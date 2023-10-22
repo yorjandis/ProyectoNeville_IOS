@@ -68,7 +68,7 @@ struct ListFavView: View {
                         dimiss()
                     }
                     .padding(.trailing, 20)
-                }
+                }.padding(.bottom, 20)
             }
             .padding(.top,20)
             .navigationTitle("Favoritos")

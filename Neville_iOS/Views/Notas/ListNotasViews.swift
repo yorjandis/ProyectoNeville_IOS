@@ -38,8 +38,9 @@ struct ListNotasViews: View {
                 Button("Volver"){
                     dimiss()
                 }
-                .padding(.trailing, 30)
-            }.padding(10)
+                .padding(.trailing, 20)
+            }
+            .padding(.bottom, 20)
            
             .navigationTitle("Notas")
             .navigationBarTitleDisplayMode(.inline)
