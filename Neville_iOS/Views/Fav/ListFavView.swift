@@ -91,7 +91,7 @@ struct ListFavView: View {
                         array.removeAll()
                         array = manageFrases().getFavFrases()
                     }
-                    .background(.red)
+                    .tint(.red)
                 }
         }
         
@@ -136,7 +136,7 @@ struct ListFavView: View {
                         array = FavModel().getAllFavTxt()
                         
                     }
-                    .background(.red)
+                    .tint(.red)
                 }
         }
         
