@@ -89,7 +89,7 @@ struct manageFrases {
 
         if isFrasesPopulated {return} //Sale si la tabla frases ya esta populada
             
-            let arrayFrases = UtilFunc.getfrasesArrayFromTxtFile() //Obtiene el arreglo de frases del txt
+            let arrayFrases = UtilFuncs.getfrasesArrayFromTxtFile() //Obtiene el arreglo de frases del txt
  
             //Populando la tabla frases
             for item in arrayFrases {

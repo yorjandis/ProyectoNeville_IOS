@@ -17,13 +17,9 @@ struct ListFavView: View {
     @State  private var arrayTxt : [FavTxt] = []
     @State  private var arrayFrases : [Frases] = []
     @State  private  var showSheetContentTxt = false
-    
-     
-   
-  
+
     var body: some View {
-        NavigationStack{
-            
+        NavigationStack{     
             VStack{
                 HStack(spacing: 40){
                     Button("Frases"){
@@ -103,7 +99,7 @@ struct ListFavView: View {
         let item : FavTxt //El identity actual
         @Binding var array : [FavTxt]
         
-        var typeContent : TypeOfContent{
+       private var typeContent : TypeOfContent{
             switch item.prefix{
             case "conf_":
                 return .conf

@@ -23,7 +23,7 @@ struct TxtListView: View {
             List(listTxtCont(), id: \.self) { item in
                 HStack{
                     Image(systemName: "fleuron.fill")
-                        .foregroundColor(FavModel().isFav(nameFile: item, prefix: typeContent.rawValue) ? .orange : .gray)
+                        .foregroundColor(FavModel().isFav(nameFile: item, prefix: typeContent.getPrefix) ? .orange : .gray)
                     
                     NavigationLink{
                         ContentTxtShowView(fileName: "\(item)",  title: item, typeContent: typeContent)
@@ -75,8 +75,8 @@ struct TxtListView: View {
             let items = try fm.contentsOfDirectory(atPath: path)
             
             for item in items {
-                if item.hasPrefix(typeContent.rawValue) {
-                    temp = String(item.trimmingPrefix(typeContent.rawValue))
+                if item.hasPrefix(typeContent.getPrefix) {
+                    temp = String(item.trimmingPrefix(typeContent.getPrefix))
                         .replacingOccurrences(of: ".txt", with: "")
                         .capitalized(with: .autoupdatingCurrent)
                     

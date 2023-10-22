@@ -79,9 +79,9 @@ struct ContentTxtShowView: View {
    private func FileRead(_ file : String)->String{
         
         var result = ""
-        let temp = "\(typeContent.rawValue)\(file.lowercased())"
+       let temp = "\(typeContent.getPrefix)\(file.lowercased())"
        
-       print("yor: \(typeContent.rawValue)\(file.lowercased())")
+       print("yor: \(typeContent.getPrefix)\(file.lowercased())")
         
         if let gg = Bundle.main.url(forResource: temp, withExtension: "txt") {
             
@@ -97,7 +97,7 @@ struct ContentTxtShowView: View {
     
     //Determina si un elemento es fasvorito
     private func ifFav(){
-        if FavModel().isFav(nameFile:fileName.lowercased(), prefix: typeContent.rawValue){
+        if FavModel().isFav(nameFile:fileName.lowercased(), prefix: typeContent.getPrefix){
             isFav = true
         }else {
             isFav = false
@@ -107,9 +107,9 @@ struct ContentTxtShowView: View {
     //Alterna entre los estados de fav/NO fav
    private  func setFav(){
         if isFav {
-            if !FavModel().Delete(nameFile:fileName.lowercased(), prefix: typeContent.rawValue){print("error delete")}
+            if !FavModel().Delete(nameFile:fileName.lowercased(), prefix: typeContent.getPrefix){print("error delete")}
         }else{
-            if !FavModel().Add(nameFile:fileName.lowercased(), prefix: typeContent.rawValue){
+            if !FavModel().Add(nameFile:fileName.lowercased(), prefix: typeContent.getPrefix){
                 print("error add")
             }
         }

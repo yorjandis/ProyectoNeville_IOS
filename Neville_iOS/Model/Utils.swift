@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 //Almacenamiento de variables globales:
 struct Constant{
     static let appName      = "Neville Para Todos"
@@ -30,13 +29,16 @@ struct Constant{
         /// UserDefault Store:  Nombre para la clave Bool que indica si la entity Frases ha sido populada
     static var UD_isfrasesLoaded = "isfrasesLoaded"
     
+    
+     //Tab names for TabButtons
+     static let tabButtons = ["book.pages.fill","video.fill","house.circle.fill","video.circle.fill", "slider.vertical.3"]
  
 }
 
 ///Enumeración para los distintos tipos de elementos de contenido:
 ///El valor raw representa el prefijo/nombre del fichero en el bundle
-enum TypeOfContent: String{
-    case conf = "conf_", video_Conf = "listidvideoconf", aud_Conf = "aconf_", frases = "listfrases", citas = "cita_", preguntas = "preg_", ayudas = "ayud_",aud_libros = "listidaudiolibros", biografia = "biografia",vide_gregg = "listidgregg",  NA = ""
+enum TypeOfContent{
+    case conf, video_Conf, aud_Conf, frases, citas, preguntas, ayudas,aud_libros, biografia,vide_gregg,  NA
     
     //devuelve un título para cada case
     var getTitleOfContent:String{
@@ -54,6 +56,28 @@ enum TypeOfContent: String{
         case .NA            :  return ""
         }
     }
+    
+    //Devuelve el prefijo del fichero txt inbuilt
+    var getPrefix : String{
+        switch self {
+        case .conf          :  return "conf_"
+        case .ayudas        :  return "ayud_"
+        case .citas         :  return "cita_"
+        case .preguntas     :  return "preg_"
+        default: return ""
+        }
+    }
+    
+    //Devuelve el nombre del fichero inbuilt
+    var getNameFile : String {
+        switch self {
+        case .video_Conf : return "listidvideoconf"
+        case .aud_libros : return "listidaudiolibros"
+        case .vide_gregg : return "listidgregg"
+        default: return ""
+        }
+    }
+    
 }
 
 
@@ -71,14 +95,14 @@ struct ItemVideoYoutube : Hashable{
     
 }
 
-struct UtilFunc{
+struct UtilFuncs{
     
     ///Obtiene la lista de frases del fichero txt in-built:
     /// - Returns: Devuelve un  arreglo de cadenas con las frases cargadas del txt en Staff
     static  func getfrasesArrayFromTxtFile() ->[String] {
         var array = [String]()
         
-        array = UtilFunc.ReadFileToArray(Constant.FileListFrases)
+        array = UtilFuncs.ReadFileToArray(Constant.FileListFrases)
         
         return array
         
@@ -109,8 +133,49 @@ struct UtilFunc{
         
     }
 
-    
+    //Devuelve un arreglo de tuplas: IDvideo:TitleOfVideo
+    static func getListVideoIds(_ typeContent : TypeOfContent)->[(String ,String)]{
+        
+        var result  = [(String , String)]()  //dic
+        var temp = [String]() //array linea del txt: "ID::Title"
+        var temp2 = [String]() //array contiene cada parte: [0]=ID, [1]=title
+        
+        
+        temp = UtilFuncs.ReadFileToArray(typeContent.getNameFile)
+        for idx in temp {
+            temp2 = idx.components(separatedBy: "::") //separando componentes
+            result.append((temp2[0], temp2[1]))
+            // result[temp2[0]] = temp2[1] //populando el dic
+        }
+        
+        return result
+        
+    }
 
+    //Yor: es la mismo que getListVideoIds pero utilizando un array2D
+    static func getListVideoIds2(_ typeContent : TypeOfContent)->[[String]]{
+
+        var temp = [String]() //array linea del txt: "ID::Title"
+        var temp2 = [String]() //array contiene cada parte: [0]=ID, [1]=title
+        
+        
+        temp = UtilFuncs.ReadFileToArray(typeContent.getNameFile)
+        
+        var result = Array(repeating: Array(repeating: "", count: 2), count: temp.count)  //dic
+        var i : Int = 0
+        for idx in temp {
+            temp2 = idx.components(separatedBy: "::") //separando componentes
+            result[i][0] = temp2[0]
+            result[i][1] = temp2[1]
+            if i <= temp.count{   i += 1}
+            // result[temp2[0]] = temp2[1] //populando el dic
+        }
+        
+        return result
+        
+    }
+
+    
 }
 
 

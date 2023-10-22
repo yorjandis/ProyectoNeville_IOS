@@ -68,7 +68,7 @@ struct SideMenuView: View {
                     }
                     
                     NavigationLink{
-                        YTLisIDstView(typeContent: .videoConf)
+                        YTLisIDstView(typeContent: .video_Conf)
                     }label: {
                         TextItem("Conferencias en Videos")
                     }
@@ -86,7 +86,7 @@ struct SideMenuView: View {
                     
                     
                     NavigationLink{
-                        YTLisIDstView(typeContent: .audioLibros)
+                        YTLisIDstView(typeContent: .aud_libros)
                     }label: {
                         TextItem("Audio Libros de Neville")
                     }

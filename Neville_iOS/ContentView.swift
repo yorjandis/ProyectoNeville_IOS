@@ -151,54 +151,55 @@ struct TabButtonBar : View{
     @State var showOptionView = false
 
 
-    //Tab names
-    var tabs = ["book.pages.fill", "video.fill","house.circle.fill","video.circle.fill", "slider.vertical.3"]
+    let  tabButtons = Constant.tabButtons
     
     var body: some View{
         
         //Creando La bottom Bar con los item del menu
         HStack{
-            ForEach (tabs, id: \.self ){ image in
-                
-                switch image{
+            ForEach (tabButtons, id: \.self ){ idx in
+            
+                switch idx{
                 case "book.pages.fill":
+                    
                     NavigationLink{TxtListView( typeContent: .conf)
-                    }label: {makeItemlabel(image: image)}
+                    }label: {makeItemlabel(image: idx)}
                     
                 case "video.fill":
-                    NavigationLink{ YTLisIDstView(typeContent: .videoConf)
-                    }label: {makeItemlabel(image: image)}
+                    NavigationLink{ YTLisIDstView(typeContent: .video_Conf)
+                    }label: {makeItemlabel(image: idx)}
                 
                 case "house.circle.fill":
                     Button{
                         showOptionView = true
                     }label: {
-                        makeItemlabel(image: image)
+                        makeItemlabel(image: idx)
                             .font(.system(size: 32, weight: .bold))
                     }
                     
                 case "video.circle.fill":
-                    NavigationLink{ YTLisIDstView(typeContent: .audioLibros)
-                    }label: {makeItemlabel(image: image)}
+                    NavigationLink{ YTLisIDstView(typeContent: .aud_libros)
+                    }label: {makeItemlabel(image: idx)}
                     
                     
                 case "slider.vertical.3":
                     Button{
                         withAnimation {showSideMenu.toggle()
                         }
-                    }label: {makeItemlabel(image: showSideMenu ? "xmark" : image ) }
+                    }label: {makeItemlabel(image: showSideMenu ? "xmark" : idx ) }
                 default: EmptyView()
                     
                 }
                 
                 //Insertando un espaciado para mantener la distancia entre los items
-                if image != tabs.last {
+                if idx != tabButtons.last {
                     Spacer(minLength: 0)
                 }
                 
             }//ForEach
             
         }
+        
         .padding(.horizontal, 25)
         .padding(.vertical, 2)
         .modifier(mof_ColorGradient(colorInit: .white, colorEnd: .orange, color3: nil))
