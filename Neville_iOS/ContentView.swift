@@ -123,20 +123,20 @@ struct ContentView: View {
 
 //Frases View
 struct FrasesView : View{
-
-     @Binding var frase : String
-     @Binding var isfav : Bool
-
+    
+    @Binding var frase : String
+    @Binding var isfav : Bool
+    
     var body: some View{
-            VStack{
-                    Text(frase)
-                    .modifier(mof_frases())
-                        .onTapGesture {
-                            frase = manageFrases().getRandomFrase()
-                            readFavInFrases(isfav: &isfav)
-                        }
-            }
-
+        VStack{
+            Text(frase)
+                .modifier(mof_frases())
+                .onTapGesture {
+                    frase = manageFrases().getRandomFrase()
+                    readFavInFrases(isfav: &isfav)
+                }
+        }
+        
     }
     
 }
@@ -201,7 +201,6 @@ struct TabButtonBar : View{
         }
         
         .padding(.horizontal, 25)
-        .padding(.vertical, 2)
         .modifier(mof_ColorGradient(colorInit: .white, colorEnd: .orange, color3: nil))
         .clipShape(Capsule())
         .shadow(color: Color.black.opacity(0.15), radius: 5, x: 5, y: 5)
@@ -220,7 +219,7 @@ struct TabButtonBar : View{
         return Image(systemName: image)
             .renderingMode(.template)
             .foregroundColor( Color.black.opacity(0.4))
-            .padding()
+            .padding(10)
         
     }
     
