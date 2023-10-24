@@ -105,10 +105,10 @@ struct ContentTxtShowView: View {
     //Alterna entre los estados de fav/NO fav
    private  func setFav(){
         if isFav {
-            if !FavModel().Delete(nameFile:fileName.lowercased(), prefix: typeContent.getPrefix){print("error delete")}
+            if !FavModel().Delete(nameFile:fileName.lowercased(), prefix: typeContent.getPrefix){print("error delete in FavTxt")}
         }else{
             if !FavModel().Add(nameFile:fileName.lowercased(), prefix: typeContent.getPrefix){
-                print("error add")
+                print("error add in FavTxt")
             }
         }
     }

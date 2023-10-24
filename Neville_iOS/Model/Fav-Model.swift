@@ -4,7 +4,7 @@
 //
 //  Created by Yorjandis Garcia on 20/10/23.
 //
-//Manejo de la tabla FavTxt para facvoritos de las conferencias
+//Manejo de la tabla FavTxt
 //Para los favoritos de las frases se utiliza `ManageFrases` en CoreDataCRUD.swift
 
 import Foundation
@@ -34,11 +34,12 @@ struct FavModel{
 
     ///Adiciona un nuevo elemento a la BD
     /// - Returns - true si OK, false si error
-    func Add(nameFile : String, prefix : String)-> Bool{
+    func Add(nameFile : String, prefix : String, idvideo : String = "")-> Bool{
             let entity : FavTxt = FavTxt(context: self.context)
             entity.id = UUID().uuidString
-        entity.namefile = nameFile.lowercased()
+            entity.namefile = nameFile.lowercased()
             entity.prefix = prefix
+            entity.idvideo = idvideo
             
             if self.context.hasChanges {
                 do{
@@ -74,6 +75,9 @@ struct FavModel{
     
     
     ///Check if is Favorite (true si esta en la BD)
+    ///
+    ///La propiedad prefix se refiere a la función "getPrefix" de TypeOfContent
+    ///
     /// - Returns - true si esta en la BD, false si no esta
     func isFav(nameFile : String, prefix : String)-> Bool{
         let array = getAllFavTxt()

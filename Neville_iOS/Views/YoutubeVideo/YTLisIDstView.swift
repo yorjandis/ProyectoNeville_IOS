@@ -5,16 +5,20 @@
 //  Created by Yorjandis Garcia on 22/9/23.
 //
 //Muestra un listado de IDs de videos de youtube y los lanza
+//La variable typeContent indica el tipo de contenido a cargar
 
 import SwiftUI
 
 struct YTLisIDstView: View {
     
     @Environment(\.dismiss) var dimiss
+    @Environment(\.colorScheme) var theme
     
     var typeContent : TypeOfContent = .NA //Tipo de contenido a cargar
     
-    @State  var ListOfVideosID : [[String]] = [[String]]()
+    @State private var ListOfVideosID : ([[String]]) = [[String]]()
+    
+    @State private var ListOfVideosIds : [[String]] = []
     
     
     
@@ -23,32 +27,29 @@ struct YTLisIDstView: View {
         NavigationStack{
             List(ListOfVideosID, id: \.[0]){ idx in
                 HStack{
+                    Image(systemName: "video.fill")
+                        .padding(.horizontal, 5)
+                        .foregroundStyle(FavModel().isFav(nameFile: idx[1], prefix: typeContent.getPrefix) ? .orange : .gray)
+                    
                     NavigationLink{
-                        YTVideoView(items: ItemVideoYoutube(id: idx[0], title: idx[1]).getInfo())
+                        YTVideoView(items: ItemVideoYoutube(id: idx[0], title: idx[1], prefix: typeContent).getInfo(), showFavIcon: true)
                     }label: {
-                        UiViewmaker(nameFile: idx[1], prefix: idx[0])
-                            
+                        Text(idx[1].capitalized(with: .autoupdatingCurrent))
+                            .bold()
+                            .foregroundStyle(theme == ColorScheme.dark ? .white : .black)       
                     }
                 }
                 .swipeActions(edge: .trailing){
                     Button("Favorito"){
-                        //conmuta entre los estados de fav
-                        if FavModel().isFav(nameFile: idx[1], prefix: idx[0]) {
-                            FavModel().Delete(nameFile: idx[1], prefix: idx[0])
-                            
-                        }else { // Si no esta en la BD:
-                            FavModel().Add(nameFile: idx[1], prefix: idx[0])
-                        }
-                        //Actualiza el listado
-                        ListOfVideosID.removeAll()
-                        ListOfVideosID = UtilFuncs.getListVideoIds2(typeContent)
+                        setFav(nameFile: idx[1], prefix: typeContent.getPrefix)
+                        
+                        getVideosList()
                     }
                 }.tint(.orange)
                 
             }
-            .onAppear{
-                ListOfVideosID.removeAll()
-                ListOfVideosID = UtilFuncs.getListVideoIds2(typeContent)
+            .onAppear {
+                getVideosList()
             }
             
             Divider()
@@ -56,13 +57,7 @@ struct YTLisIDstView: View {
             //Barra Inferior (Permitir volver, favorito, etc)
             HStack( spacing: 20){
                 Spacer()
-                //Show/Hide the fav button
-                Button{
-                    ListOfVideosID.removeAll()
-                    ListOfVideosID = UtilFuncs.getListVideoIds2(typeContent)
-                }label: {
-                    Image(systemName: "arrow.triangle.2.circlepath.circle")
-                }
+                
                 Button{dimiss()
                 }label: {
                     Text("Volver")
@@ -71,53 +66,32 @@ struct YTLisIDstView: View {
                 .padding(.top, 10)
                 
             }
-            .navigationTitle(typeContent.getTitleOfContent)
+            .navigationTitle(typeContent.getDescription)
             .navigationBarTitleDisplayMode(.inline)
         }
         
     }
-}
-            
-        
-        
-        //View para Item de video
-        struct UiViewmaker : View{
-            @Environment(\.colorScheme) var theme
-            let nameFile : String
-            let prefix : String
-            
-            var isFav : Bool {
-                if FavModel().isFav(nameFile: nameFile, prefix: prefix) {
-                    return true
-                }else {
-                    return false
-                }
-            }
     
-            var body: some View{
-                VStack(alignment: .leading){
-                    HStack {
-                        Image(systemName: "video.fill")
-                            .padding(.horizontal, 5)
-                            .foregroundStyle(isFav ? .orange : .gray)
-                        
-                        
-                        Text(nameFile.lowercased())
-                            .bold()
-                            .foregroundStyle(FavModel().isFav(nameFile: nameFile, prefix: prefix) ? .orange : .gray)
-                        
-                    }
-                    .padding(10)
-                }
-                
-            }
+    ///Auxiliar: actualiza el estado de favoritos
+    private func setFav(nameFile: String , prefix : String){
+        if FavModel().isFav(nameFile: nameFile, prefix: typeContent.getPrefix){
+            FavModel().Delete(nameFile: nameFile, prefix: typeContent.getPrefix)
+        }else{
+            FavModel().Add(nameFile: nameFile, prefix: typeContent.getPrefix)
         }
-        
-    //}
+    }
     
+    ///Auxiliar: Recarga el listado
+    private func getVideosList(){
+        ListOfVideosID.removeAll()
+        ListOfVideosID = UtilFuncs.getListVideoIds(typeContent)
+    }
+
+}
+
 
 
 
 #Preview {
-   ContentView()
+    ContentView()
 }

@@ -5,7 +5,8 @@
 //  Created by Yorjandis Garcia on 22/9/23.
 //
 //Pantalla que mostrará uno o más Videos de Youtube
-    //Acepta un arreglo de estructuras de tipo ItemVideoYoutube
+    //Acepta un arreglo de estructuras de tipo ItemVideoYoutube para mostrar varios videos
+//El botón de favorito, conyrolada por la propiedad "isSingleVideo" en esta vista se oculta si se esta mostrando varios videos.
 
 import SwiftUI
 
@@ -13,9 +14,12 @@ struct YTVideoView: View {
     @Environment(\.dismiss) var dimiss
     
     @State var showProgress : Bool = true
+    @State private var  isFav : Bool = false //color del image fav
    
-    
     var items : [ItemVideoYoutube] //array de struct ItemVideoYoutube
+    
+    let showFavIcon : Bool  //true : se esta mostrando 1 video, false se muestra varios videos. esto permite mostrar u ocultar el boton de favorito
+    
 
     var body: some View {
         VStack {
@@ -49,6 +53,20 @@ struct YTVideoView: View {
             HStack( spacing: 20){
                 Spacer()
                 //Show/Hide the fav button
+                if showFavIcon {
+                    Button{
+                        setFav() //Alterna entre fav/No fav
+                        ifFav() //Actualiza el estado de favorito
+                    }label: {
+                        Image(systemName: "heart.fill")
+                            .tint(isFav ? .orange : .gray)
+                    }
+                    .onAppear { //Leyendo el estado del Fav y ajustando color del icono
+                        ifFav()
+                    }
+                }
+                
+                //button back:
                 Button{
                     dimiss()
                 }label: {
@@ -62,6 +80,27 @@ struct YTVideoView: View {
         }
         
     }
+    
+    //Alterna entre los estados de fav/NO fav
+    private  func setFav(){
+        if isFav {
+            if !FavModel().Delete(nameFile:items[0].title, prefix: items[0].prefix.getPrefix){print("error delete in FavTxt")}
+        }else{
+            if !FavModel().Add(nameFile:items[0].title, prefix: items[0].prefix.getPrefix){
+                print("error add in FavTxt")
+            }
+        }
+    }
+    
+    //Determina si el video es favorito y ajusta la variable isFav
+    private func ifFav(){
+        if FavModel().isFav(nameFile: items[0].title, prefix: items[0].prefix.getPrefix){
+            isFav = true
+        }else {
+            isFav = false
+        }
+    }
+    
 }
 
 #Preview {

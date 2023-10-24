@@ -38,10 +38,10 @@ struct Constant{
 ///Enumeración para los distintos tipos de elementos de contenido:
 ///El valor raw representa el prefijo/nombre del fichero en el bundle
 enum TypeOfContent{
-    case conf, video_Conf, aud_Conf, frases, citas, preguntas, ayudas,aud_libros, biografia,vide_gregg,  NA
+    case conf, video_Conf, aud_Conf, frases, citas, preguntas, ayudas,aud_libros, biografia,vide_gregg, NA
     
     //devuelve un título para cada case
-    var getTitleOfContent:String{
+    var getDescription:String{
         switch self {
         case .conf          :  return "Conferencias En Texto"
         case .frases        :  return "Frases"
@@ -51,24 +51,28 @@ enum TypeOfContent{
         case .preguntas     :  return "Preguntas y Respuestas"
         case .video_Conf    :  return "Video Conferencias"
         case .aud_libros    :  return "Audio libros"
-        case .biografia     :  return "Bio"
+        case .biografia     :  return "Biografía"
         case .vide_gregg    :  return "Videos Gregg Braden"
         case .NA            :  return ""
         }
     }
     
-    //Devuelve el prefijo del fichero txt inbuilt
+    //Devuelve el prefijo del fichero txt inbuilt (También para IDs youtube)
     var getPrefix : String{
         switch self {
         case .conf          :  return "conf_"
         case .ayudas        :  return "ayud_"
         case .citas         :  return "cita_"
         case .preguntas     :  return "preg_"
+            
+        case .video_Conf    :  return "video Conf"
+        case .aud_Conf      :  return "audio Conf"
+        case .vide_gregg    :  return "gregg"
         default: return ""
         }
     }
     
-    //Devuelve el nombre del fichero inbuilt
+    //Devuelve el nombre del fichero txt inbuilt
     var getNameFile : String {
         switch self {
         case .video_Conf : return "listidvideoconf"
@@ -81,15 +85,16 @@ enum TypeOfContent{
 }
 
 
-//Representa un item de video de Youtube:
+//Item de video de Youtube:
 struct ItemVideoYoutube : Hashable{
     let id : String //id del video
     let title : String //Un título descriptivo
+    let prefix : TypeOfContent //Indica el tipo de contenido (video_conf, aud_conf....)
     
-    ///Devuelve un arreglo con la info de sus campos
+    ///Devuelve un arreglo de objetos "ItemVideoYoutube"
     func getInfo()->[ItemVideoYoutube]{
         var result = [ItemVideoYoutube]()
-        result.append(ItemVideoYoutube(id: self.id, title: self.title))
+        result.append(ItemVideoYoutube(id: self.id, title: self.title, prefix: self.prefix))
         return result
     }
     
@@ -133,39 +138,23 @@ struct UtilFuncs{
         
     }
 
-    //Devuelve un arreglo de tuplas: IDvideo:TitleOfVideo
-    static func getListVideoIds(_ typeContent : TypeOfContent)->[(String ,String)]{
-        
-        var result  = [(String , String)]()  //dic
-        var temp = [String]() //array linea del txt: "ID::Title"
-        var temp2 = [String]() //array contiene cada parte: [0]=ID, [1]=title
-        
-        
-        temp = UtilFuncs.ReadFileToArray(typeContent.getNameFile)
-        for idx in temp {
-            temp2 = idx.components(separatedBy: "::") //separando componentes
-            result.append((temp2[0], temp2[1]))
-            // result[temp2[0]] = temp2[1] //populando el dic
-        }
-        
-        return result
-        
-    }
 
-    //Yor: es la mismo que getListVideoIds pero utilizando un array2D
-    static func getListVideoIds2(_ typeContent : TypeOfContent)->[[String]]{
+    ///Devuelve un arreglo 2d con informacion de los items de video.
+    /// - Returns - Arreglo 2d: [0] id del video, [1] titulo del video
+    static func getListVideoIds(_ typeContent : TypeOfContent)->[[String]]{
 
-        var temp = [String]() //array linea del txt: "ID::Title"
-        var temp2 = [String]() //array contiene cada parte: [0]=ID, [1]=title
+        var temp = [String]() //array: linea del txt: "ID::Title"
+        var temp2 = [String]() //array: contiene cada parte: [0]=ID, [1]=title
 
         temp = UtilFuncs.ReadFileToArray(typeContent.getNameFile)
         
-        var result = Array(repeating: Array(repeating: "", count: 2), count: temp.count)  //dic
+        var result = Array(repeating: Array(repeating: "", count: 2), count: temp.count)  // "count: 2" es el número de columnas
+        
         var i : Int = 0
         for idx in temp {
             temp2 = idx.components(separatedBy: "::") //separando componentes
-            result[i][0] = temp2[0]
-            result[i][1] = temp2[1]
+            result[i][0] = temp2[0] //ID
+            result[i][1] = temp2[1] //Title
             if i <= temp.count{   i += 1}
             // result[temp2[0]] = temp2[1] //populando el dic
         }

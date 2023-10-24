@@ -13,8 +13,8 @@ struct SideMenuView: View {
     @State private var show = false
     
     let itemVideoMaestrosNeville = [
-    ItemVideoYoutube(id: "YQ9jM5B0-O8", title: "William Blake"),
-    ItemVideoYoutube(id: "mgbdcv606Rg", title: "Abdullah"),
+        ItemVideoYoutube(id: "YQ9jM5B0-O8", title: "William Blake", prefix: .NA),
+        ItemVideoYoutube(id: "mgbdcv606Rg", title: "Abdullah", prefix: .NA),
     ]
     
     
@@ -54,7 +54,7 @@ struct SideMenuView: View {
                     }
                     
                     NavigationLink{
-                        YTVideoView(items: itemVideoMaestrosNeville)
+                        YTVideoView(items: itemVideoMaestrosNeville, showFavIcon: false)
                     }label: {
                         TextItem("Los Maestros de neville")
                     }

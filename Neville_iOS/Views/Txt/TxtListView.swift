@@ -14,6 +14,7 @@ struct TxtListView: View {
     
     @Environment(\.dismiss) var dimiss
     @Environment(\.colorScheme) var theme
+    
     var typeContent : TypeOfContent = .NA
     
     
@@ -57,7 +58,7 @@ struct TxtListView: View {
             
             
         }
-        .navigationTitle(typeContent.getTitleOfContent)
+        .navigationTitle(typeContent.getDescription)
         .navigationBarTitleDisplayMode(.inline)
     }
     
