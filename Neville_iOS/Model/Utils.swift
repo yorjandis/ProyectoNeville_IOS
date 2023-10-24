@@ -66,7 +66,7 @@ enum TypeOfContent{
         case .preguntas     :  return "preg_"
             
         case .video_Conf    :  return "video Conf"
-        case .aud_Conf      :  return "audio Conf"
+        case .aud_libros    :  return "audio Libros"
         case .vide_gregg    :  return "gregg"
         default: return ""
         }

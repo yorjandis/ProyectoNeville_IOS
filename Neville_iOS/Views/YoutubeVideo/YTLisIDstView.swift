@@ -41,7 +41,7 @@ struct YTLisIDstView: View {
                 }
                 .swipeActions(edge: .trailing){
                     Button("Favorito"){
-                        setFav(nameFile: idx[1], prefix: typeContent.getPrefix)
+                        setFav(nameFile: idx[1], prefix: typeContent.getPrefix, idVideo: idx[0])
                         
                         getVideosList()
                     }
@@ -73,11 +73,11 @@ struct YTLisIDstView: View {
     }
     
     ///Auxiliar: actualiza el estado de favoritos
-    private func setFav(nameFile: String , prefix : String){
+    private func setFav(nameFile: String , prefix : String, idVideo : String){
         if FavModel().isFav(nameFile: nameFile, prefix: typeContent.getPrefix){
             FavModel().Delete(nameFile: nameFile, prefix: typeContent.getPrefix)
         }else{
-            FavModel().Add(nameFile: nameFile, prefix: typeContent.getPrefix)
+            FavModel().Add(nameFile: nameFile, prefix: typeContent.getPrefix, idvideo: idVideo)
         }
     }
     

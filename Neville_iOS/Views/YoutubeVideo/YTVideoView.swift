@@ -86,7 +86,7 @@ struct YTVideoView: View {
         if isFav {
             if !FavModel().Delete(nameFile:items[0].title, prefix: items[0].prefix.getPrefix){print("error delete in FavTxt")}
         }else{
-            if !FavModel().Add(nameFile:items[0].title, prefix: items[0].prefix.getPrefix){
+            if !FavModel().Add(nameFile:items[0].title, prefix: items[0].prefix.getPrefix, idvideo: items[0].id){
                 print("error add in FavTxt")
             }
         }

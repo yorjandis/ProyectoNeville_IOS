@@ -37,6 +37,7 @@ struct optionView: View {
                         }.modifier(GradientButtonStyle(ancho: 100))
                         
                     }
+                    
                     HStack(spacing: 20){
                         
                         Button{
