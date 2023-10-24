@@ -73,9 +73,9 @@ struct FavModel{
         }
     
     
-    ///Check if is Favorite
+    ///Check if is Favorite (true si esta en la BD)
+    /// - Returns - true si esta en la BD, false si no esta
     func isFav(nameFile : String, prefix : String)-> Bool{
-        print("prefijo: \(prefix) nombre: \(nameFile)")
         let array = getAllFavTxt()
         for item in array{
             if (item.namefile == nameFile.lowercased() && item.prefix == prefix) {

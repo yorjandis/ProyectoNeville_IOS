@@ -157,8 +157,7 @@ struct UtilFuncs{
 
         var temp = [String]() //array linea del txt: "ID::Title"
         var temp2 = [String]() //array contiene cada parte: [0]=ID, [1]=title
-        
-        
+
         temp = UtilFuncs.ReadFileToArray(typeContent.getNameFile)
         
         var result = Array(repeating: Array(repeating: "", count: 2), count: temp.count)  //dic

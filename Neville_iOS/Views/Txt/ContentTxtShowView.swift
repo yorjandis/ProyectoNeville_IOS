@@ -80,8 +80,6 @@ struct ContentTxtShowView: View {
         
         var result = ""
        let temp = "\(typeContent.getPrefix)\(file.lowercased())"
-       
-       print("yor: \(typeContent.getPrefix)\(file.lowercased())")
         
         if let gg = Bundle.main.url(forResource: temp, withExtension: "txt") {
             

@@ -14,70 +14,80 @@ struct YTLisIDstView: View {
     
     var typeContent : TypeOfContent = .NA //Tipo de contenido a cargar
     
+    @State private var ListOfVideosID : [[String]] = Array()
+    
     
     
     var body: some View {
         
         NavigationStack{
-                    List{
-                            ForEach(UtilFuncs.getListVideoIds2(typeContent), id: \.[0]){ idx in
-                                HStack{
-                                    NavigationLink{
-                                        YTVideoView(items: ItemVideoYoutube(id: idx[0], title: idx[1]).getInfo())
-                                    }label: {
-                                        UiViewmaker(value: idx[1])
-                                    }
-                                }
-                                .swipeActions(edge: .trailing){
-                                    Button("Favorito"){
-                                        //code: marca/Desmarca fav
-                                        //El efecto se ve en el color del icono del item
-                                        
-                                    }
-                                }.tint(.orange)
-                                
-                            }
-                            //.listRowSeparator(.hidden)
-  
-                        }
-                        .background(.ultraThinMaterial)
-   
-                    Divider()
-                    
-                    //Barra Inferior (Permitir volver, favorito, etc)
-                    HStack( spacing: 20){
-                        Spacer()
-                        //Show/Hide the fav button
-                        Button{dimiss()
-                        }label: {
-                            Text("Volver")
-                        }
-                        .padding(.trailing, 25)
-                        .padding(.top, 10)
-                        
+            List(ListOfVideosID, id: \.[0]){ idx in
+                HStack{
+                    NavigationLink{
+                        YTVideoView(items: ItemVideoYoutube(id: idx[0], title: idx[1]).getInfo())
+                    }label: {
+                        UiViewmaker(nameFile: idx[1], prefix: idx[0])
                     }
-                    
                 }
-                .navigationTitle(typeContent.getTitleOfContent)
-                .navigationBarTitleDisplayMode(.inline)
+                .swipeActions(edge: .trailing){
+                    Button("Favorito"){
+                        //conmuta entre los estados de fav
+                        ListOfVideosID.removeAll()
+                        if FavModel().isFav(nameFile: idx[1], prefix: idx[0]) {
+                            FavModel().Delete(nameFile: idx[1], prefix: idx[0])
+                            
+                        }else { // Si no esta en la BD:
+                            FavModel().Add(nameFile: idx[1], prefix: idx[0])
+                        }
+                        //Actualiza el listado
+                        
+                        ListOfVideosID = UtilFuncs.getListVideoIds2(typeContent)
+                    }
+                }.tint(.orange)
+                
+            }
+            .onAppear{
+                ListOfVideosID = UtilFuncs.getListVideoIds2(typeContent)
             }
             
+            Divider()
+            
+            //Barra Inferior (Permitir volver, favorito, etc)
+            HStack( spacing: 20){
+                Spacer()
+                //Show/Hide the fav button
+                Button{dimiss()
+                }label: {
+                    Text("Volver")
+                }
+                .padding(.trailing, 25)
+                .padding(.top, 10)
+                
+            }
+            .navigationTitle(typeContent.getTitleOfContent)
+            .navigationBarTitleDisplayMode(.inline)
+        }
+        
+    }
+}
             
         
         
         //View para Item de video
         struct UiViewmaker : View{
             @Environment(\.colorScheme) var theme
-            let value : String
+            let nameFile : String
+            let prefix : String
+            
             
             var body: some View{
                 VStack(alignment: .leading){
                     HStack {
                         Image(systemName: "video.fill")
-                            .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
+                            .foregroundStyle(FavModel().isFav(nameFile: nameFile, prefix: prefix) ? .orange : .gray)
                             .padding(.horizontal, 5)
                         
-                        Text(value.lowercased())
+                        Text(nameFile.lowercased())
                             .bold()
                             .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
                         
@@ -88,7 +98,7 @@ struct YTLisIDstView: View {
             }
         }
         
-    }
+    //}
     
 
 
