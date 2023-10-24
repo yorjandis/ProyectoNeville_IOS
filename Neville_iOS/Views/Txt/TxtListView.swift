@@ -17,11 +17,13 @@ struct TxtListView: View {
     
     var typeContent : TypeOfContent = .NA
     
+    @State private var listTxt : [String] = []
+    
     
     var body: some View {
  
         VStack {
-            List(listTxtCont(), id: \.self) { item in
+            List(listTxt , id: \.self) { item in
                 HStack{
                     Image(systemName: "fleuron.fill")
                         .foregroundColor(FavModel().isFav(nameFile: item, prefix: typeContent.getPrefix) ? .orange : .gray)
@@ -36,7 +38,18 @@ struct TxtListView: View {
                     }
                         
                 }
+                .swipeActions(edge: .trailing){
+                    
+                    Button("Favorito"){
+                        setFav(nameFile: item, prefix: typeContent.getPrefix)
+                        getList()
+                    }
+                    
+                }.tint(.orange)
                 
+            }//List
+            .onAppear{
+                getList()
             }
             .background(.ultraThinMaterial)
             
@@ -63,8 +76,8 @@ struct TxtListView: View {
     }
     
     
-    //Obtiene el arreglo de ficheros txt
-    func  listTxtCont()-> [String] {
+    ///Obtiene el arreglo de ficheros txt
+   private  func  listTxtCont()-> [String] {
         var result = [String]()
         var temp : String = ""
         let fm = FileManager.default
@@ -92,6 +105,23 @@ struct TxtListView: View {
         
     }
     
+    
+
+    ///Auxiliar: Alterna entre los estados de fav/NO fav
+    private func setFav(nameFile : String, prefix : String){
+        if FavModel().isFav(nameFile: nameFile, prefix: prefix){
+               FavModel().Delete(nameFile:nameFile.lowercased(), prefix: prefix)
+               }else{
+                   FavModel().Add(nameFile:nameFile.lowercased(), prefix: prefix)
+               }
+        
+    }
+    
+    ///Auxiliar: Actualiza el listado
+    private func getList(){
+        listTxt.removeAll()
+        listTxt = listTxtCont()
+    }
         
 }
 
