@@ -14,7 +14,7 @@ struct YTLisIDstView: View {
     
     var typeContent : TypeOfContent = .NA //Tipo de contenido a cargar
     
-    @State private var ListOfVideosID : [[String]] = Array()
+    @State  var ListOfVideosID : [[String]] = [[String]]()
     
     
     
@@ -27,12 +27,12 @@ struct YTLisIDstView: View {
                         YTVideoView(items: ItemVideoYoutube(id: idx[0], title: idx[1]).getInfo())
                     }label: {
                         UiViewmaker(nameFile: idx[1], prefix: idx[0])
+                            
                     }
                 }
                 .swipeActions(edge: .trailing){
                     Button("Favorito"){
                         //conmuta entre los estados de fav
-                        ListOfVideosID.removeAll()
                         if FavModel().isFav(nameFile: idx[1], prefix: idx[0]) {
                             FavModel().Delete(nameFile: idx[1], prefix: idx[0])
                             
@@ -40,13 +40,14 @@ struct YTLisIDstView: View {
                             FavModel().Add(nameFile: idx[1], prefix: idx[0])
                         }
                         //Actualiza el listado
-                        
+                        ListOfVideosID.removeAll()
                         ListOfVideosID = UtilFuncs.getListVideoIds2(typeContent)
                     }
                 }.tint(.orange)
                 
             }
             .onAppear{
+                ListOfVideosID.removeAll()
                 ListOfVideosID = UtilFuncs.getListVideoIds2(typeContent)
             }
             
@@ -56,6 +57,12 @@ struct YTLisIDstView: View {
             HStack( spacing: 20){
                 Spacer()
                 //Show/Hide the fav button
+                Button{
+                    ListOfVideosID.removeAll()
+                    ListOfVideosID = UtilFuncs.getListVideoIds2(typeContent)
+                }label: {
+                    Image(systemName: "arrow.triangle.2.circlepath.circle")
+                }
                 Button{dimiss()
                 }label: {
                     Text("Volver")
@@ -79,17 +86,25 @@ struct YTLisIDstView: View {
             let nameFile : String
             let prefix : String
             
-            
+            var isFav : Bool {
+                if FavModel().isFav(nameFile: nameFile, prefix: prefix) {
+                    return true
+                }else {
+                    return false
+                }
+            }
+    
             var body: some View{
                 VStack(alignment: .leading){
                     HStack {
                         Image(systemName: "video.fill")
-                            .foregroundStyle(FavModel().isFav(nameFile: nameFile, prefix: prefix) ? .orange : .gray)
                             .padding(.horizontal, 5)
+                            .foregroundStyle(isFav ? .orange : .gray)
+                        
                         
                         Text(nameFile.lowercased())
                             .bold()
-                            .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
+                            .foregroundStyle(FavModel().isFav(nameFile: nameFile, prefix: prefix) ? .orange : .gray)
                         
                     }
                     .padding(10)
