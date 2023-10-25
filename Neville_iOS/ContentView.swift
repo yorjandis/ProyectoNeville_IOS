@@ -11,10 +11,7 @@ struct ContentView: View {
     @State  var frase : String = manageFrases().getRandomFrase()
     @State  var isfav  = false
     @State  var isHaveNote = false
-    
-    
 
-    
     var body: some View {
         NavigationStack{
             
