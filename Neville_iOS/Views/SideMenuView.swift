@@ -23,7 +23,7 @@ struct SideMenuView: View {
             
             //Header
                 VStack (alignment: HorizontalAlignment.center){
-                    Image("neville512")
+                    Image("appstore")
                         .resizable()
                         .renderingMode(.original)
                         .frame(width: 80, height: 80)
