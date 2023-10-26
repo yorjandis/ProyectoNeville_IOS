@@ -13,8 +13,8 @@ struct ListFavView: View {
     @Environment(\.dismiss) var dimiss
     @State var ButtonActive: Bool = true //true para frase, false para conf
     
-    @State  private var arrayTxt : [FavTxt] = []
-    @State  private var arrayFrases : [Frases] = []
+    @State  private var arrayTxt : [FavTxt] = FavModel().getAllFavTxt()
+    @State  private var arrayFrases : [Frases] = manageFrases().getFavFrases()
     @State  private  var showSheetContentTxt = false
 
 
@@ -40,19 +40,13 @@ struct ListFavView: View {
                         RowFrases(item: item, array: $arrayFrases)
                         
                     }
-                    .onAppear{
-                        arrayFrases.removeAll()
-                        arrayFrases = manageFrases().getFavFrases()
-                    }
+                    
                 }else{
                     List(arrayTxt){item in
                         RowTxt(item: item, array: $arrayTxt)
                             
                     }
-                    .onAppear{
-                        arrayTxt.removeAll()
-                        arrayTxt = FavModel().getAllFavTxt()
-                    }
+                    
                 }
                 
                 Spacer()
