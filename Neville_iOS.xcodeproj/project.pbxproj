@@ -7,8 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		194F11212AEC50D2009FA23E /* list2.txt in Resources */ = {isa = PBXBuildFile; fileRef = 194F111A2AEC50D2009FA23E /* list2.txt */; };
+		194F11222AEC50D2009FA23E /* list6.txt in Resources */ = {isa = PBXBuildFile; fileRef = 194F111B2AEC50D2009FA23E /* list6.txt */; };
+		194F11232AEC50D2009FA23E /* list1.txt in Resources */ = {isa = PBXBuildFile; fileRef = 194F111C2AEC50D2009FA23E /* list1.txt */; };
+		194F11242AEC50D2009FA23E /* list7.txt in Resources */ = {isa = PBXBuildFile; fileRef = 194F111D2AEC50D2009FA23E /* list7.txt */; };
+		194F11252AEC50D2009FA23E /* list3.txt in Resources */ = {isa = PBXBuildFile; fileRef = 194F111E2AEC50D2009FA23E /* list3.txt */; };
+		194F11262AEC50D2009FA23E /* list4.txt in Resources */ = {isa = PBXBuildFile; fileRef = 194F111F2AEC50D2009FA23E /* list4.txt */; };
+		194F11272AEC50D2009FA23E /* list5.txt in Resources */ = {isa = PBXBuildFile; fileRef = 194F11202AEC50D2009FA23E /* list5.txt */; };
 		19E06FA62AEB74E20016F9E6 /* FrasesNotasAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19E06FA52AEB74E20016F9E6 /* FrasesNotasAddView.swift */; };
 		19E06FA82AEB91F00016F9E6 /* FrasesNotasListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19E06FA72AEB91F00016F9E6 /* FrasesNotasListView.swift */; };
+		19E06FAA2AEBA1F50016F9E6 /* gregg.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19E06FA92AEBA1F50016F9E6 /* gregg.swift */; };
 		E9084D1C2ABD057800C5F7B7 /* VideoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9084D1B2ABD057800C5F7B7 /* VideoViewModel.swift */; };
 		E9084D1E2ABD08FB00C5F7B7 /* YTVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9084D1D2ABD08FB00C5F7B7 /* YTVideoView.swift */; };
 		E92F61152AB3ADA2007BB4BA /* SideMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92F61142AB3ADA2007BB4BA /* SideMenuView.swift */; };
@@ -412,8 +420,16 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		194F111A2AEC50D2009FA23E /* list2.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = list2.txt; sourceTree = "<group>"; };
+		194F111B2AEC50D2009FA23E /* list6.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = list6.txt; sourceTree = "<group>"; };
+		194F111C2AEC50D2009FA23E /* list1.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = list1.txt; sourceTree = "<group>"; };
+		194F111D2AEC50D2009FA23E /* list7.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = list7.txt; sourceTree = "<group>"; };
+		194F111E2AEC50D2009FA23E /* list3.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = list3.txt; sourceTree = "<group>"; };
+		194F111F2AEC50D2009FA23E /* list4.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = list4.txt; sourceTree = "<group>"; };
+		194F11202AEC50D2009FA23E /* list5.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = list5.txt; sourceTree = "<group>"; };
 		19E06FA52AEB74E20016F9E6 /* FrasesNotasAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrasesNotasAddView.swift; sourceTree = "<group>"; };
 		19E06FA72AEB91F00016F9E6 /* FrasesNotasListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrasesNotasListView.swift; sourceTree = "<group>"; };
+		19E06FA92AEBA1F50016F9E6 /* gregg.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = gregg.swift; sourceTree = "<group>"; };
 		E9084D1B2ABD057800C5F7B7 /* VideoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoViewModel.swift; sourceTree = "<group>"; };
 		E9084D1D2ABD08FB00C5F7B7 /* YTVideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YTVideoView.swift; sourceTree = "<group>"; };
 		E92F61142AB3ADA2007BB4BA /* SideMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideMenuView.swift; sourceTree = "<group>"; };
@@ -840,6 +856,13 @@
 		E92F61182AB3E05C007BB4BA /* Staff */ = {
 			isa = PBXGroup;
 			children = (
+				194F111C2AEC50D2009FA23E /* list1.txt */,
+				194F111A2AEC50D2009FA23E /* list2.txt */,
+				194F111E2AEC50D2009FA23E /* list3.txt */,
+				194F111F2AEC50D2009FA23E /* list4.txt */,
+				194F11202AEC50D2009FA23E /* list5.txt */,
+				194F111B2AEC50D2009FA23E /* list6.txt */,
+				194F111D2AEC50D2009FA23E /* list7.txt */,
 				E92F64562AB7D2BA007BB4BA /* listfrases.txt */,
 				E93C23AB2ABA4DA100939D16 /* biografia.txt */,
 				E969818A2ABD8F99002CD503 /* listidvideoconf.txt */,
@@ -1276,6 +1299,7 @@
 				E92F61142AB3ADA2007BB4BA /* SideMenuView.swift */,
 				E93C23AD2ABAAC6800939D16 /* galeriaFotosView.swift */,
 				E9D0F1CA2AE2226A00B35452 /* optionView.swift */,
+				19E06FA92AEBA1F50016F9E6 /* gregg.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1484,6 +1508,7 @@
 				E92F62E02AB3E1C2007BB4BA /* conf_nuestras verdaderas creencias.txt in Resources */,
 				E92F63392AB3E1C2007BB4BA /* conf_la palabra.txt in Resources */,
 				E92F63532AB3E1C2007BB4BA /* conf_oracion respondida.txt in Resources */,
+				194F11222AEC50D2009FA23E /* list6.txt in Resources */,
 				E92F63F32AB4EEE7007BB4BA /* preg_pregunta 16.txt in Resources */,
 				E92F62672AB3E1C2007BB4BA /* conf_la roca.txt in Resources */,
 				E92F63672AB3E1C2007BB4BA /* conf_construir tu templo.txt in Resources */,
@@ -1583,6 +1608,7 @@
 				E92F626E2AB3E1C2007BB4BA /* conf_sean lo que desean sean lo que creen.txt in Resources */,
 				E92F63DF2AB4EEE7007BB4BA /* preg_pregunta 36.txt in Resources */,
 				E92F63502AB3E1C2007BB4BA /* conf_imaginar es crear.txt in Resources */,
+				194F11232AEC50D2009FA23E /* list1.txt in Resources */,
 				E92F62652AB3E1C2007BB4BA /* conf_alcanza el estado de animo.txt in Resources */,
 				E92F628E2AB3E1C2007BB4BA /* conf_la ley.txt in Resources */,
 				E92F62EA2AB3E1C2007BB4BA /* conf_eres un ser cosmico.txt in Resources */,
@@ -1613,6 +1639,7 @@
 				E92F62492AB3E1C2007BB4BA /* conf_alimenta mis ovejas.txt in Resources */,
 				E92F62F92AB3E1C2007BB4BA /* conf_navidad.txt in Resources */,
 				E92F632D2AB3E1C2007BB4BA /* conf_leccion 3 pensar cuatridimencionalmente.txt in Resources */,
+				194F11242AEC50D2009FA23E /* list7.txt in Resources */,
 				E92F63352AB3E1C2007BB4BA /* conf_la batalla del armagedon.txt in Resources */,
 				E92F62D12AB3E1C2007BB4BA /* conf_arrepentimiento un regalo de dios.txt in Resources */,
 				E92F62E32AB3E1C2007BB4BA /* conf_el poder creador de dios.txt in Resources */,
@@ -1654,6 +1681,7 @@
 				E92F64392AB5018A007BB4BA /* cita_el secreto de la oracion.txt in Resources */,
 				E92F63E32AB4EEE7007BB4BA /* preg_pregunta 32.txt in Resources */,
 				E92F63402AB3E1C2007BB4BA /* conf_la causa oculta.txt in Resources */,
+				194F11212AEC50D2009FA23E /* list2.txt in Resources */,
 				E92F625B2AB3E1C2007BB4BA /* conf_tu verdadero proposito.txt in Resources */,
 				E92F642E2AB5018A007BB4BA /* cita_la revelación encarnada.txt in Resources */,
 				E92F62B02AB3E1C2007BB4BA /* conf_se el amo del humor.txt in Resources */,
@@ -1682,6 +1710,7 @@
 				E92F63512AB3E1C2007BB4BA /* conf_un movimiento de la mente.txt in Resources */,
 				E92F62FB2AB3E1C2007BB4BA /* conf_se imitadores de dios.txt in Resources */,
 				E92F62BA2AB3E1C2007BB4BA /* conf_examinaos a vosotros mismos.txt in Resources */,
+				194F11262AEC50D2009FA23E /* list4.txt in Resources */,
 				E92F633D2AB3E1C2007BB4BA /* conf_ordena tus conversaciones rectamente.txt in Resources */,
 				E92F635D2AB3E1C2007BB4BA /* conf_apariencias.txt in Resources */,
 				E92F63332AB3E1C2007BB4BA /* conf_verdad revelada.txt in Resources */,
@@ -1698,6 +1727,7 @@
 				E92F62962AB3E1C2007BB4BA /* conf_cristo revelado.txt in Resources */,
 				E92F62932AB3E1C2007BB4BA /* conf_poder.txt in Resources */,
 				E92F63DB2AB4EEE7007BB4BA /* preg_pregunta 28.txt in Resources */,
+				194F11252AEC50D2009FA23E /* list3.txt in Resources */,
 				E92F64342AB5018A007BB4BA /* cita_el es mi resureccion.txt in Resources */,
 				E92F63092AB3E1C2007BB4BA /* conf_muchas moradas.txt in Resources */,
 				E92F63202AB3E1C2007BB4BA /* conf_se lo que quieras se lo que crees.txt in Resources */,
@@ -1745,6 +1775,7 @@
 				E92F627B2AB3E1C2007BB4BA /* conf_todos los efectos naturales.txt in Resources */,
 				E92F632F2AB3E1C2007BB4BA /* conf_la fuente.txt in Resources */,
 				E92F63E72AB4EEE7007BB4BA /* preg_pregunta 31.txt in Resources */,
+				194F11272AEC50D2009FA23E /* list5.txt in Resources */,
 				E92F62F72AB3E1C2007BB4BA /* conf_la revision.txt in Resources */,
 				E92F64452AB5018A007BB4BA /* cita_la causa espiritual.txt in Resources */,
 				E92F62D82AB3E1C2007BB4BA /* conf_señales desde arriba.txt in Resources */,
@@ -1834,6 +1865,7 @@
 				19E06FA82AEB91F00016F9E6 /* FrasesNotasListView.swift in Sources */,
 				E9D0F1D42AE239D100B35452 /* Fav-Model.swift in Sources */,
 				E96981912ABD9145002CD503 /* YTLisIDstView.swift in Sources */,
+				19E06FAA2AEBA1F50016F9E6 /* gregg.swift in Sources */,
 				E9D0F1CF2AE2310D00B35452 /* ShowNotaView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

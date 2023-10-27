@@ -115,7 +115,7 @@ struct SideMenuView: View {
                     
                     
                     NavigationLink{
-                        //Open Gregg Braden View
+                        gregg()
                     }label: {
                         TextItem("Gregg Braden")
                     }
@@ -150,6 +150,14 @@ struct SideMenuView: View {
                     Link(destination: URL(string: "https://realneville.com/")!, label: {
                         TextItem("Web Real Neville (inglés)")
                     } )
+                    
+                    divider(title: "Muchos caminos, una verdad", size: 60)
+                    
+                    NavigationLink("") {
+                        
+                    }
+                    
+                    
                     
                     Spacer()
                 }.padding(.bottom, 10)

@@ -166,6 +166,21 @@ struct UtilFuncs{
         return result
         
     }
+    
+    //Devuelve un arreglo de tuplas con pares titulo, idVideo para videos de greeg Braden
+    static func GetVideosGreeg()-> [(String, String)]{
+        var result : [(String, String)] = []
+        var temp = [String]() //array: linea del txt: "ID::Title"
+
+        temp = UtilFuncs.ReadFileToArray(TypeOfContent.vide_gregg.getNameFile)
+        
+        for item in temp {
+            let temp1 = item.components(separatedBy: "::")
+            result.append((temp1[0], temp1[1]))
+        }
+        return result
+
+    }
 
     
 }
