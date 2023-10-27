@@ -68,11 +68,17 @@ struct ListFavView: View {
                     }
                     
                 }else{
+                   
                     List(arrayTxt){item in
                         RowTxt(item: item, array: $arrayTxt)
                             .swipeActions(edge: .trailing){
                                 Button("Quitar Favorito"){
-                                    FavModel().Delete(nameFile: item.namefile?.lowercased() ?? "", prefix: item.prefix ?? "")
+                                    if item.prefix == "" {
+                                        FavModel().DeleteVideos(title: item.title ?? "", idVideo: item.idvideo ?? "")
+                                    }else {
+                                        FavModel().DeleteTXT(title: item.title?.lowercased() ?? "", prefix: item.prefix ?? "")
+                                    }
+
                                     withAnimation {
                                         arrayTxt.removeAll()
                                         arrayTxt = FavModel().getAllFavTxt()
@@ -111,22 +117,15 @@ struct ListFavView: View {
         @Binding var array : [FavTxt]
         
         //Obtiene el valor TypeOfContent a partir del nombre del prefijo (Yor esto debe mejorarse en un futuro)
-        private var TypeContent : TypeOfContent{
+        private var TypeContent : TypeOfTxtContent{
             switch item.prefix{
             case "conf_" : return .conf
             case "ayud_" : return .ayudas
             case "cita_" : return .citas
             case "preg_" : return .preguntas
-                
-            case "video Conf" : return .video_Conf
-            case "audio Libros" : return .aud_libros
-            case "gregg" : return .vide_gregg
-                
             default: return .NA
-                
             }
-            
-            
+   
         }
 
         var body: some View{
@@ -135,14 +134,14 @@ struct ListFavView: View {
                     //Abre un txt o Inicia un video, segun:
                     switch TypeContent {
                     case .conf, .ayudas, .citas, .preguntas:
-                        ContentTxtShowView(fileName: item.namefile ?? "", title: item.namefile ?? "", typeContent: TypeContent)
+                        ContentTxtShowView(fileName: item.title ?? "", title: item.title ?? "", typeContent: TypeContent)
                     default:
-                        YTVideoView(items: [ItemVideoYoutube(id: item.idvideo ?? "", title: item.namefile ?? "", prefix: TypeContent )], showFavIcon: true)
+                        YTVideoView(items: [ItemVideoYoutube(id: item.idvideo ?? "", title: item.title ?? "" )], showFavIcon: true)
                     }
  
                 }label: {
                     VStack(alignment: .leading){
-                        Text("\(item.namefile ?? "")")
+                        Text("\(item.title ?? "")")
                             .textInputAutocapitalization(.words)
                         Text("\(item.prefix ?? "")")
                             .font(.caption2)

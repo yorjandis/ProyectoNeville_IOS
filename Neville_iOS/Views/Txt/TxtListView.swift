@@ -15,7 +15,7 @@ struct TxtListView: View {
     @Environment(\.dismiss) var dimiss
     @Environment(\.colorScheme) var theme
     
-    var typeContent : TypeOfContent = .NA
+    var typeContent : TypeOfTxtContent = .NA
     
     @State private var listTxt : [String] = []
     
@@ -26,7 +26,7 @@ struct TxtListView: View {
             List(listTxt , id: \.self) { item in
                 HStack{
                     Image(systemName: "fleuron.fill")
-                        .foregroundColor(FavModel().isFav(nameFile: item, prefix: typeContent.getPrefix) ? .orange : .gray)
+                        .foregroundColor(FavModel().isFavTxt(title: item, prefix: typeContent.getPrefix) ? .orange : .gray)
                     
                     NavigationLink{
                         ContentTxtShowView(fileName: "\(item)",  title: item, typeContent: typeContent)
@@ -109,10 +109,10 @@ struct TxtListView: View {
 
     ///Auxiliar: Alterna entre los estados de fav/NO fav
     private func setFav(nameFile : String, prefix : String){
-        if FavModel().isFav(nameFile: nameFile, prefix: prefix){
-               FavModel().Delete(nameFile:nameFile.lowercased(), prefix: prefix)
+        if FavModel().isFavTxt(title: nameFile, prefix: prefix){
+               FavModel().DeleteTXT(title:nameFile.lowercased(), prefix: prefix)
                }else{
-                   FavModel().Add(nameFile:nameFile.lowercased(), prefix: prefix)
+                   FavModel().Add(title:nameFile.lowercased(), prefix: prefix)
                }
         
     }

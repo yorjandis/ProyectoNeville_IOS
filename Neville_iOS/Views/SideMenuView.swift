@@ -13,8 +13,8 @@ struct SideMenuView: View {
     @State private var show = false
     
     let itemVideoMaestrosNeville = [
-        ItemVideoYoutube(id: "YQ9jM5B0-O8", title: "William Blake", prefix: .NA),
-        ItemVideoYoutube(id: "mgbdcv606Rg", title: "Abdullah", prefix: .NA),
+        ItemVideoYoutube(id: "YQ9jM5B0-O8", title: "William Blake"),
+        ItemVideoYoutube(id: "mgbdcv606Rg", title: "Abdullah"),
     ]
     
     
@@ -151,13 +151,47 @@ struct SideMenuView: View {
                         TextItem("Web Real Neville (inglés)")
                     } )
                     
-                    divider(title: "Muchos caminos, una verdad", size: 60)
+                    divider(title: "Muchos caminos, una verdad", size: 40)
                     
-                    NavigationLink("") {
-                        
+                    NavigationLink{
+                        YTLisIDstView(typeContent: TypeIdVideosYoutube.espiritualidad)
+                    }label: {
+                        TextItem(TypeIdVideosYoutube.espiritualidad.getTitle)
                     }
                     
+                    NavigationLink{
+                        YTLisIDstView(typeContent: TypeIdVideosYoutube.liderazgo)
+                    }label: {
+                        TextItem(TypeIdVideosYoutube.liderazgo.getTitle)
+                    }
+                    NavigationLink{
+                        YTLisIDstView(typeContent: TypeIdVideosYoutube.desarrolloPersonal)
+                    }label: {
+                        TextItem(TypeIdVideosYoutube.desarrolloPersonal.getTitle)
+                    }
                     
+                    NavigationLink{
+                        YTLisIDstView(typeContent: TypeIdVideosYoutube.libertadFinanciera)
+                    }label: {
+                        TextItem(TypeIdVideosYoutube.libertadFinanciera.getTitle)
+                    }
+                    NavigationLink{
+                        YTLisIDstView(typeContent: TypeIdVideosYoutube.emprendedores)
+                    }label: {
+                        TextItem(TypeIdVideosYoutube.emprendedores.getTitle)
+                    }
+                    NavigationLink{
+                        YTLisIDstView(typeContent: TypeIdVideosYoutube.alcanzarExito)
+                    }label: {
+                        TextItem(TypeIdVideosYoutube.alcanzarExito.getTitle)
+                    }
+                    
+                    NavigationLink{
+                        YTLisIDstView(typeContent: TypeIdVideosYoutube.personasDejaronHuellas)
+                    }label: {
+                        TextItem(TypeIdVideosYoutube.personasDejaronHuellas.getTitle)
+                    }
+
                     
                     Spacer()
                 }.padding(.bottom, 10)

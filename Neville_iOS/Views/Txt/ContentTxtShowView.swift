@@ -15,7 +15,7 @@ struct ContentTxtShowView: View {
     @Environment(\.dismiss) var dimiss
     @State  var fileName : String //Nombre del txt a abrir
     @State var  title : String = ""
-    var typeContent : TypeOfContent = .NA //tipo de txt (conf, ayuda, etc)
+    var typeContent : TypeOfTxtContent = .NA //tipo de txt (conf, ayuda, etc)
     @State private var isFav = false
     
     
@@ -95,7 +95,7 @@ struct ContentTxtShowView: View {
     
     //Determina si un elemento es fasvorito
     private func ifFav(){
-        if FavModel().isFav(nameFile:fileName.lowercased(), prefix: typeContent.getPrefix){
+        if FavModel().isFavTxt(title:fileName.lowercased(), prefix: typeContent.getPrefix){
             isFav = true
         }else {
             isFav = false
@@ -105,9 +105,9 @@ struct ContentTxtShowView: View {
     //Alterna entre los estados de fav/NO fav
    private  func setFav(){
         if isFav {
-            if !FavModel().Delete(nameFile:fileName.lowercased(), prefix: typeContent.getPrefix){print("error delete in FavTxt")}
+            if !FavModel().DeleteTXT(title:fileName.lowercased(), prefix: typeContent.getPrefix){print("error delete in FavTxt")}
         }else{
-            if !FavModel().Add(nameFile:fileName.lowercased(), prefix: typeContent.getPrefix){
+            if !FavModel().Add(title:fileName.lowercased(), prefix: typeContent.getPrefix){
                 print("error add in FavTxt")
             }
         }

@@ -83,10 +83,10 @@ struct YTVideoView: View {
     
     //Alterna entre los estados de fav/NO fav
     private  func setFav(){
-        if isFav {
-            if !FavModel().Delete(nameFile:items[0].title, prefix: items[0].prefix.getPrefix){print("error delete in FavTxt")}
+       if isFav {
+           if !FavModel().DeleteVideos(title: items[0].title, idVideo: items[0].id){print("error delete in FavTxt")}
         }else{
-            if !FavModel().Add(nameFile:items[0].title, prefix: items[0].prefix.getPrefix, idvideo: items[0].id){
+            if !FavModel().Add(title: items[0].title, prefix: "", idvideo: items[0].id){
                 print("error add in FavTxt")
             }
         }
@@ -94,10 +94,10 @@ struct YTVideoView: View {
     
     //Determina si el video es favorito y ajusta la variable isFav
     private func ifFav(){
-        if FavModel().isFav(nameFile: items[0].title, prefix: items[0].prefix.getPrefix){
+        if FavModel().isFavVideos(title: items[0].title, idVideo: items[0].id){
             isFav = true
         }else {
-            isFav = false
+           isFav = false
         }
     }
     

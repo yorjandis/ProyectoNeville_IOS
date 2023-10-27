@@ -20,7 +20,7 @@ struct FrasesNotasListView: View {
         NavigationStack{
             List(listNotas){ idx in
                 HStack{
-                    Image(systemName: "heart")
+                    Image(systemName: "heart.fill")
                         .foregroundColor(idx.isfav ? .orange : .gray)
                         .frame(width: 20, height: 20)
                         .onTapGesture {

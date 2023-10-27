@@ -34,10 +34,10 @@ struct FavModel{
 
     ///Adiciona un nuevo elemento a la BD
     /// - Returns - true si OK, false si error
-    func Add(nameFile : String, prefix : String, idvideo : String = "")-> Bool{
+    func Add(title : String, prefix : String, idvideo : String = "")-> Bool{
             let entity : FavTxt = FavTxt(context: self.context)
             entity.id = UUID().uuidString
-            entity.namefile = nameFile.lowercased()
+            entity.title = title.lowercased()
             entity.prefix = prefix
             entity.idvideo = idvideo
             
@@ -53,14 +53,35 @@ struct FavModel{
         }
         
         
-    ///Delete Item (quita una referencia de la tabla conferencia)
+    ///Delete Item (quita una referencia de la tabla conferencia) PARA TXT
     /// - Returns -  true ai OK, false si error
-    func Delete(nameFile : String, prefix : String)-> Bool{
+    func DeleteTXT(title : String, prefix : String)-> Bool{
             let array : [FavTxt] = getAllFavTxt()
             if array.count == 0 {return false}
             
             for it in array {
-                if (it.namefile == nameFile.lowercased() && it.prefix == prefix){
+                if (it.title == title.lowercased() && it.prefix == prefix){
+                    self.context.delete(it)
+                    if self.context.hasChanges{
+                        try? self.context.save()
+                    }
+                    
+                    return true
+                }
+            }
+            
+            return false
+        }
+    
+   
+    ///Delete Item (quita una referencia de la tabla conferencia) PARA VIDEOS
+    /// - Returns -  true ai OK, false si error
+    func DeleteVideos(title : String, idVideo : String)-> Bool{
+            let array : [FavTxt] = getAllFavTxt()
+            if array.count == 0 {return false}
+            
+            for it in array {
+                if (it.title == title.lowercased() && it.idvideo == idVideo){
                     self.context.delete(it)
                     if self.context.hasChanges{
                         try? self.context.save()
@@ -74,15 +95,35 @@ struct FavModel{
         }
     
     
-    ///Check if is Favorite (true si esta en la BD)
+    
+    
+    ///Chequea si esta en la tabla FavTxt  (true si esta en la BD) PARA TXT (conf, citas conf, preguntas, ayudas, etc)
     ///
-    ///La propiedad prefix se refiere a la función "getPrefix" de TypeOfContent
+    /// - Parameters - nameFile La propiedad prefix se refiere a la función "getPrefix" de TypeOfContent
+    /// - Parameters - prefix  se refiere a la función "getPrefix" de TypeOfContent
     ///
     /// - Returns - true si esta en la BD, false si no esta
-    func isFav(nameFile : String, prefix : String)-> Bool{
+    func isFavTxt(title : String, prefix : String)-> Bool{
         let array = getAllFavTxt()
         for item in array{
-            if (item.namefile == nameFile.lowercased() && item.prefix == prefix) {
+            if (item.title == title.lowercased() && item.prefix == prefix) {
+                return true
+            }
+        }
+        return false
+    }
+    
+    
+    ///Chequea si esta en la tabla FavTxt  (true si esta en la BD) PARA VIDEOS ()
+    ///
+    /// - Parameters - nameFile La propiedad prefix se refiere a la función "getPrefix" de TypeOfContent
+    /// - Parameters - prefix  se refiere a la función "getPrefix" de TypeOfContent
+    ///
+    /// - Returns - true si esta en la BD, false si no esta
+    func isFavVideos(title : String, idVideo : String)-> Bool{
+        let array = getAllFavTxt()
+        for item in array{
+            if (item.title == title.lowercased() && item.idvideo == idVideo) {
                 return true
             }
         }

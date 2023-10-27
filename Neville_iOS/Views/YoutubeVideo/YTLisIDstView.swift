@@ -6,6 +6,7 @@
 //
 //Muestra un listado de IDs de videos de youtube y los lanza
 //La variable typeContent indica el tipo de contenido a cargar
+//La variable ListOfVideosIds Almacena el listado
 
 import SwiftUI
 
@@ -14,42 +15,40 @@ struct YTLisIDstView: View {
     @Environment(\.dismiss) var dimiss
     @Environment(\.colorScheme) var theme
     
-    var typeContent : TypeOfContent = .NA //Tipo de contenido a cargar
+    var typeContent : TypeIdVideosYoutube = .NA //Tipo de contenido a cargar
     
-    @State private var ListOfVideosID : ([[String]]) = [[String]]()
-    
-    @State private var ListOfVideosIds : [[String]] = []
+    @State private var ListOfVideosIds : [(String, String)] = []
     
     
     
     var body: some View {
         
         NavigationStack{
-            List(ListOfVideosID, id: \.[0]){ idx in
+            List(ListOfVideosIds, id: \.0){ idx in
                 HStack{
                     Image(systemName: "video.fill")
                         .padding(.horizontal, 5)
-                        .foregroundStyle(FavModel().isFav(nameFile: idx[1], prefix: typeContent.getPrefix) ? .orange : .gray)
+                        .foregroundStyle(FavModel().isFavVideos(title: idx.1, idVideo: idx.0) ? .orange : .gray)
                     
                     NavigationLink{
-                        YTVideoView(items: ItemVideoYoutube(id: idx[0], title: idx[1], prefix: typeContent).getInfo(), showFavIcon: true)
+                        YTVideoView(items: [ItemVideoYoutube(id: idx.0, title: idx.1)], showFavIcon: true)
                     }label: {
-                        Text(idx[1].capitalized(with: .autoupdatingCurrent))
+                        Text(idx.1.capitalized(with: .autoupdatingCurrent))
                             .bold()
                             .foregroundStyle(theme == ColorScheme.dark ? .white : .black)       
                     }
                 }
                 .swipeActions(edge: .trailing){
                     Button("Favorito"){
-                        setFav(nameFile: idx[1], prefix: typeContent.getPrefix, idVideo: idx[0])
+                       setFav(title: idx.1, prefix: "" , idVideo: idx.0)
                         
-                        getVideosList()
+                       getVideosList(typecontent: typeContent)
                     }
                 }.tint(.orange)
                 
             }
             .onAppear {
-                getVideosList()
+                getVideosList(typecontent: typeContent)
             }
             
             Divider()
@@ -66,25 +65,25 @@ struct YTLisIDstView: View {
                 .padding(.top, 10)
                 
             }
-            .navigationTitle(typeContent.getDescription)
+            .navigationTitle(typeContent.getTitle)
             .navigationBarTitleDisplayMode(.inline)
         }
         
     }
     
     ///Auxiliar: actualiza el estado de favoritos
-    private func setFav(nameFile: String , prefix : String, idVideo : String){
-        if FavModel().isFav(nameFile: nameFile, prefix: typeContent.getPrefix){
-            FavModel().Delete(nameFile: nameFile, prefix: typeContent.getPrefix)
+    private func setFav(title: String , prefix : String, idVideo : String){
+        if FavModel().isFavVideos(title: title, idVideo: idVideo){
+            FavModel().DeleteVideos(title: title, idVideo: idVideo)
         }else{
-            FavModel().Add(nameFile: nameFile, prefix: typeContent.getPrefix, idvideo: idVideo)
-        }
+            FavModel().Add(title: title, prefix: "", idvideo: idVideo)
+       }
     }
     
     ///Auxiliar: Recarga el listado
-    private func getVideosList(){
-        ListOfVideosID.removeAll()
-        ListOfVideosID = UtilFuncs.getListVideoIds(typeContent)
+    private func getVideosList(typecontent : TypeIdVideosYoutube){
+        ListOfVideosIds.removeAll()
+        ListOfVideosIds = UtilFuncs.GetIdVideosFromYoutube(typeContent: typecontent)
     }
 
 }

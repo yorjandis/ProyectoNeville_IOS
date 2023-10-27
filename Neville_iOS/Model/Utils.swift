@@ -37,8 +37,8 @@ struct Constant{
 
 ///Enumeración para los distintos tipos de elementos de contenido:
 ///El valor raw representa el prefijo/nombre del fichero en el bundle
-enum TypeOfContent{
-    case conf, video_Conf, aud_Conf, frases, citas, preguntas, ayudas,aud_libros, biografia,vide_gregg, NA
+enum TypeOfTxtContent{
+    case conf, aud_Conf, frases, citas, preguntas, ayudas, biografia, NA
     
     //devuelve un título para cada case
     var getDescription:String{
@@ -49,10 +49,7 @@ enum TypeOfContent{
         case .ayudas        :  return "Ayudas"
         case .citas         :  return "Citas de Conferencias"
         case .preguntas     :  return "Preguntas y Respuestas"
-        case .video_Conf    :  return "Video Conferencias"
-        case .aud_libros    :  return "Audio libros"
         case .biografia     :  return "Biografía"
-        case .vide_gregg    :  return "Videos Gregg Braden"
         case .NA            :  return ""
         }
     }
@@ -64,27 +61,57 @@ enum TypeOfContent{
         case .ayudas        :  return "ayud_"
         case .citas         :  return "cita_"
         case .preguntas     :  return "preg_"
-            
-        case .video_Conf    :  return "video Conf"
-        case .aud_libros    :  return "audio Libros"
-        case .vide_gregg    :  return "gregg"
         default: return ""
         }
     }
     
     //Devuelve el valor self de acuerdo al prefijo entrado (lo contrario de getPrefix )
     
+
+    
+}
+
+
+///Enum para listar videos de youtube
+///
+enum TypeIdVideosYoutube{
+    case aud_libros, video_Conf, gregg, liderazgo, desarrolloPersonal, libertadFinanciera, emprendedores, espiritualidad, personasDejaronHuellas, alcanzarExito, NA
     
     
-    //Devuelve el nombre del fichero txt inbuilt
-    var getNameFile : String {
-        switch self {
-        case .video_Conf : return "listidvideoconf"
-        case .aud_libros : return "listidaudiolibros"
-        case .vide_gregg : return "listidgregg"
-        default: return ""
+    var getnameFile : String {
+        switch self{
+        case .gregg:                        return "listidgregg"
+        case .espiritualidad:               return "list1"
+        case .liderazgo:                    return "list2"
+        case .desarrolloPersonal:           return "list3"
+        case .libertadFinanciera:           return "list4"
+        case .emprendedores:                return "list5"
+        case .personasDejaronHuellas:       return "list6"
+        case .alcanzarExito:                return "list7"
+        case .video_Conf:                   return "listidvideoconf"
+        case .aud_libros:                   return "listidaudiolibros"
+        case .NA:                           return ""
         }
     }
+    
+    var getTitle : String {
+        switch self{
+        case .gregg:                        return "Videos de Gregg Braden"
+        case .espiritualidad:               return "Espiritualidad"
+        case .liderazgo:                    return "Liderazgo"
+        case .desarrolloPersonal:           return "Desarrollo Personal"
+        case .libertadFinanciera:           return "Libertad Financiera"
+        case .emprendedores:                return "Emprendedores"
+        case .personasDejaronHuellas:       return "Personas que dejaron huellas"
+        case .alcanzarExito:                return "Alcanzar el éxito"
+        case .video_Conf:                   return "Videos Conferencias"
+        case .aud_libros:                   return "Audio Libros"
+        case .NA:                           return ""
+        }
+    }
+    
+    
+    
     
 }
 
@@ -93,12 +120,11 @@ enum TypeOfContent{
 struct ItemVideoYoutube : Hashable{
     let id : String //id del video
     let title : String //Un título descriptivo
-    let prefix : TypeOfContent //Indica el tipo de contenido (video_conf, aud_conf....)
     
-    ///Devuelve un arreglo de objetos "ItemVideoYoutube"
+    ///Devuelve un arreglo de objetos "ItemVideoYoutube" Para poder crear varios videos a la vez
     func getInfo()->[ItemVideoYoutube]{
         var result = [ItemVideoYoutube]()
-        result.append(ItemVideoYoutube(id: self.id, title: self.title, prefix: self.prefix))
+        result.append(ItemVideoYoutube(id: self.id, title: self.title))
         return result
     }
     
@@ -142,37 +168,17 @@ struct UtilFuncs{
         
     }
 
-
-    ///Devuelve un arreglo 2d con informacion de los items de video.
-    /// - Returns - Arreglo 2d: [0] id del video, [1] titulo del video
-    static func getListVideoIds(_ typeContent : TypeOfContent)->[[String]]{
-
-        var temp = [String]() //array: linea del txt: "ID::Title"
-        var temp2 = [String]() //array: contiene cada parte: [0]=ID, [1]=title
-
-        temp = UtilFuncs.ReadFileToArray(typeContent.getNameFile)
-        
-        var result = Array(repeating: Array(repeating: "", count: 2), count: temp.count)  // "count: 2" es el número de columnas
-        
-        var i : Int = 0
-        for idx in temp {
-            temp2 = idx.components(separatedBy: "::") //separando componentes
-            result[i][0] = temp2[0] //ID
-            result[i][1] = temp2[1] //Title
-            if i <= temp.count{   i += 1}
-            // result[temp2[0]] = temp2[1] //populando el dic
-        }
-        
-        return result
-        
-    }
     
-    //Devuelve un arreglo de tuplas con pares titulo, idVideo para videos de greeg Braden
-    static func GetVideosGreeg()-> [(String, String)]{
+    
+    ///Devuelve un arreglo de tuplas con pares titulo, idVideo para videos
+    ///
+    /// - Parameters - typeContent : indica el tipo de listado a cargar
+    /// - Returns - arreglo de tuplas donde .0 es IdVideo; .1 es el título del video
+    static func GetIdVideosFromYoutube(typeContent : TypeIdVideosYoutube)-> [(String, String)]{
         var result : [(String, String)] = []
         var temp = [String]() //array: linea del txt: "ID::Title"
 
-        temp = UtilFuncs.ReadFileToArray(TypeOfContent.vide_gregg.getNameFile)
+        temp = UtilFuncs.ReadFileToArray(typeContent.getnameFile)
         
         for item in temp {
             let temp1 = item.components(separatedBy: "::")
