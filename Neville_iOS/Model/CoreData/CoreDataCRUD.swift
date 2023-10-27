@@ -81,6 +81,42 @@ struct manageFrases {
     }
 
     
+    ///Obtiene una entity aleatoria de Frase
+    ///
+    ///Aqui se actualiza el ID de la frase actualmente cargada para fines de búsqueda dentro de la tabla Frases. Al inicio,  se intenta popular la tabla Frases si esta marcada como NO populada(false).
+    ///
+    /// - Returns Devuelve la entity frase.
+    ///
+    ///
+    func getRandomFraseEntity()->Frases {
+        
+        if isFrasesPopulated == false {populateTableFrases(); return Frases()}
+        
+        let req = NSFetchRequest<NSFetchRequestResult>(entityName: "Frases")
+        
+        // find out how many items are there
+        let totalresults = try! context.count(for: req)
+        if totalresults > 0 {
+            // randomlize offset
+            req.fetchOffset = Int.random(in: 0..<totalresults)
+            req.fetchLimit = 1
+            
+            do{
+                let res = try context.fetch(req) as! [Frases]
+                manageFrases.idFraseActual = res.first?.id ?? ""
+                return res.first ?? Frases()
+            }catch{
+                
+            }
+            
+  
+           
+        }
+        
+        return Frases()
+ 
+    }
+    
     ///Popula la tabla Frases al inicio de la app (ojo: esto borrará todas las notas y marcas de fav en la tabla)
     ///
     ///Es llamado solo una vez al iniciar la app por primera vez. Carga todos los datos de la tabla Frases y actualiza el el estado de la carga de la tabla Frases
@@ -148,6 +184,26 @@ struct manageFrases {
 
     }
     
+    ///Chequea si una frase tiene Nota asociada
+    /// - returns : deuelve el valor del capo fav de la frase actual:  `true` | `false` . Por defecto devuelve `false`
+    func getNoteState(fraseID : String)->Bool {
+        let array = getAllFrases()
+
+        for item in array{
+            if item.id == fraseID {
+                let nota = item.nota ?? ""
+                if nota.isEmpty {
+                    return true
+                }else{
+                    return false
+                }
+            }
+        }
+
+        return false
+
+    }
+    
     
     ///Establece el estado de favorito
     /// - parameter fraseID : ID de la frase que será usado como id de búsqueda
@@ -174,16 +230,24 @@ struct manageFrases {
     ///Actualizar nota asociada
     /// - Returns : Devuelve true si éxito; false de otro modo
     func UpdateNotaAsociada(fraseID : String, notaAsociada : String = "")->Bool{
-        do{
-            let row = getEntityRow(value: fraseID)
-            row.nota = notaAsociada
-            try context.save()
-            return true
-        }catch{
-            context.rollback()
-            return false
+        
+        let array = getAllFrases()        
+        for frase in array{
+            if frase.id == fraseID {
+                frase.nota = notaAsociada
+                if context.hasChanges {
+                    do{
+                        try context.save()
+                        return true
+                    }catch{
+                        return false
+                    }
+                    
+                }
+            }
         }
 
+        return false
     }
 
     ///Buscar texto en frases.
@@ -246,7 +310,27 @@ struct manageFrases {
          return Frases()
     }
     
+    
+    ///Devuelve un arreglo de entity Frases con las frases que contienen notas
+    ///
+    /// - Returns - Devuelve un arreglo de tipo [Frases]
+    ///
+    //Lista todas las frases que tienen notas
+     func getFrasesWithNotes()->[Frases]{
+        var result : [Frases] = []
+        
+        let array = manageFrases().getAllFrases()
+        
+        for frase in array {
+            if frase.nota ?? "" != "" {
+                result.append(frase)
+            }
+        }
  
+        return result
+    }
+    
+    
 }//struct
 
 

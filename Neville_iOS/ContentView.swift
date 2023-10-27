@@ -8,9 +8,11 @@ struct ContentView: View {
     @State  var showSideMenu = false //Para Abrir/cerrar Menu Lateral
     @State  var showAddNoteView = false //Abre la view AddNota
     @State  var showAddNoteList = false //Abre la view NoteList
-    @State  var frase : String = manageFrases().getRandomFrase()
-    @State  var isfav  = false
-    @State  var isHaveNote = false
+    @State  var frase : Frases = manageFrases().getRandomFraseEntity()
+    @State  var isfav  = false //chequea si la frase actual es favorita
+    @State  var isHaveNote = false //Chequea si la frase actual tiene nota
+
+    
     
     //esto es solo un ejemplo Yprjandis
 
@@ -20,9 +22,12 @@ struct ContentView: View {
             ZStack(alignment: .bottom){
                 VStack{
                     Spacer()
-                    FrasesView(frase: $frase, isfav: $isfav)
+                    FrasesView(frase: $frase, isFav: $isfav, isHaveNote: $isHaveNote)
+                        .onAppear {
+                            readFraseStatus(fraseEntity: frase, isfav: &isfav, isHaveNote: &isHaveNote)
+                        }
                     Spacer()
-                    TabButtonBar(showSideMenu: $showSideMenu, frase: $frase, isfav: $isfav )
+                    TabButtonBar(showSideMenu: $showSideMenu)
                 }
                 
                 //Menú lateral
@@ -57,8 +62,8 @@ struct ContentView: View {
                     withAnimation {
                         showSideMenu = true }
                 }else if start.y > end.y + 24 {//up
-                    frase = manageFrases().getRandomFrase()
-                    readFavInFrases(isfav: &isfav)
+                    frase = manageFrases().getRandomFraseEntity()
+                    readFraseStatus(fraseEntity: frase, isfav: &isfav, isHaveNote: &isHaveNote)
                 }
                 else if start.x < end.x - 24 {} //left -> right
                 else if start.y < end.y - 24 {} //down
@@ -66,9 +71,9 @@ struct ContentView: View {
             })
             .toolbar{
                 HStack(spacing: 10){
-                    
+                
                     //Solo muestra el botón de fav para frases si se muestra el texto de una frase
-                    if !frase.isEmpty {
+                    if frase.frase ?? "" != "" {
                         Button{
                             FavHandlerFrases()
                         }label: {
@@ -77,20 +82,19 @@ struct ContentView: View {
                                 
                         }
                     }
-             
+                    
                     Button{
                         showAddNoteView = true
                     }label: {
-                        Image(systemName: "note.text.badge.plus")
+                        Image(systemName: "bookmark.fill")
                             .foregroundColor(isHaveNote  ? .orange : .black)
                     }
                     
                 }
                 .padding(.trailing, 15)
             }
-            .sheet(isPresented: $showAddNoteView){
-                AddNotasViewInbuilt()
-                //Custiomizes the sheet:
+            .sheet(isPresented: $showAddNoteView){ //permite modificar la nota de una frase
+                NotaFraseAddView(idFrase: frase.id ?? "", nota: frase.nota ?? "")
                     .presentationDetents([.medium])
                     .presentationDragIndicator(.hidden)
                     //.interactiveDismissDisabled() //No deja que se oculte
@@ -105,7 +109,7 @@ struct ContentView: View {
     
     
     ///Onclick del botón favorito (toolbar) para frases: marca/des-marca los fav
-    func FavHandlerFrases(){
+   private func FavHandlerFrases(){
         if manageFrases().getFavState(fraseID: manageFrases.idFraseActual) { //si esta marcado con fav
             if  manageFrases().updateFavState(fraseID: manageFrases.idFraseActual, statusFav: false) {
                 isfav = false
@@ -117,22 +121,25 @@ struct ContentView: View {
         }
     }
     
-}//struct
 
+
+
+}//struct
 
 //Frases View
 struct FrasesView : View{
+    @Binding var frase : Frases
+    @Binding var isFav : Bool
+    @Binding var isHaveNote : Bool
     
-    @Binding var frase : String
-    @Binding var isfav : Bool
     
     var body: some View{
         VStack{
-            Text(frase)
+            Text(frase.frase ?? "")
                 .modifier(mof_frases())
                 .onTapGesture {
-                    frase = manageFrases().getRandomFrase()
-                    readFavInFrases(isfav: &isfav)
+                    frase = manageFrases().getRandomFraseEntity()
+                    readFraseStatus(fraseEntity: frase, isfav: &isFav, isHaveNote: &isHaveNote)
                 }
         }
         
@@ -141,12 +148,12 @@ struct FrasesView : View{
 }
 
 
+
+
 //CustomTabView
 struct TabButtonBar : View{
     
     @Binding var showSideMenu : Bool
-    @Binding var frase : String
-    @Binding var isfav : Bool
     @State var showOptionView = false
 
 
@@ -290,16 +297,22 @@ struct AddNotasViewInbuilt: View {
 
 
 
+
+
 ///Actualiza el estado de la variable isfav: Se llama cada vez que se carga una frase nueva
 ///
-///el parámetro es pasado in-line y corresponde con una variable @State de ContentView. Esto es una forma de actualizar una variable de estado desde fuera de la struct
+///El parámetro es pasado in-line y corresponde con una variable @State de ContentView. Esto es una forma de actualizar una variable de estado desde fuera de la struct
 ///
 /// - Parameter isfav : variable @State que controla el color del icono de fav para frases, en la toolBar
-func readFavInFrases( isfav : inout Bool){
-    if manageFrases().getFavState(fraseID: manageFrases.idFraseActual){
-        isfav = true
-    }else{
-        isfav = false
+func readFraseStatus( fraseEntity : Frases?, isfav : inout Bool, isHaveNote : inout Bool){
+    if let frase = fraseEntity {
+        isfav = frase.isfav
+        let nota = frase.nota
+        if nota == "" {
+            isHaveNote = false
+        }else{
+            isHaveNote = true
+        }
     }
 }
 

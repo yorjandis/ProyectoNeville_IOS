@@ -11,6 +11,8 @@ struct optionView: View {
 
     @State var showNotasSheet = false
     @State var showFavSheet = false
+    @State var showFrasesNotes = false
+    
     var body: some View {
         NavigationStack{
             ZStack{
@@ -25,7 +27,7 @@ struct optionView: View {
                                 Image(systemName: "gear")
                                 Text("Setting")
                             }
-                        }.modifier(GradientButtonStyle(ancho: 100))
+                        }.modifier(GradientButtonStyle(ancho: 150))
                         
                         Button{
                             showNotasSheet = true
@@ -34,7 +36,7 @@ struct optionView: View {
                                 Image(systemName: "note.text")
                                 Text("Notas")
                             }
-                        }.modifier(GradientButtonStyle(ancho: 100))
+                        }.modifier(GradientButtonStyle(ancho: 150))
                         
                     }
                     
@@ -47,16 +49,16 @@ struct optionView: View {
                                 Image(systemName: "heart")
                                 Text("Favoritos")
                             }
-                        }.modifier(GradientButtonStyle(ancho: 100))
+                        }.modifier(GradientButtonStyle(ancho: 150))
                         
                         Button{
-                            
+                            showFrasesNotes = true
                         }label: {
                             HStack {
                                 Image(systemName: "bookmark.fill")
-                                Text("Otros")
+                                Text("Notas Frases")
                             }
-                        }.modifier(GradientButtonStyle(ancho: 100))
+                        }.modifier(GradientButtonStyle(ancho: 150))
                         
                     }
                     
@@ -69,6 +71,9 @@ struct optionView: View {
             }
             .sheet(isPresented: $showFavSheet) {
                 ListFavView()
+            }
+            .sheet (isPresented: $showFrasesNotes){
+                FrasesNotasListView()
             }
         }
  

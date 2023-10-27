@@ -49,6 +49,20 @@ struct ListFavView: View {
                                     
                                 }
                                 .tint(.red)
+                                
+                                //Modificar la nota de la frase
+                                NavigationLink{
+                                    NotaFraseAddView(idFrase: item.id ?? "", nota: item.nota ?? "")
+                                        .onDisappear {
+                                            withAnimation {
+                                                arrayFrases.removeAll()
+                                                arrayFrases = manageFrases().getFavFrases()
+                                            }
+                                        }
+                                }label: {
+                                    Image(systemName: "bookmark.fill")
+                                }
+                                .tint(.green)
                             }
                         
                     }

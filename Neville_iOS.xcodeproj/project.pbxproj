@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		19E06FA62AEB74E20016F9E6 /* FrasesNotasAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19E06FA52AEB74E20016F9E6 /* FrasesNotasAddView.swift */; };
+		19E06FA82AEB91F00016F9E6 /* FrasesNotasListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19E06FA72AEB91F00016F9E6 /* FrasesNotasListView.swift */; };
 		E9084D1C2ABD057800C5F7B7 /* VideoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9084D1B2ABD057800C5F7B7 /* VideoViewModel.swift */; };
 		E9084D1E2ABD08FB00C5F7B7 /* YTVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9084D1D2ABD08FB00C5F7B7 /* YTVideoView.swift */; };
 		E92F61152AB3ADA2007BB4BA /* SideMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92F61142AB3ADA2007BB4BA /* SideMenuView.swift */; };
@@ -410,6 +412,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		19E06FA52AEB74E20016F9E6 /* FrasesNotasAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrasesNotasAddView.swift; sourceTree = "<group>"; };
+		19E06FA72AEB91F00016F9E6 /* FrasesNotasListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrasesNotasListView.swift; sourceTree = "<group>"; };
 		E9084D1B2ABD057800C5F7B7 /* VideoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoViewModel.swift; sourceTree = "<group>"; };
 		E9084D1D2ABD08FB00C5F7B7 /* YTVideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YTVideoView.swift; sourceTree = "<group>"; };
 		E92F61142AB3ADA2007BB4BA /* SideMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideMenuView.swift; sourceTree = "<group>"; };
@@ -824,6 +828,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		19E06FA42AEB74D20016F9E6 /* Frases */ = {
+			isa = PBXGroup;
+			children = (
+				19E06FA52AEB74E20016F9E6 /* FrasesNotasAddView.swift */,
+				19E06FA72AEB91F00016F9E6 /* FrasesNotasListView.swift */,
+			);
+			path = Frases;
+			sourceTree = "<group>";
+		};
 		E92F61182AB3E05C007BB4BA /* Staff */ = {
 			isa = PBXGroup;
 			children = (
@@ -1255,6 +1268,7 @@
 		E92F644E2AB6EF5A007BB4BA /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				19E06FA42AEB74D20016F9E6 /* Frases */,
 				E9934DB12AE2B51A004636F9 /* Txt */,
 				E9D0F1D02AE2369900B35452 /* Fav */,
 				E966EDDF2ACF1C51002D84C4 /* YoutubeVideo */,
@@ -1803,6 +1817,7 @@
 				E93C23AE2ABAAC6800939D16 /* galeriaFotosView.swift in Sources */,
 				E9084D1E2ABD08FB00C5F7B7 /* YTVideoView.swift in Sources */,
 				E99F9CCA2ACB75E800169084 /* ListNotasViews.swift in Sources */,
+				19E06FA62AEB74E20016F9E6 /* FrasesNotasAddView.swift in Sources */,
 				E966EDE12ACF2029002D84C4 /* UpdateNotasView.swift in Sources */,
 				E99F9CC82ACACE3600169084 /* AddNotasView.swift in Sources */,
 				E95B93592AAFBB2600B5E2B5 /* ContentView.swift in Sources */,
@@ -1816,6 +1831,7 @@
 				E99B15602AC07D7600B2D161 /* CoreDataCRUD.swift in Sources */,
 				E9D0F1D22AE236C600B35452 /* ListFavView.swift in Sources */,
 				E92F63732AB468F4007BB4BA /* Utils.swift in Sources */,
+				19E06FA82AEB91F00016F9E6 /* FrasesNotasListView.swift in Sources */,
 				E9D0F1D42AE239D100B35452 /* Fav-Model.swift in Sources */,
 				E96981912ABD9145002CD503 /* YTLisIDstView.swift in Sources */,
 				E9D0F1CF2AE2310D00B35452 /* ShowNotaView.swift in Sources */,
