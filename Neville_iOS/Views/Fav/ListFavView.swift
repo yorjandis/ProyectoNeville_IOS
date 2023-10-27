@@ -11,7 +11,7 @@ import CoreData
 
 struct ListFavView: View {
     @Environment(\.dismiss) var dimiss
-    @State var ButtonActive: Bool = true //true para frase, false para conf
+    @State var ButtonActive: Bool = true //true para frase, false para otros
     
     @State  private var arrayTxt : [FavTxt] = FavModel().getAllFavTxt()
     @State  private var arrayFrases : [Frases] = manageFrases().getFavFrases()
@@ -32,18 +32,40 @@ struct ListFavView: View {
                     }
                         .modifier(ButtonActive ?  GradientButtonStyle(ancho: 80, colors: [.gray, .brown]) : GradientButtonStyle(ancho: 80) )
                 }
+                
                 Divider()
                 
                 //
                 if (ButtonActive){
                     List(arrayFrases){item in
-                        RowFrases(item: item, array: $arrayFrases)
+                        Text(item.frase ?? "")
+                            .swipeActions(edge: .trailing){
+                                Button("Quitar Favorito"){
+                                    manageFrases().updateFavState(fraseID: item.id ?? "", statusFav: false)
+                                    withAnimation {
+                                        arrayFrases.removeAll()
+                                        arrayFrases = manageFrases().getFavFrases()
+                                    }
+                                    
+                                }
+                                .tint(.red)
+                            }
                         
                     }
                     
                 }else{
                     List(arrayTxt){item in
                         RowTxt(item: item, array: $arrayTxt)
+                            .swipeActions(edge: .trailing){
+                                Button("Quitar Favorito"){
+                                    FavModel().Delete(nameFile: item.namefile?.lowercased() ?? "", prefix: item.prefix ?? "")
+                                    withAnimation {
+                                        arrayTxt.removeAll()
+                                        arrayTxt = FavModel().getAllFavTxt()
+                                    }       
+                                }
+                                .tint(.red)
+                            }
                             
                     }
                     
@@ -66,34 +88,16 @@ struct ListFavView: View {
         }
     }
     
-    //item de frase
-    struct RowFrases : View{
-        let item : Frases
-        @Binding var array : [Frases]
-        
-        
-        var body: some View{
-            Text(item.frase ?? "")
-                .swipeActions(edge: .trailing){
-                    Button("Quitar Favorito"){
-                        manageFrases().updateFavState(fraseID: item.id ?? "", statusFav: false)
-                        array.removeAll()
-                        array = manageFrases().getFavFrases()
-                    }
-                    .tint(.red)
-                }
-        }
-        
-        
-    }
+
     
     //Item de fichero txt
+    //recibe como parámetros la entity actual y el arreglo de entity totales
     struct RowTxt : View{
         let item : FavTxt //El identity actual
         @Binding var array : [FavTxt]
         
-        //Obtiene el valor de TypeOfContent a partir del nombre del prefijo (Yor esto debe mejorarse en un futuro)
-        private var getTypeContent : TypeOfContent{
+        //Obtiene el valor TypeOfContent a partir del nombre del prefijo (Yor esto debe mejorarse en un futuro)
+        private var TypeContent : TypeOfContent{
             switch item.prefix{
             case "conf_" : return .conf
             case "ayud_" : return .ayudas
@@ -112,37 +116,27 @@ struct ListFavView: View {
         }
 
         var body: some View{
-            HStack{
                 NavigationLink{
                     
                     //Abre un txt o Inicia un video, segun:
-                    switch getTypeContent {
+                    switch TypeContent {
                     case .conf, .ayudas, .citas, .preguntas:
-                        ContentTxtShowView(fileName: item.namefile ?? "", title: item.namefile ?? "", typeContent: getTypeContent)
+                        ContentTxtShowView(fileName: item.namefile ?? "", title: item.namefile ?? "", typeContent: TypeContent)
                     default:
-                        YTVideoView(items: [ItemVideoYoutube(id: item.idvideo ?? "", title: item.namefile ?? "", prefix: getTypeContent )], showFavIcon: true)
+                        YTVideoView(items: [ItemVideoYoutube(id: item.idvideo ?? "", title: item.namefile ?? "", prefix: TypeContent )], showFavIcon: true)
                     }
-                    
-                    
+ 
                 }label: {
-                    Text("\(item.namefile ?? "")")
-                    Spacer()
-                    Text("\(item.prefix ?? "")")
-                }
-                
-            }
-                .swipeActions(edge: .trailing){
-                    Button("Quitar Favorito"){
-                        FavModel().Delete(nameFile: item.namefile?.lowercased() ?? "", prefix: item.prefix ?? "")
-                        array.removeAll()
-                        array = FavModel().getAllFavTxt()
-                        
+                    VStack(alignment: .leading){
+                        Text("\(item.namefile ?? "")")
+                            .textInputAutocapitalization(.words)
+                        Text("\(item.prefix ?? "")")
+                            .font(.caption2)
+                            .padding(.top, 3)
                     }
-                    .tint(.red)
+                    
                 }
         }
-        
-        
     }
 }
 

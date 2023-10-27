@@ -72,6 +72,10 @@ enum TypeOfContent{
         }
     }
     
+    //Devuelve el valor self de acuerdo al prefijo entrado (lo contrario de getPrefix )
+    
+    
+    
     //Devuelve el nombre del fichero txt inbuilt
     var getNameFile : String {
         switch self {
