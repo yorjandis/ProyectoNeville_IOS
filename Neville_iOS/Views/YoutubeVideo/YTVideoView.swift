@@ -13,8 +13,10 @@ import SwiftUI
 struct YTVideoView: View {
     @Environment(\.dismiss) var dimiss
     
-    @State var showProgress : Bool = true
+    @State private var showProgress : Bool = true
     @State private var  isFav : Bool = false //color del image fav
+    @EnvironmentObject var netMonitor : NetworkMonitor
+    @State private var showAlert = false
    
     var items : [ItemVideoYoutube] //array de struct ItemVideoYoutube
     
@@ -34,6 +36,9 @@ struct YTVideoView: View {
                                 
                             }
                             .onAppear{ //Oculta la barra de progreso pasado 1 segundo
+                                if !netMonitor.isConnected {
+                                    showAlert = true
+                                }
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                                     showProgress = false
                                 }
@@ -45,6 +50,12 @@ struct YTVideoView: View {
                     .padding(20)
 
                 }
+            }
+            .alert(isPresented: $showAlert) {
+                Alert(
+                    title: Text("Neville"),
+                    message: Text("El contenido de esta sección requiere conección a internet")
+                )
             }
             Spacer()
             Divider()

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		193B6EAD2AF1B1D10003E897 /* NetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 193B6EAC2AF1B1D10003E897 /* NetModel.swift */; };
 		194F11212AEC50D2009FA23E /* list2.txt in Resources */ = {isa = PBXBuildFile; fileRef = 194F111A2AEC50D2009FA23E /* list2.txt */; };
 		194F11222AEC50D2009FA23E /* list6.txt in Resources */ = {isa = PBXBuildFile; fileRef = 194F111B2AEC50D2009FA23E /* list6.txt */; };
 		194F11232AEC50D2009FA23E /* list1.txt in Resources */ = {isa = PBXBuildFile; fileRef = 194F111C2AEC50D2009FA23E /* list1.txt */; };
@@ -423,6 +424,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		193B6EAC2AF1B1D10003E897 /* NetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetModel.swift; sourceTree = "<group>"; };
 		194F111A2AEC50D2009FA23E /* list2.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = list2.txt; sourceTree = "<group>"; };
 		194F111B2AEC50D2009FA23E /* list6.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = list6.txt; sourceTree = "<group>"; };
 		194F111C2AEC50D2009FA23E /* list1.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = list1.txt; sourceTree = "<group>"; };
@@ -1291,6 +1293,7 @@
 				E9D0F1CC2AE22F7000B35452 /* Notas-Model.swift */,
 				E9D0F1D32AE239D100B35452 /* Fav-Model.swift */,
 				194F112A2AEF23E8009FA23E /* settingModel.swift */,
+				193B6EAC2AF1B1D10003E897 /* NetModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1854,6 +1857,7 @@
 				E92F61152AB3ADA2007BB4BA /* SideMenuView.swift in Sources */,
 				E92F64532AB78EE6007BB4BA /* ModelData.xcdatamodeld in Sources */,
 				E99F9CC62AC4682B00169084 /* CoreDataController.swift in Sources */,
+				193B6EAD2AF1B1D10003E897 /* NetModel.swift in Sources */,
 				E93C23AE2ABAAC6800939D16 /* galeriaFotosView.swift in Sources */,
 				E9084D1E2ABD08FB00C5F7B7 /* YTVideoView.swift in Sources */,
 				194F112B2AEF23E8009FA23E /* settingModel.swift in Sources */,

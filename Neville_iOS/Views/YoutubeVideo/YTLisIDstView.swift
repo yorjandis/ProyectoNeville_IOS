@@ -14,6 +14,8 @@ struct YTLisIDstView: View {
     
     @Environment(\.dismiss) var dimiss
     @Environment(\.colorScheme) var theme
+    @EnvironmentObject var netMonitor : NetworkMonitor
+    @State private var showAlert = false
     
     var typeContent : TypeIdVideosYoutube = .NA //Tipo de contenido a cargar
     
@@ -24,6 +26,7 @@ struct YTLisIDstView: View {
     var body: some View {
         
         NavigationStack{
+     
             List(ListOfVideosIds, id: \.0){ idx in
                 HStack{
                     Image(systemName: "video.fill")
@@ -49,6 +52,9 @@ struct YTLisIDstView: View {
                 
             }
             .onAppear {
+                if !netMonitor.isConnected {
+                    showAlert = true
+                }
                 getVideosList(typecontent: typeContent)
                 fontSizeList = CGFloat(UserDefaults.standard.integer(forKey: Constant.setting_fontListaSize))//setting
             }
@@ -69,6 +75,12 @@ struct YTLisIDstView: View {
             }
             .navigationTitle(typeContent.getTitle)
             .navigationBarTitleDisplayMode(.inline)
+            .alert(isPresented: $showAlert) {
+                Alert(
+                    title: Text("Neville"),
+                    message: Text("El contenido de esta sección requiere conección a internet")
+                )
+            }
         }
         
     }

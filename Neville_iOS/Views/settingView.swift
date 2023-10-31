@@ -94,10 +94,7 @@ struct settingView: View {
                     
                     
                 }
-                
-                
-                
-                
+
                 Section("Contacto"){
                     Link(destination: URL(string:  "https://projectsypg.mozello.com/contacto/")!) {
                         Label("Enviarme un comentario", systemImage: "exclamationmark.warninglight.fill")

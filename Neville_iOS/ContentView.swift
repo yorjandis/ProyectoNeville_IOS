@@ -4,7 +4,7 @@ import CoreData
 
 
 struct ContentView: View {
-
+    
     @State  private var showSideMenu = false //Para Abrir/cerrar Menu Lateral
     @State  private var showAddNoteView = false //Abre la view AddNota
     @State  private var showAddNoteList = false //Abre la view NoteList
@@ -19,6 +19,8 @@ struct ContentView: View {
     
     @State private var colorFondo_a : Color = SettingModel().loadColor(forkey: Constant.setting_color_main_a)
     @State private var colorFondo_b : Color = SettingModel().loadColor(forkey: Constant.setting_color_main_b)
+    
+    
 
     
     
@@ -90,6 +92,8 @@ struct ContentView: View {
                         }label: {
                             Image(systemName: "heart.fill")
                                 .foregroundColor(  isfav ? Constant.favoriteColorOn : Constant.favoriteColorOff)
+                                .onTapGesture {
+                                }
                                 
                                             
                         }

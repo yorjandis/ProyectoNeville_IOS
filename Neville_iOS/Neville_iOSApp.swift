@@ -13,7 +13,7 @@ import SwiftUI
 @main
 struct Neville_iOSApp: App {
     
-  
+  @StateObject var networkMonitor = NetworkMonitor()
     
     
     //Codigo a cargar al inicio:
@@ -35,6 +35,7 @@ struct Neville_iOSApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(networkMonitor)
                 
         }
     }
