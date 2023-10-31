@@ -76,9 +76,9 @@ struct YTLisIDstView: View {
     ///Auxiliar: actualiza el estado de favoritos
     private func setFav(title: String , prefix : String, idVideo : String){
         if FavModel().isFavVideos(title: title, idVideo: idVideo){
-            if FavModel().DeleteVideos(title: title, idVideo: idVideo){}
+            if FavModel().DeleteVideos(title: title, idVideo: idVideo){print("")}
         }else{
-            if FavModel().Add(title: title, prefix: "", idvideo: idVideo){}
+            if FavModel().Add(title: title, prefix: "", idvideo: idVideo){print("")}
        }
     }
     

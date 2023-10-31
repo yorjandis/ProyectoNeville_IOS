@@ -58,6 +58,7 @@ struct ListNotasViews: View {
     func updateYorj(nota : Notas){
         
         if  manageNotas().updateNota(NotaID: nota.id ?? "", newTitle: nota.title ?? "", newNota: nota.nota ?? "") {
+            print("")
             notas.removeAll()
             notas.append(contentsOf: manageNotas().getAllNotas())
         }

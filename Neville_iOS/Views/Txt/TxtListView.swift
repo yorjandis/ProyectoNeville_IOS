@@ -118,11 +118,11 @@ struct TxtListView: View {
     private func setFav(nameFile : String, prefix : String){
         if FavModel().isFavTxt(title: nameFile, prefix: prefix){
             if  FavModel().DeleteTXT(title:nameFile.lowercased(), prefix: prefix) {
-                
+                print("")
             }
                }else{
                    if  FavModel().Add(title:nameFile.lowercased(), prefix: prefix){
-                       
+                       print("")
                    }
                }
         

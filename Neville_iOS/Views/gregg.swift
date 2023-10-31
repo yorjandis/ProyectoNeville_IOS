@@ -85,18 +85,14 @@ Gregg Braden, nacido el 28 de junio de 1954  es un físico y autor estadounidens
         
         
     }
-    
-    
-    
-    
-    
+
     struct GradientButtonStyle: ButtonStyle {
         func makeBody(configuration: Self.Configuration) -> some View {
             configuration.label
                 .foregroundColor(Color.white)
                 .padding()
                 .frame(width: 200, height: 50)
-                .background(LinearGradient(gradient: Gradient(colors: [Color.red, Color.gray]), startPoint: .leading, endPoint: .trailing))
+                .background(LinearGradient(gradient: Gradient(colors: [Color.gray, Color.brown]), startPoint: .leading, endPoint: .trailing))
                 .cornerRadius(15.0)
         }
     }

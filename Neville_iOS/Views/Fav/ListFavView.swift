@@ -42,6 +42,7 @@ struct ListFavView: View {
                             .swipeActions(edge: .trailing){
                                 Button("Quitar Favorito"){
                                     if manageFrases().updateFavState(fraseID: item.id ?? "", statusFav: false) {
+                                        print("")
                                         withAnimation {
                                             arrayFrases.removeAll()
                                             arrayFrases = manageFrases().getFavFrases()
