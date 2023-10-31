@@ -106,7 +106,13 @@ struct settingView: View {
                             .font(.headline)
                     }
                     Link(destination: URL(string:  "https://projectsypg.mozello.com/productos/neville/")!) {
-                        Label("Abrir pagina del proyecto", systemImage: "link")
+                        Label("Abrir pagina del proyecto", systemImage: "swiftdata")
+                            .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
+                            .bold()
+                            .font(.headline)
+                    }
+                    Link(destination: URL(string:  "https://projectsypg.mozello.com/productos/neville/privacy-police/")!) {
+                        Label("Política de Privacidad", systemImage: "link")
                             .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
                             .bold()
                             .font(.headline)

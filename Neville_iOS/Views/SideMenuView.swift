@@ -35,6 +35,7 @@ struct SideMenuView: View {
                         .padding(.top, 10)
                         
                     Text("Imaginar Crea la Realidad")
+                        .foregroundStyle(.black)
                     
                 }
                 
@@ -193,6 +194,7 @@ struct SideMenuView: View {
             Rectangle()
                 .frame(width: size, height: 1, alignment: .center)
             Text(title)
+                .foregroundStyle(.black)
                 .font(.subheadline).bold()
             Rectangle()
                 .frame(width: size, height: 1, alignment: .center)

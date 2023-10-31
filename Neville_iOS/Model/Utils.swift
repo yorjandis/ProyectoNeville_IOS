@@ -31,7 +31,7 @@ struct Constant{
     
     
      //Tab names for TabButtons
-     static let tabButtons = ["book.pages.fill","video.fill","house.circle.fill","video.badge.waveform.fill", "slider.vertical.3"]
+     static let tabButtons = ["book.pages.fill","video.fill","house.circle.fill","video.badge.waveform.fill", "list.bullet"]
     
     //Userdefault name values for setting:
     static let setting_fontFrasesSize   = "setting_fontFrasesSize"

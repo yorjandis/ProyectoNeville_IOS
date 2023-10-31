@@ -5,20 +5,20 @@ import CoreData
 
 struct ContentView: View {
 
-    @State  var showSideMenu = false //Para Abrir/cerrar Menu Lateral
-    @State  var showAddNoteView = false //Abre la view AddNota
-    @State  var showAddNoteList = false //Abre la view NoteList
-    @State  var frase : Frases = manageFrases().getRandomFraseEntity()
-    @State  var isfav  = false //chequea si la frase actual es favorita
-    @State  var isHaveNote = false //Chequea si la frase actual tiene nota
+    @State  private var showSideMenu = false //Para Abrir/cerrar Menu Lateral
+    @State  private var showAddNoteView = false //Abre la view AddNota
+    @State  private var showAddNoteList = false //Abre la view NoteList
+    @State  private var frase : Frases = manageFrases().getRandomFraseEntity()
+    @State  private var isfav  = false //chequea si la frase actual es favorita
+    @State  private var isHaveNote = false //Chequea si la frase actual tiene nota
     
-    @State  var fontSize : CGFloat = 24 //Setting para Frases
-    @State  var fontSizeMenu : CGFloat = 24 //Setting para menu
+    @State  private var fontSize : CGFloat = 24 //Setting para Frases
+    @State  private var fontSizeMenu : CGFloat = 24 //Setting para menu
     
-    @State var colorFrase : Color = SettingModel().loadColor(forkey: Constant.setting_color_frases)
+    @State private var colorFrase : Color = SettingModel().loadColor(forkey: Constant.setting_color_frases)
     
-    @State var colorFondo_a : Color = SettingModel().loadColor(forkey: Constant.setting_color_main_a)
-    @State var colorFondo_b : Color = SettingModel().loadColor(forkey: Constant.setting_color_main_b)
+    @State private var colorFondo_a : Color = SettingModel().loadColor(forkey: Constant.setting_color_main_a)
+    @State private var colorFondo_b : Color = SettingModel().loadColor(forkey: Constant.setting_color_main_b)
 
     
     
@@ -91,6 +91,7 @@ struct ContentView: View {
                             Image(systemName: "heart.fill")
                                 .foregroundColor(  isfav ? Constant.favoriteColorOn : Constant.favoriteColorOff)
                                 
+                                            
                         }
                     }
                     
@@ -208,7 +209,7 @@ struct TabButtonBar : View{
                     }label: {makeItemlabel(image: idx)}
                     
                     
-                case "slider.vertical.3":
+                case "list.bullet":
                     Button{
                         withAnimation {showSideMenu.toggle()
                         }
@@ -227,7 +228,8 @@ struct TabButtonBar : View{
         }
         
         .padding(.horizontal, 25)
-        .modifier(mof_ColorGradient(colorInit: $colorFondo_a, colorEnd: $colorFondo_b))
+        .background(LinearGradient(colors: [.gray, .cyan], startPoint: .top, endPoint: .bottom))
+        //.modifier(mof_ColorGradient(colorInit: $colorFondo_a, colorEnd: $colorFondo_b))
         .clipShape(Capsule())
         .shadow(color: Color.black.opacity(0.15), radius: 5, x: 5, y: 5)
         .shadow(color: Color.black.opacity(0.15), radius: 5, x: -5, y: -5)
@@ -345,9 +347,6 @@ func readFraseStatus( fraseEntity : Frases?, isfav : inout Bool, isHaveNote : in
         }
     }
 }
-
-
-
 
 
 
