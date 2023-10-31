@@ -41,11 +41,13 @@ struct ListFavView: View {
                         Text(item.frase ?? "")
                             .swipeActions(edge: .trailing){
                                 Button("Quitar Favorito"){
-                                    manageFrases().updateFavState(fraseID: item.id ?? "", statusFav: false)
-                                    withAnimation {
-                                        arrayFrases.removeAll()
-                                        arrayFrases = manageFrases().getFavFrases()
+                                    if manageFrases().updateFavState(fraseID: item.id ?? "", statusFav: false) {
+                                        withAnimation {
+                                            arrayFrases.removeAll()
+                                            arrayFrases = manageFrases().getFavFrases()
+                                        }
                                     }
+                                    
                                     
                                 }
                                 .tint(.red)
@@ -74,9 +76,13 @@ struct ListFavView: View {
                             .swipeActions(edge: .trailing){
                                 Button("Quitar Favorito"){
                                     if item.prefix == "" {
-                                        FavModel().DeleteVideos(title: item.title ?? "", idVideo: item.idvideo ?? "")
+                                        if  FavModel().DeleteVideos(title: item.title ?? "", idVideo: item.idvideo ?? "") {
+                                            
+                                        }
                                     }else {
-                                        FavModel().DeleteTXT(title: item.title?.lowercased() ?? "", prefix: item.prefix ?? "")
+                                        if FavModel().DeleteTXT(title: item.title?.lowercased() ?? "", prefix: item.prefix ?? ""){
+                                            
+                                        }
                                     }
 
                                     withAnimation {

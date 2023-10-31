@@ -11,6 +11,14 @@ struct ContentView: View {
     @State  var frase : Frases = manageFrases().getRandomFraseEntity()
     @State  var isfav  = false //chequea si la frase actual es favorita
     @State  var isHaveNote = false //Chequea si la frase actual tiene nota
+    
+    @State  var fontSize : CGFloat = 24 //Setting para Frases
+    @State  var fontSizeMenu : CGFloat = 24 //Setting para menu
+    
+    @State var colorFrase : Color = SettingModel().loadColor(forkey: Constant.setting_color_frases)
+    
+    @State var colorFondo_a : Color = SettingModel().loadColor(forkey: Constant.setting_color_main_a)
+    @State var colorFondo_b : Color = SettingModel().loadColor(forkey: Constant.setting_color_main_b)
 
     
     
@@ -22,19 +30,22 @@ struct ContentView: View {
             ZStack(alignment: .bottom){
                 VStack{
                     Spacer()
-                    FrasesView(frase: $frase, isFav: $isfav, isHaveNote: $isHaveNote)
+                    FrasesView(frase: $frase, isFav: $isfav, isHaveNote: $isHaveNote, fontSize: $fontSize, colorFrase: $colorFrase)
                         .onAppear {
                             readFraseStatus(fraseEntity: frase, isfav: &isfav, isHaveNote: &isHaveNote)
+                            fontSize = CGFloat(UserDefaults.standard.integer(forKey: Constant.setting_fontFrasesSize))
+                            colorFrase = SettingModel().loadColor(forkey: Constant.setting_color_frases)
+                            
                         }
                     Spacer()
-                    TabButtonBar(showSideMenu: $showSideMenu)
+                    TabButtonBar(showSideMenu: $showSideMenu, fontFrasesSize: $fontSize, fontMenuSize: $fontSizeMenu, colorFrase: $colorFrase, colorFondo_a: $colorFondo_a, colorFondo_b: $colorFondo_b)
                 }
                 
                 //Menú lateral
                 GeometryReader{ geometry in
                     HStack {
                         Spacer()
-                        SideMenuView()
+                        SideMenuView(fontSize: $fontSizeMenu, colorFondo_a: $colorFondo_a, colorFondo_b: $colorFondo_b)
                         .offset(x : showSideMenu ? 0 :  UIScreen.main.bounds.width)
                         
                     }
@@ -45,7 +56,7 @@ struct ContentView: View {
                 
                 
             }
-            .modifier(mof_ColorGradient(colorInit: .brown, colorEnd: .orange, color3: .pink))
+            .modifier(mof_ColorGradient(colorInit: $colorFondo_a, colorEnd: $colorFondo_b))
             .navigationTitle( Constant.appName)
             .navigationBarTitleDisplayMode(.inline)
             .onTapGesture {
@@ -131,18 +142,20 @@ struct FrasesView : View{
     @Binding var frase : Frases
     @Binding var isFav : Bool
     @Binding var isHaveNote : Bool
-    
+    @Binding var fontSize : CGFloat
+    @Binding var colorFrase : Color
     
     var body: some View{
         VStack{
             Text(frase.frase ?? "")
+                .font(.system(size: fontSize, design: .rounded))
+                .foregroundStyle(colorFrase)
                 .modifier(mof_frases())
                 .onTapGesture {
                     frase = manageFrases().getRandomFraseEntity()
                     readFraseStatus(fraseEntity: frase, isfav: &isFav, isHaveNote: &isHaveNote)
                 }
         }
-        
     }
     
 }
@@ -155,7 +168,14 @@ struct TabButtonBar : View{
     
     @Binding var showSideMenu : Bool
     @State var showOptionView = false
-
+    @Binding var fontFrasesSize : CGFloat //Setting
+    @Binding var fontMenuSize : CGFloat //Setting$
+    
+    @Binding var colorFrase : Color
+    
+    @Binding var colorFondo_a : Color
+    @Binding var colorFondo_b : Color
+    
 
     let  tabButtons = Constant.tabButtons
     
@@ -183,7 +203,7 @@ struct TabButtonBar : View{
                             .font(.system(size: 32, weight: .bold))
                     }
                     
-                case "video.circle.fill":
+                case "video.badge.waveform.fill":
                     NavigationLink{ YTLisIDstView(typeContent: .aud_libros)
                     }label: {makeItemlabel(image: idx)}
                     
@@ -207,7 +227,7 @@ struct TabButtonBar : View{
         }
         
         .padding(.horizontal, 25)
-        .modifier(mof_ColorGradient(colorInit: .white, colorEnd: .orange, color3: nil))
+        .modifier(mof_ColorGradient(colorInit: $colorFondo_a, colorEnd: $colorFondo_b))
         .clipShape(Capsule())
         .shadow(color: Color.black.opacity(0.15), radius: 5, x: 5, y: 5)
         .shadow(color: Color.black.opacity(0.15), radius: 5, x: -5, y: -5)
@@ -217,6 +237,16 @@ struct TabButtonBar : View{
             optionView()
                 .presentationDetents([.height(180)])
                 .presentationDragIndicator(.hidden)
+            //Al ocultar las opciones: se actualiza el tamaño de fuente de las frases
+                .onDisappear(perform: {
+                    fontFrasesSize = CGFloat(UserDefaults.standard.integer(forKey: Constant.setting_fontFrasesSize))
+                    fontMenuSize = CGFloat(UserDefaults.standard.integer(forKey: Constant.setting_fontMenuSize))
+                    
+                    colorFrase = SettingModel().loadColor(forkey: Constant.setting_color_frases)
+                    
+                    colorFondo_a = SettingModel().loadColor(forkey: Constant.setting_color_main_a)
+                    colorFondo_b = SettingModel().loadColor(forkey: Constant.setting_color_main_b)
+                })
         }
     }
     

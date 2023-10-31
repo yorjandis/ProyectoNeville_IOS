@@ -12,6 +12,9 @@ struct optionView: View {
     @State var showNotasSheet = false
     @State var showFavSheet = false
     @State var showFrasesNotes = false
+    @State var showSeeting = false
+    private let colorGradientButton = [SettingModel().loadColor(forkey: Constant.setting_color_main_a),
+                                       SettingModel().loadColor(forkey: Constant.setting_color_main_b)]
     
     var body: some View {
         NavigationStack{
@@ -21,13 +24,13 @@ struct optionView: View {
                 VStack(spacing: 20){
                     HStack(spacing: 20){
                         Button{
-                            
+                            showSeeting = true
                         }label: {
                             HStack {
                                 Image(systemName: "gear")
                                 Text("Setting")
                             }
-                        }.modifier(GradientButtonStyle(ancho: 150))
+                        }.modifier(GradientButtonStyle(ancho: 150, colors: colorGradientButton))
                         
                         Button{
                             showNotasSheet = true
@@ -36,7 +39,7 @@ struct optionView: View {
                                 Image(systemName: "note.text")
                                 Text("Notas")
                             }
-                        }.modifier(GradientButtonStyle(ancho: 150))
+                        }.modifier(GradientButtonStyle(ancho: 150, colors: colorGradientButton))
                         
                     }
                     
@@ -49,7 +52,7 @@ struct optionView: View {
                                 Image(systemName: "heart")
                                 Text("Favoritos")
                             }
-                        }.modifier(GradientButtonStyle(ancho: 150))
+                        }.modifier(GradientButtonStyle(ancho: 150, colors: colorGradientButton))
                         
                         Button{
                             showFrasesNotes = true
@@ -58,7 +61,7 @@ struct optionView: View {
                                 Image(systemName: "bookmark.fill")
                                 Text("Notas Frases")
                             }
-                        }.modifier(GradientButtonStyle(ancho: 150))
+                        }.modifier(GradientButtonStyle(ancho: 150, colors: colorGradientButton))
                         
                     }
                     
@@ -74,6 +77,9 @@ struct optionView: View {
             }
             .sheet (isPresented: $showFrasesNotes){
                 FrasesNotasListView()
+            }
+            .sheet (isPresented: $showSeeting){
+                settingView()
             }
         }
  

@@ -19,7 +19,7 @@ struct YTLisIDstView: View {
     
     @State private var ListOfVideosIds : [(String, String)] = []
     
-    
+    @State var fontSizeList : CGFloat = 18
     
     var body: some View {
         
@@ -35,7 +35,8 @@ struct YTLisIDstView: View {
                     }label: {
                         Text(idx.1.capitalized(with: .autoupdatingCurrent))
                             .bold()
-                            .foregroundStyle(theme == ColorScheme.dark ? .white : .black)       
+                            .foregroundStyle(theme == ColorScheme.dark ? .white : .black)    
+                            .font(.system(size: CGFloat(fontSizeList)))
                     }
                 }
                 .swipeActions(edge: .trailing){
@@ -49,6 +50,7 @@ struct YTLisIDstView: View {
             }
             .onAppear {
                 getVideosList(typecontent: typeContent)
+                fontSizeList = CGFloat(UserDefaults.standard.integer(forKey: Constant.setting_fontListaSize))//setting
             }
             
             Divider()
@@ -74,9 +76,9 @@ struct YTLisIDstView: View {
     ///Auxiliar: actualiza el estado de favoritos
     private func setFav(title: String , prefix : String, idVideo : String){
         if FavModel().isFavVideos(title: title, idVideo: idVideo){
-            FavModel().DeleteVideos(title: title, idVideo: idVideo)
+            if FavModel().DeleteVideos(title: title, idVideo: idVideo){}
         }else{
-            FavModel().Add(title: title, prefix: "", idvideo: idVideo)
+            if FavModel().Add(title: title, prefix: "", idvideo: idVideo){}
        }
     }
     

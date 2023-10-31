@@ -13,7 +13,12 @@ import SwiftUI
 struct TxtListView: View {
     
     @Environment(\.dismiss) var dimiss
+    
     @Environment(\.colorScheme) var theme
+    
+    @State var fontSizeList : CGFloat = 18
+        
+    
     
     var typeContent : TypeOfTxtContent = .NA
     
@@ -32,7 +37,8 @@ struct TxtListView: View {
                         ContentTxtShowView(fileName: "\(item)",  title: item, typeContent: typeContent)
                     }label: {
                         Text(item)
-                            .foregroundStyle(theme == ColorScheme.dark ? .white : .black )
+                            .foregroundStyle(theme == .light ? Color.black : Color.white)
+                            .font(.system(size: CGFloat(fontSizeList)))
                             .bold()
                             
                     }
@@ -50,6 +56,7 @@ struct TxtListView: View {
             }//List
             .onAppear{
                 getList()
+                fontSizeList = CGFloat(UserDefaults.standard.integer(forKey: Constant.setting_fontListaSize))
             }
             .background(.ultraThinMaterial)
             
@@ -110,9 +117,13 @@ struct TxtListView: View {
     ///Auxiliar: Alterna entre los estados de fav/NO fav
     private func setFav(nameFile : String, prefix : String){
         if FavModel().isFavTxt(title: nameFile, prefix: prefix){
-               FavModel().DeleteTXT(title:nameFile.lowercased(), prefix: prefix)
+            if  FavModel().DeleteTXT(title:nameFile.lowercased(), prefix: prefix) {
+                
+            }
                }else{
-                   FavModel().Add(title:nameFile.lowercased(), prefix: prefix)
+                   if  FavModel().Add(title:nameFile.lowercased(), prefix: prefix){
+                       
+                   }
                }
         
     }

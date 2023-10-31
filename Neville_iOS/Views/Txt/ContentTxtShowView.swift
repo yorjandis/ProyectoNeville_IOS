@@ -18,7 +18,7 @@ struct ContentTxtShowView: View {
     var typeContent : TypeOfTxtContent = .NA //tipo de txt (conf, ayuda, etc)
     @State private var isFav = false
     
-    
+    @State var fontSizeContent : CGFloat = 18
     
 
     //Lee un fichero txt y devuelve su contenido
@@ -32,7 +32,7 @@ struct ContentTxtShowView: View {
             VStack {
                 ScrollView(showsIndicators: true) {
                     Text(self.getContent)
-                        .font(.system(size: 24, design: .rounded))
+                        .font(.system(size: fontSizeContent, design: .rounded))
                         .fontDesign(.rounded)
                         .padding(.trailing, 20)
             
@@ -52,9 +52,7 @@ struct ContentTxtShowView: View {
                             Image(systemName: "heart.fill")
                                 .tint(isFav ? .orange : .gray)
                         }
-                        .onAppear { //Al inicio se actualiza el estado del fav
-                            ifFav()
-                        }
+                        
 
                     Button{
                         
@@ -71,6 +69,10 @@ struct ContentTxtShowView: View {
             }
             .navigationBarTitle(title, displayMode: .inline)
             .navigationBarTitleDisplayMode(.inline)
+            .onAppear { //Al inicio se actualiza el estado del fav
+                ifFav()
+                fontSizeContent = CGFloat(UserDefaults.standard.integer(forKey: Constant.setting_fontContentSize))
+            }
             
         }
     }//body

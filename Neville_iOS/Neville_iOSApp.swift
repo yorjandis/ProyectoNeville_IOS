@@ -21,14 +21,20 @@ struct Neville_iOSApp: App {
         //Popular la tabla Frases SI es la primera vez
         manageFrases().populateTableFrases()
         
+        //Carga los valores de Setting para Userdefault si es la primera vez
+        if UserDefaults.standard.integer(forKey: Constant.setting_fontFrasesSize) == 0 {
+            SettingModel().setValuesByDefault()
+            print("Es la primera vez")
+        }
+        
+        
+        
     }
 
     
     var body: some Scene {
         WindowGroup {
             ContentView()
-            //Crear una ambiente de Objeto Administrado y lo expone a SwiftUI
-               
                 
         }
     }

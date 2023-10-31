@@ -14,6 +14,9 @@
 		194F11252AEC50D2009FA23E /* list3.txt in Resources */ = {isa = PBXBuildFile; fileRef = 194F111E2AEC50D2009FA23E /* list3.txt */; };
 		194F11262AEC50D2009FA23E /* list4.txt in Resources */ = {isa = PBXBuildFile; fileRef = 194F111F2AEC50D2009FA23E /* list4.txt */; };
 		194F11272AEC50D2009FA23E /* list5.txt in Resources */ = {isa = PBXBuildFile; fileRef = 194F11202AEC50D2009FA23E /* list5.txt */; };
+		194F11292AEC79D5009FA23E /* settingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 194F11282AEC79D5009FA23E /* settingView.swift */; };
+		194F112B2AEF23E8009FA23E /* settingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 194F112A2AEF23E8009FA23E /* settingModel.swift */; };
+		198DB0792AF0943300165B48 /* ShowPlayListYTView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 198DB0782AF0943300165B48 /* ShowPlayListYTView.swift */; };
 		19E06FA62AEB74E20016F9E6 /* FrasesNotasAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19E06FA52AEB74E20016F9E6 /* FrasesNotasAddView.swift */; };
 		19E06FA82AEB91F00016F9E6 /* FrasesNotasListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19E06FA72AEB91F00016F9E6 /* FrasesNotasListView.swift */; };
 		19E06FAA2AEBA1F50016F9E6 /* gregg.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19E06FA92AEBA1F50016F9E6 /* gregg.swift */; };
@@ -427,6 +430,9 @@
 		194F111E2AEC50D2009FA23E /* list3.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = list3.txt; sourceTree = "<group>"; };
 		194F111F2AEC50D2009FA23E /* list4.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = list4.txt; sourceTree = "<group>"; };
 		194F11202AEC50D2009FA23E /* list5.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = list5.txt; sourceTree = "<group>"; };
+		194F11282AEC79D5009FA23E /* settingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = settingView.swift; sourceTree = "<group>"; };
+		194F112A2AEF23E8009FA23E /* settingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = settingModel.swift; sourceTree = "<group>"; };
+		198DB0782AF0943300165B48 /* ShowPlayListYTView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowPlayListYTView.swift; sourceTree = "<group>"; };
 		19E06FA52AEB74E20016F9E6 /* FrasesNotasAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrasesNotasAddView.swift; sourceTree = "<group>"; };
 		19E06FA72AEB91F00016F9E6 /* FrasesNotasListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrasesNotasListView.swift; sourceTree = "<group>"; };
 		19E06FA92AEBA1F50016F9E6 /* gregg.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = gregg.swift; sourceTree = "<group>"; };
@@ -1284,6 +1290,7 @@
 				E9084D1B2ABD057800C5F7B7 /* VideoViewModel.swift */,
 				E9D0F1CC2AE22F7000B35452 /* Notas-Model.swift */,
 				E9D0F1D32AE239D100B35452 /* Fav-Model.swift */,
+				194F112A2AEF23E8009FA23E /* settingModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1300,6 +1307,8 @@
 				E93C23AD2ABAAC6800939D16 /* galeriaFotosView.swift */,
 				E9D0F1CA2AE2226A00B35452 /* optionView.swift */,
 				19E06FA92AEBA1F50016F9E6 /* gregg.swift */,
+				194F11282AEC79D5009FA23E /* settingView.swift */,
+				198DB0782AF0943300165B48 /* ShowPlayListYTView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1847,6 +1856,7 @@
 				E99F9CC62AC4682B00169084 /* CoreDataController.swift in Sources */,
 				E93C23AE2ABAAC6800939D16 /* galeriaFotosView.swift in Sources */,
 				E9084D1E2ABD08FB00C5F7B7 /* YTVideoView.swift in Sources */,
+				194F112B2AEF23E8009FA23E /* settingModel.swift in Sources */,
 				E99F9CCA2ACB75E800169084 /* ListNotasViews.swift in Sources */,
 				19E06FA62AEB74E20016F9E6 /* FrasesNotasAddView.swift in Sources */,
 				E966EDE12ACF2029002D84C4 /* UpdateNotasView.swift in Sources */,
@@ -1855,8 +1865,10 @@
 				E9D0F1CB2AE2226A00B35452 /* optionView.swift in Sources */,
 				E93C23AA2ABA365100939D16 /* UtilsForViews.swift in Sources */,
 				E92F636C2AB3EC5E007BB4BA /* ContentTxtShowView.swift in Sources */,
+				198DB0792AF0943300165B48 /* ShowPlayListYTView.swift in Sources */,
 				E92F61172AB3D35D007BB4BA /* TxtListView.swift in Sources */,
 				E9D0F1CD2AE22F7000B35452 /* Notas-Model.swift in Sources */,
+				194F11292AEC79D5009FA23E /* settingView.swift in Sources */,
 				E95B93572AAFBB2600B5E2B5 /* Neville_iOSApp.swift in Sources */,
 				E9084D1C2ABD057800C5F7B7 /* VideoViewModel.swift in Sources */,
 				E99B15602AC07D7600B2D161 /* CoreDataCRUD.swift in Sources */,
