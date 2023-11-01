@@ -33,7 +33,7 @@ struct AddNotasView: View {
             .toolbar{
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Guardar"){
-                        if NotasModel.AddNota(title: title, nota: nota) {
+                        if NotasModel().AddNota(title: title, nota: nota) {
                             notas.removeAll()
                             notas.append(contentsOf: manageNotas().getAllNotas())
                         }else{

@@ -59,13 +59,15 @@ struct YTLisIDstView: View {
                 fontSizeList = CGFloat(UserDefaults.standard.integer(forKey: Constant.setting_fontListaSize))//setting
             }
             
+            
             Divider()
             
             //Barra Inferior (Permitir volver, favorito, etc)
             HStack( spacing: 20){
                 Spacer()
                 
-                Button{dimiss()
+                Button{
+                    dimiss()
                 }label: {
                     Text("Volver")
                 }

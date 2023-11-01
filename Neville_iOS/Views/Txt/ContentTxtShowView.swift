@@ -18,7 +18,7 @@ struct ContentTxtShowView: View {
     var typeContent : TypeOfTxtContent = .NA //tipo de txt (conf, ayuda, etc)
     @State private var isFav = false
     
-    @State var fontSizeContent : CGFloat = 18
+    @State private var fontSizeContent : CGFloat = 18 // Setting
     
 
     //Lee un fichero txt y devuelve su contenido

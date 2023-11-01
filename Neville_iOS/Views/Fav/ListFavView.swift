@@ -11,7 +11,7 @@ import CoreData
 
 struct ListFavView: View {
     @Environment(\.dismiss) var dimiss
-    @State var ButtonActive: Bool = true //true para frase, false para otros
+    @State private var ButtonActive: Bool = true //true para frase, false para otros
     
     @State  private var arrayTxt : [FavTxt] = FavModel().getAllFavTxt()
     @State  private var arrayFrases : [Frases] = manageFrases().getFavFrases()

@@ -9,7 +9,7 @@ struct ContentView: View {
     @State  private var showAddNoteView = false //Abre la view AddNota
     @State  private var showAddNoteList = false //Abre la view NoteList
     @State  private var frase : Frases = manageFrases().getRandomFraseEntity()
-    @State  private var isfav  = false //chequea si la frase actual es favorita
+    @State   var isfav  = false //chequea si la frase actual es favorita
     @State  private var isHaveNote = false //Chequea si la frase actual tiene nota
     
     @State  private var fontSize : CGFloat = 24 //Setting para Frases
@@ -86,17 +86,14 @@ struct ContentView: View {
                 HStack(spacing: 10){
                 
                     //Solo muestra el botón de fav para frases si se muestra el texto de una frase
-                    if frase.frase ?? "" != "" {
-                        Button{
-                            FavHandlerFrases()
-                        }label: {
-                            Image(systemName: "heart.fill")
-                                .foregroundColor(  isfav ? Constant.favoriteColorOn : Constant.favoriteColorOff)
-                                .onTapGesture {
-                                }
-                                
-                                            
-                        }
+                  if frase.frase ?? "" != "" {
+                      Button{
+                          FavHandlerFrases()
+                      }label: {
+                          Image(systemName: "heart.fill")
+                              .foregroundStyle(isfav ? Constant.favoriteColorOn : Constant.favoriteColorOff)
+                      }
+                      
                     }
                     
                     Button{
@@ -147,8 +144,8 @@ struct FrasesView : View{
     @Binding var frase : Frases
     @Binding var isFav : Bool
     @Binding var isHaveNote : Bool
-    @Binding var fontSize : CGFloat
-    @Binding var colorFrase : Color
+    @Binding var fontSize : CGFloat //setting
+    @Binding var colorFrase : Color //setting
     
     var body: some View{
         VStack{

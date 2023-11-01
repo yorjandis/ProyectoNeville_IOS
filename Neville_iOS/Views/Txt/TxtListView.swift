@@ -16,7 +16,7 @@ struct TxtListView: View {
     
     @Environment(\.colorScheme) var theme
     
-    @State var fontSizeList : CGFloat = 18
+    @State private var fontSizeList : CGFloat = 18 //Setting
         
     
     

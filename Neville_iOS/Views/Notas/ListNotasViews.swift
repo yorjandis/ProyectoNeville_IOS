@@ -16,8 +16,8 @@ import CoreData
 
 struct ListNotasViews: View {
     @Environment(\.dismiss) var dimiss
-    @State var showAddNoteView = false
-    @State var notas : [Notas] = manageNotas().getAllNotas()
+    @State private var showAddNoteView = false
+    @State private var notas : [Notas] = manageNotas().getAllNotas()
  
     var body: some View {
         NavigationStack {
@@ -73,12 +73,12 @@ struct ListNotasViews: View {
 
 //Representa un item de la lista
 struct Row : View {
-     var context = CoreDataController.dC.context
-    @State var confirm = false
-    @State var showUpdateNoteView = false
+
+    @State private var confirm = false
+    @State private var showUpdateNoteView = false
     @Binding var notas : [Notas] //Listado de Notas cargadas
     var nota: Notas //La nota para esta fila
-    @State var showConfirmDialogDeleteNota = false
+    @State private var showConfirmDialogDeleteNota = false
    
     
     var body: some View {
@@ -114,27 +114,16 @@ struct Row : View {
         //Dialogo de conformación para elimnar una nota
         .confirmationDialog("Esta seguro?", isPresented: $showConfirmDialogDeleteNota){
             Button("Eliminar Nota", role: .destructive){
-                deleteNota(nota: nota)
+                if  NotasModel().deleteNota(nota: nota){
+                    notas.removeAll()
+                    notas.append(contentsOf: manageNotas().getAllNotas())
+                }
+               //deleteNota(nota: nota)
             }
         } message: {
             Text("La nota será removida!!!")
         }
 
-    }
-    
-    //Función que elimina una nota de la BD
-    func deleteNota(nota : Notas){
-        let context = CoreDataController.dC.context
-        context.delete(nota)
-        do {
-            if context.hasChanges {
-                try context.save()
-                notas.removeAll()
-                notas.append(contentsOf: manageNotas().getAllNotas())
-            }
-        } catch {
-            print(error.localizedDescription)
-        }
     }
     
 }
