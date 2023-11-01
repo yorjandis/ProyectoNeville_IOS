@@ -27,7 +27,7 @@ struct ContentTxtShowView: View {
     }
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             
             VStack {
                 ScrollView(showsIndicators: true) {

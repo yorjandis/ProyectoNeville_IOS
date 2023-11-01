@@ -9,7 +9,7 @@ import SwiftUI
 
 struct galeriaFotosView: View {
     var body: some View {
-        NavigationView {
+        NavigationStack{
             ScrollView {
                 ForEach (1..<18){idx in
                     VStack {
