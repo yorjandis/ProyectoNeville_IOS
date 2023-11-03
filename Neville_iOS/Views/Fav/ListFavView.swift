@@ -40,7 +40,7 @@ struct ListFavView: View {
                     List(arrayFrases){item in
                         Text(item.frase ?? "")
                             .swipeActions(edge: .trailing){
-                                Button("Quitar Favorito"){
+                                Button{
                                     if manageFrases().updateFavState(fraseID: item.id ?? "", statusFav: false) {
                                         print("")
                                         withAnimation {
@@ -50,6 +50,8 @@ struct ListFavView: View {
                                     }
                                     
                                     
+                                }label: {
+                                    Text("Quitar Favorito")
                                 }
                                 .tint(.red)
                                 
@@ -69,6 +71,7 @@ struct ListFavView: View {
                             }
                         
                     }
+                    .listStyle(SidebarListStyle())
                     
                 }else{
                    
