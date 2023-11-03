@@ -24,7 +24,6 @@ struct Neville_iOSApp: App {
         //Carga los valores de Setting para Userdefault si es la primera vez
         if UserDefaults.standard.integer(forKey: Constant.setting_fontFrasesSize) == 0 {
             SettingModel().setValuesByDefault()
-            print("Es la primera vez")
         }
         
         
