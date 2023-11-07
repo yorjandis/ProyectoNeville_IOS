@@ -17,7 +17,13 @@
 		194F11272AEC50D2009FA23E /* list5.txt in Resources */ = {isa = PBXBuildFile; fileRef = 194F11202AEC50D2009FA23E /* list5.txt */; };
 		194F11292AEC79D5009FA23E /* settingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 194F11282AEC79D5009FA23E /* settingView.swift */; };
 		194F112B2AEF23E8009FA23E /* settingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 194F112A2AEF23E8009FA23E /* settingModel.swift */; };
+		197D2A322AF96FC200486014 /* gnerateQR.swift in Sources */ = {isa = PBXBuildFile; fileRef = 197D2A312AF96FC200486014 /* gnerateQR.swift */; };
+		197D2A352AF9853000486014 /* ReadQRCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 197D2A342AF9853000486014 /* ReadQRCode.swift */; };
+		197D2A382AF9854E00486014 /* CodeScanner in Frameworks */ = {isa = PBXBuildFile; productRef = 197D2A372AF9854E00486014 /* CodeScanner */; };
+		197D2A3B2AFA9FE000486014 /* DiarioModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 197D2A3A2AFA9FE000486014 /* DiarioModel.swift */; };
+		197D2A3E2AFAA3FC00486014 /* DiarioListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 197D2A3D2AFAA3FB00486014 /* DiarioListView.swift */; };
 		198DB0792AF0943300165B48 /* ShowPlayListYTView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 198DB0782AF0943300165B48 /* ShowPlayListYTView.swift */; };
+		199CADEA2AF57EC0004BF185 /* TestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 199CADE92AF57EC0004BF185 /* TestView.swift */; };
 		19E06FA62AEB74E20016F9E6 /* FrasesNotasAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19E06FA52AEB74E20016F9E6 /* FrasesNotasAddView.swift */; };
 		19E06FA82AEB91F00016F9E6 /* FrasesNotasListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19E06FA72AEB91F00016F9E6 /* FrasesNotasListView.swift */; };
 		19E06FAA2AEBA1F50016F9E6 /* gregg.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19E06FA92AEBA1F50016F9E6 /* gregg.swift */; };
@@ -434,7 +440,13 @@
 		194F11202AEC50D2009FA23E /* list5.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = list5.txt; sourceTree = "<group>"; };
 		194F11282AEC79D5009FA23E /* settingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = settingView.swift; sourceTree = "<group>"; };
 		194F112A2AEF23E8009FA23E /* settingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = settingModel.swift; sourceTree = "<group>"; };
+		197D2A312AF96FC200486014 /* gnerateQR.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = gnerateQR.swift; sourceTree = "<group>"; };
+		197D2A342AF9853000486014 /* ReadQRCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadQRCode.swift; sourceTree = "<group>"; };
+		197D2A392AF9858900486014 /* Neville-iOS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Neville-iOS-Info.plist"; sourceTree = SOURCE_ROOT; };
+		197D2A3A2AFA9FE000486014 /* DiarioModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiarioModel.swift; sourceTree = "<group>"; };
+		197D2A3D2AFAA3FB00486014 /* DiarioListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiarioListView.swift; sourceTree = "<group>"; };
 		198DB0782AF0943300165B48 /* ShowPlayListYTView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowPlayListYTView.swift; sourceTree = "<group>"; };
+		199CADE92AF57EC0004BF185 /* TestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestView.swift; sourceTree = "<group>"; };
 		19E06FA52AEB74E20016F9E6 /* FrasesNotasAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrasesNotasAddView.swift; sourceTree = "<group>"; };
 		19E06FA72AEB91F00016F9E6 /* FrasesNotasListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrasesNotasListView.swift; sourceTree = "<group>"; };
 		19E06FA92AEBA1F50016F9E6 /* gregg.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = gregg.swift; sourceTree = "<group>"; };
@@ -846,12 +858,38 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				197D2A382AF9854E00486014 /* CodeScanner in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		197D2A332AF9851300486014 /* QRCode */ = {
+			isa = PBXGroup;
+			children = (
+				197D2A312AF96FC200486014 /* gnerateQR.swift */,
+				197D2A342AF9853000486014 /* ReadQRCode.swift */,
+			);
+			path = QRCode;
+			sourceTree = "<group>";
+		};
+		197D2A3C2AFAA3E100486014 /* Diario */ = {
+			isa = PBXGroup;
+			children = (
+				197D2A3D2AFAA3FB00486014 /* DiarioListView.swift */,
+			);
+			path = Diario;
+			sourceTree = "<group>";
+		};
+		199CADE82AF57E9D004BF185 /* TestsDebug */ = {
+			isa = PBXGroup;
+			children = (
+				199CADE92AF57EC0004BF185 /* TestView.swift */,
+			);
+			path = TestsDebug;
+			sourceTree = "<group>";
+		};
 		19E06FA42AEB74D20016F9E6 /* Frases */ = {
 			isa = PBXGroup;
 			children = (
@@ -1286,6 +1324,7 @@
 		E92F63712AB468D7007BB4BA /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				197D2A332AF9851300486014 /* QRCode */,
 				E9934DB22AE2B54B004636F9 /* CoreData */,
 				E92F63722AB468F4007BB4BA /* Utils.swift */,
 				E93C23A92ABA365100939D16 /* UtilsForViews.swift */,
@@ -1294,6 +1333,7 @@
 				E9D0F1D32AE239D100B35452 /* Fav-Model.swift */,
 				194F112A2AEF23E8009FA23E /* settingModel.swift */,
 				193B6EAC2AF1B1D10003E897 /* NetModel.swift */,
+				197D2A3A2AFA9FE000486014 /* DiarioModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1301,6 +1341,7 @@
 		E92F644E2AB6EF5A007BB4BA /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				197D2A3C2AFAA3E100486014 /* Diario */,
 				19E06FA42AEB74D20016F9E6 /* Frases */,
 				E9934DB12AE2B51A004636F9 /* Txt */,
 				E9D0F1D02AE2369900B35452 /* Fav */,
@@ -1335,8 +1376,10 @@
 		E95B93552AAFBB2600B5E2B5 /* Neville_iOS */ = {
 			isa = PBXGroup;
 			children = (
+				197D2A392AF9858900486014 /* Neville-iOS-Info.plist */,
 				E95B93562AAFBB2600B5E2B5 /* Neville_iOSApp.swift */,
 				E95B93582AAFBB2600B5E2B5 /* ContentView.swift */,
+				199CADE82AF57E9D004BF185 /* TestsDebug */,
 				E92F61182AB3E05C007BB4BA /* Staff */,
 				E92F63712AB468D7007BB4BA /* Model */,
 				E92F644E2AB6EF5A007BB4BA /* Views */,
@@ -1417,6 +1460,9 @@
 			dependencies = (
 			);
 			name = Neville_iOS;
+			packageProductDependencies = (
+				197D2A372AF9854E00486014 /* CodeScanner */,
+			);
 			productName = Neville_iOS;
 			productReference = E95B93532AAFBB2600B5E2B5 /* Neville_iOS.app */;
 			productType = "com.apple.product-type.application";
@@ -1445,6 +1491,9 @@
 				Base,
 			);
 			mainGroup = E95B934A2AAFBB2600B5E2B5;
+			packageReferences = (
+				197D2A362AF9854E00486014 /* XCRemoteSwiftPackageReference "CodeScanner" */,
+			);
 			productRefGroup = E95B93542AAFBB2600B5E2B5 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -1859,7 +1908,9 @@
 				E99F9CC62AC4682B00169084 /* CoreDataController.swift in Sources */,
 				193B6EAD2AF1B1D10003E897 /* NetModel.swift in Sources */,
 				E93C23AE2ABAAC6800939D16 /* galeriaFotosView.swift in Sources */,
+				197D2A352AF9853000486014 /* ReadQRCode.swift in Sources */,
 				E9084D1E2ABD08FB00C5F7B7 /* YTVideoView.swift in Sources */,
+				199CADEA2AF57EC0004BF185 /* TestView.swift in Sources */,
 				194F112B2AEF23E8009FA23E /* settingModel.swift in Sources */,
 				E99F9CCA2ACB75E800169084 /* ListNotasViews.swift in Sources */,
 				19E06FA62AEB74E20016F9E6 /* FrasesNotasAddView.swift in Sources */,
@@ -1877,7 +1928,10 @@
 				E9084D1C2ABD057800C5F7B7 /* VideoViewModel.swift in Sources */,
 				E99B15602AC07D7600B2D161 /* CoreDataCRUD.swift in Sources */,
 				E9D0F1D22AE236C600B35452 /* ListFavView.swift in Sources */,
+				197D2A3B2AFA9FE000486014 /* DiarioModel.swift in Sources */,
+				197D2A3E2AFAA3FC00486014 /* DiarioListView.swift in Sources */,
 				E92F63732AB468F4007BB4BA /* Utils.swift in Sources */,
+				197D2A322AF96FC200486014 /* gnerateQR.swift in Sources */,
 				19E06FA82AEB91F00016F9E6 /* FrasesNotasListView.swift in Sources */,
 				E9D0F1D42AE239D100B35452 /* Fav-Model.swift in Sources */,
 				E96981912ABD9145002CD503 /* YTLisIDstView.swift in Sources */,
@@ -2020,8 +2074,10 @@
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Neville-iOS-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Neville;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Se requiere permisos para usar la cámara";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -2056,8 +2112,10 @@
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Neville-iOS-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Neville;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Se requiere permisos para usar la cámara";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -2102,6 +2160,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		197D2A362AF9854E00486014 /* XCRemoteSwiftPackageReference "CodeScanner" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/twostraws/CodeScanner";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.3.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		197D2A372AF9854E00486014 /* CodeScanner */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 197D2A362AF9854E00486014 /* XCRemoteSwiftPackageReference "CodeScanner" */;
+			productName = CodeScanner;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		E92F64512AB78EE6007BB4BA /* ModelData.xcdatamodeld */ = {

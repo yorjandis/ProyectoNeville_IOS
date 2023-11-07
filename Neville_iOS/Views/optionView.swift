@@ -13,14 +13,14 @@ struct optionView: View {
     @State private var showFavSheet = false
     @State private var showFrasesNotes = false
     @State private var showSeeting = false
+    @State private var showCodeScanner = false
+    @State private var showCodeGenerate = false
     private let colorGradientButton = [SettingModel().loadColor(forkey: Constant.setting_color_main_a),
                                        SettingModel().loadColor(forkey: Constant.setting_color_main_b)]
     private let sizeWigth : CGFloat = 130
     
     var body: some View {
-        NavigationStack{
             ZStack{
-                LinearGradient(colors: [.black, .cyan], startPoint: .top, endPoint: .bottom)
                 
                 VStack(spacing: 20){
                     HStack(spacing: 20){
@@ -67,9 +67,34 @@ struct optionView: View {
                     }
                     
                     
+                    HStack(spacing: 20){
+                        
+                        Button{
+                        showCodeScanner = true
+                        }label: {
+                            HStack {
+                                Image(systemName: "qrcode.viewfinder")
+                                Text("Leer QR")
+                            }
+                        }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
+                        
+                        Button{
+                            showCodeGenerate = true
+                        }label: {
+                            HStack {
+                                Image(systemName: "qrcode")
+                                Text("Crear QR")
+                            }
+                        }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
+                        
+                    }
+                    
                     
                 }
+                .frame(maxWidth: .infinity , maxHeight: .infinity)
+                .background(.ultraThinMaterial)
             }
+            
             .sheet(isPresented: $showNotasSheet) {
                 ListNotasViews()
             }
@@ -82,9 +107,14 @@ struct optionView: View {
             .sheet (isPresented: $showSeeting){
                 settingView()
             }
+            .popover(isPresented: $showCodeScanner){
+                ReadQRCode()
+            }.popover(isPresented: $showCodeGenerate){
+                GenerateImageQR(string: "Yorjandis", footer: "")
+            }
         }
  
-    }
+
     
     
    

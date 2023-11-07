@@ -7,7 +7,8 @@ struct ContentView: View {
     
     @State  private var showSideMenu = false //Para Abrir/cerrar Menu Lateral
     @State  private var showAddNoteView = false //Abre la view AddNota
-    @State  private var showAddNoteList = false //Abre la view NoteList
+    @State  private var showAddNoteList = false //Abre la view AddNota
+    
     @State  private var frase : Frases = manageFrases().getRandomFraseEntity()
     @State   var isfav  = false //chequea si la frase actual es favorita
     @State  private var isHaveNote = false //Chequea si la frase actual tiene nota
@@ -83,8 +84,20 @@ struct ContentView: View {
                 
             })
             .toolbar{
-                HStack(spacing: 10){
-                
+                HStack(spacing: 5){
+                    
+                    NavigationLink{
+                        DiarioListView()
+                    }label: {
+                        Image("feliz")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 30, height: 30, alignment: .center)
+                    }
+                        
+                        
+                        
+
                     //Solo muestra el botón de fav para frases si se muestra el texto de una frase
                   if frase.frase ?? "" != "" {
                       Button{
@@ -115,6 +128,7 @@ struct ContentView: View {
             .sheet(isPresented: $showAddNoteList){
                 ListNotasViews()
             }
+            
             
         }
         
@@ -157,6 +171,25 @@ struct FrasesView : View{
                     frase = manageFrases().getRandomFraseEntity()
                     readFraseStatus(fraseEntity: frase, isfav: &isFav, isHaveNote: &isHaveNote)
                 }
+            Menu{
+                Button("Convertir en Nota"){ }
+                NavigationLink("Generar QR"){
+                    GenerateImageQR(string: frase.frase ?? "", footer: "")
+                }
+                Button("Nueva Frase"){}
+                
+                
+            }label: {
+                HStack{
+                    Spacer()
+                    Image(systemName: "ellipsis")
+                        .tint(.black)
+                        .padding(.trailing, 25)
+                        .frame(width: 50, height: 50)
+                    
+                }
+               
+            }
         }
     }
     
@@ -238,7 +271,7 @@ struct TabButtonBar : View{
         
         .sheet(isPresented: $showOptionView) {
             optionView()
-                .presentationDetents([.height(180)])
+                .presentationDetents([.height(250)])
                 .presentationDragIndicator(.hidden)
             //Al ocultar las opciones: se actualiza el tamaño de fuente de las frases
                 .onDisappear(perform: {
