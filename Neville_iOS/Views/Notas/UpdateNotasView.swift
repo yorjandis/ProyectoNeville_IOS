@@ -36,9 +36,9 @@ struct UpdateNotasView: View {
             .toolbar{
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Actualizar"){
-                        if ManageNotas().updateNota(NotaID: NotaId, newTitle: title, newNota: nota){
+                        if NotasModel().updateNota(NotaID: NotaId, newTitle: title, newNota: nota){
                             notas.removeAll()
-                            notas.append(contentsOf: ManageNotas().getAllNotas())
+                            notas.append(contentsOf: NotasModel().getAllNotas())
                         }else{
                             print("Error al actualizar la nota")
                         }

@@ -13,13 +13,11 @@ import SwiftUI
 struct TxtListView: View {
     
     @Environment(\.dismiss) var dimiss
-    
     @Environment(\.colorScheme) var theme
     
     @State private var fontSizeList : CGFloat = 18 //Setting
         
-    
-    
+
     var typeContent : TypeOfTxtContent = .NA
     
     @State private var listTxt : [String] = []
@@ -75,11 +73,25 @@ struct TxtListView: View {
                 .padding(.top, 10)
                 
             }
-            
-            
         }
         .navigationTitle(typeContent.getDescription)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar{
+            #if os(macOS)
+                HStack{
+                    Spacer()
+                    Button{
+                        
+                    }label: {
+                        Image(systemName: "plus")
+                    }
+                }
+            #endif
+        }
+        
+        
+        
+        
     }
     
     

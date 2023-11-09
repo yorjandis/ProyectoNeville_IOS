@@ -26,8 +26,10 @@ struct Constant{
     
     //UserDefault:
     
-        /// UserDefault Store:  Nombre para la clave Bool que indica si la entity Frases ha sido populada
+    /// UserDefault Store:  Nombre para la clave Bool que indica si la entity Frases ha sido populada
     static var UD_isfrasesLoaded = "isfrasesLoaded"
+    /// UserDefault Store:  Nombre para la clave Bool que indica si la entity Confe ha sido populada
+    static var UD_isConfLoaded = "isConfeLoaded"
     
     
      //Tab names for TabButtons

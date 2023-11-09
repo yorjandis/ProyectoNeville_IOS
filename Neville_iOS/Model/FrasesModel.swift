@@ -318,6 +318,27 @@ struct FrasesModel {
     }
     
     
+    ///Buscar texto en el campo nota de una frase
+    /// - Parameter text : Texto a buscar dentro de la frase
+    /// - Returns : Devuelve un arreglo de entity Frases que contienen el texto a buscar
+    func searchTextInNotaFrases(textNota : String)->[Frases]{
+        var arrayResult = [Frases]()
+        
+        let arrayFrases = getAllFrases()
+        
+        for item in arrayFrases {
+            let temp = item.nota?.lowercased() ?? ""
+            if (temp.contains(textNota.lowercased())){
+                arrayResult.append(item)
+            }
+        }
+        
+        return arrayResult
+ 
+    }
+    
+    
+    
     ///Obtiene todas las frases favoritas
     ///Obtener todas las notas favoritas
     ///  - Returns : Devuelve un arreglo con todas las entity Frases favoritas

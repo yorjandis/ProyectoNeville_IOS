@@ -10,15 +10,20 @@ import SwiftUI
 import CoreImage.CIFilterBuiltins
 
 
-struct GenerateImageQR : View {
+struct GenerateQRView : View {
     
     @State var  string : String
     let footer : String
     @State private var textfiel = ""
     
+   
+    
     var body: some View {
         NavigationStack{
             VStack(spacing: 10){
+                Text("Modifique el texto debajo de la imagen y utilice el botón: Generar")
+                Divider()
+                Spacer()
                 Image(uiImage: UIImage(data: generateQRCode(text: string)!)!)
                     .resizable()
                     .scaledToFit()
@@ -33,7 +38,7 @@ struct GenerateImageQR : View {
                     .onAppear{
                         textfiel = footer
                     }
-                
+                Spacer()
          
 
         }

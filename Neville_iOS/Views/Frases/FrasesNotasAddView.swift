@@ -9,7 +9,7 @@
 import SwiftUI
 
 
-struct NotaFraseAddView: View {
+struct FrasesNotasAddView: View {
     @Environment(\.dismiss) var dimiss
 
     let idFrase : String

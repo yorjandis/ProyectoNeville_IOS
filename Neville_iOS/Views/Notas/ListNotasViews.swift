@@ -16,51 +16,105 @@ import CoreData
 
 struct ListNotasViews: View {
     @Environment(\.dismiss) var dimiss
+    @Environment(\.colorScheme) var theme
     @State private var showAddNoteView = false
-    @State private var notas : [Notas] = ManageNotas().getAllNotas()
+    @State private var list : [Notas] = NotasModel().getAllNotas()
+    //Buscar en notas
+    @State var showAlertSearch = false
+    @State var textField = ""
+    //Buscar en titulos de notas
+    @State var showAlertSearchTitle = false
+    @State var textFieldTitle = ""
  
     var body: some View {
         NavigationStack {
-            List(notas,id: \.id){nota in
-               Row(notas: $notas, nota: nota)
+            List(list,id: \.id){nota in
+               Row(notas: $list, nota: nota)
             }
             Spacer()
             Divider()
             HStack(spacing: 30){
                 Spacer()
-                Button{ //Adicionar una nuena nota
-                    showAddNoteView = true
-                }label: {
-                    Image(systemName: "note.text.badge.plus")
-                        .tint(.green)
-                        .font(.system(size: 24, weight: .ultraLight))
-                }
+                
                 Button("Volver"){
                     dimiss()
                 }
                 .padding(.trailing, 20)
             }
             .padding(.bottom, 20)
-           
             .navigationTitle("Notas")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar{
+                HStack{
+                    Menu{
+                        Button("Todas las notas"){
+                            withAnimation {
+                                list.removeAll()
+                                list = NotasModel().getAllNotas()
+                            }
+                        }
+                        Button("Notas Favoritas"){
+                            withAnimation {
+                                list.removeAll()
+                                list = NotasModel().getFavNotas()
+                            }
+                            
+                        }  
+                        Button("Buscar en Notas"){
+                            showAlertSearch = true
+                        }
+                        Button("Buscar en títulos"){
+                            showAlertSearchTitle = true
+                        }
+                        
+                        
+                    }label: {
+                        Image(systemName: "line.3.horizontal.decrease")
+                            .foregroundStyle(theme ==  .dark ? .white :  .black)
+                    }
+                    Button{
+                        showAddNoteView = true
+                    }label: {
+                        Image(systemName: "plus")
+                    }
+                }
+                
+            }
             .sheet(isPresented: $showAddNoteView) {
-                AddNotasView(notas: $notas)
+                AddNotasView(notas: $list)
                     .presentationDetents([.medium])
                     .presentationDragIndicator(.hidden)
                 
             }
-            
-            
+            .alert("Buscar en Notas", isPresented: $showAlertSearch){
+                TextField("", text: $textField, axis: .vertical)
+                Button("Buscar"){
+                    let temp = NotasModel().searchTextInNotas(text: textField, donde: .nota)
+                    if temp.count > 0 {
+                        list.removeAll()
+                        list = temp
+                    }
+                }
+            }
+            .alert("Buscar en título de Notas", isPresented: $showAlertSearchTitle){
+                TextField("", text: $textFieldTitle, axis: .vertical)
+                Button("Buscar"){
+                    let temp = NotasModel().searchTextInNotas(text: textFieldTitle, donde: .titulo)
+                    if temp.count > 0 {
+                        list.removeAll()
+                        list = temp
+                    }
+                }
+            }
         }
     }
     
     func updateYorj(nota : Notas){
         
-        if  ManageNotas().updateNota(NotaID: nota.id ?? "", newTitle: nota.title ?? "", newNota: nota.nota ?? "") {
+        if  NotasModel().updateNota(NotaID: nota.id ?? "", newTitle: nota.title ?? "", newNota: nota.nota ?? "") {
             print("")
-            notas.removeAll()
-            notas.append(contentsOf: ManageNotas().getAllNotas())
+            list.removeAll()
+            list.append(contentsOf: NotasModel().getAllNotas())
         }
         
         
@@ -86,6 +140,18 @@ struct Row : View {
             ShowNotaView(nota: nota, notass: $notas)
         } label: {
             Text(nota.title ?? "")
+        }
+        .swipeActions(edge: .leading){
+            Button{
+                var stateFav = nota.isfav
+                stateFav.toggle()
+                if  NotasModel().updateFav(NotaID: nota.id ?? "", favState: stateFav) {
+                    print("ok")
+                }
+            }label: {
+                Image(systemName: "heart")
+                    .tint(.black)
+            }
         }
         .swipeActions(edge: .trailing){ //Eliminar una nota
             Button{
@@ -115,9 +181,9 @@ struct Row : View {
         .confirmationDialog("Esta seguro?", isPresented: $showConfirmDialogDeleteNota){
             Button("Eliminar Nota", role: .destructive){
                 withAnimation {
-                    ManageNotas().deleteNota(nota: nota)
+                    NotasModel().deleteNota(nota: nota)
                       notas.removeAll()
-                      notas.append(contentsOf: ManageNotas().getAllNotas())
+                      notas.append(contentsOf: NotasModel().getAllNotas())
                 }
 
             }

@@ -150,7 +150,7 @@ struct FrasesView : View{
                 Menu{
                     Button("Convertir en Nota"){ }
                     NavigationLink("Generar QR"){
-                        GenerateImageQR(string: frase.frase ?? "", footer: frase.frase ?? "")
+                        GenerateQRView(string: frase.frase ?? "", footer: frase.frase ?? "")
                     }
                     Button{
                         showAddNoteView = true
@@ -176,7 +176,7 @@ struct FrasesView : View{
            
         }
         .sheet(isPresented: $showAddNoteView){ //permite modificar la nota de una frase
-            NotaFraseAddView(idFrase: frase.id ?? "", nota: frase.nota ?? "")
+            FrasesNotasAddView(idFrase: frase.id ?? "", nota: frase.nota ?? "")
                 .presentationDetents([.medium])
                 .presentationDragIndicator(.hidden)
                 //.interactiveDismissDisabled() //No deja que se oculte
@@ -361,7 +361,7 @@ struct AddNotasViewInbuilt: View {
         
         if (nota.isEmpty || title.isEmpty) {return false}
         
-        if  ManageNotas().addNote(nota: nota, title: title) {
+        if  NotasModel().addNote(nota: nota, title: title) {
             return true
         }else{
             return false

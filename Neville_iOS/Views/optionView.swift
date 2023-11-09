@@ -105,10 +105,10 @@ struct optionView: View {
             .sheet (isPresented: $showSeeting){
                 settingView()
             }
-            .popover(isPresented: $showCodeScanner){
+            .sheet(isPresented: $showCodeScanner){
                 ReadQRCode()
-            }.popover(isPresented: $showCodeGenerate){
-                GenerateImageQR(string: "Ejemplo", footer: "Ejemplo")
+            }.sheet(isPresented: $showCodeGenerate){
+                GenerateQRView(string: "Ejemplo", footer: "Ejemplo")
                     .presentationDetents([.large])
                     .presentationDragIndicator(.hidden)
             }

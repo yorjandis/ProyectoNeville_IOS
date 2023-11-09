@@ -9,10 +9,10 @@ import Foundation
 import CoreData
 
 //Manejo de la tabla Notas
-struct ManageNotas{
+struct NotasModel{
     
     /// Establece los campos para búsqueda contenido dentro de las notas
-    enum campo{
+    enum CampoBusqueda{
         case titulo, nota
     }
     
@@ -85,27 +85,29 @@ struct ManageNotas{
         
     }
     
-    ///Buscar texto en notas
+    ///Buscar texto en titulo y en el texto de las notas
     /// - Parameter text : texto a buscar
     /// - Parameter buscarEn: search target: en el campo de nota o en el campo de titulo
-    func searchTextInNotas(_ text : String, buscarEn : campo = .nota)->[Notas]{
+    /// - Returns - Devuelve un arreglo de entity Notas
+    func searchTextInNotas(text: String, donde buscar: CampoBusqueda)->[Notas]{
       
         let arrayNotas = getAllNotas()
-        var result = [Notas]()
+        var result : [Notas] = []
         
         for item in arrayNotas {
             
-            switch buscarEn{
+            switch buscar{
             case .nota:
-                if item.nota?.contains(text) != nil{
+                let temp = item.nota?.lowercased() ?? ""
+                if temp.contains(text.lowercased()){
                     result.append(item)
                 }
             case .titulo:
-                if item.title?.contains(text) != nil{
+                let temp = item.title?.lowercased() ?? ""
+                if temp.contains(text.lowercased()){
                     result.append(item)
                 }
             }
-            
         }
         
         return result

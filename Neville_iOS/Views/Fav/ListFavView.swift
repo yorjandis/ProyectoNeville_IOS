@@ -57,7 +57,7 @@ struct ListFavView: View {
                                 
                                 //Modificar la nota de la frase
                                 NavigationLink{
-                                    NotaFraseAddView(idFrase: item.id ?? "", nota: item.nota ?? "")
+                                    FrasesNotasAddView(idFrase: item.id ?? "", nota: item.nota ?? "")
                                         .onDisappear {
                                             withAnimation {
                                                 arrayFrases.removeAll()

@@ -41,7 +41,7 @@ Gregg Braden, nacido el 28 de junio de 1954  es un físico y autor estadounidens
                     .buttonStyle(GradientButtonStyle())
                     
                     Link(destination: URL(string: "https://drive.google.com/file/d/1_fTTJDpyTSqOtZ4shdbsXeEQSVWqpO_a/view?usp=sharing")!, label: {
-                        Text("Descargar Libros")
+                        Text("Libros")
                     })
                     .buttonStyle(GradientButtonStyle())
                     
@@ -92,7 +92,7 @@ Gregg Braden, nacido el 28 de junio de 1954  es un físico y autor estadounidens
                 .foregroundColor(Color.white)
                 .padding()
                 .frame(width: 200, height: 50)
-                .background(LinearGradient(gradient: Gradient(colors: [Color.gray, Color.brown]), startPoint: .leading, endPoint: .trailing))
+                .background(LinearGradient(gradient: Gradient(colors: [Color.gray, Color.black]), startPoint: .top, endPoint: .bottom))
                 .cornerRadius(15.0)
         }
     }
