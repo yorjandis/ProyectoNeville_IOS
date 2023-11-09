@@ -33,9 +33,9 @@ struct AddNotasView: View {
             .toolbar{
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Guardar"){
-                        if NotasModel().AddNota(title: title, nota: nota) {
+                        if ManageNotas().addNote(nota: nota, title: title, isFav: false) {
                             notas.removeAll()
-                            notas.append(contentsOf: manageNotas().getAllNotas())
+                            notas.append(contentsOf: ManageNotas().getAllNotas())
                         }else{
                             print("se ha producido un error al guardar la nota")
                         }

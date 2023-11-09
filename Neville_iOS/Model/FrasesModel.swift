@@ -1,17 +1,16 @@
 //
-//  CoreDataCRUD.swift
+//  FrasesModel.swift
 //  Neville_iOS
 //
-//  Created by Yorjandis Garcia on 24/9/23.
+//  Created by Yorjandis Garcia on 8/11/23.
 //
-//Funciones relacionadas con BD
+//Operaciones sobre Frases
 
-import SwiftUI
+import Foundation
 import CoreData
 
-
 //Manejo de la tabla frases
-struct manageFrases {
+struct FrasesModel {
     
     ///Obtiene el contexto de Objetos administrados
     private var context = CoreDataController.dC.context
@@ -44,6 +43,58 @@ struct manageFrases {
     }
   
     
+    ///Obtiene la lista de frases del fichero txt in-built:
+    /// - Returns: Devuelve un  arreglo de cadenas con las frases cargadas del txt en Staff
+     func getfrasesArrayFromTxtFile() ->[String] {
+        var array = [String]()
+        
+        array = UtilFuncs.ReadFileToArray(Constant.FileListFrases)
+        
+        return array
+        
+    }
+    
+    ///Adiciona una frase NO inBuilt a la tabla Frases.
+    /// - Parameter frase : El texto de la frase a añadir
+    func AddFrase(frase : String){
+        var entity = Frases(context: context)
+        entity.id = UUID().uuidString
+        entity.frase = frase
+        entity.isfav = false
+        entity.noinbuilt = true
+        entity.nota = ""
+        
+        if context.hasChanges {
+            do{
+                try context.save()
+            }catch{
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    ///Devuelve un arreglo con todas las frases NO inBuilt. Útil para funciones de filtrado
+    func getFrasesNoInbuilt()->[Frases]{
+        var result : [Frases] = []
+        let lista = getAllFrases()
+        
+        for item in lista {
+            if item.noinbuilt {
+                result.append(item)
+            }
+        }
+        
+        return result
+    }
+    
+
+    ///Devuelve una frase aleatoria
+    /// - Returns : Devuelve una frase aleatoria a partir del arreglo generado por `getfrasesArrayFromTxtFile()`
+     func getRandonFrase()->String{
+        return getfrasesArrayFromTxtFile().randomElement() ?? ""
+    }
+
+    
     ///Obtiene una frase aleatoria
     ///
     ///Aqui se actualiza el ID de la frase actualmente cargada para fines de búsqueda dentro de la tabla Frases. Al inicio,  se intenta popular la tabla Frases si esta marcada como NO populada(false).
@@ -66,14 +117,11 @@ struct manageFrases {
             
             do{
                 let res = try context.fetch(req) as! [Frases]
-                manageFrases.idFraseActual = res.first?.id ?? ""
+                FrasesModel.idFraseActual = res.first?.id ?? ""
                 return res.first?.frase ?? ""
             }catch{
                 
             }
-            
-  
-           
         }
         
         return ""
@@ -103,7 +151,7 @@ struct manageFrases {
             
             do{
                 let res = try context.fetch(req) as! [Frases]
-                manageFrases.idFraseActual = res.first?.id ?? ""
+                FrasesModel.idFraseActual = res.first?.id ?? ""
                 return res.first ?? Frases()
             }catch{
                 
@@ -125,7 +173,7 @@ struct manageFrases {
 
         if isFrasesPopulated {return} //Sale si la tabla frases ya esta populada
             
-            let arrayFrases = UtilFuncs.getfrasesArrayFromTxtFile() //Obtiene el arreglo de frases del txt
+            let arrayFrases = getfrasesArrayFromTxtFile() //Obtiene el arreglo de frases del txt
  
             //Populando la tabla frases
             for item in arrayFrases {
@@ -136,7 +184,7 @@ struct manageFrases {
                 row.frase = item
                 row.isfav = false
                 row.nota  = ""
-                    try? context.save()  
+                    try? context.save()
             }
                 
                 //almacena una marca que indica que la tabla frase ha sido populada
@@ -231,7 +279,7 @@ struct manageFrases {
     /// - Returns : Devuelve true si éxito; false de otro modo
     func UpdateNotaAsociada(fraseID : String, notaAsociada : String = "")->Bool{
         
-        let array = getAllFrases()        
+        let array = getAllFrases()
         for frase in array{
             if frase.id == fraseID {
                 frase.nota = notaAsociada
@@ -259,7 +307,8 @@ struct manageFrases {
         let arrayFrases = getAllFrases()
         
         for item in arrayFrases {
-            if ((item.frase?.contains(text)) != nil){
+            let temp = item.frase?.lowercased() ?? ""
+            if (temp.contains(text.lowercased())){
                 arrayResult.append(item)
             }
         }
@@ -271,8 +320,8 @@ struct manageFrases {
     
     ///Obtiene todas las frases favoritas
     ///Obtener todas las notas favoritas
-    ///  - Returns : Devuelve un arreglo con todas las entity Notas favoritas
-    func getFavFrases()->[Frases]{
+    ///  - Returns : Devuelve un arreglo con todas las entity Frases favoritas
+    func getAllFavFrases()->[Frases]{
         
         let array = getAllFrases()
         var arrayResult = [Frases]()
@@ -316,10 +365,10 @@ struct manageFrases {
     /// - Returns - Devuelve un arreglo de tipo [Frases]
     ///
     //Lista todas las frases que tienen notas
-     func getFrasesWithNotes()->[Frases]{
+     func getAllNotasFrases()->[Frases]{
         var result : [Frases] = []
         
-        let array = manageFrases().getAllFrases()
+        let array = FrasesModel().getAllFrases()
         
         for frase in array {
             if frase.nota ?? "" != "" {
@@ -331,174 +380,38 @@ struct manageFrases {
     }
     
     
+    ///Chequear si una frase es NoInbuilt (personal)
+    func CheckIfNotInbuiltFrase(frase : Frases)->Bool{
+        if frase.noinbuilt {
+            return true
+        }else{
+            return false
+        }
+    }
+    
+    ///Delete frase: Solo las frases personales se pueden eliminar
+    func Delete(frase : Frases){
+        if frase.noinbuilt {
+            context.delete(frase)
+            try? context.save()
+        }
+    }
+    
+    ///Delete frase: Solo las frases personales se pueden eliminar
+    func Update(frase : Frases, fraseStr : String, nota : String){
+        if frase.noinbuilt {
+            frase.frase  = fraseStr
+            frase.nota = nota
+            
+            if context.hasChanges{
+                try? context.save()
+            }
+            
+        }
+    }
+    
+    
+    
+    
 }//struct
-
-
-//Manejo de la tabla Notas
-struct manageNotas{
-    
-    /// Establece los campos para búsqueda contenido dentro de las notas
-    enum campo{
-        case titulo, nota
-    }
-    
-    private var context = CoreDataController.dC.context
-    
-    ///Obtener la lista de notas
-    /// - Returns : Devuelve un arreglo de entity Notas. De lo contrario devuelve un arreglo vacio
-    func getAllNotas()->[Notas]{
-        let defaultResult = [Notas]()
-        
-        let fetcRequest : NSFetchRequest<Notas> = Notas.fetchRequest()
-        
-        do{
-            return try  self.context.fetch(fetcRequest)
-        }
-        catch{
-            return defaultResult
-        }
-        
-    }
-    
-    ///Adicionar una nueva nota:
-    /// - Parameter nota : Texto de la nota
-    /// - Parameter title : Título  de la nota , por defecto es " "
-    /// - Parameter isfav : Campo favorito <true|false>, por defecto `false`
-    /// - Returns : devuelve una tupla: $0: true si éxito, false si error; $1: descripción del error, si $0 es false
-    func addNote(nota : String, title : String = "", isFav : Bool = false)->(Bool, String){
-        let entity = Notas(context: self.context)
-        entity.id = UUID().uuidString
-        entity.title = title
-        entity.nota = nota
-        entity.isfav = isFav
-   
-        if self.context.hasChanges {
-            do {
-                try context.save()
-                return (true, "")
-            }catch{
-                context.rollback()
-                return (false, error.localizedDescription)
-            }
-        }
-        return (true, "")
-    }
-    
-    ///Elimina una nota
-    /// - Parameter NotaID : Id de la nota a eliminar
-    func deleteNota(NotaID : String){
-         let row = getEntityRow(value: NotaID)
-            context.delete(row)
-    }
-    
-    ///Modifica una nota
-    ///  - Parameter NotaID : Id de la nota a actualizar
-    ///  - Parameter newTitle : Nuevo título de la nota
-    ///  - Parameter newNota : Nuevo texto de la nota
-    ///  - Parameter isfav : Estado del campo favorito, por defecto false
-    ///  - Returns : true si éxito, false otherwise
-    func updateNota(NotaID : String, newTitle : String, newNota : String, isfav : Bool = false)->Bool{
-        let row = getEntityRow(value: NotaID)
-        row.title = newTitle
-        row.nota = newNota
-        row.isfav = isfav
-        do {
-            try  self.context.save()
-            return true
-        }catch{
-            return false
-        }
-        
-    }
-    
-    ///Buscar texto en notas
-    /// - Parameter text : texto a buscar
-    /// - Parameter buscarEn: search target: en el campo de nota o en el campo de titulo
-    func searchTextInNotas(_ text : String, buscarEn : campo = .nota)->[Notas]{
-      
-        let arrayNotas = getAllNotas()
-        var result = [Notas]()
-        
-        for item in arrayNotas {
-            
-            switch buscarEn{
-            case .nota:
-                if item.nota?.contains(text) != nil{
-                    result.append(item)
-                }
-            case .titulo:
-                if item.title?.contains(text) != nil{
-                    result.append(item)
-                }
-            }
-            
-        }
-        
-        return result
-    }
-    
-    ///Actualizar el estado de favorito
-    /// - Parameter NotaID : Id de la nota a actualizar
-    /// - Parameter favState : Valor del campo favorito < true | false >
-    /// - Returns  : true si éxito, false de otro modo
-    func updateFav(NotaID : String, favState : Bool)->Bool{
-        let row = getEntityRow(value: NotaID)
-        row.isfav = favState
-        do{
-            try context.save()
-            return true
-        }catch{
-            return false
-        }
-    
-        
-        
-    }
-    
-    ///Obtener todas las notas favoritas
-    ///  - Returns : Devuelve un arreglo con todas las entity Notas favoritas
-    func getFavNotas()->[Notas]{
-       let array = getAllNotas()
-        var arrayResult = [Notas]()
-        
-        for item in array {
-            if item.isfav == true {
-                arrayResult.append(item)
-            }
-        }
-        return arrayResult
-        
-    }
-    
-    ///Devuelve un registro en base a un predicado (semajante a utilizar Where en SQL):
-    /// - Parameter value : Valor del campo que será tomado como condición
-    /// - Parameter fieldId : Campo de la entity que será chequeado (por defecto es `id`)
-    /// - Returns Devuelve una instancia de la fila filtrada dentro de la entity
-    private func getEntityRow( value : String, fieldId: String = "id")-> Notas{
-        
-        let predicate = NSPredicate(format: "\(fieldId) = %@", value)
-        let fetcRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Notas")
-        fetcRequest.predicate = predicate
-        do{
-            let fetchedResults = try context.fetch(fetcRequest) as! [NSManagedObject]
-            
-            if  let entity = fetchedResults.first as? Notas{
-                return  entity
-            }
-        }catch{
-            print(error.localizedDescription)
-            
-        }
-        
-        return Notas()
-    }
-    
-}
-
-
-
-
-
-
-
 

@@ -6,11 +6,9 @@ import CoreData
 struct ContentView: View {
     
     @State  private var showSideMenu = false //Para Abrir/cerrar Menu Lateral
-    @State  private var showAddNoteView = false //Abre la view AddNota
     @State  private var showAddNoteList = false //Abre la view AddNota
     
-    @State  private var frase : Frases = manageFrases().getRandomFraseEntity()
-    @State   var isfav  = false //chequea si la frase actual es favorita
+    @State  private var frase : Frases = FrasesModel().getRandomFraseEntity()
     @State  private var isHaveNote = false //Chequea si la frase actual tiene nota
     
     @State  private var fontSize : CGFloat = 24 //Setting para Frases
@@ -33,9 +31,8 @@ struct ContentView: View {
             ZStack(alignment: .bottom){
                 VStack{
                     Spacer()
-                    FrasesView(frase: $frase, isFav: $isfav, isHaveNote: $isHaveNote, fontSize: $fontSize, colorFrase: $colorFrase)
+                    FrasesView(frase: $frase, isHaveNote: $isHaveNote, fontSize: $fontSize, colorFrase: $colorFrase)
                         .onAppear {
-                            readFraseStatus(fraseEntity: frase, isfav: &isfav, isHaveNote: &isHaveNote)
                             fontSize = CGFloat(UserDefaults.standard.integer(forKey: Constant.setting_fontFrasesSize))
                             colorFrase = SettingModel().loadColor(forkey: Constant.setting_color_frases)
                             
@@ -76,8 +73,7 @@ struct ContentView: View {
                     withAnimation {
                         showSideMenu = true }
                 }else if start.y > end.y + 24 {//up
-                    frase = manageFrases().getRandomFraseEntity()
-                    readFraseStatus(fraseEntity: frase, isfav: &isfav, isHaveNote: &isHaveNote)
+                    frase = FrasesModel().getRandomFraseEntity()
                 }
                 else if start.x < end.x - 24 {} //left -> right
                 else if start.y < end.y - 24 {} //down
@@ -89,42 +85,17 @@ struct ContentView: View {
                     NavigationLink{
                         DiarioListView()
                     }label: {
-                        Image("feliz")
+                        Image(systemName: "book")
                             .resizable()
                             .scaledToFit()
+                            .foregroundStyle(Color.primary)
                             .frame(width: 30, height: 30, alignment: .center)
                     }
-                        
-                        
-                        
-
-                    //Solo muestra el botón de fav para frases si se muestra el texto de una frase
-                  if frase.frase ?? "" != "" {
-                      Button{
-                          FavHandlerFrases()
-                      }label: {
-                          Image(systemName: "heart.fill")
-                              .foregroundStyle(isfav ? Constant.favoriteColorOn : Constant.favoriteColorOff)
-                      }
-                      
-                    }
-                    
-                    Button{
-                        showAddNoteView = true
-                    }label: {
-                        Image(systemName: "bookmark.fill")
-                            .foregroundColor(isHaveNote  ? .orange : .black)
-                    }
-                    
+           
                 }
                 .padding(.trailing, 15)
             }
-            .sheet(isPresented: $showAddNoteView){ //permite modificar la nota de una frase
-                NotaFraseAddView(idFrase: frase.id ?? "", nota: frase.nota ?? "")
-                    .presentationDetents([.medium])
-                    .presentationDragIndicator(.hidden)
-                    //.interactiveDismissDisabled() //No deja que se oculte
-            }
+            
             .sheet(isPresented: $showAddNoteList){
                 ListNotasViews()
             }
@@ -135,18 +106,7 @@ struct ContentView: View {
     }//body
     
     
-    ///Onclick del botón favorito (toolbar) para frases: marca/des-marca los fav
-   private func FavHandlerFrases(){
-        if manageFrases().getFavState(fraseID: manageFrases.idFraseActual) { //si esta marcado con fav
-            if  manageFrases().updateFavState(fraseID: manageFrases.idFraseActual, statusFav: false) {
-                isfav = false
-            }
-        }else { //Si esta inactivo: marcar como favorito
-            if  manageFrases().updateFavState(fraseID: manageFrases.idFraseActual, statusFav: true) {
-                isfav = true
-            }
-        }
-    }
+
     
 
 
@@ -156,10 +116,15 @@ struct ContentView: View {
 //Frases View
 struct FrasesView : View{
     @Binding var frase : Frases
-    @Binding var isFav : Bool
     @Binding var isHaveNote : Bool
     @Binding var fontSize : CGFloat //setting
     @Binding var colorFrase : Color //setting
+    //Para Adicionar una nueva frase
+    @State private var showSheetAddFrase = false
+    //Para notas en frases
+    @State private var showAddNoteView = false
+    @State private var isFav = false
+    
     
     var body: some View{
         VStack{
@@ -168,27 +133,73 @@ struct FrasesView : View{
                 .foregroundStyle(colorFrase)
                 .modifier(mof_frases())
                 .onTapGesture {
-                    frase = manageFrases().getRandomFraseEntity()
+                    frase = FrasesModel().getRandomFraseEntity()
                     readFraseStatus(fraseEntity: frase, isfav: &isFav, isHaveNote: &isHaveNote)
                 }
-            Menu{
-                Button("Convertir en Nota"){ }
-                NavigationLink("Generar QR"){
-                    GenerateImageQR(string: frase.frase ?? "", footer: "")
+            
+            HStack(spacing:15){
+                Spacer()
+                
+                Button{
+                    FavHandlerFrases()
+                }label: {
+                    Image(systemName: isFav ? "heart.fill" : "heart")
+                        .foregroundStyle(isFav ? Constant.favoriteColorOn : Constant.favoriteColorOff)
                 }
-                Button("Nueva Frase"){}
+                .onAppear{
+                    readFraseStatus(fraseEntity: frase, isfav: &isFav, isHaveNote: &isHaveNote)
+                }
                 
-                
-            }label: {
-                HStack{
-                    Spacer()
-                    Image(systemName: "ellipsis")
-                        .tint(.black)
-                        .padding(.trailing, 25)
-                        .frame(width: 50, height: 50)
+                Menu{
+                    Button("Convertir en Nota"){ }
+                    NavigationLink("Generar QR"){
+                        GenerateImageQR(string: frase.frase ?? "", footer: frase.frase ?? "")
+                    }
+                    Button{
+                        showAddNoteView = true
+                    }label: {
+                        Label("Adicionar una nota", systemImage: "bookmark.fill" )
+                    }
+                    Button("Nueva Frase"){
+                        showSheetAddFrase = true
+                    }
                     
+                    
+                }label: {
+                    HStack{
+                        Image(systemName: "ellipsis")
+                            .tint(.black)
+                            .padding(.trailing, 25)
+                            .frame(width: 50, height: 50)
+                        
+                    }
+                   
                 }
-               
+            }
+           
+        }
+        .sheet(isPresented: $showAddNoteView){ //permite modificar la nota de una frase
+            NotaFraseAddView(idFrase: frase.id ?? "", nota: frase.nota ?? "")
+                .presentationDetents([.medium])
+                .presentationDragIndicator(.hidden)
+                //.interactiveDismissDisabled() //No deja que se oculte
+        }
+        .sheet(isPresented: $showSheetAddFrase){
+            FraseAddView()
+                .presentationDetents([.medium])
+                .presentationDragIndicator(.hidden)
+        }
+    }
+    
+    ///Onclick del botón favorito (toolbar) para frases: marca/des-marca los fav
+   private func FavHandlerFrases(){
+        if FrasesModel().getFavState(fraseID: FrasesModel.idFraseActual) { //si esta marcado con fav
+            if  FrasesModel().updateFavState(fraseID: FrasesModel.idFraseActual, statusFav: false) {
+                isFav = false
+            }
+        }else { //Si esta inactivo: marcar como favorito
+            if  FrasesModel().updateFavState(fraseID: FrasesModel.idFraseActual, statusFav: true) {
+                isFav = true
             }
         }
     }
@@ -251,6 +262,7 @@ struct TabButtonBar : View{
                 default: EmptyView()
                     
                 }
+
                 
                 //Insertando un espaciado para mantener la distancia entre los items
                 if idx != tabButtons.last {
@@ -271,7 +283,7 @@ struct TabButtonBar : View{
         
         .sheet(isPresented: $showOptionView) {
             optionView()
-                .presentationDetents([.height(250)])
+                .presentationDetents([.height(350)])
                 .presentationDragIndicator(.hidden)
             //Al ocultar las opciones: se actualiza el tamaño de fuente de las frases
                 .onDisappear(perform: {
@@ -352,7 +364,7 @@ struct AddNotasViewInbuilt: View {
         
         if (nota.isEmpty || title.isEmpty) {return false}
         
-        if  manageNotas().addNote(nota: nota, title: title).0 {
+        if  ManageNotas().addNote(nota: nota, title: title) {
             return true
         }else{
             return false

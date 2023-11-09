@@ -12,24 +12,40 @@ import CoreImage.CIFilterBuiltins
 
 struct GenerateImageQR : View {
     
-    let string : String
+    @State var  string : String
     let footer : String
+    @State private var textfiel = ""
     
     var body: some View {
-        GeometryReader(){proxy in 
+        NavigationStack{
             VStack(spacing: 10){
                 Image(uiImage: UIImage(data: generateQRCode(text: string)!)!)
                     .resizable()
                     .scaledToFit()
-                    .frame(width: proxy.size.width * 0.8, height: proxy.size.height )
-                    .offset(x:50)
+                    .frame(width: 300, height: 300 )
+                    //.offset(x:50)
                 
-                Text(footer)
+                TextField("", text: $textfiel, axis: .vertical)
                     .font(.title2)
                     .padding(.horizontal, 10)
-            }
+                    .lineLimit(12)
+                    .multilineTextAlignment(.center)
+                    .onAppear{
+                        textfiel = footer
+                    }
+                
+         
 
         }
+            .navigationTitle("Generar Código QR")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar{
+                Button("Generar"){
+                    string = textfiel
+                }
+            }
+        }
+            
 
     }
      

@@ -3,8 +3,9 @@
     <entity name="Diario" representedClassName="Diario" syncable="YES" codeGenerationType="class">
         <attribute name="content" optional="YES" attributeType="String"/>
         <attribute name="emotion" optional="YES" attributeType="String"/>
+        <attribute name="fecha" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
-        <attribute name="istijeras" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isFav" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="title" optional="YES" attributeType="String"/>
     </entity>
     <entity name="FavTxt" representedClassName="FavTxt" syncable="YES" codeGenerationType="class">
@@ -17,6 +18,7 @@
         <attribute name="frase" attributeType="String"/>
         <attribute name="id" attributeType="String"/>
         <attribute name="isfav" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="noinbuilt" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="nota" optional="YES" attributeType="String"/>
     </entity>
     <entity name="Notas" representedClassName="Notas" syncable="YES" codeGenerationType="class">

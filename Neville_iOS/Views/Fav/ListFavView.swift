@@ -14,7 +14,7 @@ struct ListFavView: View {
     @State private var ButtonActive: Bool = true //true para frase, false para otros
     
     @State  private var arrayTxt : [FavTxt] = FavModel().getAllFavTxt()
-    @State  private var arrayFrases : [Frases] = manageFrases().getFavFrases()
+    @State  private var arrayFrases : [Frases] = FrasesModel().getAllFavFrases()
     @State  private  var showSheetContentTxt = false
 
 
@@ -41,11 +41,11 @@ struct ListFavView: View {
                         Text(item.frase ?? "")
                             .swipeActions(edge: .trailing){
                                 Button{
-                                    if manageFrases().updateFavState(fraseID: item.id ?? "", statusFav: false) {
+                                    if FrasesModel().updateFavState(fraseID: item.id ?? "", statusFav: false) {
                                         print("")
                                         withAnimation {
                                             arrayFrases.removeAll()
-                                            arrayFrases = manageFrases().getFavFrases()
+                                            arrayFrases = FrasesModel().getAllFavFrases()
                                         }
                                     }
                                     
@@ -61,7 +61,7 @@ struct ListFavView: View {
                                         .onDisappear {
                                             withAnimation {
                                                 arrayFrases.removeAll()
-                                                arrayFrases = manageFrases().getFavFrases()
+                                                arrayFrases = FrasesModel().getAllFavFrases()
                                             }
                                         }
                                 }label: {

@@ -19,7 +19,7 @@ struct Neville_iOSApp: App {
     //Codigo a cargar al inicio:
     init(){
         //Popular la tabla Frases SI es la primera vez
-        manageFrases().populateTableFrases()
+        FrasesModel().populateTableFrases()
         
         //Carga los valores de Setting para Userdefault si es la primera vez
         if UserDefaults.standard.integer(forKey: Constant.setting_fontFrasesSize) == 0 {

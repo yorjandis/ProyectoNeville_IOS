@@ -43,9 +43,7 @@ struct Constant{
     static let setting_color_main_a      = "settig_color_main_a"
     static let setting_color_main_b      = "settig_color_main_b"
     
-    
-    
- 
+
 }
 
 ///Enumeración para los distintos tipos de elementos de contenido:
@@ -145,24 +143,7 @@ struct ItemVideoYoutube : Hashable{
 
 struct UtilFuncs{
     
-    ///Obtiene la lista de frases del fichero txt in-built:
-    /// - Returns: Devuelve un  arreglo de cadenas con las frases cargadas del txt en Staff
-    static  func getfrasesArrayFromTxtFile() ->[String] {
-        var array = [String]()
-        
-        array = UtilFuncs.ReadFileToArray(Constant.FileListFrases)
-        
-        return array
-        
-    }
-    
-    ///Devuelve una frase aleatoria
-    /// - Returns : Devuelve una frase aleatoria a partir del arreglo generado por `getfrasesArrayFromTxtFile()`
-    static func getRandonFrase()->String{
-        return getfrasesArrayFromTxtFile().randomElement() ?? ""
-    }
-    
-    
+
     ///ReadFileToArray : Devuelve un array conteniendo todas las líneas de texto de un fichero txt
    static  func ReadFileToArray(_ filetxt : String)->[String]{
         

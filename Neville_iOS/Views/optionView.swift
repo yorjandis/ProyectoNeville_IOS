@@ -11,7 +11,7 @@ struct optionView: View {
 
     @State private var showNotasSheet = false
     @State private var showFavSheet = false
-    @State private var showFrasesNotes = false
+    @State private var showFrasesList = false
     @State private var showSeeting = false
     @State private var showCodeScanner = false
     @State private var showCodeGenerate = false
@@ -56,11 +56,11 @@ struct optionView: View {
                         }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
                         
                         Button{
-                            showFrasesNotes = true
+                            showFrasesList = true
                         }label: {
                             HStack {
                                 Image(systemName: "bookmark.fill")
-                                Text("Notas Frases")
+                                Text("Frases")
                             }
                         }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
                         
@@ -89,6 +89,22 @@ struct optionView: View {
                         
                     }
                     
+                    HStack(spacing: 20){
+                        
+                        NavigationLink{
+                        DiarioListView()
+                        }label: {
+                            HStack {
+                                Image(systemName: "book")
+                                Text("Diario")
+                            }
+                        }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
+                        
+                        
+                        
+                    }
+                    
+                    
                     
                 }
                 .frame(maxWidth: .infinity , maxHeight: .infinity)
@@ -101,8 +117,8 @@ struct optionView: View {
             .sheet(isPresented: $showFavSheet) {
                 ListFavView()
             }
-            .sheet (isPresented: $showFrasesNotes){
-                FrasesNotasListView()
+            .sheet (isPresented: $showFrasesList){
+                FrasesListView()
             }
             .sheet (isPresented: $showSeeting){
                 settingView()
@@ -110,7 +126,9 @@ struct optionView: View {
             .popover(isPresented: $showCodeScanner){
                 ReadQRCode()
             }.popover(isPresented: $showCodeGenerate){
-                GenerateImageQR(string: "Yorjandis", footer: "")
+                GenerateImageQR(string: "Ejemplo", footer: "Ejemplo")
+                    .presentationDetents([.large])
+                    .presentationDragIndicator(.hidden)
             }
         }
  
@@ -122,4 +140,7 @@ struct optionView: View {
 
 #Preview {
     optionView()
+}
+#Preview("home") {
+    ContentView()
 }

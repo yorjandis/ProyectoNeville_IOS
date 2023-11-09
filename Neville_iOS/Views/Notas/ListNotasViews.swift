@@ -17,7 +17,7 @@ import CoreData
 struct ListNotasViews: View {
     @Environment(\.dismiss) var dimiss
     @State private var showAddNoteView = false
-    @State private var notas : [Notas] = manageNotas().getAllNotas()
+    @State private var notas : [Notas] = ManageNotas().getAllNotas()
  
     var body: some View {
         NavigationStack {
@@ -57,10 +57,10 @@ struct ListNotasViews: View {
     
     func updateYorj(nota : Notas){
         
-        if  manageNotas().updateNota(NotaID: nota.id ?? "", newTitle: nota.title ?? "", newNota: nota.nota ?? "") {
+        if  ManageNotas().updateNota(NotaID: nota.id ?? "", newTitle: nota.title ?? "", newNota: nota.nota ?? "") {
             print("")
             notas.removeAll()
-            notas.append(contentsOf: manageNotas().getAllNotas())
+            notas.append(contentsOf: ManageNotas().getAllNotas())
         }
         
         
@@ -114,11 +114,12 @@ struct Row : View {
         //Dialogo de conformación para elimnar una nota
         .confirmationDialog("Esta seguro?", isPresented: $showConfirmDialogDeleteNota){
             Button("Eliminar Nota", role: .destructive){
-                if  NotasModel().deleteNota(nota: nota){
-                    notas.removeAll()
-                    notas.append(contentsOf: manageNotas().getAllNotas())
+                withAnimation {
+                    ManageNotas().deleteNota(nota: nota)
+                      notas.removeAll()
+                      notas.append(contentsOf: ManageNotas().getAllNotas())
                 }
-               //deleteNota(nota: nota)
+
             }
         } message: {
             Text("La nota será removida!!!")
