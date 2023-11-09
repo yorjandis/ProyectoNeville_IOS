@@ -402,11 +402,7 @@ struct FrasesModel {
         if frase.noinbuilt {
             frase.frase  = fraseStr
             frase.nota = nota
-            
-            if context.hasChanges{
-                try? context.save()
-            }
-            
+            try? context.save()
         }
     }
     

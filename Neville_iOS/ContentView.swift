@@ -86,10 +86,7 @@ struct ContentView: View {
                         DiarioListView()
                     }label: {
                         Image(systemName: "book")
-                            .resizable()
-                            .scaledToFit()
                             .foregroundStyle(Color.primary)
-                            .frame(width: 30, height: 30, alignment: .center)
                     }
            
                 }
@@ -283,7 +280,7 @@ struct TabButtonBar : View{
         
         .sheet(isPresented: $showOptionView) {
             optionView()
-                .presentationDetents([.height(350)])
+                .presentationDetents([.height(250)])
                 .presentationDragIndicator(.hidden)
             //Al ocultar las opciones: se actualiza el tamaño de fuente de las frases
                 .onDisappear(perform: {

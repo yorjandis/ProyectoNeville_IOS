@@ -87,25 +87,7 @@ struct optionView: View {
                             }
                         }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
                         
-                    }
-                    
-                    HStack(spacing: 20){
-                        
-                        NavigationLink{
-                        DiarioListView()
-                        }label: {
-                            HStack {
-                                Image(systemName: "book")
-                                Text("Diario")
-                            }
-                        }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
-                        
-                        
-                        
-                    }
-                    
-                    
-                    
+                    } 
                 }
                 .frame(maxWidth: .infinity , maxHeight: .infinity)
                 .background(.ultraThinMaterial)
