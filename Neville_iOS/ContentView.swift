@@ -14,10 +14,10 @@ struct ContentView: View {
     @State  private var fontSize : CGFloat = 24 //Setting para Frases
     @State  private var fontSizeMenu : CGFloat = 24 //Setting para menu
     
-    @State private var colorFrase : Color = SettingModel().loadColor(forkey: Constant.setting_color_frases)
+    @State private var colorFrase : Color = SettingModel().loadColor(forkey: Constant.UD_setting_color_frases)
     
-    @State private var colorFondo_a : Color = SettingModel().loadColor(forkey: Constant.setting_color_main_a)
-    @State private var colorFondo_b : Color = SettingModel().loadColor(forkey: Constant.setting_color_main_b)
+    @State private var colorFondo_a : Color = SettingModel().loadColor(forkey: Constant.UD_setting_color_main_a)
+    @State private var colorFondo_b : Color = SettingModel().loadColor(forkey: Constant.UD_setting_color_main_b)
     
     
 
@@ -33,8 +33,8 @@ struct ContentView: View {
                     Spacer()
                     FrasesView(frase: $frase, isHaveNote: $isHaveNote, fontSize: $fontSize, colorFrase: $colorFrase)
                         .onAppear {
-                            fontSize = CGFloat(UserDefaults.standard.integer(forKey: Constant.setting_fontFrasesSize))
-                            colorFrase = SettingModel().loadColor(forkey: Constant.setting_color_frases)
+                            fontSize = CGFloat(UserDefaults.standard.integer(forKey: Constant.UD_setting_fontFrasesSize))
+                            colorFrase = SettingModel().loadColor(forkey: Constant.UD_setting_color_frases)
                             
                         }
                     Spacer()
@@ -209,18 +209,18 @@ struct FrasesView : View{
 //CustomTabView
 struct TabButtonBar : View{
     
-    @Binding var showSideMenu : Bool
-    @State var showOptionView = false
-    @Binding var fontFrasesSize : CGFloat //Setting
-    @Binding var fontMenuSize : CGFloat //Setting$
+    @Binding    var showSideMenu : Bool
+    @State      var showOptionView = false
+    @Binding    var fontFrasesSize : CGFloat //Setting
+    @Binding    var fontMenuSize : CGFloat //Setting$
     
-    @Binding var colorFrase : Color
+    @Binding    var colorFrase : Color
     
-    @Binding var colorFondo_a : Color
-    @Binding var colorFondo_b : Color
+    @Binding    var colorFondo_a : Color
+    @Binding    var colorFondo_b : Color
     
 
-    let  tabButtons = Constant.tabButtons
+    let  tabButtons = ["book.pages.fill","video.fill","house.circle.fill","video.badge.waveform.fill", "list.bullet"]
     
     var body: some View{
         
@@ -231,11 +231,11 @@ struct TabButtonBar : View{
                 switch idx{
                 case "book.pages.fill":
                     
-                    NavigationLink{TxtListView( typeContent: .conf)
+                    NavigationLink{TxtListView(type: .conf, title: "Conferencias")
                     }label: {makeItemlabel(image: idx)}
                     
                 case "video.fill":
-                    NavigationLink{ YTLisIDstView(typeContent: .video_Conf)
+                    NavigationLink{ YTLisIDstView(type: .video_Conf)
                     }label: {makeItemlabel(image: idx)}
                 
                 case "house.circle.fill":
@@ -247,7 +247,7 @@ struct TabButtonBar : View{
                     }
                     
                 case "video.badge.waveform.fill":
-                    NavigationLink{ YTLisIDstView(typeContent: .aud_libros)
+                    NavigationLink{ YTLisIDstView(type: .aud_libros)
                     }label: {makeItemlabel(image: idx)}
                     
                     
@@ -284,13 +284,13 @@ struct TabButtonBar : View{
                 .presentationDragIndicator(.hidden)
             //Al ocultar las opciones: se actualiza el tamaño de fuente de las frases
                 .onDisappear(perform: {
-                    fontFrasesSize = CGFloat(UserDefaults.standard.integer(forKey: Constant.setting_fontFrasesSize))
-                    fontMenuSize = CGFloat(UserDefaults.standard.integer(forKey: Constant.setting_fontMenuSize))
+                    fontFrasesSize = CGFloat(UserDefaults.standard.integer(forKey: Constant.UD_setting_fontFrasesSize))
+                    fontMenuSize = CGFloat(UserDefaults.standard.integer(forKey: Constant.UD_setting_fontMenuSize))
                     
-                    colorFrase = SettingModel().loadColor(forkey: Constant.setting_color_frases)
+                    colorFrase = SettingModel().loadColor(forkey: Constant.UD_setting_color_frases)
                     
-                    colorFondo_a = SettingModel().loadColor(forkey: Constant.setting_color_main_a)
-                    colorFondo_b = SettingModel().loadColor(forkey: Constant.setting_color_main_b)
+                    colorFondo_a = SettingModel().loadColor(forkey: Constant.UD_setting_color_main_a)
+                    colorFondo_b = SettingModel().loadColor(forkey: Constant.UD_setting_color_main_b)
                 })
         }
     }

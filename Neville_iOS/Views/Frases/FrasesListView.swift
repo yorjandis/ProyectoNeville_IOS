@@ -36,7 +36,7 @@ struct FrasesListView: View {
                                 FrasesNotasAddView(idFrase: frase.id ?? "", nota: frase.nota ?? "")
                             }label: {
                                 Image(systemName: "bookmark")
-                                    .tint(theme == .dark ? .clear :  .gray)
+                                    .tint(.green)
                             }
                         }
                         .swipeActions(edge: .trailing, allowsFullSwipe: true){
@@ -45,7 +45,7 @@ struct FrasesListView: View {
                                 GenerateQRView(string: frase.frase ?? "", footer: frase.frase ?? "")
                             }label: {
                                 Image(systemName: "qrcode")
-                                    .tint(theme == .dark ? .clear :  .gray)
+                                    .tint(.brown)
                             }
                             //Ajustar el estado de favorito de una frase
                             Button{
@@ -57,7 +57,7 @@ struct FrasesListView: View {
                                 }
                             }label: {
                                 Image(systemName: "heart")
-                                    .tint(theme == .dark ? .clear :  .gray)
+                                    .tint(.orange)
                             }
                             
                             //Solo para frases NO Inbuilt

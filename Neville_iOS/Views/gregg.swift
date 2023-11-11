@@ -68,7 +68,7 @@ Gregg Braden, nacido el 28 de junio de 1954  es un físico y autor estadounidens
     
     struct ListVideos : View{
         
-        @State var list  =  UtilFuncs.GetIdVideosFromYoutube(typeContent: .gregg)
+        @State var list  =  YTIdModel().GetIdVideosFromTxtFiles(nameFile: YTIdModel.TypeIdVideosYoutube.gregg.getnameFile)
         
         var body: some View {
             

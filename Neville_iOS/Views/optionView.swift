@@ -15,8 +15,8 @@ struct optionView: View {
     @State private var showSeeting = false
     @State private var showCodeScanner = false
     @State private var showCodeGenerate = false
-    private let colorGradientButton = [SettingModel().loadColor(forkey: Constant.setting_color_main_a),
-                                       SettingModel().loadColor(forkey: Constant.setting_color_main_b)]
+    private let colorGradientButton = [SettingModel().loadColor(forkey: Constant.UD_setting_color_main_a),
+                                       SettingModel().loadColor(forkey: Constant.UD_setting_color_main_b)]
     private let sizeWigth : CGFloat = 130
     
     var body: some View {
@@ -97,7 +97,7 @@ struct optionView: View {
                 ListNotasViews()
             }
             .sheet(isPresented: $showFavSheet) {
-                ListFavView()
+                //(Reparar)ListFavView()
             }
             .sheet (isPresented: $showFrasesList){
                 FrasesListView()

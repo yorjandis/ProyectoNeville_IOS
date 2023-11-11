@@ -26,42 +26,42 @@ struct ShowPlayListYTView : View {
                         .font(.headline)
                     Divider()
                     NavigationLink{
-                        YTLisIDstView(typeContent: TypeIdVideosYoutube.espiritualidad)
+                        YTLisIDstView(type: YTIdModel.TypeIdVideosYoutube.espiritualidad)
                     }label: {
-                        TextItem(text: TypeIdVideosYoutube.espiritualidad.getTitle)
+                        TextItem(text: YTIdModel.TypeIdVideosYoutube.espiritualidad.getTitle)
                     }
                     
                     NavigationLink{
-                        YTLisIDstView(typeContent: TypeIdVideosYoutube.liderazgo)
+                        YTLisIDstView(type: YTIdModel.TypeIdVideosYoutube.liderazgo)
                     }label: {
-                        TextItem(text: TypeIdVideosYoutube.liderazgo.getTitle)
+                        TextItem(text: YTIdModel.TypeIdVideosYoutube.liderazgo.getTitle)
                     }
                     NavigationLink{
-                        YTLisIDstView(typeContent: TypeIdVideosYoutube.desarrolloPersonal)
+                        YTLisIDstView(type: YTIdModel.TypeIdVideosYoutube.desarrolloPersonal)
                     }label: {
-                        TextItem(text: TypeIdVideosYoutube.desarrolloPersonal.getTitle)
-                    }
-                    
-                    NavigationLink{
-                        YTLisIDstView(typeContent: TypeIdVideosYoutube.libertadFinanciera)
-                    }label: {
-                        TextItem(text: TypeIdVideosYoutube.libertadFinanciera.getTitle)
-                    }
-                    NavigationLink{
-                        YTLisIDstView(typeContent: TypeIdVideosYoutube.emprendedores)
-                    }label: {
-                        TextItem(text: TypeIdVideosYoutube.emprendedores.getTitle)
-                    }
-                    NavigationLink{
-                        YTLisIDstView(typeContent: TypeIdVideosYoutube.alcanzarExito)
-                    }label: {
-                        TextItem(text: TypeIdVideosYoutube.alcanzarExito.getTitle)
+                        TextItem(text: YTIdModel.TypeIdVideosYoutube.desarrolloPersonal.getTitle)
                     }
                     
                     NavigationLink{
-                        YTLisIDstView(typeContent: TypeIdVideosYoutube.personasDejaronHuellas)
+                        YTLisIDstView(type: YTIdModel.TypeIdVideosYoutube.libertadFinanciera)
                     }label: {
-                        TextItem(text: TypeIdVideosYoutube.personasDejaronHuellas.getTitle)
+                        TextItem(text: YTIdModel.TypeIdVideosYoutube.libertadFinanciera.getTitle)
+                    }
+                    NavigationLink{
+                        YTLisIDstView(type: YTIdModel.TypeIdVideosYoutube.emprendedores)
+                    }label: {
+                        TextItem(text: YTIdModel.TypeIdVideosYoutube.emprendedores.getTitle)
+                    }
+                    NavigationLink{
+                        YTLisIDstView(type: YTIdModel.TypeIdVideosYoutube.alcanzarExito)
+                    }label: {
+                        TextItem(text: YTIdModel.TypeIdVideosYoutube.alcanzarExito.getTitle)
+                    }
+                    
+                    NavigationLink{
+                        YTLisIDstView(type: YTIdModel.TypeIdVideosYoutube.personasDejaronHuellas)
+                    }label: {
+                        TextItem(text: YTIdModel.TypeIdVideosYoutube.personasDejaronHuellas.getTitle)
                     }
                         
                     Spacer()
@@ -71,7 +71,7 @@ struct ShowPlayListYTView : View {
                         Button{
                             dimiss()
                         }label: {
-                            Text("Volver")
+                            Text("Atrás")
                                 .font(.headline)
                                 .foregroundStyle(.black)
                                 .padding(.trailing, 30)

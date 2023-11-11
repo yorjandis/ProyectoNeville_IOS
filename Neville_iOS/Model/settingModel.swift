@@ -40,14 +40,14 @@ struct SettingModel {
     ///Establece los valores por defecto para setting
     func setValuesByDefault(){
         
-        UserDefaults.standard.setValue(30, forKey: Constant.setting_fontFrasesSize)
-        UserDefaults.standard.setValue(18, forKey: Constant.setting_fontContentSize)
-        UserDefaults.standard.setValue(18, forKey: Constant.setting_fontMenuSize)
-        UserDefaults.standard.setValue(18, forKey: Constant.setting_fontListaSize)
+        UserDefaults.standard.setValue(30, forKey: Constant.UD_setting_fontFrasesSize)
+        UserDefaults.standard.setValue(18, forKey: Constant.UD_setting_fontContentSize)
+        UserDefaults.standard.setValue(18, forKey: Constant.UD_setting_fontMenuSize)
+        UserDefaults.standard.setValue(18, forKey: Constant.UD_setting_fontListaSize)
         
-        saveColor(forkey: Constant.setting_color_frases, color: .black)
-        saveColor(forkey: Constant.setting_color_main_a, color: .red)
-        saveColor(forkey: Constant.setting_color_main_b, color: .orange)
+        saveColor(forkey: Constant.UD_setting_color_frases, color: .black)
+        saveColor(forkey: Constant.UD_setting_color_main_a, color: .red)
+        saveColor(forkey: Constant.UD_setting_color_main_b, color: .orange)
         
     }
     

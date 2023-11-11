@@ -15,10 +15,9 @@ struct ContentTxtShowView: View {
     @Environment(\.dismiss) var dimiss
     @State  var fileName : String //Nombre del txt a abrir
     @State var  title : String = ""
-    var typeContent : TypeOfTxtContent = .NA //tipo de txt (conf, ayuda, etc)
-    @State private var isFav = false
-    
+    var typeContent : TxtContentModel.TipoDeContenido = .NA
     @State private var fontSizeContent : CGFloat = 18 // Setting
+
     
 
     //Lee un fichero txt y devuelve su contenido
@@ -44,21 +43,12 @@ struct ContentTxtShowView: View {
                 //Barra Inferior (Permitir volver, favorito, etc)
                 HStack( spacing: 30){
                     Spacer()
-                    
-                        Button{
-                            setFav() //Alterna entre fav/No fav
-                            ifFav() //Actualiza el estado de favorito
-                        }label: {
-                            Image(systemName: "heart.fill")
-                                .tint(isFav ? .orange : .gray)
-                        }
-                        
 
                     Button{
                         
                         dimiss()
                     }label: {
-                        Text("Volver")
+                        Text("Atrás")
                     }
                     .padding(.trailing, 30)
                     
@@ -69,9 +59,8 @@ struct ContentTxtShowView: View {
             }
             .navigationBarTitle(title, displayMode: .inline)
             .navigationBarTitleDisplayMode(.inline)
-            .onAppear { //Al inicio se actualiza el estado del fav
-                ifFav()
-                fontSizeContent = CGFloat(UserDefaults.standard.integer(forKey: Constant.setting_fontContentSize))
+            .onAppear {
+                fontSizeContent = CGFloat(UserDefaults.standard.integer(forKey: Constant.UD_setting_fontContentSize))
             }
             
         }
@@ -81,7 +70,7 @@ struct ContentTxtShowView: View {
    private func FileRead(_ file : String)->String{
         
         var result = ""
-       let temp = "\(typeContent.getPrefix)\(file.lowercased())"
+       let temp = "\(typeContent.rawValue)\(file.lowercased())"
         
         if let gg = Bundle.main.url(forResource: temp, withExtension: "txt") {
             
@@ -95,28 +84,9 @@ struct ContentTxtShowView: View {
         
     }
     
-    //Determina si un elemento es fasvorito
-    private func ifFav(){
-        if FavModel().isFavTxt(title:fileName.lowercased(), prefix: typeContent.getPrefix){
-            isFav = true
-        }else {
-            isFav = false
-        }
-    }
-    
-    //Alterna entre los estados de fav/NO fav
-   private  func setFav(){
-        if isFav {
-            if !FavModel().DeleteTXT(title:fileName.lowercased(), prefix: typeContent.getPrefix){print("error delete in FavTxt")}
-        }else{
-            if !FavModel().Add(title:fileName.lowercased(), prefix: typeContent.getPrefix){
-                print("error add in FavTxt")
-            }
-        }
-    }
     
 }
 
 #Preview {
-    ContentTxtShowView( fileName: String(""))
+    ContentView()
 }

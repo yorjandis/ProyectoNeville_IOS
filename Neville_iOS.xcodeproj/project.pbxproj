@@ -24,18 +24,19 @@
 		197D2A3E2AFAA3FC00486014 /* DiarioListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 197D2A3D2AFAA3FB00486014 /* DiarioListView.swift */; };
 		198DB0792AF0943300165B48 /* ShowPlayListYTView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 198DB0782AF0943300165B48 /* ShowPlayListYTView.swift */; };
 		199CADEA2AF57EC0004BF185 /* TestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 199CADE92AF57EC0004BF185 /* TestView.swift */; };
+		19A91EB42AFF08EA00879BC1 /* YTIdModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A91EB32AFF08EA00879BC1 /* YTIdModel.swift */; };
 		19B255C02AFC47C30093104F /* FrasesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19B255BF2AFC47C30093104F /* FrasesModel.swift */; };
 		19B255C22AFC489D0093104F /* NotasModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19B255C12AFC489D0093104F /* NotasModel.swift */; };
 		19B255C42AFC51FC0093104F /* FraseAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19B255C32AFC51FC0093104F /* FraseAddView.swift */; };
 		19B255C62AFC68940093104F /* FrasesUpdateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19B255C52AFC68940093104F /* FrasesUpdateView.swift */; };
-		19D23D002AFD817E008C63BA /* ConfeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D23CFF2AFD817E008C63BA /* ConfeModel.swift */; };
+		19D23D002AFD817E008C63BA /* TxtContentModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D23CFF2AFD817E008C63BA /* TxtContentModel.swift */; };
+		19D23D022AFD969E008C63BA /* TxtListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D23D012AFD969E008C63BA /* TxtListView.swift */; };
 		19E06FA62AEB74E20016F9E6 /* FrasesNotasAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19E06FA52AEB74E20016F9E6 /* FrasesNotasAddView.swift */; };
 		19E06FA82AEB91F00016F9E6 /* FrasesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19E06FA72AEB91F00016F9E6 /* FrasesListView.swift */; };
 		19E06FAA2AEBA1F50016F9E6 /* gregg.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19E06FA92AEBA1F50016F9E6 /* gregg.swift */; };
 		E9084D1C2ABD057800C5F7B7 /* VideoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9084D1B2ABD057800C5F7B7 /* VideoViewModel.swift */; };
 		E9084D1E2ABD08FB00C5F7B7 /* YTVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9084D1D2ABD08FB00C5F7B7 /* YTVideoView.swift */; };
 		E92F61152AB3ADA2007BB4BA /* SideMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92F61142AB3ADA2007BB4BA /* SideMenuView.swift */; };
-		E92F61172AB3D35D007BB4BA /* TxtListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92F61162AB3D35D007BB4BA /* TxtListView.swift */; };
 		E92F62442AB3E1C2007BB4BA /* conf_el desperta de la fe.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F611D2AB3E1B3007BB4BA /* conf_el desperta de la fe.txt */; };
 		E92F62452AB3E1C2007BB4BA /* conf_siente profundamente.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F611E2AB3E1B3007BB4BA /* conf_siente profundamente.txt */; };
 		E92F62462AB3E1C2007BB4BA /* conf_una sola causa.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F611F2AB3E1B3007BB4BA /* conf_una sola causa.txt */; };
@@ -389,7 +390,6 @@
 		E92F64372AB5018A007BB4BA /* cita_tu creador.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F64162AB50188007BB4BA /* cita_tu creador.txt */; };
 		E92F64382AB5018A007BB4BA /* cita_¿le has encontrado.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F64172AB50188007BB4BA /* cita_¿le has encontrado.txt */; };
 		E92F64392AB5018A007BB4BA /* cita_el secreto de la oracion.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F64182AB50188007BB4BA /* cita_el secreto de la oracion.txt */; };
-		E92F643A2AB5018A007BB4BA /* cita_renamefile.au3 in Resources */ = {isa = PBXBuildFile; fileRef = E92F64192AB50189007BB4BA /* cita_renamefile.au3 */; };
 		E92F643B2AB5018A007BB4BA /* cita_audaz atrevimiento.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F641A2AB50189007BB4BA /* cita_audaz atrevimiento.txt */; };
 		E92F643C2AB5018A007BB4BA /* cita_caminar por fe.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F641B2AB50189007BB4BA /* cita_caminar por fe.txt */; };
 		E92F643D2AB5018A007BB4BA /* cita_una conviccion interna.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F641C2AB50189007BB4BA /* cita_una conviccion interna.txt */; };
@@ -428,8 +428,6 @@
 		E99F9CCA2ACB75E800169084 /* ListNotasViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = E99F9CC92ACB75E800169084 /* ListNotasViews.swift */; };
 		E9D0F1CB2AE2226A00B35452 /* optionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9D0F1CA2AE2226A00B35452 /* optionView.swift */; };
 		E9D0F1CF2AE2310D00B35452 /* ShowNotaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9D0F1CE2AE2310D00B35452 /* ShowNotaView.swift */; };
-		E9D0F1D22AE236C600B35452 /* ListFavView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9D0F1D12AE236C600B35452 /* ListFavView.swift */; };
-		E9D0F1D42AE239D100B35452 /* Fav-Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9D0F1D32AE239D100B35452 /* Fav-Model.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -450,18 +448,19 @@
 		197D2A3D2AFAA3FB00486014 /* DiarioListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiarioListView.swift; sourceTree = "<group>"; };
 		198DB0782AF0943300165B48 /* ShowPlayListYTView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowPlayListYTView.swift; sourceTree = "<group>"; };
 		199CADE92AF57EC0004BF185 /* TestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestView.swift; sourceTree = "<group>"; };
+		19A91EB32AFF08EA00879BC1 /* YTIdModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YTIdModel.swift; sourceTree = "<group>"; };
 		19B255BF2AFC47C30093104F /* FrasesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrasesModel.swift; sourceTree = "<group>"; };
 		19B255C12AFC489D0093104F /* NotasModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotasModel.swift; sourceTree = "<group>"; };
 		19B255C32AFC51FC0093104F /* FraseAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FraseAddView.swift; sourceTree = "<group>"; };
 		19B255C52AFC68940093104F /* FrasesUpdateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrasesUpdateView.swift; sourceTree = "<group>"; };
-		19D23CFF2AFD817E008C63BA /* ConfeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfeModel.swift; sourceTree = "<group>"; };
+		19D23CFF2AFD817E008C63BA /* TxtContentModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TxtContentModel.swift; sourceTree = "<group>"; };
+		19D23D012AFD969E008C63BA /* TxtListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TxtListView.swift; sourceTree = "<group>"; };
 		19E06FA52AEB74E20016F9E6 /* FrasesNotasAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrasesNotasAddView.swift; sourceTree = "<group>"; };
 		19E06FA72AEB91F00016F9E6 /* FrasesListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrasesListView.swift; sourceTree = "<group>"; };
 		19E06FA92AEBA1F50016F9E6 /* gregg.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = gregg.swift; sourceTree = "<group>"; };
 		E9084D1B2ABD057800C5F7B7 /* VideoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoViewModel.swift; sourceTree = "<group>"; };
 		E9084D1D2ABD08FB00C5F7B7 /* YTVideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YTVideoView.swift; sourceTree = "<group>"; };
 		E92F61142AB3ADA2007BB4BA /* SideMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideMenuView.swift; sourceTree = "<group>"; };
-		E92F61162AB3D35D007BB4BA /* TxtListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TxtListView.swift; sourceTree = "<group>"; };
 		E92F611D2AB3E1B3007BB4BA /* conf_el desperta de la fe.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_el desperta de la fe.txt"; sourceTree = "<group>"; };
 		E92F611E2AB3E1B3007BB4BA /* conf_siente profundamente.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_siente profundamente.txt"; sourceTree = "<group>"; };
 		E92F611F2AB3E1B3007BB4BA /* conf_una sola causa.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_una sola causa.txt"; sourceTree = "<group>"; };
@@ -815,7 +814,6 @@
 		E92F64162AB50188007BB4BA /* cita_tu creador.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "cita_tu creador.txt"; sourceTree = "<group>"; };
 		E92F64172AB50188007BB4BA /* cita_¿le has encontrado.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "cita_¿le has encontrado.txt"; sourceTree = "<group>"; };
 		E92F64182AB50188007BB4BA /* cita_el secreto de la oracion.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "cita_el secreto de la oracion.txt"; sourceTree = "<group>"; };
-		E92F64192AB50189007BB4BA /* cita_renamefile.au3 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cita_renamefile.au3; sourceTree = "<group>"; };
 		E92F641A2AB50189007BB4BA /* cita_audaz atrevimiento.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "cita_audaz atrevimiento.txt"; sourceTree = "<group>"; };
 		E92F641B2AB50189007BB4BA /* cita_caminar por fe.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "cita_caminar por fe.txt"; sourceTree = "<group>"; };
 		E92F641C2AB50189007BB4BA /* cita_una conviccion interna.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "cita_una conviccion interna.txt"; sourceTree = "<group>"; };
@@ -855,8 +853,6 @@
 		E99F9CC92ACB75E800169084 /* ListNotasViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListNotasViews.swift; sourceTree = "<group>"; };
 		E9D0F1CA2AE2226A00B35452 /* optionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = optionView.swift; sourceTree = "<group>"; };
 		E9D0F1CE2AE2310D00B35452 /* ShowNotaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowNotaView.swift; sourceTree = "<group>"; };
-		E9D0F1D12AE236C600B35452 /* ListFavView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListFavView.swift; sourceTree = "<group>"; };
-		E9D0F1D32AE239D100B35452 /* Fav-Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Fav-Model.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1273,7 +1269,6 @@
 				E92F64292AB50189007BB4BA /* cita_libertad.txt */,
 				E92F641E2AB50189007BB4BA /* cita_percepcion.txt */,
 				E92F641F2AB50189007BB4BA /* cita_poneos a prueba.txt */,
-				E92F64192AB50189007BB4BA /* cita_renamefile.au3 */,
 				E92F64122AB50188007BB4BA /* cita_sensacion espiritual.txt */,
 				E92F64162AB50188007BB4BA /* cita_tu creador.txt */,
 				E92F640C2AB50188007BB4BA /* cita_tuyo para que lo tomes.txt */,
@@ -1336,13 +1331,13 @@
 				E92F63722AB468F4007BB4BA /* Utils.swift */,
 				E93C23A92ABA365100939D16 /* UtilsForViews.swift */,
 				E9084D1B2ABD057800C5F7B7 /* VideoViewModel.swift */,
-				E9D0F1D32AE239D100B35452 /* Fav-Model.swift */,
 				194F112A2AEF23E8009FA23E /* settingModel.swift */,
 				193B6EAC2AF1B1D10003E897 /* NetModel.swift */,
 				197D2A3A2AFA9FE000486014 /* DiarioModel.swift */,
 				19B255BF2AFC47C30093104F /* FrasesModel.swift */,
 				19B255C12AFC489D0093104F /* NotasModel.swift */,
-				19D23CFF2AFD817E008C63BA /* ConfeModel.swift */,
+				19D23CFF2AFD817E008C63BA /* TxtContentModel.swift */,
+				19A91EB32AFF08EA00879BC1 /* YTIdModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1353,7 +1348,6 @@
 				197D2A3C2AFAA3E100486014 /* Diario */,
 				19E06FA42AEB74D20016F9E6 /* Frases */,
 				E9934DB12AE2B51A004636F9 /* Txt */,
-				E9D0F1D02AE2369900B35452 /* Fav */,
 				E966EDDF2ACF1C51002D84C4 /* YoutubeVideo */,
 				E966EDDE2ACF1C2E002D84C4 /* Notas */,
 				E92F61142AB3ADA2007BB4BA /* SideMenuView.swift */,
@@ -1431,8 +1425,8 @@
 		E9934DB12AE2B51A004636F9 /* Txt */ = {
 			isa = PBXGroup;
 			children = (
-				E92F61162AB3D35D007BB4BA /* TxtListView.swift */,
 				E92F636B2AB3EC5E007BB4BA /* ContentTxtShowView.swift */,
+				19D23D012AFD969E008C63BA /* TxtListView.swift */,
 			);
 			path = Txt;
 			sourceTree = "<group>";
@@ -1443,14 +1437,6 @@
 				E99F9CC52AC4682B00169084 /* CoreDataController.swift */,
 			);
 			path = CoreData;
-			sourceTree = "<group>";
-		};
-		E9D0F1D02AE2369900B35452 /* Fav */ = {
-			isa = PBXGroup;
-			children = (
-				E9D0F1D12AE236C600B35452 /* ListFavView.swift */,
-			);
-			path = Fav;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1757,7 +1743,6 @@
 				E92F62B02AB3E1C2007BB4BA /* conf_se el amo del humor.txt in Resources */,
 				E92F627D2AB3E1C2007BB4BA /* conf_afirma la realidad de nuestra propia grandesa.txt in Resources */,
 				E92F63542AB3E1C2007BB4BA /* conf_moises - elias - jesus.txt in Resources */,
-				E92F643A2AB5018A007BB4BA /* cita_renamefile.au3 in Resources */,
 				E92F63EE2AB4EEE7007BB4BA /* preg_pregunta 20.txt in Resources */,
 				E92F63072AB3E1C2007BB4BA /* conf_la crucifixion.txt in Resources */,
 				E92F62ED2AB3E1C2007BB4BA /* conf_el descubrimiento de jeremias.txt in Resources */,
@@ -1926,26 +1911,25 @@
 				19B255C62AFC68940093104F /* FrasesUpdateView.swift in Sources */,
 				19E06FA62AEB74E20016F9E6 /* FrasesNotasAddView.swift in Sources */,
 				E966EDE12ACF2029002D84C4 /* UpdateNotasView.swift in Sources */,
-				19D23D002AFD817E008C63BA /* ConfeModel.swift in Sources */,
+				19D23D002AFD817E008C63BA /* TxtContentModel.swift in Sources */,
 				E99F9CC82ACACE3600169084 /* AddNotasView.swift in Sources */,
 				E95B93592AAFBB2600B5E2B5 /* ContentView.swift in Sources */,
+				19D23D022AFD969E008C63BA /* TxtListView.swift in Sources */,
 				E9D0F1CB2AE2226A00B35452 /* optionView.swift in Sources */,
 				E93C23AA2ABA365100939D16 /* UtilsForViews.swift in Sources */,
 				E92F636C2AB3EC5E007BB4BA /* ContentTxtShowView.swift in Sources */,
 				198DB0792AF0943300165B48 /* ShowPlayListYTView.swift in Sources */,
-				E92F61172AB3D35D007BB4BA /* TxtListView.swift in Sources */,
 				194F11292AEC79D5009FA23E /* settingView.swift in Sources */,
 				E95B93572AAFBB2600B5E2B5 /* Neville_iOSApp.swift in Sources */,
 				E9084D1C2ABD057800C5F7B7 /* VideoViewModel.swift in Sources */,
 				19B255C42AFC51FC0093104F /* FraseAddView.swift in Sources */,
-				E9D0F1D22AE236C600B35452 /* ListFavView.swift in Sources */,
 				197D2A3B2AFA9FE000486014 /* DiarioModel.swift in Sources */,
 				197D2A3E2AFAA3FC00486014 /* DiarioListView.swift in Sources */,
 				E92F63732AB468F4007BB4BA /* Utils.swift in Sources */,
+				19A91EB42AFF08EA00879BC1 /* YTIdModel.swift in Sources */,
 				19B255C22AFC489D0093104F /* NotasModel.swift in Sources */,
 				197D2A322AF96FC200486014 /* gnerateQRView.swift in Sources */,
 				19E06FA82AEB91F00016F9E6 /* FrasesListView.swift in Sources */,
-				E9D0F1D42AE239D100B35452 /* Fav-Model.swift in Sources */,
 				E96981912ABD9145002CD503 /* YTLisIDstView.swift in Sources */,
 				19E06FAA2AEBA1F50016F9E6 /* gregg.swift in Sources */,
 				E9D0F1CF2AE2310D00B35452 /* ShowNotaView.swift in Sources */,

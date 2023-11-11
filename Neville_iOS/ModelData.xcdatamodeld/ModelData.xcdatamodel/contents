@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22225" systemVersion="23B74" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
-    <entity name="Confe" representedClassName="Confe" syncable="YES" codeGenerationType="class">
-        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
-        <attribute name="isFav" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
-        <attribute name="nameFile" optional="YES" attributeType="String"/>
-        <attribute name="nota" optional="YES" attributeType="String"/>
-    </entity>
     <entity name="Diario" representedClassName="Diario" syncable="YES" codeGenerationType="class">
         <attribute name="content" optional="YES" attributeType="String"/>
         <attribute name="emotion" optional="YES" attributeType="String"/>
@@ -13,12 +7,6 @@
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="isFav" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="title" optional="YES" attributeType="String"/>
-    </entity>
-    <entity name="FavTxt" representedClassName="FavTxt" syncable="YES" codeGenerationType="class">
-        <attribute name="id" attributeType="String"/>
-        <attribute name="idvideo" optional="YES" attributeType="String"/>
-        <attribute name="prefix" attributeType="String"/>
-        <attribute name="title" attributeType="String"/>
     </entity>
     <entity name="Frases" representedClassName="Frases" syncable="YES" codeGenerationType="class">
         <attribute name="frase" attributeType="String"/>
@@ -32,5 +20,20 @@
         <attribute name="isfav" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="nota" attributeType="String"/>
         <attribute name="title" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="TxtCont" representedClassName="TxtCont" syncable="YES" codeGenerationType="class">
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="isfav" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="namefile" optional="YES" attributeType="String"/>
+        <attribute name="nota" optional="YES" attributeType="String"/>
+        <attribute name="type" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="YTvideo" representedClassName="YTvideo" syncable="YES" codeGenerationType="class">
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="idvideo" optional="YES" attributeType="String"/>
+        <attribute name="isfav" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="nota" optional="YES" attributeType="String"/>
+        <attribute name="titlevideo" optional="YES" attributeType="String"/>
+        <attribute name="type" optional="YES" attributeType="String"/>
     </entity>
 </model>

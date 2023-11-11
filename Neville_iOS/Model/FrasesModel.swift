@@ -57,12 +57,12 @@ struct FrasesModel {
     ///Adiciona una frase NO inBuilt a la tabla Frases.
     /// - Parameter frase : El texto de la frase a añadir
     func AddFrase(frase : String){
-        var entity = Frases(context: context)
-        entity.id = UUID().uuidString
-        entity.frase = frase
-        entity.isfav = false
-        entity.noinbuilt = true
-        entity.nota = ""
+        let entidad = Frases(context: context)
+        entidad.id = UUID().uuidString
+        entidad.frase = frase
+        entidad.isfav = false
+        entidad.noinbuilt = true
+        entidad.nota = ""
         
         if context.hasChanges {
             do{

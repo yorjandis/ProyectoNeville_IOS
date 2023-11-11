@@ -67,13 +67,13 @@ struct SideMenuView: View {
                     divider(title: "Conferencias")
     
                     NavigationLink{
-                        TxtListView(typeContent: .conf)
+                        TxtListView(type: .conf, title : "Conferencias")
                     }label: {
                         TextItem(fontsize: $fontSize,text: "Conferencias en Texto")
                     }
                     
                     NavigationLink{
-                        YTLisIDstView(typeContent: .video_Conf)
+                        YTLisIDstView(type: .video_Conf)
                     }label: {
                         TextItem(fontsize: $fontSize,text: "Conferencias en Videos")
                     }
@@ -91,26 +91,26 @@ struct SideMenuView: View {
                     
                     
                     NavigationLink{
-                        YTLisIDstView(typeContent: .aud_libros)
+                        YTLisIDstView(type: .aud_libros)
                     }label: {
                         TextItem(fontsize: $fontSize,text: "Audio Libros de Neville")
                     }
                     
                     
                     NavigationLink{
-                        TxtListView(typeContent: .preguntas)
+                        TxtListView(type: .preg , title: "Preguntas")
                     }label: {
                         TextItem(fontsize: $fontSize,text: "Preguntas y Respuestas")
                     }
                     
                     NavigationLink{
-                        TxtListView(typeContent: .citas)
+                        TxtListView(type: .citas, title: "Citas")
                     }label: {
                         TextItem(fontsize: $fontSize,text: "Citas de Conferencias")
                     }
                     
                     NavigationLink{
-                        TxtListView(typeContent: .ayudas)
+                        TxtListView(type: .ayud, title: "Ayudas")
                     }label: {
                         TextItem(fontsize: $fontSize,text: "Ayudas")
                     }

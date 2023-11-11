@@ -11,15 +11,15 @@ struct settingView: View {
     
     @Environment(\.colorScheme) var theme
     
-    @AppStorage(Constant.setting_fontFrasesSize) var fontSizeFrases : Int = 24
-    @AppStorage(Constant.setting_fontContentSize) var fontSizeContenido : Int = 18
-    @AppStorage(Constant.setting_fontMenuSize) var fontSizeMenu : Int = 18
-    @AppStorage(Constant.setting_fontListaSize) var fontSizeLista : Int = 18
+    @AppStorage(Constant.UD_setting_fontFrasesSize) var fontSizeFrases : Int = 24
+    @AppStorage(Constant.UD_setting_fontContentSize) var fontSizeContenido : Int = 18
+    @AppStorage(Constant.UD_setting_fontMenuSize) var fontSizeMenu : Int = 18
+    @AppStorage(Constant.UD_setting_fontListaSize) var fontSizeLista : Int = 18
     
  
-    @State var ColorFrase       : Color = SettingModel().loadColor(forkey: Constant.setting_color_frases)
-    @State var ColorPrimario    : Color = SettingModel().loadColor(forkey: Constant.setting_color_main_a)
-    @State var ColorSecundario  : Color = SettingModel().loadColor(forkey: Constant.setting_color_main_b)
+    @State var ColorFrase       : Color = SettingModel().loadColor(forkey: Constant.UD_setting_color_frases)
+    @State var ColorPrimario    : Color = SettingModel().loadColor(forkey: Constant.UD_setting_color_main_a)
+    @State var ColorSecundario  : Color = SettingModel().loadColor(forkey: Constant.UD_setting_color_main_b)
 
 
     
@@ -67,7 +67,7 @@ struct settingView: View {
                         .foregroundColor(ColorFrase)
                         .bold()
                         .onChange(of: ColorFrase, initial: true) { oldValue, newValue in
-                            SettingModel().saveColor(forkey: Constant.setting_color_frases, color: newValue)
+                            SettingModel().saveColor(forkey: Constant.UD_setting_color_frases, color: newValue)
                         }
                 }
                 
@@ -76,12 +76,12 @@ struct settingView: View {
                     VStack(alignment: .center){
                         ColorPicker("Color primario", selection: $ColorPrimario)
                             .onChange(of: ColorPrimario, initial: true) { oldValue, newValue in
-                                SettingModel().saveColor(forkey: Constant.setting_color_main_a, color: newValue)
+                                SettingModel().saveColor(forkey: Constant.UD_setting_color_main_a, color: newValue)
                             }
                             .padding(.bottom, 10)
                         ColorPicker("Color Secundario", selection: $ColorSecundario)
                             .onChange(of: ColorSecundario, initial: true) { oldValue, newValue in
-                                SettingModel().saveColor(forkey: Constant.setting_color_main_b, color: newValue)
+                                SettingModel().saveColor(forkey: Constant.UD_setting_color_main_b, color: newValue)
                             }
                         
                         Text("")

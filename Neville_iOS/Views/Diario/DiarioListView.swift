@@ -22,6 +22,7 @@ struct DiarioListView: View {
     //Para Buscar en contenido
     @State private var showAlertFilterByContent = false
     @State private var textfielContent = ""
+
     
     let titlesExamples : [(String,String)] = [
     ("Revisión de este día", "neutral"),
@@ -35,7 +36,7 @@ struct DiarioListView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                LinearGradient(colors: [.purple , .mint], startPoint: .top, endPoint: .bottom)
+                LinearGradient(colors: [Color(red:0.45, green:0.50, blue: 0.50), .orange], startPoint: .top, endPoint: .bottom)
                     .ignoresSafeArea()
                 
                 ScrollView(.vertical){
@@ -186,6 +187,18 @@ struct DiarioListView: View {
                 }
                     
             }
+            .overlay {
+                Text("El Diario le permite llevar un registro de las actividades y hechos del día")
+                    .multilineTextAlignment(.center)
+                    .italic()
+                    .fontWeight(.heavy)
+                    .fontDesign(.serif)
+                    .font(.system(size: 25))
+                    .foregroundStyle(.black)
+                    .padding(15)
+                    .opacity(list.count > 0 ? 0 : 1)
+            }
+            
         }
         
     }
@@ -255,7 +268,11 @@ struct cardItem: View{
             
             //Contenido
                 Text(diario.content ?? "")
-                    .font(.subheadline)
+                    .font(.system(size: 18))  
+                    .italic()
+                    .fontDesign(.serif)
+                    .fontWeight(.heavy)
+                    
                     .lineLimit(expandText ? nil :  3)
                     .onTapGesture {
                         withAnimation {

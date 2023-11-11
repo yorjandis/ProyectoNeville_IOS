@@ -66,14 +66,13 @@ struct YTVideoView: View {
                 //Show/Hide the fav button
                 if showFavIcon {
                     Button{
-                        setFav() //Alterna entre fav/No fav
-                        ifFav() //Actualiza el estado de favorito
+                        
                     }label: {
                         Image(systemName: "heart.fill")
                             .tint(isFav ? .orange : .gray)
                     }
                     .onAppear { //Leyendo el estado del Fav y ajustando color del icono
-                        ifFav()
+                        
                     }
                 }
                 
@@ -81,7 +80,7 @@ struct YTVideoView: View {
                 Button{
                     dimiss()
                 }label: {
-                    Text("Volver")
+                    Text("Atrás")
                 }
                 .padding(.trailing, 25)
                 .padding(.top, 10)
@@ -92,25 +91,7 @@ struct YTVideoView: View {
         
     }
     
-    //Alterna entre los estados de fav/NO fav
-    private  func setFav(){
-       if isFav {
-           if !FavModel().DeleteVideos(title: items[0].title, idVideo: items[0].id){print("error delete in FavTxt")}
-        }else{
-            if !FavModel().Add(title: items[0].title, prefix: "", idvideo: items[0].id){
-                print("error add in FavTxt")
-            }
-        }
-    }
-    
-    //Determina si el video es favorito y ajusta la variable isFav
-    private func ifFav(){
-        if FavModel().isFavVideos(title: items[0].title, idVideo: items[0].id){
-            isFav = true
-        }else {
-           isFav = false
-        }
-    }
+  
     
 }
 
