@@ -121,6 +121,8 @@ struct FrasesView : View{
     //Para notas en frases
     @State private var showAddNoteView = false
     @State private var isFav = false
+    @State private var animationHeart = 0
+    
     
     
     var body: some View{
@@ -139,9 +141,11 @@ struct FrasesView : View{
                 
                 Button{
                     FavHandlerFrases()
+                    animationHeart += 1
                 }label: {
                     Image(systemName: isFav ? "heart.fill" : "heart")
                         .foregroundStyle(isFav ? Constant.favoriteColorOn : Constant.favoriteColorOff)
+                        .symbolEffect(.bounce, value: animationHeart)
                 }
                 .onAppear{
                     readFraseStatus(fraseEntity: frase, isfav: &isFav, isHaveNote: &isHaveNote)

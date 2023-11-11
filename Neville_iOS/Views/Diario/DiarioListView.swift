@@ -126,7 +126,7 @@ struct DiarioListView: View {
                         }, label: {
                             Menu{
                                 Button("Nueva Entrada"){
-                                    DiarioModel().addItem(title: "Título", emocion: .neutral, content: "Nuevo Contenido")
+                                    DiarioModel().addItem(title: "Título", emocion: .neutral, content: "Nuevo Contenido!")
                                     withAnimation {
                                         list.removeAll()
                                         list = DiarioModel().getAllItem()
@@ -223,6 +223,9 @@ struct cardItem: View{
     @State private var showSheet = false
     //favorito
     @State private var isfav : Bool = false
+    //Animation
+    @State private var animValue = 0
+    
 
     
    private let emociones : [Emociones] = [.neutral,.feliz,.enfado,.desanimado,.distraido,.sorpresa]
@@ -272,7 +275,6 @@ struct cardItem: View{
                     .italic()
                     .fontDesign(.serif)
                     .fontWeight(.heavy)
-                    
                     .lineLimit(expandText ? nil :  3)
                     .onTapGesture {
                         withAnimation {
@@ -296,10 +298,12 @@ struct cardItem: View{
                         Button{
                             isfav.toggle()
                             DiarioModel().UpdateFav(isFav: isfav, diario: diario)
+                            animValue += 1
                         }label: {
                             Image(systemName: isfav ? "heart.fill" : "heart")
                                 .foregroundStyle(isfav ? .orange : .black)
                                 .padding(.trailing, 10)
+                                .symbolEffect(.pulse, value: animValue)
                         }
                         .onAppear{
                             isfav = diario.isFav

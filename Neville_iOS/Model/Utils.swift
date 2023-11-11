@@ -115,6 +115,23 @@ struct UtilFuncs{
         
     }
 
+    //Lee el contenido del TXt y lo devuelve como String
+   static func FileRead(_ file : String)->String{
+        
+        var result = ""
+       let temp = "\(file.lowercased())"
+        
+        if let gg = Bundle.main.url(forResource: temp, withExtension: "txt") {
+            
+            if let fileContens = try? String(contentsOf: gg){
+                result = fileContens
+            }
+            
+        }
+        
+        return result
+        
+    }
     
 
 

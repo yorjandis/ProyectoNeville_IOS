@@ -1,11 +1,12 @@
 //
-//  TxtConfeListView.swift
+//  TxtConfelistadoView.swift
 //  Neville_iOS
 //
 //  Created by Yorjandis Garcia on 9/11/23.
 //
-//Lista los elementos TXT de contenido que tienen prefijos: conf_, cita_, preg: y ayud_
+//listadoa los elementos TXT de contenido que tienen prefijos: conf_, cita_, preg: y ayud_
 
+import Foundation
 import SwiftUI
 import CoreData
 
@@ -14,112 +15,136 @@ struct TxtListView: View {
     @Environment(\.colorScheme) var theme
     
     let type : TxtContentModel.TipoDeContenido //Tipo de contenido a cargar
-    
-    @State var list : [TxtCont] = []
-    
+
     @State var title : String //Es el título
     
     //Para Agregar notas
     @State var showAlertAddNote = false
     @State var textFiel = ""
-    @State private var entidad : TxtCont = TxtCont(context: CoreDataController.dC.context) //Esto es para permitir editar la nota de la entidad
+    
+    //Para buscar en texto:
+    @State var showAlertSearchInTxt = false
+    @State var textFiel2 = ""
+    
+    //Para buscar en titulos
+    @State var showAlertSearchInTitle = false
+    @State var textFiel3 = ""
     
     
+    @State var listado : [TxtCont] = []
+    @State private var entidad : TxtCont = TxtCont(context: CoreDataController.dC.context) //Esto es para permitir editar la nota y buscar en txt
 
     var body: some View {
         
         NavigationStack{
-            
             VStack{
-                List(list){item in
+                List(listado){item in
                     HStack{
                         Image(systemName: "leaf.fill")
                             .padding(.horizontal, 5)
-                            //.foregroundStyle(.linearGradient(colors: [.orange, .green], startPoint: .leading, endPoint: .trailing))
                             .foregroundStyle(.linearGradient(colors: [item.isfav ? .orange : .gray, item.nota!.isEmpty ? .gray : .green], startPoint: .leading, endPoint: .trailing))
                         
                         NavigationLink{
-                            ContentTxtShowView(fileName: item.namefile ?? "", typeContent: self.type)
+                            ContentTxtShowView(entidad: item)
                         }label: {
                             Text(item.namefile ?? "")
                         }
                         .swipeActions(edge: .leading){
                             Button{
-                                var isfav = item.isfav
-                                isfav.toggle()
-                                TxtContentModel().setFavState(entity: item, state: isfav)
+                                var temp = item.isfav
+                                temp.toggle()
+                                TxtContentModel().setFavState(entity: item, state: temp)
                                 withAnimation {
-                                    let temp2 = list
-                                    list.removeAll()
-                                    list = temp2
+                                    let temp2 = listado
+                                    listado.removeAll()
+                                    listado = temp2
                                 }
                             }label: {
                                 Image(systemName: "heart")
                                     .tint(Color.orange)
                             }
-                            
                             NavigationLink{
                                 EditNoteTxt(entidad: item)
-                                    .presentationDetents([.medium])
                             }label: {
                                 Image(systemName: "bookmark")
-                                    .tint(.green)
+                                    .tint(Color.green)
+                            }
+                        }
+                    }
+                }
+                .onAppear{
+                    listado.removeAll()
+                    listado = TxtContentModel().getAllItems(type: self.type)
+                }
+            }
+            .toolbar{
+                            HStack{
+                                Spacer()
+                                Menu{
+                                    Button("Todas las \(self.title)"){
+                                        listado.removeAll()
+                                        listado = TxtContentModel().getAllItems(type: self.type)
+                                    }
+                                    Button("\(self.title) favoritas"){
+                                        let temp = TxtContentModel().getAllFavorite(type:self.type)
+                                        listado.removeAll()
+                                        listado = temp
+                                        
+                                    }
+                                    Button("\(self.title) con notas"){
+                                        let temp = TxtContentModel().getAllNota(type:self.type)
+                                        listado.removeAll()
+                                        listado = temp
+                                    }
+                                    
+                                    Button("Buscar en títulos"){
+                                        showAlertSearchInTitle = true
+                                    }
+                                    Button("Buscar en \(self.title)"){
+                                        showAlertSearchInTxt = true
+                                    }
+                                    
+                                }label: {
+                                    Image(systemName: "line.3.horizontal.decrease")
+                                        .foregroundStyle(theme ==  .dark ? .white :  .black)
+                                }
+                            
+                            }
+                        }
+                        .alert("Modificar Nota", isPresented: $showAlertAddNote){
+                            TextField("", text: $textFiel, axis: .vertical)
+                                .multilineTextAlignment(.leading)
+                            Button("Guardar"){
+                                TxtContentModel().setNota(entity: self.entidad, nota: textFiel)
+                            }
+                            Button("Cancelar"){showAlertAddNote = false}
+                        }
+                        .alert("Buscar un texto", isPresented: $showAlertSearchInTxt){
+                            TextField("", text: $textFiel2, axis: .vertical)
+                            Button("Cancelar"){showAlertSearchInTxt = false}
+                                .multilineTextAlignment(.leading)
+                            Button("Buscar"){
+                                let temp  =  TxtContentModel().searchInText(list: self.listado , texto: textFiel2)
+                                listado.removeAll()
+                                listado = temp
                             }
                             
                         }
-                    }
-                    
-                    
-                }
-                .onAppear{
-                    list.removeAll()
-                    list = TxtContentModel().getAllItems(type: self.type)
-                    
-                }
-            }
-            .navigationTitle(self.title)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar{
-                HStack{
-                    Spacer()
-                    Menu{
-                        Button("Todas las \(self.title)"){
-                            list.removeAll()
-                            list = TxtContentModel().getAllItems(type: self.type)
-                        }
-                        Button("\(self.title) favoritas"){
-                            let temp = TxtContentModel().getAllFavorite(type:self.type)
-                            list.removeAll()
-                            list = temp
+                        .alert("Buscar en títulos", isPresented: $showAlertSearchInTitle){
+                            TextField("", text: $textFiel3, axis: .vertical)
+                                .multilineTextAlignment(.leading)
+                            Button("Cancelar"){showAlertSearchInTitle = false}
+                            Button("Buscar"){
+                                let temp  =  TxtContentModel().searchInTitle(list: self.listado , texto: textFiel3)
+                                listado.removeAll()
+                                listado = temp
+                            }
                             
                         }
-                        Button("\(self.title) con notas"){
-                            let temp = TxtContentModel().getAllNota(type:self.type)
-                            list.removeAll()
-                            list = temp
-                        }
-                    }label: {
-                        Image(systemName: "line.3.horizontal.decrease")
-                            .foregroundStyle(theme ==  .dark ? .white :  .black)
-                    }
-                }
-            }
-            .alert("Modificar Nota", isPresented: $showAlertAddNote){
-                TextField("", text: $textFiel, axis: .vertical)
-                    .multilineTextAlignment(.leading)
-                Button("Guardar"){
-                    TxtContentModel().setNota(entity: self.entidad, nota: textFiel)
-                }
-                Button("Cancelar"){showAlertAddNote = false}
-            }
-            
-            
         }
-        
         
     }
 }
-
 
 
 //Permite ver y editar el campo notya
@@ -164,6 +189,7 @@ struct EditNoteTxt:View {
         }
     }
 }
+
 
 
 #Preview {

@@ -47,7 +47,7 @@ struct SideMenuView: View {
                     divider(title: "Sobre Neville")
                     
                     NavigationLink{
-                        ContentTxtShowView( fileName: "biografia", title: "Biografía")
+                        ContentTxtShowView(fileName: "biografia", title: "Biografía")
                     }label: {
                         TextItem(fontsize: $fontSize, text: "Biografía de Neville")
                     }

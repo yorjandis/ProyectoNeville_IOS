@@ -17,7 +17,9 @@ struct YTLisIDstView: View {
     @EnvironmentObject var netMonitor : NetworkMonitor
     
     @State private var showAlert = false
-    
+    //Para búsqueda en titulos
+    @State private var showAlertSerachInTitle = false
+    @State private var textFiel = ""
     
     var type : YTIdModel.TypeIdVideosYoutube = .NA //Tipo de contenido a cargar
     
@@ -115,6 +117,10 @@ struct YTLisIDstView: View {
                             list.removeAll()
                             list = temp
                         }
+                        Button("Buscar en títulos"){
+                            showAlertSerachInTitle = true
+                        }
+                        
                     }label: {
                         Image(systemName: "line.3.horizontal.decrease")
                             .foregroundStyle(theme ==  .dark ? .white :  .black)
@@ -126,6 +132,17 @@ struct YTLisIDstView: View {
                     title: Text("Neville"),
                     message: Text("El contenido de esta sección requiere conección a internet")
                 )
+            }
+            .alert("Buscar en títulos", isPresented: $showAlertSerachInTitle){
+                TextField("", text: $textFiel, axis: .vertical)
+                Button("Cancelar"){showAlertSerachInTitle = false}
+                Button("Buscar"){
+                    let temp = YTIdModel().searchInTitle(list: list, texto: textFiel)
+                    list.removeAll()
+                    list = temp
+                }
+                
+               
             }
         }
         

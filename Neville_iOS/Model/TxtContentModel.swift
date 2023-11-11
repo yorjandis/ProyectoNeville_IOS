@@ -113,6 +113,37 @@ struct TxtContentModel{
     }
  
     
+    ///Búsqueda en texto
+    func searchInText(list : [TxtCont],  texto : String)->[TxtCont]{
+        var result : [TxtCont] = []
+
+        for item in list {
+            let temp = UtilFuncs.ReadFileToArray("\(item.type?.lowercased() ?? "")" + "\(item.namefile?.lowercased() ?? "")")
+            //print("\(item.type?.lowercased() ?? "")" + "\(item.namefile?.lowercased() ?? "")")
+            for item2 in temp {
+                if item2.contains(texto){
+                    result.append(item)
+                    break
+                }
+            }
+        }
+
+        return result
+    }
+    
+    ///Búsqueda en Títulos
+    func searchInTitle(list : [TxtCont],  texto : String)->[TxtCont]{
+        var result : [TxtCont] = []
+
+        for item in list {
+            let temp = item.namefile?.lowercased() ?? ""
+            if temp.contains(texto.lowercased()){
+                result.append(item)
+            }
+        }
+
+        return result
+    }
     
  
     

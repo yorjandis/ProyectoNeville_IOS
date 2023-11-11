@@ -10,7 +10,7 @@ import SwiftUI
 struct optionView: View {
 
     @State private var showNotasSheet = false
-    @State private var showFavSheet = false
+    @State private var showDiarioSheet = false
     @State private var showFrasesList = false
     @State private var showSeeting = false
     @State private var showCodeScanner = false
@@ -47,11 +47,11 @@ struct optionView: View {
                     HStack(spacing: 20){
                         
                         Button{
-                        showFavSheet = true
+                        showDiarioSheet = true
                         }label: {
                             HStack {
-                                Image(systemName: "heart")
-                                Text("Favoritos")
+                                Image(systemName: "book")
+                                Text("Diario")
                             }
                         }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
                         
@@ -96,8 +96,8 @@ struct optionView: View {
             .sheet(isPresented: $showNotasSheet) {
                 ListNotasViews()
             }
-            .sheet(isPresented: $showFavSheet) {
-                //(Reparar)ListFavView()
+            .sheet(isPresented: $showDiarioSheet) {
+                DiarioListView()
             }
             .sheet (isPresented: $showFrasesList){
                 FrasesListView()

@@ -105,6 +105,20 @@ struct YTIdModel{
         return result
     }
     
+    ///Búsqueda en Títulos
+    func searchInTitle(list : [YTvideo],  texto : String)->[YTvideo]{
+        var result : [YTvideo] = []
+
+        for item in list {
+            let temp = item.titlevideo?.lowercased() ?? ""
+            if temp.contains(texto.lowercased()){
+                result.append(item)
+            }
+        }
+
+        return result
+    }
+    
     
     
     //------------------------------------------------------FUNCIONES INTERNAS------------------------------------------------

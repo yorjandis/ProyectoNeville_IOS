@@ -6,23 +6,36 @@
 //
 //Muestra un contenido txt en pantalla
 
-
+import Foundation
 import SwiftUI
-import AVFoundation
+import CoreData
+
 
 struct ContentTxtShowView: View {
     
     @Environment(\.dismiss) var dimiss
-    @State  var fileName : String //Nombre del txt a abrir
+    //Para leer ficheros txt con prefijos
+    var entidad : TxtCont = TxtCont(context: CoreDataController.dC.context)
+    
+    //Si typeContent es .NA se deben de proveer estos campos
+    @State  var fileName : String = "" //Nombre del txt a abrir
     @State var  title : String = ""
-    var typeContent : TxtContentModel.TipoDeContenido = .NA
-    @State private var fontSizeContent : CGFloat = 18 // Setting
+    
+    //Setting: Tamaño de fuente por defecto
+    @State private var fontSizeContent : CGFloat = 18
 
     
 
-    //Lee un fichero txt y devuelve su contenido
+    //Lee un fichero txt que no tenga prefijo. Hay que pasar como typeContent .NA
+    //Esto permite mostrar ficheros de texto como biografia o las imágines
     var getContent : String {
-        return FileRead(fileName)
+        //Yor aqui va el código para leer el contenido del fichero
+        if fileName == "" {
+            return UtilFuncs.FileRead("\(entidad.type ?? "")" + "\(entidad.namefile ?? "")")
+        }else{
+            return UtilFuncs.FileRead(fileName)
+        }
+        
     }
 
     var body: some View {
@@ -66,23 +79,7 @@ struct ContentTxtShowView: View {
         }
     }//body
     
-    //Lee el contenido del TXt
-   private func FileRead(_ file : String)->String{
-        
-        var result = ""
-       let temp = "\(typeContent.rawValue)\(file.lowercased())"
-        
-        if let gg = Bundle.main.url(forResource: temp, withExtension: "txt") {
-            
-            if let fileContens = try? String(contentsOf: gg){
-                result = fileContens
-            }
-            
-        }
-        
-        return result
-        
-    }
+   
     
     
 }

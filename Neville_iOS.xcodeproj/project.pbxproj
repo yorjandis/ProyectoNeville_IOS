@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		193425B62AFFD83700A99C25 /* GamePLay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 193425B52AFFD83700A99C25 /* GamePLay.swift */; };
 		193B6EAD2AF1B1D10003E897 /* NetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 193B6EAC2AF1B1D10003E897 /* NetModel.swift */; };
 		194F11212AEC50D2009FA23E /* list2.txt in Resources */ = {isa = PBXBuildFile; fileRef = 194F111A2AEC50D2009FA23E /* list2.txt */; };
 		194F11222AEC50D2009FA23E /* list6.txt in Resources */ = {isa = PBXBuildFile; fileRef = 194F111B2AEC50D2009FA23E /* list6.txt */; };
@@ -431,6 +432,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		193425B52AFFD83700A99C25 /* GamePLay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamePLay.swift; sourceTree = "<group>"; };
 		193B6EAC2AF1B1D10003E897 /* NetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetModel.swift; sourceTree = "<group>"; };
 		194F111A2AEC50D2009FA23E /* list2.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = list2.txt; sourceTree = "<group>"; };
 		194F111B2AEC50D2009FA23E /* list6.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = list6.txt; sourceTree = "<group>"; };
@@ -867,6 +869,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		193425B42AFFD81C00A99C25 /* PLayGame */ = {
+			isa = PBXGroup;
+			children = (
+				193425B52AFFD83700A99C25 /* GamePLay.swift */,
+			);
+			path = PLayGame;
+			sourceTree = "<group>";
+		};
 		197D2A332AF9851300486014 /* QRCode */ = {
 			isa = PBXGroup;
 			children = (
@@ -1345,6 +1355,7 @@
 		E92F644E2AB6EF5A007BB4BA /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				193425B42AFFD81C00A99C25 /* PLayGame */,
 				197D2A3C2AFAA3E100486014 /* Diario */,
 				19E06FA42AEB74D20016F9E6 /* Frases */,
 				E9934DB12AE2B51A004636F9 /* Txt */,
@@ -1927,6 +1938,7 @@
 				197D2A3E2AFAA3FC00486014 /* DiarioListView.swift in Sources */,
 				E92F63732AB468F4007BB4BA /* Utils.swift in Sources */,
 				19A91EB42AFF08EA00879BC1 /* YTIdModel.swift in Sources */,
+				193425B62AFFD83700A99C25 /* GamePLay.swift in Sources */,
 				19B255C22AFC489D0093104F /* NotasModel.swift in Sources */,
 				197D2A322AF96FC200486014 /* gnerateQRView.swift in Sources */,
 				19E06FA82AEB91F00016F9E6 /* FrasesListView.swift in Sources */,
