@@ -75,14 +75,69 @@ struct ContentTxtShowView: View {
             .onAppear {
                 fontSizeContent = CGFloat(UserDefaults.standard.integer(forKey: Constant.UD_setting_fontContentSize))
             }
-            
+            .toolbar{
+                HStack{
+                    Spacer()
+                    if self.fileName.isEmpty {
+                        Menu{
+                            NavigationLink("Añadir nota asociada"){
+                                EditNoteTxtContentTxtShow(entidad: self.entidad)
+                            }
+                        }label: {
+                            Image(systemName: "plus")
+                        }
+                    }
+                    
+                }
+            } 
         }
     }//body
-    
-   
-    
-    
 }
+
+
+//Permite ver y editar el campo notya
+struct EditNoteTxtContentTxtShow:View {
+    @Environment(\.dismiss) var dimiss
+    @State var entidad : TxtCont
+    @State private var textfiel = ""
+
+    
+    var body: some View {
+        NavigationStack{
+            ZStack{
+                LinearGradient(colors: [.gray, .brown], startPoint: .top, endPoint: .bottom)
+                    .ignoresSafeArea()
+                VStack(){
+                    TextField("Coloque su nota aqui", text: $textfiel, axis: .vertical)
+                        .multilineTextAlignment(.leading)
+                        .font(.title)
+                        .foregroundStyle(.black).italic().bold()
+                        .onAppear {
+                            textfiel = entidad.nota ?? ""
+                        }
+                    
+                    Spacer()
+                }
+            }
+            .navigationTitle("Notas")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar{
+                HStack{
+                    Spacer()
+                    Button{
+                        TxtContentModel().setNota(entity: entidad, nota: textfiel)
+                        dimiss()
+                    }label: {
+                        Text("Guardar")
+                            .foregroundStyle(.black).bold()
+                    }
+                }
+            }
+            
+        }
+    }
+}
+
 
 #Preview {
     ContentView()
