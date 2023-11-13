@@ -284,7 +284,7 @@ struct TabButtonBar : View{
         
         .sheet(isPresented: $showOptionView) {
             optionView()
-                .presentationDetents([.height(250)])
+                .presentationDetents([.height(280)])
                 .presentationDragIndicator(.hidden)
             //Al ocultar las opciones: se actualiza el tamaño de fuente de las frases
                 .onDisappear(perform: {

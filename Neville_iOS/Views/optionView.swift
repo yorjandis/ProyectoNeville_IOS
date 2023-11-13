@@ -15,6 +15,7 @@ struct optionView: View {
     @State private var showSeeting = false
     @State private var showCodeScanner = false
     @State private var showCodeGenerate = false
+    @State private var showGame = false
     private let colorGradientButton = [SettingModel().loadColor(forkey: Constant.UD_setting_color_main_a),
                                        SettingModel().loadColor(forkey: Constant.UD_setting_color_main_b)]
     private let sizeWigth : CGFloat = 130
@@ -25,13 +26,14 @@ struct optionView: View {
                 VStack(spacing: 20){
                     HStack(spacing: 20){
                         Button{
-                            showSeeting = true
+                        showGame = true
                         }label: {
                             HStack {
-                                Image(systemName: "gear")
-                                Text("Setting")
+                                Image(systemName: "gamecontroller")
+                                Text("Jugar!")
                             }
                         }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
+                        
                         
                         Button{
                             showNotasSheet = true
@@ -88,6 +90,18 @@ struct optionView: View {
                         }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
                         
                     } 
+                    HStack(spacing: 20){
+                        
+                        Button{
+                            showSeeting = true
+                        }label: {
+                            HStack {
+                                Image(systemName: "gear")
+                                Text("Setting")
+                            }
+                        }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
+   
+                    }
                 }
                 .frame(maxWidth: .infinity , maxHeight: .infinity)
                 .background(.ultraThinMaterial)
@@ -107,8 +121,14 @@ struct optionView: View {
             }
             .sheet(isPresented: $showCodeScanner){
                 ReadQRCode()
-            }.sheet(isPresented: $showCodeGenerate){
+            }
+            .sheet(isPresented: $showCodeGenerate){
                 GenerateQRView(string: "Ejemplo", footer: "Ejemplo")
+                    .presentationDetents([.large])
+                    .presentationDragIndicator(.hidden)
+            }
+            .sheet(isPresented: $showGame){
+                GamePLay()
                     .presentationDetents([.large])
                     .presentationDragIndicator(.hidden)
             }
