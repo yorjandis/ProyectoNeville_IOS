@@ -38,7 +38,7 @@ struct NotasModel{
     /// - Parameter nota : Texto de la nota
     /// - Parameter title : Título  de la nota , por defecto es " "
     /// - Parameter isfav : Campo favorito <true|false>, por defecto `false`
-    /// - Returns : devuelve una tupla: $0: true si éxito, false si error; $1: descripción del error, si $0 es false
+    /// - Returns : devuelve  true si éxito, false si error
     func addNote(nota : String, title : String = "", isFav : Bool = false)->Bool{
         let entity = Notas(context: self.context)
         entity.id = UUID().uuidString

@@ -27,6 +27,9 @@ struct GamePLay: View {
     @State private var opaci : Double = 1
     
     @State private var showHide = false
+    //Para animación
+    @State private var showBubbles = false
+    @State private var showAnimation = false
     
     var body: some View {
         NavigationStack {
@@ -77,8 +80,11 @@ struct GamePLay: View {
                             .foregroundStyle(.black)
                             .opacity(self.showHide ? 1 : 0)
                             .onTapGesture {
-                                self.comentario = ""
-                                self.showHide = false
+                                withAnimation {
+                                    self.comentario = ""
+                                    self.showHide = false
+                                }
+                                
                             }
                         HStack{
                             Spacer()
@@ -104,6 +110,26 @@ struct GamePLay: View {
                     VStack{
                         
                         HStack{
+                            
+                            Button{
+                                showAnimation = true
+                                showBubbles = true
+                                
+                                
+                                if self.opaci != 1 {
+                                    checkValue(pregunta: self.pregunta, buttonSi: false)
+                                    self.getNextPregunta()
+                                }
+                            }label: {
+                                Text("Falso")
+                                    .foregroundStyle(.white)
+                                    
+                            }
+                            .frame(width: 100)
+                            .padding()
+                            .background(.black.opacity(0.7))
+                            .clipShape(RoundedRectangle(cornerSize: CGSize(width: 20, height: 10)))
+                            
                             Button{
                                 if self.opaci != 1 {
                                     checkValue(pregunta: self.pregunta, buttonSi: true)
@@ -119,21 +145,7 @@ struct GamePLay: View {
                             .padding()
                             .background(.black.opacity(0.7))
                             .clipShape(RoundedRectangle(cornerSize: CGSize(width: 20, height: 10)))
-                            
-                            Button{
-                                if self.opaci != 1 {
-                                    checkValue(pregunta: self.pregunta, buttonSi: false)
-                                    self.getNextPregunta()
-                                }
-                            }label: {
-                                Text("Falso")
-                                    .foregroundStyle(.white)
-                                    
-                            }
-                            .frame(width: 100)
-                            .padding()
-                            .background(.black.opacity(0.7))
-                            .clipShape(RoundedRectangle(cornerSize: CGSize(width: 20, height: 10)))
+
                             
                         }
                         
@@ -148,8 +160,6 @@ struct GamePLay: View {
                     .opacity(self.opaci == 1 ? 0 : 1)
 
                 }
-                
-                
                 
                 Circle()
                 //.trim(from: 0, to: 0.8)

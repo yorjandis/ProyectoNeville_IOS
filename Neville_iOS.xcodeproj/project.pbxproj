@@ -11,6 +11,7 @@
 		193B6EAD2AF1B1D10003E897 /* NetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 193B6EAC2AF1B1D10003E897 /* NetModel.swift */; };
 		1949D5142B01E7F300DFD46D /* cuestionario.txt in Resources */ = {isa = PBXBuildFile; fileRef = 1949D5132B01E7F300DFD46D /* cuestionario.txt */; };
 		1949D5162B01F04800DFD46D /* GameModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1949D5152B01F04800DFD46D /* GameModel.swift */; };
+		1949D5192B02B1E200DFD46D /* QRModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1949D5182B02B1E200DFD46D /* QRModel.swift */; };
 		194F11212AEC50D2009FA23E /* list2.txt in Resources */ = {isa = PBXBuildFile; fileRef = 194F111A2AEC50D2009FA23E /* list2.txt */; };
 		194F11222AEC50D2009FA23E /* list6.txt in Resources */ = {isa = PBXBuildFile; fileRef = 194F111B2AEC50D2009FA23E /* list6.txt */; };
 		194F11232AEC50D2009FA23E /* list1.txt in Resources */ = {isa = PBXBuildFile; fileRef = 194F111C2AEC50D2009FA23E /* list1.txt */; };
@@ -438,6 +439,7 @@
 		193B6EAC2AF1B1D10003E897 /* NetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetModel.swift; sourceTree = "<group>"; };
 		1949D5132B01E7F300DFD46D /* cuestionario.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cuestionario.txt; sourceTree = "<group>"; };
 		1949D5152B01F04800DFD46D /* GameModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameModel.swift; sourceTree = "<group>"; };
+		1949D5182B02B1E200DFD46D /* QRModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRModel.swift; sourceTree = "<group>"; };
 		194F111A2AEC50D2009FA23E /* list2.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = list2.txt; sourceTree = "<group>"; };
 		194F111B2AEC50D2009FA23E /* list6.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = list6.txt; sourceTree = "<group>"; };
 		194F111C2AEC50D2009FA23E /* list1.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = list1.txt; sourceTree = "<group>"; };
@@ -881,10 +883,19 @@
 			path = PLayGame;
 			sourceTree = "<group>";
 		};
+		1949D5172B02B09C00DFD46D /* QRCode */ = {
+			isa = PBXGroup;
+			children = (
+				197D2A312AF96FC200486014 /* gnerateQRView.swift */,
+			);
+			path = QRCode;
+			sourceTree = "<group>";
+		};
 		197D2A332AF9851300486014 /* QRCode */ = {
 			isa = PBXGroup;
 			children = (
 				197D2A342AF9853000486014 /* ReadQRCode.swift */,
+				1949D5182B02B1E200DFD46D /* QRModel.swift */,
 			);
 			path = QRCode;
 			sourceTree = "<group>";
@@ -1361,6 +1372,7 @@
 		E92F644E2AB6EF5A007BB4BA /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				1949D5172B02B09C00DFD46D /* QRCode */,
 				193425B42AFFD81C00A99C25 /* PLayGame */,
 				197D2A3C2AFAA3E100486014 /* Diario */,
 				19E06FA42AEB74D20016F9E6 /* Frases */,
@@ -1373,7 +1385,6 @@
 				19E06FA92AEBA1F50016F9E6 /* gregg.swift */,
 				194F11282AEC79D5009FA23E /* settingView.swift */,
 				198DB0782AF0943300165B48 /* ShowPlayListYTView.swift */,
-				197D2A312AF96FC200486014 /* gnerateQRView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1924,6 +1935,7 @@
 				197D2A352AF9853000486014 /* ReadQRCode.swift in Sources */,
 				E9084D1E2ABD08FB00C5F7B7 /* YTVideoView.swift in Sources */,
 				199CADEA2AF57EC0004BF185 /* TestView.swift in Sources */,
+				1949D5192B02B1E200DFD46D /* QRModel.swift in Sources */,
 				194F112B2AEF23E8009FA23E /* settingModel.swift in Sources */,
 				E99F9CCA2ACB75E800169084 /* ListNotasViews.swift in Sources */,
 				19B255C62AFC68940093104F /* FrasesUpdateView.swift in Sources */,

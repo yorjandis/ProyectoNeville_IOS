@@ -23,6 +23,8 @@ struct optionView: View {
     var body: some View {
             ZStack{
                 
+                Color(Color.black.opacity(0.7))
+                
                 VStack(spacing: 20){
                     HStack(spacing: 20){
                         Button{
@@ -105,6 +107,7 @@ struct optionView: View {
                 }
                 .frame(maxWidth: .infinity , maxHeight: .infinity)
                 .background(.ultraThinMaterial)
+                .shadow(radius: 5)
             }
             
             .sheet(isPresented: $showNotasSheet) {
@@ -123,7 +126,7 @@ struct optionView: View {
                 ReadQRCode()
             }
             .sheet(isPresented: $showCodeGenerate){
-                GenerateQRView(string: "Ejemplo", footer: "Ejemplo")
+                GenerateQRView(string: "", footer: "")
                     .presentationDetents([.large])
                     .presentationDragIndicator(.hidden)
             }
