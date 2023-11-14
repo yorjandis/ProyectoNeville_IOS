@@ -7,6 +7,7 @@
 
 import SwiftUI
 import CoreData
+import LocalAuthentication
 
 
 
@@ -32,6 +33,16 @@ struct DiarioListView: View {
     ("¿Que he aprendido hoy?","neutral"),
     ("Mi vida es maravillosa porque...", "feliz"),
     ("!Hoy se ha materializado un deseo!","feliz") ]
+    
+    //Autenticaxción segura
+    let contextLA = LAContext()
+    @State var canOpenDiario = false //False, No se puede ver ni agregar entradas al usuario
+    
+    //Alert:
+    @State var showAlert = false
+    @State var alertMessage = ""
+    
+    
 
     var body: some View {
         NavigationStack {
@@ -40,18 +51,21 @@ struct DiarioListView: View {
                     .ignoresSafeArea()
                 
                 ScrollView(.vertical){
-                    ForEach($list){ item in
-                        cardItem(diario: item, list: $list)
-                            .padding(15)
-                            .frame(maxWidth: .infinity)
-                            .foregroundStyle(Color.black)
-                            .background(.ultraThinMaterial)
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
-                            .shadow(radius: 5)
-                            .padding(.horizontal, 15)
-                            .padding(.vertical, 8)
-                            
+                    if canOpenDiario {
+                        ForEach($list){ item in
+                            cardItem(diario: item, list: $list)
+                                .padding(15)
+                                .frame(maxWidth: .infinity)
+                                .foregroundStyle(Color.black)
+                                .background(.ultraThinMaterial)
+                                .clipShape(RoundedRectangle(cornerRadius: 10))
+                                .shadow(radius: 5)
+                                .padding(.horizontal, 15)
+                                .padding(.vertical, 8)
+                                
+                        }
                     }
+                    
                     
                 }
                 .onAppear{
@@ -63,97 +77,102 @@ struct DiarioListView: View {
                 .toolbar{
                     HStack(spacing: 5){
                         
-                        Menu{
-                            Button("Todas las entradas"){withAnimation {
-                                list.removeAll(); list = DiarioModel().getAllItem()}
-                            }
-                            Button("favoritas"){list.removeAll(); list = DiarioModel().filterByFav()}
+                        if canOpenDiario {
+                            
                             Menu{
-                                Button{withAnimation {
-                                    list.removeAll() ; list = DiarioModel().filterByEmoticono(criterio: Emociones.feliz.rawValue)
+                                Button("Todas las entradas"){withAnimation {
+                                    list.removeAll(); list = DiarioModel().getAllItem()}
                                 }
+                                Button("favoritas"){list.removeAll(); list = DiarioModel().filterByFav()}
+                                Menu{
+                                    Button{withAnimation {
+                                        list.removeAll() ; list = DiarioModel().filterByEmoticono(criterio: Emociones.feliz.rawValue)
+                                    }
+                                    }label: {
+                                        Label(Emociones.feliz.rawValue.capitalized, image: Emociones.feliz.rawValue)
+                                    }
+                                    Button{withAnimation {
+                                        list.removeAll() ; list = DiarioModel().filterByEmoticono(criterio: Emociones.neutral.rawValue)
+                                    }
+                                    }label: {
+                                        Label(Emociones.neutral.rawValue.capitalized, image: Emociones.neutral.rawValue)
+                                    }
+                                    Button{ withAnimation {
+                                        list.removeAll() ; list = DiarioModel().filterByEmoticono(criterio: Emociones.desanimado.rawValue)
+                                    }
+                                    }label: {
+                                        Label(Emociones.desanimado.rawValue.capitalized, image: Emociones.desanimado.rawValue)
+                                    }
+                                    Button{withAnimation {
+                                        list.removeAll() ; list = DiarioModel().filterByEmoticono(criterio: Emociones.enfado.rawValue)
+                                    }
+                                    }label: {
+                                        Label(Emociones.enfado.rawValue.capitalized, image: Emociones.enfado.rawValue)
+                                    }
+                                    Button{withAnimation {
+                                        list.removeAll() ; list = DiarioModel().filterByEmoticono(criterio: Emociones.distraido.rawValue)
+                                    }
+                                    }label: {
+                                        Label(Emociones.distraido.rawValue.capitalized, image: Emociones.distraido.rawValue)
+                                    }
+                                    Button{withAnimation {
+                                        list.removeAll() ; list = DiarioModel().filterByEmoticono(criterio: Emociones.sorpresa.rawValue)
+                                    }
+                                    }label: {
+                                        Label(Emociones.sorpresa.rawValue.capitalized, image: Emociones.sorpresa.rawValue)
+                                    }
                                 }label: {
-                                    Label(Emociones.feliz.rawValue.capitalized, image: Emociones.feliz.rawValue)
+                                    Text("Por emoción")
                                 }
-                                Button{withAnimation {
-                                    list.removeAll() ; list = DiarioModel().filterByEmoticono(criterio: Emociones.neutral.rawValue)
+                                Button("Buscar en Títulos"){
+                                    showAlertFilterByTitles = true
                                 }
-                                }label: {
-                                    Label(Emociones.neutral.rawValue.capitalized, image: Emociones.neutral.rawValue)
-                                }
-                                Button{ withAnimation {
-                                    list.removeAll() ; list = DiarioModel().filterByEmoticono(criterio: Emociones.desanimado.rawValue)
-                                }
-                                }label: {
-                                    Label(Emociones.desanimado.rawValue.capitalized, image: Emociones.desanimado.rawValue)
-                                }
-                                Button{withAnimation {
-                                    list.removeAll() ; list = DiarioModel().filterByEmoticono(criterio: Emociones.enfado.rawValue)
-                                }
-                                }label: {
-                                    Label(Emociones.enfado.rawValue.capitalized, image: Emociones.enfado.rawValue)
-                                }
-                                Button{withAnimation {
-                                    list.removeAll() ; list = DiarioModel().filterByEmoticono(criterio: Emociones.distraido.rawValue)
-                                }
-                                }label: {
-                                    Label(Emociones.distraido.rawValue.capitalized, image: Emociones.distraido.rawValue)
-                                }
-                                Button{withAnimation {
-                                    list.removeAll() ; list = DiarioModel().filterByEmoticono(criterio: Emociones.sorpresa.rawValue)
-                                }
-                                }label: {
-                                    Label(Emociones.sorpresa.rawValue.capitalized, image: Emociones.sorpresa.rawValue)
+                                Button("Buscar en Contenido"){
+                                    showAlertFilterByContent = true
                                 }
                             }label: {
-                                Text("Por emoción")
+                                Image(systemName: "line.3.horizontal.decrease")
+                                    .tint(.black)
+                                    
                             }
-                            Button("Buscar en Títulos"){
-                                showAlertFilterByTitles = true
-                            }
-                            Button("Buscar en Contenido"){
-                                showAlertFilterByContent = true
-                            }
-                        }label: {
-                            Image(systemName: "line.3.horizontal.decrease")
-                                .tint(.black)
-                        }
-                        
-                        Button(action: {
                             
-                        
-                            
-                        }, label: {
-                            Menu{
-                                Button("Nueva Entrada"){
-                                    DiarioModel().addItem(title: "Título", emocion: .neutral, content: "Nuevo Contenido!")
-                                    withAnimation {
-                                        list.removeAll()
-                                        list = DiarioModel().getAllItem()
+                            Button(action: {
+                                    //Nada por aqui
+                            }, label: {
+                                Menu{
+                                    Button("Nueva Entrada"){
+                                        DiarioModel().addItem(title: "Título", emocion: .neutral, content: "Nuevo Contenido!")
+                                        withAnimation {
+                                            list.removeAll()
+                                            list = DiarioModel().getAllItem()
+                                        }
+                                        
                                     }
                                     
-                                }
-                                
-                                Menu{
-                                    ForEach(0..<titlesExamples.count, id: \.self){ value in
-                                        Button(titlesExamples[value].0){
-                                            DiarioModel().addItem(title: titlesExamples[value].0, emocion: DiarioModel().getEmocionesFromStr(value: titlesExamples[value].1) , content: "Nuevo contenido!")
-                                            withAnimation {
-                                                list.removeAll()
-                                                list = DiarioModel().getAllItem()
+                                    Menu{
+                                        ForEach(0..<titlesExamples.count, id: \.self){ value in
+                                            Button(titlesExamples[value].0){
+                                                DiarioModel().addItem(title: titlesExamples[value].0, emocion: DiarioModel().getEmocionesFromStr(value: titlesExamples[value].1) , content: "Nuevo contenido!")
+                                                withAnimation {
+                                                    list.removeAll()
+                                                    list = DiarioModel().getAllItem()
+                                                }
                                             }
                                         }
+                                    }label: {
+                                        Label("Sugerrencias", systemImage: "wand.and.rays")
                                     }
-                                }label: {
-                                    Label("Sugerrencias", systemImage: "wand.and.rays")
+                                    
+                                }label:{
+                                    Image(systemName: "plus")//"wand.and.rays")
+                                        .tint(.black)
                                 }
                                 
-                            }label:{
-                                Image(systemName: "plus")//"wand.and.rays")
-                                    .tint(.black)
-                            }
+                            })
                             
-                        })
+                        }
+                        
+                        
                     }
             }
                 .alert("Filtrar por Título", isPresented: $showAlertFilterByTitles) {
@@ -169,6 +188,7 @@ struct DiarioListView: View {
                         }
                         textfielTitles = ""
                     }
+                    
                 }
                 .alert("Filtrar por Contenido", isPresented: $showAlertFilterByContent) {
                     TextField("", text: $textfielContent)
@@ -185,22 +205,65 @@ struct DiarioListView: View {
                         textfielContent = ""
                     }
                 }
+                .alert("Diario", isPresented: $showAlert) {
+                    
+                } message: {
+                    Text(self.alertMessage)
+                }
+
+
                     
             }
             .overlay {
-                Text("El Diario le permite llevar un registro de las actividades y hechos del día")
-                    .multilineTextAlignment(.center)
-                    .italic()
-                    .fontWeight(.heavy)
-                    .fontDesign(.serif)
-                    .font(.system(size: 25))
-                    .foregroundStyle(.black)
-                    .padding(15)
-                    .opacity(list.count > 0 ? 0 : 1)
+                VStack{
+                    Text("El Diario le permite llevar un registro de las actividades y hechos del día. Está protegido y solo usted tiene acceso.")
+                        .multilineTextAlignment(.center)
+                        .italic()
+                        .fontWeight(.heavy)
+                        .fontDesign(.serif)
+                        .font(.system(size: 25))
+                        .foregroundStyle(.black)
+                        .padding(15)
+                    
+                    Button{
+                        autent()
+                    }label:{
+                        Image(systemName: "key.viewfinder")
+                            .font(.system(size: 60))
+                            .foregroundStyle(Color.black.opacity(0.7))
+                            .symbolEffect(.pulse, isActive: true)
+                    }
+                    }
+                .opacity(canOpenDiario ? 0 : 1)
+                
             }
-            
+
         }
         
+    }
+    
+    func autent(){
+        var error : NSError?
+        if contextLA.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error){
+            
+            contextLA.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: "Por favor autentícate para temer acceso a su Diario") { success, error in
+                        if success {
+                             //Habilitación del contenido
+                            withAnimation {
+                                canOpenDiario = true
+                            }
+                            
+                        } else {
+                            print("Error en la autenticación biométrica")
+                        }
+                    }
+            
+            
+        }else{
+            alertMessage = "El dispositivo no soporta autenticación Biométrica. Se ha deshabilitado la protección del Diario"
+            showAlert = true
+            canOpenDiario = true //Deshabilitando la protección del Diario.
+        }
     }
 }
 
