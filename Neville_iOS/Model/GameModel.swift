@@ -23,7 +23,7 @@ struct GameModel{
 
         for item in array{
             let temp2 = item.components(separatedBy: "-")
-            let pregunta = Pregunta(pregunta: temp2[0], isCorrect: temp2[1] == "v" ? true : false, comentario: temp2[2])
+            let pregunta = Pregunta(pregunta: temp2[0], isCorrect: temp2[1] == "v" ? true : false)
             result.append(pregunta)
         }
 
@@ -44,5 +44,4 @@ struct GameModel{
 struct Pregunta : Equatable{
     let pregunta : String
     let isCorrect : Bool
-    let comentario : String 
 }

@@ -11,13 +11,12 @@ struct GamePLay: View {
     @Environment(\.dismiss) var dimiss
 
 
-    @State private var Fallos = 0
-    @State private var Aciertos = 0
+    @State private var Fallos : Int8 = 0
+    @State private var Aciertos : Int8 = 0
     
-    @State private var pregunta : Pregunta = Pregunta(pregunta: "", isCorrect: false, comentario: "")
+    @State private var pregunta : Pregunta = Pregunta(pregunta: "", isCorrect: false)
     @State private var listado : [Pregunta] = GameModel().getList()
     @State private var text = ""
-    @State private var comentario = ""
     
     //Para circulo
     @State private var total = 0
@@ -27,9 +26,11 @@ struct GamePLay: View {
     @State private var opaci : Double = 1
     
     @State private var showHide = false
-    //Para animación
-    @State private var showBubbles = false
-    @State private var showAnimation = false
+    @State private var showFallos = false
+    
+    @State var listFallifos : [String] = []
+    @State var listAciertos : [String] = []
+
     
     var body: some View {
         NavigationStack {
@@ -75,32 +76,6 @@ struct GamePLay: View {
                             .font(.system(size: 30))
                             
                         .padding(.horizontal, 8)
-                        //Texto de comentario: se pone a "" si esta invisible: showHide = false
-                        Text(self.showHide ? self.comentario : "")
-                            .foregroundStyle(.black)
-                            .opacity(self.showHide ? 1 : 0)
-                            .onTapGesture {
-                                withAnimation {
-                                    self.comentario = ""
-                                    self.showHide = false
-                                }
-                                
-                            }
-                        HStack{
-                            Spacer()
-                            Button{
-                                withAnimation {
-                                    self.comentario = self.pregunta.comentario
-                                    self.showHide.toggle()
-                                }
-                            }label: {
-                                Image(systemName: "ellipsis")
-                                    .foregroundStyle(.black)
-                                    .opacity(self.opaci == 1 ? 0 : 1)
-                                    
-                            }
-                        }
-                        .padding(.trailing, 25)
                         
                     }
                     
@@ -112,9 +87,6 @@ struct GamePLay: View {
                         HStack{
                             
                             Button{
-                                showAnimation = true
-                                showBubbles = true
-                                
                                 
                                 if self.opaci != 1 {
                                     checkValue(pregunta: self.pregunta, buttonSi: false)
@@ -151,7 +123,23 @@ struct GamePLay: View {
                         
                         HStack(spacing: 20){
                             Text("Fallos:\(Fallos)")
+                                .onTapGesture {
+                                    if listFallifos.count > 0 {
+                                        viewResult.title = "Lista de fallos"
+                                        viewResult.type = true
+                                        showFallos = true
+                                    }
+                                   
+                                }
                             Text("Aciertos:\(Aciertos)")
+                                .onTapGesture {
+                                    if listAciertos.count > 0 {
+                                        viewResult.title = "Lista de Aciertos"
+                                        viewResult.type = false
+                                        showFallos = true
+                                    }
+                                    
+                                }
                         }
                         .foregroundStyle(.black)
                         .font(.system(size: 30))
@@ -180,6 +168,9 @@ struct GamePLay: View {
             }
             .navigationTitle("Compruebe lo que sabe")
             .navigationBarTitleDisplayMode(.inline)
+            .sheet(isPresented: $showFallos){
+                viewResult(listFallifos: $listFallifos, listAciertos: $listAciertos, listado: $listado, Fallidos: $Fallos)
+            }
         }
         
         
@@ -194,10 +185,8 @@ struct GamePLay: View {
                 listado.remove(at: index!)
                 self.pregunta = result
                 withAnimation {
-                    self.comentario = ""
                     self.showHide = false
                     self.text = result.pregunta
-                    self.trim += CGFloat((180/Double(total))/355)
                 }
             }
             
@@ -224,15 +213,34 @@ struct GamePLay: View {
         if buttonSi {
             if pregunta.isCorrect{
                 Aciertos += 1
+                withAnimation {
+                    self.trim += CGFloat((180/Double(total))/355)
+                }
+                listAciertos.append(pregunta.pregunta)
+                
             }else{
                 Fallos += 1
+                withAnimation {
+                    self.trim -= CGFloat((180/Double(total))/355)
+                }
+                listFallifos.append(pregunta.pregunta)
+               
             }
         }else{
-            
             if !pregunta.isCorrect{
                 Aciertos += 1
+                withAnimation {
+                    self.trim += CGFloat((180/Double(total))/355)
+                }
+                listAciertos.append(pregunta.pregunta)
+                
             }else{
                 Fallos += 1
+                withAnimation {
+                    self.trim -= CGFloat((180/Double(total))/355)
+                }
+                listFallifos.append(pregunta.pregunta)
+                
             }
             
         }
@@ -244,7 +252,51 @@ struct GamePLay: View {
     
 
 
+//Struct para mostrar los resultados fallidos
+struct viewResult: View{
+    static var title : String = ""
+    static var type : Bool = true // true para fallos, false para aciertos
+    @Binding var listFallifos : [String]
+    @Binding var listAciertos : [String]
+    @Binding var listado : [Pregunta]
+    @Binding var Fallidos : Int8
+    
+    
+    var body: some View{
 
+        NavigationStack {
+            VStack{
+                List(viewResult.type ? listFallifos : listAciertos, id: \.self){ i in
+                    Text(i)
+                }
+            }
+            .navigationTitle(viewResult.title)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar{
+                //Solo para los fallos
+                if viewResult.type {
+                    Menu{
+                            Button("Recuperar Fallos"){
+                                print(listado.count)
+                                for item in listFallifos{
+                                    listado.append(Pregunta(pregunta: item, isCorrect: true))
+                                }
+                                listFallifos.removeAll()
+                                Fallidos = 0
+                                print(listado.count)
+                            }
+                        }label:{
+                           Image(systemName: "wand.and.stars")
+                        }
+                }
+              
+            }
+
+        }
+        
+    }
+    
+}
 
 
 
