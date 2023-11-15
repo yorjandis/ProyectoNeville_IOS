@@ -41,18 +41,6 @@ struct ContentView: View {
                     TabButtonBar(showSideMenu: $showSideMenu, fontFrasesSize: $fontSize, fontMenuSize: $fontSizeMenu, colorFrase: $colorFrase, colorFondo_a: $colorFondo_a, colorFondo_b: $colorFondo_b)
                 }
                 
-                //Menú lateral
-                GeometryReader{ geometry in
-                    HStack {
-                        Spacer()
-                        SideMenuView(fontSize: $fontSizeMenu, colorFondo_a: $colorFondo_a, colorFondo_b: $colorFondo_b)
-                        .offset(x : showSideMenu ? 0 :  UIScreen.main.bounds.width)
-                        
-                    }
-                    
-                }
-                //Opacar el fondo cuando se muestre el menú
-                .background(Color.black.opacity(showSideMenu ? 0.3 : 0  ))
                 
                 
             }
@@ -79,19 +67,6 @@ struct ContentView: View {
                 else if start.y < end.y - 24 {} //down
                 
             })
-            .toolbar{
-                HStack(spacing: 5){
-                    
-                    NavigationLink{
-                        DiarioListView()
-                    }label: {
-                        Image(systemName: "book")
-                            .foregroundStyle(Color.primary)
-                    }
-           
-                }
-                .padding(.trailing, 15)
-            }
             
             .sheet(isPresented: $showAddNoteList){
                 ListNotasViews()
@@ -224,7 +199,7 @@ struct TabButtonBar : View{
     @Binding    var colorFondo_b : Color
     
 
-    let  tabButtons = ["book.pages.fill","video.fill","house.circle.fill","video.badge.waveform.fill", "list.bullet"]
+    let  tabButtons = ["book.pages.fill","info.square","house.circle.fill","book", "gear"]
     
     var body: some View{
         
@@ -238,28 +213,30 @@ struct TabButtonBar : View{
                     NavigationLink{TxtListView(type: .conf, title: "Conferencias")
                     }label: {makeItemlabel(image: idx)}
                     
-                case "video.fill":
-                    NavigationLink{ YTLisIDstView(type: .video_Conf)
-                    }label: {makeItemlabel(image: idx)}
+                case "info.square":
+                    NavigationLink{
+                        ContentTxtShowView(fileName: "biografia", title: "Biografía")
+                    }label: {
+                        makeItemlabel(image: idx)  
+                    }
                 
                 case "house.circle.fill":
                     Button{
                         showOptionView = true
                     }label: {
                         makeItemlabel(image: idx)
-                            .font(.system(size: 32, weight: .bold))
+                            .font(.system(size: 30))
+                            
                     }
                     
-                case "video.badge.waveform.fill":
-                    NavigationLink{ YTLisIDstView(type: .aud_libros)
+                case "book":
+                    NavigationLink{ DiarioListView()
                     }label: {makeItemlabel(image: idx)}
                     
-                    
-                case "list.bullet":
-                    Button{
-                        withAnimation {showSideMenu.toggle()
-                        }
-                    }label: {makeItemlabel(image: showSideMenu ? "xmark" : idx ) }
+                case "gear":
+                    NavigationLink{ settingView()
+                    }label: {makeItemlabel(image: idx)}
+
                 default: EmptyView()
                     
                 }

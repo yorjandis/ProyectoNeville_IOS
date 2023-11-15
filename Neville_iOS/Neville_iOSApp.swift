@@ -23,7 +23,7 @@ struct Neville_iOSApp: App {
         
         TxtContentModel().populateTable() //Popular la tabla TxtFiles SI es la primera vez
         
-        YTIdModel().populateTable() //Popular la tabla YTVideos si es la primera vez
+        //YTIdModel().populateTable() //Popular la tabla YTVideos si es la primera vez
         
         //Carga los valores de Setting para Userdefault si es la primera vez
         if UserDefaults.standard.integer(forKey: Constant.UD_setting_fontFrasesSize) == 0 {

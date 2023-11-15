@@ -9,16 +9,8 @@
 /* Begin PBXBuildFile section */
 		193425B62AFFD83700A99C25 /* GamePLay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 193425B52AFFD83700A99C25 /* GamePLay.swift */; };
 		193B6EAD2AF1B1D10003E897 /* NetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 193B6EAC2AF1B1D10003E897 /* NetModel.swift */; };
-		1949D5142B01E7F300DFD46D /* cuestionario.txt in Resources */ = {isa = PBXBuildFile; fileRef = 1949D5132B01E7F300DFD46D /* cuestionario.txt */; };
 		1949D5162B01F04800DFD46D /* GameModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1949D5152B01F04800DFD46D /* GameModel.swift */; };
 		1949D5192B02B1E200DFD46D /* QRModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1949D5182B02B1E200DFD46D /* QRModel.swift */; };
-		194F11212AEC50D2009FA23E /* list2.txt in Resources */ = {isa = PBXBuildFile; fileRef = 194F111A2AEC50D2009FA23E /* list2.txt */; };
-		194F11222AEC50D2009FA23E /* list6.txt in Resources */ = {isa = PBXBuildFile; fileRef = 194F111B2AEC50D2009FA23E /* list6.txt */; };
-		194F11232AEC50D2009FA23E /* list1.txt in Resources */ = {isa = PBXBuildFile; fileRef = 194F111C2AEC50D2009FA23E /* list1.txt */; };
-		194F11242AEC50D2009FA23E /* list7.txt in Resources */ = {isa = PBXBuildFile; fileRef = 194F111D2AEC50D2009FA23E /* list7.txt */; };
-		194F11252AEC50D2009FA23E /* list3.txt in Resources */ = {isa = PBXBuildFile; fileRef = 194F111E2AEC50D2009FA23E /* list3.txt */; };
-		194F11262AEC50D2009FA23E /* list4.txt in Resources */ = {isa = PBXBuildFile; fileRef = 194F111F2AEC50D2009FA23E /* list4.txt */; };
-		194F11272AEC50D2009FA23E /* list5.txt in Resources */ = {isa = PBXBuildFile; fileRef = 194F11202AEC50D2009FA23E /* list5.txt */; };
 		194F11292AEC79D5009FA23E /* settingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 194F11282AEC79D5009FA23E /* settingView.swift */; };
 		194F112B2AEF23E8009FA23E /* settingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 194F112A2AEF23E8009FA23E /* settingModel.swift */; };
 		197D2A322AF96FC200486014 /* gnerateQRView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 197D2A312AF96FC200486014 /* gnerateQRView.swift */; };
@@ -40,7 +32,6 @@
 		19E06FAA2AEBA1F50016F9E6 /* gregg.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19E06FA92AEBA1F50016F9E6 /* gregg.swift */; };
 		E9084D1C2ABD057800C5F7B7 /* VideoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9084D1B2ABD057800C5F7B7 /* VideoViewModel.swift */; };
 		E9084D1E2ABD08FB00C5F7B7 /* YTVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9084D1D2ABD08FB00C5F7B7 /* YTVideoView.swift */; };
-		E92F61152AB3ADA2007BB4BA /* SideMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92F61142AB3ADA2007BB4BA /* SideMenuView.swift */; };
 		E92F62442AB3E1C2007BB4BA /* conf_el desperta de la fe.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F611D2AB3E1B3007BB4BA /* conf_el desperta de la fe.txt */; };
 		E92F62452AB3E1C2007BB4BA /* conf_siente profundamente.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F611E2AB3E1B3007BB4BA /* conf_siente profundamente.txt */; };
 		E92F62462AB3E1C2007BB4BA /* conf_una sola causa.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F611F2AB3E1B3007BB4BA /* conf_una sola causa.txt */; };
@@ -338,81 +329,6 @@
 		E92F636A2AB3E1C2007BB4BA /* conf_creed en el.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F62432AB3E1C1007BB4BA /* conf_creed en el.txt */; };
 		E92F636C2AB3EC5E007BB4BA /* ContentTxtShowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92F636B2AB3EC5E007BB4BA /* ContentTxtShowView.swift */; };
 		E92F63732AB468F4007BB4BA /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92F63722AB468F4007BB4BA /* Utils.swift */; };
-		E92F63DA2AB4EEE7007BB4BA /* preg_pregunta 19.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F63B62AB4EEE5007BB4BA /* preg_pregunta 19.txt */; };
-		E92F63DB2AB4EEE7007BB4BA /* preg_pregunta 28.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F63B72AB4EEE5007BB4BA /* preg_pregunta 28.txt */; };
-		E92F63DC2AB4EEE7007BB4BA /* preg_pregunta 17.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F63B82AB4EEE5007BB4BA /* preg_pregunta 17.txt */; };
-		E92F63DD2AB4EEE7007BB4BA /* preg_pregunta 29.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F63B92AB4EEE5007BB4BA /* preg_pregunta 29.txt */; };
-		E92F63DE2AB4EEE7007BB4BA /* preg_pregunta 24.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F63BA2AB4EEE5007BB4BA /* preg_pregunta 24.txt */; };
-		E92F63DF2AB4EEE7007BB4BA /* preg_pregunta 36.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F63BB2AB4EEE5007BB4BA /* preg_pregunta 36.txt */; };
-		E92F63E02AB4EEE7007BB4BA /* preg_pregunta 15.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F63BC2AB4EEE5007BB4BA /* preg_pregunta 15.txt */; };
-		E92F63E12AB4EEE7007BB4BA /* preg_pregunta 1.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F63BD2AB4EEE5007BB4BA /* preg_pregunta 1.txt */; };
-		E92F63E22AB4EEE7007BB4BA /* preg_pregunta 10.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F63BE2AB4EEE5007BB4BA /* preg_pregunta 10.txt */; };
-		E92F63E32AB4EEE7007BB4BA /* preg_pregunta 32.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F63BF2AB4EEE5007BB4BA /* preg_pregunta 32.txt */; };
-		E92F63E42AB4EEE7007BB4BA /* preg_pregunta 23.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F63C02AB4EEE5007BB4BA /* preg_pregunta 23.txt */; };
-		E92F63E52AB4EEE7007BB4BA /* preg_pregunta 25.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F63C12AB4EEE5007BB4BA /* preg_pregunta 25.txt */; };
-		E92F63E62AB4EEE7007BB4BA /* preg_pregunta 27.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F63C22AB4EEE5007BB4BA /* preg_pregunta 27.txt */; };
-		E92F63E72AB4EEE7007BB4BA /* preg_pregunta 31.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F63C32AB4EEE5007BB4BA /* preg_pregunta 31.txt */; };
-		E92F63E82AB4EEE7007BB4BA /* preg_pregunta 22.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F63C42AB4EEE5007BB4BA /* preg_pregunta 22.txt */; };
-		E92F63E92AB4EEE7007BB4BA /* preg_pregunta 8.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F63C52AB4EEE6007BB4BA /* preg_pregunta 8.txt */; };
-		E92F63EA2AB4EEE7007BB4BA /* preg_pregunta 35.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F63C62AB4EEE6007BB4BA /* preg_pregunta 35.txt */; };
-		E92F63EB2AB4EEE7007BB4BA /* preg_pregunta 3.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F63C72AB4EEE6007BB4BA /* preg_pregunta 3.txt */; };
-		E92F63EC2AB4EEE7007BB4BA /* preg_pregunta 21.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F63C82AB4EEE6007BB4BA /* preg_pregunta 21.txt */; };
-		E92F63ED2AB4EEE7007BB4BA /* preg_pregunta 6.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F63C92AB4EEE6007BB4BA /* preg_pregunta 6.txt */; };
-		E92F63EE2AB4EEE7007BB4BA /* preg_pregunta 20.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F63CA2AB4EEE6007BB4BA /* preg_pregunta 20.txt */; };
-		E92F63EF2AB4EEE7007BB4BA /* preg_pregunta 14.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F63CB2AB4EEE6007BB4BA /* preg_pregunta 14.txt */; };
-		E92F63F02AB4EEE7007BB4BA /* preg_pregunta 11.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F63CC2AB4EEE6007BB4BA /* preg_pregunta 11.txt */; };
-		E92F63F12AB4EEE7007BB4BA /* preg_pregunta 4.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F63CD2AB4EEE6007BB4BA /* preg_pregunta 4.txt */; };
-		E92F63F22AB4EEE7007BB4BA /* preg_pregunta 2.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F63CE2AB4EEE6007BB4BA /* preg_pregunta 2.txt */; };
-		E92F63F32AB4EEE7007BB4BA /* preg_pregunta 16.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F63CF2AB4EEE6007BB4BA /* preg_pregunta 16.txt */; };
-		E92F63F42AB4EEE7007BB4BA /* preg_pregunta 5.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F63D02AB4EEE6007BB4BA /* preg_pregunta 5.txt */; };
-		E92F63F52AB4EEE7007BB4BA /* preg_pregunta 18.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F63D12AB4EEE6007BB4BA /* preg_pregunta 18.txt */; };
-		E92F63F62AB4EEE7007BB4BA /* preg_pregunta 30.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F63D22AB4EEE6007BB4BA /* preg_pregunta 30.txt */; };
-		E92F63F72AB4EEE7007BB4BA /* preg_pregunta 34.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F63D32AB4EEE6007BB4BA /* preg_pregunta 34.txt */; };
-		E92F63F82AB4EEE7007BB4BA /* preg_pregunta 33.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F63D42AB4EEE6007BB4BA /* preg_pregunta 33.txt */; };
-		E92F63F92AB4EEE7007BB4BA /* preg_pregunta 7.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F63D52AB4EEE6007BB4BA /* preg_pregunta 7.txt */; };
-		E92F63FA2AB4EEE7007BB4BA /* preg_pregunta 13.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F63D62AB4EEE6007BB4BA /* preg_pregunta 13.txt */; };
-		E92F63FB2AB4EEE7007BB4BA /* preg_pregunta 9.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F63D72AB4EEE6007BB4BA /* preg_pregunta 9.txt */; };
-		E92F63FC2AB4EEE7007BB4BA /* preg_pregunta 26.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F63D82AB4EEE7007BB4BA /* preg_pregunta 26.txt */; };
-		E92F63FD2AB4EEE7007BB4BA /* preg_pregunta 12.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F63D92AB4EEE7007BB4BA /* preg_pregunta 12.txt */; };
-		E92F64052AB4EF4E007BB4BA /* ayud_la formula de la victoria.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F63FE2AB4EF4D007BB4BA /* ayud_la formula de la victoria.txt */; };
-		E92F64062AB4EF4E007BB4BA /* ayud_salir de las limitaciones y problemas.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F63FF2AB4EF4D007BB4BA /* ayud_salir de las limitaciones y problemas.txt */; };
-		E92F64072AB4EF4E007BB4BA /* ayud_metodo de manifestacion.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F64002AB4EF4D007BB4BA /* ayud_metodo de manifestacion.txt */; };
-		E92F64082AB4EF4E007BB4BA /* ayud_el poder llamado la ley.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F64012AB4EF4D007BB4BA /* ayud_el poder llamado la ley.txt */; };
-		E92F64092AB4EF4E007BB4BA /* ayud_El arte de la revisión.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F64022AB4EF4D007BB4BA /* ayud_El arte de la revisión.txt */; };
-		E92F640A2AB4EF4E007BB4BA /* ayud_expresar un cambio en tu mundo.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F64032AB4EF4E007BB4BA /* ayud_expresar un cambio en tu mundo.txt */; };
-		E92F640B2AB4EF4E007BB4BA /* ayud_ejercicio para la imaginacion.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F64042AB4EF4E007BB4BA /* ayud_ejercicio para la imaginacion.txt */; };
-		E92F642D2AB5018A007BB4BA /* cita_tuyo para que lo tomes.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F640C2AB50188007BB4BA /* cita_tuyo para que lo tomes.txt */; };
-		E92F642E2AB5018A007BB4BA /* cita_la revelación encarnada.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F640D2AB50188007BB4BA /* cita_la revelación encarnada.txt */; };
-		E92F642F2AB5018A007BB4BA /* cita_creelo dentro.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F640E2AB50188007BB4BA /* cita_creelo dentro.txt */; };
-		E92F64302AB5018A007BB4BA /* cita_judas el revelador.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F640F2AB50188007BB4BA /* cita_judas el revelador.txt */; };
-		E92F64312AB5018A007BB4BA /* cita_¿que estas haciendo.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F64102AB50188007BB4BA /* cita_¿que estas haciendo.txt */; };
-		E92F64322AB5018A007BB4BA /* cita_el caliz de la experiencia.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F64112AB50188007BB4BA /* cita_el caliz de la experiencia.txt */; };
-		E92F64332AB5018A007BB4BA /* cita_sensacion espiritual.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F64122AB50188007BB4BA /* cita_sensacion espiritual.txt */; };
-		E92F64342AB5018A007BB4BA /* cita_el es mi resureccion.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F64132AB50188007BB4BA /* cita_el es mi resureccion.txt */; };
-		E92F64352AB5018A007BB4BA /* cita_la revelacion encarnada.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F64142AB50188007BB4BA /* cita_la revelacion encarnada.txt */; };
-		E92F64362AB5018A007BB4BA /* cita_una lección de las escrituras.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F64152AB50188007BB4BA /* cita_una lección de las escrituras.txt */; };
-		E92F64372AB5018A007BB4BA /* cita_tu creador.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F64162AB50188007BB4BA /* cita_tu creador.txt */; };
-		E92F64382AB5018A007BB4BA /* cita_¿le has encontrado.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F64172AB50188007BB4BA /* cita_¿le has encontrado.txt */; };
-		E92F64392AB5018A007BB4BA /* cita_el secreto de la oracion.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F64182AB50188007BB4BA /* cita_el secreto de la oracion.txt */; };
-		E92F643B2AB5018A007BB4BA /* cita_audaz atrevimiento.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F641A2AB50189007BB4BA /* cita_audaz atrevimiento.txt */; };
-		E92F643C2AB5018A007BB4BA /* cita_caminar por fe.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F641B2AB50189007BB4BA /* cita_caminar por fe.txt */; };
-		E92F643D2AB5018A007BB4BA /* cita_una conviccion interna.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F641C2AB50189007BB4BA /* cita_una conviccion interna.txt */; };
-		E92F643E2AB5018A007BB4BA /* cita_un movimiento dentro de dios.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F641D2AB50189007BB4BA /* cita_un movimiento dentro de dios.txt */; };
-		E92F643F2AB5018A007BB4BA /* cita_percepcion.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F641E2AB50189007BB4BA /* cita_percepcion.txt */; };
-		E92F64402AB5018A007BB4BA /* cita_poneos a prueba.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F641F2AB50189007BB4BA /* cita_poneos a prueba.txt */; };
-		E92F64412AB5018A007BB4BA /* cita_bocetos profeticos.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F64202AB50189007BB4BA /* cita_bocetos profeticos.txt */; };
-		E92F64422AB5018A007BB4BA /* cita_estados eternos.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F64212AB50189007BB4BA /* cita_estados eternos.txt */; };
-		E92F64432AB5018A007BB4BA /* cita_vive la respuesta ahora.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F64222AB50189007BB4BA /* cita_vive la respuesta ahora.txt */; };
-		E92F64442AB5018A007BB4BA /* cita_concepcion.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F64232AB50189007BB4BA /* cita_concepcion.txt */; };
-		E92F64452AB5018A007BB4BA /* cita_la causa espiritual.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F64242AB50189007BB4BA /* cita_la causa espiritual.txt */; };
-		E92F64462AB5018A007BB4BA /* cita_la fuente.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F64252AB50189007BB4BA /* cita_la fuente.txt */; };
-		E92F64472AB5018A007BB4BA /* cita_cuando un hombre ora con exito.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F64262AB50189007BB4BA /* cita_cuando un hombre ora con exito.txt */; };
-		E92F64482AB5018A007BB4BA /* cita_creación - fe.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F64272AB50189007BB4BA /* cita_creación - fe.txt */; };
-		E92F64492AB5018A007BB4BA /* cita_el estado de visión.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F64282AB50189007BB4BA /* cita_el estado de visión.txt */; };
-		E92F644A2AB5018A007BB4BA /* cita_libertad.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F64292AB50189007BB4BA /* cita_libertad.txt */; };
-		E92F644B2AB5018A007BB4BA /* cita_la nueva cristologia.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F642A2AB5018A007BB4BA /* cita_la nueva cristologia.txt */; };
-		E92F644C2AB5018A007BB4BA /* cita_el nucleo del hombre.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F642B2AB5018A007BB4BA /* cita_el nucleo del hombre.txt */; };
-		E92F644D2AB5018A007BB4BA /* cita_confía en dios.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F642C2AB5018A007BB4BA /* cita_confía en dios.txt */; };
 		E92F64532AB78EE6007BB4BA /* ModelData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E92F64512AB78EE6007BB4BA /* ModelData.xcdatamodeld */; };
 		E92F64572AB7D2BA007BB4BA /* listfrases.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F64562AB7D2BA007BB4BA /* listfrases.txt */; };
 		E93C23AA2ABA365100939D16 /* UtilsForViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = E93C23A92ABA365100939D16 /* UtilsForViews.swift */; };
@@ -423,9 +339,6 @@
 		E95B935B2AAFBB2900B5E2B5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E95B935A2AAFBB2900B5E2B5 /* Assets.xcassets */; };
 		E95B935E2AAFBB2900B5E2B5 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E95B935D2AAFBB2900B5E2B5 /* Preview Assets.xcassets */; };
 		E966EDE12ACF2029002D84C4 /* UpdateNotasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E966EDE02ACF2029002D84C4 /* UpdateNotasView.swift */; };
-		E969818B2ABD8F99002CD503 /* listidvideoconf.txt in Resources */ = {isa = PBXBuildFile; fileRef = E969818A2ABD8F99002CD503 /* listidvideoconf.txt */; };
-		E969818E2ABD907B002CD503 /* listidgregg.txt in Resources */ = {isa = PBXBuildFile; fileRef = E969818C2ABD907B002CD503 /* listidgregg.txt */; };
-		E969818F2ABD907B002CD503 /* listidaudiolibros.txt in Resources */ = {isa = PBXBuildFile; fileRef = E969818D2ABD907B002CD503 /* listidaudiolibros.txt */; };
 		E96981912ABD9145002CD503 /* YTLisIDstView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E96981902ABD9145002CD503 /* YTLisIDstView.swift */; };
 		E99F9CC62AC4682B00169084 /* CoreDataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E99F9CC52AC4682B00169084 /* CoreDataController.swift */; };
 		E99F9CC82ACACE3600169084 /* AddNotasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E99F9CC72ACACE3600169084 /* AddNotasView.swift */; };
@@ -437,16 +350,8 @@
 /* Begin PBXFileReference section */
 		193425B52AFFD83700A99C25 /* GamePLay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamePLay.swift; sourceTree = "<group>"; };
 		193B6EAC2AF1B1D10003E897 /* NetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetModel.swift; sourceTree = "<group>"; };
-		1949D5132B01E7F300DFD46D /* cuestionario.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cuestionario.txt; sourceTree = "<group>"; };
 		1949D5152B01F04800DFD46D /* GameModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameModel.swift; sourceTree = "<group>"; };
 		1949D5182B02B1E200DFD46D /* QRModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRModel.swift; sourceTree = "<group>"; };
-		194F111A2AEC50D2009FA23E /* list2.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = list2.txt; sourceTree = "<group>"; };
-		194F111B2AEC50D2009FA23E /* list6.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = list6.txt; sourceTree = "<group>"; };
-		194F111C2AEC50D2009FA23E /* list1.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = list1.txt; sourceTree = "<group>"; };
-		194F111D2AEC50D2009FA23E /* list7.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = list7.txt; sourceTree = "<group>"; };
-		194F111E2AEC50D2009FA23E /* list3.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = list3.txt; sourceTree = "<group>"; };
-		194F111F2AEC50D2009FA23E /* list4.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = list4.txt; sourceTree = "<group>"; };
-		194F11202AEC50D2009FA23E /* list5.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = list5.txt; sourceTree = "<group>"; };
 		194F11282AEC79D5009FA23E /* settingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = settingView.swift; sourceTree = "<group>"; };
 		194F112A2AEF23E8009FA23E /* settingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = settingModel.swift; sourceTree = "<group>"; };
 		197D2A312AF96FC200486014 /* gnerateQRView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = gnerateQRView.swift; sourceTree = "<group>"; };
@@ -468,7 +373,6 @@
 		19E06FA92AEBA1F50016F9E6 /* gregg.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = gregg.swift; sourceTree = "<group>"; };
 		E9084D1B2ABD057800C5F7B7 /* VideoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoViewModel.swift; sourceTree = "<group>"; };
 		E9084D1D2ABD08FB00C5F7B7 /* YTVideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YTVideoView.swift; sourceTree = "<group>"; };
-		E92F61142AB3ADA2007BB4BA /* SideMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideMenuView.swift; sourceTree = "<group>"; };
 		E92F611D2AB3E1B3007BB4BA /* conf_el desperta de la fe.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_el desperta de la fe.txt"; sourceTree = "<group>"; };
 		E92F611E2AB3E1B3007BB4BA /* conf_siente profundamente.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_siente profundamente.txt"; sourceTree = "<group>"; };
 		E92F611F2AB3E1B3007BB4BA /* conf_una sola causa.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_una sola causa.txt"; sourceTree = "<group>"; };
@@ -766,81 +670,6 @@
 		E92F62432AB3E1C1007BB4BA /* conf_creed en el.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_creed en el.txt"; sourceTree = "<group>"; };
 		E92F636B2AB3EC5E007BB4BA /* ContentTxtShowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentTxtShowView.swift; sourceTree = "<group>"; };
 		E92F63722AB468F4007BB4BA /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
-		E92F63B62AB4EEE5007BB4BA /* preg_pregunta 19.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "preg_pregunta 19.txt"; sourceTree = "<group>"; };
-		E92F63B72AB4EEE5007BB4BA /* preg_pregunta 28.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "preg_pregunta 28.txt"; sourceTree = "<group>"; };
-		E92F63B82AB4EEE5007BB4BA /* preg_pregunta 17.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "preg_pregunta 17.txt"; sourceTree = "<group>"; };
-		E92F63B92AB4EEE5007BB4BA /* preg_pregunta 29.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "preg_pregunta 29.txt"; sourceTree = "<group>"; };
-		E92F63BA2AB4EEE5007BB4BA /* preg_pregunta 24.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "preg_pregunta 24.txt"; sourceTree = "<group>"; };
-		E92F63BB2AB4EEE5007BB4BA /* preg_pregunta 36.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "preg_pregunta 36.txt"; sourceTree = "<group>"; };
-		E92F63BC2AB4EEE5007BB4BA /* preg_pregunta 15.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "preg_pregunta 15.txt"; sourceTree = "<group>"; };
-		E92F63BD2AB4EEE5007BB4BA /* preg_pregunta 1.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "preg_pregunta 1.txt"; sourceTree = "<group>"; };
-		E92F63BE2AB4EEE5007BB4BA /* preg_pregunta 10.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "preg_pregunta 10.txt"; sourceTree = "<group>"; };
-		E92F63BF2AB4EEE5007BB4BA /* preg_pregunta 32.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "preg_pregunta 32.txt"; sourceTree = "<group>"; };
-		E92F63C02AB4EEE5007BB4BA /* preg_pregunta 23.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "preg_pregunta 23.txt"; sourceTree = "<group>"; };
-		E92F63C12AB4EEE5007BB4BA /* preg_pregunta 25.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "preg_pregunta 25.txt"; sourceTree = "<group>"; };
-		E92F63C22AB4EEE5007BB4BA /* preg_pregunta 27.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "preg_pregunta 27.txt"; sourceTree = "<group>"; };
-		E92F63C32AB4EEE5007BB4BA /* preg_pregunta 31.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "preg_pregunta 31.txt"; sourceTree = "<group>"; };
-		E92F63C42AB4EEE5007BB4BA /* preg_pregunta 22.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "preg_pregunta 22.txt"; sourceTree = "<group>"; };
-		E92F63C52AB4EEE6007BB4BA /* preg_pregunta 8.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "preg_pregunta 8.txt"; sourceTree = "<group>"; };
-		E92F63C62AB4EEE6007BB4BA /* preg_pregunta 35.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "preg_pregunta 35.txt"; sourceTree = "<group>"; };
-		E92F63C72AB4EEE6007BB4BA /* preg_pregunta 3.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "preg_pregunta 3.txt"; sourceTree = "<group>"; };
-		E92F63C82AB4EEE6007BB4BA /* preg_pregunta 21.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "preg_pregunta 21.txt"; sourceTree = "<group>"; };
-		E92F63C92AB4EEE6007BB4BA /* preg_pregunta 6.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "preg_pregunta 6.txt"; sourceTree = "<group>"; };
-		E92F63CA2AB4EEE6007BB4BA /* preg_pregunta 20.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "preg_pregunta 20.txt"; sourceTree = "<group>"; };
-		E92F63CB2AB4EEE6007BB4BA /* preg_pregunta 14.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "preg_pregunta 14.txt"; sourceTree = "<group>"; };
-		E92F63CC2AB4EEE6007BB4BA /* preg_pregunta 11.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "preg_pregunta 11.txt"; sourceTree = "<group>"; };
-		E92F63CD2AB4EEE6007BB4BA /* preg_pregunta 4.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "preg_pregunta 4.txt"; sourceTree = "<group>"; };
-		E92F63CE2AB4EEE6007BB4BA /* preg_pregunta 2.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "preg_pregunta 2.txt"; sourceTree = "<group>"; };
-		E92F63CF2AB4EEE6007BB4BA /* preg_pregunta 16.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "preg_pregunta 16.txt"; sourceTree = "<group>"; };
-		E92F63D02AB4EEE6007BB4BA /* preg_pregunta 5.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "preg_pregunta 5.txt"; sourceTree = "<group>"; };
-		E92F63D12AB4EEE6007BB4BA /* preg_pregunta 18.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "preg_pregunta 18.txt"; sourceTree = "<group>"; };
-		E92F63D22AB4EEE6007BB4BA /* preg_pregunta 30.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "preg_pregunta 30.txt"; sourceTree = "<group>"; };
-		E92F63D32AB4EEE6007BB4BA /* preg_pregunta 34.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "preg_pregunta 34.txt"; sourceTree = "<group>"; };
-		E92F63D42AB4EEE6007BB4BA /* preg_pregunta 33.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "preg_pregunta 33.txt"; sourceTree = "<group>"; };
-		E92F63D52AB4EEE6007BB4BA /* preg_pregunta 7.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "preg_pregunta 7.txt"; sourceTree = "<group>"; };
-		E92F63D62AB4EEE6007BB4BA /* preg_pregunta 13.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "preg_pregunta 13.txt"; sourceTree = "<group>"; };
-		E92F63D72AB4EEE6007BB4BA /* preg_pregunta 9.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "preg_pregunta 9.txt"; sourceTree = "<group>"; };
-		E92F63D82AB4EEE7007BB4BA /* preg_pregunta 26.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "preg_pregunta 26.txt"; sourceTree = "<group>"; };
-		E92F63D92AB4EEE7007BB4BA /* preg_pregunta 12.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "preg_pregunta 12.txt"; sourceTree = "<group>"; };
-		E92F63FE2AB4EF4D007BB4BA /* ayud_la formula de la victoria.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "ayud_la formula de la victoria.txt"; sourceTree = "<group>"; };
-		E92F63FF2AB4EF4D007BB4BA /* ayud_salir de las limitaciones y problemas.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "ayud_salir de las limitaciones y problemas.txt"; sourceTree = "<group>"; };
-		E92F64002AB4EF4D007BB4BA /* ayud_metodo de manifestacion.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "ayud_metodo de manifestacion.txt"; sourceTree = "<group>"; };
-		E92F64012AB4EF4D007BB4BA /* ayud_el poder llamado la ley.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "ayud_el poder llamado la ley.txt"; sourceTree = "<group>"; };
-		E92F64022AB4EF4D007BB4BA /* ayud_El arte de la revisión.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "ayud_El arte de la revisión.txt"; sourceTree = "<group>"; };
-		E92F64032AB4EF4E007BB4BA /* ayud_expresar un cambio en tu mundo.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "ayud_expresar un cambio en tu mundo.txt"; sourceTree = "<group>"; };
-		E92F64042AB4EF4E007BB4BA /* ayud_ejercicio para la imaginacion.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "ayud_ejercicio para la imaginacion.txt"; sourceTree = "<group>"; };
-		E92F640C2AB50188007BB4BA /* cita_tuyo para que lo tomes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "cita_tuyo para que lo tomes.txt"; sourceTree = "<group>"; };
-		E92F640D2AB50188007BB4BA /* cita_la revelación encarnada.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "cita_la revelación encarnada.txt"; sourceTree = "<group>"; };
-		E92F640E2AB50188007BB4BA /* cita_creelo dentro.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "cita_creelo dentro.txt"; sourceTree = "<group>"; };
-		E92F640F2AB50188007BB4BA /* cita_judas el revelador.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "cita_judas el revelador.txt"; sourceTree = "<group>"; };
-		E92F64102AB50188007BB4BA /* cita_¿que estas haciendo.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "cita_¿que estas haciendo.txt"; sourceTree = "<group>"; };
-		E92F64112AB50188007BB4BA /* cita_el caliz de la experiencia.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "cita_el caliz de la experiencia.txt"; sourceTree = "<group>"; };
-		E92F64122AB50188007BB4BA /* cita_sensacion espiritual.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "cita_sensacion espiritual.txt"; sourceTree = "<group>"; };
-		E92F64132AB50188007BB4BA /* cita_el es mi resureccion.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "cita_el es mi resureccion.txt"; sourceTree = "<group>"; };
-		E92F64142AB50188007BB4BA /* cita_la revelacion encarnada.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "cita_la revelacion encarnada.txt"; sourceTree = "<group>"; };
-		E92F64152AB50188007BB4BA /* cita_una lección de las escrituras.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "cita_una lección de las escrituras.txt"; sourceTree = "<group>"; };
-		E92F64162AB50188007BB4BA /* cita_tu creador.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "cita_tu creador.txt"; sourceTree = "<group>"; };
-		E92F64172AB50188007BB4BA /* cita_¿le has encontrado.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "cita_¿le has encontrado.txt"; sourceTree = "<group>"; };
-		E92F64182AB50188007BB4BA /* cita_el secreto de la oracion.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "cita_el secreto de la oracion.txt"; sourceTree = "<group>"; };
-		E92F641A2AB50189007BB4BA /* cita_audaz atrevimiento.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "cita_audaz atrevimiento.txt"; sourceTree = "<group>"; };
-		E92F641B2AB50189007BB4BA /* cita_caminar por fe.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "cita_caminar por fe.txt"; sourceTree = "<group>"; };
-		E92F641C2AB50189007BB4BA /* cita_una conviccion interna.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "cita_una conviccion interna.txt"; sourceTree = "<group>"; };
-		E92F641D2AB50189007BB4BA /* cita_un movimiento dentro de dios.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "cita_un movimiento dentro de dios.txt"; sourceTree = "<group>"; };
-		E92F641E2AB50189007BB4BA /* cita_percepcion.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cita_percepcion.txt; sourceTree = "<group>"; };
-		E92F641F2AB50189007BB4BA /* cita_poneos a prueba.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "cita_poneos a prueba.txt"; sourceTree = "<group>"; };
-		E92F64202AB50189007BB4BA /* cita_bocetos profeticos.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "cita_bocetos profeticos.txt"; sourceTree = "<group>"; };
-		E92F64212AB50189007BB4BA /* cita_estados eternos.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "cita_estados eternos.txt"; sourceTree = "<group>"; };
-		E92F64222AB50189007BB4BA /* cita_vive la respuesta ahora.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "cita_vive la respuesta ahora.txt"; sourceTree = "<group>"; };
-		E92F64232AB50189007BB4BA /* cita_concepcion.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cita_concepcion.txt; sourceTree = "<group>"; };
-		E92F64242AB50189007BB4BA /* cita_la causa espiritual.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "cita_la causa espiritual.txt"; sourceTree = "<group>"; };
-		E92F64252AB50189007BB4BA /* cita_la fuente.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "cita_la fuente.txt"; sourceTree = "<group>"; };
-		E92F64262AB50189007BB4BA /* cita_cuando un hombre ora con exito.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "cita_cuando un hombre ora con exito.txt"; sourceTree = "<group>"; };
-		E92F64272AB50189007BB4BA /* cita_creación - fe.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "cita_creación - fe.txt"; sourceTree = "<group>"; };
-		E92F64282AB50189007BB4BA /* cita_el estado de visión.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "cita_el estado de visión.txt"; sourceTree = "<group>"; };
-		E92F64292AB50189007BB4BA /* cita_libertad.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cita_libertad.txt; sourceTree = "<group>"; };
-		E92F642A2AB5018A007BB4BA /* cita_la nueva cristologia.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "cita_la nueva cristologia.txt"; sourceTree = "<group>"; };
-		E92F642B2AB5018A007BB4BA /* cita_el nucleo del hombre.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "cita_el nucleo del hombre.txt"; sourceTree = "<group>"; };
-		E92F642C2AB5018A007BB4BA /* cita_confía en dios.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "cita_confía en dios.txt"; sourceTree = "<group>"; };
 		E92F64522AB78EE6007BB4BA /* ModelData.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ModelData.xcdatamodel; sourceTree = "<group>"; };
 		E92F64562AB7D2BA007BB4BA /* listfrases.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = listfrases.txt; sourceTree = "<group>"; };
 		E93C23A92ABA365100939D16 /* UtilsForViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilsForViews.swift; sourceTree = "<group>"; };
@@ -852,9 +681,6 @@
 		E95B935A2AAFBB2900B5E2B5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E95B935D2AAFBB2900B5E2B5 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		E966EDE02ACF2029002D84C4 /* UpdateNotasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateNotasView.swift; sourceTree = "<group>"; };
-		E969818A2ABD8F99002CD503 /* listidvideoconf.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = listidvideoconf.txt; sourceTree = "<group>"; };
-		E969818C2ABD907B002CD503 /* listidgregg.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = listidgregg.txt; sourceTree = "<group>"; };
-		E969818D2ABD907B002CD503 /* listidaudiolibros.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = listidaudiolibros.txt; sourceTree = "<group>"; };
 		E96981902ABD9145002CD503 /* YTLisIDstView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YTLisIDstView.swift; sourceTree = "<group>"; };
 		E99F9CC52AC4682B00169084 /* CoreDataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataController.swift; sourceTree = "<group>"; };
 		E99F9CC72ACACE3600169084 /* AddNotasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNotasView.swift; sourceTree = "<group>"; };
@@ -930,22 +756,8 @@
 		E92F61182AB3E05C007BB4BA /* Staff */ = {
 			isa = PBXGroup;
 			children = (
-				1949D5132B01E7F300DFD46D /* cuestionario.txt */,
-				194F111C2AEC50D2009FA23E /* list1.txt */,
-				194F111A2AEC50D2009FA23E /* list2.txt */,
-				194F111E2AEC50D2009FA23E /* list3.txt */,
-				194F111F2AEC50D2009FA23E /* list4.txt */,
-				194F11202AEC50D2009FA23E /* list5.txt */,
-				194F111B2AEC50D2009FA23E /* list6.txt */,
-				194F111D2AEC50D2009FA23E /* list7.txt */,
 				E92F64562AB7D2BA007BB4BA /* listfrases.txt */,
 				E93C23AB2ABA4DA100939D16 /* biografia.txt */,
-				E969818A2ABD8F99002CD503 /* listidvideoconf.txt */,
-				E969818D2ABD907B002CD503 /* listidaudiolibros.txt */,
-				E969818C2ABD907B002CD503 /* listidgregg.txt */,
-				E92F611C2AB3E0C4007BB4BA /* Preguntas */,
-				E92F611B2AB3E0A3007BB4BA /* Citas */,
-				E92F611A2AB3E098007BB4BA /* Ayudas */,
 				E92F61192AB3E06F007BB4BA /* Conf */,
 			);
 			path = Staff;
@@ -1253,102 +1065,6 @@
 			path = Conf;
 			sourceTree = "<group>";
 		};
-		E92F611A2AB3E098007BB4BA /* Ayudas */ = {
-			isa = PBXGroup;
-			children = (
-				E92F64042AB4EF4E007BB4BA /* ayud_ejercicio para la imaginacion.txt */,
-				E92F64022AB4EF4D007BB4BA /* ayud_El arte de la revisión.txt */,
-				E92F64012AB4EF4D007BB4BA /* ayud_el poder llamado la ley.txt */,
-				E92F64032AB4EF4E007BB4BA /* ayud_expresar un cambio en tu mundo.txt */,
-				E92F63FE2AB4EF4D007BB4BA /* ayud_la formula de la victoria.txt */,
-				E92F64002AB4EF4D007BB4BA /* ayud_metodo de manifestacion.txt */,
-				E92F63FF2AB4EF4D007BB4BA /* ayud_salir de las limitaciones y problemas.txt */,
-			);
-			path = Ayudas;
-			sourceTree = "<group>";
-		};
-		E92F611B2AB3E0A3007BB4BA /* Citas */ = {
-			isa = PBXGroup;
-			children = (
-				E92F64172AB50188007BB4BA /* cita_¿le has encontrado.txt */,
-				E92F64102AB50188007BB4BA /* cita_¿que estas haciendo.txt */,
-				E92F641A2AB50189007BB4BA /* cita_audaz atrevimiento.txt */,
-				E92F64202AB50189007BB4BA /* cita_bocetos profeticos.txt */,
-				E92F641B2AB50189007BB4BA /* cita_caminar por fe.txt */,
-				E92F64232AB50189007BB4BA /* cita_concepcion.txt */,
-				E92F642C2AB5018A007BB4BA /* cita_confía en dios.txt */,
-				E92F64272AB50189007BB4BA /* cita_creación - fe.txt */,
-				E92F640E2AB50188007BB4BA /* cita_creelo dentro.txt */,
-				E92F64262AB50189007BB4BA /* cita_cuando un hombre ora con exito.txt */,
-				E92F64112AB50188007BB4BA /* cita_el caliz de la experiencia.txt */,
-				E92F64132AB50188007BB4BA /* cita_el es mi resureccion.txt */,
-				E92F64282AB50189007BB4BA /* cita_el estado de visión.txt */,
-				E92F642B2AB5018A007BB4BA /* cita_el nucleo del hombre.txt */,
-				E92F64182AB50188007BB4BA /* cita_el secreto de la oracion.txt */,
-				E92F64212AB50189007BB4BA /* cita_estados eternos.txt */,
-				E92F640F2AB50188007BB4BA /* cita_judas el revelador.txt */,
-				E92F64242AB50189007BB4BA /* cita_la causa espiritual.txt */,
-				E92F64252AB50189007BB4BA /* cita_la fuente.txt */,
-				E92F642A2AB5018A007BB4BA /* cita_la nueva cristologia.txt */,
-				E92F64142AB50188007BB4BA /* cita_la revelacion encarnada.txt */,
-				E92F640D2AB50188007BB4BA /* cita_la revelación encarnada.txt */,
-				E92F64292AB50189007BB4BA /* cita_libertad.txt */,
-				E92F641E2AB50189007BB4BA /* cita_percepcion.txt */,
-				E92F641F2AB50189007BB4BA /* cita_poneos a prueba.txt */,
-				E92F64122AB50188007BB4BA /* cita_sensacion espiritual.txt */,
-				E92F64162AB50188007BB4BA /* cita_tu creador.txt */,
-				E92F640C2AB50188007BB4BA /* cita_tuyo para que lo tomes.txt */,
-				E92F641D2AB50189007BB4BA /* cita_un movimiento dentro de dios.txt */,
-				E92F641C2AB50189007BB4BA /* cita_una conviccion interna.txt */,
-				E92F64152AB50188007BB4BA /* cita_una lección de las escrituras.txt */,
-				E92F64222AB50189007BB4BA /* cita_vive la respuesta ahora.txt */,
-			);
-			path = Citas;
-			sourceTree = "<group>";
-		};
-		E92F611C2AB3E0C4007BB4BA /* Preguntas */ = {
-			isa = PBXGroup;
-			children = (
-				E92F63BD2AB4EEE5007BB4BA /* preg_pregunta 1.txt */,
-				E92F63CE2AB4EEE6007BB4BA /* preg_pregunta 2.txt */,
-				E92F63C72AB4EEE6007BB4BA /* preg_pregunta 3.txt */,
-				E92F63CD2AB4EEE6007BB4BA /* preg_pregunta 4.txt */,
-				E92F63D02AB4EEE6007BB4BA /* preg_pregunta 5.txt */,
-				E92F63C92AB4EEE6007BB4BA /* preg_pregunta 6.txt */,
-				E92F63D52AB4EEE6007BB4BA /* preg_pregunta 7.txt */,
-				E92F63C52AB4EEE6007BB4BA /* preg_pregunta 8.txt */,
-				E92F63D72AB4EEE6007BB4BA /* preg_pregunta 9.txt */,
-				E92F63BE2AB4EEE5007BB4BA /* preg_pregunta 10.txt */,
-				E92F63CC2AB4EEE6007BB4BA /* preg_pregunta 11.txt */,
-				E92F63D92AB4EEE7007BB4BA /* preg_pregunta 12.txt */,
-				E92F63D62AB4EEE6007BB4BA /* preg_pregunta 13.txt */,
-				E92F63CB2AB4EEE6007BB4BA /* preg_pregunta 14.txt */,
-				E92F63BC2AB4EEE5007BB4BA /* preg_pregunta 15.txt */,
-				E92F63CF2AB4EEE6007BB4BA /* preg_pregunta 16.txt */,
-				E92F63B82AB4EEE5007BB4BA /* preg_pregunta 17.txt */,
-				E92F63D12AB4EEE6007BB4BA /* preg_pregunta 18.txt */,
-				E92F63B62AB4EEE5007BB4BA /* preg_pregunta 19.txt */,
-				E92F63CA2AB4EEE6007BB4BA /* preg_pregunta 20.txt */,
-				E92F63C82AB4EEE6007BB4BA /* preg_pregunta 21.txt */,
-				E92F63C42AB4EEE5007BB4BA /* preg_pregunta 22.txt */,
-				E92F63C02AB4EEE5007BB4BA /* preg_pregunta 23.txt */,
-				E92F63BA2AB4EEE5007BB4BA /* preg_pregunta 24.txt */,
-				E92F63C12AB4EEE5007BB4BA /* preg_pregunta 25.txt */,
-				E92F63D82AB4EEE7007BB4BA /* preg_pregunta 26.txt */,
-				E92F63C22AB4EEE5007BB4BA /* preg_pregunta 27.txt */,
-				E92F63B72AB4EEE5007BB4BA /* preg_pregunta 28.txt */,
-				E92F63B92AB4EEE5007BB4BA /* preg_pregunta 29.txt */,
-				E92F63D22AB4EEE6007BB4BA /* preg_pregunta 30.txt */,
-				E92F63C32AB4EEE5007BB4BA /* preg_pregunta 31.txt */,
-				E92F63BF2AB4EEE5007BB4BA /* preg_pregunta 32.txt */,
-				E92F63D42AB4EEE6007BB4BA /* preg_pregunta 33.txt */,
-				E92F63D32AB4EEE6007BB4BA /* preg_pregunta 34.txt */,
-				E92F63C62AB4EEE6007BB4BA /* preg_pregunta 35.txt */,
-				E92F63BB2AB4EEE5007BB4BA /* preg_pregunta 36.txt */,
-			);
-			path = Preguntas;
-			sourceTree = "<group>";
-		};
 		E92F63712AB468D7007BB4BA /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -1379,7 +1095,6 @@
 				E9934DB12AE2B51A004636F9 /* Txt */,
 				E966EDDF2ACF1C51002D84C4 /* YoutubeVideo */,
 				E966EDDE2ACF1C2E002D84C4 /* Notas */,
-				E92F61142AB3ADA2007BB4BA /* SideMenuView.swift */,
 				E93C23AD2ABAAC6800939D16 /* galeriaFotosView.swift */,
 				E9D0F1CA2AE2226A00B35452 /* optionView.swift */,
 				19E06FA92AEBA1F50016F9E6 /* gregg.swift */,
@@ -1537,14 +1252,12 @@
 				E92F62FD2AB3E1C2007BB4BA /* conf_dietas mentales.txt in Resources */,
 				E92F62FA2AB3E1C2007BB4BA /* conf_el verdadero conocimiento de dios.txt in Resources */,
 				E92F624C2AB3E1C2007BB4BA /* conf_eleccion y cambio de conciencia.txt in Resources */,
-				E92F63F52AB4EEE7007BB4BA /* preg_pregunta 18.txt in Resources */,
 				E92F62E92AB3E1C2007BB4BA /* conf_el niño milagroso.txt in Resources */,
 				E92F630F2AB3E1C2007BB4BA /* conf_autoabandono.txt in Resources */,
 				E92F624E2AB3E1C2007BB4BA /* conf_si alguno de los dos esta de acuerdo.txt in Resources */,
 				E92F62EE2AB3E1C2007BB4BA /* conf_mediante agua y sangre.txt in Resources */,
 				E92F629A2AB3E1C2007BB4BA /* conf_un estado llamado moises.txt in Resources */,
 				E92F633F2AB3E1C2007BB4BA /* conf_imaginacion despierta.txt in Resources */,
-				E92F643D2AB5018A007BB4BA /* cita_una conviccion interna.txt in Resources */,
 				E92F631C2AB3E1C2007BB4BA /* conf_atando y soltando.txt in Resources */,
 				E92F624A2AB3E1C2007BB4BA /* conf_el esta  soñando ahora_1.txt in Resources */,
 				E92F62622AB3E1C2007BB4BA /* conf_lecccion 5 permanece fiel a tu idea.txt in Resources */,
@@ -1557,7 +1270,6 @@
 				E92F62872AB3E1C2007BB4BA /* conf_la palabra viva.txt in Resources */,
 				E92F624D2AB3E1C2007BB4BA /* conf_imaginacion mi esclava.txt in Resources */,
 				E92F629F2AB3E1C2007BB4BA /* conf_la verdadera vid.txt in Resources */,
-				E92F64472AB5018A007BB4BA /* cita_cuando un hombre ora con exito.txt in Resources */,
 				E92F63472AB3E1C2007BB4BA /* conf_el arte de morir(2).txt in Resources */,
 				E92F62AF2AB3E1C2007BB4BA /* conf_la ley de asuncion.txt in Resources */,
 				E92F62612AB3E1C2007BB4BA /* conf_la formacion de los no engendrados.txt in Resources */,
@@ -1566,7 +1278,6 @@
 				E92F62472AB3E1C2007BB4BA /* conf_perdon verdadero.txt in Resources */,
 				E92F62562AB3E1C2007BB4BA /* conf_el despierta en mi.txt in Resources */,
 				E92F62AE2AB3E1C2007BB4BA /* conf_nunca puedes superar yo soy.txt in Resources */,
-				E92F63ED2AB4EEE7007BB4BA /* preg_pregunta 6.txt in Resources */,
 				E92F63372AB3E1C2007BB4BA /* conf_creacion fe.txt in Resources */,
 				E92F62D62AB3E1C2007BB4BA /* conf_signos divinos.txt in Resources */,
 				E92F62CF2AB3E1C2007BB4BA /* conf_inversiones seguras.txt in Resources */,
@@ -1574,14 +1285,10 @@
 				E92F63272AB3E1C2007BB4BA /* conf_agua viviente.txt in Resources */,
 				E92F62F82AB3E1C2007BB4BA /* conf_la gran posesion.txt in Resources */,
 				E92F629C2AB3E1C2007BB4BA /* conf_lo que siembras recoges.txt in Resources */,
-				E92F643E2AB5018A007BB4BA /* cita_un movimiento dentro de dios.txt in Resources */,
 				E92F62BB2AB3E1C2007BB4BA /* conf_un acertijo.txt in Resources */,
-				E92F64372AB5018A007BB4BA /* cita_tu creador.txt in Resources */,
 				E92F633B2AB3E1C2007BB4BA /* conf_eleccion  libre albedrio.txt in Resources */,
-				E92F63F82AB4EEE7007BB4BA /* preg_pregunta 33.txt in Resources */,
 				E92F63052AB3E1C2007BB4BA /* conf_el patron del hombre.txt in Resources */,
 				E92F63112AB3E1C2007BB4BA /* conf_conviertanse en seleccionadores.txt in Resources */,
-				E92F643F2AB5018A007BB4BA /* cita_percepcion.txt in Resources */,
 				E92F62BD2AB3E1C2007BB4BA /* conf_ningun otro dios.txt in Resources */,
 				E92F62D92AB3E1C2007BB4BA /* conf_caminar por fe.txt in Resources */,
 				E92F62F02AB3E1C2007BB4BA /* conf_jesucristo.txt in Resources */,
@@ -1592,15 +1299,10 @@
 				E92F62E02AB3E1C2007BB4BA /* conf_nuestras verdaderas creencias.txt in Resources */,
 				E92F63392AB3E1C2007BB4BA /* conf_la palabra.txt in Resources */,
 				E92F63532AB3E1C2007BB4BA /* conf_oracion respondida.txt in Resources */,
-				194F11222AEC50D2009FA23E /* list6.txt in Resources */,
-				E92F63F32AB4EEE7007BB4BA /* preg_pregunta 16.txt in Resources */,
 				E92F62672AB3E1C2007BB4BA /* conf_la roca.txt in Resources */,
 				E92F63672AB3E1C2007BB4BA /* conf_construir tu templo.txt in Resources */,
 				E92F62802AB3E1C2007BB4BA /* conf_sobre la ley.txt in Resources */,
-				E969818F2ABD907B002CD503 /* listidaudiolibros.txt in Resources */,
 				E92F62D52AB3E1C2007BB4BA /* conf_dios solo actua.txt in Resources */,
-				E92F64302AB5018A007BB4BA /* cita_judas el revelador.txt in Resources */,
-				E92F64402AB5018A007BB4BA /* cita_poneos a prueba.txt in Resources */,
 				E92F62FE2AB3E1C2007BB4BA /* conf_autobiografia de pablo.txt in Resources */,
 				E92F626C2AB3E1C2007BB4BA /* conf_el nacimiento del bebe.txt in Resources */,
 				E92F62812AB3E1C2007BB4BA /* conf_todas las cosas existen.txt in Resources */,
@@ -1610,7 +1312,6 @@
 				E92F63102AB3E1C2007BB4BA /* conf_el deseo.txt in Resources */,
 				E92F62C02AB3E1C2007BB4BA /* conf_virnes santo - pascua.txt in Resources */,
 				E92F634B2AB3E1C2007BB4BA /* conf_el plan de redencion de dios.txt in Resources */,
-				E92F64072AB4EF4E007BB4BA /* ayud_metodo de manifestacion.txt in Resources */,
 				E92F62B72AB3E1C2007BB4BA /* conf_verdad, la palabra de dios.txt in Resources */,
 				E92F631D2AB3E1C2007BB4BA /* conf_camina sobre el agua.txt in Resources */,
 				E92F62AD2AB3E1C2007BB4BA /* conf_es cristo tu imaginacion.txt in Resources */,
@@ -1622,20 +1323,13 @@
 				E92F62632AB3E1C2007BB4BA /* conf_el hombre libre.txt in Resources */,
 				E92F62CE2AB3E1C2007BB4BA /* conf_la esfera interior.txt in Resources */,
 				E92F62F52AB3E1C2007BB4BA /* conf_el gran secreto.txt in Resources */,
-				E92F64432AB5018A007BB4BA /* cita_vive la respuesta ahora.txt in Resources */,
 				E92F62882AB3E1C2007BB4BA /* conf_leccion 2 las asunciones se materializan en hechos.txt in Resources */,
-				E92F63FB2AB4EEE7007BB4BA /* preg_pregunta 9.txt in Resources */,
-				E92F643C2AB5018A007BB4BA /* cita_caminar por fe.txt in Resources */,
 				E92F634D2AB3E1C2007BB4BA /* conf_a quien buscas.txt in Resources */,
-				E92F64412AB5018A007BB4BA /* cita_bocetos profeticos.txt in Resources */,
 				E92F633A2AB3E1C2007BB4BA /* conf_fe.txt in Resources */,
 				E92F634C2AB3E1C2007BB4BA /* conf_libera a barrabas y cruxifica a jesus.txt in Resources */,
-				E92F63E02AB4EEE7007BB4BA /* preg_pregunta 15.txt in Resources */,
 				E92F62E22AB3E1C2007BB4BA /* conf_un entendimiento seguro.txt in Resources */,
-				E92F64482AB5018A007BB4BA /* cita_creación - fe.txt in Resources */,
 				E92F63662AB3E1C2007BB4BA /* conf_uso conciente de la ley.txt in Resources */,
 				E92F62F62AB3E1C2007BB4BA /* conf_el evangelio cudruple.txt in Resources */,
-				E92F63EF2AB4EEE7007BB4BA /* preg_pregunta 14.txt in Resources */,
 				E92F631A2AB3E1C2007BB4BA /* conf_capitulo 24 fracaso.txt in Resources */,
 				E92F64572AB7D2BA007BB4BA /* listfrases.txt in Resources */,
 				E92F632A2AB3E1C2007BB4BA /* conf_la vision celestial.txt in Resources */,
@@ -1643,19 +1337,12 @@
 				E92F62F22AB3E1C2007BB4BA /* conf_libre o esclavo.txt in Resources */,
 				E92F629E2AB3E1C2007BB4BA /* conf_poder que obra maravillas.txt in Resources */,
 				E92F625F2AB3E1C2007BB4BA /* conf_infinitos estados.txt in Resources */,
-				E92F64322AB5018A007BB4BA /* cita_el caliz de la experiencia.txt in Resources */,
-				E92F643B2AB5018A007BB4BA /* cita_audaz atrevimiento.txt in Resources */,
-				E92F63FA2AB4EEE7007BB4BA /* preg_pregunta 13.txt in Resources */,
 				E92F62B22AB3E1C2007BB4BA /* conf_sobrellevad las cargas los unos de los otros.txt in Resources */,
 				E92F627C2AB3E1C2007BB4BA /* conf_leccion 1 la conciencia es la unica realidad.txt in Resources */,
-				E92F63FC2AB4EEE7007BB4BA /* preg_pregunta 26.txt in Resources */,
 				E92F62AC2AB3E1C2007BB4BA /* conf_el estado de la vision.txt in Resources */,
-				E92F64492AB5018A007BB4BA /* cita_el estado de visión.txt in Resources */,
 				E92F62712AB3E1C2007BB4BA /* conf_vive la respuesta ahora.txt in Resources */,
 				E92F632C2AB3E1C2007BB4BA /* conf_la nueva cristologia.txt in Resources */,
-				E92F63E52AB4EEE7007BB4BA /* preg_pregunta 25.txt in Resources */,
 				E92F63452AB3E1C2007BB4BA /* conf_el deseo primario.txt in Resources */,
-				E92F63F02AB4EEE7007BB4BA /* preg_pregunta 11.txt in Resources */,
 				E92F63382AB3E1C2007BB4BA /* conf_estados de conciencia.txt in Resources */,
 				E92F63412AB3E1C2007BB4BA /* conf_una profecia.txt in Resources */,
 				E92F62952AB3E1C2007BB4BA /* conf_redencion.txt in Resources */,
@@ -1664,9 +1351,7 @@
 				E92F62F42AB3E1C2007BB4BA /* conf_la vid verdadera.txt in Resources */,
 				E92F62D02AB3E1C2007BB4BA /* conf_una conviccion interna.txt in Resources */,
 				E92F62F12AB3E1C2007BB4BA /* conf_la luz del mundo.txt in Resources */,
-				E92F644A2AB5018A007BB4BA /* cita_libertad.txt in Resources */,
 				E92F63242AB3E1C2007BB4BA /* conf_fundamentos.txt in Resources */,
-				E92F63EB2AB4EEE7007BB4BA /* preg_pregunta 3.txt in Resources */,
 				E92F63082AB3E1C2007BB4BA /* conf_el libro de job.txt in Resources */,
 				E92F62CD2AB3E1C2007BB4BA /* conf_ven oh bendito.txt in Resources */,
 				E92F62752AB3E1C2007BB4BA /* conf_eternidad dentro.txt in Resources */,
@@ -1677,22 +1362,13 @@
 				E92F635A2AB3E1C2007BB4BA /* conf_el talento.txt in Resources */,
 				E92F63262AB3E1C2007BB4BA /* conf_el  arbol de la vida.txt in Resources */,
 				E92F63692AB3E1C2007BB4BA /* conf_escatologia - el drama del fin.txt in Resources */,
-				E92F64052AB4EF4E007BB4BA /* ayud_la formula de la victoria.txt in Resources */,
-				E92F640A2AB4EF4E007BB4BA /* ayud_expresar un cambio en tu mundo.txt in Resources */,
-				E92F64442AB5018A007BB4BA /* cita_concepcion.txt in Resources */,
 				E92F63602AB3E1C2007BB4BA /* conf_yo soy en vosotros.txt in Resources */,
 				E92F62A32AB3E1C2007BB4BA /* conf_ver a cristo a traves de los ojos de pablo.txt in Resources */,
 				E92F625E2AB3E1C2007BB4BA /* conf_tu hacedor.txt in Resources */,
-				E92F63E82AB4EEE7007BB4BA /* preg_pregunta 22.txt in Resources */,
-				E92F644C2AB5018A007BB4BA /* cita_el nucleo del hombre.txt in Resources */,
 				E92F634A2AB3E1C2007BB4BA /* conf_imaginacion.txt in Resources */,
 				E92F624B2AB3E1C2007BB4BA /* conf_la historia de judas.txt in Resources */,
-				E92F64092AB4EF4E007BB4BA /* ayud_El arte de la revisión.txt in Resources */,
-				E92F63F12AB4EEE7007BB4BA /* preg_pregunta 4.txt in Resources */,
 				E92F626E2AB3E1C2007BB4BA /* conf_sean lo que desean sean lo que creen.txt in Resources */,
-				E92F63DF2AB4EEE7007BB4BA /* preg_pregunta 36.txt in Resources */,
 				E92F63502AB3E1C2007BB4BA /* conf_imaginar es crear.txt in Resources */,
-				194F11232AEC50D2009FA23E /* list1.txt in Resources */,
 				E92F62652AB3E1C2007BB4BA /* conf_alcanza el estado de animo.txt in Resources */,
 				E92F628E2AB3E1C2007BB4BA /* conf_la ley.txt in Resources */,
 				E92F62EA2AB3E1C2007BB4BA /* conf_eres un ser cosmico.txt in Resources */,
@@ -1700,19 +1376,14 @@
 				E92F62942AB3E1C2007BB4BA /* conf_la imaginacion se cumple.txt in Resources */,
 				E92F63492AB3E1C2007BB4BA /* conf_la criatura mas sabia de dios.txt in Resources */,
 				E92F62722AB3E1C2007BB4BA /* conf_como usar tu inmaginacion.txt in Resources */,
-				E92F63DA2AB4EEE7007BB4BA /* preg_pregunta 19.txt in Resources */,
 				E92F62CA2AB3E1C2007BB4BA /* conf_tres proposiciones.txt in Resources */,
 				E92F63062AB3E1C2007BB4BA /* conf_el señor nuestro alfarero.txt in Resources */,
 				E92F62A62AB3E1C2007BB4BA /* conf_historia de la salvacion.txt in Resources */,
-				E92F64312AB5018A007BB4BA /* cita_¿que estas haciendo.txt in Resources */,
-				E92F63EC2AB4EEE7007BB4BA /* preg_pregunta 21.txt in Resources */,
 				E92F634E2AB3E1C2007BB4BA /* conf_espada de dios.txt in Resources */,
 				E92F62832AB3E1C2007BB4BA /* conf_el milagroso poder del apego.txt in Resources */,
-				E92F644D2AB5018A007BB4BA /* cita_confía en dios.txt in Resources */,
 				E92F628B2AB3E1C2007BB4BA /* conf_el conocimiento de dios.txt in Resources */,
 				E92F62CC2AB3E1C2007BB4BA /* conf_libertad.txt in Resources */,
 				E92F63002AB3E1C2007BB4BA /* conf_mil docientos sesenta dias.txt in Resources */,
-				E92F63F22AB4EEE7007BB4BA /* preg_pregunta 2.txt in Resources */,
 				E92F62C42AB3E1C2007BB4BA /* conf_el pecado contra el espitiru santo.txt in Resources */,
 				E92F63552AB3E1C2007BB4BA /* conf_la plegaria correcta segun neville.txt in Resources */,
 				E92F62702AB3E1C2007BB4BA /* conf_yo soy la causa.txt in Resources */,
@@ -1720,11 +1391,9 @@
 				E92F62792AB3E1C2007BB4BA /* conf_el rollo del libro.txt in Resources */,
 				E92F63142AB3E1C2007BB4BA /* conf_el poder llamado la ley.txt in Resources */,
 				E92F63442AB3E1C2007BB4BA /* conf_conversaciones internas.txt in Resources */,
-				1949D5142B01E7F300DFD46D /* cuestionario.txt in Resources */,
 				E92F62492AB3E1C2007BB4BA /* conf_alimenta mis ovejas.txt in Resources */,
 				E92F62F92AB3E1C2007BB4BA /* conf_navidad.txt in Resources */,
 				E92F632D2AB3E1C2007BB4BA /* conf_leccion 3 pensar cuatridimencionalmente.txt in Resources */,
-				194F11242AEC50D2009FA23E /* list7.txt in Resources */,
 				E92F63352AB3E1C2007BB4BA /* conf_la batalla del armagedon.txt in Resources */,
 				E92F62D12AB3E1C2007BB4BA /* conf_arrepentimiento un regalo de dios.txt in Resources */,
 				E92F62E32AB3E1C2007BB4BA /* conf_el poder creador de dios.txt in Resources */,
@@ -1733,14 +1402,12 @@
 				E92F62682AB3E1C2007BB4BA /* conf_los puros de corazon.txt in Resources */,
 				E92F62922AB3E1C2007BB4BA /* conf_audaz atrevimiento.txt in Resources */,
 				E92F62742AB3E1C2007BB4BA /* conf_deseo.txt in Resources */,
-				E92F64362AB5018A007BB4BA /* cita_una lección de las escrituras.txt in Resources */,
 				E92F62C82AB3E1C2007BB4BA /* conf_la obra.txt in Resources */,
 				E95B935E2AAFBB2900B5E2B5 /* Preview Assets.xcassets in Resources */,
 				E92F63582AB3E1C2007BB4BA /* conf_vive en el final.txt in Resources */,
 				E92F63192AB3E1C2007BB4BA /* conf_la ley de la libertad.txt in Resources */,
 				E93C23AC2ABA4DA100939D16 /* biografia.txt in Resources */,
 				E92F62442AB3E1C2007BB4BA /* conf_el desperta de la fe.txt in Resources */,
-				E92F64352AB5018A007BB4BA /* cita_la revelacion encarnada.txt in Resources */,
 				E92F62A82AB3E1C2007BB4BA /* conf_el misterio de la inspiracion.txt in Resources */,
 				E92F63432AB3E1C2007BB4BA /* conf_quien es el hijo del hombre.txt in Resources */,
 				E92F626B2AB3E1C2007BB4BA /* conf_dios es luz.txt in Resources */,
@@ -1748,42 +1415,30 @@
 				E92F62582AB3E1C2007BB4BA /* conf_getsemani.txt in Resources */,
 				E92F631E2AB3E1C2007BB4BA /* conf_el ultimo sentido.txt in Resources */,
 				E92F635C2AB3E1C2007BB4BA /* conf_experimentar las escrituras.txt in Resources */,
-				E92F63DD2AB4EEE7007BB4BA /* preg_pregunta 29.txt in Resources */,
-				E92F63F72AB4EEE7007BB4BA /* preg_pregunta 34.txt in Resources */,
-				E92F64382AB5018A007BB4BA /* cita_¿le has encontrado.txt in Resources */,
 				E92F62B52AB3E1C2007BB4BA /* conf_su nombre.txt in Resources */,
 				E92F63592AB3E1C2007BB4BA /* conf_dios habla al hombre.txt in Resources */,
 				E92F627E2AB3E1C2007BB4BA /* conf_lenguaje biblico.txt in Resources */,
 				E92F62A72AB3E1C2007BB4BA /* conf_ningun otro fundamento 1.txt in Resources */,
 				E92F62B42AB3E1C2007BB4BA /* conf_una formula para la victoria.txt in Resources */,
 				E92F63252AB3E1C2007BB4BA /* conf_no hay ficcion.txt in Resources */,
-				E969818E2ABD907B002CD503 /* listidgregg.txt in Resources */,
-				E92F63E92AB4EEE7007BB4BA /* preg_pregunta 8.txt in Resources */,
 				E92F62C72AB3E1C2007BB4BA /* conf_la imagen perfecta.txt in Resources */,
 				E92F63232AB3E1C2007BB4BA /* conf_el primer principio.txt in Resources */,
 				E92F63522AB3E1C2007BB4BA /* conf_yo soy el señor.txt in Resources */,
 				E92F63622AB3E1C2007BB4BA /* conf_el es mi resurreccion.txt in Resources */,
-				E92F64392AB5018A007BB4BA /* cita_el secreto de la oracion.txt in Resources */,
-				E92F63E32AB4EEE7007BB4BA /* preg_pregunta 32.txt in Resources */,
 				E92F63402AB3E1C2007BB4BA /* conf_la causa oculta.txt in Resources */,
-				194F11212AEC50D2009FA23E /* list2.txt in Resources */,
 				E92F625B2AB3E1C2007BB4BA /* conf_tu verdadero proposito.txt in Resources */,
-				E92F642E2AB5018A007BB4BA /* cita_la revelación encarnada.txt in Resources */,
 				E92F62B02AB3E1C2007BB4BA /* conf_se el amo del humor.txt in Resources */,
 				E92F627D2AB3E1C2007BB4BA /* conf_afirma la realidad de nuestra propia grandesa.txt in Resources */,
 				E92F63542AB3E1C2007BB4BA /* conf_moises - elias - jesus.txt in Resources */,
-				E92F63EE2AB4EEE7007BB4BA /* preg_pregunta 20.txt in Resources */,
 				E92F63072AB3E1C2007BB4BA /* conf_la crucifixion.txt in Resources */,
 				E92F62ED2AB3E1C2007BB4BA /* conf_el descubrimiento de jeremias.txt in Resources */,
 				E92F62D42AB3E1C2007BB4BA /* conf_el valor de los sueños.txt in Resources */,
-				E969818B2ABD8F99002CD503 /* listidvideoconf.txt in Resources */,
 				E92F62A92AB3E1C2007BB4BA /* conf_leccion 4 nadie a quien cambiar sino a uno mismo.txt in Resources */,
 				E92F62592AB3E1C2007BB4BA /* conf_lo has encontrado.txt in Resources */,
 				E92F63612AB3E1C2007BB4BA /* conf_el creador.txt in Resources */,
 				E92F62522AB3E1C2007BB4BA /* conf_el secreto de la causalidad.txt in Resources */,
 				E92F63022AB3E1C2007BB4BA /* conf_blake sobre la religion.txt in Resources */,
 				E92F62C52AB3E1C2007BB4BA /* conf_quien es el verdadero mesias.txt in Resources */,
-				E92F63E62AB4EEE7007BB4BA /* preg_pregunta 27.txt in Resources */,
 				E92F62F32AB3E1C2007BB4BA /* conf_la piedra angular la imaginacion.txt in Resources */,
 				E92F62BC2AB3E1C2007BB4BA /* conf_bocetos profeticos.txt in Resources */,
 				E92F63562AB3E1C2007BB4BA /* conf_que es la verdad.txt in Resources */,
@@ -1794,7 +1449,6 @@
 				E92F63512AB3E1C2007BB4BA /* conf_un movimiento de la mente.txt in Resources */,
 				E92F62FB2AB3E1C2007BB4BA /* conf_se imitadores de dios.txt in Resources */,
 				E92F62BA2AB3E1C2007BB4BA /* conf_examinaos a vosotros mismos.txt in Resources */,
-				194F11262AEC50D2009FA23E /* list4.txt in Resources */,
 				E92F633D2AB3E1C2007BB4BA /* conf_ordena tus conversaciones rectamente.txt in Resources */,
 				E92F635D2AB3E1C2007BB4BA /* conf_apariencias.txt in Resources */,
 				E92F63332AB3E1C2007BB4BA /* conf_verdad revelada.txt in Resources */,
@@ -1810,9 +1464,6 @@
 				E92F62602AB3E1C2007BB4BA /* conf_discuciones subjetivas y conversaciones mentales.txt in Resources */,
 				E92F62962AB3E1C2007BB4BA /* conf_cristo revelado.txt in Resources */,
 				E92F62932AB3E1C2007BB4BA /* conf_poder.txt in Resources */,
-				E92F63DB2AB4EEE7007BB4BA /* preg_pregunta 28.txt in Resources */,
-				194F11252AEC50D2009FA23E /* list3.txt in Resources */,
-				E92F64342AB5018A007BB4BA /* cita_el es mi resureccion.txt in Resources */,
 				E92F63092AB3E1C2007BB4BA /* conf_muchas moradas.txt in Resources */,
 				E92F63202AB3E1C2007BB4BA /* conf_se lo que quieras se lo que crees.txt in Resources */,
 				E92F62EF2AB3E1C2007BB4BA /* conf_una revelacion parabolica.txt in Resources */,
@@ -1831,9 +1482,7 @@
 				E92F62502AB3E1C2007BB4BA /* conf_la promesa de dios al hombre.txt in Resources */,
 				E92F62862AB3E1C2007BB4BA /* conf_tiempo de siembra y cosecha.txt in Resources */,
 				E92F63032AB3E1C2007BB4BA /* conf_resumen.txt in Resources */,
-				E92F64462AB5018A007BB4BA /* cita_la fuente.txt in Resources */,
 				E92F63342AB3E1C2007BB4BA /* conf_asuncion persistente.txt in Resources */,
-				E92F64062AB4EF4E007BB4BA /* ayud_salir de las limitaciones y problemas.txt in Resources */,
 				E92F62732AB3E1C2007BB4BA /* conf_dios se hizo hombre.txt in Resources */,
 				E92F63642AB3E1C2007BB4BA /* conf_fe en dios.txt in Resources */,
 				E92F63682AB3E1C2007BB4BA /* conf_judas el revelador.txt in Resources */,
@@ -1847,54 +1496,38 @@
 				E92F628C2AB3E1C2007BB4BA /* conf_apacienta mis ovejas.txt in Resources */,
 				E92F62DA2AB3E1C2007BB4BA /* conf_como funciona la ley.txt in Resources */,
 				E92F636A2AB3E1C2007BB4BA /* conf_creed en el.txt in Resources */,
-				E92F63E22AB4EEE7007BB4BA /* preg_pregunta 10.txt in Resources */,
 				E95B935B2AAFBB2900B5E2B5 /* Assets.xcassets in Resources */,
-				E92F63EA2AB4EEE7007BB4BA /* preg_pregunta 35.txt in Resources */,
-				E92F64422AB5018A007BB4BA /* cita_estados eternos.txt in Resources */,
-				E92F640B2AB4EF4E007BB4BA /* ayud_ejercicio para la imaginacion.txt in Resources */,
-				E92F64082AB4EF4E007BB4BA /* ayud_el poder llamado la ley.txt in Resources */,
 				E92F62CB2AB3E1C2007BB4BA /* conf_el padre.txt in Resources */,
 				E92F63282AB3E1C2007BB4BA /* conf_la morada de dios.txt in Resources */,
-				E92F63DE2AB4EEE7007BB4BA /* preg_pregunta 24.txt in Resources */,
 				E92F627B2AB3E1C2007BB4BA /* conf_todos los efectos naturales.txt in Resources */,
 				E92F632F2AB3E1C2007BB4BA /* conf_la fuente.txt in Resources */,
-				E92F63E72AB4EEE7007BB4BA /* preg_pregunta 31.txt in Resources */,
-				194F11272AEC50D2009FA23E /* list5.txt in Resources */,
 				E92F62F72AB3E1C2007BB4BA /* conf_la revision.txt in Resources */,
-				E92F64452AB5018A007BB4BA /* cita_la causa espiritual.txt in Resources */,
 				E92F62D82AB3E1C2007BB4BA /* conf_señales desde arriba.txt in Resources */,
 				E92F62782AB3E1C2007BB4BA /* conf_el espiritu de la verdad.txt in Resources */,
 				E92F63572AB3E1C2007BB4BA /* conf_una leccion en las escrituras.txt in Resources */,
 				E92F63632AB3E1C2007BB4BA /* conf_cristo en ti.txt in Resources */,
 				E92F631F2AB3E1C2007BB4BA /* conf_estados eternos.txt in Resources */,
 				E92F62532AB3E1C2007BB4BA /* conf_los ultimos dias.txt in Resources */,
-				E92F63F92AB4EEE7007BB4BA /* preg_pregunta 7.txt in Resources */,
 				E92F62B82AB3E1C2007BB4BA /* conf_la causa espiritual.txt in Resources */,
 				E92F632B2AB3E1C2007BB4BA /* conf_la eternidad dentro.txt in Resources */,
-				E92F644B2AB5018A007BB4BA /* cita_la nueva cristologia.txt in Resources */,
-				E92F63F42AB4EEE7007BB4BA /* preg_pregunta 5.txt in Resources */,
 				E92F62852AB3E1C2007BB4BA /* conf_la segunda vision.txt in Resources */,
 				E92F625C2AB3E1C2007BB4BA /* conf_ocupante o recluso.txt in Resources */,
 				E92F63182AB3E1C2007BB4BA /* conf_tuyo para que lo tomes.txt in Resources */,
 				E92F63172AB3E1C2007BB4BA /* conf_concepcion.txt in Resources */,
-				E92F642F2AB5018A007BB4BA /* cita_creelo dentro.txt in Resources */,
 				E92F62DF2AB3E1C2007BB4BA /* conf_el evangelio.txt in Resources */,
 				E92F62D22AB3E1C2007BB4BA /* conf_la ley de la cosecha identica.txt in Resources */,
 				E92F62772AB3E1C2007BB4BA /* conf_hijos del altisimo.txt in Resources */,
 				E92F62E62AB3E1C2007BB4BA /* conf_busca el reino.txt in Resources */,
 				E92F62EC2AB3E1C2007BB4BA /* conf_lo que ya ha sido.txt in Resources */,
 				E92F626D2AB3E1C2007BB4BA /* conf_entra en la imagen.txt in Resources */,
-				E92F63E12AB4EEE7007BB4BA /* preg_pregunta 1.txt in Resources */,
 				E92F627F2AB3E1C2007BB4BA /* conf_sensacion espiritual.txt in Resources */,
 				E92F633E2AB3E1C2007BB4BA /* conf_el secreto de la oracion.txt in Resources */,
 				E92F63362AB3E1C2007BB4BA /* conf_sigue el patron.txt in Resources */,
 				E92F62BF2AB3E1C2007BB4BA /* conf_de donde eres.txt in Resources */,
 				E92F63222AB3E1C2007BB4BA /* conf_el juego de la vida.txt in Resources */,
 				E92F62892AB3E1C2007BB4BA /* conf_navidad  el nacimiento del hombre como dios.txt in Resources */,
-				E92F63FD2AB4EEE7007BB4BA /* preg_pregunta 12.txt in Resources */,
 				E92F62D72AB3E1C2007BB4BA /* conf_tu marido.txt in Resources */,
 				E92F63012AB3E1C2007BB4BA /* conf_todo lo que ves.txt in Resources */,
-				E92F63DC2AB4EEE7007BB4BA /* preg_pregunta 17.txt in Resources */,
 				E92F628F2AB3E1C2007BB4BA /* conf_el dilubio todavia esta entre nosotros.txt in Resources */,
 				E92F62B92AB3E1C2007BB4BA /* conf_ese es mi nombre.txt in Resources */,
 				E92F62972AB3E1C2007BB4BA /* conf_el sueña en mi.txt in Resources */,
@@ -1904,17 +1537,13 @@
 				E92F62A42AB3E1C2007BB4BA /* conf_el arte de morir.txt in Resources */,
 				E92F63212AB3E1C2007BB4BA /* conf_se observador.txt in Resources */,
 				E92F62912AB3E1C2007BB4BA /* conf_el misterio de la biblia.txt in Resources */,
-				E92F64332AB5018A007BB4BA /* cita_sensacion espiritual.txt in Resources */,
 				E92F62EB2AB3E1C2007BB4BA /* conf_el espiritu dentro.txt in Resources */,
-				E92F63E42AB4EEE7007BB4BA /* preg_pregunta 23.txt in Resources */,
-				E92F63F62AB4EEE7007BB4BA /* preg_pregunta 30.txt in Resources */,
 				E92F62642AB3E1C2007BB4BA /* conf_esau jacob israel.txt in Resources */,
 				E92F62E42AB3E1C2007BB4BA /* conf_yo estoy en ti.txt in Resources */,
 				E92F631B2AB3E1C2007BB4BA /* conf_el unico cristianismo.txt in Resources */,
 				E92F630D2AB3E1C2007BB4BA /* conf_gracia versus ley.txt in Resources */,
 				E92F62E12AB3E1C2007BB4BA /* conf_compartiendo en la creatividad.txt in Resources */,
 				E92F63482AB3E1C2007BB4BA /* conf_historias de casos reales.txt in Resources */,
-				E92F642D2AB5018A007BB4BA /* cita_tuyo para que lo tomes.txt in Resources */,
 				E92F635B2AB3E1C2007BB4BA /* conf_tu puedes perdonar el pecado.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1926,7 +1555,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E92F61152AB3ADA2007BB4BA /* SideMenuView.swift in Sources */,
 				E92F64532AB78EE6007BB4BA /* ModelData.xcdatamodeld in Sources */,
 				E99F9CC62AC4682B00169084 /* CoreDataController.swift in Sources */,
 				19B255C02AFC47C30093104F /* FrasesModel.swift in Sources */,
@@ -2097,7 +1725,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_ASSET_PATHS = "\"Neville_iOS/Preview Content\"";
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				ENABLE_PREVIEWS = YES;
@@ -2136,7 +1764,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_ASSET_PATHS = "\"Neville_iOS/Preview Content\"";
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				ENABLE_PREVIEWS = YES;

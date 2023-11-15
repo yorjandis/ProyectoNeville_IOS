@@ -156,12 +156,14 @@ struct TxtContentModel{
         
         var array : [String] = [] //Almacena los name files leidos del bundle para el contenido txt
 
-        let arrayOfPrefix = ["conf_","cita_","preg_","ayud_"] //Yor en un futuro esto debe poder escalarse autom. con nuevo contenido
+       // let arrayOfPrefix = ["conf_","cita_","preg_","ayud_"] //Yor en un futuro esto debe poder escalarse autom. con nuevo contenido
         
  
-        for prefix in arrayOfPrefix{
+       // for prefix in arrayOfPrefix{
             
-            array = self.FilesListToArray(prefix : prefix) //Obteniendo el arreglo de nombre de ficheros...
+            
+            
+            array = self.FilesListToArray(prefix : "conf_") //Obteniendo el arreglo de nombre de ficheros...
             
             //Populando... segun el tipo de elemento (prefijo)
             for item in array {
@@ -169,10 +171,10 @@ struct TxtContentModel{
                 entidad.id = UUID()
                 entidad.isfav = false
                 entidad.nota = ""
-                entidad.type = prefix //!!!determina el tipo de contenido. es el prefijo del txt!!!
+                entidad.type = "conf_" //!!!determina el tipo de contenido. es el prefijo del txt!!!
                 entidad.namefile = item
             }
-        }
+        //}
         
         if context.hasChanges {
             try? context.save()
