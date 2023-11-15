@@ -169,9 +169,7 @@ struct SideMenuView: View {
                     Spacer()
                 }
                 .padding(.bottom, 10)
-                .onSubmit {
-                    print("yorjandis")
-                }
+                
             }
             
            

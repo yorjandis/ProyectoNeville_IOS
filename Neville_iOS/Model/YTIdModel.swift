@@ -128,8 +128,6 @@ struct YTIdModel{
         
        if UserDefaults.standard.bool(forKey: Constant.UD_isYTvideoPupulate) {return} //Sale si la tabla TxtFiles ya esta populada
         
-        print("yor: Esta es la primera vez")
-        
         var array : [(String, String)] = [] //Almacena los idVideos,title en forma de tupla
 
         let arrayOfNameFiles = ["listidvideoconf","listidaudiolibros","listidgregg","list1",

@@ -119,7 +119,6 @@ struct TxtContentModel{
 
         for item in list {
             let temp = UtilFuncs.ReadFileToArray("\(item.type?.lowercased() ?? "")" + "\(item.namefile?.lowercased() ?? "")")
-            //print("\(item.type?.lowercased() ?? "")" + "\(item.namefile?.lowercased() ?? "")")
             for item2 in temp {
                 if item2.contains(texto){
                     result.append(item)

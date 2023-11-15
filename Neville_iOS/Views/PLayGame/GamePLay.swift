@@ -277,13 +277,13 @@ struct viewResult: View{
                 if viewResult.type {
                     Menu{
                             Button("Recuperar Fallos"){
-                                print(listado.count)
+                                
                                 for item in listFallifos{
                                     listado.append(Pregunta(pregunta: item, isCorrect: true))
                                 }
                                 listFallifos.removeAll()
                                 Fallidos = 0
-                                print(listado.count)
+                                
                             }
                         }label:{
                            Image(systemName: "wand.and.stars")
