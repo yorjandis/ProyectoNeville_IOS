@@ -199,23 +199,24 @@ struct TabButtonBar : View{
     @Binding    var colorFondo_b : Color
     
 
-    let  tabButtons = ["book.pages.fill","info.square","house.circle.fill","book", "gear"]
+    @State var  tabButtons = ["book.pages.fill","gamecontroller","house.circle.fill","book", "gear"]
     
     var body: some View{
         
         //Creando La bottom Bar con los item del menu
         HStack{
-            ForEach (tabButtons, id: \.self ){ idx in
-            
+            ForEach(tabButtons, id:\.self){idx in
                 switch idx{
                 case "book.pages.fill":
-                    
-                    NavigationLink{TxtListView(type: .conf, title: "Conferencias")
-                    }label: {makeItemlabel(image: idx)}
-                    
-                case "info.square":
                     NavigationLink{
-                        ContentTxtShowView(fileName: "biografia", title: "Biografía")
+                        TxtListView(type: .conf, title: "Lecturas")
+                    }label: {
+                        makeItemlabel(image: idx)
+                    }
+                    
+                case "gamecontroller":
+                    NavigationLink{
+                        GamePLay()
                     }label: {
                         makeItemlabel(image: idx)  
                     }
@@ -225,8 +226,7 @@ struct TabButtonBar : View{
                         showOptionView = true
                     }label: {
                         makeItemlabel(image: idx)
-                            .font(.system(size: 30))
-                            
+                            .font(.system(size: 30))    
                     }
                     
                 case "book":

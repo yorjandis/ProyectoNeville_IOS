@@ -28,12 +28,4 @@
         <attribute name="nota" optional="YES" attributeType="String"/>
         <attribute name="type" optional="YES" attributeType="String"/>
     </entity>
-    <entity name="YTvideo" representedClassName="YTvideo" syncable="YES" codeGenerationType="class">
-        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
-        <attribute name="idvideo" optional="YES" attributeType="String"/>
-        <attribute name="isfav" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
-        <attribute name="nota" optional="YES" attributeType="String"/>
-        <attribute name="titlevideo" optional="YES" attributeType="String"/>
-        <attribute name="type" optional="YES" attributeType="String"/>
-    </entity>
 </model>

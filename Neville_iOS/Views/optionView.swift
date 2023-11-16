@@ -34,6 +34,7 @@ struct optionView: View {
                                 Image(systemName: "gamecontroller")
                                 Text("Jugar!")
                             }
+                            .foregroundStyle(.black).bold()
                         }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
                         
                         
@@ -44,6 +45,7 @@ struct optionView: View {
                                 Image(systemName: "note.text")
                                 Text("Notas")
                             }
+                            .foregroundStyle(.black).bold()
                         }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
                         
                     }
@@ -57,6 +59,7 @@ struct optionView: View {
                                 Image(systemName: "book")
                                 Text("Diario")
                             }
+                            .foregroundStyle(.black).bold()
                         }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
                         
                         Button{
@@ -66,6 +69,7 @@ struct optionView: View {
                                 Image(systemName: "bookmark.fill")
                                 Text("Frases")
                             }
+                            .foregroundStyle(.black).bold()
                         }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
                         
                     }
@@ -80,6 +84,7 @@ struct optionView: View {
                                 Image(systemName: "qrcode.viewfinder")
                                 Text("Leer QR")
                             }
+                            .foregroundStyle(.black).bold()
                         }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
                         
                         Button{
@@ -89,6 +94,7 @@ struct optionView: View {
                                 Image(systemName: "qrcode")
                                 Text("Crear QR")
                             }
+                            .foregroundStyle(.black).bold()
                         }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
                         
                     } 
@@ -101,6 +107,7 @@ struct optionView: View {
                                 Image(systemName: "gear")
                                 Text("Setting")
                             }
+                            .foregroundStyle(.black).bold()
                         }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
    
                     }
@@ -126,7 +133,7 @@ struct optionView: View {
                 ReadQRCode()
             }
             .sheet(isPresented: $showCodeGenerate){
-                GenerateQRView(string: "", footer: "")
+                GenerateQRView(string: "", footer: "", showImage: false)
                     .presentationDetents([.large])
                     .presentationDragIndicator(.hidden)
             }

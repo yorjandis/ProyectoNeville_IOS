@@ -14,7 +14,7 @@ struct GenerateQRView : View {
     
     @State var  string : String
     @State var  footer : String = ""
-    @State var  showImage = false
+    @State var  showImage = true //muestra la imagen del QR ya generado
     
    
     
@@ -25,7 +25,7 @@ struct GenerateQRView : View {
                     .ignoresSafeArea()
                 
                 VStack(spacing: 10){
-                    Text("Modifique el texto debajo de la imagen y utilice el botón: Generar")
+                    Text("Modifique el texto y utilice el botón: Generar")
                     Divider()
                     if showImage {
                         Image(uiImage: UIImage(data: QRModel().generateQRCode(text: string)!)!)

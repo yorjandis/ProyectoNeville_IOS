@@ -11,10 +11,10 @@ struct settingView: View {
     
     @Environment(\.colorScheme) var theme
     
-    @AppStorage(Constant.UD_setting_fontFrasesSize) var fontSizeFrases : Int = 24
-    @AppStorage(Constant.UD_setting_fontContentSize) var fontSizeContenido : Int = 18
-    @AppStorage(Constant.UD_setting_fontMenuSize) var fontSizeMenu : Int = 18
-    @AppStorage(Constant.UD_setting_fontListaSize) var fontSizeLista : Int = 18
+    @AppStorage(Constant.UD_setting_fontFrasesSize)     var fontSizeFrases      : Int = 24
+    @AppStorage(Constant.UD_setting_fontContentSize)    var fontSizeContenido   : Int = 18
+    @AppStorage(Constant.UD_setting_fontMenuSize)       var fontSizeMenu        : Int = 18
+    @AppStorage(Constant.UD_setting_fontListaSize)      var fontSizeLista       : Int = 18
     
  
     @State var ColorFrase       : Color = SettingModel().loadColor(forkey: Constant.UD_setting_color_frases)

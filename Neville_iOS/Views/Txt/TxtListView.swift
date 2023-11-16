@@ -75,8 +75,11 @@ struct TxtListView: View {
                 .onAppear{
                     listado.removeAll()
                     listado = TxtContentModel().getAllItems(type: self.type)
+                    print(listado.count)
                 }
             }
+            .navigationTitle(self.title)
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar{
                             HStack{
                                 Spacer()
@@ -100,7 +103,7 @@ struct TxtListView: View {
                                     Button("Buscar en títulos"){
                                         showAlertSearchInTitle = true
                                     }
-                                    Button("Buscar en \(self.title)"){
+                                    Button("Buscar en el contenido"){
                                         showAlertSearchInTxt = true
                                     }
                                     

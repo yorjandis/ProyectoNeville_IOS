@@ -9,7 +9,7 @@ import SwiftUI
 
 //Almacenamiento de variables globales:
 struct Constant{
-    static let appName      = "Neville Para Todos"
+    static let appName      = "La Ley"
     static let appVersion   = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
     
     //nameFile in Staff:
