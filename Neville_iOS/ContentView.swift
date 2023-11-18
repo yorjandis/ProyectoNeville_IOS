@@ -14,10 +14,10 @@ struct ContentView: View {
     @State  private var fontSize : CGFloat = 24 //Setting para Frases
     @State  private var fontSizeMenu : CGFloat = 24 //Setting para menu
     
-    @State private var colorFrase : Color = SettingModel().loadColor(forkey: Constant.UD_setting_color_frases)
+    @State private var colorFrase : Color = Color.black
     
-    @State private var colorFondo_a : Color = SettingModel().loadColor(forkey: Constant.UD_setting_color_main_a)
-    @State private var colorFondo_b : Color = SettingModel().loadColor(forkey: Constant.UD_setting_color_main_b)
+    @State private var colorFondo_a : Color = Color.red
+    @State private var colorFondo_b : Color = Color.orange
     
     
 
@@ -39,6 +39,11 @@ struct ContentView: View {
                         }
                     Spacer()
                     TabButtonBar(showSideMenu: $showSideMenu, fontFrasesSize: $fontSize, fontMenuSize: $fontSizeMenu, colorFrase: $colorFrase, colorFondo_a: $colorFondo_a, colorFondo_b: $colorFondo_b)
+                }
+                .onAppear{
+                    colorFrase      = SettingModel().loadColor(forkey: Constant.UD_setting_color_frases)
+                    colorFondo_a    = SettingModel().loadColor(forkey: Constant.UD_setting_color_main_a)
+                    colorFondo_b    = SettingModel().loadColor(forkey: Constant.UD_setting_color_main_b)
                 }
                 
                 
@@ -199,7 +204,7 @@ struct TabButtonBar : View{
     @Binding    var colorFondo_b : Color
     
 
-    @State var  tabButtons = ["book.pages.fill","gamecontroller","house.circle.fill","book", "gear"]
+    @State var  tabButtons = ["book.pages.fill","gamecontroller","house.circle.fill","book", "note.text"]
     
     var body: some View{
         
@@ -233,8 +238,8 @@ struct TabButtonBar : View{
                     NavigationLink{ DiarioListView()
                     }label: {makeItemlabel(image: idx)}
                     
-                case "gear":
-                    NavigationLink{ settingView()
+                case "note.text":
+                    NavigationLink{ ListNotasViews()
                     }label: {makeItemlabel(image: idx)}
 
                 default: EmptyView()

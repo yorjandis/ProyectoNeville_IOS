@@ -25,92 +25,106 @@ struct optionView: View {
                 
                 Color(Color.black.opacity(0.7))
                 
-                VStack(spacing: 20){
-                    HStack(spacing: 20){
-                        Button{
-                        showGame = true
-                        }label: {
-                            HStack {
-                                Image(systemName: "gamecontroller")
-                                Text("Jugar!")
+                ScrollView(.horizontal) {
+                    HStack(alignment: .center, spacing: 10) {
+                        VStack(spacing: 20){
+                            HStack(spacing: 20){
+                                Button{
+                                showGame = true
+                                }label: {
+                                    HStack {
+                                        Image(systemName: "gamecontroller")
+                                        Text("Jugar!")
+                                    }
+                                    .foregroundStyle(.black).bold()
+                                }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
+                                
+                                
+                                Button{
+                                    showNotasSheet = true
+                                }label: {
+                                    HStack {
+                                        Image(systemName: "note.text")
+                                        Text("Notas")
+                                    }
+                                    .foregroundStyle(.black).bold()
+                                }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
+                                
                             }
-                            .foregroundStyle(.black).bold()
-                        }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
-                        
-                        
-                        Button{
-                            showNotasSheet = true
-                        }label: {
-                            HStack {
-                                Image(systemName: "note.text")
-                                Text("Notas")
+                            
+                            HStack(spacing: 20){
+                                
+                                Button{
+                                showDiarioSheet = true
+                                }label: {
+                                    HStack {
+                                        Image(systemName: "book")
+                                        Text("Diario")
+                                    }
+                                    .foregroundStyle(.black).bold()
+                                }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
+                                
+                                Button{
+                                    showFrasesList = true
+                                }label: {
+                                    HStack {
+                                        Image(systemName: "bookmark.fill")
+                                        Text("Frases")
+                                    }
+                                    .foregroundStyle(.black).bold()
+                                }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
+                                
                             }
-                            .foregroundStyle(.black).bold()
-                        }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
+                            
+                            HStack(spacing: 20){
+                                
+                                Button{
+                                showCodeScanner = true
+                                }label: {
+                                    HStack {
+                                        Image(systemName: "qrcode.viewfinder")
+                                        Text("Leer QR")
+                                    }
+                                    .foregroundStyle(.black).bold()
+                                }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
+                                
+                                Button{
+                                    showCodeGenerate = true
+                                }label: {
+                                    HStack {
+                                        Image(systemName: "qrcode")
+                                        Text("Crear QR")
+                                    }
+                                    .foregroundStyle(.black).bold()
+                                }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
+                                
+                            }
+                            
+                            HStack(spacing: 20){
+                                
+                                Button{
+                                    showSeeting = true
+                                }label: {
+                                    HStack {
+                                        Image(systemName: "gear")
+                                        Text("Setting")
+                                    }
+                                    .foregroundStyle(.black).bold()
+                                }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
+           
+                            }
+                        }
+                        .padding(.horizontal, 20)
+                        //Yorjandis esta es otra sección lateral: Poner otros contenidos
+                        VStack(spacing: 20){
+                            HStack(spacing: 20){
+                                
+                            }
+                        }
+                        .padding(.horizontal, 20)
                         
                     }
-                    
-                    HStack(spacing: 20){
-                        
-                        Button{
-                        showDiarioSheet = true
-                        }label: {
-                            HStack {
-                                Image(systemName: "book")
-                                Text("Diario")
-                            }
-                            .foregroundStyle(.black).bold()
-                        }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
-                        
-                        Button{
-                            showFrasesList = true
-                        }label: {
-                            HStack {
-                                Image(systemName: "bookmark.fill")
-                                Text("Frases")
-                            }
-                            .foregroundStyle(.black).bold()
-                        }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
-                        
-                    }
-                    
-                    
-                    HStack(spacing: 20){
-                        
-                        Button{
-                        showCodeScanner = true
-                        }label: {
-                            HStack {
-                                Image(systemName: "qrcode.viewfinder")
-                                Text("Leer QR")
-                            }
-                            .foregroundStyle(.black).bold()
-                        }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
-                        
-                        Button{
-                            showCodeGenerate = true
-                        }label: {
-                            HStack {
-                                Image(systemName: "qrcode")
-                                Text("Crear QR")
-                            }
-                            .foregroundStyle(.black).bold()
-                        }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
-                        
-                    } 
-                    HStack(spacing: 20){
-                        
-                        Button{
-                            showSeeting = true
-                        }label: {
-                            HStack {
-                                Image(systemName: "gear")
-                                Text("Setting")
-                            }
-                            .foregroundStyle(.black).bold()
-                        }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
-   
-                    }
+         
                 }
                 .frame(maxWidth: .infinity , maxHeight: .infinity)
                 .background(.ultraThinMaterial)

@@ -91,6 +91,12 @@ struct settingView: View {
                         
                         
                     }
+                    .onAppear{
+                        ColorFrase       = SettingModel().loadColor(forkey: Constant.UD_setting_color_frases)
+                        ColorPrimario    = SettingModel().loadColor(forkey: Constant.UD_setting_color_main_a)
+                        ColorSecundario  = SettingModel().loadColor(forkey: Constant.UD_setting_color_main_b)
+                    }
+                    
                     
                     
                 }
@@ -108,7 +114,7 @@ struct settingView: View {
                             .bold()
                             .font(.headline)
                     }
-                    Link(destination: URL(string:  "https://projectsypg.mozello.com/productos/neville/privacy-police/")!) {
+                    Link(destination: URL(string:  "https://projectsypg.mozello.com/productos/neville/privacy-police-ios/")!) {
                         Label("Política de Privacidad", systemImage: "link")
                             .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
                             .bold()

@@ -1202,6 +1202,7 @@
 			mainGroup = E95B934A2AAFBB2600B5E2B5;
 			packageReferences = (
 				197D2A362AF9854E00486014 /* XCRemoteSwiftPackageReference "CodeScanner" */,
+				1924C6042B08681D00748A1F /* XCRemoteSwiftPackageReference "CodableFiles" */,
 			);
 			productRefGroup = E95B93542AAFBB2600B5E2B5 /* Products */;
 			projectDirPath = "";
@@ -1695,7 +1696,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Neville-iOS-Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = Neville;
+				INFOPLIST_KEY_CFBundleDisplayName = "La Ley";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Se requiere permisos para usar la cámara";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Se requiere permisos para usar Autenticación segura para Abrir el Diario";
@@ -1734,7 +1735,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Neville-iOS-Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = Neville;
+				INFOPLIST_KEY_CFBundleDisplayName = "La Ley";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Se requiere permisos para usar la cámara";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Se requiere permisos para usar Autenticación segura para Abrir el Diario";
@@ -1784,6 +1785,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		1924C6042B08681D00748A1F /* XCRemoteSwiftPackageReference "CodableFiles" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/egzonpllana/CodableFiles.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.0;
+			};
+		};
 		197D2A362AF9854E00486014 /* XCRemoteSwiftPackageReference "CodeScanner" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/twostraws/CodeScanner";

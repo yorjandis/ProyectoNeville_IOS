@@ -45,7 +45,7 @@ struct TxtListView: View {
                             .foregroundStyle(.linearGradient(colors: [item.isfav ? .orange : .gray, item.nota!.isEmpty ? .gray : .green], startPoint: .leading, endPoint: .trailing))
                         
                         NavigationLink{
-                            ContentTxtShowView(entidad: item)
+                            ContentTxtShowView(entidad: item, title: item.namefile ?? "")
                         }label: {
                             Text(item.namefile ?? "")
                         }
