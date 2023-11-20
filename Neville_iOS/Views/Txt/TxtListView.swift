@@ -75,7 +75,6 @@ struct TxtListView: View {
                 .onAppear{
                     listado.removeAll()
                     listado = TxtContentModel().getAllItems(type: self.type)
-                    print(listado.count)
                 }
             }
             .navigationTitle(self.title)
