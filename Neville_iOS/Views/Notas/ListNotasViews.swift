@@ -9,6 +9,7 @@
 
 import SwiftUI
 import CoreData
+import LocalAuthentication
 
 
 
@@ -25,89 +26,132 @@ struct ListNotasViews: View {
     //Buscar en titulos de notas
     @State var showAlertSearchTitle = false
     @State var textFieldTitle = ""
+    //Autenticacion FaceID
+   private  let contextLA = LAContext()
+    @State var canOpenNotas = false
+    @State var showAlert = false
+    @State var alertMessage = ""
  
     var body: some View {
         NavigationStack {
-            List(list,id: \.id){nota in
-               Row(notas: $list, nota: nota)
-            }
-            Spacer()
-            Divider()
-            HStack(spacing: 30){
-                Spacer()
-                
-                Button("Volver"){
-                    dimiss()
+            //Solo muestra el contenido
+            if canOpenNotas {
+                List(list,id: \.id){nota in
+                   Row(notas: $list, nota: nota)
                 }
-                .padding(.trailing, 20)
-            }
-            .padding(.bottom, 20)
-            .navigationTitle("Notas")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar{
-                HStack{
-                    Menu{
-                        Button("Todas las notas"){
-                            withAnimation {
-                                list.removeAll()
-                                list = NotasModel().getAllNotas()
+                .onAppear {
+                    list = NotasModel().getAllNotas()
+                }
+                Spacer()
+                Divider()
+                HStack(spacing: 30){
+                    Spacer()
+                    
+                    Button("Volver"){
+                        dimiss()
+                    }
+                    .padding(.trailing, 20)
+                }
+                .padding(.bottom, 20)
+                .navigationTitle("Notas")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar{
+                    HStack{
+                        Menu{
+                            Button("Todas las notas"){
+                                withAnimation {
+                                    list.removeAll()
+                                    list = NotasModel().getAllNotas()
+                                }
                             }
-                        }
-                        Button("Notas Favoritas"){
-                            withAnimation {
-                                list.removeAll()
-                                list = NotasModel().getFavNotas()
+                            Button("Notas Favoritas"){
+                                withAnimation {
+                                    list.removeAll()
+                                    list = NotasModel().getFavNotas()
+                                }
+                                
+                            }
+                            Button("Buscar en Notas"){
+                                showAlertSearch = true
+                            }
+                            Button("Buscar en títulos"){
+                                showAlertSearchTitle = true
                             }
                             
-                        }  
-                        Button("Buscar en Notas"){
-                            showAlertSearch = true
+                            
+                        }label: {
+                            Image(systemName: "line.3.horizontal.decrease")
+                                .foregroundStyle(theme ==  .dark ? .white :  .black)
                         }
-                        Button("Buscar en títulos"){
-                            showAlertSearchTitle = true
+                        Button{
+                            showAddNoteView = true
+                        }label: {
+                            Image(systemName: "plus")
                         }
-                        
-                        
-                    }label: {
-                        Image(systemName: "line.3.horizontal.decrease")
-                            .foregroundStyle(theme ==  .dark ? .white :  .black)
                     }
-                    Button{
-                        showAddNoteView = true
-                    }label: {
-                        Image(systemName: "plus")
+                    
+                }
+                .sheet(isPresented: $showAddNoteView) {
+                    AddNotasView(notas: $list)
+                        .presentationDetents([.medium])
+                        .presentationDragIndicator(.hidden)
+                    
+                }
+                .alert("Buscar en Notas", isPresented: $showAlertSearch){
+                    TextField("", text: $textField, axis: .vertical)
+                    Button("Buscar"){
+                        let temp = NotasModel().searchTextInNotas(text: textField, donde: .nota)
+                        if temp.count > 0 {
+                            list.removeAll()
+                            list = temp
+                        }
                     }
                 }
-                
-            }
-            .sheet(isPresented: $showAddNoteView) {
-                AddNotasView(notas: $list)
-                    .presentationDetents([.medium])
-                    .presentationDragIndicator(.hidden)
-                
-            }
-            .alert("Buscar en Notas", isPresented: $showAlertSearch){
-                TextField("", text: $textField, axis: .vertical)
-                Button("Buscar"){
-                    let temp = NotasModel().searchTextInNotas(text: textField, donde: .nota)
-                    if temp.count > 0 {
-                        list.removeAll()
-                        list = temp
+                .alert("Buscar en título de Notas", isPresented: $showAlertSearchTitle){
+                    TextField("", text: $textFieldTitle, axis: .vertical)
+                    Button("Buscar"){
+                        let temp = NotasModel().searchTextInNotas(text: textFieldTitle, donde: .titulo)
+                        if temp.count > 0 {
+                            list.removeAll()
+                            list = temp
+                        }
                     }
                 }
-            }
-            .alert("Buscar en título de Notas", isPresented: $showAlertSearchTitle){
-                TextField("", text: $textFieldTitle, axis: .vertical)
-                Button("Buscar"){
-                    let temp = NotasModel().searchTextInNotas(text: textFieldTitle, donde: .titulo)
-                    if temp.count > 0 {
-                        list.removeAll()
-                        list = temp
+                .alert(isPresented: $showAlert){
+                    Alert(title: Text("Notas"), message: Text(alertMessage))
+                }
+            } 
+            else{
+                ZStack{
+                    VStack(spacing: 20) {
+                        Text("Se ha habilitado la protección de las Notas")
+                            .foregroundStyle(.orange.opacity(0.7))
+                            .font(.system(size: 18))
+                            .bold()
+                        Button{
+                            autent()
+                        }label: {
+                            Image(systemName: "key.viewfinder")
+                                .font(.system(size: 60))
+                                .foregroundStyle(Color.orange.opacity(0.7))
+                                .symbolEffect(.pulse, isActive: true)
+                        }
                     }
+                    
                 }
             }
         }
+        .onAppear {
+            if UserDefaults.standard.bool(forKey: AppCons.UD_setting_NotasFaceID){
+                canOpenNotas = false
+            }else{
+                canOpenNotas = true
+            }
+        }
+
     }
+    
+   
     
     func updateYorj(nota : Notas){
         
@@ -118,6 +162,35 @@ struct ListNotasViews: View {
         
         
     }
+    
+//Autentificación con FaceID
+    func autent(){
+        var error : NSError?
+        if contextLA.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error){
+            
+            contextLA.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: "Por favor autentícate para tener acceso a Notas") { success, error in
+                        if success {
+                             //Habilitación del contenido
+                            withAnimation {
+                                canOpenNotas = true
+                            }
+                            
+                        } else {
+                            alertMessage = "Error en la autenticación biométrica"
+                            showAlert = true
+                        }
+                    }
+            
+            
+        }else{
+            UserDefaults.standard.setValue(false, forKey: AppCons.UD_setting_NotasFaceID)
+            alertMessage = "El dispositivo no soporta autenticación Biométrica. Se ha deshabilitado la protección de Notas"
+            showAlert = true
+            canOpenNotas = true //Deshabilitando la protección del Diario.
+        }
+    }
+    
+    
 
 }
 
@@ -129,6 +202,7 @@ struct Row : View {
 
     @State private var confirm = false
     @State private var showUpdateNoteView = false
+    
     @Binding var notas : [Notas] //Listado de Notas cargadas
     var nota: Notas //La nota para esta fila
     @State private var showConfirmDialogDeleteNota = false
@@ -149,7 +223,15 @@ struct Row : View {
                 }
             }label: {
                 Image(systemName: "heart")
-                    .tint(.black)
+                    .tint(.orange)
+            }
+            NavigationLink{
+                let isfav = nota.isfav
+                let texto = "nota>>\(nota.title ?? "")>>\(nota.nota ?? "")>>isfav:\(isfav == true  ? "Si" : "No")"
+                GenerateQRView(string: texto, footer: texto, textFiel: false)
+            }label: {
+                Image(systemName: "qrcode")
+                    .tint(.gray)
             }
         }
         .swipeActions(edge: .trailing){ //Eliminar una nota

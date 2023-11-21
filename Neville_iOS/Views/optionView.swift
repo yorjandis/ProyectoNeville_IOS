@@ -16,8 +16,8 @@ struct optionView: View {
     @State private var showCodeScanner = false
     @State private var showCodeGenerate = false
     @State private var showGame = false
-    private let colorGradientButton = [SettingModel().loadColor(forkey: Constant.UD_setting_color_main_a),
-                                       SettingModel().loadColor(forkey: Constant.UD_setting_color_main_b)]
+    private let colorGradientButton = [SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_a),
+                                       SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_b)]
     private let sizeWigth : CGFloat = 130
     
     var body: some View {

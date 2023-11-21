@@ -118,7 +118,7 @@ struct TxtContentModel{
         var result : [TxtCont] = []
 
         for item in list {
-            let temp = UtilFuncs.ReadFileToArray("\(item.type?.lowercased() ?? "")" + "\(item.namefile?.lowercased() ?? "")")
+            let temp = UtilFuncs.FileReadToArray("\(item.type?.lowercased() ?? "")" + "\(item.namefile?.lowercased() ?? "")")
             for item2 in temp {
                 if item2.contains(texto){
                     result.append(item)
@@ -152,7 +152,7 @@ struct TxtContentModel{
     ///Popula la Tabla Conf. Esto se hace la primera vez que se instala la app
     func populateTable(){
         
-       if UserDefaults.standard.bool(forKey: Constant.UD_isTxtFilesPupulate) {return} //Sale si la tabla TxtFiles ya esta populada
+       if UserDefaults.standard.bool(forKey: AppCons.UD_isTxtFilesPupulate) {return} //Sale si la tabla TxtFiles ya esta populada
         
         var array : [String] = [] //Almacena los name files leidos del bundle para el contenido txt
 
@@ -183,7 +183,7 @@ struct TxtContentModel{
         
         //almacena en UserDefault un flag que indica que la tabla se ha populado
         if self.getAllItems(type: .conf).count > 0 { //Significa que se populó la tabla con al menos las conferencias
-            UserDefaults.standard.setValue(true, forKey: Constant.UD_isTxtFilesPupulate)
+            UserDefaults.standard.setValue(true, forKey: AppCons.UD_isTxtFilesPupulate)
         }
             
            

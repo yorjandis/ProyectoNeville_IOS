@@ -8,7 +8,7 @@
 import SwiftUI
 
 //Almacenamiento de variables globales:
-struct Constant{
+struct AppCons{
     static let appName      = "La Ley"
     static let appVersion   = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
     
@@ -45,13 +45,12 @@ struct Constant{
     static let UD_setting_color_main_a      = "settig_color_main_a"
     static let UD_setting_color_main_b      = "settig_color_main_b"
     
-    
+    static let UD_setting_NotasFaceID       = "setting_NotasFaceID"
     
 
 }
 
 ///Enumeración para los distintos tipos de elementos de contenido:
-///El valor raw representa el prefijo/nombre del fichero en el bundle
 enum TypeOfTxtContent{
     case conf, aud_Conf, frases, citas, preguntas, ayudas, biografia, NA
     
@@ -80,17 +79,9 @@ enum TypeOfTxtContent{
         }
     }
     
-    //Devuelve el valor self de acuerdo al prefijo entrado (lo contrario de getPrefix )
-    
 
     
 }
-
-
-///Enum para listar videos de youtube
-///
-
-
 
 
 
@@ -98,15 +89,17 @@ struct UtilFuncs{
     
 
     ///ReadFileToArray : Devuelve un array conteniendo todas las líneas de texto de un fichero txt
-   static  func ReadFileToArray(_ filetxt : String)->[String]{
+    /// - Parameter - filetxt: el nombre del fichero sin la extension, para ser procesado
+    /// - Returns - Devuelve un arreglo de String. cada línea del fichero es una item del arreglo
+   static  func FileReadToArray(_ filename : String)->[String]{
         
         var result = [String]()
         
-        if let content = Bundle.main.url(forResource: filetxt , withExtension: "txt") {
+        if let content = Bundle.main.url(forResource: filename , withExtension: "txt") {
             if let fileContens = try? String(contentsOf: content){
                 
                 result = fileContens.components(separatedBy: .newlines)
-                if result.last == "" {
+                while result.last == ""{
                     result.removeLast()
                 }
             }
@@ -115,11 +108,12 @@ struct UtilFuncs{
         
     }
 
-    //Lee el contenido del TXt y lo devuelve como String
-   static func FileRead(_ file : String)->String{
+    ///Lee el contenido del TXt y lo devuelve como String
+    ///
+   static func FileRead(_ fileName : String)->String{
         
         var result = ""
-       let temp = "\(file.lowercased())"
+       let temp = "\(fileName.lowercased())"
         
         if let gg = Bundle.main.url(forResource: temp, withExtension: "txt") {
             

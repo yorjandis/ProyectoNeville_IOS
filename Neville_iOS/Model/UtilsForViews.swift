@@ -48,3 +48,12 @@ struct GradientButtonStyle: ViewModifier {
 }
 
 
+//Extensión de Bundle para obtener el nombre de la App
+extension Bundle {
+    ///  Obtiene el nombre de la App
+    var displayName: String? {
+            return object(forInfoDictionaryKey: "CFBundleDisplayName") as? String ??
+                object(forInfoDictionaryKey: "CFBundleName") as? String
+    }
+}
+

@@ -246,7 +246,7 @@ struct DiarioListView: View {
         var error : NSError?
         if contextLA.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error){
             
-            contextLA.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: "Por favor autentícate para temer acceso a su Diario") { success, error in
+            contextLA.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: "Por favor autentícate para tener acceso a su Diario") { success, error in
                         if success {
                              //Habilitación del contenido
                             withAnimation {

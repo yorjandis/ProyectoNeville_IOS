@@ -20,7 +20,7 @@ struct FrasesModel {
     
     ///Variable que indica si se ha populado la tabla frase (consulta a UserDefault)
    private  var isFrasesPopulated : Bool {
-        return UserDefaults.standard.bool(forKey: Constant.UD_isfrasesLoaded)
+        return UserDefaults.standard.bool(forKey: AppCons.UD_isfrasesLoaded)
     }
     
     
@@ -48,7 +48,7 @@ struct FrasesModel {
      func getfrasesArrayFromTxtFile() ->[String] {
         var array = [String]()
         
-        array = UtilFuncs.ReadFileToArray(Constant.FileListFrases)
+        array = UtilFuncs.FileReadToArray(AppCons.FileListFrases)
         
         return array
         
@@ -188,7 +188,7 @@ struct FrasesModel {
             }
                 
                 //almacena una marca que indica que la tabla frase ha sido populada
-                UserDefaults.standard.setValue(true, forKey: Constant.UD_isfrasesLoaded)
+                UserDefaults.standard.setValue(true, forKey: AppCons.UD_isfrasesLoaded)
      
     }
     

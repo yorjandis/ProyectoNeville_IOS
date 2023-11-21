@@ -5,7 +5,7 @@ import CoreData
 
 struct ContentView: View {
     
-    @State  private var showSideMenu = false //Para Abrir/cerrar Menu Lateral
+
     @State  private var showAddNoteList = false //Abre la view AddNota
     
     @State  private var frase : Frases = FrasesModel().getRandomFraseEntity()
@@ -18,12 +18,8 @@ struct ContentView: View {
     
     @State private var colorFondo_a : Color = Color.red
     @State private var colorFondo_b : Color = Color.orange
-    
-    
 
-    
-    
-    //esto es solo un ejemplo Yprjandis
+    //esto es solo un ejemplo Yorjandis
 
     var body: some View {
         NavigationStack{
@@ -33,38 +29,32 @@ struct ContentView: View {
                     Spacer()
                     FrasesView(frase: $frase, isHaveNote: $isHaveNote, fontSize: $fontSize, colorFrase: $colorFrase)
                         .onAppear {
-                            fontSize = CGFloat(UserDefaults.standard.integer(forKey: Constant.UD_setting_fontFrasesSize))
-                            colorFrase = SettingModel().loadColor(forkey: Constant.UD_setting_color_frases)
+                            fontSize = CGFloat(UserDefaults.standard.integer(forKey: AppCons.UD_setting_fontFrasesSize))
+                            colorFrase = SettingModel().loadColor(forkey: AppCons.UD_setting_color_frases)
                             
                         }
                     Spacer()
-                    TabButtonBar(showSideMenu: $showSideMenu, fontFrasesSize: $fontSize, fontMenuSize: $fontSizeMenu, colorFrase: $colorFrase, colorFondo_a: $colorFondo_a, colorFondo_b: $colorFondo_b)
+                    TabButtonBar(fontFrasesSize: $fontSize, fontMenuSize: $fontSizeMenu, colorFrase: $colorFrase, colorFondo_a: $colorFondo_a, colorFondo_b: $colorFondo_b)
                 }
                 .onAppear{
-                    colorFrase      = SettingModel().loadColor(forkey: Constant.UD_setting_color_frases)
-                    colorFondo_a    = SettingModel().loadColor(forkey: Constant.UD_setting_color_main_a)
-                    colorFondo_b    = SettingModel().loadColor(forkey: Constant.UD_setting_color_main_b)
+                    colorFrase      = SettingModel().loadColor(forkey: AppCons.UD_setting_color_frases)
+                    colorFondo_a    = SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_a)
+                    colorFondo_b    = SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_b)
                 }
                 
                 
                 
             }
             .modifier(mof_ColorGradient(colorInit: $colorFondo_a, colorEnd: $colorFondo_b))
-            .navigationTitle( Constant.appName)
+            .navigationTitle( AppCons.appName)
             .navigationBarTitleDisplayMode(.inline)
-            .onTapGesture {
-                withAnimation {
-                    showSideMenu = false
-                }
-               
-            }
             .gesture(DragGesture().onEnded{ value in
                 let start = value.startLocation
                 let end = value.location
                 
                 if start.x > end.x + 24 { //right->left
                     withAnimation {
-                        showSideMenu = true }
+                        }
                 }else if start.y > end.y + 24 {//up
                     frase = FrasesModel().getRandomFraseEntity()
                 }
@@ -124,7 +114,7 @@ struct FrasesView : View{
                     animationHeart += 1
                 }label: {
                     Image(systemName: isFav ? "heart.fill" : "heart")
-                        .foregroundStyle(isFav ? Constant.favoriteColorOn : Constant.favoriteColorOff)
+                        .foregroundStyle(isFav ? AppCons.favoriteColorOn : AppCons.favoriteColorOff)
                         .symbolEffect(.bounce, value: animationHeart)
                 }
                 .onAppear{
@@ -193,7 +183,6 @@ struct FrasesView : View{
 //CustomTabView
 struct TabButtonBar : View{
     
-    @Binding    var showSideMenu : Bool
     @State      var showOptionView = false
     @Binding    var fontFrasesSize : CGFloat //Setting
     @Binding    var fontMenuSize : CGFloat //Setting$
@@ -270,13 +259,13 @@ struct TabButtonBar : View{
                 .presentationDragIndicator(.hidden)
             //Al ocultar las opciones: se actualiza el tamaño de fuente de las frases
                 .onDisappear(perform: {
-                    fontFrasesSize = CGFloat(UserDefaults.standard.integer(forKey: Constant.UD_setting_fontFrasesSize))
-                    fontMenuSize = CGFloat(UserDefaults.standard.integer(forKey: Constant.UD_setting_fontMenuSize))
+                    fontFrasesSize = CGFloat(UserDefaults.standard.integer(forKey: AppCons.UD_setting_fontFrasesSize))
+                    fontMenuSize = CGFloat(UserDefaults.standard.integer(forKey: AppCons.UD_setting_fontMenuSize))
                     
-                    colorFrase = SettingModel().loadColor(forkey: Constant.UD_setting_color_frases)
+                    colorFrase = SettingModel().loadColor(forkey: AppCons.UD_setting_color_frases)
                     
-                    colorFondo_a = SettingModel().loadColor(forkey: Constant.UD_setting_color_main_a)
-                    colorFondo_b = SettingModel().loadColor(forkey: Constant.UD_setting_color_main_b)
+                    colorFondo_a = SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_a)
+                    colorFondo_b = SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_b)
                 })
         }
     }

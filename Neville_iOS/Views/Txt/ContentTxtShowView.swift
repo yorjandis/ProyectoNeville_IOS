@@ -28,7 +28,7 @@ struct ContentTxtShowView: View {
     //Setting: Tamaño de fuente por defecto
     @State private var fontSizeContent : CGFloat = 18
 
-    @AppStorage(Constant.UD_setting_fontContentSize)  var fontSizeContenido  = 18
+    @AppStorage(AppCons.UD_setting_fontContentSize)  var fontSizeContenido  = 18
 
 
     
@@ -96,7 +96,7 @@ struct ContentTxtShowView: View {
             .navigationBarTitle(title, displayMode: .inline)
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {
-                fontSizeContent = CGFloat(UserDefaults.standard.integer(forKey: Constant.UD_setting_fontContentSize))
+                fontSizeContent = CGFloat(UserDefaults.standard.integer(forKey: AppCons.UD_setting_fontContentSize))
                 fontSizeContenido = Int(self.fontSizeContent)
             }
             .toolbar{

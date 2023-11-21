@@ -6,20 +6,29 @@
 //
 
 import SwiftUI
+import LocalAuthentication
 
 struct settingView: View {
     
     @Environment(\.colorScheme) var theme
     
-    @AppStorage(Constant.UD_setting_fontFrasesSize)     var fontSizeFrases      : Int = 24
-    @AppStorage(Constant.UD_setting_fontContentSize)    var fontSizeContenido   : Int = 18
-    @AppStorage(Constant.UD_setting_fontMenuSize)       var fontSizeMenu        : Int = 18
-    @AppStorage(Constant.UD_setting_fontListaSize)      var fontSizeLista       : Int = 18
+    @AppStorage(AppCons.UD_setting_fontFrasesSize)     var fontSizeFrases      : Int = 24
+    @AppStorage(AppCons.UD_setting_fontContentSize)    var fontSizeContenido   : Int = 18
+    @AppStorage(AppCons.UD_setting_fontMenuSize)       var fontSizeMenu        : Int = 18
+    @AppStorage(AppCons.UD_setting_fontListaSize)      var fontSizeLista       : Int = 18
+    @AppStorage(AppCons.UD_setting_NotasFaceID)        var setting_NotasFaceID : Bool = false
     
  
-    @State var ColorFrase       : Color = SettingModel().loadColor(forkey: Constant.UD_setting_color_frases)
-    @State var ColorPrimario    : Color = SettingModel().loadColor(forkey: Constant.UD_setting_color_main_a)
-    @State var ColorSecundario  : Color = SettingModel().loadColor(forkey: Constant.UD_setting_color_main_b)
+    @State var ColorFrase       : Color = SettingModel().loadColor(forkey: AppCons.UD_setting_color_frases)
+    @State var ColorPrimario    : Color = SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_a)
+    @State var ColorSecundario  : Color = SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_b)
+    
+    //Autenti
+    private let contextLA = LAContext()
+    @State var canOpenToggleButton = false
+    @State var showAlert = false
+    @State var alertMessage = ""
+    
 
 
     
@@ -67,7 +76,7 @@ struct settingView: View {
                         .foregroundColor(ColorFrase)
                         .bold()
                         .onChange(of: ColorFrase, initial: true) { oldValue, newValue in
-                            SettingModel().saveColor(forkey: Constant.UD_setting_color_frases, color: newValue)
+                            SettingModel().saveColor(forkey: AppCons.UD_setting_color_frases, color: newValue)
                         }
                 }
                 
@@ -76,12 +85,12 @@ struct settingView: View {
                     VStack(alignment: .center){
                         ColorPicker("Color primario", selection: $ColorPrimario)
                             .onChange(of: ColorPrimario, initial: true) { oldValue, newValue in
-                                SettingModel().saveColor(forkey: Constant.UD_setting_color_main_a, color: newValue)
+                                SettingModel().saveColor(forkey: AppCons.UD_setting_color_main_a, color: newValue)
                             }
                             .padding(.bottom, 10)
                         ColorPicker("Color Secundario", selection: $ColorSecundario)
                             .onChange(of: ColorSecundario, initial: true) { oldValue, newValue in
-                                SettingModel().saveColor(forkey: Constant.UD_setting_color_main_b, color: newValue)
+                                SettingModel().saveColor(forkey: AppCons.UD_setting_color_main_b, color: newValue)
                             }
                         
                         Text("")
@@ -92,12 +101,25 @@ struct settingView: View {
                         
                     }
                     .onAppear{
-                        ColorFrase       = SettingModel().loadColor(forkey: Constant.UD_setting_color_frases)
-                        ColorPrimario    = SettingModel().loadColor(forkey: Constant.UD_setting_color_main_a)
-                        ColorSecundario  = SettingModel().loadColor(forkey: Constant.UD_setting_color_main_b)
+                        ColorFrase       = SettingModel().loadColor(forkey: AppCons.UD_setting_color_frases)
+                        ColorPrimario    = SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_a)
+                        ColorSecundario  = SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_b)
                     }
                     
                     
+                    
+                }
+                
+                Section("Notas Generales"){
+                    if canOpenToggleButton {
+                        Toggle("Proteger las Notas con FaceID", isOn: $setting_NotasFaceID)
+                    }else{
+                        Button{
+                            autent()
+                        }label: {
+                            Label("Protegido por FaceID", systemImage: "key.viewfinder")
+                        }
+                    }
                     
                 }
 
@@ -109,7 +131,7 @@ struct settingView: View {
                             .font(.headline)
                     }
                     Link(destination: URL(string:  "https://projectsypg.mozello.com/productos/neville/")!) {
-                        Label("Abrir pagina del proyecto", systemImage: "swiftdata")
+                        Label("Abrir página del proyecto", systemImage: "swiftdata")
                             .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
                             .bold()
                             .font(.headline)
@@ -127,11 +149,40 @@ struct settingView: View {
                 
                 .navigationTitle("Configuración")
                 .navigationBarTitleDisplayMode(.inline)
+                .alert(isPresented: $showAlert) {
+                    Alert(title: Text("Configuración"), message: Text(alertMessage))
+                }
             }
             
             
         }
     }
+    
+    
+    func autent(){
+        var error : NSError?
+        if contextLA.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error){
+            
+            contextLA.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: "Por favor autentícate para tener acceso a su Diario") { success, error in
+                        if success {
+                             //Habilitación del contenido
+                            withAnimation {
+                                canOpenToggleButton = true
+                            }
+                            
+                        } else {
+                            print("Error en la autenticación biométrica")
+                        }
+                    }
+            
+            
+        }else{
+            alertMessage = "El dispositivo no soporta autenticación Biométrica. Se ha deshabilitado la protección del Diario"
+            showAlert = true
+            canOpenToggleButton = true //Deshabilitando la protección del Diario.
+        }
+    }
+    
 }
 
 

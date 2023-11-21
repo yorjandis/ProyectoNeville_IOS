@@ -19,7 +19,7 @@ struct GameModel{
     func getList()->[Pregunta]{
         var result : [Pregunta] = []
         
-        let array = UtilFuncs.ReadFileToArray(nameFile)
+        let array = UtilFuncs.FileReadToArray(nameFile)
 
         for item in array{
             let temp2 = item.components(separatedBy: "-")
