@@ -56,7 +56,12 @@ struct DiarioListView: View {
                             cardItem(diario: item, list: $list)
                                 .padding(15)
                                 .frame(maxWidth: .infinity)
+                            #if os(iOS)
                                 .foregroundStyle(Color.black)
+                            #endif
+                            #if os(macOS)
+                                .foregroundStyle(theme == .dark ?  Color.black : Color.white)
+                            #endif
                                 .background(.ultraThinMaterial)
                                 .clipShape(RoundedRectangle(cornerRadius: 10))
                                 .shadow(radius: 5)
@@ -335,6 +340,9 @@ struct cardItem: View{
             //Contenido
                 Text(diario.content ?? "")
                     .font(.system(size: 18))  
+                    #if os(macOS)
+                    .foregroundStyle(theme == .dark ? Color.white : Color.black)
+                    #endif
                     .italic()
                     .fontDesign(.serif)
                     .fontWeight(.heavy)

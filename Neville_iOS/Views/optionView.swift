@@ -107,7 +107,7 @@ struct optionView: View {
                                 }label: {
                                     HStack {
                                         Image(systemName: "gear")
-                                        Text("Setting")
+                                        Text("Ajustes")
                                     }
                                     .foregroundStyle(.black).bold()
                                 }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))

@@ -32,6 +32,9 @@ struct settingView: View {
 
 
     
+
+
+    
     var body: some View {
         NavigationStack{
             Form{
@@ -117,13 +120,22 @@ struct settingView: View {
                         Button{
                             autent()
                         }label: {
-                            Label("Protegido por FaceID", systemImage: "key.viewfinder")
+                            Label("Opción protegida por FaceID", systemImage: "key.viewfinder")
                         }
                     }
                     
                 }
 
-                Section("Contacto"){
+                Section("Contacto & Información"){
+
+                        ShareLink(item: URL(string: "https://apps.apple.com/es/app/la-ley/id6472626696")!) {
+                                Label("Compartir la App", image: "Icon-29")
+                                .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
+                                .bold()
+                                .font(.headline)
+                                                    
+                        }
+
                     Link(destination: URL(string:  "https://projectsypg.mozello.com/contacto/")!) {
                         Label("Enviarme un comentario", systemImage: "exclamationmark.warninglight.fill")
                             .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
@@ -136,6 +148,7 @@ struct settingView: View {
                             .bold()
                             .font(.headline)
                     }
+
                     Link(destination: URL(string:  "https://projectsypg.mozello.com/productos/neville/privacy-police-ios/")!) {
                         Label("Política de Privacidad", systemImage: "link")
                             .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
@@ -147,11 +160,12 @@ struct settingView: View {
                 
                 
                 
-                .navigationTitle("Configuración")
+                .navigationTitle("Ajustes")
                 .navigationBarTitleDisplayMode(.inline)
                 .alert(isPresented: $showAlert) {
                     Alert(title: Text("Configuración"), message: Text(alertMessage))
                 }
+                
             }
             
             

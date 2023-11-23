@@ -18,6 +18,7 @@
 		197D2A382AF9854E00486014 /* CodeScanner in Frameworks */ = {isa = PBXBuildFile; productRef = 197D2A372AF9854E00486014 /* CodeScanner */; };
 		197D2A3B2AFA9FE000486014 /* DiarioModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 197D2A3A2AFA9FE000486014 /* DiarioModel.swift */; };
 		197D2A3E2AFAA3FC00486014 /* DiarioListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 197D2A3D2AFAA3FB00486014 /* DiarioListView.swift */; };
+		199DA0672B0EAC5800DEED62 /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = 199DA0662B0EAC5800DEED62 /* Home.swift */; };
 		19B255C02AFC47C30093104F /* FrasesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19B255BF2AFC47C30093104F /* FrasesModel.swift */; };
 		19B255C22AFC489D0093104F /* NotasModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19B255C12AFC489D0093104F /* NotasModel.swift */; };
 		19B255C42AFC51FC0093104F /* FraseAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19B255C32AFC51FC0093104F /* FraseAddView.swift */; };
@@ -383,6 +384,7 @@
 		197D2A392AF9858900486014 /* Neville-iOS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Neville-iOS-Info.plist"; sourceTree = SOURCE_ROOT; };
 		197D2A3A2AFA9FE000486014 /* DiarioModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiarioModel.swift; sourceTree = "<group>"; };
 		197D2A3D2AFAA3FB00486014 /* DiarioListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiarioListView.swift; sourceTree = "<group>"; };
+		199DA0662B0EAC5800DEED62 /* Home.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
 		19B255BF2AFC47C30093104F /* FrasesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrasesModel.swift; sourceTree = "<group>"; };
 		19B255C12AFC489D0093104F /* NotasModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotasModel.swift; sourceTree = "<group>"; };
 		19B255C32AFC51FC0093104F /* FraseAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FraseAddView.swift; sourceTree = "<group>"; };
@@ -1169,6 +1171,7 @@
 				197D2A392AF9858900486014 /* Neville-iOS-Info.plist */,
 				E95B93562AAFBB2600B5E2B5 /* Neville_iOSApp.swift */,
 				E95B93582AAFBB2600B5E2B5 /* ContentView.swift */,
+				199DA0662B0EAC5800DEED62 /* Home.swift */,
 				E92F61182AB3E05C007BB4BA /* Staff */,
 				E92F63712AB468D7007BB4BA /* Model */,
 				E92F644E2AB6EF5A007BB4BA /* Views */,
@@ -1631,6 +1634,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E92F64532AB78EE6007BB4BA /* ModelData.xcdatamodeld in Sources */,
+				199DA0672B0EAC5800DEED62 /* Home.swift in Sources */,
 				E99F9CC62AC4682B00169084 /* CoreDataController.swift in Sources */,
 				19B255C02AFC47C30093104F /* FrasesModel.swift in Sources */,
 				193B6EAD2AF1B1D10003E897 /* NetModel.swift in Sources */,
@@ -1681,7 +1685,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 11;
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FrasesWigget/Info.plist;
@@ -1692,7 +1696,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.6;
+				MARKETING_VERSION = 1.0.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.FrasesWigget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1709,7 +1713,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 11;
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FrasesWigget/Info.plist;
@@ -1720,7 +1724,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.6;
+				MARKETING_VERSION = 1.0.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.FrasesWigget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1858,7 +1862,7 @@
 				CODE_SIGN_ENTITLEMENTS = Neville_iOS/Neville_iOS.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 11;
 				DEVELOPMENT_ASSET_PATHS = "\"Neville_iOS/Preview Content\"";
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				ENABLE_PREVIEWS = YES;
@@ -1878,7 +1882,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.6;
+				MARKETING_VERSION = 1.0.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1900,7 +1904,7 @@
 				CODE_SIGN_ENTITLEMENTS = Neville_iOS/Neville_iOS.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 11;
 				DEVELOPMENT_ASSET_PATHS = "\"Neville_iOS/Preview Content\"";
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				ENABLE_PREVIEWS = YES;
@@ -1920,7 +1924,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.6;
+				MARKETING_VERSION = 1.0.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
