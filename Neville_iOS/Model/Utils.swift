@@ -12,6 +12,8 @@ struct AppCons{
     static let appName      = "La Ley"
     static let appVersion   = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
     
+    static let AppGroupName = "group.com.ypg.nev.group" //Nombre del contenedor compartido
+    
     //nameFile in Staff:
     static let FileListFrases           = "listfrases"
     static let FileBiografia            = "biografia"

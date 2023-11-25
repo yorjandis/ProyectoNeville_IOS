@@ -8,7 +8,7 @@
 import Foundation
 import CoreData
 
-class CoreDataController {
+final class CoreDataController : Sendable {
     
     let persistenContainer : NSPersistentContainer
     
@@ -33,11 +33,13 @@ class CoreDataController {
     }
     
    private init(){
+
         persistenContainer = NSPersistentContainer(name: "ModelData")
         persistenContainer.loadPersistentStores{(description, error) in
             if let error = error {
                 print(error.localizedDescription)
             }
+            
         }
         
         

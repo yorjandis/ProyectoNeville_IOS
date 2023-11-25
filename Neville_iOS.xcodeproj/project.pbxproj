@@ -13,12 +13,14 @@
 		1949D5192B02B1E200DFD46D /* QRModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1949D5182B02B1E200DFD46D /* QRModel.swift */; };
 		194F11292AEC79D5009FA23E /* settingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 194F11282AEC79D5009FA23E /* settingView.swift */; };
 		194F112B2AEF23E8009FA23E /* settingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 194F112A2AEF23E8009FA23E /* settingModel.swift */; };
+		1954CDAA2B1152BC0093DDF0 /* AppIntentWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 199DA0682B102AA600DEED62 /* AppIntentWidget.swift */; };
 		197D2A322AF96FC200486014 /* gnerateQRView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 197D2A312AF96FC200486014 /* gnerateQRView.swift */; };
 		197D2A352AF9853000486014 /* ReadQRCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 197D2A342AF9853000486014 /* ReadQRCode.swift */; };
 		197D2A382AF9854E00486014 /* CodeScanner in Frameworks */ = {isa = PBXBuildFile; productRef = 197D2A372AF9854E00486014 /* CodeScanner */; };
 		197D2A3B2AFA9FE000486014 /* DiarioModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 197D2A3A2AFA9FE000486014 /* DiarioModel.swift */; };
 		197D2A3E2AFAA3FC00486014 /* DiarioListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 197D2A3D2AFAA3FB00486014 /* DiarioListView.swift */; };
 		199DA0672B0EAC5800DEED62 /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = 199DA0662B0EAC5800DEED62 /* Home.swift */; };
+		199DA0692B102AA600DEED62 /* AppIntentWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 199DA0682B102AA600DEED62 /* AppIntentWidget.swift */; };
 		19B255C02AFC47C30093104F /* FrasesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19B255BF2AFC47C30093104F /* FrasesModel.swift */; };
 		19B255C22AFC489D0093104F /* NotasModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19B255C12AFC489D0093104F /* NotasModel.swift */; };
 		19B255C42AFC51FC0093104F /* FraseAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19B255C32AFC51FC0093104F /* FraseAddView.swift */; };
@@ -379,12 +381,14 @@
 		1949D5182B02B1E200DFD46D /* QRModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRModel.swift; sourceTree = "<group>"; };
 		194F11282AEC79D5009FA23E /* settingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = settingView.swift; sourceTree = "<group>"; };
 		194F112A2AEF23E8009FA23E /* settingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = settingModel.swift; sourceTree = "<group>"; };
+		1954CDA92B1152740093DDF0 /* FrasesWiggetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FrasesWiggetExtension.entitlements; sourceTree = "<group>"; };
 		197D2A312AF96FC200486014 /* gnerateQRView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = gnerateQRView.swift; sourceTree = "<group>"; };
 		197D2A342AF9853000486014 /* ReadQRCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadQRCode.swift; sourceTree = "<group>"; };
 		197D2A392AF9858900486014 /* Neville-iOS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Neville-iOS-Info.plist"; sourceTree = SOURCE_ROOT; };
 		197D2A3A2AFA9FE000486014 /* DiarioModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiarioModel.swift; sourceTree = "<group>"; };
 		197D2A3D2AFAA3FB00486014 /* DiarioListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiarioListView.swift; sourceTree = "<group>"; };
 		199DA0662B0EAC5800DEED62 /* Home.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
+		199DA0682B102AA600DEED62 /* AppIntentWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntentWidget.swift; sourceTree = "<group>"; };
 		19B255BF2AFC47C30093104F /* FrasesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrasesModel.swift; sourceTree = "<group>"; };
 		19B255C12AFC489D0093104F /* NotasModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotasModel.swift; sourceTree = "<group>"; };
 		19B255C32AFC51FC0093104F /* FraseAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FraseAddView.swift; sourceTree = "<group>"; };
@@ -794,6 +798,7 @@
 			children = (
 				19E0BE182B0C661A00E149A5 /* FrasesWiggetBundle.swift */,
 				19E0BE1A2B0C661A00E149A5 /* FrasesWigget.swift */,
+				199DA0682B102AA600DEED62 /* AppIntentWidget.swift */,
 				19E0BE1C2B0C661B00E149A5 /* Assets.xcassets */,
 				19E0BE1E2B0C661B00E149A5 /* Info.plist */,
 			);
@@ -1148,6 +1153,7 @@
 		E95B934A2AAFBB2600B5E2B5 = {
 			isa = PBXGroup;
 			children = (
+				1954CDA92B1152740093DDF0 /* FrasesWiggetExtension.entitlements */,
 				E95B93552AAFBB2600B5E2B5 /* Neville_iOS */,
 				19E0BE172B0C661A00E149A5 /* FrasesWigget */,
 				19E0BDEB2B0B412D00E149A5 /* Frameworks */,
@@ -1626,6 +1632,7 @@
 				19E0BE1B2B0C661A00E149A5 /* FrasesWigget.swift in Sources */,
 				19E0BE192B0C661A00E149A5 /* FrasesWiggetBundle.swift in Sources */,
 				19E0BE2B2B0C76E000E149A5 /* Utils.swift in Sources */,
+				199DA0692B102AA600DEED62 /* AppIntentWidget.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1640,6 +1647,7 @@
 				193B6EAD2AF1B1D10003E897 /* NetModel.swift in Sources */,
 				197D2A352AF9853000486014 /* ReadQRCode.swift in Sources */,
 				1949D5192B02B1E200DFD46D /* QRModel.swift in Sources */,
+				1954CDAA2B1152BC0093DDF0 /* AppIntentWidget.swift in Sources */,
 				194F112B2AEF23E8009FA23E /* settingModel.swift in Sources */,
 				E99F9CCA2ACB75E800169084 /* ListNotasViews.swift in Sources */,
 				19B255C62AFC68940093104F /* FrasesUpdateView.swift in Sources */,
@@ -1683,6 +1691,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = FrasesWiggetExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 11;
@@ -1711,6 +1720,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = FrasesWiggetExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 11;

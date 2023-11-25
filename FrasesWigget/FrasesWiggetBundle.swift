@@ -10,6 +10,7 @@ import SwiftUI
 
 @main
 struct FrasesWiggetBundle: WidgetBundle {
+
     var body: some Widget {
         FrasesWigget()
     }
