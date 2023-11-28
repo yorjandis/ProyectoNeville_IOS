@@ -14,6 +14,7 @@ struct AppCons{
     
     static let AppGroupName = "group.com.ypg.nev.group" //Nombre del contenedor compartido
     
+    
     //nameFile in Staff:
     static let FileListFrases           = "listfrases"
     static let FileBiografia            = "biografia"
@@ -26,7 +27,7 @@ struct AppCons{
     static var favoriteColorOff : Color = Color.black
     static var favoriteColorOn  : Color  = Color.orange
     
-    //UserDefault(UD_):
+    //UserDefault Standard (UD_):
     
     /// Para conocer si se ha populado la tabla Frases
     static var UD_isfrasesLoaded = "isfrasesLoaded"
@@ -48,6 +49,14 @@ struct AppCons{
     static let UD_setting_color_main_b      = "settig_color_main_b"
     
     static let UD_setting_NotasFaceID       = "setting_NotasFaceID"
+    
+    //UserDefault compartido:(UD_shared_)
+    static let UD_shared_FraseWidgetActual = "FraseWidgetActual" //Donde se almacena la frase actualmente cargada en el widget
+    
+    //DeepLinks:
+    static let DeepLink_url_Diario  = "widget:/com.ypg.nev.diario"
+    static let DeepLink_url_Notas   = "widget:/com.ypg.nev.notas"
+    static let DeepLink_url_Frase   = "widget:/com.ypg.nev.frase"
     
 
 }
@@ -88,8 +97,6 @@ enum TypeOfTxtContent{
 
 
 struct UtilFuncs{
-    
-
     ///ReadFileToArray : Devuelve un array conteniendo todas las líneas de texto de un fichero txt
     /// - Parameter - filetxt: el nombre del fichero sin la extension, para ser procesado
     /// - Returns - Devuelve un arreglo de String. cada línea del fichero es una item del arreglo
@@ -137,6 +144,13 @@ struct UtilFuncs{
 
 
 
+//Permite acceder al UserDefaul compartido : UserDefault.shared
+extension UserDefaults {
+    static func shared()->UserDefaults{
+        return UserDefaults(suiteName: AppCons.AppGroupName) ?? .standard
+    }
+    
+}
 
 
 

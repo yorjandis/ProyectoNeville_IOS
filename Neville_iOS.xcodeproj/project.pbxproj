@@ -25,6 +25,10 @@
 		19B255C22AFC489D0093104F /* NotasModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19B255C12AFC489D0093104F /* NotasModel.swift */; };
 		19B255C42AFC51FC0093104F /* FraseAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19B255C32AFC51FC0093104F /* FraseAddView.swift */; };
 		19B255C62AFC68940093104F /* FrasesUpdateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19B255C52AFC68940093104F /* FrasesUpdateView.swift */; };
+		19BBC58A2B1592D800FBB079 /* biografia.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19BBC5892B1592D800FBB079 /* biografia.txt */; };
+		19BBC58C2B1592E800FBB079 /* Citas in Resources */ = {isa = PBXBuildFile; fileRef = 19BBC58B2B1592E800FBB079 /* Citas */; };
+		19BBC58E2B15931C00FBB079 /* Ayudas in Resources */ = {isa = PBXBuildFile; fileRef = 19BBC58D2B15931C00FBB079 /* Ayudas */; };
+		19BBC5902B15932600FBB079 /* Preguntas in Resources */ = {isa = PBXBuildFile; fileRef = 19BBC58F2B15932600FBB079 /* Preguntas */; };
 		19C7483C2B045E6D004D52E6 /* cuestionario.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19C7483B2B045E6D004D52E6 /* cuestionario.txt */; };
 		19D23D002AFD817E008C63BA /* TxtContentModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D23CFF2AFD817E008C63BA /* TxtContentModel.swift */; };
 		19D23D022AFD969E008C63BA /* TxtListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D23D012AFD969E008C63BA /* TxtListView.swift */; };
@@ -393,6 +397,10 @@
 		19B255C12AFC489D0093104F /* NotasModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotasModel.swift; sourceTree = "<group>"; };
 		19B255C32AFC51FC0093104F /* FraseAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FraseAddView.swift; sourceTree = "<group>"; };
 		19B255C52AFC68940093104F /* FrasesUpdateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrasesUpdateView.swift; sourceTree = "<group>"; };
+		19BBC5892B1592D800FBB079 /* biografia.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = biografia.txt; sourceTree = "<group>"; };
+		19BBC58B2B1592E800FBB079 /* Citas */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Citas; sourceTree = "<group>"; };
+		19BBC58D2B15931C00FBB079 /* Ayudas */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Ayudas; sourceTree = "<group>"; };
+		19BBC58F2B15932600FBB079 /* Preguntas */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Preguntas; sourceTree = "<group>"; };
 		19C7483B2B045E6D004D52E6 /* cuestionario.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cuestionario.txt; sourceTree = "<group>"; };
 		19D23CFF2AFD817E008C63BA /* TxtContentModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TxtContentModel.swift; sourceTree = "<group>"; };
 		19D23D012AFD969E008C63BA /* TxtListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TxtListView.swift; sourceTree = "<group>"; };
@@ -808,9 +816,13 @@
 		E92F61182AB3E05C007BB4BA /* Staff */ = {
 			isa = PBXGroup;
 			children = (
+				19BBC5892B1592D800FBB079 /* biografia.txt */,
 				19C7483B2B045E6D004D52E6 /* cuestionario.txt */,
 				E92F64562AB7D2BA007BB4BA /* listfrases.txt */,
 				E92F61192AB3E06F007BB4BA /* Conf */,
+				19BBC58F2B15932600FBB079 /* Preguntas */,
+				19BBC58D2B15931C00FBB079 /* Ayudas */,
+				19BBC58B2B1592E800FBB079 /* Citas */,
 			);
 			path = Staff;
 			sourceTree = "<group>";
@@ -1383,11 +1395,13 @@
 				E92F62B12AB3E1C2007BB4BA /* conf_elevate.txt in Resources */,
 				E92F62552AB3E1C2007BB4BA /* conf_hombre inmortal.txt in Resources */,
 				E92F63422AB3E1C2007BB4BA /* conf_la biblia tu biografia.txt in Resources */,
+				19BBC58E2B15931C00FBB079 /* Ayudas in Resources */,
 				E92F63102AB3E1C2007BB4BA /* conf_el deseo.txt in Resources */,
 				E92F62C02AB3E1C2007BB4BA /* conf_virnes santo - pascua.txt in Resources */,
 				E92F634B2AB3E1C2007BB4BA /* conf_el plan de redencion de dios.txt in Resources */,
 				E92F62B72AB3E1C2007BB4BA /* conf_verdad, la palabra de dios.txt in Resources */,
 				E92F631D2AB3E1C2007BB4BA /* conf_camina sobre el agua.txt in Resources */,
+				19BBC5902B15932600FBB079 /* Preguntas in Resources */,
 				E92F62AD2AB3E1C2007BB4BA /* conf_es cristo tu imaginacion.txt in Resources */,
 				E92F635F2AB3E1C2007BB4BA /* conf_he aqui el soñador.txt in Resources */,
 				E92F62452AB3E1C2007BB4BA /* conf_siente profundamente.txt in Resources */,
@@ -1447,6 +1461,7 @@
 				E92F628E2AB3E1C2007BB4BA /* conf_la ley.txt in Resources */,
 				E92F62EA2AB3E1C2007BB4BA /* conf_eres un ser cosmico.txt in Resources */,
 				E92F62C12AB3E1C2007BB4BA /* conf_la pregunta de sami.txt in Resources */,
+				19BBC58A2B1592D800FBB079 /* biografia.txt in Resources */,
 				E92F62942AB3E1C2007BB4BA /* conf_la imaginacion se cumple.txt in Resources */,
 				E92F63492AB3E1C2007BB4BA /* conf_la criatura mas sabia de dios.txt in Resources */,
 				E92F62722AB3E1C2007BB4BA /* conf_como usar tu inmaginacion.txt in Resources */,
@@ -1501,6 +1516,7 @@
 				E92F63402AB3E1C2007BB4BA /* conf_la causa oculta.txt in Resources */,
 				E92F625B2AB3E1C2007BB4BA /* conf_tu verdadero proposito.txt in Resources */,
 				E92F62B02AB3E1C2007BB4BA /* conf_se el amo del humor.txt in Resources */,
+				19BBC58C2B1592E800FBB079 /* Citas in Resources */,
 				E92F627D2AB3E1C2007BB4BA /* conf_afirma la realidad de nuestra propia grandesa.txt in Resources */,
 				E92F63542AB3E1C2007BB4BA /* conf_moises - elias - jesus.txt in Resources */,
 				E92F63072AB3E1C2007BB4BA /* conf_la crucifixion.txt in Resources */,

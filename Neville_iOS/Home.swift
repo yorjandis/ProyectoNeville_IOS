@@ -134,10 +134,17 @@ struct FrasesView : View{
                 .font(.system(size: fontSize, design: .rounded))
                 .foregroundStyle(colorFrase)
                 .modifier(mof_frases())
+                .id(frase.frase)
+                .animation(.smooth(duration: 2), value: frase.frase)
                 .onTapGesture {
                     frase = FrasesModel().getRandomFraseEntity()
                     readFraseStatus(fraseEntity: frase, isfav: &isFav, isHaveNote: &isHaveNote)
                 }
+                .onOpenURL(perform: { url in
+                    if url.description == AppCons.DeepLink_url_Frase {
+                        frase = FrasesModel().GetFraseFromTextFrase(frase: UserDefaults.shared().string(forKey: AppCons.UD_shared_FraseWidgetActual) ?? "")
+                    }
+                })
             
             HStack(spacing:15){
                 Spacer()

@@ -18,7 +18,5 @@ struct TestAppIntent : AppIntent{
         WidgetCenter.shared.reloadTimelines(ofKind: "FrasesWigget") //reload the widget! Available in Siri as "Actualiza frases"
         return .result()
     }
-    
-    
-    
+
 }

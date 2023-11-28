@@ -427,11 +427,21 @@ struct FrasesModel {
         }
     }
     
-
+    ///Devuelve una entity Frase de  acuerdo al texto de la frase
+    /// - Parameter -  frase : el texto de la frase a filtrar
+    ///  - Return - Devuelve una entity Frase? que corresponde con la frase filtrada, de lo contrario devuelve una frase aleatoria
+    func GetFraseFromTextFrase(frase : String)->Frases{
+        let array = getAllFrases()
+        
+        for i in array{
+            
+            if i.frase == frase {
+                return i
+            }
+        }
+        return getRandomFraseEntity()
+    }
     
 
-    
-    
-    
 }//struct
 

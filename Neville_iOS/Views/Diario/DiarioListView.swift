@@ -374,7 +374,7 @@ struct cardItem: View{
                             Image(systemName: isfav ? "heart.fill" : "heart")
                                 .foregroundStyle(isfav ? .orange : .black)
                                 .padding(.trailing, 10)
-                                .symbolEffect(.pulse, value: animValue)
+                                .symbolEffect(.bounce, value: animValue)
                         }
                         .onAppear{
                             isfav = diario.isFav
