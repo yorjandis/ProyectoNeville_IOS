@@ -9,21 +9,19 @@
 import Foundation
 import SwiftUI
 import CoreData
-import AVFoundation
 
 
 struct ContentTxtShowView: View {
     
-    @Environment(\.dismiss) var dimiss
+    @Environment(\.dismiss) private var dimiss
     
-    @State var synthesizer = AVSpeechSynthesizer()
     
     //Para leer ficheros txt con prefijos
-    var entidad : TxtCont = TxtCont(context: CoreDataController.dC.context)
+    var entidad : TxtCont?
     
     //Si typeContent es .NA se deben de proveer estos campos
-    @State  var fileName : String = "" //Nombre del txt a abrir
-    @State var  title : String = ""
+    @State  var fileName    : String = "" //Nombre del txt a abrir
+    @State  var  title      : String = ""   //Titulo
     
     //Setting: Tamaño de fuente por defecto
     @State private var fontSizeContent : CGFloat = 18
@@ -38,11 +36,14 @@ struct ContentTxtShowView: View {
     var getContent : String {
         //Yor aqui va el código para leer el contenido del fichero
         if fileName == "" {
-            return UtilFuncs.FileRead("\(entidad.type ?? "")" + "\(entidad.namefile ?? "")")
+            if let enti = self.entidad {
+                return UtilFuncs.FileRead("\(enti.type ?? "")" + "\(enti.namefile ?? "")")
+            }
         }else{
             return UtilFuncs.FileRead(fileName)
         }
         
+        return ""
     }
 
     var body: some View {
@@ -54,8 +55,6 @@ struct ContentTxtShowView: View {
                         .font(.system(size: fontSizeContent, design: .rounded))
                         .fontDesign(.rounded)
                         .padding(.trailing, 20)
-                    
-            
                 }
                 .padding(.horizontal, 10)
                 
@@ -65,17 +64,6 @@ struct ContentTxtShowView: View {
                 //Barra Inferior (Permitir volver, favorito, etc)
                 HStack(spacing: 30){
                     Spacer()
-                    
-                    Button{
-                        let texto = self.getContent
-                        let utterance = AVSpeechUtterance(string: texto)
-                        utterance.voice = AVSpeechSynthesisVoice(language: "es-ES")
-                        //utterance.rate = 0.4
-
-                        synthesizer.speak(utterance)
-                    }label: {
-                        Image(systemName: "speaker.wave.3")
-                    }
                     
                     Slider(value: $fontSizeContent, in: 18...30) { Bool in
                         fontSizeContenido = Int(fontSizeContent)
@@ -104,11 +92,19 @@ struct ContentTxtShowView: View {
                     Spacer()
                     if self.fileName.isEmpty {
                         Menu{
+                            Button("Marcar como Favorita"){
+                                if let enti = self.entidad {
+                                    TxtContentModel().setFavState(entity: enti, state: true)
+                                }
+                            }
                             NavigationLink("Añadir nota asociada"){
-                                EditNoteTxtContentTxtShow(entidad: self.entidad)
+                                if let enti = self.entidad {
+                                    EditNoteTxtContentTxtShow(entidad: enti)
+                                }
                             }
                         }label: {
-                            Image(systemName: "plus")
+                            Image(systemName: "ellipsis")
+                                .rotationEffect(Angle(degrees: 135))
                         }
                     }
                     

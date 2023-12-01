@@ -162,7 +162,10 @@ struct FrasesView : View{
                 }
                 
                 Menu{
-                    Button("Convertir en Nota"){ }
+                    Button("Convertir en Nota"){ 
+                        //Guarda la nota poniendo como titulo una parte de la cadena
+                        _ = NotasModel().addNote(nota: frase.frase ?? "", title: "\(String(String(frase.frase ?? "").prefix(frase.frase!.count / 3 )))...")
+                    }
                     NavigationLink("Generar QR"){
                         GenerateQRView(string: frase.frase ?? "", footer: frase.frase ?? "")
                     }
@@ -233,9 +236,10 @@ struct TabButtonBar : View{
     
     @Binding    var colorFondo_a : Color
     @Binding    var colorFondo_b : Color
+    @State private var showSetting = false
     
 
-    @State var  tabButtons = ["book.pages.fill","gamecontroller","house.circle.fill","book", "note.text"]
+    @State var  tabButtons = ["book.pages.fill","gamecontroller","house.circle.fill","book", "gear"]
     
     var body: some View{
         
@@ -269,8 +273,8 @@ struct TabButtonBar : View{
                     NavigationLink{ DiarioListView()
                     }label: {makeItemlabel(image: idx)}
                     
-                case "note.text":
-                    NavigationLink{ ListNotasViews()
+                case "gear":
+                    Button{ showSetting = true
                     }label: {makeItemlabel(image: idx)}
 
                 default: EmptyView()
@@ -309,6 +313,9 @@ struct TabButtonBar : View{
                     colorFondo_b = SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_b)
                 })
         }
+        .sheet(isPresented: $showSetting, content: {
+            settingView()
+        })
     }
     
     //Create UI for reusability

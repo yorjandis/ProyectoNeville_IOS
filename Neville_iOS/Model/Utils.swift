@@ -30,13 +30,16 @@ struct AppCons{
     //UserDefault Standard (UD_):
     
     /// Para conocer si se ha populado la tabla Frases
-    static var UD_isfrasesLoaded = "isfrasesLoaded"
+    static var UD_isfrasesLoaded        = "isfrasesLoaded"
     
     /// Para conocer si se ha populado la tabla TxtFiles con el  contenido TXT(conferencias, citas, preguntas, ayudas...) : Bool
-    static var UD_isTxtFilesPupulate        = "isTxtFilesPupulate"
+    static var UD_isTxtFilesPupulate    = "isTxtFilesPupulate"
     
     /// Para conocer si se ha populado la tabla YTvideo  : Bool
-    static var UD_isYTvideoPupulate        = "isYTvideoPupulate"
+    static var UD_isYTvideoPupulate     = "isYTvideoPupulate"
+    
+    ///Para conocer si se ha populado la tabla Reflex: Bool
+    static var UD_isReflexPopulate      = "isReflexPopulate"
     
     //name values for setting:
     static let UD_setting_fontFrasesSize   = "setting_fontFrasesSize"

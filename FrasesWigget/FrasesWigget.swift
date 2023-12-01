@@ -63,10 +63,12 @@ struct Provider: TimelineProvider {
 struct FrasesWiggetEntryView : View {
     var entry: Provider.Entry
     
-    //DeepLink:
+    //DeepLinks:
     let url_Diario = URL(string:    AppCons.DeepLink_url_Diario)
     let url_Notas = URL(string:     AppCons.DeepLink_url_Notas)
     let url_Frase = URL(string:     AppCons.DeepLink_url_Frase)
+
+        
     
 
     var body: some View {

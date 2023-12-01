@@ -25,6 +25,8 @@ struct Neville_iOSApp: App {
         
         //YTIdModel().populateTable() //Popular la tabla YTVideos si es la primera vez
         
+        RefexModel().populateTableReflex() //Popula la tabla reflex si es la primera vez
+        
         //Carga los valores de Setting para Userdefault si es la primera vez
         if UserDefaults.standard.integer(forKey: AppCons.UD_setting_fontFrasesSize) == 0 {
             SettingModel().setValuesByDefault()

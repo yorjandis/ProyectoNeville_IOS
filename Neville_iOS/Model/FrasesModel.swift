@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreData
+import SwiftUI
 
 //Manejo de la tabla frases
 struct FrasesModel {
@@ -40,6 +41,18 @@ struct FrasesModel {
                 return defaultResult
             }
 
+    }
+    
+    //test: Recupera valores de acuerdo a cierto criterio
+    
+    func getTestYor(){
+        
+        let fetchRequest = NSFetchRequest<Frases>(entityName: "Frases")
+        fetchRequest.predicate = NSPredicate(format: "isfav == %@", true)
+        
+        
+        
+        
     }
   
     

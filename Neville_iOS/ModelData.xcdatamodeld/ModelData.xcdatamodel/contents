@@ -21,6 +21,13 @@
         <attribute name="nota" attributeType="String"/>
         <attribute name="title" optional="YES" attributeType="String"/>
     </entity>
+    <entity name="Reflex" representedClassName="Reflex" syncable="YES" codeGenerationType="class">
+        <attribute name="autor" optional="YES" attributeType="String"/>
+        <attribute name="id" optional="YES" attributeType="String"/>
+        <attribute name="isfav" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="texto" attributeType="String"/>
+        <attribute name="title" attributeType="String"/>
+    </entity>
     <entity name="TxtCont" representedClassName="TxtCont" syncable="YES" codeGenerationType="class">
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="isfav" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>

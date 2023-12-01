@@ -12,31 +12,39 @@ struct optionView: View {
     @State private var showNotasSheet = false
     @State private var showDiarioSheet = false
     @State private var showFrasesList = false
-    @State private var showSeeting = false
     @State private var showCodeScanner = false
     @State private var showCodeGenerate = false
     @State private var showGame = false
+    @State private var showBiografia = false
+    @State private var showCitas = false
+    @State private var showPreguntas = false
+    @State private var showAyudas = false
+    @State private var showReflex = false
+    
     private let colorGradientButton = [SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_a),
                                        SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_b)]
-    private let sizeWigth : CGFloat = 130
+    
+    private let sizeWigth : CGFloat = 150
     
     var body: some View {
+        NavigationStack{
             ZStack{
                 
                 Color(Color.black.opacity(0.7))
                 
                 ScrollView(.horizontal) {
-                    HStack(alignment: .center, spacing: 10) {
+                    HStack(alignment: .center, spacing: 5) {
                         primerGroup()
-                        .padding(.horizontal, 20)
+                        .padding(.horizontal, 7)
                         segundoGrupo()
-                        .padding(.horizontal, 20)
+                        .padding(.horizontal, 7)
                         tercerGrupo()
-                        .padding(.horizontal, 40)
+                        .padding(.horizontal, 45)
                         
                     }
          
                 }
+                .scrollIndicators(.hidden)
                 .frame(maxWidth: .infinity , maxHeight: .infinity)
                 .background(.ultraThinMaterial)
                 .shadow(radius: 5)
@@ -51,9 +59,6 @@ struct optionView: View {
             .sheet (isPresented: $showFrasesList){
                 FrasesListView()
             }
-            .sheet (isPresented: $showSeeting){
-                settingView()
-            }
             .sheet(isPresented: $showCodeScanner){
                 ReadQRCode()
             }
@@ -67,6 +72,33 @@ struct optionView: View {
                     .presentationDetents([.large])
                     .presentationDragIndicator(.hidden)
             }
+            .sheet(isPresented: $showBiografia){
+                ContentTxtShowView(fileName: "biografia", title: "Biografía")
+                    .presentationDetents([.large])
+                    .presentationDragIndicator(.hidden)
+            }
+            .sheet(isPresented: $showCitas){
+                TxtListView(type: .citas, title: "Citas")
+                    .presentationDetents([.large])
+                    .presentationDragIndicator(.hidden)
+            }
+            .sheet(isPresented: $showPreguntas){
+                TxtListView(type: .preg, title: "Preguntas Respuestas")
+                    .presentationDetents([.large])
+                    .presentationDragIndicator(.hidden)
+            }
+            .sheet(isPresented: $showAyudas){
+                TxtListView(type: .ayud, title: "Ayudas")
+                    .presentationDetents([.large])
+                    .presentationDragIndicator(.hidden)
+            }
+            .sheet(isPresented: $showReflex){
+                ReflexListView()
+                    .presentationDetents([.large])
+                    .presentationDragIndicator(.hidden)
+            }
+        }
+            
         }
     
     @ViewBuilder
@@ -76,46 +108,31 @@ struct optionView: View {
                 Button{
                 showGame = true
                 }label: {
-                    HStack {
-                        Image(systemName: "gamecontroller")
-                        Text("Jugar!")
-                    }
-                    .foregroundStyle(.black).bold()
+                    bloqueA("gamecontroller", "Evaluación")
                 }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
                 
                 
                 Button{
                     showNotasSheet = true
                 }label: {
-                    HStack {
-                        Image(systemName: "note.text")
-                        Text("Notas")
-                    }
-                    .foregroundStyle(.black).bold()
+                    bloqueA("note.text", "Notas")
                 }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
                 
             }
+            .padding(.top, 5)
             
             HStack(spacing: 20){
                 
                 Button{
                 showDiarioSheet = true
                 }label: {
-                    HStack {
-                        Image(systemName: "book")
-                        Text("Diario")
-                    }
-                    .foregroundStyle(.black).bold()
+                    bloqueA("book", "Diario")
                 }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
                 
                 Button{
                     showFrasesList = true
                 }label: {
-                    HStack {
-                        Image(systemName: "bookmark.fill")
-                        Text("Frases")
-                    }
-                    .foregroundStyle(.black).bold()
+                    bloqueA("bookmark.fill", "Frases")
                 }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
                 
             }
@@ -125,38 +142,21 @@ struct optionView: View {
                 Button{
                 showCodeScanner = true
                 }label: {
-                    HStack {
-                        Image(systemName: "qrcode.viewfinder")
-                        Text("Leer QR")
-                    }
-                    .foregroundStyle(.black).bold()
+                    bloqueA("qrcode.viewfinder", "Leer QR")
                 }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
                 
                 Button{
                     showCodeGenerate = true
                 }label: {
-                    HStack {
-                        Image(systemName: "qrcode")
-                        Text("Crear QR")
-                    }
-                    .foregroundStyle(.black).bold()
+                    bloqueA("qrcode", "Crear QR")
                 }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
                 
             }
+            Spacer()
+            Text ("Inicio")
+                .font(.title2)
+                .fontDesign(.serif)
             
-            HStack(spacing: 20){
-                
-                Button{
-                    showSeeting = true
-                }label: {
-                    HStack {
-                        Image(systemName: "gear")
-                        Text("Ajustes")
-                    }
-                    .foregroundStyle(.black).bold()
-                }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
-
-            }
         }
     }
     
@@ -164,110 +164,91 @@ struct optionView: View {
     @ViewBuilder
     func  segundoGrupo()-> some View {
         VStack(spacing: 20){
+            
                 HStack(spacing: 20){
                     Button{
-                    
+                        showBiografia = true
                     }label: {
-                        HStack {
-                            Image(systemName: "link")
-                            Text("Bibliografia")
-                        }
-                        .foregroundStyle(.black).bold()
+                        bloqueA("person.text.rectangle", "Bibliografia")
+                    }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
+ 
+                    Link(destination: URL(string: "https://t.me/+rODRAz2S6nVmMmY0")!){
+                        bloqueA("personalhotspot", "Canal Telegram")
+                    }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
+                }
+                .padding(.top, 5)
+                HStack(spacing: 20){
+                    Button{
+                        showCitas = true
+                    }label: {
+                        bloqueA("doc.append", "Citas")
                     }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
                     
                     Button{
-                       
+                       showPreguntas = true
                     }label: {
-                        HStack {
-                            Image(systemName: "link")
-                            Text("Galeria")
-                        }
-                        .foregroundStyle(.black).bold()
+                        bloqueA("questionmark.bubble", "Preguntas & Respuestas")
                     }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
                 }
                 HStack(spacing: 20){
                     Button{
-                    
+                    showReflex = true
                     }label: {
-                        HStack {
-                            Image(systemName: "link")
-                            Text("Citas")
-                        }
-                        .foregroundStyle(.black).bold()
+                        bloqueA("infinity", "Reflexiones")
                     }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
                     
                     Button{
-                       
+                       showAyudas = true
                     }label: {
-                        HStack {
-                            Image(systemName: "link")
-                            Text("Preguntas & Respuestas")
-                        }
-                        .foregroundStyle(.black).bold()
+                        bloqueA("flag.2.crossed.fill", "Ayudas")
                     }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
                 }
-                HStack(spacing: 20){
-                    Button{
-                    
-                    }label: {
-                        HStack {
-                            Image(systemName: "link")
-                            Text("Reflexiones")
-                        }
-                        .foregroundStyle(.black).bold()
-                    }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
-                    
-                    Button{
-                       
-                    }label: {
-                        HStack {
-                            Image(systemName: "link")
-                            Text("Silencio")
-                        }
-                        .foregroundStyle(.black).bold()
-                    }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
-                }
+            Spacer()
             Text ("Sobre el Maestro")
                 .font(.title2)
                 .fontDesign(.serif)
+                
             }
     }
 
+    
     @ViewBuilder
     func  tercerGrupo()-> some View {
-        VStack(spacing: 10){
+        VStack(spacing: 20){
 
                     Link(destination: URL(string: "https://www.youtube.com/watch?v=jd5ctdBQAeo&list=PL2kf06WQ27nmP4VFSy4li_U1jvoPM6wPU")!){
-                        HStack {
-                            Image(systemName: "link")
-                            Text("Espiritualidad")
-                        }
-                        .foregroundStyle(.black).bold()
+                        bloqueA("link", "Espiritualidad")
                     }.modifier(GradientButtonStyle(ancho: 270, colors: colorGradientButton))
+                .padding(.top, 5)
             
             Link(destination: URL(string: "https://www.youtube.com/watch?v=ZPOS12O0Vd0&list=PL2kf06WQ27nmK4nw5oo1Dnw24xrxUDtyV")!){
-                HStack {
-                    Image(systemName: "link")
-                    Text("Alcanzar el Éxito")
-                }
-                .foregroundStyle(.black).bold()
+                bloqueA("link", "Alcanzar el Éxito")
             }.modifier(GradientButtonStyle(ancho: 270, colors: colorGradientButton))
                     
             Link(destination: URL(string: "https://www.youtube.com/watch?v=wcE8X8FBWN0&list=PL2kf06WQ27nnuvoeU7-sk7qmEofplDEMR")!){
-                HStack {
-                    Image(systemName: "link")
-                    Text("Personas que dejaron huellas")
-                }
-                .foregroundStyle(.black).bold()
+                bloqueA("link", "Personas que dejaron huellas")
             }.modifier(GradientButtonStyle(ancho: 270, colors: colorGradientButton))
                 
             
             
-               
+               Spacer()
             Text ("10 lecciones de Sabiduria")
                 .font(.title2)
                 .fontDesign(.serif)
             }
+    }
+    
+    //auxiliar
+    @ViewBuilder
+   private  func bloqueA( _ systemImagen : String, _ texto : String)-> some View{
+        
+        HStack {
+            Image(systemName: systemImagen)
+            Text(texto)
+            Spacer()
+        }
+        .foregroundStyle(.black).bold()
+        
     }
 
     
