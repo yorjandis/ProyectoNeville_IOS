@@ -51,6 +51,7 @@ struct RefexModel {
                 row.title = item.0
                 row.texto = item.1
                 row.autor = item.2
+                row.isInbuilt = true
                 
                 try? context.save()  
             }
@@ -70,6 +71,7 @@ struct RefexModel {
         entidad.texto = reflex
         entidad.autor = autor
         entidad.isfav = isfav
+        entidad.isInbuilt = false
         
         if context.hasChanges {
             do{
@@ -81,6 +83,27 @@ struct RefexModel {
         }
         
         return false
+    }
+    
+    
+    ///Modificar una reflexión
+    func EditReflex(reflex : Reflex, title: String, autor: String, texto: String)->Bool{
+        var result = false
+        reflex.title = title
+        reflex.autor = autor
+        reflex.texto = texto
+        
+        if context.hasChanges {
+            do{
+                try context.save()
+                result = true
+            }catch{
+                result = false
+            }
+            
+        }
+        return result
+        
     }
     
     

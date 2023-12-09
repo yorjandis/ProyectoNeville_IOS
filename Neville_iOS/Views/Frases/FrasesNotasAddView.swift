@@ -7,12 +7,13 @@
 //Actualiza el campo nota de la frase
 
 import SwiftUI
+import CoreData
 
 
 struct FrasesNotasAddView: View {
     @Environment(\.dismiss) var dimiss
-
-    let idFrase : String
+    
+    let frase : Frases?
     @State var nota : String = ""
     
     var body: some View {
@@ -24,12 +25,22 @@ struct FrasesNotasAddView: View {
                             .textFieldStyle(.roundedBorder)
                     }
             }
+            .onAppear{
+                if let tt = frase {
+                    nota = tt.nota ?? ""
+                }
+                
+            }
+            Spacer()
+            ScrollView(content: {
+                Text(frase?.frase ?? "")
+            })
             .navigationTitle("Nota en Frase")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar{
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Guardar"){
-                        if !FrasesModel().UpdateNotaAsociada(fraseID: idFrase, notaAsociada: nota){
+                        if !FrasesModel().UpdateNotaAsociada(fraseID: self.frase?.id ?? "", notaAsociada: nota){
                             print("se ha producido un error al guardar la nota")
                         }
                         dimiss()

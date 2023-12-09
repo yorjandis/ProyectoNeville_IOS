@@ -63,7 +63,7 @@ struct optionView: View {
                 ReadQRCode()
             }
             .sheet(isPresented: $showCodeGenerate){
-                GenerateQRView(string: "", footer: "", showImage: false)
+                GenerateQRView(footer: "", showImage: false)
                     .presentationDetents([.large])
                     .presentationDragIndicator(.hidden)
             }

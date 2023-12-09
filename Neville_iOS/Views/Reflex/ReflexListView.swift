@@ -11,7 +11,7 @@ import CoreData
 struct ReflexListView: View {
     
     @Environment(\.colorScheme) private var theme
-    @State var list : [Reflex] = RefexModel().getAllReflex()
+    @State var list : [Reflex] = []
     
     @State var showAlertSearchInTitle = false
     @State var showAlertSearchInTxt = false
@@ -38,7 +38,7 @@ struct ReflexListView: View {
                         Text(item.autor ?? "")
                             .font(.caption2)
                             .italic()
-                            .foregroundStyle(RefexModel().getFavState(fraseID: item.id ?? "") ? Color.orange : Color.primary)
+                            .foregroundStyle(RefexModel().getFavState(fraseID: item.id ?? "") ? Color.orange.opacity(0.7) : Color.gray)
                     }
                     .swipeActions(edge: .leading) {
                             Button{
@@ -65,6 +65,10 @@ struct ReflexListView: View {
                             }
                     }
                     
+                }
+                .onAppear {
+                    list.removeAll()
+                    list = RefexModel().getAllReflex()
                 }
                 
             }

@@ -134,6 +134,7 @@ struct FrasesView : View{
                 .font(.system(size: fontSize, design: .rounded))
                 .foregroundStyle(colorFrase)
                 .modifier(mof_frases())
+                .textSelection(.enabled)
                 .id(frase.frase)
                 .animation(.smooth(duration: 2), value: frase.frase)
                 .onTapGesture {
@@ -167,7 +168,7 @@ struct FrasesView : View{
                         _ = NotasModel().addNote(nota: frase.frase ?? "", title: "\(String(String(frase.frase ?? "").prefix(frase.frase!.count / 3 )))...")
                     }
                     NavigationLink("Generar QR"){
-                        GenerateQRView(string: frase.frase ?? "", footer: frase.frase ?? "")
+                        GenerateQRView(footer: frase.frase ?? "", showImage: true)
                     }
                     Button{
                         showAddNoteView = true
@@ -193,7 +194,7 @@ struct FrasesView : View{
            
         }
         .sheet(isPresented: $showAddNoteView){ //permite modificar la nota de una frase
-            FrasesNotasAddView(idFrase: frase.id ?? "", nota: frase.nota ?? "")
+            FrasesNotasAddView(frase: self.frase, nota: self.frase.nota ?? "")
                 .presentationDetents([.medium])
                 .presentationDragIndicator(.hidden)
                 //.interactiveDismissDisabled() //No deja que se oculte

@@ -33,7 +33,7 @@ struct FrasesListView: View {
                         //Modificar el campo nota de una frase
                         .swipeActions(edge: .leading, allowsFullSwipe: true){
                             NavigationLink{
-                                FrasesNotasAddView(idFrase: frase.id ?? "", nota: frase.nota ?? "")
+                                FrasesNotasAddView( frase: frase, nota: frase.nota ?? "")
                             }label: {
                                 Image(systemName: "bookmark")
                                     .tint(.green)
@@ -42,7 +42,7 @@ struct FrasesListView: View {
                         .swipeActions(edge: .trailing, allowsFullSwipe: true){
                             //Solo se pueden borrar las frases personalas: NoInbuilt
                             NavigationLink{
-                                GenerateQRView(string: frase.frase ?? "", footer: frase.frase ?? "")
+                                GenerateQRView(footer: frase.frase ?? "")
                             }label: {
                                 Image(systemName: "qrcode")
                                     .tint(.brown)

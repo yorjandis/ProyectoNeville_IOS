@@ -28,7 +28,7 @@ struct ContentTxtShowView: View {
 
     @AppStorage(AppCons.UD_setting_fontContentSize)  var fontSizeContenido  = 18
 
-
+    @State private var showSlider = false
     
 
     //Lee un fichero txt que no tenga prefijo. Hay que pasar como typeContent .NA
@@ -55,6 +55,7 @@ struct ContentTxtShowView: View {
                         .font(.system(size: fontSizeContent, design: .rounded))
                         .fontDesign(.rounded)
                         .padding(.trailing, 20)
+                        .textSelection(.enabled)
                 }
                 .padding(.horizontal, 10)
                 
@@ -64,11 +65,24 @@ struct ContentTxtShowView: View {
                 //Barra Inferior (Permitir volver, favorito, etc)
                 HStack(spacing: 30){
                     Spacer()
-                    
-                    Slider(value: $fontSizeContent, in: 18...30) { Bool in
-                        fontSizeContenido = Int(fontSizeContent)
+                    if showSlider {
+                        HStack{
+                            Button{
+                                withAnimation(.easeInOut) {
+                                    showSlider = false
+                                }
+                                
+                            }label: {
+                                Image(systemName: "xmark.circle")
+                                    .foregroundColor(.red.opacity(0.7))
+                            }
+                            Slider(value: $fontSizeContent, in: 18...30) { Bool in
+                                fontSizeContenido = Int(fontSizeContent)
+                            }
+                        }
+                        .padding(.horizontal, 10)
                     }
-
+                    
                     Button{
                         dimiss()
                     }label: {
@@ -100,6 +114,11 @@ struct ContentTxtShowView: View {
                             NavigationLink("Añadir nota asociada"){
                                 if let enti = self.entidad {
                                     EditNoteTxtContentTxtShow(entidad: enti)
+                                }
+                            }
+                            Button("Tamaño de Letra", systemImage: "textformat") {
+                                withAnimation(.easeInOut) {
+                                    showSlider.toggle()
                                 }
                             }
                         }label: {

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22225" systemVersion="23B81" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22225" systemVersion="23B92" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
     <entity name="Diario" representedClassName="Diario" syncable="YES" codeGenerationType="class">
         <attribute name="content" optional="YES" attributeType="String"/>
         <attribute name="emotion" optional="YES" attributeType="String"/>
@@ -25,6 +25,7 @@
         <attribute name="autor" optional="YES" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="String"/>
         <attribute name="isfav" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isInbuilt" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="texto" attributeType="String"/>
         <attribute name="title" attributeType="String"/>
     </entity>

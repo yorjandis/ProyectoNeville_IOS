@@ -228,7 +228,7 @@ struct Row : View {
             NavigationLink{
                 let isfav = nota.isfav
                 let texto = "nota>>\(nota.title ?? "")>>\(nota.nota ?? "")>>isfav:\(isfav == true  ? "Si" : "No")"
-                GenerateQRView(string: texto, footer: texto, textFiel: false)
+                GenerateQRView(footer: texto, showImage: true)
             }label: {
                 Image(systemName: "qrcode")
                     .tint(.gray)

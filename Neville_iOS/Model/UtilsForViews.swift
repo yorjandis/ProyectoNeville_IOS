@@ -34,12 +34,12 @@ struct mof_frases : ViewModifier{
 
 //Buttom Style
 struct GradientButtonStyle: ViewModifier {
-    
+    var alto : CGFloat = 20
     var ancho : CGFloat = 100
     var colors : [Color] = [.red, .orange]
     
     func body(content: Content) -> some View { content
-            .frame(width: ancho, height: 20)
+            .frame(width: ancho, height: alto)
             .foregroundColor(Color.white)
             .padding()
             .background(LinearGradient(gradient: Gradient(colors: colors), startPoint: .top, endPoint: .bottom))

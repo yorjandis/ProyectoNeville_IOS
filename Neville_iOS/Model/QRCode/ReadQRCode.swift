@@ -144,7 +144,7 @@ struct ReadQRCode : View {
                 CodeScannerView(codeTypes: [.qr], completion: handleScan)
             }
             .sheet(isPresented: $showQRGenerate){
-                GenerateQRView(string: textQR, footer: textQR)
+                GenerateQRView(footer: textQR, showImage: true)
             }
             .alert(isPresented: $showAlert){
                 Alert(title: Text("Lector de código QR"), message: Text(message))

@@ -18,6 +18,7 @@ struct ShowNotaView: View {
             Form{
                 Section(nota.title ?? ""){
                     Text(nota.nota ?? "")
+                        .textSelection(.enabled)
                 }
             }
             Spacer()
