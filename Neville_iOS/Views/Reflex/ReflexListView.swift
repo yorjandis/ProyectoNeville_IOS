@@ -22,7 +22,9 @@ struct ReflexListView: View {
     
     @State var showalertDeleteItem = false
     
-    @State private var entityToDelete : Reflex = Reflex()
+    @State private var entity : Reflex?
+    
+    @State private var subtitle = "Reflexiones"
     
     
     var body: some View {
@@ -39,6 +41,8 @@ struct ReflexListView: View {
                             .font(.caption2)
                             .italic()
                             .foregroundStyle(RefexModel().getFavState(fraseID: item.id ?? "") ? Color.orange.opacity(0.7) : Color.gray)
+                        //Marcando los elementos nuevos
+                       
                     }
                     .swipeActions(edge: .leading) {
                             Button{
@@ -57,7 +61,7 @@ struct ReflexListView: View {
                     }
                     .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                             Button{
-                                entityToDelete = item
+                                entity = item
                                 showalertDeleteItem = true
                             }label: {
                                 Image(systemName: "minus.circle")
@@ -72,7 +76,7 @@ struct ReflexListView: View {
                 }
                 
             }
-            .navigationTitle("Reflexiones")
+            .navigationTitle(self.subtitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar{
                             HStack{
@@ -81,20 +85,40 @@ struct ReflexListView: View {
                                     Button("Todas las reflexiones"){
                                         list.removeAll()
                                         list = RefexModel().getAllReflex()
+                                        self.subtitle = "Reflexiones"
                                     }
                                     Button("Reflexiones favoritas"){
                                         let temp = RefexModel().GetAllFav()
                                         list.removeAll()
                                         list = temp
+                                        self.subtitle = "Reflexiones favoritas"
                                         
                                     }
                                                     
                                     Button("Buscar en títulos"){
                                         showAlertSearchInTitle = true
+                                        self.subtitle = "Reflexiones"
                                     }
                                     Button("Buscar en el contenido"){
                                         showAlertSearchInTxt = true
+                                        self.subtitle = "Reflexiones"
                                     }
+                                    Button("Nuevas reflexiones"){
+                                        let temp = RefexModel().getAllNewsElements()
+                                        list.removeAll()
+                                        list = temp
+                                        self.subtitle = "Reflexiones nuevas"
+                                    }
+                                    
+                                    if self.subtitle == "Reflexiones nuevas" {
+                                        Button("Desmarcar reflexiones nuevas"){
+                                            showAlertSearchInTxt = true
+                                            self.subtitle = "Reflexiones"
+                                        }
+                                    }
+                                    
+                                    
+                                    
                                     
                                 }label: {
                                     Image(systemName: "line.3.horizontal.decrease")
@@ -139,12 +163,15 @@ struct ReflexListView: View {
                     Alert(title: Text("La Ley"),
                       message: Text("Desea eliminar la entrada?"),
                           primaryButton: .destructive(Text("Eliminar"), action: {
-                        if RefexModel().deleteEntity(id: entityToDelete.id ?? ""){
-                            withAnimation {
-                                list.removeAll()
-                                list = RefexModel().getAllReflex()
-                            }    
+                        if let tt = self.entity {
+                            if RefexModel().deleteEntity(id: tt.id! ){
+                                withAnimation {
+                                    list.removeAll()
+                                    list = RefexModel().getAllReflex()
+                                }
+                            }
                         }
+                        
                         
                         }), secondaryButton: .cancel()
                           

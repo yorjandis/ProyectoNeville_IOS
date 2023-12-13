@@ -39,16 +39,27 @@ struct TxtListView: View {
         NavigationStack{
             VStack{
                 List(listado){item in
-                    HStack{
-                        Image(systemName: "leaf.fill")
-                            .padding(.horizontal, 5)
-                            .foregroundStyle(.linearGradient(colors: [item.isfav ? .orange : .gray, item.nota!.isEmpty ? .gray : .green], startPoint: .leading, endPoint: .trailing))
-                        
-                        NavigationLink{
-                            ContentTxtShowView(entidad: item, title: item.namefile ?? "")
-                        }label: {
-                            Text(item.namefile ?? "")
+                    VStack {
+                        HStack{
+                            Image(systemName: "leaf.fill")
+                                .padding(.horizontal, 5)
+                                .foregroundStyle(.linearGradient(colors: [item.isfav ? .orange : .gray, item.nota!.isEmpty ? .gray : .green], startPoint: .leading, endPoint: .trailing))
+                            
+                            NavigationLink{
+                                ContentTxtShowView(entidad: item, type: self.type, title: item.namefile ?? "")
+                            }label: {
+                                Text(item.namefile ?? "")
+                            }
+                            
                         }
+                        //Marcando los elementos como nuevos
+                        if item.isnew {
+                            Text("Nueva")
+                                .font(.footnote).bold()
+                                .foregroundStyle(Color.orange)
+                                .fontDesign(.serif)
+                        }
+                    }
                         .swipeActions(edge: .leading){
                             Button{
                                 var temp = item.isfav
@@ -69,8 +80,8 @@ struct TxtListView: View {
                                 Image(systemName: "bookmark")
                                     .tint(Color.green)
                             }
-                        }
                     }
+                    
                 }
                 .onAppear{
                     listado.removeAll()
@@ -105,6 +116,13 @@ struct TxtListView: View {
                                     Button("Buscar en el contenido"){
                                         showAlertSearchInTxt = true
                                     }
+                                    Button("\(self.title) recientes"){
+                                        let temp = TxtContentModel().getAllNewsElements(type: self.type)
+                                        listado.removeAll()
+                                        listado = temp
+                                    }
+                                    
+                                    
                                     
                                 }label: {
                                     Image(systemName: "line.3.horizontal.decrease")

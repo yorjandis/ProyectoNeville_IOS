@@ -30,14 +30,10 @@ struct settingView: View {
     @State var alertMessage = ""
     
 
-
-    
-
-
-    
     var body: some View {
         NavigationStack{
             Form{
+                
                 Section("Tamaño de letra"){
                     HStack{
                         Text("Frases:")
@@ -125,7 +121,7 @@ struct settingView: View {
                     }
                     
                 }
-
+                
                 Section("Contacto & Información"){
 
                         ShareLink(item: URL(string: "https://apps.apple.com/es/app/la-ley/id6472626696")!) {
@@ -157,15 +153,13 @@ struct settingView: View {
                     }
 
                 }
-                
-                
-                
+     
                 .navigationTitle("Ajustes")
                 .navigationBarTitleDisplayMode(.inline)
                 .alert(isPresented: $showAlert) {
                     Alert(title: Text("Configuración"), message: Text(alertMessage))
                 }
-                
+ 
             }
             
             

@@ -85,6 +85,12 @@ struct ReflexShowTextView: View {
                 
                 fontSizeContent = CGFloat(UserDefaults.standard.integer(forKey: AppCons.UD_setting_fontContentSize))
                 fontSizeContenido = Int(self.fontSizeContent)
+                
+                //Desmarcando el elemento news:   
+                if self.entity.isnew {
+                    RefexModel().RemoveNewFlag(entity: &entity)
+                }
+                
             }
             
         }

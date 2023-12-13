@@ -4,7 +4,7 @@
 //
 //  Created by Yorjandis Garcia on 9/11/23.
 //
-//Maneja la tabla TxtCont que muestra los elementos txt que contienen prefijo
+//Maneja la tabla TxtCont que muestra los elementos txt que contienen prefijo(conferencias, citas, ayudas, preguntas y respuestas ect)
 
 
 
@@ -216,6 +216,105 @@ struct TxtContentModel{
         return result
         
     }
+    
+    
+    
+    ///Funcion que actualiza la info cuando se adiciona nuevo contenido al bundle en una nueva actualización
+    ///Por ejemplo cuando adicionamos nuevas conferencias, o ayudas, citas o preguntas
+    /// - Parameter - type : Tipo de contenido a actualizar
+    /// - Returns : devuelve un closure con una tupla que contiene un flag bool que indica operación exitosa (true/...) y una cadena que indica el tipo de error ocurrido
+    func UpdateContenAfterAppUpdate(type : TipoDeContenido, action: @escaping ((Bool,String))->() ){
+        
+        var set : Set<String> = Set()
+        var errorCount = 0 //cuanta los elementos fallidos que no se han podido adicionar a la BD
+        
+        //Volcar todos los nombres de conferencias de la BD a un set.
+        let arrayBdConfe = self.getAllItems(type: type)
+        
+        if arrayBdConfe.isEmpty { action((false, "No se pudo cargar elementos de la BD")) ; return } //Manejo de errores
+        
+        for i in arrayBdConfe {
+           set.insert(i.namefile ?? "")
+        }
+        
+        //print("Cantidad antes de actualizar: \(set.count)")
+        
+        
+        //Obtengo todas los nombres de conferencias del bundle e intento actualizar el set, los que se inserten representan los nuevos elementos
+        //Luego inserto esos nuevos elementos a la BD.
+        let files = self.FilesListToArray(prefix: type.rawValue)
+        if files.isEmpty { action((false, "No se pudo cargar elementos del bundle")) ; return } //Manejo de errores
+        
+        
+        for i in files {
+            let result = set.insert(i)
+            if result.0 {
+               //Actualizando la BD
+                do {
+                    let item = TxtCont(context: self.context)
+                    item.id = UUID()
+                    item.namefile = result.1
+                    item.type = type.rawValue
+                    item.isfav = false
+                    item.nota = ""
+                    try context.save()
+                }catch{
+                    errorCount += 1 //Cuenta los elementos que no se han actualziado
+                }
+                
+                
+            }
+            
+        }
+        
+       // print("Cantidad después de actualizar: \(set.count)")
+        
+  
+        //Chequea si ha habido un error en la adición de los nuevos elementos a la BD
+        if errorCount > 0 {
+            action((false, "Algunos elementos no se pudieron adicionar a la BD"))
+            return 
+        }
+        
+        
+        action((true, ""))
+        
+    }
+    
+ 
+    
+    
+    ///Pone el campo isnew a false. La modificación se hace inline, sobre el parámetro pasado
+    /// - Parameter - entity : el registro a modificar
+    func RemoveNewFlag( entity : TxtCont){
+            entity.isnew = false
+            try?  entity.managedObjectContext?.save()
+    }
+    
+    ///Pone el campo isnew a false de todos los registros de un tipo determinado
+    func RemoveAllNewFlag(type : TipoDeContenido){
+        let array = getAllItems(type: type)
+        for i in array {
+            i.isnew = false
+           try?  i.managedObjectContext?.save()
+        }
+
+    }
+    
+    ///Lista todos los elementos recientemente adicionado: isnew:true
+    /// - Returns - Devuelve un arreglo con todos los campos del tipo dado,   añadidos recientemente
+    func getAllNewsElements(type : TipoDeContenido)->[TxtCont]{
+        var result : [TxtCont] = []
+        let array = getAllItems(type: type)
+        for i in array{
+            if i.isnew {
+                result.append(i)
+            }
+        }
+        return result
+    }
+    
+    
     
     
     

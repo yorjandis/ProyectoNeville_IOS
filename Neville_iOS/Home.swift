@@ -264,6 +264,11 @@ struct TabButtonBar : View{
                 
                 case "house.circle.fill":
                     Button{
+                        FrasesModel().UpdateContenAfterAppUpdate { (Bool, String) in
+                            if Bool{
+                                print("OKOKOK")
+                            }
+                        }
                         showOptionView = true
                     }label: {
                         makeItemlabel(image: idx)

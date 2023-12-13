@@ -29,7 +29,17 @@ struct FrasesListView: View {
                     .font(.caption)
                 
                 List(list, id: \.id){ frase in
-                    Text(frase.frase ?? "")
+                    VStack(alignment: .leading){
+                        Text(frase.frase ?? "")
+                        //Marcar las frases nuevas
+                        if frase.isnew {
+                            Text("Nueva")
+                                .font(.footnote).bold()
+                                .foregroundStyle(Color.orange)
+                                .fontDesign(.serif)
+                        }
+                    }
+                    
                         //Modificar el campo nota de una frase
                         .swipeActions(edge: .leading, allowsFullSwipe: true){
                             NavigationLink{
@@ -61,7 +71,7 @@ struct FrasesListView: View {
                             }
                             
                             //Solo para frases NO Inbuilt
-                            if FrasesModel().CheckIfNotInbuiltFrase(frase: frase){
+                            if frase.noinbuilt{
                                 NavigationLink{
                                     FrasesUpdateView(frase: frase, list: list)
                                 }label: {
@@ -116,6 +126,16 @@ struct FrasesListView: View {
                         Button("Buscar en nota de frase"){
                             subtitle = "Búsqueda en nota de Frase"
                             showAlertSearchInNotaFrase = true
+                        }
+                        Button("Frases recién añadidas"){
+                            list.removeAll()
+                            list = FrasesModel().getAllNewsElements()
+                            subtitle = "Frases nuevas"
+                        }
+                        if subtitle == "Frases nuevas" {
+                            Button("Desmarcar frases nuevas"){
+                                FrasesModel().RemoveAllNewFlag()
+                            }
                         }
                             
                         }label: {

@@ -216,14 +216,14 @@ struct GamePLay: View {
                 withAnimation {
                     self.trim += CGFloat((180/Double(total))/355)
                 }
-                listAciertos.append(pregunta.pregunta)
+                listAciertos.append("\(pregunta.pregunta)(\(pregunta.isCorrect ? "correcta" : "errónea"))")
                 
             }else{
                 Fallos += 1
                 withAnimation {
                     self.trim -= CGFloat((180/Double(total))/355)
                 }
-                listFallifos.append(pregunta.pregunta)
+                listFallifos.append("\(pregunta.pregunta)(\(pregunta.isCorrect ? "correcta" : "errónea"))")
                
             }
         }else{
@@ -232,14 +232,14 @@ struct GamePLay: View {
                 withAnimation {
                     self.trim += CGFloat((180/Double(total))/355)
                 }
-                listAciertos.append(pregunta.pregunta)
+                listAciertos.append("\(pregunta.pregunta)(\(pregunta.isCorrect ? "correcta" : "errónea"))")
                 
             }else{
                 Fallos += 1
                 withAnimation {
                     self.trim -= CGFloat((180/Double(total))/355)
                 }
-                listFallifos.append(pregunta.pregunta)
+                listFallifos.append("\(pregunta.pregunta)(\(pregunta.isCorrect ? "correcta" : "errónea"))")
                 
             }
             

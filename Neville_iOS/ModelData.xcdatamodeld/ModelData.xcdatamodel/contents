@@ -12,6 +12,7 @@
         <attribute name="frase" attributeType="String"/>
         <attribute name="id" attributeType="String"/>
         <attribute name="isfav" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isnew" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="noinbuilt" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="nota" optional="YES" attributeType="String"/>
     </entity>
@@ -26,12 +27,14 @@
         <attribute name="id" optional="YES" attributeType="String"/>
         <attribute name="isfav" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="isInbuilt" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isnew" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="texto" attributeType="String"/>
         <attribute name="title" attributeType="String"/>
     </entity>
     <entity name="TxtCont" representedClassName="TxtCont" syncable="YES" codeGenerationType="class">
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="isfav" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isnew" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="namefile" optional="YES" attributeType="String"/>
         <attribute name="nota" optional="YES" attributeType="String"/>
         <attribute name="type" optional="YES" attributeType="String"/>

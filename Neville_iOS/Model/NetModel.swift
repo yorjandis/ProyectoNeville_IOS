@@ -40,6 +40,7 @@ struct CheckAppStatus{
 
     ///Chequea si existe una nueva versión de la App
     /// - Returns - Devuelve un closure para manejar el resultado: Una tupla donde se devuelve bool que si es true indica que hay que actualizar (version local y remota distinta) si es false indica que las versiones local y remota son iguales. El segundo elemento de la tupla es error que de NO ser nil indica que se ha producido un error.
+    /// Nota: Una vez actualizado la app en la App Store, los cambios en la Itunes Store se hacen efectivos en 24 horas. Por lo que habrá un período de tiempo en que notará dos versiones distintas
     func isUpdateAvailable(completion: @escaping (Bool?, Error?) -> Void) throws -> URLSessionDataTask {
         
         //Obtener la info de la versión actual instalada
@@ -50,6 +51,8 @@ struct CheckAppStatus{
               let url = URL(string: "https://itunes.apple.com/lookup?bundleId=\(identifier)") else {throw TError.invalidBundleInfo}
  
         //Iniciando la tarea asíncrona para obtener la versión remota de la App
+        
+        URLCache.shared.removeAllCachedResponses()
         let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
             do {
                 if let error = error { throw error } //Lanza un error y sale

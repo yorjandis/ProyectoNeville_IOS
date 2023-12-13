@@ -19,6 +19,8 @@ struct ContentTxtShowView: View {
     //Para leer ficheros txt con prefijos
     var entidad : TxtCont?
     
+    let type : TxtContentModel.TipoDeContenido
+    
     //Si typeContent es .NA se deben de proveer estos campos
     @State  var fileName    : String = "" //Nombre del txt a abrir
     @State  var  title      : String = ""   //Titulo
@@ -100,6 +102,12 @@ struct ContentTxtShowView: View {
             .onAppear {
                 fontSizeContent = CGFloat(UserDefaults.standard.integer(forKey: AppCons.UD_setting_fontContentSize))
                 fontSizeContenido = Int(self.fontSizeContent)
+                //Quitando la marca isnew
+                if let ii = entidad {
+                    if ii.isnew {
+                        TxtContentModel().RemoveNewFlag(entity: entidad!)
+                    }
+                }
             }
             .toolbar{
                 HStack{

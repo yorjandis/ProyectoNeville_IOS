@@ -9,17 +9,17 @@ import SwiftUI
 
 struct optionView: View {
 
-    @State private var showNotasSheet = false
-    @State private var showDiarioSheet = false
-    @State private var showFrasesList = false
-    @State private var showCodeScanner = false
+    @State private var showNotasSheet   = false
+    @State private var showDiarioSheet  = false
+    @State private var showFrasesList   = false
+    @State private var showCodeScanner  = false
     @State private var showCodeGenerate = false
-    @State private var showGame = false
-    @State private var showBiografia = false
-    @State private var showCitas = false
-    @State private var showPreguntas = false
-    @State private var showAyudas = false
-    @State private var showReflex = false
+    @State private var showGame         = false
+    @State private var showBiografia    = false
+    @State private var showCitas        = false
+    @State private var showPreguntas    = false
+    @State private var showAyudas       = false
+    @State private var showReflex       = false
     
     private let colorGradientButton = [SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_a),
                                        SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_b)]
@@ -73,7 +73,7 @@ struct optionView: View {
                     .presentationDragIndicator(.hidden)
             }
             .sheet(isPresented: $showBiografia){
-                ContentTxtShowView(fileName: "biografia", title: "Biografía")
+                ContentTxtShowView(type: .NA, fileName: "biografia", title: "Biografía")
                     .presentationDetents([.large])
                     .presentationDragIndicator(.hidden)
             }

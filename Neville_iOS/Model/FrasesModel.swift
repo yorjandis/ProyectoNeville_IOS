@@ -197,6 +197,7 @@ struct FrasesModel {
                 row.frase = item
                 row.isfav = false
                 row.nota  = ""
+                row.noinbuilt = false
                     try? context.save()
             }
                 
@@ -414,15 +415,6 @@ struct FrasesModel {
     }
     
     
-    ///Chequear si una frase es NoInbuilt (personal)
-    func CheckIfNotInbuiltFrase(frase : Frases)->Bool{
-        if frase.noinbuilt {
-            return true
-        }else{
-            return false
-        }
-    }
-    
     ///Delete frase: Solo las frases personales se pueden eliminar
     func Delete(frase : Frases){
         if frase.noinbuilt {
@@ -455,6 +447,111 @@ struct FrasesModel {
         return getRandomFraseEntity()
     }
     
+    
+    
+    ///Actualiza la BD cuando se adiciona nuevas frases al bundle en una nueva actualización
+    /// - Returns : devuelve un closure con una tupla que contiene un flag bool que indica operación exitosa (true/...) y una cadena que indica el tipo de error ocurrido
+    func UpdateContenAfterAppUpdate(action: @escaping ((Bool,String))->() ){
+        
+        var set : Set<String> = Set()
+        var errorCount = 0 //cuanta los elementos fallidos que no se han podido adicionar a la BD
+        
+        //Volcar todos los nombres de conferencias de la BD a un set.
+        let arrayBdFrases = self.getAllFrases()
+        
+        if arrayBdFrases.isEmpty { action((false, "No se pudo cargar elementos de la BD")) ; return } //Manejo de errores
+        
+        for i in arrayBdFrases {
+            set.insert(i.frase ?? "")
+        }
+        
+       // print("Cantidad antes de actualizar: \(set.count)")
+        
+        
+        //Obtengo todas los nombres de conferencias del bundle e intento actualizar el set, los que se inserten representan los nuevos elementos
+        //Luego inserto esos nuevos elementos a la BD.
+        let frases = UtilFuncs.FileReadToArray("listfrases")
+        
+        if frases.isEmpty { action((false, "No se pudo cargar elementos del bundle")) ; return } //Manejo de errores
+        
+        
+        for i in frases {
+            let result = set.insert(i)
+            if result.0 {
+               //Actualizando la BD
+                do {
+                    let item = Frases(context: self.context)
+                    item.id = UUID().uuidString
+                    item.frase = i
+                    item.nota = ""
+                    item.isfav = false
+                    item.noinbuilt = false
+                    item.isnew = true
+                   try context.save()
+                }catch{
+                    errorCount += 1 //Cuenta los elementos que no se han actualziado
+                }
+                
+                
+            }
+            
+        }
+        
+       // print("Cantidad después de actualizar: \(set.count)")
+        
+  
+        //Chequea si ha habido un error en la adición de los nuevos elementos a la BD
+        if errorCount > 0 {
+            action((false, "Algunos elementos no se pudieron adicionar a la BD"))
+            return 
+        }
+        
+        
+        action((true, ""))
+        
+    }
+    
+ 
+    ///Pone el campo isnew a false. La modificación se hace inline, sobre el parámetro pasado
+    /// - Parameter - entity : el registro a modificar
+    func RemoveNewFlag( entity : inout Frases){
+            entity.isnew = false
+            try?  entity.managedObjectContext?.save()
+    }
+    
+    ///Pone el campo isnew a false de todas las frases nuevas
+    func RemoveAllNewFlag(){
+        let predicate = NSPredicate(format: "%K==%@", #keyPath(Frases.isnew), NSNumber(value: true))
+        let fetcRequest : NSFetchRequest<Frases> = NSFetchRequest(entityName: "Frases")
+        fetcRequest.predicate = predicate
+        do {
+           let  temp =  try context.fetch(fetcRequest)
+            
+            for i in temp {
+                i.isnew = false
+               try?  i.managedObjectContext?.save()
+            }
+            
+        }catch{
+           
+        }
+    }
+    
+    
+
+    ///Lista todos los elementos recientemente adicionado: isnew:true
+    /// - Returns - Devuelve un arreglo con todos los campos Frases añadidas recientemente
+    func getAllNewsElements()->[Frases]{
+        let result : [Frases] = []
+        let predicate = NSPredicate(format: "%K==%@", #keyPath(Frases.isnew), NSNumber(value: true))
+        let fetcRequest : NSFetchRequest<Frases> = NSFetchRequest(entityName: "Frases")
+        fetcRequest.predicate = predicate
+        do {
+            return try context.fetch(fetcRequest)
+        }catch{
+            return result
+        }
+    }
 
 }//struct
 

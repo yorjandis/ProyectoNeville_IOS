@@ -76,6 +76,7 @@ struct QRLoadFromGaleryView: View {
                                     
                                 }else{
                                     selectedImage = UIImage(systemName: "qrcode")
+                                    self.texto = ""
                                 }
                             }else{
                                 print("Fallo al cargar la imagen de la galeria")
