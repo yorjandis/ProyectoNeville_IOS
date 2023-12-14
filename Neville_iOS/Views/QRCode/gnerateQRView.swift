@@ -43,6 +43,22 @@ struct GenerateQRView : View {
                             .onTapGesture {
                                 focusState = false
                             }
+                            .contextMenu {
+                                
+                                ShareLink( item: Image(uiImage: imagen!),
+                                                preview: SharePreview("Compartir",
+                                                    image: Image(systemName: "book")
+                                                )
+                                 )
+                                Button("Guardar en Frases"){
+                                    FrasesModel().AddFrase(frase: footer)
+                                }
+                                Button("Guardar en Notas"){
+                                    _ = NotasModel().addNote(nota: footer, title: "\(String(String(footer).prefix(footer.count / 3 )))...")
+                                }
+                                
+                                
+                            }
                     }
                    
                         TextField("Escriba un texto...!", text: $footer, axis: .vertical)
@@ -96,6 +112,7 @@ struct GenerateQRView : View {
                                             image: Image(systemName: "book")
                                         )
                          )
+                        
                         
                         Button{
                             UIImageWriteToSavedPhotosAlbum(imagen!, nil, nil, nil)
@@ -153,8 +170,14 @@ struct GenerateQRView : View {
         print(qrCodeLink)//Your result from QR Code
     }
  
+    
+ 
+    
    
 }
+
+
+
 
 
 

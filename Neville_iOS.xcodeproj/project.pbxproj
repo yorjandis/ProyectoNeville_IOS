@@ -21,6 +21,7 @@
 		197D2A3E2AFAA3FC00486014 /* DiarioListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 197D2A3D2AFAA3FB00486014 /* DiarioListView.swift */; };
 		199DA0672B0EAC5800DEED62 /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = 199DA0662B0EAC5800DEED62 /* Home.swift */; };
 		199DA0692B102AA600DEED62 /* AppIntentWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 199DA0682B102AA600DEED62 /* AppIntentWidget.swift */; };
+		19A8E4682B29487800EE0184 /* conf_yorjandis.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19A8E4672B29487800EE0184 /* conf_yorjandis.txt */; };
 		19B255C02AFC47C30093104F /* FrasesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19B255BF2AFC47C30093104F /* FrasesModel.swift */; };
 		19B255C22AFC489D0093104F /* NotasModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19B255C12AFC489D0093104F /* NotasModel.swift */; };
 		19B255C42AFC51FC0093104F /* FraseAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19B255C32AFC51FC0093104F /* FraseAddView.swift */; };
@@ -472,6 +473,7 @@
 		197D2A3D2AFAA3FB00486014 /* DiarioListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiarioListView.swift; sourceTree = "<group>"; };
 		199DA0662B0EAC5800DEED62 /* Home.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
 		199DA0682B102AA600DEED62 /* AppIntentWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntentWidget.swift; sourceTree = "<group>"; };
+		19A8E4672B29487800EE0184 /* conf_yorjandis.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = conf_yorjandis.txt; sourceTree = "<group>"; };
 		19B255BF2AFC47C30093104F /* FrasesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrasesModel.swift; sourceTree = "<group>"; };
 		19B255C12AFC489D0093104F /* NotasModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotasModel.swift; sourceTree = "<group>"; };
 		19B255C32AFC51FC0093104F /* FraseAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FraseAddView.swift; sourceTree = "<group>"; };
@@ -1096,6 +1098,7 @@
 		E92F61192AB3E06F007BB4BA /* Conf */ = {
 			isa = PBXGroup;
 			children = (
+				19A8E4672B29487800EE0184 /* conf_yorjandis.txt */,
 				E92F62262AB3E1C0007BB4BA /* conf_a quien buscas.txt */,
 				E92F61562AB3E1B6007BB4BA /* conf_afirma la realidad de nuestra propia grandesa.txt */,
 				E92F62002AB3E1BE007BB4BA /* conf_agua viviente.txt */,
@@ -1570,8 +1573,8 @@
 			developmentRegion = es;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				Base,
 				es,
+				Base,
 			);
 			mainGroup = E95B934A2AAFBB2600B5E2B5;
 			packageReferences = (
@@ -1785,6 +1788,7 @@
 				19BBC61A2B159A2600FBB079 /* preg_pregunta 6.txt in Resources */,
 				19BBC6162B159A2600FBB079 /* preg_pregunta 29.txt in Resources */,
 				E92F62E32AB3E1C2007BB4BA /* conf_el poder creador de dios.txt in Resources */,
+				19A8E4682B29487800EE0184 /* conf_yorjandis.txt in Resources */,
 				E92F62C32AB3E1C2007BB4BA /* conf_si de verdad puedes creer.txt in Resources */,
 				E92F62842AB3E1C2007BB4BA /* conf_el esta soñando ahora.txt in Resources */,
 				E92F62682AB3E1C2007BB4BA /* conf_los puros de corazon.txt in Resources */,

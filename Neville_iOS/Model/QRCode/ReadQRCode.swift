@@ -138,6 +138,7 @@ struct ReadQRCode : View {
                     showQRGenerate = true
                 }label: {
                     Image(systemName: "qrcode")
+                        .tint(Color.primary)
                 }
             }
             .sheet(isPresented: $showQRScanner){

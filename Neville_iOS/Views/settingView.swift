@@ -30,10 +30,16 @@ struct settingView: View {
     @State var alertMessage = ""
     
 
+    
+
     var body: some View {
-        NavigationStack{
+        
+        VStack{
+            Text("Ajustes")
+        }
+
+        
             Form{
-                
                 Section("Tamaño de letra"){
                     HStack{
                         Text("Frases:")
@@ -122,8 +128,45 @@ struct settingView: View {
                     
                 }
                 
+                Section("Actualización de Contenido"){
+                    VStack(alignment: .leading){
+                            Button("Actualizar Contenido!"){
+                                //LLamar a todas las funciones de actualización de contenido
+                                let NoElementFrases = FrasesModel().UpdateContenAfterAppUpdate().0
+                                let NoElementConf   =   TxtContentModel().UpdateContenAfterAppUpdate(type: .conf).0
+                               // let NoElementCitas  =   TxtContentModel().UpdateContenAfterAppUpdate(type: .citas)
+                               // let NoElementPreg   =   TxtContentModel().UpdateContenAfterAppUpdate(type: .preg)
+                                let NoElementAyuda  =   TxtContentModel().UpdateContenAfterAppUpdate(type: .ayud).0
+                                let NoElementReflex =   RefexModel().UpdateContenAfterAppUpdate().0
+                                
+                                self.alertMessage = """
+                                Se han adicionado:
+                                \(NoElementFrases) frases
+                                \(NoElementConf) Conferencias
+                                \(NoElementAyuda) Ayudas
+                                \(NoElementReflex) Reflexiones
+                                """
+                                self.showAlert = true
+                            }
+                            .padding(5)
+                            .background(.ultraThinMaterial)
+                            .clipShape(RoundedRectangle(cornerRadius: 25))
+                        
+                        
+                        
+                        
+                        Text("Si existe nuevo contenido esta opción se habilitará. Se recomienda utilizar solo una vez.")
+                            .font(.footnote)
+                            .foregroundStyle(.gray)
+                    }
+                        
+                        
+                        
+                }
+                
+                
                 Section("Contacto & Información"){
-
+         
                         ShareLink(item: URL(string: "https://apps.apple.com/es/app/la-ley/id6472626696")!) {
                                 Label("Compartir la App", image: "Icon-29")
                                 .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
@@ -153,9 +196,7 @@ struct settingView: View {
                     }
 
                 }
-     
-                .navigationTitle("Ajustes")
-                .navigationBarTitleDisplayMode(.inline)
+    
                 .alert(isPresented: $showAlert) {
                     Alert(title: Text("Configuración"), message: Text(alertMessage))
                 }
@@ -163,7 +204,7 @@ struct settingView: View {
             }
             
             
-        }
+        
     }
     
     

@@ -11,7 +11,7 @@ struct Home: View {
 
     @State  private var showAddNoteList = false //Abre la view AddNota
     
-    @State  private var frase : Frases = FrasesModel().getRandomFraseEntity()
+    @State  private var frase : Frases = FrasesModel().getRandomFraseEntity()!
     @State  private var isHaveNote = false //Chequea si la frase actual tiene nota
     
     @State  private var fontSize : CGFloat = 24 //Setting para Frases
@@ -93,7 +93,7 @@ struct Home: View {
                     withAnimation {
                         }
                 }else if start.y > end.y + 24 {//up
-                    frase = FrasesModel().getRandomFraseEntity()
+                    frase = FrasesModel().getRandomFraseEntity()!
                 }
                 else if start.x < end.x - 24 {} //left -> right
                 else if start.y < end.y - 24 {} //down
@@ -138,12 +138,12 @@ struct FrasesView : View{
                 .id(frase.frase)
                 .animation(.smooth(duration: 2), value: frase.frase)
                 .onTapGesture {
-                    frase = FrasesModel().getRandomFraseEntity()
+                    frase = FrasesModel().getRandomFraseEntity()!
                     readFraseStatus(fraseEntity: frase, isfav: &isFav, isHaveNote: &isHaveNote)
                 }
                 .onOpenURL(perform: { url in
                     if url.description == AppCons.DeepLink_url_Frase {
-                        frase = FrasesModel().GetFraseFromTextFrase(frase: UserDefaults.shared().string(forKey: AppCons.UD_shared_FraseWidgetActual) ?? "")
+                        frase = FrasesModel().GetFraseFromTextFrase(frase: UserDefaults.shared().string(forKey: AppCons.UD_shared_FraseWidgetActual) ?? "")!
                     }
                 })
             
@@ -151,7 +151,8 @@ struct FrasesView : View{
                 Spacer()
                 
                 Button{
-                    FavHandlerFrases()
+                    FrasesModel().handleFavState(frase: frase)
+                    isFav = FrasesModel().getFavState(frase: frase) ? true : false
                     animationHeart += 1
                 }label: {
                     Image(systemName: isFav ? "heart.fill" : "heart")
@@ -206,19 +207,6 @@ struct FrasesView : View{
         }
     }
     
-    ///Onclick del botón favorito (toolbar) para frases: marca/des-marca los fav
-   private func FavHandlerFrases(){
-        if FrasesModel().getFavState(fraseID: FrasesModel.idFraseActual) { //si esta marcado con fav
-            if  FrasesModel().updateFavState(fraseID: FrasesModel.idFraseActual, statusFav: false) {
-                isFav = false
-            }
-        }else { //Si esta inactivo: marcar como favorito
-            if  FrasesModel().updateFavState(fraseID: FrasesModel.idFraseActual, statusFav: true) {
-                isFav = true
-            }
-        }
-    }
-    
  
     
 }
@@ -264,11 +252,7 @@ struct TabButtonBar : View{
                 
                 case "house.circle.fill":
                     Button{
-                        FrasesModel().UpdateContenAfterAppUpdate { (Bool, String) in
-                            if Bool{
-                                print("OKOKOK")
-                            }
-                        }
+                        
                         showOptionView = true
                     }label: {
                         makeItemlabel(image: idx)

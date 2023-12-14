@@ -12,7 +12,7 @@ import CoreData
 struct FrasesListView: View {
     @Environment(\.colorScheme) var theme
     
-    @State  var list : [Frases] = FrasesModel().getAllFrases()
+    @State  var list : [Frases] = FrasesModel().GetRequest(predicate: nil)
     @State  private var showAddFrase = false
     @State private var subtitle = "Todas las Frases"
     //Buscar en frase
@@ -63,7 +63,7 @@ struct FrasesListView: View {
                                 isfav.toggle()
                                 if FrasesModel().updateFavState(fraseID: frase.id ?? "", statusFav: isfav){
                                     list.removeAll()
-                                    list = FrasesModel().getAllFrases()
+                                    list = FrasesModel().GetRequest(predicate: nil)
                                 }
                             }label: {
                                 Image(systemName: "heart")
@@ -81,8 +81,8 @@ struct FrasesListView: View {
                                 Button{
                                     FrasesModel().Delete(frase: frase)
                                     withAnimation {
-                                        list.removeAll()
-                                        list = FrasesModel().getAllFrases()
+                                            list.removeAll()
+                                            list = FrasesModel().GetRequest(predicate: FrasesModel.PredicatesTypes().getAllPersonalFrases)     
                                     }
                                 }label: {
                                     Image(systemName: "trash")
@@ -96,7 +96,7 @@ struct FrasesListView: View {
                 .backgroundStyle(.red)
                 .onAppear{
                     list.removeAll()
-                    list = FrasesModel().getAllFrases()
+                    list = FrasesModel().GetRequest(predicate: nil)
                 }
                 .navigationTitle("Listado de Frases")
                 .navigationBarTitleDisplayMode(.inline)
@@ -104,7 +104,7 @@ struct FrasesListView: View {
                     
                     Menu{
                         Button("Todas las Frases"){withAnimation {
-                            list.removeAll(); list = FrasesModel().getAllFrases()}
+                            list.removeAll(); list = FrasesModel().GetRequest(predicate: nil)}
                             subtitle = "Todas las Frases"
                         }
                         Button("Frases Personales"){withAnimation {
@@ -127,9 +127,9 @@ struct FrasesListView: View {
                             subtitle = "Búsqueda en nota de Frase"
                             showAlertSearchInNotaFrase = true
                         }
-                        Button("Frases recién añadidas"){
+                        Button("Frases recién añadidas"){withAnimation {
                             list.removeAll()
-                            list = FrasesModel().getAllNewsElements()
+                            list = FrasesModel().getAllNewsElements()}
                             subtitle = "Frases nuevas"
                         }
                         if subtitle == "Frases nuevas" {

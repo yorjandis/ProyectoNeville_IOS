@@ -270,16 +270,17 @@ struct RefexModel {
     
     
     ///Funcion que actualiza la info cuando se adiciona nuevas reflexiones  al bundle en una nueva actualización
-    /// - Returns : devuelve un closure con una tupla que contiene un flag bool que indica operación exitosa (true/...) y una cadena que indica el tipo de error ocurrido
-    func UpdateContenAfterAppUpdate(action: @escaping ((Bool,String))->() ){
+    /// - Returns : Devuelve una tupla de dos enteros: el primero es el # de elementos que se han añadido, el segundo el # de elementos que han fallado al insertarse
+    func UpdateContenAfterAppUpdate()->(Int,Int){
         
         var set : Set<String> = Set()
         var errorCount = 0 //cuanta los elementos fallidos que no se han podido adicionar a la BD
+        var exitoCount = 0 //cuanta los elementos exitosos que no se han podido adicionar a la BD
         
         //Volcar todos los nombres de conferencias de la BD a un set.
         let arrayBdReflex = self.getAllReflex()
         
-        if arrayBdReflex.isEmpty { action((false, "No se pudo cargar elementos de la BD")); return  } //Manejo de errores
+        if arrayBdReflex.isEmpty { return (0,0) } //Manejo de errores
         
         for i in arrayBdReflex {
             set.insert(i.title ?? "" )
@@ -292,7 +293,7 @@ struct RefexModel {
         //Luego inserto esos nuevos elementos a la BD.
         let reflex = self.getArrayReflexOfTxtFile()
         
-        if reflex.isEmpty { action((false, "No se pudo cargar elementos del bundle")); return  } //Manejo de errores
+        if reflex.isEmpty { return (0,0) } //Manejo de errores
         
         
         for i in reflex {
@@ -307,7 +308,9 @@ struct RefexModel {
                     item.autor = i.2
                     item.isInbuilt = true
                     item.isfav = false
+                    item.isnew = true
                     try context.save()
+                    exitoCount += 1
                 }catch{
                     errorCount += 1 //Cuenta los elementos que no se han actualziado
                 }
@@ -320,14 +323,7 @@ struct RefexModel {
        // print("Cantidad después de actualizar: \(set.count)")
         
   
-        //Chequea si ha habido un error en la adición de los nuevos elementos a la BD
-        if errorCount > 0 {
-            action((false, "Algunos elementos no se pudieron adicionar a la BD") )
-            return 
-        }
-        
-        
-        action((true, ""))
+        return (exitoCount, errorCount)
         
     }
     

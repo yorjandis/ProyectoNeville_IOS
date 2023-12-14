@@ -27,12 +27,14 @@ struct DiarioListView: View {
     
     let titlesExamples : [(String,String)] = [
     ("Revisión de este día", "neutral"),
-    ("¿Como me he sentido hoy?", "nautral" ),
+    ("¿Como me he sentido hoy?", "neutral" ),
     ("Hoy agradezco:", "feliz"),
     ("¿Que debo mejorar?", "desanimado"),
     ("¿Que he aprendido hoy?","neutral"),
     ("Mi vida es maravillosa porque...", "feliz"),
-    ("!Hoy se ha materializado un deseo!","feliz") ]
+    ("!Hoy se ha materializado un deseo!","feliz"),
+    ("!No es maravillo si...!","feliz"),
+    ("!Lo he logrado!","feliz")]
     
     //Autenticaxción segura
     let contextLA = LAContext()

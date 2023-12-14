@@ -39,7 +39,7 @@ struct TxtListView: View {
         NavigationStack{
             VStack{
                 List(listado){item in
-                    VStack {
+                    VStack(alignment: .leading) {
                         HStack{
                             Image(systemName: "leaf.fill")
                                 .padding(.horizontal, 5)
@@ -85,7 +85,7 @@ struct TxtListView: View {
                 }
                 .onAppear{
                     listado.removeAll()
-                    listado = TxtContentModel().getAllItems(type: self.type)
+                    listado = TxtContentModel().GetRequest(type: self.type, predicate: nil)
                 }
             }
             .navigationTitle(self.title)
@@ -96,7 +96,7 @@ struct TxtListView: View {
                                 Menu{
                                     Button("Todas las \(self.title)"){
                                         listado.removeAll()
-                                        listado = TxtContentModel().getAllItems(type: self.type)
+                                        listado = TxtContentModel().GetRequest(type: self.type, predicate: nil)
                                     }
                                     Button("\(self.title) favoritas"){
                                         let temp = TxtContentModel().getAllFavorite(type:self.type)

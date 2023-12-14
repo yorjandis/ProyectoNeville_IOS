@@ -25,35 +25,47 @@ struct FrasesModel {
     }
     
     
-    ///Obtiene todas las frases
-    /// - Returns : Devuelve un arreglo de objetos Frases, si falla devuelve un arreglo vacio
-    func getAllFrases()-> [Frases]{
-        let defaultResult = [Frases]()
+    
+    //Conjuntos de predicados comunes
+    struct PredicatesTypes{
+        var getAllFavorites: NSPredicate{
+            NSPredicate(format: "%K == %@", #keyPath(Frases.isfav), NSNumber(value: true))
+        }
+        var getAllNotas: NSPredicate{
+            NSPredicate(format: "%K != %@", #keyPath(Frases.nota), "")
+        }
+        var getAllNews: NSPredicate{
+            NSPredicate(format: "%K != %@", #keyPath(Frases.isnew), NSNumber(value: true))
+        }
+        var getAllPersonalFrases: NSPredicate{
+            NSPredicate(format: "%K == %@", #keyPath(Frases.noinbuilt), NSNumber(value: true))
+        }
         
-        if isFrasesPopulated == false {return defaultResult}
         
-            let fetcRequest : NSFetchRequest<Frases> = Frases.fetchRequest()
-            
-            do{
-                return try context.fetch(fetcRequest)
-            }
-            catch{
-                return defaultResult
-            }
+    }
+    
+    
+    ///Realiza consultas a la BD
+    /// - Parameter - type: define el tipo de contenido a consultar
+    /// - Parameter - predicate: define el predicado a utilizar para filtrar la consulta. Si es nil devuelve todos los elementos
+    ///  - Returns - Devuelve un arreglo de elementos de cierto tipo. Si falla la cosulta se devuelve un arreglo vacio
+    func GetRequest(predicate : NSPredicate?)->[Frases]{
+        
+        let fecthRequest = NSFetchRequest<Frases>(entityName: "Frases")
+        
+        if let tt = predicate {
+            fecthRequest.predicate = tt
+        }
+  
+        do {
+            return try context.fetch(fecthRequest)
+        }catch{
+            print(error.localizedDescription)
+            return []
+        }
+ 
+    }
 
-    }
-    
-    //test: Recupera valores de acuerdo a cierto criterio
-    
-    func getTestYor(){
-        
-        let fetchRequest = NSFetchRequest<Frases>(entityName: "Frases")
-        fetchRequest.predicate = NSPredicate(format: "isfav == %@", true)
-        
-        
-        
-        
-    }
   
     
     ///Obtiene la lista de frases del fichero txt in-built:
@@ -67,7 +79,7 @@ struct FrasesModel {
         
     }
     
-    ///Adiciona una frase NO inBuilt a la tabla Frases.
+    ///Adiciona una frase Personal NO inBuilt a la tabla Frases.
     /// - Parameter frase : El texto de la frase a añadir
     func AddFrase(frase : String){
         let entidad = Frases(context: context)
@@ -88,100 +100,40 @@ struct FrasesModel {
     
     ///Devuelve un arreglo con todas las frases NO inBuilt. Útil para funciones de filtrado
     func getFrasesNoInbuilt()->[Frases]{
-        var result : [Frases] = []
-        let lista = getAllFrases()
-        
-        for item in lista {
-            if item.noinbuilt {
-                result.append(item)
-            }
-        }
-        
-        return result
+        return GetRequest(predicate: PredicatesTypes().getAllPersonalFrases)
     }
-    
 
-    ///Devuelve una frase aleatoria
-    /// - Returns : Devuelve una frase aleatoria a partir del arreglo generado por `getfrasesArrayFromTxtFile()`
-     func getRandonFrase()->String{
-        return getfrasesArrayFromTxtFile().randomElement() ?? ""
-    }
 
     
     ///Obtiene una frase aleatoria
-    ///
     ///Aqui se actualiza el ID de la frase actualmente cargada para fines de búsqueda dentro de la tabla Frases. Al inicio,  se intenta popular la tabla Frases si esta marcada como NO populada(false).
-    ///
     /// - Returns Devuelve el texto de la frase. Actualiza la static var idFraseActual con el id de la frase devuelta. Si falla devuelve una frase vacia
-    ///
-    ///
     func getRandomFrase()->String {
-        
-        if isFrasesPopulated == false {populateTableFrases(); return ""}
-        
-        let req = NSFetchRequest<NSFetchRequestResult>(entityName: "Frases")
-        
-        // find out how many items are there
-        let totalresults = try! context.count(for: req)
-        if totalresults > 0 {
-            // randomlize offset
-            req.fetchOffset = Int.random(in: 0..<totalresults)
-            req.fetchLimit = 1
-            
-            do{
-                let res = try context.fetch(req) as! [Frases]
-                FrasesModel.idFraseActual = res.first?.id ?? ""
-                return res.first?.frase ?? ""
-            }catch{
-                
-            }
+        let arrayFrases = GetRequest(predicate: nil)
+        if arrayFrases.count > 0 {
+            return arrayFrases.randomElement()?.frase ?? ""
+        }else{
+            return ""
         }
         
-        return ""
- 
     }
 
     
     ///Obtiene una entity aleatoria de Frase
-    ///
     ///Aqui se actualiza el ID de la frase actualmente cargada para fines de búsqueda dentro de la tabla Frases. Al inicio,  se intenta popular la tabla Frases si esta marcada como NO populada(false).
-    ///
     /// - Returns Devuelve la entity frase.
-    ///
-    ///
-    func getRandomFraseEntity()->Frases {
-        
-        if isFrasesPopulated == false {populateTableFrases(); return Frases()}
-        
-        let req = NSFetchRequest<NSFetchRequestResult>(entityName: "Frases")
-        
-        // find out how many items are there
-        let totalresults = try! context.count(for: req)
-        if totalresults > 0 {
-            // randomlize offset
-            req.fetchOffset = Int.random(in: 0..<totalresults)
-            req.fetchLimit = 1
-            
-            do{
-                let res = try context.fetch(req) as! [Frases]
-                FrasesModel.idFraseActual = res.first?.id ?? ""
-                return res.first ?? Frases()
-            }catch{
-                
-            }
-            
-  
-           
+    func getRandomFraseEntity()->Frases?{
+        let arrayFrases = GetRequest(predicate: nil)
+        if arrayFrases.count > 0 {
+            return arrayFrases.randomElement()!
+        }else{
+            return nil
         }
-        
-        return Frases()
  
     }
     
     ///Popula la tabla Frases al inicio de la app (ojo: esto borrará todas las notas y marcas de fav en la tabla)
-    ///
     ///Es llamado solo una vez al iniciar la app por primera vez. Carga todos los datos de la tabla Frases y actualiza el el estado de la carga de la tabla Frases
-    ///
     func populateTableFrases(){
 
         if isFrasesPopulated {return} //Sale si la tabla frases ya esta populada
@@ -190,16 +142,17 @@ struct FrasesModel {
  
             //Populando la tabla frases
             for item in arrayFrases {
-                
                 let row = Frases(context: context) //carga entidad Frases desde el contexto
-                
                 row.id    = UUID().uuidString
                 row.frase = item
                 row.isfav = false
                 row.nota  = ""
                 row.noinbuilt = false
-                    try? context.save()
             }
+        
+        if context.hasChanges {
+            try? context.save()
+        }
                 
                 //almacena una marca que indica que la tabla frase ha sido populada
                 UserDefaults.standard.setValue(true, forKey: AppCons.UD_isfrasesLoaded)
@@ -214,7 +167,7 @@ struct FrasesModel {
         
         if isFrasesPopulated == false { return false}
         
-            let content = getAllFrases()
+            let content = GetRequest(predicate: nil)
             
             for row in content{
                 context.delete(row)
@@ -232,24 +185,25 @@ struct FrasesModel {
     
     ///Obtiene el estado de favorito de una frase
     /// - returns : deuelve el valor del capo fav de la frase actual:  `true` | `false` . Por defecto devuelve `false`
-    func getFavState(fraseID : String)->Bool {
-        
-        let array = getAllFrases()
-        
-        
-        for item in array{
-            if item.id == fraseID {
-                return item.isfav
-            }
+    func getFavState(frase : Frases)->Bool {
+        return  frase.isfav
+    }
+    
+    //Hace un toggle al estado de favorito de una frase
+    func handleFavState(frase : Frases?){
+        if let tt = frase {
+            var yy = tt.isfav
+            yy.toggle()
+            tt.isfav = yy
+            try? frase?.managedObjectContext?.save()
         }
-        return false
-
+        
     }
     
     ///Chequea si una frase tiene Nota asociada
     /// - returns : deuelve el valor del capo fav de la frase actual:  `true` | `false` . Por defecto devuelve `false`
     func getNoteState(fraseID : String)->Bool {
-        let array = getAllFrases()
+        let array = GetRequest(predicate: nil)
 
         for item in array{
             if item.id == fraseID {
@@ -271,7 +225,7 @@ struct FrasesModel {
     /// - parameter fraseID : ID de la frase que será usado como id de búsqueda
     /// - parameter statusFav : `true` para marca como favorito, `false` para des-marcarlo
     func updateFavState(fraseID : String, statusFav : Bool)-> Bool{
-        let array = getAllFrases()
+        let array = GetRequest(predicate: nil)
         
         for item in array{
             if item.id == fraseID {
@@ -293,7 +247,7 @@ struct FrasesModel {
     /// - Returns : Devuelve true si éxito; false de otro modo
     func UpdateNotaAsociada(fraseID : String, notaAsociada : String = "")->Bool{
         
-        let array = getAllFrases()
+        let array = GetRequest(predicate: nil)
         for frase in array{
             if frase.id == fraseID {
                 frase.nota = notaAsociada
@@ -318,7 +272,7 @@ struct FrasesModel {
     func searchTextInFrases(text : String)->[Frases]{
         var arrayResult = [Frases]()
         
-        let arrayFrases = getAllFrases()
+        let arrayFrases = GetRequest(predicate: nil)
         
         for item in arrayFrases {
             let temp = item.frase?.lowercased() ?? ""
@@ -338,7 +292,7 @@ struct FrasesModel {
     func searchTextInNotaFrases(textNota : String)->[Frases]{
         var arrayResult = [Frases]()
         
-        let arrayFrases = getAllFrases()
+        let arrayFrases = GetRequest(predicate: nil)
         
         for item in arrayFrases {
             let temp = item.nota?.lowercased() ?? ""
@@ -358,7 +312,7 @@ struct FrasesModel {
     ///  - Returns : Devuelve un arreglo con todas las entity Frases favoritas
     func getAllFavFrases()->[Frases]{
         
-        let array = getAllFrases()
+        let array = GetRequest(predicate: nil)
         var arrayResult = [Frases]()
         
         for item in array {
@@ -403,7 +357,7 @@ struct FrasesModel {
      func getAllNotasFrases()->[Frases]{
         var result : [Frases] = []
         
-        let array = FrasesModel().getAllFrases()
+        let array = FrasesModel().GetRequest(predicate: nil)
         
         for frase in array {
             if frase.nota ?? "" != "" {
@@ -435,8 +389,8 @@ struct FrasesModel {
     ///Devuelve una entity Frase de  acuerdo al texto de la frase
     /// - Parameter -  frase : el texto de la frase a filtrar
     ///  - Return - Devuelve una entity Frase? que corresponde con la frase filtrada, de lo contrario devuelve una frase aleatoria
-    func GetFraseFromTextFrase(frase : String)->Frases{
-        let array = getAllFrases()
+    func GetFraseFromTextFrase(frase : String)->Frases?{
+        let array = GetRequest(predicate: nil)
         
         for i in array{
             
@@ -450,17 +404,19 @@ struct FrasesModel {
     
     
     ///Actualiza la BD cuando se adiciona nuevas frases al bundle en una nueva actualización
-    /// - Returns : devuelve un closure con una tupla que contiene un flag bool que indica operación exitosa (true/...) y una cadena que indica el tipo de error ocurrido
-    func UpdateContenAfterAppUpdate(action: @escaping ((Bool,String))->() ){
+    /// - Returns : Devuelve una tupla de dos enteros: el primero es el # de elementos que se han añadido, el segundo el # de elementos que han fallado al insertarse
+    func UpdateContenAfterAppUpdate()->(Int, Int){
         
         var set : Set<String> = Set()
         var errorCount = 0 //cuanta los elementos fallidos que no se han podido adicionar a la BD
+        var exitoCount = 0 //cuanta los elementos exitosos que no se han podido adicionar a la BD
         
         //Volcar todos los nombres de conferencias de la BD a un set.
-        let arrayBdFrases = self.getAllFrases()
+        let arrayBdFrases = self.GetRequest(predicate: nil)
         
-        if arrayBdFrases.isEmpty { action((false, "No se pudo cargar elementos de la BD")) ; return } //Manejo de errores
+        if arrayBdFrases.isEmpty { return  (0,0) } //Manejo de errores
         
+        //Insertando todas las frases de la BD a un conjunto
         for i in arrayBdFrases {
             set.insert(i.frase ?? "")
         }
@@ -472,7 +428,7 @@ struct FrasesModel {
         //Luego inserto esos nuevos elementos a la BD.
         let frases = UtilFuncs.FileReadToArray("listfrases")
         
-        if frases.isEmpty { action((false, "No se pudo cargar elementos del bundle")) ; return } //Manejo de errores
+        if frases.isEmpty { return (0,0) } //Manejo de errores
         
         
         for i in frases {
@@ -486,10 +442,11 @@ struct FrasesModel {
                     item.nota = ""
                     item.isfav = false
                     item.noinbuilt = false
-                    item.isnew = true
+                    item.isnew = true //Marca el elemento como nuevo
                    try context.save()
+                    exitoCount += 1
                 }catch{
-                    errorCount += 1 //Cuenta los elementos que no se han actualziado
+                    errorCount += 1 //Cuenta los elementos que no se han actualizado
                 }
                 
                 
@@ -498,16 +455,9 @@ struct FrasesModel {
         }
         
        // print("Cantidad después de actualizar: \(set.count)")
+    
+            return (exitoCount, errorCount)
         
-  
-        //Chequea si ha habido un error en la adición de los nuevos elementos a la BD
-        if errorCount > 0 {
-            action((false, "Algunos elementos no se pudieron adicionar a la BD"))
-            return 
-        }
-        
-        
-        action((true, ""))
         
     }
     
