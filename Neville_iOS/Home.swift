@@ -19,18 +19,20 @@ struct Home: View {
     
     @State private var colorFrase : Color = Color.black
     
-    @State private var colorFondo_a : Color = Color.red
-    @State private var colorFondo_b : Color = Color.orange
+    @State private var colorFondo_a : Color = SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_a)
+    @State private var colorFondo_b : Color = SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_b)
     
     //Para chequeo de actualización de la app:
     @State private var showTextUpdateApp = false
 
-    //esto es solo un ejemplo Yorjandis
 
     var body: some View {
         NavigationStack{
             
             ZStack(alignment: .bottom){
+                
+                
+                
                 VStack{
                     //Muestra el texto para indicar nueva actualización
                     if showTextUpdateApp {
@@ -62,25 +64,29 @@ struct Home: View {
                     Spacer()
                     TabButtonBar(fontFrasesSize: $fontSize, fontMenuSize: $fontSizeMenu, colorFrase: $colorFrase, colorFondo_a: $colorFondo_a, colorFondo_b: $colorFondo_b)
                 }
-                .onAppear{
-                    fontSize = CGFloat(UserDefaults.standard.integer(forKey: AppCons.UD_setting_fontFrasesSize))
-                    colorFrase      = SettingModel().loadColor(forkey: AppCons.UD_setting_color_frases)
+  
+                
+                
+                
+            }
+            .onAppear{
+                fontSize = CGFloat(UserDefaults.standard.integer(forKey: AppCons.UD_setting_fontFrasesSize))
+                colorFrase      = SettingModel().loadColor(forkey: AppCons.UD_setting_color_frases)
+                withAnimation {
                     colorFondo_a    = SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_a)
                     colorFondo_b    = SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_b)
-                    //Chequeando si existe una nueva versión de la App...
-                    _ = try? CheckAppStatus().isUpdateAvailable { update, error in
-                        if let update = update {
-                              if update{
-                                  showTextUpdateApp = true
-                              }else{
-                                  showTextUpdateApp = false
-                              }
-                          }
-                       }
                 }
                 
-                
-                
+                //Chequeando si existe una nueva versión de la App...
+                _ = try? CheckAppStatus().isUpdateAvailable { update, error in
+                    if let update = update {
+                          if update{
+                              showTextUpdateApp = true
+                          }else{
+                              showTextUpdateApp = false
+                          }
+                      }
+                   }
             }
             .modifier(mof_ColorGradient(colorInit: $colorFondo_a, colorEnd: $colorFondo_b))
             .navigationTitle( AppCons.appName)
@@ -134,7 +140,6 @@ struct FrasesView : View{
                 .font(.system(size: fontSize, design: .rounded))
                 .foregroundStyle(colorFrase)
                 .modifier(mof_frases())
-                .textSelection(.enabled)
                 .id(frase.frase)
                 .animation(.smooth(duration: 2), value: frase.frase)
                 .onTapGesture {
@@ -146,25 +151,8 @@ struct FrasesView : View{
                         frase = FrasesModel().GetFraseFromTextFrase(frase: UserDefaults.shared().string(forKey: AppCons.UD_shared_FraseWidgetActual) ?? "")!
                     }
                 })
-            
-            HStack(spacing:15){
-                Spacer()
-                
-                Button{
-                    FrasesModel().handleFavState(frase: frase)
-                    isFav = FrasesModel().getFavState(frase: frase) ? true : false
-                    animationHeart += 1
-                }label: {
-                    Image(systemName: isFav ? "heart.fill" : "heart")
-                        .foregroundStyle(isFav ? AppCons.favoriteColorOn : AppCons.favoriteColorOff)
-                        .symbolEffect(.bounce, value: animationHeart)
-                }
-                .onAppear{
-                    readFraseStatus(fraseEntity: frase, isfav: &isFav, isHaveNote: &isHaveNote)
-                }
-                
-                Menu{
-                    Button("Convertir en Nota"){ 
+                .contextMenu{
+                    Button("Convertir en Nota"){
                         //Guarda la nota poniendo como titulo una parte de la cadena
                         _ = NotasModel().addNote(nota: frase.frase ?? "", title: "\(String(String(frase.frase ?? "").prefix(frase.frase!.count / 3 )))...")
                     }
@@ -179,17 +167,24 @@ struct FrasesView : View{
                     Button("Nueva Frase"){
                         showSheetAddFrase = true
                     }
-                    
-                    
+                }
+            
+            HStack(){
+                Spacer()
+                
+                Button{
+                    FrasesModel().handleFavState(frase: frase)
+                    isFav = frase.isfav ? true : false
+                    animationHeart += 1
                 }label: {
-                    HStack{
-                        Image(systemName: "ellipsis")
-                            .tint(.black)
-                            .padding(.trailing, 25)
-                            .frame(width: 50, height: 50)
-                        
-                    }
-                   
+                    Image(systemName: isFav ? "heart.fill" : "heart")
+                        .foregroundStyle(isFav ? AppCons.favoriteColorOn : AppCons.favoriteColorOff)
+                        .symbolEffect(.bounce, value: animationHeart)
+                }
+                .padding(10)
+                .padding(.trailing, 15)
+                .onAppear{
+                    readFraseStatus(fraseEntity: frase, isfav: &isFav, isHaveNote: &isHaveNote)
                 }
             }
            

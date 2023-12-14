@@ -59,12 +59,7 @@ struct FrasesListView: View {
                             }
                             //Ajustar el estado de favorito de una frase
                             Button{
-                                var isfav : Bool = frase.isfav
-                                isfav.toggle()
-                                if FrasesModel().updateFavState(fraseID: frase.id ?? "", statusFav: isfav){
-                                    list.removeAll()
-                                    list = FrasesModel().GetRequest(predicate: nil)
-                                }
+                                FrasesModel().handleFavState(frase: frase)
                             }label: {
                                 Image(systemName: "heart")
                                     .tint(.orange)

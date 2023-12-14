@@ -28,20 +28,10 @@ struct FrasesModel {
     
     //Conjuntos de predicados comunes
     struct PredicatesTypes{
-        var getAllFavorites: NSPredicate{
-            NSPredicate(format: "%K == %@", #keyPath(Frases.isfav), NSNumber(value: true))
-        }
-        var getAllNotas: NSPredicate{
-            NSPredicate(format: "%K != %@", #keyPath(Frases.nota), "")
-        }
-        var getAllNews: NSPredicate{
-            NSPredicate(format: "%K != %@", #keyPath(Frases.isnew), NSNumber(value: true))
-        }
-        var getAllPersonalFrases: NSPredicate{
-            NSPredicate(format: "%K == %@", #keyPath(Frases.noinbuilt), NSNumber(value: true))
-        }
-        
-        
+        let  getAllFavorites: NSPredicate       = NSPredicate(format: "%K == %@", #keyPath(Frases.isfav), NSNumber(value: true))
+        let  getAllNotas: NSPredicate           = NSPredicate(format: "%K != %@", #keyPath(Frases.nota), "")
+        let  getAllNews: NSPredicate            = NSPredicate(format: "%K != %@", #keyPath(Frases.isnew), NSNumber(value: true))
+        let  getAllPersonalFrases: NSPredicate  = NSPredicate(format: "%K == %@", #keyPath(Frases.noinbuilt), NSNumber(value: true))
     }
     
     
@@ -182,13 +172,7 @@ struct FrasesModel {
         return result
     }
  
-    
-    ///Obtiene el estado de favorito de una frase
-    /// - returns : deuelve el valor del capo fav de la frase actual:  `true` | `false` . Por defecto devuelve `false`
-    func getFavState(frase : Frases)->Bool {
-        return  frase.isfav
-    }
-    
+
     //Hace un toggle al estado de favorito de una frase
     func handleFavState(frase : Frases?){
         if let tt = frase {
@@ -200,70 +184,15 @@ struct FrasesModel {
         
     }
     
-    ///Chequea si una frase tiene Nota asociada
-    /// - returns : deuelve el valor del capo fav de la frase actual:  `true` | `false` . Por defecto devuelve `false`
-    func getNoteState(fraseID : String)->Bool {
-        let array = GetRequest(predicate: nil)
-
-        for item in array{
-            if item.id == fraseID {
-                let nota = item.nota ?? ""
-                if nota.isEmpty {
-                    return true
-                }else{
-                    return false
-                }
-            }
-        }
-
-        return false
-
-    }
-    
-    
-    ///Establece el estado de favorito
-    /// - parameter fraseID : ID de la frase que será usado como id de búsqueda
-    /// - parameter statusFav : `true` para marca como favorito, `false` para des-marcarlo
-    func updateFavState(fraseID : String, statusFav : Bool)-> Bool{
-        let array = GetRequest(predicate: nil)
-        
-        for item in array{
-            if item.id == fraseID {
-                item.isfav = statusFav
-                do{
-                    try context.save()
-                    return true
-                }catch{
-                    context.rollback()
-                    return false
-                }
-            }
-        }
-        
-        return false
-    }
     
     ///Actualizar nota asociada
     /// - Returns : Devuelve true si éxito; false de otro modo
-    func UpdateNotaAsociada(fraseID : String, notaAsociada : String = "")->Bool{
-        
-        let array = GetRequest(predicate: nil)
-        for frase in array{
-            if frase.id == fraseID {
-                frase.nota = notaAsociada
-                if context.hasChanges {
-                    do{
-                        try context.save()
-                        return true
-                    }catch{
-                        return false
-                    }
-                    
-                }
-            }
-        }
-
-        return false
+    func UpdateNotaAsociada(frase : Frases?, notaAsociada : String = "")->Bool{
+        if let tt = frase {
+            tt.nota = notaAsociada
+            try? tt.managedObjectContext?.save()
+            return true
+        }else {return false}
     }
 
     ///Buscar texto en frases.
@@ -311,61 +240,14 @@ struct FrasesModel {
     ///Obtener todas las notas favoritas
     ///  - Returns : Devuelve un arreglo con todas las entity Frases favoritas
     func getAllFavFrases()->[Frases]{
-        
-        let array = GetRequest(predicate: nil)
-        var arrayResult = [Frases]()
-        
-        for item in array {
-            if item.isfav {
-                arrayResult.append(item)
-            }
-        }
-        
-        return arrayResult
-        
-    }
-    
-    ///Devuelve un registro en base a un predicado (semajante a utilizar Where en SQL):
-    /// - Parameter value : Valor del campo que será tomado como condición
-    /// - Parameter fieldId : Campo de la entity que será chequeado (por defecto es `id`)
-    /// - Returns Devuelve una instancia de la fila filtrada dentro de la entity
-     func getEntityRow( value : String, fieldId: String = "id")-> Frases{
-         
-        let predicate = NSPredicate(format: "\(fieldId) = %@", value)
-        let fetcRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Frases")
-        fetcRequest.predicate = predicate
-        do{
-            let fetchedResults = try context.fetch(fetcRequest) as! [NSManagedObject]
-            
-            if  let entity = fetchedResults.first as? Frases{
-                return  entity
-            }
-        }catch{
-            print(error.localizedDescription)
-              
-        }
-        
-         return Frases()
+        return GetRequest(predicate: PredicatesTypes().getAllFavorites)
     }
     
     
     ///Devuelve un arreglo de entity Frases con las frases que contienen notas
-    ///
     /// - Returns - Devuelve un arreglo de tipo [Frases]
-    ///
-    //Lista todas las frases que tienen notas
      func getAllNotasFrases()->[Frases]{
-        var result : [Frases] = []
-        
-        let array = FrasesModel().GetRequest(predicate: nil)
-        
-        for frase in array {
-            if frase.nota ?? "" != "" {
-                result.append(frase)
-            }
-        }
- 
-        return result
+         return GetRequest(predicate: PredicatesTypes().getAllNotas)
     }
     
     
@@ -377,10 +259,10 @@ struct FrasesModel {
         }
     }
     
-    ///Delete frase: Solo las frases personales se pueden eliminar
+    ///Actualiza los campos de una frase Personal. Solo las frases personales se pueden modificar
     func Update(frase : Frases, fraseStr : String, nota : String){
         if frase.noinbuilt {
-            frase.frase  = fraseStr
+            frase.frase = fraseStr
             frase.nota = nota
             try? context.save()
         }
@@ -390,17 +272,18 @@ struct FrasesModel {
     /// - Parameter -  frase : el texto de la frase a filtrar
     ///  - Return - Devuelve una entity Frase? que corresponde con la frase filtrada, de lo contrario devuelve una frase aleatoria
     func GetFraseFromTextFrase(frase : String)->Frases?{
-        let array = GetRequest(predicate: nil)
+        let fetchRequest = NSFetchRequest<Frases>(entityName: "Frases")
+        fetchRequest.predicate = NSPredicate(format: "%K == %@", #keyPath(Frases.frase), frase)
         
-        for i in array{
-            
-            if i.frase == frase {
-                return i
-            }
+        do {
+            return try context.fetch(fetchRequest).first
+        }catch{
+            return nil
         }
-        return getRandomFraseEntity()
     }
     
+    
+    //--------------------------- FUNCIONES PARA NUEVOS ITEMS AÑADIDOS --------------------------------------
     
     
     ///Actualiza la BD cuando se adiciona nuevas frases al bundle en una nueva actualización
@@ -492,14 +375,13 @@ struct FrasesModel {
     ///Lista todos los elementos recientemente adicionado: isnew:true
     /// - Returns - Devuelve un arreglo con todos los campos Frases añadidas recientemente
     func getAllNewsElements()->[Frases]{
-        let result : [Frases] = []
         let predicate = NSPredicate(format: "%K==%@", #keyPath(Frases.isnew), NSNumber(value: true))
         let fetcRequest : NSFetchRequest<Frases> = NSFetchRequest(entityName: "Frases")
         fetcRequest.predicate = predicate
         do {
             return try context.fetch(fetcRequest)
         }catch{
-            return result
+            return []
         }
     }
 

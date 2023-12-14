@@ -17,20 +17,17 @@ struct ReflexListView: View {
     @State var showAlertSearchInTxt = false
     @State var textFiel2 = ""
     @State var textFiel3 = ""
-    
     @State var showSheetAddReflex = false
-    
     @State var showalertDeleteItem = false
-    
     @State private var entity : Reflex?
-    
     @State private var subtitle = "Reflexiones"
+    @State var isfav = false
     
     
     var body: some View {
         NavigationStack{
             VStack{
-                List(list){item in
+                List(self.list){item in
                     VStack(alignment: .leading){
                         NavigationLink{
                             ReflexShowTextView(entity: item)                 
@@ -40,19 +37,18 @@ struct ReflexListView: View {
                         Text(item.autor ?? "")
                             .font(.caption2)
                             .italic()
-                            .foregroundStyle(RefexModel().getFavState(fraseID: item.id ?? "") ? Color.orange.opacity(0.7) : Color.gray)
+                            .foregroundStyle(item.isfav ? Color.orange.opacity(0.7) : Color.gray)
                         //Marcando los elementos nuevos
                        
                     }
                     .swipeActions(edge: .leading) {
-                            Button{
-                                if RefexModel().switchFavState(ReflexID: item.id ?? "") {
+                            Button{           
+                                if RefexModel().handleFavState(reflex: item){
                                     withAnimation {
                                         let temp2 = list
                                         list.removeAll()
                                         list = temp2
                                     }
-                                    
                                 }
                             }label: {
                                 Image(systemName: "heart")
@@ -72,7 +68,7 @@ struct ReflexListView: View {
                 }
                 .onAppear {
                     list.removeAll()
-                    list = RefexModel().getAllReflex()
+                    list = RefexModel().GetRequest(predicate: nil)
                 }
                 
             }
@@ -84,7 +80,7 @@ struct ReflexListView: View {
                                 Menu{
                                     Button("Todas las reflexiones"){
                                         list.removeAll()
-                                        list = RefexModel().getAllReflex()
+                                        list = RefexModel().GetRequest(predicate: nil)
                                         self.subtitle = "Reflexiones"
                                     }
                                     Button("Reflexiones favoritas"){
@@ -164,10 +160,10 @@ struct ReflexListView: View {
                       message: Text("Desea eliminar la entrada?"),
                           primaryButton: .destructive(Text("Eliminar"), action: {
                         if let tt = self.entity {
-                            if RefexModel().deleteEntity(id: tt.id! ){
+                            if RefexModel().deleteEntity(reflex: tt){
                                 withAnimation {
                                     list.removeAll()
-                                    list = RefexModel().getAllReflex()
+                                    list = RefexModel().GetRequest(predicate: nil)
                                 }
                             }
                         }
@@ -224,7 +220,7 @@ struct ReflexListView: View {
                                 alertMessage = "Se ha guardado la reflexión"
                                 showAlert = true
                                 list.removeAll()
-                                list = RefexModel().getAllReflex()
+                                list = RefexModel().GetRequest(predicate: nil)
                                 dimiss()
                             }else{
                                 alertMessage = "Se ha producido un error al guardar la reflexión"

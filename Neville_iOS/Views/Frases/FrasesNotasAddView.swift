@@ -40,7 +40,7 @@ struct FrasesNotasAddView: View {
             .toolbar{
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Guardar"){
-                        if !FrasesModel().UpdateNotaAsociada(fraseID: self.frase?.id ?? "", notaAsociada: nota){
+                        if !FrasesModel().UpdateNotaAsociada(frase: frase!, notaAsociada: nota){
                             print("se ha producido un error al guardar la nota")
                         }
                         dimiss()

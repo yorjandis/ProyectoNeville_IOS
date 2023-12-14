@@ -17,24 +17,37 @@ struct RefexModel {
         return UserDefaults.standard.bool(forKey: AppCons.UD_isReflexPopulate)
     }
     
-    ///Obtiene todos las Entitys:
-    /// - Returns -  Devuelve un arreglo de entitys
-    func getAllReflex()->[Reflex]{
-        
-        let defaultResult = [Reflex]()
-        
-        if isReflexPopulated == false {return defaultResult}
-        
-            let fetcRequest : NSFetchRequest<Reflex> = Reflex.fetchRequest()
-            
-            do{
-                return try context.fetch(fetcRequest)
-            }
-            catch{
-                return defaultResult
-            }
+    
+    
+    //Conjuntos de predicados comunes
+    struct PredicatesTypes{
+        let  getAllFavorites: NSPredicate       = NSPredicate(format: "%K == %@", #keyPath(Reflex.isfav), NSNumber(value: true))
+        let  getAllNews: NSPredicate            = NSPredicate(format: "%K != %@", #keyPath(Reflex.isnew), NSNumber(value: true))
     }
     
+    ///Realiza consultas a la BD
+    /// - Parameter - type: define el tipo de contenido a consultar
+    /// - Parameter - predicate: define el predicado a utilizar para filtrar la consulta. Si es nil devuelve todos los elementos
+    ///  - Returns - Devuelve un arreglo de elementos de cierto tipo. Si falla la cosulta se devuelve un arreglo vacio
+    func GetRequest(predicate : NSPredicate?)->[Reflex]{
+        
+        let fecthRequest = NSFetchRequest<Reflex>(entityName: "Reflex")
+        
+        if let tt = predicate {
+            fecthRequest.predicate = tt
+        }
+  
+        do {
+            return try context.fetch(fecthRequest)
+        }catch{
+            print(error.localizedDescription)
+            return []
+        }
+ 
+    }
+    
+    
+
     
     ///Popula la tabla Reflex. Las reflexiones inbuilt están contenidas en un fichero txt con siguiente formato: Cada linea contiene una reflexión y se compone de un "titulo"##"Contenido"##"autor". El contenido puede tener
     func populateTableReflex(){
@@ -44,7 +57,6 @@ struct RefexModel {
  
             //Populando la tabla reflex
             for item in arrayReflex {
-                
                 let row = Reflex(context: context) //carga entidad Reflex desde el contexto
                 row.id = UUID().uuidString
                 row.isfav = false
@@ -52,9 +64,11 @@ struct RefexModel {
                 row.texto = item.1
                 row.autor = item.2
                 row.isInbuilt = true
-                
-                try? context.save()  
+               
             }
+        if context.hasChanges {
+            try? context.save()
+        }
                 
                 //almacena una marca que indica que la tabla frase ha sido populada
                 UserDefaults.standard.setValue(true, forKey: AppCons.UD_isReflexPopulate)
@@ -108,29 +122,16 @@ struct RefexModel {
     
     
     ///Delete un entity for you ID
-    func deleteEntity(id : String)->Bool{  
-        let items = getAllReflex()
-        for i in items {
-            if i.id == id {
-                do {
-                    context.delete(i)
-                    try context.save()
-                    return true
-                }catch{
-                    return false
-                }
-            }
+    func deleteEntity(reflex : Reflex)->Bool{
+        do {
+            context.delete(reflex)
+            try context.save()
+            return true
+        }catch{
+            return false
         }
-        
-        return false
     }
     
-    ///Devuelve una reflexion aleatoria
-    /// - Returns : Devuelve una entity Reflex aleatoria
-     func getRandonFrase()->Reflex{
-         let result = getAllReflex().randomElement() ?? Reflex(context: context)
-         return result
-    }
     
     ///Elimina todas las filas de la tabla Reflex
     /// - Returns : Devuelve true si la operación ha sido un éxito o false si ha habido un error o la tabla no esta populada. Por defecto es true (éxito)
@@ -139,9 +140,9 @@ struct RefexModel {
         
         if isReflexPopulated == false { return false}
         
-            let content = getAllReflex()
+            let arrayReflex = GetRequest(predicate: nil)
             
-            for row in content{
+            for row in arrayReflex{
                 context.delete(row)
             }
             
@@ -158,50 +159,31 @@ struct RefexModel {
     ///Devuelve todas las entradas favoritas
     /// - Returns Devuelve un arreglo de entity Frases
     func GetAllFav()->[Reflex]{
-        var result : [Reflex] = []
-        
-        let array = getAllReflex()
-        for item in array {
-            if (item.isfav){
-                result.append(item)
-            }
-        }
-        return result
+        return GetRequest(predicate: PredicatesTypes().getAllFavorites)
     }
     
     
     ///Obtiene el estado de favorito de una Reflexion
     /// - returns : deuelve el valor del capo fav de la reflex actual:  `true` | `false` . Por defecto devuelve `false`
-    func getFavState(fraseID : String)->Bool {
-        
-        let array = getAllReflex()
-
-        for item in array{
-            if item.id == fraseID {
-                return item.isfav
-            }
+    func getFavState(reflex : Reflex?)->Bool {
+        if let tt = reflex {
+            return tt.isfav
+        }else{
+            return false
         }
-        return false
-
+        
     }
     
     ///Establece el estado de favorito
-    /// - parameter ReflexID : ID de la reflex que será usado como id de búsqueda
-    /// - parameter statusFav : `true` para marca como favorito, `false` para des-marcarlo
-    func switchFavState(ReflexID : String)-> Bool{
-        let array = getAllReflex()
-        
-        for item in array{
-            if item.id == ReflexID {
-                item.isfav = !item.isfav
-                do{
-                    try context.save()
-                    return true
-                }catch{
-                    context.rollback()
-                    return false
-                }
-            }
+    /// - parameter reflex : la instancia de reflex a modificar
+    /// - Returns -  Devuelve true si exito, false si se ha pasado una instancia nil
+    func handleFavState(reflex : Reflex?)-> Bool{
+        if let tt = reflex {
+            var temp = tt.isfav
+            temp.toggle()
+            tt.isfav = temp
+            try? context.save()
+            return true
         }
         
         return false
@@ -214,7 +196,7 @@ struct RefexModel {
     func searchTextInTextoReflex(text : String)->[Reflex]{
         var arrayResult = [Reflex]()
         
-        let arrayReflex = getAllReflex()
+        let arrayReflex = GetRequest(predicate: nil)
         
         for item in arrayReflex {
             let temp = item.texto?.lowercased() ?? ""
@@ -233,7 +215,7 @@ struct RefexModel {
     func searchTextInTitleReflex(text : String)->[Reflex]{
         var arrayResult = [Reflex]()
         
-        let arrayReflex = getAllReflex()
+        let arrayReflex = GetRequest(predicate: nil)
         
         for item in arrayReflex {
             let temp = item.title?.lowercased() ?? ""
@@ -268,6 +250,8 @@ struct RefexModel {
     
     
     
+    //-----------------------------------------  FUNCIONES PARA LOS NUEVOS ITEMS AÑADIDOS ---------------------------------
+    
     
     ///Funcion que actualiza la info cuando se adiciona nuevas reflexiones  al bundle en una nueva actualización
     /// - Returns : Devuelve una tupla de dos enteros: el primero es el # de elementos que se han añadido, el segundo el # de elementos que han fallado al insertarse
@@ -278,7 +262,7 @@ struct RefexModel {
         var exitoCount = 0 //cuanta los elementos exitosos que no se han podido adicionar a la BD
         
         //Volcar todos los nombres de conferencias de la BD a un set.
-        let arrayBdReflex = self.getAllReflex()
+        let arrayBdReflex = self.GetRequest(predicate: nil)
         
         if arrayBdReflex.isEmpty { return (0,0) } //Manejo de errores
         
@@ -339,7 +323,7 @@ struct RefexModel {
     
     ///Pone el campo isnew a false de todas las reflexiones nuevas
     func RemoveAllNewFlag(){
-        let array = getAllReflex()
+        let array = GetRequest(predicate: nil)
         for i in array{
             i.isnew = false
             try? i.managedObjectContext?.save()
@@ -351,7 +335,7 @@ struct RefexModel {
     /// - Returns - Devuelve un arreglo con todos las reflexiones  añadidas recientemente
     func getAllNewsElements()->[Reflex]{
         var result : [Reflex] = []
-        let array = getAllReflex()
+        let array = GetRequest(predicate: nil)
         for i in array{
             if i.isnew {
                 result.append(i)
