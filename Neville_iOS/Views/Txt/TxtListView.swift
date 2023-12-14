@@ -121,7 +121,14 @@ struct TxtListView: View {
                                         listado.removeAll()
                                         listado = temp
                                     }
-                                    
+                                    if self.title == "\(self.title) recientes" && self.listado.count > 0 {
+                                        Button("Desmarcar \(self.title) recientes"){
+                                            TxtContentModel().RemoveAllNewFlag(type: self.type)
+                                            let temp = self.listado
+                                            listado.removeAll()
+                                            listado = temp
+                                        }
+                                    }
                                     
                                     
                                 }label: {

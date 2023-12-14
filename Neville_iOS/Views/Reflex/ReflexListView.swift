@@ -34,11 +34,21 @@ struct ReflexListView: View {
                         }label: {
                             Text(item.title ?? "")
                         }
-                        Text(item.autor ?? "")
-                            .font(.caption2)
-                            .italic()
-                            .foregroundStyle(item.isfav ? Color.orange.opacity(0.7) : Color.gray)
-                        //Marcando los elementos nuevos
+                        HStack{
+                            Text(item.autor ?? "")
+                                .font(.caption2)
+                                .italic()
+                                .foregroundStyle(item.isfav ? Color.orange.opacity(0.7) : Color.gray)
+                            //Marcando los elementos nuevos
+                            if item.isnew {
+                                Text("Nueva")
+                                    .font(.footnote).bold()
+                                    .foregroundStyle(Color.orange)
+                                    .fontDesign(.serif)
+                            }
+                            
+                        }
+                       
                        
                     }
                     .swipeActions(edge: .leading) {
@@ -101,15 +111,17 @@ struct ReflexListView: View {
                                     }
                                     Button("Nuevas reflexiones"){
                                         let temp = RefexModel().getAllNewsElements()
-                                        list.removeAll()
-                                        list = temp
+                                        self.list.removeAll()
+                                        self.list = temp
                                         self.subtitle = "Reflexiones nuevas"
                                     }
                                     
-                                    if self.subtitle == "Reflexiones nuevas" {
+                                    if self.subtitle == "Reflexiones nuevas" && self.list.count > 0 {
                                         Button("Desmarcar reflexiones nuevas"){
-                                            showAlertSearchInTxt = true
-                                            self.subtitle = "Reflexiones"
+                                            RefexModel().RemoveAllNewFlag()
+                                            let temp = self.list
+                                            list.removeAll()
+                                            list = temp
                                         }
                                     }
                                     

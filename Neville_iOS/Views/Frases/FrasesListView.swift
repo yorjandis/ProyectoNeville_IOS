@@ -127,7 +127,7 @@ struct FrasesListView: View {
                             list = FrasesModel().getAllNewsElements()}
                             subtitle = "Frases nuevas"
                         }
-                        if subtitle == "Frases nuevas" {
+                        if subtitle == "Frases nuevas" && self.list.count > 0 {
                             Button("Desmarcar frases nuevas"){
                                 FrasesModel().RemoveAllNewFlag()
                             }

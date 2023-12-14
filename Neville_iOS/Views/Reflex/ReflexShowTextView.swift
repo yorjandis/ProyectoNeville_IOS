@@ -34,6 +34,11 @@ struct ReflexShowTextView: View {
                 }
                 
             }
+            .onAppear{
+                if self.entity.isnew {
+                    RefexModel().RemoveNewFlag(entity: &self.entity)
+                }
+            }
                 Divider()
                 HStack{
                     Spacer()

@@ -1494,8 +1494,8 @@
 		E9934DB12AE2B51A004636F9 /* Txt */ = {
 			isa = PBXGroup;
 			children = (
-				E92F636B2AB3EC5E007BB4BA /* ContentTxtShowView.swift */,
 				19D23D012AFD969E008C63BA /* TxtListView.swift */,
+				E92F636B2AB3EC5E007BB4BA /* ContentTxtShowView.swift */,
 			);
 			path = Txt;
 			sourceTree = "<group>";
