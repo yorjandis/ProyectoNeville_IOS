@@ -7,31 +7,46 @@
 
 import Foundation
 import CoreData
+import SwiftUI
+
+protocol Personas{}
+protocol Mascotas{}
 
 
-struct testYor {
-    
-   private  let context = CoreDataController.dC.context
-    
-    
-    
-    func test(){
-        var dic  = [String:Frases]()
-        let frase = Frases(context: context)
-        frase.id = UUID().uuidString
-        frase.frase = "Esto es una frase"
-        frase.isfav = false
-        frase.nota = "esto es una nota"
-        
-        dic["Ejemplo"] = frase
-        dic["Ejemplo"] = frase
-        dic["Ejemplo3"] = frase
-        
-        print(dic)
-    }
-
-    
+struct Persona : ~Copyable{
+    let name : String
 }
+
+
+
+func primera(){
+    
+    let p1 = Persona(name: "juan")
+    consumir(a: p1)
+    print(p1.name)
+}
+
+
+
+
+
+func consumir(a : borrowing Persona){
+   print(a.name)
+  
+}
+
+
+
+
+
+
+
+
+
+
+
+
+    
 
 
 

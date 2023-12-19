@@ -29,6 +29,9 @@ struct settingView: View {
     @State var showAlert = false
     @State var alertMessage = ""
     
+    //Other
+    @State var showButtonUpdate = false // muestra/oculta el boton para actualizar nuevo contenido añadido al bundle
+    
 
     
 
@@ -130,6 +133,7 @@ struct settingView: View {
                 
                 Section("Actualización de Contenido"){
                     VStack(alignment: .leading){
+                        if showButtonUpdate {
                             Button("Actualizar Contenido!"){
                                 //LLamar a todas las funciones de actualización de contenido
                                 let NoElementFrases = FrasesModel().UpdateContenAfterAppUpdate().0
@@ -151,11 +155,8 @@ struct settingView: View {
                             .padding(5)
                             .background(.ultraThinMaterial)
                             .clipShape(RoundedRectangle(cornerRadius: 25))
-                        
-                        
-                        
-                        
-                        Text("Si existe nuevo contenido esta opción se habilitará. Se recomienda utilizar solo una vez.")
+                        }
+                        Text("Si existe nuevo contenido esta opción se habilitará. Un solo uso es suficiente")
                             .font(.footnote)
                             .foregroundStyle(.gray)
                     }

@@ -218,9 +218,8 @@ struct Row : View {
             Button{
                 var stateFav = nota.isfav
                 stateFav.toggle()
-                if  NotasModel().updateFav(NotaID: nota.id ?? "", favState: stateFav) {
-                    print("ok")
-                }
+                _ =   NotasModel().updateFav(NotaID: nota.id ?? "", favState: stateFav)
+                 
             }label: {
                 Image(systemName: "heart")
                     .tint(.orange)
