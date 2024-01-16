@@ -30,7 +30,7 @@ struct settingView: View {
     @State var alertMessage = ""
     
     //Other
-    @State var showButtonUpdate = false // muestra/oculta el boton para actualizar nuevo contenido añadido al bundle
+    @State var showButtonUpdate = true // muestra/oculta el boton para actualizar nuevo contenido añadido al bundle
     
 
     
@@ -135,22 +135,27 @@ struct settingView: View {
                     VStack(alignment: .leading){
                         if showButtonUpdate {
                             Button("Actualizar Contenido!"){
-                                //LLamar a todas las funciones de actualización de contenido
-                                let NoElementFrases = FrasesModel().UpdateContenAfterAppUpdate().0
-                                let NoElementConf   =   TxtContentModel().UpdateContenAfterAppUpdate(type: .conf).0
-                               // let NoElementCitas  =   TxtContentModel().UpdateContenAfterAppUpdate(type: .citas)
-                               // let NoElementPreg   =   TxtContentModel().UpdateContenAfterAppUpdate(type: .preg)
-                                let NoElementAyuda  =   TxtContentModel().UpdateContenAfterAppUpdate(type: .ayud).0
-                                let NoElementReflex =   RefexModel().UpdateContenAfterAppUpdate().0
                                 
-                                self.alertMessage = """
-                                Se han adicionado:
-                                \(NoElementFrases) frases
-                                \(NoElementConf) Conferencias
-                                \(NoElementAyuda) Ayudas
-                                \(NoElementReflex) Reflexiones
-                                """
-                                self.showAlert = true
+                                Task{
+                                    //LLamar a todas las funciones de actualización de contenido
+                                    let NoElementFrases = await FrasesModel().UpdateContenAfterAppUpdate()
+                                    //Para elementos con prefijos:
+                                    let NoElementConf   =  await TxtContentModel().UpdateContenAfterAppUpdate(type: .conf)
+                                   // let NoElementCitas  =   TxtContentModel().UpdateContenAfterAppUpdate(type: .citas)
+                                   // let NoElementPreg   =   TxtContentModel().UpdateContenAfterAppUpdate(type: .preg)
+                                    let NoElementAyuda  =  await TxtContentModel().UpdateContenAfterAppUpdate(type: .ayud)
+                                    let NoElementReflex =   await RefexModel().UpdateContenAfterAppUpdate()
+                                    
+                                    self.alertMessage = """
+                                    Se han adicionado:
+                                    \(NoElementFrases.0) \\ \(NoElementFrases.1) frases
+                                    \(NoElementConf.0) \\ \(NoElementConf.1) Conferencias
+                                    \(NoElementAyuda.0) \\ \(NoElementAyuda.1) Ayudas
+                                    \(NoElementReflex.0) \\ \(NoElementReflex.1) Reflexiones
+                                    """
+                                    self.showAlert = true
+                                }
+                                
                             }
                             .padding(5)
                             .background(.ultraThinMaterial)

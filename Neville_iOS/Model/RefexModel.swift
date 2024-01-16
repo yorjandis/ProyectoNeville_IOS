@@ -255,11 +255,12 @@ struct RefexModel {
     
     ///Funcion que actualiza la info cuando se adiciona nuevas reflexiones  al bundle en una nueva actualización
     /// - Returns : Devuelve una tupla de dos enteros: el primero es el # de elementos que se han añadido, el segundo el # de elementos que han fallado al insertarse
-    func UpdateContenAfterAppUpdate()->(Int,Int){
+    func UpdateContenAfterAppUpdate()async ->(Int,Int){
         
         var set : Set<String> = Set()
         var errorCount = 0 //cuanta los elementos fallidos que no se han podido adicionar a la BD
         var exitoCount = 0 //cuanta los elementos exitosos que no se han podido adicionar a la BD
+        var totalNews = 0 //cuanta elementos nuevos han sido detectados
         
         //Volcar todos los nombres de conferencias de la BD a un set.
         let arrayBdReflex = self.GetRequest(predicate: nil)
@@ -283,6 +284,7 @@ struct RefexModel {
         for i in reflex {
             let result = set.insert(i.0)
             if result.0 {
+                totalNews += 1
                //Actualizando la BD
                 do {
                     let item = Reflex(context: self.context)
@@ -307,7 +309,7 @@ struct RefexModel {
        // print("Cantidad después de actualizar: \(set.count)")
         
   
-        return (exitoCount, errorCount)
+        return (exitoCount, totalNews)
         
     }
     

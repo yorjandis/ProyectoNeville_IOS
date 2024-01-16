@@ -26,7 +26,7 @@ struct FrasesModel {
     
     
     
-    //Conjuntos de predicados comunes
+    //Conjuntos de predicados comunes para ser usados con: GetRequest(predicate :...)
     struct PredicatesTypes{
         let  getAllFavorites: NSPredicate       = NSPredicate(format: "%K == %@", #keyPath(Frases.isfav), NSNumber(value: true))
         let  getAllNotas: NSPredicate           = NSPredicate(format: "%K != %@", #keyPath(Frases.nota), "")
@@ -36,7 +36,6 @@ struct FrasesModel {
     
     
     ///Realiza consultas a la BD
-    /// - Parameter - type: define el tipo de contenido a consultar
     /// - Parameter - predicate: define el predicado a utilizar para filtrar la consulta. Si es nil devuelve todos los elementos
     ///  - Returns - Devuelve un arreglo de elementos de cierto tipo. Si falla la cosulta se devuelve un arreglo vacio
     func GetRequest(predicate : NSPredicate?)->[Frases]{
@@ -112,7 +111,7 @@ struct FrasesModel {
     ///Obtiene una entity aleatoria de Frase
     ///Aqui se actualiza el ID de la frase actualmente cargada para fines de búsqueda dentro de la tabla Frases. Al inicio,  se intenta popular la tabla Frases si esta marcada como NO populada(false).
     /// - Returns Devuelve la entity frase.
-    func getRandomFraseEntity()->Frases?{
+    func getRandomFraseEntity() ->Frases?{
         let arrayFrases = GetRequest(predicate: nil)
         if arrayFrases.count > 0 {
             return arrayFrases.randomElement()!
@@ -124,11 +123,11 @@ struct FrasesModel {
     
     ///Popula la tabla Frases al inicio de la app (ojo: esto borrará todas las notas y marcas de fav en la tabla)
     ///Es llamado solo una vez al iniciar la app por primera vez. Carga todos los datos de la tabla Frases y actualiza el el estado de la carga de la tabla Frases
-    func populateTableFrases(){
+    func populateTableFrases()  {
 
         if isFrasesPopulated {return} //Sale si la tabla frases ya esta populada
             
-            let arrayFrases = getfrasesArrayFromTxtFile() //Obtiene el arreglo de frases del txt
+            let arrayFrases =  getfrasesArrayFromTxtFile() //Obtiene el arreglo de frases del txt
  
             //Populando la tabla frases
             for item in arrayFrases {
@@ -288,11 +287,12 @@ struct FrasesModel {
     
     ///Actualiza la BD cuando se adiciona nuevas frases al bundle en una nueva actualización
     /// - Returns : Devuelve una tupla de dos enteros: el primero es el # de elementos que se han añadido, el segundo el # de elementos que han fallado al insertarse
-    func UpdateContenAfterAppUpdate()->(Int, Int){
+    func UpdateContenAfterAppUpdate() async ->(Int, Int){
         
         var set : Set<String> = Set()
         var errorCount = 0 //cuanta los elementos fallidos que no se han podido adicionar a la BD
         var exitoCount = 0 //cuanta los elementos exitosos que no se han podido adicionar a la BD
+        var totalNews = 0 //cuanta elementos nuevos han sido detectados
         
         //Volcar todos los nombres de conferencias de la BD a un set.
         let arrayBdFrases = self.GetRequest(predicate: nil)
@@ -317,6 +317,7 @@ struct FrasesModel {
         for i in frases {
             let result = set.insert(i)
             if result.0 {
+                totalNews += 1
                //Actualizando la BD
                 do {
                     let item = Frases(context: self.context)
@@ -339,7 +340,7 @@ struct FrasesModel {
         
        // print("Cantidad después de actualizar: \(set.count)")
     
-            return (exitoCount, errorCount)
+            return (exitoCount, totalNews)
         
         
     }

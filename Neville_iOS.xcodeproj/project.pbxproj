@@ -121,6 +121,7 @@
 		19E0BE212B0C661B00E149A5 /* FrasesWiggetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 19E0BE142B0C661A00E149A5 /* FrasesWiggetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		19E0BE2A2B0C750300E149A5 /* listfrases.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F64562AB7D2BA007BB4BA /* listfrases.txt */; };
 		19E0BE2B2B0C76E000E149A5 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92F63722AB468F4007BB4BA /* Utils.swift */; };
+		19F3CFCA2B5677B200DEB026 /* conf_a sus ordenes.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19F3CFC92B5677B200DEB026 /* conf_a sus ordenes.txt */; };
 		E92F62442AB3E1C2007BB4BA /* conf_el desperta de la fe.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F611D2AB3E1B3007BB4BA /* conf_el desperta de la fe.txt */; };
 		E92F62452AB3E1C2007BB4BA /* conf_siente profundamente.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F611E2AB3E1B3007BB4BA /* conf_siente profundamente.txt */; };
 		E92F62462AB3E1C2007BB4BA /* conf_una sola causa.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F611F2AB3E1B3007BB4BA /* conf_una sola causa.txt */; };
@@ -572,6 +573,7 @@
 		19E0BE1A2B0C661A00E149A5 /* FrasesWigget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrasesWigget.swift; sourceTree = "<group>"; };
 		19E0BE1C2B0C661B00E149A5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		19E0BE1E2B0C661B00E149A5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		19F3CFC92B5677B200DEB026 /* conf_a sus ordenes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_a sus ordenes.txt"; sourceTree = "<group>"; };
 		E92F611D2AB3E1B3007BB4BA /* conf_el desperta de la fe.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_el desperta de la fe.txt"; sourceTree = "<group>"; };
 		E92F611E2AB3E1B3007BB4BA /* conf_siente profundamente.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_siente profundamente.txt"; sourceTree = "<group>"; };
 		E92F611F2AB3E1B3007BB4BA /* conf_una sola causa.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_una sola causa.txt"; sourceTree = "<group>"; };
@@ -1097,6 +1099,7 @@
 			isa = PBXGroup;
 			children = (
 				19A8E4672B29487800EE0184 /* conf_yorjandis.txt */,
+				19F3CFC92B5677B200DEB026 /* conf_a sus ordenes.txt */,
 				E92F62262AB3E1C0007BB4BA /* conf_a quien buscas.txt */,
 				E92F61562AB3E1B6007BB4BA /* conf_afirma la realidad de nuestra propia grandesa.txt */,
 				E92F62002AB3E1BE007BB4BA /* conf_agua viviente.txt */,
@@ -1622,6 +1625,7 @@
 				E92F62622AB3E1C2007BB4BA /* conf_lecccion 5 permanece fiel a tu idea.txt in Resources */,
 				19BBC5CE2B1599DC00FBB079 /* cita_estados eternos.txt in Resources */,
 				E92F62A52AB3E1C2007BB4BA /* conf_percepcion.txt in Resources */,
+				19F3CFCA2B5677B200DEB026 /* conf_a sus ordenes.txt in Resources */,
 				E92F62542AB3E1C2007BB4BA /* conf_la copa de la experiencia.txt in Resources */,
 				E92F62982AB3E1C2007BB4BA /* conf_naturalidad.txt in Resources */,
 				E92F634F2AB3E1C2007BB4BA /* conf_quien soy.txt in Resources */,

@@ -353,7 +353,6 @@ struct cardItem: View{
                         withAnimation {
                             expandText.toggle()
                         }
-                        
                     }
             
                 
@@ -432,7 +431,7 @@ struct cardItem: View{
             }
             
         }
-        .alert("¿Desea eliminar esta entrada?", isPresented: $showAlertDeleteEntry, actions: {
+        .alert("¿Desea eliminar la entrada? \n Esta acción no puede deshacerse", isPresented: $showAlertDeleteEntry, actions: {
             Button("Eliminar", role: .destructive){
                 withAnimation {
                     DiarioModel().DeleteItem(diario: diario)

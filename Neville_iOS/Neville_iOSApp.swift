@@ -19,8 +19,8 @@ struct Neville_iOSApp: App {
     //Codigo a cargar al inicio:
     init(){
         
+       
         FrasesModel().populateTableFrases() //Popular la tabla Frases SI es la primera vez
-        
         TxtContentModel().populateTable() //Popular la tabla TxtFiles SI es la primera vez
         
         //YTIdModel().populateTable() //Popular la tabla YTVideos si es la primera vez

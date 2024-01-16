@@ -231,11 +231,12 @@ struct TxtContentModel{
     ///Por ejemplo cuando adicionamos nuevas conferencias, o ayudas, citas o preguntas
     /// - Parameter - type : Tipo de contenido a actualizar
     /// - Returns : Devuelve una tupla de dos enteros: el primero es el # de elementos que se han añadido, el segundo el # de elementos que han fallado al insertarse
-    func UpdateContenAfterAppUpdate(type : TipoDeContenido)->(Int,Int){
+    func UpdateContenAfterAppUpdate(type : TipoDeContenido) async ->(Int,Int){
         
         var set : Set<String> = Set()
         var errorCount = 0 //cuanta los elementos fallidos que no se han podido adicionar a la BD
         var exitoCount = 0 //cuanta los elementos exitosos que no se han podido adicionar a la BD
+        var totalNews = 0 //cuanta elementos nuevos han sido detectados
         
         //Volcar todos los nombres de conferencias de la BD a un set.
         let arrayBdConfe = self.GetRequest(type: type, predicate: nil)
@@ -258,6 +259,7 @@ struct TxtContentModel{
         for i in files {
             let result = set.insert(i) //Intenta insertar al set un elemento del bundle, si el elemento se logra insertar es porque es Nuevo contenido
             if result.0 {
+                totalNews += 1
                //Actualizando la BD
                 do {
                     let item = TxtCont(context: self.context)
@@ -280,7 +282,7 @@ struct TxtContentModel{
         
        // print("Cantidad después de actualizar: \(set.count)")
         
-            return (exitoCount, errorCount)
+            return (exitoCount, totalNews)
         
         
         

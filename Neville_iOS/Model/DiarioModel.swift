@@ -110,6 +110,7 @@ struct DiarioModel{
     //Actualizar el emoticono
     func UpdateEmoticono(emoticono : Emociones, diario : Diario){
         diario.emotion = emoticono.rawValue
+        diario.fechaM = Date.now
         if context.hasChanges {
             try? context.save()
         }
@@ -117,7 +118,8 @@ struct DiarioModel{
     
     //Actualizar el título
     func UpdateTitle(title : String, diario : Diario){
-        diario.title = title
+        diario.title    = title
+        diario.fechaM   = Date.now
         if context.hasChanges {
             try? context.save()
         }

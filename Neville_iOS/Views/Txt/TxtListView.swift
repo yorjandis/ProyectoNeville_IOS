@@ -116,7 +116,7 @@ struct TxtListView: View {
                                     Button("Buscar en el contenido"){
                                         showAlertSearchInTxt = true
                                     }
-                                    Button("\(self.title) recientes"){
+                                    Button("Nuevo contenido!"){
                                         let temp = TxtContentModel().getAllNewsElements(type: self.type)
                                         listado.removeAll()
                                         listado = temp

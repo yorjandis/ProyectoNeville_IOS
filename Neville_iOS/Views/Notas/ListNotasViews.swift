@@ -34,9 +34,9 @@ struct ListNotasViews: View {
  
     var body: some View {
         NavigationStack {
-            //Solo muestra el contenido
-            ScrollView(.vertical){
-                if canOpenNotas {
+            if canOpenNotas {
+                ScrollView(.vertical){
+                    
                     ForEach (list.reversed()){ nota in
                         cardNotas(nota: nota, notas: $list)
                     }
@@ -47,35 +47,12 @@ struct ListNotasViews: View {
                         
                     }
                 }
-                else{
-                    ZStack{
-                        VStack(spacing: 20) {
-                            Text("Se ha habilitado la protección de las Notas")
-                                .foregroundStyle(.orange.opacity(0.7))
-                                .font(.system(size: 18))
-                                .bold()
-                            Button{
-                                autent()
-                            }label: {
-                                Image(systemName: "key.viewfinder")
-                                    .font(.system(size: 60))
-                                    .foregroundStyle(Color.orange.opacity(0.7))
-                                    .symbolEffect(.pulse, isActive: true)
-                            }
-                        }
-                        
-                    }
+            }else{
+                Spacer()
+                       autenticationView()
                 }
-            }
-            .onAppear {
-                if UserDefaults.standard.bool(forKey: AppCons.UD_setting_NotasFaceID){
-                    canOpenNotas = false
-                }else{
-                    canOpenNotas = true
-                }
-            }
             
-            
+
                 Spacer()
                 Divider()
                 HStack(spacing: 30){
@@ -85,6 +62,13 @@ struct ListNotasViews: View {
                         dimiss()
                     }
                     .padding(.trailing, 20)
+                }
+                .onAppear {
+                    if UserDefaults.standard.bool(forKey: AppCons.UD_setting_NotasFaceID){
+                        canOpenNotas = false
+                    }else{
+                        canOpenNotas = true
+                    }
                 }
                 .padding(.bottom, 20)
                 .navigationTitle("Notas")
@@ -199,17 +183,34 @@ struct ListNotasViews: View {
         }
     }
     
+    @ViewBuilder // View Extract
+    func autenticationView()-> some View {
+        VStack(alignment: .center,  spacing: 20) {
+             
+             Text("Se ha habilitado la protección de las Notas")
+                 .foregroundStyle(.orange.opacity(0.7))
+                 .font(.system(size: 18))
+                 .bold()
+             Button{
+                 autent()
+             }label: {
+                 Image(systemName: "key.viewfinder")
+                     .font(.system(size: 60))
+                     .foregroundStyle(Color.orange.opacity(0.7))
+                     .symbolEffect(.pulse, isActive: true)
+             }
+         }
+    }
 
 }
 
 //Card notas:
-
-
 struct cardNotas: View{
     let nota : Notas
     @Binding var  notas : [Notas]
     @State private var expandText = false
     @State private var isfav = false
+    @State private var expandNota = false
     
     //Opciones:
     @State private var showConfirmDialogDeleteNota = false
@@ -224,6 +225,11 @@ struct cardNotas: View{
                     .padding(8)
                     .onTapGesture(count: 2) {
                         showUpdateNoteView = true
+                    }
+                    .onTapGesture {
+                        withAnimation {
+                            expandNota.toggle()
+                        }
                     }
                 Spacer()
                 if isfav {
@@ -251,12 +257,15 @@ struct cardNotas: View{
                                 isfav = nota.isfav ? true : false
                             }
                         
-                    }
-                        NavigationLink("Generar QR..."){
+                        }
+                    NavigationLink("Generar QR..."){
                             let isfav = nota.isfav
                             let texto = "nota>>\(nota.title ?? "")>>\(nota.nota ?? "")>>isfav:\(isfav == true  ? "Si" : "No")"
                             GenerateQRView(footer: texto, showImage: true)
                         }
+                    Button("Copiar Nota"){
+                        UIPasteboard.general.string = nota.nota
+                    }
                     ShareLink(item: "\(nota.title ?? "")\n \(nota.nota ?? "")")
                     
                         Button("Eliminar..."){showConfirmDialogDeleteNota = true}
@@ -289,24 +298,27 @@ struct cardNotas: View{
                     .presentationDetents([.medium])
                     .presentationDragIndicator(.hidden)
             }
+            if expandNota {
+                    Divider()
+                    HStack{
+                        Text(nota.nota ?? "")
+                            .font(.system(size: 18))
+                            .italic()
+                            .padding(.vertical, 4)
+                            .padding(.horizontal, 5)
+                            .fontDesign(.serif)
+                            //.lineLimit(expandText ? nil :  1)
+                            
+                            .onTapGesture {
+                                withAnimation {
+                                    expandText.toggle()
+                                }
+                                
+                            }
+                        Spacer()
+                }
             
-            Divider()
-            HStack{
-                Text(nota.nota ?? "")
-                    .font(.system(size: 18))
-                    .italic()
-                    .padding(.vertical, 4)
-                    .padding(.horizontal, 5)
-                    .fontDesign(.serif)
-                    .lineLimit(expandText ? nil :  1)
-                    
-                    .onTapGesture {
-                        withAnimation {
-                            expandText.toggle()
-                        }
-                        
-                    }
-                Spacer()
+            
             }
             
         }
@@ -321,6 +333,7 @@ struct cardNotas: View{
     
     
 }
+
 
 
 

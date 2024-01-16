@@ -11,7 +11,7 @@ struct Home: View {
 
     @State  private var showAddNoteList = false //Abre la view AddNota
     
-    @State  private var frase : Frases = FrasesModel().getRandomFraseEntity()!
+    @State  private var frase : Frases =  FrasesModel().getRandomFraseEntity()!
     @State  private var isHaveNote = false //Chequea si la frase actual tiene nota
     
     @State  private var fontSize : CGFloat = 24 //Setting para Frases
