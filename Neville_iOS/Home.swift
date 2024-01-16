@@ -31,22 +31,20 @@ struct Home: View {
             
             ZStack(alignment: .bottom){
                 
-                
-                
                 VStack{
                     //Muestra el texto para indicar nueva actualización
                     if showTextUpdateApp {
                         Button{
                             if let url = URL(string: "https://apps.apple.com/es/app/la-ley/id6472626696"),
-                                    UIApplication.shared.canOpenURL(url){
-                                    UIApplication.shared.open(url, options: [:]) { (opened) in
-                                        if(opened){
-                                           // print("App Store Opened")
-                                        }
+                               UIApplication.shared.canOpenURL(url){
+                                UIApplication.shared.open(url, options: [:]) { (opened) in
+                                    if(opened){
+                                        // print("App Store Opened")
                                     }
-                                } else {
-                                   // print("Can't Open URL on Simulator")
                                 }
+                            } else {
+                                // print("Can't Open URL on Simulator")
+                            }
                         }label: {
                             HStack{
                                 Image(systemName: "exclamationmark.circle")
@@ -64,58 +62,56 @@ struct Home: View {
                     Spacer()
                     TabButtonBar(fontFrasesSize: $fontSize, fontMenuSize: $fontSizeMenu, colorFrase: $colorFrase, colorFondo_a: $colorFondo_a, colorFondo_b: $colorFondo_b)
                 }
-  
-                
-                
-                
-            }
-            .onAppear{
-                fontSize = CGFloat(UserDefaults.standard.integer(forKey: AppCons.UD_setting_fontFrasesSize))
-                colorFrase      = SettingModel().loadColor(forkey: AppCons.UD_setting_color_frases)
-                withAnimation {
-                    colorFondo_a    = SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_a)
-                    colorFondo_b    = SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_b)
-                }
-                
-                //Chequeando si existe una nueva versión de la App...
-                _ = try? CheckAppStatus().isUpdateAvailable { update, error in
-                    if let update = update {
-                          if update{
-                              showTextUpdateApp = true
-                          }else{
-                              showTextUpdateApp = false
-                          }
-                      }
-                   }
-            }
-            .modifier(mof_ColorGradient(colorInit: $colorFondo_a, colorEnd: $colorFondo_b))
-            .navigationTitle( AppCons.appName)
-            .navigationBarTitleDisplayMode(.inline)
-            .gesture(DragGesture().onEnded{ value in
-                let start = value.startLocation
-                let end = value.location
-                
-                if start.x > end.x + 24 { //right->left
-                    withAnimation {
+                .task {
+                    do {
+                        try await CheckAppStatus().getAppNewVersion { update in
+                            if update{
+                                showTextUpdateApp = true
+                            }else{
+                                showTextUpdateApp = false
+                            }
                         }
-                }else if start.y > end.y + 24 {//up
-                    frase = FrasesModel().getRandomFraseEntity()!
+                    }catch{
+                        print(error.localizedDescription)
+                    }
+                    
                 }
-                else if start.x < end.x - 24 {} //left -> right
-                else if start.y < end.y - 24 {} //down
+                .onAppear{
+                    fontSize = CGFloat(UserDefaults.standard.integer(forKey: AppCons.UD_setting_fontFrasesSize))
+                    colorFrase      = SettingModel().loadColor(forkey: AppCons.UD_setting_color_frases)
+                    withAnimation {
+                        colorFondo_a    = SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_a)
+                        colorFondo_b    = SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_b)
+                    }
+                }
+                .modifier(mof_ColorGradient(colorInit: $colorFondo_a, colorEnd: $colorFondo_b))
+                .navigationTitle( AppCons.appName)
+                .navigationBarTitleDisplayMode(.inline)
+                .gesture(DragGesture().onEnded{ value in
+                    let start = value.startLocation
+                    let end = value.location
+                    
+                    if start.x > end.x + 24 { //right->left
+                        withAnimation {
+                        }
+                    }else if start.y > end.y + 24 {//up
+                        frase = FrasesModel().getRandomFraseEntity()!
+                    }
+                    else if start.x < end.x - 24 {} //left -> right
+                    else if start.y < end.y - 24 {} //down
+                    
+                })
                 
-            })
-            
-            .sheet(isPresented: $showAddNoteList){
-                ListNotasViews()
+                .sheet(isPresented: $showAddNoteList){
+                    ListNotasViews()
+                }
+                
+                
             }
-            
             
         }
         
     }
-
-
 
 }//struct
 
@@ -223,7 +219,7 @@ struct TabButtonBar : View{
     @State private var showSetting = false
     
 
-    @State var  tabButtons = ["book.pages.fill","gamecontroller","house.circle.fill","book", "gear"]
+    @State var  tabButtons = ["book.pages.fill","note.text","house.circle.fill","book", "gear"]
     
     var body: some View{
         
@@ -238,17 +234,16 @@ struct TabButtonBar : View{
                         makeItemlabel(image: idx)
                     }
                     
-                case "gamecontroller":
+                case "note.text":
                     NavigationLink{
-                        GamePLay()
+                       ListNotasViews()
                     }label: {
                         makeItemlabel(image: idx)
                     }
                 
                 case "house.circle.fill":
                     Button{
-
-                        //showOptionView = true
+                       showOptionView = true
                     }label: {
                         makeItemlabel(image: idx)
                             .font(.system(size: 30))
@@ -315,7 +310,7 @@ struct TabButtonBar : View{
 }
 
 
-//Permite guardar una nueva nota en la BD
+//View: Permite guardar una nueva nota en la BD
 struct AddNotasViewInbuilt: View {
     @Environment(\.dismiss) var dimiss
     

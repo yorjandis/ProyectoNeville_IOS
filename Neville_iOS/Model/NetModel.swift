@@ -38,77 +38,65 @@ struct CheckAppStatus{
         case invalidResponse, invalidBundleInfo
     }
 
-    ///Chequea si existe una nueva versión de la App
-    /// - Returns - Devuelve un closure para manejar el resultado: Una tupla donde se devuelve bool que si es true indica que hay que actualizar (version local y remota distinta) si es false indica que las versiones local y remota son iguales. El segundo elemento de la tupla es error que de NO ser nil indica que se ha producido un error.
-    /// Nota: Una vez actualizado la app en la App Store, los cambios en la Itunes Store se hacen efectivos en 24 horas. Por lo que habrá un período de tiempo en que notará dos versiones distintas
-    func isUpdateAvailable(completion: @escaping (Bool?, Error?) -> Void) throws -> URLSessionDataTask {
-        
-        //Obtener la info de la versión actual instalada
-        guard let info = Bundle.main.infoDictionary,
-              let localVersion = info["CFBundleShortVersionString"] as? String,
-              let identifier = info["CFBundleIdentifier"] as? String,
-              //url que será chequeada para obtener la información remota
-              let url = URL(string: "https://itunes.apple.com/lookup?bundleId=\(identifier)") else {throw TError.invalidBundleInfo}
- 
-        //Iniciando la tarea asíncrona para obtener la versión remota de la App
-        
-        URLCache.shared.removeAllCachedResponses()
-        let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
-            do {
-                if let error = error { throw error } //Lanza un error y sale
-                
-                guard let data = data else { throw TError.invalidResponse } //Lanza un error y sale
-                
-                let json = try JSONSerialization.jsonObject(with: data, options: [.allowFragments]) as? [String: Any]
 
-                guard let result = (json?["results"] as? [Any])?.first as? [String: Any],
-                      let remoteVersion = result["version"] as? String else {throw TError.invalidResponse}
-            
-                // Completando el closure que será devuelto
-                
-               //print(localVersion)
-               //print(remoteVersion)
-                completion(remoteVersion != localVersion, nil)
-                
-            } catch {
-                completion(nil, error)
+    //Función asíncrona para detectar un cambio de versión de la App publicada
+    /// - Parameter  action closure que se devolverá con un valor Bool que indica si existe una nueva versión (true si existe una nueva versión)
+    /// - Returns devuelve un closure con un valor booleano que indica si existe una nueva versión: true si existe, false de otro modo.
+
+    func getAppNewVersion(action: @escaping @Sendable (Bool)->()) async throws ->Void{
+        
+        enum TError: Error {
+                case errorLocalizado
             }
+        
+        
+        let urlApp = "https://apps.apple.com/es/app/la-ley/id6472626696"
+        let stringSeparate = "new__latest__version" //Esta cadena identificará el texto de la versión en el texto de la web. Apple la puede cambiar
+        
+        //Obteniendo la versión local instalada
+                guard let info = Bundle.main.infoDictionary,
+                      let localVersion = info["CFBundleShortVersionString"] as? String else {throw TError.errorLocalizado}
+        
+        //print("localVersion: \(localVersion)")
+        
+        
+        
+        //Chequeando la url del sitio web:
+        guard let url = URL(string: urlApp) else {throw TError.errorLocalizado}
+        
+        //Obtener la versión remota en la App Store:
+        do {
+            let webContent = try String(contentsOf: url, encoding: .utf8) //Obtiene el contenido de la web
+            let arrayOfInfo = webContent.components(separatedBy: "\n") //Obtiene un arreglo del contenido en líneas
+            if !arrayOfInfo.isEmpty {
+                for i in arrayOfInfo {
+                    //Comprobando si la linea contiene la frase clave que indica que contiene la versión
+                    if i.contains(stringSeparate){
+                        let lineaClave = i.components(separatedBy: stringSeparate)
+                        
+                       // print("remoteVersion: \(lineaClave[1].digitos)")
+                        
+                        let remoteVersion = lineaClave[1].digitos //digitos es una extensión de String que obtiene los dígitos de una cadena
+                        
+                        return action(remoteVersion != localVersion) //Devuelve el closure con la evaluación: true si las cadenas son distintas
+                        
+                    }
+                }
+            }else{ //Si se obtiene un arreglo vacio se devuelve error
+                throw TError.errorLocalizado
+            }
+            
+        }catch{
+            throw TError.errorLocalizado
         }
         
-        //LLegado a este punto, si no ha devuelto nada se resume la tarea
-        task.resume()
-        //Devuelve el valor de retorno
-        return task
-    }
-    
-   
-   /*
-    //Ejemplo
- try? isUpdateAvailable { (update, error) in
-    if let error = error {
-        print(error)
-    } else if let update = update {
-    //Si update es true indica que las versiones local y remota son distintas y hay que actualizar
-        if update {
-        //Hay que actualizar
-    }else{
-        //No hay que actualizar
-    }
-    }
-}
-    */
-
-}
-
-
-struct testYorj{
-    
-    //Función que ejecuta un closure a los segundos indicados en los parámetros. Asíncrona
-    func executeLater(offsetTime : Int, _ action : @escaping @Sendable ()->Void)->Void{
-        let dispatchAfter = DispatchTimeInterval.seconds(offsetTime)
         
-        DispatchQueue.global().asyncAfter(deadline: .now() + dispatchAfter, execute: action)
     }
-    
-    
+ 
+
 }
+
+
+
+
+

@@ -72,6 +72,7 @@ struct DiarioModel{
         diario.isFav = isFav
         diario.content = content
         diario.fecha = Date.now
+        diario.fechaM = Date.now
         
         if context.hasChanges {
             try? context.save()
@@ -84,7 +85,7 @@ struct DiarioModel{
         diario.emotion = emoticono.rawValue
         diario.isFav = isFav
         diario.content = content
-        diario.fecha = Date.now
+        diario.fechaM = Date.now
         if context.hasChanges {
             try? context.save()
         }

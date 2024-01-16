@@ -362,51 +362,61 @@ struct cardItem: View{
             VStack {
                 Divider()
                 HStack{
-                        Text(diario.fecha ?? Date.now, style: .date)
-                            .font(.caption2).bold()
-                        Text(diario.fecha ?? Date.now, style: .time)
-                            .font(.caption2).bold()
-                        
-                        Spacer()
-                        Button{
-                            isfav.toggle()
-                            DiarioModel().UpdateFav(isFav: isfav, diario: diario)
-                            animValue += 1
-                        }label: {
-                            Image(systemName: isfav ? "heart.fill" : "heart")
-                                .foregroundStyle(isfav ? .orange : .black)
-                                .padding(.trailing, 10)
-                                .symbolEffect(.bounce, value: animValue)
+                    VStack{
+                        HStack{
+                            Text("Modificado:")
+                            .font(.system(size: 10))
+                            Text(diario.fechaM ?? Date.now, style: .date)
+                                .font(.caption2).bold()
+                            Text(diario.fechaM ?? Date.now, style: .time)
+                                .font(.caption2).bold()
                         }
-                        .onAppear{
-                            isfav = diario.isFav
+                        HStack{
+                            Text("       Creado:")
+                            .font(.system(size: 10))
+                            Text(diario.fecha ?? Date.now, style: .date)
+                                .font(.caption2).bold()
+                            Text(diario.fecha ?? Date.now, style: .time)
+                                .font(.caption2).bold()
                         }
-                        
-                            
-                        
-                        Menu{
-                            Button{
-                                showSheet.toggle()
-                            }label: {
-                                Label("Editar", systemImage: "pencil")
-                            }
-                            
-                            Button(role: .destructive){
-                                showAlertDeleteEntry = true
-                            }label: {
-                                Label("Eliminar", systemImage: "trash")
-                            }
-                            
-                            
-                        }label: {
-                            Image(systemName: "ellipsis")
-                                .tint(.black)
-                                .frame(width: 20, height: 20)
-                        
+   
                     }
+                    Spacer()
+                    Button{
+                        isfav.toggle()
+                        DiarioModel().UpdateFav(isFav: isfav, diario: diario)
+                        animValue += 1
+                    }label: {
+                        Image(systemName: isfav ? "heart.fill" : "heart")
+                            .foregroundStyle(isfav ? .orange : .black)
+                            .padding(.trailing, 10)
+                            .symbolEffect(.bounce, value: animValue)
+                    }
+                    .onAppear{
+                        isfav = diario.isFav
+                    }
+
+                    Menu{
+                        Button{
+                            showSheet.toggle()
+                        }label: {
+                            Label("Editar", systemImage: "pencil")
+                        }
+                        
+                        Button(role: .destructive){
+                            showAlertDeleteEntry = true
+                        }label: {
+                            Label("Eliminar", systemImage: "trash")
+                        }
+                        
+                    }label: {
+                        Image(systemName: "ellipsis")
+                            .tint(.black)
+                            .frame(width: 20, height: 20)
                     
                 }
-                .padding(1)
+                    
+                }
             }
         }
         .alert("Modificar Título", isPresented: $showAlert){
@@ -439,7 +449,7 @@ struct cardItem: View{
 }
 
 
-//Editar el contenido de una entrada del diario
+//View: Editar el contenido de una entrada del diario
 struct editContent : View {
     @Environment(\.dismiss) var dimiss
     @Environment(\.colorScheme) var theme
@@ -519,3 +529,5 @@ struct editContent : View {
 #Preview {
     DiarioListView()
 }
+
+

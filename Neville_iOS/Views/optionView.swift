@@ -105,19 +105,19 @@ struct optionView: View {
     func primerGroup()-> some View{
         VStack(spacing: 20){
             HStack(spacing: 20){
-                Button{
-                showGame = true
-                }label: {
-                    bloqueA("gamecontroller", "Evaluación")
-                }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
-                
                 
                 Button{
-                    showNotasSheet = true
+                showReflex = true
                 }label: {
-                    bloqueA("note.text", "Notas")
+                    bloqueA("infinity", "Reflexiones")
                 }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
                 
+                Button{
+                   showAyudas = true
+                }label: {
+                    bloqueA("flag.2.crossed.fill", "Ayudas")
+                }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
+ 
             }
             .padding(.top, 5)
             
@@ -138,17 +138,16 @@ struct optionView: View {
             }
             
             HStack(spacing: 20){
-                
                 Button{
-                showCodeScanner = true
+                    showCitas = true
                 }label: {
-                    bloqueA("qrcode.viewfinder", "Leer QR")
+                    bloqueA("doc.append", "Citas")
                 }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
                 
                 Button{
-                    showCodeGenerate = true
+                   showPreguntas = true
                 }label: {
-                    bloqueA("qrcode", "Crear QR")
+                    bloqueA("questionmark.bubble", "Preguntas & Respuestas")
                 }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
                 
             }
@@ -179,32 +178,36 @@ struct optionView: View {
                 .padding(.top, 5)
                 HStack(spacing: 20){
                     Button{
-                        showCitas = true
+                    showGame = true
                     }label: {
-                        bloqueA("doc.append", "Citas")
+                        bloqueA("gamecontroller", "Evaluación")
                     }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
                     
-                    Button{
-                       showPreguntas = true
-                    }label: {
-                        bloqueA("questionmark.bubble", "Preguntas & Respuestas")
-                    }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
-                }
-                HStack(spacing: 20){
-                    Button{
-                    showReflex = true
-                    }label: {
-                        bloqueA("infinity", "Reflexiones")
-                    }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
                     
                     Button{
-                       showAyudas = true
+                        showNotasSheet = true
                     }label: {
-                        bloqueA("flag.2.crossed.fill", "Ayudas")
+                        bloqueA("note.text", "Notas")
                     }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
                 }
+            HStack(spacing: 20){
+
+                Button{
+                showCodeScanner = true
+                }label: {
+                    bloqueA("qrcode.viewfinder", "Leer QR")
+                }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
+                
+                Button{
+                    showCodeGenerate = true
+                }label: {
+                    bloqueA("qrcode", "Crear QR")
+                }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
+                
+                
+            }
             Spacer()
-            Text ("Sobre el Maestro")
+            Text ("Recursos")
                 .font(.title2)
                 .fontDesign(.serif)
                 

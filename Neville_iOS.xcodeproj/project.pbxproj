@@ -106,7 +106,6 @@
 		19BBC62D2B16BAB900FBB079 /* reflexiones.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19BBC62C2B16BAB900FBB079 /* reflexiones.txt */; };
 		19BBC6302B16BE5D00FBB079 /* ReflexListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19BBC62F2B16BE5D00FBB079 /* ReflexListView.swift */; };
 		19BBC6322B173B8100FBB079 /* ReflexShowTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19BBC6312B173B8100FBB079 /* ReflexShowTextView.swift */; };
-		19C6742C2B2153D7006B4AB7 /* Pruebas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19C6742B2B2153D7006B4AB7 /* Pruebas.swift */; };
 		19C674552B23A3ED006B4AB7 /* ReflexEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19C674542B23A3ED006B4AB7 /* ReflexEditView.swift */; };
 		19C674572B23B708006B4AB7 /* QRLoadFromGaleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19C674562B23B708006B4AB7 /* QRLoadFromGaleryView.swift */; };
 		19C7483C2B045E6D004D52E6 /* cuestionario.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19C7483B2B045E6D004D52E6 /* cuestionario.txt */; };
@@ -558,7 +557,6 @@
 		19BBC62C2B16BAB900FBB079 /* reflexiones.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = reflexiones.txt; sourceTree = "<group>"; };
 		19BBC62F2B16BE5D00FBB079 /* ReflexListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReflexListView.swift; sourceTree = "<group>"; };
 		19BBC6312B173B8100FBB079 /* ReflexShowTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReflexShowTextView.swift; sourceTree = "<group>"; };
-		19C6742B2B2153D7006B4AB7 /* Pruebas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pruebas.swift; sourceTree = "<group>"; };
 		19C674542B23A3ED006B4AB7 /* ReflexEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReflexEditView.swift; sourceTree = "<group>"; };
 		19C674562B23B708006B4AB7 /* QRLoadFromGaleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRLoadFromGaleryView.swift; sourceTree = "<group>"; };
 		19C7483B2B045E6D004D52E6 /* cuestionario.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cuestionario.txt; sourceTree = "<group>"; };
@@ -1413,7 +1411,6 @@
 				19D23CFF2AFD817E008C63BA /* TxtContentModel.swift */,
 				1949D5152B01F04800DFD46D /* GameModel.swift */,
 				19BBC62A2B16B00700FBB079 /* RefexModel.swift */,
-				19C6742B2B2153D7006B4AB7 /* Pruebas.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -2033,7 +2030,6 @@
 				1949D5162B01F04800DFD46D /* GameModel.swift in Sources */,
 				193425B62AFFD83700A99C25 /* GamePLay.swift in Sources */,
 				19B255C22AFC489D0093104F /* NotasModel.swift in Sources */,
-				19C6742C2B2153D7006B4AB7 /* Pruebas.swift in Sources */,
 				197D2A322AF96FC200486014 /* gnerateQRView.swift in Sources */,
 				19C674552B23A3ED006B4AB7 /* ReflexEditView.swift in Sources */,
 				19E06FA82AEB91F00016F9E6 /* FrasesListView.swift in Sources */,

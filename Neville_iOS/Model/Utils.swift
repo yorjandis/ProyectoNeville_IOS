@@ -156,5 +156,12 @@ extension UserDefaults {
 }
 
 
+//Extensión de String que permite obtener todos los dígitos de una cadena, incluido el punto "."
+extension String {
+    var digitos: String {
+        return filter("1234567890.".contains)
+    }
+}
+
 
 

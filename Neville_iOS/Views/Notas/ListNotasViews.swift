@@ -35,13 +35,47 @@ struct ListNotasViews: View {
     var body: some View {
         NavigationStack {
             //Solo muestra el contenido
-            if canOpenNotas {
-                List(list,id: \.id){nota in
-                   Row(notas: $list, nota: nota)
+            ScrollView(.vertical){
+                if canOpenNotas {
+                    ForEach (list.reversed()){ nota in
+                        cardNotas(nota: nota, notas: $list)
+                    }
+                    .onAppear {
+                        withAnimation {
+                            list = NotasModel().getAllNotas()
+                        }
+                        
+                    }
                 }
-                .onAppear {
-                    list = NotasModel().getAllNotas()
+                else{
+                    ZStack{
+                        VStack(spacing: 20) {
+                            Text("Se ha habilitado la protección de las Notas")
+                                .foregroundStyle(.orange.opacity(0.7))
+                                .font(.system(size: 18))
+                                .bold()
+                            Button{
+                                autent()
+                            }label: {
+                                Image(systemName: "key.viewfinder")
+                                    .font(.system(size: 60))
+                                    .foregroundStyle(Color.orange.opacity(0.7))
+                                    .symbolEffect(.pulse, isActive: true)
+                            }
+                        }
+                        
+                    }
                 }
+            }
+            .onAppear {
+                if UserDefaults.standard.bool(forKey: AppCons.UD_setting_NotasFaceID){
+                    canOpenNotas = false
+                }else{
+                    canOpenNotas = true
+                }
+            }
+            
+            
                 Spacer()
                 Divider()
                 HStack(spacing: 30){
@@ -120,39 +154,14 @@ struct ListNotasViews: View {
                 .alert(isPresented: $showAlert){
                     Alert(title: Text("Notas"), message: Text(alertMessage))
                 }
-            } 
-            else{
-                ZStack{
-                    VStack(spacing: 20) {
-                        Text("Se ha habilitado la protección de las Notas")
-                            .foregroundStyle(.orange.opacity(0.7))
-                            .font(.system(size: 18))
-                            .bold()
-                        Button{
-                            autent()
-                        }label: {
-                            Image(systemName: "key.viewfinder")
-                                .font(.system(size: 60))
-                                .foregroundStyle(Color.orange.opacity(0.7))
-                                .symbolEffect(.pulse, isActive: true)
-                        }
-                    }
-                    
-                }
-            }
+            
         }
-        .onAppear {
-            if UserDefaults.standard.bool(forKey: AppCons.UD_setting_NotasFaceID){
-                canOpenNotas = false
-            }else{
-                canOpenNotas = true
-            }
-        }
+        
 
     }
     
    
-    
+    //Actualiza una nota
     func updateYorj(nota : Notas){
         
         if  NotasModel().updateNota(NotaID: nota.id ?? "", newTitle: nota.title ?? "", newNota: nota.nota ?? "") {
@@ -163,7 +172,7 @@ struct ListNotasViews: View {
         
     }
     
-//Autentificación con FaceID
+    //Autentificación con FaceID
     func autent(){
         var error : NSError?
         if contextLA.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error){
@@ -190,102 +199,128 @@ struct ListNotasViews: View {
         }
     }
     
-    
 
 }
 
+//Card notas:
 
 
-
-//Representa un item de la lista
-struct Row : View {
-
-    @State private var confirm = false
+struct cardNotas: View{
+    let nota : Notas
+    @Binding var  notas : [Notas]
+    @State private var expandText = false
+    @State private var isfav = false
+    
+    //Opciones:
+    @State private var showConfirmDialogDeleteNota = false
     @State private var showUpdateNoteView = false
     
-    @Binding var notas : [Notas] //Listado de Notas cargadas
-    var nota: Notas //La nota para esta fila
-    @State private var showConfirmDialogDeleteNota = false
-   
-    
-    var body: some View {
-        NavigationLink{
-            ShowNotaView(nota: nota, notass: $notas)
-        } label: {
-            Text(nota.title ?? "")
-        }
-        .swipeActions(edge: .leading){
-            Button{
-                var stateFav = nota.isfav
-                stateFav.toggle()
-                _ =   NotasModel().updateFav(NotaID: nota.id ?? "", favState: stateFav)
-                 
-            }label: {
-                Image(systemName: "heart")
-                    .tint(.orange)
-            }
-            NavigationLink{
-                let isfav = nota.isfav
-                let texto = "nota>>\(nota.title ?? "")>>\(nota.nota ?? "")>>isfav:\(isfav == true  ? "Si" : "No")"
-                GenerateQRView(footer: texto, showImage: true)
-            }label: {
-                Image(systemName: "qrcode")
-                    .tint(.gray)
-            }
-        }
-        .swipeActions(edge: .trailing){ //Eliminar una nota
-            Button{
-                showUpdateNoteView = true
-            }label: {
-                Image(systemName: "pencil.and.scribble")
-                    .tint(.green)
-            }
-            Button{
-                showConfirmDialogDeleteNota = true
-            }label: {
-                Image(systemName: "minus.circle")
-                    .tint(.red)
-            }
-            
-            
-        }
-        
-        //Sheets:
-        .sheet(isPresented: $showUpdateNoteView){
-            UpdateNotasView(NotaId: nota.id ?? "", title:  nota.title ?? "", nota: nota.nota ?? "", notas: $notas)
-                .presentationDetents([.medium])
-                .presentationDragIndicator(.hidden)
-        }
-      
-        //Dialogo de conformación para elimnar una nota
-        .confirmationDialog("Esta seguro?", isPresented: $showConfirmDialogDeleteNota){
-            Button("Eliminar Nota", role: .destructive){
-                withAnimation {
-                    NotasModel().deleteNota(nota: nota)
-                      notas.removeAll()
-                      notas.append(contentsOf: NotasModel().getAllNotas())
+    var body: some View{
+        VStack(){
+            HStack{
+                Text(nota.title ?? "")
+                    .bold()
+                    .fontDesign(.serif)
+                    .padding(8)
+                    .onTapGesture(count: 2) {
+                        showUpdateNoteView = true
+                    }
+                Spacer()
+                if isfav {
+                    Image(systemName: "heart.fill")
+                        .font(.system(size: 12))
+                        .foregroundStyle(LinearGradient(colors: [.orange, .green], startPoint: .topLeading, endPoint: .bottomTrailing))
+                        .onTapGesture {
+                            _ = NotasModel().updateFav(NotaID: nota.id ?? "", favState: false)
+                            withAnimation {
+                                isfav = nota.isfav ? true : false
+                            }
+                        }
                 }
-
+                Menu{
+                        Text("< \(nota.title ?? "") >")
+                    
+                        Button("Editar..."){showUpdateNoteView = true}
+                        Button(nota.isfav ? "Quitar Favorito" : "Hacer Favorito"){
+                        if nota.isfav {
+                            _ = NotasModel().updateFav(NotaID: nota.id ?? "", favState: false)
+                        }else{
+                            _ = NotasModel().updateFav(NotaID: nota.id ?? "", favState: true)
+                        }
+                            withAnimation {
+                                isfav = nota.isfav ? true : false
+                            }
+                        
+                    }
+                        NavigationLink("Generar QR..."){
+                            let isfav = nota.isfav
+                            let texto = "nota>>\(nota.title ?? "")>>\(nota.nota ?? "")>>isfav:\(isfav == true  ? "Si" : "No")"
+                            GenerateQRView(footer: texto, showImage: true)
+                        }
+                    ShareLink(item: "\(nota.title ?? "")\n \(nota.nota ?? "")")
+                    
+                        Button("Eliminar..."){showConfirmDialogDeleteNota = true}
+   
+                }label: {
+                    Image(systemName: "ellipsis")
+                        .tint(.primary)
+                        .padding(15)
+                }
+                
             }
-        } message: {
-            Text("La nota será removida!!!")
-        }
+            .onAppear{
+                isfav = nota.isfav
+            }
+            //Dialogo de conformación para elimnar una nota
+            .confirmationDialog("Esta seguro?", isPresented: $showConfirmDialogDeleteNota){
+                Button("Eliminar Nota", role: .destructive){
+                    withAnimation {
+                        NotasModel().deleteNota(nota: nota)
+                          notas.removeAll()
+                          notas.append(contentsOf: NotasModel().getAllNotas())
+                    }
 
+                }
+            } message: {
+                Text("La nota será removida!!!")
+            }
+            .sheet(isPresented: $showUpdateNoteView){
+                UpdateNotasView(NotaId: nota.id ?? "", title:  nota.title ?? "", nota: nota.nota ?? "", notas: $notas)
+                    .presentationDetents([.medium])
+                    .presentationDragIndicator(.hidden)
+            }
+            
+            Divider()
+            HStack{
+                Text(nota.nota ?? "")
+                    .font(.system(size: 18))
+                    .italic()
+                    .padding(.vertical, 4)
+                    .padding(.horizontal, 5)
+                    .fontDesign(.serif)
+                    .lineLimit(expandText ? nil :  1)
+                    
+                    .onTapGesture {
+                        withAnimation {
+                            expandText.toggle()
+                        }
+                        
+                    }
+                Spacer()
+            }
+            
+        }
+        .frame(maxWidth: .infinity)
+        .background(.ultraThinMaterial)
+        .clipShape(RoundedRectangle(cornerRadius: 10))
+        //.shadow(radius: 5)
+        .padding(.horizontal, 10)
+        .padding(.vertical, 8)
     }
     
+    
+    
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -176,20 +176,20 @@ struct settingView: View {
                                                     
                         }
 
-                    Link(destination: URL(string:  "https://projectsypg.mozello.com/contacto/")!) {
+                    Link(destination: URL(string:  "https://ypg.mozello.com/contacto/")!) {
                         Label("Enviarme un comentario", systemImage: "exclamationmark.warninglight.fill")
                             .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
                             .bold()
                             .font(.headline)
                     }
-                    Link(destination: URL(string:  "https://projectsypg.mozello.com/productos/neville/")!) {
+                    Link(destination: URL(string:  "https://ypg.mozello.com/productos/neville/")!) {
                         Label("Abrir página del proyecto", systemImage: "swiftdata")
                             .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
                             .bold()
                             .font(.headline)
                     }
 
-                    Link(destination: URL(string:  "https://projectsypg.mozello.com/productos/neville/privacy-police-ios/")!) {
+                    Link(destination: URL(string:  "https://ypg.mozello.com/productos/neville/privacy-police-ios/")!) {
                         Label("Política de Privacidad", systemImage: "link")
                             .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
                             .bold()
