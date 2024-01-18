@@ -32,6 +32,9 @@ struct Neville_iOSApp: App {
             SettingModel().setValuesByDefault()
         }
         
+        //Temporal: Limpieza de errores
+        FrasesModel().tempDeleteFrase() //borra frases de pruebas
+       
         
         
     }

@@ -242,7 +242,7 @@ struct TabButtonBar : View{
                     }
                 
                 case "house.circle.fill":
-                    Button{
+                    Button{              
                        showOptionView = true
                     }label: {
                         makeItemlabel(image: idx)

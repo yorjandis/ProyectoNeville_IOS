@@ -385,6 +385,23 @@ struct FrasesModel {
             return []
         }
     }
+    
+    
+    //Funcion temporal Lanzada en la version 1.1.1: Elimina dos frase de prueba que se fue en la compilación 1.1.0.
+    //Yor: Eliminar esta función en la versión 1.1.3
+    func tempDeleteFrase() {
+        let array = GetRequest(predicate: nil)
+        
+        for i in array {
+            let temp = i.frase ?? ""
+            if temp.contains("yorjandis"){
+                print("Resultado: \(i.frase ?? "")")
+                context.delete(i)
+                try? context.save()
+            }
+        }
+    }
+
 
 }//struct
 

@@ -219,6 +219,7 @@ struct cardNotas: View{
     var body: some View{
         VStack(){
             HStack{
+
                 Text(nota.title ?? "")
                     .bold()
                     .fontDesign(.serif)
@@ -227,9 +228,7 @@ struct cardNotas: View{
                         showUpdateNoteView = true
                     }
                     .onTapGesture {
-                        withAnimation {
                             expandNota.toggle()
-                        }
                     }
                 Spacer()
                 if isfav {
@@ -243,6 +242,7 @@ struct cardNotas: View{
                             }
                         }
                 }
+
                 Menu{
                         Text("< \(nota.title ?? "") >")
                     
@@ -277,6 +277,10 @@ struct cardNotas: View{
                 }
                 
             }
+            .contentShape(Rectangle())
+            .onTapGesture {
+                expandNota.toggle()
+            }
             .onAppear{
                 isfav = nota.isfav
             }
@@ -299,7 +303,7 @@ struct cardNotas: View{
                     .presentationDragIndicator(.hidden)
             }
             if expandNota {
-                    Divider()
+                    //Divider()
                     HStack{
                         Text(nota.nota ?? "")
                             .font(.system(size: 18))
@@ -310,10 +314,7 @@ struct cardNotas: View{
                             //.lineLimit(expandText ? nil :  1)
                             
                             .onTapGesture {
-                                withAnimation {
                                     expandText.toggle()
-                                }
-                                
                             }
                         Spacer()
                 }
