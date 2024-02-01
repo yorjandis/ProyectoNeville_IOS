@@ -13,7 +13,8 @@ import SwiftUI
 @main
 struct Neville_iOSApp: App {
     
-  @StateObject var networkMonitor = NetworkMonitor()
+  @StateObject private var networkMonitor = NetworkMonitor()
+    @StateObject private var WatchConectivityMV = WatchConectivityModel.shared
     
     
     //Codigo a cargar al inicio:
@@ -44,6 +45,7 @@ struct Neville_iOSApp: App {
         WindowGroup {
             ContentView()
                 .environmentObject(networkMonitor)
+                .environmentObject(WatchConectivityMV) //Conectividad con el reloj
                 
         }
     }

@@ -16,7 +16,7 @@ struct NotasModel{
         case titulo, nota
     }
     
-    private var context = CoreDataController.dC.context
+    private var context = CoreDataController.shared.context
     
     ///Obtener la lista de notas
     /// - Returns : Devuelve un arreglo de entity Notas. De lo contrario devuelve un arreglo vacio

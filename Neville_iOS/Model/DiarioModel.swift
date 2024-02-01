@@ -31,7 +31,7 @@ enum Emociones : String{
 
 
 struct DiarioModel{
-    private let context = CoreDataController.dC.context
+    private let context = CoreDataController.shared.context
     
     //Obtiene el valor enum de Emociones a partir de una cadena de texto
     func getEmocionesFromStr(value : String)->Emociones{

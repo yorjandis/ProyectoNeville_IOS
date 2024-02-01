@@ -14,7 +14,7 @@ import SwiftUI
 struct FrasesModel {
     
     ///Obtiene el contexto de Objetos administrados
-    private var context = CoreDataController.dC.context
+    private var context = CoreDataController.shared.context
  
     ///Almacena el Id de la frase actualmente cargada. Se actualiza en: getRandomFrase()
     static var idFraseActual : String = ""
@@ -402,6 +402,9 @@ struct FrasesModel {
         }
     }
 
+    
+    
+    
 
 }//struct
 

@@ -12,8 +12,7 @@ final class CoreDataController : Sendable {
     
     let persistenContainer : NSPersistentContainer
     
-    //Esta variable permite tener en ejecución solo una instancia de esta clase (Singleton)
-    static let dC = CoreDataController()
+    static let shared = CoreDataController() //Singleton
     
     //Acceso al contexto de objeto administrado
     var context : NSManagedObjectContext {

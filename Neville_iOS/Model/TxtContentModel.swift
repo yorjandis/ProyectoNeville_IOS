@@ -13,7 +13,7 @@ import CoreData
 
 struct TxtContentModel{
 
-    private let context = CoreDataController.dC.context
+    private let context = CoreDataController.shared.context
     
     //Typo de contenido a manejar: Nota: Si en un futuro se adiciona más contenido se maneja aqui
     enum TipoDeContenido: String{

@@ -103,5 +103,5 @@ struct ReflexShowTextView: View {
 }
 
 #Preview {
-    ReflexShowTextView( entity: Reflex(context: CoreDataController.dC.context) )
+    ReflexShowTextView( entity: Reflex(context: CoreDataController.shared.context) )
 }

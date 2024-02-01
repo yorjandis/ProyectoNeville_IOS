@@ -32,7 +32,7 @@ struct TxtListView: View {
     
     
     @State var listado : [TxtCont] = []
-    @State private var entidad : TxtCont = TxtCont(context: CoreDataController.dC.context) //Esto es para permitir editar la nota y buscar en txt
+    @State private var entidad : TxtCont = TxtCont(context: CoreDataController.shared.context) //Esto es para permitir editar la nota y buscar en txt
 
     var body: some View {
         

@@ -10,7 +10,7 @@ import CoreData
 
 
 struct RefexModel {
-    private let context = CoreDataController.dC.context
+    private let context = CoreDataController.shared.context
     
     ///Variable que indica si se ha populado la tabla frase (consulta a UserDefault)
    private  var isReflexPopulated : Bool {

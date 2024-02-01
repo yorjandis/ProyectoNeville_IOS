@@ -7,6 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		190C39AC2B6B8CC7008007C6 /* ModelData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E92F64512AB78EE6007BB4BA /* ModelData.xcdatamodeld */; };
+		190C39AD2B6B8D9D008007C6 /* FrasesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19B255BF2AFC47C30093104F /* FrasesModel.swift */; };
+		190C39AE2B6B8DBD008007C6 /* CoreDataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E99F9CC52AC4682B00169084 /* CoreDataController.swift */; };
+		190C39AF2B6B8DC9008007C6 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92F63722AB468F4007BB4BA /* Utils.swift */; };
+		190C39B02B6B8DD6008007C6 /* UtilsForViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = E93C23A92ABA365100939D16 /* UtilsForViews.swift */; };
+		190C39B12B6B8F87008007C6 /* NotasModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19B255C12AFC489D0093104F /* NotasModel.swift */; };
+		190C39B22B6B8F8C008007C6 /* TxtContentModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D23CFF2AFD817E008C63BA /* TxtContentModel.swift */; };
+		190C39B32B6B8F9C008007C6 /* DiarioModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 197D2A3A2AFA9FE000486014 /* DiarioModel.swift */; };
+		190C39B42B6B9026008007C6 /* listfrases.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F64562AB7D2BA007BB4BA /* listfrases.txt */; };
+		190C39B72B6B98A7008007C6 /* WatchCoreDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 190C39B62B6B98A7008007C6 /* WatchCoreDataModel.swift */; };
 		193425B62AFFD83700A99C25 /* GamePLay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 193425B52AFFD83700A99C25 /* GamePLay.swift */; };
 		193B6EAD2AF1B1D10003E897 /* NetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 193B6EAC2AF1B1D10003E897 /* NetModel.swift */; };
 		1949D5162B01F04800DFD46D /* GameModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1949D5152B01F04800DFD46D /* GameModel.swift */; };
@@ -15,8 +25,6 @@
 		194F112B2AEF23E8009FA23E /* settingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 194F112A2AEF23E8009FA23E /* settingModel.swift */; };
 		1954CDAA2B1152BC0093DDF0 /* AppIntentWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 199DA0682B102AA600DEED62 /* AppIntentWidget.swift */; };
 		197D2A322AF96FC200486014 /* gnerateQRView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 197D2A312AF96FC200486014 /* gnerateQRView.swift */; };
-		197D2A352AF9853000486014 /* ReadQRCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 197D2A342AF9853000486014 /* ReadQRCode.swift */; };
-		197D2A382AF9854E00486014 /* CodeScanner in Frameworks */ = {isa = PBXBuildFile; productRef = 197D2A372AF9854E00486014 /* CodeScanner */; };
 		197D2A3B2AFA9FE000486014 /* DiarioModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 197D2A3A2AFA9FE000486014 /* DiarioModel.swift */; };
 		197D2A3E2AFAA3FC00486014 /* DiarioListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 197D2A3D2AFAA3FB00486014 /* DiarioListView.swift */; };
 		199DA0672B0EAC5800DEED62 /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = 199DA0662B0EAC5800DEED62 /* Home.swift */; };
@@ -122,6 +130,13 @@
 		19E0BE2A2B0C750300E149A5 /* listfrases.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F64562AB7D2BA007BB4BA /* listfrases.txt */; };
 		19E0BE2B2B0C76E000E149A5 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92F63722AB468F4007BB4BA /* Utils.swift */; };
 		19F3CFCA2B5677B200DEB026 /* conf_a sus ordenes.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19F3CFC92B5677B200DEB026 /* conf_a sus ordenes.txt */; };
+		19F8041C2B69CB9D00A323A0 /* La_LeyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19F8041B2B69CB9D00A323A0 /* La_LeyApp.swift */; };
+		19F8041E2B69CB9D00A323A0 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19F8041D2B69CB9D00A323A0 /* ContentView.swift */; };
+		19F804202B69CBA000A323A0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 19F8041F2B69CBA000A323A0 /* Assets.xcassets */; };
+		19F804232B69CBA000A323A0 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 19F804222B69CBA000A323A0 /* Preview Assets.xcassets */; };
+		19F804262B69CBA000A323A0 /* La Ley Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 19F804192B69CB9D00A323A0 /* La Ley Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		19F8042C2B69CC1700A323A0 /* WatchConectivityModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19F8042B2B69CC1700A323A0 /* WatchConectivityModel.swift */; };
+		19F8042D2B69CC1700A323A0 /* WatchConectivityModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19F8042B2B69CC1700A323A0 /* WatchConectivityModel.swift */; };
 		E92F62442AB3E1C2007BB4BA /* conf_el desperta de la fe.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F611D2AB3E1B3007BB4BA /* conf_el desperta de la fe.txt */; };
 		E92F62452AB3E1C2007BB4BA /* conf_siente profundamente.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F611E2AB3E1B3007BB4BA /* conf_siente profundamente.txt */; };
 		E92F62462AB3E1C2007BB4BA /* conf_una sola causa.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F611F2AB3E1B3007BB4BA /* conf_una sola causa.txt */; };
@@ -442,6 +457,13 @@
 			remoteGlobalIDString = 19E0BE132B0C661A00E149A5;
 			remoteInfo = FrasesWiggetExtension;
 		};
+		19F804242B69CBA000A323A0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E95B934B2AAFBB2600B5E2B5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 19F804182B69CB9D00A323A0;
+			remoteInfo = "La Ley Watch App";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -456,9 +478,22 @@
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		19F804272B69CBA000A323A0 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				19F804262B69CBA000A323A0 /* La Ley Watch App.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		190C39AB2B6B84AA008007C6 /* La Ley Watch App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "La Ley Watch App.entitlements"; sourceTree = "<group>"; };
+		190C39B62B6B98A7008007C6 /* WatchCoreDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchCoreDataModel.swift; sourceTree = "<group>"; };
 		193425B52AFFD83700A99C25 /* GamePLay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamePLay.swift; sourceTree = "<group>"; };
 		193B6EAC2AF1B1D10003E897 /* NetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetModel.swift; sourceTree = "<group>"; };
 		1949D5152B01F04800DFD46D /* GameModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameModel.swift; sourceTree = "<group>"; };
@@ -467,7 +502,6 @@
 		194F112A2AEF23E8009FA23E /* settingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = settingModel.swift; sourceTree = "<group>"; };
 		1954CDA92B1152740093DDF0 /* FrasesWiggetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FrasesWiggetExtension.entitlements; sourceTree = "<group>"; };
 		197D2A312AF96FC200486014 /* gnerateQRView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = gnerateQRView.swift; sourceTree = "<group>"; };
-		197D2A342AF9853000486014 /* ReadQRCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadQRCode.swift; sourceTree = "<group>"; };
 		197D2A392AF9858900486014 /* Neville-iOS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Neville-iOS-Info.plist"; sourceTree = SOURCE_ROOT; };
 		197D2A3A2AFA9FE000486014 /* DiarioModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiarioModel.swift; sourceTree = "<group>"; };
 		197D2A3D2AFAA3FB00486014 /* DiarioListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiarioListView.swift; sourceTree = "<group>"; };
@@ -574,6 +608,12 @@
 		19E0BE1C2B0C661B00E149A5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		19E0BE1E2B0C661B00E149A5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		19F3CFC92B5677B200DEB026 /* conf_a sus ordenes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_a sus ordenes.txt"; sourceTree = "<group>"; };
+		19F804192B69CB9D00A323A0 /* La Ley Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "La Ley Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		19F8041B2B69CB9D00A323A0 /* La_LeyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = La_LeyApp.swift; sourceTree = "<group>"; };
+		19F8041D2B69CB9D00A323A0 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		19F8041F2B69CBA000A323A0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		19F804222B69CBA000A323A0 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		19F8042B2B69CC1700A323A0 /* WatchConectivityModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConectivityModel.swift; sourceTree = "<group>"; };
 		E92F611D2AB3E1B3007BB4BA /* conf_el desperta de la fe.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_el desperta de la fe.txt"; sourceTree = "<group>"; };
 		E92F611E2AB3E1B3007BB4BA /* conf_siente profundamente.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_siente profundamente.txt"; sourceTree = "<group>"; };
 		E92F611F2AB3E1B3007BB4BA /* conf_una sola causa.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_una sola causa.txt"; sourceTree = "<group>"; };
@@ -897,17 +937,31 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		19F804162B69CB9D00A323A0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E95B93502AAFBB2600B5E2B5 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				197D2A382AF9854E00486014 /* CodeScanner in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		190C39B52B6B97F3008007C6 /* model */ = {
+			isa = PBXGroup;
+			children = (
+				190C39B62B6B98A7008007C6 /* WatchCoreDataModel.swift */,
+			);
+			path = model;
+			sourceTree = "<group>";
+		};
 		193425B42AFFD81C00A99C25 /* PLayGame */ = {
 			isa = PBXGroup;
 			children = (
@@ -928,7 +982,6 @@
 		197D2A332AF9851300486014 /* QRCode */ = {
 			isa = PBXGroup;
 			children = (
-				197D2A342AF9853000486014 /* ReadQRCode.swift */,
 				1949D5182B02B1E200DFD46D /* QRModel.swift */,
 			);
 			path = QRCode;
@@ -1078,6 +1131,27 @@
 				19E0BE1E2B0C661B00E149A5 /* Info.plist */,
 			);
 			path = FrasesWigget;
+			sourceTree = "<group>";
+		};
+		19F8041A2B69CB9D00A323A0 /* La Ley Watch App */ = {
+			isa = PBXGroup;
+			children = (
+				190C39B52B6B97F3008007C6 /* model */,
+				190C39AB2B6B84AA008007C6 /* La Ley Watch App.entitlements */,
+				19F8041B2B69CB9D00A323A0 /* La_LeyApp.swift */,
+				19F8041D2B69CB9D00A323A0 /* ContentView.swift */,
+				19F8041F2B69CBA000A323A0 /* Assets.xcassets */,
+				19F804212B69CBA000A323A0 /* Preview Content */,
+			);
+			path = "La Ley Watch App";
+			sourceTree = "<group>";
+		};
+		19F804212B69CBA000A323A0 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				19F804222B69CBA000A323A0 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
 			sourceTree = "<group>";
 		};
 		E92F61182AB3E05C007BB4BA /* Staff */ = {
@@ -1414,6 +1488,7 @@
 				19D23CFF2AFD817E008C63BA /* TxtContentModel.swift */,
 				1949D5152B01F04800DFD46D /* GameModel.swift */,
 				19BBC62A2B16B00700FBB079 /* RefexModel.swift */,
+				19F8042B2B69CC1700A323A0 /* WatchConectivityModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1440,6 +1515,7 @@
 				1954CDA92B1152740093DDF0 /* FrasesWiggetExtension.entitlements */,
 				E95B93552AAFBB2600B5E2B5 /* Neville_iOS */,
 				19E0BE172B0C661A00E149A5 /* FrasesWigget */,
+				19F8041A2B69CB9D00A323A0 /* La Ley Watch App */,
 				19E0BDEB2B0B412D00E149A5 /* Frameworks */,
 				E95B93542AAFBB2600B5E2B5 /* Products */,
 			);
@@ -1450,6 +1526,7 @@
 			children = (
 				E95B93532AAFBB2600B5E2B5 /* Neville_iOS.app */,
 				19E0BE142B0C661A00E149A5 /* FrasesWiggetExtension.appex */,
+				19F804192B69CB9D00A323A0 /* La Ley Watch App.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1528,6 +1605,23 @@
 			productReference = 19E0BE142B0C661A00E149A5 /* FrasesWiggetExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		19F804182B69CB9D00A323A0 /* La Ley Watch App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 19F8042A2B69CBA000A323A0 /* Build configuration list for PBXNativeTarget "La Ley Watch App" */;
+			buildPhases = (
+				19F804152B69CB9D00A323A0 /* Sources */,
+				19F804162B69CB9D00A323A0 /* Frameworks */,
+				19F804172B69CB9D00A323A0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "La Ley Watch App";
+			productName = "La Ley Watch App";
+			productReference = 19F804192B69CB9D00A323A0 /* La Ley Watch App.app */;
+			productType = "com.apple.product-type.application";
+		};
 		E95B93522AAFBB2600B5E2B5 /* Neville_iOS */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = E95B93612AAFBB2900B5E2B5 /* Build configuration list for PBXNativeTarget "Neville_iOS" */;
@@ -1536,15 +1630,16 @@
 				E95B93502AAFBB2600B5E2B5 /* Frameworks */,
 				E95B93512AAFBB2600B5E2B5 /* Resources */,
 				19E0BDFE2B0B412F00E149A5 /* Embed Foundation Extensions */,
+				19F804272B69CBA000A323A0 /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				19E0BE202B0C661B00E149A5 /* PBXTargetDependency */,
+				19F804252B69CBA000A323A0 /* PBXTargetDependency */,
 			);
 			name = Neville_iOS;
 			packageProductDependencies = (
-				197D2A372AF9854E00486014 /* CodeScanner */,
 			);
 			productName = Neville_iOS;
 			productReference = E95B93532AAFBB2600B5E2B5 /* Neville_iOS.app */;
@@ -1557,11 +1652,14 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1500;
+				LastSwiftUpdateCheck = 1520;
 				LastUpgradeCheck = 1500;
 				TargetAttributes = {
 					19E0BE132B0C661A00E149A5 = {
 						CreatedOnToolsVersion = 15.0.1;
+					};
+					19F804182B69CB9D00A323A0 = {
+						CreatedOnToolsVersion = 15.2;
 					};
 					E95B93522AAFBB2600B5E2B5 = {
 						CreatedOnToolsVersion = 15.0;
@@ -1578,7 +1676,6 @@
 			);
 			mainGroup = E95B934A2AAFBB2600B5E2B5;
 			packageReferences = (
-				197D2A362AF9854E00486014 /* XCRemoteSwiftPackageReference "CodeScanner" */,
 			);
 			productRefGroup = E95B93542AAFBB2600B5E2B5 /* Products */;
 			projectDirPath = "";
@@ -1586,6 +1683,7 @@
 			targets = (
 				E95B93522AAFBB2600B5E2B5 /* Neville_iOS */,
 				19E0BE132B0C661A00E149A5 /* FrasesWiggetExtension */,
+				19F804182B69CB9D00A323A0 /* La Ley Watch App */,
 			);
 		};
 /* End PBXProject section */
@@ -1597,6 +1695,16 @@
 			files = (
 				19E0BE2A2B0C750300E149A5 /* listfrases.txt in Resources */,
 				19E0BE1D2B0C661B00E149A5 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		19F804172B69CB9D00A323A0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				19F804232B69CBA000A323A0 /* Preview Assets.xcassets in Resources */,
+				190C39B42B6B9026008007C6 /* listfrases.txt in Resources */,
+				19F804202B69CBA000A323A0 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1999,6 +2107,25 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		19F804152B69CB9D00A323A0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				19F8041E2B69CB9D00A323A0 /* ContentView.swift in Sources */,
+				190C39AC2B6B8CC7008007C6 /* ModelData.xcdatamodeld in Sources */,
+				190C39B12B6B8F87008007C6 /* NotasModel.swift in Sources */,
+				190C39B32B6B8F9C008007C6 /* DiarioModel.swift in Sources */,
+				190C39AE2B6B8DBD008007C6 /* CoreDataController.swift in Sources */,
+				190C39AF2B6B8DC9008007C6 /* Utils.swift in Sources */,
+				190C39B72B6B98A7008007C6 /* WatchCoreDataModel.swift in Sources */,
+				190C39B02B6B8DD6008007C6 /* UtilsForViews.swift in Sources */,
+				190C39B22B6B8F8C008007C6 /* TxtContentModel.swift in Sources */,
+				19F8041C2B69CB9D00A323A0 /* La_LeyApp.swift in Sources */,
+				190C39AD2B6B8D9D008007C6 /* FrasesModel.swift in Sources */,
+				19F8042D2B69CC1700A323A0 /* WatchConectivityModel.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E95B934F2AAFBB2600B5E2B5 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2008,7 +2135,6 @@
 				E99F9CC62AC4682B00169084 /* CoreDataController.swift in Sources */,
 				19B255C02AFC47C30093104F /* FrasesModel.swift in Sources */,
 				193B6EAD2AF1B1D10003E897 /* NetModel.swift in Sources */,
-				197D2A352AF9853000486014 /* ReadQRCode.swift in Sources */,
 				1949D5192B02B1E200DFD46D /* QRModel.swift in Sources */,
 				1954CDAA2B1152BC0093DDF0 /* AppIntentWidget.swift in Sources */,
 				194F112B2AEF23E8009FA23E /* settingModel.swift in Sources */,
@@ -2024,6 +2150,7 @@
 				E9D0F1CB2AE2226A00B35452 /* optionView.swift in Sources */,
 				E93C23AA2ABA365100939D16 /* UtilsForViews.swift in Sources */,
 				E92F636C2AB3EC5E007BB4BA /* ContentTxtShowView.swift in Sources */,
+				19F8042C2B69CC1700A323A0 /* WatchConectivityModel.swift in Sources */,
 				19C674572B23B708006B4AB7 /* QRLoadFromGaleryView.swift in Sources */,
 				194F11292AEC79D5009FA23E /* settingView.swift in Sources */,
 				E95B93572AAFBB2600B5E2B5 /* Neville_iOSApp.swift in Sources */,
@@ -2050,6 +2177,11 @@
 			isa = PBXTargetDependency;
 			target = 19E0BE132B0C661A00E149A5 /* FrasesWiggetExtension */;
 			targetProxy = 19E0BE1F2B0C661B00E149A5 /* PBXContainerItemProxy */;
+		};
+		19F804252B69CBA000A323A0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 19F804182B69CB9D00A323A0 /* La Ley Watch App */;
+			targetProxy = 19F804242B69CBA000A323A0 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -2109,6 +2241,70 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		19F804282B69CBA000A323A0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "La Ley Watch App/La Ley Watch App.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"La Ley Watch App/Preview Content\"";
+				DEVELOPMENT_TEAM = NDP3AP6896;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "La Ley";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.ypg.nev;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.2;
+			};
+			name = Debug;
+		};
+		19F804292B69CBA000A323A0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "La Ley Watch App/La Ley Watch App.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"La Ley Watch App/Preview Content\"";
+				DEVELOPMENT_TEAM = NDP3AP6896;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "La Ley";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.ypg.nev;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.2;
 			};
 			name = Release;
 		};
@@ -2329,6 +2525,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		19F8042A2B69CBA000A323A0 /* Build configuration list for PBXNativeTarget "La Ley Watch App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				19F804282B69CBA000A323A0 /* Debug */,
+				19F804292B69CBA000A323A0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		E95B934E2AAFBB2600B5E2B5 /* Build configuration list for PBXProject "Neville_iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -2348,25 +2553,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		197D2A362AF9854E00486014 /* XCRemoteSwiftPackageReference "CodeScanner" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/twostraws/CodeScanner";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.3.3;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		197D2A372AF9854E00486014 /* CodeScanner */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 197D2A362AF9854E00486014 /* XCRemoteSwiftPackageReference "CodeScanner" */;
-			productName = CodeScanner;
-		};
-/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		E92F64512AB78EE6007BB4BA /* ModelData.xcdatamodeld */ = {
