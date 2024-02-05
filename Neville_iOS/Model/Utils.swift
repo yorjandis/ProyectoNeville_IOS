@@ -122,10 +122,10 @@ struct UtilFuncs{
 
     ///Lee el contenido del TXt y lo devuelve como String
     ///
-   static func FileRead(_ fileName : String)->String{
+    static func FileRead(_ fileName : String)->String{
         
         var result = ""
-       let temp = "\(fileName.lowercased())"
+        let temp = "\(fileName.lowercased())"
         
         if let gg = Bundle.main.url(forResource: temp, withExtension: "txt") {
             

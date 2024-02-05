@@ -7,10 +7,11 @@
 
 import Foundation
 import CoreData
+import CloudKit
 
 final class CoreDataController : Sendable {
     
-    let persistenContainer : NSPersistentContainer
+    let persistenContainer : NSPersistentCloudKitContainer //Migrando a iCloud
     
     static let shared = CoreDataController() //Singleton
     
@@ -33,13 +34,14 @@ final class CoreDataController : Sendable {
     
    private init(){
 
-        persistenContainer = NSPersistentContainer(name: "ModelData")
+        persistenContainer = NSPersistentCloudKitContainer(name: "ModelData") //Migrando a iCloud
         persistenContainer.loadPersistentStores{(description, error) in
             if let error = error {
                 print(error.localizedDescription)
             }
             
         }
+       persistenContainer.viewContext.automaticallyMergesChangesFromParent = true //For rigth sincro, because many user can change data at same time
         
         
     }

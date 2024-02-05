@@ -60,7 +60,7 @@ struct optionView: View {
                 FrasesListView()
             }
             .sheet(isPresented: $showCodeScanner){
-                //#PreviewReadQRCode()
+                //QRCodeScanner()
             }
             .sheet(isPresented: $showCodeGenerate){
                 GenerateQRView(footer: "", showImage: false)
