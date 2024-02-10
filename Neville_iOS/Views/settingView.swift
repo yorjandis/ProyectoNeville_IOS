@@ -32,6 +32,9 @@ struct settingView: View {
     //Other
     @State var showButtonUpdate = false // muestra/oculta el boton para actualizar nuevo contenido añadido al bundle
     
+    //Flag de prueba:
+    @Binding var isSettingChanged : Bool
+    
 
     
 
@@ -49,6 +52,9 @@ struct settingView: View {
                             .font(.system(size:CGFloat(fontSizeFrases)))
                         Spacer()
                         Stepper(String(fontSizeFrases), value: $fontSizeFrases)
+                            .onChange(of: fontSizeFrases) { oldValue, newValue in
+                                self.isSettingChanged.toggle() //Informa que se ha cambiado la setting
+                            }
                             
                     }
                     
@@ -85,6 +91,7 @@ struct settingView: View {
                         .bold()
                         .onChange(of: ColorFrase, initial: true) { oldValue, newValue in
                             SettingModel().saveColor(forkey: AppCons.UD_setting_color_frases, color: newValue)
+                            self.isSettingChanged.toggle() //Informa a Home que se ha cambiado el color
                         }
                 }
                 
@@ -94,11 +101,13 @@ struct settingView: View {
                         ColorPicker("Color primario", selection: $ColorPrimario)
                             .onChange(of: ColorPrimario, initial: true) { oldValue, newValue in
                                 SettingModel().saveColor(forkey: AppCons.UD_setting_color_main_a, color: newValue)
+                                self.isSettingChanged.toggle() //Informa a Home que se ha cambiado el color
                             }
                             .padding(.bottom, 10)
                         ColorPicker("Color Secundario", selection: $ColorSecundario)
                             .onChange(of: ColorSecundario, initial: true) { oldValue, newValue in
                                 SettingModel().saveColor(forkey: AppCons.UD_setting_color_main_b, color: newValue)
+                                self.isSettingChanged.toggle() //Informa a Home que se ha cambiado el color
                             }
                         
                         Text("")
@@ -243,5 +252,5 @@ struct settingView: View {
 
 
 #Preview {
-    settingView()
+    settingView(isSettingChanged: .constant(true))
 }

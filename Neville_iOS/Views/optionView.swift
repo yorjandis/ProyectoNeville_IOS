@@ -20,6 +20,7 @@ struct optionView: View {
     @State private var showPreguntas    = false
     @State private var showAyudas       = false
     @State private var showReflex       = false
+    @State private var selectionTab     = 1
     
     private let colorGradientButton = [SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_a),
                                        SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_b)]
@@ -27,29 +28,36 @@ struct optionView: View {
     private let sizeWigth : CGFloat = 150
     
     var body: some View {
-        NavigationStack{
-            ZStack{
+        
+            VStack{
+                //Color(Color.black.opacity(0.7))
                 
-                Color(Color.black.opacity(0.7))
-                
-                ScrollView(.horizontal) {
-                    HStack(alignment: .center, spacing: 5) {
+                TabView(selection: $selectionTab){
+                    
+                    NavigationStack{
                         primerGroup()
-                        .padding(.horizontal, 7)
+                            .frame(maxHeight: 250)
+                            
+                    }.tag(1)
+
+                    
+                    NavigationStack{
                         segundoGrupo()
-                        .padding(.horizontal, 7)
+                           .frame(maxHeight: 250)
+
+                    }.tag(2)
+
+                    
+                    NavigationStack{
                         tercerGrupo()
-                        .padding(.horizontal, 45)
-                        
-                    }
-         
+                           .frame(maxHeight: 250)
+                            
+                    }.tag(3)
+
+ 
                 }
-                .scrollIndicators(.hidden)
-                .frame(maxWidth: .infinity , maxHeight: .infinity)
-                .background(.ultraThinMaterial)
-                .shadow(radius: 5)
+                .tabViewStyle(.page)
             }
-            
             .sheet(isPresented: $showNotasSheet) {
                 ListNotasViews()
             }
@@ -99,32 +107,30 @@ struct optionView: View {
             }
         }
             
-        }
-    
     @ViewBuilder
     func primerGroup()-> some View{
         VStack(spacing: 20){
             HStack(spacing: 20){
                 
                 Button{
-                showReflex = true
+                    showReflex = true
                 }label: {
                     bloqueA("infinity", "Reflexiones")
                 }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
                 
                 Button{
-                   showAyudas = true
+                    showAyudas = true
                 }label: {
                     bloqueA("flag.2.crossed.fill", "Ayudas")
                 }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
- 
+                
             }
             .padding(.top, 5)
             
             HStack(spacing: 20){
                 
                 Button{
-                showDiarioSheet = true
+                    showDiarioSheet = true
                 }label: {
                     bloqueA("book", "Diario")
                 }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
@@ -145,7 +151,7 @@ struct optionView: View {
                 }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
                 
                 Button{
-                   showPreguntas = true
+                    showPreguntas = true
                 }label: {
                     bloqueA("questionmark.bubble", "Preguntas & Respuestas")
                 }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
@@ -159,41 +165,41 @@ struct optionView: View {
         }
     }
     
-
+    
     @ViewBuilder
     func  segundoGrupo()-> some View {
         VStack(spacing: 20){
             
-                HStack(spacing: 20){
-                    Button{
-                        showBiografia = true
-                    }label: {
-                        bloqueA("person.text.rectangle", "Bibliografia")
-                    }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
- 
-                    Link(destination: URL(string: "https://t.me/+rODRAz2S6nVmMmY0")!){
-                        bloqueA("personalhotspot", "Canal Telegram")
-                    }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
-                }
-                .padding(.top, 5)
-                HStack(spacing: 20){
-                    Button{
-                    showGame = true
-                    }label: {
-                        bloqueA("gamecontroller", "Evaluación")
-                    }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
-                    
-                    
-                    Button{
-                        showNotasSheet = true
-                    }label: {
-                        bloqueA("note.text", "Notas")
-                    }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
-                }
             HStack(spacing: 20){
-
                 Button{
-                showCodeScanner = true
+                    showBiografia = true
+                }label: {
+                    bloqueA("person.text.rectangle", "Bibliografia")
+                }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
+                
+                Link(destination: URL(string: "https://t.me/+rODRAz2S6nVmMmY0")!){
+                    bloqueA("personalhotspot", "Canal Telegram")
+                }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
+            }
+            .padding(.top, 5)
+            HStack(spacing: 20){
+                Button{
+                    showGame = true
+                }label: {
+                    bloqueA("gamecontroller", "Evaluación")
+                }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
+                
+                
+                Button{
+                    showNotasSheet = true
+                }label: {
+                    bloqueA("note.text", "Notas")
+                }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
+            }
+            HStack(spacing: 20){
+                
+                Button{
+                    showCodeScanner = true
                 }label: {
                     bloqueA("qrcode.viewfinder", "Leer QR")
                 }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
@@ -210,36 +216,39 @@ struct optionView: View {
             Text ("Recursos")
                 .font(.title2)
                 .fontDesign(.serif)
-                
-            }
+            
+        }
     }
-
+    
     
     @ViewBuilder
     func  tercerGrupo()-> some View {
         VStack(spacing: 20){
-
-                    Link(destination: URL(string: "https://www.youtube.com/watch?v=jd5ctdBQAeo&list=PL2kf06WQ27nmP4VFSy4li_U1jvoPM6wPU")!){
-                        bloqueA("link", "Espiritualidad")
-                    }.modifier(GradientButtonStyle(ancho: 270, colors: colorGradientButton))
+            
+            Link(destination: URL(string: "https://www.youtube.com/watch?v=jd5ctdBQAeo&list=PL2kf06WQ27nmP4VFSy4li_U1jvoPM6wPU")!){
+                bloqueA("link", "Espiritualidad")
+            }.modifier(GradientButtonStyle(ancho: 270, colors: colorGradientButton))
                 .padding(.top, 5)
             
             Link(destination: URL(string: "https://www.youtube.com/watch?v=ZPOS12O0Vd0&list=PL2kf06WQ27nmK4nw5oo1Dnw24xrxUDtyV")!){
                 bloqueA("link", "Alcanzar el Éxito")
             }.modifier(GradientButtonStyle(ancho: 270, colors: colorGradientButton))
-                    
+            
             Link(destination: URL(string: "https://www.youtube.com/watch?v=wcE8X8FBWN0&list=PL2kf06WQ27nnuvoeU7-sk7qmEofplDEMR")!){
                 bloqueA("link", "Personas que dejaron huellas")
             }.modifier(GradientButtonStyle(ancho: 270, colors: colorGradientButton))
-                
             
             
-               Spacer()
+            
+            Spacer()
             Text ("10 lecciones de Sabiduria")
                 .font(.title2)
                 .fontDesign(.serif)
-            }
+        }
     }
+        }
+    
+
     
     //auxiliar
     @ViewBuilder
@@ -255,7 +264,7 @@ struct optionView: View {
     }
 
     
-}
+
 
 
 

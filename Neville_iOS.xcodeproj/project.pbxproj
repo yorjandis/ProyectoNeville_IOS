@@ -16,13 +16,15 @@
 		190C39B22B6B8F8C008007C6 /* TxtContentModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D23CFF2AFD817E008C63BA /* TxtContentModel.swift */; };
 		190C39B32B6B8F9C008007C6 /* DiarioModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 197D2A3A2AFA9FE000486014 /* DiarioModel.swift */; };
 		190C39B42B6B9026008007C6 /* listfrases.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F64562AB7D2BA007BB4BA /* listfrases.txt */; };
-		190C39B72B6B98A7008007C6 /* WatchCoreDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 190C39B62B6B98A7008007C6 /* WatchCoreDataModel.swift */; };
 		193425B62AFFD83700A99C25 /* GamePLay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 193425B52AFFD83700A99C25 /* GamePLay.swift */; };
 		193B6EAD2AF1B1D10003E897 /* NetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 193B6EAC2AF1B1D10003E897 /* NetModel.swift */; };
 		1949D5162B01F04800DFD46D /* GameModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1949D5152B01F04800DFD46D /* GameModel.swift */; };
 		1949D5192B02B1E200DFD46D /* QRModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1949D5182B02B1E200DFD46D /* QRModel.swift */; };
 		194F11292AEC79D5009FA23E /* settingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 194F11282AEC79D5009FA23E /* settingView.swift */; };
 		194F112B2AEF23E8009FA23E /* settingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 194F112A2AEF23E8009FA23E /* settingModel.swift */; };
+		19520A4F2B75C34F000B11CC /* AddDiario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19520A4E2B75C34F000B11CC /* AddDiario.swift */; };
+		19520A512B765E31000B11CC /* FilterByNotaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19520A502B765E30000B11CC /* FilterByNotaView.swift */; };
+		19520A532B76778B000B11CC /* FilterByDiarioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19520A522B76778B000B11CC /* FilterByDiarioView.swift */; };
 		1954CDAA2B1152BC0093DDF0 /* AppIntentWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 199DA0682B102AA600DEED62 /* AppIntentWidget.swift */; };
 		197D2A322AF96FC200486014 /* gnerateQRView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 197D2A312AF96FC200486014 /* gnerateQRView.swift */; };
 		197D2A3B2AFA9FE000486014 /* DiarioModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 197D2A3A2AFA9FE000486014 /* DiarioModel.swift */; };
@@ -117,6 +119,8 @@
 		19C674552B23A3ED006B4AB7 /* ReflexEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19C674542B23A3ED006B4AB7 /* ReflexEditView.swift */; };
 		19C674572B23B708006B4AB7 /* QRLoadFromGaleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19C674562B23B708006B4AB7 /* QRLoadFromGaleryView.swift */; };
 		19C7483C2B045E6D004D52E6 /* cuestionario.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19C7483B2B045E6D004D52E6 /* cuestionario.txt */; };
+		19D04F192B723018007B66F2 /* iCloudKitCRUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D04F182B723018007B66F2 /* iCloudKitCRUD.swift */; };
+		19D04F1C2B7455B8007B66F2 /* AddNota.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D04F1B2B7455B8007B66F2 /* AddNota.swift */; };
 		19D23D002AFD817E008C63BA /* TxtContentModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D23CFF2AFD817E008C63BA /* TxtContentModel.swift */; };
 		19D23D022AFD969E008C63BA /* TxtListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D23D012AFD969E008C63BA /* TxtListView.swift */; };
 		19D2F0622B6F250500D9B62C /* iCloudKitModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D2F0612B6F250500D9B62C /* iCloudKitModel.swift */; };
@@ -495,13 +499,15 @@
 
 /* Begin PBXFileReference section */
 		190C39AB2B6B84AA008007C6 /* La Ley Watch App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "La Ley Watch App.entitlements"; sourceTree = "<group>"; };
-		190C39B62B6B98A7008007C6 /* WatchCoreDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchCoreDataModel.swift; sourceTree = "<group>"; };
 		193425B52AFFD83700A99C25 /* GamePLay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamePLay.swift; sourceTree = "<group>"; };
 		193B6EAC2AF1B1D10003E897 /* NetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetModel.swift; sourceTree = "<group>"; };
 		1949D5152B01F04800DFD46D /* GameModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameModel.swift; sourceTree = "<group>"; };
 		1949D5182B02B1E200DFD46D /* QRModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRModel.swift; sourceTree = "<group>"; };
 		194F11282AEC79D5009FA23E /* settingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = settingView.swift; sourceTree = "<group>"; };
 		194F112A2AEF23E8009FA23E /* settingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = settingModel.swift; sourceTree = "<group>"; };
+		19520A4E2B75C34F000B11CC /* AddDiario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddDiario.swift; sourceTree = "<group>"; };
+		19520A502B765E30000B11CC /* FilterByNotaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterByNotaView.swift; sourceTree = "<group>"; };
+		19520A522B76778B000B11CC /* FilterByDiarioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterByDiarioView.swift; sourceTree = "<group>"; };
 		1954CDA92B1152740093DDF0 /* FrasesWiggetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FrasesWiggetExtension.entitlements; sourceTree = "<group>"; };
 		197D2A312AF96FC200486014 /* gnerateQRView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = gnerateQRView.swift; sourceTree = "<group>"; };
 		197D2A392AF9858900486014 /* Neville-iOS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Neville-iOS-Info.plist"; sourceTree = SOURCE_ROOT; };
@@ -597,6 +603,8 @@
 		19C674542B23A3ED006B4AB7 /* ReflexEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReflexEditView.swift; sourceTree = "<group>"; };
 		19C674562B23B708006B4AB7 /* QRLoadFromGaleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRLoadFromGaleryView.swift; sourceTree = "<group>"; };
 		19C7483B2B045E6D004D52E6 /* cuestionario.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cuestionario.txt; sourceTree = "<group>"; };
+		19D04F182B723018007B66F2 /* iCloudKitCRUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iCloudKitCRUD.swift; sourceTree = "<group>"; };
+		19D04F1B2B7455B8007B66F2 /* AddNota.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNota.swift; sourceTree = "<group>"; };
 		19D23CFF2AFD817E008C63BA /* TxtContentModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TxtContentModel.swift; sourceTree = "<group>"; };
 		19D23D012AFD969E008C63BA /* TxtListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TxtListView.swift; sourceTree = "<group>"; };
 		19D2F0602B6DE90600D9B62C /* La-Ley-Watch-App-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "La-Ley-Watch-App-Info.plist"; sourceTree = SOURCE_ROOT; };
@@ -962,8 +970,8 @@
 		190C39B52B6B97F3008007C6 /* model */ = {
 			isa = PBXGroup;
 			children = (
-				190C39B62B6B98A7008007C6 /* WatchCoreDataModel.swift */,
 				19D2F0612B6F250500D9B62C /* iCloudKitModel.swift */,
+				19D04F182B723018007B66F2 /* iCloudKitCRUD.swift */,
 			);
 			path = model;
 			sourceTree = "<group>";
@@ -1108,6 +1116,17 @@
 			path = Reflex;
 			sourceTree = "<group>";
 		};
+		19D04F1A2B7305A8007B66F2 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				19D04F1B2B7455B8007B66F2 /* AddNota.swift */,
+				19520A4E2B75C34F000B11CC /* AddDiario.swift */,
+				19520A502B765E30000B11CC /* FilterByNotaView.swift */,
+				19520A522B76778B000B11CC /* FilterByDiarioView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		19E06FA42AEB74D20016F9E6 /* Frases */ = {
 			isa = PBXGroup;
 			children = (
@@ -1145,6 +1164,7 @@
 			children = (
 				19D2F0602B6DE90600D9B62C /* La-Ley-Watch-App-Info.plist */,
 				190C39B52B6B97F3008007C6 /* model */,
+				19D04F1A2B7305A8007B66F2 /* Views */,
 				190C39AB2B6B84AA008007C6 /* La Ley Watch App.entitlements */,
 				19F8041B2B69CB9D00A323A0 /* La_LeyApp.swift */,
 				19F8041D2B69CB9D00A323A0 /* ContentView.swift */,
@@ -2119,19 +2139,23 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				19520A532B76778B000B11CC /* FilterByDiarioView.swift in Sources */,
+				19520A4F2B75C34F000B11CC /* AddDiario.swift in Sources */,
 				19F8041E2B69CB9D00A323A0 /* ContentView.swift in Sources */,
 				190C39AC2B6B8CC7008007C6 /* ModelData.xcdatamodeld in Sources */,
 				190C39B12B6B8F87008007C6 /* NotasModel.swift in Sources */,
 				190C39B32B6B8F9C008007C6 /* DiarioModel.swift in Sources */,
 				19D2F0622B6F250500D9B62C /* iCloudKitModel.swift in Sources */,
+				19D04F1C2B7455B8007B66F2 /* AddNota.swift in Sources */,
 				190C39AE2B6B8DBD008007C6 /* CoreDataController.swift in Sources */,
 				190C39AF2B6B8DC9008007C6 /* Utils.swift in Sources */,
-				190C39B72B6B98A7008007C6 /* WatchCoreDataModel.swift in Sources */,
 				190C39B02B6B8DD6008007C6 /* UtilsForViews.swift in Sources */,
 				190C39B22B6B8F8C008007C6 /* TxtContentModel.swift in Sources */,
+				19D04F192B723018007B66F2 /* iCloudKitCRUD.swift in Sources */,
 				19F8041C2B69CB9D00A323A0 /* La_LeyApp.swift in Sources */,
 				190C39AD2B6B8D9D008007C6 /* FrasesModel.swift in Sources */,
 				19F8042D2B69CC1700A323A0 /* WatchConectivityModel.swift in Sources */,
+				19520A512B765E31000B11CC /* FilterByNotaView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

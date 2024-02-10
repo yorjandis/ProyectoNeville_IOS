@@ -24,6 +24,9 @@ struct Home: View {
     
     //Para chequeo de actualización de la app:
     @State private var showTextUpdateApp = false
+    
+    //Para determinar cuando se ha cambiado los colores y actualizar el fondo de pantalla.
+    @State private var isSettingChanged : Bool = false
 
 
     var body: some View {
@@ -60,7 +63,7 @@ struct Home: View {
                     Spacer()
                     FrasesView(frase: $frase, isHaveNote: $isHaveNote, fontSize: $fontSize, colorFrase: $colorFrase)
                     Spacer()
-                    TabButtonBar(fontFrasesSize: $fontSize, fontMenuSize: $fontSizeMenu, colorFrase: $colorFrase, colorFondo_a: $colorFondo_a, colorFondo_b: $colorFondo_b)
+                    TabButtonBar(fontFrasesSize: $fontSize, fontMenuSize: $fontSizeMenu, colorFrase: $colorFrase, colorFondo_a: $colorFondo_a, colorFondo_b: $colorFondo_b, isSettingChanged: $isSettingChanged)
                 }
                 .task {
                     do {
@@ -76,13 +79,11 @@ struct Home: View {
                     }
                     
                 }
-                .onAppear{
-                    fontSize = CGFloat(UserDefaults.standard.integer(forKey: AppCons.UD_setting_fontFrasesSize))
+                .onChange(of: self.isSettingChanged) {
+                    fontSize        = CGFloat(UserDefaults.standard.integer(forKey: AppCons.UD_setting_fontFrasesSize))
                     colorFrase      = SettingModel().loadColor(forkey: AppCons.UD_setting_color_frases)
-                    withAnimation {
-                        colorFondo_a    = SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_a)
-                        colorFondo_b    = SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_b)
-                    }
+                    colorFondo_a    = SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_a)
+                    colorFondo_b    = SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_b)
                 }
                 .modifier(mof_ColorGradient(colorInit: $colorFondo_a, colorEnd: $colorFondo_b))
                 .navigationTitle( AppCons.appName)
@@ -114,6 +115,7 @@ struct Home: View {
     }
 
 }//struct
+
 
 //Frases View
 struct FrasesView : View{
@@ -216,7 +218,16 @@ struct TabButtonBar : View{
     
     @Binding    var colorFondo_a : Color
     @Binding    var colorFondo_b : Color
+    
+    //Actualiza la UI de Home si cambia valores en setting
+    @Binding    var isSettingChanged : Bool //Flag de prueba para cambiar los colores de la pantalla
+    
+    
+
     @State private var showSetting = false
+    
+    
+    @State private var sellectionTab = 1
     
 
     @State var  tabButtons = ["book.pages.fill","note.text","house.circle.fill","book", "gear"]
@@ -280,8 +291,11 @@ struct TabButtonBar : View{
         
         .sheet(isPresented: $showOptionView) {
             optionView()
-                .presentationDetents([.height(280)])
-                .presentationDragIndicator(.hidden)
+                .offset(y: 230)
+            
+            
+               //.presentationDetents([.height(280)])
+               //.presentationDragIndicator(.hidden)
             //Al ocultar las opciones: se actualiza el tamaño de fuente de las frases
                 .onDisappear(perform: {
                     fontFrasesSize = CGFloat(UserDefaults.standard.integer(forKey: AppCons.UD_setting_fontFrasesSize))
@@ -294,7 +308,7 @@ struct TabButtonBar : View{
                 })
         }
         .sheet(isPresented: $showSetting, content: {
-            settingView()
+            settingView(isSettingChanged: $isSettingChanged)
         })
     }
     

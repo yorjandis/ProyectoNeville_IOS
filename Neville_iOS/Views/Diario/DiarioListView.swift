@@ -71,7 +71,7 @@ struct DiarioListView: View {
                             #if os(macOS)
                                 .foregroundStyle(theme == .dark ?  Color.black : Color.white)
                             #endif
-                                .background(.ultraThinMaterial)
+                                .background(.white.opacity(0.7))
                                 .clipShape(RoundedRectangle(cornerRadius: 10))
                                 .shadow(radius: 5)
                                 .padding(.horizontal, 15)
@@ -550,6 +550,7 @@ struct cardItem: View{
                 }
             }
         }
+
         .alert("Modificar Título", isPresented: $showAlert){
             TextField("Nuevo título", text: $title)
                 .foregroundStyle(theme == .dark ? .white : .black)

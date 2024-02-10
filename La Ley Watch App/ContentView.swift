@@ -13,94 +13,160 @@ struct ContentView: View {
     
     
     @EnvironmentObject  var WatchVM : WatchConectivityModel
-    @State private var selectedTab = 4
+    @State private var selectedTab = 2
     
     var body: some View {
       TabView(selection: $selectedTab) {
           
           NavigationStack{
               Notas()
+                  .ignoresSafeArea()
           }.tag(1)
           
           NavigationStack{
               Frases()
+                  .ignoresSafeArea()
           }.tag(2)
           
           NavigationStack{
               Diario()
+                  .ignoresSafeArea()
           }.tag(3)
-          
-          NavigationStack{
-              pruebas()
-          }.tag(4)
-          
-          
-                    
+             
       }
+      
       .tabViewStyle(.page)
                 
                 
     }
     
-   //Vista de
+   //Vistas
     
     struct Notas: View {
         
-        @State var list = [[String:String]]()
-        @State var runTask = true
+        @State var list = [CKRecord]()
+        @State var showSheetOptionsFilter = false
+        @State var runTask = true //Para cargar la lista la primera vez que se muestra la vista
+        @State var asyncIsWorking = false //Indica que hay una tarea async ejecutandose
+        @State private var showAlert = false
+        @State private var alertMessage = ""
 
         var body: some View {
             
-            VStack {
-                    Label("Sync", systemImage: "arrow.counterclockwise.icloud")
-                    .foregroundColor(.orange)
-                    .frame(maxWidth: .infinity, alignment: .trailing)
-                    .padding([.top, .trailing], 25)
-                        .onTapGesture {
-                            Task{
+            ZStack {
+                LinearGradient(colors: [.red, .orange], startPoint: .bottom, endPoint: .top)
+                
+                VStack {
+                    Text("Notas")
+                        .fontDesign(.serif).foregroundStyle(.black).bold()
+                        .frame(maxWidth: .infinity, alignment: .center).padding(.top, 5)
+                    Divider()
+                    HStack{
+                        Button{
+                            Task{self.asyncIsWorking = true
                                 self.list.removeAll()
-                                let model = iCloudKitModel(of: .BDPrivada)
-                                list = await model.getRecords(tableName: "CD_Notas", listFields: ["CD_title","CD_nota"])
+                                list = await getList().reversed()
                                 runTask = false
+                                self.asyncIsWorking = false
+                            }
+                        }label: {
+                            Image(systemName: "arrow.triangle.2.circlepath").foregroundColor(.black)
+                                .frame(width: 30, height: 30)
+                                .clipShape(Circle())
+                               
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                        
+                        Spacer()
+                        
+                        Button{
+                            self.showSheetOptionsFilter = true
+                        }label: {
+                            Image(systemName: "text.magnifyingglass").foregroundColor(.black)
+                                .frame(width: 30, height: 30)
+                                .clipShape(Circle())
+                        }.buttonStyle(PlainButtonStyle())
+                        
+                        Spacer()
+                        
+                        NavigationLink{
+                            AddNota()
+                        }label: {
+                            Image(systemName: "plus").foregroundColor(.black)
+                                .frame(width: 30, height: 30)
+                                .clipShape(Circle())
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                    }
+                    .padding(.horizontal, 20)
+                    
+                        Divider()
+     
+                    
+                    List(self.list, id: \.recordID){ record in
+                        NavigationLink{
+                            ScrollView {
+                                Text(record.value(forKey: TNotas.CD_nota.txt) as? String ?? "")
+                            }
+                        }label: {
+                           Text(record.value(forKey: TNotas.CD_title.txt) as? String ?? "").fontDesign(.serif).foregroundStyle(.black)
+                                .frame(height: 10)
+                        }
+                        .swipeActions(edge: .leading){
+                            Button{
+                                Task{
+                                    self.asyncIsWorking = true
+                                    if  await iCloudKitModel(of: .BDPrivada).DeleteRecord(record: record){
+                                        self.alertMessage = "Se ha eliminadio la nota"
+                                        self.list.removeAll()
+                                        self.list = await getList()
+                                    }else{
+                                        self.alertMessage = "Error al eliminar la nota. Inténtelo de nuevo"
+                                    }
+                                    self.asyncIsWorking = false
+                                    self.showAlert = true
+                                }
+                                
+                            }label: {
+                                Image(systemName: "trash")
+                                    .tint(.red)
                             }
                         }
-                        .opacity(runTask ? 0 : 1)
- 
-                
-                List(self.list, id: \.self){ idx in
-                    NavigationLink(idx["CD_title"] ?? ""){
-                        ScrollView {
-                            Text(idx["CD_nota"] ?? "")
-                        }
-                    }
-                    .swipeActions(edge: .trailing){
-                        Button{
-                            
-                        }label: {
-                            Image(systemName: "trash")
-                                .tint(.orange)
-                        }
-                    }
-                    
-                }
-                .overlay(content: {
-                    if list.isEmpty {
-                        ProgressView()
-                    }
-                })
-                .task{
-                    if runTask {
-                        self.list.removeAll()
-                        let model = iCloudKitModel(of: .BDPrivada)
                         
-                        list = await model.getRecords(tableName:"CD_Notas" ,listFields: ["CD_title","CD_nota"])
-                        runTask = false
                     }
-                    
-                    
+                    .overlay(content: { //Muestra una barra de progreso si hay una tarea async ejecutándose...
+                        if self.asyncIsWorking {
+                            ProgressView()
+                        }
+                    })
+                    .task{
+                        if runTask {
+                            self.asyncIsWorking = true
+                            self.list.removeAll()
+                            list = await getList().reversed()
+                            runTask = false
+                            self.asyncIsWorking = false
+                        }
+                        
+                        
+                }
+                }
+                .overlay {
+                    if self.list.isEmpty && !self.asyncIsWorking {
+                        Text("Nada que mostrar").foregroundStyle(.primary).bold()
+                    }
+                }
+                
             }
-            }
-            .ignoresSafeArea(edges: .top)
+            .sheet(isPresented: $showSheetOptionsFilter, content: {
+                FilterByNotaView(listRecord: self.$list, showListOptions: self.$showSheetOptionsFilter)
+            })
+        }
+        
+        //Aux obtiene el listado
+        private func getList() async -> [CKRecord]{
+            let model = iCloudKitModel(of: .BDPrivada)
+            return await model.getRecords(tableName: TableName.CD_Notas)
         }
         
         
@@ -109,93 +175,203 @@ struct ContentView: View {
     struct Frases : View {
         @State private var frase : String = UtilFuncs.FileReadToArray("listfrases").randomElement() ?? ""
         var body: some View {
-            ScrollView
-            {
+            ZStack{
+                LinearGradient(colors: [.red, .orange], startPoint: .bottom, endPoint: .top)
+                    
                 VStack(alignment: .center){
-                    Text(frase)
-                        .onTapGesture {
-                            frase = UtilFuncs.FileReadToArray("listfrases").randomElement() ?? ""
-                        }
+                    Text("Frases").bold()
+                        .padding(.bottom, 10)
+                    ScrollView
+                    {
+                        Text(frase)
+                            .italic()
+                            .padding(.horizontal, 5)
+                            .padding(.bottom, 20)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .onTapGesture {
+                                frase = UtilFuncs.FileReadToArray("listfrases").randomElement() ?? ""
+                            }
+                            
                         
+                    }
+                    
                 }
-                .navigationTitle("Frases")
-            .navigationBarTitleDisplayMode(.inline)
+                .fontDesign(.serif)
+                .font(.system(size: 20))
+                .foregroundStyle(.black)
             }
+            
         }
     }
     
     struct Diario: View {
         
-        @State var list = [[String:String]]()
-        @State var runTask = true
+        @State var list = [CKRecord]()
+        @State var showSheetOptionsFilter = false
+        @State var runTask = true //Para cargar la lista la primera vez que se muestra la vista
+        @State var asyncIsWorking = false //Indica que hay una tarea async ejecutandose
+        @State private var showAlert = false
+        @State private var alertMessage = ""
         
         var body: some View {
             
-            VStack {
-                Label("Sync", systemImage: "arrow.counterclockwise.icloud")
-                    .foregroundColor(.orange)
-                    .frame(maxWidth: .infinity, alignment: .trailing)
-                    .padding([.top, .trailing], 25)
-                    .onTapGesture {
-                        Task{
-                            self.list.removeAll()
-                            let model = iCloudKitModel(of: .BDPrivada)
-                            list = await model.getRecords(tableName: "CD_Diario", listFields: ["CD_title","CD_content"])
-                            runTask = false
-                        }
-                    }
-                    .opacity(runTask ? 0 : 1)
+            ZStack {
+                LinearGradient(colors: [.red, .orange], startPoint: .bottom, endPoint: .top)
                 
-                
-                List(self.list, id: \.self){ idx in
-                    NavigationLink(idx["CD_title"] ?? "error"){
-                        ScrollView {
-                            Text(idx["CD_content"] ?? "error")
-                        }
-                    }
-                    .swipeActions(edge: .trailing){
+                VStack {
+                    Text("Diario")
+                        .fontDesign(.serif).foregroundStyle(.black).bold()
+                        .frame(maxWidth: .infinity, alignment: .center).padding(.top, 5)
+                    Divider()
+                    
+                    HStack{
                         Button{
-                            
+                            Task{
+                                self.asyncIsWorking = true
+                                self.list.removeAll()
+                                list = await getList().reversed()
+                                runTask = false
+                                self.asyncIsWorking = false
+                            }
                         }label: {
-                            Image(systemName: "trash")
-                                .tint(.orange)
+                            Image(systemName: "arrow.triangle.2.circlepath").foregroundColor(.black)
+                                .frame(width: 30, height: 30)
+                                .clipShape(Circle())
                         }
-                    }
-                    
-                }
-                .overlay(content: {
-                    if list.isEmpty {
-                        ProgressView()
-                    }
-                })
-                .task{
-                    if runTask {
-                        self.list.removeAll()
-                        let model = iCloudKitModel(of: .BDPrivada)
+                        .buttonStyle(PlainButtonStyle())
                         
-                        list = await model.getRecords(tableName:"CD_Diario" , listFields: ["CD_title","CD_content"])
-                        runTask = false
+                        
+                        
+                      Spacer()
+                        
+                        Button{
+                            self.showSheetOptionsFilter = true
+                        }label: {
+                            Image(systemName: "text.magnifyingglass").foregroundColor(.black)
+                                .frame(width: 30, height: 30)
+                                .clipShape(Circle())
+                        }.buttonStyle(PlainButtonStyle())
+                        
+                       Spacer()
+                        
+                        NavigationLink{
+                            AddDiario()
+                        }label: {
+                            Image(systemName: "plus").foregroundColor(.black)
+                                .frame(width: 30, height: 30)
+                                .clipShape(Circle())
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                        
+                    }
+                    .padding(.horizontal, 20)
+                    
+                    Divider()
+                    
+                    
+                    List{
+                        ForEach(self.list, id: \.recordID) {record in
+                            NavigationLink{
+                                ScrollView {
+                                    Text(record.value(forKey: TDiario.CD_content.txt) as? String ?? "")
+                                }
+                            }label: {
+                                VStack {
+                                    HStack{
+                                        Text(emotion(record.value(forKey: TDiario.CD_emotion.txt) as? String ?? ""))
+                                            .font(.system(size: 28))
+                                        Text(record.value(forKey: TDiario.CD_title.txt) as? String ?? "")
+                                        .foregroundStyle(.black)
+                                        Spacer()
+                                    }
+                                    Text((record.value(forKey: TDiario.CD_fecha.txt) as? Date ?? Date.now).formatted(date: .long, time: .omitted))
+                                        .font(.system(size: 10, weight: .medium, design: .serif)).foregroundStyle(.black)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                }
+                                
+           
+                            }
+                            .swipeActions(edge: .trailing){
+                                Button{
+                                    Task{
+                                        self.asyncIsWorking = true
+                                        if await  iCloudDiario().Delete(record: record) {
+                                            self.alertMessage = "Se ha eliminado la entrada"
+                                            self.list.removeAll()
+                                            list    = await getList().reversed()
+                                            runTask = false
+                                        }else{
+                                            self.alertMessage = "Error al eliminar la entrada. inténtelo de nuevo"
+                                        }
+                                        self.asyncIsWorking = false
+                                        self.showAlert = true
+                                    }
+                                   
+                                }label: {
+                                    Image(systemName: "trash")
+                                        .tint(.red)
+                                }
+                            }
+                        }
+                        
+                        
                     }
                     
-                    
+                    .overlay(content: { //Muestra una barra de progreso si hay una tarea async ejecutándose...
+                        if self.asyncIsWorking {
+                            ProgressView()
+                        }
+                    })
+                    .task{
+                        if runTask {
+                            self.asyncIsWorking = true
+                            self.list.removeAll()
+                            list    = await getList().reversed()
+                            runTask = false //Pone a false para que no se vuelva a ejecutar al inicio
+                            self.asyncIsWorking = false
+                        }
+                        
+                        
+                    }
                 }
+                .overlay {
+                    if self.list.isEmpty && !self.asyncIsWorking {
+                        Text("Nada que mostrar").foregroundStyle(.primary).bold()
+                    }
+                }
+                
             }
-            .ignoresSafeArea(edges: .top)
+            .alert(isPresented : $showAlert){
+                Alert(title: Text("Diario"), message: Text(self.alertMessage))
+            }
+            .sheet(isPresented: $showSheetOptionsFilter) {
+                FilterByDiarioView(listRecord: $list, showListOptions: $showSheetOptionsFilter)
+            }
+            
         }
         
-        
-    }
-    
-    struct pruebas : View {
-        var body: some View {
-            Button("OK09"){
-                Task{
-                    await  iCloudKitModel(of: .BDPrivada).saveRecordNota(title:"titulo OKOKOK", nota:"Nota OKOKOK", isfav:0)
-                }
+    //Aux: Devuelve el emoticono segun el texto: Para funciones de filtrado
+    private func emotion(_ txt: String)->String{
+            switch txt {
+            case "neutral" : "🙂"
+            case "feliz": "😃"
+            case "enfadado": "😤"
+            case "desanimado": "😔"
+            case "sorpresa": "😲"
+            case "distraido": "🙄"
+            default: ""
             }
-            .buttonStyle(.borderedProminent)
         }
+        
+    //Aux: Devuelve el listado:
+    private func getList()async ->[CKRecord]{
+        let model = iCloudKitModel(of: .BDPrivada)
+        return await model.getRecords(tableName: TableName.CD_Diario)
     }
+        
+  
+    }
+
     
     
 }
