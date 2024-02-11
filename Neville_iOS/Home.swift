@@ -14,10 +14,10 @@ struct Home: View {
     @State  private var frase : Frases =  FrasesModel().getRandomFraseEntity()!
     @State  private var isHaveNote = false //Chequea si la frase actual tiene nota
     
-    @State  private var fontSize : CGFloat = 24 //Setting para Frases
+    @State  private var fontSize : CGFloat = CGFloat(UserDefaults.standard.integer(forKey: AppCons.UD_setting_fontFrasesSize)) //Setting para Frases
     @State  private var fontSizeMenu : CGFloat = 24 //Setting para menu
     
-    @State private var colorFrase : Color = Color.black
+    @State private var colorFrase : Color = SettingModel().loadColor(forkey: AppCons.UD_setting_color_frases)
     
     @State private var colorFondo_a : Color = SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_a)
     @State private var colorFondo_b : Color = SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_b)
@@ -220,7 +220,7 @@ struct TabButtonBar : View{
     @Binding    var colorFondo_b : Color
     
     //Actualiza la UI de Home si cambia valores en setting
-    @Binding    var isSettingChanged : Bool //Flag de prueba para cambiar los colores de la pantalla
+    @Binding    var isSettingChanged : Bool ////Para actualizar los valores de configuración
     
     
 
@@ -290,22 +290,9 @@ struct TabButtonBar : View{
         .padding(.horizontal)
         
         .sheet(isPresented: $showOptionView) {
-            optionView()
-                .offset(y: 230)
-            
-            
-               //.presentationDetents([.height(280)])
-               //.presentationDragIndicator(.hidden)
-            //Al ocultar las opciones: se actualiza el tamaño de fuente de las frases
-                .onDisappear(perform: {
-                    fontFrasesSize = CGFloat(UserDefaults.standard.integer(forKey: AppCons.UD_setting_fontFrasesSize))
-                    fontMenuSize = CGFloat(UserDefaults.standard.integer(forKey: AppCons.UD_setting_fontMenuSize))
-                    
-                    colorFrase = SettingModel().loadColor(forkey: AppCons.UD_setting_color_frases)
-                    
-                    colorFondo_a = SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_a)
-                    colorFondo_b = SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_b)
-                })
+            optionView(isSettingChanged: $isSettingChanged)
+               .presentationDetents([.height(280)])
+               .presentationDragIndicator(.hidden)
         }
         .sheet(isPresented: $showSetting, content: {
             settingView(isSettingChanged: $isSettingChanged)

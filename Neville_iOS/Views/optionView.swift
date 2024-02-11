@@ -20,7 +20,8 @@ struct optionView: View {
     @State private var showPreguntas    = false
     @State private var showAyudas       = false
     @State private var showReflex       = false
-    @State private var selectionTab     = 1
+    @State private var showSetting      = false
+    @Binding  var isSettingChanged : Bool //Para actualizar los valores de configuración
     
     private let colorGradientButton = [SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_a),
                                        SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_b)]
@@ -28,36 +29,29 @@ struct optionView: View {
     private let sizeWigth : CGFloat = 150
     
     var body: some View {
-        
-            VStack{
-                //Color(Color.black.opacity(0.7))
+        NavigationStack{
+            ZStack{
                 
-                TabView(selection: $selectionTab){
-                    
-                    NavigationStack{
+                Color(Color.black.opacity(0.7))
+                
+                ScrollView(.horizontal) {
+                    HStack(alignment: .center, spacing: 5) {
                         primerGroup()
-                            .frame(maxHeight: 250)
-                            
-                    }.tag(1)
-
-                    
-                    NavigationStack{
+                            .padding(.horizontal, 7)
                         segundoGrupo()
-                           .frame(maxHeight: 250)
-
-                    }.tag(2)
-
-                    
-                    NavigationStack{
+                            .padding(.horizontal, 7)
                         tercerGrupo()
-                           .frame(maxHeight: 250)
-                            
-                    }.tag(3)
-
- 
+                            .padding(.horizontal, 45)
+                        
+                    }
+                    
                 }
-                .tabViewStyle(.page)
+                .scrollIndicators(.hidden)
+                .frame(maxWidth: .infinity , maxHeight: .infinity)
+                .background(.ultraThinMaterial)
+                .shadow(radius: 5)
             }
+            
             .sheet(isPresented: $showNotasSheet) {
                 ListNotasViews()
             }
@@ -67,11 +61,14 @@ struct optionView: View {
             .sheet (isPresented: $showFrasesList){
                 FrasesListView()
             }
+            .sheet (isPresented: $showSetting){
+                settingView(isSettingChanged: $isSettingChanged)
+            }
             .sheet(isPresented: $showCodeScanner){
-                //QRCodeScanner()
+                //Mostrar el lector de código
             }
             .sheet(isPresented: $showCodeGenerate){
-                GenerateQRView(footer: "", showImage: false)
+                GenerateQRView(footer: "")
                     .presentationDetents([.large])
                     .presentationDragIndicator(.hidden)
             }
@@ -79,34 +76,12 @@ struct optionView: View {
                 GamePLay()
                     .presentationDetents([.large])
                     .presentationDragIndicator(.hidden)
-            }
-            .sheet(isPresented: $showBiografia){
-                ContentTxtShowView(type: .NA, fileName: "biografia", title: "Biografía")
-                    .presentationDetents([.large])
-                    .presentationDragIndicator(.hidden)
-            }
-            .sheet(isPresented: $showCitas){
-                TxtListView(type: .citas, title: "Citas")
-                    .presentationDetents([.large])
-                    .presentationDragIndicator(.hidden)
-            }
-            .sheet(isPresented: $showPreguntas){
-                TxtListView(type: .preg, title: "Preguntas Respuestas")
-                    .presentationDetents([.large])
-                    .presentationDragIndicator(.hidden)
-            }
-            .sheet(isPresented: $showAyudas){
-                TxtListView(type: .ayud, title: "Ayudas")
-                    .presentationDetents([.large])
-                    .presentationDragIndicator(.hidden)
-            }
-            .sheet(isPresented: $showReflex){
-                ReflexListView()
-                    .presentationDetents([.large])
-                    .presentationDragIndicator(.hidden)
-            }
         }
-            
+        }
+    }
+   
+    
+    
     @ViewBuilder
     func primerGroup()-> some View{
         VStack(spacing: 20){
@@ -199,7 +174,8 @@ struct optionView: View {
             HStack(spacing: 20){
                 
                 Button{
-                    showCodeScanner = true
+                    //Mostrar el lector de QR
+                    //showCodeScanner = true
                 }label: {
                     bloqueA("qrcode.viewfinder", "Leer QR")
                 }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
@@ -269,7 +245,7 @@ struct optionView: View {
 
 
 #Preview {
-    optionView()
+    optionView(isSettingChanged: .constant(true))
 }
 #Preview("home") {
     ContentView()

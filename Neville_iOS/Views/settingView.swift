@@ -32,7 +32,7 @@ struct settingView: View {
     //Other
     @State var showButtonUpdate = false // muestra/oculta el boton para actualizar nuevo contenido añadido al bundle
     
-    //Flag de prueba:
+    //Permite ajustar en tiempo real los cambios en la UI home:
     @Binding var isSettingChanged : Bool
     
 

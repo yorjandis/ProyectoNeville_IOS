@@ -76,12 +76,9 @@ struct DiarioListView: View {
                                 .shadow(radius: 5)
                                 .padding(.horizontal, 15)
                                 .padding(.vertical, 8)
-                                
                         }
                         
-                    }
-                    
-                    
+                    } 
                 }
                 .onAppear{
                     list = DiarioModel().getAllItem()
