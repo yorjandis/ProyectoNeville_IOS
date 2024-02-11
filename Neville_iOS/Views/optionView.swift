@@ -66,6 +66,7 @@ struct optionView: View {
             }
             .sheet(isPresented: $showCodeScanner){
                 //Mostrar el lector de código
+                ReadQRCode()
             }
             .sheet(isPresented: $showCodeGenerate){
                 GenerateQRView(footer: "")
@@ -175,7 +176,7 @@ struct optionView: View {
                 
                 Button{
                     //Mostrar el lector de QR
-                    //showCodeScanner = true
+                    showCodeScanner = true
                 }label: {
                     bloqueA("qrcode.viewfinder", "Leer QR")
                 }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
