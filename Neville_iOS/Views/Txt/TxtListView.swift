@@ -9,6 +9,7 @@
 import Foundation
 import SwiftUI
 import CoreData
+import CloudKit
 
 struct TxtListView: View {
     
@@ -32,13 +33,46 @@ struct TxtListView: View {
     
     
     @State var listado : [TxtCont] = []
+    @State var listadoTemp : [TxtCont] = [] //Yorj: temporalmente para facilitrar la busqueda de contenido
+    
     @State private var entidad : TxtCont = TxtCont(context: CoreDataController.shared.context) //Esto es para permitir editar la nota y buscar en txt
+    
+    @State private var textFielSearh = ""
+    @FocusState private var focus : Bool
+    
+    func filter (str : String)->Bool {
+        return str.contains(textFielSearh)
+    }
 
     var body: some View {
         
         NavigationStack{
             VStack{
-                List(listado){item in
+                HStack {
+                    TextField("Buscar", text: $textFielSearh)
+                        .onChange(of: self.textFielSearh) {
+                            //self.listadoTemp.removeAll()
+                            self.listadoTemp = self.listado.filter({ str in
+                                return str.namefile!.lowercased().contains(self.textFielSearh.lowercased())
+                            })
+                        }
+                        .focused($focus)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    Spacer()
+                        Button{
+                            self.focus = false
+                        } label:{
+                            Label("Ocultar", systemImage: "keyboard.badge.eye")
+                        }
+                        .buttonStyle(.bordered)
+                    
+                }
+                    
+                
+                    
+                
+                
+                List(listadoTemp){item in
                     VStack(alignment: .leading) {
                         HStack{
                             Image(systemName: "leaf.fill")

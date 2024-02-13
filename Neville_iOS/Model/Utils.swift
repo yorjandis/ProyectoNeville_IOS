@@ -12,7 +12,7 @@ struct AppCons{
     static let appName      = "La Ley"
     static let appVersion   = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
     
-    static let AppGroupName = "group.com.ypg.nev.group" //Nombre del contenedor compartido
+    static let AppGroupName = "group.com.ypg.nev.group" //Nombre del contenedor AppGroup compartido
     
     
     //nameFile in Staff:
@@ -101,7 +101,7 @@ enum TypeOfTxtContent{
 
 struct UtilFuncs{
     ///ReadFileToArray : Devuelve un array conteniendo todas las líneas de texto de un fichero txt
-    /// - Parameter - filetxt: el nombre del fichero sin la extension, para ser procesado
+    /// - Parameter - filename: el nombre del fichero sin la extension, para ser procesado
     /// - Returns - Devuelve un arreglo de String. cada línea del fichero es una item del arreglo
    static  func FileReadToArray(_ filename : String)->[String]{
         
@@ -120,8 +120,9 @@ struct UtilFuncs{
         
     }
 
-    ///Lee el contenido del TXt y lo devuelve como String
-    ///
+    ///Lee el contenido de un fichero Txt, ubicado en el bundle de la app, y lo devuelve como String
+    /// - Parameter - fileName: el nombre del fichero, soin la extensión
+    ///  - Returns - Devuelve el contebido del fichero
     static func FileRead(_ fileName : String)->String{
         
         var result = ""

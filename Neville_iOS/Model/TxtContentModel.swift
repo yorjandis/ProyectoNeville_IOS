@@ -16,7 +16,7 @@ struct TxtContentModel{
     private let context = CoreDataController.shared.context
     
     //Typo de contenido a manejar: Nota: Si en un futuro se adiciona más contenido se maneja aqui
-    enum TipoDeContenido: String{
+    enum TipoDeContenido: String, CaseIterable{
         case conf="conf_", citas="cita_", preg="preg_", ayud="ayud_", NA = ""
     }
 
@@ -152,16 +152,60 @@ struct TxtContentModel{
 
     }
     
+    
+    //Clean DataBase: Elimina todos los registros de la tabla TXT: conf, citas, ayudas, pregunt
+    func cleanTxtCont()->Bool{
+
+      if UserDefaults.standard.bool(forKey: AppCons.UD_isTxtFilesPupulate) {return false} //Sale si la tabla TxtFiles ya esta populada
+        
+        //Obteniendo todos los registros de la tabla TXTCont:
+        
+        let fecthRequest = NSFetchRequest<TxtCont>(entityName: "TxtCont")
+            fecthRequest.predicate = nil
+        
+        
+        do {
+            let array =  try context.fetch(fecthRequest)
+            
+            for row in array {
+                context.delete(row)
+            }
+            
+            try context.save()
+            
+            return true
+            
+        }catch{
+            print(error.localizedDescription)
+            return false
+        }
+        
+    }
+    
+    
  
     
     
     // ---------------------------------------------------- FUNCIONES INTERNAS --------------------------------------------------------------
     
     ///Popula la Tabla Conf. Esto se hace la primera vez que se instala la app en un dispositivo
-    func populateTable(){
+    func populateTable() async {
         
        if UserDefaults.standard.bool(forKey: AppCons.UD_isTxtFilesPupulate) {return} //Sale si la tabla TxtFiles ya esta populada
         
+        //Chequea si iCloud esta habilitado.
+        if FileManager.default.ubiquityIdentityToken != nil {
+            //icloud disponible:
+            
+            //Chequeando si existe resgistros en iCloud
+            let resultTemp = await iCloudKitModel(of: .BDPrivada).getRecords(tableName: .CD_Frases)
+            if !resultTemp.isEmpty {
+                //Significa que tiene registros en iCloud: NO popula
+                return
+            }
+            
+        }
+
         var array : [String] = [] //Almacena los name files leidos del bundle para el contenido txt
 
         let arrayOfPrefix = ["conf_","cita_","preg_","ayud_"] //Yor en un futuro esto debe poder escalarse autom. con nuevo contenido

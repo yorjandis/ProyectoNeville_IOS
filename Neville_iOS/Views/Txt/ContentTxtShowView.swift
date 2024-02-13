@@ -33,18 +33,17 @@ struct ContentTxtShowView: View {
     @State private var showSlider = false
     
 
-    //Lee un fichero txt que no tenga prefijo. Hay que pasar como typeContent .NA
-    //Esto permite mostrar ficheros de texto como biografia o las imágines
+    //Yor aqui va el código para leer el contenido del fichero
     var getContent : String {
-        //Yor aqui va el código para leer el contenido del fichero
-        if fileName == "" {
+        if self.type != .NA { //se ha pasado un fichero de prefijo
             if let enti = self.entidad {
                 return UtilFuncs.FileRead("\(enti.type ?? "")" + "\(enti.namefile ?? "")")
             }
         }else{
-            return UtilFuncs.FileRead(fileName)
+            if self.fileName != "" {
+                return UtilFuncs.FileRead(fileName)
+            }
         }
-        
         return ""
     }
 
@@ -52,7 +51,7 @@ struct ContentTxtShowView: View {
         NavigationStack {
             
             VStack {
-                ScrollView(showsIndicators: true) {
+                ScrollView(showsIndicators: true){
                     Text(self.getContent)
                         .font(.system(size: fontSizeContent, design: .rounded))
                         .fontDesign(.rounded)
@@ -112,16 +111,18 @@ struct ContentTxtShowView: View {
             .toolbar{
                 HStack{
                     Spacer()
-                    if self.fileName.isEmpty {
+                    
                         Menu{
-                            Button("Marcar como Favorita"){
-                                if let enti = self.entidad {
-                                    TxtContentModel().setFavState(entity: enti, state: true)
+                            if self.fileName.isEmpty {
+                                Button("Marcar como Favorita"){
+                                    if let enti = self.entidad {
+                                        TxtContentModel().setFavState(entity: enti, state: true)
+                                    }
                                 }
-                            }
-                            NavigationLink("Añadir nota asociada"){
-                                if let enti = self.entidad {
-                                    EditNoteTxtContentTxtShow(entidad: enti)
+                                NavigationLink("Añadir nota asociada"){
+                                    if let enti = self.entidad {
+                                        EditNoteTxtContentTxtShow(entidad: enti)
+                                    }
                                 }
                             }
                             Button("Tamaño de Letra", systemImage: "textformat") {
@@ -133,7 +134,7 @@ struct ContentTxtShowView: View {
                             Image(systemName: "ellipsis")
                                 .rotationEffect(Angle(degrees: 135))
                         }
-                    }
+                    
                     
                 }
             } 
@@ -142,7 +143,7 @@ struct ContentTxtShowView: View {
 }
 
 
-//Permite ver y editar el campo notya
+//Permite ver y editar el campo nota
 struct EditNoteTxtContentTxtShow:View {
     @Environment(\.dismiss) var dimiss
     @State var entidad : TxtCont

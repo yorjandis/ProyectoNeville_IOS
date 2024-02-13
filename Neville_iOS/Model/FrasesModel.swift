@@ -15,6 +15,7 @@ struct FrasesModel {
     
     ///Obtiene el contexto de Objetos administrados
     private var context = CoreDataController.shared.context
+    
  
     ///Almacena el Id de la frase actualmente cargada. Se actualiza en: getRandomFrase()
     static var idFraseActual : String = ""
@@ -123,10 +124,25 @@ struct FrasesModel {
     
     ///Popula la tabla Frases al inicio de la app (ojo: esto borrará todas las notas y marcas de fav en la tabla)
     ///Es llamado solo una vez al iniciar la app por primera vez. Carga todos los datos de la tabla Frases y actualiza el el estado de la carga de la tabla Frases
-    func populateTableFrases()  {
+    func populateTableFrases() async {
 
         if isFrasesPopulated {return} //Sale si la tabla frases ya esta populada
+        
+        //Chequea si iCloud esta habilitado.
+        if FileManager.default.ubiquityIdentityToken != nil {
+            //icloud disponible:
             
+            //Chequeando si existe resgistros en iCloud
+            let resultTemp = await iCloudKitModel(of: .BDPrivada).getRecords(tableName: .CD_Frases)
+            if !resultTemp.isEmpty {
+                //Significa que tiene registros en iCloud: NO popula
+                return
+            }
+
+        }
+            
+        print("Populando la tabla frases")
+        
             let arrayFrases =  getfrasesArrayFromTxtFile() //Obtiene el arreglo de frases del txt
  
             //Populando la tabla frases
@@ -140,12 +156,14 @@ struct FrasesModel {
             }
         
         if context.hasChanges {
-            try? context.save()
+            do {
+                try context.save()
+                UserDefaults.standard.setValue(true, forKey: AppCons.UD_isfrasesLoaded) //almacena una marca que indica que la tabla frase ha sido populada
+            }catch{
+                print("No se ha podido popular la tabla Frases")
+            }
+            
         }
-                
-                //almacena una marca que indica que la tabla frase ha sido populada
-                UserDefaults.standard.setValue(true, forKey: AppCons.UD_isfrasesLoaded)
-     
     }
     
    
@@ -154,7 +172,7 @@ struct FrasesModel {
     func cleanFrases()->Bool{
        var result = true
         
-        if isFrasesPopulated == false { return false}
+        if isFrasesPopulated == false { return false} //si no se ha populado la tabla sale
         
             let content = GetRequest(predicate: nil)
             

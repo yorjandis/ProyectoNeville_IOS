@@ -55,6 +55,21 @@ struct optionView: View {
             .sheet(isPresented: $showNotasSheet) {
                 ListNotasViews()
             }
+            .sheet(isPresented: $showBiografia) {
+                ContentTxtShowView(type: .NA, fileName: "biografia", title: "Biografía")
+            }
+            .sheet(isPresented: $showPreguntas) {
+                TxtListView(type: .preg, title: "Preguntas")
+            }
+            .sheet(isPresented: $showCitas) {
+                TxtListView(type: .citas, title: "Citas")
+            }
+            .sheet(isPresented: $showAyudas) {
+                TxtListView(type: .ayud, title: "Ayudas")
+            }
+            .sheet(isPresented: $showReflex) {
+                ReflexListView()
+            }
             .sheet(isPresented: $showDiarioSheet) {
                 DiarioListView()
             }

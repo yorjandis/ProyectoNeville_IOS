@@ -66,6 +66,9 @@ class iCloudKitModel {
         
     }
     
+
+    
+    
     
     ///Delete record in the BD:
     /// - Parameter -  record: record to delete
@@ -241,7 +244,7 @@ class iCloudKitModel {
 
 //MARK: Enumeraciones de Tablas
 enum TableName : String{
-    case CD_Frases, CD_Diario, CD_Notas, CD_Reflex, CD_TxtCont
+    case CD_Frases, CD_Diario, CD_Notas, CD_Reflex, CD_TxtCont, Prueba
     var txt: String { self.rawValue}
 }
 

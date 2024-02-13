@@ -11,7 +11,7 @@ struct Home: View {
 
     @State  private var showAddNoteList = false //Abre la view AddNota
     
-    @State  private var frase : Frases =  FrasesModel().getRandomFraseEntity()!
+    @State  private var frase : Frases =  FrasesModel().getRandomFraseEntity() ?? Frases(context: CoreDataController.shared.context)
     @State  private var isHaveNote = false //Chequea si la frase actual tiene nota
     
     @State  private var fontSize : CGFloat = CGFloat(UserDefaults.standard.integer(forKey: AppCons.UD_setting_fontFrasesSize)) //Setting para Frases
@@ -61,7 +61,12 @@ struct Home: View {
                     }
                     
                     Spacer()
-                    FrasesView(frase: $frase, isHaveNote: $isHaveNote, fontSize: $fontSize, colorFrase: $colorFrase)
+                    if (frase.frase?.isEmpty == false) {
+                        FrasesView(frase: self.$frase, isHaveNote: $isHaveNote, fontSize: $fontSize, colorFrase: $colorFrase)
+                    }
+                       
+                   
+                    
                     Spacer()
                     TabButtonBar(fontFrasesSize: $fontSize, fontMenuSize: $fontSizeMenu, colorFrase: $colorFrase, colorFondo_a: $colorFondo_a, colorFondo_b: $colorFondo_b, isSettingChanged: $isSettingChanged)
                 }
@@ -134,14 +139,14 @@ struct FrasesView : View{
     
     var body: some View{
         VStack{
-            Text(frase.frase ?? "")
+            Text( frase.frase ?? "")
                 .font(.system(size: fontSize, design: .rounded))
                 .foregroundStyle(colorFrase)
                 .modifier(mof_frases())
                 .id(frase.frase)
                 .animation(.smooth(duration: 2), value: frase.frase)
                 .onTapGesture {
-                    frase = FrasesModel().getRandomFraseEntity()!
+                    frase = FrasesModel().getRandomFraseEntity() ?? Frases(context: CoreDataController.shared.context)
                     readFraseStatus(fraseEntity: frase, isfav: &isFav, isHaveNote: &isHaveNote)
                 }
                 .onOpenURL(perform: { url in

@@ -138,7 +138,7 @@ struct RefexModel {
     func cleanReflex()->Bool{
        var result = true
         
-        if isReflexPopulated == false { return false}
+        if isReflexPopulated == false { return false} //Sale si no se ha pipulado la tabla
         
             let arrayReflex = GetRequest(predicate: nil)
             

@@ -126,6 +126,7 @@
 		19D2F0622B6F250500D9B62C /* iCloudKitModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D2F0612B6F250500D9B62C /* iCloudKitModel.swift */; };
 		19D2F0642B70903200D9B62C /* QRReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D2F0632B70903100D9B62C /* QRReader.swift */; };
 		19D808872B796D4800D8054C /* CodeScanner in Frameworks */ = {isa = PBXBuildFile; productRef = 19D808862B796D4800D8054C /* CodeScanner */; };
+		19D808882B79966F00D8054C /* iCloudKitModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D2F0612B6F250500D9B62C /* iCloudKitModel.swift */; };
 		19E06FA62AEB74E20016F9E6 /* FrasesNotasAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19E06FA52AEB74E20016F9E6 /* FrasesNotasAddView.swift */; };
 		19E06FA82AEB91F00016F9E6 /* FrasesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19E06FA72AEB91F00016F9E6 /* FrasesListView.swift */; };
 		19E0BE152B0C661A00E149A5 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19E0BDEC2B0B412D00E149A5 /* WidgetKit.framework */; };
@@ -2184,6 +2185,7 @@
 				E99F9CC82ACACE3600169084 /* AddNotasView.swift in Sources */,
 				E95B93592AAFBB2600B5E2B5 /* ContentView.swift in Sources */,
 				19D23D022AFD969E008C63BA /* TxtListView.swift in Sources */,
+				19D808882B79966F00D8054C /* iCloudKitModel.swift in Sources */,
 				E9D0F1CB2AE2226A00B35452 /* optionView.swift in Sources */,
 				E93C23AA2ABA365100939D16 /* UtilsForViews.swift in Sources */,
 				E92F636C2AB3EC5E007BB4BA /* ContentTxtShowView.swift in Sources */,

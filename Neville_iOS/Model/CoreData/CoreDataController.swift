@@ -36,13 +36,16 @@ final class CoreDataController : Sendable {
 
         persistenContainer = NSPersistentCloudKitContainer(name: "ModelData") //Migrando a iCloud
         persistenContainer.loadPersistentStores{(description, error) in
+            
             if let error = error {
                 print(error.localizedDescription)
             }
             
         }
+       
+       
        persistenContainer.viewContext.automaticallyMergesChangesFromParent = true //For rigth sincro, because many user can change data at same time
-        
+       
         
     }
     
