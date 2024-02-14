@@ -31,20 +31,22 @@ struct ListNotasViews: View {
     @State var canOpenNotas = false
     @State var showAlert = false
     @State var alertMessage = ""
+    private var filtered : [Notas] {
+        if self.textFieldTitle.isEmpty {return self.list}
+        return self.list.filter{$0.title?.localizedCaseInsensitiveContains(self.textFieldTitle) ?? false}
+    }
  
     var body: some View {
         NavigationStack {
             if canOpenNotas {
                 ScrollView(.vertical){
                     
-                    ForEach (list.reversed()){ nota in
+                    ForEach (self.filtered.reversed()){ nota in
                         cardNotas(nota: nota, notas: $list)
                     }
-                    .onAppear {
-                        withAnimation {
+                    .searchable(text: $textFieldTitle, placement: .navigationBarDrawer(displayMode: .always)  , prompt:"Buscar")
+                    .task {
                             list = NotasModel().getAllNotas()
-                        }
-                        
                     }
                 }
             }else{
@@ -92,10 +94,6 @@ struct ListNotasViews: View {
                             Button("Buscar en Notas"){
                                 showAlertSearch = true
                             }
-                            Button("Buscar en títulos"){
-                                showAlertSearchTitle = true
-                            }
-                            
                             
                         }label: {
                             Image(systemName: "line.3.horizontal.decrease")
@@ -341,6 +339,5 @@ struct cardNotas: View{
 
 
 #Preview("Home") {
-    ContentView()
-        .dynamicTypeSize(.xxxLarge)
+    ListNotasViews()
 }

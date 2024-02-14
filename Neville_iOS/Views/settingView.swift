@@ -30,7 +30,7 @@ struct settingView: View {
     @State var alertMessage = ""
     
     //Other
-    @State var showButtonUpdate = false // muestra/oculta el boton para actualizar nuevo contenido añadido al bundle
+    @State var showButtonUpdate = true // muestra/oculta el boton para actualizar nuevo contenido añadido al bundle
     
     //Permite ajustar en tiempo real los cambios en la UI home:
     @Binding var isSettingChanged : Bool

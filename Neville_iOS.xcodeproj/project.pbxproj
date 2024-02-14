@@ -137,6 +137,182 @@
 		19E0BE212B0C661B00E149A5 /* FrasesWiggetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 19E0BE142B0C661A00E149A5 /* FrasesWiggetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		19E0BE2A2B0C750300E149A5 /* listfrases.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F64562AB7D2BA007BB4BA /* listfrases.txt */; };
 		19E0BE2B2B0C76E000E149A5 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92F63722AB468F4007BB4BA /* Utils.swift */; };
+		19EDBB0C2B7C507F00432CDE /* conf_Cual es su nombre.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA592B7C507600432CDE /* conf_Cual es su nombre.txt */; };
+		19EDBB0D2B7C507F00432CDE /* conf_El sembrador.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA5A2B7C507600432CDE /* conf_El sembrador.txt */; };
+		19EDBB0E2B7C507F00432CDE /* conf_El amigo de los pecadores.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA5B2B7C507600432CDE /* conf_El amigo de los pecadores.txt */; };
+		19EDBB0F2B7C507F00432CDE /* conf_el nombre de dios es sinonimo de dios.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA5C2B7C507600432CDE /* conf_el nombre de dios es sinonimo de dios.txt */; };
+		19EDBB102B7C507F00432CDE /* conf_libro libertad pata todos.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA5D2B7C507700432CDE /* conf_libro libertad pata todos.txt */; };
+		19EDBB112B7C507F00432CDE /* conf_notas el milagro de la imaginacion.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA5E2B7C507700432CDE /* conf_notas el milagro de la imaginacion.txt */; };
+		19EDBB122B7C507F00432CDE /* conf_libro el poder de la conciencia.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA5F2B7C507700432CDE /* conf_libro el poder de la conciencia.txt */; };
+		19EDBB132B7C507F00432CDE /* conf_por imaginacion nos convertimos.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA602B7C507700432CDE /* conf_por imaginacion nos convertimos.txt */; };
+		19EDBB142B7C507F00432CDE /* conf_Purificado por la muerte de tus engaños.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA612B7C507700432CDE /* conf_Purificado por la muerte de tus engaños.txt */; };
+		19EDBB152B7C507F00432CDE /* conf_Participe de la naturaleza divida.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA622B7C507700432CDE /* conf_Participe de la naturaleza divida.txt */; };
+		19EDBB162B7C507F00432CDE /* conf_libro resurreccion.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA632B7C507700432CDE /* conf_libro resurreccion.txt */; };
+		19EDBB172B7C507F00432CDE /* conf_Todo existe en la imaginacion.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA642B7C507700432CDE /* conf_Todo existe en la imaginacion.txt */; };
+		19EDBB182B7C507F00432CDE /* conf_Tu estado de animo decide tu futuro.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA652B7C507700432CDE /* conf_Tu estado de animo decide tu futuro.txt */; };
+		19EDBB192B7C507F00432CDE /* conf_Una confesion de fe.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA662B7C507700432CDE /* conf_Una confesion de fe.txt */; };
+		19EDBB1A2B7C507F00432CDE /* conf_Uno mismo en uno mismo y resucitado.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA672B7C507700432CDE /* conf_Uno mismo en uno mismo y resucitado.txt */; };
+		19EDBB1B2B7C507F00432CDE /* conf_Veintesiete cielos.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA682B7C507700432CDE /* conf_Veintesiete cielos.txt */; };
+		19EDBB1C2B7C507F00432CDE /* conf_adan y cristo son uno.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA692B7C507700432CDE /* conf_adan y cristo son uno.txt */; };
+		19EDBB1D2B7C507F00432CDE /* conf_Es hora de actuar.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA6A2B7C507700432CDE /* conf_Es hora de actuar.txt */; };
+		19EDBB1E2B7C507F00432CDE /* conf_Hasta el mar en barcos.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA6B2B7C507700432CDE /* conf_Hasta el mar en barcos.txt */; };
+		19EDBB1F2B7C507F00432CDE /* conf_ahora mis ojos te ven.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA6C2B7C507700432CDE /* conf_ahora mis ojos te ven.txt */; };
+		19EDBB202B7C507F00432CDE /* conf_El actor desconocido.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA6D2B7C507700432CDE /* conf_El actor desconocido.txt */; };
+		19EDBB212B7C507F00432CDE /* conf_Creelo en tu futuro.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA6E2B7C507800432CDE /* conf_Creelo en tu futuro.txt */; };
+		19EDBB222B7C507F00432CDE /* conf_arrepiéntete y cree en el evangelio.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA6F2B7C507800432CDE /* conf_arrepiéntete y cree en el evangelio.txt */; };
+		19EDBB232B7C507F00432CDE /* conf_si puedes creer.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA702B7C507800432CDE /* conf_si puedes creer.txt */; };
+		19EDBB242B7C507F00432CDE /* conf_el misterio de la gracia.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA712B7C507800432CDE /* conf_el misterio de la gracia.txt */; };
+		19EDBB252B7C507F00432CDE /* conf_libro imaginacion despierta.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA722B7C507800432CDE /* conf_libro imaginacion despierta.txt */; };
+		19EDBB262B7C507F00432CDE /* conf_contando el costo.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA732B7C507800432CDE /* conf_contando el costo.txt */; };
+		19EDBB272B7C507F00432CDE /* conf_La vida a travez de la muerte.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA742B7C507800432CDE /* conf_La vida a travez de la muerte.txt */; };
+		19EDBB282B7C507F00432CDE /* conf_La estrella de la mañana.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA752B7C507800432CDE /* conf_La estrella de la mañana.txt */; };
+		19EDBB292B7C507F00432CDE /* conf_El misterio cristiano experimentado.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA762B7C507800432CDE /* conf_El misterio cristiano experimentado.txt */; };
+		19EDBB2A2B7C507F00432CDE /* conf_El bribon inteligentemente.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA772B7C507800432CDE /* conf_El bribon inteligentemente.txt */; };
+		19EDBB2B2B7C507F00432CDE /* conf_sus propias credenciales.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA782B7C507800432CDE /* conf_sus propias credenciales.txt */; };
+		19EDBB2C2B7C507F00432CDE /* conf_adora al creador no a la criatura.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA792B7C507800432CDE /* conf_adora al creador no a la criatura.txt */; };
+		19EDBB2E2B7C507F00432CDE /* conf_La pascua y viernes santo.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA7B2B7C507800432CDE /* conf_La pascua y viernes santo.txt */; };
+		19EDBB2F2B7C507F00432CDE /* conf_Sobre los misterios.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA7C2B7C507800432CDE /* conf_Sobre los misterios.txt */; };
+		19EDBB302B7C507F00432CDE /* conf_solo jesus.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA7D2B7C507800432CDE /* conf_solo jesus.txt */; };
+		19EDBB312B7C507F00432CDE /* conf_Relataron sus propias experiencias.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA7E2B7C507900432CDE /* conf_Relataron sus propias experiencias.txt */; };
+		19EDBB332B7C507F00432CDE /* conf_el poder de la imaginacion.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA802B7C507900432CDE /* conf_el poder de la imaginacion.txt */; };
+		19EDBB342B7C507F00432CDE /* conf_El misterio llamado Cristo.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA812B7C507900432CDE /* conf_El misterio llamado Cristo.txt */; };
+		19EDBB352B7C507F00432CDE /* conf_La sonrisa.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA822B7C507900432CDE /* conf_La sonrisa.txt */; };
+		19EDBB362B7C507F00432CDE /* conf_yo soy la vid.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA832B7C507900432CDE /* conf_yo soy la vid.txt */; };
+		19EDBB372B7C507F00432CDE /* conf_Todos son humanos.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA842B7C507900432CDE /* conf_Todos son humanos.txt */; };
+		19EDBB382B7C507F00432CDE /* conf_el me esta meditando.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA852B7C507900432CDE /* conf_el me esta meditando.txt */; };
+		19EDBB392B7C507F00432CDE /* conf_el antiguo testamento.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA862B7C507900432CDE /* conf_el antiguo testamento.txt */; };
+		19EDBB3A2B7C507F00432CDE /* conf_la estrella de seis puntas.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA872B7C507900432CDE /* conf_la estrella de seis puntas.txt */; };
+		19EDBB3B2B7C507F00432CDE /* conf_El mundo exterior responde a actos imaginarios.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA882B7C507900432CDE /* conf_El mundo exterior responde a actos imaginarios.txt */; };
+		19EDBB3C2B7C507F00432CDE /* conf_La biblia se trata de ti.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA892B7C507900432CDE /* conf_La biblia se trata de ti.txt */; };
+		19EDBB3D2B7C507F00432CDE /* conf_Jesus, el plan de salvación de Dios.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA8A2B7C507900432CDE /* conf_Jesus, el plan de salvación de Dios.txt */; };
+		19EDBB3E2B7C507F00432CDE /* conf_nuetras verdaderas creencias 2.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA8B2B7C507900432CDE /* conf_nuetras verdaderas creencias 2.txt */; };
+		19EDBB3F2B7C507F00432CDE /* conf_El hombre nuevo.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA8C2B7C507900432CDE /* conf_El hombre nuevo.txt */; };
+		19EDBB402B7C507F00432CDE /* conf_la cosecha identica.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA8D2B7C507900432CDE /* conf_la cosecha identica.txt */; };
+		19EDBB412B7C507F00432CDE /* conf_por agua y por sangre.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA8E2B7C507900432CDE /* conf_por agua y por sangre.txt */; };
+		19EDBB422B7C507F00432CDE /* conf_Visiones escatologicas.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA8F2B7C507A00432CDE /* conf_Visiones escatologicas.txt */; };
+		19EDBB432B7C507F00432CDE /* conf_libro rompe la cascara.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA902B7C507A00432CDE /* conf_libro rompe la cascara.txt */; };
+		19EDBB442B7C507F00432CDE /* conf_Los ultimos dias de un hijo.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA912B7C507A00432CDE /* conf_Los ultimos dias de un hijo.txt */; };
+		19EDBB452B7C507F00432CDE /* conf_El nombre nuevo.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA922B7C507A00432CDE /* conf_El nombre nuevo.txt */; };
+		19EDBB462B7C507F00432CDE /* conf_El enigma.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA932B7C507A00432CDE /* conf_El enigma.txt */; };
+		19EDBB472B7C507F00432CDE /* conf_La falsedad es profetica.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA942B7C507A00432CDE /* conf_La falsedad es profetica.txt */; };
+		19EDBB482B7C507F00432CDE /* conf_lo hemos encontrado.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA952B7C507A00432CDE /* conf_lo hemos encontrado.txt */; };
+		19EDBB492B7C507F00432CDE /* conf_Participes de la naturalesa divina.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA962B7C507A00432CDE /* conf_Participes de la naturalesa divina.txt */; };
+		19EDBB4A2B7C507F00432CDE /* conf_La roca y la carretera.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA972B7C507A00432CDE /* conf_La roca y la carretera.txt */; };
+		19EDBB4B2B7C507F00432CDE /* conf_la imaginacion es el hombre real.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA982B7C507A00432CDE /* conf_la imaginacion es el hombre real.txt */; };
+		19EDBB4C2B7C507F00432CDE /* conf_consignados a la desobediencia.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA992B7C507A00432CDE /* conf_consignados a la desobediencia.txt */; };
+		19EDBB4D2B7C507F00432CDE /* conf_libro cinco lecciones.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA9A2B7C507A00432CDE /* conf_libro cinco lecciones.txt */; };
+		19EDBB4E2B7C507F00432CDE /* conf_Que requiere el señor.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA9B2B7C507A00432CDE /* conf_Que requiere el señor.txt */; };
+		19EDBB4F2B7C507F00432CDE /* conf_encontramos al padre en nosotros.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA9C2B7C507A00432CDE /* conf_encontramos al padre en nosotros.txt */; };
+		19EDBB502B7C507F00432CDE /* conf_navidad el mensaje redentor.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA9D2B7C507A00432CDE /* conf_navidad el mensaje redentor.txt */; };
+		19EDBB512B7C507F00432CDE /* conf_el soñador II.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA9E2B7C507A00432CDE /* conf_el soñador II.txt */; };
+		19EDBB522B7C507F00432CDE /* conf_moises elias y jesus.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBA9F2B7C507A00432CDE /* conf_moises elias y jesus.txt */; };
+		19EDBB532B7C507F00432CDE /* conf_libro fuera de este mundo.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAA02B7C507A00432CDE /* conf_libro fuera de este mundo.txt */; };
+		19EDBB542B7C507F00432CDE /* conf_el misterio de la imaginacion.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAA12B7C507A00432CDE /* conf_el misterio de la imaginacion.txt */; };
+		19EDBB552B7C507F00432CDE /* conf_La creacion.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAA22B7C507B00432CDE /* conf_La creacion.txt */; };
+		19EDBB562B7C507F00432CDE /* conf_Enviados a perturbar con la verdad.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAA32B7C507B00432CDE /* conf_Enviados a perturbar con la verdad.txt */; };
+		19EDBB572B7C507F00432CDE /* conf_libro oracion el arte de creer.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAA42B7C507B00432CDE /* conf_libro oracion el arte de creer.txt */; };
+		19EDBB582B7C507F00432CDE /* conf_El secreto de imaginar.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAA52B7C507B00432CDE /* conf_El secreto de imaginar.txt */; };
+		19EDBB592B7C507F00432CDE /* conf_La cabala.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAA62B7C507B00432CDE /* conf_La cabala.txt */; };
+		19EDBB5A2B7C507F00432CDE /* conf_adviento.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAA72B7C507B00432CDE /* conf_adviento.txt */; };
+		19EDBB5B2B7C507F00432CDE /* conf_Elevar la imaginacion al estado de la vision.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAA82B7C507B00432CDE /* conf_Elevar la imaginacion al estado de la vision.txt */; };
+		19EDBB5C2B7C507F00432CDE /* conf_aferrarnos a nuestra fe.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAA92B7C507B00432CDE /* conf_aferrarnos a nuestra fe.txt */; };
+		19EDBB5D2B7C507F00432CDE /* conf_el libro del apocalipsis.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAAA2B7C507B00432CDE /* conf_el libro del apocalipsis.txt */; };
+		19EDBB5E2B7C507F00432CDE /* conf_el da tu recibes.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAAB2B7C507B00432CDE /* conf_el da tu recibes.txt */; };
+		19EDBB5F2B7C507F00432CDE /* conf_la copa y la cruz.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAAC2B7C507B00432CDE /* conf_la copa y la cruz.txt */; };
+		19EDBB602B7C507F00432CDE /* conf_El verdadero hombre.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAAD2B7C507B00432CDE /* conf_El verdadero hombre.txt */; };
+		19EDBB612B7C507F00432CDE /* conf_El talento dado por Dios.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAAE2B7C507B00432CDE /* conf_El talento dado por Dios.txt */; };
+		19EDBB622B7C507F00432CDE /* conf_El remanente.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAAF2B7C507B00432CDE /* conf_El remanente.txt */; };
+		19EDBB632B7C507F00432CDE /* conf_la vida tiene un proposito.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAB02B7C507B00432CDE /* conf_la vida tiene un proposito.txt */; };
+		19EDBB642B7C507F00432CDE /* conf_los dos lados de este enseñanza.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAB12B7C507B00432CDE /* conf_los dos lados de este enseñanza.txt */; };
+		19EDBB652B7C507F00432CDE /* conf_absolucion divina.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAB22B7C507B00432CDE /* conf_absolucion divina.txt */; };
+		19EDBB662B7C507F00432CDE /* conf_Esta dentro.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAB32B7C507B00432CDE /* conf_Esta dentro.txt */; };
+		19EDBB672B7C507F00432CDE /* conf_Llame al proximo testigo.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAB42B7C507B00432CDE /* conf_Llame al proximo testigo.txt */; };
+		19EDBB682B7C507F00432CDE /* conf_Experiencias compartidas.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAB52B7C507B00432CDE /* conf_Experiencias compartidas.txt */; };
+		19EDBB692B7C507F00432CDE /* conf_libro la ley y la promesa.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAB62B7C507B00432CDE /* conf_libro la ley y la promesa.txt */; };
+		19EDBB6A2B7C507F00432CDE /* conf_Se el dueño del estado de animo.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAB72B7C507B00432CDE /* conf_Se el dueño del estado de animo.txt */; };
+		19EDBB6B2B7C507F00432CDE /* conf_Salimos del padre y volvemos.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAB82B7C507B00432CDE /* conf_Salimos del padre y volvemos.txt */; };
+		19EDBB6C2B7C507F00432CDE /* conf_En una visión de la noche.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAB92B7C507C00432CDE /* conf_En una visión de la noche.txt */; };
+		19EDBB6D2B7C507F00432CDE /* conf_ellos no murieron.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBABA2B7C507C00432CDE /* conf_ellos no murieron.txt */; };
+		19EDBB6E2B7C507F00432CDE /* conf_El secreto de la imaginacion II.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBABB2B7C507C00432CDE /* conf_El secreto de la imaginacion II.txt */; };
+		19EDBB6F2B7C507F00432CDE /* conf_en estos ultimos dias por su hijo.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBABC2B7C507C00432CDE /* conf_en estos ultimos dias por su hijo.txt */; };
+		19EDBB702B7C507F00432CDE /* conf_libro conozco a mi padre.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBABD2B7C507C00432CDE /* conf_libro conozco a mi padre.txt */; };
+		19EDBB712B7C507F00432CDE /* conf_libro tiempo de siembra y cosecha.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBABE2B7C507C00432CDE /* conf_libro tiempo de siembra y cosecha.txt */; };
+		19EDBB722B7C507F00432CDE /* conf_sobre la ley pruebate a ti mismo.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBABF2B7C507C00432CDE /* conf_sobre la ley pruebate a ti mismo.txt */; };
+		19EDBB732B7C507F00432CDE /* conf_verdad.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAC02B7C507C00432CDE /* conf_verdad.txt */; };
+		19EDBB742B7C507F00432CDE /* conf_Tus muertos viviran.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAC12B7C507C00432CDE /* conf_Tus muertos viviran.txt */; };
+		19EDBB752B7C507F00432CDE /* conf_Dones otorgados por Dios.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAC22B7C507C00432CDE /* conf_Dones otorgados por Dios.txt */; };
+		19EDBB762B7C507F00432CDE /* conf_pide lo que te dare.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAC32B7C507C00432CDE /* conf_pide lo que te dare.txt */; };
+		19EDBB772B7C507F00432CDE /* conf_Señales y maravillas.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAC42B7C507C00432CDE /* conf_Señales y maravillas.txt */; };
+		19EDBB782B7C507F00432CDE /* conf_La Casa del Alfarero.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAC52B7C507C00432CDE /* conf_La Casa del Alfarero.txt */; };
+		19EDBB792B7C507F00432CDE /* conf_La serpiente-Jesucristo.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAC62B7C507C00432CDE /* conf_La serpiente-Jesucristo.txt */; };
+		19EDBB7A2B7C507F00432CDE /* conf_el camino.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAC72B7C507C00432CDE /* conf_el camino.txt */; };
+		19EDBB7B2B7C507F00432CDE /* conf_prueba la ley funciona.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAC82B7C507C00432CDE /* conf_prueba la ley funciona.txt */; };
+		19EDBB7C2B7C507F00432CDE /* conf_Que debemos hacer.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAC92B7C507C00432CDE /* conf_Que debemos hacer.txt */; };
+		19EDBB7D2B7C507F00432CDE /* conf_Dios esta en Cristo reconciliando.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBACA2B7C507C00432CDE /* conf_Dios esta en Cristo reconciliando.txt */; };
+		19EDBB7E2B7C507F00432CDE /* conf_El útero del universo.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBACB2B7C507C00432CDE /* conf_El útero del universo.txt */; };
+		19EDBB7F2B7C507F00432CDE /* conf_guardar el sabado.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBACC2B7C507C00432CDE /* conf_guardar el sabado.txt */; };
+		19EDBB802B7C507F00432CDE /* conf_La copa de vino espumoso.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBACD2B7C507C00432CDE /* conf_La copa de vino espumoso.txt */; };
+		19EDBB812B7C507F00432CDE /* conf_el reino.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBACE2B7C507C00432CDE /* conf_el reino.txt */; };
+		19EDBB822B7C507F00432CDE /* conf_libro sentir es el secreto.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBACF2B7C507C00432CDE /* conf_libro sentir es el secreto.txt */; };
+		19EDBB832B7C507F00432CDE /* conf_soy llamado por tu nombre ho señor.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAD02B7C507C00432CDE /* conf_soy llamado por tu nombre ho señor.txt */; };
+		19EDBB842B7C507F00432CDE /* conf_Imaginacion mas fe.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAD12B7C507D00432CDE /* conf_Imaginacion mas fe.txt */; };
+		19EDBB852B7C507F00432CDE /* conf_meditacion.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAD22B7C507D00432CDE /* conf_meditacion.txt */; };
+		19EDBB862B7C507F00432CDE /* conf_El dialogo interno.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAD32B7C507D00432CDE /* conf_El dialogo interno.txt */; };
+		19EDBB872B7C507F00432CDE /* conf_La niña de sus ojos.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAD42B7C507D00432CDE /* conf_La niña de sus ojos.txt */; };
+		19EDBB882B7C507F00432CDE /* conf_Dios tiene un propósito.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAD52B7C507D00432CDE /* conf_Dios tiene un propósito.txt */; };
+		19EDBB892B7C507F00432CDE /* conf_El misterio de la navidad.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAD62B7C507D00432CDE /* conf_El misterio de la navidad.txt */; };
+		19EDBB8A2B7C507F00432CDE /* conf_La verdad del concepto.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAD72B7C507D00432CDE /* conf_La verdad del concepto.txt */; };
+		19EDBB8B2B7C507F00432CDE /* conf_El camino nuevo y vivo.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAD82B7C507D00432CDE /* conf_El camino nuevo y vivo.txt */; };
+		19EDBB8C2B7C507F00432CDE /* conf_la formacion de cristo en nosotros.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAD92B7C507D00432CDE /* conf_la formacion de cristo en nosotros.txt */; };
+		19EDBB8D2B7C507F00432CDE /* conf_la empresa mas grande.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBADA2B7C507D00432CDE /* conf_la empresa mas grande.txt */; };
+		19EDBB8E2B7C507F00432CDE /* conf_El misterio escondido por siglos.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBADB2B7C507D00432CDE /* conf_El misterio escondido por siglos.txt */; };
+		19EDBB8F2B7C507F00432CDE /* conf_El plan eterno.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBADC2B7C507D00432CDE /* conf_El plan eterno.txt */; };
+		19EDBB902B7C507F00432CDE /* conf_Este es mi nombre para siempre Yo Soy.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBADD2B7C507D00432CDE /* conf_Este es mi nombre para siempre Yo Soy.txt */; };
+		19EDBB912B7C507F00432CDE /* conf_interpretacion de la oracion de pablo.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBADE2B7C507D00432CDE /* conf_interpretacion de la oracion de pablo.txt */; };
+		19EDBB922B7C507F00432CDE /* conf_Controla tus conversaciones internas.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBADF2B7C507D00432CDE /* conf_Controla tus conversaciones internas.txt */; };
+		19EDBB932B7C507F00432CDE /* conf_Memoria.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAE02B7C507D00432CDE /* conf_Memoria.txt */; };
+		19EDBB942B7C507F00432CDE /* conf_Reunidos uno por uno.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAE12B7C507D00432CDE /* conf_Reunidos uno por uno.txt */; };
+		19EDBB952B7C507F00432CDE /* conf_El modelo de las escrituras es real.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAE22B7C507D00432CDE /* conf_El modelo de las escrituras es real.txt */; };
+		19EDBB962B7C507F00432CDE /* conf_La vida es para actuar.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAE32B7C507D00432CDE /* conf_La vida es para actuar.txt */; };
+		19EDBB972B7C507F00432CDE /* conf_libro la fe es tu fortuna.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAE42B7C507D00432CDE /* conf_libro la fe es tu fortuna.txt */; };
+		19EDBB982B7C507F00432CDE /* conf_una experiencia mistica.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAE52B7C507D00432CDE /* conf_una experiencia mistica.txt */; };
+		19EDBB992B7C507F00432CDE /* conf_El soñador.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAE62B7C507D00432CDE /* conf_El soñador.txt */; };
+		19EDBB9A2B7C507F00432CDE /* conf_el poder todopoderoso de dios.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAE72B7C507D00432CDE /* conf_el poder todopoderoso de dios.txt */; };
+		19EDBB9B2B7C507F00432CDE /* conf_La inundación todavia esta  sobre nosotros.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAE82B7C507D00432CDE /* conf_La inundación todavia esta  sobre nosotros.txt */; };
+		19EDBB9C2B7C507F00432CDE /* conf_Palabras humanas todopoderosas.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAE92B7C507E00432CDE /* conf_Palabras humanas todopoderosas.txt */; };
+		19EDBB9D2B7C507F00432CDE /* conf_En alabanza a la sabiduria.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAEA2B7C507E00432CDE /* conf_En alabanza a la sabiduria.txt */; };
+		19EDBB9E2B7C507F00432CDE /* conf_personificaciones no personas.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAEB2B7C507E00432CDE /* conf_personificaciones no personas.txt */; };
+		19EDBB9F2B7C507F00432CDE /* conf_Bajad a la casa del alfarero.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAEC2B7C507E00432CDE /* conf_Bajad a la casa del alfarero.txt */; };
+		19EDBBA02B7C507F00432CDE /* conf_La ley perfecta de la libertad.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAED2B7C507E00432CDE /* conf_La ley perfecta de la libertad.txt */; };
+		19EDBBA12B7C507F00432CDE /* conf_Te atreves a asumir.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAEE2B7C507E00432CDE /* conf_Te atreves a asumir.txt */; };
+		19EDBBA22B7C507F00432CDE /* conf_El poder de la fe.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAEF2B7C507E00432CDE /* conf_El poder de la fe.txt */; };
+		19EDBBA32B7C507F00432CDE /* conf_libro la busqueda.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAF02B7C507E00432CDE /* conf_libro la busqueda.txt */; };
+		19EDBBA42B7C507F00432CDE /* conf_Recuerdo de las cosas futuras.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAF12B7C507E00432CDE /* conf_Recuerdo de las cosas futuras.txt */; };
+		19EDBBA52B7C507F00432CDE /* conf_cruz.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAF22B7C507E00432CDE /* conf_cruz.txt */; };
+		19EDBBA62B7C507F00432CDE /* conf_el secreto de la imaginacion.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAF32B7C507E00432CDE /* conf_el secreto de la imaginacion.txt */; };
+		19EDBBA72B7C507F00432CDE /* conf_La imaginación humana.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAF42B7C507E00432CDE /* conf_La imaginación humana.txt */; };
+		19EDBBA82B7C507F00432CDE /* conf_Donde te alojarás.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAF52B7C507E00432CDE /* conf_Donde te alojarás.txt */; };
+		19EDBBA92B7C507F00432CDE /* conf_Uno mas grande que juan.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAF62B7C507E00432CDE /* conf_Uno mas grande que juan.txt */; };
+		19EDBBAA2B7C507F00432CDE /* conf_la carta de fawcett.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAF72B7C507E00432CDE /* conf_la carta de fawcett.txt */; };
+		19EDBBAB2B7C507F00432CDE /* conf_El Poder me envio.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAF82B7C507E00432CDE /* conf_El Poder me envio.txt */; };
+		19EDBBAC2B7C507F00432CDE /* conf_perla de gran precio.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAF92B7C507E00432CDE /* conf_perla de gran precio.txt */; };
+		19EDBBAD2B7C507F00432CDE /* conf_Dios se conoce por la experiencia.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAFA2B7C507E00432CDE /* conf_Dios se conoce por la experiencia.txt */; };
+		19EDBBAE2B7C507F00432CDE /* conf_su obra eterna.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAFB2B7C507E00432CDE /* conf_su obra eterna.txt */; };
+		19EDBBAF2B7C507F00432CDE /* conf_Experimenta el misterio de Cristo.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAFC2B7C507E00432CDE /* conf_Experimenta el misterio de Cristo.txt */; };
+		19EDBBB02B7C507F00432CDE /* conf_Quienes son los condenados.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAFD2B7C507E00432CDE /* conf_Quienes son los condenados.txt */; };
+		19EDBBB12B7C507F00432CDE /* conf_La ley la autocircuncision.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAFE2B7C507E00432CDE /* conf_La ley la autocircuncision.txt */; };
+		19EDBBB22B7C507F00432CDE /* conf_ordene luego espere.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBAFF2B7C507E00432CDE /* conf_ordene luego espere.txt */; };
+		19EDBBB32B7C507F00432CDE /* conf_el santo.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBB002B7C507E00432CDE /* conf_el santo.txt */; };
+		19EDBBB52B7C507F00432CDE /* conf_Cada uno tiene el plan en el.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBB022B7C507F00432CDE /* conf_Cada uno tiene el plan en el.txt */; };
+		19EDBBB62B7C507F00432CDE /* conf_la promesa cumplida.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBB032B7C507F00432CDE /* conf_la promesa cumplida.txt */; };
+		19EDBBB72B7C507F00432CDE /* conf_el dios invisible detras de los hechos.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBB042B7C507F00432CDE /* conf_el dios invisible detras de los hechos.txt */; };
+		19EDBBB82B7C507F00432CDE /* conf_Comulga contigo mismo.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBB052B7C507F00432CDE /* conf_Comulga contigo mismo.txt */; };
+		19EDBBB92B7C507F00432CDE /* conf_el pecado original.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBB062B7C507F00432CDE /* conf_el pecado original.txt */; };
+		19EDBBBA2B7C507F00432CDE /* conf_El sentir de Jesus es como el de David.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBB072B7C507F00432CDE /* conf_El sentir de Jesus es como el de David.txt */; };
+		19EDBBBB2B7C507F00432CDE /* conf_Obras de fe, no los milagros.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBB082B7C507F00432CDE /* conf_Obras de fe, no los milagros.txt */; };
+		19EDBBBC2B7C507F00432CDE /* conf_el ha puesto la eternidad en el pensamiento del hombre.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBB092B7C507F00432CDE /* conf_el ha puesto la eternidad en el pensamiento del hombre.txt */; };
+		19EDBBBD2B7C507F00432CDE /* conf_Entra en escena.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBB0A2B7C507F00432CDE /* conf_Entra en escena.txt */; };
+		19EDBBBE2B7C507F00432CDE /* conf_incubar el sueño.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBB0B2B7C507F00432CDE /* conf_incubar el sueño.txt */; };
 		19F3CFCA2B5677B200DEB026 /* conf_a sus ordenes.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19F3CFC92B5677B200DEB026 /* conf_a sus ordenes.txt */; };
 		19F8041C2B69CB9D00A323A0 /* La_LeyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19F8041B2B69CB9D00A323A0 /* La_LeyApp.swift */; };
 		19F8041E2B69CB9D00A323A0 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19F8041D2B69CB9D00A323A0 /* ContentView.swift */; };
@@ -622,6 +798,182 @@
 		19E0BE1A2B0C661A00E149A5 /* FrasesWigget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrasesWigget.swift; sourceTree = "<group>"; };
 		19E0BE1C2B0C661B00E149A5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		19E0BE1E2B0C661B00E149A5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		19EDBA592B7C507600432CDE /* conf_Cual es su nombre.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Cual es su nombre.txt"; sourceTree = "<group>"; };
+		19EDBA5A2B7C507600432CDE /* conf_El sembrador.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_El sembrador.txt"; sourceTree = "<group>"; };
+		19EDBA5B2B7C507600432CDE /* conf_El amigo de los pecadores.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_El amigo de los pecadores.txt"; sourceTree = "<group>"; };
+		19EDBA5C2B7C507600432CDE /* conf_el nombre de dios es sinonimo de dios.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_el nombre de dios es sinonimo de dios.txt"; sourceTree = "<group>"; };
+		19EDBA5D2B7C507700432CDE /* conf_libro libertad pata todos.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_libro libertad pata todos.txt"; sourceTree = "<group>"; };
+		19EDBA5E2B7C507700432CDE /* conf_notas el milagro de la imaginacion.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_notas el milagro de la imaginacion.txt"; sourceTree = "<group>"; };
+		19EDBA5F2B7C507700432CDE /* conf_libro el poder de la conciencia.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_libro el poder de la conciencia.txt"; sourceTree = "<group>"; };
+		19EDBA602B7C507700432CDE /* conf_por imaginacion nos convertimos.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_por imaginacion nos convertimos.txt"; sourceTree = "<group>"; };
+		19EDBA612B7C507700432CDE /* conf_Purificado por la muerte de tus engaños.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Purificado por la muerte de tus engaños.txt"; sourceTree = "<group>"; };
+		19EDBA622B7C507700432CDE /* conf_Participe de la naturaleza divida.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Participe de la naturaleza divida.txt"; sourceTree = "<group>"; };
+		19EDBA632B7C507700432CDE /* conf_libro resurreccion.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_libro resurreccion.txt"; sourceTree = "<group>"; };
+		19EDBA642B7C507700432CDE /* conf_Todo existe en la imaginacion.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Todo existe en la imaginacion.txt"; sourceTree = "<group>"; };
+		19EDBA652B7C507700432CDE /* conf_Tu estado de animo decide tu futuro.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Tu estado de animo decide tu futuro.txt"; sourceTree = "<group>"; };
+		19EDBA662B7C507700432CDE /* conf_Una confesion de fe.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Una confesion de fe.txt"; sourceTree = "<group>"; };
+		19EDBA672B7C507700432CDE /* conf_Uno mismo en uno mismo y resucitado.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Uno mismo en uno mismo y resucitado.txt"; sourceTree = "<group>"; };
+		19EDBA682B7C507700432CDE /* conf_Veintesiete cielos.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Veintesiete cielos.txt"; sourceTree = "<group>"; };
+		19EDBA692B7C507700432CDE /* conf_adan y cristo son uno.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_adan y cristo son uno.txt"; sourceTree = "<group>"; };
+		19EDBA6A2B7C507700432CDE /* conf_Es hora de actuar.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Es hora de actuar.txt"; sourceTree = "<group>"; };
+		19EDBA6B2B7C507700432CDE /* conf_Hasta el mar en barcos.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Hasta el mar en barcos.txt"; sourceTree = "<group>"; };
+		19EDBA6C2B7C507700432CDE /* conf_ahora mis ojos te ven.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_ahora mis ojos te ven.txt"; sourceTree = "<group>"; };
+		19EDBA6D2B7C507700432CDE /* conf_El actor desconocido.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_El actor desconocido.txt"; sourceTree = "<group>"; };
+		19EDBA6E2B7C507800432CDE /* conf_Creelo en tu futuro.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Creelo en tu futuro.txt"; sourceTree = "<group>"; };
+		19EDBA6F2B7C507800432CDE /* conf_arrepiéntete y cree en el evangelio.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_arrepiéntete y cree en el evangelio.txt"; sourceTree = "<group>"; };
+		19EDBA702B7C507800432CDE /* conf_si puedes creer.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_si puedes creer.txt"; sourceTree = "<group>"; };
+		19EDBA712B7C507800432CDE /* conf_el misterio de la gracia.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_el misterio de la gracia.txt"; sourceTree = "<group>"; };
+		19EDBA722B7C507800432CDE /* conf_libro imaginacion despierta.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_libro imaginacion despierta.txt"; sourceTree = "<group>"; };
+		19EDBA732B7C507800432CDE /* conf_contando el costo.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_contando el costo.txt"; sourceTree = "<group>"; };
+		19EDBA742B7C507800432CDE /* conf_La vida a travez de la muerte.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_La vida a travez de la muerte.txt"; sourceTree = "<group>"; };
+		19EDBA752B7C507800432CDE /* conf_La estrella de la mañana.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_La estrella de la mañana.txt"; sourceTree = "<group>"; };
+		19EDBA762B7C507800432CDE /* conf_El misterio cristiano experimentado.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_El misterio cristiano experimentado.txt"; sourceTree = "<group>"; };
+		19EDBA772B7C507800432CDE /* conf_El bribon inteligentemente.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_El bribon inteligentemente.txt"; sourceTree = "<group>"; };
+		19EDBA782B7C507800432CDE /* conf_sus propias credenciales.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_sus propias credenciales.txt"; sourceTree = "<group>"; };
+		19EDBA792B7C507800432CDE /* conf_adora al creador no a la criatura.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_adora al creador no a la criatura.txt"; sourceTree = "<group>"; };
+		19EDBA7B2B7C507800432CDE /* conf_La pascua y viernes santo.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_La pascua y viernes santo.txt"; sourceTree = "<group>"; };
+		19EDBA7C2B7C507800432CDE /* conf_Sobre los misterios.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Sobre los misterios.txt"; sourceTree = "<group>"; };
+		19EDBA7D2B7C507800432CDE /* conf_solo jesus.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_solo jesus.txt"; sourceTree = "<group>"; };
+		19EDBA7E2B7C507900432CDE /* conf_Relataron sus propias experiencias.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Relataron sus propias experiencias.txt"; sourceTree = "<group>"; };
+		19EDBA802B7C507900432CDE /* conf_el poder de la imaginacion.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_el poder de la imaginacion.txt"; sourceTree = "<group>"; };
+		19EDBA812B7C507900432CDE /* conf_El misterio llamado Cristo.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_El misterio llamado Cristo.txt"; sourceTree = "<group>"; };
+		19EDBA822B7C507900432CDE /* conf_La sonrisa.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_La sonrisa.txt"; sourceTree = "<group>"; };
+		19EDBA832B7C507900432CDE /* conf_yo soy la vid.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_yo soy la vid.txt"; sourceTree = "<group>"; };
+		19EDBA842B7C507900432CDE /* conf_Todos son humanos.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Todos son humanos.txt"; sourceTree = "<group>"; };
+		19EDBA852B7C507900432CDE /* conf_el me esta meditando.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_el me esta meditando.txt"; sourceTree = "<group>"; };
+		19EDBA862B7C507900432CDE /* conf_el antiguo testamento.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_el antiguo testamento.txt"; sourceTree = "<group>"; };
+		19EDBA872B7C507900432CDE /* conf_la estrella de seis puntas.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_la estrella de seis puntas.txt"; sourceTree = "<group>"; };
+		19EDBA882B7C507900432CDE /* conf_El mundo exterior responde a actos imaginarios.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_El mundo exterior responde a actos imaginarios.txt"; sourceTree = "<group>"; };
+		19EDBA892B7C507900432CDE /* conf_La biblia se trata de ti.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_La biblia se trata de ti.txt"; sourceTree = "<group>"; };
+		19EDBA8A2B7C507900432CDE /* conf_Jesus, el plan de salvación de Dios.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Jesus, el plan de salvación de Dios.txt"; sourceTree = "<group>"; };
+		19EDBA8B2B7C507900432CDE /* conf_nuetras verdaderas creencias 2.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_nuetras verdaderas creencias 2.txt"; sourceTree = "<group>"; };
+		19EDBA8C2B7C507900432CDE /* conf_El hombre nuevo.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_El hombre nuevo.txt"; sourceTree = "<group>"; };
+		19EDBA8D2B7C507900432CDE /* conf_la cosecha identica.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_la cosecha identica.txt"; sourceTree = "<group>"; };
+		19EDBA8E2B7C507900432CDE /* conf_por agua y por sangre.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_por agua y por sangre.txt"; sourceTree = "<group>"; };
+		19EDBA8F2B7C507A00432CDE /* conf_Visiones escatologicas.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Visiones escatologicas.txt"; sourceTree = "<group>"; };
+		19EDBA902B7C507A00432CDE /* conf_libro rompe la cascara.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_libro rompe la cascara.txt"; sourceTree = "<group>"; };
+		19EDBA912B7C507A00432CDE /* conf_Los ultimos dias de un hijo.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Los ultimos dias de un hijo.txt"; sourceTree = "<group>"; };
+		19EDBA922B7C507A00432CDE /* conf_El nombre nuevo.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_El nombre nuevo.txt"; sourceTree = "<group>"; };
+		19EDBA932B7C507A00432CDE /* conf_El enigma.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_El enigma.txt"; sourceTree = "<group>"; };
+		19EDBA942B7C507A00432CDE /* conf_La falsedad es profetica.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_La falsedad es profetica.txt"; sourceTree = "<group>"; };
+		19EDBA952B7C507A00432CDE /* conf_lo hemos encontrado.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_lo hemos encontrado.txt"; sourceTree = "<group>"; };
+		19EDBA962B7C507A00432CDE /* conf_Participes de la naturalesa divina.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Participes de la naturalesa divina.txt"; sourceTree = "<group>"; };
+		19EDBA972B7C507A00432CDE /* conf_La roca y la carretera.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_La roca y la carretera.txt"; sourceTree = "<group>"; };
+		19EDBA982B7C507A00432CDE /* conf_la imaginacion es el hombre real.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_la imaginacion es el hombre real.txt"; sourceTree = "<group>"; };
+		19EDBA992B7C507A00432CDE /* conf_consignados a la desobediencia.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_consignados a la desobediencia.txt"; sourceTree = "<group>"; };
+		19EDBA9A2B7C507A00432CDE /* conf_libro cinco lecciones.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_libro cinco lecciones.txt"; sourceTree = "<group>"; };
+		19EDBA9B2B7C507A00432CDE /* conf_Que requiere el señor.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Que requiere el señor.txt"; sourceTree = "<group>"; };
+		19EDBA9C2B7C507A00432CDE /* conf_encontramos al padre en nosotros.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_encontramos al padre en nosotros.txt"; sourceTree = "<group>"; };
+		19EDBA9D2B7C507A00432CDE /* conf_navidad el mensaje redentor.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_navidad el mensaje redentor.txt"; sourceTree = "<group>"; };
+		19EDBA9E2B7C507A00432CDE /* conf_el soñador II.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_el soñador II.txt"; sourceTree = "<group>"; };
+		19EDBA9F2B7C507A00432CDE /* conf_moises elias y jesus.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_moises elias y jesus.txt"; sourceTree = "<group>"; };
+		19EDBAA02B7C507A00432CDE /* conf_libro fuera de este mundo.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_libro fuera de este mundo.txt"; sourceTree = "<group>"; };
+		19EDBAA12B7C507A00432CDE /* conf_el misterio de la imaginacion.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_el misterio de la imaginacion.txt"; sourceTree = "<group>"; };
+		19EDBAA22B7C507B00432CDE /* conf_La creacion.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_La creacion.txt"; sourceTree = "<group>"; };
+		19EDBAA32B7C507B00432CDE /* conf_Enviados a perturbar con la verdad.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Enviados a perturbar con la verdad.txt"; sourceTree = "<group>"; };
+		19EDBAA42B7C507B00432CDE /* conf_libro oracion el arte de creer.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_libro oracion el arte de creer.txt"; sourceTree = "<group>"; };
+		19EDBAA52B7C507B00432CDE /* conf_El secreto de imaginar.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_El secreto de imaginar.txt"; sourceTree = "<group>"; };
+		19EDBAA62B7C507B00432CDE /* conf_La cabala.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_La cabala.txt"; sourceTree = "<group>"; };
+		19EDBAA72B7C507B00432CDE /* conf_adviento.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = conf_adviento.txt; sourceTree = "<group>"; };
+		19EDBAA82B7C507B00432CDE /* conf_Elevar la imaginacion al estado de la vision.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Elevar la imaginacion al estado de la vision.txt"; sourceTree = "<group>"; };
+		19EDBAA92B7C507B00432CDE /* conf_aferrarnos a nuestra fe.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_aferrarnos a nuestra fe.txt"; sourceTree = "<group>"; };
+		19EDBAAA2B7C507B00432CDE /* conf_el libro del apocalipsis.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_el libro del apocalipsis.txt"; sourceTree = "<group>"; };
+		19EDBAAB2B7C507B00432CDE /* conf_el da tu recibes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_el da tu recibes.txt"; sourceTree = "<group>"; };
+		19EDBAAC2B7C507B00432CDE /* conf_la copa y la cruz.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_la copa y la cruz.txt"; sourceTree = "<group>"; };
+		19EDBAAD2B7C507B00432CDE /* conf_El verdadero hombre.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_El verdadero hombre.txt"; sourceTree = "<group>"; };
+		19EDBAAE2B7C507B00432CDE /* conf_El talento dado por Dios.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_El talento dado por Dios.txt"; sourceTree = "<group>"; };
+		19EDBAAF2B7C507B00432CDE /* conf_El remanente.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_El remanente.txt"; sourceTree = "<group>"; };
+		19EDBAB02B7C507B00432CDE /* conf_la vida tiene un proposito.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_la vida tiene un proposito.txt"; sourceTree = "<group>"; };
+		19EDBAB12B7C507B00432CDE /* conf_los dos lados de este enseñanza.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_los dos lados de este enseñanza.txt"; sourceTree = "<group>"; };
+		19EDBAB22B7C507B00432CDE /* conf_absolucion divina.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_absolucion divina.txt"; sourceTree = "<group>"; };
+		19EDBAB32B7C507B00432CDE /* conf_Esta dentro.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Esta dentro.txt"; sourceTree = "<group>"; };
+		19EDBAB42B7C507B00432CDE /* conf_Llame al proximo testigo.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Llame al proximo testigo.txt"; sourceTree = "<group>"; };
+		19EDBAB52B7C507B00432CDE /* conf_Experiencias compartidas.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Experiencias compartidas.txt"; sourceTree = "<group>"; };
+		19EDBAB62B7C507B00432CDE /* conf_libro la ley y la promesa.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_libro la ley y la promesa.txt"; sourceTree = "<group>"; };
+		19EDBAB72B7C507B00432CDE /* conf_Se el dueño del estado de animo.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Se el dueño del estado de animo.txt"; sourceTree = "<group>"; };
+		19EDBAB82B7C507B00432CDE /* conf_Salimos del padre y volvemos.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Salimos del padre y volvemos.txt"; sourceTree = "<group>"; };
+		19EDBAB92B7C507C00432CDE /* conf_En una visión de la noche.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_En una visión de la noche.txt"; sourceTree = "<group>"; };
+		19EDBABA2B7C507C00432CDE /* conf_ellos no murieron.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_ellos no murieron.txt"; sourceTree = "<group>"; };
+		19EDBABB2B7C507C00432CDE /* conf_El secreto de la imaginacion II.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_El secreto de la imaginacion II.txt"; sourceTree = "<group>"; };
+		19EDBABC2B7C507C00432CDE /* conf_en estos ultimos dias por su hijo.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_en estos ultimos dias por su hijo.txt"; sourceTree = "<group>"; };
+		19EDBABD2B7C507C00432CDE /* conf_libro conozco a mi padre.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_libro conozco a mi padre.txt"; sourceTree = "<group>"; };
+		19EDBABE2B7C507C00432CDE /* conf_libro tiempo de siembra y cosecha.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_libro tiempo de siembra y cosecha.txt"; sourceTree = "<group>"; };
+		19EDBABF2B7C507C00432CDE /* conf_sobre la ley pruebate a ti mismo.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_sobre la ley pruebate a ti mismo.txt"; sourceTree = "<group>"; };
+		19EDBAC02B7C507C00432CDE /* conf_verdad.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = conf_verdad.txt; sourceTree = "<group>"; };
+		19EDBAC12B7C507C00432CDE /* conf_Tus muertos viviran.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Tus muertos viviran.txt"; sourceTree = "<group>"; };
+		19EDBAC22B7C507C00432CDE /* conf_Dones otorgados por Dios.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Dones otorgados por Dios.txt"; sourceTree = "<group>"; };
+		19EDBAC32B7C507C00432CDE /* conf_pide lo que te dare.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_pide lo que te dare.txt"; sourceTree = "<group>"; };
+		19EDBAC42B7C507C00432CDE /* conf_Señales y maravillas.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Señales y maravillas.txt"; sourceTree = "<group>"; };
+		19EDBAC52B7C507C00432CDE /* conf_La Casa del Alfarero.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_La Casa del Alfarero.txt"; sourceTree = "<group>"; };
+		19EDBAC62B7C507C00432CDE /* conf_La serpiente-Jesucristo.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_La serpiente-Jesucristo.txt"; sourceTree = "<group>"; };
+		19EDBAC72B7C507C00432CDE /* conf_el camino.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_el camino.txt"; sourceTree = "<group>"; };
+		19EDBAC82B7C507C00432CDE /* conf_prueba la ley funciona.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_prueba la ley funciona.txt"; sourceTree = "<group>"; };
+		19EDBAC92B7C507C00432CDE /* conf_Que debemos hacer.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Que debemos hacer.txt"; sourceTree = "<group>"; };
+		19EDBACA2B7C507C00432CDE /* conf_Dios esta en Cristo reconciliando.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Dios esta en Cristo reconciliando.txt"; sourceTree = "<group>"; };
+		19EDBACB2B7C507C00432CDE /* conf_El útero del universo.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_El útero del universo.txt"; sourceTree = "<group>"; };
+		19EDBACC2B7C507C00432CDE /* conf_guardar el sabado.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_guardar el sabado.txt"; sourceTree = "<group>"; };
+		19EDBACD2B7C507C00432CDE /* conf_La copa de vino espumoso.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_La copa de vino espumoso.txt"; sourceTree = "<group>"; };
+		19EDBACE2B7C507C00432CDE /* conf_el reino.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_el reino.txt"; sourceTree = "<group>"; };
+		19EDBACF2B7C507C00432CDE /* conf_libro sentir es el secreto.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_libro sentir es el secreto.txt"; sourceTree = "<group>"; };
+		19EDBAD02B7C507C00432CDE /* conf_soy llamado por tu nombre ho señor.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_soy llamado por tu nombre ho señor.txt"; sourceTree = "<group>"; };
+		19EDBAD12B7C507D00432CDE /* conf_Imaginacion mas fe.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Imaginacion mas fe.txt"; sourceTree = "<group>"; };
+		19EDBAD22B7C507D00432CDE /* conf_meditacion.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = conf_meditacion.txt; sourceTree = "<group>"; };
+		19EDBAD32B7C507D00432CDE /* conf_El dialogo interno.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_El dialogo interno.txt"; sourceTree = "<group>"; };
+		19EDBAD42B7C507D00432CDE /* conf_La niña de sus ojos.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_La niña de sus ojos.txt"; sourceTree = "<group>"; };
+		19EDBAD52B7C507D00432CDE /* conf_Dios tiene un propósito.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Dios tiene un propósito.txt"; sourceTree = "<group>"; };
+		19EDBAD62B7C507D00432CDE /* conf_El misterio de la navidad.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_El misterio de la navidad.txt"; sourceTree = "<group>"; };
+		19EDBAD72B7C507D00432CDE /* conf_La verdad del concepto.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_La verdad del concepto.txt"; sourceTree = "<group>"; };
+		19EDBAD82B7C507D00432CDE /* conf_El camino nuevo y vivo.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_El camino nuevo y vivo.txt"; sourceTree = "<group>"; };
+		19EDBAD92B7C507D00432CDE /* conf_la formacion de cristo en nosotros.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_la formacion de cristo en nosotros.txt"; sourceTree = "<group>"; };
+		19EDBADA2B7C507D00432CDE /* conf_la empresa mas grande.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_la empresa mas grande.txt"; sourceTree = "<group>"; };
+		19EDBADB2B7C507D00432CDE /* conf_El misterio escondido por siglos.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_El misterio escondido por siglos.txt"; sourceTree = "<group>"; };
+		19EDBADC2B7C507D00432CDE /* conf_El plan eterno.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_El plan eterno.txt"; sourceTree = "<group>"; };
+		19EDBADD2B7C507D00432CDE /* conf_Este es mi nombre para siempre Yo Soy.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Este es mi nombre para siempre Yo Soy.txt"; sourceTree = "<group>"; };
+		19EDBADE2B7C507D00432CDE /* conf_interpretacion de la oracion de pablo.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_interpretacion de la oracion de pablo.txt"; sourceTree = "<group>"; };
+		19EDBADF2B7C507D00432CDE /* conf_Controla tus conversaciones internas.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Controla tus conversaciones internas.txt"; sourceTree = "<group>"; };
+		19EDBAE02B7C507D00432CDE /* conf_Memoria.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = conf_Memoria.txt; sourceTree = "<group>"; };
+		19EDBAE12B7C507D00432CDE /* conf_Reunidos uno por uno.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Reunidos uno por uno.txt"; sourceTree = "<group>"; };
+		19EDBAE22B7C507D00432CDE /* conf_El modelo de las escrituras es real.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_El modelo de las escrituras es real.txt"; sourceTree = "<group>"; };
+		19EDBAE32B7C507D00432CDE /* conf_La vida es para actuar.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_La vida es para actuar.txt"; sourceTree = "<group>"; };
+		19EDBAE42B7C507D00432CDE /* conf_libro la fe es tu fortuna.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_libro la fe es tu fortuna.txt"; sourceTree = "<group>"; };
+		19EDBAE52B7C507D00432CDE /* conf_una experiencia mistica.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_una experiencia mistica.txt"; sourceTree = "<group>"; };
+		19EDBAE62B7C507D00432CDE /* conf_El soñador.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_El soñador.txt"; sourceTree = "<group>"; };
+		19EDBAE72B7C507D00432CDE /* conf_el poder todopoderoso de dios.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_el poder todopoderoso de dios.txt"; sourceTree = "<group>"; };
+		19EDBAE82B7C507D00432CDE /* conf_La inundación todavia esta  sobre nosotros.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_La inundación todavia esta  sobre nosotros.txt"; sourceTree = "<group>"; };
+		19EDBAE92B7C507E00432CDE /* conf_Palabras humanas todopoderosas.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Palabras humanas todopoderosas.txt"; sourceTree = "<group>"; };
+		19EDBAEA2B7C507E00432CDE /* conf_En alabanza a la sabiduria.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_En alabanza a la sabiduria.txt"; sourceTree = "<group>"; };
+		19EDBAEB2B7C507E00432CDE /* conf_personificaciones no personas.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_personificaciones no personas.txt"; sourceTree = "<group>"; };
+		19EDBAEC2B7C507E00432CDE /* conf_Bajad a la casa del alfarero.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Bajad a la casa del alfarero.txt"; sourceTree = "<group>"; };
+		19EDBAED2B7C507E00432CDE /* conf_La ley perfecta de la libertad.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_La ley perfecta de la libertad.txt"; sourceTree = "<group>"; };
+		19EDBAEE2B7C507E00432CDE /* conf_Te atreves a asumir.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Te atreves a asumir.txt"; sourceTree = "<group>"; };
+		19EDBAEF2B7C507E00432CDE /* conf_El poder de la fe.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_El poder de la fe.txt"; sourceTree = "<group>"; };
+		19EDBAF02B7C507E00432CDE /* conf_libro la busqueda.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_libro la busqueda.txt"; sourceTree = "<group>"; };
+		19EDBAF12B7C507E00432CDE /* conf_Recuerdo de las cosas futuras.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Recuerdo de las cosas futuras.txt"; sourceTree = "<group>"; };
+		19EDBAF22B7C507E00432CDE /* conf_cruz.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = conf_cruz.txt; sourceTree = "<group>"; };
+		19EDBAF32B7C507E00432CDE /* conf_el secreto de la imaginacion.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_el secreto de la imaginacion.txt"; sourceTree = "<group>"; };
+		19EDBAF42B7C507E00432CDE /* conf_La imaginación humana.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_La imaginación humana.txt"; sourceTree = "<group>"; };
+		19EDBAF52B7C507E00432CDE /* conf_Donde te alojarás.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Donde te alojarás.txt"; sourceTree = "<group>"; };
+		19EDBAF62B7C507E00432CDE /* conf_Uno mas grande que juan.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Uno mas grande que juan.txt"; sourceTree = "<group>"; };
+		19EDBAF72B7C507E00432CDE /* conf_la carta de fawcett.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_la carta de fawcett.txt"; sourceTree = "<group>"; };
+		19EDBAF82B7C507E00432CDE /* conf_El Poder me envio.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_El Poder me envio.txt"; sourceTree = "<group>"; };
+		19EDBAF92B7C507E00432CDE /* conf_perla de gran precio.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_perla de gran precio.txt"; sourceTree = "<group>"; };
+		19EDBAFA2B7C507E00432CDE /* conf_Dios se conoce por la experiencia.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Dios se conoce por la experiencia.txt"; sourceTree = "<group>"; };
+		19EDBAFB2B7C507E00432CDE /* conf_su obra eterna.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_su obra eterna.txt"; sourceTree = "<group>"; };
+		19EDBAFC2B7C507E00432CDE /* conf_Experimenta el misterio de Cristo.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Experimenta el misterio de Cristo.txt"; sourceTree = "<group>"; };
+		19EDBAFD2B7C507E00432CDE /* conf_Quienes son los condenados.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Quienes son los condenados.txt"; sourceTree = "<group>"; };
+		19EDBAFE2B7C507E00432CDE /* conf_La ley la autocircuncision.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_La ley la autocircuncision.txt"; sourceTree = "<group>"; };
+		19EDBAFF2B7C507E00432CDE /* conf_ordene luego espere.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_ordene luego espere.txt"; sourceTree = "<group>"; };
+		19EDBB002B7C507E00432CDE /* conf_el santo.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_el santo.txt"; sourceTree = "<group>"; };
+		19EDBB022B7C507F00432CDE /* conf_Cada uno tiene el plan en el.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Cada uno tiene el plan en el.txt"; sourceTree = "<group>"; };
+		19EDBB032B7C507F00432CDE /* conf_la promesa cumplida.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_la promesa cumplida.txt"; sourceTree = "<group>"; };
+		19EDBB042B7C507F00432CDE /* conf_el dios invisible detras de los hechos.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_el dios invisible detras de los hechos.txt"; sourceTree = "<group>"; };
+		19EDBB052B7C507F00432CDE /* conf_Comulga contigo mismo.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Comulga contigo mismo.txt"; sourceTree = "<group>"; };
+		19EDBB062B7C507F00432CDE /* conf_el pecado original.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_el pecado original.txt"; sourceTree = "<group>"; };
+		19EDBB072B7C507F00432CDE /* conf_El sentir de Jesus es como el de David.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_El sentir de Jesus es como el de David.txt"; sourceTree = "<group>"; };
+		19EDBB082B7C507F00432CDE /* conf_Obras de fe, no los milagros.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Obras de fe, no los milagros.txt"; sourceTree = "<group>"; };
+		19EDBB092B7C507F00432CDE /* conf_el ha puesto la eternidad en el pensamiento del hombre.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_el ha puesto la eternidad en el pensamiento del hombre.txt"; sourceTree = "<group>"; };
+		19EDBB0A2B7C507F00432CDE /* conf_Entra en escena.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Entra en escena.txt"; sourceTree = "<group>"; };
+		19EDBB0B2B7C507F00432CDE /* conf_incubar el sueño.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_incubar el sueño.txt"; sourceTree = "<group>"; };
 		19F3CFC92B5677B200DEB026 /* conf_a sus ordenes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_a sus ordenes.txt"; sourceTree = "<group>"; };
 		19F804192B69CB9D00A323A0 /* La Ley Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "La Ley Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		19F8041B2B69CB9D00A323A0 /* La_LeyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = La_LeyApp.swift; sourceTree = "<group>"; };
@@ -1162,6 +1514,189 @@
 			path = FrasesWigget;
 			sourceTree = "<group>";
 		};
+		19EDBA582B7C505E00432CDE /* news */ = {
+			isa = PBXGroup;
+			children = (
+				19EDBAB22B7C507B00432CDE /* conf_absolucion divina.txt */,
+				19EDBA692B7C507700432CDE /* conf_adan y cristo son uno.txt */,
+				19EDBA792B7C507800432CDE /* conf_adora al creador no a la criatura.txt */,
+				19EDBAA72B7C507B00432CDE /* conf_adviento.txt */,
+				19EDBAA92B7C507B00432CDE /* conf_aferrarnos a nuestra fe.txt */,
+				19EDBA6C2B7C507700432CDE /* conf_ahora mis ojos te ven.txt */,
+				19EDBA6F2B7C507800432CDE /* conf_arrepiéntete y cree en el evangelio.txt */,
+				19EDBAEC2B7C507E00432CDE /* conf_Bajad a la casa del alfarero.txt */,
+				19EDBB022B7C507F00432CDE /* conf_Cada uno tiene el plan en el.txt */,
+				19EDBB052B7C507F00432CDE /* conf_Comulga contigo mismo.txt */,
+				19EDBA992B7C507A00432CDE /* conf_consignados a la desobediencia.txt */,
+				19EDBA732B7C507800432CDE /* conf_contando el costo.txt */,
+				19EDBADF2B7C507D00432CDE /* conf_Controla tus conversaciones internas.txt */,
+				19EDBA6E2B7C507800432CDE /* conf_Creelo en tu futuro.txt */,
+				19EDBAF22B7C507E00432CDE /* conf_cruz.txt */,
+				19EDBA592B7C507600432CDE /* conf_Cual es su nombre.txt */,
+				19EDBACA2B7C507C00432CDE /* conf_Dios esta en Cristo reconciliando.txt */,
+				19EDBAFA2B7C507E00432CDE /* conf_Dios se conoce por la experiencia.txt */,
+				19EDBAD52B7C507D00432CDE /* conf_Dios tiene un propósito.txt */,
+				19EDBAF52B7C507E00432CDE /* conf_Donde te alojarás.txt */,
+				19EDBAC22B7C507C00432CDE /* conf_Dones otorgados por Dios.txt */,
+				19EDBA6D2B7C507700432CDE /* conf_El actor desconocido.txt */,
+				19EDBA5B2B7C507600432CDE /* conf_El amigo de los pecadores.txt */,
+				19EDBA862B7C507900432CDE /* conf_el antiguo testamento.txt */,
+				19EDBA772B7C507800432CDE /* conf_El bribon inteligentemente.txt */,
+				19EDBAD82B7C507D00432CDE /* conf_El camino nuevo y vivo.txt */,
+				19EDBAC72B7C507C00432CDE /* conf_el camino.txt */,
+				19EDBAAB2B7C507B00432CDE /* conf_el da tu recibes.txt */,
+				19EDBAD32B7C507D00432CDE /* conf_El dialogo interno.txt */,
+				19EDBB042B7C507F00432CDE /* conf_el dios invisible detras de los hechos.txt */,
+				19EDBA932B7C507A00432CDE /* conf_El enigma.txt */,
+				19EDBB092B7C507F00432CDE /* conf_el ha puesto la eternidad en el pensamiento del hombre.txt */,
+				19EDBA8C2B7C507900432CDE /* conf_El hombre nuevo.txt */,
+				19EDBAAA2B7C507B00432CDE /* conf_el libro del apocalipsis.txt */,
+				19EDBA852B7C507900432CDE /* conf_el me esta meditando.txt */,
+				19EDBA762B7C507800432CDE /* conf_El misterio cristiano experimentado.txt */,
+				19EDBA712B7C507800432CDE /* conf_el misterio de la gracia.txt */,
+				19EDBAA12B7C507A00432CDE /* conf_el misterio de la imaginacion.txt */,
+				19EDBAD62B7C507D00432CDE /* conf_El misterio de la navidad.txt */,
+				19EDBADB2B7C507D00432CDE /* conf_El misterio escondido por siglos.txt */,
+				19EDBA812B7C507900432CDE /* conf_El misterio llamado Cristo.txt */,
+				19EDBAE22B7C507D00432CDE /* conf_El modelo de las escrituras es real.txt */,
+				19EDBA882B7C507900432CDE /* conf_El mundo exterior responde a actos imaginarios.txt */,
+				19EDBA5C2B7C507600432CDE /* conf_el nombre de dios es sinonimo de dios.txt */,
+				19EDBA922B7C507A00432CDE /* conf_El nombre nuevo.txt */,
+				19EDBB062B7C507F00432CDE /* conf_el pecado original.txt */,
+				19EDBADC2B7C507D00432CDE /* conf_El plan eterno.txt */,
+				19EDBAEF2B7C507E00432CDE /* conf_El poder de la fe.txt */,
+				19EDBA802B7C507900432CDE /* conf_el poder de la imaginacion.txt */,
+				19EDBAF82B7C507E00432CDE /* conf_El Poder me envio.txt */,
+				19EDBAE72B7C507D00432CDE /* conf_el poder todopoderoso de dios.txt */,
+				19EDBACE2B7C507C00432CDE /* conf_el reino.txt */,
+				19EDBAAF2B7C507B00432CDE /* conf_El remanente.txt */,
+				19EDBB002B7C507E00432CDE /* conf_el santo.txt */,
+				19EDBAA52B7C507B00432CDE /* conf_El secreto de imaginar.txt */,
+				19EDBABB2B7C507C00432CDE /* conf_El secreto de la imaginacion II.txt */,
+				19EDBAF32B7C507E00432CDE /* conf_el secreto de la imaginacion.txt */,
+				19EDBA5A2B7C507600432CDE /* conf_El sembrador.txt */,
+				19EDBB072B7C507F00432CDE /* conf_El sentir de Jesus es como el de David.txt */,
+				19EDBA9E2B7C507A00432CDE /* conf_el soñador II.txt */,
+				19EDBAE62B7C507D00432CDE /* conf_El soñador.txt */,
+				19EDBAAE2B7C507B00432CDE /* conf_El talento dado por Dios.txt */,
+				19EDBACB2B7C507C00432CDE /* conf_El útero del universo.txt */,
+				19EDBAAD2B7C507B00432CDE /* conf_El verdadero hombre.txt */,
+				19EDBAA82B7C507B00432CDE /* conf_Elevar la imaginacion al estado de la vision.txt */,
+				19EDBABA2B7C507C00432CDE /* conf_ellos no murieron.txt */,
+				19EDBAEA2B7C507E00432CDE /* conf_En alabanza a la sabiduria.txt */,
+				19EDBABC2B7C507C00432CDE /* conf_en estos ultimos dias por su hijo.txt */,
+				19EDBAB92B7C507C00432CDE /* conf_En una visión de la noche.txt */,
+				19EDBA9C2B7C507A00432CDE /* conf_encontramos al padre en nosotros.txt */,
+				19EDBB0A2B7C507F00432CDE /* conf_Entra en escena.txt */,
+				19EDBAA32B7C507B00432CDE /* conf_Enviados a perturbar con la verdad.txt */,
+				19EDBA6A2B7C507700432CDE /* conf_Es hora de actuar.txt */,
+				19EDBAB32B7C507B00432CDE /* conf_Esta dentro.txt */,
+				19EDBADD2B7C507D00432CDE /* conf_Este es mi nombre para siempre Yo Soy.txt */,
+				19EDBAB52B7C507B00432CDE /* conf_Experiencias compartidas.txt */,
+				19EDBAFC2B7C507E00432CDE /* conf_Experimenta el misterio de Cristo.txt */,
+				19EDBACC2B7C507C00432CDE /* conf_guardar el sabado.txt */,
+				19EDBA6B2B7C507700432CDE /* conf_Hasta el mar en barcos.txt */,
+				19EDBAD12B7C507D00432CDE /* conf_Imaginacion mas fe.txt */,
+				19EDBB0B2B7C507F00432CDE /* conf_incubar el sueño.txt */,
+				19EDBADE2B7C507D00432CDE /* conf_interpretacion de la oracion de pablo.txt */,
+				19EDBA8A2B7C507900432CDE /* conf_Jesus, el plan de salvación de Dios.txt */,
+				19EDBA892B7C507900432CDE /* conf_La biblia se trata de ti.txt */,
+				19EDBAA62B7C507B00432CDE /* conf_La cabala.txt */,
+				19EDBAF72B7C507E00432CDE /* conf_la carta de fawcett.txt */,
+				19EDBAC52B7C507C00432CDE /* conf_La Casa del Alfarero.txt */,
+				19EDBACD2B7C507C00432CDE /* conf_La copa de vino espumoso.txt */,
+				19EDBAAC2B7C507B00432CDE /* conf_la copa y la cruz.txt */,
+				19EDBA8D2B7C507900432CDE /* conf_la cosecha identica.txt */,
+				19EDBAA22B7C507B00432CDE /* conf_La creacion.txt */,
+				19EDBADA2B7C507D00432CDE /* conf_la empresa mas grande.txt */,
+				19EDBA752B7C507800432CDE /* conf_La estrella de la mañana.txt */,
+				19EDBA872B7C507900432CDE /* conf_la estrella de seis puntas.txt */,
+				19EDBA942B7C507A00432CDE /* conf_La falsedad es profetica.txt */,
+				19EDBAD92B7C507D00432CDE /* conf_la formacion de cristo en nosotros.txt */,
+				19EDBA982B7C507A00432CDE /* conf_la imaginacion es el hombre real.txt */,
+				19EDBAF42B7C507E00432CDE /* conf_La imaginación humana.txt */,
+				19EDBAE82B7C507D00432CDE /* conf_La inundación todavia esta  sobre nosotros.txt */,
+				19EDBAFE2B7C507E00432CDE /* conf_La ley la autocircuncision.txt */,
+				19EDBAED2B7C507E00432CDE /* conf_La ley perfecta de la libertad.txt */,
+				19EDBAD42B7C507D00432CDE /* conf_La niña de sus ojos.txt */,
+				19EDBA7B2B7C507800432CDE /* conf_La pascua y viernes santo.txt */,
+				19EDBB032B7C507F00432CDE /* conf_la promesa cumplida.txt */,
+				19EDBA972B7C507A00432CDE /* conf_La roca y la carretera.txt */,
+				19EDBAC62B7C507C00432CDE /* conf_La serpiente-Jesucristo.txt */,
+				19EDBA822B7C507900432CDE /* conf_La sonrisa.txt */,
+				19EDBAD72B7C507D00432CDE /* conf_La verdad del concepto.txt */,
+				19EDBA742B7C507800432CDE /* conf_La vida a travez de la muerte.txt */,
+				19EDBAE32B7C507D00432CDE /* conf_La vida es para actuar.txt */,
+				19EDBAB02B7C507B00432CDE /* conf_la vida tiene un proposito.txt */,
+				19EDBA9A2B7C507A00432CDE /* conf_libro cinco lecciones.txt */,
+				19EDBABD2B7C507C00432CDE /* conf_libro conozco a mi padre.txt */,
+				19EDBA5F2B7C507700432CDE /* conf_libro el poder de la conciencia.txt */,
+				19EDBAA02B7C507A00432CDE /* conf_libro fuera de este mundo.txt */,
+				19EDBA722B7C507800432CDE /* conf_libro imaginacion despierta.txt */,
+				19EDBAF02B7C507E00432CDE /* conf_libro la busqueda.txt */,
+				19EDBAE42B7C507D00432CDE /* conf_libro la fe es tu fortuna.txt */,
+				19EDBAB62B7C507B00432CDE /* conf_libro la ley y la promesa.txt */,
+				19EDBA5D2B7C507700432CDE /* conf_libro libertad pata todos.txt */,
+				19EDBAA42B7C507B00432CDE /* conf_libro oracion el arte de creer.txt */,
+				19EDBA632B7C507700432CDE /* conf_libro resurreccion.txt */,
+				19EDBA902B7C507A00432CDE /* conf_libro rompe la cascara.txt */,
+				19EDBACF2B7C507C00432CDE /* conf_libro sentir es el secreto.txt */,
+				19EDBABE2B7C507C00432CDE /* conf_libro tiempo de siembra y cosecha.txt */,
+				19EDBAB42B7C507B00432CDE /* conf_Llame al proximo testigo.txt */,
+				19EDBA952B7C507A00432CDE /* conf_lo hemos encontrado.txt */,
+				19EDBAB12B7C507B00432CDE /* conf_los dos lados de este enseñanza.txt */,
+				19EDBA912B7C507A00432CDE /* conf_Los ultimos dias de un hijo.txt */,
+				19EDBAD22B7C507D00432CDE /* conf_meditacion.txt */,
+				19EDBAE02B7C507D00432CDE /* conf_Memoria.txt */,
+				19EDBA9F2B7C507A00432CDE /* conf_moises elias y jesus.txt */,
+				19EDBA9D2B7C507A00432CDE /* conf_navidad el mensaje redentor.txt */,
+				19EDBA5E2B7C507700432CDE /* conf_notas el milagro de la imaginacion.txt */,
+				19EDBA8B2B7C507900432CDE /* conf_nuetras verdaderas creencias 2.txt */,
+				19EDBB082B7C507F00432CDE /* conf_Obras de fe, no los milagros.txt */,
+				19EDBAFF2B7C507E00432CDE /* conf_ordene luego espere.txt */,
+				19EDBAE92B7C507E00432CDE /* conf_Palabras humanas todopoderosas.txt */,
+				19EDBA622B7C507700432CDE /* conf_Participe de la naturaleza divida.txt */,
+				19EDBA962B7C507A00432CDE /* conf_Participes de la naturalesa divina.txt */,
+				19EDBAF92B7C507E00432CDE /* conf_perla de gran precio.txt */,
+				19EDBAEB2B7C507E00432CDE /* conf_personificaciones no personas.txt */,
+				19EDBAC32B7C507C00432CDE /* conf_pide lo que te dare.txt */,
+				19EDBA8E2B7C507900432CDE /* conf_por agua y por sangre.txt */,
+				19EDBA602B7C507700432CDE /* conf_por imaginacion nos convertimos.txt */,
+				19EDBAC82B7C507C00432CDE /* conf_prueba la ley funciona.txt */,
+				19EDBA612B7C507700432CDE /* conf_Purificado por la muerte de tus engaños.txt */,
+				19EDBAC92B7C507C00432CDE /* conf_Que debemos hacer.txt */,
+				19EDBA9B2B7C507A00432CDE /* conf_Que requiere el señor.txt */,
+				19EDBAFD2B7C507E00432CDE /* conf_Quienes son los condenados.txt */,
+				19EDBAF12B7C507E00432CDE /* conf_Recuerdo de las cosas futuras.txt */,
+				19EDBA7E2B7C507900432CDE /* conf_Relataron sus propias experiencias.txt */,
+				19EDBAE12B7C507D00432CDE /* conf_Reunidos uno por uno.txt */,
+				19EDBAB82B7C507B00432CDE /* conf_Salimos del padre y volvemos.txt */,
+				19EDBAB72B7C507B00432CDE /* conf_Se el dueño del estado de animo.txt */,
+				19EDBAC42B7C507C00432CDE /* conf_Señales y maravillas.txt */,
+				19EDBA702B7C507800432CDE /* conf_si puedes creer.txt */,
+				19EDBABF2B7C507C00432CDE /* conf_sobre la ley pruebate a ti mismo.txt */,
+				19EDBA7C2B7C507800432CDE /* conf_Sobre los misterios.txt */,
+				19EDBA7D2B7C507800432CDE /* conf_solo jesus.txt */,
+				19EDBAD02B7C507C00432CDE /* conf_soy llamado por tu nombre ho señor.txt */,
+				19EDBAFB2B7C507E00432CDE /* conf_su obra eterna.txt */,
+				19EDBA782B7C507800432CDE /* conf_sus propias credenciales.txt */,
+				19EDBAEE2B7C507E00432CDE /* conf_Te atreves a asumir.txt */,
+				19EDBA642B7C507700432CDE /* conf_Todo existe en la imaginacion.txt */,
+				19EDBA842B7C507900432CDE /* conf_Todos son humanos.txt */,
+				19EDBA652B7C507700432CDE /* conf_Tu estado de animo decide tu futuro.txt */,
+				19EDBAC12B7C507C00432CDE /* conf_Tus muertos viviran.txt */,
+				19EDBA662B7C507700432CDE /* conf_Una confesion de fe.txt */,
+				19EDBAE52B7C507D00432CDE /* conf_una experiencia mistica.txt */,
+				19EDBAF62B7C507E00432CDE /* conf_Uno mas grande que juan.txt */,
+				19EDBA672B7C507700432CDE /* conf_Uno mismo en uno mismo y resucitado.txt */,
+				19EDBA682B7C507700432CDE /* conf_Veintesiete cielos.txt */,
+				19EDBAC02B7C507C00432CDE /* conf_verdad.txt */,
+				19EDBA8F2B7C507A00432CDE /* conf_Visiones escatologicas.txt */,
+				19EDBA832B7C507900432CDE /* conf_yo soy la vid.txt */,
+			);
+			path = news;
+			sourceTree = "<group>";
+		};
 		19F8041A2B69CB9D00A323A0 /* La Ley Watch App */ = {
 			isa = PBXGroup;
 			children = (
@@ -1203,6 +1738,7 @@
 		E92F61192AB3E06F007BB4BA /* Conf */ = {
 			isa = PBXGroup;
 			children = (
+				19EDBA582B7C505E00432CDE /* news */,
 				19A8E4672B29487800EE0184 /* conf_yorjandis.txt */,
 				19F3CFC92B5677B200DEB026 /* conf_a sus ordenes.txt */,
 				E92F62262AB3E1C0007BB4BA /* conf_a quien buscas.txt */,
@@ -1745,62 +2281,106 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				19EDBB2C2B7C507F00432CDE /* conf_adora al creador no a la criatura.txt in Resources */,
+				19EDBBAC2B7C507F00432CDE /* conf_perla de gran precio.txt in Resources */,
 				19BBC5C12B1599DC00FBB079 /* cita_el secreto de la oracion.txt in Resources */,
+				19EDBB3F2B7C507F00432CDE /* conf_El hombre nuevo.txt in Resources */,
+				19EDBB2A2B7C507F00432CDE /* conf_El bribon inteligentemente.txt in Resources */,
 				E92F629B2AB3E1C2007BB4BA /* conf_un movimiento dentro de dios.txt in Resources */,
 				E92F630A2AB3E1C2007BB4BA /* conf_planos profeticos.txt in Resources */,
+				19EDBB792B7C507F00432CDE /* conf_La serpiente-Jesucristo.txt in Resources */,
+				19EDBB972B7C507F00432CDE /* conf_libro la fe es tu fortuna.txt in Resources */,
 				E92F62B32AB3E1C2007BB4BA /* conf_tu supremo dominio.txt in Resources */,
 				E92F62FD2AB3E1C2007BB4BA /* conf_dietas mentales.txt in Resources */,
+				19EDBB9C2B7C507F00432CDE /* conf_Palabras humanas todopoderosas.txt in Resources */,
 				E92F62FA2AB3E1C2007BB4BA /* conf_el verdadero conocimiento de dios.txt in Resources */,
 				E92F624C2AB3E1C2007BB4BA /* conf_eleccion y cambio de conciencia.txt in Resources */,
+				19EDBB6D2B7C507F00432CDE /* conf_ellos no murieron.txt in Resources */,
 				E92F62E92AB3E1C2007BB4BA /* conf_el niño milagroso.txt in Resources */,
 				E92F630F2AB3E1C2007BB4BA /* conf_autoabandono.txt in Resources */,
 				E92F624E2AB3E1C2007BB4BA /* conf_si alguno de los dos esta de acuerdo.txt in Resources */,
 				E92F62EE2AB3E1C2007BB4BA /* conf_mediante agua y sangre.txt in Resources */,
+				19EDBB822B7C507F00432CDE /* conf_libro sentir es el secreto.txt in Resources */,
 				19BBC5BC2B1599DC00FBB079 /* cita_libertad.txt in Resources */,
 				E92F629A2AB3E1C2007BB4BA /* conf_un estado llamado moises.txt in Resources */,
+				19EDBBA72B7C507F00432CDE /* conf_La imaginación humana.txt in Resources */,
 				19BBC6282B159A4800FBB079 /* ayud_expresar un cambio en tu mundo.txt in Resources */,
 				E92F633F2AB3E1C2007BB4BA /* conf_imaginacion despierta.txt in Resources */,
+				19EDBB762B7C507F00432CDE /* conf_pide lo que te dare.txt in Resources */,
+				19EDBB662B7C507F00432CDE /* conf_Esta dentro.txt in Resources */,
+				19EDBB9D2B7C507F00432CDE /* conf_En alabanza a la sabiduria.txt in Resources */,
 				E92F631C2AB3E1C2007BB4BA /* conf_atando y soltando.txt in Resources */,
 				E92F624A2AB3E1C2007BB4BA /* conf_el esta  soñando ahora_1.txt in Resources */,
 				19BBC6042B159A2600FBB079 /* preg_pregunta 16.txt in Resources */,
+				19EDBB262B7C507F00432CDE /* conf_contando el costo.txt in Resources */,
+				19EDBB7A2B7C507F00432CDE /* conf_el camino.txt in Resources */,
 				E92F62622AB3E1C2007BB4BA /* conf_lecccion 5 permanece fiel a tu idea.txt in Resources */,
 				19BBC5CE2B1599DC00FBB079 /* cita_estados eternos.txt in Resources */,
+				19EDBB2F2B7C507F00432CDE /* conf_Sobre los misterios.txt in Resources */,
+				19EDBB3D2B7C507F00432CDE /* conf_Jesus, el plan de salvación de Dios.txt in Resources */,
 				E92F62A52AB3E1C2007BB4BA /* conf_percepcion.txt in Resources */,
+				19EDBBA12B7C507F00432CDE /* conf_Te atreves a asumir.txt in Resources */,
 				19F3CFCA2B5677B200DEB026 /* conf_a sus ordenes.txt in Resources */,
 				E92F62542AB3E1C2007BB4BA /* conf_la copa de la experiencia.txt in Resources */,
+				19EDBB7D2B7C507F00432CDE /* conf_Dios esta en Cristo reconciliando.txt in Resources */,
 				E92F62982AB3E1C2007BB4BA /* conf_naturalidad.txt in Resources */,
 				E92F634F2AB3E1C2007BB4BA /* conf_quien soy.txt in Resources */,
 				E92F625A2AB3E1C2007BB4BA /* conf_recuerdo cuando.txt in Resources */,
 				19BBC6292B159A4800FBB079 /* ayud_salir de las limitaciones y problemas.txt in Resources */,
 				19BBC6052B159A2600FBB079 /* preg_pregunta 33.txt in Resources */,
+				19EDBB152B7C507F00432CDE /* conf_Participe de la naturaleza divida.txt in Resources */,
 				E92F62572AB3E1C2007BB4BA /* conf_el amor perdura.txt in Resources */,
 				E92F62872AB3E1C2007BB4BA /* conf_la palabra viva.txt in Resources */,
 				E92F624D2AB3E1C2007BB4BA /* conf_imaginacion mi esclava.txt in Resources */,
+				19EDBB172B7C507F00432CDE /* conf_Todo existe en la imaginacion.txt in Resources */,
+				19EDBB392B7C507F00432CDE /* conf_el antiguo testamento.txt in Resources */,
 				E92F629F2AB3E1C2007BB4BA /* conf_la verdadera vid.txt in Resources */,
 				E92F63472AB3E1C2007BB4BA /* conf_el arte de morir(2).txt in Resources */,
 				E92F62AF2AB3E1C2007BB4BA /* conf_la ley de asuncion.txt in Resources */,
+				19EDBB492B7C507F00432CDE /* conf_Participes de la naturalesa divina.txt in Resources */,
 				E92F62612AB3E1C2007BB4BA /* conf_la formacion de los no engendrados.txt in Resources */,
 				E92F62DD2AB3E1C2007BB4BA /* conf_la naturaleza de dios.txt in Resources */,
 				E92F63462AB3E1C2007BB4BA /* conf_cristo es tu vida.txt in Resources */,
+				19EDBB252B7C507F00432CDE /* conf_libro imaginacion despierta.txt in Resources */,
 				E92F62472AB3E1C2007BB4BA /* conf_perdon verdadero.txt in Resources */,
 				E92F62562AB3E1C2007BB4BA /* conf_el despierta en mi.txt in Resources */,
 				E92F62AE2AB3E1C2007BB4BA /* conf_nunca puedes superar yo soy.txt in Resources */,
+				19EDBB9A2B7C507F00432CDE /* conf_el poder todopoderoso de dios.txt in Resources */,
+				19EDBB472B7C507F00432CDE /* conf_La falsedad es profetica.txt in Resources */,
 				19BBC6102B159A2600FBB079 /* preg_pregunta 26.txt in Resources */,
 				E92F63372AB3E1C2007BB4BA /* conf_creacion fe.txt in Resources */,
+				19EDBB5A2B7C507F00432CDE /* conf_adviento.txt in Resources */,
+				19EDBB582B7C507F00432CDE /* conf_El secreto de imaginar.txt in Resources */,
 				E92F62D62AB3E1C2007BB4BA /* conf_signos divinos.txt in Resources */,
+				19EDBB5E2B7C507F00432CDE /* conf_el da tu recibes.txt in Resources */,
+				19EDBB942B7C507F00432CDE /* conf_Reunidos uno por uno.txt in Resources */,
 				E92F62CF2AB3E1C2007BB4BA /* conf_inversiones seguras.txt in Resources */,
 				E92F62FC2AB3E1C2007BB4BA /* conf_cumplimiento del plan de dios.txt in Resources */,
+				19EDBB9E2B7C507F00432CDE /* conf_personificaciones no personas.txt in Resources */,
+				19EDBB8F2B7C507F00432CDE /* conf_El plan eterno.txt in Resources */,
 				E92F63272AB3E1C2007BB4BA /* conf_agua viviente.txt in Resources */,
+				19EDBBAD2B7C507F00432CDE /* conf_Dios se conoce por la experiencia.txt in Resources */,
+				19EDBBB72B7C507F00432CDE /* conf_el dios invisible detras de los hechos.txt in Resources */,
+				19EDBB8A2B7C507F00432CDE /* conf_La verdad del concepto.txt in Resources */,
+				19EDBB562B7C507F00432CDE /* conf_Enviados a perturbar con la verdad.txt in Resources */,
 				E92F62F82AB3E1C2007BB4BA /* conf_la gran posesion.txt in Resources */,
 				E92F629C2AB3E1C2007BB4BA /* conf_lo que siembras recoges.txt in Resources */,
+				19EDBB542B7C507F00432CDE /* conf_el misterio de la imaginacion.txt in Resources */,
 				E92F62BB2AB3E1C2007BB4BA /* conf_un acertijo.txt in Resources */,
+				19EDBB292B7C507F00432CDE /* conf_El misterio cristiano experimentado.txt in Resources */,
+				19EDBB6E2B7C507F00432CDE /* conf_El secreto de la imaginacion II.txt in Resources */,
 				E92F633B2AB3E1C2007BB4BA /* conf_eleccion  libre albedrio.txt in Resources */,
+				19EDBB352B7C507F00432CDE /* conf_La sonrisa.txt in Resources */,
+				19EDBB932B7C507F00432CDE /* conf_Memoria.txt in Resources */,
 				19BBC6072B159A2600FBB079 /* preg_pregunta 22.txt in Resources */,
 				E92F63052AB3E1C2007BB4BA /* conf_el patron del hombre.txt in Resources */,
 				E92F63112AB3E1C2007BB4BA /* conf_conviertanse en seleccionadores.txt in Resources */,
 				E92F62BD2AB3E1C2007BB4BA /* conf_ningun otro dios.txt in Resources */,
 				E92F62D92AB3E1C2007BB4BA /* conf_caminar por fe.txt in Resources */,
+				19EDBB632B7C507F00432CDE /* conf_la vida tiene un proposito.txt in Resources */,
 				E92F62F02AB3E1C2007BB4BA /* conf_jesucristo.txt in Resources */,
+				19EDBB512B7C507F00432CDE /* conf_el soñador II.txt in Resources */,
+				19EDBB332B7C507F00432CDE /* conf_el poder de la imaginacion.txt in Resources */,
 				E92F62C92AB3E1C2007BB4BA /* conf_todo es posible.txt in Resources */,
 				E92F63122AB3E1C2007BB4BA /* conf_surgir.txt in Resources */,
 				19BBC5C42B1599DC00FBB079 /* cita_creelo dentro.txt in Resources */,
@@ -1809,43 +2389,65 @@
 				E92F62A22AB3E1C2007BB4BA /* conf_confianza en dios.txt in Resources */,
 				19BBC5FB2B159A2600FBB079 /* preg_pregunta 10.txt in Resources */,
 				19BBC5F82B159A2600FBB079 /* preg_pregunta 11.txt in Resources */,
+				19EDBB602B7C507F00432CDE /* conf_El verdadero hombre.txt in Resources */,
 				E92F62E02AB3E1C2007BB4BA /* conf_nuestras verdaderas creencias.txt in Resources */,
 				E92F63392AB3E1C2007BB4BA /* conf_la palabra.txt in Resources */,
 				E92F63532AB3E1C2007BB4BA /* conf_oracion respondida.txt in Resources */,
 				E92F62672AB3E1C2007BB4BA /* conf_la roca.txt in Resources */,
 				E92F63672AB3E1C2007BB4BA /* conf_construir tu templo.txt in Resources */,
+				19EDBB672B7C507F00432CDE /* conf_Llame al proximo testigo.txt in Resources */,
+				19EDBB902B7C507F00432CDE /* conf_Este es mi nombre para siempre Yo Soy.txt in Resources */,
 				E92F62802AB3E1C2007BB4BA /* conf_sobre la ley.txt in Resources */,
 				19BBC60E2B159A2600FBB079 /* preg_pregunta 27.txt in Resources */,
 				E92F62D52AB3E1C2007BB4BA /* conf_dios solo actua.txt in Resources */,
+				19EDBB502B7C507F00432CDE /* conf_navidad el mensaje redentor.txt in Resources */,
 				E92F62FE2AB3E1C2007BB4BA /* conf_autobiografia de pablo.txt in Resources */,
 				E92F626C2AB3E1C2007BB4BA /* conf_el nacimiento del bebe.txt in Resources */,
 				E92F62812AB3E1C2007BB4BA /* conf_todas las cosas existen.txt in Resources */,
 				E92F62B12AB3E1C2007BB4BA /* conf_elevate.txt in Resources */,
 				19BBC5C62B1599DC00FBB079 /* cita_confía en dios.txt in Resources */,
 				19BBC60B2B159A2600FBB079 /* preg_pregunta 19.txt in Resources */,
+				19EDBB4A2B7C507F00432CDE /* conf_La roca y la carretera.txt in Resources */,
+				19EDBB622B7C507F00432CDE /* conf_El remanente.txt in Resources */,
 				E92F62552AB3E1C2007BB4BA /* conf_hombre inmortal.txt in Resources */,
 				E92F63422AB3E1C2007BB4BA /* conf_la biblia tu biografia.txt in Resources */,
+				19EDBB722B7C507F00432CDE /* conf_sobre la ley pruebate a ti mismo.txt in Resources */,
 				E92F63102AB3E1C2007BB4BA /* conf_el deseo.txt in Resources */,
+				19EDBBA22B7C507F00432CDE /* conf_El poder de la fe.txt in Resources */,
+				19EDBB8C2B7C507F00432CDE /* conf_la formacion de cristo en nosotros.txt in Resources */,
 				E92F62C02AB3E1C2007BB4BA /* conf_virnes santo - pascua.txt in Resources */,
 				E92F634B2AB3E1C2007BB4BA /* conf_el plan de redencion de dios.txt in Resources */,
+				19EDBBA62B7C507F00432CDE /* conf_el secreto de la imaginacion.txt in Resources */,
+				19EDBB382B7C507F00432CDE /* conf_el me esta meditando.txt in Resources */,
 				E92F62B72AB3E1C2007BB4BA /* conf_verdad, la palabra de dios.txt in Resources */,
+				19EDBB112B7C507F00432CDE /* conf_notas el milagro de la imaginacion.txt in Resources */,
+				19EDBB342B7C507F00432CDE /* conf_El misterio llamado Cristo.txt in Resources */,
 				E92F631D2AB3E1C2007BB4BA /* conf_camina sobre el agua.txt in Resources */,
+				19EDBBBC2B7C507F00432CDE /* conf_el ha puesto la eternidad en el pensamiento del hombre.txt in Resources */,
 				E92F62AD2AB3E1C2007BB4BA /* conf_es cristo tu imaginacion.txt in Resources */,
 				E92F635F2AB3E1C2007BB4BA /* conf_he aqui el soñador.txt in Resources */,
 				19BBC6002B159A2600FBB079 /* preg_pregunta 12.txt in Resources */,
+				19EDBB1A2B7C507F00432CDE /* conf_Uno mismo en uno mismo y resucitado.txt in Resources */,
+				19EDBBBD2B7C507F00432CDE /* conf_Entra en escena.txt in Resources */,
 				E92F62452AB3E1C2007BB4BA /* conf_siente profundamente.txt in Resources */,
 				E92F62692AB3E1C2007BB4BA /* conf_ningun otro fundamento.txt in Resources */,
+				19EDBBA52B7C507F00432CDE /* conf_cruz.txt in Resources */,
 				E92F63312AB3E1C2007BB4BA /* conf_cuando un hombre ora con exito....txt in Resources */,
 				E92F62C62AB3E1C2007BB4BA /* conf_la revelacion encarnada.txt in Resources */,
 				E92F62632AB3E1C2007BB4BA /* conf_el hombre libre.txt in Resources */,
+				19EDBB772B7C507F00432CDE /* conf_Señales y maravillas.txt in Resources */,
 				E92F62CE2AB3E1C2007BB4BA /* conf_la esfera interior.txt in Resources */,
 				E92F62F52AB3E1C2007BB4BA /* conf_el gran secreto.txt in Resources */,
 				19BBC5C92B1599DC00FBB079 /* cita_la revelación encarnada.txt in Resources */,
 				E92F62882AB3E1C2007BB4BA /* conf_leccion 2 las asunciones se materializan en hechos.txt in Resources */,
 				E92F634D2AB3E1C2007BB4BA /* conf_a quien buscas.txt in Resources */,
 				E92F633A2AB3E1C2007BB4BA /* conf_fe.txt in Resources */,
+				19EDBB8B2B7C507F00432CDE /* conf_El camino nuevo y vivo.txt in Resources */,
+				19EDBBB22B7C507F00432CDE /* conf_ordene luego espere.txt in Resources */,
+				19EDBB9B2B7C507F00432CDE /* conf_La inundación todavia esta  sobre nosotros.txt in Resources */,
 				E92F634C2AB3E1C2007BB4BA /* conf_libera a barrabas y cruxifica a jesus.txt in Resources */,
 				E92F62E22AB3E1C2007BB4BA /* conf_un entendimiento seguro.txt in Resources */,
+				19EDBBBA2B7C507F00432CDE /* conf_El sentir de Jesus es como el de David.txt in Resources */,
 				E92F63662AB3E1C2007BB4BA /* conf_uso conciente de la ley.txt in Resources */,
 				E92F62F62AB3E1C2007BB4BA /* conf_el evangelio cudruple.txt in Resources */,
 				E92F631A2AB3E1C2007BB4BA /* conf_capitulo 24 fracaso.txt in Resources */,
@@ -1857,8 +2459,13 @@
 				E92F625F2AB3E1C2007BB4BA /* conf_infinitos estados.txt in Resources */,
 				E92F62B22AB3E1C2007BB4BA /* conf_sobrellevad las cargas los unos de los otros.txt in Resources */,
 				E92F627C2AB3E1C2007BB4BA /* conf_leccion 1 la conciencia es la unica realidad.txt in Resources */,
+				19EDBB8E2B7C507F00432CDE /* conf_El misterio escondido por siglos.txt in Resources */,
+				19EDBB912B7C507F00432CDE /* conf_interpretacion de la oracion de pablo.txt in Resources */,
+				19EDBB232B7C507F00432CDE /* conf_si puedes creer.txt in Resources */,
+				19EDBB702B7C507F00432CDE /* conf_libro conozco a mi padre.txt in Resources */,
 				E92F62AC2AB3E1C2007BB4BA /* conf_el estado de la vision.txt in Resources */,
 				19BBC60F2B159A2600FBB079 /* preg_pregunta 30.txt in Resources */,
+				19EDBB142B7C507F00432CDE /* conf_Purificado por la muerte de tus engaños.txt in Resources */,
 				E92F62712AB3E1C2007BB4BA /* conf_vive la respuesta ahora.txt in Resources */,
 				E92F632C2AB3E1C2007BB4BA /* conf_la nueva cristologia.txt in Resources */,
 				E92F63452AB3E1C2007BB4BA /* conf_el deseo primario.txt in Resources */,
@@ -1867,21 +2474,34 @@
 				19BBC6132B159A2600FBB079 /* preg_pregunta 36.txt in Resources */,
 				E92F62952AB3E1C2007BB4BA /* conf_redencion.txt in Resources */,
 				E92F630E2AB3E1C2007BB4BA /* conf_despierta oh durmiente.txt in Resources */,
+				19EDBBA82B7C507F00432CDE /* conf_Donde te alojarás.txt in Resources */,
 				E92F62462AB3E1C2007BB4BA /* conf_una sola causa.txt in Resources */,
+				19EDBBA42B7C507F00432CDE /* conf_Recuerdo de las cosas futuras.txt in Resources */,
 				19BBC6112B159A2600FBB079 /* preg_pregunta 9.txt in Resources */,
 				E92F62F42AB3E1C2007BB4BA /* conf_la vid verdadera.txt in Resources */,
 				19BBC6122B159A2600FBB079 /* preg_pregunta 28.txt in Resources */,
+				19EDBBB52B7C507F00432CDE /* conf_Cada uno tiene el plan en el.txt in Resources */,
+				19EDBB882B7C507F00432CDE /* conf_Dios tiene un propósito.txt in Resources */,
+				19EDBB432B7C507F00432CDE /* conf_libro rompe la cascara.txt in Resources */,
 				E92F62D02AB3E1C2007BB4BA /* conf_una conviccion interna.txt in Resources */,
 				E92F62F12AB3E1C2007BB4BA /* conf_la luz del mundo.txt in Resources */,
 				E92F63242AB3E1C2007BB4BA /* conf_fundamentos.txt in Resources */,
+				19EDBB872B7C507F00432CDE /* conf_La niña de sus ojos.txt in Resources */,
 				E92F63082AB3E1C2007BB4BA /* conf_el libro de job.txt in Resources */,
 				E92F62CD2AB3E1C2007BB4BA /* conf_ven oh bendito.txt in Resources */,
 				E92F62752AB3E1C2007BB4BA /* conf_eternidad dentro.txt in Resources */,
 				E92F63302AB3E1C2007BB4BA /* conf_el pan y el vino.txt in Resources */,
+				19EDBBBE2B7C507F00432CDE /* conf_incubar el sueño.txt in Resources */,
+				19EDBB282B7C507F00432CDE /* conf_La estrella de la mañana.txt in Resources */,
 				E92F62DE2AB3E1C2007BB4BA /* conf_entrar en el sueño.txt in Resources */,
+				19EDBBA32B7C507F00432CDE /* conf_libro la busqueda.txt in Resources */,
 				E92F630B2AB3E1C2007BB4BA /* conf_poder y sabiduria.txt in Resources */,
+				19EDBB222B7C507F00432CDE /* conf_arrepiéntete y cree en el evangelio.txt in Resources */,
+				19EDBB1D2B7C507F00432CDE /* conf_Es hora de actuar.txt in Resources */,
 				E92F62902AB3E1C2007BB4BA /* conf_extracto del libro imaginacion despierta.txt in Resources */,
 				19BBC6232B159A4800FBB079 /* ayud_la formula de la victoria.txt in Resources */,
+				19EDBB982B7C507F00432CDE /* conf_una experiencia mistica.txt in Resources */,
+				19EDBB612B7C507F00432CDE /* conf_El talento dado por Dios.txt in Resources */,
 				E92F635A2AB3E1C2007BB4BA /* conf_el talento.txt in Resources */,
 				E92F63262AB3E1C2007BB4BA /* conf_el  arbol de la vida.txt in Resources */,
 				E92F63692AB3E1C2007BB4BA /* conf_escatologia - el drama del fin.txt in Resources */,
@@ -1889,32 +2509,50 @@
 				E92F62A32AB3E1C2007BB4BA /* conf_ver a cristo a traves de los ojos de pablo.txt in Resources */,
 				E92F625E2AB3E1C2007BB4BA /* conf_tu hacedor.txt in Resources */,
 				E92F634A2AB3E1C2007BB4BA /* conf_imaginacion.txt in Resources */,
+				19EDBB362B7C507F00432CDE /* conf_yo soy la vid.txt in Resources */,
 				E92F624B2AB3E1C2007BB4BA /* conf_la historia de judas.txt in Resources */,
 				E92F626E2AB3E1C2007BB4BA /* conf_sean lo que desean sean lo que creen.txt in Resources */,
+				19EDBB712B7C507F00432CDE /* conf_libro tiempo de siembra y cosecha.txt in Resources */,
 				E92F63502AB3E1C2007BB4BA /* conf_imaginar es crear.txt in Resources */,
+				19EDBB7F2B7C507F00432CDE /* conf_guardar el sabado.txt in Resources */,
 				E92F62652AB3E1C2007BB4BA /* conf_alcanza el estado de animo.txt in Resources */,
+				19EDBB692B7C507F00432CDE /* conf_libro la ley y la promesa.txt in Resources */,
 				E92F628E2AB3E1C2007BB4BA /* conf_la ley.txt in Resources */,
 				E92F62EA2AB3E1C2007BB4BA /* conf_eres un ser cosmico.txt in Resources */,
 				19BBC6242B159A4800FBB079 /* ayud_El arte de la revisión.txt in Resources */,
 				E92F62C12AB3E1C2007BB4BA /* conf_la pregunta de sami.txt in Resources */,
 				19BBC5B52B1599DC00FBB079 /* cita_el estado de visión.txt in Resources */,
+				19EDBB202B7C507F00432CDE /* conf_El actor desconocido.txt in Resources */,
 				19BBC58A2B1592D800FBB079 /* biografia.txt in Resources */,
 				E92F62942AB3E1C2007BB4BA /* conf_la imaginacion se cumple.txt in Resources */,
 				E92F63492AB3E1C2007BB4BA /* conf_la criatura mas sabia de dios.txt in Resources */,
+				19EDBB3A2B7C507F00432CDE /* conf_la estrella de seis puntas.txt in Resources */,
+				19EDBB682B7C507F00432CDE /* conf_Experiencias compartidas.txt in Resources */,
 				E92F62722AB3E1C2007BB4BA /* conf_como usar tu inmaginacion.txt in Resources */,
+				19EDBB242B7C507F00432CDE /* conf_el misterio de la gracia.txt in Resources */,
+				19EDBB6A2B7C507F00432CDE /* conf_Se el dueño del estado de animo.txt in Resources */,
+				19EDBB2E2B7C507F00432CDE /* conf_La pascua y viernes santo.txt in Resources */,
 				E92F62CA2AB3E1C2007BB4BA /* conf_tres proposiciones.txt in Resources */,
 				19BBC6252B159A4800FBB079 /* ayud_metodo de manifestacion.txt in Resources */,
+				19EDBB6F2B7C507F00432CDE /* conf_en estos ultimos dias por su hijo.txt in Resources */,
 				E92F63062AB3E1C2007BB4BA /* conf_el señor nuestro alfarero.txt in Resources */,
 				E92F62A62AB3E1C2007BB4BA /* conf_historia de la salvacion.txt in Resources */,
 				E92F634E2AB3E1C2007BB4BA /* conf_espada de dios.txt in Resources */,
 				E92F62832AB3E1C2007BB4BA /* conf_el milagroso poder del apego.txt in Resources */,
+				19EDBB212B7C507F00432CDE /* conf_Creelo en tu futuro.txt in Resources */,
 				E92F628B2AB3E1C2007BB4BA /* conf_el conocimiento de dios.txt in Resources */,
 				E92F62CC2AB3E1C2007BB4BA /* conf_libertad.txt in Resources */,
 				E92F63002AB3E1C2007BB4BA /* conf_mil docientos sesenta dias.txt in Resources */,
 				19BBC5B82B1599DC00FBB079 /* cita_la fuente.txt in Resources */,
+				19EDBB572B7C507F00432CDE /* conf_libro oracion el arte de creer.txt in Resources */,
 				19BBC6142B159A2600FBB079 /* preg_pregunta 7.txt in Resources */,
+				19EDBB952B7C507F00432CDE /* conf_El modelo de las escrituras es real.txt in Resources */,
+				19EDBBBB2B7C507F00432CDE /* conf_Obras de fe, no los milagros.txt in Resources */,
+				19EDBB182B7C507F00432CDE /* conf_Tu estado de animo decide tu futuro.txt in Resources */,
+				19EDBB3C2B7C507F00432CDE /* conf_La biblia se trata de ti.txt in Resources */,
 				E92F62C42AB3E1C2007BB4BA /* conf_el pecado contra el espitiru santo.txt in Resources */,
 				E92F63552AB3E1C2007BB4BA /* conf_la plegaria correcta segun neville.txt in Resources */,
+				19EDBB992B7C507F00432CDE /* conf_El soñador.txt in Resources */,
 				E92F62702AB3E1C2007BB4BA /* conf_yo soy la causa.txt in Resources */,
 				E92F62762AB3E1C2007BB4BA /* conf_cristo lleva nuestros pecados.txt in Resources */,
 				E92F62792AB3E1C2007BB4BA /* conf_el rollo del libro.txt in Resources */,
@@ -1923,9 +2561,15 @@
 				E92F62492AB3E1C2007BB4BA /* conf_alimenta mis ovejas.txt in Resources */,
 				E92F62F92AB3E1C2007BB4BA /* conf_navidad.txt in Resources */,
 				E92F632D2AB3E1C2007BB4BA /* conf_leccion 3 pensar cuatridimencionalmente.txt in Resources */,
+				19EDBB2B2B7C507F00432CDE /* conf_sus propias credenciales.txt in Resources */,
 				E92F63352AB3E1C2007BB4BA /* conf_la batalla del armagedon.txt in Resources */,
 				19BBC5C22B1599DC00FBB079 /* cita_caminar por fe.txt in Resources */,
+				19EDBB482B7C507F00432CDE /* conf_lo hemos encontrado.txt in Resources */,
+				19EDBB962B7C507F00432CDE /* conf_La vida es para actuar.txt in Resources */,
 				19BBC5F92B159A2600FBB079 /* preg_pregunta 1.txt in Resources */,
+				19EDBB422B7C507F00432CDE /* conf_Visiones escatologicas.txt in Resources */,
+				19EDBBB02B7C507F00432CDE /* conf_Quienes son los condenados.txt in Resources */,
+				19EDBB652B7C507F00432CDE /* conf_absolucion divina.txt in Resources */,
 				E92F62D12AB3E1C2007BB4BA /* conf_arrepentimiento un regalo de dios.txt in Resources */,
 				19BBC61A2B159A2600FBB079 /* preg_pregunta 6.txt in Resources */,
 				19BBC6162B159A2600FBB079 /* preg_pregunta 29.txt in Resources */,
@@ -1935,14 +2579,20 @@
 				E92F62842AB3E1C2007BB4BA /* conf_el esta soñando ahora.txt in Resources */,
 				E92F62682AB3E1C2007BB4BA /* conf_los puros de corazon.txt in Resources */,
 				E92F62922AB3E1C2007BB4BA /* conf_audaz atrevimiento.txt in Resources */,
+				19EDBB1E2B7C507F00432CDE /* conf_Hasta el mar en barcos.txt in Resources */,
+				19EDBBAB2B7C507F00432CDE /* conf_El Poder me envio.txt in Resources */,
 				E92F62742AB3E1C2007BB4BA /* conf_deseo.txt in Resources */,
+				19EDBB922B7C507F00432CDE /* conf_Controla tus conversaciones internas.txt in Resources */,
 				E92F62C82AB3E1C2007BB4BA /* conf_la obra.txt in Resources */,
 				E95B935E2AAFBB2900B5E2B5 /* Preview Assets.xcassets in Resources */,
 				19BBC5CA2B1599DC00FBB079 /* cita_¿le has encontrado.txt in Resources */,
+				19EDBB372B7C507F00432CDE /* conf_Todos son humanos.txt in Resources */,
 				19BBC5F72B159A2600FBB079 /* preg_pregunta 25.txt in Resources */,
+				19EDBB3B2B7C507F00432CDE /* conf_El mundo exterior responde a actos imaginarios.txt in Resources */,
 				E92F63582AB3E1C2007BB4BA /* conf_vive en el final.txt in Resources */,
 				19BBC6192B159A2600FBB079 /* preg_pregunta 32.txt in Resources */,
 				E92F63192AB3E1C2007BB4BA /* conf_la ley de la libertad.txt in Resources */,
+				19EDBB192B7C507F00432CDE /* conf_Una confesion de fe.txt in Resources */,
 				E92F62442AB3E1C2007BB4BA /* conf_el desperta de la fe.txt in Resources */,
 				19BBC5B92B1599DC00FBB079 /* cita_la causa espiritual.txt in Resources */,
 				E92F62A82AB3E1C2007BB4BA /* conf_el misterio de la inspiracion.txt in Resources */,
@@ -1951,11 +2601,14 @@
 				19BBC5D02B1599DC00FBB079 /* cita_el nucleo del hombre.txt in Resources */,
 				E92F626B2AB3E1C2007BB4BA /* conf_dios es luz.txt in Resources */,
 				E92F62512AB3E1C2007BB4BA /* conf_la historia de maria el nacimiento virgen.txt in Resources */,
+				19EDBB3E2B7C507F00432CDE /* conf_nuetras verdaderas creencias 2.txt in Resources */,
 				E92F62582AB3E1C2007BB4BA /* conf_getsemani.txt in Resources */,
 				E92F631E2AB3E1C2007BB4BA /* conf_el ultimo sentido.txt in Resources */,
+				19EDBB0C2B7C507F00432CDE /* conf_Cual es su nombre.txt in Resources */,
 				19BBC5B72B1599DC00FBB079 /* cita_sensacion espiritual.txt in Resources */,
 				19BBC5BF2B1599DC00FBB079 /* cita_poneos a prueba.txt in Resources */,
 				E92F635C2AB3E1C2007BB4BA /* conf_experimentar las escrituras.txt in Resources */,
+				19EDBB122B7C507F00432CDE /* conf_libro el poder de la conciencia.txt in Resources */,
 				E92F62B52AB3E1C2007BB4BA /* conf_su nombre.txt in Resources */,
 				E92F63592AB3E1C2007BB4BA /* conf_dios habla al hombre.txt in Resources */,
 				E92F627E2AB3E1C2007BB4BA /* conf_lenguaje biblico.txt in Resources */,
@@ -1963,47 +2616,60 @@
 				E92F62B42AB3E1C2007BB4BA /* conf_una formula para la victoria.txt in Resources */,
 				E92F63252AB3E1C2007BB4BA /* conf_no hay ficcion.txt in Resources */,
 				E92F62C72AB3E1C2007BB4BA /* conf_la imagen perfecta.txt in Resources */,
+				19EDBB462B7C507F00432CDE /* conf_El enigma.txt in Resources */,
 				E92F63232AB3E1C2007BB4BA /* conf_el primer principio.txt in Resources */,
 				E92F63522AB3E1C2007BB4BA /* conf_yo soy el señor.txt in Resources */,
+				19EDBBA02B7C507F00432CDE /* conf_La ley perfecta de la libertad.txt in Resources */,
+				19EDBBA92B7C507F00432CDE /* conf_Uno mas grande que juan.txt in Resources */,
 				E92F63622AB3E1C2007BB4BA /* conf_el es mi resurreccion.txt in Resources */,
 				19BBC5C32B1599DC00FBB079 /* cita_la nueva cristologia.txt in Resources */,
 				E92F63402AB3E1C2007BB4BA /* conf_la causa oculta.txt in Resources */,
+				19EDBBAF2B7C507F00432CDE /* conf_Experimenta el misterio de Cristo.txt in Resources */,
 				19BBC60A2B159A2600FBB079 /* preg_pregunta 5.txt in Resources */,
 				E92F625B2AB3E1C2007BB4BA /* conf_tu verdadero proposito.txt in Resources */,
 				E92F62B02AB3E1C2007BB4BA /* conf_se el amo del humor.txt in Resources */,
 				E92F627D2AB3E1C2007BB4BA /* conf_afirma la realidad de nuestra propia grandesa.txt in Resources */,
 				E92F63542AB3E1C2007BB4BA /* conf_moises - elias - jesus.txt in Resources */,
+				19EDBB9F2B7C507F00432CDE /* conf_Bajad a la casa del alfarero.txt in Resources */,
 				19BBC5B42B1599DC00FBB079 /* cita_judas el revelador.txt in Resources */,
+				19EDBB7B2B7C507F00432CDE /* conf_prueba la ley funciona.txt in Resources */,
 				E92F63072AB3E1C2007BB4BA /* conf_la crucifixion.txt in Resources */,
 				19BBC6152B159A2600FBB079 /* preg_pregunta 24.txt in Resources */,
 				E92F62ED2AB3E1C2007BB4BA /* conf_el descubrimiento de jeremias.txt in Resources */,
 				E92F62D42AB3E1C2007BB4BA /* conf_el valor de los sueños.txt in Resources */,
 				E92F62A92AB3E1C2007BB4BA /* conf_leccion 4 nadie a quien cambiar sino a uno mismo.txt in Resources */,
+				19EDBB862B7C507F00432CDE /* conf_El dialogo interno.txt in Resources */,
 				19BBC5BB2B1599DC00FBB079 /* cita_vive la respuesta ahora.txt in Resources */,
 				E92F62592AB3E1C2007BB4BA /* conf_lo has encontrado.txt in Resources */,
 				19BBC6032B159A2600FBB079 /* preg_pregunta 2.txt in Resources */,
 				E92F63612AB3E1C2007BB4BA /* conf_el creador.txt in Resources */,
 				E92F62522AB3E1C2007BB4BA /* conf_el secreto de la causalidad.txt in Resources */,
+				19EDBB552B7C507F00432CDE /* conf_La creacion.txt in Resources */,
 				E92F63022AB3E1C2007BB4BA /* conf_blake sobre la religion.txt in Resources */,
 				19BBC6182B159A2600FBB079 /* preg_pregunta 13.txt in Resources */,
 				E92F62C52AB3E1C2007BB4BA /* conf_quien es el verdadero mesias.txt in Resources */,
 				19BBC5BA2B1599DC00FBB079 /* cita_un movimiento dentro de dios.txt in Resources */,
 				E92F62F32AB3E1C2007BB4BA /* conf_la piedra angular la imaginacion.txt in Resources */,
 				19BBC6022B159A2600FBB079 /* preg_pregunta 17.txt in Resources */,
+				19EDBB132B7C507F00432CDE /* conf_por imaginacion nos convertimos.txt in Resources */,
 				E92F62BC2AB3E1C2007BB4BA /* conf_bocetos profeticos.txt in Resources */,
 				E92F63562AB3E1C2007BB4BA /* conf_que es la verdad.txt in Resources */,
 				E92F63042AB3E1C2007BB4BA /* conf_el proposito de neville revelado.txt in Resources */,
+				19EDBB302B7C507F00432CDE /* conf_solo jesus.txt in Resources */,
 				E92F62E82AB3E1C2007BB4BA /* conf_un movimiento mental.txt in Resources */,
 				E92F632E2AB3E1C2007BB4BA /* conf_vision cu druple.txt in Resources */,
 				19BBC6082B159A2600FBB079 /* preg_pregunta 3.txt in Resources */,
 				E92F62C22AB3E1C2007BB4BA /* conf_sigueme.txt in Resources */,
 				E92F63512AB3E1C2007BB4BA /* conf_un movimiento de la mente.txt in Resources */,
 				E92F62FB2AB3E1C2007BB4BA /* conf_se imitadores de dios.txt in Resources */,
+				19EDBB4D2B7C507F00432CDE /* conf_libro cinco lecciones.txt in Resources */,
 				E92F62BA2AB3E1C2007BB4BA /* conf_examinaos a vosotros mismos.txt in Resources */,
 				E92F633D2AB3E1C2007BB4BA /* conf_ordena tus conversaciones rectamente.txt in Resources */,
+				19EDBB522B7C507F00432CDE /* conf_moises elias y jesus.txt in Resources */,
 				E92F635D2AB3E1C2007BB4BA /* conf_apariencias.txt in Resources */,
 				E92F63332AB3E1C2007BB4BA /* conf_verdad revelada.txt in Resources */,
 				19BBC6062B159A2600FBB079 /* preg_pregunta 35.txt in Resources */,
+				19EDBB312B7C507F00432CDE /* conf_Relataron sus propias experiencias.txt in Resources */,
 				E92F63652AB3E1C2007BB4BA /* conf_todas las cosas son posibles.txt in Resources */,
 				E92F62A02AB3E1C2007BB4BA /* conf_el n｣cleo del hombre.txt in Resources */,
 				19BBC5C02B1599DC00FBB079 /* cita_el es mi resureccion.txt in Resources */,
@@ -2019,6 +2685,7 @@
 				19BBC5CB2B1599DC00FBB079 /* cita_bocetos profeticos.txt in Resources */,
 				E92F62932AB3E1C2007BB4BA /* conf_poder.txt in Resources */,
 				E92F63092AB3E1C2007BB4BA /* conf_muchas moradas.txt in Resources */,
+				19EDBB1C2B7C507F00432CDE /* conf_adan y cristo son uno.txt in Resources */,
 				E92F63202AB3E1C2007BB4BA /* conf_se lo que quieras se lo que crees.txt in Resources */,
 				E92F62EF2AB3E1C2007BB4BA /* conf_una revelacion parabolica.txt in Resources */,
 				E92F63162AB3E1C2007BB4BA /* conf_la promesa explicada.txt in Resources */,
@@ -2028,27 +2695,40 @@
 				E92F62DB2AB3E1C2007BB4BA /* conf_el supremo poder de dios.txt in Resources */,
 				E92F625D2AB3E1C2007BB4BA /* conf_la verdad de cristo esta aqui.txt in Resources */,
 				E92F63132AB3E1C2007BB4BA /* conf_que estas haciendo.txt in Resources */,
+				19EDBB742B7C507F00432CDE /* conf_Tus muertos viviran.txt in Resources */,
 				19BBC5CC2B1599DC00FBB079 /* cita_tuyo para que lo tomes.txt in Resources */,
 				E92F62AB2AB3E1C2007BB4BA /* conf_los doce discipulos.txt in Resources */,
 				E92F626F2AB3E1C2007BB4BA /* conf_suposicion persistent.txt in Resources */,
 				19BBC5B62B1599DC00FBB079 /* cita_cuando un hombre ora con exito.txt in Resources */,
+				19EDBB412B7C507F00432CDE /* conf_por agua y por sangre.txt in Resources */,
 				E92F628D2AB3E1C2007BB4BA /* conf_creelo en tu interior.txt in Resources */,
+				19EDBB8D2B7C507F00432CDE /* conf_la empresa mas grande.txt in Resources */,
 				19BBC5FA2B159A2600FBB079 /* preg_pregunta 18.txt in Resources */,
+				19EDBB102B7C507F00432CDE /* conf_libro libertad pata todos.txt in Resources */,
 				E92F62B62AB3E1C2007BB4BA /* conf_el corazon del soñador.txt in Resources */,
 				19BBC6092B159A2600FBB079 /* preg_pregunta 4.txt in Resources */,
 				E92F62AA2AB3E1C2007BB4BA /* conf_escatologia - la doctrina del fin.txt in Resources */,
 				E92F629D2AB3E1C2007BB4BA /* conf_mi palabra.txt in Resources */,
 				E92F62502AB3E1C2007BB4BA /* conf_la promesa de dios al hombre.txt in Resources */,
 				E92F62862AB3E1C2007BB4BA /* conf_tiempo de siembra y cosecha.txt in Resources */,
+				19EDBB532B7C507F00432CDE /* conf_libro fuera de este mundo.txt in Resources */,
+				19EDBB782B7C507F00432CDE /* conf_La Casa del Alfarero.txt in Resources */,
+				19EDBBB32B7C507F00432CDE /* conf_el santo.txt in Resources */,
 				E92F63032AB3E1C2007BB4BA /* conf_resumen.txt in Resources */,
 				19BBC5BD2B1599DC00FBB079 /* cita_audaz atrevimiento.txt in Resources */,
 				E92F63342AB3E1C2007BB4BA /* conf_asuncion persistente.txt in Resources */,
 				E92F62732AB3E1C2007BB4BA /* conf_dios se hizo hombre.txt in Resources */,
+				19EDBB0D2B7C507F00432CDE /* conf_El sembrador.txt in Resources */,
 				E92F63642AB3E1C2007BB4BA /* conf_fe en dios.txt in Resources */,
 				E92F63682AB3E1C2007BB4BA /* conf_judas el revelador.txt in Resources */,
 				E92F62A12AB3E1C2007BB4BA /* conf_reconcialiacion.txt in Resources */,
 				E92F62992AB3E1C2007BB4BA /* conf_siembra y cosecha.txt in Resources */,
+				19EDBB6C2B7C507F00432CDE /* conf_En una visión de la noche.txt in Resources */,
+				19EDBB4C2B7C507F00432CDE /* conf_consignados a la desobediencia.txt in Resources */,
+				19EDBB5F2B7C507F00432CDE /* conf_la copa y la cruz.txt in Resources */,
+				19EDBB4B2B7C507F00432CDE /* conf_la imaginacion es el hombre real.txt in Resources */,
 				E92F62E52AB3E1C2007BB4BA /* conf_fe - esperanza - amor.txt in Resources */,
+				19EDBB5B2B7C507F00432CDE /* conf_Elevar la imaginacion al estado de la vision.txt in Resources */,
 				E92F62E72AB3E1C2007BB4BA /* conf_hablando desde la experiencia.txt in Resources */,
 				E92F62DC2AB3E1C2007BB4BA /* conf_el pecado y el perdon segun neville.txt in Resources */,
 				E92F63322AB3E1C2007BB4BA /* conf_los cuatro poderosos.txt in Resources */,
@@ -2057,7 +2737,9 @@
 				E92F62DA2AB3E1C2007BB4BA /* conf_como funciona la ley.txt in Resources */,
 				19BBC5FC2B159A2600FBB079 /* preg_pregunta 23.txt in Resources */,
 				E92F636A2AB3E1C2007BB4BA /* conf_creed en el.txt in Resources */,
+				19EDBB4E2B7C507F00432CDE /* conf_Que requiere el señor.txt in Resources */,
 				E95B935B2AAFBB2900B5E2B5 /* Assets.xcassets in Resources */,
+				19EDBB752B7C507F00432CDE /* conf_Dones otorgados por Dios.txt in Resources */,
 				19BBC6262B159A4800FBB079 /* ayud_ejercicio para la imaginacion.txt in Resources */,
 				E92F62CB2AB3E1C2007BB4BA /* conf_el padre.txt in Resources */,
 				19BBC62D2B16BAB900FBB079 /* reflexiones.txt in Resources */,
@@ -2070,9 +2752,11 @@
 				E92F62F72AB3E1C2007BB4BA /* conf_la revision.txt in Resources */,
 				19BBC6172B159A2600FBB079 /* preg_pregunta 21.txt in Resources */,
 				E92F62D82AB3E1C2007BB4BA /* conf_señales desde arriba.txt in Resources */,
+				19EDBB7E2B7C507F00432CDE /* conf_El útero del universo.txt in Resources */,
 				E92F62782AB3E1C2007BB4BA /* conf_el espiritu de la verdad.txt in Resources */,
 				19BBC5C72B1599DC00FBB079 /* cita_el caliz de la experiencia.txt in Resources */,
 				E92F63572AB3E1C2007BB4BA /* conf_una leccion en las escrituras.txt in Resources */,
+				19EDBBAE2B7C507F00432CDE /* conf_su obra eterna.txt in Resources */,
 				E92F63632AB3E1C2007BB4BA /* conf_cristo en ti.txt in Resources */,
 				E92F631F2AB3E1C2007BB4BA /* conf_estados eternos.txt in Resources */,
 				E92F62532AB3E1C2007BB4BA /* conf_los ultimos dias.txt in Resources */,
@@ -2081,47 +2765,75 @@
 				E92F632B2AB3E1C2007BB4BA /* conf_la eternidad dentro.txt in Resources */,
 				E92F62852AB3E1C2007BB4BA /* conf_la segunda vision.txt in Resources */,
 				E92F625C2AB3E1C2007BB4BA /* conf_ocupante o recluso.txt in Resources */,
+				19EDBBB12B7C507F00432CDE /* conf_La ley la autocircuncision.txt in Resources */,
+				19EDBB812B7C507F00432CDE /* conf_el reino.txt in Resources */,
 				19BBC60D2B159A2600FBB079 /* preg_pregunta 15.txt in Resources */,
+				19EDBB0E2B7C507F00432CDE /* conf_El amigo de los pecadores.txt in Resources */,
 				E92F63182AB3E1C2007BB4BA /* conf_tuyo para que lo tomes.txt in Resources */,
 				E92F63172AB3E1C2007BB4BA /* conf_concepcion.txt in Resources */,
 				E92F62DF2AB3E1C2007BB4BA /* conf_el evangelio.txt in Resources */,
+				19EDBB6B2B7C507F00432CDE /* conf_Salimos del padre y volvemos.txt in Resources */,
 				E92F62D22AB3E1C2007BB4BA /* conf_la ley de la cosecha identica.txt in Resources */,
 				E92F62772AB3E1C2007BB4BA /* conf_hijos del altisimo.txt in Resources */,
+				19EDBB442B7C507F00432CDE /* conf_Los ultimos dias de un hijo.txt in Resources */,
+				19EDBB732B7C507F00432CDE /* conf_verdad.txt in Resources */,
+				19EDBB5C2B7C507F00432CDE /* conf_aferrarnos a nuestra fe.txt in Resources */,
+				19EDBB852B7C507F00432CDE /* conf_meditacion.txt in Resources */,
+				19EDBB402B7C507F00432CDE /* conf_la cosecha identica.txt in Resources */,
 				E92F62E62AB3E1C2007BB4BA /* conf_busca el reino.txt in Resources */,
 				E92F62EC2AB3E1C2007BB4BA /* conf_lo que ya ha sido.txt in Resources */,
 				E92F626D2AB3E1C2007BB4BA /* conf_entra en la imagen.txt in Resources */,
 				E92F627F2AB3E1C2007BB4BA /* conf_sensacion espiritual.txt in Resources */,
 				E92F633E2AB3E1C2007BB4BA /* conf_el secreto de la oracion.txt in Resources */,
 				E92F63362AB3E1C2007BB4BA /* conf_sigue el patron.txt in Resources */,
+				19EDBB4F2B7C507F00432CDE /* conf_encontramos al padre en nosotros.txt in Resources */,
 				19BBC60C2B159A2600FBB079 /* preg_pregunta 20.txt in Resources */,
 				E92F62BF2AB3E1C2007BB4BA /* conf_de donde eres.txt in Resources */,
 				E92F63222AB3E1C2007BB4BA /* conf_el juego de la vida.txt in Resources */,
 				E92F62892AB3E1C2007BB4BA /* conf_navidad  el nacimiento del hombre como dios.txt in Resources */,
+				19EDBB0F2B7C507F00432CDE /* conf_el nombre de dios es sinonimo de dios.txt in Resources */,
 				E92F62D72AB3E1C2007BB4BA /* conf_tu marido.txt in Resources */,
+				19EDBBB82B7C507F00432CDE /* conf_Comulga contigo mismo.txt in Resources */,
 				E92F63012AB3E1C2007BB4BA /* conf_todo lo que ves.txt in Resources */,
+				19EDBBB62B7C507F00432CDE /* conf_la promesa cumplida.txt in Resources */,
+				19EDBBB92B7C507F00432CDE /* conf_el pecado original.txt in Resources */,
 				E92F628F2AB3E1C2007BB4BA /* conf_el dilubio todavia esta entre nosotros.txt in Resources */,
+				19EDBB802B7C507F00432CDE /* conf_La copa de vino espumoso.txt in Resources */,
+				19EDBB272B7C507F00432CDE /* conf_La vida a travez de la muerte.txt in Resources */,
+				19EDBB5D2B7C507F00432CDE /* conf_el libro del apocalipsis.txt in Resources */,
+				19EDBB162B7C507F00432CDE /* conf_libro resurreccion.txt in Resources */,
 				E92F62B92AB3E1C2007BB4BA /* conf_ese es mi nombre.txt in Resources */,
 				19BBC5CD2B1599DC00FBB079 /* cita_una lección de las escrituras.txt in Resources */,
 				E92F62972AB3E1C2007BB4BA /* conf_el sueña en mi.txt in Resources */,
+				19EDBB452B7C507F00432CDE /* conf_El nombre nuevo.txt in Resources */,
 				E92F624F2AB3E1C2007BB4BA /* conf_las tijeras de poder de la revision.txt in Resources */,
+				19EDBB642B7C507F00432CDE /* conf_los dos lados de este enseñanza.txt in Resources */,
+				19EDBB7C2B7C507F00432CDE /* conf_Que debemos hacer.txt in Resources */,
 				19BBC5C82B1599DC00FBB079 /* cita_la revelacion encarnada.txt in Resources */,
+				19EDBB1F2B7C507F00432CDE /* conf_ahora mis ojos te ven.txt in Resources */,
 				E92F635E2AB3E1C2007BB4BA /* conf_pruebe usted mismo.txt in Resources */,
 				E92F633C2AB3E1C2007BB4BA /* conf_los siete ojos de dios.txt in Resources */,
 				19BBC5B32B1599DC00FBB079 /* cita_creación - fe.txt in Resources */,
+				19EDBB592B7C507F00432CDE /* conf_La cabala.txt in Resources */,
 				19BBC5CF2B1599DC00FBB079 /* cita_¿que estas haciendo.txt in Resources */,
 				19BBC6272B159A4800FBB079 /* ayud_el poder llamado la ley.txt in Resources */,
+				19EDBB1B2B7C507F00432CDE /* conf_Veintesiete cielos.txt in Resources */,
 				E92F62A42AB3E1C2007BB4BA /* conf_el arte de morir.txt in Resources */,
+				19EDBB842B7C507F00432CDE /* conf_Imaginacion mas fe.txt in Resources */,
 				E92F63212AB3E1C2007BB4BA /* conf_se observador.txt in Resources */,
 				E92F62912AB3E1C2007BB4BA /* conf_el misterio de la biblia.txt in Resources */,
+				19EDBB892B7C507F00432CDE /* conf_El misterio de la navidad.txt in Resources */,
 				E92F62EB2AB3E1C2007BB4BA /* conf_el espiritu dentro.txt in Resources */,
 				E92F62642AB3E1C2007BB4BA /* conf_esau jacob israel.txt in Resources */,
 				19BBC5FE2B159A2600FBB079 /* preg_pregunta 14.txt in Resources */,
 				E92F62E42AB3E1C2007BB4BA /* conf_yo estoy en ti.txt in Resources */,
 				E92F631B2AB3E1C2007BB4BA /* conf_el unico cristianismo.txt in Resources */,
+				19EDBBAA2B7C507F00432CDE /* conf_la carta de fawcett.txt in Resources */,
 				E92F630D2AB3E1C2007BB4BA /* conf_gracia versus ley.txt in Resources */,
 				E92F62E12AB3E1C2007BB4BA /* conf_compartiendo en la creatividad.txt in Resources */,
 				E92F63482AB3E1C2007BB4BA /* conf_historias de casos reales.txt in Resources */,
 				E92F635B2AB3E1C2007BB4BA /* conf_tu puedes perdonar el pecado.txt in Resources */,
+				19EDBB832B7C507F00432CDE /* conf_soy llamado por tu nombre ho señor.txt in Resources */,
 				19C7483C2B045E6D004D52E6 /* cuestionario.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -27,52 +27,30 @@ struct TxtListView: View {
     @State var showAlertSearchInTxt = false
     @State var textFiel2 = ""
     
-    //Para buscar en titulos
-    @State var showAlertSearchInTitle = false
-    @State var textFiel3 = ""
-    
-    
     @State var listado : [TxtCont] = []
-    @State var listadoTemp : [TxtCont] = [] //Yorj: temporalmente para facilitrar la busqueda de contenido
     
     @State private var entidad : TxtCont = TxtCont(context: CoreDataController.shared.context) //Esto es para permitir editar la nota y buscar en txt
     
     @State private var textFielSearh = ""
     @FocusState private var focus : Bool
     
-    func filter (str : String)->Bool {
-        return str.contains(textFielSearh)
+    private var filter : [TxtCont] {
+        return self.listado.filter({ str in
+            return str.namefile?.localizedCaseInsensitiveContains(self.textFielSearh) ?? false
+        })
+    }
+    
+    private var filteredSearch : [TxtCont]{
+        if textFielSearh.isEmpty {return self.listado}
+        return self.listado.filter{ $0.namefile?.localizedCaseInsensitiveContains(self.textFielSearh) ?? false}
     }
 
     var body: some View {
         
         NavigationStack{
             VStack{
-                HStack {
-                    TextField("Buscar", text: $textFielSearh)
-                        .onChange(of: self.textFielSearh) {
-                            //self.listadoTemp.removeAll()
-                            self.listadoTemp = self.listado.filter({ str in
-                                return str.namefile!.lowercased().contains(self.textFielSearh.lowercased())
-                            })
-                        }
-                        .focused($focus)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    Spacer()
-                        Button{
-                            self.focus = false
-                        } label:{
-                            Label("Ocultar", systemImage: "keyboard.badge.eye")
-                        }
-                        .buttonStyle(.bordered)
-                    
-                }
-                    
-                
-                    
-                
-                
-                List(listadoTemp){item in
+
+                List(self.filteredSearch){item in
                     VStack(alignment: .leading) {
                         HStack{
                             Image(systemName: "leaf.fill")
@@ -117,91 +95,76 @@ struct TxtListView: View {
                     }
                     
                 }
-                .onAppear{
-                    listado.removeAll()
+                .task{
                     listado = TxtContentModel().GetRequest(type: self.type, predicate: nil)
                 }
+                .searchable(text: $textFielSearh, placement: .navigationBarDrawer(displayMode: .always)  ,prompt: "Buscar" )
             }
             .navigationTitle(self.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar{
-                            HStack{
-                                Spacer()
-                                Menu{
-                                    Button("Todas las \(self.title)"){
-                                        listado.removeAll()
-                                        listado = TxtContentModel().GetRequest(type: self.type, predicate: nil)
-                                    }
-                                    Button("\(self.title) favoritas"){
-                                        let temp = TxtContentModel().getAllFavorite(type:self.type)
-                                        listado.removeAll()
-                                        listado = temp
-                                        
-                                    }
-                                    Button("\(self.title) con notas"){
-                                        let temp = TxtContentModel().getAllNota(type:self.type)
-                                        listado.removeAll()
-                                        listado = temp
-                                    }
-                                    
-                                    Button("Buscar en títulos"){
-                                        showAlertSearchInTitle = true
-                                    }
-                                    Button("Buscar en el contenido"){
-                                        showAlertSearchInTxt = true
-                                    }
-                                    Button("Nuevo contenido!"){
-                                        let temp = TxtContentModel().getAllNewsElements(type: self.type)
-                                        listado.removeAll()
-                                        listado = temp
-                                    }
-                                    if self.title == "\(self.title) recientes" && self.listado.count > 0 {
-                                        Button("Desmarcar \(self.title) recientes"){
-                                            TxtContentModel().RemoveAllNewFlag(type: self.type)
-                                            let temp = self.listado
-                                            listado.removeAll()
-                                            listado = temp
-                                        }
-                                    }
-                                    
-                                    
-                                }label: {
-                                    Image(systemName: "line.3.horizontal.decrease")
-                                        .foregroundStyle(theme ==  .dark ? .white :  .black)
-                                }
-                            
-                            }
+                HStack{
+                    Spacer()
+                    Menu{
+                        Button("Todas las \(self.title)"){
+                            listado.removeAll()
+                            listado = TxtContentModel().GetRequest(type: self.type, predicate: nil)
                         }
-                        .alert("Modificar Nota", isPresented: $showAlertAddNote){
-                            TextField("", text: $textFiel, axis: .vertical)
-                                .multilineTextAlignment(.leading)
-                            Button("Guardar"){
-                                TxtContentModel().setNota(entity: self.entidad, nota: textFiel)
-                            }
-                            Button("Cancelar"){showAlertAddNote = false}
+                        Button("\(self.title) favoritas"){
+                            let temp = TxtContentModel().getAllFavorite(type:self.type)
+                            listado.removeAll()
+                            listado = temp
                         }
-                        .alert("Buscar un texto", isPresented: $showAlertSearchInTxt){
-                            TextField("", text: $textFiel2, axis: .vertical)
-                            Button("Cancelar"){showAlertSearchInTxt = false}
-                                .multilineTextAlignment(.leading)
-                            Button("Buscar"){
-                                let temp  =  TxtContentModel().searchInText(list: self.listado , texto: textFiel2)
+                        Button("\(self.title) con notas"){
+                            let temp = TxtContentModel().getAllNota(type:self.type)
+                            listado.removeAll()
+                            listado = temp
+                        }
+
+                        Button("Buscar en el contenido"){
+                            showAlertSearchInTxt = true
+                        }
+                        Button("Nuevo contenido!"){
+                            let temp = TxtContentModel().getAllNewsElements(type: self.type)
+                            listado.removeAll()
+                            listado = temp
+                        }
+                        if self.title == "\(self.title) recientes" && self.listado.count > 0 {
+                            Button("Desmarcar \(self.title) recientes"){
+                                TxtContentModel().RemoveAllNewFlag(type: self.type)
+                                let temp = self.listado
                                 listado.removeAll()
                                 listado = temp
                             }
-                            
                         }
-                        .alert("Buscar en títulos", isPresented: $showAlertSearchInTitle){
-                            TextField("", text: $textFiel3, axis: .vertical)
-                                .multilineTextAlignment(.leading)
-                            Button("Cancelar"){showAlertSearchInTitle = false}
-                            Button("Buscar"){
-                                let temp  =  TxtContentModel().searchInTitle(list: self.listado , texto: textFiel3)
-                                listado.removeAll()
-                                listado = temp
-                            }
-                            
-                        }
+                        
+                        
+                    }label: {
+                        Image(systemName: "line.3.horizontal.decrease")
+                            .foregroundStyle(theme ==  .dark ? .white :  .black)
+                    }
+                    
+                }
+            }
+            .alert("Modificar Nota", isPresented: $showAlertAddNote){
+                TextField("", text: $textFiel, axis: .vertical)
+                    .multilineTextAlignment(.leading)
+                Button("Guardar"){
+                    TxtContentModel().setNota(entity: self.entidad, nota: textFiel)
+                }
+                Button("Cancelar"){showAlertAddNote = false}
+            }
+            .alert("Buscar un texto", isPresented: $showAlertSearchInTxt){
+                TextField("", text: $textFiel2, axis: .vertical)
+                Button("Cancelar"){showAlertSearchInTxt = false}
+                    .multilineTextAlignment(.leading)
+                Button("Buscar"){
+                    let temp  =  TxtContentModel().searchInText(list: self.listado , texto: textFiel2)
+                    listado.removeAll()
+                    listado = temp
+                }
+                
+            }
         }
         
     }
@@ -254,5 +217,5 @@ struct EditNoteTxt:View {
 
 
 #Preview {
-    ContentView()
+    TxtListView(type: .conf, title: "Conferencias")
 }

@@ -21,14 +21,16 @@ struct FrasesListView: View {
     //Buscar en notas de frase
     @State private var showAlertSearchInNotaFrase = false
     @State private var textFiel2 = ""
+    private var filtered : [Frases] {
+        if self.textFiel.isEmpty { return self.list}
+        return self.list.filter{ $0.frase?.localizedCaseInsensitiveContains(self.textFiel) ?? false}
+    }
     
     var body: some View {
         NavigationStack{
             VStack {
-                Text(subtitle)
-                    .font(.caption)
-                
-                List(list, id: \.id){ frase in
+
+                List(self.filtered, id: \.id){ frase in
                     VStack(alignment: .leading){
                         Text(frase.frase ?? "")
                         //Marcar las frases nuevas
@@ -88,9 +90,9 @@ struct FrasesListView: View {
                         }
                     
                 }
+                .searchable(text: $textFiel, placement: .navigationBarDrawer(displayMode: .always)  , prompt: "Buscar")
                 .backgroundStyle(.red)
-                .onAppear{
-                    list.removeAll()
+                .task{
                     list = FrasesModel().GetRequest(predicate: nil)
                 }
                 .navigationTitle("Listado de Frases")
@@ -185,5 +187,5 @@ struct FrasesListView: View {
     
 
 #Preview {
-    ContentView()
+    FrasesListView()
 }

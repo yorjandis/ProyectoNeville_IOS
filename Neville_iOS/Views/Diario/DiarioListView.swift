@@ -80,7 +80,7 @@ struct DiarioListView: View {
                         
                     } 
                 }
-                .onAppear{
+                .task{
                     list = DiarioModel().getAllItem()
                 }
                 .scrollIndicators(.hidden)
@@ -428,6 +428,7 @@ struct cardItem: View{
 
     
    private let emociones : [Emociones] = [.neutral,.feliz,.enfado,.desanimado,.distraido,.sorpresa]
+    
     
     var body: some View{
         VStack(spacing: 20){
