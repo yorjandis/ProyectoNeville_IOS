@@ -167,7 +167,7 @@ struct GenerateQRView : View {
 
         let qrCodeLink = features.reduce("") { $0 + ($1.messageString ?? "") }
 
-        print(qrCodeLink)//Your result from QR Code
+       
     }
  
     

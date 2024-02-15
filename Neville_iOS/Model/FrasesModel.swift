@@ -112,7 +112,7 @@ struct FrasesModel {
     ///Obtiene una entity aleatoria de Frase
     ///Aqui se actualiza el ID de la frase actualmente cargada para fines de búsqueda dentro de la tabla Frases. Al inicio,  se intenta popular la tabla Frases si esta marcada como NO populada(false).
     /// - Returns Devuelve la entity frase.
-    func getRandomFraseEntity() ->Frases?{
+    func getRandomFraseEntity() async ->Frases?{
         let arrayFrases = GetRequest(predicate: nil)
         if arrayFrases.count > 0 {
             return arrayFrases.randomElement()!
@@ -120,6 +120,19 @@ struct FrasesModel {
             return nil
         }
  
+    }
+    
+    ///Obtiene una entity aleatoria de Frase: VERSION  NO SINCRIONICA
+    ///Aqui se actualiza el ID de la frase actualmente cargada para fines de búsqueda dentro de la tabla Frases. Al inicio,  se intenta popular la tabla Frases si esta marcada como NO populada(false).
+    /// - Returns Devuelve la entity frase.
+    func getRandomFraseEntityNoAsync() ->Frases?{
+        let arrayFrases = GetRequest(predicate: nil)
+        if arrayFrases.count > 0 {
+            return arrayFrases.randomElement()!
+        }else{
+            return nil
+        }
+        
     }
     
     ///Popula la tabla Frases al inicio de la app (ojo: esto borrará todas las notas y marcas de fav en la tabla)
@@ -141,7 +154,7 @@ struct FrasesModel {
 
         }
             
-        print("Populando la tabla frases")
+    
         
             let arrayFrases =  getfrasesArrayFromTxtFile() //Obtiene el arreglo de frases del txt
  

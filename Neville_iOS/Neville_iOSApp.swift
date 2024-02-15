@@ -43,7 +43,7 @@ struct Neville_iOSApp: App {
                 .environmentObject(WatchConectivityMV) //Conectividad con el reloj
                 .task {
                     await FrasesModel().populateTableFrases() //Popular la tabla Frases SI se reinstala la app por primera vez
-                   // await TxtContentModel().populateTable()   //Popular la tabla TxtFiles SI se reinstala la app por primera vez
+                    await TxtContentModel().populateTable()   //Popular la tabla TxtFiles SI se reinstala la app por primera vez
                 }
                 
         }

@@ -29,7 +29,7 @@ struct settingView: View {
     @State var showAlert = false
     @State var alertMessage = ""
     
-    //Other
+    //Habilitar un botón en Ajustes para actualizar el nuevo contenido (importarlo a las BD)
     @State var showButtonUpdate = true // muestra/oculta el boton para actualizar nuevo contenido añadido al bundle
     
     //Permite ajustar en tiempo real los cambios en la UI home:

@@ -8,13 +8,20 @@
 import WidgetKit
 import SwiftUI
 
+//representa los datos
+struct SimpleEntry: TimelineEntry {
+    let date: Date
+    let image : String
+}
+
 struct Provider: TimelineProvider {
+    
     func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), emoji: "😀")
+        SimpleEntry(date: Date(), image: "🥰")
     }
 
     func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {
-        let entry = SimpleEntry(date: Date(), emoji: "😀")
+        let entry = SimpleEntry(date: Date(), image: "🥰")
         completion(entry)
     }
 
@@ -23,34 +30,28 @@ struct Provider: TimelineProvider {
 
         // Generate a timeline consisting of five entries an hour apart, starting from the current date.
         let currentDate = Date()
-        for hourOffset in 0 ..< 5 {
-            let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
-            let entry = SimpleEntry(date: entryDate, emoji: "😀")
-            entries.append(entry)
-        }
+        //for hourOffset in 0 ..< 5 {
+          //  let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
+          //  let entry = SimpleEntry(date: entryDate,image: "🥰")
+          //  entries.append(entry)
+       // }
+        entries.append(SimpleEntry(date: currentDate, image: ""))
 
-        let timeline = Timeline(entries: entries, policy: .atEnd)
+        let timeline = Timeline(entries: entries, policy: .never)
         completion(timeline)
     }
 }
 
-struct SimpleEntry: TimelineEntry {
-    let date: Date
-    let emoji: String
-}
+
 
 struct WatchComplicationLaLeyEntryView : View {
     var entry: Provider.Entry
-
+    
     var body: some View {
         VStack {
-            HStack {
-                Text("Time:")
-                Text(entry.date, style: .time)
-            }
-
-            Text("Emoji:")
-            Text(entry.emoji)
+            Image(uiImage: UIImage(named: "icon")!)
+                .resizable()
+                .scaledToFill()
         }
     }
 }
@@ -70,14 +71,9 @@ struct WatchComplicationLaLey: Widget {
                     .background()
             }
         }
-        .configurationDisplayName("My Widget")
-        .description("This is an example widget.")
+        .configurationDisplayName("La Ley")
+        .description("Watch Complication")
     }
 }
 
-#Preview(as: .accessoryRectangular) {
-    WatchComplicationLaLey()
-} timeline: {
-    SimpleEntry(date: .now, emoji: "😀")
-    SimpleEntry(date: .now, emoji: "🤩")
-}
+

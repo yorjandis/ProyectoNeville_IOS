@@ -205,7 +205,7 @@ struct TxtContentModel{
             }
             
         }
-
+        
         var array : [String] = [] //Almacena los name files leidos del bundle para el contenido txt
 
         let arrayOfPrefix = ["conf_","cita_","preg_","ayud_"] //Yor en un futuro esto debe poder escalarse autom. con nuevo contenido

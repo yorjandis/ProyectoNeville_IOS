@@ -11,7 +11,7 @@ struct Home: View {
 
     @State  private var showAddNoteList = false //Abre la view AddNota
     
-    @State  private var frase : Frases =  FrasesModel().getRandomFraseEntity() ?? Frases(context: CoreDataController.shared.context)
+    @State   var frase : Frases = FrasesModel().getRandomFraseEntityNoAsync() ?? Frases(context: CoreDataController.shared.context)
     @State  private var isHaveNote = false //Chequea si la frase actual tiene nota
     
     @State  private var fontSize : CGFloat = CGFloat(UserDefaults.standard.integer(forKey: AppCons.UD_setting_fontFrasesSize)) //Setting para Frases
@@ -27,6 +27,8 @@ struct Home: View {
     
     //Para determinar cuando se ha cambiado los colores y actualizar el fondo de pantalla.
     @State private var isSettingChanged : Bool = false
+
+    
 
 
     var body: some View {
@@ -63,6 +65,16 @@ struct Home: View {
                     Spacer()
                     if (frase.frase?.isEmpty == false) {
                         FrasesView(frase: self.$frase, isHaveNote: $isHaveNote, fontSize: $fontSize, colorFrase: $colorFrase)
+                    }else{
+                        ProgressView {
+                            Text("Recuperando el contenido...")
+                        }
+                        .task {
+                            //Ejecuta una función despues de pasar un tiempo en segundo: carga las frases
+                            delayWithSeconds(5){
+                                self.frase  =  FrasesModel().getRandomFraseEntityNoAsync() ?? Frases(context: CoreDataController.shared.context)
+                            }
+                        }
                     }
                        
                    
@@ -84,6 +96,9 @@ struct Home: View {
                     }
                     
                 }
+                .task{
+                    self.frase  =  await FrasesModel().getRandomFraseEntity() ?? Frases(context: CoreDataController.shared.context)
+                }
                 .onChange(of: self.isSettingChanged) {
                     fontSize        = CGFloat(UserDefaults.standard.integer(forKey: AppCons.UD_setting_fontFrasesSize))
                     colorFrase      = SettingModel().loadColor(forkey: AppCons.UD_setting_color_frases)
@@ -101,7 +116,10 @@ struct Home: View {
                         withAnimation {
                         }
                     }else if start.y > end.y + 24 {//up
-                        frase = FrasesModel().getRandomFraseEntity()!
+                        Task{
+                            frase = await FrasesModel().getRandomFraseEntity()!
+                        }
+                        
                     }
                     else if start.x < end.x - 24 {} //left -> right
                     else if start.y < end.y - 24 {} //down
@@ -118,6 +136,14 @@ struct Home: View {
         }
         
     }
+    
+    //Ejecuta una función sincrónica despues de un tiempo en segundos
+    func delayWithSeconds(_ seconds: Double, completion: @escaping () -> ()) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
+            completion()
+        }
+    }
+   
 
 }//struct
 
@@ -146,8 +172,8 @@ struct FrasesView : View{
                 .id(frase.frase)
                 .animation(.smooth(duration: 2), value: frase.frase)
                 .onTapGesture {
-                    frase = FrasesModel().getRandomFraseEntity() ?? Frases(context: CoreDataController.shared.context)
-                    readFraseStatus(fraseEntity: frase, isfav: &isFav, isHaveNote: &isHaveNote)
+                        frase = FrasesModel().getRandomFraseEntityNoAsync() ?? Frases(context: CoreDataController.shared.context)
+                        readFraseStatus(fraseEntity: frase, isfav: &isFav, isHaveNote: &isHaveNote)
                 }
                 .onOpenURL(perform: { url in
                     if url.description == AppCons.DeepLink_url_Frase {

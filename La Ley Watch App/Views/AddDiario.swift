@@ -9,6 +9,8 @@ import SwiftUI
 
 struct AddDiario: View {
    
+    @Environment(\.dismiss) private var dimiss
+    
         @State private var title : String = ""
         @State private var content : String = ""
         @State private var isfav : Bool = false
@@ -70,6 +72,7 @@ struct AddDiario: View {
                                     if  result {
                                         self.alertMessage = "Entrada Guardada!"
                                         showAlert = true
+                                        dimiss()
                                     }else{
                                         self.alertMessage = "No se ha podido guardar la entrada. Inténtelo de nuevo"
                                         showAlert = true
@@ -140,12 +143,12 @@ struct AddDiario: View {
         case feliz = "😃", neutral = "🙂", enfadado = "😤", sorpresa = "😲", distraido = "🙄",desanimado = "😔"
         var txt : String{
             switch self{
-            case .desanimado : "Desanimado"
-            case .distraido : "Distraido"
-            case .enfadado : "Enfadado"
-            case .feliz : "Feliz"
-            case .neutral : "Neutral"
-            case .sorpresa : "Sorpresa"
+            case .desanimado : "desanimado"
+            case .distraido : "distraido"
+            case .enfadado : "enfadado"
+            case .feliz : "feliz"
+            case .neutral : "neutral"
+            case .sorpresa : "sorpresa"
             }
         }
     }

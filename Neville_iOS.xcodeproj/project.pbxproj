@@ -125,7 +125,6 @@
 		19D23D022AFD969E008C63BA /* TxtListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D23D012AFD969E008C63BA /* TxtListView.swift */; };
 		19D2F0622B6F250500D9B62C /* iCloudKitModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D2F0612B6F250500D9B62C /* iCloudKitModel.swift */; };
 		19D2F0642B70903200D9B62C /* QRReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D2F0632B70903100D9B62C /* QRReader.swift */; };
-		19D808872B796D4800D8054C /* CodeScanner in Frameworks */ = {isa = PBXBuildFile; productRef = 19D808862B796D4800D8054C /* CodeScanner */; };
 		19D808882B79966F00D8054C /* iCloudKitModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D2F0612B6F250500D9B62C /* iCloudKitModel.swift */; };
 		19E06FA62AEB74E20016F9E6 /* FrasesNotasAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19E06FA52AEB74E20016F9E6 /* FrasesNotasAddView.swift */; };
 		19E06FA82AEB91F00016F9E6 /* FrasesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19E06FA72AEB91F00016F9E6 /* FrasesListView.swift */; };
@@ -313,6 +312,12 @@
 		19EDBBBC2B7C507F00432CDE /* conf_el ha puesto la eternidad en el pensamiento del hombre.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBB092B7C507F00432CDE /* conf_el ha puesto la eternidad en el pensamiento del hombre.txt */; };
 		19EDBBBD2B7C507F00432CDE /* conf_Entra en escena.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBB0A2B7C507F00432CDE /* conf_Entra en escena.txt */; };
 		19EDBBBE2B7C507F00432CDE /* conf_incubar el sueño.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBB0B2B7C507F00432CDE /* conf_incubar el sueño.txt */; };
+		19EDBBC42B7DD66000432CDE /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19E0BDEC2B0B412D00E149A5 /* WidgetKit.framework */; };
+		19EDBBC52B7DD66000432CDE /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19E0BDEE2B0B412D00E149A5 /* SwiftUI.framework */; };
+		19EDBBC82B7DD66000432CDE /* WatchComplicationLaLey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19EDBBC72B7DD66000432CDE /* WatchComplicationLaLey.swift */; };
+		19EDBBCA2B7DD66200432CDE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 19EDBBC92B7DD66200432CDE /* Assets.xcassets */; };
+		19EDBBCE2B7DD66200432CDE /* WatchComplicationLaLeyExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 19EDBBC32B7DD66000432CDE /* WatchComplicationLaLeyExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		19EDBBD52B7DDA2300432CDE /* CodeScanner in Frameworks */ = {isa = PBXBuildFile; productRef = 19EDBBD42B7DDA2300432CDE /* CodeScanner */; };
 		19F3CFCA2B5677B200DEB026 /* conf_a sus ordenes.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19F3CFC92B5677B200DEB026 /* conf_a sus ordenes.txt */; };
 		19F8041C2B69CB9D00A323A0 /* La_LeyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19F8041B2B69CB9D00A323A0 /* La_LeyApp.swift */; };
 		19F8041E2B69CB9D00A323A0 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19F8041D2B69CB9D00A323A0 /* ContentView.swift */; };
@@ -641,6 +646,13 @@
 			remoteGlobalIDString = 19E0BE132B0C661A00E149A5;
 			remoteInfo = FrasesWiggetExtension;
 		};
+		19EDBBCC2B7DD66200432CDE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E95B934B2AAFBB2600B5E2B5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 19EDBBC22B7DD66000432CDE;
+			remoteInfo = WatchComplicationLaLeyExtension;
+		};
 		19F804242B69CBA000A323A0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = E95B934B2AAFBB2600B5E2B5 /* Project object */;
@@ -658,6 +670,17 @@
 			dstSubfolderSpec = 13;
 			files = (
 				19E0BE212B0C661B00E149A5 /* FrasesWiggetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		19EDBBCF2B7DD66200432CDE /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				19EDBBCE2B7DD66200432CDE /* WatchComplicationLaLeyExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -974,6 +997,10 @@
 		19EDBB092B7C507F00432CDE /* conf_el ha puesto la eternidad en el pensamiento del hombre.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_el ha puesto la eternidad en el pensamiento del hombre.txt"; sourceTree = "<group>"; };
 		19EDBB0A2B7C507F00432CDE /* conf_Entra en escena.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_Entra en escena.txt"; sourceTree = "<group>"; };
 		19EDBB0B2B7C507F00432CDE /* conf_incubar el sueño.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_incubar el sueño.txt"; sourceTree = "<group>"; };
+		19EDBBC32B7DD66000432CDE /* WatchComplicationLaLeyExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WatchComplicationLaLeyExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		19EDBBC72B7DD66000432CDE /* WatchComplicationLaLey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchComplicationLaLey.swift; sourceTree = "<group>"; };
+		19EDBBC92B7DD66200432CDE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		19EDBBCB2B7DD66200432CDE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		19F3CFC92B5677B200DEB026 /* conf_a sus ordenes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "conf_a sus ordenes.txt"; sourceTree = "<group>"; };
 		19F804192B69CB9D00A323A0 /* La Ley Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "La Ley Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		19F8041B2B69CB9D00A323A0 /* La_LeyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = La_LeyApp.swift; sourceTree = "<group>"; };
@@ -1304,6 +1331,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		19EDBBC02B7DD66000432CDE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				19EDBBC52B7DD66000432CDE /* SwiftUI.framework in Frameworks */,
+				19EDBBC42B7DD66000432CDE /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		19F804162B69CB9D00A323A0 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -1315,7 +1351,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				19D808872B796D4800D8054C /* CodeScanner in Frameworks */,
+				19EDBBD52B7DDA2300432CDE /* CodeScanner in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1695,6 +1731,16 @@
 				19EDBA832B7C507900432CDE /* conf_yo soy la vid.txt */,
 			);
 			path = news;
+			sourceTree = "<group>";
+		};
+		19EDBBC62B7DD66000432CDE /* WatchComplicationLaLey */ = {
+			isa = PBXGroup;
+			children = (
+				19EDBBC72B7DD66000432CDE /* WatchComplicationLaLey.swift */,
+				19EDBBC92B7DD66200432CDE /* Assets.xcassets */,
+				19EDBBCB2B7DD66200432CDE /* Info.plist */,
+			);
+			path = WatchComplicationLaLey;
 			sourceTree = "<group>";
 		};
 		19F8041A2B69CB9D00A323A0 /* La Ley Watch App */ = {
@@ -2083,6 +2129,7 @@
 				E95B93552AAFBB2600B5E2B5 /* Neville_iOS */,
 				19E0BE172B0C661A00E149A5 /* FrasesWigget */,
 				19F8041A2B69CB9D00A323A0 /* La Ley Watch App */,
+				19EDBBC62B7DD66000432CDE /* WatchComplicationLaLey */,
 				19E0BDEB2B0B412D00E149A5 /* Frameworks */,
 				E95B93542AAFBB2600B5E2B5 /* Products */,
 			);
@@ -2094,6 +2141,7 @@
 				E95B93532AAFBB2600B5E2B5 /* Neville_iOS.app */,
 				19E0BE142B0C661A00E149A5 /* FrasesWiggetExtension.appex */,
 				19F804192B69CB9D00A323A0 /* La Ley Watch App.app */,
+				19EDBBC32B7DD66000432CDE /* WatchComplicationLaLeyExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -2172,6 +2220,23 @@
 			productReference = 19E0BE142B0C661A00E149A5 /* FrasesWiggetExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		19EDBBC22B7DD66000432CDE /* WatchComplicationLaLeyExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 19EDBBD22B7DD66200432CDE /* Build configuration list for PBXNativeTarget "WatchComplicationLaLeyExtension" */;
+			buildPhases = (
+				19EDBBBF2B7DD66000432CDE /* Sources */,
+				19EDBBC02B7DD66000432CDE /* Frameworks */,
+				19EDBBC12B7DD66000432CDE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = WatchComplicationLaLeyExtension;
+			productName = WatchComplicationLaLeyExtension;
+			productReference = 19EDBBC32B7DD66000432CDE /* WatchComplicationLaLeyExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		19F804182B69CB9D00A323A0 /* La Ley Watch App */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 19F8042A2B69CBA000A323A0 /* Build configuration list for PBXNativeTarget "La Ley Watch App" */;
@@ -2179,10 +2244,12 @@
 				19F804152B69CB9D00A323A0 /* Sources */,
 				19F804162B69CB9D00A323A0 /* Frameworks */,
 				19F804172B69CB9D00A323A0 /* Resources */,
+				19EDBBCF2B7DD66200432CDE /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				19EDBBCD2B7DD66200432CDE /* PBXTargetDependency */,
 			);
 			name = "La Ley Watch App";
 			productName = "La Ley Watch App";
@@ -2207,7 +2274,7 @@
 			);
 			name = Neville_iOS;
 			packageProductDependencies = (
-				19D808862B796D4800D8054C /* CodeScanner */,
+				19EDBBD42B7DDA2300432CDE /* CodeScanner */,
 			);
 			productName = Neville_iOS;
 			productReference = E95B93532AAFBB2600B5E2B5 /* Neville_iOS.app */;
@@ -2225,6 +2292,9 @@
 				TargetAttributes = {
 					19E0BE132B0C661A00E149A5 = {
 						CreatedOnToolsVersion = 15.0.1;
+					};
+					19EDBBC22B7DD66000432CDE = {
+						CreatedOnToolsVersion = 15.2;
 					};
 					19F804182B69CB9D00A323A0 = {
 						CreatedOnToolsVersion = 15.2;
@@ -2244,7 +2314,7 @@
 			);
 			mainGroup = E95B934A2AAFBB2600B5E2B5;
 			packageReferences = (
-				19D808852B796C1800D8054C /* XCRemoteSwiftPackageReference "CodeScanner" */,
+				19EDBBD32B7DDA2300432CDE /* XCRemoteSwiftPackageReference "CodeScanner" */,
 			);
 			productRefGroup = E95B93542AAFBB2600B5E2B5 /* Products */;
 			projectDirPath = "";
@@ -2253,6 +2323,7 @@
 				E95B93522AAFBB2600B5E2B5 /* Neville_iOS */,
 				19E0BE132B0C661A00E149A5 /* FrasesWiggetExtension */,
 				19F804182B69CB9D00A323A0 /* La Ley Watch App */,
+				19EDBBC22B7DD66000432CDE /* WatchComplicationLaLeyExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -2264,6 +2335,14 @@
 			files = (
 				19E0BE2A2B0C750300E149A5 /* listfrases.txt in Resources */,
 				19E0BE1D2B0C661B00E149A5 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		19EDBBC12B7DD66000432CDE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				19EDBBCA2B7DD66200432CDE /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2852,6 +2931,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		19EDBBBF2B7DD66000432CDE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				19EDBBC82B7DD66000432CDE /* WatchComplicationLaLey.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		19F804152B69CB9D00A323A0 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2930,6 +3017,11 @@
 			target = 19E0BE132B0C661A00E149A5 /* FrasesWiggetExtension */;
 			targetProxy = 19E0BE1F2B0C661B00E149A5 /* PBXContainerItemProxy */;
 		};
+		19EDBBCD2B7DD66200432CDE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 19EDBBC22B7DD66000432CDE /* WatchComplicationLaLeyExtension */;
+			targetProxy = 19EDBBCC2B7DD66200432CDE /* PBXContainerItemProxy */;
+		};
 		19F804252B69CBA000A323A0 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 19F804182B69CB9D00A323A0 /* La Ley Watch App */;
@@ -2946,7 +3038,7 @@
 				CODE_SIGN_ENTITLEMENTS = FrasesWiggetExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 15;
+				CURRENT_PROJECT_VERSION = 16;
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FrasesWigget/Info.plist;
@@ -2957,7 +3049,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.1.1;
+				MARKETING_VERSION = 1.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.FrasesWigget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -2975,7 +3067,7 @@
 				CODE_SIGN_ENTITLEMENTS = FrasesWiggetExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 15;
+				CURRENT_PROJECT_VERSION = 16;
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FrasesWigget/Info.plist;
@@ -2986,7 +3078,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.1.1;
+				MARKETING_VERSION = 1.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.FrasesWigget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -2996,15 +3088,78 @@
 			};
 			name = Release;
 		};
+		19EDBBD02B7DD66200432CDE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 16;
+				DEVELOPMENT_TEAM = NDP3AP6896;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = WatchComplicationLaLey/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = WatchComplicationLaLey;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MARKETING_VERSION = 1.2.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.watchkitapp.WatchComplicationLaLey;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Debug;
+		};
+		19EDBBD12B7DD66200432CDE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 16;
+				DEVELOPMENT_TEAM = NDP3AP6896;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = WatchComplicationLaLey/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = WatchComplicationLaLey;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MARKETING_VERSION = 1.2.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.watchkitapp.WatchComplicationLaLey;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Release;
+		};
 		19F804282B69CBA000A323A0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "La Ley Watch App/La Ley Watch App.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 16;
 				DEVELOPMENT_ASSET_PATHS = "\"La Ley Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				ENABLE_PREVIEWS = YES;
@@ -3017,7 +3172,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -3025,19 +3180,20 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 10.2;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
 			};
 			name = Debug;
 		};
 		19F804292B69CBA000A323A0 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "La Ley Watch App/La Ley Watch App.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 16;
 				DEVELOPMENT_ASSET_PATHS = "\"La Ley Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				ENABLE_PREVIEWS = YES;
@@ -3050,7 +3206,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -3058,7 +3214,7 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 10.2;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
 			};
 			name = Release;
 		};
@@ -3190,7 +3346,7 @@
 				CODE_SIGN_ENTITLEMENTS = Neville_iOS/Neville_iOS.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 15;
+				CURRENT_PROJECT_VERSION = 16;
 				DEVELOPMENT_ASSET_PATHS = "\"Neville_iOS/Preview Content\"";
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				ENABLE_PREVIEWS = YES;
@@ -3211,7 +3367,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.1;
+				MARKETING_VERSION = 1.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -3233,7 +3389,7 @@
 				CODE_SIGN_ENTITLEMENTS = Neville_iOS/Neville_iOS.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 15;
+				CURRENT_PROJECT_VERSION = 16;
 				DEVELOPMENT_ASSET_PATHS = "\"Neville_iOS/Preview Content\"";
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				ENABLE_PREVIEWS = YES;
@@ -3254,7 +3410,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.1;
+				MARKETING_VERSION = 1.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -3275,6 +3431,15 @@
 			buildConfigurations = (
 				19E0BE232B0C661B00E149A5 /* Debug */,
 				19E0BE242B0C661B00E149A5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		19EDBBD22B7DD66200432CDE /* Build configuration list for PBXNativeTarget "WatchComplicationLaLeyExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				19EDBBD02B7DD66200432CDE /* Debug */,
+				19EDBBD12B7DD66200432CDE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -3309,7 +3474,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		19D808852B796C1800D8054C /* XCRemoteSwiftPackageReference "CodeScanner" */ = {
+		19EDBBD32B7DDA2300432CDE /* XCRemoteSwiftPackageReference "CodeScanner" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/twostraws/CodeScanner";
 			requirement = {
@@ -3320,9 +3485,9 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		19D808862B796D4800D8054C /* CodeScanner */ = {
+		19EDBBD42B7DDA2300432CDE /* CodeScanner */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 19D808852B796C1800D8054C /* XCRemoteSwiftPackageReference "CodeScanner" */;
+			package = 19EDBBD32B7DDA2300432CDE /* XCRemoteSwiftPackageReference "CodeScanner" */;
 			productName = CodeScanner;
 		};
 /* End XCSwiftPackageProductDependency section */
