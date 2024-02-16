@@ -154,7 +154,6 @@ struct GenerateQRView : View {
     
     
     //Auxiliar para cargar una imagen QR de la galería y decodificarla
-    
     func imagePickerController(_ picker: UIImagePickerController,
                                didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
 
@@ -165,15 +164,9 @@ struct GenerateQRView : View {
             let ciImage = CIImage(image: pickedImage),
             let features = detector.features(in: ciImage) as? [CIQRCodeFeature] else { return }
 
-        let qrCodeLink = features.reduce("") { $0 + ($1.messageString ?? "") }
-
-       
+       // let qrCodeLink = features.reduce("") { $0 + ($1.messageString ?? "") }
     }
  
-    
- 
-    
-   
 }
 
 

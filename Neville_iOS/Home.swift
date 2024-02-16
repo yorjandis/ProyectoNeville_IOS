@@ -11,7 +11,6 @@ struct Home: View {
 
     @State  private var showAddNoteList = false //Abre la view AddNota
     
-    @State   var frase : Frases = FrasesModel().getRandomFraseEntityNoAsync() ?? Frases(context: CoreDataController.shared.context)
     @State  private var isHaveNote = false //Chequea si la frase actual tiene nota
     
     @State  private var fontSize : CGFloat = CGFloat(UserDefaults.standard.integer(forKey: AppCons.UD_setting_fontFrasesSize)) //Setting para Frases
@@ -63,22 +62,9 @@ struct Home: View {
                     }
                     
                     Spacer()
-                    if (frase.frase?.isEmpty == false) {
-                        FrasesView(frase: self.$frase, isHaveNote: $isHaveNote, fontSize: $fontSize, colorFrase: $colorFrase)
-                    }else{
-                        ProgressView {
-                            Text("Recuperando el contenido...")
-                        }
-                        .task {
-                            //Ejecuta una función despues de pasar un tiempo en segundo: carga las frases
-                            delayWithSeconds(5){
-                                self.frase  =  FrasesModel().getRandomFraseEntityNoAsync() ?? Frases(context: CoreDataController.shared.context)
-                            }
-                        }
-                    }
-                       
-                   
                     
+                    FrasesView(isHaveNote: $isHaveNote, fontSize: $fontSize, colorFrase: $colorFrase)
+ 
                     Spacer()
                     TabButtonBar(fontFrasesSize: $fontSize, fontMenuSize: $fontSizeMenu, colorFrase: $colorFrase, colorFondo_a: $colorFondo_a, colorFondo_b: $colorFondo_b, isSettingChanged: $isSettingChanged)
                 }
@@ -95,9 +81,6 @@ struct Home: View {
                         print(error.localizedDescription)
                     }
                     
-                }
-                .task{
-                    self.frase  =  await FrasesModel().getRandomFraseEntity() ?? Frases(context: CoreDataController.shared.context)
                 }
                 .onChange(of: self.isSettingChanged) {
                     fontSize        = CGFloat(UserDefaults.standard.integer(forKey: AppCons.UD_setting_fontFrasesSize))
@@ -116,9 +99,6 @@ struct Home: View {
                         withAnimation {
                         }
                     }else if start.y > end.y + 24 {//up
-                        Task{
-                            frase = await FrasesModel().getRandomFraseEntity()!
-                        }
                         
                     }
                     else if start.x < end.x - 24 {} //left -> right
@@ -137,12 +117,7 @@ struct Home: View {
         
     }
     
-    //Ejecuta una función sincrónica despues de un tiempo en segundos
-    func delayWithSeconds(_ seconds: Double, completion: @escaping () -> ()) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
-            completion()
-        }
-    }
+
    
 
 }//struct
@@ -150,7 +125,7 @@ struct Home: View {
 
 //Frases View
 struct FrasesView : View{
-    @Binding var frase : Frases
+    @State private var  frase : Frases = FrasesModel().getRandomFraseEntityNoAsync() ?? Frases(context: CoreDataController.shared.context)
     @Binding var isHaveNote : Bool
     @Binding var fontSize : CGFloat //setting
     @Binding var colorFrase : Color //setting
@@ -164,75 +139,102 @@ struct FrasesView : View{
     
     
     var body: some View{
-        VStack{
-            Text( frase.frase ?? "")
-                .font(.system(size: fontSize, design: .rounded))
-                .foregroundStyle(colorFrase)
-                .modifier(mof_frases())
-                .id(frase.frase)
-                .animation(.smooth(duration: 2), value: frase.frase)
-                .onTapGesture {
+        
+        if (frase.frase?.isEmpty == false) {
+            VStack{
+                Text( frase.frase ?? "")
+                    .font(.system(size: fontSize, design: .rounded))
+                    .foregroundStyle(colorFrase)
+                    .modifier(mof_frases())
+                    .id(frase.frase)
+                    .animation(.smooth(duration: 2), value: frase.frase)
+                    .onTapGesture {
                         frase = FrasesModel().getRandomFraseEntityNoAsync() ?? Frases(context: CoreDataController.shared.context)
                         readFraseStatus(fraseEntity: frase, isfav: &isFav, isHaveNote: &isHaveNote)
-                }
-                .onOpenURL(perform: { url in
-                    if url.description == AppCons.DeepLink_url_Frase {
-                        frase = FrasesModel().GetFraseFromTextFrase(frase: UserDefaults.shared().string(forKey: AppCons.UD_shared_FraseWidgetActual) ?? "")!
                     }
-                })
-                .contextMenu{
-                    Button("Convertir en Nota"){
-                        //Guarda la nota poniendo como titulo una parte de la cadena
-                        _ = NotasModel().addNote(nota: frase.frase ?? "", title: "\(String(String(frase.frase ?? "").prefix(frase.frase!.count / 3 )))...")
+                    .task{
+                        self.frase = FrasesModel().getRandomFraseEntityNoAsync() ?? Frases(context: CoreDataController.shared.context)
                     }
-                    NavigationLink("Generar QR"){
-                        GenerateQRView(footer: frase.frase ?? "", showImage: true)
+                    .onOpenURL(perform: { url in
+                        if url.description == AppCons.DeepLink_url_Frase {
+                            frase = FrasesModel().GetFraseFromTextFrase(frase: UserDefaults.shared().string(forKey: AppCons.UD_shared_FraseWidgetActual) ?? "")!
+                        }
+                    })
+                    .contextMenu{
+                        Button("Convertir en Nota"){
+                            //Guarda la nota poniendo como titulo una parte de la cadena
+                            _ = NotasModel().addNote(nota: frase.frase ?? "", title: "\(String(String(frase.frase ?? "").prefix(frase.frase!.count / 3 )))...")
+                        }
+                        NavigationLink("Generar QR"){
+                            GenerateQRView(footer: frase.frase ?? "", showImage: true)
+                        }
+                        Button{
+                            showAddNoteView = true
+                        }label: {
+                            Label("Adicionar una nota", systemImage: "bookmark.fill" )
+                        }
+                        Button("Nueva Frase"){
+                            showSheetAddFrase = true
+                        }
                     }
-                    Button{
-                        showAddNoteView = true
-                    }label: {
-                        Label("Adicionar una nota", systemImage: "bookmark.fill" )
-                    }
-                    Button("Nueva Frase"){
-                        showSheetAddFrase = true
-                    }
-                }
-            
-            HStack(){
-                Spacer()
                 
-                Button{
-                    FrasesModel().handleFavState(frase: frase)
-                    isFav = frase.isfav ? true : false
-                    animationHeart += 1
-                }label: {
-                    Image(systemName: isFav ? "heart.fill" : "heart")
-                        .foregroundStyle(isFav ? AppCons.favoriteColorOn : AppCons.favoriteColorOff)
-                        .symbolEffect(.bounce, value: animationHeart)
+                HStack(){
+                    Spacer()
+                    
+                    Button{
+                        FrasesModel().handleFavState(frase: frase)
+                        isFav = frase.isfav ? true : false
+                        animationHeart += 1
+                    }label: {
+                        Image(systemName: isFav ? "heart.fill" : "heart")
+                            .foregroundStyle(isFav ? AppCons.favoriteColorOn : AppCons.favoriteColorOff)
+                            .symbolEffect(.bounce, value: animationHeart)
+                    }
+                    .padding(10)
+                    .padding(.trailing, 15)
+                    .onAppear{
+                        readFraseStatus(fraseEntity: frase, isfav: &isFav, isHaveNote: &isHaveNote)
+                    }
                 }
-                .padding(10)
-                .padding(.trailing, 15)
-                .onAppear{
-                    readFraseStatus(fraseEntity: frase, isfav: &isFav, isHaveNote: &isHaveNote)
-                }
+                
             }
-           
-        }
-        .sheet(isPresented: $showAddNoteView){ //permite modificar la nota de una frase
-            FrasesNotasAddView(frase: self.frase, nota: self.frase.nota ?? "")
-                .presentationDetents([.medium])
-                .presentationDragIndicator(.hidden)
+            
+            .sheet(isPresented: $showAddNoteView){ //permite modificar la nota de una frase
+                FrasesNotasAddView(frase: self.frase, nota: self.frase.nota ?? "")
+                    .presentationDetents([.medium])
+                    .presentationDragIndicator(.hidden)
                 //.interactiveDismissDisabled() //No deja que se oculte
-        }
-        .sheet(isPresented: $showSheetAddFrase){
-            FraseAddView()
-                .presentationDetents([.medium])
-                .presentationDragIndicator(.hidden)
+            }
+            .sheet(isPresented: $showSheetAddFrase){
+                FraseAddView()
+                    .presentationDetents([.medium])
+                    .presentationDragIndicator(.hidden)
+            }
+                
+            }else{ //Si la frase a cargar no tiene contenido...se intenta recuperar una frase válida
+                ProgressView {
+                    Text("Recuperando el contenido...")
+                }
+                .task {
+                    //Ejecuta una función despues de pasar un tiempo en segundo: carga las frases
+                    delayWithSeconds(5){
+                        self.frase  =  FrasesModel().getRandomFraseEntityNoAsync() ?? Frases(context: CoreDataController.shared.context)
+                    }
+                }
+                
+            }
+    }
+
+    
+    
+    
+    //Ejecuta una función sincrónica despues de un tiempo en segundos
+    func delayWithSeconds(_ seconds: Double, completion: @escaping () -> ()) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
+            completion()
         }
     }
-    
- 
-    
+
 }
 
 

@@ -181,8 +181,7 @@ struct ContentView: View {
                 VStack(alignment: .center){
                     Text("Frases").bold()
                         .padding(.bottom, 10)
-                    ScrollView
-                    {
+                    ScrollView{
                         Text(frase)
                             .italic()
                             .padding(.horizontal, 5)
@@ -191,11 +190,10 @@ struct ContentView: View {
                             .onTapGesture {
                                 frase = UtilFuncs.FileReadToArray("listfrases").randomElement() ?? ""
                             }
-                            
-                        
                     }
                     
                 }
+                .padding(.top, 10)
                 .fontDesign(.serif)
                 .font(.system(size: 20))
                 .foregroundStyle(.black)
