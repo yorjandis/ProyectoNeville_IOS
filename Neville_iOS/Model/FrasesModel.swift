@@ -141,6 +141,9 @@ struct FrasesModel {
 
         if isFrasesPopulated {return} //Sale si la tabla frases ya esta populada
         
+        
+        //sleep(5) //Haciendo una pausa de 5 segundos para permitir 
+        
         //Chequea si iCloud esta habilitado.
         if FileManager.default.ubiquityIdentityToken != nil {
             //icloud disponible:
@@ -152,15 +155,19 @@ struct FrasesModel {
                 return
             }
 
+        }else{
+            print("icloud no esta disponible")
         }
             
     
+        print("populando la tabla Frases")
         
             let arrayFrases =  getfrasesArrayFromTxtFile() //Obtiene el arreglo de frases del txt
  
             //Populando la tabla frases
             for item in arrayFrases {
-                let row = Frases(context: context) //carga entidad Frases desde el contexto
+                if item.isEmpty {continue} //Salta si halla una línea en blanco
+                let row   = Frases(context: context) //carga entidad Frases desde el contexto
                 row.id    = UUID().uuidString
                 row.frase = item
                 row.isfav = false
@@ -318,7 +325,7 @@ struct FrasesModel {
     
     ///Actualiza la BD cuando se adiciona nuevas frases al bundle en una nueva actualización
     /// - Returns : Devuelve una tupla de dos enteros: el primero es el # de elementos que se han añadido, el segundo el # de elementos que han fallado al insertarse
-    func UpdateContenAfterAppUpdate() async ->(Int, Int){
+    func UpdateContenAfterAppUpdate()->(Int, Int){
         
         var set : Set<String> = Set()
         var errorCount = 0 //cuanta los elementos fallidos que no se han podido adicionar a la BD
@@ -418,8 +425,56 @@ struct FrasesModel {
     }
     
     
-    //Funcion temporal Lanzada en la version 1.1.1: Elimina dos frase de prueba que se fue en la compilación 1.1.0.
+    
+    ///OKOKOK Mantenimiento de la BD: Elimina registros duplicados en Core Data. Se asegura que se eliminan solos aquellos registros que tengan el campo fav a false y nota a vacio:
+    /// Yor: esto repara la BD de frases de elementos duplicados. Solo conserva aquellos que tiene  nota o están marcados como favoritos.
+    /// - Returns - devuelve el número de registros duplicados:
+    func Fix_DeleteDuplicatesRowsInBDCoreDataForfrases(){
+        var arrayForDelete : [Frases] = [] //Arreglo de elementos duplicados para eliminar
+        let ArrayItems = FrasesModel().GetRequest(predicate: nil) //Total de elementos en BD
+        
+        var totalDuplicadosTemp = 0 //Para control de elementos duplicados
+
+        for i in ArrayItems {
+            let duplicadosTemp = ArrayItems.filter{ $0.frase == i.frase } //Filtrando los elementos duplicados
+            totalDuplicadosTemp = duplicadosTemp.count //almacena la cantidad de elementos duplicados
+            
+            for ii in duplicadosTemp{//Recorre los elementos duplicados para filtrar todos lo que no son favoritos ni tienen notas
+                if ii.isfav == false && ii.nota == ""{
+                    arrayForDelete.append(ii)
+                    if ii.frase == "" { continue } //Para eliminar las frases que estan vacias (Actualmente se ha ido una yor)
+                    totalDuplicadosTemp -= 1 //va descontando el contador cada vez que se adiciona un elemento para eliminar
+                }
+            }
+            
+            //dejando un elemento vivo en la BD en caso de que se hayan filtrados todos los duplicados para borrar:
+            if totalDuplicadosTemp == 0 { //Significa que se ha tomado todos los registros para borrar, hay que dejar uno yorj
+                _ = arrayForDelete.popLast() //Quita el último registro del arreglo de elementos para eliminar
+            }
+        }
+        
+       // print("despues de borrar:\(arrayForDelete)")
+        
+        //Eliminando los elementos y recalculando el arreglo resultante
+        for d in arrayForDelete {
+            context.delete(d)
+            do {
+                try context.save()
+            }catch{
+                print("Yorjandis error eliminando: \(d.frase ?? "")")
+            }
+        }
+        
+       // ArrayItems = FrasesModel().GetRequest(predicate: nil) //recalculando el arreglo resultante
+
+    }
+    
+    
+    
+    
+    //Función temporal Lanzada en la version 1.1.1: Elimina dos frase de prueba que se fue en la compilación 1.1.0.
     //Yor: Eliminar esta función en la versión 1.1.3
+    //Yor: Intentar hacer esta función desde un comando web:
     func tempDeleteFrase() {
         let array = GetRequest(predicate: nil)
         

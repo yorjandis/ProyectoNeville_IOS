@@ -140,7 +140,7 @@ struct FrasesView : View{
     
     var body: some View{
         
-        if (frase.frase?.isEmpty == false) {
+        if (frase.frase?.isEmpty == false) { //Si frase se ha cargado
             VStack{
                 Text( frase.frase ?? "")
                     .font(.system(size: fontSize, design: .rounded))
@@ -210,30 +210,22 @@ struct FrasesView : View{
                     .presentationDetents([.medium])
                     .presentationDragIndicator(.hidden)
             }
-                
-            }else{ //Si la frase a cargar no tiene contenido...se intenta recuperar una frase válida
-                ProgressView {
-                    Text("Recuperando el contenido...")
-                }
-                .task {
-                    //Ejecuta una función despues de pasar un tiempo en segundo: carga las frases
-                    delayWithSeconds(5){
-                        self.frase  =  FrasesModel().getRandomFraseEntityNoAsync() ?? Frases(context: CoreDataController.shared.context)
-                    }
-                }
-                
+            
+        }else{ //Si la frase a cargar no tiene contenido...se intenta recuperar una frase válida
+            //Carga una frase de texto del fichero txt del bundle
+            ProgressView {
+                Text("Recuperando el contenido...")
             }
+            .task {
+                //Crea una frase temporal, no la almacena en Core Data
+                let frastemp = Frases(context: CoreDataController.shared.context)
+                frastemp.frase = FrasesModel().getfrasesArrayFromTxtFile().randomElement()
+                self.frase = frastemp 
+            }
+        }
     }
 
     
-    
-    
-    //Ejecuta una función sincrónica despues de un tiempo en segundos
-    func delayWithSeconds(_ seconds: Double, completion: @escaping () -> ()) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
-            completion()
-        }
-    }
 
 }
 

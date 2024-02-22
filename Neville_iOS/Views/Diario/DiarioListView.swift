@@ -14,8 +14,11 @@ import LocalAuthentication
 
 
 struct DiarioListView: View {
+
     @Environment(\.dismiss) var dimiss
     @State  var list : [Diario] = DiarioModel().getAllItem()
+    
+
     
     //Para filtros en fechas
     enum TypeOfSearch{case fix, interval}

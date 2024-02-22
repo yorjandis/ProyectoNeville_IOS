@@ -206,6 +206,9 @@ struct TxtContentModel{
             
         }
         
+        
+        print("populando la tabla TxtContent")
+        
         var array : [String] = [] //Almacena los name files leidos del bundle para el contenido txt
 
         let arrayOfPrefix = ["conf_","cita_","preg_","ayud_"] //Yor en un futuro esto debe poder escalarse autom. con nuevo contenido
@@ -243,7 +246,7 @@ struct TxtContentModel{
     
     ///Devuelve un arreglo de String con los nombres de ficheros txt dentro del bundle según un prefijo (el prefijo se extrae de parametro de entrada)
     /// - Parameter type : Tipo de contenido a indexar. Se toma de un enum
-    private  func  FilesListToArray(prefix : String)-> [String] {
+      func  FilesListToArray(prefix : String)-> [String] {
         var result = [String]()
         var temp : String = ""
         let fm = FileManager.default
@@ -275,7 +278,7 @@ struct TxtContentModel{
     ///Por ejemplo cuando adicionamos nuevas conferencias, o ayudas, citas o preguntas
     /// - Parameter - type : Tipo de contenido a actualizar
     /// - Returns : Devuelve una tupla de dos enteros: el primero es el # de elementos que se han añadido, el segundo el # de elementos que han fallado al insertarse
-    func UpdateContenAfterAppUpdate(type : TipoDeContenido) async ->(Int,Int){
+    func UpdateContenAfterAppUpdate(type : TipoDeContenido)->(Int,Int){
         
         var set : Set<String> = Set()
         var errorCount = 0 //cuanta los elementos fallidos que no se han podido adicionar a la BD
@@ -364,6 +367,58 @@ struct TxtContentModel{
         return result
     }
     
+    
+    
+    
+    ///OKOKOK Mantenimiento de la BD: Elimina registros duplicados en Core Data. Se asegura que se eliminan solos aquellos registros que tengan el campo fav a false y nota a vacio:
+    /// Yor: esto repara la BD de frases de elementos duplicados. Solo conserva aquellos que tiene  nota o están marcados como favoritos.
+    /// - Returns - devuelve el número de registros duplicados:
+    func Fix_DeleteDuplicatesRowsInBDCoreDataForConf(){
+        var arrayForDelete : [TxtCont] = [] //Arreglo de elementos duplicados para eliminar
+        
+        
+        var totalDuplicadosTemp = 0 //Para control de elementos duplicados
+        
+        
+        let tipoDeElemento = [TipoDeContenido.conf, TipoDeContenido.citas, TipoDeContenido.ayud, TipoDeContenido.preg]
+        
+        for type in tipoDeElemento {
+            let ArrayItems = TxtContentModel().GetRequest(type: type, predicate: nil) //Total de elementos en BD
+            for i in ArrayItems {
+                let duplicadosTemp = ArrayItems.filter{ $0.namefile == i.namefile } //Filtrando los elementos duplicados
+                totalDuplicadosTemp = duplicadosTemp.count //almacena la cantidad de elementos duplicados
+                
+                for ii in duplicadosTemp{//Recorre los elementos duplicados para filtrar todos lo que no son favoritos ni tienen notas
+                    if ii.isfav == false && ii.nota == ""{
+                        arrayForDelete.append(ii)
+                        if ii.namefile == "" { continue } //Para eliminar las frases que estan vacias (Actualmente se ha ido una yor)
+                        totalDuplicadosTemp -= 1 //va descontando el contador cada vez que se adiciona un elemento para eliminar
+                    }
+                }
+                
+                //dejando un elemento vivo en la BD en caso de que se hayan filtrados todos los duplicados para borrar:
+                if totalDuplicadosTemp == 0 { //Significa que se ha tomado todos los registros para borrar, hay que dejar uno yorj
+                    _ = arrayForDelete.popLast() //Quita el último registro del arreglo de elementos para eliminar
+                }
+            }
+        }
+        
+        
+        
+        // print("despues de borrar:\(arrayForDelete)")
+        
+        //Eliminando los elementos
+        for d in arrayForDelete {
+            context.delete(d)
+            do {
+                try context.save()
+            }catch{
+                print("Yorjandis error eliminando: \(d.namefile ?? "")")
+            }
+        }
+        
+        
+    }
     
     
     

@@ -16,6 +16,7 @@
 		190C39B22B6B8F8C008007C6 /* TxtContentModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D23CFF2AFD817E008C63BA /* TxtContentModel.swift */; };
 		190C39B32B6B8F9C008007C6 /* DiarioModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 197D2A3A2AFA9FE000486014 /* DiarioModel.swift */; };
 		190C39B42B6B9026008007C6 /* listfrases.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F64562AB7D2BA007BB4BA /* listfrases.txt */; };
+		1931B16B2B86CFAA00A51EF6 /* privacy.txt in Resources */ = {isa = PBXBuildFile; fileRef = 1931B16A2B86CFAA00A51EF6 /* privacy.txt */; };
 		193425B62AFFD83700A99C25 /* GamePLay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 193425B52AFFD83700A99C25 /* GamePLay.swift */; };
 		193B6EAD2AF1B1D10003E897 /* NetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 193B6EAC2AF1B1D10003E897 /* NetModel.swift */; };
 		1949D5162B01F04800DFD46D /* GameModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1949D5152B01F04800DFD46D /* GameModel.swift */; };
@@ -31,7 +32,6 @@
 		197D2A3E2AFAA3FC00486014 /* DiarioListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 197D2A3D2AFAA3FB00486014 /* DiarioListView.swift */; };
 		199DA0672B0EAC5800DEED62 /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = 199DA0662B0EAC5800DEED62 /* Home.swift */; };
 		199DA0692B102AA600DEED62 /* AppIntentWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 199DA0682B102AA600DEED62 /* AppIntentWidget.swift */; };
-		19A8E4682B29487800EE0184 /* conf_yorjandis.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19A8E4672B29487800EE0184 /* conf_yorjandis.txt */; };
 		19B255C02AFC47C30093104F /* FrasesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19B255BF2AFC47C30093104F /* FrasesModel.swift */; };
 		19B255C22AFC489D0093104F /* NotasModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19B255C12AFC489D0093104F /* NotasModel.swift */; };
 		19B255C42AFC51FC0093104F /* FraseAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19B255C32AFC51FC0093104F /* FraseAddView.swift */; };
@@ -700,6 +700,7 @@
 
 /* Begin PBXFileReference section */
 		190C39AB2B6B84AA008007C6 /* La Ley Watch App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "La Ley Watch App.entitlements"; sourceTree = "<group>"; };
+		1931B16A2B86CFAA00A51EF6 /* privacy.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = privacy.txt; sourceTree = "<group>"; };
 		193425B52AFFD83700A99C25 /* GamePLay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamePLay.swift; sourceTree = "<group>"; };
 		193B6EAC2AF1B1D10003E897 /* NetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetModel.swift; sourceTree = "<group>"; };
 		1949D5152B01F04800DFD46D /* GameModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameModel.swift; sourceTree = "<group>"; };
@@ -716,7 +717,6 @@
 		197D2A3D2AFAA3FB00486014 /* DiarioListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiarioListView.swift; sourceTree = "<group>"; };
 		199DA0662B0EAC5800DEED62 /* Home.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
 		199DA0682B102AA600DEED62 /* AppIntentWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntentWidget.swift; sourceTree = "<group>"; };
-		19A8E4672B29487800EE0184 /* conf_yorjandis.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = conf_yorjandis.txt; sourceTree = "<group>"; };
 		19B255BF2AFC47C30093104F /* FrasesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrasesModel.swift; sourceTree = "<group>"; };
 		19B255C12AFC489D0093104F /* NotasModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotasModel.swift; sourceTree = "<group>"; };
 		19B255C32AFC51FC0093104F /* FraseAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FraseAddView.swift; sourceTree = "<group>"; };
@@ -1769,6 +1769,7 @@
 		E92F61182AB3E05C007BB4BA /* Staff */ = {
 			isa = PBXGroup;
 			children = (
+				1931B16A2B86CFAA00A51EF6 /* privacy.txt */,
 				19BBC62C2B16BAB900FBB079 /* reflexiones.txt */,
 				19BBC61B2B159A3A00FBB079 /* Ayudas */,
 				19BBC5D22B159A0100FBB079 /* Preguntas */,
@@ -1785,7 +1786,6 @@
 			isa = PBXGroup;
 			children = (
 				19EDBA582B7C505E00432CDE /* news */,
-				19A8E4672B29487800EE0184 /* conf_yorjandis.txt */,
 				19F3CFC92B5677B200DEB026 /* conf_a sus ordenes.txt */,
 				E92F62262AB3E1C0007BB4BA /* conf_a quien buscas.txt */,
 				E92F61562AB3E1B6007BB4BA /* conf_afirma la realidad de nuestra propia grandesa.txt */,
@@ -2653,7 +2653,6 @@
 				19BBC61A2B159A2600FBB079 /* preg_pregunta 6.txt in Resources */,
 				19BBC6162B159A2600FBB079 /* preg_pregunta 29.txt in Resources */,
 				E92F62E32AB3E1C2007BB4BA /* conf_el poder creador de dios.txt in Resources */,
-				19A8E4682B29487800EE0184 /* conf_yorjandis.txt in Resources */,
 				E92F62C32AB3E1C2007BB4BA /* conf_si de verdad puedes creer.txt in Resources */,
 				E92F62842AB3E1C2007BB4BA /* conf_el esta soñando ahora.txt in Resources */,
 				E92F62682AB3E1C2007BB4BA /* conf_los puros de corazon.txt in Resources */,
@@ -2754,6 +2753,7 @@
 				19BBC5C02B1599DC00FBB079 /* cita_el es mi resureccion.txt in Resources */,
 				E92F63152AB3E1C2007BB4BA /* conf_el artista es dios.txt in Resources */,
 				E92F62662AB3E1C2007BB4BA /* conf_el misterio de la vida.txt in Resources */,
+				1931B16B2B86CFAA00A51EF6 /* privacy.txt in Resources */,
 				E92F628A2AB3E1C2007BB4BA /* conf_todo lo divino.txt in Resources */,
 				E92F62482AB3E1C2007BB4BA /* conf_al norte de la franja.txt in Resources */,
 				E92F62BE2AB3E1C2007BB4BA /* conf_el revelador.txt in Resources */,
@@ -3038,7 +3038,7 @@
 				CODE_SIGN_ENTITLEMENTS = FrasesWiggetExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 18;
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FrasesWigget/Info.plist;
@@ -3049,7 +3049,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.0;
+				MARKETING_VERSION = 1.2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.FrasesWigget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -3067,7 +3067,7 @@
 				CODE_SIGN_ENTITLEMENTS = FrasesWiggetExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 18;
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FrasesWigget/Info.plist;
@@ -3078,7 +3078,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.0;
+				MARKETING_VERSION = 1.2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.FrasesWigget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -3095,7 +3095,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 18;
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WatchComplicationLaLey/Info.plist;
@@ -3107,7 +3107,7 @@
 					"@executable_path/../../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.0;
+				MARKETING_VERSION = 1.2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.watchkitapp.WatchComplicationLaLey;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -3126,7 +3126,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 18;
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WatchComplicationLaLey/Info.plist;
@@ -3138,7 +3138,7 @@
 					"@executable_path/../../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.0;
+				MARKETING_VERSION = 1.2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.watchkitapp.WatchComplicationLaLey;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -3159,7 +3159,7 @@
 				CODE_SIGN_ENTITLEMENTS = "La Ley Watch App/La Ley Watch App.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 18;
 				DEVELOPMENT_ASSET_PATHS = "\"La Ley Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				ENABLE_PREVIEWS = YES;
@@ -3172,7 +3172,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.0;
+				MARKETING_VERSION = 1.2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -3193,7 +3193,7 @@
 				CODE_SIGN_ENTITLEMENTS = "La Ley Watch App/La Ley Watch App.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 18;
 				DEVELOPMENT_ASSET_PATHS = "\"La Ley Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				ENABLE_PREVIEWS = YES;
@@ -3206,7 +3206,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.0;
+				MARKETING_VERSION = 1.2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -3346,7 +3346,7 @@
 				CODE_SIGN_ENTITLEMENTS = Neville_iOS/Neville_iOS.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 18;
 				DEVELOPMENT_ASSET_PATHS = "\"Neville_iOS/Preview Content\"";
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				ENABLE_PREVIEWS = YES;
@@ -3367,7 +3367,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.0;
+				MARKETING_VERSION = 1.2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -3389,7 +3389,7 @@
 				CODE_SIGN_ENTITLEMENTS = Neville_iOS/Neville_iOS.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 18;
 				DEVELOPMENT_ASSET_PATHS = "\"Neville_iOS/Preview Content\"";
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				ENABLE_PREVIEWS = YES;
@@ -3410,7 +3410,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.0;
+				MARKETING_VERSION = 1.2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

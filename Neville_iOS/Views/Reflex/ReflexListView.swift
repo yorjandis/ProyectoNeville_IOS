@@ -17,17 +17,22 @@ struct ReflexListView: View {
     @State var showAlertSearchInTxt = false
     @State var textFiel2 = ""
     @State var textFiel3 = ""
+    @State var textFielTitleForSearch = ""
     @State var showSheetAddReflex = false
     @State var showalertDeleteItem = false
     @State private var entity : Reflex?
     @State private var subtitle = "Reflexiones"
     @State var isfav = false
+    private var filtered : [Reflex]{
+        if self.textFielTitleForSearch.isEmpty {return self.list}
+        return self.list.filter{$0.title?.localizedCaseInsensitiveContains(self.textFielTitleForSearch) ?? false}
+    }
     
     
     var body: some View {
         NavigationStack{
             VStack{
-                List(self.list){item in
+                List(self.filtered){item in
                     VStack(alignment: .leading){
                         NavigationLink{
                             ReflexShowTextView(entity: item)                 
@@ -76,6 +81,7 @@ struct ReflexListView: View {
                     }
                     
                 }
+                .searchable(text: $textFielTitleForSearch, placement: .navigationBarDrawer(displayMode: .always), prompt: "Buscar")
                 .onAppear {
                     list.removeAll()
                     list = RefexModel().GetRequest(predicate: nil)
@@ -174,7 +180,6 @@ struct ReflexListView: View {
                         if let tt = self.entity {
                             if RefexModel().deleteEntity(reflex: tt){
                                 withAnimation {
-                                    list.removeAll()
                                     list = RefexModel().GetRequest(predicate: nil)
                                 }
                             }

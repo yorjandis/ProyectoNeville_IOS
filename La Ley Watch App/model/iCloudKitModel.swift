@@ -24,32 +24,35 @@ class iCloudKitModel {
     private let OwnerName       = "_a2f03c7433ba9905c18635267039d0dc"
     
     
-   private var container : CKDatabase    //= CKContainer.init(identifier: "iCloud.com.ypg.nev.app.icloud").privateCloudDatabase
-    
+    private var container   : CKContainer     //Acceso al contenedor para operaciones que lo requieran
+    private var containerDB : CKDatabase      //Acceso a la BD según el tipo especificado: privada, publica y compartida
+   
     
     init(of type: typeOfDataBase){
         switch type{
         case .BDPrivada:
-            self.container = CKContainer(identifier: self.containerName).privateCloudDatabase
+            self.containerDB = CKContainer(identifier: self.containerName).privateCloudDatabase
         case .BDpublica:
-            self.container = CKContainer(identifier: self.containerName).publicCloudDatabase
+            self.containerDB = CKContainer(identifier: self.containerName).publicCloudDatabase
         case .BDshared:
-            self.container = CKContainer(identifier: self.containerName).sharedCloudDatabase
+            self.containerDB = CKContainer(identifier: self.containerName).sharedCloudDatabase
         }
+        
+        self.container = CKContainer(identifier: self.containerName)
         
     }
     
 
 
     /// Returns all records in the table
-    /// - Parameter - : tableName: Nombre de la tabla a consultar
-    /// - Returns - Devuelve un arreglo con todos los records de la tableName
+    /// - Parameter - : tableName: table name to request
+    /// - Returns - array of all records in the table name
     func getRecords(tableName: TableName)async -> [CKRecord]{
         
         let query = CKQuery(recordType: tableName.txt, predicate: NSPredicate(value: true))   
         var result = [CKRecord]()
         do {
-            let  yy  = try await self.container.records(matching: query)
+            let  yy  = try await self.containerDB.records(matching: query)
             for tuple in yy.matchResults {  //matchResults es un arreglo de tuples [RecordID, Result<record, error>]
                 
                 do {
@@ -75,7 +78,7 @@ class iCloudKitModel {
     /// - Returns -  true if success, false otherwise
     func DeleteRecord(record : CKRecord)async -> Bool{
         do{
-            try await self.container.deleteRecord(withID: record.recordID)
+            try await self.containerDB.deleteRecord(withID: record.recordID)
         }catch{
             print(error.localizedDescription)
             return false
@@ -84,13 +87,13 @@ class iCloudKitModel {
     }
     
     
-    ///Salva un registro (record). Para Operaciones de Update
+    ///Save a record. Para Operaciones de Update
     ///Yorj: En el archivo CRUD se obtiene un registro, se modifica sus entradas y luego se llama a esta función para actualizar su contenido
     /// - Parameters - record : El registro a actualizar
     /// - Returns - true if success, false otherwise
     func SaveRecord(record : CKRecord)async -> Bool{
         do{
-            try await self.container.save(record)
+            try await self.containerDB.save(record)
             return true
         }catch{
             return false
@@ -112,7 +115,7 @@ class iCloudKitModel {
         
         record.setValuesForKeys(listFields)
         do{
-          try await  self.container.save(record)
+          try await  self.containerDB.save(record)
             return true
         }catch{
             print(error.localizedDescription)
@@ -132,7 +135,7 @@ class iCloudKitModel {
          let record = CKRecord(recordType: tableName.txt)
         record.setValuesForKeys(listFields)
         do{
-            try await  self.container.save(record)
+            try await  self.containerDB.save(record)
         }catch{
             print(error.localizedDescription)
             return false

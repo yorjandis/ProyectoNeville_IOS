@@ -16,10 +16,11 @@ struct Neville_iOSApp: App {
   @StateObject private var networkMonitor = NetworkMonitor()
   @StateObject private var WatchConectivityMV = WatchConectivityModel.shared
     
-    
     //Codigo a cargar al inicio:
     init(){
 
+        
+        
         //--YTIdModel().populateTable() //Popular la tabla YTVideos si es la primera vez
         //RefexModel().populateTableReflex() //Popula la tabla reflex si es la primera vez
         
@@ -43,7 +44,7 @@ struct Neville_iOSApp: App {
                 .environmentObject(WatchConectivityMV) //Conectividad con el reloj
                 .task {
                     await FrasesModel().populateTableFrases() //Popular la tabla Frases SI se reinstala la app por primera vez
-                    await TxtContentModel().populateTable()   //Popular la tabla TxtFiles SI se reinstala la app por primera vez
+                   // await TxtContentModel().populateTable()   //Popular la tabla TxtFiles SI se reinstala la app por primera vez
                 }
                 
         }

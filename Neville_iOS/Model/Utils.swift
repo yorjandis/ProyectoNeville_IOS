@@ -5,6 +5,7 @@
 //  Created by Yorjandis Garcia on 15/9/23.
 //Esto es un ejemplo
 
+import Foundation
 import SwiftUI
 
 //Almacenamiento de variables globales:
@@ -139,12 +140,11 @@ struct UtilFuncs{
         return result
         
     }
-
-    
-    
-    
-    
 }
+
+
+
+
 
 
 

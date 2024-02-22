@@ -11,6 +11,7 @@ import LocalAuthentication
 struct settingView: View {
     
     @Environment(\.colorScheme) var theme
+    @Environment(\.dismiss) var dismiss
     
     @AppStorage(AppCons.UD_setting_fontFrasesSize)     var fontSizeFrases      : Int = 24
     @AppStorage(AppCons.UD_setting_fontContentSize)    var fontSizeContenido   : Int = 18
@@ -35,16 +36,15 @@ struct settingView: View {
     //Permite ajustar en tiempo real los cambios en la UI home:
     @Binding var isSettingChanged : Bool
     
+    
+    //Otros
+    @State private var showSheet : Int? = nil
 
     
 
     var body: some View {
         
-        VStack{
-            Text("Ajustes")
-        }
-
-        
+        NavigationStack{
             Form{
                 Section("Tamaño de letra"){
                     HStack{
@@ -55,7 +55,7 @@ struct settingView: View {
                             .onChange(of: fontSizeFrases) { oldValue, newValue in
                                 self.isSettingChanged.toggle() //Informa que se ha cambiado la setting
                             }
-                            
+                        
                     }
                     
                     HStack{
@@ -63,7 +63,7 @@ struct settingView: View {
                             .font(.system(size:CGFloat(fontSizeContenido)))
                         Spacer()
                         Stepper(String(fontSizeContenido), value: $fontSizeContenido)
-                           
+                        
                     }
                     
                     HStack{
@@ -71,7 +71,7 @@ struct settingView: View {
                             .font(.system(size:CGFloat(fontSizeMenu)))
                         Spacer()
                         Stepper(String(fontSizeMenu), value: $fontSizeMenu)
-                            
+                        
                     }
                     
                     HStack{
@@ -79,11 +79,11 @@ struct settingView: View {
                             .font(.system(size:CGFloat(fontSizeLista)))
                         Spacer()
                         Stepper(String(fontSizeLista), value: $fontSizeLista)
-                           
+                        
                     }
                     
                 }.padding(2)
-                    
+                
                 Section("Color de texto de frases"){
                     
                     ColorPicker("Color de frases", selection: $ColorFrase)
@@ -147,13 +147,16 @@ struct settingView: View {
                                 
                                 Task{
                                     //LLamar a todas las funciones de actualización de contenido
-                                    let NoElementFrases = await FrasesModel().UpdateContenAfterAppUpdate()
+                                    let NoElementFrases =  FrasesModel().UpdateContenAfterAppUpdate()
+                                    
                                     //Para elementos con prefijos:
-                                    let NoElementConf   =  await TxtContentModel().UpdateContenAfterAppUpdate(type: .conf)
-                                   // let NoElementCitas  =   TxtContentModel().UpdateContenAfterAppUpdate(type: .citas)
-                                   // let NoElementPreg   =   TxtContentModel().UpdateContenAfterAppUpdate(type: .preg)
-                                    let NoElementAyuda  =  await TxtContentModel().UpdateContenAfterAppUpdate(type: .ayud)
-                                    let NoElementReflex =   await RefexModel().UpdateContenAfterAppUpdate()
+                                    let NoElementConf   =  TxtContentModel().UpdateContenAfterAppUpdate(type: .conf)
+                                    
+                                    // let NoElementCitas  =   TxtContentModel().UpdateContenAfterAppUpdate(type: .citas)
+                                    // let NoElementPreg   =   TxtContentModel().UpdateContenAfterAppUpdate(type: .preg)
+                                    let NoElementAyuda  = TxtContentModel().UpdateContenAfterAppUpdate(type: .ayud)
+                                    
+                                    let NoElementReflex = RefexModel().UpdateContenAfterAppUpdate()
                                     
                                     self.alertMessage = """
                                     Se han adicionado:
@@ -163,6 +166,7 @@ struct settingView: View {
                                     \(NoElementReflex.0) \\ \(NoElementReflex.1) Reflexiones
                                     """
                                     self.showAlert = true
+                                    
                                 }
                                 
                             }
@@ -174,22 +178,110 @@ struct settingView: View {
                             .font(.footnote)
                             .foregroundStyle(.gray)
                     }
-                        
-                        
-                        
+                    
+                    
+                    
+                }
+                
+                Section("Manteniemiento"){
+                    VStack(alignment: .leading){
+                        NavigationLink("Eliminar duplicados"){
+                            VStack{
+                                Text("Si ha instalado la app anteriormente, es posible que el contenido no se sincronice correctamente con iCloud. Esta situación origina elementos duplicados en Frases, Conferencias, Citas, Preguntas, Ayudas y Reflexiones. Las cáusas pueden deberse a que iCloud no esta iniciado en el momento de la instalación entre otros...Para solucionar este problema y eliminar con seguridad los elementos duplicados utilice el botón debajo. Esto restaura los listados sin perder la información personal como notas o favoritos")
+                                    .font(.system(size: 20))
+                                    .fontDesign(.serif)
+                                    .padding(20)
+                                Button("Eliminar Duplicados"){
+                                    FrasesModel().Fix_DeleteDuplicatesRowsInBDCoreDataForfrases()
+                                    TxtContentModel().Fix_DeleteDuplicatesRowsInBDCoreDataForConf()
+                                    RefexModel().Fix_DeleteDuplicatesRowsInBDCoreDataForReflex()
+                                    self.alertMessage = "Los elementos duplicados se han borrado correctamente. Si el problema persiste, utilice la sección de contacto en Ajustes para enviar un mensaje al desarrollador"
+                                    self.showAlert = true
+                                }
+                                .buttonStyle(.borderedProminent)
+                                Spacer()
+                                    .navigationTitle("Ajustes - Eliminar Duplicados")
+                                
+                            }
+                        }
+                        Text("Eliminar elementos duplicados")
+                            .font(.footnote)
+                            .foregroundStyle(.gray)
+                    }
+                    
                 }
                 
                 
                 Section("Contacto & Información"){
-         
-                        ShareLink(item: URL(string: "https://apps.apple.com/es/app/la-ley/id6472626696")!) {
-                                Label("Compartir la App", image: "Icon-29")
-                                .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
-                                .bold()
-                                .font(.headline)
-                                                    
-                        }
+                    
+                    NavigationLink{
+                        Form{
+                            HStack{
+                                Text("Versión")
+                                Spacer()
+                                Text("\(AppCons.appVersion ?? "")")
+                                    .foregroundStyle(.orange).bold()
+                            }
+                            HStack{
+                                Text("Frases")
+                                Spacer()
+                                Text("\(FrasesModel().GetRequest(predicate: nil).count)")
+                            }.onTapGesture {self.showSheet = 1}
+                            HStack{
+                                Text("Conferencias")
+                                Spacer()
+                                Text("\(TxtContentModel().GetRequest(type: .conf, predicate: nil).count)")
+                            }.onTapGesture {self.showSheet = 2}
+                            HStack{
+                                Text("Citas")
+                                Spacer()
+                                Text("\(TxtContentModel().GetRequest(type: .citas, predicate: nil).count)")
+                            }.onTapGesture {self.showSheet = 3}
+                            HStack{
+                                Text("Preguntas")
+                                Spacer()
+                                Text("\(TxtContentModel().GetRequest(type: .preg, predicate: nil).count)")
+                            }.onTapGesture {self.showSheet = 4}
+                            HStack{
+                                Text("Ayudas")
+                                Spacer()
+                                Text("\(TxtContentModel().GetRequest(type: .ayud, predicate: nil).count)")
+                            }.onTapGesture {self.showSheet = 5}
 
+                            HStack{
+                                Text("Reflexiones")
+                                Spacer()
+                                Text("\(RefexModel().GetRequest(predicate: nil).count)")
+                            }.onTapGesture {self.showSheet = 6}
+                            
+                        }
+                        .navigationTitle("Ajustes - Información")
+                    }label: {
+                        Label("Información", systemImage: "info.circle.fill")
+                            .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
+                    }
+                    
+                    NavigationLink{
+                        NavigationStack{
+                            ScrollView{
+                                Text(UtilFuncs.FileRead("privacy"))
+                            }.navigationTitle("Ajustes - Privacy")
+                        }
+                    }label:{
+                        Label("Política de Privacidad", systemImage: "hand.raised.circle")
+                            .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
+                            .bold()
+                            .font(.headline)
+                    }
+                    
+                    ShareLink(item: URL(string: "https://apps.apple.com/es/app/la-ley/id6472626696")!) {
+                        Label("Compartir la App", image: "Icon-29")
+                            .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
+                            .bold()
+                            .font(.headline)
+                        
+                    }
+                    
                     Link(destination: URL(string:  "https://ypg.mozello.com/contacto/")!) {
                         Label("Enviarme un comentario", systemImage: "exclamationmark.warninglight.fill")
                             .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
@@ -202,21 +294,45 @@ struct settingView: View {
                             .bold()
                             .font(.headline)
                     }
-
-                    Link(destination: URL(string:  "https://ypg.mozello.com/productos/neville/privacy-police-ios/")!) {
-                        Label("Política de Privacidad", systemImage: "link")
-                            .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
-                            .bold()
-                            .font(.headline)
-                    }
-
+                    
+                    
+                    
+                    
+                    
+                    
+                    
                 }
-    
+                
                 .alert(isPresented: $showAlert) {
                     Alert(title: Text("Configuración"), message: Text(alertMessage))
                 }
- 
+                
             }
+            .navigationTitle("Ajustes")
+            .navigationBarTitleDisplayMode(.inline)
+            
+        }
+        .sheet(item: $showSheet) { details in
+            switch details {
+            case 1:
+                FrasesListView()
+            case 2:
+                TxtListView( type: .conf, title: "Lecturas")
+            case 3:
+                TxtListView( type: .citas, title: "Citas")
+            case 4:
+                TxtListView( type: .preg, title: "Preguntas")
+            case 5:
+                TxtListView( type: .ayud, title: "Ayudas")
+            case 6:
+                ReflexListView()
+            default :
+                EmptyView()
+            }
+        }
+
+        
+            
             
             
         
@@ -246,9 +362,14 @@ struct settingView: View {
             canOpenToggleButton = true //Deshabilitando la protección del Diario.
         }
     }
+
+    
     
 }
 
+extension Int: Identifiable {
+    public var id: Int { return self }
+}
 
 
 #Preview {

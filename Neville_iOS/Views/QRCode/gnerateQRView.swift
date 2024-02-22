@@ -162,7 +162,7 @@ struct GenerateQRView : View {
                                       context: nil,
                                       options: [CIDetectorAccuracy: CIDetectorAccuracyHigh]),
             let ciImage = CIImage(image: pickedImage),
-            let features = detector.features(in: ciImage) as? [CIQRCodeFeature] else { return }
+              let _ = detector.features(in: ciImage) as? [CIQRCodeFeature] else { return }
 
        // let qrCodeLink = features.reduce("") { $0 + ($1.messageString ?? "") }
     }
