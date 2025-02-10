@@ -336,6 +336,11 @@ struct TabButtonBar : View{
 }
 
 
+
+
+
+
+
 //View: Permite guardar una nueva nota en la BD
 struct AddNotasViewInbuilt: View {
     @Environment(\.dismiss) var dimiss
