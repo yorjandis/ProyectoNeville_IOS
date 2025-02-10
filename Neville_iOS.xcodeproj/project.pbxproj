@@ -1550,7 +1550,56 @@
 			path = FrasesWigget;
 			sourceTree = "<group>";
 		};
-		19EDBA582B7C505E00432CDE /* news */ = {
+		19EDBBC62B7DD66000432CDE /* WatchComplicationLaLey */ = {
+			isa = PBXGroup;
+			children = (
+				19EDBBC72B7DD66000432CDE /* WatchComplicationLaLey.swift */,
+				19EDBBC92B7DD66200432CDE /* Assets.xcassets */,
+				19EDBBCB2B7DD66200432CDE /* Info.plist */,
+			);
+			path = WatchComplicationLaLey;
+			sourceTree = "<group>";
+		};
+		19F8041A2B69CB9D00A323A0 /* La Ley Watch App */ = {
+			isa = PBXGroup;
+			children = (
+				19D2F0602B6DE90600D9B62C /* La-Ley-Watch-App-Info.plist */,
+				190C39B52B6B97F3008007C6 /* model */,
+				19D04F1A2B7305A8007B66F2 /* Views */,
+				190C39AB2B6B84AA008007C6 /* La Ley Watch App.entitlements */,
+				19F8041B2B69CB9D00A323A0 /* La_LeyApp.swift */,
+				19F8041D2B69CB9D00A323A0 /* ContentView.swift */,
+				19F8041F2B69CBA000A323A0 /* Assets.xcassets */,
+				19F804212B69CBA000A323A0 /* Preview Content */,
+			);
+			path = "La Ley Watch App";
+			sourceTree = "<group>";
+		};
+		19F804212B69CBA000A323A0 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				19F804222B69CBA000A323A0 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		E92F61182AB3E05C007BB4BA /* Staff */ = {
+			isa = PBXGroup;
+			children = (
+				1931B16A2B86CFAA00A51EF6 /* privacy.txt */,
+				19BBC62C2B16BAB900FBB079 /* reflexiones.txt */,
+				19BBC61B2B159A3A00FBB079 /* Ayudas */,
+				19BBC5D22B159A0100FBB079 /* Preguntas */,
+				19BBC5912B1599B600FBB079 /* Citas */,
+				19BBC5892B1592D800FBB079 /* biografia.txt */,
+				19C7483B2B045E6D004D52E6 /* cuestionario.txt */,
+				E92F64562AB7D2BA007BB4BA /* listfrases.txt */,
+				E92F61192AB3E06F007BB4BA /* Conf */,
+			);
+			path = Staff;
+			sourceTree = "<group>";
+		};
+		E92F61192AB3E06F007BB4BA /* Conf */ = {
 			isa = PBXGroup;
 			children = (
 				19EDBAB22B7C507B00432CDE /* conf_absolucion divina.txt */,
@@ -1729,63 +1778,6 @@
 				19EDBAC02B7C507C00432CDE /* conf_verdad.txt */,
 				19EDBA8F2B7C507A00432CDE /* conf_Visiones escatologicas.txt */,
 				19EDBA832B7C507900432CDE /* conf_yo soy la vid.txt */,
-			);
-			path = news;
-			sourceTree = "<group>";
-		};
-		19EDBBC62B7DD66000432CDE /* WatchComplicationLaLey */ = {
-			isa = PBXGroup;
-			children = (
-				19EDBBC72B7DD66000432CDE /* WatchComplicationLaLey.swift */,
-				19EDBBC92B7DD66200432CDE /* Assets.xcassets */,
-				19EDBBCB2B7DD66200432CDE /* Info.plist */,
-			);
-			path = WatchComplicationLaLey;
-			sourceTree = "<group>";
-		};
-		19F8041A2B69CB9D00A323A0 /* La Ley Watch App */ = {
-			isa = PBXGroup;
-			children = (
-				19D2F0602B6DE90600D9B62C /* La-Ley-Watch-App-Info.plist */,
-				190C39B52B6B97F3008007C6 /* model */,
-				19D04F1A2B7305A8007B66F2 /* Views */,
-				190C39AB2B6B84AA008007C6 /* La Ley Watch App.entitlements */,
-				19F8041B2B69CB9D00A323A0 /* La_LeyApp.swift */,
-				19F8041D2B69CB9D00A323A0 /* ContentView.swift */,
-				19F8041F2B69CBA000A323A0 /* Assets.xcassets */,
-				19F804212B69CBA000A323A0 /* Preview Content */,
-			);
-			path = "La Ley Watch App";
-			sourceTree = "<group>";
-		};
-		19F804212B69CBA000A323A0 /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				19F804222B69CBA000A323A0 /* Preview Assets.xcassets */,
-			);
-			path = "Preview Content";
-			sourceTree = "<group>";
-		};
-		E92F61182AB3E05C007BB4BA /* Staff */ = {
-			isa = PBXGroup;
-			children = (
-				1931B16A2B86CFAA00A51EF6 /* privacy.txt */,
-				19BBC62C2B16BAB900FBB079 /* reflexiones.txt */,
-				19BBC61B2B159A3A00FBB079 /* Ayudas */,
-				19BBC5D22B159A0100FBB079 /* Preguntas */,
-				19BBC5912B1599B600FBB079 /* Citas */,
-				19BBC5892B1592D800FBB079 /* biografia.txt */,
-				19C7483B2B045E6D004D52E6 /* cuestionario.txt */,
-				E92F64562AB7D2BA007BB4BA /* listfrases.txt */,
-				E92F61192AB3E06F007BB4BA /* Conf */,
-			);
-			path = Staff;
-			sourceTree = "<group>";
-		};
-		E92F61192AB3E06F007BB4BA /* Conf */ = {
-			isa = PBXGroup;
-			children = (
-				19EDBA582B7C505E00432CDE /* news */,
 				19F3CFC92B5677B200DEB026 /* conf_a sus ordenes.txt */,
 				E92F62262AB3E1C0007BB4BA /* conf_a quien buscas.txt */,
 				E92F61562AB3E1B6007BB4BA /* conf_afirma la realidad de nuestra propia grandesa.txt */,
