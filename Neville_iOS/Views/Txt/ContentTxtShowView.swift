@@ -9,12 +9,13 @@
 import Foundation
 import SwiftUI
 import CoreData
+import RichText
 
 
 struct ContentTxtShowView: View {
     
     @Environment(\.dismiss) private var dimiss
-    
+    @Environment(\.managedObjectContext) private var context
     
     //Para leer ficheros txt con prefijos
     var entidad : TxtCont?
@@ -36,11 +37,13 @@ struct ContentTxtShowView: View {
     //Yor aqui va el código para leer el contenido del fichero
     var getContent : String {
         if self.type != .NA { //se ha pasado un fichero de prefijo
-            if let enti = self.entidad {
-                return UtilFuncs.FileRead("\(enti.type ?? "")" + "\(enti.namefile ?? "")")
+            if let entidadTemp = self.entidad {
+                print("Yorj: Entidad: \(entidadTemp.type ?? "")" + "\(entidadTemp.namefile ?? "") ")
+                return UtilFuncs.FileRead("\(entidadTemp.type ?? "")" + "\(entidadTemp.namefile ?? "")")
             }
         }else{
             if self.fileName != "" {
+                print("Yorj:  Fichero: \(self.fileName)")
                 return UtilFuncs.FileRead(fileName)
             }
         }
@@ -52,11 +55,20 @@ struct ContentTxtShowView: View {
             
             VStack {
                 ScrollView(showsIndicators: true){
+                   
+                    RichText(html: self.getContent )
+                        .colorScheme(.auto)
+                        .fontType(.customName("Arial"))
+                        .customCSS("*{font-size: \(self.fontSizeContent)px;}")
+                        .padding(.horizontal, 5)
+                    
+                    /*
                     Text(self.getContent)
                         .font(.system(size: fontSizeContent, design: .rounded))
                         .fontDesign(.rounded)
                         .padding(.trailing, 20)
                         .textSelection(.enabled)
+                    */
                 }
                 .padding(.horizontal, 10)
                 
@@ -116,7 +128,7 @@ struct ContentTxtShowView: View {
                             if self.fileName.isEmpty {
                                 Button("Marcar como Favorita"){
                                     if let enti = self.entidad {
-                                        TxtContentModel().setFavState(entity: enti, state: true)
+                                        TxtContentModel().setFavState(context: self.context, entity: enti, state: true)
                                     }
                                 }
                                 NavigationLink("Añadir nota asociada"){
@@ -148,6 +160,7 @@ struct EditNoteTxtContentTxtShow:View {
     @Environment(\.dismiss) var dimiss
     @State var entidad : TxtCont
     @State private var textfiel = ""
+    @Environment(\.managedObjectContext) var context
 
     
     var body: some View {
@@ -173,7 +186,7 @@ struct EditNoteTxtContentTxtShow:View {
                 HStack{
                     Spacer()
                     Button{
-                        TxtContentModel().setNota(entity: entidad, nota: textfiel)
+                        TxtContentModel().setNota(context: self.context , entity: entidad, nota: textfiel)
                         dimiss()
                     }label: {
                         Text("Guardar")

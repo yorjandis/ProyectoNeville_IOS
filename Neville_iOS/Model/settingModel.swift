@@ -19,9 +19,6 @@ struct SettingModel {
             
             UserDefaults.standard.setValue(components, forKey: forkey)
         }
-        
-       
-        
     }
     
     //Devuelve el valor de un color como Color para una clave en userdefault. Por defecto devuelve el color primario en el sistema
@@ -39,7 +36,6 @@ struct SettingModel {
 
     ///Establece los valores por defecto para setting
     func setValuesByDefault(){
-        
         UserDefaults.standard.setValue(30, forKey: AppCons.UD_setting_fontFrasesSize)
         UserDefaults.standard.setValue(18, forKey: AppCons.UD_setting_fontContentSize)
         UserDefaults.standard.setValue(18, forKey: AppCons.UD_setting_fontMenuSize)
@@ -49,8 +45,5 @@ struct SettingModel {
         saveColor(forkey: AppCons.UD_setting_color_frases, color: .black)
         saveColor(forkey: AppCons.UD_setting_color_main_a, color: .red)
         saveColor(forkey: AppCons.UD_setting_color_main_b, color: .orange)
-        
     }
-    
-    
 }

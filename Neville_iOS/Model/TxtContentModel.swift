@@ -10,10 +10,15 @@
 
 import Foundation
 import CoreData
+import SwiftUI
 
-struct TxtContentModel{
-
-    private let context = CoreDataController.shared.context
+@MainActor
+final class TxtContentModel : ObservableObject {
+    
+    @Published var txtContent: [TxtCont] = []
+    
+    
+  //  private let context = CoreDataController.shared.context
     
     //Typo de contenido a manejar: Nota: Si en un futuro se adiciona más contenido se maneja aqui
     enum TipoDeContenido: String, CaseIterable{
@@ -35,10 +40,10 @@ struct TxtContentModel{
     
     
     ///Realiza consultas a la BD
-    /// - Parameter - type: define el tipo de contenido a consultar
+    /// - Parameter - type: define el tipo de contenido .txt a consultar (conf, citas, preguntas, reflexiones)
     /// - Parameter - predicate: define el predicado a utilizar para filtrar la consulta. Si es nil devuelve todos los elementos
-    ///  - Returns - Devuelve un arreglo de elementos de cierto tipo. Si falla la cosulta se devuelve un arreglo vacio
-    func GetRequest(type: TipoDeContenido, predicate : NSPredicate?)->[TxtCont]{
+    /// - Returns - Devuelve un arreglo de elementos de cierto tipo. Si falla la cosulta se devuelve un arreglo vacio
+    func GetRequest( context : NSManagedObjectContext, type: TipoDeContenido, predicate : NSPredicate?)->[TxtCont]{
         
         let fecthRequest = NSFetchRequest<TxtCont>(entityName: "TxtCont")
         
@@ -64,9 +69,9 @@ struct TxtContentModel{
     ///Devuelve una entity aleatoria, segun el tipo
     ////// - Parameter type : indica el tipo de contenido a filtrar
     /// - Returns - Devuelve un objeto de tipo Confe. Si falla devuelve un objeto vacio
-    func getRandomItem(type : TipoDeContenido)->TxtCont?{
+    func getRandomItem(context : NSManagedObjectContext, type : TipoDeContenido)->TxtCont?{
         
-        let temp = GetRequest(type: type, predicate: nil) //Obtiene todas las conferencias
+        let temp = GetRequest(context: context, type: type, predicate: nil) //Obtiene todas las conferencias
         if temp.count > 0 {
             return temp.randomElement() ?? TxtCont(context: context)
         }
@@ -75,7 +80,7 @@ struct TxtContentModel{
     
     
     ///Actualiza el estado de favorito (Alterna entre el estado actual)
-    func setFavState(entity : TxtCont?, state : Bool){
+    func setFavState(context : NSManagedObjectContext, entity : TxtCont?, state : Bool){
         do{
             if let tt = entity {
                 tt.isfav = state
@@ -98,7 +103,7 @@ struct TxtContentModel{
     }
     
     ///Establece el valor del campo nota
-    func setNota(entity : TxtCont?, nota : String){
+    func setNota(context : NSManagedObjectContext, entity : TxtCont?, nota : String){
         do{
             if let tt = entity {
                 tt.nota = nota
@@ -110,13 +115,13 @@ struct TxtContentModel{
     }
     
     ///Devuelve un arreglo con todas las entity de cierto tipo que son favoritas
-    func getAllFavorite(type : TipoDeContenido)->[TxtCont]{
-           return GetRequest(type: type, predicate: PredicatesTypes(type: type).getAllFavorites)
+    func getAllFavorite(context : NSManagedObjectContext, type : TipoDeContenido)->[TxtCont]{
+        return GetRequest(context: context, type: type, predicate: PredicatesTypes(type: type).getAllFavorites)
     }
     
     ///Devuelve todas las entity que tiene una nota, segun el tipo
-    func getAllNota(type : TipoDeContenido)->[TxtCont]{
-        return GetRequest(type: type, predicate: PredicatesTypes(type: type).getAllNotas)
+    func getAllNota(context : NSManagedObjectContext,  type : TipoDeContenido)->[TxtCont]{
+        return GetRequest(context: context, type: type, predicate: PredicatesTypes(type: type).getAllNotas)
     }
  
     
@@ -154,7 +159,7 @@ struct TxtContentModel{
     
     
     //Clean DataBase: Elimina todos los registros de la tabla TXT: conf, citas, ayudas, pregunt
-    func cleanTxtCont()->Bool{
+    func cleanTxtCont(context : NSManagedObjectContext)->Bool{
 
       if UserDefaults.standard.bool(forKey: AppCons.UD_isTxtFilesPupulate) {return false} //Sale si la tabla TxtFiles ya esta populada
         
@@ -189,7 +194,7 @@ struct TxtContentModel{
     // ---------------------------------------------------- FUNCIONES INTERNAS --------------------------------------------------------------
     
     ///Popula la Tabla Conf. Esto se hace la primera vez que se instala la app en un dispositivo
-    func populateTable() async {
+    func populateTable(context : NSManagedObjectContext) async {
         
        if UserDefaults.standard.bool(forKey: AppCons.UD_isTxtFilesPupulate) {return} //Sale si la tabla TxtFiles ya esta populada
         
@@ -197,7 +202,7 @@ struct TxtContentModel{
         if FileManager.default.ubiquityIdentityToken != nil {
             //icloud disponible:
             
-            //Chequeando si existe resgistros en iCloud
+            //Chequeando si existe registros en iCloud
             let resultTemp = await iCloudKitModel(of: .BDPrivada).getRecords(tableName: .CD_Frases)
             if !resultTemp.isEmpty {
                 //Significa que tiene registros en iCloud: NO popula
@@ -207,7 +212,7 @@ struct TxtContentModel{
         }
         
         
-        print("populando la tabla TxtContent")
+       // print("populando la tabla TxtContent")
         
         var array : [String] = [] //Almacena los name files leidos del bundle para el contenido txt
 
@@ -234,7 +239,7 @@ struct TxtContentModel{
         
         
         //almacena en UserDefault un flag que indica que la tabla se ha populado
-        if self.GetRequest(type: .conf, predicate: nil).count > 0 { //Significa que se populó la tabla con al menos las conferencias
+        if self.GetRequest(context: context, type: .conf, predicate: nil).count > 0 { //Significa que se populó la tabla con al menos las conferencias
             UserDefaults.standard.setValue(true, forKey: AppCons.UD_isTxtFilesPupulate)
         }
             
@@ -278,7 +283,7 @@ struct TxtContentModel{
     ///Por ejemplo cuando adicionamos nuevas conferencias, o ayudas, citas o preguntas
     /// - Parameter - type : Tipo de contenido a actualizar
     /// - Returns : Devuelve una tupla de dos enteros: el primero es el # de elementos que se han añadido, el segundo el # de elementos que han fallado al insertarse
-    func UpdateContenAfterAppUpdate(type : TipoDeContenido)->(Int,Int){
+    func UpdateContenAfterAppUpdate(context : NSManagedObjectContext, type : TipoDeContenido)->(Int,Int){
         
         var set : Set<String> = Set()
         var errorCount = 0 //cuanta los elementos fallidos que no se han podido adicionar a la BD
@@ -286,7 +291,7 @@ struct TxtContentModel{
         var totalNews = 0 //cuanta elementos nuevos han sido detectados
         
         //Volcar todos los nombres de conferencias de la BD a un set.
-        let arrayBdConfe = self.GetRequest(type: type, predicate: nil)
+        let arrayBdConfe = self.GetRequest(context: context, type: type, predicate: nil)
         
         if arrayBdConfe.isEmpty { return (0,0) } //Manejo de errores
         
@@ -309,7 +314,7 @@ struct TxtContentModel{
                 totalNews += 1
                //Actualizando la BD
                 do {
-                    let item = TxtCont(context: self.context)
+                    let item = TxtCont(context: context)
                     item.id = UUID()
                     item.namefile = result.1
                     item.type = type.rawValue
@@ -344,8 +349,8 @@ struct TxtContentModel{
     }
     
     ///Pone el campo isnew a false de todos los registros de un tipo determinado
-    func RemoveAllNewFlag(type : TipoDeContenido){
-        let array = GetRequest(type: type, predicate: nil)
+    func RemoveAllNewFlag(context : NSManagedObjectContext, type : TipoDeContenido){
+        let array = GetRequest(context: context, type: type, predicate: nil)
         for i in array {
             i.isnew = false
            try?  i.managedObjectContext?.save()
@@ -355,10 +360,10 @@ struct TxtContentModel{
     
     ///Lista todos los elementos recientemente adicionado: isnew:true
     /// - Returns - Devuelve un arreglo con todos los campos del tipo dado,   añadidos recientemente
-    func getAllNewsElements(type : TipoDeContenido)->[TxtCont]{
+    func getAllNewsElements(context : NSManagedObjectContext,  type : TipoDeContenido)->[TxtCont]{
         var result : [TxtCont] = []
 
-        let array = GetRequest(type: type, predicate: nil)
+        let array = GetRequest(context: context, type: type, predicate: nil)
         for i in array{
             if i.isnew {
                 result.append(i)
@@ -373,7 +378,7 @@ struct TxtContentModel{
     ///OKOKOK Mantenimiento de la BD: Elimina registros duplicados en Core Data. Se asegura que se eliminan solos aquellos registros que tengan el campo fav a false y nota a vacio:
     /// Yor: esto repara la BD de frases de elementos duplicados. Solo conserva aquellos que tiene  nota o están marcados como favoritos.
     /// - Returns - devuelve el número de registros duplicados:
-    func Fix_DeleteDuplicatesRowsInBDCoreDataForConf(){
+    func Fix_DeleteDuplicatesRowsInBDCoreDataForConf(context : NSManagedObjectContext){
         var arrayForDelete : [TxtCont] = [] //Arreglo de elementos duplicados para eliminar
         
         
@@ -383,7 +388,7 @@ struct TxtContentModel{
         let tipoDeElemento = [TipoDeContenido.conf, TipoDeContenido.citas, TipoDeContenido.ayud, TipoDeContenido.preg]
         
         for type in tipoDeElemento {
-            let ArrayItems = TxtContentModel().GetRequest(type: type, predicate: nil) //Total de elementos en BD
+            let ArrayItems = TxtContentModel().GetRequest(context: context, type: type, predicate: nil) //Total de elementos en BD
             for i in ArrayItems {
                 let duplicadosTemp = ArrayItems.filter{ $0.namefile == i.namefile } //Filtrando los elementos duplicados
                 totalDuplicadosTemp = duplicadosTemp.count //almacena la cantidad de elementos duplicados

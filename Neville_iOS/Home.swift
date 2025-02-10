@@ -72,9 +72,13 @@ struct Home: View {
                     do {
                         try await CheckAppStatus().getAppNewVersion { update in
                             if update{
-                                showTextUpdateApp = true
+                                DispatchQueue.main.async {
+                                    showTextUpdateApp = true
+                                } 
                             }else{
-                                showTextUpdateApp = false
+                                DispatchQueue.main.async {
+                                    showTextUpdateApp = true
+                                }
                             }
                         }
                     }catch{
@@ -265,7 +269,7 @@ struct TabButtonBar : View{
                 switch idx{
                 case "book.pages.fill":
                     NavigationLink{
-                        TxtListView(type: .conf, title: "Lecturas")
+                        TxtListView(typeOfContent: .conf, title: "Lecturas")
                     }label: {
                         makeItemlabel(image: idx)
                     }

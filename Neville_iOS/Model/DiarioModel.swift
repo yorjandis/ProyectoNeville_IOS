@@ -36,13 +36,13 @@ struct DiarioModel{
     //Obtiene el valor enum de Emociones a partir de una cadena de texto
     func getEmocionesFromStr(value : String)->Emociones{
         switch value{
-        case "feliz":       Emociones.feliz
-        case "enfadado":    Emociones.enfado
-        case "desanimado":  Emociones.desanimado
-        case "sorpresa":    Emociones.sorpresa
-        case "distraido":   Emociones.distraido
-        case "neutral":     Emociones.neutral
-        default:            Emociones.neutral  //By default
+        case "feliz"        : Emociones.feliz
+        case "enfadado"     : Emociones.enfado
+        case "desanimado"   : Emociones.desanimado
+        case "sorpresa"     : Emociones.sorpresa
+        case "distraido"    : Emociones.distraido
+        case "neutral"      : Emociones.neutral
+        default             : Emociones.neutral  //By default
         }
     }
     
@@ -59,7 +59,6 @@ struct DiarioModel{
         }catch{
             return []
         }
-        
     }
     
     
@@ -201,10 +200,6 @@ struct DiarioModel{
 
         return result
     }
-    
 
-    
-    
-    
 }
 

@@ -12,6 +12,7 @@ struct settingView: View {
     
     @Environment(\.colorScheme) var theme
     @Environment(\.dismiss) var dismiss
+    @Environment(\.managedObjectContext) private var context
     
     @AppStorage(AppCons.UD_setting_fontFrasesSize)     var fontSizeFrases      : Int = 24
     @AppStorage(AppCons.UD_setting_fontContentSize)    var fontSizeContenido   : Int = 18
@@ -140,6 +141,7 @@ struct settingView: View {
                     
                 }
                 
+                /*
                 Section("Actualización de Contenido"){
                     VStack(alignment: .leading){
                         if showButtonUpdate {
@@ -211,6 +213,7 @@ struct settingView: View {
                     
                 }
                 
+                */
                 
                 Section("Contacto & Información"){
                     
@@ -230,22 +233,22 @@ struct settingView: View {
                             HStack{
                                 Text("Conferencias")
                                 Spacer()
-                                Text("\(TxtContentModel().GetRequest(type: .conf, predicate: nil).count)")
+                                Text("\(TxtContentModel().GetRequest(context: self.context, type: .conf, predicate: nil).count)")
                             }.onTapGesture {self.showSheet = 2}
                             HStack{
                                 Text("Citas")
                                 Spacer()
-                                Text("\(TxtContentModel().GetRequest(type: .citas, predicate: nil).count)")
+                                Text("\(TxtContentModel().GetRequest(context: self.context, type: .citas, predicate: nil).count)")
                             }.onTapGesture {self.showSheet = 3}
                             HStack{
                                 Text("Preguntas")
                                 Spacer()
-                                Text("\(TxtContentModel().GetRequest(type: .preg, predicate: nil).count)")
+                                Text("\(TxtContentModel().GetRequest(context: self.context, type: .preg, predicate: nil).count)")
                             }.onTapGesture {self.showSheet = 4}
                             HStack{
                                 Text("Ayudas")
                                 Spacer()
-                                Text("\(TxtContentModel().GetRequest(type: .ayud, predicate: nil).count)")
+                                Text("\(TxtContentModel().GetRequest(context: self.context, type: .ayud, predicate: nil).count)")
                             }.onTapGesture {self.showSheet = 5}
 
                             HStack{
@@ -253,6 +256,12 @@ struct settingView: View {
                                 Spacer()
                                 Text("\(RefexModel().GetRequest(predicate: nil).count)")
                             }.onTapGesture {self.showSheet = 6}
+                            
+                            HStack{
+                                Text("Cuestionario")
+                                Spacer()
+                                Text("\(UtilFuncs.FileReadToArray("cuestionario").count)")
+                            }.onTapGesture {self.showSheet = 7}
                             
                         }
                         .navigationTitle("Ajustes - Información")
@@ -317,15 +326,17 @@ struct settingView: View {
             case 1:
                 FrasesListView()
             case 2:
-                TxtListView( type: .conf, title: "Lecturas")
+                TxtListView( typeOfContent: .conf, title: "Lecturas")
             case 3:
-                TxtListView( type: .citas, title: "Citas")
+                TxtListView( typeOfContent: .citas, title: "Citas")
             case 4:
-                TxtListView( type: .preg, title: "Preguntas")
+                TxtListView( typeOfContent: .preg, title: "Preguntas")
             case 5:
-                TxtListView( type: .ayud, title: "Ayudas")
+                TxtListView( typeOfContent: .ayud, title: "Ayudas")
             case 6:
                 ReflexListView()
+            case 7:
+                GamePLay()
             default :
                 EmptyView()
             }
@@ -367,7 +378,7 @@ struct settingView: View {
     
 }
 
-extension Int: Identifiable {
+extension Int: @retroactive Identifiable {
     public var id: Int { return self }
 }
 

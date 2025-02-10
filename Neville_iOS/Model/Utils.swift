@@ -65,6 +65,7 @@ struct AppCons{
 
 }
 
+/*
 ///Enumeración para los distintos tipos de elementos de contenido:
 enum TypeOfTxtContent{
     case conf, aud_Conf, frases, citas, preguntas, ayudas, biografia, NA
@@ -97,10 +98,12 @@ enum TypeOfTxtContent{
 
     
 }
+*/
 
 
 
 struct UtilFuncs{
+    
     ///ReadFileToArray : Devuelve un array conteniendo todas las líneas de texto de un fichero txt
     /// - Parameter - filename: el nombre del fichero sin la extension, para ser procesado
     /// - Returns - Devuelve un arreglo de String. cada línea del fichero es una item del arreglo
@@ -122,23 +125,18 @@ struct UtilFuncs{
     }
 
     ///Lee el contenido de un fichero Txt, ubicado en el bundle de la app, y lo devuelve como String
-    /// - Parameter - fileName: el nombre del fichero, soin la extensión
-    ///  - Returns - Devuelve el contebido del fichero
-    static func FileRead(_ fileName : String)->String{
-        
+    /// - Parameter - fileName: el nombre del fichero, sin la extensión
+    ///  - Returns - Devuelve el contenido del fichero
+    static func FileRead(_ fileName: String) -> String {
         var result = ""
         let temp = "\(fileName.lowercased())"
         
         if let gg = Bundle.main.url(forResource: temp, withExtension: "txt") {
-            
-            if let fileContens = try? String(contentsOf: gg){
-                result = fileContens
+            if let fileContents = try? String(contentsOf: gg) {
+                result = fileContents.replacingOccurrences(of: "\n", with: "<br>")
             }
-            
         }
-        
         return result
-        
     }
 }
 

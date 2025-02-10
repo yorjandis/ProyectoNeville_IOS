@@ -10,7 +10,7 @@ import SwiftUI
 
 //Custom Modifier: crea un gradiente de 3 color: Observe que el último color es opcional, si es nil solo se utiliza los dos primeros.
 struct mof_ColorGradient : ViewModifier {
-    
+
     @Binding var colorInit : Color
     @Binding var colorEnd : Color
     
@@ -28,7 +28,6 @@ struct mof_frases : ViewModifier{
         .padding(.horizontal, 5)
         .shadow(color: Color.black.opacity(0.15), radius: 5, x: 5, y: 5)
         .shadow(color: Color.black.opacity(0.10), radius: 5, x: -5, y: -5)
-       
     }
 }
 

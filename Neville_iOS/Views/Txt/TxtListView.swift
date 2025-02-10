@@ -4,7 +4,7 @@
 //
 //  Created by Yorjandis Garcia on 9/11/23.
 //
-//listadoa los elementos TXT de contenido que tienen prefijos: conf_, cita_, preg: y ayud_
+//lista los elementos TXT de contenido que tienen prefijos: conf_, cita_, preg: y ayud_
 
 import Foundation
 import SwiftUI
@@ -14,8 +14,9 @@ import CloudKit
 struct TxtListView: View {
     
     @Environment(\.colorScheme) var theme
+    @Environment(\.managedObjectContext) var context
     
-    let type : TxtContentModel.TipoDeContenido //Tipo de contenido a cargar
+    let typeOfContent : TxtContentModel.TipoDeContenido //Tipo de contenido a cargar
 
     @State var title : String //Es el título
     
@@ -27,18 +28,13 @@ struct TxtListView: View {
     @State var showAlertSearchInTxt = false
     @State var textFiel2 = ""
     
-    @State var listado : [TxtCont] = []
+    @State var listado : [TxtCont] = [] //Listado de conferencias txt
     
     @State private var entidad : TxtCont = TxtCont(context: CoreDataController.shared.context) //Esto es para permitir editar la nota y buscar en txt
     
     @State private var textFielSearh = ""
     @FocusState private var focus : Bool
     
-    private var filter : [TxtCont] {
-        return self.listado.filter({ str in
-            return str.namefile?.localizedCaseInsensitiveContains(self.textFielSearh) ?? false
-        })
-    }
     
     private var filteredSearch : [TxtCont]{
         if textFielSearh.isEmpty {return self.listado}
@@ -58,7 +54,7 @@ struct TxtListView: View {
                                 .foregroundStyle(.linearGradient(colors: [item.isfav ? .orange : .gray, item.nota!.isEmpty ? .gray : .green], startPoint: .leading, endPoint: .trailing))
                             
                             NavigationLink{
-                                ContentTxtShowView(entidad: item, type: self.type, title: item.namefile ?? "")
+                                ContentTxtShowView(entidad: item, type: self.typeOfContent, title: item.namefile ?? "")
                             }label: {
                                 Text(item.namefile ?? "")
                             }
@@ -76,7 +72,7 @@ struct TxtListView: View {
                             Button{
                                 var temp = item.isfav
                                 temp.toggle()
-                                TxtContentModel().setFavState(entity: item, state: temp)
+                                TxtContentModel().setFavState(context: self.context, entity: item, state: temp)
                                 withAnimation {
                                     let temp2 = listado
                                     listado.removeAll()
@@ -96,7 +92,7 @@ struct TxtListView: View {
                     
                 }
                 .task{
-                    listado = TxtContentModel().GetRequest(type: self.type, predicate: nil)
+                    listado = TxtContentModel().GetRequest(context: self.context, type: self.typeOfContent, predicate: nil)
                 }
                 .searchable(text: $textFielSearh, placement: .navigationBarDrawer(displayMode: .always)  ,prompt: "Buscar" )
             }
@@ -108,15 +104,15 @@ struct TxtListView: View {
                     Menu{
                         Button("Todas las \(self.title)"){
                             listado.removeAll()
-                            listado = TxtContentModel().GetRequest(type: self.type, predicate: nil)
+                            listado = TxtContentModel().GetRequest(context: self.context, type: self.typeOfContent, predicate: nil)
                         }
                         Button("\(self.title) favoritas"){
-                            let temp = TxtContentModel().getAllFavorite(type:self.type)
+                            let temp = TxtContentModel().getAllFavorite(context: self.context, type:self.typeOfContent)
                             listado.removeAll()
                             listado = temp
                         }
                         Button("\(self.title) con notas"){
-                            let temp = TxtContentModel().getAllNota(type:self.type)
+                            let temp = TxtContentModel().getAllNota(context: self.context, type:self.typeOfContent)
                             listado.removeAll()
                             listado = temp
                         }
@@ -125,13 +121,13 @@ struct TxtListView: View {
                             showAlertSearchInTxt = true
                         }
                         Button("Nuevo contenido!"){
-                            let temp = TxtContentModel().getAllNewsElements(type: self.type)
+                            let temp = TxtContentModel().getAllNewsElements(context: self.context, type: self.typeOfContent)
                             listado.removeAll()
                             listado = temp
                         }
                         if self.title == "\(self.title) recientes" && self.listado.count > 0 {
                             Button("Desmarcar \(self.title) recientes"){
-                                TxtContentModel().RemoveAllNewFlag(type: self.type)
+                                TxtContentModel().RemoveAllNewFlag(context: self.context, type: self.typeOfContent)
                                 let temp = self.listado
                                 listado.removeAll()
                                 listado = temp
@@ -150,7 +146,7 @@ struct TxtListView: View {
                 TextField("", text: $textFiel, axis: .vertical)
                     .multilineTextAlignment(.leading)
                 Button("Guardar"){
-                    TxtContentModel().setNota(entity: self.entidad, nota: textFiel)
+                    TxtContentModel().setNota(context: self.context, entity: self.entidad, nota: textFiel)
                 }
                 Button("Cancelar"){showAlertAddNote = false}
             }
@@ -176,6 +172,7 @@ struct EditNoteTxt:View {
     @Environment(\.dismiss) var dimiss
     @State var entidad : TxtCont
     @State private var textfiel = ""
+    @Environment(\.managedObjectContext) private var context
 
     
     var body: some View {
@@ -201,7 +198,7 @@ struct EditNoteTxt:View {
                 HStack{
                     Spacer()
                     Button{
-                        TxtContentModel().setNota(entity: entidad, nota: textfiel)
+                        TxtContentModel().setNota(context: self.context, entity: entidad, nota: textfiel)
                         dimiss()
                     }label: {
                         Text("Guardar")
@@ -217,5 +214,5 @@ struct EditNoteTxt:View {
 
 
 #Preview {
-    TxtListView(type: .conf, title: "Conferencias")
+    TxtListView(typeOfContent: .conf, title: "Conferencias")
 }

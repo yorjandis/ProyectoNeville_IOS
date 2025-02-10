@@ -40,9 +40,6 @@ struct optionView: View {
                             .padding(.horizontal, 7)
                         segundoGrupo()
                             .padding(.horizontal, 7)
-                        tercerGrupo()
-                            .padding(.horizontal, 45)
-                        
                     }
                     
                 }
@@ -59,13 +56,13 @@ struct optionView: View {
                 ContentTxtShowView(type: .NA, fileName: "biografia", title: "Biografía")
             }
             .sheet(isPresented: $showPreguntas) {
-                TxtListView(type: .preg, title: "Preguntas")
+                TxtListView(typeOfContent: .preg, title: "Preguntas")
             }
             .sheet(isPresented: $showCitas) {
-                TxtListView(type: .citas, title: "Citas")
+                TxtListView(typeOfContent: .citas, title: "Citas")
             }
             .sheet(isPresented: $showAyudas) {
-                TxtListView(type: .ayud, title: "Ayudas")
+                TxtListView(typeOfContent: .ayud, title: "Ayudas")
             }
             .sheet(isPresented: $showReflex) {
                 ReflexListView()
@@ -213,31 +210,7 @@ struct optionView: View {
     }
     
     
-    @ViewBuilder
-    func  tercerGrupo()-> some View {
-        VStack(spacing: 20){
-            
-            Link(destination: URL(string: "https://www.youtube.com/watch?v=jd5ctdBQAeo&list=PL2kf06WQ27nmP4VFSy4li_U1jvoPM6wPU")!){
-                bloqueA("link", "Espiritualidad")
-            }.modifier(GradientButtonStyle(ancho: 270, colors: colorGradientButton))
-                .padding(.top, 5)
-            
-            Link(destination: URL(string: "https://www.youtube.com/watch?v=ZPOS12O0Vd0&list=PL2kf06WQ27nmK4nw5oo1Dnw24xrxUDtyV")!){
-                bloqueA("link", "Alcanzar el Éxito")
-            }.modifier(GradientButtonStyle(ancho: 270, colors: colorGradientButton))
-            
-            Link(destination: URL(string: "https://www.youtube.com/watch?v=wcE8X8FBWN0&list=PL2kf06WQ27nnuvoeU7-sk7qmEofplDEMR")!){
-                bloqueA("link", "Personas que dejaron huellas")
-            }.modifier(GradientButtonStyle(ancho: 270, colors: colorGradientButton))
-            
-            
-            
-            Spacer()
-            Text ("10 lecciones de Sabiduria")
-                .font(.title2)
-                .fontDesign(.serif)
-        }
-    }
+    
         }
     
 

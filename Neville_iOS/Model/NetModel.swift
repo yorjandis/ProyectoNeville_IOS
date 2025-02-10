@@ -32,6 +32,7 @@ class NetworkMonitor: ObservableObject {
 
 //Chequea si existe una nueva versión en la play store
 //No bloquea el hilo principal de la app
+
 struct CheckAppStatus{
     //Tipos de error
     enum TError: Error {
