@@ -39,27 +39,31 @@ final class TxtContentModel : ObservableObject {
     }
     
     
-    ///Realiza consultas a la BD
+    ///Obtiene Elementos txt de la tabla TxtCont (conferencias, citas, preguntas, etc)
+    /// - Parameter - context: contexto de Core Data
     /// - Parameter - type: define el tipo de contenido .txt a consultar (conf, citas, preguntas, reflexiones)
     /// - Parameter - predicate: define el predicado a utilizar para filtrar la consulta. Si es nil devuelve todos los elementos
-    /// - Returns - Devuelve un arreglo de elementos de cierto tipo. Si falla la cosulta se devuelve un arreglo vacio
-    func GetRequest( context : NSManagedObjectContext, type: TipoDeContenido, predicate : NSPredicate?)->[TxtCont]{
+    /// - Returns - Devuelve un arreglo de elementos TxtCont. Si falla la cosulta se devuelve un arreglo vacio
+    func GetRequest(context: NSManagedObjectContext, type: TipoDeContenido, predicate: NSPredicate?) -> [TxtCont] {
+        var resultados: [TxtCont] = []
         
-        let fecthRequest = NSFetchRequest<TxtCont>(entityName: "TxtCont")
+        context.performAndWait {  // 🔹 Asegura que siempre se ejecute en el contexto correcto
+            let fetchRequest = NSFetchRequest<TxtCont>(entityName: "TxtCont")
+            
+            if let pred = predicate {
+                fetchRequest.predicate = pred
+            } else {
+                fetchRequest.predicate = NSPredicate(format: "%K == %@", #keyPath(TxtCont.type), type.rawValue)
+            }
+            
+            do {
+                resultados = try context.fetch(fetchRequest)
+            } catch {
+                print("❌ Error al hacer fetch de TxtCont: \(error.localizedDescription)")
+            }
+        }
         
-        if let pred = predicate {
-            fecthRequest.predicate = pred
-        }else { //Si no se da predicado entonces devuelve todos los elementos de un mismo tipo
-            fecthRequest.predicate = NSPredicate(format: "%K == %@", #keyPath(TxtCont.type), type.rawValue)
-        }
-           
-        do {
-            return try context.fetch(fecthRequest)
-        }catch{
-            print(error.localizedDescription)
-            return []
-        }
- 
+        return resultados
     }
     
 
@@ -67,7 +71,8 @@ final class TxtContentModel : ObservableObject {
     
     
     ///Devuelve una entity aleatoria, segun el tipo
-    ////// - Parameter type : indica el tipo de contenido a filtrar
+    /// - Parameter context : contexto de Core Data
+    /// - Parameter type : indica el tipo de contenido a filtrar
     /// - Returns - Devuelve un objeto de tipo Confe. Si falla devuelve un objeto vacio
     func getRandomItem(context : NSManagedObjectContext, type : TipoDeContenido)->TxtCont?{
         
@@ -82,8 +87,8 @@ final class TxtContentModel : ObservableObject {
     ///Actualiza el estado de favorito (Alterna entre el estado actual)
     func setFavState(context : NSManagedObjectContext, entity : TxtCont?, state : Bool){
         do{
-            if let tt = entity {
-                tt.isfav = state
+            if let item = entity {
+                item.isfav = state
                 try context.save()
             }
         }catch{
@@ -103,10 +108,13 @@ final class TxtContentModel : ObservableObject {
     }
     
     ///Establece el valor del campo nota
+    /// - parameters - context : Contexto de Core Data
+    /// - parameters - entity : El elemento a modificard
+    /// - parameters - nota : La nueva nota
     func setNota(context : NSManagedObjectContext, entity : TxtCont?, nota : String){
         do{
-            if let tt = entity {
-                tt.nota = nota
+            if let item = entity {
+                item.nota = nota
                 try context.save()
             }
         }catch{
@@ -115,17 +123,26 @@ final class TxtContentModel : ObservableObject {
     }
     
     ///Devuelve un arreglo con todas las entity de cierto tipo que son favoritas
+    /// - Parameters - context: Contexto de Core Data
+    /// - Parameters - type: El tipo de elemento a consultar
+    /// - Returns - Devuelve un arreglo de elementos TxtCont
     func getAllFavorite(context : NSManagedObjectContext, type : TipoDeContenido)->[TxtCont]{
         return GetRequest(context: context, type: type, predicate: PredicatesTypes(type: type).getAllFavorites)
     }
     
     ///Devuelve todas las entity que tiene una nota, segun el tipo
+    /// - Parameters - context: Contexto de Core Data
+    /// - Parameters - type: El tipo de elemento a consultar
+    /// - Returns - Devuelve un arreglo de elementos TxtCont
     func getAllNota(context : NSManagedObjectContext,  type : TipoDeContenido)->[TxtCont]{
         return GetRequest(context: context, type: type, predicate: PredicatesTypes(type: type).getAllNotas)
     }
  
     
     ///Búsqueda en texto
+    /// - Parameters - list: Listado de elementos  TxtCont a consultar
+    /// - Parameters - texto: cadena a buscar
+    /// - Returns - Devuelve los slementos que contienen el texto especificado
     func searchInText(list : [TxtCont],  texto : String)->[TxtCont]{
         var result : [TxtCont] = []
 
@@ -143,6 +160,9 @@ final class TxtContentModel : ObservableObject {
     }
     
     ///Búsqueda en Títulos
+    /// - Parameters - list: Listado de elementos  TxtCont a consultar
+    /// - Parameters - texto: cadena a buscar
+    /// - Returns - Devuelve los slementos que contienen el título especificado
     func searchInTitle(list : [TxtCont],  texto : String)->[TxtCont]{
         var result : [TxtCont] = []
 
@@ -212,7 +232,7 @@ final class TxtContentModel : ObservableObject {
         }
         
         
-       // print("populando la tabla TxtContent")
+       // Populando la tabla Txt, con los ficheros txt que están en Staff
         
         var array : [String] = [] //Almacena los name files leidos del bundle para el contenido txt
 

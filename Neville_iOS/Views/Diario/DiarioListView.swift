@@ -54,6 +54,8 @@ struct DiarioListView: View {
     @State var showAlert = false
     @State var alertMessage = ""
     
+    //Mostrar la ventana de FeedBackReview
+    @State private var sheetShowFeedBackReview: Bool = false
     
 
     var body: some View {
@@ -189,22 +191,33 @@ struct DiarioListView: View {
                             }, label: {
                                 Menu{                
                                     Button("Nueva Entrada"){
-                                        DiarioModel().addItem(title: "Título", emocion: .neutral, content: "Nuevo Contenido!")
-                                        withAnimation {
-                                            list.removeAll()
-                                            list = DiarioModel().getAllItem()
+                                        if  DiarioModel().addItem(title: "Título", emocion: .neutral, content: "Nuevo Contenido!") {
+                                            withAnimation {
+                                                list.removeAll()
+                                                list = DiarioModel().getAllItem()
+                                            }
+                                            if checkReviewRequest() {
+                                                self.sheetShowFeedBackReview = true
+                                            }
                                         }
+                                        
                                         
                                     }
                                     
                                     Menu{
                                         ForEach(0..<titlesExamples.count, id: \.self){ value in
                                             Button(titlesExamples[value].0){
-                                                DiarioModel().addItem(title: titlesExamples[value].0, emocion: DiarioModel().getEmocionesFromStr(value: titlesExamples[value].1) , content: "Nuevo contenido!")
-                                                withAnimation {
-                                                    list.removeAll()
-                                                    list = DiarioModel().getAllItem()
+                                                if  DiarioModel().addItem(title: titlesExamples[value].0, emocion: DiarioModel().getEmocionesFromStr(value: titlesExamples[value].1) , content: "Nuevo contenido!"){
+                                                    
+                                                    withAnimation {
+                                                        list.removeAll()
+                                                        list = DiarioModel().getAllItem()
+                                                    }
+                                                    if checkReviewRequest() {
+                                                        self.sheetShowFeedBackReview = true
+                                                    }
                                                 }
+                                                
                                             }
                                         }
                                     }label: {
@@ -264,6 +277,9 @@ struct DiarioListView: View {
                         .presentationDetents([.height(150)])
                         .presentationCornerRadius(25)
                         .presentationDragIndicator(.hidden)
+                })
+                .sheet(isPresented: self.$sheetShowFeedBackReview, content: {
+                    FeedbackView(showTextBotton: true)
                 })
                 .alert("Diario", isPresented: $showAlert) {
                     

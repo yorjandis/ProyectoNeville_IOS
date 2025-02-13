@@ -41,9 +41,14 @@ struct SettingModel {
         UserDefaults.standard.setValue(18, forKey: AppCons.UD_setting_fontMenuSize)
         UserDefaults.standard.setValue(18, forKey: AppCons.UD_setting_fontListaSize)
         UserDefaults.standard.setValue(false, forKey: AppCons.UD_setting_NotasFaceID)
+        UserDefaults.standard.setValue(0, forKey: AppCons.UD_setting_ReviewCounter) //Lleva un conteo de interacciones con el usuario, si llega a 150 se muestra una ventana de review y se resetea
+        UserDefaults.standard.setValue(1, forKey: AppCons.UD_setting_showReview) //Lleva un conteo de interacciones con el usuario, si llega a 150 se muestra una ventana de review y se resetea
         
         saveColor(forkey: AppCons.UD_setting_color_frases, color: .black)
         saveColor(forkey: AppCons.UD_setting_color_main_a, color: .red)
         saveColor(forkey: AppCons.UD_setting_color_main_b, color: .orange)
+        saveColor(forkey: AppCons.UD_setting_color_fondoContent, color: .gray) //Color de fondo del ContentTxt
+        saveColor(forkey: AppCons.UD_setting_color_textContent, color: .black) //Color de texto del ContentTxt
+        
     }
 }

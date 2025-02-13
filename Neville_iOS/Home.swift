@@ -77,7 +77,7 @@ struct Home: View {
                                 } 
                             }else{
                                 DispatchQueue.main.async {
-                                    showTextUpdateApp = true
+                                    showTextUpdateApp = false
                                 }
                             }
                         }
@@ -109,7 +109,6 @@ struct Home: View {
                     else if start.y < end.y - 24 {} //down
                     
                 })
-                
                 .sheet(isPresented: $showAddNoteList){
                     ListNotasViews()
                 }

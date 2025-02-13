@@ -48,11 +48,13 @@ struct AppCons{
     static let UD_setting_fontMenuSize     = "setting_fontMenuSize"
     static let UD_setting_fontListaSize    = "setting_fontListaSize"
     
-    static let UD_setting_color_frases      = "settig_color_frases"
-    static let UD_setting_color_main_a      = "settig_color_main_a"
-    static let UD_setting_color_main_b      = "settig_color_main_b"
+    static let UD_setting_color_frases          = "settig_color_frases"
+    static let UD_setting_color_main_a          = "settig_color_main_a"
+    static let UD_setting_color_main_b          = "settig_color_main_b"
+    static let UD_setting_color_fondoContent    = "settig_color_fondoContent"
+    static let UD_setting_color_textContent     = "settig_color_textContent"
     
-    static let UD_setting_NotasFaceID       = "setting_NotasFaceID"
+    static let UD_setting_NotasFaceID           = "setting_NotasFaceID"
     
     //UserDefault compartido:(UD_shared_)
     static let UD_shared_FraseWidgetActual = "FraseWidgetActual" //Donde se almacena la frase actualmente cargada en el widget
@@ -61,6 +63,10 @@ struct AppCons{
     static let DeepLink_url_Diario  = "widget:/com.ypg.nev.diario"
     static let DeepLink_url_Notas   = "widget:/com.ypg.nev.notas"
     static let DeepLink_url_Frase   = "widget:/com.ypg.nev.frase"
+    
+    //Lleva un registro con las interacciones del usuario para mostrar una ventana de reseña
+    static let UD_setting_ReviewCounter     = "UD_setting_ReviewCounter" //Contador de hitos
+    static let UD_setting_showReview        = "UD_setting_showReview"   //Si es 1, se muestra la ventana, si es 2  no se muestra la ventana de review
     
 
 }
@@ -107,7 +113,7 @@ struct UtilFuncs{
     ///ReadFileToArray : Devuelve un array conteniendo todas las líneas de texto de un fichero txt
     /// - Parameter - filename: el nombre del fichero sin la extension, para ser procesado
     /// - Returns - Devuelve un arreglo de String. cada línea del fichero es una item del arreglo
-   static  func FileReadToArray(_ filename : String)->[String]{
+    static  func FileReadToArray(_ filename : String)->[String]{
         
         var result = [String]()
         
@@ -123,7 +129,7 @@ struct UtilFuncs{
         return result
         
     }
-
+    
     ///Lee el contenido de un fichero Txt, ubicado en el bundle de la app, y lo devuelve como String
     /// - Parameter - fileName: el nombre del fichero, sin la extensión
     ///  - Returns - Devuelve el contenido del fichero
@@ -138,9 +144,8 @@ struct UtilFuncs{
         }
         return result
     }
+    
 }
-
-
 
 
 

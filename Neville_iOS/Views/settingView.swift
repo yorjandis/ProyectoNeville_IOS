@@ -7,6 +7,7 @@
 
 import SwiftUI
 import LocalAuthentication
+import CoreData
 
 struct settingView: View {
     
@@ -40,6 +41,13 @@ struct settingView: View {
     
     //Otros
     @State private var showSheet : Int? = nil
+    
+    //Contadores de elementos:
+    @State private var frasesCount          : Int = 0
+    @State private var ayudasCount          : Int = 0
+    @State private var preguntasCount       : Int = 0
+    @State private var citasCount           : Int = 0
+    @State private var conferenciasCount    : Int = 0
 
     
 
@@ -141,82 +149,8 @@ struct settingView: View {
                     
                 }
                 
-                /*
-                Section("Actualización de Contenido"){
-                    VStack(alignment: .leading){
-                        if showButtonUpdate {
-                            Button("Actualizar Contenido!"){
-                                
-                                Task{
-                                    //LLamar a todas las funciones de actualización de contenido
-                                    let NoElementFrases =  FrasesModel().UpdateContenAfterAppUpdate()
-                                    
-                                    //Para elementos con prefijos:
-                                    let NoElementConf   =  TxtContentModel().UpdateContenAfterAppUpdate(type: .conf)
-                                    
-                                    // let NoElementCitas  =   TxtContentModel().UpdateContenAfterAppUpdate(type: .citas)
-                                    // let NoElementPreg   =   TxtContentModel().UpdateContenAfterAppUpdate(type: .preg)
-                                    let NoElementAyuda  = TxtContentModel().UpdateContenAfterAppUpdate(type: .ayud)
-                                    
-                                    let NoElementReflex = RefexModel().UpdateContenAfterAppUpdate()
-                                    
-                                    self.alertMessage = """
-                                    Se han adicionado:
-                                    \(NoElementFrases.0) \\ \(NoElementFrases.1) frases
-                                    \(NoElementConf.0) \\ \(NoElementConf.1) Conferencias
-                                    \(NoElementAyuda.0) \\ \(NoElementAyuda.1) Ayudas
-                                    \(NoElementReflex.0) \\ \(NoElementReflex.1) Reflexiones
-                                    """
-                                    self.showAlert = true
-                                    
-                                }
-                                
-                            }
-                            .padding(5)
-                            .background(.ultraThinMaterial)
-                            .clipShape(RoundedRectangle(cornerRadius: 25))
-                        }
-                        Text("Si existe nuevo contenido esta opción se habilitará. Un solo uso es suficiente")
-                            .font(.footnote)
-                            .foregroundStyle(.gray)
-                    }
-                    
-                    
-                    
-                }
-                
-                Section("Manteniemiento"){
-                    VStack(alignment: .leading){
-                        NavigationLink("Eliminar duplicados"){
-                            VStack{
-                                Text("Si ha instalado la app anteriormente, es posible que el contenido no se sincronice correctamente con iCloud. Esta situación origina elementos duplicados en Frases, Conferencias, Citas, Preguntas, Ayudas y Reflexiones. Las cáusas pueden deberse a que iCloud no esta iniciado en el momento de la instalación entre otros...Para solucionar este problema y eliminar con seguridad los elementos duplicados utilice el botón debajo. Esto restaura los listados sin perder la información personal como notas o favoritos")
-                                    .font(.system(size: 20))
-                                    .fontDesign(.serif)
-                                    .padding(20)
-                                Button("Eliminar Duplicados"){
-                                    FrasesModel().Fix_DeleteDuplicatesRowsInBDCoreDataForfrases()
-                                    TxtContentModel().Fix_DeleteDuplicatesRowsInBDCoreDataForConf()
-                                    RefexModel().Fix_DeleteDuplicatesRowsInBDCoreDataForReflex()
-                                    self.alertMessage = "Los elementos duplicados se han borrado correctamente. Si el problema persiste, utilice la sección de contacto en Ajustes para enviar un mensaje al desarrollador"
-                                    self.showAlert = true
-                                }
-                                .buttonStyle(.borderedProminent)
-                                Spacer()
-                                    .navigationTitle("Ajustes - Eliminar Duplicados")
-                                
-                            }
-                        }
-                        Text("Eliminar elementos duplicados")
-                            .font(.footnote)
-                            .foregroundStyle(.gray)
-                    }
-                    
-                }
-                
-                */
-                
+
                 Section("Contacto & Información"){
-                    
                     NavigationLink{
                         Form{
                             HStack{
@@ -228,27 +162,28 @@ struct settingView: View {
                             HStack{
                                 Text("Frases")
                                 Spacer()
-                                Text("\(FrasesModel().GetRequest(predicate: nil).count)")
+                                Text("\(self.frasesCount)")
                             }.onTapGesture {self.showSheet = 1}
                             HStack{
                                 Text("Conferencias")
                                 Spacer()
-                                Text("\(TxtContentModel().GetRequest(context: self.context, type: .conf, predicate: nil).count)")
+                                Text("\(self.conferenciasCount)")
                             }.onTapGesture {self.showSheet = 2}
                             HStack{
                                 Text("Citas")
                                 Spacer()
-                                Text("\(TxtContentModel().GetRequest(context: self.context, type: .citas, predicate: nil).count)")
+                               Text("\(citasCount)")
                             }.onTapGesture {self.showSheet = 3}
                             HStack{
                                 Text("Preguntas")
                                 Spacer()
-                                Text("\(TxtContentModel().GetRequest(context: self.context, type: .preg, predicate: nil).count)")
+                                Text("\(self.preguntasCount)")
                             }.onTapGesture {self.showSheet = 4}
                             HStack{
                                 Text("Ayudas")
                                 Spacer()
-                                Text("\(TxtContentModel().GetRequest(context: self.context, type: .ayud, predicate: nil).count)")
+                                Text("\(self.ayudasCount)")
+                                    
                             }.onTapGesture {self.showSheet = 5}
 
                             HStack{
@@ -264,6 +199,13 @@ struct settingView: View {
                             }.onTapGesture {self.showSheet = 7}
                             
                         }
+                        .task{
+                            self.frasesCount = FrasesModel().GetRequest(predicate: nil).count
+                            self.conferenciasCount = TxtContentModel().GetRequest(context: self.context, type: .conf, predicate: nil).count
+                            self.citasCount = TxtContentModel().GetRequest(context: self.context, type: .citas, predicate: nil).count
+                            self.preguntasCount = TxtContentModel().GetRequest(context: self.context, type: .preg, predicate: nil).count
+                            self.ayudasCount = TxtContentModel().GetRequest(context: self.context, type: .ayud, predicate: nil).count
+                        }
                         .navigationTitle("Ajustes - Información")
                     }label: {
                         Label("Información", systemImage: "info.circle.fill")
@@ -277,7 +219,7 @@ struct settingView: View {
                             }.navigationTitle("Ajustes - Privacy")
                         }
                     }label:{
-                        Label("Política de Privacidad", systemImage: "hand.raised.circle")
+                        Label("Política de Privacidad", systemImage: "square.and.pencil.circle")
                             .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
                             .bold()
                             .font(.headline)
@@ -290,20 +232,29 @@ struct settingView: View {
                             .font(.headline)
                         
                     }
-                    
-                    Link(destination: URL(string:  "https://ypg.mozello.com/contacto/")!) {
-                        Label("Enviarme un comentario", systemImage: "exclamationmark.warninglight.fill")
-                            .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
-                            .bold()
-                            .font(.headline)
+                    NavigationLink{
+                        FeedbackView(showTextBotton: false)
+                    }label:{
+                       Label("Deja una reseña!", systemImage:"bolt.heart.fill" )
                     }
-                    Link(destination: URL(string:  "https://ypg.mozello.com/productos/neville/")!) {
+                    
+                    Link(destination: URL(string: "mailto:info@ypgcode.es")!) {
+                        Label("Enviar Email", systemImage: "envelope.fill")
+                    }
+                    .font(.headline)
+                    
+                    Link(destination: URL(string:  "https://ypgcode.es/la-ley-neville-goddard/")!) {
                         Label("Abrir página del proyecto", systemImage: "swiftdata")
                             .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
                             .bold()
                             .font(.headline)
                     }
-                    
+                    Link(destination: URL(string:  "https://paypal.me/Yorpg?country.x=ES&locale.x=es_ES")!) {
+                        Label("Donar para este proyecto", systemImage: "dollarsign.circle.fill")
+                            .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
+                            .bold()
+                            .font(.headline)
+                    }
                     
                     
                     
@@ -349,6 +300,7 @@ struct settingView: View {
         
     }
     
+   
     
     func autent(){
         var error : NSError?

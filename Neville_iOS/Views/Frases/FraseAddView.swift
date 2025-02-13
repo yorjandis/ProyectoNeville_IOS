@@ -11,6 +11,9 @@ struct FraseAddView: View {
     @Environment(\.dismiss) var dimiss
     @State private var text = ""
     
+    //Mostrar la ventana de FeedBackReview
+    @State private var sheetShowFeedBackReview: Bool = false
+    
     var body: some View {
         NavigationStack {
             VStack{
@@ -29,9 +32,16 @@ struct FraseAddView: View {
                 Button("OK"){
                     if !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                         FrasesModel().AddFrase(frase: text)
+                        //Lanza la ventana de FeedBackreview si se alcanza el humbral de hitos
+                        if  checkReviewRequest() {
+                            self.sheetShowFeedBackReview = true
+                        }
                         dimiss()
                     }
                 }
+            }
+            .sheet(isPresented: self.$sheetShowFeedBackReview) {
+                FeedbackView(showTextBotton: true)
             }
         }
     }

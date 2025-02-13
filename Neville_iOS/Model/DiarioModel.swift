@@ -63,7 +63,7 @@ struct DiarioModel{
     
     
     ///Adiciona un item a la tabla Diario
-    func addItem(title : String, emocion : Emociones, content : String, isFav : Bool = false ){
+    func addItem(title : String, emocion : Emociones, content : String, isFav : Bool = false )->Bool{
         let diario : Diario = Diario(context: context)
         diario.id = UUID()
         diario.title = title
@@ -75,7 +75,9 @@ struct DiarioModel{
         
         if context.hasChanges {
             try? context.save()
+            return true
         }
+        return false
     }
     
     //Actualiza una entrada: La fecha se actualiza automáticamente.

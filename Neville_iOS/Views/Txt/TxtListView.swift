@@ -51,7 +51,7 @@ struct TxtListView: View {
                         HStack{
                             Image(systemName: "leaf.fill")
                                 .padding(.horizontal, 5)
-                                .foregroundStyle(.linearGradient(colors: [item.isfav ? .orange : .gray, item.nota!.isEmpty ? .gray : .green], startPoint: .leading, endPoint: .trailing))
+                                .foregroundStyle(.linearGradient(colors: [item.isfav ? .orange : .gray, (item.nota?.isEmpty ?? true) ? .gray : .green], startPoint: .leading, endPoint: .trailing))
                             
                             NavigationLink{
                                 ContentTxtShowView(entidad: item, type: self.typeOfContent, title: item.namefile ?? "")

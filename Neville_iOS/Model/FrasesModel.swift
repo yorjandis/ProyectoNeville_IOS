@@ -14,8 +14,8 @@ import SwiftUI
 struct FrasesModel {
     
     ///Obtiene el contexto de Objetos administrados
-    private var context = CoreDataController.shared.context
-    
+private let context = CoreDataController.shared.context
+
  
     ///Almacena el Id de la frase actualmente cargada. Se actualiza en: getRandomFrase()
     static var idFraseActual : String = ""
@@ -328,9 +328,9 @@ struct FrasesModel {
     func UpdateContenAfterAppUpdate()->(Int, Int){
         
         var set : Set<String> = Set()
-        var errorCount = 0 //cuanta los elementos fallidos que no se han podido adicionar a la BD
-        var exitoCount = 0 //cuanta los elementos exitosos que no se han podido adicionar a la BD
-        var totalNews = 0 //cuanta elementos nuevos han sido detectados
+        var errorCount = 0 //cuanta los elementos fallidos que no se han adicionado a la BD
+        var exitoCount = 0 //cuanta los elementos exitosos adicionados a la BD
+        var totalNews = 0 //cuanta elementos nuevos que han sido detectados
         
         //Volcar todos los nombres de conferencias de la BD a un set.
         let arrayBdFrases = self.GetRequest(predicate: nil)
