@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import LocalAuthentication
 
 //Almacenamiento de variables globales:
 @MainActor
@@ -111,6 +112,7 @@ enum TypeOfTxtContent{
 
 struct UtilFuncs{
     
+    
     ///ReadFileToArray : Devuelve un array conteniendo todas las líneas de texto de un fichero txt
     /// - Parameter - filename: el nombre del fichero sin la extension, para ser procesado
     /// - Returns - Devuelve un arreglo de String. cada línea del fichero es una item del arreglo
@@ -148,6 +150,39 @@ struct UtilFuncs{
         return result
     }
     
+    #if os(iOS)
+    
+    //Yorj: Muy importante: Em Swift 6 , esta función debe estar fuera de toda View, como una función statica por ejemplo.
+   static func autent(HabilitarContenido : Binding<Bool>){
+        
+        let contextLA : LAContext = LAContext()
+        var error : NSError?
+        if contextLA.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error){
+            
+            contextLA.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: "Por favor autentícate para tener acceso a su información") { success, error in
+                if success {
+                    //Habilitación del contenido
+                    //"el valor es satisfactorio")
+                    HabilitarContenido.wrappedValue = true
+                    
+                    
+                } else {
+                    //"Error en la autenticación biométrica")
+                    //"el valor ha dado error")
+                    HabilitarContenido.wrappedValue = false
+                }
+            }
+            
+            
+        }else{ //El Dispositivo no soporta autenticación biométrica
+               // print("El Dispositivo no soporta autenticación biométrica")
+        }
+        
+    }
+    
+    #endif
+    
+    
 }
 
 
@@ -169,4 +204,6 @@ extension String {
         return filter("1234567890.".contains)
     }
 }
+
+
 

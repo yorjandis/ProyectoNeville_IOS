@@ -151,32 +151,7 @@ struct ListNotasViews: View {
         
     }
     
-    //Autentificación con FaceID
-    func autent(){
-        var error : NSError?
-        if contextLA.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error){
-            
-            contextLA.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: "Por favor autentícate para tener acceso a Notas") { success, error in
-                        if success {
-                             //Habilitación del contenido
-                            withAnimation {
-                                canOpenNotas = true
-                            }
-                            
-                        } else {
-                            alertMessage = "Error en la autenticación biométrica"
-                            showAlert = true
-                        }
-                    }
-            
-            
-        }else{
-            UserDefaults.standard.setValue(false, forKey: AppCons.UD_setting_NotasFaceID)
-            alertMessage = "El dispositivo no soporta autenticación Biométrica. Se ha deshabilitado la protección de Notas"
-            showAlert = true
-            canOpenNotas = true //Deshabilitando la protección del Diario.
-        }
-    }
+
     
     @ViewBuilder // View Extract
     func autenticationView()-> some View {
@@ -187,7 +162,7 @@ struct ListNotasViews: View {
                  .font(.system(size: 18))
                  .bold()
              Button{
-                 autent()
+                 UtilFuncs.autent(HabilitarContenido: self.$canOpenNotas)
              }label: {
                  Image(systemName: "key.viewfinder")
                      .font(.system(size: 60))

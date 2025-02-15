@@ -146,7 +146,7 @@ struct settingView: View {
                         Toggle("Proteger las Notas con FaceID", isOn: $setting_NotasFaceID)
                     }else{
                         Button{
-                            autent()
+                            UtilFuncs.autent(HabilitarContenido: self.$canOpenToggleButton)
                         }label: {
                             Label("Opción protegida por FaceID", systemImage: "key.viewfinder")
                         }
@@ -300,30 +300,6 @@ struct settingView: View {
     }
     
    
-    
-    func autent(){
-        var error : NSError?
-        if contextLA.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error){
-            
-            contextLA.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: "Por favor autentícate para tener acceso a su Diario") { success, error in
-                        if success {
-                             //Habilitación del contenido
-                            withAnimation {
-                                canOpenToggleButton = true
-                            }
-                            
-                        } else {
-                            print("Error en la autenticación biométrica")
-                        }
-                    }
-            
-            
-        }else{
-            alertMessage = "El dispositivo no soporta autenticación Biométrica. Se ha deshabilitado la protección del Diario"
-            showAlert = true
-            canOpenToggleButton = true //Deshabilitando la protección del Diario.
-        }
-    }
 
     
     

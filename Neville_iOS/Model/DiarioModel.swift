@@ -30,9 +30,17 @@ enum Emociones : String{
 
 
 @MainActor
-struct DiarioModel{
+final class DiarioModel : ObservableObject{
+
+    @Published var list : [Diario] = []
+    
+    static let shared = DiarioModel() //Singleton
+    
     
     private let context = CoreDataController.shared.context
+    
+    
+    private init(){}
     
     //Obtiene el valor enum de Emociones a partir de una cadena de texto
     func getEmocionesFromStr(value : String)->Emociones{
@@ -50,18 +58,28 @@ struct DiarioModel{
     
     
     ///Obtiene todos los item de la tabla Diario. Devuelve un arreglo
-    func getAllItem()->[Diario]{    
+    func getAllItem(){
         let fechtRequest : NSFetchRequest<Diario> = Diario.fetchRequest()
         
         do{
            let temp =  try context.fetch(fechtRequest)
+            self.list = temp.reversed()
+        }catch{
+            self.list = []
+        }
+    }
+    
+    ///Obtiene todos los item de la tabla Diario. Devuelve un arreglo
+    func getAllItemGET() -> [Diario]{
+        let fechtRequest : NSFetchRequest<Diario> = Diario.fetchRequest()
+        
+        do{
+            let temp =  try context.fetch(fechtRequest)
             return temp.reversed()
-            
         }catch{
             return []
         }
     }
-    
     
     ///Adiciona un item a la tabla Diario
     func addItem(title : String, emocion : Emociones, content : String, isFav : Bool = false )->Bool{
@@ -148,7 +166,7 @@ struct DiarioModel{
     //Filtrar por título: Case Insentitive
     func filterByTitle(criterio : String)->[Diario]{
          var result : [Diario] = []
-         let listDiarios = self.getAllItem()
+         let listDiarios = self.getAllItemGET()
         
         for diario in listDiarios {
             let temp = diario.title?.lowercased() ?? ""
@@ -163,7 +181,7 @@ struct DiarioModel{
     //Filtrar por contenido: Case Insentitive
     func filterByContent(criterio : String)->[Diario]{
          var result : [Diario] = []
-         let listDiarios = self.getAllItem()
+         let listDiarios = self.getAllItemGET()
         
         for diario in listDiarios {
             let temp = diario.content?.lowercased() ?? ""
@@ -178,7 +196,7 @@ struct DiarioModel{
     //Filtrar por emoticono: Case Insentitive
     func filterByEmoticono(criterio : String)->[Diario]{
          var result : [Diario] = []
-         let listDiarios = self.getAllItem()
+         let listDiarios = self.getAllItemGET()
         
         for diario in listDiarios {
             if diario.emotion == criterio {
@@ -192,7 +210,7 @@ struct DiarioModel{
     //Filtrar por Favorito: Devuelve todas las entradas favoritas
     func filterByFav()->[Diario]{
          var result : [Diario] = []
-         let listDiarios = self.getAllItem()
+         let listDiarios = self.getAllItemGET()
         
         for diario in listDiarios {
             
