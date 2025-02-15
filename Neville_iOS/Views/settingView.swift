@@ -231,10 +231,17 @@ struct settingView: View {
                     }
                     
                     ShareLink(item: URL(string: "https://apps.apple.com/es/app/la-ley/id6472626696")!) {
-                        Label("Compartir la App", image: "Icon-29")
-                            .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
-                            .bold()
-                            .font(.headline)
+                        HStack {
+                            Image("Icon-29")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 24, height: 24) // Ajusta el tamaño según sea necesario
+                            
+                            Text("Compartir la App")
+                                .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
+                                .bold()
+                                .font(.headline)
+                        }
                         
                     }
                     NavigationLink{

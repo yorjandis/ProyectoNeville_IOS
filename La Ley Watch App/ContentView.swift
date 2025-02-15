@@ -358,7 +358,7 @@ struct ContentView: View {
                 LinearGradient(colors: [.red, .orange], startPoint: .bottom, endPoint: .top)
                 
                 VStack(alignment: .center){
-                    Text("Frases").bold()
+                    Text("La Ley").bold()
                         .padding(.bottom, 10)
                     ScrollView{
                         Text(frase)

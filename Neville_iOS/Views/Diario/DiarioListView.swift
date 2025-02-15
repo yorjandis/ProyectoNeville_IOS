@@ -37,6 +37,7 @@ struct DiarioListView: View {
     ("Mi vida es maravillosa porque...", "feliz"),
     ("!Hoy se ha materializado un deseo!","feliz"),
     ("!No es maravillo si...!","feliz"),
+    ("Hoy nace un deseo!","feliz"),
     ("!Lo he logrado!","feliz")]
     
 
