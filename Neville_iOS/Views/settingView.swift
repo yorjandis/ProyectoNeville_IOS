@@ -8,12 +8,17 @@
 import SwiftUI
 import LocalAuthentication
 import CoreData
+import RichText
 
 struct settingView: View {
     
     @Environment(\.colorScheme) var theme
     @Environment(\.dismiss) var dismiss
     @Environment(\.managedObjectContext) private var context
+    @EnvironmentObject private var modelTxt : TxtContentModel
+    @EnvironmentObject private var modelFrases : FrasesModel
+    
+     private let context2 = CoreDataController.shared.context
     
     @AppStorage(AppCons.UD_setting_fontFrasesSize)     var fontSizeFrases      : Int = 24
     @AppStorage(AppCons.UD_setting_fontContentSize)    var fontSizeContenido   : Int = 18
@@ -200,13 +205,13 @@ struct settingView: View {
                             
                         }
                         .task{
-                            self.frasesCount = FrasesModel().GetRequest(predicate: nil).count
-                            self.conferenciasCount = TxtContentModel().GetRequest(context: self.context, type: .conf, predicate: nil).count
-                            self.citasCount = TxtContentModel().GetRequest(context: self.context, type: .citas, predicate: nil).count
-                            self.preguntasCount = TxtContentModel().GetRequest(context: self.context, type: .preg, predicate: nil).count
-                            self.ayudasCount = TxtContentModel().GetRequest(context: self.context, type: .ayud, predicate: nil).count
+                            self.frasesCount    = modelFrases.listfrases.count
+                            self.conferenciasCount = modelTxt.getArrayOfAllFileTxtOfType(type: .conf).count
+                            self.citasCount     = modelTxt.getArrayOfAllFileTxtOfType(type: .citas).count
+                            self.preguntasCount = modelTxt.getArrayOfAllFileTxtOfType(type: .preg).count
+                            self.ayudasCount    = modelTxt.getArrayOfAllFileTxtOfType(type: .ayud).count
                         }
-                        .navigationTitle("Ajustes - Información")
+                        .navigationTitle("Información")
                     }label: {
                         Label("Información", systemImage: "info.circle.fill")
                             .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
@@ -215,7 +220,7 @@ struct settingView: View {
                     NavigationLink{
                         NavigationStack{
                             ScrollView{
-                                Text(UtilFuncs.FileRead("privacy"))
+                                RichText(html: UtilFuncs.FileRead("privacy"))
                             }.navigationTitle("Ajustes - Privacy")
                         }
                     }label:{
@@ -255,12 +260,6 @@ struct settingView: View {
                             .bold()
                             .font(.headline)
                     }
-                    
-                    
-                    
-                    
-                    
-                    
                 }
                 
                 .alert(isPresented: $showAlert) {

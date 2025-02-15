@@ -4,117 +4,140 @@
 //
 //  Created by Yorjandis Garcia on 27/10/23.
 //
-//Lista todas las frases que tienen notas
+//Muesta y maneja el listado de frases
 
 import SwiftUI
 import CoreData
 
 struct FrasesListView: View {
     @Environment(\.colorScheme) var theme
+    @EnvironmentObject private var frasesModel: FrasesModel
     
-    @State  var list : [Frases] = FrasesModel().GetRequest(predicate: nil)
-    @State  private var showAddFrase = false
+    @State private var showAddFrase = false
     @State private var subtitle = "Todas las Frases"
-    //Buscar en frase
+    
+    //Buscar en la lista actual
     @State private var showAlertSearchInFrase = false
-    @State private var textFiel = ""
+    @State private var textFieldFrase = ""
+    @State private var listadoTemporal : [String] =  []
+    @FocusState private var focused: Bool
+    
+    
+    //Buscar en todas las frases
+    @State private var showAlertSearchInFraseAll = false
+    @State private var textFieldFraseAll = ""
+    
     //Buscar en notas de frase
     @State private var showAlertSearchInNotaFrase = false
-    @State private var textFiel2 = ""
-    private var filtered : [Frases] {
-        if self.textFiel.isEmpty { return self.list}
-        return self.list.filter{ $0.frase?.localizedCaseInsensitiveContains(self.textFiel) ?? false}
-    }
+    @State private var textFieldNota = ""
+    
+
     
     var body: some View {
         NavigationStack{
             VStack {
-
-                List(self.filtered, id: \.id){ frase in
+                //Búsqueda:
+                HStack {
+                    Image(systemName: "magnifyingglass")
+                        .foregroundColor(.gray)
+                    
+                    TextField("Buscar", text: self.$textFieldFrase)
+                        .textFieldStyle(PlainTextFieldStyle())
+                        .padding(8)
+                        .focused(self.$focused)
+                        .onChange(of: self.focused) { oldValue, newValue in
+                            //Me aseguro de hacer una copia del listado original una sola vez
+                            //Mientras se usa el cuadro de búsqueda
+                            if self.textFieldFrase.isEmpty{
+                                if newValue{
+                                    self.listadoTemporal = self.frasesModel.listfrases
+                                }
+                            }
+                        }
+                }
+                
+                List(frasesModel.listfrases, id: \.self){ frase in
                     VStack(alignment: .leading){
-                        Text(frase.frase ?? "")
-                        //Marcar las frases nuevas
-                        if frase.isnew {
-                            Text("Nueva")
-                                .font(.footnote).bold()
-                                .foregroundStyle(Color.orange)
-                                .fontDesign(.serif)
+                        Text(frase)
+                    }
+                    //Modificar el campo nota de una frase
+                    .swipeActions(edge: .leading, allowsFullSwipe: true){
+                        NavigationLink{
+                             FrasesNotasAddView( frase: frase)
+                        }label: {
+                            Image(systemName: "bookmark")
+                                .tint(.green)
+                        }
+                        if frasesModel.isNoInbuilt(frase: frase){
+                            Button{
+                                withAnimation {
+                                    if frasesModel.DeleteFraseInbuilt(frase: frase){
+                                        frasesModel.getfrasesArrayFromTxtFile() //Recargando el listado
+                                    }
+                                }
+                            }label:{
+                                Image(systemName: "minus.circle.fill")
+                                    .tint(.red.opacity(0.8))
+                            }
+                        }
+                    }
+                    .swipeActions(edge: .trailing, allowsFullSwipe: true){
+                        //Solo se pueden borrar las frases personalas: NoInbuilt
+                        NavigationLink{
+                            GenerateQRView(footer: frase)
+                        }label: {
+                            Image(systemName: "qrcode")
+                                .tint(.brown)
+                        }
+                        //Ajustar el estado de favorito de una frase
+                        Button{
+                            var favState = FrasesModel().isFavFrase(frase)
+                            favState.toggle()
+                            _ = FrasesModel().setFavFrase(frase, favState)
+                        }label: {
+                            Image(systemName: "heart")
+                                .tint(.orange)
                         }
                     }
                     
-                        //Modificar el campo nota de una frase
-                        .swipeActions(edge: .leading, allowsFullSwipe: true){
-                            NavigationLink{
-                                FrasesNotasAddView( frase: frase, nota: frase.nota ?? "")
-                            }label: {
-                                Image(systemName: "bookmark")
-                                    .tint(.green)
-                            }
-                        }
-                        .swipeActions(edge: .trailing, allowsFullSwipe: true){
-                            //Solo se pueden borrar las frases personalas: NoInbuilt
-                            NavigationLink{
-                                GenerateQRView(footer: frase.frase ?? "")
-                            }label: {
-                                Image(systemName: "qrcode")
-                                    .tint(.brown)
-                            }
-                            //Ajustar el estado de favorito de una frase
-                            Button{
-                                FrasesModel().handleFavState(frase: frase)
-                            }label: {
-                                Image(systemName: "heart")
-                                    .tint(.orange)
-                            }
-                            
-                            //Solo para frases NO Inbuilt
-                            if frase.noinbuilt{
-                                NavigationLink{
-                                    FrasesUpdateView(frase: frase, list: list)
-                                }label: {
-                                    Image(systemName: "pencil.and.scribble")
-                                        .tint(.green)
-                                }
-                                Button{
-                                    FrasesModel().Delete(frase: frase)
-                                    withAnimation {
-                                            list.removeAll()
-                                            list = FrasesModel().GetRequest(predicate: FrasesModel.PredicatesTypes().getAllPersonalFrases)     
-                                    }
-                                }label: {
-                                    Image(systemName: "trash")
-                                        .tint(.red)
-                                }
-                            }
-                            
-                        }
-                    
                 }
-                .searchable(text: $textFiel, placement: .navigationBarDrawer(displayMode: .always)  , prompt: "Buscar")
                 .backgroundStyle(.red)
                 .task{
-                    list = FrasesModel().GetRequest(predicate: nil)
+                    frasesModel.getfrasesArrayFromTxtFile()
                 }
+                .onChange(of: self.textFieldFrase, { oldValue, newValue in
+                    if self.textFieldFrase.isEmpty{
+                        frasesModel.listfrases = self.listadoTemporal //restaura el listado actual
+                    }else{ //Ejecuta el filtro
+                        let filtro = self.listadoTemporal.filter{$0.lowercased().contains(newValue.lowercased()) }
+                        self.frasesModel.listfrases = filtro //Actualiza el listado con el filtro
+                    }
+                })
+                
                 .navigationTitle("Listado de Frases")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar{
-                    
                     Menu{
-                        Button("Todas las Frases"){withAnimation {
-                            list.removeAll(); list = FrasesModel().GetRequest(predicate: nil)}
-                            subtitle = "Todas las Frases"
+                        Button("Todas las Frases"){
+                            withAnimation {
+                                frasesModel.getfrasesArrayFromTxtFile()
+                            }
                         }
-                        Button("Frases Personales"){withAnimation {
-                            list.removeAll(); list = FrasesModel().getFrasesNoInbuilt()}
-                            subtitle = "Frases Personales"
+                        Button("Frases Personales"){
+                            withAnimation {
+                                frasesModel.listfrases = frasesModel.getFrasesNoInbuilt()
+                            }
+                            
                         }
-                        Button("Frases Favoritas"){withAnimation {
-                            list.removeAll(); list = FrasesModel().getAllFavFrases()}
-                            subtitle = "Frases Favoritas"
+                        Button("Frases Favoritas"){
+                            withAnimation {
+                                frasesModel.listfrases = frasesModel.getAllFavFrases()
+                            }
                         }
-                        Button("Frases con notas"){withAnimation {
-                            list.removeAll(); list = FrasesModel().getAllNotasFrases()}
-                            subtitle = "Frases con notas"
+                        Button("Frases con notas"){
+                            withAnimation {
+                                frasesModel.listfrases = frasesModel.getFrasesConNotas()
+                            }
                         }
                         Button("Buscar en frase"){
                             subtitle = "Búsqueda en Frase"
@@ -124,64 +147,47 @@ struct FrasesListView: View {
                             subtitle = "Búsqueda en nota de Frase"
                             showAlertSearchInNotaFrase = true
                         }
-                        Button("Frases recién añadidas"){withAnimation {
-                            list.removeAll()
-                            list = FrasesModel().getAllNewsElements()}
-                            subtitle = "Frases nuevas"
-                        }
-                        if subtitle == "Frases nuevas" && self.list.count > 0 {
-                            Button("Desmarcar frases nuevas"){
-                                FrasesModel().RemoveAllNewFlag()
-                            }
-                        }
-                            
-                        }label: {
-                            Image(systemName: "line.3.horizontal.decrease")
-                                .foregroundStyle(theme ==  .dark ? .white :  .black)
-                        }
-                    
-                        //Boton Adicionar una frase
-                        Button{
-                            showAddFrase = true
-                        }label: {
-                            Image(systemName: "plus")
-                                .foregroundStyle(theme ==  .dark ? .white :  .black)
-                        }
-                    }
-                    
-                }
-                .sheet(isPresented: $showAddFrase){
-                    FraseAddView()
-                        .presentationDetents([.medium])
-                        .presentationDragIndicator(.hidden)
-                }
-                .alert("Buscar en Frase", isPresented: $showAlertSearchInFrase){
-                    TextField("", text: $textFiel)
-                    Button("Buscar"){
-                        let arrayResult = FrasesModel().searchTextInFrases(text: textFiel)
-                        if arrayResult.count > 0 {
-                            list.removeAll()
-                            list = arrayResult
-                        }
                         
+                    }label: { //Label del Mnú
+                        Image(systemName: "line.3.horizontal.decrease")
+                            .foregroundStyle(theme ==  .dark ? .white :  .black)
                     }
                     
-                }
-                .alert("Buscar en nota de Frase", isPresented: $showAlertSearchInNotaFrase){
-                    TextField("", text: $textFiel2)
-                    Button("Buscar"){
-                        let arrayResult = FrasesModel().searchTextInNotaFrases(textNota: textFiel2)
-                        if arrayResult.count > 0 {
-                            list.removeAll()
-                            list = arrayResult
-                        }
-                        
+                    //Boton Adicionar una frase
+                    Button{
+                        showAddFrase = true
+                    }label: {
+                        Image(systemName: "plus")
+                            .foregroundStyle(theme ==  .dark ? .white :  .black)
                     }
-                    
                 }
+                
             }
-            
+            .sheet(isPresented: $showAddFrase){
+                EmptyView()
+                FraseAddView()
+                .presentationDetents([.medium])
+                .presentationDragIndicator(.hidden)
+            }
+            .alert("Buscar en Frase", isPresented: $showAlertSearchInFraseAll){
+                TextField("", text: $textFieldFraseAll)
+                Button("Buscar"){
+                    frasesModel.listfrases.removeAll()
+                    frasesModel.listfrases = FrasesModel().searchTextInFrases(text: textFieldFrase)
+                }
+                
+            }
+            .alert("Buscar en nota de Frase", isPresented: $showAlertSearchInNotaFrase){
+                TextField("", text: $textFieldNota)
+                Button("Buscar"){
+                    frasesModel.listfrases.removeAll()
+                    frasesModel.listfrases = FrasesModel().searchTextInNotaFrases(textNota: self.textFieldNota)
+                }
+                
+            }
         }
+        
+    }
         
     }
     

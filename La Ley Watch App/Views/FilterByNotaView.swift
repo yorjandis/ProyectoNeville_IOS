@@ -7,8 +7,7 @@
 // sheet que permite filtrar el contenido de las notas
 
 import SwiftUI
-import CloudKit
-
+/*
 struct FilterByNotaView: View {
     @Binding var listRecord : [CKRecord]
     @Binding var showListOptions : Bool //permite cerrar la ventana de opciones de filtro
@@ -32,8 +31,10 @@ struct FilterByNotaView: View {
                 Button("Favoritos"){
                     self.listRecord.removeAll()
                     Task{
+                        /*
                         self.listRecord = await iCloudKitModel(of: .BDPrivada).filterByCriterio(tableName: .CD_Notas, criterio: .favoritoNota)
                         showListOptions = false
+                        */
                         
                     }
                    
@@ -49,9 +50,11 @@ struct FilterByNotaView: View {
                     TextFieldLink("🔍 Título a buscar",prompt: Text("Texto del título")) { str in
                         listRecord.removeAll()
                         Task{
+                            /*
                             listRecord =  await iCloudKitModel(of: .BDPrivada).filterByCriterio(tableName: .CD_Notas, criterio: .tituloNota, textoABuscar: str)
                             self.showSheetTitulo = false
                             self.showListOptions = false
+                            */
                         }
                     }
                 }
@@ -62,9 +65,11 @@ struct FilterByNotaView: View {
                     TextFieldLink("🔍 Texto a buscar",prompt: Text("Texto de la nota")) { str in
                         listRecord.removeAll()
                         Task{
+                            /*
                             listRecord =  await iCloudKitModel(of: .BDPrivada).filterByCriterio(tableName: .CD_Notas, criterio: .textoNota, textoABuscar: str)
                             self.showSheetTitulo = false
                             self.showListOptions = false
+                            */
                         }
                     }
                 }
@@ -80,3 +85,4 @@ struct FilterByNotaView: View {
 #Preview {
     FilterByNotaView(listRecord: .constant([CKRecord]()), showListOptions: .constant(false))
 }
+*/

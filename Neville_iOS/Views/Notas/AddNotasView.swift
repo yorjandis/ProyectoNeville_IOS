@@ -39,7 +39,7 @@ struct AddNotasView: View {
                         if NotasModel().addNote(nota: nota, title: title, isFav: false) {
                             notas.removeAll()
                             notas.append(contentsOf: NotasModel().getAllNotas())
-                            if checkReviewRequest() {
+                            if FeedBackModel.checkReviewRequest() {
                                 self.sheetShowFeedBackReview = true
                             }else{
                                 dimiss()

@@ -13,8 +13,11 @@ struct GenerateQRView : View {
 
     
     @State var  footer : String = ""
-    @State var title : String = "Toque el texto para modificarlo"
-    @State var  showImage = true //muestra la imagen del QR ya generado
+    
+    @State  var title : String = "Toque el texto para modificarlo"
+    
+    @State  var  showImage = true //muestra la imagen del QR ya generado
+    
     @FocusState private var focusState : Bool //Para ocultar el teclado
     @State private var imagen : UIImage? = UIImage(systemName: "qrcode")
     
@@ -51,7 +54,7 @@ struct GenerateQRView : View {
                                                 )
                                  )
                                 Button("Guardar en Frases"){
-                                    FrasesModel().AddFrase(frase: footer)
+                                    FrasesModel.shared.AddFrase(frase: footer)
                                 }
                                 Button("Guardar en Notas"){
                                     _ = NotasModel().addNote(nota: footer, title: "\(String(String(footer).prefix(footer.count / 3 )))...")
@@ -163,8 +166,6 @@ struct GenerateQRView : View {
                                       options: [CIDetectorAccuracy: CIDetectorAccuracyHigh]),
             let ciImage = CIImage(image: pickedImage),
               let _ = detector.features(in: ciImage) as? [CIQRCodeFeature] else { return }
-
-       // let qrCodeLink = features.reduce("") { $0 + ($1.messageString ?? "") }
     }
  
 }

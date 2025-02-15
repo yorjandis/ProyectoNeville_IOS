@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-
+@MainActor
 struct SettingModel {
     
     //Devuelve un arreglo del color a almacenar

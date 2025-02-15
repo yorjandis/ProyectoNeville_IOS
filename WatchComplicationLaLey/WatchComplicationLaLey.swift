@@ -48,10 +48,15 @@ struct WatchComplicationLaLeyEntryView : View {
     var entry: Provider.Entry
     
     var body: some View {
-        VStack {
+        VStack{
+        //La imagen que aparecerá en en la esfera del reloj
+            //Las dimensiones deben ser: 1x:38x38, 2x:60x60, 3x:90X90
+            //Aquí icon es una imagen tomada de Assets
             Image(uiImage: UIImage(named: "icon")!)
                 .resizable()
-                .scaledToFill()
+                .scaledToFit() // Mejor mantener proporción
+                .frame(width: 38, height: 38)
+                .foregroundColor(.primary) // Permitir tintado
         }
     }
 }

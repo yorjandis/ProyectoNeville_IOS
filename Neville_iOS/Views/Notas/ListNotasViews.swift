@@ -12,9 +12,6 @@ import CoreData
 import LocalAuthentication
 
 
-
-
-
 struct ListNotasViews: View {
     @Environment(\.dismiss) var dimiss
     @Environment(\.colorScheme) var theme

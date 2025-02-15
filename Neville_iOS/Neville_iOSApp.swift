@@ -13,9 +13,13 @@ import SwiftUI
 @main
 struct Neville_iOSApp: App {
     
- @StateObject private var networkMonitor = NetworkMonitor()
- @StateObject private var WatchConectivityMV = WatchConectivityModel.shared
+ @StateObject private var networkMonitor        = NetworkMonitor() //Helper Para conexiones de red
+ @StateObject private var modelTxt              = TxtContentModel()
+    @StateObject private var modelFrases        = FrasesModel.shared
+    
   private let persistentStore : CoreDataController =  CoreDataController.shared
+    
+    
     //Codigo a cargar al inicio:
     init(){
 
@@ -33,11 +37,12 @@ struct Neville_iOSApp: App {
         WindowGroup {
             ContentView()
                 .environmentObject(networkMonitor)
-                .environmentObject(WatchConectivityMV) //Conectividad con el reloj
+                .environmentObject(modelTxt)
+                .environmentObject(modelFrases)
                 .environment(\.managedObjectContext, persistentStore.context)
                 .task {
-                    await FrasesModel().populateTableFrases() //Popular la tabla Frases SI se reinstala la app por primera vez
-                    await TxtContentModel().populateTable(context: self.persistentStore.context)   //Popular la tabla TxtFiles SI se reinstala la app por primera vez
+                    modelTxt.getAllFileTxtOfType(type: .conf) // Carga el listado de conferencias
+                    modelFrases.getfrasesArrayFromTxtFile()
                 }
                 
         }

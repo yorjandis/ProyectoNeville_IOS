@@ -64,9 +64,11 @@ struct AddDiario: View {
                         Button{
                             Task{
                                 if self.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || self.content.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                                    self.alertMessage = "Debe colocar un titulo y un texto para la entrada"
+                                    self.alertMessage = "Debe colocar un título y un texto para la entrada"
                                     showAlert = true
                                 }else{
+                                    /*
+                                     //Yor Modificar esto: interaccion con icloud
                                     self.isWorking = true
                                     let result = await iCloudDiario().add(title: self.title, content: self.content, emotion: self.selection.txt, fecha: Date.now, fechaM: Date.now, isfav: self.isfav ? 1 : 0)
                                     if  result {
@@ -78,6 +80,7 @@ struct AddDiario: View {
                                         showAlert = true
                                     }
                                     self.isWorking = false
+                                    */
                                 }
                                 
                             }
@@ -128,12 +131,8 @@ struct AddDiario: View {
                         Text(i.txt)
                         Spacer()
                     }.padding(.horizontal)
-                    
-                   
                 }
                 .buttonStyle(PlainButtonStyle())
-                
-                
             }
         }
     }

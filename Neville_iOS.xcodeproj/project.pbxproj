@@ -8,13 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		190C39AC2B6B8CC7008007C6 /* ModelData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E92F64512AB78EE6007BB4BA /* ModelData.xcdatamodeld */; };
-		190C39AD2B6B8D9D008007C6 /* FrasesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19B255BF2AFC47C30093104F /* FrasesModel.swift */; };
-		190C39AE2B6B8DBD008007C6 /* CoreDataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E99F9CC52AC4682B00169084 /* CoreDataController.swift */; };
 		190C39AF2B6B8DC9008007C6 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92F63722AB468F4007BB4BA /* Utils.swift */; };
 		190C39B02B6B8DD6008007C6 /* UtilsForViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = E93C23A92ABA365100939D16 /* UtilsForViews.swift */; };
-		190C39B12B6B8F87008007C6 /* NotasModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19B255C12AFC489D0093104F /* NotasModel.swift */; };
-		190C39B22B6B8F8C008007C6 /* TxtContentModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D23CFF2AFD817E008C63BA /* TxtContentModel.swift */; };
-		190C39B32B6B8F9C008007C6 /* DiarioModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 197D2A3A2AFA9FE000486014 /* DiarioModel.swift */; };
 		190C39B42B6B9026008007C6 /* listfrases.txt in Resources */ = {isa = PBXBuildFile; fileRef = E92F64562AB7D2BA007BB4BA /* listfrases.txt */; };
 		1931B16B2B86CFAA00A51EF6 /* privacy.txt in Resources */ = {isa = PBXBuildFile; fileRef = 1931B16A2B86CFAA00A51EF6 /* privacy.txt */; };
 		193425B62AFFD83700A99C25 /* GamePLay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 193425B52AFFD83700A99C25 /* GamePLay.swift */; };
@@ -119,13 +114,10 @@
 		19C674552B23A3ED006B4AB7 /* ReflexEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19C674542B23A3ED006B4AB7 /* ReflexEditView.swift */; };
 		19C674572B23B708006B4AB7 /* QRLoadFromGaleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19C674562B23B708006B4AB7 /* QRLoadFromGaleryView.swift */; };
 		19C7483C2B045E6D004D52E6 /* cuestionario.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19C7483B2B045E6D004D52E6 /* cuestionario.txt */; };
-		19D04F192B723018007B66F2 /* iCloudKitCRUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D04F182B723018007B66F2 /* iCloudKitCRUD.swift */; };
 		19D04F1C2B7455B8007B66F2 /* AddNota.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D04F1B2B7455B8007B66F2 /* AddNota.swift */; };
 		19D23D002AFD817E008C63BA /* TxtContentModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D23CFF2AFD817E008C63BA /* TxtContentModel.swift */; };
 		19D23D022AFD969E008C63BA /* TxtListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D23D012AFD969E008C63BA /* TxtListView.swift */; };
-		19D2F0622B6F250500D9B62C /* iCloudKitModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D2F0612B6F250500D9B62C /* iCloudKitModel.swift */; };
 		19D2F0642B70903200D9B62C /* QRReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D2F0632B70903100D9B62C /* QRReader.swift */; };
-		19D808882B79966F00D8054C /* iCloudKitModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19D2F0612B6F250500D9B62C /* iCloudKitModel.swift */; };
 		19E06FA62AEB74E20016F9E6 /* FrasesNotasAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19E06FA52AEB74E20016F9E6 /* FrasesNotasAddView.swift */; };
 		19E06FA82AEB91F00016F9E6 /* FrasesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19E06FA72AEB91F00016F9E6 /* FrasesListView.swift */; };
 		19E0BE152B0C661A00E149A5 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19E0BDEC2B0B412D00E149A5 /* WidgetKit.framework */; };
@@ -147,8 +139,6 @@
 		19F804202B69CBA000A323A0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 19F8041F2B69CBA000A323A0 /* Assets.xcassets */; };
 		19F804232B69CBA000A323A0 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 19F804222B69CBA000A323A0 /* Preview Assets.xcassets */; };
 		19F804262B69CBA000A323A0 /* La Ley Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 19F804192B69CB9D00A323A0 /* La Ley Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		19F8042C2B69CC1700A323A0 /* WatchConectivityModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19F8042B2B69CC1700A323A0 /* WatchConectivityModel.swift */; };
-		19F8042D2B69CC1700A323A0 /* WatchConectivityModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19F8042B2B69CC1700A323A0 /* WatchConectivityModel.swift */; };
 		912273502D5A7CA600DE3AC6 /* conf_tu estado de animo decide tu futuro.txt in Resources */ = {isa = PBXBuildFile; fileRef = 912273262D5A7CA600DE3AC6 /* conf_tu estado de animo decide tu futuro.txt */; };
 		912273512D5A7CA600DE3AC6 /* conf_navidad el mensaje redentor.txt in Resources */ = {isa = PBXBuildFile; fileRef = 912272CE2D5A7CA600DE3AC6 /* conf_navidad el mensaje redentor.txt */; };
 		912273522D5A7CA600DE3AC6 /* conf_soy llamado por tu nombre ho señor.txt in Resources */ = {isa = PBXBuildFile; fileRef = 912273152D5A7CA600DE3AC6 /* conf_soy llamado por tu nombre ho señor.txt */; };
@@ -623,6 +613,9 @@
 		912275272D5A7CA600DE3AC6 /* conf_señales y maravillas.txt in Resources */ = {isa = PBXBuildFile; fileRef = 912273072D5A7CA600DE3AC6 /* conf_señales y maravillas.txt */; };
 		9122752F2D5A955B00DE3AC6 /* RichText in Frameworks */ = {isa = PBXBuildFile; productRef = 9122752E2D5A955B00DE3AC6 /* RichText */; };
 		91F0DD432D5D3A7200307453 /* FeedBackReview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F0DD422D5D3A5D00307453 /* FeedBackReview.swift */; };
+		91F0DD472D60312E00307453 /* FeedBackModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F0DD452D60312600307453 /* FeedBackModel.swift */; };
+		91F0DD522D6039C400307453 /* CRUDModelWatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F0DD512D6039BC00307453 /* CRUDModelWatch.swift */; };
+		91F0DD552D605B5800307453 /* watchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F0DD542D605B4B00307453 /* watchModel.swift */; };
 		E92F636C2AB3EC5E007BB4BA /* ContentTxtShowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92F636B2AB3EC5E007BB4BA /* ContentTxtShowView.swift */; };
 		E92F63732AB468F4007BB4BA /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92F63722AB468F4007BB4BA /* Utils.swift */; };
 		E92F64532AB78EE6007BB4BA /* ModelData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E92F64512AB78EE6007BB4BA /* ModelData.xcdatamodeld */; };
@@ -806,12 +799,10 @@
 		19C674542B23A3ED006B4AB7 /* ReflexEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReflexEditView.swift; sourceTree = "<group>"; };
 		19C674562B23B708006B4AB7 /* QRLoadFromGaleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRLoadFromGaleryView.swift; sourceTree = "<group>"; };
 		19C7483B2B045E6D004D52E6 /* cuestionario.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cuestionario.txt; sourceTree = "<group>"; };
-		19D04F182B723018007B66F2 /* iCloudKitCRUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iCloudKitCRUD.swift; sourceTree = "<group>"; };
 		19D04F1B2B7455B8007B66F2 /* AddNota.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNota.swift; sourceTree = "<group>"; };
 		19D23CFF2AFD817E008C63BA /* TxtContentModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TxtContentModel.swift; sourceTree = "<group>"; };
 		19D23D012AFD969E008C63BA /* TxtListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TxtListView.swift; sourceTree = "<group>"; };
 		19D2F0602B6DE90600D9B62C /* La-Ley-Watch-App-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "La-Ley-Watch-App-Info.plist"; sourceTree = SOURCE_ROOT; };
-		19D2F0612B6F250500D9B62C /* iCloudKitModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iCloudKitModel.swift; sourceTree = "<group>"; };
 		19D2F0632B70903100D9B62C /* QRReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRReader.swift; sourceTree = "<group>"; };
 		19E06FA52AEB74E20016F9E6 /* FrasesNotasAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrasesNotasAddView.swift; sourceTree = "<group>"; };
 		19E06FA72AEB91F00016F9E6 /* FrasesListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrasesListView.swift; sourceTree = "<group>"; };
@@ -832,7 +823,6 @@
 		19F8041D2B69CB9D00A323A0 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		19F8041F2B69CBA000A323A0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		19F804222B69CBA000A323A0 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		19F8042B2B69CC1700A323A0 /* WatchConectivityModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConectivityModel.swift; sourceTree = "<group>"; };
 		912271782D5A7CA600DE3AC6 /* conf_a quien buscas.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "conf_a quien buscas.txt"; sourceTree = "<group>"; };
 		912271792D5A7CA600DE3AC6 /* conf_a sus ordenes.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "conf_a sus ordenes.txt"; sourceTree = "<group>"; };
 		9122717A2D5A7CA600DE3AC6 /* conf_absolucion divina.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "conf_absolucion divina.txt"; sourceTree = "<group>"; };
@@ -1307,6 +1297,10 @@
 		9122734F2D5A7CA600DE3AC6 /* conf_yo soy la vid.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "conf_yo soy la vid.txt"; sourceTree = "<group>"; };
 		9122752B2D5A925200DE3AC6 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		91F0DD422D5D3A5D00307453 /* FeedBackReview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedBackReview.swift; sourceTree = "<group>"; };
+		91F0DD452D60312600307453 /* FeedBackModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedBackModel.swift; sourceTree = "<group>"; };
+		91F0DD4E2D60384700307453 /* WatchComplicationLaLeyExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WatchComplicationLaLeyExtension.entitlements; sourceTree = "<group>"; };
+		91F0DD512D6039BC00307453 /* CRUDModelWatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CRUDModelWatch.swift; sourceTree = "<group>"; };
+		91F0DD542D605B4B00307453 /* watchModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = watchModel.swift; sourceTree = "<group>"; };
 		E92F636B2AB3EC5E007BB4BA /* ContentTxtShowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentTxtShowView.swift; sourceTree = "<group>"; };
 		E92F63722AB468F4007BB4BA /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		E92F64522AB78EE6007BB4BA /* ModelData.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ModelData.xcdatamodel; sourceTree = "<group>"; };
@@ -1366,8 +1360,7 @@
 		190C39B52B6B97F3008007C6 /* model */ = {
 			isa = PBXGroup;
 			children = (
-				19D2F0612B6F250500D9B62C /* iCloudKitModel.swift */,
-				19D04F182B723018007B66F2 /* iCloudKitCRUD.swift */,
+				91F0DD542D605B4B00307453 /* watchModel.swift */,
 			);
 			path = model;
 			sourceTree = "<group>";
@@ -1570,11 +1563,11 @@
 			isa = PBXGroup;
 			children = (
 				19D2F0602B6DE90600D9B62C /* La-Ley-Watch-App-Info.plist */,
+				19F8041B2B69CB9D00A323A0 /* La_LeyApp.swift */,
+				19F8041D2B69CB9D00A323A0 /* ContentView.swift */,
 				190C39B52B6B97F3008007C6 /* model */,
 				19D04F1A2B7305A8007B66F2 /* Views */,
 				190C39AB2B6B84AA008007C6 /* La Ley Watch App.entitlements */,
-				19F8041B2B69CB9D00A323A0 /* La_LeyApp.swift */,
-				19F8041D2B69CB9D00A323A0 /* ContentView.swift */,
 				19F8041F2B69CBA000A323A0 /* Assets.xcassets */,
 				19F804212B69CBA000A323A0 /* Preview Content */,
 			);
@@ -2087,6 +2080,8 @@
 		E92F63712AB468D7007BB4BA /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				91F0DD512D6039BC00307453 /* CRUDModelWatch.swift */,
+				91F0DD452D60312600307453 /* FeedBackModel.swift */,
 				197D2A332AF9851300486014 /* QRCode */,
 				E9934DB22AE2B54B004636F9 /* CoreData */,
 				E92F63722AB468F4007BB4BA /* Utils.swift */,
@@ -2099,7 +2094,6 @@
 				19D23CFF2AFD817E008C63BA /* TxtContentModel.swift */,
 				1949D5152B01F04800DFD46D /* GameModel.swift */,
 				19BBC62A2B16B00700FBB079 /* RefexModel.swift */,
-				19F8042B2B69CC1700A323A0 /* WatchConectivityModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -2107,7 +2101,6 @@
 		E92F644E2AB6EF5A007BB4BA /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				91F0DD422D5D3A5D00307453 /* FeedBackReview.swift */,
 				19BBC62E2B16BE3200FBB079 /* Reflex */,
 				1949D5172B02B09C00DFD46D /* QRCode */,
 				193425B42AFFD81C00A99C25 /* PLayGame */,
@@ -2116,6 +2109,7 @@
 				E9934DB12AE2B51A004636F9 /* Txt */,
 				E966EDDE2ACF1C2E002D84C4 /* Notas */,
 				E9D0F1CA2AE2226A00B35452 /* optionView.swift */,
+				91F0DD422D5D3A5D00307453 /* FeedBackReview.swift */,
 				194F11282AEC79D5009FA23E /* settingView.swift */,
 			);
 			path = Views;
@@ -2124,6 +2118,7 @@
 		E95B934A2AAFBB2600B5E2B5 = {
 			isa = PBXGroup;
 			children = (
+				91F0DD4E2D60384700307453 /* WatchComplicationLaLeyExtension.entitlements */,
 				1954CDA92B1152740093DDF0 /* FrasesWiggetExtension.entitlements */,
 				E95B93552AAFBB2600B5E2B5 /* Neville_iOS */,
 				19E0BE172B0C661A00E149A5 /* FrasesWigget */,
@@ -2948,19 +2943,13 @@
 				19520A4F2B75C34F000B11CC /* AddDiario.swift in Sources */,
 				19F8041E2B69CB9D00A323A0 /* ContentView.swift in Sources */,
 				190C39AC2B6B8CC7008007C6 /* ModelData.xcdatamodeld in Sources */,
-				190C39B12B6B8F87008007C6 /* NotasModel.swift in Sources */,
-				190C39B32B6B8F9C008007C6 /* DiarioModel.swift in Sources */,
-				19D2F0622B6F250500D9B62C /* iCloudKitModel.swift in Sources */,
 				19D04F1C2B7455B8007B66F2 /* AddNota.swift in Sources */,
-				190C39AE2B6B8DBD008007C6 /* CoreDataController.swift in Sources */,
+				91F0DD552D605B5800307453 /* watchModel.swift in Sources */,
 				190C39AF2B6B8DC9008007C6 /* Utils.swift in Sources */,
 				190C39B02B6B8DD6008007C6 /* UtilsForViews.swift in Sources */,
-				190C39B22B6B8F8C008007C6 /* TxtContentModel.swift in Sources */,
-				19D04F192B723018007B66F2 /* iCloudKitCRUD.swift in Sources */,
 				19F8041C2B69CB9D00A323A0 /* La_LeyApp.swift in Sources */,
-				190C39AD2B6B8D9D008007C6 /* FrasesModel.swift in Sources */,
-				19F8042D2B69CC1700A323A0 /* WatchConectivityModel.swift in Sources */,
 				19520A512B765E31000B11CC /* FilterByNotaView.swift in Sources */,
+				91F0DD522D6039C400307453 /* CRUDModelWatch.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2968,6 +2957,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				91F0DD472D60312E00307453 /* FeedBackModel.swift in Sources */,
 				E92F64532AB78EE6007BB4BA /* ModelData.xcdatamodeld in Sources */,
 				199DA0672B0EAC5800DEED62 /* Home.swift in Sources */,
 				E99F9CC62AC4682B00169084 /* CoreDataController.swift in Sources */,
@@ -2986,11 +2976,9 @@
 				E99F9CC82ACACE3600169084 /* AddNotasView.swift in Sources */,
 				E95B93592AAFBB2600B5E2B5 /* ContentView.swift in Sources */,
 				19D23D022AFD969E008C63BA /* TxtListView.swift in Sources */,
-				19D808882B79966F00D8054C /* iCloudKitModel.swift in Sources */,
 				E9D0F1CB2AE2226A00B35452 /* optionView.swift in Sources */,
 				E93C23AA2ABA365100939D16 /* UtilsForViews.swift in Sources */,
 				E92F636C2AB3EC5E007BB4BA /* ContentTxtShowView.swift in Sources */,
-				19F8042C2B69CC1700A323A0 /* WatchConectivityModel.swift in Sources */,
 				19C674572B23B708006B4AB7 /* QRLoadFromGaleryView.swift in Sources */,
 				194F11292AEC79D5009FA23E /* settingView.swift in Sources */,
 				19D2F0642B70903200D9B62C /* QRReader.swift in Sources */,
@@ -3040,7 +3028,7 @@
 				CODE_SIGN_ENTITLEMENTS = FrasesWiggetExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20;
+				CURRENT_PROJECT_VERSION = 21;
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FrasesWigget/Info.plist;
@@ -3051,12 +3039,12 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.3;
+				MARKETING_VERSION = 1.2.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.FrasesWigget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -3069,7 +3057,7 @@
 				CODE_SIGN_ENTITLEMENTS = FrasesWiggetExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20;
+				CURRENT_PROJECT_VERSION = 21;
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FrasesWigget/Info.plist;
@@ -3080,12 +3068,12 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.3;
+				MARKETING_VERSION = 1.2.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.FrasesWigget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -3095,9 +3083,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = WatchComplicationLaLeyExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20;
+				CURRENT_PROJECT_VERSION = 21;
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WatchComplicationLaLey/Info.plist;
@@ -3109,13 +3098,13 @@
 					"@executable_path/../../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.3;
+				MARKETING_VERSION = 1.2.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.watchkitapp.WatchComplicationLaLey;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				WATCHOS_DEPLOYMENT_TARGET = 10.0;
 			};
@@ -3126,9 +3115,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = WatchComplicationLaLeyExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20;
+				CURRENT_PROJECT_VERSION = 21;
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WatchComplicationLaLey/Info.plist;
@@ -3140,13 +3130,13 @@
 					"@executable_path/../../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.3;
+				MARKETING_VERSION = 1.2.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.watchkitapp.WatchComplicationLaLey;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				WATCHOS_DEPLOYMENT_TARGET = 10.0;
 			};
@@ -3160,7 +3150,7 @@
 				CODE_SIGN_ENTITLEMENTS = "La Ley Watch App/La Ley Watch App.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20;
+				CURRENT_PROJECT_VERSION = 21;
 				DEVELOPMENT_ASSET_PATHS = "\"La Ley Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				ENABLE_PREVIEWS = YES;
@@ -3173,13 +3163,13 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.3;
+				MARKETING_VERSION = 1.2.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				WATCHOS_DEPLOYMENT_TARGET = 10.0;
 			};
@@ -3193,7 +3183,7 @@
 				CODE_SIGN_ENTITLEMENTS = "La Ley Watch App/La Ley Watch App.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20;
+				CURRENT_PROJECT_VERSION = 21;
 				DEVELOPMENT_ASSET_PATHS = "\"La Ley Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				ENABLE_PREVIEWS = YES;
@@ -3206,13 +3196,13 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.3;
+				MARKETING_VERSION = 1.2.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				WATCHOS_DEPLOYMENT_TARGET = 10.0;
 			};
@@ -3345,7 +3335,7 @@
 				CODE_SIGN_ENTITLEMENTS = Neville_iOS/Neville_iOS.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20;
+				CURRENT_PROJECT_VERSION = 21;
 				DEVELOPMENT_ASSET_PATHS = "\"Neville_iOS/Preview Content\"";
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				ENABLE_PREVIEWS = YES;
@@ -3366,7 +3356,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.3;
+				MARKETING_VERSION = 1.2.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -3374,7 +3364,7 @@
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -3387,7 +3377,7 @@
 				CODE_SIGN_ENTITLEMENTS = Neville_iOS/Neville_iOS.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20;
+				CURRENT_PROJECT_VERSION = 21;
 				DEVELOPMENT_ASSET_PATHS = "\"Neville_iOS/Preview Content\"";
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				ENABLE_PREVIEWS = YES;
@@ -3408,7 +3398,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.3;
+				MARKETING_VERSION = 1.2.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -3416,7 +3406,7 @@
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

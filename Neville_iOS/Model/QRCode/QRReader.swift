@@ -94,7 +94,7 @@ struct ReadQRCode : View {
                             .modifier(GradientButtonStyle(ancho: 200, colors: [SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_a), SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_b)]))
                             
                             Button{
-                                FrasesModel().AddFrase(frase: textQR)
+                                FrasesModel.shared.AddFrase(frase: textQR)
                                 self.message = "La frase ha sido importada"
                                 showAlert = true
                             }label: {

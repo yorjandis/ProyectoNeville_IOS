@@ -16,15 +16,15 @@ struct ContentTxtShowView: View {
     
     @Environment(\.dismiss) private var dimiss
     @Environment(\.managedObjectContext) private var context
+    @EnvironmentObject private var modeloTxt : TxtContentModel
     
-    //Para leer ficheros txt con prefijos
-    var entidad : TxtCont?
+    let title : String 
     
-    let type : TxtContentModel.TipoDeContenido
+    let nombreTxt : String //Nombre del fichero txt a abrir, sin el prefijo
     
-    //Si typeContent es .NA se deben de proveer estos campos
-    @State  var fileName    : String = "" //Nombre del txt a abrir
-    @State  var  title      : String = ""   //Titulo
+    let type : TipoDeContenido
+    
+  
     
     //Setting: Tamaño de fuente por defecto
     @State private var fontSizeContent : CGFloat = 18
@@ -47,18 +47,14 @@ struct ContentTxtShowView: View {
 
     //Yor aqui va el código para leer el contenido del fichero
     var getContent : String {
-        if self.type != .NA { //se ha pasado un fichero de prefijo
-            if let entidadTemp = self.entidad {
-                //print("Yorj: Entidad: \(entidadTemp.type ?? "")" + "\(entidadTemp.namefile ?? "") ")
-                return UtilFuncs.FileRead("\(entidadTemp.type ?? "")" + "\(entidadTemp.namefile ?? "")")
-            }
+        if type == .NA {
+            //Este es el caso de ficheros como "biografia.txt" que no tienen prefijo
+            return UtilFuncs.FileRead(self.nombreTxt)
         }else{
-            if self.fileName != "" {
-                //print("Yorj:  Fichero: \(self.fileName)")
-                return UtilFuncs.FileRead(fileName)
-            }
+            //Ficheros txt con prefijo
+            return  modeloTxt.getContentTxt(nombreTxt: self.nombreTxt, type: self.type)
         }
-        return ""
+        
     }
     
     // Función para convertir el color a formato hexadecimal
@@ -77,6 +73,10 @@ struct ContentTxtShowView: View {
         NavigationStack {
             
             VStack {
+                VStack{
+                    Divider()
+                    .padding(0)
+                }
                 ScrollView(showsIndicators: true){
                     VStack{
                         RichText(html: self.getContent )
@@ -98,7 +98,7 @@ struct ContentTxtShowView: View {
                             DispatchQueue.main.async {
                                 self.scrollOffset = offset
                                 if offset >= threshold {
-                                    if checkReviewRequest() {
+                                    if FeedBackModel.checkReviewRequest() {
                                         self.sheetShowFeedBackReview = true
                                     }
                                     self.flagScroll = true //Desactiva el lanzamiento de la func
@@ -186,30 +186,28 @@ struct ContentTxtShowView: View {
             .onAppear {
                 fontSizeContent = CGFloat(UserDefaults.standard.integer(forKey: AppCons.UD_setting_fontContentSize))
                 fontSizeContenido = Int(self.fontSizeContent)
-                //Quitando la marca isnew
-                if let ii = entidad {
-                    if ii.isnew {
-                        TxtContentModel().RemoveNewFlag(entity: entidad!)
-                    }
-                }
             }
             .toolbar{
                 HStack{
                     Spacer()
                     
                         Menu{
-                            if self.fileName.isEmpty {
+                            
                                 Button("Marcar como Favorita"){
+                                    /*
                                     if let enti = self.entidad {
                                         TxtContentModel().setFavState(context: self.context, entity: enti, state: true)
                                     }
+                                    */
                                 }
                                 NavigationLink("Añadir nota asociada"){
+                                    /*
                                     if let enti = self.entidad {
                                         EditNoteTxtContentTxtShow(entidad: enti)
                                     }
+                                    */
                                 }
-                            }
+                            
                             Button("Tamaño de Letra", systemImage: "textformat") {
                                 withAnimation(.easeInOut) {
                                     self.showColor = false
@@ -236,6 +234,7 @@ struct ContentTxtShowView: View {
 }
 
 
+/*
 //Permite ver y editar el campo nota
 struct EditNoteTxtContentTxtShow:View {
     @Environment(\.dismiss) var dimiss
@@ -280,6 +279,7 @@ struct EditNoteTxtContentTxtShow:View {
     }
 }
 
+*/
 
 
 #Preview {

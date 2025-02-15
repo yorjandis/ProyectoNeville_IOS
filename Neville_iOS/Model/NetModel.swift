@@ -11,18 +11,18 @@ import Network
 
 
 /// Se encarga de monitorizar la conección a internet
-class NetworkMonitor: ObservableObject {
+
+@MainActor final class NetworkMonitor: ObservableObject {
     private let networkMonitor = NWPathMonitor()
     private let workerQueue = DispatchQueue(label: "Monitor")
-    var isConnected = false
-
+    
+    @Published var isConnected = false
+    
     init() {
-        networkMonitor.pathUpdateHandler = { path in
-            self.isConnected = path.status == .satisfied
-            Task {
-                await MainActor.run {
-                    self.objectWillChange.send()
-                }
+        networkMonitor.pathUpdateHandler = { [weak self] path in
+            // Usamos Task para asegurar que la actualización se haga en el hilo principal
+            Task { @MainActor in
+                self?.isConnected = path.status == .satisfied
             }
         }
         networkMonitor.start(queue: workerQueue)

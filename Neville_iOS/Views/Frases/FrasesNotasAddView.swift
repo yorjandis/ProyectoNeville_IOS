@@ -13,36 +13,34 @@ import CoreData
 struct FrasesNotasAddView: View {
     @Environment(\.dismiss) var dimiss
     
-    let frase : Frases?
-    @State var nota : String = ""
+    let frase : String
+    
+    @State private var nota : String = "" //Campo del textField
     
     var body: some View {
         NavigationStack {
             Form{
-
                     Section("Nota"){
                         TextField("", text: $nota, axis: .vertical)
                             .textFieldStyle(.roundedBorder)
                     }
             }
             .onAppear{
-                if let tt = frase {
-                    nota = tt.nota ?? ""
-                }
-                
+                nota = FrasesModel().GetNotaAsociadaFrase(frase: self.frase)
             }
             Spacer()
             ScrollView(content: {
-                Text(frase?.frase ?? "")
+                Text(frase)
             })
             .navigationTitle("Nota en Frase")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar{
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Guardar"){
-                        if !FrasesModel().UpdateNotaAsociada(frase: frase!, notaAsociada: nota){
+                        if !FrasesModel.shared.UpdateNotaAsociada(frase: frase, notaAsociada: nota){
                             print("se ha producido un error al guardar la nota")
                         }
+                        FrasesModel().getfrasesArrayFromTxtFile()
                         dimiss()
                     }
                 }

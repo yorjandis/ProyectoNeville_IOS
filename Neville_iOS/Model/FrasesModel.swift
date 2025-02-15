@@ -11,65 +11,123 @@ import CoreData
 import SwiftUI
 
 //Manejo de la tabla frases
-struct FrasesModel {
+
+@MainActor
+final class FrasesModel : ObservableObject {
+    @Published var listfrases : [String] = []
     
-    ///Obtiene el contexto de Objetos administrados
-private let context = CoreDataController.shared.context
+    static let shared = FrasesModel() //Singleton
+
+    private let context = CoreDataController.shared.context
 
  
     ///Almacena el Id de la frase actualmente cargada. Se actualiza en: getRandomFrase()
     static var idFraseActual : String = ""
     
-    ///Variable que indica si se ha populado la tabla frase (consulta a UserDefault)
-   private  var isFrasesPopulated : Bool {
-        return UserDefaults.standard.bool(forKey: AppCons.UD_isfrasesLoaded)
-    }
     
-    
-    
-    //Conjuntos de predicados comunes para ser usados con: GetRequest(predicate :...)
-    struct PredicatesTypes{
-        let  getAllFavorites: NSPredicate       = NSPredicate(format: "%K == %@", #keyPath(Frases.isfav), NSNumber(value: true))
-        let  getAllNotas: NSPredicate           = NSPredicate(format: "%K != %@", #keyPath(Frases.nota), "")
-        let  getAllNews: NSPredicate            = NSPredicate(format: "%K != %@", #keyPath(Frases.isnew), NSNumber(value: true))
-        let  getAllPersonalFrases: NSPredicate  = NSPredicate(format: "%K == %@", #keyPath(Frases.noinbuilt), NSNumber(value: true))
-    }
-    
-    
-    ///Realiza consultas a la BD
-    /// - Parameter - predicate: define el predicado a utilizar para filtrar la consulta. Si es nil devuelve todos los elementos
-    ///  - Returns - Devuelve un arreglo de elementos de cierto tipo. Si falla la cosulta se devuelve un arreglo vacio
-    func GetRequest(predicate : NSPredicate?)->[Frases]{
-        
-        let fecthRequest = NSFetchRequest<Frases>(entityName: "Frases")
-        
-        if let tt = predicate {
-            fecthRequest.predicate = tt
-        }
   
-        do {
-            return try context.fetch(fecthRequest)
+    //Nuevas funciones Yor
+    
+    
+    ///Obtiene la lista de frases del fichero txt in-built (También agrega las frases personales creadas):
+    /// - Returns: Devuelve un  arreglo de cadenas con las frases cargadas del txt en Staff
+    func getfrasesArrayFromTxtFile(){
+        self.listfrases.removeAll()
+        //Extrayendo las frases inbuilt, almacenadas dentro del bundle de la App
+        self.listfrases = UtilFuncs.FileReadToArray(AppCons.FileListFrases)
+        
+        //Agregando las frases noInbuit, de la Tabla Frases
+        let fetchRequest : NSFetchRequest<Frases> = NSFetchRequest(entityName: "Frases")
+        let predicate : NSPredicate = NSPredicate(format: "noinbuilt == %@", NSNumber(value: true))
+        fetchRequest.predicate = predicate
+        do{
+            let elements = try self.context.fetch(fetchRequest)
+            for item in elements{
+                if let frase = item.frase{
+                    self.listfrases.append(frase)
+                }
+            }
         }catch{
-            print(error.localizedDescription)
-            return []
+            print("Error al recuperar las frases desde Core Data: \(error.localizedDescription)")
         }
- 
+    }
+    
+    ///Obtiene una frase aleatoria
+    ///Aqui se actualiza el ID de la frase actualmente cargada para fines de búsqueda dentro de la tabla Frases. Al inicio,  se intenta popular la tabla Frases si esta marcada como NO populada(false).
+    /// - Returns Devuelve el texto de la frase. Actualiza la static var idFraseActual con el id de la frase devuelta. Si falla devuelve una frase vacia
+    func getRandomFrase()->String {
+        return self.listfrases.randomElement() ?? "Malo"
     }
 
-  
     
-    ///Obtiene la lista de frases del fichero txt in-built:
-    /// - Returns: Devuelve un  arreglo de cadenas con las frases cargadas del txt en Staff
-     func getfrasesArrayFromTxtFile() ->[String] {
-        var array = [String]()
+    
+    //Devuelve todas las frases favoritas
+    func getAllFavFrases() -> [String] {
+        var frasesFavoritas: [String] = []
+        let fetchRequest: NSFetchRequest<Frases> = Frases.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "isfav == %@", NSNumber(value: true))
         
-        array = UtilFuncs.FileReadToArray(AppCons.FileListFrases)
-        
-        return array
-        
+        do {
+            let elements = try context.fetch(fetchRequest)
+            for item in elements {
+                if let frase = item.frase{
+                    frasesFavoritas.append(frase)
+                }
+            }
+        }catch{
+            print("Error al obtener las frases favoritas: \(error.localizedDescription)")
+        }
+        return frasesFavoritas
     }
     
-    ///Adiciona una frase Personal NO inBuilt a la tabla Frases.
+    //Chequear si una frase es favorita
+    func isFavFrase(_ frase: String) -> Bool {
+        let fetchRequest: NSFetchRequest<Frases> = Frases.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "frase == %@ AND isfav == %@", frase, NSNumber(value: true))
+        fetchRequest.fetchLimit = 1 // Solo necesitamos verificar si existe al menos una
+        
+        do {
+            let count = try context.count(for: fetchRequest)
+            return count > 0
+        } catch {
+            print("Error al verificar la frase favorita: \(error.localizedDescription)")
+            return false
+        }
+    }
+    
+    //fija el estado de favorito a una frase
+    //Nota: esta función busca si la frase esta en la tabla Frases. Si esta, le asigna el nuevo estado isfav.
+    func setFavFrase(_ frase: String, _ isFav: Bool) -> Bool {
+        let fetchRequest: NSFetchRequest<Frases> = Frases.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "frase == %@", frase)
+        fetchRequest.fetchLimit = 1 // Optimizamos la búsqueda para traer solo un resultado
+        
+        do {
+            if let fraseEntity = try context.fetch(fetchRequest).first {
+                // La frase ya existe en la tabla, solo actualizamos el estado de favorito si es necesario
+                if fraseEntity.isfav != isFav { //solo hace el cambio si el estado es distinto al que ya tiene
+                    fraseEntity.isfav = isFav
+                    try context.save()
+                }
+            } else {
+                // Si la frase no existe,  creamos una nueva entrada en la tabla Frases
+                let newFrase = Frases(context: context)
+                newFrase.id = UUID().uuidString
+                newFrase.frase = frase
+                newFrase.isfav = true // Solo creamos si isFav es true
+                newFrase.noinbuilt = false
+                
+                try context.save()
+            }
+            return true
+        } catch {
+            print("Error al fijar el estado de favorito: \(error.localizedDescription)")
+            return false
+        }
+    }
+    
+    
+    ///Adiciona una frase Personal (NO inBuilt) a la tabla Frases.
     /// - Parameter frase : El texto de la frase a añadir
     func AddFrase(frase : String){
         let entidad = Frases(context: context)
@@ -88,409 +146,195 @@ private let context = CoreDataController.shared.context
         }
     }
     
+
+    
     ///Devuelve un arreglo con todas las frases NO inBuilt. Útil para funciones de filtrado
-    func getFrasesNoInbuilt()->[Frases]{
-        return GetRequest(predicate: PredicatesTypes().getAllPersonalFrases)
-    }
+    func getFrasesNoInbuilt()->[String]{
+        
+        let fetchRequest : NSFetchRequest<Frases> = Frases.fetchRequest()
+        let predicate : NSPredicate = NSPredicate(format: "noinbuilt == true")
+        fetchRequest.predicate = predicate
+        var result : [String] = []
 
-
-    
-    ///Obtiene una frase aleatoria
-    ///Aqui se actualiza el ID de la frase actualmente cargada para fines de búsqueda dentro de la tabla Frases. Al inicio,  se intenta popular la tabla Frases si esta marcada como NO populada(false).
-    /// - Returns Devuelve el texto de la frase. Actualiza la static var idFraseActual con el id de la frase devuelta. Si falla devuelve una frase vacia
-    func getRandomFrase()->String {
-        let arrayFrases = GetRequest(predicate: nil)
-        if arrayFrases.count > 0 {
-            return arrayFrases.randomElement()?.frase ?? ""
-        }else{
-            return ""
-        }
-        
-    }
-
-    
-    ///Obtiene una entity aleatoria de Frase
-    ///Aqui se actualiza el ID de la frase actualmente cargada para fines de búsqueda dentro de la tabla Frases. Al inicio,  se intenta popular la tabla Frases si esta marcada como NO populada(false).
-    /// - Returns Devuelve la entity frase.
-    func getRandomFraseEntity() async ->Frases?{
-        let arrayFrases = GetRequest(predicate: nil)
-        if arrayFrases.count > 0 {
-            return arrayFrases.randomElement()!
-        }else{
-            return nil
-        }
- 
-    }
-    
-    ///Obtiene una entity aleatoria de Frase: VERSION  NO SINCRIONICA
-    ///Aqui se actualiza el ID de la frase actualmente cargada para fines de búsqueda dentro de la tabla Frases. Al inicio,  se intenta popular la tabla Frases si esta marcada como NO populada(false).
-    /// - Returns Devuelve la entity frase.
-    func getRandomFraseEntityNoAsync() ->Frases?{
-        let arrayFrases = GetRequest(predicate: nil)
-        if arrayFrases.count > 0 {
-            return arrayFrases.randomElement()!
-        }else{
-            return nil
-        }
-        
-    }
-    
-    ///Popula la tabla Frases al inicio de la app (ojo: esto borrará todas las notas y marcas de fav en la tabla)
-    ///Es llamado solo una vez al iniciar la app por primera vez. Carga todos los datos de la tabla Frases y actualiza el el estado de la carga de la tabla Frases
-    func populateTableFrases() async {
-
-        if isFrasesPopulated {return} //Sale si la tabla frases ya esta populada
-        
-        
-        //sleep(5) //Haciendo una pausa de 5 segundos para permitir 
-        
-        //Chequea si iCloud esta habilitado.
-        if FileManager.default.ubiquityIdentityToken != nil {
-            //icloud disponible:
-            
-            //Chequeando si existe resgistros en iCloud
-            let resultTemp = await iCloudKitModel(of: .BDPrivada).getRecords(tableName: .CD_Frases)
-            if !resultTemp.isEmpty {
-                //Significa que tiene registros en iCloud: NO popula
-                return
+        do{
+            let elements : [Frases] = try context.fetch(fetchRequest)
+            for item in elements{
+                result.append(item.frase ?? "")
             }
-
-        }else{
-            print("icloud no esta disponible")
+            return result
+        }catch{
+            print(error.localizedDescription)
+            return []
         }
-            
+    }
     
-        print("populando la tabla Frases")
+    //Chequea si una frase es no inbuilt:
+    func isNoInbuilt(frase:String)->Bool{
         
-            let arrayFrases =  getfrasesArrayFromTxtFile() //Obtiene el arreglo de frases del txt
- 
-            //Populando la tabla frases
-            for item in arrayFrases {
-                if item.isEmpty {continue} //Salta si halla una línea en blanco
-                let row   = Frases(context: context) //carga entidad Frases desde el contexto
-                row.id    = UUID().uuidString
-                row.frase = item
-                row.isfav = false
-                row.nota  = ""
-                row.noinbuilt = false
+        let fetchRequest : NSFetchRequest<Frases> = Frases.fetchRequest()
+        let predicate : NSPredicate = NSPredicate(format: "frase == %@ AND noinbuilt == %@", frase, NSNumber(value: true))
+        fetchRequest.predicate = predicate
+        fetchRequest.fetchLimit = 1
+        
+        do{
+            let element = try context.fetch(fetchRequest).first
+            if element != nil{
+                return true
+            }else{
+                return false
             }
+        }catch{
+            return false
+        }
+    }
+    
+    //Elimina una frase personal de la Tabla Frases
+    func DeleteFraseInbuilt(frase : String)->Bool{
+        let fetchRequest: NSFetchRequest<Frases> = Frases.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "frase == %@ AND noinbuilt == %@", frase, NSNumber(value: true))
+        fetchRequest.fetchLimit = 1 // Optimizamos la búsqueda para traer solo un resultado
         
-        if context.hasChanges {
-            do {
+        do{
+            let element = try context.fetch(fetchRequest).first
+            if let elementToDelete = element { //Se asegura de que exista un elemento a eliminar
+                context.delete(elementToDelete)
                 try context.save()
-                UserDefaults.standard.setValue(true, forKey: AppCons.UD_isfrasesLoaded) //almacena una marca que indica que la tabla frase ha sido populada
-            }catch{
-                print("No se ha podido popular la tabla Frases")
+                return true
+            }else{
+                return false
             }
-            
+        }catch{
+            print("Error al eliminar una frase personal : \(error.localizedDescription)")
+            return false
         }
+        
     }
     
-   
-    ///Elimina todas las filas de la tabla Frases
-    /// - Returns : Devuelve true si la operación ha sido un éxito o false si ha habido un error o la tabla no esta populada. Por defecto es true (éxito)
-    func cleanFrases()->Bool{
-       var result = true
+    
+    
+    //Devuelve todas las frases con notas
+    func getFrasesConNotas()->[String]{
         
-        if isFrasesPopulated == false { return false} //si no se ha populado la tabla sale
+        let fetchRequest : NSFetchRequest<Frases> = Frases.fetchRequest()
+        let predicate : NSPredicate = NSPredicate(format: "nota != ''")
+        fetchRequest.predicate = predicate
+        var result : [String] = []
         
-            let content = GetRequest(predicate: nil)
-            
-            for row in content{
-                context.delete(row)
+        do{
+            let elements : [Frases] = try context.fetch(fetchRequest)
+            for item in elements{
+                result.append(item.frase ?? "")
             }
-            
-            do {
-                try context.save()
-            }catch{
-                result = false //si existe un error se devuelve false
-            }
-        
+        }catch{
+            print("Error al devolver todas las frases con notas : \(error.localizedDescription)")
+        }
         return result
     }
- 
-
-    //Hace un toggle al estado de favorito de una frase
-    func handleFavState(frase : Frases?){
-        if let tt = frase {
-            var yy = tt.isfav
-            yy.toggle()
-            tt.isfav = yy
-            try? frase?.managedObjectContext?.save()
-        }
+    
+    ///Obtiene la nota de una frase
+    ///
+    func GetNotaAsociadaFrase(frase : String)->String{
+        let fetchRequest : NSFetchRequest = NSFetchRequest<Frases>(entityName: "Frases")
+        let predicate : NSPredicate = NSPredicate(format: "frase == %@", frase)
+        fetchRequest.predicate = predicate
+        fetchRequest.fetchLimit = 1
         
+        do{
+            let element = try context.fetch(fetchRequest)
+            return element.first?.nota ?? ""
+        }catch{
+            return ""
+        }
     }
     
+
     
     ///Actualizar nota asociada
     /// - Returns : Devuelve true si éxito; false de otro modo
-    func UpdateNotaAsociada(frase : Frases?, notaAsociada : String = "")->Bool{
-        if let tt = frase {
-            tt.nota = notaAsociada
-            try? tt.managedObjectContext?.save()
-            return true
-        }else {return false}
+    func UpdateNotaAsociada(frase : String, notaAsociada : String = "")->Bool{
+        let fetchRequest : NSFetchRequest = NSFetchRequest<Frases>(entityName: "Frases")
+        let predicate : NSPredicate = NSPredicate(format: "frase == %@", frase)
+        fetchRequest.predicate = predicate
+        fetchRequest.fetchLimit = 1 // Optimizamos la búsqueda para traer solo un resultado
+        
+        do{
+            let elements : [Frases] = try context.fetch(fetchRequest)
+            
+            if elements.isEmpty{ //Si la frase no esta en la Tabla Frases, crea una nueva entidad y la añade
+                
+                let frasenew = Frases(context: context)
+                frasenew.id = UUID().uuidString
+                frasenew.frase = frase
+                frasenew.nota = notaAsociada
+                frasenew.noinbuilt = false
+                
+            }else{ //Si la frase esta en la tabla, solo cambia su campo nota
+                elements.first?.nota = notaAsociada
+            }
+            if context.hasChanges{
+                try context.save()
+                return true
+            }else{
+                context.rollback()
+                return false
+            }
+            
+        }catch{
+            print(error.localizedDescription)
+            return false
+        }
     }
 
+    
     ///Buscar texto en frases.
     /// - Parameter text : Texto a buscar dentro de la frase
-    /// - Returns : Devuelve un arreglo de entity Frases que contienen el texto a buscar
-    func searchTextInFrases(text : String)->[Frases]{
-        var arrayResult = [Frases]()
-        
-        let arrayFrases = GetRequest(predicate: nil)
-        
-        for item in arrayFrases {
-            let temp = item.frase?.lowercased() ?? ""
-            if (temp.contains(text.lowercased())){
-                arrayResult.append(item)
+    /// - Returns : Devuelve un arreglo de  frases que contienen el texto a buscar
+    func searchTextInFrases(text : String)->[String]{
+        let fetchRequest : NSFetchRequest = NSFetchRequest<Frases>(entityName: "Frases")
+        var result: [String] = []
+        do{
+            let elements = try context.fetch(fetchRequest)
+            for item in elements{
+                if let frase = item.frase {
+                    if(frase.lowercased().contains(text.lowercased())){
+                        result.append(frase)
+                    }
+                }
             }
+            return result
+        }catch{
+            return result
         }
-        
-        return arrayResult
- 
     }
     
     
     ///Buscar texto en el campo nota de una frase
     /// - Parameter text : Texto a buscar dentro de la frase
     /// - Returns : Devuelve un arreglo de entity Frases que contienen el texto a buscar
-    func searchTextInNotaFrases(textNota : String)->[Frases]{
-        var arrayResult = [Frases]()
-        
-        let arrayFrases = GetRequest(predicate: nil)
-        
-        for item in arrayFrases {
-            let temp = item.nota?.lowercased() ?? ""
-            if (temp.contains(textNota.lowercased())){
-                arrayResult.append(item)
-            }
-        }
-        
-        return arrayResult
- 
-    }
-    
-    
-    
-    ///Obtiene todas las frases favoritas
-    ///Obtener todas las notas favoritas
-    ///  - Returns : Devuelve un arreglo con todas las entity Frases favoritas
-    func getAllFavFrases()->[Frases]{
-        return GetRequest(predicate: PredicatesTypes().getAllFavorites)
-    }
-    
-    
-    ///Devuelve un arreglo de entity Frases con las frases que contienen notas
-    /// - Returns - Devuelve un arreglo de tipo [Frases]
-     func getAllNotasFrases()->[Frases]{
-         return GetRequest(predicate: PredicatesTypes().getAllNotas)
-    }
-    
-    
-    ///Delete frase: Solo las frases personales se pueden eliminar
-    func Delete(frase : Frases){
-        if frase.noinbuilt {
-            context.delete(frase)
-            try? context.save()
-        }
-    }
-    
-    ///Actualiza los campos de una frase Personal. Solo las frases personales se pueden modificar
-    func Update(frase : Frases, fraseStr : String, nota : String){
-        if frase.noinbuilt {
-            frase.frase = fraseStr
-            frase.nota = nota
-            try? context.save()
-        }
-    }
-    
-    ///Devuelve una entity Frase de  acuerdo al texto de la frase
-    /// - Parameter -  frase : el texto de la frase a filtrar
-    ///  - Return - Devuelve una entity Frase? que corresponde con la frase filtrada, de lo contrario devuelve una frase aleatoria
-    func GetFraseFromTextFrase(frase : String)->Frases?{
-        let fetchRequest = NSFetchRequest<Frases>(entityName: "Frases")
-        fetchRequest.predicate = NSPredicate(format: "%K == %@", #keyPath(Frases.frase), frase)
-        
-        do {
-            return try context.fetch(fetchRequest).first
-        }catch{
-            return nil
-        }
-    }
-    
-    
-    //--------------------------- FUNCIONES PARA NUEVOS ITEMS AÑADIDOS --------------------------------------
-    
-    
-    ///Actualiza la BD cuando se adiciona nuevas frases al bundle en una nueva actualización
-    /// - Returns : Devuelve una tupla de dos enteros: el primero es el # de elementos que se han añadido, el segundo el # de elementos que han fallado al insertarse
-    func UpdateContenAfterAppUpdate()->(Int, Int){
-        
-        var set : Set<String> = Set()
-        var errorCount = 0 //cuanta los elementos fallidos que no se han adicionado a la BD
-        var exitoCount = 0 //cuanta los elementos exitosos adicionados a la BD
-        var totalNews = 0 //cuanta elementos nuevos que han sido detectados
-        
-        //Volcar todos los nombres de conferencias de la BD a un set.
-        let arrayBdFrases = self.GetRequest(predicate: nil)
-        
-        if arrayBdFrases.isEmpty { return  (0,0) } //Manejo de errores
-        
-        //Insertando todas las frases de la BD a un conjunto
-        for i in arrayBdFrases {
-            set.insert(i.frase ?? "")
-        }
-        
-       // print("Cantidad antes de actualizar: \(set.count)")
-        
-        
-        //Obtengo todas los nombres de conferencias del bundle e intento actualizar el set, los que se inserten representan los nuevos elementos
-        //Luego inserto esos nuevos elementos a la BD.
-        let frases = UtilFuncs.FileReadToArray("listfrases")
-        
-        if frases.isEmpty { return (0,0) } //Manejo de errores
-        
-        
-        for i in frases {
-            let result = set.insert(i)
-            if result.0 {
-                totalNews += 1
-               //Actualizando la BD
-                do {
-                    let item = Frases(context: self.context)
-                    item.id = UUID().uuidString
-                    item.frase = i
-                    item.nota = ""
-                    item.isfav = false
-                    item.noinbuilt = false
-                    item.isnew = true //Marca el elemento como nuevo
-                   try context.save()
-                    exitoCount += 1
-                }catch{
-                    errorCount += 1 //Cuenta los elementos que no se han actualizado
-                }
-                
-                
-            }
-            
-        }
-        
-       // print("Cantidad después de actualizar: \(set.count)")
-    
-            return (exitoCount, totalNews)
-        
-        
-    }
-    
- 
-    ///Pone el campo isnew a false. La modificación se hace inline, sobre el parámetro pasado
-    /// - Parameter - entity : el registro a modificar
-    func RemoveNewFlag( entity : inout Frases){
-            entity.isnew = false
-            try?  entity.managedObjectContext?.save()
-    }
-    
-    ///Pone el campo isnew a false de todas las frases nuevas
-    func RemoveAllNewFlag(){
-        let predicate = NSPredicate(format: "%K==%@", #keyPath(Frases.isnew), NSNumber(value: true))
-        let fetcRequest : NSFetchRequest<Frases> = NSFetchRequest(entityName: "Frases")
-        fetcRequest.predicate = predicate
-        do {
-           let  temp =  try context.fetch(fetcRequest)
-            
-            for i in temp {
-                i.isnew = false
-               try?  i.managedObjectContext?.save()
-            }
-            
-        }catch{
-           
-        }
-    }
-    
-    
-
-    ///Lista todos los elementos recientemente adicionado: isnew:true
-    /// - Returns - Devuelve un arreglo con todos los campos Frases añadidas recientemente
-    func getAllNewsElements()->[Frases]{
-        let predicate = NSPredicate(format: "%K==%@", #keyPath(Frases.isnew), NSNumber(value: true))
-        let fetcRequest : NSFetchRequest<Frases> = NSFetchRequest(entityName: "Frases")
-        fetcRequest.predicate = predicate
-        do {
-            return try context.fetch(fetcRequest)
-        }catch{
-            return []
-        }
-    }
-    
-    
-    
-    ///OKOKOK Mantenimiento de la BD: Elimina registros duplicados en Core Data. Se asegura que se eliminan solos aquellos registros que tengan el campo fav a false y nota a vacio:
-    /// Yor: esto repara la BD de frases de elementos duplicados. Solo conserva aquellos que tiene  nota o están marcados como favoritos.
-    /// - Returns - devuelve el número de registros duplicados:
-    func Fix_DeleteDuplicatesRowsInBDCoreDataForfrases(){
-        var arrayForDelete : [Frases] = [] //Arreglo de elementos duplicados para eliminar
-        let ArrayItems = FrasesModel().GetRequest(predicate: nil) //Total de elementos en BD
-        
-        var totalDuplicadosTemp = 0 //Para control de elementos duplicados
-
-        for i in ArrayItems {
-            let duplicadosTemp = ArrayItems.filter{ $0.frase == i.frase } //Filtrando los elementos duplicados
-            totalDuplicadosTemp = duplicadosTemp.count //almacena la cantidad de elementos duplicados
-            
-            for ii in duplicadosTemp{//Recorre los elementos duplicados para filtrar todos lo que no son favoritos ni tienen notas
-                if ii.isfav == false && ii.nota == ""{
-                    arrayForDelete.append(ii)
-                    if ii.frase == "" { continue } //Para eliminar las frases que estan vacias (Actualmente se ha ido una yor)
-                    totalDuplicadosTemp -= 1 //va descontando el contador cada vez que se adiciona un elemento para eliminar
+    func searchTextInNotaFrases(textNota : String)->[String]{
+        let fetchRequest : NSFetchRequest = NSFetchRequest<Frases>(entityName: "Frases")
+        var result: [String] = []
+        do{
+            let elements = try context.fetch(fetchRequest)
+            for item in elements{
+                if let nota = item.nota {
+                    if(nota.lowercased().contains(textNota.lowercased())){
+                        result.append(nota)
+                    }
                 }
             }
-            
-            //dejando un elemento vivo en la BD en caso de que se hayan filtrados todos los duplicados para borrar:
-            if totalDuplicadosTemp == 0 { //Significa que se ha tomado todos los registros para borrar, hay que dejar uno yorj
-                _ = arrayForDelete.popLast() //Quita el último registro del arreglo de elementos para eliminar
-            }
+            return result
+        }catch{
+            return result
         }
         
-       // print("despues de borrar:\(arrayForDelete)")
-        
-        //Eliminando los elementos y recalculando el arreglo resultante
-        for d in arrayForDelete {
-            context.delete(d)
-            do {
-                try context.save()
-            }catch{
-                print("Yorjandis error eliminando: \(d.frase ?? "")")
-            }
-        }
-        
-       // ArrayItems = FrasesModel().GetRequest(predicate: nil) //recalculando el arreglo resultante
-
     }
     
     
     
+    //---------------------------------------------------------------------
     
-    //Función temporal Lanzada en la version 1.1.1: Elimina dos frase de prueba que se fue en la compilación 1.1.0.
-    //Yor: Eliminar esta función en la versión 1.1.3
-    //Yor: Intentar hacer esta función desde un comando web:
-    func tempDeleteFrase() {
-        let array = GetRequest(predicate: nil)
-        
-        for i in array {
-            let temp = i.frase ?? ""
-            if temp.contains("yorjandis"){
-                print("Resultado: \(i.frase ?? "")")
-                context.delete(i)
-                try? context.save()
-            }
-        }
-    }
 
-    
-    
-    
 
 }//struct
 

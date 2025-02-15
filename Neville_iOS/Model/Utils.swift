@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 
 //Almacenamiento de variables globales:
+@MainActor
 struct AppCons{
     static let appName      = "La Ley"
     static let appVersion   = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
@@ -137,6 +138,8 @@ struct UtilFuncs{
         var result = ""
         let temp = "\(fileName.lowercased())"
         
+       // print("Yorj: nombre del fichero a abrir \(temp)")
+        
         if let gg = Bundle.main.url(forResource: temp, withExtension: "txt") {
             if let fileContents = try? String(contentsOf: gg) {
                 result = fileContents.replacingOccurrences(of: "\n", with: "<br>")
@@ -153,7 +156,7 @@ struct UtilFuncs{
 
 //Permite acceder al UserDefaul compartido : UserDefault.shared
 extension UserDefaults {
-    static func shared()->UserDefaults{
+    @MainActor static func shared()->UserDefaults{
         return UserDefaults(suiteName: AppCons.AppGroupName) ?? .standard
     }
     

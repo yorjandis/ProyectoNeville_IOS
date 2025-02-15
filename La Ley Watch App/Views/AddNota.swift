@@ -54,6 +54,8 @@ struct AddNota : View {
                             if title.isEmpty || texto.isEmpty {
                                 self.alertMesage = "Debe colocar un titulo y un texto para la nota" ; showAlert = true
                             }else{
+                                /*
+                                 //Yorjandis: Deshabilitado por problema con icloudKit
                                 self.isWorking = true //Oculta el botón
                                 let result = await iCloudNotas().add(title: self.title, nota: self.texto, isfav: isfav ? 1 : 0)
                                 if  result {
@@ -63,6 +65,7 @@ struct AddNota : View {
                                  
                                 }
                                 self.isWorking = false //Muestra el botón
+                                */
                                 
                             }
                              

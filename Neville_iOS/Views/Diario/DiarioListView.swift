@@ -9,16 +9,10 @@ import SwiftUI
 import CoreData
 import LocalAuthentication
 
-
-
-
-
 struct DiarioListView: View {
 
     @Environment(\.dismiss) var dimiss
-    @State  var list : [Diario] = DiarioModel().getAllItem()
-    
-
+    @State  var list : [Diario] = []
     
     //Para filtros en fechas
     enum TypeOfSearch{case fix, interval}
@@ -46,9 +40,8 @@ struct DiarioListView: View {
     ("!No es maravillo si...!","feliz"),
     ("!Lo he logrado!","feliz")]
     
-    //Autenticaxción segura
-    let contextLA = LAContext()
-    @State var canOpenDiario = false //False, No se puede ver ni agregar entradas al usuario
+
+    @State var canOpenDiario : Bool = false 
     
     //Alert:
     @State var showAlert = false
@@ -60,287 +53,276 @@ struct DiarioListView: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                LinearGradient(colors: [Color(red:0.45, green:0.50, blue: 0.50), .orange], startPoint: .top, endPoint: .bottom)
-                    .ignoresSafeArea()
+            ZStack{
                 
-                ScrollView(.vertical){
-                    if canOpenDiario {
-                        ForEach($list){ item in
-                            cardItem(diario: item, list: $list)
-                                .padding(15)
-                                .frame(maxWidth: .infinity)
-                            #if os(iOS)
-                                .foregroundStyle(Color.black)
-                            #endif
-                            #if os(macOS)
-                                .foregroundStyle(theme == .dark ?  Color.black : Color.white)
-                            #endif
-                                .background(.white.opacity(0.7))
-                                .clipShape(RoundedRectangle(cornerRadius: 10))
-                                .shadow(radius: 5)
-                                .padding(.horizontal, 15)
-                                .padding(.vertical, 8)
-                        }
-                        
-                    } 
-                }
-                .task{
-                    list = DiarioModel().getAllItem()
-                }
-                .scrollIndicators(.hidden)
-                .navigationTitle("Diario")
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar{
-                    HStack(spacing: 5){
-                        
-                        if canOpenDiario {
-                            
-                            Menu{
-                                Button("Todas las entradas"){withAnimation {
-                                    list.removeAll(); list = DiarioModel().getAllItem()}
-                                }
-                                Button("favoritas"){list.removeAll(); list = DiarioModel().filterByFav()}
-                                Menu{
-                                    Button{withAnimation {
-                                        list.removeAll() ; list = DiarioModel().filterByEmoticono(criterio: Emociones.feliz.rawValue)
+                 LinearGradient(colors: [Color(red:0.45, green:0.50, blue: 0.50), .orange], startPoint: .top, endPoint: .bottom)
+                 .ignoresSafeArea()
+                
+                if self.canOpenDiario{
+                    VStack{
+                        VStack{
+                            ScrollView(){
+                                if canOpenDiario {
+                                    ForEach($list){ item in
+                                        cardItem(diario: item, list: $list)
+                                            .padding(15)
+                                            .frame(maxWidth: .infinity)
+                                            .foregroundStyle(Color.black)
+                                            .background(.white.opacity(0.7))
+                                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                                            .shadow(radius: 5)
+                                            .padding(.horizontal, 15)
+                                            .padding(.vertical, 8)
                                     }
-                                    }label: {
-                                        Label(Emociones.feliz.rawValue.capitalized, image: Emociones.feliz.rawValue)
-                                    }
-                                    Button{withAnimation {
-                                        list.removeAll() ; list = DiarioModel().filterByEmoticono(criterio: Emociones.neutral.rawValue)
-                                    }
-                                    }label: {
-                                        Label(Emociones.neutral.rawValue.capitalized, image: Emociones.neutral.rawValue)
-                                    }
-                                    Button{ withAnimation {
-                                        list.removeAll() ; list = DiarioModel().filterByEmoticono(criterio: Emociones.desanimado.rawValue)
-                                    }
-                                    }label: {
-                                        Label(Emociones.desanimado.rawValue.capitalized, image: Emociones.desanimado.rawValue)
-                                    }
-                                    Button{withAnimation {
-                                        list.removeAll() ; list = DiarioModel().filterByEmoticono(criterio: Emociones.enfado.rawValue)
-                                    }
-                                    }label: {
-                                        Label(Emociones.enfado.rawValue.capitalized, image: Emociones.enfado.rawValue)
-                                    }
-                                    Button{withAnimation {
-                                        list.removeAll() ; list = DiarioModel().filterByEmoticono(criterio: Emociones.distraido.rawValue)
-                                    }
-                                    }label: {
-                                        Label(Emociones.distraido.rawValue.capitalized, image: Emociones.distraido.rawValue)
-                                    }
-                                    Button{withAnimation {
-                                        list.removeAll() ; list = DiarioModel().filterByEmoticono(criterio: Emociones.sorpresa.rawValue)
-                                    }
-                                    }label: {
-                                        Label(Emociones.sorpresa.rawValue.capitalized, image: Emociones.sorpresa.rawValue)
-                                    }
-                                }label: {
-                                    Text("Por emoción")
-                                }
-                                Button("Buscar en Títulos"){
-                                    showAlertFilterByTitles = true
-                                }
-                                Button("Buscar en Contenido"){
-                                    showAlertFilterByContent = true
-                                }
-                                Menu{
-                                    Button("Fecha"){showFilterByDate = true}
-                                    Button("Intervalo"){showFilterByIntervalDate = true}
-                                    Menu{
-                                        Button("Semana anterior"){Task{
-                                            await calcByIntervalDate(fechaInicial: Calendar.current.date(byAdding: .day, value: -7, to: Date.now) ?? Date.now)
-                                        }}
-                                        Button("Quincena anterior"){Task{
-                                            await calcByIntervalDate(fechaInicial: Calendar.current.date(byAdding: .day, value: -15, to: Date.now) ?? Date.now)
-                                        } }
-                                        Button("Mes anterior"){Task{
-                                          await calcByIntervalDate(fechaInicial: Calendar.current.date(byAdding: .month, value: -1, to: Date.now) ?? Date.now)
-                                        }}
-                                        Button("Dos meses"){Task{
-                                            await calcByIntervalDate(fechaInicial: Calendar.current.date(byAdding: .month, value: -2, to: Date.now) ?? Date.now)
-                                          }}
-                                        Button("Seis meses"){Task{
-                                            await calcByIntervalDate(fechaInicial: Calendar.current.date(byAdding: .month, value: -6, to: Date.now) ?? Date.now)
-                                          }}
-                                        Button("Un año"){Task{
-                                            await calcByIntervalDate(fechaInicial: Calendar.current.date(byAdding: .year, value: -1, to: Date.now) ?? Date.now)
-                                        }}
-                                        Button("Dos año"){Task{
-                                            await calcByIntervalDate(fechaInicial: Calendar.current.date(byAdding: .year, value: -2, to: Date.now) ?? Date.now)
-                                        }}
-                                    }label:{
-                                        Text("Sugerencias")
-                                    }
-                                   
                                     
-                                }label:{
-                                    Text("Fecha de creación")
                                 }
-                            }label: {
-                                Image(systemName: "line.3.horizontal.decrease")
-                                    .tint(.black)
-                                    
                             }
-                            
-                            Button(action: {
-                                    //Nada por aqui
-                            }, label: {
-                                Menu{                
-                                    Button("Nueva Entrada"){
-                                        if  DiarioModel().addItem(title: "Título", emocion: .neutral, content: "Nuevo Contenido!") {
-                                            withAnimation {
-                                                list.removeAll()
-                                                list = DiarioModel().getAllItem()
-                                            }
-                                            if checkReviewRequest() {
-                                                self.sheetShowFeedBackReview = true
-                                            }
+                        }
+                        .task{
+                            list = DiarioModel().getAllItem()
+                        }
+                        .scrollIndicators(.hidden)
+                        .navigationTitle("Diario")
+                        .navigationBarTitleDisplayMode(.inline)
+                        .toolbar{
+                            HStack(spacing: 5){
+                                
+                                if canOpenDiario {
+                                    
+                                    Menu{
+                                        Button("Todas las entradas"){withAnimation {
+                                            list.removeAll(); list = DiarioModel().getAllItem()}
                                         }
-                                        
+                                        Button("favoritas"){list.removeAll(); list = DiarioModel().filterByFav()}
+                                        Menu{
+                                            Button{withAnimation {
+                                                list.removeAll() ; list = DiarioModel().filterByEmoticono(criterio: Emociones.feliz.rawValue)
+                                            }
+                                            }label: {
+                                                Label(Emociones.feliz.rawValue.capitalized, image: Emociones.feliz.rawValue)
+                                            }
+                                            Button{withAnimation {
+                                                list.removeAll() ; list = DiarioModel().filterByEmoticono(criterio: Emociones.neutral.rawValue)
+                                            }
+                                            }label: {
+                                                Label(Emociones.neutral.rawValue.capitalized, image: Emociones.neutral.rawValue)
+                                            }
+                                            Button{ withAnimation {
+                                                list.removeAll() ; list = DiarioModel().filterByEmoticono(criterio: Emociones.desanimado.rawValue)
+                                            }
+                                            }label: {
+                                                Label(Emociones.desanimado.rawValue.capitalized, image: Emociones.desanimado.rawValue)
+                                            }
+                                            Button{withAnimation {
+                                                list.removeAll() ; list = DiarioModel().filterByEmoticono(criterio: Emociones.enfado.rawValue)
+                                            }
+                                            }label: {
+                                                Label(Emociones.enfado.rawValue.capitalized, image: Emociones.enfado.rawValue)
+                                            }
+                                            Button{withAnimation {
+                                                list.removeAll() ; list = DiarioModel().filterByEmoticono(criterio: Emociones.distraido.rawValue)
+                                            }
+                                            }label: {
+                                                Label(Emociones.distraido.rawValue.capitalized, image: Emociones.distraido.rawValue)
+                                            }
+                                            Button{withAnimation {
+                                                list.removeAll() ; list = DiarioModel().filterByEmoticono(criterio: Emociones.sorpresa.rawValue)
+                                            }
+                                            }label: {
+                                                Label(Emociones.sorpresa.rawValue.capitalized, image: Emociones.sorpresa.rawValue)
+                                            }
+                                        }label: {
+                                            Text("Por emoción")
+                                        }
+                                        Button("Buscar en Títulos"){
+                                            showAlertFilterByTitles = true
+                                        }
+                                        Button("Buscar en Contenido"){
+                                            showAlertFilterByContent = true
+                                        }
+                                        Menu{
+                                            Button("Fecha"){showFilterByDate = true}
+                                            Button("Intervalo"){showFilterByIntervalDate = true}
+                                            Menu{
+                                                Button("Semana anterior"){Task{
+                                                    await calcByIntervalDate(fechaInicial: Calendar.current.date(byAdding: .day, value: -7, to: Date.now) ?? Date.now)
+                                                }}
+                                                Button("Quincena anterior"){Task{
+                                                    await calcByIntervalDate(fechaInicial: Calendar.current.date(byAdding: .day, value: -15, to: Date.now) ?? Date.now)
+                                                } }
+                                                Button("Mes anterior"){Task{
+                                                    await calcByIntervalDate(fechaInicial: Calendar.current.date(byAdding: .month, value: -1, to: Date.now) ?? Date.now)
+                                                }}
+                                                Button("Dos meses"){Task{
+                                                    await calcByIntervalDate(fechaInicial: Calendar.current.date(byAdding: .month, value: -2, to: Date.now) ?? Date.now)
+                                                }}
+                                                Button("Seis meses"){Task{
+                                                    await calcByIntervalDate(fechaInicial: Calendar.current.date(byAdding: .month, value: -6, to: Date.now) ?? Date.now)
+                                                }}
+                                                Button("Un año"){Task{
+                                                    await calcByIntervalDate(fechaInicial: Calendar.current.date(byAdding: .year, value: -1, to: Date.now) ?? Date.now)
+                                                }}
+                                                Button("Dos año"){Task{
+                                                    await calcByIntervalDate(fechaInicial: Calendar.current.date(byAdding: .year, value: -2, to: Date.now) ?? Date.now)
+                                                }}
+                                            }label:{
+                                                Text("Sugerencias")
+                                            }
+                                            
+                                            
+                                        }label:{
+                                            Text("Fecha de creación")
+                                        }
+                                    }label: {
+                                        Image(systemName: "line.3.horizontal.decrease")
+                                            .tint(.black)
                                         
                                     }
                                     
-                                    Menu{
-                                        ForEach(0..<titlesExamples.count, id: \.self){ value in
-                                            Button(titlesExamples[value].0){
-                                                if  DiarioModel().addItem(title: titlesExamples[value].0, emocion: DiarioModel().getEmocionesFromStr(value: titlesExamples[value].1) , content: "Nuevo contenido!"){
-                                                    
+                                    Button(action: {
+                                        //Nada por aqui
+                                    }, label: {
+                                        Menu{
+                                            Button("Nueva Entrada"){
+                                                if  DiarioModel().addItem(title: "Título", emocion: .neutral, content: "Nuevo Contenido!") {
                                                     withAnimation {
                                                         list.removeAll()
                                                         list = DiarioModel().getAllItem()
                                                     }
-                                                    if checkReviewRequest() {
+                                                    if FeedBackModel.checkReviewRequest() {
                                                         self.sheetShowFeedBackReview = true
                                                     }
                                                 }
                                                 
+                                                
                                             }
+                                            
+                                            Menu{
+                                                ForEach(0..<titlesExamples.count, id: \.self){ value in
+                                                    Button(titlesExamples[value].0){
+                                                        if  DiarioModel().addItem(title: titlesExamples[value].0, emocion: DiarioModel().getEmocionesFromStr(value: titlesExamples[value].1) , content: "Nuevo contenido!"){
+                                                            
+                                                            withAnimation {
+                                                                list.removeAll()
+                                                                list = DiarioModel().getAllItem()
+                                                            }
+                                                            if FeedBackModel.checkReviewRequest() {
+                                                                self.sheetShowFeedBackReview = true
+                                                            }
+                                                        }
+                                                        
+                                                    }
+                                                }
+                                            }label: {
+                                                Label("Sugerencias", systemImage: "wand.and.rays")
+                                            }
+                                            
+                                        }label:{
+                                            Image(systemName: "plus")//"wand.and.rays")
+                                                .tint(.black)
                                         }
-                                    }label: {
-                                        Label("Sugerencias", systemImage: "wand.and.rays")
-                                    }
+                                        
+                                    })
                                     
-                                }label:{
-                                    Image(systemName: "plus")//"wand.and.rays")
-                                        .tint(.black)
                                 }
                                 
-                            })
-                            
+                                
+                            }
                         }
-                        
-                        
-                    }
-            }
-                .alert("Filtrar por Título", isPresented: $showAlertFilterByTitles) {
-                    TextField("", text: $textfielTitles)
-                    Button("Cancelar"){
-                        textfielTitles = ""
-                        dimiss()
-                    }
-                    Button("Filtrar"){
-                        withAnimation {
-                            list.removeAll()
-                            list = DiarioModel().filterByTitle(criterio: textfielTitles)
-                        }
-                        textfielTitles = ""
-                    }
-                    
-                }
-                .alert("Filtrar por Contenido", isPresented: $showAlertFilterByContent) {
-                    TextField("", text: $textfielContent)
-                    Button("Cancelar"){
-                        textfielContent = ""
-                        dimiss()
-                    }
-                    Button("Filtrar"){
-                        withAnimation {
-                            list.removeAll()
-                            list = DiarioModel().filterByContent(criterio: textfielContent)
-                        }
-                        
-                        textfielContent = ""
-                    }
-                }
-                .sheet(isPresented: $showFilterByDate, content: {
-                    findBydate(lista: $list, typeOfSearch: TypeOfSearch.fix)
-                        .presentationDetents([.height(150)])
-                        .presentationCornerRadius(25)
-                        .presentationDragIndicator(.hidden)
-                })
-                .sheet(isPresented: $showFilterByIntervalDate, content: {
-                    findBydate(lista: $list, typeOfSearch: TypeOfSearch.interval)
-                        .presentationDetents([.height(150)])
-                        .presentationCornerRadius(25)
-                        .presentationDragIndicator(.hidden)
-                })
-                .sheet(isPresented: self.$sheetShowFeedBackReview, content: {
-                    FeedbackView(showTextBotton: true)
-                })
-                .alert("Diario", isPresented: $showAlert) {
-                    
-                } message: {
-                    Text(self.alertMessage)
-                }
-
-
-                    
-            }
-            .overlay {
-                VStack{
-                    Text("El Diario le permite llevar un registro de las actividades y hechos del día. Está protegido y solo usted tiene acceso.")
-                        .multilineTextAlignment(.center)
-                        .italic()
-                        .fontWeight(.heavy)
-                        .fontDesign(.serif)
-                        .font(.system(size: 25))
-                        .foregroundStyle(.black)
-                        .padding(15)
-                    
-                    Button{
-                        autent()
-                    }label:{
-                        Image(systemName: "key.viewfinder")
-                            .font(.system(size: 60))
-                            .foregroundStyle(Color.black.opacity(0.7))
-                            .symbolEffect(.pulse, isActive: true)
-                    }
-                    }
-                .opacity(canOpenDiario ? 0 : 1)
-                
-            }
-
-        }
-        
-    }
-    
-    func autent(){
-        var error : NSError?
-        if contextLA.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error){
-            
-            contextLA.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: "Por favor autentícate para tener acceso a su Diario") { success, error in
-                        if success {
-                             //Habilitación del contenido
-                            withAnimation {
-                                canOpenDiario = true
+                        .alert("Filtrar por Título", isPresented: $showAlertFilterByTitles) {
+                            TextField("", text: $textfielTitles)
+                            Button("Cancelar"){
+                                textfielTitles = ""
+                                dimiss()
+                            }
+                            Button("Filtrar"){
+                                withAnimation {
+                                    list.removeAll()
+                                    list = DiarioModel().filterByTitle(criterio: textfielTitles)
+                                }
+                                textfielTitles = ""
                             }
                             
-                        } else {
-                            print("Error en la autenticación biométrica")
+                        }
+                        .alert("Filtrar por Contenido", isPresented: $showAlertFilterByContent) {
+                            TextField("", text: $textfielContent)
+                            Button("Cancelar"){
+                                textfielContent = ""
+                                dimiss()
+                            }
+                            Button("Filtrar"){
+                                withAnimation {
+                                    list.removeAll()
+                                    list = DiarioModel().filterByContent(criterio: textfielContent)
+                                }
+                                
+                                textfielContent = ""
+                            }
+                        }
+                        .sheet(isPresented: $showFilterByDate, content: {
+                            findBydate(lista: $list, typeOfSearch: TypeOfSearch.fix)
+                                .presentationDetents([.height(150)])
+                                .presentationCornerRadius(25)
+                                .presentationDragIndicator(.hidden)
+                        })
+                        .sheet(isPresented: $showFilterByIntervalDate, content: {
+                            findBydate(lista: $list, typeOfSearch: TypeOfSearch.interval)
+                                .presentationDetents([.height(150)])
+                                .presentationCornerRadius(25)
+                                .presentationDragIndicator(.hidden)
+                        })
+                        .sheet(isPresented: self.$sheetShowFeedBackReview, content: {
+                            FeedbackView(showTextBotton: true)
+                        })
+                        .alert("Diario", isPresented: $showAlert) {
+                            
+                        } message: {
+                            Text(self.alertMessage)
                         }
                     }
-            
-            
-        }else{
-            alertMessage = "El dispositivo no soporta autenticación Biométrica. Se ha deshabilitado la protección del Diario"
-            showAlert = true
-            canOpenDiario = true //Deshabilitando la protección del Diario.
-        }
+                    
+                }else{ //Ventana de Autenticación
+                    
+                    VStack{
+                        Text("El Diario le permite llevar un registro de las actividades y hechos del día. Está protegido y solo usted tiene acceso.")
+                            .multilineTextAlignment(.center)
+                            .italic()
+                            .fontWeight(.heavy)
+                            .fontDesign(.serif)
+                            .font(.system(size: 25))
+                            .foregroundStyle(.black)
+                            .padding(15)
+                        
+                        Button{
+                            authenticateUser { success, message in
+                                if success {
+                                    self.canOpenDiario = true
+                                } else {
+                                    print("Error: \(message)")
+                                }
+                            }
+                        }label:{
+                            Image(systemName: "key.viewfinder")
+                                .font(.system(size: 60))
+                                .foregroundStyle(Color.black.opacity(0.7))
+                                .symbolEffect(.pulse, isActive: true)
+                        }
+                    }
+                    
+                }
+                
+                
+                
+                
+                 
+            }
+                    
+                    
+                    
+         }
     }
+    
+
     
     //View: Filtrar por una fecha dada y por un intervalo:
     struct findBydate : View {
@@ -419,9 +401,41 @@ struct DiarioListView: View {
         }
         
     }
+
+    
+   
     
 }
 
+@MainActor
+func authenticateUser(completion: @escaping (Bool, String) -> Void) {
+    let context = LAContext()
+    var error: NSError?
+    
+    // Verifica si la autenticación biométrica está disponible
+    if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) {
+        // Si está disponible, intenta autenticar al usuario
+        let reason = "Autenticación biométrica requerida para continuar"
+        
+        context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: reason) { success, authenticationError in
+            // Aseguramos que el bloque de completado se ejecute en el hilo principal
+            DispatchQueue.main.async {
+                if success {
+                    completion(true, "Autenticación exitosa")
+                } else {
+                    let errorMessage = authenticationError?.localizedDescription ?? "Error desconocido"
+                    completion(false, "Autenticación fallida: \(errorMessage)")
+                }
+            }
+        }
+    } else {
+        // Si no está disponible, se muestra un error
+        let errorMessage = error?.localizedDescription ?? "La autenticación biométrica no está disponible"
+        DispatchQueue.main.async {
+            completion(false, "Error: \(errorMessage)")
+        }
+    }
+}
 
 //Card Item
 struct cardItem: View{
@@ -673,6 +687,7 @@ struct editContent : View {
         }
     }
 }
+
 
 
 

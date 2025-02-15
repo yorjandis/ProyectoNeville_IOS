@@ -36,7 +36,7 @@ struct QRLoadFromGaleryView: View {
                                             )
                              )
                             Button("Guardar en Frases"){
-                                FrasesModel().AddFrase(frase: texto)
+                                FrasesModel.shared.AddFrase(frase: texto)
                             }
                             Button("Guardar en Notas"){
                                 _ = NotasModel().addNote(nota: texto, title: "\(String(String(texto).prefix(texto.count / 3 )))...")

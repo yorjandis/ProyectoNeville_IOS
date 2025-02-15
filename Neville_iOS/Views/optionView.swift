@@ -53,7 +53,7 @@ struct optionView: View {
                 ListNotasViews()
             }
             .sheet(isPresented: $showBiografia) {
-                ContentTxtShowView(type: .NA, fileName: "biografia", title: "Biografía")
+                ContentTxtShowView(title: "Biografía", nombreTxt: "biografia", type: .NA )
             }
             .sheet(isPresented: $showPreguntas) {
                 TxtListView(typeOfContent: .preg, title: "Preguntas")
@@ -216,6 +216,7 @@ struct optionView: View {
 
     
     //auxiliar
+@MainActor
     @ViewBuilder
    private  func bloqueA( _ systemImagen : String, _ texto : String)-> some View{
         

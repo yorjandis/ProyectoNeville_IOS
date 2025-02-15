@@ -9,14 +9,14 @@
 import Foundation
 import SwiftUI
 import CoreData
-import CloudKit
 
 struct TxtListView: View {
     
     @Environment(\.colorScheme) var theme
     @Environment(\.managedObjectContext) var context
+    @EnvironmentObject var modeloTxt : TxtContentModel
     
-    let typeOfContent : TxtContentModel.TipoDeContenido //Tipo de contenido a cargar
+    let typeOfContent : TipoDeContenido //Tipo de contenido a cargar
 
     @State var title : String //Es el título
     
@@ -28,62 +28,84 @@ struct TxtListView: View {
     @State var showAlertSearchInTxt = false
     @State var textFiel2 = ""
     
-    @State var listado : [TxtCont] = [] //Listado de conferencias txt
+    //Para buscar en notas:
+    @State var showAlertSearchInNotas = false
+    @State var textFiel3 = ""
     
-    @State private var entidad : TxtCont = TxtCont(context: CoreDataController.shared.context) //Esto es para permitir editar la nota y buscar en txt
+
+    //Buscar en la lista actual
+    @State private var showAlertSearchInTitles = false
+    @State private var textFieldTxtTitles = ""
+    @State private var listadoTemporal : [String] =  []
+    @FocusState private var focused: Bool
     
-    @State private var textFielSearh = ""
-    @FocusState private var focus : Bool
     
-    
-    private var filteredSearch : [TxtCont]{
-        if textFielSearh.isEmpty {return self.listado}
-        return self.listado.filter{ $0.namefile?.localizedCaseInsensitiveContains(self.textFielSearh) ?? false}
-    }
 
     var body: some View {
         
         NavigationStack{
             VStack{
-
-                List(self.filteredSearch){item in
+                //Búsqueda:
+                HStack {
+                    Image(systemName: "magnifyingglass")
+                        .foregroundColor(.gray)
+                    
+                    TextField("Buscar", text: self.$textFieldTxtTitles)
+                        .textFieldStyle(PlainTextFieldStyle())
+                        .padding(8)
+                        .focused(self.$focused)
+                        .onChange(of: self.focused) { oldValue, newValue in
+                            //Me aseguro de hacer una copia del listado original una sola vez
+                            //Mientras se usa el cuadro de búsqueda
+                            if self.textFieldTxtTitles.isEmpty{
+                                if newValue{
+                                    self.listadoTemporal = modeloTxt.getArrayOfAllFileTxtOfType(type: self.typeOfContent)
+                                }
+                            }
+                        }
+                        .onChange(of: self.textFieldTxtTitles, { oldValue, newValue in
+                            if newValue.isEmpty{
+                                modeloTxt.textList = self.listadoTemporal //restaura el listado actual
+                            }else{ //Ejecuta el filtro
+                                let filtro = self.listadoTemporal.filter{$0.lowercased().contains(newValue.lowercased()) }
+                                modeloTxt.textList = filtro //Actualiza el listado con el filtro
+                            }
+                        })
+                }
+                
+                List(modeloTxt.textList, id: \.self){nombreTxt in
                     VStack(alignment: .leading) {
                         HStack{
                             Image(systemName: "leaf.fill")
                                 .padding(.horizontal, 5)
-                                .foregroundStyle(.linearGradient(colors: [item.isfav ? .orange : .gray, (item.nota?.isEmpty ?? true) ? .gray : .green], startPoint: .leading, endPoint: .trailing))
+                                .foregroundStyle(.linearGradient(colors: [
+                                    (modeloTxt.getIsFavOfTxt(nombreTxt: nombreTxt, type: self.typeOfContent)) ? .orange : .gray, (modeloTxt.isNotaOfTxt(nombreTxt: nombreTxt, type: typeOfContent)) ? .green : .gray], startPoint: .leading, endPoint: .trailing))
                             
+                            //Abrir la conferencia
                             NavigationLink{
-                                ContentTxtShowView(entidad: item, type: self.typeOfContent, title: item.namefile ?? "")
+                                
+                                ContentTxtShowView(title: self.title, nombreTxt: nombreTxt, type: self.typeOfContent)
+                                
                             }label: {
-                                Text(item.namefile ?? "")
+                                Text(nombreTxt)
                             }
-                            
-                        }
-                        //Marcando los elementos como nuevos
-                        if item.isnew {
-                            Text("Nueva")
-                                .font(.footnote).bold()
-                                .foregroundStyle(Color.orange)
-                                .fontDesign(.serif)
                         }
                     }
                         .swipeActions(edge: .leading){
-                            Button{
-                                var temp = item.isfav
+                            Button{ //Poner favorito
+                                var temp = modeloTxt.getIsFavOfTxt(nombreTxt: nombreTxt, type: typeOfContent)
                                 temp.toggle()
-                                TxtContentModel().setFavState(context: self.context, entity: item, state: temp)
-                                withAnimation {
-                                    let temp2 = listado
-                                    listado.removeAll()
-                                    listado = temp2
+                                if TxtContentModel().setIsFavOfTxt(nombreTxt: nombreTxt, type: self.typeOfContent, isFav: temp){
+                                    
+                                 self.modeloTxt.getAllFileTxtOfType(type: self.typeOfContent) //Actualizando el listado
+
                                 }
                             }label: {
                                 Image(systemName: "heart")
                                     .tint(Color.orange)
                             }
                             NavigationLink{
-                                EditNoteTxt(entidad: item)
+                                EditNoteTxt(entidad: nombreTxt, typeOfContent: self.typeOfContent)
                             }label: {
                                 Image(systemName: "bookmark")
                                     .tint(Color.green)
@@ -91,10 +113,6 @@ struct TxtListView: View {
                     }
                     
                 }
-                .task{
-                    listado = TxtContentModel().GetRequest(context: self.context, type: self.typeOfContent, predicate: nil)
-                }
-                .searchable(text: $textFielSearh, placement: .navigationBarDrawer(displayMode: .always)  ,prompt: "Buscar" )
             }
             .navigationTitle(self.title)
             .navigationBarTitleDisplayMode(.inline)
@@ -103,37 +121,31 @@ struct TxtListView: View {
                     Spacer()
                     Menu{
                         Button("Todas las \(self.title)"){
-                            listado.removeAll()
-                            listado = TxtContentModel().GetRequest(context: self.context, type: self.typeOfContent, predicate: nil)
+                            withAnimation {
+                                modeloTxt.getAllFileTxtOfType(type: self.typeOfContent)
+                            }
+                            
                         }
                         Button("\(self.title) favoritas"){
-                            let temp = TxtContentModel().getAllFavorite(context: self.context, type:self.typeOfContent)
-                            listado.removeAll()
-                            listado = temp
+                            withAnimation {
+                                modeloTxt.textList = modeloTxt.getArrayFavTxt(type: self.typeOfContent)
+                            }
+                            
                         }
                         Button("\(self.title) con notas"){
-                            let temp = TxtContentModel().getAllNota(context: self.context, type:self.typeOfContent)
-                            listado.removeAll()
-                            listado = temp
+                            withAnimation {
+                                modeloTxt.textList = modeloTxt.getArrayNoteTxt(type: self.typeOfContent)
+                            }
+                           
                         }
 
                         Button("Buscar en el contenido"){
                             showAlertSearchInTxt = true
                         }
-                        Button("Nuevo contenido!"){
-                            let temp = TxtContentModel().getAllNewsElements(context: self.context, type: self.typeOfContent)
-                            listado.removeAll()
-                            listado = temp
-                        }
-                        if self.title == "\(self.title) recientes" && self.listado.count > 0 {
-                            Button("Desmarcar \(self.title) recientes"){
-                                TxtContentModel().RemoveAllNewFlag(context: self.context, type: self.typeOfContent)
-                                let temp = self.listado
-                                listado.removeAll()
-                                listado = temp
-                            }
-                        }
                         
+                        Button("Buscar en las notas"){
+                            showAlertSearchInNotas = true
+                        }
                         
                     }label: {
                         Image(systemName: "line.3.horizontal.decrease")
@@ -142,35 +154,41 @@ struct TxtListView: View {
                     
                 }
             }
-            .alert("Modificar Nota", isPresented: $showAlertAddNote){
-                TextField("", text: $textFiel, axis: .vertical)
-                    .multilineTextAlignment(.leading)
-                Button("Guardar"){
-                    TxtContentModel().setNota(context: self.context, entity: self.entidad, nota: textFiel)
-                }
-                Button("Cancelar"){showAlertAddNote = false}
+            .task{
+               modeloTxt.getAllFileTxtOfType(type: self.typeOfContent)
             }
-            .alert("Buscar un texto", isPresented: $showAlertSearchInTxt){
+            .alert("Buscar en contenido", isPresented: $showAlertSearchInTxt){
                 TextField("", text: $textFiel2, axis: .vertical)
                 Button("Cancelar"){showAlertSearchInTxt = false}
                     .multilineTextAlignment(.leading)
                 Button("Buscar"){
-                    let temp  =  TxtContentModel().searchInText(list: self.listado , texto: textFiel2)
-                    listado.removeAll()
-                    listado = temp
+                    modeloTxt.textList = modeloTxt.searchInTxt(str: self.textFiel2, type: self.typeOfContent)
                 }
                 
             }
+            .alert("Buscar en las notas", isPresented: $showAlertSearchInNotas){
+                TextField("", text: $textFiel3, axis: .vertical)
+                Button("Cancelar"){showAlertSearchInNotas = false}
+                    .multilineTextAlignment(.leading)
+                Button("Buscar"){
+                    modeloTxt.textList = modeloTxt.searchInNotesTxt(str: self.textFiel3, type: self.typeOfContent)
+                }
+                
+            }
+            
         }
         
     }
 }
 
 
-//Permite ver y editar el campo notya
+//Permite ver y editar el campo nota
 struct EditNoteTxt:View {
     @Environment(\.dismiss) var dimiss
-    @State var entidad : TxtCont
+    @EnvironmentObject var modeloTxt : TxtContentModel
+    @State var entidad : String
+    @State var typeOfContent : TipoDeContenido
+    
     @State private var textfiel = ""
     @Environment(\.managedObjectContext) private var context
 
@@ -178,15 +196,15 @@ struct EditNoteTxt:View {
     var body: some View {
         NavigationStack{
             ZStack{
-                LinearGradient(colors: [.gray, .brown], startPoint: .top, endPoint: .bottom)
+                LinearGradient(colors: [.black.opacity(0.7), .brown], startPoint: .top, endPoint: .bottom)
                     .ignoresSafeArea()
                 VStack(){
                     TextField("Coloque su nota aqui", text: $textfiel, axis: .vertical)
                         .multilineTextAlignment(.leading)
                         .font(.title)
-                        .foregroundStyle(.black).italic().bold()
+                        .foregroundStyle(.white).italic().bold()
                         .onAppear {
-                            textfiel = entidad.nota ?? ""
+                            textfiel = modeloTxt.getNotaOfTXT(nombreTxt: self.entidad, type: typeOfContent )
                         }
                     
                     Spacer()
@@ -198,15 +216,16 @@ struct EditNoteTxt:View {
                 HStack{
                     Spacer()
                     Button{
-                        TxtContentModel().setNota(context: self.context, entity: entidad, nota: textfiel)
+                        if modeloTxt.setNotaOfTXT(nombreTxt: entidad, type: self.typeOfContent, nota: textfiel){
+                            modeloTxt.getAllFileTxtOfType(type: self.typeOfContent)
+                        }
                         dimiss()
                     }label: {
                         Text("Guardar")
-                            .foregroundStyle(.black).bold()
+                            .foregroundStyle(.blue).bold()
                     }
                 }
             }
-            
         }
     }
 }
@@ -214,5 +233,5 @@ struct EditNoteTxt:View {
 
 
 #Preview {
-    TxtListView(typeOfContent: .conf, title: "Conferencias")
+    TxtListView(typeOfContent: .conf , title: "Lecturas")
 }

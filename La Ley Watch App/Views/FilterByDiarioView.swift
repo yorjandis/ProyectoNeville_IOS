@@ -6,8 +6,7 @@
 //
 
 import SwiftUI
-import CloudKit
-
+/*
 struct FilterByDiarioView: View {
     
     @Binding var listRecord : [CKRecord] //Permite actualizar el listado original
@@ -38,8 +37,10 @@ struct FilterByDiarioView: View {
                 Button("Favoritos"){
                     self.listRecord.removeAll()
                     Task{
+                        /*
                         self.listRecord = await iCloudKitModel(of: .BDPrivada).filterByCriterio(tableName: .CD_Diario, criterio: .favoritoDiario)
                         showListOptions = false
+                        */
                     }
                 }
                 Button("Emoción"){
@@ -66,9 +67,11 @@ struct FilterByDiarioView: View {
                 TextFieldLink("🔍 Título a buscar",prompt: Text("Texto de la entrada")) { str in
                     listRecord.removeAll()
                     Task{
+                        /*
                         listRecord =  await iCloudKitModel(of: .BDPrivada).filterByCriterio(tableName: .CD_Diario, criterio: .tituloDiario, textoABuscar: str)
                         self.showSheetTitulo = false
                         self.showListOptions = false
+                        */
                     }
                 }
             }
@@ -79,9 +82,11 @@ struct FilterByDiarioView: View {
                 TextFieldLink("🔍 Contenido a buscar",prompt: Text("Contenido de la entrada")) { str in
                     listRecord.removeAll()
                     Task{
+                        /*
                         listRecord =  await iCloudKitModel(of: .BDPrivada).filterByCriterio(tableName: .CD_Diario, criterio: .contenidoDiario, textoABuscar: str)
                         self.showSheetTitulo = false
                         self.showListOptions = false
+                        */
                     }
                 }
             }
@@ -95,8 +100,10 @@ struct FilterByDiarioView: View {
                     showSheetFecha = false
                     showListOptions = false
                     Task{
+                        /*
                         self.listRecord.removeAll()
                         self.listRecord = await iCloudKitModel(of: .BDPrivada).filterByCriterio(tableName: .CD_Diario, criterio: .fechaDiario, fecha1: self.fecha1)
+                        */
                         
                     }
                 }label: {
@@ -128,9 +135,11 @@ struct FilterByDiarioView: View {
                     showSheetFecha = false
                     showListOptions = false
                     Task{
+                        /*
                         self.listRecord.removeAll()
                         self.listRecord = await iCloudKitModel(of: .BDPrivada).filterByCriterio(tableName: .CD_Diario, criterio: .rangoFechaDiario, fecha1: self.fecha1, fecha2: self.fecha2)
                         
+                        */
                     }
                 }label: {
                     Text("Buscar")
@@ -157,7 +166,9 @@ struct FilterByDiarioView: View {
                             self.showSheetEmocion = false
                             self.showListOptions = false
                             Task{
+                                /*
                                 self.listRecord = await iCloudKitModel(of: .BDPrivada).filterByCriterio(tableName: .CD_Diario, criterio: .emocionDiario, textoABuscar: item.txt)
+                                */
                             }
           
                         }label: {
@@ -284,6 +295,7 @@ struct FilterByDiarioView: View {
     
     //Para filtro de Antiguedad: Funcion que devuelve la lista de elementos para filtro de antiguedad
     func getListForAntiquity(antiguedad : Antiguedad)async -> [CKRecord]{
+        /*
         var result = [CKRecord]()
         
         let allRecords = await iCloudKitModel(of: .BDPrivada).getRecords(tableName: .CD_Diario)
@@ -318,9 +330,12 @@ struct FilterByDiarioView: View {
                 }
             }
         return result
+        */
+        return []
     }
 }
 
 #Preview {
     FilterByDiarioView(listRecord: .constant([CKRecord]()), showListOptions: .constant(false))
 }
+*/

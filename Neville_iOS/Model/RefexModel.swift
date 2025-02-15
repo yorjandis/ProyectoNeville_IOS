@@ -8,7 +8,7 @@
 import Foundation
 import CoreData
 
-
+@MainActor
 struct RefexModel {
     private let context = CoreDataController.shared.context
     

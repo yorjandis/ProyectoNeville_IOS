@@ -31,9 +31,9 @@ struct FraseAddView: View {
             .toolbar{
                 Button("OK"){
                     if !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                        FrasesModel().AddFrase(frase: text)
+                        FrasesModel.shared.AddFrase(frase: text)
                         //Lanza la ventana de FeedBackreview si se alcanza el humbral de hitos
-                        if  checkReviewRequest() {
+                        if  FeedBackModel.checkReviewRequest() {
                             self.sheetShowFeedBackReview = true
                         }
                         dimiss()

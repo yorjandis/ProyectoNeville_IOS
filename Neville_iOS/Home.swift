@@ -63,7 +63,7 @@ struct Home: View {
                     
                     Spacer()
                     
-                    FrasesView(isHaveNote: $isHaveNote, fontSize: $fontSize, colorFrase: $colorFrase)
+                    FrasesView()
  
                     Spacer()
                     TabButtonBar(fontFrasesSize: $fontSize, fontMenuSize: $fontSizeMenu, colorFrase: $colorFrase, colorFondo_a: $colorFondo_a, colorFondo_b: $colorFondo_b, isSettingChanged: $isSettingChanged)
@@ -128,48 +128,52 @@ struct Home: View {
 
 //Frases View
 struct FrasesView : View{
-    @State private var  frase : Frases = FrasesModel().getRandomFraseEntityNoAsync() ?? Frases(context: CoreDataController.shared.context)
-    @Binding var isHaveNote : Bool
-    @Binding var fontSize : CGFloat //setting
-    @Binding var colorFrase : Color //setting
+    @EnvironmentObject private var fraseModel : FrasesModel
+    
+    @State private var  frase : String = ""
+   
+    @AppStorage(AppCons.UD_setting_fontFrasesSize) var fontSizeFrases : Int = 24
+    @State var colorFrase : Color = SettingModel().loadColor(forkey: AppCons.UD_setting_color_frases)
+
     //Para Adicionar una nueva frase
     @State private var showSheetAddFrase = false
+    
     //Para notas en frases
     @State private var showAddNoteView = false
-    @State private var isFav = false
+    @State private var isFav = false //muestra un corazon lleno o vacio según el valor
     @State private var animationHeart = 0
-    
-    
+
     
     var body: some View{
         
-        if (frase.frase?.isEmpty == false) { //Si frase se ha cargado
+  
             VStack{
-                Text( frase.frase ?? "")
-                    .font(.system(size: fontSize, design: .rounded))
+                Text(self.frase)
+                    .font(.system(size: CGFloat(fontSizeFrases), design: .rounded))
                     .foregroundStyle(colorFrase)
                     .modifier(mof_frases())
-                    .id(frase.frase)
-                    .animation(.smooth(duration: 2), value: frase.frase)
+                    .id(self.frase)
+                    .animation(.smooth(duration: 2), value: self.frase)
                     .onTapGesture {
-                        frase = FrasesModel().getRandomFraseEntityNoAsync() ?? Frases(context: CoreDataController.shared.context)
-                        readFraseStatus(fraseEntity: frase, isfav: &isFav, isHaveNote: &isHaveNote)
+                        self.frase = fraseModel.getRandomFrase()
+                        self.isFav = FrasesModel().isFavFrase(self.frase) //Actualizando el estado
                     }
                     .task{
-                        self.frase = FrasesModel().getRandomFraseEntityNoAsync() ?? Frases(context: CoreDataController.shared.context)
+                        self.frase = fraseModel.getRandomFrase()
                     }
                     .onOpenURL(perform: { url in
                         if url.description == AppCons.DeepLink_url_Frase {
-                            frase = FrasesModel().GetFraseFromTextFrase(frase: UserDefaults.shared().string(forKey: AppCons.UD_shared_FraseWidgetActual) ?? "")!
+                            frase = UserDefaults.shared().string(forKey: AppCons.UD_shared_FraseWidgetActual) ?? ""
                         }
+                        
                     })
                     .contextMenu{
                         Button("Convertir en Nota"){
                             //Guarda la nota poniendo como titulo una parte de la cadena
-                            _ = NotasModel().addNote(nota: frase.frase ?? "", title: "\(String(String(frase.frase ?? "").prefix(frase.frase!.count / 3 )))...")
+                            _ = NotasModel().addNote(nota: frase, title: "\(String(frase).prefix(frase.count / 3 )))...")
                         }
                         NavigationLink("Generar QR"){
-                            GenerateQRView(footer: frase.frase ?? "", showImage: true)
+                            GenerateQRView(footer: frase, showImage: true)
                         }
                         Button{
                             showAddNoteView = true
@@ -185,9 +189,14 @@ struct FrasesView : View{
                     Spacer()
                     
                     Button{
-                        FrasesModel().handleFavState(frase: frase)
-                        isFav = frase.isfav ? true : false
-                        animationHeart += 1
+                        var getState = FrasesModel().isFavFrase(frase) //Obtiene el estado previo
+                        getState.toggle() //Invierte su valor
+                        if FrasesModel().setFavFrase(self.frase, getState){
+                            isFav = getState
+                            animationHeart += 1
+                        }
+                        
+                        
                     }label: {
                         Image(systemName: isFav ? "heart.fill" : "heart")
                             .foregroundStyle(isFav ? AppCons.favoriteColorOn : AppCons.favoriteColorOff)
@@ -196,17 +205,21 @@ struct FrasesView : View{
                     .padding(10)
                     .padding(.trailing, 15)
                     .onAppear{
-                        readFraseStatus(fraseEntity: frase, isfav: &isFav, isHaveNote: &isHaveNote)
+                        //leyendo el estado isfav de la frase
+                        isFav = FrasesModel().isFavFrase(frase) //Obtiene el estado previo
+                        animationHeart += 1
                     }
                 }
                 
             }
             
             .sheet(isPresented: $showAddNoteView){ //permite modificar la nota de una frase
+                /*
                 FrasesNotasAddView(frase: self.frase, nota: self.frase.nota ?? "")
                     .presentationDetents([.medium])
                     .presentationDragIndicator(.hidden)
                 //.interactiveDismissDisabled() //No deja que se oculte
+                */
             }
             .sheet(isPresented: $showSheetAddFrase){
                 FraseAddView()
@@ -214,18 +227,7 @@ struct FrasesView : View{
                     .presentationDragIndicator(.hidden)
             }
             
-        }else{ //Si la frase a cargar no tiene contenido...se intenta recuperar una frase válida
-            //Carga una frase de texto del fichero txt del bundle
-            ProgressView {
-                Text("Recuperando el contenido...")
-            }
-            .task {
-                //Crea una frase temporal, no la almacena en Core Data
-                let frastemp = Frases(context: CoreDataController.shared.context)
-                frastemp.frase = FrasesModel().getfrasesArrayFromTxtFile().randomElement()
-                self.frase = frastemp 
-            }
-        }
+        
     }
 
     
@@ -266,7 +268,7 @@ struct TabButtonBar : View{
         HStack{
             ForEach(tabButtons, id:\.self){idx in
                 switch idx{
-                case "book.pages.fill":
+                case "book.pages.fill": //Listado de Conferencias
                     NavigationLink{
                         TxtListView(typeOfContent: .conf, title: "Lecturas")
                     }label: {

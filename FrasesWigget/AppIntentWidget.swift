@@ -8,10 +8,11 @@
 import AppIntents
 import WidgetKit
 
+
 struct TestAppIntent : AppIntent{
     
-    static var title: LocalizedStringResource = "Actualiza frases"
-    static var description: IntentDescription? = "Actualizar Frases"
+    static let title: LocalizedStringResource = "Actualiza frases"
+    static let description: IntentDescription? = "Actualizar Frases"
     
 
     func perform() async throws -> some IntentResult {

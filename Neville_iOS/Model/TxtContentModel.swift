@@ -12,442 +12,292 @@ import Foundation
 import CoreData
 import SwiftUI
 
+//Typo de contenido a manejar: Nota: Si en un futuro se adiciona más contenido se maneja aqui
+enum TipoDeContenido: String, CaseIterable{
+    case conf="conf_", citas="cita_", preg="preg_", ayud="ayud_", NA = ""
+}
+
 @MainActor
 final class TxtContentModel : ObservableObject {
     
-    @Published var txtContent: [TxtCont] = []
+    @Published var textList: [String] = [] //Listado de elementos txt
     
-    
-  //  private let context = CoreDataController.shared.context
-    
-    //Typo de contenido a manejar: Nota: Si en un futuro se adiciona más contenido se maneja aqui
-    enum TipoDeContenido: String, CaseIterable{
-        case conf="conf_", citas="cita_", preg="preg_", ayud="ayud_", NA = ""
-    }
 
-    //Conjuntos de predicados comunes
-    struct PredicatesTypes{
-        let type : TipoDeContenido
+    private let context = CoreDataController.shared.context
 
-        var getAllFavorites: NSPredicate{
-            NSPredicate(format: "%K == %@ AND %K == %@", #keyPath(TxtCont.type), type.rawValue, #keyPath(TxtCont.isfav), NSNumber(value: true))
-        }
-        var getAllNotas: NSPredicate{
-            NSPredicate(format: "%K == %@ AND %K != %@", #keyPath(TxtCont.type), type.rawValue, #keyPath(TxtCont.nota), "")
-        }
-        
-    }
-    
-    
-    ///Obtiene Elementos txt de la tabla TxtCont (conferencias, citas, preguntas, etc)
-    /// - Parameter - context: contexto de Core Data
-    /// - Parameter - type: define el tipo de contenido .txt a consultar (conf, citas, preguntas, reflexiones)
-    /// - Parameter - predicate: define el predicado a utilizar para filtrar la consulta. Si es nil devuelve todos los elementos
-    /// - Returns - Devuelve un arreglo de elementos TxtCont. Si falla la cosulta se devuelve un arreglo vacio
-    func GetRequest(context: NSManagedObjectContext, type: TipoDeContenido, predicate: NSPredicate?) -> [TxtCont] {
-        var resultados: [TxtCont] = []
-        
-        context.performAndWait {  // 🔹 Asegura que siempre se ejecute en el contexto correcto
-            let fetchRequest = NSFetchRequest<TxtCont>(entityName: "TxtCont")
-            
-            if let pred = predicate {
-                fetchRequest.predicate = pred
-            } else {
-                fetchRequest.predicate = NSPredicate(format: "%K == %@", #keyPath(TxtCont.type), type.rawValue)
-            }
-            
-            do {
-                resultados = try context.fetch(fetchRequest)
-            } catch {
-                print("❌ Error al hacer fetch de TxtCont: \(error.localizedDescription)")
-            }
-        }
-        
-        return resultados
-    }
-    
+    static let shared = TxtContentModel() //Singleton
 
     
     
     
-    ///Devuelve una entity aleatoria, segun el tipo
-    /// - Parameter context : contexto de Core Data
-    /// - Parameter type : indica el tipo de contenido a filtrar
-    /// - Returns - Devuelve un objeto de tipo Confe. Si falla devuelve un objeto vacio
-    func getRandomItem(context : NSManagedObjectContext, type : TipoDeContenido)->TxtCont?{
-        
-        let temp = GetRequest(context: context, type: type, predicate: nil) //Obtiene todas las conferencias
-        if temp.count > 0 {
-            return temp.randomElement() ?? TxtCont(context: context)
-        }
-        return nil
-    }
-    
-    
-    ///Actualiza el estado de favorito (Alterna entre el estado actual)
-    func setFavState(context : NSManagedObjectContext, entity : TxtCont?, state : Bool){
-        do{
-            if let item = entity {
-                item.isfav = state
-                try context.save()
-            }
-        }catch{
-            print(error.localizedDescription)
-        }
-    }
-    
-
-    ///Devuelve el valor del campo nota
-    func getNota(entity : TxtCont?)->String{
-        if let tt = entity {
-            return tt.nota ?? ""
-        }else{
-            return ""
-        }
-        
-    }
-    
-    ///Establece el valor del campo nota
-    /// - parameters - context : Contexto de Core Data
-    /// - parameters - entity : El elemento a modificard
-    /// - parameters - nota : La nueva nota
-    func setNota(context : NSManagedObjectContext, entity : TxtCont?, nota : String){
-        do{
-            if let item = entity {
-                item.nota = nota
-                try context.save()
-            }
-        }catch{
-            print(error.localizedDescription)
-        }
-    }
-    
-    ///Devuelve un arreglo con todas las entity de cierto tipo que son favoritas
-    /// - Parameters - context: Contexto de Core Data
-    /// - Parameters - type: El tipo de elemento a consultar
-    /// - Returns - Devuelve un arreglo de elementos TxtCont
-    func getAllFavorite(context : NSManagedObjectContext, type : TipoDeContenido)->[TxtCont]{
-        return GetRequest(context: context, type: type, predicate: PredicatesTypes(type: type).getAllFavorites)
-    }
-    
-    ///Devuelve todas las entity que tiene una nota, segun el tipo
-    /// - Parameters - context: Contexto de Core Data
-    /// - Parameters - type: El tipo de elemento a consultar
-    /// - Returns - Devuelve un arreglo de elementos TxtCont
-    func getAllNota(context : NSManagedObjectContext,  type : TipoDeContenido)->[TxtCont]{
-        return GetRequest(context: context, type: type, predicate: PredicatesTypes(type: type).getAllNotas)
-    }
- 
-    
-    ///Búsqueda en texto
-    /// - Parameters - list: Listado de elementos  TxtCont a consultar
-    /// - Parameters - texto: cadena a buscar
-    /// - Returns - Devuelve los slementos que contienen el texto especificado
-    func searchInText(list : [TxtCont],  texto : String)->[TxtCont]{
-        var result : [TxtCont] = []
-
-        for item in list {
-            let temp = UtilFuncs.FileReadToArray("\(item.type?.lowercased() ?? "")" + "\(item.namefile?.lowercased() ?? "")")
-            for item2 in temp {
-                if item2.contains(texto){
-                    result.append(item)
-                    break
-                }
-            }
-        }
-
-        return result
-    }
-    
-    ///Búsqueda en Títulos
-    /// - Parameters - list: Listado de elementos  TxtCont a consultar
-    /// - Parameters - texto: cadena a buscar
-    /// - Returns - Devuelve los slementos que contienen el título especificado
-    func searchInTitle(list : [TxtCont],  texto : String)->[TxtCont]{
-        var result : [TxtCont] = []
-
-        for item in list {
-            let temp = item.namefile?.lowercased() ?? ""
-            if temp.contains(texto.lowercased()){
-                result.append(item)
-            }
-        }
-
-        return result
-
-    }
-    
-    
-    //Clean DataBase: Elimina todos los registros de la tabla TXT: conf, citas, ayudas, pregunt
-    func cleanTxtCont(context : NSManagedObjectContext)->Bool{
-
-      if UserDefaults.standard.bool(forKey: AppCons.UD_isTxtFilesPupulate) {return false} //Sale si la tabla TxtFiles ya esta populada
-        
-        //Obteniendo todos los registros de la tabla TXTCont:
-        
-        let fecthRequest = NSFetchRequest<TxtCont>(entityName: "TxtCont")
-            fecthRequest.predicate = nil
-        
-        
-        do {
-            let array =  try context.fetch(fecthRequest)
-            
-            for row in array {
-                context.delete(row)
-            }
-            
-            try context.save()
-            
-            return true
-            
-        }catch{
-            print(error.localizedDescription)
-            return false
-        }
-        
-    }
-    
-    
- 
-    
-    
-    // ---------------------------------------------------- FUNCIONES INTERNAS --------------------------------------------------------------
-    
-    ///Popula la Tabla Conf. Esto se hace la primera vez que se instala la app en un dispositivo
-    func populateTable(context : NSManagedObjectContext) async {
-        
-       if UserDefaults.standard.bool(forKey: AppCons.UD_isTxtFilesPupulate) {return} //Sale si la tabla TxtFiles ya esta populada
-        
-        //Chequea si iCloud esta habilitado.
-        if FileManager.default.ubiquityIdentityToken != nil {
-            //icloud disponible:
-            
-            //Chequeando si existe registros en iCloud
-            let resultTemp = await iCloudKitModel(of: .BDPrivada).getRecords(tableName: .CD_Frases)
-            if !resultTemp.isEmpty {
-                //Significa que tiene registros en iCloud: NO popula
-                return
-            }
-            
-        }
-        
-        
-       // Populando la tabla Txt, con los ficheros txt que están en Staff
-        
-        var array : [String] = [] //Almacena los name files leidos del bundle para el contenido txt
-
-        let arrayOfPrefix = ["conf_","cita_","preg_","ayud_"] //Yor en un futuro esto debe poder escalarse autom. con nuevo contenido
-        
- 
-        for prefix in arrayOfPrefix{
-            array = self.FilesListToArray(prefix : prefix) //Obteniendo el arreglo de nombre de ficheros...
-            
-            //Populando... segun el tipo de elemento (prefijo)
-            for item in array {
-                let entidad = TxtCont(context: context)
-                entidad.id = UUID()
-                entidad.isfav = false
-                entidad.nota = ""
-                entidad.type = prefix //!!!determina el tipo de contenido. es el prefijo del txt!!!
-                entidad.namefile = item
-            }
-        }
-        
-        if context.hasChanges {
-            try? context.save()
-        }
-        
-        
-        //almacena en UserDefault un flag que indica que la tabla se ha populado
-        if self.GetRequest(context: context, type: .conf, predicate: nil).count > 0 { //Significa que se populó la tabla con al menos las conferencias
-            UserDefaults.standard.setValue(true, forKey: AppCons.UD_isTxtFilesPupulate)
-        }
-            
-           
-    }
-    
-
+    //Nuevas funciones Yor:
 
     
-    ///Devuelve un arreglo de String con los nombres de ficheros txt dentro del bundle según un prefijo (el prefijo se extrae de parametro de entrada)
+    ///Actualiza la un arreglo de String con los nombres de ficheros txt dentro del bundle según un prefijo (el prefijo se extrae de parametro de entrada)
     /// - Parameter type : Tipo de contenido a indexar. Se toma de un enum
-      func  FilesListToArray(prefix : String)-> [String] {
-        var result = [String]()
-        var temp : String = ""
+    func getAllFileTxtOfType(type: TipoDeContenido){
         let fm = FileManager.default
-        let path = Bundle.main.resourcePath!
-
+        guard let path = Bundle.main.resourcePath else { return}
+        
         do {
             let items = try fm.contentsOfDirectory(atPath: path)
             
-            for item in items {
-                if item.hasPrefix(prefix) {
-                    temp = String(item.trimmingPrefix(prefix)) //Remueve el prefijo
-                        .replacingOccurrences(of: ".txt", with: "") //Remueve la extension de fichero
-                        .capitalized(with: .autoupdatingCurrent)    //Capitaliza el resultado
-                    
-                    result.append(temp)
+            let result = items
+                .filter { $0.hasPrefix(type.rawValue) && $0.hasSuffix(".txt") }
+                .map { $0
+                    .replacingOccurrences(of: type.rawValue, with: "")  //Quitando el prefijo
+                    .replacingOccurrences(of: ".txt", with: "")         //Quitando la extensión
+                    .capitalized(with: .autoupdatingCurrent)            //Capitalizando el texto
                 }
-            }
+            
+            self.textList = result
         } catch {
-            // failed to read directory – bad permissions, perhaps?
+            print("Error al leer el directorio: \(error.localizedDescription)")
+            self.textList = []
         }
-        
-        return result
-        
     }
     
-    // ------------------------- FUNCIONES PARA PROCESAR LOS NUEVOS ELEMENTOS AÑADIDOS ------------------------------
     
-    ///Funcion que actualiza la info cuando se adiciona nuevo contenido al bundle en una nueva actualización
-    ///Por ejemplo cuando adicionamos nuevas conferencias, o ayudas, citas o preguntas
-    /// - Parameter - type : Tipo de contenido a actualizar
-    /// - Returns : Devuelve una tupla de dos enteros: el primero es el # de elementos que se han añadido, el segundo el # de elementos que han fallado al insertarse
-    func UpdateContenAfterAppUpdate(context : NSManagedObjectContext, type : TipoDeContenido)->(Int,Int){
+    ///Devuelve un arreglo de String con los nombres de ficheros txt dentro del bundle según un prefijo (el prefijo se extrae de parametro de entrada)
+    /// - Parameter type : Tipo de contenido a indexar. Se toma de un enum
+    func getArrayOfAllFileTxtOfType(type: TipoDeContenido)->[String]{
+        let fm = FileManager.default
+        guard let path = Bundle.main.resourcePath else { return []}
         
-        var set : Set<String> = Set()
-        var errorCount = 0 //cuanta los elementos fallidos que no se han podido adicionar a la BD
-        var exitoCount = 0 //cuanta los elementos exitosos que no se han podido adicionar a la BD
-        var totalNews = 0 //cuanta elementos nuevos han sido detectados
-        
-        //Volcar todos los nombres de conferencias de la BD a un set.
-        let arrayBdConfe = self.GetRequest(context: context, type: type, predicate: nil)
-        
-        if arrayBdConfe.isEmpty { return (0,0) } //Manejo de errores
-        
-        for i in arrayBdConfe {
-           set.insert(i.namefile ?? "")
-        }
-        
-        //print("Cantidad antes de actualizar: \(set.count)")
-        
-        
-        //Obtengo todas los nombres de conferencias del bundle e intento actualizar el set, los que se inserten representan los nuevos elementos
-        //Luego inserto esos nuevos elementos a la BD.
-        let files = self.FilesListToArray(prefix: type.rawValue)
-        if files.isEmpty {  return (0,0)} //Manejo de errores
-        
-        
-        for i in files {
-            let result = set.insert(i) //Intenta insertar al set un elemento del bundle, si el elemento se logra insertar es porque es Nuevo contenido
-            if result.0 {
-                totalNews += 1
-               //Actualizando la BD
-                do {
-                    let item = TxtCont(context: context)
-                    item.id = UUID()
-                    item.namefile = result.1
-                    item.type = type.rawValue
-                    item.isfav = false
-                    item.nota = ""
-                    item.isnew = true //Marcando como nuevo
-                    try context.save()
-                    exitoCount += 1
-                }catch{
-                    errorCount += 1 //Cuenta los elementos que no se han actualziado
+        do {
+            let items = try fm.contentsOfDirectory(atPath: path)
+            
+            let result = items
+                .filter { $0.hasPrefix(type.rawValue) && $0.hasSuffix(".txt") }
+                .map { $0
+                    .replacingOccurrences(of: type.rawValue, with: "")  //Quitando el prefijo
+                    .replacingOccurrences(of: ".txt", with: "")         //Quitando la extensión
+                    .capitalized(with: .autoupdatingCurrent)            //Capitalizando el texto
                 }
-                
-                
+            
+            return result
+        } catch {
+            print("Error al leer el directorio: \(error.localizedDescription)")
+            return  []
+        }
+    }
+    
+
+    //devuelve el contenido de un elemento Txt
+    func getContentTxt(nombreTxt : String, type : TipoDeContenido)-> String{
+        //Obtiene
+        return UtilFuncs.FileRead("\(type.rawValue)" + "\(nombreTxt)")
+    }
+    
+
+    //Verifica si un elemento tiene una nota
+    func isNotaOfTxt(nombreTxt: String, type: TipoDeContenido) -> Bool {
+        let fetchRequest = NSFetchRequest<TxtCont>(entityName: "TxtCont")
+        
+        // Crear el filtro para buscar por nombre y tipo
+        fetchRequest.predicate = NSPredicate(format: "namefile == %@ AND type == %@", nombreTxt, type.rawValue )
+        fetchRequest.fetchLimit = 1
+        
+        do {
+            // Verificar si hay al menos un elemento que coincida con el criterio
+            if let txtCont = try context.fetch(fetchRequest).first {
+                if !txtCont.nota!.isEmpty {
+                    return true
+                }else{
+                    return false
+                }
             }
             
+        } catch {
+            print("Error al buscar la nota: \(error.localizedDescription)")
+            return false
         }
-        
-       // print("Cantidad después de actualizar: \(set.count)")
-        
-            return (exitoCount, totalNews)
-        
-        
-        
+        return false
     }
     
-    
-    ///Pone el campo isnew a false. La modificación se hace inline, sobre el parámetro pasado
-    /// - Parameter - entity : el registro a modificar
-    func RemoveNewFlag( entity : TxtCont){
-            entity.isnew = false
-            try?  entity.managedObjectContext?.save()
-    }
-    
-    ///Pone el campo isnew a false de todos los registros de un tipo determinado
-    func RemoveAllNewFlag(context : NSManagedObjectContext, type : TipoDeContenido){
-        let array = GetRequest(context: context, type: type, predicate: nil)
-        for i in array {
-            i.isnew = false
-           try?  i.managedObjectContext?.save()
-        }
-
-    }
-    
-    ///Lista todos los elementos recientemente adicionado: isnew:true
-    /// - Returns - Devuelve un arreglo con todos los campos del tipo dado,   añadidos recientemente
-    func getAllNewsElements(context : NSManagedObjectContext,  type : TipoDeContenido)->[TxtCont]{
-        var result : [TxtCont] = []
-
-        let array = GetRequest(context: context, type: type, predicate: nil)
-        for i in array{
-            if i.isnew {
-                result.append(i)
+    //Obtiene la nota de un elemento
+    func getNotaOfTXT(nombreTxt: String, type: TipoDeContenido) -> String {
+        let fetchRequest = NSFetchRequest<TxtCont>(entityName: "TxtCont")
+        fetchRequest.predicate = NSPredicate(format: "namefile == %@ AND type == %@", nombreTxt, type.rawValue )
+        fetchRequest.fetchLimit = 1
+        
+        do{
+            if let element = try context.fetch(fetchRequest).first {
+                return element.nota!
             }
+            return ""
+        }catch{
+            print("Error al obtener la nota de un elemento: \(error.localizedDescription)")
+            return ""
         }
+    }
+    
+    //Fija la nota de un elemento:
+    func setNotaOfTXT(nombreTxt: String, type: TipoDeContenido, nota: String) -> Bool{
+        let fetchRequest = NSFetchRequest<TxtCont>(entityName: "TxtCont")
+        fetchRequest.predicate = NSPredicate(format: "namefile == %@ AND type == %@", nombreTxt, type.rawValue )
+        fetchRequest.fetchLimit = 1
+        
+        do{
+            if let element = try context.fetch(fetchRequest).first {
+                element.nota = nota //Actualizando la nota
+                try context.save()
+            }else{ //Si el elemento no esta en la Tabla y hay valor en el parámetro nota se crea el elemento
+                let itemnew = TxtCont(context: context)
+                itemnew.id = UUID()
+                itemnew.namefile = nombreTxt
+                itemnew.nota = nota
+                
+                try context.save()
+            }
+            return true
+        }catch{
+            print("Error al fija la nota del elemento: \(error.localizedDescription)")
+            return false
+        }
+    }
+    
+    
+    //Verifica si un elemento es favorito
+    func getIsFavOfTxt(nombreTxt: String, type: TipoDeContenido) -> Bool {
+        let fetchRequest = NSFetchRequest<TxtCont>(entityName: "TxtCont")
+        // Crear el filtro para buscar por nombre y tipo
+        fetchRequest.predicate = NSPredicate(format: "namefile == %@ AND type == %@", nombreTxt, type.rawValue )
+        fetchRequest.fetchLimit = 1
+        
+        do {
+            // Verificar si hay al menos un elemento que coincida con el criterio
+            if let txtCont = try context.fetch(fetchRequest).first {
+                return txtCont.isfav // Se devuelve directamente sin negar
+            }
+            return false
+        } catch {
+            print("Error al buscar el estado de favorito: \(error.localizedDescription)")
+            return false
+        }
+    }
+    
+    
+    //Actualiza el estado de favorito de un elemento
+    func setIsFavOfTxt(nombreTxt: String, type: TipoDeContenido, isFav: Bool) -> Bool {
+        let fetchRequest = NSFetchRequest<TxtCont>(entityName: "TxtCont")
+        // Crear el filtro para buscar por nombre y tipo
+        fetchRequest.predicate = NSPredicate(format: "namefile == %@ AND type == %@", nombreTxt, type.rawValue )
+            
+        do{
+            if let element = try context.fetch(fetchRequest).first{
+                element.isfav = isFav
+                try context.save()
+            }else if isFav{ //Si no se encuentra un elemento en la tabla y el isfav a fijar es true, se crea el elemento
+                let itemnew = TxtCont(context: context)
+                itemnew.id = UUID()
+                itemnew.namefile = nombreTxt
+                itemnew.type = type.rawValue
+                itemnew.isfav = isFav
+                try context.save()
+            }
+            return true
+        }catch{
+            print("Error al fijar el estado de favorito: \(error.localizedDescription)")
+            return false
+        }
+        
+                                             
+    }
+    
+    
+   //Devuelve los elementos favoritos
+    func getArrayFavTxt(type: TipoDeContenido)->[String]{
+        let fetchRequest = NSFetchRequest<TxtCont>(entityName: "TxtCont")
+        // Crear el filtro para buscar por nombre y tipo
+        fetchRequest.predicate = NSPredicate(format: "type == %@",type.rawValue )
+        var result : [String] = []
+        do{
+            let elements = try context.fetch(fetchRequest)
+            for item in elements{
+                if item.isfav {
+                    if let namefile = item.namefile {
+                        result.append(namefile )
+                    }
+                }
+            }
+            
+        }catch{
+            return []
+        }
+
         return result
     }
     
-    
-    
-    
-    ///OKOKOK Mantenimiento de la BD: Elimina registros duplicados en Core Data. Se asegura que se eliminan solos aquellos registros que tengan el campo fav a false y nota a vacio:
-    /// Yor: esto repara la BD de frases de elementos duplicados. Solo conserva aquellos que tiene  nota o están marcados como favoritos.
-    /// - Returns - devuelve el número de registros duplicados:
-    func Fix_DeleteDuplicatesRowsInBDCoreDataForConf(context : NSManagedObjectContext){
-        var arrayForDelete : [TxtCont] = [] //Arreglo de elementos duplicados para eliminar
-        
-        
-        var totalDuplicadosTemp = 0 //Para control de elementos duplicados
-        
-        
-        let tipoDeElemento = [TipoDeContenido.conf, TipoDeContenido.citas, TipoDeContenido.ayud, TipoDeContenido.preg]
-        
-        for type in tipoDeElemento {
-            let ArrayItems = TxtContentModel().GetRequest(context: context, type: type, predicate: nil) //Total de elementos en BD
-            for i in ArrayItems {
-                let duplicadosTemp = ArrayItems.filter{ $0.namefile == i.namefile } //Filtrando los elementos duplicados
-                totalDuplicadosTemp = duplicadosTemp.count //almacena la cantidad de elementos duplicados
-                
-                for ii in duplicadosTemp{//Recorre los elementos duplicados para filtrar todos lo que no son favoritos ni tienen notas
-                    if ii.isfav == false && ii.nota == ""{
-                        arrayForDelete.append(ii)
-                        if ii.namefile == "" { continue } //Para eliminar las frases que estan vacias (Actualmente se ha ido una yor)
-                        totalDuplicadosTemp -= 1 //va descontando el contador cada vez que se adiciona un elemento para eliminar
+    //Devuelve los elementos con notas
+    func getArrayNoteTxt(type: TipoDeContenido)->[String]{
+        let fetchRequest = NSFetchRequest<TxtCont>(entityName: "TxtCont")
+        fetchRequest.predicate = NSPredicate(format: "type == %@", type.rawValue )
+        var result : [String] = []
+        do{
+            let elements = try context.fetch(fetchRequest)
+            for item in elements{
+                if item.nota != "" {
+                    if let namefile = item.namefile {
+                        result.append(namefile )
                     }
                 }
-                
-                //dejando un elemento vivo en la BD en caso de que se hayan filtrados todos los duplicados para borrar:
-                if totalDuplicadosTemp == 0 { //Significa que se ha tomado todos los registros para borrar, hay que dejar uno yorj
-                    _ = arrayForDelete.popLast() //Quita el último registro del arreglo de elementos para eliminar
-                }
             }
+            
+        }catch{
+            return []
         }
         
-        
-        
-        // print("despues de borrar:\(arrayForDelete)")
-        
-        //Eliminando los elementos
-        for d in arrayForDelete {
-            context.delete(d)
-            do {
-                try context.save()
-            }catch{
-                print("Yorjandis error eliminando: \(d.namefile ?? "")")
-            }
-        }
-        
-        
+        return result
+ 
     }
     
     
+    //Busca dentro del texto de los elementos.
+    //Devuelve un listado de elementos que contienen la cadena buscada
+    func searchInTxt(str: String, type: TipoDeContenido) -> [String] {
+        let fetchRequest: NSFetchRequest<TxtCont> = TxtCont.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "type == %@", type.rawValue)
+        
+        do {
+            let elements = try context.fetch(fetchRequest)
+            
+            return elements
+                .compactMap { $0.namefile } // Extraer solo los nombres de archivo no nulos
+                .filter { nameFile in
+                    let content = getContentTxt(nombreTxt: nameFile, type: type)
+                    return content.lowercased().contains(str.lowercased())
+                }
+        } catch {
+            print("Error al buscar en Core Data: \(error.localizedDescription)")
+            return []
+        }
+    }
     
+    //Buscar dentro de las notas de los elementos
+    //Debuelve los elementos que contengan la cadena en sus notas
+    func searchInNotesTxt(str: String, type: TipoDeContenido) -> [String] {
+        let fetchRequest: NSFetchRequest<TxtCont> = TxtCont.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "type == %@", type.rawValue)
+        
+        do {
+            let elements = try context.fetch(fetchRequest)
+            
+            return elements
+                .compactMap { item -> String? in
+                    guard let itemNameFileOK = item.namefile,
+                            let content = item.nota?.lowercased() else { return nil }
+                    
+                    return content.contains(str.lowercased()) ? itemNameFileOK : nil
+                }
+        } catch {
+            print("Error al obtener los elementos para la búsqueda: \(error.localizedDescription)")
+            return []
+        }
+    }
+
     
+
 }
 
 
