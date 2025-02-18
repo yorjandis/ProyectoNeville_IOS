@@ -29,42 +29,61 @@ enum Emociones : String{
 }
 
 
+@MainActor
+final class DiarioModel : ObservableObject{
 
-struct DiarioModel{
-    private let context = CoreDataController.dC.context
+    @Published var list : [Diario] = []
+    
+    static let shared = DiarioModel() //Singleton
+    
+    
+    private let context = CoreDataController.shared.context
+    
+    
+    private init(){}
     
     //Obtiene el valor enum de Emociones a partir de una cadena de texto
     func getEmocionesFromStr(value : String)->Emociones{
         switch value{
-        case "feliz":       Emociones.feliz
-        case "enfadado":    Emociones.enfado
-        case "desanimado":  Emociones.desanimado
-        case "sorpresa":    Emociones.sorpresa
-        case "distraido":   Emociones.distraido
-        case "neutral":     Emociones.neutral
-        default:            Emociones.neutral  //By default
+        case "feliz"        : Emociones.feliz
+        case "enfadado"     : Emociones.enfado
+        case "desanimado"   : Emociones.desanimado
+        case "sorpresa"     : Emociones.sorpresa
+        case "distraido"    : Emociones.distraido
+        case "neutral"      : Emociones.neutral
+        default             : Emociones.neutral  //By default
         }
     }
     
     
     
     ///Obtiene todos los item de la tabla Diario. Devuelve un arreglo
-    func getAllItem()->[Diario]{    
+    func getAllItem(){
+        let fechtRequest : NSFetchRequest<Diario> = Diario.fetchRequest()
+        // Ordenar por fecha descendente (del más reciente al más antiguo)
+        fechtRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Diario.fechaM, ascending: false)]
+        
+        do{
+            self.list =  try context.fetch(fechtRequest)
+        }catch{
+            self.list = []
+        }
+    }
+    
+    ///Obtiene todos los item de la tabla Diario. Devuelve un arreglo
+    func getAllItemGET() -> [Diario]{
         let fechtRequest : NSFetchRequest<Diario> = Diario.fetchRequest()
         
         do{
-           let temp =  try context.fetch(fechtRequest)
+            let temp =  try context.fetch(fechtRequest)
             return temp.reversed()
-            
         }catch{
             return []
         }
-        
     }
     
-    
     ///Adiciona un item a la tabla Diario
-    func addItem(title : String, emocion : Emociones, content : String, isFav : Bool = false ){
+    func addItem(title : String, emocion : Emociones, content : String, isFav : Bool = false )->Bool{
         let diario : Diario = Diario(context: context)
         diario.id = UUID()
         diario.title = title
@@ -72,10 +91,13 @@ struct DiarioModel{
         diario.isFav = isFav
         diario.content = content
         diario.fecha = Date.now
+        diario.fechaM = Date.now
         
         if context.hasChanges {
             try? context.save()
+            return true
         }
+        return false
     }
     
     //Actualiza una entrada: La fecha se actualiza automáticamente.
@@ -84,7 +106,7 @@ struct DiarioModel{
         diario.emotion = emoticono.rawValue
         diario.isFav = isFav
         diario.content = content
-        diario.fecha = Date.now
+        diario.fechaM = Date.now
         if context.hasChanges {
             try? context.save()
         }
@@ -109,6 +131,7 @@ struct DiarioModel{
     //Actualizar el emoticono
     func UpdateEmoticono(emoticono : Emociones, diario : Diario){
         diario.emotion = emoticono.rawValue
+        diario.fechaM = Date.now
         if context.hasChanges {
             try? context.save()
         }
@@ -116,7 +139,8 @@ struct DiarioModel{
     
     //Actualizar el título
     func UpdateTitle(title : String, diario : Diario){
-        diario.title = title
+        diario.title    = title
+        diario.fechaM   = Date.now
         if context.hasChanges {
             try? context.save()
         }
@@ -143,7 +167,7 @@ struct DiarioModel{
     //Filtrar por título: Case Insentitive
     func filterByTitle(criterio : String)->[Diario]{
          var result : [Diario] = []
-         let listDiarios = self.getAllItem()
+         let listDiarios = self.getAllItemGET()
         
         for diario in listDiarios {
             let temp = diario.title?.lowercased() ?? ""
@@ -158,7 +182,7 @@ struct DiarioModel{
     //Filtrar por contenido: Case Insentitive
     func filterByContent(criterio : String)->[Diario]{
          var result : [Diario] = []
-         let listDiarios = self.getAllItem()
+         let listDiarios = self.getAllItemGET()
         
         for diario in listDiarios {
             let temp = diario.content?.lowercased() ?? ""
@@ -173,7 +197,7 @@ struct DiarioModel{
     //Filtrar por emoticono: Case Insentitive
     func filterByEmoticono(criterio : String)->[Diario]{
          var result : [Diario] = []
-         let listDiarios = self.getAllItem()
+         let listDiarios = self.getAllItemGET()
         
         for diario in listDiarios {
             if diario.emotion == criterio {
@@ -187,7 +211,7 @@ struct DiarioModel{
     //Filtrar por Favorito: Devuelve todas las entradas favoritas
     func filterByFav()->[Diario]{
          var result : [Diario] = []
-         let listDiarios = self.getAllItem()
+         let listDiarios = self.getAllItemGET()
         
         for diario in listDiarios {
             
@@ -200,8 +224,5 @@ struct DiarioModel{
     }
     
 
-    
-    
-    
 }
 

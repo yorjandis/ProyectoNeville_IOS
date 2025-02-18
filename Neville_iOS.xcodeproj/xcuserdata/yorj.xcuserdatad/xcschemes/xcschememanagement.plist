@@ -4,14 +4,49 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
+		<key>FrasesWiggetExtension.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>2</integer>
+		</dict>
+		<key>La Ley Watch App.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>1</integer>
+		</dict>
+		<key>La Ley.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>1</integer>
+		</dict>
 		<key>Neville_iOS.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>0</integer>
 		</dict>
+		<key>WatchComplicationLaLeyExtension.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>3</integer>
+		</dict>
+		<key>nevWidgetExtension.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>2</integer>
+		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>19E0BE132B0C661A00E149A5</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>19F804182B69CB9D00A323A0</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>E95B93522AAFBB2600B5E2B5</key>
 		<dict>
 			<key>primary</key>

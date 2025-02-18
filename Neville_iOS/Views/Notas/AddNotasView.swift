@@ -15,6 +15,9 @@ struct AddNotasView: View {
     @State      var nota : String = ""
     @Binding    var  notas : [Notas]
     
+    //Mostrar la ventana de FeedBackReview
+    @State private var sheetShowFeedBackReview: Bool = false
+    
     var body: some View {
         NavigationStack {
             Form{
@@ -36,10 +39,17 @@ struct AddNotasView: View {
                         if NotasModel().addNote(nota: nota, title: title, isFav: false) {
                             notas.removeAll()
                             notas.append(contentsOf: NotasModel().getAllNotas())
+                            if FeedBackModel.checkReviewRequest() {
+                                self.sheetShowFeedBackReview = true
+                            }else{
+                                dimiss()
+                            }
+                            
                         }else{
                             print("se ha producido un error al guardar la nota")
+                            dimiss()
                         }
-                        dimiss()
+                        
                     }
                 }
                 ToolbarItem(placement: .topBarLeading) {
@@ -48,6 +58,9 @@ struct AddNotasView: View {
                             .foregroundStyle(.red)
                     }
                 }
+            }
+            .sheet(isPresented: self.$sheetShowFeedBackReview) {
+                FeedbackView(showTextBotton: true)
             }
         }
         

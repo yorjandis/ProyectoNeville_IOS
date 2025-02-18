@@ -6,24 +6,58 @@
 //
 
 import SwiftUI
+import LocalAuthentication
+import CoreData
+import RichText
 
 struct settingView: View {
     
     @Environment(\.colorScheme) var theme
+    @Environment(\.dismiss) var dismiss
+    @Environment(\.managedObjectContext) private var context
+    @EnvironmentObject private var modelTxt : TxtContentModel
+    @EnvironmentObject private var modelFrases : FrasesModel
     
-    @AppStorage(Constant.UD_setting_fontFrasesSize) var fontSizeFrases : Int = 24
-    @AppStorage(Constant.UD_setting_fontContentSize) var fontSizeContenido : Int = 18
-    @AppStorage(Constant.UD_setting_fontMenuSize) var fontSizeMenu : Int = 18
-    @AppStorage(Constant.UD_setting_fontListaSize) var fontSizeLista : Int = 18
+     private let context2 = CoreDataController.shared.context
+    
+    @AppStorage(AppCons.UD_setting_fontFrasesSize)     var fontSizeFrases      : Int = 24
+    @AppStorage(AppCons.UD_setting_fontContentSize)    var fontSizeContenido   : Int = 18
+    @AppStorage(AppCons.UD_setting_fontMenuSize)       var fontSizeMenu        : Int = 18
+    @AppStorage(AppCons.UD_setting_fontListaSize)      var fontSizeLista       : Int = 18
+    @AppStorage(AppCons.UD_setting_NotasFaceID)        var setting_NotasFaceID : Bool = false
     
  
-    @State var ColorFrase       : Color = SettingModel().loadColor(forkey: Constant.UD_setting_color_frases)
-    @State var ColorPrimario    : Color = SettingModel().loadColor(forkey: Constant.UD_setting_color_main_a)
-    @State var ColorSecundario  : Color = SettingModel().loadColor(forkey: Constant.UD_setting_color_main_b)
-
+    @State var ColorFrase       : Color = SettingModel().loadColor(forkey: AppCons.UD_setting_color_frases)
+    @State var ColorPrimario    : Color = SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_a)
+    @State var ColorSecundario  : Color = SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_b)
+    
+    //Autenti
+    private let contextLA = LAContext()
+    @State var canOpenToggleButton = false
+    @State var showAlert = false
+    @State var alertMessage = ""
+    
+    //Habilitar un botón en Ajustes para actualizar el nuevo contenido (importarlo a las BD)
+    @State var showButtonUpdate = true // muestra/oculta el boton para actualizar nuevo contenido añadido al bundle
+    
+    //Permite ajustar en tiempo real los cambios en la UI home:
+    @Binding var isSettingChanged : Bool
+    
+    
+    //Otros
+    @State private var showSheet : Int? = nil
+    
+    //Contadores de elementos:
+    @State private var frasesCount          : Int = 0
+    @State private var ayudasCount          : Int = 0
+    @State private var preguntasCount       : Int = 0
+    @State private var citasCount           : Int = 0
+    @State private var conferenciasCount    : Int = 0
 
     
+
     var body: some View {
+        
         NavigationStack{
             Form{
                 Section("Tamaño de letra"){
@@ -32,7 +66,10 @@ struct settingView: View {
                             .font(.system(size:CGFloat(fontSizeFrases)))
                         Spacer()
                         Stepper(String(fontSizeFrases), value: $fontSizeFrases)
-                            
+                            .onChange(of: fontSizeFrases) { oldValue, newValue in
+                                self.isSettingChanged.toggle() //Informa que se ha cambiado la setting
+                            }
+                        
                     }
                     
                     HStack{
@@ -40,7 +77,7 @@ struct settingView: View {
                             .font(.system(size:CGFloat(fontSizeContenido)))
                         Spacer()
                         Stepper(String(fontSizeContenido), value: $fontSizeContenido)
-                           
+                        
                     }
                     
                     HStack{
@@ -48,7 +85,7 @@ struct settingView: View {
                             .font(.system(size:CGFloat(fontSizeMenu)))
                         Spacer()
                         Stepper(String(fontSizeMenu), value: $fontSizeMenu)
-                            
+                        
                     }
                     
                     HStack{
@@ -56,18 +93,19 @@ struct settingView: View {
                             .font(.system(size:CGFloat(fontSizeLista)))
                         Spacer()
                         Stepper(String(fontSizeLista), value: $fontSizeLista)
-                           
+                        
                     }
                     
                 }.padding(2)
-                    
+                
                 Section("Color de texto de frases"){
                     
                     ColorPicker("Color de frases", selection: $ColorFrase)
                         .foregroundColor(ColorFrase)
                         .bold()
                         .onChange(of: ColorFrase, initial: true) { oldValue, newValue in
-                            SettingModel().saveColor(forkey: Constant.UD_setting_color_frases, color: newValue)
+                            SettingModel().saveColor(forkey: AppCons.UD_setting_color_frases, color: newValue)
+                            self.isSettingChanged.toggle() //Informa a Home que se ha cambiado el color
                         }
                 }
                 
@@ -76,12 +114,14 @@ struct settingView: View {
                     VStack(alignment: .center){
                         ColorPicker("Color primario", selection: $ColorPrimario)
                             .onChange(of: ColorPrimario, initial: true) { oldValue, newValue in
-                                SettingModel().saveColor(forkey: Constant.UD_setting_color_main_a, color: newValue)
+                                SettingModel().saveColor(forkey: AppCons.UD_setting_color_main_a, color: newValue)
+                                self.isSettingChanged.toggle() //Informa a Home que se ha cambiado el color
                             }
                             .padding(.bottom, 10)
                         ColorPicker("Color Secundario", selection: $ColorSecundario)
                             .onChange(of: ColorSecundario, initial: true) { oldValue, newValue in
-                                SettingModel().saveColor(forkey: Constant.UD_setting_color_main_b, color: newValue)
+                                SettingModel().saveColor(forkey: AppCons.UD_setting_color_main_b, color: newValue)
+                                self.isSettingChanged.toggle() //Informa a Home que se ha cambiado el color
                             }
                         
                         Text("")
@@ -91,45 +131,192 @@ struct settingView: View {
                         
                         
                     }
+                    .onAppear{
+                        ColorFrase       = SettingModel().loadColor(forkey: AppCons.UD_setting_color_frases)
+                        ColorPrimario    = SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_a)
+                        ColorSecundario  = SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_b)
+                    }
+                    
                     
                     
                 }
-
-                Section("Contacto"){
-                    Link(destination: URL(string:  "https://projectsypg.mozello.com/contacto/")!) {
-                        Label("Enviarme un comentario", systemImage: "exclamationmark.warninglight.fill")
-                            .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
-                            .bold()
-                            .font(.headline)
+                
+                Section("Notas Generales"){
+                    if canOpenToggleButton {
+                        Toggle("Proteger las Notas con FaceID", isOn: $setting_NotasFaceID)
+                    }else{
+                        Button{
+                            UtilFuncs.autent(HabilitarContenido: self.$canOpenToggleButton)
+                        }label: {
+                            Label("Opción protegida por FaceID", systemImage: "key.viewfinder")
+                        }
                     }
-                    Link(destination: URL(string:  "https://projectsypg.mozello.com/productos/neville/")!) {
-                        Label("Abrir pagina del proyecto", systemImage: "swiftdata")
-                            .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
-                            .bold()
-                            .font(.headline)
-                    }
-                    Link(destination: URL(string:  "https://projectsypg.mozello.com/productos/neville/privacy-police/")!) {
-                        Label("Política de Privacidad", systemImage: "link")
-                            .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
-                            .bold()
-                            .font(.headline)
-                    }
-
+                    
                 }
                 
+
+                Section("Contacto & Información"){
+                    NavigationLink{
+                        Form{
+                            HStack{
+                                Text("Versión")
+                                Spacer()
+                                Text("\(AppCons.appVersion ?? "")")
+                                    .foregroundStyle(.orange).bold()
+                            }
+                            HStack{
+                                Text("Frases")
+                                Spacer()
+                                Text("\(self.frasesCount)")
+                            }.onTapGesture {self.showSheet = 1}
+                            HStack{
+                                Text("Conferencias")
+                                Spacer()
+                                Text("\(self.conferenciasCount)")
+                            }.onTapGesture {self.showSheet = 2}
+                            HStack{
+                                Text("Citas")
+                                Spacer()
+                               Text("\(citasCount)")
+                            }.onTapGesture {self.showSheet = 3}
+                            HStack{
+                                Text("Preguntas")
+                                Spacer()
+                                Text("\(self.preguntasCount)")
+                            }.onTapGesture {self.showSheet = 4}
+                            HStack{
+                                Text("Ayudas")
+                                Spacer()
+                                Text("\(self.ayudasCount)")
+                                    
+                            }.onTapGesture {self.showSheet = 5}
+
+                            HStack{
+                                Text("Reflexiones")
+                                Spacer()
+                                Text("\(ReflexModel.shared.getArrayReflexOfTxtFileGET().count)")
+                            }.onTapGesture {self.showSheet = 6}
+                            
+                            HStack{
+                                Text("Cuestionario")
+                                Spacer()
+                                Text("\(UtilFuncs.FileReadToArray("cuestionario").count)")
+                            }.onTapGesture {self.showSheet = 7}
+                            
+                        }
+                        .task{
+                            self.frasesCount    = modelFrases.listfrases.count
+                            self.conferenciasCount = modelTxt.getArrayOfAllFileTxtOfType(type: .conf).count
+                            self.citasCount     = modelTxt.getArrayOfAllFileTxtOfType(type: .citas).count
+                            self.preguntasCount = modelTxt.getArrayOfAllFileTxtOfType(type: .preg).count
+                            self.ayudasCount    = modelTxt.getArrayOfAllFileTxtOfType(type: .ayud).count
+                        }
+                        .navigationTitle("Información")
+                    }label: {
+                        Label("Información", systemImage: "info.circle.fill")
+                            .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
+                    }
+                    
+                    NavigationLink{
+                        NavigationStack{
+                            ScrollView{
+                                RichText(html: UtilFuncs.FileRead("privacy"))
+                            }.navigationTitle("Ajustes - Privacy")
+                        }
+                    }label:{
+                        Label("Política de Privacidad", systemImage: "square.and.pencil.circle")
+                            .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
+                            .bold()
+                            .font(.headline)
+                    }
+                    
+                    ShareLink(item: URL(string: "https://apps.apple.com/es/app/la-ley/id6472626696")!) {
+                        HStack {
+                            Image("Icon-29")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 24, height: 24) // Ajusta el tamaño según sea necesario
+                            
+                            Text("Compartir la App")
+                                .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
+                                .bold()
+                                .font(.headline)
+                        }
+                        
+                    }
+                    NavigationLink{
+                        FeedbackView(showTextBotton: false)
+                    }label:{
+                       Label("Deja una reseña!", systemImage:"bolt.heart.fill" )
+                    }
+                    
+                    Link(destination: URL(string: "mailto:info@ypgcode.es")!) {
+                        Label("Enviar Email", systemImage: "envelope.fill")
+                    }
+                    .font(.headline)
+                    
+                    Link(destination: URL(string:  "https://ypgcode.es/la-ley-neville-goddard/")!) {
+                        Label("Abrir página del proyecto", systemImage: "swiftdata")
+                            .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
+                            .bold()
+                            .font(.headline)
+                    }
+                    Link(destination: URL(string:  "https://paypal.me/Yorpg?country.x=ES&locale.x=es_ES")!) {
+                        Label("Donar para este proyecto", systemImage: "dollarsign.circle.fill")
+                            .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
+                            .bold()
+                            .font(.headline)
+                    }
+                }
                 
+                .alert(isPresented: $showAlert) {
+                    Alert(title: Text("Configuración"), message: Text(alertMessage))
+                }
                 
-                .navigationTitle("Configuración")
-                .navigationBarTitleDisplayMode(.inline)
             }
-            
+            .navigationTitle("Ajustes")
+            .navigationBarTitleDisplayMode(.inline)
             
         }
+        .sheet(item: $showSheet) { details in
+            switch details {
+            case 1:
+                FrasesListView()
+            case 2:
+                TxtListView( typeOfContent: .conf, title: "Lecturas")
+            case 3:
+                TxtListView( typeOfContent: .citas, title: "Citas")
+            case 4:
+                TxtListView( typeOfContent: .preg, title: "Preguntas")
+            case 5:
+                TxtListView( typeOfContent: .ayud, title: "Ayudas")
+            case 6:
+                ReflexListView()
+            case 7:
+                GamePLay()
+            default :
+                EmptyView()
+            }
+        }
+
+        
+            
+            
+            
+        
     }
+    
+   
+
+    
+    
+}
+
+extension Int: @retroactive Identifiable {
+    public var id: Int { return self }
 }
 
 
-
 #Preview {
-    settingView()
+    settingView(isSettingChanged: .constant(true))
 }

@@ -41,12 +41,14 @@ struct FrasesUpdateView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar{
                 Button("OK"){
+                    /*
                     FrasesModel().Update(frase: frase, fraseStr: text, nota: nota)
                     withAnimation {
                         list.removeAll()
-                        list = FrasesModel().getAllFrases()
+                        list = FrasesModel().GetRequest(predicate: nil)
                         dimiss()
                     }
+                    */
                 }
             }
         }

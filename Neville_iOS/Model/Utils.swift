@@ -3,14 +3,20 @@
 //  Neville_iOS
 //
 //  Created by Yorjandis Garcia on 15/9/23.
-//
+//Esto es un ejemplo
 
+import Foundation
 import SwiftUI
+import LocalAuthentication
 
 //Almacenamiento de variables globales:
-struct Constant{
-    static let appName      = "Neville Para Todos"
+@MainActor
+struct AppCons{
+    static let appName      = "La Ley"
     static let appVersion   = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+    
+    static let AppGroupName = "group.com.ypg.nev.group" //Nombre del contenedor AppGroup compartido
+    
     
     //nameFile in Staff:
     static let FileListFrases           = "listfrases"
@@ -23,17 +29,7 @@ struct Constant{
     //Colors:
     static var favoriteColorOff : Color = Color.black
     static var favoriteColorOn  : Color  = Color.orange
-    
-    //UserDefault(UD_):
-    
-    /// Para conocer si se ha populado la tabla Frases
-    static var UD_isfrasesLoaded = "isfrasesLoaded"
-    
-    /// Para conocer si se ha populado la tabla TxtFiles con el  contenido TXT(conferencias, citas, preguntas, ayudas...) : Bool
-    static var UD_isTxtFilesPupulate        = "isTxtFilesPupulate"
-    
-    /// Para conocer si se ha populado la tabla YTvideo  : Bool
-    static var UD_isYTvideoPupulate        = "isYTvideoPupulate"
+
     
     //name values for setting:
     static let UD_setting_fontFrasesSize   = "setting_fontFrasesSize"
@@ -41,17 +37,31 @@ struct Constant{
     static let UD_setting_fontMenuSize     = "setting_fontMenuSize"
     static let UD_setting_fontListaSize    = "setting_fontListaSize"
     
-    static let UD_setting_color_frases      = "settig_color_frases"
-    static let UD_setting_color_main_a      = "settig_color_main_a"
-    static let UD_setting_color_main_b      = "settig_color_main_b"
+    static let UD_setting_color_frases          = "settig_color_frases"
+    static let UD_setting_color_main_a          = "settig_color_main_a"
+    static let UD_setting_color_main_b          = "settig_color_main_b"
+    static let UD_setting_color_fondoContent    = "settig_color_fondoContent"
+    static let UD_setting_color_textContent     = "settig_color_textContent"
     
+    static let UD_setting_NotasFaceID           = "setting_NotasFaceID"
     
+    //UserDefault compartido:(UD_shared_)
+    static let UD_shared_FraseWidgetActual = "FraseWidgetActual" //Donde se almacena la frase actualmente cargada en el widget
+    
+    //DeepLinks:
+    static let DeepLink_url_Diario  = "widget:/com.ypg.nev.diario"
+    static let DeepLink_url_Notas   = "widget:/com.ypg.nev.notas"
+    static let DeepLink_url_Frase   = "widget:/com.ypg.nev.frase"
+    
+    //Lleva un registro con las interacciones del usuario para mostrar una ventana de reseña
+    static let UD_setting_ReviewCounter     = "UD_setting_ReviewCounter" //Contador de hitos
+    static let UD_setting_showReview        = "UD_setting_showReview"   //Si es 1, se muestra la ventana, si es 2  no se muestra la ventana de review
     
 
 }
 
+/*
 ///Enumeración para los distintos tipos de elementos de contenido:
-///El valor raw representa el prefijo/nombre del fichero en el bundle
 enum TypeOfTxtContent{
     case conf, aud_Conf, frases, citas, preguntas, ayudas, biografia, NA
     
@@ -80,33 +90,28 @@ enum TypeOfTxtContent{
         }
     }
     
-    //Devuelve el valor self de acuerdo al prefijo entrado (lo contrario de getPrefix )
-    
 
     
 }
-
-
-///Enum para listar videos de youtube
-///
-
-
+*/
 
 
 
 struct UtilFuncs{
     
-
+    
     ///ReadFileToArray : Devuelve un array conteniendo todas las líneas de texto de un fichero txt
-   static  func ReadFileToArray(_ filetxt : String)->[String]{
+    /// - Parameter - filename: el nombre del fichero sin la extension, para ser procesado
+    /// - Returns - Devuelve un arreglo de String. cada línea del fichero es una item del arreglo
+    static  func FileReadToArray(_ filename : String)->[String]{
         
         var result = [String]()
         
-        if let content = Bundle.main.url(forResource: filetxt , withExtension: "txt") {
+        if let content = Bundle.main.url(forResource: filename , withExtension: "txt") {
             if let fileContens = try? String(contentsOf: content){
                 
                 result = fileContens.components(separatedBy: .newlines)
-                if result.last == "" {
+                while result.last == ""{
                     result.removeLast()
                 }
             }
@@ -114,33 +119,78 @@ struct UtilFuncs{
         return result
         
     }
-
-    //Lee el contenido del TXt y lo devuelve como String
-   static func FileRead(_ file : String)->String{
-        
+    
+    ///Lee el contenido de un fichero Txt, ubicado en el bundle de la app, y lo devuelve como String
+    /// - Parameter - fileName: el nombre del fichero, sin la extensión
+    ///  - Returns - Devuelve el contenido del fichero
+    static func FileRead(_ fileName: String) -> String {
         var result = ""
-       let temp = "\(file.lowercased())"
+        let temp = "\(fileName.lowercased())"
+        
+       // print("Yorj: nombre del fichero a abrir \(temp)")
         
         if let gg = Bundle.main.url(forResource: temp, withExtension: "txt") {
+            if let fileContents = try? String(contentsOf: gg) {
+                result = fileContents.replacingOccurrences(of: "\n", with: "<br>")
+            }
+        }
+        return result
+    }
+    
+    #if os(iOS)
+    
+    //Yorj: Muy importante: Em Swift 6 , esta función debe estar fuera de toda View, como una función statica por ejemplo.
+   static func autent(HabilitarContenido : Binding<Bool>){
+        
+        let contextLA : LAContext = LAContext()
+        var error : NSError?
+        if contextLA.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error){
             
-            if let fileContens = try? String(contentsOf: gg){
-                result = fileContens
+            contextLA.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: "Por favor autentícate para tener acceso a su información") { success, error in
+                if success {
+                    //Habilitación del contenido
+                    //"el valor es satisfactorio")
+                    HabilitarContenido.wrappedValue = true
+                    
+                    
+                } else {
+                    //"Error en la autenticación biométrica")
+                    //"el valor ha dado error")
+                    HabilitarContenido.wrappedValue = false
+                }
             }
             
+            
+        }else{ //El Dispositivo no soporta autenticación biométrica
+               // print("El Dispositivo no soporta autenticación biométrica")
         }
-        
-        return result
         
     }
     
-
-
+    #endif
+    
     
 }
 
 
 
 
+
+//Permite acceder al UserDefaul compartido : UserDefault.shared
+extension UserDefaults {
+    @MainActor static func shared()->UserDefaults{
+        return UserDefaults(suiteName: AppCons.AppGroupName) ?? .standard
+    }
+    
+}
+
+
+//Extensión de String que permite obtener todos los dígitos de una cadena, incluido el punto "."
+extension String {
+    var digitos: String {
+        return filter("1234567890.".contains)
+    }
+}
 
 
 

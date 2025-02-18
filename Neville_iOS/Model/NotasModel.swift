@@ -16,7 +16,7 @@ struct NotasModel{
         case titulo, nota
     }
     
-    private var context = CoreDataController.dC.context
+    private var context = CoreDataController.shared.context
     
     ///Obtener la lista de notas
     /// - Returns : Devuelve un arreglo de entity Notas. De lo contrario devuelve un arreglo vacio
@@ -39,7 +39,7 @@ struct NotasModel{
     /// - Parameter title : Título  de la nota , por defecto es " "
     /// - Parameter isfav : Campo favorito <true|false>, por defecto `false`
     /// - Returns : devuelve  true si éxito, false si error
-    func addNote(nota : String, title : String = "", isFav : Bool = false)->Bool{
+    func addNote(nota : String, title : String = "", isFav : Bool = false)->Bool {
         let entity = Notas(context: self.context)
         entity.id = UUID().uuidString
         entity.title = title
@@ -57,6 +57,7 @@ struct NotasModel{
         }
         return true
     }
+    
     
     ///Elimina una nota
     /// - Parameter NotaID : Id de la nota a eliminar

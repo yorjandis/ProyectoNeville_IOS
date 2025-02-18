@@ -9,56 +9,167 @@
 import Foundation
 import SwiftUI
 import CoreData
+import RichText
 
 
 struct ContentTxtShowView: View {
     
-    @Environment(\.dismiss) var dimiss
-    //Para leer ficheros txt con prefijos
-    var entidad : TxtCont = TxtCont(context: CoreDataController.dC.context)
+    @Environment(\.dismiss) private var dimiss
+    @Environment(\.managedObjectContext) private var context
+    @EnvironmentObject private var modeloTxt : TxtContentModel
     
-    //Si typeContent es .NA se deben de proveer estos campos
-    @State  var fileName : String = "" //Nombre del txt a abrir
-    @State var  title : String = ""
+    let title : String 
+    
+    let nombreTxt : String //Nombre del fichero txt a abrir, sin el prefijo
+    
+    let type : TipoDeContenido
+    
+  
     
     //Setting: Tamaño de fuente por defecto
     @State private var fontSizeContent : CGFloat = 18
 
+    @AppStorage(AppCons.UD_setting_fontContentSize)   var fontSizeContenido  = 18
+    
+    //Colores de Texto y fondo
+    @State private var textContentdColor    : Color = Color.black
+    @State private var backgroundColor      : Color = Color.teal
     
 
-    //Lee un fichero txt que no tenga prefijo. Hay que pasar como typeContent .NA
-    //Esto permite mostrar ficheros de texto como biografia o las imágines
+    @State private var showSlider   = false         //Para mostrar el Ajuste de tamaño de fuente
+    @State private var showColor    = false         //Para mostrar el Ajuste de Colores de Texto y Fondo
+    
+    //Para comprobar el valor de desplazamiento del texto: funcion de review:
+    @State private var scrollOffset: CGFloat = 0 //Para medir el desplazamiento
+    private let threshold: CGFloat = 7000 // Umbrall de hito
+    @State private var flagScroll : Bool = false //Si es true se detiene el proceso
+    @State private var sheetShowFeedBackReview : Bool = false
+
+    //Yor aqui va el código para leer el contenido del fichero
     var getContent : String {
-        //Yor aqui va el código para leer el contenido del fichero
-        if fileName == "" {
-            return UtilFuncs.FileRead("\(entidad.type ?? "")" + "\(entidad.namefile ?? "")")
+        if type == .NA {
+            //Este es el caso de ficheros como "biografia.txt" que no tienen prefijo
+            return UtilFuncs.FileRead(self.nombreTxt)
         }else{
-            return UtilFuncs.FileRead(fileName)
+            //Ficheros txt con prefijo
+            return  modeloTxt.getContentTxt(nombreTxt: self.nombreTxt, type: self.type)
         }
         
+    }
+    
+    // Función para convertir el color a formato hexadecimal
+    func hexString(for color: Color) -> String {
+        let uiColor = UIColor(color)
+        var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
+        uiColor.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+        
+        
+        
+        // Convertir a hexadecimal
+        return String(format: "#%02lX%02lX%02lX", lroundf(Float(red * 255)), lroundf(Float(green * 255)), lroundf(Float(blue * 255)))
     }
 
     var body: some View {
         NavigationStack {
             
             VStack {
-                ScrollView(showsIndicators: true) {
-                    Text(self.getContent)
-                        .font(.system(size: fontSizeContent, design: .rounded))
-                        .fontDesign(.rounded)
-                        .padding(.trailing, 20)
-            
+                VStack{
+                    Divider()
+                    .padding(0)
                 }
-                .padding(.horizontal, 10)
+                ScrollView(showsIndicators: true){
+                    VStack{
+                        RichText(html: self.getContent )
+                            .colorScheme(.auto)
+                            .fontType(.customName("Arial"))
+                            .customCSS("*{font-size: \(self.fontSizeContent)px; background-color: \(self.hexString(for: backgroundColor)); color: \(self.hexString(for: self.textContentdColor)) !important; }")
+                            .padding(.horizontal, 5)
+                            .task {
+                                //Se cargan y aplican los colores de fondo y de texto
+                                self.backgroundColor = SettingModel().loadColor(forkey: AppCons.UD_setting_color_fondoContent)
+                                self.textContentdColor = SettingModel().loadColor(forkey: AppCons.UD_setting_color_textContent)
+                                
+                            }
+                    }
+                    .padding(.horizontal, 3)
+                    .background(GeometryReader { proxy -> Color in //Para lazar ventana FeedBackRevie
+                        if self.flagScroll == false {
+                            let offset = -proxy.frame(in: .global).minY
+                            DispatchQueue.main.async {
+                                self.scrollOffset = offset
+                                if offset >= threshold {
+                                    if FeedBackModel.checkReviewRequest() {
+                                        self.sheetShowFeedBackReview = true
+                                    }
+                                    self.flagScroll = true //Desactiva el lanzamiento de la func
+                                }
+                            }
+                        }
+                        return Color.clear
+                    })
+                    
+                }
+                
+                
                 
                 Divider()
                 
                 //Barra Inferior (Permitir volver, favorito, etc)
-                HStack( spacing: 30){
+                HStack(spacing: 30){
                     Spacer()
-
-                    Button{
+                    if showSlider {
+                        HStack{
+                            Button{
+                                withAnimation(.easeInOut) {
+                                    showSlider = false
+                                }
+                                
+                            }label: {
+                                Image(systemName: "xmark.circle")
+                                    .foregroundColor(.red.opacity(0.7))
+                            }
+                            Slider(value: $fontSizeContent, in: 18...30) { Bool in
+                                fontSizeContenido = Int(fontSizeContent)
+                            }
+                        }
+                        .padding(.horizontal, 10)
+                    }
+                    
+                    if self.showColor {
+                        //Color de fondo
+                        ColorPicker(selection: self.$backgroundColor) {
+                            HStack{
+                                Text("fondo")
+                                Image(systemName: "text.page.fill")
+                                    .foregroundStyle(self.backgroundColor)
+                            }
+                            
+                        }
+                        .onChange(of: self.backgroundColor) { oldValue, newValue in
+                            SettingModel().saveColor(forkey: AppCons.UD_setting_color_fondoContent, color: newValue)
+                        }
                         
+                        
+                        //Color de texto
+                        ColorPicker(selection: self.$textContentdColor) {
+                            HStack(spacing: 0){
+                                Text("letra")
+                                Image(systemName: "text.alignleft")
+                                    .foregroundStyle(self.textContentdColor)
+                                    
+                            }
+                            
+                        }
+                        .onChange(of: self.textContentdColor) { oldValue, newValue in
+                            print(self.hexString(for: newValue)) // Verifica el valor hexadecimal que se está pasando
+                            SettingModel().saveColor(forkey: AppCons.UD_setting_color_textContent, color: newValue)
+                        }
+                    }
+                    
+                    
+                    
+                    
+                    Button{
                         dimiss()
                     }label: {
                         Text("Atrás")
@@ -73,33 +184,63 @@ struct ContentTxtShowView: View {
             .navigationBarTitle(title, displayMode: .inline)
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {
-                fontSizeContent = CGFloat(UserDefaults.standard.integer(forKey: Constant.UD_setting_fontContentSize))
+                fontSizeContent = CGFloat(UserDefaults.standard.integer(forKey: AppCons.UD_setting_fontContentSize))
+                fontSizeContenido = Int(self.fontSizeContent)
             }
             .toolbar{
                 HStack{
                     Spacer()
-                    if self.fileName.isEmpty {
+                    
                         Menu{
-                            NavigationLink("Añadir nota asociada"){
-                                EditNoteTxtContentTxtShow(entidad: self.entidad)
+                            
+                                Button("Marcar como Favorita"){
+                                    /*
+                                    if let enti = self.entidad {
+                                        TxtContentModel().setFavState(context: self.context, entity: enti, state: true)
+                                    }
+                                    */
+                                }
+                                NavigationLink("Añadir nota asociada"){
+                                    /*
+                                    if let enti = self.entidad {
+                                        EditNoteTxtContentTxtShow(entidad: enti)
+                                    }
+                                    */
+                                }
+                            
+                            Button("Tamaño de Letra", systemImage: "textformat") {
+                                withAnimation(.easeInOut) {
+                                    self.showColor = false
+                                    self.showSlider.toggle()
+                                }
+                            }
+                            Button("Color de fondo y letra", systemImage: "paintpalette.fill") {
+                                withAnimation(.easeInOut) {
+                                    self.showSlider = false
+                                    self.showColor.toggle()
+                                }
                             }
                         }label: {
-                            Image(systemName: "plus")
+                            Image(systemName: "ellipsis")
+                                .rotationEffect(Angle(degrees: 135))
                         }
-                    }
-                    
                 }
-            } 
+            }
+            .sheet(isPresented: self.$sheetShowFeedBackReview) {
+                FeedbackView(showTextBotton: true)
+            }
         }
     }//body
 }
 
 
-//Permite ver y editar el campo notya
+/*
+//Permite ver y editar el campo nota
 struct EditNoteTxtContentTxtShow:View {
     @Environment(\.dismiss) var dimiss
     @State var entidad : TxtCont
     @State private var textfiel = ""
+    @Environment(\.managedObjectContext) var context
 
     
     var body: some View {
@@ -125,7 +266,7 @@ struct EditNoteTxtContentTxtShow:View {
                 HStack{
                     Spacer()
                     Button{
-                        TxtContentModel().setNota(entity: entidad, nota: textfiel)
+                        TxtContentModel().setNota(context: self.context , entity: entidad, nota: textfiel)
                         dimiss()
                     }label: {
                         Text("Guardar")
@@ -137,6 +278,8 @@ struct EditNoteTxtContentTxtShow:View {
         }
     }
 }
+
+*/
 
 
 #Preview {

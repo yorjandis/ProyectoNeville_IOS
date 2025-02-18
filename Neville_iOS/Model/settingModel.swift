@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-
+@MainActor
 struct SettingModel {
     
     //Devuelve un arreglo del color a almacenar
@@ -19,9 +19,6 @@ struct SettingModel {
             
             UserDefaults.standard.setValue(components, forKey: forkey)
         }
-        
-       
-        
     }
     
     //Devuelve el valor de un color como Color para una clave en userdefault. Por defecto devuelve el color primario en el sistema
@@ -39,17 +36,19 @@ struct SettingModel {
 
     ///Establece los valores por defecto para setting
     func setValuesByDefault(){
+        UserDefaults.standard.setValue(30, forKey: AppCons.UD_setting_fontFrasesSize)
+        UserDefaults.standard.setValue(18, forKey: AppCons.UD_setting_fontContentSize)
+        UserDefaults.standard.setValue(18, forKey: AppCons.UD_setting_fontMenuSize)
+        UserDefaults.standard.setValue(18, forKey: AppCons.UD_setting_fontListaSize)
+        UserDefaults.standard.setValue(false, forKey: AppCons.UD_setting_NotasFaceID)
+        UserDefaults.standard.setValue(0, forKey: AppCons.UD_setting_ReviewCounter) //Lleva un conteo de interacciones con el usuario, si llega a 150 se muestra una ventana de review y se resetea
+        UserDefaults.standard.setValue(1, forKey: AppCons.UD_setting_showReview) //Lleva un conteo de interacciones con el usuario, si llega a 150 se muestra una ventana de review y se resetea
         
-        UserDefaults.standard.setValue(30, forKey: Constant.UD_setting_fontFrasesSize)
-        UserDefaults.standard.setValue(18, forKey: Constant.UD_setting_fontContentSize)
-        UserDefaults.standard.setValue(18, forKey: Constant.UD_setting_fontMenuSize)
-        UserDefaults.standard.setValue(18, forKey: Constant.UD_setting_fontListaSize)
-        
-        saveColor(forkey: Constant.UD_setting_color_frases, color: .black)
-        saveColor(forkey: Constant.UD_setting_color_main_a, color: .red)
-        saveColor(forkey: Constant.UD_setting_color_main_b, color: .orange)
+        saveColor(forkey: AppCons.UD_setting_color_frases, color: .black)
+        saveColor(forkey: AppCons.UD_setting_color_main_a, color: .red)
+        saveColor(forkey: AppCons.UD_setting_color_main_b, color: .orange)
+        saveColor(forkey: AppCons.UD_setting_color_fondoContent, color: .gray) //Color de fondo del ContentTxt
+        saveColor(forkey: AppCons.UD_setting_color_textContent, color: .black) //Color de texto del ContentTxt
         
     }
-    
-    
 }

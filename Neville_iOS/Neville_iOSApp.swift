@@ -13,24 +13,22 @@ import SwiftUI
 @main
 struct Neville_iOSApp: App {
     
-  @StateObject var networkMonitor = NetworkMonitor()
+ @StateObject private var networkMonitor        = NetworkMonitor() //Helper Para conexiones de red
+ @StateObject private var modelTxt              = TxtContentModel()
+    @StateObject private var modelFrases        = FrasesModel.shared
+    
+  private let persistentStore : CoreDataController =  CoreDataController.shared
     
     
     //Codigo a cargar al inicio:
     init(){
-        
-        FrasesModel().populateTableFrases() //Popular la tabla Frases SI es la primera vez
-        
-        TxtContentModel().populateTable() //Popular la tabla TxtFiles SI es la primera vez
-        
-        YTIdModel().populateTable() //Popular la tabla YTVideos si es la primera vez
+
         
         //Carga los valores de Setting para Userdefault si es la primera vez
-        if UserDefaults.standard.integer(forKey: Constant.UD_setting_fontFrasesSize) == 0 {
+        if UserDefaults.standard.integer(forKey: AppCons.UD_setting_fontFrasesSize) == 0 {
             SettingModel().setValuesByDefault()
         }
-        
-        
+
         
     }
 
@@ -39,6 +37,13 @@ struct Neville_iOSApp: App {
         WindowGroup {
             ContentView()
                 .environmentObject(networkMonitor)
+                .environmentObject(modelTxt)
+                .environmentObject(modelFrases)
+                .environment(\.managedObjectContext, persistentStore.context)
+                .task {
+                    modelTxt.getAllFileTxtOfType(type: .conf) // Carga el listado de conferencias
+                    modelFrases.getfrasesArrayFromTxtFile()
+                }
                 
         }
     }
