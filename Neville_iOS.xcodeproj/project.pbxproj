@@ -613,6 +613,7 @@
 		9122752F2D5A955B00DE3AC6 /* RichText in Frameworks */ = {isa = PBXBuildFile; productRef = 9122752E2D5A955B00DE3AC6 /* RichText */; };
 		91658B3E2D6293F400FEEE94 /* reflexiones.txt in Resources */ = {isa = PBXBuildFile; fileRef = 91658B3D2D6293F400FEEE94 /* reflexiones.txt */; };
 		91658B3F2D62BA0000FEEE94 /* CoreDataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E99F9CC52AC4682B00169084 /* CoreDataController.swift */; };
+		91658B412D64B2BD00FEEE94 /* DiarioCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91658B402D64B2B500FEEE94 /* DiarioCalendarView.swift */; };
 		91F0DD432D5D3A7200307453 /* FeedBackReview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F0DD422D5D3A5D00307453 /* FeedBackReview.swift */; };
 		91F0DD472D60312E00307453 /* FeedBackModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F0DD452D60312600307453 /* FeedBackModel.swift */; };
 		91F0DD552D605B5800307453 /* watchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F0DD542D605B4B00307453 /* watchModel.swift */; };
@@ -1296,6 +1297,7 @@
 		9122734F2D5A7CA600DE3AC6 /* conf_yo soy la vid.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "conf_yo soy la vid.txt"; sourceTree = "<group>"; };
 		9122752B2D5A925200DE3AC6 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		91658B3D2D6293F400FEEE94 /* reflexiones.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = reflexiones.txt; sourceTree = "<group>"; };
+		91658B402D64B2B500FEEE94 /* DiarioCalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiarioCalendarView.swift; sourceTree = "<group>"; };
 		91F0DD422D5D3A5D00307453 /* FeedBackReview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedBackReview.swift; sourceTree = "<group>"; };
 		91F0DD452D60312600307453 /* FeedBackModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedBackModel.swift; sourceTree = "<group>"; };
 		91F0DD4E2D60384700307453 /* WatchComplicationLaLeyExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WatchComplicationLaLeyExtension.entitlements; sourceTree = "<group>"; };
@@ -1393,6 +1395,7 @@
 		197D2A3C2AFAA3E100486014 /* Diario */ = {
 			isa = PBXGroup;
 			children = (
+				91658B402D64B2B500FEEE94 /* DiarioCalendarView.swift */,
 				197D2A3D2AFAA3FB00486014 /* DiarioListView.swift */,
 			);
 			path = Diario;
@@ -2965,6 +2968,7 @@
 				1954CDAA2B1152BC0093DDF0 /* AppIntentWidget.swift in Sources */,
 				194F112B2AEF23E8009FA23E /* settingModel.swift in Sources */,
 				E99F9CCA2ACB75E800169084 /* ListNotasViews.swift in Sources */,
+				91658B412D64B2BD00FEEE94 /* DiarioCalendarView.swift in Sources */,
 				19B255C62AFC68940093104F /* FrasesUpdateView.swift in Sources */,
 				19E06FA62AEB74E20016F9E6 /* FrasesNotasAddView.swift in Sources */,
 				E966EDE12ACF2029002D84C4 /* UpdateNotasView.swift in Sources */,
