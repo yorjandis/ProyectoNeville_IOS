@@ -7,10 +7,13 @@
 
 import Foundation
 import SwiftUI
+import CoreData
 
 
 struct AddNota : View {
     
+    private let context : NSManagedObjectContext = CoreDataController.shared.context
+    @Environment(\.dismiss) private var dismiss
     @State private var title : String = ""
     @State private var texto : String = ""
     @State private var isfav : Bool = false
@@ -54,18 +57,26 @@ struct AddNota : View {
                             if title.isEmpty || texto.isEmpty {
                                 self.alertMesage = "Debe colocar un titulo y un texto para la nota" ; showAlert = true
                             }else{
-                                /*
-                                 //Yorjandis: Deshabilitado por problema con icloudKit
-                                self.isWorking = true //Oculta el botón
-                                let result = await iCloudNotas().add(title: self.title, nota: self.texto, isfav: isfav ? 1 : 0)
-                                if  result {
-                                    self.alertMesage = "Nota Guardada!" ; showAlert = true
-                                }else{
-                                    self.alertMesage = "No se ha podido guardar la nota. Inténtelo de nuevo" ; showAlert = true
-                                 
+                                //Crear una entidad Nota
+                                let newNota = Notas(context: self.context)
+                                newNota.id = UUID().uuidString
+                                newNota.title = title
+                                newNota.nota = texto
+                                newNota.isfav = isfav
+                                
+                                do {
+                                    try self.context.save()
+                                    self.alertMesage = "Nota Creada"
+                                    self.showAlert = true
+                                    
+                                }catch{
+                                    self.context.rollback()
+                                    self.alertMesage = "Error al Crear Nota"
+                                    self.showAlert = true
+                                    
                                 }
-                                self.isWorking = false //Muestra el botón
-                                */
+                                
+                                dismiss()
                                 
                             }
                              

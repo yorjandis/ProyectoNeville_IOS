@@ -10,35 +10,38 @@ import CoreData
 
 struct ReflexShowTextView: View {
     
-    @State var entity : Reflex
+    @State var entity : RefType
+    
     @State private var fontSizeContent : CGFloat = 18
     @State private var showSlider = false
-    
-    @State var title = ""
-    @State var autor = ""
-    @State var texto = ""
+
 
     @AppStorage(AppCons.UD_setting_fontContentSize)  var fontSizeContenido  = 18
     
     var body: some View {
         NavigationStack {
             Form{
-                Section("Autor"){
-                    Text(autor)
-                        .multilineTextAlignment(.leading)
+                Section("Título"){
+                    VStack(alignment: .leading){
+                        Text(entity.title)
+                            .multilineTextAlignment(.leading)
+                        Text("Autor: \(entity.autor)").font(.footnote)
+                    }
+                    
                 }
                 Section("Reflexión"){
-                    Text(texto)
-                        .multilineTextAlignment(.leading)
-                        .font(.system(size: fontSizeContent, design: .rounded))
+                    VStack{
+                        ScrollView{
+                            Text(entity.content)
+                                .multilineTextAlignment(.leading)
+                                .font(.system(size: fontSizeContent, design: .rounded))
+                        }.scrollIndicators(.automatic)
+                    }
+                    
+                   
                 }
-                
             }
-            .onAppear{
-                if self.entity.isnew {
-                    RefexModel().RemoveNewFlag(entity: &self.entity)
-                }
-            }
+            
                 Divider()
                 HStack{
                     Spacer()
@@ -60,16 +63,18 @@ struct ReflexShowTextView: View {
                         
                     }
                 }
-            .navigationTitle(title)
+                .navigationTitle("Reflexiones")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar{
                 Menu{
+                    /*
                     if entity.isInbuilt == false {
                         NavigationLink("Editar Reflexión"){
                             ReflexEditView(reflex: $entity)
                         }
                     }
                     
+                    */
                     
                     Button("Tamaño de Letra", systemImage: "textformat") {
                         withAnimation(.easeInOut) {
@@ -83,19 +88,8 @@ struct ReflexShowTextView: View {
                 
             }
             .onAppear {
-                
-                title = entity.title ?? ""
-                autor = entity.autor ?? ""
-                texto = entity.texto ?? ""
-                
                 fontSizeContent = CGFloat(UserDefaults.standard.integer(forKey: AppCons.UD_setting_fontContentSize))
                 fontSizeContenido = Int(self.fontSizeContent)
-                
-                //Desmarcando el elemento news:   
-                if self.entity.isnew {
-                    RefexModel().RemoveNewFlag(entity: &entity)
-                }
-                
             }
             
         }
@@ -103,5 +97,5 @@ struct ReflexShowTextView: View {
 }
 
 #Preview {
-    ReflexShowTextView( entity: Reflex(context: CoreDataController.shared.context) )
+    ReflexShowTextView( entity: RefType(title: "", content: "", autor: "", isInbuilt: true, isfav: false))
 }

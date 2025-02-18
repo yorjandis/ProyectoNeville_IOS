@@ -111,6 +111,7 @@ final class FrasesModel : ObservableObject {
                 }
             } else {
                 // Si la frase no existe,  creamos una nueva entrada en la tabla Frases
+                //Esto quiere decir que la frase es inbuilt, porque las frases personales siempre estarán en la tabla
                 let newFrase = Frases(context: context)
                 newFrase.id = UUID().uuidString
                 newFrase.frase = frase
@@ -134,7 +135,7 @@ final class FrasesModel : ObservableObject {
         entidad.id = UUID().uuidString
         entidad.frase = frase
         entidad.isfav = false
-        entidad.noinbuilt = true
+        entidad.noinbuilt = true //Se marca como una frase NO inbuilt
         entidad.nota = ""
         
         if context.hasChanges {

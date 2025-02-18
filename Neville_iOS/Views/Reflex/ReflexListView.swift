@@ -11,7 +11,9 @@ import CoreData
 struct ReflexListView: View {
     
     @Environment(\.colorScheme) private var theme
-    @State var list : [Reflex] = []
+    @Environment(\.managedObjectContext) private var context
+   @StateObject private var modelReflex : ReflexModel = ReflexModel.shared
+    
     
     @State var showAlertSearchInTitle = false
     @State var showAlertSearchInTxt = false
@@ -20,50 +22,45 @@ struct ReflexListView: View {
     @State var textFielTitleForSearch = ""
     @State var showSheetAddReflex = false
     @State var showalertDeleteItem = false
-    @State private var entity : Reflex?
-    @State private var subtitle = "Reflexiones"
-    @State var isfav = false
-    private var filtered : [Reflex]{
-        if self.textFielTitleForSearch.isEmpty {return self.list}
-        return self.list.filter{$0.title?.localizedCaseInsensitiveContains(self.textFielTitleForSearch) ?? false}
-    }
+    
+    @State private var entityForDelete : RefType? //Almacena la entidad que será eliminada
+
+
+   @AppStorage("isUnicaVezReflex") var isUnicaVezReflex: Bool = true
+    
     
     
     var body: some View {
         NavigationStack{
             VStack{
-                List(self.filtered){item in
+                List(modelReflex.list, id: \.id){item in
                     VStack(alignment: .leading){
                         NavigationLink{
-                            ReflexShowTextView(entity: item)                 
+                            EmptyView()
+                           ReflexShowTextView(entity: item)
                         }label: {
-                            Text(item.title ?? "")
+                            Text(item.title) //title
                         }
                         HStack{
-                            Text(item.autor ?? "")
+                            Text(item.autor) //Autor
                                 .font(.caption2)
                                 .italic()
-                                .foregroundStyle(item.isfav ? Color.orange.opacity(0.7) : Color.gray)
-                            //Marcando los elementos nuevos
-                            if item.isnew {
-                                Text("Nueva")
-                                    .font(.footnote).bold()
-                                    .foregroundStyle(Color.orange)
-                                    .fontDesign(.serif)
-                            }
-                            
+                               .foregroundStyle(item.isfav ? Color.orange : Color.gray)
                         }
-                       
-                       
                     }
                     .swipeActions(edge: .leading) {
-                            Button{           
-                                if RefexModel().handleFavState(reflex: item){
+                            Button{
+                                
+                                var favState = modelReflex.getFavState(title: item.title)
+                                favState.toggle()
+                                if modelReflex.setFavState(title: item.title, state: favState){
+                                    //Actualizar el listado
                                     withAnimation {
-                                        let temp2 = list
-                                        list.removeAll()
-                                        list = temp2
+                                        modelReflex.getArrayReflexOfTxtFile()
                                     }
+                                   print("Yorj: se ha ajustado el favorito: \(item.isfav)")
+                                }else{
+                                    print("Yorj: NO se ha ajustado el favorito: \(item.isfav)")
                                 }
                             }label: {
                                 Image(systemName: "heart")
@@ -71,69 +68,47 @@ struct ReflexListView: View {
                             }
                     }
                     .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                        //Solo permite eliminar las reflexiones creadas por el usuario
+                        if !item.isInbuilt {
                             Button{
-                                entity = item
+                                self.entityForDelete = item
                                 showalertDeleteItem = true
                             }label: {
                                 Image(systemName: "minus.circle")
                                     .tint(.red)
                             }
+                        }
                     }
                     
                 }
-                .searchable(text: $textFielTitleForSearch, placement: .navigationBarDrawer(displayMode: .always), prompt: "Buscar")
-                .onAppear {
-                    list.removeAll()
-                    list = RefexModel().GetRequest(predicate: nil)
-                }
-                
             }
-            .navigationTitle(self.subtitle)
+            .navigationTitle("Reflexiones")
             .navigationBarTitleDisplayMode(.inline)
+            .task {
+                //Este código limpia la BD de reflexiones una sola vez
+                if self.isUnicaVezReflex{
+                    modelReflex.eliminarDuplicados(context: self.context)
+                    self.isUnicaVezReflex = false //Desactiva el flag
+                    print("Yorj: dadasdasdasDas")
+                }
+            }
             .toolbar{
                             HStack{
                                 Spacer()
                                 Menu{
                                     Button("Todas las reflexiones"){
-                                        list.removeAll()
-                                        list = RefexModel().GetRequest(predicate: nil)
-                                        self.subtitle = "Reflexiones"
+                                        modelReflex.getArrayReflexOfTxtFile()
+                                    }
+                                    Button("Reflexiones Personales"){
+                                        modelReflex.list = modelReflex.getAllReflexNoInbuiltGet()
                                     }
                                     Button("Reflexiones favoritas"){
-                                        let temp = RefexModel().GetAllFav()
-                                        list.removeAll()
-                                        list = temp
-                                        self.subtitle = "Reflexiones favoritas"
-                                        
+                                        modelReflex.list = modelReflex.getReflexFavoritasGet()
                                     }
-                                                    
-                                    Button("Buscar en títulos"){
-                                        showAlertSearchInTitle = true
-                                        self.subtitle = "Reflexiones"
-                                    }
+                                    
                                     Button("Buscar en el contenido"){
                                         showAlertSearchInTxt = true
-                                        self.subtitle = "Reflexiones"
                                     }
-                                    Button("Nuevas reflexiones"){
-                                        let temp = RefexModel().getAllNewsElements()
-                                        self.list.removeAll()
-                                        self.list = temp
-                                        self.subtitle = "Reflexiones nuevas"
-                                    }
-                                    
-                                    if self.subtitle == "Reflexiones nuevas" && self.list.count > 0 {
-                                        Button("Desmarcar reflexiones nuevas"){
-                                            RefexModel().RemoveAllNewFlag()
-                                            let temp = self.list
-                                            list.removeAll()
-                                            list = temp
-                                        }
-                                    }
-                                    
-                                    
-                                    
-                                    
                                 }label: {
                                     Image(systemName: "line.3.horizontal.decrease")
                                         .foregroundStyle(theme ==  .dark ? .white :  .black)
@@ -149,42 +124,33 @@ struct ReflexListView: View {
                             }
                         }
             .alert("Buscar un texto", isPresented: $showAlertSearchInTxt){
+                
                 TextField("", text: $textFiel2, axis: .vertical)
                 Button("Cancelar"){showAlertSearchInTxt = false}
                     .multilineTextAlignment(.leading)
                 Button("Buscar"){
-                    let temp  =  RefexModel().searchTextInTextoReflex(text: self.textFiel2)
-                    list.removeAll()
-                    list = temp
+                    modelReflex.list = modelReflex.searchInContent(text: self.textFiel2)
                 }
-                
-            }
-            .alert("Buscar en títulos", isPresented: $showAlertSearchInTitle){
-                TextField("", text: $textFiel3, axis: .vertical)
-                    .multilineTextAlignment(.leading)
-                Button("Cancelar"){showAlertSearchInTitle = false}
-                Button("Buscar"){
-                    let temp  =  RefexModel().searchTextInTitleReflex(text: textFiel3)
-                    list.removeAll()
-                    list = temp
-                }
+               
                 
             }
             .sheet(isPresented: $showSheetAddReflex, content: {
-                AddReflexView(list: $list)
+                EmptyView()
+                AddReflexView()
             })
             .alert(isPresented: $showalertDeleteItem){
                     Alert(title: Text("La Ley"),
                       message: Text("Desea eliminar la entrada?"),
                           primaryButton: .destructive(Text("Eliminar"), action: {
-                        if let tt = self.entity {
-                            if RefexModel().deleteEntity(reflex: tt){
+                        if let tt = self.entityForDelete {
+                            
+                            if modelReflex.deleteReflex(title: tt.title){
                                 withAnimation {
-                                    list = RefexModel().GetRequest(predicate: nil)
+                                    modelReflex.getArrayReflexOfTxtFile()
                                 }
                             }
+                            
                         }
-                        
                         
                         }), secondaryButton: .cancel()
                           
@@ -199,10 +165,11 @@ struct ReflexListView: View {
     //Permite adicionar una nueva reflexión
     struct AddReflexView : View {
         @Environment(\.dismiss) private var dimiss
-        @Binding var list : [Reflex]
+        @StateObject private var modelReflex = ReflexModel.shared
         @State private var textFielTitle = ""
         @State private var textFielTexto = ""
         @State private var textFielAutor = ""
+        @State private var isfav : Bool = false
         
         @State var showAlert = false
         @State var alertMessage = ""
@@ -221,6 +188,12 @@ struct ReflexListView: View {
                                 .multilineTextAlignment(.leading)
                                 .textFieldStyle(.roundedBorder)
                         }
+                        Section("Favorito"){
+                            Toggle(isOn: self.$isfav) {
+                                Label("Favorito", systemImage: "heart.fill")
+                                    .foregroundStyle( self.isfav ?  .orange : .primary)
+                            }
+                        }
                         Section("Contenido"){
                             TextField("Texto de la reflexión", text: $textFielTexto, axis: .vertical)
                                 .multilineTextAlignment(.leading)
@@ -230,14 +203,14 @@ struct ReflexListView: View {
                 }
                 .navigationTitle("Adicionar una reflexión")
                 .navigationBarTitleDisplayMode(.inline)
+                .preferredColorScheme(.dark)
                 .toolbar{
                     ToolbarItem {
                         Button("Guardar"){
-                            if RefexModel().AddReflex(title: self.textFielTitle, reflex: self.textFielTexto, autor: self.textFielAutor){
+                            if modelReflex.savePersonalReflex(title: self.textFielTitle, autor: self.textFielAutor, texto: self.textFielTexto, isfav: self.isfav){
                                 alertMessage = "Se ha guardado la reflexión"
                                 showAlert = true
-                                list.removeAll()
-                                list = RefexModel().GetRequest(predicate: nil)
+                                modelReflex.getArrayReflexOfTxtFile()
                                 dimiss()
                             }else{
                                 alertMessage = "Se ha producido un error al guardar la reflexión"

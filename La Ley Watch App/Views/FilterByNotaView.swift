@@ -7,18 +7,17 @@
 // sheet que permite filtrar el contenido de las notas
 
 import SwiftUI
-/*
 struct FilterByNotaView: View {
-    @Binding var listRecord : [CKRecord]
-    @Binding var showListOptions : Bool //permite cerrar la ventana de opciones de filtro
+    @StateObject private var modelWatch = watchModel.shared
+    @Environment(\.dismiss) private var dismiss
     @State private var texto : String   = ""
     @State private var showSheetTitulo  = false     //Abre/Cierra sheet
     @State private var showSheetTexto   = false     //Abre/Cierra sheet
     
     var body: some View {
-        VStack(spacing: 15){
+        VStack{
             Text("Filtrar Notas por...")
-            Spacer()
+            Divider()
             ScrollView {
                 Button("Título"){
                     showSheetTitulo = true
@@ -29,60 +28,34 @@ struct FilterByNotaView: View {
                 }
                 
                 Button("Favoritos"){
-                    self.listRecord.removeAll()
                     Task{
-                        /*
-                        self.listRecord = await iCloudKitModel(of: .BDPrivada).filterByCriterio(tableName: .CD_Notas, criterio: .favoritoNota)
-                        showListOptions = false
-                        */
-                        
+                        modelWatch.listNotas = modelWatch.getNotasFavoritas()
+                        dismiss()
                     }
-                   
                 }
-                
-            }
-                
-            
+            }  
         }
-        .ignoresSafeArea()
         .sheet(isPresented: $showSheetTitulo, content: {
                 VStack{
                     TextFieldLink("🔍 Título a buscar",prompt: Text("Texto del título")) { str in
-                        listRecord.removeAll()
                         Task{
-                            /*
-                            listRecord =  await iCloudKitModel(of: .BDPrivada).filterByCriterio(tableName: .CD_Notas, criterio: .tituloNota, textoABuscar: str)
-                            self.showSheetTitulo = false
-                            self.showListOptions = false
-                            */
+                            modelWatch.listNotas = modelWatch.searchTextInNotas(text:str, donde: .titulo)
+                            dismiss()
                         }
                     }
                 }
-           
         })
         .sheet(isPresented: $showSheetTexto, content: {
                 VStack{
                     TextFieldLink("🔍 Texto a buscar",prompt: Text("Texto de la nota")) { str in
-                        listRecord.removeAll()
                         Task{
-                            /*
-                            listRecord =  await iCloudKitModel(of: .BDPrivada).filterByCriterio(tableName: .CD_Notas, criterio: .textoNota, textoABuscar: str)
-                            self.showSheetTitulo = false
-                            self.showListOptions = false
-                            */
+                            modelWatch.listNotas = modelWatch.searchTextInNotas(text:str, donde: .contenido)
+                            dismiss()
                         }
                     }
                 }
-           
         })
-        
     }
-    
-    
 
 }
 
-#Preview {
-    FilterByNotaView(listRecord: .constant([CKRecord]()), showListOptions: .constant(false))
-}
-*/

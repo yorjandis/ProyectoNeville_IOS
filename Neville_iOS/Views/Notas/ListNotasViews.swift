@@ -73,35 +73,38 @@ struct ListNotasViews: View {
                 .navigationTitle("Notas")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar{
-                    HStack{
-                        Menu{
-                            Button("Todas las notas"){
-                                withAnimation {
-                                    list.removeAll()
-                                    list = NotasModel().getAllNotas()
+                    if self.canOpenNotas {
+                        HStack{
+                            Menu{
+                                Button("Todas las notas"){
+                                    withAnimation {
+                                        list.removeAll()
+                                        list = NotasModel().getAllNotas()
+                                    }
                                 }
-                            }
-                            Button("Notas Favoritas"){
-                                withAnimation {
-                                    list.removeAll()
-                                    list = NotasModel().getFavNotas()
+                                Button("Notas Favoritas"){
+                                    withAnimation {
+                                        list.removeAll()
+                                        list = NotasModel().getFavNotas()
+                                    }
+                                    
+                                }
+                                Button("Buscar en Notas"){
+                                    showAlertSearch = true
                                 }
                                 
+                            }label: {
+                                Image(systemName: "line.3.horizontal.decrease")
+                                    .foregroundStyle(theme ==  .dark ? .white :  .black)
                             }
-                            Button("Buscar en Notas"){
-                                showAlertSearch = true
+                            Button{
+                                showAddNoteView = true
+                            }label: {
+                                Image(systemName: "plus")
                             }
-                            
-                        }label: {
-                            Image(systemName: "line.3.horizontal.decrease")
-                                .foregroundStyle(theme ==  .dark ? .white :  .black)
-                        }
-                        Button{
-                            showAddNoteView = true
-                        }label: {
-                            Image(systemName: "plus")
                         }
                     }
+                    
                     
                 }
                 .sheet(isPresented: $showAddNoteView) {

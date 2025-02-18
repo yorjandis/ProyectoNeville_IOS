@@ -60,10 +60,11 @@ final class DiarioModel : ObservableObject{
     ///Obtiene todos los item de la tabla Diario. Devuelve un arreglo
     func getAllItem(){
         let fechtRequest : NSFetchRequest<Diario> = Diario.fetchRequest()
+        // Ordenar por fecha descendente (del más reciente al más antiguo)
+        fechtRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Diario.fechaM, ascending: false)]
         
         do{
-           let temp =  try context.fetch(fechtRequest)
-            self.list = temp.reversed()
+            self.list =  try context.fetch(fechtRequest)
         }catch{
             self.list = []
         }
@@ -221,6 +222,7 @@ final class DiarioModel : ObservableObject{
 
         return result
     }
+    
 
 }
 

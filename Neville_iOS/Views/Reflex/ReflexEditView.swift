@@ -45,6 +45,7 @@ struct ReflexEditView: View {
             }
             
             .toolbar{
+                /*
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Guardar") {
                         
@@ -60,6 +61,7 @@ struct ReflexEditView: View {
                        
                     }
                 }
+                */
             }
             .navigationTitle("Editar una Reflexión")
             .navigationBarTitleDisplayMode(.inline)

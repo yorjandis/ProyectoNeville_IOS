@@ -295,7 +295,6 @@ final class TxtContentModel : ObservableObject {
             return []
         }
     }
-
     
 
 }

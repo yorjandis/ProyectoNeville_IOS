@@ -194,7 +194,7 @@ struct settingView: View {
                             HStack{
                                 Text("Reflexiones")
                                 Spacer()
-                                Text("\(RefexModel().GetRequest(predicate: nil).count)")
+                                Text("\(ReflexModel.shared.getArrayReflexOfTxtFileGET().count)")
                             }.onTapGesture {self.showSheet = 6}
                             
                             HStack{

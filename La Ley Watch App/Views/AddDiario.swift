@@ -8,17 +8,18 @@
 import SwiftUI
 
 struct AddDiario: View {
-   
-    @Environment(\.dismiss) private var dimiss
+    private let context  = CoreDataController.shared.context
+    @StateObject private var modelWatch = watchModel.shared
+    @Environment(\.dismiss) private var dismiss
     
-        @State private var title : String = ""
-        @State private var content : String = ""
-        @State private var isfav : Bool = false
-        @State private var selection = Emoticono.neutral
-        @State private var showSheet = false
-        @State private var showAlert = false
+        @State private var title        : String = ""
+        @State private var content      : String = ""
+        @State private var isfav        : Bool = false
+        @State private var selection    = Emoticono.neutral
+        @State private var showSheet    = false
+        @State private var showAlert    = false
         @State private var alertMessage = ""
-        @State private var isWorking = false
+        @State private var isWorking    = false
         
         
         var body: some View {
@@ -67,22 +68,25 @@ struct AddDiario: View {
                                     self.alertMessage = "Debe colocar un título y un texto para la entrada"
                                     showAlert = true
                                 }else{
-                                    /*
-                                     //Yor Modificar esto: interaccion con icloud
-                                    self.isWorking = true
-                                    let result = await iCloudDiario().add(title: self.title, content: self.content, emotion: self.selection.txt, fecha: Date.now, fechaM: Date.now, isfav: self.isfav ? 1 : 0)
-                                    if  result {
-                                        self.alertMessage = "Entrada Guardada!"
-                                        showAlert = true
-                                        dimiss()
-                                    }else{
-                                        self.alertMessage = "No se ha podido guardar la entrada. Inténtelo de nuevo"
-                                        showAlert = true
+                                    //Crear una entrada de Diario y guardarla
+                                    let newDiario = Diario(context: self.context)
+                                    newDiario.id = UUID()
+                                    newDiario.title = self.title
+                                    newDiario.content = self.content
+                                    newDiario.isFav = self.isfav
+                                    newDiario.emotion = self.selection.rawValue
+                                    newDiario.fecha = Date.now
+                                    newDiario.fechaM = Date.now
+                                    
+                                    do{
+                                        try context.save()
+                                    }catch{
+                                        context.rollback()
                                     }
-                                    self.isWorking = false
-                                    */
+                                    //Actualizar el listado
+                                    modelWatch.getDiarioEntradas()
+                                    dismiss()
                                 }
-                                
                             }
                             
                         }label: {
