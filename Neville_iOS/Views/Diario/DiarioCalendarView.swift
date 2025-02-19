@@ -11,12 +11,17 @@ import SwiftUI
 import CoreData
 
 struct DiarioCalendarView: View {
+    
+    @StateObject private var modeloDiario = DiarioModel.shared
+    
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \Diario.fecha, ascending: true)],
         animation: .default
     ) private var entradas: FetchedResults<Diario>
     
     @State private var currentMonth: Date = Date()
+    
+    @State private var hideCalendar: Bool = false //Oculta el calendario pero deja la cabezera
     
     // Closure que se ejecutará cuando se seleccione una fecha con entrada
     var onDateSelected: (Date) -> Void
@@ -30,28 +35,65 @@ struct DiarioCalendarView: View {
         VStack {
             // Controles de Navegación de Mes
             HStack {
+                //Para ocultar o mostrar el calendario
+                Button{
+                    withAnimation {
+                        self.hideCalendar.toggle()
+                    }
+                    
+                }label:{
+                    Image(systemName:  self.hideCalendar ?  "eye" : "eye.slash")
+                }
+                
+                Spacer()
+                
                 Button(action: { changeMonth(by: -1) }) {
                     Image(systemName: "chevron.left")
                 }
                 .padding()
                 
-                Text(currentMonth.formatted(.dateTime.year().month()))
-                    .font(.title)
-                    .bold()
+                // Reemplazar el texto por un selector de fecha
+                DatePicker("", selection: $currentMonth, displayedComponents: [.date])
+                    .datePickerStyle(.compact)
+                    .labelsHidden()
+                    .frame(width: 120) // Ajustar el ancho según sea necesario
                 
                 Button(action: { changeMonth(by: 1) }) {
                     Image(systemName: "chevron.right")
                 }
                 .padding()
+                
+                Spacer()
+                
+                //Para fijar la fecha actual
+                Button{
+                    self.currentMonth = Date()
+                    self.modeloDiario.getAllItem()
+                }label: {
+                    Image(systemName: "diamond.circle.fill")
+                        .tint(.black)
+                }
+                
+            }
+            if !self.hideCalendar {
+                CalendarGrid(
+                    currentMonth: $currentMonth,
+                    fechasResaltadas: fechasDeEntradas,
+                    onDateSelected: onDateSelected
+                )
+                .onAppear{
+                    //Al Aparecer carga las entradas para la fecha dada
+                    modeloDiario.list = modeloDiario.getEntriesByMonth(forDate: self.currentMonth)
+                }
             }
             
-            CalendarGrid(
-                currentMonth: $currentMonth,
-                fechasResaltadas: fechasDeEntradas,
-                onDateSelected: onDateSelected
-            )
         }
         .padding()
+        .onChange(of: self.currentMonth) { oldValue, newValue in
+                //Carga las entradas para ese mes
+                modeloDiario.list = modeloDiario.getEntriesByMonth(forDate: newValue)
+            
+        }
     }
     
     // Cambia el mes actual sumando o restando 1 mes
@@ -124,14 +166,7 @@ struct CalendarGrid: View {
         return days
     }
     
-    /*
-     //NO utilizado
-    //Sencillamente resta un dia a una fecha y devuelve el resultado
-    private func SumaUnDia(date: Date) -> Date {
-        let tempDate = Calendar.current.date(byAdding: .day, value: +1, to: date)!
-        return tempDate
-    }
-    */
+
 }
 
 extension Date {

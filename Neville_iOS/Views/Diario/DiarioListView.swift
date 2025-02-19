@@ -55,8 +55,8 @@ struct DiarioListView: View {
     //Mostrar la ventana de FeedBackReview
     @State private var sheetShowFeedBackReview: Bool = false
     
-    //Mostrar/Ocultar el calendario
-    @State private var showCalendar: Bool = true
+    
+    @State private var showCalendar: Bool = false   //Mostrar/Ocultar el calendario. Por defecto aparece oculto
     
 
     var body: some View {
@@ -68,34 +68,36 @@ struct DiarioListView: View {
                 
                 if self.canOpenDiario{
                     VStack{
+                        Text("") //Para que las entradas no sobrepasen el area segura superior
+                        
+                        //Calendario:
                         if self.showCalendar {
                             VStack{
-                                DiarioCalendarView { date in
-                                    withAnimation {
-                                        modelDiario.list = modelDiario.searchPorFecha(for: date)
+                                    DiarioCalendarView { date in
+                                        withAnimation {
+                                            modelDiario.list = modelDiario.searchPorFecha(for: date)
+                                        }
                                     }
-                                }
                             }
                         }
                         
                             ScrollView(){
                                     if canOpenDiario {
-                                        ForEach(modelDiario.list){ item in
-                                            cardItem(diario: item )
-                                                .padding(15)
-                                                .frame(maxWidth: .infinity)
-                                                .foregroundStyle(Color.black)
-                                                .background(.white.opacity(0.7))
-                                                .clipShape(RoundedRectangle(cornerRadius: 10))
-                                                .shadow(radius: 5)
-                                                .padding(.horizontal, 15)
-                                                .padding(.vertical, 8)
+                                        LazyVStack{
+                                            ForEach(modelDiario.list){ item in
+                                                cardItem(diario: item )
+                                                    .padding(15)
+                                                    .frame(maxWidth: .infinity)
+                                                    .foregroundStyle(Color.black)
+                                                    .background(.white.opacity(0.7))
+                                                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                                                    .shadow(radius: 5)
+                                                    .padding(.horizontal, 15)
+                                                    .padding(.vertical, 8)
+                                            }
                                         }
                                     }
                                 }
-                            .task{
-                              modelDiario.getAllItem()
-                            }
                             .scrollIndicators(.hidden)
                     }
                     
@@ -131,11 +133,16 @@ struct DiarioListView: View {
                         Button{
                             withAnimation {
                                 self.showCalendar.toggle()
+                                //Si oculta el calendario se muestra todos los items
+                                if self.showCalendar == false {
+                                    modelDiario.getAllItem()
+                                }
                             }
                         }label:{
                             Image(systemName: "calendar")
                                 .tint(.black)
                         }.padding(.trailing, 10)
+                           
                         
                         Menu{
                             Button("Todas las entradas"){withAnimation {

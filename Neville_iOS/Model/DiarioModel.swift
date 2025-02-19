@@ -34,13 +34,17 @@ final class DiarioModel : ObservableObject{
 
     @Published var list : [Diario] = []
     
+    
+    
     static let shared = DiarioModel() //Singleton
     
     
     private let context = CoreDataController.shared.context
     
     
-    private init(){}
+    private init(){
+        getAllItem()
+    }
     
     //Obtiene el valor enum de Emociones a partir de una cadena de texto
     func getEmocionesFromStr(value : String)->Emociones{
@@ -81,6 +85,35 @@ final class DiarioModel : ObservableObject{
             return []
         }
     }
+    
+    //Obtiene todas las entradas registradas en un mes dado
+    //Usado en las funciones del Calendario
+    func getEntriesByMonth(forDate date: Date) -> [Diario] {
+        let fetchRequest: NSFetchRequest<Diario> = Diario.fetchRequest()
+        
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.year, .month], from: date)
+        
+        guard let startDate = calendar.date(from: components),
+              let endDate = calendar.date(byAdding: .month, value: 1, to: startDate) else {
+            return []
+        }
+        
+        fetchRequest.predicate = NSPredicate(format: "fecha >= %@ AND fecha < %@", startDate as NSDate, endDate as NSDate)
+        
+        do {
+            return try context.fetch(fetchRequest)
+        } catch {
+            print("Error al obtener las entradas: \(error.localizedDescription)")
+            return []
+        }
+    }
+    
+    //Determinar si una fecha dada corresponde a la fecha actua:
+    func isToday(_ date: Date) -> Bool {
+        return Calendar.current.isDate(date, inSameDayAs: Date())
+    }
+    
     
     ///Adiciona un item a la tabla Diario
     func addItem(title : String, emocion : Emociones, content : String, isFav : Bool = false )->Bool{
