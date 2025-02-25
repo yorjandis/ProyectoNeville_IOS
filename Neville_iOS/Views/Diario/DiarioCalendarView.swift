@@ -43,6 +43,7 @@ struct DiarioCalendarView: View {
                     
                 }label:{
                     Image(systemName:  self.hideCalendar ?  "eye" : "eye.slash")
+                        .tint(.black)
                 }
                 
                 Spacer()
@@ -129,7 +130,6 @@ struct CalendarGrid: View {
                         .overlay{
                             //Poner una etiqueta con el número de entradas
                             if isHighlighted {
-                               
                                 ZStack{
                                     Text("\(modelDiario.searchPorFecha(for: date, typeFecha: .FechaCreacion).count)")
                                         .font(.footnote)
@@ -142,7 +142,6 @@ struct CalendarGrid: View {
                         .onTapGesture {
                             if isHighlighted {
                                 onDateSelected(date)
-                                
                             }
                         }
                 } else {

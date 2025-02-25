@@ -128,27 +128,24 @@ struct DiarioListView: View {
             .toolbar{
                 HStack(spacing: 5){
                     
-                    if canOpenDiario {
-                        //Muestra/Oculta el diario
-                        Button{
-                            withAnimation {
-                                self.showCalendar.toggle()
-                                //Si oculta el calendario se muestra todos los items
-                                if self.showCalendar == false {
-                                    modelDiario.getAllItem()
-                                }
-                            }
-                        }label:{
-                            Image(systemName: "calendar")
-                                .tint(.black)
-                        }.padding(.trailing, 10)
-                           
-                        
+                    if canOpenDiario {      
                         Menu{
                             Button("Todas las entradas"){withAnimation {
                                 modelDiario.getAllItem()}
                             }
                             Button("favoritas"){ modelDiario.list =  modelDiario.filterByFav()}
+                            Button{
+                                withAnimation {
+                                    self.showCalendar.toggle()
+                                    //Si oculta el calendario se muestra todos los items
+                                    if self.showCalendar == false {
+                                        modelDiario.getAllItem()
+                                    }
+                                }
+                                
+                            }label:{
+                                Label( self.showCalendar ? "Ocultar Calendario" : "Mostrar calendario", systemImage: "calendar")
+                            }
                             Menu{
                                 Button{withAnimation {
                                     modelDiario.list =  modelDiario.filterByEmoticono(criterio: Emociones.feliz.rawValue)
@@ -527,7 +524,7 @@ struct cardItem: View{
                     .italic()
                     .fontDesign(.serif)
                     .fontWeight(.heavy)
-                    .lineLimit(expandText ? nil :  3)
+                    .lineLimit(expandText ? nil :  1)
                     .onTapGesture{
                         withAnimation {
                             expandText.toggle()
