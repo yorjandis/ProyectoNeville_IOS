@@ -88,7 +88,6 @@ struct ContentTxtShowView: View {
                                 //Se cargan y aplican los colores de fondo y de texto
                                 self.backgroundColor = SettingModel().loadColor(forkey: AppCons.UD_setting_color_fondoContent)
                                 self.textContentdColor = SettingModel().loadColor(forkey: AppCons.UD_setting_color_textContent)
-                                
                             }
                     }
                     .padding(.horizontal, 3)
@@ -107,7 +106,6 @@ struct ContentTxtShowView: View {
                         }
                         return Color.clear
                     })
-                    
                 }
                 
                 

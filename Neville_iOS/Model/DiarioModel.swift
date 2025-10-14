@@ -34,13 +34,17 @@ final class DiarioModel : ObservableObject{
 
     @Published var list : [Diario] = []
     
+    
+    
     static let shared = DiarioModel() //Singleton
     
     
     private let context = CoreDataController.shared.context
     
     
-    private init(){}
+    private init(){
+        getAllItem()
+    }
     
     //Obtiene el valor enum de Emociones a partir de una cadena de texto
     func getEmocionesFromStr(value : String)->Emociones{
@@ -82,6 +86,35 @@ final class DiarioModel : ObservableObject{
         }
     }
     
+    //Obtiene todas las entradas registradas en un mes dado
+    //Usado en las funciones del Calendario
+    func getEntriesByMonth(forDate date: Date) -> [Diario] {
+        let fetchRequest: NSFetchRequest<Diario> = Diario.fetchRequest()
+        
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.year, .month], from: date)
+        
+        guard let startDate = calendar.date(from: components),
+              let endDate = calendar.date(byAdding: .month, value: 1, to: startDate) else {
+            return []
+        }
+        
+        fetchRequest.predicate = NSPredicate(format: "fecha >= %@ AND fecha < %@", startDate as NSDate, endDate as NSDate)
+        
+        do {
+            return try context.fetch(fetchRequest)
+        } catch {
+            print("Error al obtener las entradas: \(error.localizedDescription)")
+            return []
+        }
+    }
+    
+    //Determinar si una fecha dada corresponde a la fecha actua:
+    func isToday(_ date: Date) -> Bool {
+        return Calendar.current.isDate(date, inSameDayAs: Date())
+    }
+    
+    
     ///Adiciona un item a la tabla Diario
     func addItem(title : String, emocion : Emociones, content : String, isFav : Bool = false )->Bool{
         let diario : Diario = Diario(context: context)
@@ -111,9 +144,6 @@ final class DiarioModel : ObservableObject{
             try? context.save()
         }
     }
-    
-    
-    
     
     
     ///Elimina un item de la tabla diario
@@ -223,6 +253,130 @@ final class DiarioModel : ObservableObject{
         return result
     }
     
-
+    //Buscar por fecha de creación
+    func searchPorFecha(for date: Date, typeFecha : TypeFecha = .FechaCreacion ) -> [Diario] {
+        let fetchRequest: NSFetchRequest<Diario> = Diario.fetchRequest()
+        
+        // Obtener el rango de la fecha (00:00 - 23:59)
+        let calendar = Calendar.current
+        let startOfDay = calendar.startOfDay(for: date)
+        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
+        
+        // Configurar el predicado para buscar en ese rango sefún el tipo de fecha:
+        switch typeFecha {
+        case .FechaCreacion:
+            fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Diario.fecha, ascending: false)]
+            fetchRequest.predicate = NSPredicate(format: "fecha >= %@ AND fecha < %@", startOfDay as NSDate, endOfDay as NSDate)
+        case .FechaModificacion:
+            fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Diario.fechaM, ascending: false)]
+            fetchRequest.predicate = NSPredicate(format: "fechaM >= %@ AND fecha < %@", startOfDay as NSDate, endOfDay as NSDate)
+        }
+       
+        
+        do {
+            return try context.fetch(fetchRequest)
+        } catch {
+            print("Error al recuperar entradas: \(error)")
+            return []
+        }
+    }
+    
+    //Buscar en un rango de fechas
+    func searchPorRangoFecha(from startDate: Date, to endDate: Date, typeFecha : TypeFecha = .FechaCreacion ) -> [Diario] {
+        let fetchRequest: NSFetchRequest<Diario> = Diario.fetchRequest()
+        
+        
+        // Obtener el comienzo del día de startDate y el final del día de endDate
+        let calendar = Calendar.current
+        let startOfDay = calendar.startOfDay(for: startDate)
+        let endOfDay = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: endDate))!
+        
+        // Configurar el predicado para buscar en el rango según el tipo de fecha:
+        switch typeFecha {
+        case .FechaCreacion:
+            fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Diario.fecha, ascending: false)]
+            fetchRequest.predicate = NSPredicate(format: "fecha >= %@ AND fecha < %@", startOfDay as NSDate, endOfDay as NSDate)
+        case .FechaModificacion:
+            fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Diario.fechaM, ascending: false)]
+            fetchRequest.predicate = NSPredicate(format: "fechaM >= %@ AND fechaM < %@", startOfDay as NSDate, endOfDay as NSDate)
+        }
+        
+        
+        do {
+            return try context.fetch(fetchRequest)
+        } catch {
+            print("Error al recuperar entradas: \(error)")
+            return []
+        }
+    }
+    
+    
+    //Buscar según antiguedad:
+    func searchPorAntiguedad(for antiguedad: Antiguedad, typeFecha : TypeFecha = .FechaCreacion ) -> [Diario] {
+        let fetchRequest: NSFetchRequest<Diario> = Diario.fetchRequest()
+        
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date()) // Inicio del día actual
+        var startDate: Date
+        
+        // Determinar la fecha de inicio según la antigüedad
+        switch antiguedad {
+        case .tresDias:
+            startDate = calendar.date(byAdding: .day, value: -3, to: today)!
+        case .semana:
+            startDate = calendar.date(byAdding: .day, value: -7, to: today)!
+        case .quincena:
+            startDate = calendar.date(byAdding: .day, value: -15, to: today)!
+        case .mes:
+            startDate = calendar.date(byAdding: .month, value: -1, to: today)!
+        case .dosMeses:
+            startDate = calendar.date(byAdding: .month, value: -2, to: today)!
+        case .tresMeses:
+            startDate = calendar.date(byAdding: .month, value: -3, to: today)!
+        case .seisMeses:
+            startDate = calendar.date(byAdding: .month, value: -6, to: today)!
+        case .unAno:
+            startDate = calendar.date(byAdding: .year, value: -1, to: today)!
+        case .dosAnos:
+            startDate = calendar.date(byAdding: .year, value: -2, to: today)!
+        case .tresAnos:
+            startDate = calendar.date(byAdding: .year, value: -3, to: today)!
+        case .cincoAnos:
+            startDate = calendar.date(byAdding: .year, value: -5, to: today)!
+        case .diezAnos:
+            startDate = calendar.date(byAdding: .year, value: -10, to: today)!
+        }
+        
+        // Configurar el predicado para obtener entradas desde startDate hasta hoy
+        switch typeFecha {
+        case .FechaCreacion:
+            fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Diario.fecha, ascending: false)]
+            fetchRequest.predicate = NSPredicate(format: "fecha >= %@ AND fecha <= %@", startDate as NSDate, today as NSDate)
+        case .FechaModificacion:
+            fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Diario.fechaM, ascending: false)]
+            fetchRequest.predicate = NSPredicate(format: "fechaM >= %@ AND fechaM <= %@", startDate as NSDate, today as NSDate)
+        }
+        
+        
+        
+        do {
+            return try context.fetch(fetchRequest)
+        } catch {
+            print("Error al recuperar entradas: \(error)")
+            return []
+        }
+    }
+    
+    
+    
+    
+    enum Antiguedad{
+        case tresDias, semana, quincena, mes, dosMeses, tresMeses, seisMeses, unAno, dosAnos, tresAnos, cincoAnos, diezAnos
+    }
+    
+   
 }
 
+enum TypeFecha{
+    case FechaCreacion, FechaModificacion
+    }

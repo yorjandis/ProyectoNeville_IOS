@@ -14,7 +14,7 @@ struct TxtListView: View {
     
     @Environment(\.colorScheme) var theme
     @Environment(\.managedObjectContext) var context
-    @EnvironmentObject var modeloTxt : TxtContentModel
+    @StateObject var modeloTxt : TxtContentModel = TxtContentModel.shared
     
     let typeOfContent : TipoDeContenido //Tipo de contenido a cargar
 

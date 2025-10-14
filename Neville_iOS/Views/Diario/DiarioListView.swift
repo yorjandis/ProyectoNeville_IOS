@@ -11,7 +11,7 @@ import CoreData
 struct DiarioListView: View {
 
     @Environment(\.dismiss) var dimiss
-    @StateObject private var diarioModel = DiarioModel.shared
+    @StateObject private var modelDiario = DiarioModel.shared
     
     //Para filtros en fechas
     enum TypeOfSearch{case fix, interval}
@@ -21,8 +21,13 @@ struct DiarioListView: View {
     @State private var textfielTitles = ""
     //Para Buscar en contenido
     @State private var showAlertFilterByContent = false
-    @State private var showFilterByDate = false
-    @State private var showFilterByIntervalDate = false
+    //Para buscar eb fechas:
+    @State private var showSheetFecha       = false
+    @State private var showSheetRangoFecha  = false
+    @State private var typeOfFechaSearch : TypeFecha = .FechaCreacion
+    @State private var fecha1 = Date.now
+    @State private var fecha2 = Date.now
+    
     @State private var datepicker : Date = Date.now
     @State private var textfielContent = ""
  
@@ -42,6 +47,7 @@ struct DiarioListView: View {
     
 
     @State var canOpenDiario : Bool = false 
+    @State var claveAcceso : String? = nil //Clave para acceder al Diario en dispisitivos son biometría
     
     //Alert:
     @State var showAlert = false
@@ -49,6 +55,9 @@ struct DiarioListView: View {
     
     //Mostrar la ventana de FeedBackReview
     @State private var sheetShowFeedBackReview: Bool = false
+    
+    
+    @State private var showCalendar: Bool = false   //Mostrar/Ocultar el calendario. Por defecto aparece oculto
     
 
     var body: some View {
@@ -60,29 +69,37 @@ struct DiarioListView: View {
                 
                 if self.canOpenDiario{
                     VStack{
-                        VStack{
+                        Text("") //Para que las entradas no sobrepasen el area segura superior
+                        
+                        //Calendario:
+                        if self.showCalendar {
                             VStack{
-                                ScrollView(){
+                                    DiarioCalendarView { date in
+                                        withAnimation {
+                                            modelDiario.list = modelDiario.searchPorFecha(for: date)
+                                        }
+                                    }
+                            }
+                        }
+                        
+                            ScrollView(){
                                     if canOpenDiario {
-                                        ForEach(diarioModel.list){ item in
-                                            cardItem(diario: item )
-                                                .padding(15)
-                                                .frame(maxWidth: .infinity)
-                                                .foregroundStyle(Color.black)
-                                                .background(.white.opacity(0.7))
-                                                .clipShape(RoundedRectangle(cornerRadius: 10))
-                                                .shadow(radius: 5)
-                                                .padding(.horizontal, 15)
-                                                .padding(.vertical, 8)
+                                        LazyVStack{
+                                            ForEach(modelDiario.list){ item in
+                                                cardItem(diario: item )
+                                                    .padding(15)
+                                                    .frame(maxWidth: .infinity)
+                                                    .foregroundStyle(Color.black)
+                                                    .background(.white.opacity(0.7))
+                                                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                                                    .shadow(radius: 5)
+                                                    .padding(.horizontal, 15)
+                                                    .padding(.vertical, 8)
+                                            }
                                         }
                                     }
                                 }
-                            }
-                            .task{
-                              diarioModel.getAllItem()
-                            }
                             .scrollIndicators(.hidden)
-                        }
                     }
                     
                 }else{ //Ventana de Autenticación
@@ -97,61 +114,116 @@ struct DiarioListView: View {
                             .foregroundStyle(.black)
                             .padding(15)
                         
-                        Button{
-                            UtilFuncs.autent(HabilitarContenido: self.$canOpenDiario)
+                        if BiometryCheckerSupport.checkBiometricSupport() == .available{ //Hay soporte para biometría
+                            Button{
+                                UtilFuncs.autent(HabilitarContenido: self.$canOpenDiario)
+                                
+                            }label:{
+                                Image(systemName: "key.viewfinder")
+                                    .font(.system(size: 60))
+                                    .foregroundStyle(Color.black.opacity(0.7))
+                                    .symbolEffect(.pulse, isActive: true)
+                            }
+                            Text("Toque la imagen para acceder.").font(.footnote).padding()
+                            NavigationLink("Acceder por contraseña"){
+                             LogginView(ente: "Diario", canOpen: self.$canOpenDiario)
+                               
+                            }
+                            .buttonStyle(.bordered)
+                            .tint(.black)
+                            .padding(.vertical, 25)
                             
-                        }label:{
-                            Image(systemName: "key.viewfinder")
-                                .font(.system(size: 60))
-                                .foregroundStyle(Color.black.opacity(0.7))
-                                .symbolEffect(.pulse, isActive: true)
+                        }else{
+                            //NO hay soporte para Biometria
+                            VStack{
+                                //Chequeamos si hay una clave guardada:
+                                if KeychainHelper.shared.getPassword() != nil{ //Hay una clave
+                                    Text("Parece que su dispositivo no admite biometría. Utilice el botón debajo para entrar por contraseña.")
+                                    NavigationLink("Acceder por contraseña"){
+                                     LogginView(ente: "Diario", canOpen: self.$canOpenDiario)
+                                       
+                                    }
+                                    .buttonStyle(.bordered)
+                                    .tint(.black)
+                                    
+                                }else{
+                                    Text("Parece que su dispositivo no admite biometría. Utilice el botón debajo para crear una contraseña para acceder al Diario.")
+                                    //No existe una clave guardada. Permitir crear una la primera vez
+                                    NavigationLink("Crear una Contraseña"){
+                                        CreatePasswordView()
+                                    }
+                                    .buttonStyle(.bordered)
+                                    .tint(.black)
+                                }
+                                
+                                
+                                
+                                
+                                
+
+                                
+                            }.padding()
                         }
+                           
+                        
+                        
                     }
                 }
             }
             .toolbar{
                 HStack(spacing: 5){
                     
-                    if canOpenDiario {
-                        
+                    if canOpenDiario {      
                         Menu{
                             Button("Todas las entradas"){withAnimation {
-                                diarioModel.getAllItem()}
+                                modelDiario.getAllItem()}
                             }
-                            Button("favoritas"){ diarioModel.list =  diarioModel.filterByFav()}
+                            Button("favoritas"){ modelDiario.list =  modelDiario.filterByFav()}
+                            Button{
+                                withAnimation {
+                                    self.showCalendar.toggle()
+                                    //Si oculta el calendario se muestra todos los items
+                                    if self.showCalendar == false {
+                                        modelDiario.getAllItem()
+                                    }
+                                }
+                                
+                            }label:{
+                                Label( self.showCalendar ? "Ocultar Calendario" : "Mostrar calendario", systemImage: "calendar")
+                            }
                             Menu{
                                 Button{withAnimation {
-                                    diarioModel.list =  diarioModel.filterByEmoticono(criterio: Emociones.feliz.rawValue)
+                                    modelDiario.list =  modelDiario.filterByEmoticono(criterio: Emociones.feliz.rawValue)
                                 }
                                 }label: {
                                     Label(Emociones.feliz.rawValue.capitalized, image: Emociones.feliz.rawValue)
                                 }
                                 Button{withAnimation {
-                                    diarioModel.list = diarioModel.filterByEmoticono(criterio: Emociones.neutral.rawValue)
+                                    modelDiario.list = modelDiario.filterByEmoticono(criterio: Emociones.neutral.rawValue)
                                 }
                                 }label: {
                                     Label(Emociones.neutral.rawValue.capitalized, image: Emociones.neutral.rawValue)
                                 }
                                 Button{ withAnimation {
-                                    diarioModel.list = diarioModel.filterByEmoticono(criterio: Emociones.desanimado.rawValue)
+                                    modelDiario.list = modelDiario.filterByEmoticono(criterio: Emociones.desanimado.rawValue)
                                 }
                                 }label: {
                                     Label(Emociones.desanimado.rawValue.capitalized, image: Emociones.desanimado.rawValue)
                                 }
                                 Button{withAnimation {
-                                    diarioModel.list = diarioModel.filterByEmoticono(criterio: Emociones.enfado.rawValue)
+                                    modelDiario.list = modelDiario.filterByEmoticono(criterio: Emociones.enfado.rawValue)
                                 }
                                 }label: {
                                     Label(Emociones.enfado.rawValue.capitalized, image: Emociones.enfado.rawValue)
                                 }
                                 Button{withAnimation {
-                                    diarioModel.list = diarioModel.filterByEmoticono(criterio: Emociones.distraido.rawValue)
+                                    modelDiario.list = modelDiario.filterByEmoticono(criterio: Emociones.distraido.rawValue)
                                 }
                                 }label: {
                                     Label(Emociones.distraido.rawValue.capitalized, image: Emociones.distraido.rawValue)
                                 }
                                 Button{withAnimation {
-                                    diarioModel.list = diarioModel.filterByEmoticono(criterio: Emociones.sorpresa.rawValue)
+                                    modelDiario.list = modelDiario.filterByEmoticono(criterio: Emociones.sorpresa.rawValue)
                                 }
                                 }label: {
                                     Label(Emociones.sorpresa.rawValue.capitalized, image: Emociones.sorpresa.rawValue)
@@ -165,38 +237,108 @@ struct DiarioListView: View {
                             Button("Buscar en Contenido"){
                                 showAlertFilterByContent = true
                             }
+                            //Filtrar por tipos de fechas: Creación y modificación
                             Menu{
-                                Button("Fecha"){showFilterByDate = true}
-                                Button("Intervalo"){showFilterByIntervalDate = true}
+                                Button("Fecha"){
+                                    self.typeOfFechaSearch = .FechaCreacion
+                                    self.showSheetFecha = true
+                                }
+                                Button("Intervalo"){
+                                    self.typeOfFechaSearch = .FechaCreacion
+                                    self.showSheetRangoFecha = true
+                                }
                                 Menu{
-                                    Button("Semana anterior"){Task{
-                                        await calcByIntervalDate(fechaInicial: Calendar.current.date(byAdding: .day, value: -7, to: Date.now) ?? Date.now)
-                                    }}
-                                    Button("Quincena anterior"){Task{
-                                        await calcByIntervalDate(fechaInicial: Calendar.current.date(byAdding: .day, value: -15, to: Date.now) ?? Date.now)
-                                    } }
-                                    Button("Mes anterior"){Task{
-                                        await calcByIntervalDate(fechaInicial: Calendar.current.date(byAdding: .month, value: -1, to: Date.now) ?? Date.now)
-                                    }}
-                                    Button("Dos meses"){Task{
-                                        await calcByIntervalDate(fechaInicial: Calendar.current.date(byAdding: .month, value: -2, to: Date.now) ?? Date.now)
-                                    }}
-                                    Button("Seis meses"){Task{
-                                        await calcByIntervalDate(fechaInicial: Calendar.current.date(byAdding: .month, value: -6, to: Date.now) ?? Date.now)
-                                    }}
-                                    Button("Un año"){Task{
-                                        await calcByIntervalDate(fechaInicial: Calendar.current.date(byAdding: .year, value: -1, to: Date.now) ?? Date.now)
-                                    }}
-                                    Button("Dos año"){Task{
-                                        await calcByIntervalDate(fechaInicial: Calendar.current.date(byAdding: .year, value: -2, to: Date.now) ?? Date.now)
-                                    }}
+                                    Button("Tres días"){
+                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .tresDias, typeFecha: .FechaCreacion)
+                                    }
+                                    Button("Semana anterior"){
+                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .semana, typeFecha: .FechaCreacion)
+                                    }
+                                    Button("Quincena anterior"){
+                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .quincena, typeFecha: .FechaCreacion)
+                                    }
+                                    Button("Mes anterior"){
+                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .mes, typeFecha: .FechaCreacion)
+                                    }
+                                    Button("Dos meses"){
+                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .dosMeses, typeFecha: .FechaCreacion)
+                                    }
+                                    Button("Seis meses"){
+                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .seisMeses, typeFecha: .FechaCreacion)
+                                    }
+                                    Button("Un año"){
+                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .unAno, typeFecha: .FechaCreacion)
+                                    }
+                                    Button("Dos año"){
+                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .dosAnos, typeFecha: .FechaCreacion)
+                                    }
+                                    Button("Tres año"){
+                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .tresAnos, typeFecha: .FechaCreacion)
+                                    }
+                                    Button("Cinco año"){
+                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .cincoAnos, typeFecha: .FechaCreacion)
+                                    }
+                                    Button("Diez año"){
+                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .diezAnos, typeFecha: .FechaCreacion)
+                                    }
                                 }label:{
                                     Text("Sugerencias")
                                 }
                                 
                                 
                             }label:{
-                                Text("Fecha de creación")
+                                Text("Fecha de Creación")
+                            }
+                            Menu{
+                                Button("Fecha"){
+                                    self.typeOfFechaSearch = .FechaModificacion
+                                    self.showSheetFecha = true
+                                }
+                                Button("Intervalo"){
+                                    self.typeOfFechaSearch = .FechaModificacion
+                                    self.showSheetRangoFecha = true
+                                }
+                                Menu{
+                                    Button("Tres días"){
+                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .tresDias, typeFecha: .FechaModificacion)
+                                    }
+                                    Button("Semana anterior"){
+                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .semana, typeFecha: .FechaModificacion)
+                                    }
+                                    Button("Quincena anterior"){
+                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .quincena, typeFecha: .FechaModificacion)
+                                    }
+                                    Button("Mes anterior"){
+                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .mes, typeFecha: .FechaModificacion)
+                                    }
+                                    Button("Dos meses"){
+                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .dosMeses, typeFecha: .FechaModificacion)
+                                    }
+                                    Button("Seis meses"){
+                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .seisMeses, typeFecha: .FechaModificacion)
+                                    }
+                                    Button("Un año"){
+                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .unAno, typeFecha: .FechaModificacion)
+                                    }
+                                    Button("Dos año"){
+                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .dosAnos, typeFecha: .FechaModificacion)
+                                    }
+                                    Button("Tres año"){
+                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .tresAnos, typeFecha: .FechaModificacion)
+                                    }
+                                    Button("Cinco año"){
+                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .cincoAnos, typeFecha: .FechaModificacion)
+                                    }
+                                    Button("Diez año"){
+                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .diezAnos, typeFecha: .FechaModificacion)
+                                    }
+                                }label:{
+                                    Text("Sugerencias")
+                                }
+                                
+                                
+                            }label:{
+                                Text("Fecha de Modificación")
                             }
                         }label: {
                             Image(systemName: "line.3.horizontal.decrease")
@@ -209,25 +351,23 @@ struct DiarioListView: View {
                         }, label: {
                             Menu{
                                 Button("Nueva Entrada"){
-                                    if  diarioModel.addItem(title: "Título", emocion: .neutral, content: "Nuevo Contenido!") {
+                                    if  modelDiario.addItem(title: "Título", emocion: .neutral, content: "Nuevo Contenido!") {
                                         withAnimation {
-                                             diarioModel.getAllItem()
+                                             modelDiario.getAllItem()
                                         }
                                         if FeedBackModel.checkReviewRequest() {
                                             self.sheetShowFeedBackReview = true
                                         }
                                     }
-                                    
-                                    
                                 }
                                 
                                 Menu{
                                     ForEach(0..<titlesExamples.count, id: \.self){ value in
                                         Button(titlesExamples[value].0){
-                                            if  diarioModel.addItem(title: titlesExamples[value].0, emocion: diarioModel.getEmocionesFromStr(value: titlesExamples[value].1) , content: "Nuevo contenido!"){
+                                            if  modelDiario.addItem(title: titlesExamples[value].0, emocion: modelDiario.getEmocionesFromStr(value: titlesExamples[value].1) , content: "Nuevo contenido!"){
                                                 
                                                 withAnimation {
-                                                    diarioModel.getAllItem()
+                                                    modelDiario.getAllItem()
                                                 }
                                                 if FeedBackModel.checkReviewRequest() {
                                                     self.sheetShowFeedBackReview = true
@@ -262,7 +402,7 @@ struct DiarioListView: View {
                 }
                 Button("Filtrar"){
                     withAnimation {
-                        diarioModel.list = diarioModel.filterByTitle(criterio: textfielTitles)
+                        modelDiario.list = modelDiario.filterByTitle(criterio: textfielTitles)
                     }
                     textfielTitles = ""
                 }
@@ -276,24 +416,64 @@ struct DiarioListView: View {
                 }
                 Button("Filtrar"){
                     withAnimation {
-                        diarioModel.list = diarioModel.filterByContent(criterio: textfielContent)
+                        modelDiario.list = modelDiario.filterByContent(criterio: textfielContent)
                     }
                     
                     textfielContent = ""
                 }
             }
-            .sheet(isPresented: $showFilterByDate, content: {
-                findBydate(typeOfSearch: TypeOfSearch.fix)
-                    .presentationDetents([.height(150)])
-                    .presentationCornerRadius(25)
-                    .presentationDragIndicator(.hidden)
-            })
-            .sheet(isPresented: $showFilterByIntervalDate, content: {
-                findBydate(typeOfSearch: TypeOfSearch.interval)
-                    .presentationDetents([.height(150)])
-                    .presentationCornerRadius(25)
-                    .presentationDragIndicator(.hidden)
-            })
+            .sheet(isPresented: $showSheetFecha){
+                VStack{
+                    DatePicker("Fecha de creación", selection: $fecha1, displayedComponents: [.date])
+                        .padding(.top, 50)
+                    Button{
+                        Task{
+                            modelDiario.list = modelDiario.searchPorFecha(for: self.fecha1, typeFecha: self.typeOfFechaSearch)
+                        }
+                    }label: {
+                        Text("Buscar")
+                            .padding(.vertical, 10)
+                            .foregroundColor(.black)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .background(.orange)
+                            .clipShape(RoundedRectangle(cornerRadius: 20))
+                    }
+                    .padding([.vertical, .horizontal])
+                    .buttonStyle(PlainButtonStyle())
+                    
+                }
+                
+                .ignoresSafeArea()
+                
+            }
+            .sheet(isPresented: $showSheetRangoFecha){
+                ScrollView{
+                    DatePicker("Fecha Inicio", selection: $fecha1, displayedComponents: [.date])
+                        .frame(height: 70)
+                        .padding(.top, 30)
+                    
+                    DatePicker("Fecha final", selection: $fecha2, displayedComponents: [.date])
+                        .frame(height: 70)
+                    
+                    Button{
+                        Task{
+                            modelDiario.list = modelDiario.searchPorRangoFecha(from: self.fecha1, to: self.fecha2, typeFecha: self.typeOfFechaSearch)
+                        }
+                    }label: {
+                        Text("Buscar")
+                            .padding(.vertical, 10)
+                            .foregroundColor(.black)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .background(.orange)
+                            .clipShape(RoundedRectangle(cornerRadius: 20))
+                    }
+                    .padding([.vertical, .horizontal])
+                    .buttonStyle(PlainButtonStyle())
+                    
+                }
+                .ignoresSafeArea()
+                
+            }
             .sheet(isPresented: self.$sheetShowFeedBackReview, content: {
                 FeedbackView(showTextBotton: true)
             })
@@ -307,83 +487,6 @@ struct DiarioListView: View {
     }
     
 
-    
-    //View: Filtrar por una fecha dada y por un intervalo:
-    struct findBydate : View {
-
-        @State var dateSelection : Date = Date.now
-        @State var dateSelection2 : Date = Date.now
-        var typeOfSearch : TypeOfSearch = .fix
-        @StateObject var diarioModel = DiarioModel.shared
-        
-        
-        var body: some View {
-            VStack(spacing: 15){
-                HStack(spacing: 10){
-                    if typeOfSearch == .fix { //Para fecha fija
-                        DatePicker("Fecha", selection: $dateSelection, displayedComponents: .date)
-                        .labelsHidden()
-                        .contentShape(Rectangle())
-                        .opacity(0.8)
-                    }else{ //Para intervalo de fecha
-                        DatePicker("Fecha inicial", selection: $dateSelection, displayedComponents: .date)
-                        .labelsHidden()
-                        .contentShape(Rectangle())
-                        .opacity(0.8)
-                        DatePicker("Fecha final", selection: $dateSelection2, displayedComponents: .date)
-                        .labelsHidden()
-                        .contentShape(Rectangle())
-                        .opacity(0.8)
-                    }
-                }
-                    
-                
-                    Button("Buscar"){
-                        let array = diarioModel.getAllItemGET()
-                        var result : [Diario] = []
-                        switch typeOfSearch {
-                            case .fix:
-                                let temp = array.filter { item in
-                                    item.fecha?.formatted(date: .long, time: .omitted) == dateSelection.formatted(date: .long, time: .omitted)
-                                }
-                                if !temp.isEmpty {
-                                    diarioModel.list = temp
-                                }
-                        case .interval:
-                            let range = dateSelection...dateSelection2
-                            for i in array {
-                                if range.contains(i.fecha ?? Date.now + 1){
-                                    result.append(i)
-                                }
-                            }
-                            if !result.isEmpty {
-                                diarioModel.list = result
-                            }
-                        }
-   
-                    }
-                    .buttonStyle(.borderedProminent)
-            }
-            .padding(.horizontal, 10)
-        }
-    }
-    
-    //Función async que devuelve un arreglo de entradas si estan en un intervalo de fecha dado
-    func calcByIntervalDate(fechaInicial : Date) async{
-        diarioModel.list.removeAll()
-        var result : [Diario] = []
-        let range = fechaInicial...Date.now
-        let array = diarioModel.getAllItemGET()
-        for i in array {
-            if range.contains(i.fecha ?? Date.now){
-                result.append(i)
-            }
-        }
-        if !result.isEmpty {
-            diarioModel.list = result
-        }
-        
-    }
 
 }
 
@@ -466,7 +569,7 @@ struct cardItem: View{
                     .italic()
                     .fontDesign(.serif)
                     .fontWeight(.heavy)
-                    .lineLimit(expandText ? nil :  3)
+                    .lineLimit(expandText ? nil :  1)
                     .onTapGesture{
                         withAnimation {
                             expandText.toggle()

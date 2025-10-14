@@ -26,8 +26,13 @@ struct Home: View {
     
     //Para determinar cuando se ha cambiado los colores y actualizar el fondo de pantalla.
     @State private var isSettingChanged : Bool = false
-
     
+    //Determinar si estamos en modo debug
+#if DEBUG
+    private let isDebug = true
+#else
+    private let isDebug = false
+#endif
 
 
     var body: some View {
@@ -36,6 +41,12 @@ struct Home: View {
             ZStack(alignment: .bottom){
                 
                 VStack{
+                    //Muestra si estamos en modo debug. Solo aparecerá en la fase de desarrollo
+                    if self.isDebug{
+                        Text("Modo Debug").padding()
+                    }
+                    
+                    
                     //Muestra el texto para indicar nueva actualización
                     if showTextUpdateApp {
                         Button{
@@ -339,10 +350,6 @@ struct TabButtonBar : View{
     }
     
 }
-
-
-
-
 
 
 

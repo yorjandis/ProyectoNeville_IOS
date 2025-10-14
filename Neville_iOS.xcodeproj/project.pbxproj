@@ -611,8 +611,18 @@
 		912275262D5A7CA600DE3AC6 /* conf_fe.txt in Resources */ = {isa = PBXBuildFile; fileRef = 9122723F2D5A7CA600DE3AC6 /* conf_fe.txt */; };
 		912275272D5A7CA600DE3AC6 /* conf_señales y maravillas.txt in Resources */ = {isa = PBXBuildFile; fileRef = 912273072D5A7CA600DE3AC6 /* conf_señales y maravillas.txt */; };
 		9122752F2D5A955B00DE3AC6 /* RichText in Frameworks */ = {isa = PBXBuildFile; productRef = 9122752E2D5A955B00DE3AC6 /* RichText */; };
+		91465D662D66C526003A29D6 /* ayud_si me resulta dificil creer.txt in Resources */ = {isa = PBXBuildFile; fileRef = 91465D652D66C526003A29D6 /* ayud_si me resulta dificil creer.txt */; };
+		91465D682D66C55D003A29D6 /* ayud_efectuar un tratamiento a otro.txt in Resources */ = {isa = PBXBuildFile; fileRef = 91465D672D66C55D003A29D6 /* ayud_efectuar un tratamiento a otro.txt */; };
+		91465D6C2D66C657003A29D6 /* ayud_evitar la influencia inconsciente.txt in Resources */ = {isa = PBXBuildFile; fileRef = 91465D6B2D66C657003A29D6 /* ayud_evitar la influencia inconsciente.txt */; };
+		916529E52E9E9361004D011C /* KeyChainModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 916529E42E9E9358004D011C /* KeyChainModel.swift */; };
+		916529E72E9E9954004D011C /* BiometrySupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 916529E62E9E994B004D011C /* BiometrySupport.swift */; };
+		916529EA2E9EA583004D011C /* CreatePasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 916529E92E9EA574004D011C /* CreatePasswordView.swift */; };
+		916529EC2E9EAB75004D011C /* LogginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 916529EB2E9EAB6C004D011C /* LogginView.swift */; };
+		916529EE2E9ECA38004D011C /* ChangePasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 916529ED2E9ECA35004D011C /* ChangePasswordView.swift */; };
 		91658B3E2D6293F400FEEE94 /* reflexiones.txt in Resources */ = {isa = PBXBuildFile; fileRef = 91658B3D2D6293F400FEEE94 /* reflexiones.txt */; };
 		91658B3F2D62BA0000FEEE94 /* CoreDataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E99F9CC52AC4682B00169084 /* CoreDataController.swift */; };
+		91658B412D64B2BD00FEEE94 /* DiarioCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91658B402D64B2B500FEEE94 /* DiarioCalendarView.swift */; };
+		919117E42D6D3DA200BAB2AC /* ayud_como manifestar.txt in Resources */ = {isa = PBXBuildFile; fileRef = 919117E32D6D3DA200BAB2AC /* ayud_como manifestar.txt */; };
 		91F0DD432D5D3A7200307453 /* FeedBackReview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F0DD422D5D3A5D00307453 /* FeedBackReview.swift */; };
 		91F0DD472D60312E00307453 /* FeedBackModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F0DD452D60312600307453 /* FeedBackModel.swift */; };
 		91F0DD552D605B5800307453 /* watchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F0DD542D605B4B00307453 /* watchModel.swift */; };
@@ -1295,7 +1305,17 @@
 		9122734E2D5A7CA600DE3AC6 /* conf_yo soy la causa.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "conf_yo soy la causa.txt"; sourceTree = "<group>"; };
 		9122734F2D5A7CA600DE3AC6 /* conf_yo soy la vid.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "conf_yo soy la vid.txt"; sourceTree = "<group>"; };
 		9122752B2D5A925200DE3AC6 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		91465D652D66C526003A29D6 /* ayud_si me resulta dificil creer.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "ayud_si me resulta dificil creer.txt"; sourceTree = "<group>"; };
+		91465D672D66C55D003A29D6 /* ayud_efectuar un tratamiento a otro.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "ayud_efectuar un tratamiento a otro.txt"; sourceTree = "<group>"; };
+		91465D6B2D66C657003A29D6 /* ayud_evitar la influencia inconsciente.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "ayud_evitar la influencia inconsciente.txt"; sourceTree = "<group>"; };
+		916529E42E9E9358004D011C /* KeyChainModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyChainModel.swift; sourceTree = "<group>"; };
+		916529E62E9E994B004D011C /* BiometrySupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometrySupport.swift; sourceTree = "<group>"; };
+		916529E92E9EA574004D011C /* CreatePasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatePasswordView.swift; sourceTree = "<group>"; };
+		916529EB2E9EAB6C004D011C /* LogginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogginView.swift; sourceTree = "<group>"; };
+		916529ED2E9ECA35004D011C /* ChangePasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordView.swift; sourceTree = "<group>"; };
 		91658B3D2D6293F400FEEE94 /* reflexiones.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = reflexiones.txt; sourceTree = "<group>"; };
+		91658B402D64B2B500FEEE94 /* DiarioCalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiarioCalendarView.swift; sourceTree = "<group>"; };
+		919117E32D6D3DA200BAB2AC /* ayud_como manifestar.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "ayud_como manifestar.txt"; sourceTree = "<group>"; };
 		91F0DD422D5D3A5D00307453 /* FeedBackReview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedBackReview.swift; sourceTree = "<group>"; };
 		91F0DD452D60312600307453 /* FeedBackModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedBackModel.swift; sourceTree = "<group>"; };
 		91F0DD4E2D60384700307453 /* WatchComplicationLaLeyExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WatchComplicationLaLeyExtension.entitlements; sourceTree = "<group>"; };
@@ -1393,6 +1413,7 @@
 		197D2A3C2AFAA3E100486014 /* Diario */ = {
 			isa = PBXGroup;
 			children = (
+				91658B402D64B2B500FEEE94 /* DiarioCalendarView.swift */,
 				197D2A3D2AFAA3FB00486014 /* DiarioListView.swift */,
 			);
 			path = Diario;
@@ -1483,6 +1504,10 @@
 		19BBC61B2B159A3A00FBB079 /* Ayudas */ = {
 			isa = PBXGroup;
 			children = (
+				919117E32D6D3DA200BAB2AC /* ayud_como manifestar.txt */,
+				91465D6B2D66C657003A29D6 /* ayud_evitar la influencia inconsciente.txt */,
+				91465D672D66C55D003A29D6 /* ayud_efectuar un tratamiento a otro.txt */,
+				91465D652D66C526003A29D6 /* ayud_si me resulta dificil creer.txt */,
 				19BBC61F2B159A4800FBB079 /* ayud_ejercicio para la imaginacion.txt */,
 				19BBC61D2B159A4800FBB079 /* ayud_El arte de la revisión.txt */,
 				19BBC6202B159A4800FBB079 /* ayud_el poder llamado la ley.txt */,
@@ -1579,6 +1604,24 @@
 				19F804222B69CBA000A323A0 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		916529E32E9E9341004D011C /* KeyChainModel */ = {
+			isa = PBXGroup;
+			children = (
+				916529E42E9E9358004D011C /* KeyChainModel.swift */,
+			);
+			path = KeyChainModel;
+			sourceTree = "<group>";
+		};
+		916529E82E9EA561004D011C /* AdminPassword */ = {
+			isa = PBXGroup;
+			children = (
+				916529ED2E9ECA35004D011C /* ChangePasswordView.swift */,
+				916529EB2E9EAB6C004D011C /* LogginView.swift */,
+				916529E92E9EA574004D011C /* CreatePasswordView.swift */,
+			);
+			path = AdminPassword;
 			sourceTree = "<group>";
 		};
 		E92F61182AB3E05C007BB4BA /* Staff */ = {
@@ -2079,6 +2122,8 @@
 		E92F63712AB468D7007BB4BA /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				916529E62E9E994B004D011C /* BiometrySupport.swift */,
+				916529E32E9E9341004D011C /* KeyChainModel */,
 				91F0DD452D60312600307453 /* FeedBackModel.swift */,
 				197D2A332AF9851300486014 /* QRCode */,
 				E9934DB22AE2B54B004636F9 /* CoreData */,
@@ -2099,6 +2144,7 @@
 		E92F644E2AB6EF5A007BB4BA /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				916529E82E9EA561004D011C /* AdminPassword */,
 				19BBC62E2B16BE3200FBB079 /* Reflex */,
 				1949D5172B02B09C00DFD46D /* QRCode */,
 				193425B42AFFD81C00A99C25 /* PLayGame */,
@@ -2281,7 +2327,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1520;
-				LastUpgradeCheck = 1620;
+				LastUpgradeCheck = 2600;
 				TargetAttributes = {
 					19E0BE132B0C661A00E149A5 = {
 						CreatedOnToolsVersion = 15.0.1;
@@ -2482,6 +2528,7 @@
 				912273C22D5A7CA600DE3AC6 /* conf_oracion respondida.txt in Resources */,
 				912273C32D5A7CA600DE3AC6 /* conf_la ley de asuncion.txt in Resources */,
 				912273C42D5A7CA600DE3AC6 /* conf_elevar la imaginacion al estado de la vision.txt in Resources */,
+				919117E42D6D3DA200BAB2AC /* ayud_como manifestar.txt in Resources */,
 				912273C52D5A7CA600DE3AC6 /* conf_siembra y cosecha.txt in Resources */,
 				912273C62D5A7CA600DE3AC6 /* conf_adora al creador no a la criatura.txt in Resources */,
 				912273C72D5A7CA600DE3AC6 /* conf_el pecado original.txt in Resources */,
@@ -2504,6 +2551,7 @@
 				912273D82D5A7CA600DE3AC6 /* conf_el dios invisible detras de los hechos.txt in Resources */,
 				912273D92D5A7CA600DE3AC6 /* conf_la esfera interior.txt in Resources */,
 				912273DA2D5A7CA600DE3AC6 /* conf_el bribon inteligentemente.txt in Resources */,
+				91465D662D66C526003A29D6 /* ayud_si me resulta dificil creer.txt in Resources */,
 				912273DB2D5A7CA600DE3AC6 /* conf_el amigo de los pecadores.txt in Resources */,
 				912273DC2D5A7CA600DE3AC6 /* conf_lenguaje biblico.txt in Resources */,
 				912273DD2D5A7CA600DE3AC6 /* conf_ningun otro dios.txt in Resources */,
@@ -2759,6 +2807,7 @@
 				912274D72D5A7CA600DE3AC6 /* conf_el secreto de imaginar.txt in Resources */,
 				912274D82D5A7CA600DE3AC6 /* conf_el secreto de la causalidad.txt in Resources */,
 				912274D92D5A7CA600DE3AC6 /* conf_un movimiento de la mente.txt in Resources */,
+				91465D682D66C55D003A29D6 /* ayud_efectuar un tratamiento a otro.txt in Resources */,
 				912274DA2D5A7CA600DE3AC6 /* conf_por imaginacion nos convertimos.txt in Resources */,
 				912274DB2D5A7CA600DE3AC6 /* conf_libre o esclavo.txt in Resources */,
 				912274DC2D5A7CA600DE3AC6 /* conf_hasta el mar en barcos.txt in Resources */,
@@ -2861,6 +2910,7 @@
 				19BBC5F92B159A2600FBB079 /* preg_pregunta 1.txt in Resources */,
 				19BBC61A2B159A2600FBB079 /* preg_pregunta 6.txt in Resources */,
 				19BBC6162B159A2600FBB079 /* preg_pregunta 29.txt in Resources */,
+				91465D6C2D66C657003A29D6 /* ayud_evitar la influencia inconsciente.txt in Resources */,
 				E95B935E2AAFBB2900B5E2B5 /* Preview Assets.xcassets in Resources */,
 				19BBC5CA2B1599DC00FBB079 /* cita_¿le has encontrado.txt in Resources */,
 				19BBC5F72B159A2600FBB079 /* preg_pregunta 25.txt in Resources */,
@@ -2958,6 +3008,7 @@
 				91F0DD472D60312E00307453 /* FeedBackModel.swift in Sources */,
 				E92F64532AB78EE6007BB4BA /* ModelData.xcdatamodeld in Sources */,
 				199DA0672B0EAC5800DEED62 /* Home.swift in Sources */,
+				916529E52E9E9361004D011C /* KeyChainModel.swift in Sources */,
 				E99F9CC62AC4682B00169084 /* CoreDataController.swift in Sources */,
 				19B255C02AFC47C30093104F /* FrasesModel.swift in Sources */,
 				193B6EAD2AF1B1D10003E897 /* NetModel.swift in Sources */,
@@ -2965,14 +3016,19 @@
 				1954CDAA2B1152BC0093DDF0 /* AppIntentWidget.swift in Sources */,
 				194F112B2AEF23E8009FA23E /* settingModel.swift in Sources */,
 				E99F9CCA2ACB75E800169084 /* ListNotasViews.swift in Sources */,
+				91658B412D64B2BD00FEEE94 /* DiarioCalendarView.swift in Sources */,
 				19B255C62AFC68940093104F /* FrasesUpdateView.swift in Sources */,
 				19E06FA62AEB74E20016F9E6 /* FrasesNotasAddView.swift in Sources */,
 				E966EDE12ACF2029002D84C4 /* UpdateNotasView.swift in Sources */,
 				19D23D002AFD817E008C63BA /* TxtContentModel.swift in Sources */,
 				19BBC6322B173B8100FBB079 /* ReflexShowTextView.swift in Sources */,
 				91F0DD432D5D3A7200307453 /* FeedBackReview.swift in Sources */,
+				916529E72E9E9954004D011C /* BiometrySupport.swift in Sources */,
 				E99F9CC82ACACE3600169084 /* AddNotasView.swift in Sources */,
 				E95B93592AAFBB2600B5E2B5 /* ContentView.swift in Sources */,
+				916529EA2E9EA583004D011C /* CreatePasswordView.swift in Sources */,
+				916529EE2E9ECA38004D011C /* ChangePasswordView.swift in Sources */,
+				916529EC2E9EAB75004D011C /* LogginView.swift in Sources */,
 				19D23D022AFD969E008C63BA /* TxtListView.swift in Sources */,
 				E9D0F1CB2AE2226A00B35452 /* optionView.swift in Sources */,
 				E93C23AA2ABA365100939D16 /* UtilsForViews.swift in Sources */,
@@ -3026,8 +3082,7 @@
 				CODE_SIGN_ENTITLEMENTS = FrasesWiggetExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 23;
-				DEVELOPMENT_TEAM = NDP3AP6896;
+				CURRENT_PROJECT_VERSION = 24;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FrasesWigget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = FrasesWigget;
@@ -3037,7 +3092,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.6;
+				MARKETING_VERSION = 1.2.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.FrasesWigget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -3055,8 +3110,7 @@
 				CODE_SIGN_ENTITLEMENTS = FrasesWiggetExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 23;
-				DEVELOPMENT_TEAM = NDP3AP6896;
+				CURRENT_PROJECT_VERSION = 24;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FrasesWigget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = FrasesWigget;
@@ -3066,7 +3120,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.6;
+				MARKETING_VERSION = 1.2.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.FrasesWigget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -3084,8 +3138,7 @@
 				CODE_SIGN_ENTITLEMENTS = WatchComplicationLaLeyExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 23;
-				DEVELOPMENT_TEAM = NDP3AP6896;
+				CURRENT_PROJECT_VERSION = 24;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WatchComplicationLaLey/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = WatchComplicationLaLey;
@@ -3096,7 +3149,7 @@
 					"@executable_path/../../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.6;
+				MARKETING_VERSION = 1.2.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.watchkitapp.WatchComplicationLaLey;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -3116,8 +3169,7 @@
 				CODE_SIGN_ENTITLEMENTS = WatchComplicationLaLeyExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 23;
-				DEVELOPMENT_TEAM = NDP3AP6896;
+				CURRENT_PROJECT_VERSION = 24;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WatchComplicationLaLey/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = WatchComplicationLaLey;
@@ -3128,7 +3180,7 @@
 					"@executable_path/../../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.6;
+				MARKETING_VERSION = 1.2.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.watchkitapp.WatchComplicationLaLey;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -3148,9 +3200,8 @@
 				CODE_SIGN_ENTITLEMENTS = "La Ley Watch App/La Ley Watch App.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 23;
+				CURRENT_PROJECT_VERSION = 24;
 				DEVELOPMENT_ASSET_PATHS = "\"La Ley Watch App/Preview Content\"";
-				DEVELOPMENT_TEAM = NDP3AP6896;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "La-Ley-Watch-App-Info.plist";
@@ -3161,7 +3212,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.6;
+				MARKETING_VERSION = 1.2.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -3181,9 +3232,8 @@
 				CODE_SIGN_ENTITLEMENTS = "La Ley Watch App/La Ley Watch App.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 23;
+				CURRENT_PROJECT_VERSION = 24;
 				DEVELOPMENT_ASSET_PATHS = "\"La Ley Watch App/Preview Content\"";
-				DEVELOPMENT_TEAM = NDP3AP6896;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "La-Ley-Watch-App-Info.plist";
@@ -3194,7 +3244,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.6;
+				MARKETING_VERSION = 1.2.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -3241,6 +3291,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = NDP3AP6896;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -3264,6 +3315,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -3304,6 +3356,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = NDP3AP6896;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -3320,6 +3373,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -3333,9 +3387,8 @@
 				CODE_SIGN_ENTITLEMENTS = Neville_iOS/Neville_iOS.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 23;
+				CURRENT_PROJECT_VERSION = 24;
 				DEVELOPMENT_ASSET_PATHS = "\"Neville_iOS/Preview Content\"";
-				DEVELOPMENT_TEAM = NDP3AP6896;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Neville-iOS-Info.plist";
@@ -3354,7 +3407,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.6;
+				MARKETING_VERSION = 1.2.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -3375,9 +3428,8 @@
 				CODE_SIGN_ENTITLEMENTS = Neville_iOS/Neville_iOS.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 23;
+				CURRENT_PROJECT_VERSION = 24;
 				DEVELOPMENT_ASSET_PATHS = "\"Neville_iOS/Preview Content\"";
-				DEVELOPMENT_TEAM = NDP3AP6896;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Neville-iOS-Info.plist";
@@ -3396,7 +3448,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.6;
+				MARKETING_VERSION = 1.2.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

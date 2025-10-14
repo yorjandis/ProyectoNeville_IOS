@@ -136,29 +136,6 @@
          .ignoresSafeArea()
          
      }
-     .sheet(isPresented: $showSheetEmocion){
-         VStack{
-             
-             ScrollView{
-                 ForEach (Emoticono2.allCases, id: \.self) {item in
-                     Button{
-                         Task{
-                             modelWatch.listDiario = modelWatch.getDiarioEntradasPorEmotion(emotion: item.txt)
-                                 dismiss()
-                         }
-                         
-                     }label: {
-                         HStack{
-                             Text(item.rawValue).font(.system(size: 40))
-                             Text(item.txt)
-                             Spacer()
-                         }
-                     }
-                     
-                 }
-             }
-         }
-     }
      .sheet(isPresented: $showSheetAntiguedad){
          VStack {
              Text("Filtrar por antiguedad")
@@ -235,6 +212,29 @@
                          modelWatch.listDiario = modelWatch.searchPorAntiguedad(for: .diezAnos)
                          dismiss()
                      }
+                 }
+             }
+         }
+     }
+     .sheet(isPresented: $showSheetEmocion){
+         VStack{
+             
+             ScrollView{
+                 ForEach (Emoticono2.allCases, id: \.self) {item in
+                     Button{
+                         Task{
+                             modelWatch.listDiario = modelWatch.getDiarioEntradasPorEmotion(emotion: item.txt)
+                             dismiss()
+                         }
+                         
+                     }label: {
+                         HStack{
+                             Text(item.rawValue).font(.system(size: 40))
+                             Text(item.txt)
+                             Spacer()
+                         }
+                     }
+                     
                  }
              }
          }

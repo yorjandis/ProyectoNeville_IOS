@@ -15,7 +15,7 @@ struct Neville_iOSApp: App {
     
  @StateObject private var networkMonitor        = NetworkMonitor() //Helper Para conexiones de red
  @StateObject private var modelTxt              = TxtContentModel()
-    @StateObject private var modelFrases        = FrasesModel.shared
+ @StateObject private var modelFrases        = FrasesModel.shared
     
   private let persistentStore : CoreDataController =  CoreDataController.shared
     
@@ -31,6 +31,8 @@ struct Neville_iOSApp: App {
 
         
     }
+    
+
 
     
     var body: some Scene {
