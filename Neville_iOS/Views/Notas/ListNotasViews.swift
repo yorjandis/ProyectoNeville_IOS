@@ -35,7 +35,7 @@ struct ListNotasViews: View {
  
     var body: some View {
         NavigationStack {
-            if canOpenNotas {
+            if ( canOpenNotas == true  ||   UserDefaults.standard.bool(forKey: AppCons.UD_setting_NotasFaceID) == false) {
                 ScrollView(.vertical){
                     
                     ForEach (self.filtered.reversed()){ nota in
@@ -62,13 +62,20 @@ struct ListNotasViews: View {
                     }
                     .padding(.trailing, 20)
                 }
+            /*
+             //Yorj, después de la última actualización este fragmento ya no es necesario. Quitarlo en futuras iteraciones
                 .onAppear {
-                    if UserDefaults.standard.bool(forKey: AppCons.UD_setting_NotasFaceID){
-                        canOpenNotas = false
+                    if UserDefaults.standard.bool(forKey: AppCons.UD_setting_NotasFaceID) == true {
+                        if BiometryCheckerSupport.checkBiometricSupport() == .available {
+                            canOpenNotas = false
+                        }
+                       
                     }else{
                         canOpenNotas = true
                     }
+                     
                 }
+             */
                 .padding(.bottom, 20)
                 .navigationTitle("Notas")
                 .navigationBarTitleDisplayMode(.inline)
@@ -136,6 +143,11 @@ struct ListNotasViews: View {
                 .alert(isPresented: $showAlert){
                     Alert(title: Text("Notas"), message: Text(alertMessage))
                 }
+                .onChange(of: self.canOpenNotas) { oldValue, newValue in
+                    if newValue == true {
+                        self.canOpenNotas = true
+                    }
+                }
             
         }
         
@@ -164,14 +176,30 @@ struct ListNotasViews: View {
                  .foregroundStyle(.orange.opacity(0.7))
                  .font(.system(size: 18))
                  .bold()
-             Button{
-                 UtilFuncs.autent(HabilitarContenido: self.$canOpenNotas)
-             }label: {
-                 Image(systemName: "key.viewfinder")
-                     .font(.system(size: 60))
-                     .foregroundStyle(Color.orange.opacity(0.7))
-                     .symbolEffect(.pulse, isActive: true)
-             }
+            
+            //Chequeando si existe biometría en el dispositivo
+            if BiometryCheckerSupport.checkBiometricSupport() == .available{
+                Button{
+                    UtilFuncs.autent(HabilitarContenido: self.$canOpenNotas)
+                }label: {
+                    Image(systemName: "key.viewfinder")
+                        .font(.system(size: 60))
+                        .foregroundStyle(Color.orange.opacity(0.7))
+                        .symbolEffect(.pulse, isActive: true)
+                }
+            }else{ // Si no existe biometría en el dispositivo
+                VStack{
+                    Text("Parece que su dispositivo no admite biometría. Utilice el botón debajo para entrar por contraseña.")
+                    NavigationLink("Acceder por contraseña"){
+                     LogginView(ente: "Notas", canOpen: self.$canOpenNotas)
+                       
+                    }
+                    .buttonStyle(.bordered)
+                    .tint(.primary)
+                }
+            }
+            
+             
          }
     }
 

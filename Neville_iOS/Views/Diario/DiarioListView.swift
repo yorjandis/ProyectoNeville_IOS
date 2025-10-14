@@ -47,6 +47,7 @@ struct DiarioListView: View {
     
 
     @State var canOpenDiario : Bool = false 
+    @State var claveAcceso : String? = nil //Clave para acceder al Diario en dispisitivos son biometría
     
     //Alert:
     @State var showAlert = false
@@ -113,15 +114,59 @@ struct DiarioListView: View {
                             .foregroundStyle(.black)
                             .padding(15)
                         
-                        Button{
-                            UtilFuncs.autent(HabilitarContenido: self.$canOpenDiario)
+                        if BiometryCheckerSupport.checkBiometricSupport() == .available{ //Hay soporte para biometría
+                            Button{
+                                UtilFuncs.autent(HabilitarContenido: self.$canOpenDiario)
+                                
+                            }label:{
+                                Image(systemName: "key.viewfinder")
+                                    .font(.system(size: 60))
+                                    .foregroundStyle(Color.black.opacity(0.7))
+                                    .symbolEffect(.pulse, isActive: true)
+                            }
+                            Text("Toque la imagen para acceder.").font(.footnote).padding()
+                            NavigationLink("Acceder por contraseña"){
+                             LogginView(ente: "Diario", canOpen: self.$canOpenDiario)
+                               
+                            }
+                            .buttonStyle(.bordered)
+                            .tint(.black)
+                            .padding(.vertical, 25)
                             
-                        }label:{
-                            Image(systemName: "key.viewfinder")
-                                .font(.system(size: 60))
-                                .foregroundStyle(Color.black.opacity(0.7))
-                                .symbolEffect(.pulse, isActive: true)
+                        }else{
+                            //NO hay soporte para Biometria
+                            VStack{
+                                //Chequeamos si hay una clave guardada:
+                                if KeychainHelper.shared.getPassword() != nil{ //Hay una clave
+                                    Text("Parece que su dispositivo no admite biometría. Utilice el botón debajo para entrar por contraseña.")
+                                    NavigationLink("Acceder por contraseña"){
+                                     LogginView(ente: "Diario", canOpen: self.$canOpenDiario)
+                                       
+                                    }
+                                    .buttonStyle(.bordered)
+                                    .tint(.black)
+                                    
+                                }else{
+                                    Text("Parece que su dispositivo no admite biometría. Utilice el botón debajo para crear una contraseña para acceder al Diario.")
+                                    //No existe una clave guardada. Permitir crear una la primera vez
+                                    NavigationLink("Crear una Contraseña"){
+                                        CreatePasswordView()
+                                    }
+                                    .buttonStyle(.bordered)
+                                    .tint(.black)
+                                }
+                                
+                                
+                                
+                                
+                                
+
+                                
+                            }.padding()
                         }
+                           
+                        
+                        
                     }
                 }
             }

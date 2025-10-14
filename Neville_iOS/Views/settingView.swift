@@ -54,11 +54,20 @@ struct settingView: View {
     @State private var citasCount           : Int = 0
     @State private var conferenciasCount    : Int = 0
 
-    
+    //Pruebas Yor
+    @State private var showSheetPruebaYor : Bool = false
 
     var body: some View {
         
         NavigationStack{
+            
+            Button("Prueba Yor"){
+                self.showSheetPruebaYor = true
+            }
+            .sheet(isPresented: self.$showSheetPruebaYor) {
+                CreatePasswordView()
+            }
+            
             Form{
                 Section("Tamaño de letra"){
                     HStack{
@@ -142,17 +151,69 @@ struct settingView: View {
                 }
                 
                 Section("Notas Generales"){
-                    if canOpenToggleButton {
-                        Toggle("Proteger las Notas con FaceID", isOn: $setting_NotasFaceID)
-                    }else{
-                        Button{
-                            UtilFuncs.autent(HabilitarContenido: self.$canOpenToggleButton)
-                        }label: {
-                            Label("Opción protegida por FaceID", systemImage: "key.viewfinder")
+                     
+                        
+                        if canOpenToggleButton {
+                            Toggle("Proteger las Notas con FaceID", isOn: $setting_NotasFaceID)
+                        }else{
+                            
+                            //Chequeando si existe soporte biométrico:
+                            if BiometryCheckerSupport.checkBiometricSupport() == .available{
+
+                                Button{
+                                    UtilFuncs.autent(HabilitarContenido: self.$canOpenToggleButton)
+                                }label: {
+                                    Label("Opción protegida por FaceID", systemImage: "key.viewfinder")
+                                }
+                            }else{ //NO existe biometría en el dispositivo
+                                 //Si existe una contraseña guardada se intenta acceder por contraseña
+                                if KeychainHelper.shared.getPassword() != nil {
+                                    NavigationLink("Acceder por contraseña"){
+                                        LogginView(ente: "Notas",canOpen: self.$canOpenToggleButton)
+                                    }
+                                }else{ //No existe contraseña guardada. Permitir crear una contraseña
+                                    NavigationLink("Crear una nueva Contraseña de Acceso"){
+                                        CreatePasswordView()
+                                    }
+                                }
+                            }
+                        }
+  
+                }
+                
+                //Habilita una sección para recuperar la contraseña. Esta sección solo esta disponible en dispositivos con biometria y si ya previamente han almacenado una contraseña
+                if BiometryCheckerSupport.checkBiometricSupport() == .available {
+                    //Si existe una contraseña guardada; sino no, no se muestra el botón para recuperar contraseña
+                    if KeychainHelper.shared.getPassword() != nil {
+                        Section("Recuperar Contraseña"){
+                            Button("Recupera Contraseña Para Acceder al Diario y Notas"){
+                                //Intentando obtener la clave
+                                if let clave = KeychainHelper.shared.getPassword() {
+                                    self.alertMessage = "La clave es: \(clave)" //Almacena la clave
+                                    UtilFuncs.autent(HabilitarContenido: self.$showAlert)
+                                }
+                            }
+                            .tint(.green)
+                        }
+                        .alert(isPresented: $showAlert) {
+                            Alert(title: Text("La contraseña es:"), message: Text(self.alertMessage), dismissButton: .cancel())
                         }
                     }
-                    
                 }
+                
+                //Mostrar una sección que permite cambiar la contraseña. Esta se habilita si ya tenemos una contraseña guardada
+                if KeychainHelper.shared.getPassword() != nil {
+                    Section("Cambiar Contraseña"){
+                        VStack(alignment: .leading){
+                           NavigationLink(destination: ChangePasswordView()){
+                                Text("Cambiar La Contraseña")
+                            }
+                            Text("Permite modificar la contraseña para proteger el acceso al Diario y a Notas Protegidas").font(.footnote)
+                        }
+                    }
+                }
+                
+                
                 
 
                 Section("Contacto & Información"){
