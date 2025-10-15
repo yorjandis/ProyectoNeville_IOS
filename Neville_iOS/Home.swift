@@ -27,6 +27,18 @@ struct Home: View {
     //Para determinar cuando se ha cambiado los colores y actualizar el fondo de pantalla.
     @State private var isSettingChanged : Bool = false
     
+    //Para determinar el cumpleaños de neville:
+    // Día y mes del cumpleaños 🎂
+        @State private var esCumple = false
+        @State private var fechaActual = Date()
+        private let dia = 19
+        private let mes = 2
+    
+    private func chequearCumple() {
+            let componentes = Calendar.current.dateComponents([.day, .month], from: fechaActual)
+            esCumple = (componentes.day == dia && componentes.month == mes)
+        }
+    
     //Determinar si estamos en modo debug
 #if DEBUG
     private let isDebug = true
@@ -41,6 +53,19 @@ struct Home: View {
             ZStack(alignment: .bottom){
                 
                 VStack{
+                    
+                    //Muestra un texto para felicitar a neville por su cumpleños(19 Frebrero)
+                    if self.esCumple{
+                        VStack{
+                            Text("Felicidades Maestro Neville! 💖").font(.title).fontDesign(.serif)
+                            Text("Gracias por tu Amor y Enseñanzas").font(.callout).fontDesign(.serif)
+                        }.foregroundStyle(.black)
+                        
+                    }
+                    
+                    
+                    
+                    
                     //Muestra si estamos en modo debug. Solo aparecerá en la fase de desarrollo
                     if self.isDebug{
                         Text("Modo Debug").padding()
@@ -79,6 +104,9 @@ struct Home: View {
                     Spacer()
                     TabButtonBar(fontFrasesSize: $fontSize, fontMenuSize: $fontSizeMenu, colorFrase: $colorFrase, colorFondo_a: $colorFondo_a, colorFondo_b: $colorFondo_b, isSettingChanged: $isSettingChanged)
                 }
+                .onAppear{
+                        self.chequearCumple()
+                    }
                 .task {
                     do {
                         try await CheckAppStatus().getAppNewVersion { update in
@@ -174,18 +202,22 @@ struct FrasesView : View{
                     }
                     .onOpenURL(perform: { url in
                         if url.description == AppCons.DeepLink_url_Frase {
-                            frase = UserDefaults.shared().string(forKey: AppCons.UD_shared_FraseWidgetActual) ?? ""
+                            self.frase = UserDefaults.shared().string(forKey: AppCons.UD_shared_FraseWidgetActual) ?? ""
                         }
                         
                     })
                     .contextMenu{
                         Button("Convertir en Nota"){
                             //Guarda la nota poniendo como titulo una parte de la cadena
-                            _ = NotasModel().addNote(nota: frase, title: "\(String(frase).prefix(frase.count / 3 )))...")
+                            _ = NotasModel().addNote(nota: self.frase, title: "\(String(self.frase).prefix(self.frase.count / 3 )))...")
                         }
                         NavigationLink("Generar QR"){
-                            GenerateQRView(footer: frase, showImage: true)
+                            GenerateQRView(footer: self.frase, showImage: true)
                         }
+                        
+                        ShareLink(item: self.frase) {
+                                        Label("Compartir frase", systemImage: "square.and.arrow.up")
+                                    }
                         Button{
                             showAddNoteView = true
                         }label: {
@@ -200,7 +232,7 @@ struct FrasesView : View{
                     Spacer()
                     
                     Button{
-                        var getState = FrasesModel().isFavFrase(frase) //Obtiene el estado previo
+                        var getState = FrasesModel().isFavFrase(self.frase) //Obtiene el estado previo
                         getState.toggle() //Invierte su valor
                         if FrasesModel().setFavFrase(self.frase, getState){
                             isFav = getState

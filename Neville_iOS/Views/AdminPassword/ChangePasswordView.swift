@@ -21,7 +21,7 @@ struct ChangePasswordView: View {
     var body: some View {
         NavigationStack {
             VStack{
-                Text("Si considera que su contraseña anterior no es lo bastante robusta o si ha sido vulnerada. Utilice esta opción para cambiarla")
+                Text("Si considera que su contraseña anterior no es lo bastante robusta o ha sido vulnerada, utilice esta opción para cambiarla")
                     .font(.title)
                 
                 VStack(alignment: .leading){

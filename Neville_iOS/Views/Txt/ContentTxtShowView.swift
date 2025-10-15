@@ -24,6 +24,8 @@ struct ContentTxtShowView: View {
     
     let type : TipoDeContenido
     
+    
+    
   
     
     //Setting: Tamaño de fuente por defecto
@@ -190,20 +192,28 @@ struct ContentTxtShowView: View {
                     Spacer()
                     
                         Menu{
-                            
-                                Button("Marcar como Favorita"){
-                                    /*
-                                    if let enti = self.entidad {
-                                        TxtContentModel().setFavState(context: self.context, entity: enti, state: true)
+                            if modeloTxt.getIsFavOfTxt(nombreTxt: nombreTxt, type: type) == true{
+                                Button("Quitar Favorita", systemImage: "heart.fill"){
+                                    if TxtContentModel().setIsFavOfTxt(nombreTxt: nombreTxt, type: self.type, isFav: false){
+                                        
+                                        self.modeloTxt.getAllFileTxtOfType(type: self.type) //Actualizando el listado
+                                        
                                     }
-                                    */
                                 }
-                                NavigationLink("Añadir nota asociada"){
-                                    /*
-                                    if let enti = self.entidad {
-                                        EditNoteTxtContentTxtShow(entidad: enti)
+                            }else{
+                                Button("Poner Favorita", systemImage: "heart"){
+                                    if TxtContentModel().setIsFavOfTxt(nombreTxt: nombreTxt, type: self.type, isFav: true){
+                                        
+                                        self.modeloTxt.getAllFileTxtOfType(type: self.type) //Actualizando el listado
+                                        
                                     }
-                                    */
+                                }
+                            }
+
+                                NavigationLink{
+                                    EditNoteTxt(entidad: nombreTxt, typeOfContent: self.type)
+                                }label: {
+                                    Label("Nota Asociada", systemImage: "pencil")
                                 }
                             
                             Button("Tamaño de Letra", systemImage: "textformat") {

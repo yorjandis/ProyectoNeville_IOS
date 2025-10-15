@@ -187,6 +187,21 @@ struct ListNotasViews: View {
                         .foregroundStyle(Color.orange.opacity(0.7))
                         .symbolEffect(.pulse, isActive: true)
                 }
+                Text("Toque la imagen de arriba para abrir las Notas")
+                
+                //Permitir acceder también por contraseña. Si existe una contraseña guardada
+                if KeychainHelper.shared.getPassword() != nil{
+                    VStack{
+                        NavigationLink("Acceder por contraseña"){
+                         LogginView(ente: "Notas", canOpen: self.$canOpenNotas)
+                           
+                        }
+                        .buttonStyle(.bordered)
+                        .tint(.primary)
+                    }.padding(.vertical, 25)
+                }
+                
+                
             }else{ // Si no existe biometría en el dispositivo
                 VStack{
                     Text("Parece que su dispositivo no admite biometría. Utilice el botón debajo para entrar por contraseña.")

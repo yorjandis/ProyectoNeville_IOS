@@ -74,7 +74,7 @@ struct TxtListView: View {
                 }
                 
                 List(modeloTxt.textList, id: \.self){nombreTxt in
-                    VStack(alignment: .leading) {
+                    LazyVStack(alignment: .leading) {
                         HStack{
                             Image(systemName: "leaf.fill")
                                 .padding(.horizontal, 5)

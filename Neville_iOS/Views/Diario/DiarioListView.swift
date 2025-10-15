@@ -81,7 +81,6 @@ struct DiarioListView: View {
                                     }
                             }
                         }
-                        
                             ScrollView(){
                                     if canOpenDiario {
                                         LazyVStack{
@@ -127,7 +126,6 @@ struct DiarioListView: View {
                             Text("Toque la imagen para acceder.").font(.footnote).padding()
                             NavigationLink("Acceder por contraseña"){
                              LogginView(ente: "Diario", canOpen: self.$canOpenDiario)
-                               
                             }
                             .buttonStyle(.bordered)
                             .tint(.black)
@@ -155,18 +153,9 @@ struct DiarioListView: View {
                                     .buttonStyle(.bordered)
                                     .tint(.black)
                                 }
-                                
-                                
-                                
-                                
-                                
-
-                                
+     
                             }.padding()
                         }
-                           
-                        
-                        
                     }
                 }
             }
@@ -697,8 +686,6 @@ struct editContent : View {
                                 }
                                 
                             }
-                            
-                            
                         }label: {
                             Image(emoticono.rawValue)
                                 .resizable()
@@ -712,6 +699,7 @@ struct editContent : View {
                             .font(.title2)
                             .multilineTextAlignment(.leading)
                             .textFieldStyle(.roundedBorder)
+                            
                     }
                     
                 }
