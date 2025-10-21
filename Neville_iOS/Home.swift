@@ -182,17 +182,18 @@ struct FrasesView : View{
     @State private var isFav = false //muestra un corazon lleno o vacio según el valor
     @State private var animationHeart = 0
 
+    private var fraseCompartir : String{
+        let frase = Frase(texto: self.frase)
+        return frase.texto
+    }
     
     var body: some View{
-        
-  
+
             VStack{
                 Text(self.frase)
                     .font(.system(size: CGFloat(fontSizeFrases), design: .rounded))
                     .foregroundStyle(colorFrase)
                     .modifier(mof_frases())
-                    .id(self.frase)
-                    .animation(.smooth(duration: 2), value: self.frase)
                     .onTapGesture {
                         self.frase = fraseModel.getRandomFrase()
                         self.isFav = FrasesModel().isFavFrase(self.frase) //Actualizando el estado
@@ -207,24 +208,33 @@ struct FrasesView : View{
                         
                     })
                     .contextMenu{
-                        Button("Convertir en Nota"){
+                        Button{
                             //Guarda la nota poniendo como titulo una parte de la cadena
                             _ = NotasModel().addNote(nota: self.frase, title: "\(String(self.frase).prefix(self.frase.count / 3 )))...")
+                        }label: {
+                            Label("Almacenar en Notas", systemImage: "list.bullet.clipboard")
                         }
-                        NavigationLink("Generar QR"){
+                        
+                        
+                        NavigationLink{
                             GenerateQRView(footer: self.frase, showImage: true)
+                        }label:{
+                            Label("Generar QR", systemImage: "qrcode")
                         }
                         
                         ShareLink(item: self.frase) {
                                         Label("Compartir frase", systemImage: "square.and.arrow.up")
                                     }
+                        
                         Button{
                             showAddNoteView = true
                         }label: {
-                            Label("Adicionar una nota", systemImage: "bookmark.fill" )
+                            Label("Nota de la frase", systemImage: "bookmark.fill" )
                         }
-                        Button("Nueva Frase"){
+                        Button{
                             showSheetAddFrase = true
+                        }label: {
+                            Label("Nueva frase", systemImage: "square.and.pencil.circle")
                         }
                     }
                 
@@ -239,6 +249,7 @@ struct FrasesView : View{
                             animationHeart += 1
                         }
                         
+                        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
                         
                     }label: {
                         Image(systemName: isFav ? "heart.fill" : "heart")
@@ -256,13 +267,14 @@ struct FrasesView : View{
                 
             }
             
+            
             .sheet(isPresented: $showAddNoteView){ //permite modificar la nota de una frase
-                /*
-                FrasesNotasAddView(frase: self.frase, nota: self.frase.nota ?? "")
+                
+                FrasesNotasAddView(frase: self.frase, nota: self.fraseModel.GetNotaAsociadaFrase(frase: self.frase))
                     .presentationDetents([.medium])
                     .presentationDragIndicator(.hidden)
                 //.interactiveDismissDisabled() //No deja que se oculte
-                */
+                
             }
             .sheet(isPresented: $showSheetAddFrase){
                 FraseAddView()

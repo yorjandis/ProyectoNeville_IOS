@@ -34,6 +34,13 @@ final class DiarioModel : ObservableObject{
 
     @Published var list : [Diario] = []
     
+    @Published var expandirEntrada : String = ""
+    
+    //Obtiene el valor de una variable de UserDefault
+        private var getUserDefaultOrdenarEntradasDiario : Bool {
+            return UserDefaults.standard.bool(forKey: AppCons.UD_setting_OrdenarEntradaDiario)
+        }
+    
     
     
     static let shared = DiarioModel() //Singleton
@@ -65,7 +72,14 @@ final class DiarioModel : ObservableObject{
     func getAllItem(){
         let fechtRequest : NSFetchRequest<Diario> = Diario.fetchRequest()
         // Ordenar por fecha descendente (del más reciente al más antiguo)
-        fechtRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Diario.fechaM, ascending: false)]
+        if self.getUserDefaultOrdenarEntradasDiario{
+            //Ordena por fecha de Creación
+            fechtRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Diario.fecha, ascending: false)]
+        }else{
+            //Ordena por fecha de Modificación
+            fechtRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Diario.fechaM, ascending: false)]
+        }
+        
         
         do{
             self.list =  try context.fetch(fechtRequest)
@@ -77,7 +91,15 @@ final class DiarioModel : ObservableObject{
     ///Obtiene todos los item de la tabla Diario. Devuelve un arreglo
     func getAllItemGET() -> [Diario]{
         let fechtRequest : NSFetchRequest<Diario> = Diario.fetchRequest()
-        
+        // Ordenar por fecha descendente (del más reciente al más antiguo)
+        if self.getUserDefaultOrdenarEntradasDiario{
+            //Ordena por fecha de Creación
+            fechtRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Diario.fecha, ascending: false)]
+        }else{
+            //Ordena por fecha de Modificación
+            fechtRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Diario.fechaM, ascending: false)]
+        }
+
         do{
             let temp =  try context.fetch(fechtRequest)
             return temp.reversed()

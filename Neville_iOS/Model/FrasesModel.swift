@@ -340,3 +340,14 @@ final class FrasesModel : ObservableObject {
 }//struct
 
 
+//Uso de transferable para poder compartir la frases en macOS y no crashee la app
+
+struct Frase: Transferable {
+    var texto: String
+
+    static var transferRepresentation: some TransferRepresentation {
+            DataRepresentation(exportedContentType: .plainText) { frase in
+                frase.texto.data(using: .utf8)!
+            }
+        }
+}

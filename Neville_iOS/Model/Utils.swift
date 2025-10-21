@@ -43,6 +43,8 @@ struct AppCons{
     static let UD_setting_color_fondoContent    = "settig_color_fondoContent"
     static let UD_setting_color_textContent     = "settig_color_textContent"
     
+    static let UD_setting_OrdenarEntradaDiario  = "settig_Diario_ordenarentradas" //Permite ordenar las entradas del Diario por fechaCracion/fechaModificación
+    
     static let UD_setting_NotasFaceID           = "setting_NotasFaceID"
     
     //UserDefault compartido:(UD_shared_)

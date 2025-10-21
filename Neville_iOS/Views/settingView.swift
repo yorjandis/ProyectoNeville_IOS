@@ -31,6 +31,7 @@ struct settingView: View {
     @State var ColorPrimario    : Color = SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_a)
     @State var ColorSecundario  : Color = SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_b)
     
+
     //Autenti
     private let contextLA = LAContext()
     @State var canOpenToggleButton = false
@@ -60,14 +61,6 @@ struct settingView: View {
     var body: some View {
         
         NavigationStack{
-            
-            Button("Prueba Yor"){
-                self.showSheetPruebaYor = true
-            }
-            .sheet(isPresented: self.$showSheetPruebaYor) {
-                CreatePasswordView()
-            }
-            
             Form{
                 Section("Tamaño de letra"){
                     HStack{
@@ -149,6 +142,8 @@ struct settingView: View {
                     
                     
                 }
+                
+               
                 
                 Section("Notas Generales"){
                      

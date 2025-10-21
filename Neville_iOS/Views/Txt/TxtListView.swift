@@ -72,6 +72,7 @@ struct TxtListView: View {
                             }
                         })
                 }
+                .padding(.horizontal)
                 
                 List(modeloTxt.textList, id: \.self){nombreTxt in
                     LazyVStack(alignment: .leading) {
@@ -117,33 +118,33 @@ struct TxtListView: View {
             .navigationTitle(self.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar{
-                HStack{
-                    Spacer()
+                
+                ToolbarItem{
                     Menu{
-                        Button("Todas las \(self.title)"){
+                        
+                        CreateMenuItemButton(text: "Todas las \(self.title)", sysImageStr: "text.magnifyingglass") {
                             withAnimation {
                                 modeloTxt.getAllFileTxtOfType(type: self.typeOfContent)
                             }
-                            
                         }
-                        Button("\(self.title) favoritas"){
+                        
+                        CreateMenuItemButton(text: "\(self.title) favoritas", sysImageStr: "text.magnifyingglass") {
                             withAnimation {
                                 modeloTxt.textList = modeloTxt.getArrayFavTxt(type: self.typeOfContent)
                             }
-                            
                         }
-                        Button("\(self.title) con notas"){
+                        
+                        CreateMenuItemButton(text: "\(self.title) con notas", sysImageStr: "text.magnifyingglass") {
                             withAnimation {
                                 modeloTxt.textList = modeloTxt.getArrayNoteTxt(type: self.typeOfContent)
                             }
-                           
-                        }
-
-                        Button("Buscar en el contenido"){
-                            showAlertSearchInTxt = true
                         }
                         
-                        Button("Buscar en las notas"){
+                        CreateMenuItemButton(text: "Buscar en el contenido", sysImageStr: "text.magnifyingglass") {
+                            showAlertSearchInTxt = true
+                        } 
+                        
+                        CreateMenuItemButton(text: "Buscar en las notas", sysImageStr: "text.magnifyingglass") {
                             showAlertSearchInNotas = true
                         }
                         
@@ -151,8 +152,9 @@ struct TxtListView: View {
                         Image(systemName: "line.3.horizontal.decrease")
                             .foregroundStyle(theme ==  .dark ? .white :  .black)
                     }
-                    
                 }
+                
+                    
             }
             .task{
                modeloTxt.getAllFileTxtOfType(type: self.typeOfContent)
@@ -188,6 +190,7 @@ struct EditNoteTxt:View {
     @EnvironmentObject var modeloTxt : TxtContentModel
     @State var entidad : String
     @State var typeOfContent : TipoDeContenido
+    @FocusState  private var focus: Bool
     
     @State private var textfiel = ""
     @Environment(\.managedObjectContext) private var context
@@ -203,9 +206,12 @@ struct EditNoteTxt:View {
                         .multilineTextAlignment(.leading)
                         .font(.title)
                         .foregroundStyle(.white).italic().bold()
+                        .focused(self.$focus)
                         .onAppear {
                             textfiel = modeloTxt.getNotaOfTXT(nombreTxt: self.entidad, type: typeOfContent )
+                            self.focus = true
                         }
+                        .padding()
                     
                     Spacer()
                 }
@@ -213,8 +219,8 @@ struct EditNoteTxt:View {
             .navigationTitle("Notas")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar{
-                HStack{
-                    Spacer()
+                
+                ToolbarItem {
                     Button{
                         if modeloTxt.setNotaOfTXT(nombreTxt: entidad, type: self.typeOfContent, nota: textfiel){
                             modeloTxt.getAllFileTxtOfType(type: self.typeOfContent)
@@ -225,6 +231,7 @@ struct EditNoteTxt:View {
                             .foregroundStyle(.blue).bold()
                     }
                 }
+
             }
         }
     }

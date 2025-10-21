@@ -30,7 +30,7 @@ struct DiarioListView: View {
     
     @State private var datepicker : Date = Date.now
     @State private var textfielContent = ""
- 
+    
 
     
     let titlesExamples : [(String,String)] = [
@@ -59,6 +59,12 @@ struct DiarioListView: View {
     
     @State private var showCalendar: Bool = false   //Mostrar/Ocultar el calendario. Por defecto aparece oculto
     
+    
+    //Ordenar las entradas del Diario por fechaCreación/fechaModificación
+    @AppStorage(AppCons.UD_setting_OrdenarEntradaDiario) var ordenarEntradaDiario : Bool = true // true es fechaCreación; false es fecha de modificación
+    
+ 
+    
 
     var body: some View {
         NavigationStack {
@@ -84,8 +90,8 @@ struct DiarioListView: View {
                             ScrollView(){
                                     if canOpenDiario {
                                         LazyVStack{
-                                            ForEach(modelDiario.list){ item in
-                                                cardItem(diario: item )
+                                            ForEach(modelDiario.list) { item in
+                                                cardItem(diario: item)
                                                     .padding(15)
                                                     .frame(maxWidth: .infinity)
                                                     .foregroundStyle(Color.black)
@@ -100,6 +106,9 @@ struct DiarioListView: View {
                                 }
                             .scrollIndicators(.hidden)
                     }
+                    .onAppear{
+                        self.modelDiario.getAllItem()
+                    }
                     
                 }else{ //Ventana de Autenticación
                     
@@ -112,6 +121,7 @@ struct DiarioListView: View {
                             .font(.system(size: 25))
                             .foregroundStyle(.black)
                             .padding(15)
+                            
                         
                         if BiometryCheckerSupport.checkBiometricSupport() == .available{ //Hay soporte para biometría
                             Button{
@@ -143,8 +153,12 @@ struct DiarioListView: View {
                                     }
                                     .buttonStyle(.bordered)
                                     .tint(.black)
+                                    .padding()
                                     
-                                }else{
+                                    Text("Si no recuerda la contraseña puede consultarla en Ajustes, en un dispositivo con biometría asociado a la misma cuenta de iCloud")
+                                        .font(.footnote)
+                                    
+                                }else{ //No hay una clave almacenada
                                     Text("Parece que su dispositivo no admite biometría. Utilice el botón debajo para crear una contraseña para acceder al Diario.")
                                     //No existe una clave guardada. Permitir crear una la primera vez
                                     NavigationLink("Crear una Contraseña"){
@@ -152,6 +166,10 @@ struct DiarioListView: View {
                                     }
                                     .buttonStyle(.bordered)
                                     .tint(.black)
+                                    .padding()
+                                    
+                                    Text("Si no recuerda la contraseña puede consultarla en Ajustes, en un dispositivo con biometría asociado a la misma cuenta de iCloud")
+                                        .font(.footnote)
                                 }
      
                             }.padding()
@@ -159,27 +177,62 @@ struct DiarioListView: View {
                     }
                 }
             }
+            
+           
             .toolbar{
-                HStack(spacing: 5){
+                
+                if canOpenDiario {
                     
-                    if canOpenDiario {      
-                        Menu{
-                            Button("Todas las entradas"){withAnimation {
-                                modelDiario.getAllItem()}
+                    ToolbarItem {
+                        Button{
+                            withAnimation {
+                                self.showCalendar.toggle()
+                                //Si oculta el calendario se muestra todos los items
+                                if self.showCalendar == false {
+                                    modelDiario.getAllItem()
+                                }
                             }
-                            Button("favoritas"){ modelDiario.list =  modelDiario.filterByFav()}
+                            
+                        }label:{
+                            Label( self.showCalendar ? "Ocultar Calendario" : "Mostrar calendario", systemImage: "calendar")
+                        }
+                    }
+                    
+                    if #available(iOS 26.0, *) {
+                        ToolbarSpacer(.fixed)
+                    }
+                    
+                    ToolbarItem{
+                        
+                        Menu{
+                            
+                            //Ordenar por fecha de creación/modificación
+                            Button{
+                                self.ordenarEntradaDiario.toggle()
+                                modelDiario.getAllItem()
+                            }label:{
+                                Label("Ordenar Por fecha de \(self.ordenarEntradaDiario ? "Modificación" : "Creación")", systemImage: "text.magnifyingglass")
+                            }
+                            
+                            //Mostrar todas las entradas
                             Button{
                                 withAnimation {
-                                    self.showCalendar.toggle()
-                                    //Si oculta el calendario se muestra todos los items
-                                    if self.showCalendar == false {
-                                        modelDiario.getAllItem()
-                                    }
+                                    modelDiario.getAllItem()
                                 }
                                 
                             }label:{
-                                Label( self.showCalendar ? "Ocultar Calendario" : "Mostrar calendario", systemImage: "calendar")
+                                Label("Todas las entradas", systemImage: "text.magnifyingglass")
                             }
+                            
+                            //Mostrar las favoritas
+                            Button{
+                                modelDiario.list =  modelDiario.filterByFav()
+                            } label:{
+                                Label("Mostrar favoritas", systemImage: "text.magnifyingglass")
+                            }
+                            
+                            
+                            
                             Menu{
                                 Button{withAnimation {
                                     modelDiario.list =  modelDiario.filterByEmoticono(criterio: Emociones.feliz.rawValue)
@@ -218,14 +271,24 @@ struct DiarioListView: View {
                                     Label(Emociones.sorpresa.rawValue.capitalized, image: Emociones.sorpresa.rawValue)
                                 }
                             }label: {
-                                Text("Por emoción")
+                                Label("Por emoción", systemImage: "face.smiling")
                             }
-                            Button("Buscar en Títulos"){
+                            
+                            //Buscar en los títulos
+                            Button{
                                 showAlertFilterByTitles = true
+                            }label:{
+                                Label("Buscar en Títulos", systemImage: "text.magnifyingglass")
                             }
-                            Button("Buscar en Contenido"){
+                            
+                            //Buscar en el contenido
+                            Button{
                                 showAlertFilterByContent = true
+                            }label:{
+                                Label("Buscar en el Contenido", systemImage: "text.magnifyingglass")
                             }
+                            
+                            
                             //Filtrar por tipos de fechas: Creación y modificación
                             Menu{
                                 Button("Fecha"){
@@ -276,7 +339,8 @@ struct DiarioListView: View {
                                 
                                 
                             }label:{
-                                Text("Fecha de Creación")
+                                Label("Fecha de Creación", systemImage: "text.magnifyingglass")
+                                
                             }
                             Menu{
                                 Button("Fecha"){
@@ -327,7 +391,7 @@ struct DiarioListView: View {
                                 
                                 
                             }label:{
-                                Text("Fecha de Modificación")
+                                Label("Fecha de Modificación", systemImage: "text.magnifyingglass")
                             }
                         }label: {
                             Image(systemName: "line.3.horizontal.decrease")
@@ -335,19 +399,26 @@ struct DiarioListView: View {
                             
                         }
                         
-                        Button(action: {
-                            //Nada por aqui
-                        }, label: {
+                    }
+                    
+                    //Establecer una separación entre los items de los menus
+                    if #available(iOS 26.0, *) {
+                        ToolbarSpacer(.fixed)
+                    }
+                    
+                    ToolbarItem{
                             Menu{
-                                Button("Nueva Entrada"){
+                                Button{
                                     if  modelDiario.addItem(title: "Título", emocion: .neutral, content: "Nuevo Contenido!") {
                                         withAnimation {
-                                             modelDiario.getAllItem()
+                                            modelDiario.getAllItem()
                                         }
                                         if FeedBackModel.checkReviewRequest() {
                                             self.sheetShowFeedBackReview = true
                                         }
                                     }
+                                }label:{
+                                    Label("Nueva Entrada", systemImage: "square.and.pencil")
                                 }
                                 
                                 Menu{
@@ -373,13 +444,10 @@ struct DiarioListView: View {
                                 Image(systemName: "plus")//"wand.and.rays")
                                     .tint(.black)
                             }
-                            
-                        })
-                        
                     }
-                    
-                    
                 }
+                    
+                
             }
             .navigationTitle("Diario")
             .navigationBarTitleDisplayMode(.inline)
@@ -491,7 +559,7 @@ struct cardItem: View{
     
     @StateObject private var diarioModel = DiarioModel.shared
     
-    @State private var expandText = false
+    @State private var expandText = false //Permite expandir/contraer el texto de una entrada
     @State private var isEditing = false
     @State private var textfield = ""
     //Alert: Modificar titulo
@@ -507,7 +575,6 @@ struct cardItem: View{
     @State private var animValue = 0
     
 
-    
    private let emociones : [Emociones] = [.neutral,.feliz,.enfado,.desanimado,.distraido,.sorpresa]
     
     
@@ -546,6 +613,7 @@ struct cardItem: View{
                         showAlert = true
                     }
                 Spacer()
+                
             }
             
             
@@ -558,12 +626,22 @@ struct cardItem: View{
                     .italic()
                     .fontDesign(.serif)
                     .fontWeight(.heavy)
-                    .lineLimit(expandText ? nil :  1)
+                    .lineLimit(self.diarioModel.expandirEntrada == self.diario.fecha?.formatted() ? nil :  1) //Aquí es donde se contrae o se expande las lineas
                     .onTapGesture{
                         withAnimation {
-                            expandText.toggle()
+                            //expandText.toggle()
+                            if self.diarioModel.expandirEntrada == self.diario.fecha?.formatted(){
+                                self.diarioModel.expandirEntrada = ""
+                            }else{
+                                self.diarioModel.expandirEntrada = self.diario.fecha?.formatted() ?? ""
+                            }
                         }
                     }
+                    .onTapGesture(count: 2) {
+                        self.showSheet = true
+                    }
+
+            
             
                 
             
@@ -591,10 +669,15 @@ struct cardItem: View{
    
                     }
                     Spacer()
+                    //Favorito
                     Button{
                         isfav.toggle()
                         diarioModel.UpdateFav(isFav: isfav, diario: diario)
                         animValue += 1
+                        
+                        UIImpactFeedbackGenerator(style: .medium).impactOccurred() //Leve vibración al tocal el boton
+                                  
+                        
                     }label: {
                         Image(systemName: isfav ? "heart.fill" : "heart")
                             .foregroundStyle(isfav ? .orange : .black)
@@ -671,6 +754,12 @@ struct editContent : View {
     
     private let emociones : [Emociones] = [.neutral,.feliz,.enfado,.desanimado,.distraido,.sorpresa]
     
+    enum Focustext{
+        case title
+        case content
+    }
+    @FocusState private var focus: Focustext?
+    
     var body: some View {
         NavigationStack {
             List{
@@ -699,17 +788,21 @@ struct editContent : View {
                             .font(.title2)
                             .multilineTextAlignment(.leading)
                             .textFieldStyle(.roundedBorder)
+                            .focused(self.$focus, equals: .title)
                             
                     }
                     
                 }
                 
                 Section("Contenido"){
-                    TextField("", text: $textContent, axis: .vertical)
-                        .font(.title2)
-                        .multilineTextAlignment(.leading)
-                        .textFieldStyle(.roundedBorder)
+                    
+                        TextField("", text: $textContent, axis: .vertical)
+                            .font(.title2)
+                            .multilineTextAlignment(.leading)
+                            .textFieldStyle(.roundedBorder)
+                            .focused(self.$focus, equals: .content)
                 }
+                
                 
             }
             //Al inicio actualiza el icono de emocion
@@ -717,15 +810,47 @@ struct editContent : View {
             .onAppear{
                 emoticono = diarioModel.getEmocionesFromStr(value: diario.emotion ?? "neutral")
             }
+            .onChange(of: self.focus) { oldValue, newValue in
+               switch newValue {
+               case .title:
+                   if self.textTitle == "Título"{
+                       self.textTitle = ""
+                   }
+               case .content:
+                   if self.textContent == "Nuevo Contenido!" {
+                       self.textContent = ""
+                   }
+               default:
+                   self.focus = nil
+                }
+            }
             .navigationTitle("Modificar Entrada")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar{
-                Button("OK"){
-                    diarioModel.UpdateItem(diario: diario, title: textTitle, content: textContent, emoticono: emoticono)
-                    diarioModel.getAllItem()
-                    dimiss()
+                
+                ToolbarItem {
+                    Button(action: {
+                        diarioModel.UpdateItem(diario: diario, title: textTitle, content: textContent, emoticono: emoticono)
+                        diarioModel.getAllItem()
+                        dimiss()
+                    }) {
+                        Text("Guardar")
+                            .fontWeight(.semibold)
+                            .foregroundStyle(.black)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 8)
+                            .background(
+                                Color.blue
+                            )
+                            .clipShape(Capsule())
+                            .compositingGroup()
+
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    .tint(.clear)
                 }
-                .foregroundStyle(theme == .dark ? .white : .black)
+                
+                
             }
         }
     }
@@ -738,5 +863,4 @@ struct editContent : View {
 #Preview {
     DiarioListView()
 }
-
 

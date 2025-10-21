@@ -57,4 +57,31 @@ extension Bundle {
 }
 
 
+//Modificador personalizado: Aplicar glass effect a una View en dependencia si estamos en iOS 26+ / iOS 18-
+#if os(iOS)
+extension View {
+    @ViewBuilder
+    func applyGlassEffect() -> some View {
+        if #available(iOS 26, *){
+            self.glassEffect()
+        }else{
+            self.background(.ultraThinMaterial)
+        }
+    }
+}
+#endif
 
+//Botón Personaizado Para menus
+
+
+@ViewBuilder
+func CreateMenuItemButton(text : String,sysImageStr : String, action : @MainActor @escaping ()->()) -> some View{
+    
+    Button{
+        action()
+    }label: {
+        Label(text, systemImage: sysImageStr)
+    }
+    
+    
+}

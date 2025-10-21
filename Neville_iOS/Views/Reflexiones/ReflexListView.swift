@@ -58,9 +58,7 @@ struct ReflexListView: View {
                                     withAnimation {
                                         modelReflex.getArrayReflexOfTxtFile()
                                     }
-                                   print("Yorj: se ha ajustado el favorito: \(item.isfav)")
-                                }else{
-                                    print("Yorj: NO se ha ajustado el favorito: \(item.isfav)")
+                                   
                                 }
                             }label: {
                                 Image(systemName: "heart")
@@ -89,40 +87,51 @@ struct ReflexListView: View {
                 if self.isUnicaVezReflex{
                     modelReflex.eliminarDuplicados(context: self.context)
                     self.isUnicaVezReflex = false //Desactiva el flag
-                    print("Yorj: dadasdasdasDas")
                 }
             }
             .toolbar{
-                            HStack{
-                                Spacer()
-                                Menu{
-                                    Button("Todas las reflexiones"){
-                                        modelReflex.getArrayReflexOfTxtFile()
-                                    }
-                                    Button("Reflexiones Personales"){
-                                        modelReflex.list = modelReflex.getAllReflexNoInbuiltGet()
-                                    }
-                                    Button("Reflexiones favoritas"){
-                                        modelReflex.list = modelReflex.getReflexFavoritasGet()
-                                    }
-                                    
-                                    Button("Buscar en el contenido"){
-                                        showAlertSearchInTxt = true
-                                    }
-                                }label: {
-                                    Image(systemName: "line.3.horizontal.decrease")
-                                        .foregroundStyle(theme ==  .dark ? .white :  .black)
-                                }
-                                
-                                Button{
-                                    showSheetAddReflex = true
-                                }label: {
-                                    Image(systemName: "plus")
-                                        .foregroundStyle(theme ==  .dark ? .white :  .black)
-                                }
-                            
-                            }
+                         
+                ToolbarItem {
+                    Menu{
+                        
+                        CreateMenuItemButton(text: "Todas las reflexiones", sysImageStr: "text.magnifyingglass") {
+                            modelReflex.getArrayReflexOfTxtFile()
                         }
+                        
+                        CreateMenuItemButton(text: "Reflexiones Personales", sysImageStr: "text.magnifyingglass") {
+                            modelReflex.list = modelReflex.getAllReflexNoInbuiltGet()
+                        }
+                        
+                        CreateMenuItemButton(text: "Reflexiones favoritas", sysImageStr: "text.magnifyingglass") {
+                            modelReflex.list = modelReflex.getReflexFavoritasGet()
+                        }
+                        
+                        CreateMenuItemButton(text: "Buscar en el contenido", sysImageStr: "text.magnifyingglass") {
+                            showAlertSearchInTxt = true
+                        }
+
+                    }label: {
+                        Image(systemName: "line.3.horizontal.decrease")
+                            .foregroundStyle(theme ==  .dark ? .white :  .black)
+                    }
+                }
+                        
+                if #available(iOS 26.0, *) {
+                    ToolbarSpacer(.fixed)
+                }
+                               
+                ToolbarItem {
+                    Button{
+                        showSheetAddReflex = true
+                    }label: {
+                        Image(systemName: "plus")
+                            .foregroundStyle(theme ==  .dark ? .white :  .black)
+                    }
+                
+                }
+                }
+                               
+                        
             .alert("Buscar un texto", isPresented: $showAlertSearchInTxt){
                 
                 TextField("", text: $textFiel2, axis: .vertical)

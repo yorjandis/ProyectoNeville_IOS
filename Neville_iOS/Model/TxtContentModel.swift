@@ -50,7 +50,7 @@ final class TxtContentModel : ObservableObject {
                     .capitalized(with: .autoupdatingCurrent)            //Capitalizando el texto
                 }
             
-            self.textList = result
+            self.textList = result.sorted()
         } catch {
             print("Error al leer el directorio: \(error.localizedDescription)")
             self.textList = []
@@ -75,7 +75,7 @@ final class TxtContentModel : ObservableObject {
                     .capitalized(with: .autoupdatingCurrent)            //Capitalizando el texto
                 }
             
-            return result
+            return result.sorted()
         } catch {
             print("Error al leer el directorio: \(error.localizedDescription)")
             return  []
@@ -295,6 +295,13 @@ final class TxtContentModel : ObservableObject {
             return []
         }
     }
+    
+    
+    
+    
+  
+    
+    
     
 
 }

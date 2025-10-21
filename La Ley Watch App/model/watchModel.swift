@@ -96,7 +96,6 @@ final class watchModel: ObservableObject {
     
     //Eliminar una nota
     func deleteNota(nota : NSManagedObject)->Bool{
-        self.context.performAndWait {
             self.context.delete(nota)
             do{
                 try self.context.save()
@@ -105,7 +104,6 @@ final class watchModel: ObservableObject {
                 self.context.rollback()
                 return false
             }
-        }
     }
     
     //Buscar en los textos de los títulos de las notas

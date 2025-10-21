@@ -24,8 +24,16 @@ struct ContentTxtShowView: View {
     
     let type : TipoDeContenido
     
+    //Para funciones de IA
+    @State private var _iaModelStorage: Any? = nil
+
+    @available(iOS 26.0, *)
+    private var iaModel: IAModel? {
+        get { _iaModelStorage as? IAModel }
+        set { _iaModelStorage = newValue }
+    }
     
-    
+    @State private var showSheetIA : Bool = false
   
     
     //Setting: Tamaño de fuente por defecto
@@ -46,6 +54,10 @@ struct ContentTxtShowView: View {
     private let threshold: CGFloat = 7000 // Umbrall de hito
     @State private var flagScroll : Bool = false //Si es true se detiene el proceso
     @State private var sheetShowFeedBackReview : Bool = false
+    
+    //Almacenar la última posición del desplazamiento:
+    
+    
 
     //Yor aqui va el código para leer el contenido del fichero
     var getContent : String {
@@ -92,8 +104,8 @@ struct ContentTxtShowView: View {
                                 self.textContentdColor = SettingModel().loadColor(forkey: AppCons.UD_setting_color_textContent)
                             }
                     }
-                    .padding(.horizontal, 3)
-                    .background(GeometryReader { proxy -> Color in //Para lazar ventana FeedBackRevie
+                    .padding(.horizontal, 5)
+                    .background(GeometryReader { proxy -> Color in //Para lanzar ventana FeedBackRevie
                         if self.flagScroll == false {
                             let offset = -proxy.frame(in: .global).minY
                             DispatchQueue.main.async {
@@ -109,7 +121,7 @@ struct ContentTxtShowView: View {
                         return Color.clear
                     })
                 }
-                
+             
                 
                 
                 Divider()
@@ -188,33 +200,79 @@ struct ContentTxtShowView: View {
                 fontSizeContenido = Int(self.fontSizeContent)
             }
             .toolbar{
-                HStack{
-                    Spacer()
+                
+                if self.nombreTxt != "biografia" {
                     
-                        Menu{
-                            if modeloTxt.getIsFavOfTxt(nombreTxt: nombreTxt, type: type) == true{
-                                Button("Quitar Favorita", systemImage: "heart.fill"){
-                                    if TxtContentModel().setIsFavOfTxt(nombreTxt: nombreTxt, type: self.type, isFav: false){
-                                        
-                                        self.modeloTxt.getAllFileTxtOfType(type: self.type) //Actualizando el listado
-                                        
-                                    }
-                                }
-                            }else{
-                                Button("Poner Favorita", systemImage: "heart"){
-                                    if TxtContentModel().setIsFavOfTxt(nombreTxt: nombreTxt, type: self.type, isFav: true){
-                                        
-                                        self.modeloTxt.getAllFileTxtOfType(type: self.type) //Actualizando el listado
-                                        
-                                    }
-                                }
+                    
+                    if #available(iOS 26.0, *){
+                        ToolbarItem {
+                            NavigationLink{
+                                RespondView(nameConference: self.title, texto: self.getContent)
+                            }label: {
+                                Label("",systemImage: "sparkles")
                             }
-
-                                NavigationLink{
-                                    EditNoteTxt(entidad: nombreTxt, typeOfContent: self.type)
-                                }label: {
-                                    Label("Nota Asociada", systemImage: "pencil")
+                            .tint(.orange)
+                            .help("Genera un resumen por IA")
+                            
+                        }
+                    }
+                    
+                    
+                    if #available(iOS 26.0, *) {
+                        ToolbarSpacer(.fixed)
+                    }
+                    
+                    ToolbarItem {
+                        if modeloTxt.getIsFavOfTxt(nombreTxt: nombreTxt, type: type) == true{
+                            Button{
+                                if TxtContentModel().setIsFavOfTxt(nombreTxt: nombreTxt, type: self.type, isFav: false){
+                                    
+                                    self.modeloTxt.getAllFileTxtOfType(type: self.type) //Actualizando el listado
+                                    
                                 }
+                            }label:{
+                                Label("Quitar Favorita", systemImage: "heart.fill")
+                                    
+                            }
+                            .tint(.orange)
+                        }else{
+                            Button{
+                                if TxtContentModel().setIsFavOfTxt(nombreTxt: nombreTxt, type: self.type, isFav: true){
+                                    
+                                    self.modeloTxt.getAllFileTxtOfType(type: self.type) //Actualizando el listado
+                                    
+                                }
+                            }label:{
+                                Label("Poner Favorita", systemImage: "heart")
+                            }
+                        }
+                    }
+                    
+                    if #available(iOS 26.0, *) {
+                        ToolbarSpacer(.fixed)
+                    }
+                    
+                    //Nota Asociada
+                    ToolbarItem {
+                        NavigationLink{
+                            EditNoteTxt(entidad: nombreTxt, typeOfContent: self.type)
+                        }label: {
+                            
+                            Label("Nota Asociada", systemImage: "note.text")
+                                
+                        }
+                        .tint(self.modeloTxt.getNotaOfTXT(nombreTxt: nombreTxt, type: type) == "" ? .gray : .green)
+                        .help("Nota Asociada")
+                    }
+                    
+                    if #available(iOS 26.0, *) {
+                        ToolbarSpacer(.fixed)
+                    }
+                    
+                    //Opciones de Ajuste de tamaño y color de fuente
+                    ToolbarItem {
+                        Menu{
+                            
                             
                             Button("Tamaño de Letra", systemImage: "textformat") {
                                 withAnimation(.easeInOut) {
@@ -229,65 +287,23 @@ struct ContentTxtShowView: View {
                                 }
                             }
                         }label: {
-                            Image(systemName: "ellipsis")
-                                .rotationEffect(Angle(degrees: 135))
+                            Image(systemName: "line.3.horizontal")
+                                
                         }
+                    }
                 }
+ 
             }
             .sheet(isPresented: self.$sheetShowFeedBackReview) {
                 FeedbackView(showTextBotton: true)
             }
+           
         }
     }//body
 }
 
 
-/*
-//Permite ver y editar el campo nota
-struct EditNoteTxtContentTxtShow:View {
-    @Environment(\.dismiss) var dimiss
-    @State var entidad : TxtCont
-    @State private var textfiel = ""
-    @Environment(\.managedObjectContext) var context
 
-    
-    var body: some View {
-        NavigationStack{
-            ZStack{
-                LinearGradient(colors: [.gray, .brown], startPoint: .top, endPoint: .bottom)
-                    .ignoresSafeArea()
-                VStack(){
-                    TextField("Coloque su nota aqui", text: $textfiel, axis: .vertical)
-                        .multilineTextAlignment(.leading)
-                        .font(.title)
-                        .foregroundStyle(.black).italic().bold()
-                        .onAppear {
-                            textfiel = entidad.nota ?? ""
-                        }
-                    
-                    Spacer()
-                }
-            }
-            .navigationTitle("Notas")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar{
-                HStack{
-                    Spacer()
-                    Button{
-                        TxtContentModel().setNota(context: self.context , entity: entidad, nota: textfiel)
-                        dimiss()
-                    }label: {
-                        Text("Guardar")
-                            .foregroundStyle(.black).bold()
-                    }
-                }
-            }
-            
-        }
-    }
-}
-
-*/
 
 
 #Preview {

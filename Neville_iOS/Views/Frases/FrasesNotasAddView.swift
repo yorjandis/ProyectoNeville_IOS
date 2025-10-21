@@ -15,7 +15,7 @@ struct FrasesNotasAddView: View {
     
     let frase : String
     
-    @State private var nota : String = "" //Campo del textField
+    @State var nota : String = "" //Campo del textField
     
     var body: some View {
         NavigationStack {
@@ -23,6 +23,7 @@ struct FrasesNotasAddView: View {
                     Section("Nota"){
                         TextField("", text: $nota, axis: .vertical)
                             .textFieldStyle(.roundedBorder)
+                            
                     }
             }
             .onAppear{
@@ -31,6 +32,7 @@ struct FrasesNotasAddView: View {
             Spacer()
             ScrollView(content: {
                 Text(frase)
+                .padding()
             })
             .navigationTitle("Nota en Frase")
             .navigationBarTitleDisplayMode(.inline)

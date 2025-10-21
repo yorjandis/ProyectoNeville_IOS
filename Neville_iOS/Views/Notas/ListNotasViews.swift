@@ -14,7 +14,6 @@ import LocalAuthentication
 
 struct ListNotasViews: View {
     @Environment(\.dismiss) var dimiss
-    @Environment(\.colorScheme) var theme
     @State private var showAddNoteView = false
     @State private var list : [Notas] = NotasModel().getAllNotas()
     //Buscar en notas
@@ -62,26 +61,14 @@ struct ListNotasViews: View {
                     }
                     .padding(.trailing, 20)
                 }
-            /*
-             //Yorj, después de la última actualización este fragmento ya no es necesario. Quitarlo en futuras iteraciones
-                .onAppear {
-                    if UserDefaults.standard.bool(forKey: AppCons.UD_setting_NotasFaceID) == true {
-                        if BiometryCheckerSupport.checkBiometricSupport() == .available {
-                            canOpenNotas = false
-                        }
-                       
-                    }else{
-                        canOpenNotas = true
-                    }
-                     
-                }
-             */
                 .padding(.bottom, 20)
                 .navigationTitle("Notas")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar{
-                    if self.canOpenNotas {
-                        HStack{
+                    
+                    //Chequea si esta habilitado la protección de las notas
+                    if UserDefaults.standard.bool(forKey: AppCons.UD_setting_NotasFaceID) == false { //No esta habilitada la protección
+                        ToolbarItem {
                             Menu{
                                 Button("Todas las notas"){
                                     withAnimation {
@@ -102,15 +89,66 @@ struct ListNotasViews: View {
                                 
                             }label: {
                                 Image(systemName: "line.3.horizontal.decrease")
-                                    .foregroundStyle(theme ==  .dark ? .white :  .black)
                             }
+                        }
+                        
+                        if #available(iOS 26.0, *) {
+                            ToolbarSpacer(.fixed)
+                        }
+                        
+                        ToolbarItem {
                             Button{
                                 showAddNoteView = true
                             }label: {
                                 Image(systemName: "plus")
                             }
                         }
+                        
+                        
+                    }else{ //Si esta habilitada la protección de las notas
+                        
+                        //Chequear si se tiene acceso al contenido
+                        if self.canOpenNotas {
+                            
+                            ToolbarItem {
+                                Menu{
+                                    Button("Todas las notas"){
+                                        withAnimation {
+                                            list.removeAll()
+                                            list = NotasModel().getAllNotas()
+                                        }
+                                    }
+                                    Button("Notas Favoritas"){
+                                        withAnimation {
+                                            list.removeAll()
+                                            list = NotasModel().getFavNotas()
+                                        }
+                                        
+                                    }
+                                    Button("Buscar en Notas"){
+                                        showAlertSearch = true
+                                    }
+                                    
+                                }label: {
+                                    Image(systemName: "line.3.horizontal.decrease")
+                                }
+                            }
+                            
+                            if #available(iOS 26.0, *) {
+                                ToolbarSpacer(.fixed)
+                            }
+                            
+                            ToolbarItem {
+                                Button{
+                                    showAddNoteView = true
+                                }label: {
+                                    Image(systemName: "plus")
+                                }
+                            }
+                        }
                     }
+                    
+                    
                     
                     
                 }
@@ -143,11 +181,7 @@ struct ListNotasViews: View {
                 .alert(isPresented: $showAlert){
                     Alert(title: Text("Notas"), message: Text(alertMessage))
                 }
-                .onChange(of: self.canOpenNotas) { oldValue, newValue in
-                    if newValue == true {
-                        self.canOpenNotas = true
-                    }
-                }
+                
             
         }
         
@@ -180,7 +214,7 @@ struct ListNotasViews: View {
             //Chequeando si existe biometría en el dispositivo
             if BiometryCheckerSupport.checkBiometricSupport() == .available{
                 Button{
-                    UtilFuncs.autent(HabilitarContenido: self.$canOpenNotas)
+                    UtilFuncs.autent(HabilitarContenido: self.$canOpenNotas) //Lanzando el chequeo biométrico
                 }label: {
                     Image(systemName: "key.viewfinder")
                         .font(.system(size: 60))
@@ -203,15 +237,39 @@ struct ListNotasViews: View {
                 
                 
             }else{ // Si no existe biometría en el dispositivo
-                VStack{
-                    Text("Parece que su dispositivo no admite biometría. Utilice el botón debajo para entrar por contraseña.")
-                    NavigationLink("Acceder por contraseña"){
-                     LogginView(ente: "Notas", canOpen: self.$canOpenNotas)
-                       
+                
+                //Determinamos que haya una contraseña Guardada:
+                if KeychainHelper.shared.getPassword() != nil{ //Hay contraseña en el llavero
+                    VStack{
+                        Text("Parece que su dispositivo no admite biometría. Utilice el botón debajo para entrar por contraseña.")
+                        NavigationLink("Acceder por contraseña"){
+                         LogginView(ente: "Notas", canOpen: self.$canOpenNotas)
+                           
+                        }
+                        .buttonStyle(.bordered)
+                        .tint(.primary)
+                        .padding()
+                        
+                        Text("Si no recuerda la contraseña puede consultarla en Ajustes, en un dispositivo con biometría asociado a la misma cuenta de iCloud")
+                            .font(.footnote)
                     }
-                    .buttonStyle(.bordered)
-                    .tint(.primary)
+                }else{ //No existe una contrasela en el llavero. Permitir crear una
+                    VStack{
+                        Text("Parece que su dispositivo no admite biometría. Establezca una contraseña para tener acceso seguro a las Notas Protegidas")
+                        NavigationLink("Crear una contraseña"){
+                         CreatePasswordView()
+                           
+                        }
+                        .buttonStyle(.bordered)
+                        .tint(.primary)
+                        .padding()
+                        
+                        Text("Si no recuerda la contraseña puede consultarla en Ajustes, en un dispositivo con biometría asociado a la misma cuenta de iCloud")
+                            .font(.footnote)
+                    }
                 }
+                
+                
             }
             
              

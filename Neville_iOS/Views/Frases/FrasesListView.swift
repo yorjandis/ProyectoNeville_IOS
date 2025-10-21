@@ -55,6 +55,7 @@ struct FrasesListView: View {
                             }
                         }
                 }
+                .padding(.horizontal)
                 
                 List(frasesModel.listfrases, id: \.self){ frase in
                     VStack(alignment: .leading){
@@ -117,49 +118,63 @@ struct FrasesListView: View {
                 .navigationTitle("Listado de Frases")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar{
-                    Menu{
-                        Button("Todas las Frases"){
-                            withAnimation {
-                                frasesModel.getfrasesArrayFromTxtFile()
-                            }
-                        }
-                        Button("Frases Personales"){
-                            withAnimation {
-                                frasesModel.listfrases = frasesModel.getFrasesNoInbuilt()
+                    
+                    ToolbarItem {
+                        Menu{
+                            
+                            CreateMenuItemButton(text: "Todas las Frases", sysImageStr: "text.magnifyingglass") {
+                                withAnimation {
+                                    frasesModel.getfrasesArrayFromTxtFile()
+                                }
                             }
                             
-                        }
-                        Button("Frases Favoritas"){
-                            withAnimation {
-                                frasesModel.listfrases = frasesModel.getAllFavFrases()
+                            CreateMenuItemButton(text: "Frases Personales", sysImageStr: "text.magnifyingglass") {
+                                withAnimation {
+                                    frasesModel.listfrases = frasesModel.getFrasesNoInbuilt()
+                                }
                             }
-                        }
-                        Button("Frases con notas"){
-                            withAnimation {
-                                frasesModel.listfrases = frasesModel.getFrasesConNotas()
+                           
+                            CreateMenuItemButton(text: "Frases Favoritas", sysImageStr: "text.magnifyingglass") {
+                                withAnimation {
+                                    frasesModel.listfrases = frasesModel.getAllFavFrases()
+                                }
                             }
+                            
+                            CreateMenuItemButton(text: "Frases con notas", sysImageStr: "text.magnifyingglass") {
+                                withAnimation {
+                                    frasesModel.listfrases = frasesModel.getFrasesConNotas()
+                                }
+                            }
+                            
+                            CreateMenuItemButton(text: "Buscar en frase", sysImageStr: "text.magnifyingglass") {
+                                subtitle = "Búsqueda en Frase"
+                                showAlertSearchInFrase = true
+                            }
+                           
+                            CreateMenuItemButton(text: "Buscar en nota de frase", sysImageStr: "text.magnifyingglass") {
+                                subtitle = "Búsqueda en nota de Frase"
+                                showAlertSearchInNotaFrase = true
+                            }
+                        }label: { //Label del Menú
+                            Image(systemName: "line.3.horizontal.decrease")
+                                .foregroundStyle(.primary)
                         }
-                        Button("Buscar en frase"){
-                            subtitle = "Búsqueda en Frase"
-                            showAlertSearchInFrase = true
-                        }
-                        Button("Buscar en nota de frase"){
-                            subtitle = "Búsqueda en nota de Frase"
-                            showAlertSearchInNotaFrase = true
-                        }
-                        
-                    }label: { //Label del Mnú
-                        Image(systemName: "line.3.horizontal.decrease")
-                            .foregroundStyle(theme ==  .dark ? .white :  .black)
                     }
                     
-                    //Boton Adicionar una frase
-                    Button{
-                        showAddFrase = true
-                    }label: {
-                        Image(systemName: "plus")
-                            .foregroundStyle(theme ==  .dark ? .white :  .black)
+                    if #available(iOS 26.0, *) {
+                        ToolbarSpacer(.fixed)
                     }
+                    ToolbarItem{
+                        //Boton Adicionar una frase
+                        Button{
+                            showAddFrase = true
+                        }label: {
+                            Image(systemName: "plus")
+                                .foregroundStyle(theme ==  .dark ? .white :  .black)
+                        }
+                    }
+
+                    
                 }
                 
             }

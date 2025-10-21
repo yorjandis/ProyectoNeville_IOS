@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -622,6 +622,7 @@
 		91658B3E2D6293F400FEEE94 /* reflexiones.txt in Resources */ = {isa = PBXBuildFile; fileRef = 91658B3D2D6293F400FEEE94 /* reflexiones.txt */; };
 		91658B3F2D62BA0000FEEE94 /* CoreDataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E99F9CC52AC4682B00169084 /* CoreDataController.swift */; };
 		91658B412D64B2BD00FEEE94 /* DiarioCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91658B402D64B2B500FEEE94 /* DiarioCalendarView.swift */; };
+		91901DF72EA691BE0049D0BA /* RespondView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91901DF52EA691AF0049D0BA /* RespondView.swift */; };
 		919117E42D6D3DA200BAB2AC /* ayud_como manifestar.txt in Resources */ = {isa = PBXBuildFile; fileRef = 919117E32D6D3DA200BAB2AC /* ayud_como manifestar.txt */; };
 		91F0DD432D5D3A7200307453 /* FeedBackReview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F0DD422D5D3A5D00307453 /* FeedBackReview.swift */; };
 		91F0DD472D60312E00307453 /* FeedBackModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F0DD452D60312600307453 /* FeedBackModel.swift */; };
@@ -1315,6 +1316,7 @@
 		916529ED2E9ECA35004D011C /* ChangePasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordView.swift; sourceTree = "<group>"; };
 		91658B3D2D6293F400FEEE94 /* reflexiones.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = reflexiones.txt; sourceTree = "<group>"; };
 		91658B402D64B2B500FEEE94 /* DiarioCalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiarioCalendarView.swift; sourceTree = "<group>"; };
+		91901DF52EA691AF0049D0BA /* RespondView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RespondView.swift; sourceTree = "<group>"; };
 		919117E32D6D3DA200BAB2AC /* ayud_como manifestar.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "ayud_como manifestar.txt"; sourceTree = "<group>"; };
 		91F0DD422D5D3A5D00307453 /* FeedBackReview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedBackReview.swift; sourceTree = "<group>"; };
 		91F0DD452D60312600307453 /* FeedBackModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedBackModel.swift; sourceTree = "<group>"; };
@@ -1337,6 +1339,10 @@
 		E9D0F1CA2AE2226A00B35452 /* optionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = optionView.swift; sourceTree = "<group>"; };
 		E9D0F1CE2AE2310D00B35452 /* ShowNotaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowNotaView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		91901DF12EA68FD00049D0BA /* IAModel */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = IAModel; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		19E0BE112B0C661A00E149A5 /* Frameworks */ = {
@@ -1519,14 +1525,14 @@
 			path = Ayudas;
 			sourceTree = "<group>";
 		};
-		19BBC62E2B16BE3200FBB079 /* Reflex */ = {
+		19BBC62E2B16BE3200FBB079 /* Reflexiones */ = {
 			isa = PBXGroup;
 			children = (
 				19BBC62F2B16BE5D00FBB079 /* ReflexListView.swift */,
 				19BBC6312B173B8100FBB079 /* ReflexShowTextView.swift */,
 				19C674542B23A3ED006B4AB7 /* ReflexEditView.swift */,
 			);
-			path = Reflex;
+			path = Reflexiones;
 			sourceTree = "<group>";
 		};
 		19D04F1A2B7305A8007B66F2 /* Views */ = {
@@ -1622,6 +1628,14 @@
 				916529E92E9EA574004D011C /* CreatePasswordView.swift */,
 			);
 			path = AdminPassword;
+			sourceTree = "<group>";
+		};
+		91901DFA2EA82EB70049D0BA /* IA View */ = {
+			isa = PBXGroup;
+			children = (
+				91901DF52EA691AF0049D0BA /* RespondView.swift */,
+			);
+			path = "IA View";
 			sourceTree = "<group>";
 		};
 		E92F61182AB3E05C007BB4BA /* Staff */ = {
@@ -2122,6 +2136,7 @@
 		E92F63712AB468D7007BB4BA /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				91901DF12EA68FD00049D0BA /* IAModel */,
 				916529E62E9E994B004D011C /* BiometrySupport.swift */,
 				916529E32E9E9341004D011C /* KeyChainModel */,
 				91F0DD452D60312600307453 /* FeedBackModel.swift */,
@@ -2144,8 +2159,9 @@
 		E92F644E2AB6EF5A007BB4BA /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				91901DFA2EA82EB70049D0BA /* IA View */,
 				916529E82E9EA561004D011C /* AdminPassword */,
-				19BBC62E2B16BE3200FBB079 /* Reflex */,
+				19BBC62E2B16BE3200FBB079 /* Reflexiones */,
 				1949D5172B02B09C00DFD46D /* QRCode */,
 				193425B42AFFD81C00A99C25 /* PLayGame */,
 				197D2A3C2AFAA3E100486014 /* Diario */,
@@ -2309,6 +2325,9 @@
 			dependencies = (
 				19E0BE202B0C661B00E149A5 /* PBXTargetDependency */,
 				19F804252B69CBA000A323A0 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				91901DF12EA68FD00049D0BA /* IAModel */,
 			);
 			name = Neville_iOS;
 			packageProductDependencies = (
@@ -3037,6 +3056,7 @@
 				194F11292AEC79D5009FA23E /* settingView.swift in Sources */,
 				19D2F0642B70903200D9B62C /* QRReader.swift in Sources */,
 				E95B93572AAFBB2600B5E2B5 /* Neville_iOSApp.swift in Sources */,
+				91901DF72EA691BE0049D0BA /* RespondView.swift in Sources */,
 				19B255C42AFC51FC0093104F /* FraseAddView.swift in Sources */,
 				197D2A3B2AFA9FE000486014 /* DiarioModel.swift in Sources */,
 				197D2A3E2AFAA3FC00486014 /* DiarioListView.swift in Sources */,
@@ -3082,7 +3102,7 @@
 				CODE_SIGN_ENTITLEMENTS = FrasesWiggetExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 24;
+				CURRENT_PROJECT_VERSION = 27;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FrasesWigget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = FrasesWigget;
@@ -3092,7 +3112,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.7;
+				MARKETING_VERSION = 1.2.10;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.FrasesWigget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -3110,7 +3130,7 @@
 				CODE_SIGN_ENTITLEMENTS = FrasesWiggetExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 24;
+				CURRENT_PROJECT_VERSION = 27;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FrasesWigget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = FrasesWigget;
@@ -3120,7 +3140,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.7;
+				MARKETING_VERSION = 1.2.10;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.FrasesWigget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -3138,7 +3158,7 @@
 				CODE_SIGN_ENTITLEMENTS = WatchComplicationLaLeyExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 24;
+				CURRENT_PROJECT_VERSION = 27;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WatchComplicationLaLey/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = WatchComplicationLaLey;
@@ -3149,7 +3169,7 @@
 					"@executable_path/../../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.7;
+				MARKETING_VERSION = 1.2.10;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.watchkitapp.WatchComplicationLaLey;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -3169,7 +3189,7 @@
 				CODE_SIGN_ENTITLEMENTS = WatchComplicationLaLeyExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 24;
+				CURRENT_PROJECT_VERSION = 27;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WatchComplicationLaLey/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = WatchComplicationLaLey;
@@ -3180,7 +3200,7 @@
 					"@executable_path/../../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.7;
+				MARKETING_VERSION = 1.2.10;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.watchkitapp.WatchComplicationLaLey;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -3200,7 +3220,7 @@
 				CODE_SIGN_ENTITLEMENTS = "La Ley Watch App/La Ley Watch App.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 24;
+				CURRENT_PROJECT_VERSION = 27;
 				DEVELOPMENT_ASSET_PATHS = "\"La Ley Watch App/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -3212,7 +3232,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.7;
+				MARKETING_VERSION = 1.2.10;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -3232,7 +3252,7 @@
 				CODE_SIGN_ENTITLEMENTS = "La Ley Watch App/La Ley Watch App.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 24;
+				CURRENT_PROJECT_VERSION = 27;
 				DEVELOPMENT_ASSET_PATHS = "\"La Ley Watch App/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -3244,7 +3264,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.7;
+				MARKETING_VERSION = 1.2.10;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -3387,7 +3407,7 @@
 				CODE_SIGN_ENTITLEMENTS = Neville_iOS/Neville_iOS.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 24;
+				CURRENT_PROJECT_VERSION = 27;
 				DEVELOPMENT_ASSET_PATHS = "\"Neville_iOS/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -3402,12 +3422,12 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.7;
+				MARKETING_VERSION = 1.2.10;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -3428,7 +3448,7 @@
 				CODE_SIGN_ENTITLEMENTS = Neville_iOS/Neville_iOS.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 24;
+				CURRENT_PROJECT_VERSION = 27;
 				DEVELOPMENT_ASSET_PATHS = "\"Neville_iOS/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -3443,12 +3463,12 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.7;
+				MARKETING_VERSION = 1.2.10;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

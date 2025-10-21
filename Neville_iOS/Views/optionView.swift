@@ -38,15 +38,16 @@ struct optionView: View {
                     HStack(alignment: .center, spacing: 5) {
                         primerGroup()
                             .padding(.horizontal, 7)
+                            .padding(.vertical, 20)
                         segundoGrupo()
                             .padding(.horizontal, 7)
+                            .padding(.vertical, 20)
                     }
                     
                 }
                 .scrollIndicators(.hidden)
                 .frame(maxWidth: .infinity , maxHeight: .infinity)
                 .background(.ultraThinMaterial)
-                .shadow(radius: 5)
             }
             
             .sheet(isPresented: $showNotasSheet) {
@@ -151,6 +152,7 @@ struct optionView: View {
                 .fontDesign(.serif)
             
         }
+        
     }
     
     

@@ -61,7 +61,7 @@ struct CreatePasswordView: View {
                 }.padding(.vertical, 50)
                 
                 
-                Text("Nota: Si olvida la contraseña, puede recuperarla utilizando el botón Recuperar Contraseña en la ventana de Ajustes (Setting). Este botón solo esta disoponible en dispositivos con autenticación biométricas como un iPhone o una macBook con biometría. Se le pedirá que se autentifique con touchID o FaceID")
+                Text("Nota: Si olvida la contraseña, puede recuperarla utilizando el botón Recuperar Contraseña en la ventana de Ajustes (Setting). Este botón solo esta disponible en dispositivos con autenticación biométrica, como un iPhone o una macBook con biometría. Se le pedirá que se autentifique con touchID o FaceID")
                     .font(.title)
                 
                 Spacer()
