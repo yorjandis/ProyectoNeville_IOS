@@ -36,6 +36,7 @@ struct AppCons{
     static let UD_setting_fontContentSize  = "setting_fontContentSize"
     static let UD_setting_fontMenuSize     = "setting_fontMenuSize"
     static let UD_setting_fontListaSize    = "setting_fontListaSize"
+    static let UD_setting_fontChatIASize   = "setting_fontChatIASize"
     
     static let UD_setting_color_frases          = "settig_color_frases"
     static let UD_setting_color_main_a          = "settig_color_main_a"
@@ -46,6 +47,8 @@ struct AppCons{
     static let UD_setting_OrdenarEntradaDiario  = "settig_Diario_ordenarentradas" //Permite ordenar las entradas del Diario por fechaCracion/fechaModificación
     
     static let UD_setting_NotasFaceID           = "setting_NotasFaceID"
+    
+   
     
     //UserDefault compartido:(UD_shared_)
     static let UD_shared_FraseWidgetActual = "FraseWidgetActual" //Donde se almacena la frase actualmente cargada en el widget

@@ -68,6 +68,10 @@ struct ListNotasViews: View {
                     
                     //Chequea si esta habilitado la protección de las notas
                     if UserDefaults.standard.bool(forKey: AppCons.UD_setting_NotasFaceID) == false { //No esta habilitada la protección
+                       
+                       
+                        
+                        
                         ToolbarItem {
                             Menu{
                                 Button("Todas las notas"){
@@ -342,7 +346,36 @@ struct cardNotas: View{
                     }
                     ShareLink(item: "\(nota.title ?? "")\n \(nota.nota ?? "")")
                     
-                        Button("Eliminar..."){showConfirmDialogDeleteNota = true}
+                    if #available(iOS 26.0, *) {
+                        if IAModel.isAvailable(){
+
+                                    
+                                    NavigationLink{
+                                        if let  temp = nota.nota{
+                                            RespondView(nameConference: "", texto: temp, tipoSalida: .interpretar )
+                                        }
+                                        
+
+                                    }label:{
+                                        Label("Interpretar", systemImage: "sparkles")
+                                    }
+                                    .tint(.purple)
+                                    
+                                    NavigationLink{
+                                        if let  temp = nota.nota{
+                                            RespondView(nameConference: "", texto: temp, tipoSalida: .practicaConcreta)
+                                        }
+                                        
+                                    }label:{
+                                        Label("Aplicación Práctica", systemImage: "sparkles")
+                                    }
+                                    .tint(.purple)
+                             
+                        }
+                    }
+                    
+                    
+                    Button("Eliminar..."){showConfirmDialogDeleteNota = true}
    
                 }label: {
                     Image(systemName: "ellipsis")

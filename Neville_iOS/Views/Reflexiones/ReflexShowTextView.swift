@@ -66,25 +66,66 @@ struct ReflexShowTextView: View {
                 .navigationTitle("Reflexiones")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar{
-                Menu{
-                    /*
-                    if entity.isInbuilt == false {
-                        NavigationLink("Editar Reflexión"){
-                            ReflexEditView(reflex: $entity)
+                
+                if #available(iOS 26.0, *){
+                    if IAModel.isAvailable(){
+                        ToolbarItem {
+                            Menu{
+                                NavigationLink{
+                                    
+                                    RespondView(nameConference: "", texto: entity.content, tipoSalida: .interpretar )
+                                   
+                                    
+                                }label:{
+                                    Label("Interpretar", systemImage: "sparkles")
+                                }
+                                .tint(.purple)
+                                
+                                NavigationLink{
+                                   
+                                    RespondView(nameConference: "", texto: entity.content, tipoSalida: .practicaConcreta)
+                                    
+                                    
+                                }label:{
+                                    Label("Aplicación Práctica", systemImage: "sparkles")
+                                }
+                                .tint(.purple)
+                            }label:{
+                                Image(systemName: "sparkles")
+                            }
+                            .tint(.purple)
                         }
                     }
-                    
-                    */
-                    
-                    Button("Tamaño de Letra", systemImage: "textformat") {
-                        withAnimation(.easeInOut) {
-                            showSlider.toggle()
-                        }
-                    }
-                }label: {
-                    Image(systemName: "ellipsis")
-                        .rotationEffect(Angle(degrees: 135))
                 }
+                
+                if #available(iOS 26.0, *) {
+                    ToolbarSpacer(.fixed)
+                }
+                
+                ToolbarItem {
+                    Menu{
+                        /*
+                        if entity.isInbuilt == false {
+                            NavigationLink("Editar Reflexión"){
+                                ReflexEditView(reflex: $entity)
+                            }
+                        }
+                        
+                        */
+                        
+                        Button("Tamaño de Letra", systemImage: "textformat") {
+                            withAnimation(.easeInOut) {
+                                showSlider.toggle()
+                            }
+                        }
+                    }label: {
+                        Image(systemName: "ellipsis")
+                            .rotationEffect(Angle(degrees: 135))
+                    }
+                    
+                }
+                
+               
                 
             }
             .onAppear {

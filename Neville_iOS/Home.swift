@@ -165,7 +165,7 @@ struct Home: View {
 }//struct
 
 
-//Frases View
+//Frases View. Cuadro de frase en la pantalla inicial
 struct FrasesView : View{
     @EnvironmentObject private var fraseModel : FrasesModel
     
@@ -231,6 +231,38 @@ struct FrasesView : View{
                         }label: {
                             Label("Nota de la frase", systemImage: "bookmark.fill" )
                         }
+                        
+                        if #available(iOS 26.0, *)  {
+                            
+                            if IAModel.isAvailable(){
+                                NavigationLink{
+                                    RespondView(nameConference: "", texto: self.frase, tipoSalida: .interpretar)
+                                }label: {
+                                    Label("Interpretar", systemImage: "sparkles")
+                                }
+                                .tint(.purple)
+                                
+                                NavigationLink{
+                                    RespondView(nameConference: "", texto: self.frase, tipoSalida: .practicaConcreta)
+                                }label: {
+                                    Label("Aplicación Práctica", systemImage: "sparkles")
+                                }
+                                .tint(.purple)
+                                
+                                NavigationLink{
+                                    ChatView()
+                                }label: {
+                                    Label("Diálogo Con el Usuario", systemImage: "sparkles")
+                                }
+                                .tint(.purple)
+                                
+                                
+                            }
+                            
+                            
+                            
+                        }
+                        
                         Button{
                             showSheetAddFrase = true
                         }label: {

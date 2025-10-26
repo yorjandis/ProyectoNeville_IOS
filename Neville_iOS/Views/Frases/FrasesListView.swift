@@ -33,6 +33,7 @@ struct FrasesListView: View {
     
 
     
+
     var body: some View {
         NavigationStack{
             VStack {
@@ -63,12 +64,49 @@ struct FrasesListView: View {
                     }
                     //Modificar el campo nota de una frase
                     .swipeActions(edge: .leading, allowsFullSwipe: true){
+                        
+                        //Esta View no se mostrará si Apple Intelligence no esta disponible
+                        CreateViewIfAppleIntelligence {
+                            Menu{
+                                NavigationLink{
+                                    if #available(iOS 26.0, *) {
+                                        RespondView(nameConference: "", texto: frase, tipoSalida: .interpretar )
+                                    }
+                                    
+                                }label:{
+                                    Label("Interpretar", systemImage: "sparkles")
+                                }
+                                .tint(.purple)
+                                
+                                NavigationLink{
+                                    if #available(iOS 26.0, *) {
+                                        RespondView(nameConference: "", texto: frase, tipoSalida: .practicaConcreta)
+                                    }
+                                    
+                                }label:{
+                                    Label("Aplicación Práctica", systemImage: "sparkles")
+                                }
+                                .tint(.purple)
+                                
+                            }label:{
+                                Image(systemName: "sparkles")
+                            }
+                            .tint(.purple)
+                            
+                            
+                            
+                            
+                        }
+                        
+                        //Notas de la Frase
                         NavigationLink{
                              FrasesNotasAddView( frase: frase)
                         }label: {
                             Image(systemName: "bookmark")
                                 .tint(.green)
                         }
+                        
+                        //Si la Frase es personal, permite eliminarla
                         if frasesModel.isNoInbuilt(frase: frase){
                             Button{
                                 withAnimation {
@@ -81,6 +119,7 @@ struct FrasesListView: View {
                                     .tint(.red.opacity(0.8))
                             }
                         }
+                        
                     }
                     .swipeActions(edge: .trailing, allowsFullSwipe: true){
                         //Solo se pueden borrar las frases personalas: NoInbuilt

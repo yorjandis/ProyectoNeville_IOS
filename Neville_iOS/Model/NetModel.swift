@@ -79,7 +79,9 @@ struct CheckAppStatus{
                         
                         let remoteVersion = lineaClave[1].digitos //digitos es una extensión de String que obtiene los dígitos de una cadena
                         
-                        return action(remoteVersion != localVersion) //Devuelve el closure con la evaluación: true si las cadenas son distintas
+                        
+                        //Devuelve el closure con la evaluación: true si las cadenas son distintas
+                        return action(remoteVersion != localVersion)
                         
                     }
                 }
@@ -96,6 +98,37 @@ struct CheckAppStatus{
  
 
 }
+
+
+
+
+//(No usado, fines de prueba)Esta función determina si dos versiones de programa son distintas
+///Incluye los casos en los cuales los números de versiones tiene distinta longitud
+/*
+ Ejemplo de uso:
+ checkVersion("1.2.3", "1.2.3") // → .orderedSame
+ checkVersion("1.2.4", "1.2.3") // → .orderedDescending (remoto mayor)
+ checkVersion("1.2", "1.2.5")   // → .orderedAscending (local mayor)
+ checkVersion("2.0", "1.9.9")   // → .orderedDescending
+ checkVersion("1.0.1", "1")     // → .orderedDescending
+ */
+func checkVersion(_ remoteVersion: String, _ localVersion: String) -> ComparisonResult {
+    let remoteParts = remoteVersion.split(separator: ".").compactMap { Int($0) }
+    let localParts = localVersion.split(separator: ".").compactMap { Int($0) }
+    
+    let maxCount = max(remoteParts.count, localParts.count)
+    
+    for i in 0..<maxCount {
+        let remote = i < remoteParts.count ? remoteParts[i] : 0
+        let local = i < localParts.count ? localParts[i] : 0
+        
+        if remote > local { return .orderedDescending }   // remoto es mayor
+        if remote < local { return .orderedAscending }    // local es mayor
+    }
+    
+    return .orderedSame  // son iguales
+}
+
 
 
 

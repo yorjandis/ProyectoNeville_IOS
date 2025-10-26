@@ -214,8 +214,20 @@ struct ReflexListView: View {
                 .navigationBarTitleDisplayMode(.inline)
                 .preferredColorScheme(.dark)
                 .toolbar{
+                    
+                   
+                    
                     ToolbarItem {
                         Button("Guardar"){
+                            //Validando campos
+                            guard !(self.textFielTitle).trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+                                  !(self.textFielAutor).trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+                                  !(self.textFielTexto).trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+                                alertMessage = "Debes rellenar todos los campos"
+                                showAlert = true
+                                return
+                            }
+                            
                             if modelReflex.savePersonalReflex(title: self.textFielTitle, autor: self.textFielAutor, texto: self.textFielTexto, isfav: self.isfav){
                                 alertMessage = "Se ha guardado la reflexión"
                                 showAlert = true

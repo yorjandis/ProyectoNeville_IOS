@@ -25,6 +25,7 @@ struct settingView: View {
     @AppStorage(AppCons.UD_setting_fontMenuSize)       var fontSizeMenu        : Int = 18
     @AppStorage(AppCons.UD_setting_fontListaSize)      var fontSizeLista       : Int = 18
     @AppStorage(AppCons.UD_setting_NotasFaceID)        var setting_NotasFaceID : Bool = false
+    @AppStorage(AppCons.UD_setting_fontChatIASize)     var fontSizeChatIA : Int = 20
     
  
     @State var ColorFrase       : Color = SettingModel().loadColor(forkey: AppCons.UD_setting_color_frases)
@@ -95,6 +96,14 @@ struct settingView: View {
                             .font(.system(size:CGFloat(fontSizeLista)))
                         Spacer()
                         Stepper(String(fontSizeLista), value: $fontSizeLista)
+                        
+                    }
+                    
+                    HStack{
+                        Text("Diálogos del Chat IA:")
+                            .font(.system(size:CGFloat(fontSizeChatIA)))
+                        Spacer()
+                        Stepper(String(fontSizeChatIA), value: $fontSizeChatIA)
                         
                     }
                     

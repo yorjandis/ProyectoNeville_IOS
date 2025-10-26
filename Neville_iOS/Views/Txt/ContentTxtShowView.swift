@@ -10,7 +10,7 @@ import Foundation
 import SwiftUI
 import CoreData
 import RichText
-
+import FoundationModels
 
 struct ContentTxtShowView: View {
     
@@ -22,16 +22,8 @@ struct ContentTxtShowView: View {
     
     let nombreTxt : String //Nombre del fichero txt a abrir, sin el prefijo
     
-    let type : TipoDeContenido
-    
-    //Para funciones de IA
-    @State private var _iaModelStorage: Any? = nil
+    let type : TipoDeContenido //define el tipo de contenido a generar por IA
 
-    @available(iOS 26.0, *)
-    private var iaModel: IAModel? {
-        get { _iaModelStorage as? IAModel }
-        set { _iaModelStorage = newValue }
-    }
     
     @State private var showSheetIA : Bool = false
   
@@ -177,10 +169,7 @@ struct ContentTxtShowView: View {
                             SettingModel().saveColor(forkey: AppCons.UD_setting_color_textContent, color: newValue)
                         }
                     }
-                    
-                    
-                    
-                    
+
                     Button{
                         dimiss()
                     }label: {
@@ -201,18 +190,48 @@ struct ContentTxtShowView: View {
             }
             .toolbar{
                 
-                if self.nombreTxt != "biografia" {
-                    
-                    
+                //Barra de opciones para conferencias
+                if (self.type == .conf) {
+
                     if #available(iOS 26.0, *){
-                        ToolbarItem {
-                            NavigationLink{
-                                RespondView(nameConference: self.title, texto: self.getContent)
-                            }label: {
-                                Label("",systemImage: "sparkles")
+                        //Verificando si el marco FoundationModels esta disponible en el dispositivo
+                        if IAModel.isAvailable() {
+                            
+                            ToolbarItemGroup{
+                                Menu{
+                                    //Botón que genera un resumen de los puntos claves del contenido
+                                    NavigationLink{
+                                        RespondView(nameConference: self.title, texto: self.getContent, tipoSalida: .puntosClaves)
+                                    }label: {
+                                        Label("Puntos Claves",systemImage: "sparkles")
+                                    }
+                                    .tint(.orange)
+                                    .help("Genera, por IA,  un resumen de los puntos claves")
+                                    
+                                    //Botón que genera un resumen general del contenido
+                                    NavigationLink{
+                                        RespondView(nameConference: self.title, texto: self.getContent, tipoSalida: .resumen)
+                                    }label: {
+                                        Label("Resumen",systemImage: "sparkles")
+                                    }
+                                    .tint(.orange)
+                                    .help("Genera, por IA,  un resumen general del contenido")
+                                    
+                                    //Genera concejos prácticos:
+                                    NavigationLink{
+                                        RespondView(nameConference: self.title, texto: self.getContent, tipoSalida: .practicas)
+                                    }label: {
+                                        Label("Aplicación Práctica",systemImage: "sparkles")
+                                    }
+                                    .tint(.orange)
+                                    .help("Genera, por IA, una lista de concejos prácticos")
+                                    
+                                }label: {
+                                    Image(systemName: "sparkles")
+                                        
+                                }
+                                .tint(.purple)
                             }
-                            .tint(.orange)
-                            .help("Genera un resumen por IA")
                             
                         }
                     }
@@ -292,6 +311,47 @@ struct ContentTxtShowView: View {
                         }
                     }
                 }
+                
+                
+                
+                //Barra de opciones de IA para Ayudas y Citas:
+                if (self.type == .ayud || self.type == .citas ){
+                    if #available(iOS 26.0, *){
+                        if IAModel.isAvailable(){
+                            
+                            ToolbarItem {
+                                Menu{
+                                    NavigationLink{
+                                        
+                                        RespondView(nameConference: "", texto: self.getContent.replacingOccurrences(of: "<br>", with: ""), tipoSalida: .interpretar )
+                                        
+                                        
+                                    }label:{
+                                        Label("Interpretar", systemImage: "sparkles")
+                                    }
+                                    .tint(.purple)
+                                    
+                                    NavigationLink{
+                                        
+                                        RespondView(nameConference: "", texto: self.getContent.replacingOccurrences(of: "<br>", with: ""), tipoSalida: .practicaConcreta)
+                                       
+                                        
+                                    }label:{
+                                        Label("Aplicación Práctica", systemImage: "sparkles")
+                                    }
+                                    .tint(.purple)
+                                    
+                                }label:{
+                                    Image(systemName: "sparkles")
+                                }
+                                .tint(.purple)
+                            }
+                            
+                           
+                        }
+                    }
+                }
+                
  
             }
             .sheet(isPresented: self.$sheetShowFeedBackReview) {
