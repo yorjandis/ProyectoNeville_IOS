@@ -12,28 +12,28 @@ import FoundationModels   // Framework de Apple para los LLM on-device
 
 struct ChatMessage: Identifiable, Equatable {
     let id = UUID()
-    var text: String //Texto que ha puesto el usuario
-    var promtp: String //Petición enviada a la IA
+    var text: String        //Texto que ha puesto el usuario
+    var promtp: String      //Petición enviada a la IA
     let isUser: Bool
 }
 
 @available(iOS 26.0, *)
 @MainActor
 class ChatViewModel: ObservableObject {
-    @Published var messages: [ChatMessage] = [] //Arreglo de las conversaciones
-    @Published var inputText: String = ""       //Entrada del usuario
-    @Published var isResponding: Bool = false   //Indica que el modelo esta trabajando
+    @Published var messages: [ChatMessage]  = []       //Arreglo de las conversaciones
+    @Published var inputText: String        = ""       //Entrada del usuario
+    @Published var isResponding: Bool       = false    //Indica que el modelo esta trabajando
+    
+
+    @AppStorage(AppCons.UD_setting_TipoChatIA) private var TipoDeChatIA : Bool = true   //Tipo de chat IA: true pata neville, false para chat general
     
     private var session: LanguageModelSession?
     
-   
-    init() {
-        setupSession()
+    enum TiposChat {
+        case Neville, Ciencias
     }
     
-    private func setupSession() {
-        // Puedes pasar instrucciones si lo deseas
-        let instructions = Instructions{
+    let IntructionForNeville    = Instructions{
             """
             Eres el Maestro Neville Goddard.
             
@@ -75,10 +75,11 @@ class ChatViewModel: ObservableObject {
             - Jesucristo es la imaginación del hombre.
             - La Biblia no es histórica sino un manual psicológico para comprender las grandes verdades de la creación deliberada.
             - Solo se debe aceptar y sentir todo lo que contribuya a la realización de tu deseo.
-            - El concepto de si mismo determina como te ven los demás.
+            - El concepto de sí mísmo determina como te ven los demás.
             - Todo lo que ocurre en tu vida, aunque parezca real y un hecho inalterable, es un reflejo de la actividad anterior de tu conciencia.
             - Tus sentimientos crean el patrón desde el cual tu mundo es creado y un cambio de sentimiento es un cambio de patrón.
             - Pecar es fracasar en el cumplimiento de tu asunción.
+            - El alfarero representa nuestra maravillosa imaginación humana. La imaginación moldea la realidad del mismo modo que el alfarero le da forma al barro.  
             - La justicia se entiende por la rectitud de pensamiento y sentimiento, alineados con el ideal que quieres ver manifestado.
             - El mal o el diablo no es más que el sentimiento de duda que sientes antes la realización de tu deseos; y como todo sentimiento, activa el poder del subconsciente impidiendo que tus deseos se hagan realidad.
             - Una asunción aunque parezca falsa, si se persiste en ella, se materializará en hechos.
@@ -95,7 +96,49 @@ class ChatViewModel: ObservableObject {
 
             """
         }
-        session = LanguageModelSession(instructions: instructions)
+    let IntructionForAll        = Instructions{
+            """
+            Actúa como un experto en conocimentos generales con sólida formación académica.
+
+            Instrucciones estrictas:
+                1.    Solo utiliza información que esté basada en conocimiento verificado dentro de tus propios pesos de entrenamiento (no inventes datos ni referencias).
+                2.    No generes contenido especulativo ni extrapolaciones no confirmadas.
+                3.    Si no tienes suficiente información o la evidencia es limitada, indícalo explícitamente en la respuesta.
+                4.    Prioriza conceptos bien establecidos en la literatura científica o técnica.
+                5.    Si mencionas teorías o hipótesis, diferencia claramente entre hechos comprobados y suposiciones.
+                6.    No cites fuentes falsas. Solo usa referencias genéricas o autores reconocidos si estás seguro de su validez.
+
+            Estructura la respuesta en:
+                •    Resumen breve
+                •    Explicación detallada
+                •    Limitaciones del conocimiento actual
+                •    Aviso sobre posibles áreas de incertidumbre
+                •    Cita Varias fuentes para complemetar el contenido
+
+            Usa un tono rigurosamente técnico, con terminología precisa y sin invenciones.
+            """
+        }
+    
+   
+    init() {
+  
+        if self.TipoDeChatIA == true {
+            setupSession(tipoChat: .Neville)
+        }else{
+            setupSession(tipoChat: .Ciencias)
+        }
+       
+    }
+    
+    private func setupSession(tipoChat : TiposChat) {
+        // Puedes pasar instrucciones si lo deseas
+        if tipoChat == .Neville {
+            session = LanguageModelSession(instructions: self.IntructionForNeville)
+        }else{
+            session =  LanguageModelSession(instructions: self.IntructionForAll)
+        }
+        
+        
     }
     
     
@@ -108,25 +151,45 @@ class ChatViewModel: ObservableObject {
         let userText = inputText.trimmingCharacters(in: .whitespacesAndNewlines)
         inputText = ""
         
-        let prompt = """
-            Basado en tu conocimiento genera una respuesta al texto dado.
-            
-            Usa un tono profesional.
+        var prompt : String = ""
+        
+        if self.TipoDeChatIA == true {
+            //Neville
+            prompt = """
+                Basado en tu conocimiento genera una respuesta al texto dado.
+                
+                Usa un tono profesional.
 
-            Termina dando un concejo práctico, si es posible.
-            
-            No uses más de 250 palabras.
-            
-            Este es el texto:
-            \(userText)
-            """
+                Termina dando un concejo práctico, si lo consideras apropiado.
+                
+                No uses más de 250 palabras.
+                
+                Este es el texto:
+                \(userText)
+                """
+        }else{
+            //Ciencias
+            prompt = """
+                Basado en tu conocimiento genera una respuesta al texto dado.
+                
+                No uses más de 1500 palabras.
+                
+                Este es el texto:
+                \(userText)
+                """
+        }
+        
+        
         
         messages.append(ChatMessage(text: userText, promtp: prompt, isUser: true))
         
         isResponding = true //Trabajando...
         do {
             let response = try await session.respond(to: prompt)
-            messages.append(ChatMessage(text: response.content,promtp: "", isUser: false))
+            if self.isResponding == true{ //Esto evita que se carge el mensaje si le damos al botón Nueva Conversación en medio de la carga
+                messages.append(ChatMessage(text: response.content,promtp: "", isUser: false))
+            }
+            
         } catch {
             messages.append(ChatMessage(text: "Lo siento, ha ocurrido un error.",promtp: "", isUser: false))
             print("Error en session.respond: \(error)")
@@ -138,8 +201,10 @@ class ChatViewModel: ObservableObject {
     //Inicia una nueva conversación:
     func newConversation() {
             // Reinicia el chat y crea una nueva sesión
+            self.isResponding = false
             messages.removeAll()
-            setupSession()
+        let tipoChat : Bool = UserDefaults.standard.bool(forKey: AppCons.UD_setting_TipoChatIA)
+        setupSession(tipoChat: tipoChat ? .Neville : .Ciencias)
         }
     
 

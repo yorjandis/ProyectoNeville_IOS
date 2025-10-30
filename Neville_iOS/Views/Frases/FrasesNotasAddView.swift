@@ -12,6 +12,7 @@ import CoreData
 
 struct FrasesNotasAddView: View {
     @Environment(\.dismiss) var dimiss
+    @EnvironmentObject private var frasesModel: FrasesModel
     
     let frase : String
     
@@ -27,7 +28,7 @@ struct FrasesNotasAddView: View {
                     }
             }
             .onAppear{
-                nota = FrasesModel().GetNotaAsociadaFrase(frase: self.frase)
+                nota = frasesModel.GetNotaAsociadaFrase(frase: self.frase)
             }
             Spacer()
             ScrollView(content: {
@@ -42,7 +43,7 @@ struct FrasesNotasAddView: View {
                         if !FrasesModel.shared.UpdateNotaAsociada(frase: frase, notaAsociada: nota){
                             print("se ha producido un error al guardar la nota")
                         }
-                        FrasesModel().getfrasesArrayFromTxtFile()
+                        frasesModel.getAllFrases()
                         dimiss()
                     }
                 }

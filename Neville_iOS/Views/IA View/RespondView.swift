@@ -13,10 +13,16 @@ import RichText
 struct RespondView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var model : IAModel = IAModel()
+    @State private var notasModel : NotasModel = NotasModel()
+    
     @State private var isloading : Bool = false
     @State private var bounce = false //Para animar la imagend de IA en el centro de la pantalla
     
     @AppStorage(AppCons.UD_setting_fontContentSize)    var fontSizeContenido : Int = 24
+    
+    
+    @State private var showAlert : Bool = false
+    @State private var alertMessage : String = ""
     
     
     
@@ -90,14 +96,37 @@ struct RespondView: View {
                 
             }
         }
+        .alert(isPresented: self.$showAlert){
+            Alert(title: Text("Chat"), message: Text(self.alertMessage))
+        }
         .toolbar{
-            //Share the text
-            ToolbarItem {
-                ShareLink(item: self.creatorContentToShare){
-                    Label("", systemImage: "square.and.arrow.up")
+            if !self.isloading {
+                //Share the text
+                ToolbarItem {
+                    ShareLink(item: self.creatorContentToShare){
+                        Label("", systemImage: "square.and.arrow.up")
+                    }
+                     
                 }
-                 
+                
+                ToolbarSpacer(.fixed)
+                
+                ToolbarItem {
+                    Button{
+                        
+                        if self.notasModel.addNote(nota: "\(self.creatorContentToShare ) \n\n ----Texto de Referencia---- \n \(self.tipoSalida == .interpretar ? self.texto : self.nameConference + " (Conferencia)")", title: "Nota de IA"){
+                            self.alertMessage = "Se ha guardado la respuesta en Notas"
+                            self.showAlert = true
+                        }else{
+                            self.alertMessage = "No fue posible guardar la respuesta en Notas. Inténtelo más tarde."
+                            self.showAlert = true
+                        }
+                    }label:{
+                        Image(systemName: "text.page")
+                    }
+                }
             }
+            
         }
     }
     

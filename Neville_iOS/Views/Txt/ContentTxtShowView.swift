@@ -17,6 +17,7 @@ struct ContentTxtShowView: View {
     @Environment(\.dismiss) private var dimiss
     @Environment(\.managedObjectContext) private var context
     @EnvironmentObject private var modeloTxt : TxtContentModel
+    @EnvironmentObject private var settingModel : SettingModel
     
     let title : String 
     
@@ -92,26 +93,12 @@ struct ContentTxtShowView: View {
                             .padding(.horizontal, 5)
                             .task {
                                 //Se cargan y aplican los colores de fondo y de texto
-                                self.backgroundColor = SettingModel().loadColor(forkey: AppCons.UD_setting_color_fondoContent)
-                                self.textContentdColor = SettingModel().loadColor(forkey: AppCons.UD_setting_color_textContent)
+                                self.backgroundColor = SettingModel.loadColor(forkey: AppCons.UD_setting_color_fondoContent)
+                                self.textContentdColor = SettingModel.loadColor(forkey: AppCons.UD_setting_color_textContent)
                             }
                     }
                     .padding(.horizontal, 5)
-                    .background(GeometryReader { proxy -> Color in //Para lanzar ventana FeedBackRevie
-                        if self.flagScroll == false {
-                            let offset = -proxy.frame(in: .global).minY
-                            DispatchQueue.main.async {
-                                self.scrollOffset = offset
-                                if offset >= threshold {
-                                    if FeedBackModel.checkReviewRequest() {
-                                        self.sheetShowFeedBackReview = true
-                                    }
-                                    self.flagScroll = true //Desactiva el lanzamiento de la func
-                                }
-                            }
-                        }
-                        return Color.clear
-                    })
+                    
                 }
              
                 
@@ -150,7 +137,7 @@ struct ContentTxtShowView: View {
                             
                         }
                         .onChange(of: self.backgroundColor) { oldValue, newValue in
-                            SettingModel().saveColor(forkey: AppCons.UD_setting_color_fondoContent, color: newValue)
+                            settingModel.saveColor(forkey: AppCons.UD_setting_color_fondoContent, color: newValue)
                         }
                         
                         
@@ -166,7 +153,7 @@ struct ContentTxtShowView: View {
                         }
                         .onChange(of: self.textContentdColor) { oldValue, newValue in
                             print(self.hexString(for: newValue)) // Verifica el valor hexadecimal que se está pasando
-                            SettingModel().saveColor(forkey: AppCons.UD_setting_color_textContent, color: newValue)
+                            settingModel.saveColor(forkey: AppCons.UD_setting_color_textContent, color: newValue)
                         }
                     }
 
@@ -201,7 +188,7 @@ struct ContentTxtShowView: View {
                                 Menu{
                                     //Botón que genera un resumen de los puntos claves del contenido
                                     NavigationLink{
-                                        RespondView(nameConference: self.title, texto: self.getContent, tipoSalida: .puntosClaves)
+                                        RespondView(nameConference: self.nombreTxt, texto: self.getContent, tipoSalida: .puntosClaves)
                                     }label: {
                                         Label("Puntos Claves",systemImage: "sparkles")
                                     }
@@ -210,7 +197,7 @@ struct ContentTxtShowView: View {
                                     
                                     //Botón que genera un resumen general del contenido
                                     NavigationLink{
-                                        RespondView(nameConference: self.title, texto: self.getContent, tipoSalida: .resumen)
+                                        RespondView(nameConference: self.nombreTxt, texto: self.getContent, tipoSalida: .resumen)
                                     }label: {
                                         Label("Resumen",systemImage: "sparkles")
                                     }
@@ -219,7 +206,7 @@ struct ContentTxtShowView: View {
                                     
                                     //Genera concejos prácticos:
                                     NavigationLink{
-                                        RespondView(nameConference: self.title, texto: self.getContent, tipoSalida: .practicas)
+                                        RespondView(nameConference: self.nombreTxt, texto: self.getContent, tipoSalida: .practicas)
                                     }label: {
                                         Label("Aplicación Práctica",systemImage: "sparkles")
                                     }

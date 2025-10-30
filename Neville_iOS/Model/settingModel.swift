@@ -6,23 +6,49 @@
 //
 //Maneja las configuraciones de Setting
 
+//Esta clase se pasará como un objeto de enviroment a toda la jerarquia de vista a nivel de la App.
 import SwiftUI
 
 @MainActor
-struct SettingModel {
+final class SettingModel : ObservableObject {
     
-    //Devuelve un arreglo del color a almacenar
-    func saveColor(forkey: String, color : Color) {
+    @Published var colorfrase : Color = .black
+    @Published var colorFondo_a : Color = .orange
+    @Published var colorFondo_b : Color = .blue
+    
+    init(){
+        //Cargando los últimos colores almacenados en UserDefault:
+        Task{
+            await LoadLastColors()
+        }
+       
+    }
+    
+    //Almacena un color y actualiza las variables
+     func saveColor(forkey: String, color : Color) {
         let colortemp = UIColor(color).cgColor
         
         if let components = colortemp.components {
             
             UserDefaults.standard.setValue(components, forKey: forkey)
         }
+         
+         //Actualizando las variables Observables
+         switch forkey {
+             case AppCons.UD_setting_color_main_a:
+             self.colorFondo_a = color
+         case AppCons.UD_setting_color_main_b:
+             self.colorFondo_b = color
+         case AppCons.UD_setting_color_frases:
+             self.colorfrase = color
+         default:
+             break
+         }
+         
     }
     
     //Devuelve el valor de un color como Color para una clave en userdefault. Por defecto devuelve el color primario en el sistema
-    func loadColor(forkey: String)->Color{
+    static func loadColor(forkey: String)->Color{
         guard let userdefault = UserDefaults.standard.object(forKey: forkey) as? [CGFloat] else {
             return Color.primary
         }
@@ -31,8 +57,12 @@ struct SettingModel {
                                  green: userdefault[1],
                                  blue: userdefault[2],
                                  opacity:userdefault[3])
+         
         return color
     }
+    
+
+    
 
     ///Establece los valores por defecto para setting
     func setValuesByDefault(){
@@ -50,5 +80,12 @@ struct SettingModel {
         saveColor(forkey: AppCons.UD_setting_color_fondoContent, color: .gray) //Color de fondo del ContentTxt
         saveColor(forkey: AppCons.UD_setting_color_textContent, color: .black) //Color de texto del ContentTxt
         
+    }
+    
+    ///Actualiza las variables observables con los últimos colores almacenados:
+    func LoadLastColors() async {
+        self.colorfrase     = SettingModel.loadColor(forkey: AppCons.UD_setting_color_frases)
+        self.colorFondo_a   = SettingModel.loadColor(forkey: AppCons.UD_setting_color_main_a)
+        self.colorFondo_b   = SettingModel.loadColor(forkey: AppCons.UD_setting_color_main_b)
     }
 }

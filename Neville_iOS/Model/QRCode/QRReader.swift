@@ -11,6 +11,7 @@ import CodeScanner
 
 struct ReadQRCode : View {
     @Environment(\.colorScheme) var theme
+    @EnvironmentObject private var settingModel : SettingModel
     @State private var showQRScanner = false
     @State private var showQRGenerate = false
     @State private var textQR = ""
@@ -91,7 +92,7 @@ struct ReadQRCode : View {
                                 Text("Importar a Notas")
                                     .foregroundStyle(.black)
                             }
-                            .modifier(GradientButtonStyle(ancho: 200, colors: [SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_a), SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_b)]))
+                            .modifier(GradientButtonStyle(ancho: 200, colors: [settingModel.colorFondo_a, settingModel.colorFondo_b]))
                             
                             Button{
                                 FrasesModel.shared.AddFrase(frase: textQR)
@@ -101,7 +102,7 @@ struct ReadQRCode : View {
                                 Text("Importar a Frases")
                                     .foregroundStyle(.black)
                             }
-                            .modifier(GradientButtonStyle(ancho: 200, colors: [SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_a), SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_b)]))
+                            .modifier(GradientButtonStyle(ancho: 200, colors: [settingModel.colorFondo_a, settingModel.colorFondo_b]))
                             
                             
                             Button{
@@ -119,7 +120,7 @@ struct ReadQRCode : View {
                                 Text("Copiar al portapales")
                                     .foregroundStyle(.black)
                             }
-                            .modifier(GradientButtonStyle(ancho: 200, colors: [SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_a), SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_b)]))
+                            .modifier(GradientButtonStyle(ancho: 200, colors: [settingModel.colorFondo_a, settingModel.colorFondo_b]))
                             .padding(.bottom, 20)
                             
                             

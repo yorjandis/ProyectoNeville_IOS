@@ -9,24 +9,17 @@ import SwiftUI
 
 struct Home: View {
 
-    @State  private var showAddNoteList = false //Abre la view AddNota
+    @EnvironmentObject private var settingModel : SettingModel
     
-    @State  private var isHaveNote = false //Chequea si la frase actual tiene nota
+    @State  private var showAddNoteList = false //Abre la view AddNota
     
     @State  private var fontSize : CGFloat = CGFloat(UserDefaults.standard.integer(forKey: AppCons.UD_setting_fontFrasesSize)) //Setting para Frases
     @State  private var fontSizeMenu : CGFloat = 24 //Setting para menu
     
-    @State private var colorFrase : Color = SettingModel().loadColor(forkey: AppCons.UD_setting_color_frases)
-    
-    @State private var colorFondo_a : Color = SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_a)
-    @State private var colorFondo_b : Color = SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_b)
-    
+
     //Para chequeo de actualización de la app:
     @State private var showTextUpdateApp = false
-    
-    //Para determinar cuando se ha cambiado los colores y actualizar el fondo de pantalla.
-    @State private var isSettingChanged : Bool = false
-    
+
     //Para determinar el cumpleaños de neville:
     // Día y mes del cumpleaños 🎂
         @State private var esCumple = false
@@ -46,13 +39,20 @@ struct Home: View {
     private let isDebug = false
 #endif
 
+    
+
 
     var body: some View {
         NavigationStack{
             
             ZStack(alignment: .bottom){
                 
+                LinearGradient(gradient: Gradient(colors: [settingModel.colorFondo_a, settingModel.colorFondo_b]), startPoint: .top, endPoint: .bottom)
+                    .ignoresSafeArea()
+                
                 VStack{
+                    
+                    
                     
                     //Muestra un texto para felicitar a neville por su cumpleños(19 Frebrero)
                     if self.esCumple{
@@ -102,7 +102,13 @@ struct Home: View {
                     FrasesView()
  
                     Spacer()
-                    TabButtonBar(fontFrasesSize: $fontSize, fontMenuSize: $fontSizeMenu, colorFrase: $colorFrase, colorFondo_a: $colorFondo_a, colorFondo_b: $colorFondo_b, isSettingChanged: $isSettingChanged)
+                    TabButtonBar(
+                        fontFrasesSize: $fontSize,
+                        fontMenuSize: $fontSizeMenu,
+                        colorFrase:  Binding(get: { self.settingModel.colorfrase }, set: { self.settingModel.colorfrase = $0 }),
+                        colorFondo_a: Binding(get: { self.settingModel.colorFondo_a }, set: { self.settingModel.colorFondo_a = $0 }),
+                        colorFondo_b: Binding(get: { self.settingModel.colorFondo_b }, set: { self.settingModel.colorFondo_b = $0 })
+                    )
                 }
                 .onAppear{
                         self.chequearCumple()
@@ -125,14 +131,7 @@ struct Home: View {
                     }
                     
                 }
-                .onChange(of: self.isSettingChanged) {
-                    fontSize        = CGFloat(UserDefaults.standard.integer(forKey: AppCons.UD_setting_fontFrasesSize))
-                    colorFrase      = SettingModel().loadColor(forkey: AppCons.UD_setting_color_frases)
-                    colorFondo_a    = SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_a)
-                    colorFondo_b    = SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_b)
-                }
-                .modifier(mof_ColorGradient(colorInit: $colorFondo_a, colorEnd: $colorFondo_b))
-                .navigationTitle( AppCons.appName)
+                .navigationTitle("La Ley")
                 .navigationBarTitleDisplayMode(.inline)
                 .gesture(DragGesture().onEnded{ value in
                     let start = value.startLocation
@@ -155,6 +154,7 @@ struct Home: View {
                 
             }
             
+            
         }
         
     }
@@ -167,13 +167,12 @@ struct Home: View {
 
 //Frases View. Cuadro de frase en la pantalla inicial
 struct FrasesView : View{
-    @EnvironmentObject private var fraseModel : FrasesModel
+    @EnvironmentObject private var frasesModel : FrasesModel
+    @EnvironmentObject private var settingModel : SettingModel
     
-    @State private var  frase : String = ""
+    @State private var  frase : String = "" //Texto de la Frase
    
     @AppStorage(AppCons.UD_setting_fontFrasesSize) var fontSizeFrases : Int = 24
-    @State var colorFrase : Color = SettingModel().loadColor(forkey: AppCons.UD_setting_color_frases)
-
     //Para Adicionar una nueva frase
     @State private var showSheetAddFrase = false
     
@@ -192,14 +191,13 @@ struct FrasesView : View{
             VStack{
                 Text(self.frase)
                     .font(.system(size: CGFloat(fontSizeFrases), design: .rounded))
-                    .foregroundStyle(colorFrase)
+                    .foregroundStyle(self.settingModel.colorfrase)
                     .modifier(mof_frases())
                     .onTapGesture {
-                        self.frase = fraseModel.getRandomFrase()
-                        self.isFav = FrasesModel().isFavFrase(self.frase) //Actualizando el estado
-                    }
-                    .task{
-                        self.frase = fraseModel.getRandomFrase()
+                        self.frase = frasesModel.getRandomFrase()
+                        self.isFav = frasesModel.isFavFrase(self.frase) //Actualizando el estado
+                        frasesModel.favStateOfCurrentFrase = self.isFav
+                        frasesModel.fraseActual = self.frase //Guardando la frase actualmente visible en la variable observable
                     }
                     .onOpenURL(perform: { url in
                         if url.description == AppCons.DeepLink_url_Frase {
@@ -248,15 +246,6 @@ struct FrasesView : View{
                                     Label("Aplicación Práctica", systemImage: "sparkles")
                                 }
                                 .tint(.purple)
-                                
-                                NavigationLink{
-                                    ChatView()
-                                }label: {
-                                    Label("Diálogo Con el Usuario", systemImage: "sparkles")
-                                }
-                                .tint(.purple)
-                                
-                                
                             }
                             
                             
@@ -273,36 +262,40 @@ struct FrasesView : View{
                 HStack(){
                     Spacer()
                     
+                    //Boton de Favorito de la frase
                     Button{
-                        var getState = FrasesModel().isFavFrase(self.frase) //Obtiene el estado previo
-                        getState.toggle() //Invierte su valor
-                        if FrasesModel().setFavFrase(self.frase, getState){
-                            isFav = getState
+                        let getState = frasesModel.isFavFrase(self.frase) //Obtiene el estado previo
+                        if frasesModel.setFavFrase(self.frase, !getState){
+                            isFav = !getState
+                            frasesModel.favStateOfCurrentFrase = isFav
                             animationHeart += 1
                         }
                         
                         UIImpactFeedbackGenerator(style: .medium).impactOccurred()
                         
                     }label: {
-                        Image(systemName: isFav ? "heart.fill" : "heart")
-                            .foregroundStyle(isFav ? AppCons.favoriteColorOn : AppCons.favoriteColorOff)
+                        Image(systemName: frasesModel.favStateOfCurrentFrase ? "heart.fill" : "heart")
+                            .foregroundStyle(.black)
                             .symbolEffect(.bounce, value: animationHeart)
                     }
                     .padding(10)
                     .padding(.trailing, 15)
-                    .onAppear{
-                        //leyendo el estado isfav de la frase
-                        isFav = FrasesModel().isFavFrase(frase) //Obtiene el estado previo
-                        animationHeart += 1
-                    }
+                    
                 }
                 
             }
-            
+            .onAppear{
+                self.frase = frasesModel.getRandomFrase()
+                //leyendo el estado isfav de la frase
+                isFav = frasesModel.isFavFrase(frase) //Obtiene el estado previo
+                frasesModel.favStateOfCurrentFrase = isFav //Actualiza el estado del favorito en la variable observable
+                frasesModel.fraseActual = self.frase //Almacenando la frase actualmente visible en Home
+                //animationHeart += 1
+            }
             
             .sheet(isPresented: $showAddNoteView){ //permite modificar la nota de una frase
                 
-                FrasesNotasAddView(frase: self.frase, nota: self.fraseModel.GetNotaAsociadaFrase(frase: self.frase))
+                FrasesNotasAddView(frase: self.frase, nota: self.frasesModel.GetNotaAsociadaFrase(frase: self.frase))
                     .presentationDetents([.medium])
                     .presentationDragIndicator(.hidden)
                 //.interactiveDismissDisabled() //No deja que se oculte
@@ -327,6 +320,7 @@ struct FrasesView : View{
 //CustomTabView
 struct TabButtonBar : View{
     
+    @EnvironmentObject private var frasesModel : FrasesModel
     @State      var showOptionView = false
     @Binding    var fontFrasesSize : CGFloat //Setting
     @Binding    var fontMenuSize : CGFloat //Setting$
@@ -335,10 +329,6 @@ struct TabButtonBar : View{
     
     @Binding    var colorFondo_a : Color
     @Binding    var colorFondo_b : Color
-    
-    //Actualiza la UI de Home si cambia valores en setting
-    @Binding    var isSettingChanged : Bool ////Para actualizar los valores de configuración
-    
     
 
     @State private var showSetting = false
@@ -352,67 +342,103 @@ struct TabButtonBar : View{
     var body: some View{
         
         //Creando La bottom Bar con los item del menu
-        HStack{
-            ForEach(tabButtons, id:\.self){idx in
-                switch idx{
-                case "book.pages.fill": //Listado de Conferencias
-                    NavigationLink{
-                        TxtListView(typeOfContent: .conf, title: "Lecturas")
-                    }label: {
-                        makeItemlabel(image: idx)
-                    }
+        VStack{
+            HStack{
+                ForEach(tabButtons, id:\.self){idx in
+                    switch idx{
+                    case "book.pages.fill": //Listado de Conferencias
+                        NavigationLink{
+                            TxtListView(typeOfContent: .conf, title: "Lecturas")
+                        }label: {
+                            makeItemlabel(image: idx)
+                        }
+                        
+                    case "note.text":
+                        NavigationLink{
+                           ListNotasViews()
+                        }label: {
+                            makeItemlabel(image: idx)
+                        }
                     
-                case "note.text":
-                    NavigationLink{
-                       ListNotasViews()
-                    }label: {
-                        makeItemlabel(image: idx)
-                    }
-                
-                case "house.circle.fill":
-                    Button{              
-                       showOptionView = true
-                    }label: {
-                        makeItemlabel(image: idx)
-                            .font(.system(size: 30))
-                    }
-                    
-                case "book":
-                    NavigationLink{ DiarioListView()
-                    }label: {makeItemlabel(image: idx)}
-                    
-                case "gear":
-                    Button{ showSetting = true
-                    }label: {makeItemlabel(image: idx)}
+                    case "house.circle.fill":
+                        Button{
+                           showOptionView = true
+                        }label: {
+                            makeItemlabel(image: idx)
+                                .font(.system(size: 30))
+                        }
+                        
+                    case "book":
+                        NavigationLink{ DiarioListView()
+                        }label: {makeItemlabel(image: idx)}
+                        
+                    case "gear":
+                        if #available(iOS 26.0, *){
+                            if IAModel.isAvailable(){
+                                NavigationLink{
+                                        ChatView()
+                                }label: {
+                                    Image(systemName: "ellipsis.message")
+                                        .font(.system(size: 22))
+                                        .foregroundStyle(.black.opacity(0.7))
+                                        .padding(8)
+                                }
+                            }else{
+                                Button{ showSetting = true
+                                }label: {
+                                    makeItemlabel(image: idx)
+                                    
+                                }
+                            }
+                        }else{
+                            Button{ showSetting = true
+                            }label: {
+                                makeItemlabel(image: idx)
+                                
+                            }
+                        }
+                        
 
-                default: EmptyView()
-                    
-                }
+                    default: EmptyView()
+                        
+                    }
 
+                    
+                    //Insertando un espaciado para mantener la distancia entre los items
+                    if idx != tabButtons.last {
+                        Spacer(minLength: 0)
+                    }
+                    
+                }//ForEach
                 
-                //Insertando un espaciado para mantener la distancia entre los items
-                if idx != tabButtons.last {
-                    Spacer(minLength: 0)
-                }
-                
-            }//ForEach
-            
+            }
+            .padding(.horizontal, 25)
+            .background(LinearGradient(colors: [.gray, .cyan], startPoint: .top, endPoint: .bottom))
+            //.modifier(mof_ColorGradient(colorInit: $colorFondo_a, colorEnd: $colorFondo_b))
+            .clipShape(Capsule())
+            .shadow(color: Color.black.opacity(0.15), radius: 5, x: 5, y: 5)
+            .shadow(color: Color.black.opacity(0.15), radius: 5, x: -5, y: -5)
+            .padding(.horizontal)
+            .padding(.vertical, 5)
         }
-        .padding(.horizontal, 25)
-        .background(LinearGradient(colors: [.gray, .cyan], startPoint: .top, endPoint: .bottom))
-        //.modifier(mof_ColorGradient(colorInit: $colorFondo_a, colorEnd: $colorFondo_b))
-        .clipShape(Capsule())
-        .shadow(color: Color.black.opacity(0.15), radius: 5, x: 5, y: 5)
-        .shadow(color: Color.black.opacity(0.15), radius: 5, x: -5, y: -5)
-        .padding(.horizontal)
+        .onChange(of: self.showOptionView, { oldValue, newValue in
+            //Si se ha cerrado la ventana modal del las opciones en la tabBar:
+            if !newValue {
+                //Actualizando el estado de favorito de la frase actual
+                withAnimation {
+                    self.frasesModel.favStateOfCurrentFrase = frasesModel.isFavFrase(frasesModel.fraseActual)
+                }
+                
+            }
+        })
         
         .sheet(isPresented: $showOptionView) {
-            optionView(isSettingChanged: $isSettingChanged)
+            optionView()
                .presentationDetents([.height(280)])
                .presentationDragIndicator(.hidden)
         }
         .sheet(isPresented: $showSetting, content: {
-            settingView(isSettingChanged: $isSettingChanged)
+            settingView()
         })
     }
     
@@ -496,25 +522,10 @@ struct AddNotasViewInbuilt: View {
 
 
 
-///Actualiza el estado de la variable isfav: Se llama cada vez que se carga una frase nueva
-///
-///El parámetro es pasado in-line y corresponde con una variable @State de ContentView. Esto es una forma de actualizar una variable de estado desde fuera de la struct
-///
-/// - Parameter isfav : variable @State que controla el color del icono de fav para frases, en la toolBar
-func readFraseStatus( fraseEntity : Frases?, isfav : inout Bool, isHaveNote : inout Bool){
-    if let frase = fraseEntity {
-        isfav = frase.isfav
-        let nota = frase.nota
-        if nota == "" {
-            isHaveNote = false
-        }else{
-            isHaveNote = true
-        }
-    }
-}
 
 
 
 #Preview {
     ContentView()
 }
+

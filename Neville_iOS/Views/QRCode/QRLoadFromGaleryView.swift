@@ -11,6 +11,8 @@ import PhotosUI
 
 struct QRLoadFromGaleryView: View {
     
+   
+    
     @State private var selectedItem: PhotosPickerItem?
      @State private var selectedImage : UIImage?
      @State private var texto = ""
@@ -18,8 +20,7 @@ struct QRLoadFromGaleryView: View {
     @State private var ShowMenu = false
     @State private var inicialScreen = false
     
-    private let colorGradientButton = [SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_a),
-                                       SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_b)]
+  
     
     var body: some View {
         NavigationStack {

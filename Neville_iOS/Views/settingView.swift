@@ -17,6 +17,7 @@ struct settingView: View {
     @Environment(\.managedObjectContext) private var context
     @EnvironmentObject private var modelTxt : TxtContentModel
     @EnvironmentObject private var modelFrases : FrasesModel
+    @EnvironmentObject private var settingModel : SettingModel
     
      private let context2 = CoreDataController.shared.context
     
@@ -27,11 +28,17 @@ struct settingView: View {
     @AppStorage(AppCons.UD_setting_NotasFaceID)        var setting_NotasFaceID : Bool = false
     @AppStorage(AppCons.UD_setting_fontChatIASize)     var fontSizeChatIA : Int = 20
     
- 
-    @State var ColorFrase       : Color = SettingModel().loadColor(forkey: AppCons.UD_setting_color_frases)
-    @State var ColorPrimario    : Color = SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_a)
-    @State var ColorSecundario  : Color = SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_b)
     
+    //Tipo de chat de IA
+    @AppStorage(AppCons.UD_setting_TipoChatIA)              var tipoChatIA : Bool = true // True para Neville, False para Ciencias
+    @AppStorage(AppCons.UD_setting_AceptacionDescargoIA)    var DescargoDeIA : Bool = false // True para Neville, False para Ciencias
+    
+
+    //Almacena internamente los colores de configuración. Al inicio se cargan los valores almacenados
+    @State var ColorFrase       : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_color_frases)
+    @State var ColorPrimario    : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_color_main_a)
+    @State var ColorSecundario  : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_color_main_b)
+
 
     //Autenti
     private let contextLA = LAContext()
@@ -41,9 +48,6 @@ struct settingView: View {
     
     //Habilitar un botón en Ajustes para actualizar el nuevo contenido (importarlo a las BD)
     @State var showButtonUpdate = true // muestra/oculta el boton para actualizar nuevo contenido añadido al bundle
-    
-    //Permite ajustar en tiempo real los cambios en la UI home:
-    @Binding var isSettingChanged : Bool
     
     
     //Otros
@@ -55,9 +59,7 @@ struct settingView: View {
     @State private var preguntasCount       : Int = 0
     @State private var citasCount           : Int = 0
     @State private var conferenciasCount    : Int = 0
-
-    //Pruebas Yor
-    @State private var showSheetPruebaYor : Bool = false
+    
 
     var body: some View {
         
@@ -69,9 +71,6 @@ struct settingView: View {
                             .font(.system(size:CGFloat(fontSizeFrases)))
                         Spacer()
                         Stepper(String(fontSizeFrases), value: $fontSizeFrases)
-                            .onChange(of: fontSizeFrases) { oldValue, newValue in
-                                self.isSettingChanged.toggle() //Informa que se ha cambiado la setting
-                            }
                         
                     }
                     
@@ -98,61 +97,78 @@ struct settingView: View {
                         Stepper(String(fontSizeLista), value: $fontSizeLista)
                         
                     }
-                    
-                    HStack{
-                        Text("Diálogos del Chat IA:")
-                            .font(.system(size:CGFloat(fontSizeChatIA)))
-                        Spacer()
-                        Stepper(String(fontSizeChatIA), value: $fontSizeChatIA)
-                        
+                    if #available(iOS 26.0, *){
+                        if IAModel.isAvailable(){
+                            HStack{
+                                Text("Chat IA:")
+                                    .font(.system(size:CGFloat(fontSizeChatIA)))
+                                Spacer()
+                                Stepper(String(fontSizeChatIA), value: $fontSizeChatIA)
+                                
+                            }
+                        }
                     }
+                    
+                    
                     
                 }.padding(2)
                 
-                Section("Color de texto de frases"){
+                
+                
+                Section("Colores"){
                     
                     ColorPicker("Color de frases", selection: $ColorFrase)
-                        .foregroundColor(ColorFrase)
                         .bold()
                         .onChange(of: ColorFrase, initial: true) { oldValue, newValue in
-                            SettingModel().saveColor(forkey: AppCons.UD_setting_color_frases, color: newValue)
-                            self.isSettingChanged.toggle() //Informa a Home que se ha cambiado el color
+                            settingModel.saveColor(forkey: AppCons.UD_setting_color_frases, color: newValue)
                         }
-                }
-                
-                Section("Color de fondo - Pantalla Principal"){
                     
                     VStack(alignment: .center){
-                        ColorPicker("Color primario", selection: $ColorPrimario)
+                        ColorPicker("Color Degradado Superior", selection: $ColorPrimario)
                             .onChange(of: ColorPrimario, initial: true) { oldValue, newValue in
-                                SettingModel().saveColor(forkey: AppCons.UD_setting_color_main_a, color: newValue)
-                                self.isSettingChanged.toggle() //Informa a Home que se ha cambiado el color
+                                settingModel.saveColor(forkey: AppCons.UD_setting_color_main_a, color: newValue)
                             }
                             .padding(.bottom, 10)
-                        ColorPicker("Color Secundario", selection: $ColorSecundario)
+                        ColorPicker("Color Degradado Inferior", selection: $ColorSecundario)
                             .onChange(of: ColorSecundario, initial: true) { oldValue, newValue in
-                                SettingModel().saveColor(forkey: AppCons.UD_setting_color_main_b, color: newValue)
-                                self.isSettingChanged.toggle() //Informa a Home que se ha cambiado el color
+                                settingModel.saveColor(forkey: AppCons.UD_setting_color_main_b, color: newValue)
+                                
                             }
                         
-                        Text("")
-                            .frame(width: 200 ,  height: 60)
-                            .background(LinearGradient(colors: [ColorPrimario, ColorSecundario], startPoint: .top, endPoint: .bottom))
-                            .clipShape(RoundedRectangle(cornerRadius: 20))
+                        HStack{
+                            Text("Muestra:").font(.footnote)
+                            Spacer()
+                            Text("")
+                                .frame(width: 200 ,  height: 60)
+                                .background(LinearGradient(colors: [ColorPrimario, ColorSecundario], startPoint: .top, endPoint: .bottom))
+                                .clipShape(RoundedRectangle(cornerRadius: 20))
+                        }
+                        
                         
                         
                     }
-                    .onAppear{
-                        ColorFrase       = SettingModel().loadColor(forkey: AppCons.UD_setting_color_frases)
-                        ColorPrimario    = SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_a)
-                        ColorSecundario  = SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_b)
+                }
+                if #available(iOS 26.0, *){
+                    if IAModel.isAvailable(){
+                        
+                        Section("Utilización de la IA"){
+                            VStack(spacing: 10){
+                                HStack{
+                                    Text("(\(self.DescargoDeIA ? "Aceptado" : "No aceptado")) ")
+                                        .foregroundStyle(self.DescargoDeIA ? .green : .red).bold().font(.subheadline)
+                                    NavigationLink("Acceder al Descargo de responsabilidad"){DescargoResponsabilidadIA(VentanaEnSetting: true)}.foregroundStyle(.orange)
+                                }
+                                Text("Nota: Para utilizar la IA generativa en el dispositivo, debe leer y aceptar primero el Descargo de R esponsabilidad.").font(Font.footnote.bold())
+                            }
+                        }
+                        
+                        Section("Tipo de Chat de IA"){
+                            Toggle(self.tipoChatIA ? "Enseñanzas de Neville" : "Propósito General", isOn: self.$tipoChatIA)
+                        }
                     }
-                    
-                    
-                    
                 }
                 
-               
+                
                 
                 Section("Notas Generales"){
                      
@@ -189,7 +205,7 @@ struct settingView: View {
                 if BiometryCheckerSupport.checkBiometricSupport() == .available {
                     //Si existe una contraseña guardada; sino no, no se muestra el botón para recuperar contraseña
                     if KeychainHelper.shared.getPassword() != nil {
-                        Section("Recuperar Contraseña"){
+                        Section("Contraseña Maestra"){
                             Button("Recupera Contraseña Para Acceder al Diario y Notas"){
                                 //Intentando obtener la clave
                                 if let clave = KeychainHelper.shared.getPassword() {
@@ -198,6 +214,14 @@ struct settingView: View {
                                 }
                             }
                             .tint(.green)
+                            
+                            VStack(alignment: .leading){
+                               NavigationLink(destination: ChangePasswordView()){
+                                    Text("Cambiar La Contraseña")
+                                }
+                                Text("Permite modificar la contraseña para proteger el acceso al Diario y a Notas Protegidas").font(.footnote)
+                            }
+                            
                         }
                         .alert(isPresented: $showAlert) {
                             Alert(title: Text("La contraseña es:"), message: Text(self.alertMessage), dismissButton: .cancel())
@@ -205,17 +229,6 @@ struct settingView: View {
                     }
                 }
                 
-                //Mostrar una sección que permite cambiar la contraseña. Esta se habilita si ya tenemos una contraseña guardada
-                if KeychainHelper.shared.getPassword() != nil {
-                    Section("Cambiar Contraseña"){
-                        VStack(alignment: .leading){
-                           NavigationLink(destination: ChangePasswordView()){
-                                Text("Cambiar La Contraseña")
-                            }
-                            Text("Permite modificar la contraseña para proteger el acceso al Diario y a Notas Protegidas").font(.footnote)
-                        }
-                    }
-                }
                 
                 
                 
@@ -382,6 +395,3 @@ extension Int: @retroactive Identifiable {
 }
 
 
-#Preview {
-    settingView(isSettingChanged: .constant(true))
-}

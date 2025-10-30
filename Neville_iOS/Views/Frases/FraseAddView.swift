@@ -22,11 +22,12 @@ struct FraseAddView: View {
                         TextField("Texto de la frase", text: $text, axis: .vertical)
                             .multilineTextAlignment(.leading)
                             .font(.system(size: 22))
+                            .frame(height: 80)
                     }
                 }
                 
             }
-            .navigationTitle("Adicionar Frase")
+            .navigationTitle("Nueva Frase")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar{
                 Button("OK"){

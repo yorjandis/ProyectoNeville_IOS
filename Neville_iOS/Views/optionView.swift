@@ -8,7 +8,9 @@
 import SwiftUI
 
 struct optionView: View {
-
+    
+    @EnvironmentObject var settingModel: SettingModel
+    
     @State private var showNotasSheet   = false
     @State private var showDiarioSheet  = false
     @State private var showFrasesList   = false
@@ -21,12 +23,10 @@ struct optionView: View {
     @State private var showAyudas       = false
     @State private var showReflex       = false
     @State private var showSetting      = false
-    @Binding  var isSettingChanged : Bool //Para actualizar los valores de configuración
-    
-    private let colorGradientButton = [SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_a),
-                                       SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_b)]
-    
+
     private let sizeWigth : CGFloat = 150
+    
+    
     
     var body: some View {
         NavigationStack{
@@ -49,6 +49,7 @@ struct optionView: View {
                 .frame(maxWidth: .infinity , maxHeight: .infinity)
                 .background(.ultraThinMaterial)
             }
+
             
             .sheet(isPresented: $showNotasSheet) {
                 ListNotasViews()
@@ -75,7 +76,8 @@ struct optionView: View {
                 FrasesListView()
             }
             .sheet (isPresented: $showSetting){
-                settingView(isSettingChanged: $isSettingChanged)
+                settingView()
+                    .presentationDetents( [.large] )
             }
             .sheet(isPresented: $showCodeScanner){
                 //Mostrar el lector de código
@@ -90,10 +92,10 @@ struct optionView: View {
                 GamePLay()
                     .presentationDetents([.large])
                     .presentationDragIndicator(.hidden)
-        }
+            }
         }
     }
-   
+    
     
     
     @ViewBuilder
@@ -105,13 +107,13 @@ struct optionView: View {
                     showReflex = true
                 }label: {
                     bloqueA("infinity", "Reflexiones")
-                }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
+                }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: [settingModel.colorFondo_a, settingModel.colorFondo_b]))
                 
                 Button{
                     showAyudas = true
                 }label: {
                     bloqueA("flag.2.crossed.fill", "Ayudas")
-                }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
+                }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: [settingModel.colorFondo_a, settingModel.colorFondo_b]))
                 
             }
             .padding(.top, 5)
@@ -122,13 +124,13 @@ struct optionView: View {
                     showDiarioSheet = true
                 }label: {
                     bloqueA("book", "Diario")
-                }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
+                }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: [settingModel.colorFondo_a, settingModel.colorFondo_b]))
                 
                 Button{
                     showFrasesList = true
                 }label: {
                     bloqueA("bookmark.fill", "Frases")
-                }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
+                }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: [settingModel.colorFondo_a, settingModel.colorFondo_b]))
                 
             }
             
@@ -137,19 +139,39 @@ struct optionView: View {
                     showCitas = true
                 }label: {
                     bloqueA("doc.append", "Citas")
-                }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
+                }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: [settingModel.colorFondo_a, settingModel.colorFondo_b]))
                 
                 Button{
                     showPreguntas = true
                 }label: {
                     bloqueA("questionmark.bubble", "Preguntas & Respuestas")
-                }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
+                }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: [settingModel.colorFondo_a, settingModel.colorFondo_b]))
                 
             }
             Spacer()
-            Text ("Inicio")
-                .font(.title2)
-                .fontDesign(.serif)
+            HStack{
+                
+                Spacer()
+                
+                Text ("     Inicio")
+                    .font(.title2)
+                    .fontDesign(.serif)
+                
+                Spacer()
+                
+                Button{
+                    showSetting = true 
+                }label: {
+                    Image(systemName: "gear")
+                        .foregroundStyle(.orange)
+                        .font(.system(size: 24))
+                        
+                }
+                
+            }
+            .padding(.vertical, 0)
+            
+            
             
         }
         
@@ -165,11 +187,11 @@ struct optionView: View {
                     showBiografia = true
                 }label: {
                     bloqueA("person.text.rectangle", "Bibliografia")
-                }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
+                }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: [settingModel.colorFondo_a, settingModel.colorFondo_b]))
                 
                 Link(destination: URL(string: "https://t.me/+rODRAz2S6nVmMmY0")!){
                     bloqueA("personalhotspot", "Canal Telegram")
-                }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
+                }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: [settingModel.colorFondo_a, settingModel.colorFondo_b]))
             }
             .padding(.top, 5)
             HStack(spacing: 20){
@@ -177,14 +199,14 @@ struct optionView: View {
                     showGame = true
                 }label: {
                     bloqueA("gamecontroller", "Evaluación")
-                }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
+                }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: [settingModel.colorFondo_a, settingModel.colorFondo_b]))
                 
                 
                 Button{
                     showNotasSheet = true
                 }label: {
                     bloqueA("note.text", "Notas")
-                }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
+                }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: [settingModel.colorFondo_a, settingModel.colorFondo_b]))
             }
             HStack(spacing: 20){
                 
@@ -193,13 +215,13 @@ struct optionView: View {
                     showCodeScanner = true
                 }label: {
                     bloqueA("qrcode.viewfinder", "Leer QR")
-                }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
+                }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: [settingModel.colorFondo_a, settingModel.colorFondo_b]))
                 
                 Button{
                     showCodeGenerate = true
                 }label: {
                     bloqueA("qrcode", "Crear QR")
-                }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: colorGradientButton))
+                }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: [settingModel.colorFondo_a, settingModel.colorFondo_b]))
                 
                 
             }
@@ -213,14 +235,14 @@ struct optionView: View {
     
     
     
-        }
     
-
+    
+    
     
     //auxiliar
-@MainActor
+    @MainActor
     @ViewBuilder
-   private  func bloqueA( _ systemImagen : String, _ texto : String)-> some View{
+    private  func bloqueA( _ systemImagen : String, _ texto : String)-> some View{
         
         HStack {
             Image(systemName: systemImagen)
@@ -230,15 +252,10 @@ struct optionView: View {
         .foregroundStyle(.black).bold()
         
     }
-
     
-
-
-
-
-#Preview {
-    optionView(isSettingChanged: .constant(true))
+    
 }
-#Preview("home") {
-    ContentView()
-}
+
+
+
+

@@ -16,10 +16,20 @@ import SwiftUI
 final class FrasesModel : ObservableObject {
     @Published var listfrases : [String] = []
     
+    @Published var favStateOfCurrentFrase : Bool = false //Almacena el estado del favorito de la frase actualmente en la pantalla Home.
+    
+    var fraseActual : String = "" //Almacena la frase actualmente cargada en el home. Esto permite ajustar el estado del favorito en el home, si lo modificamos en el listado de frases.
+    
+    
     static let shared = FrasesModel() //Singleton
 
     private let context = CoreDataController.shared.context
 
+    
+    private init(){
+        getAllFrases()
+    }
+    
  
     ///Almacena el Id de la frase actualmente cargada. Se actualiza en: getRandomFrase()
     static var idFraseActual : String = ""
@@ -29,12 +39,11 @@ final class FrasesModel : ObservableObject {
     //Nuevas funciones Yor
     
     
-    ///Obtiene la lista de frases del fichero txt in-built (También agrega las frases personales creadas):
-    /// - Returns: Devuelve un  arreglo de cadenas con las frases cargadas del txt en Staff
-    func getfrasesArrayFromTxtFile(){
+    ///Obtiene la lista de frases del fichero txt in-built +  rases personales creadas). Actualiza la variable observable: listfrases
+    func getAllFrases(){
         self.listfrases.removeAll()
         //Extrayendo las frases inbuilt, almacenadas dentro del bundle de la App
-        self.listfrases = UtilFuncs.FileReadToArray(AppCons.FileListFrases)
+       var listTemp : [String] = UtilFuncs.FileReadToArray(AppCons.FileListFrases)
         
         //Agregando las frases noInbuit, de la Tabla Frases
         let fetchRequest : NSFetchRequest<Frases> = NSFetchRequest(entityName: "Frases")
@@ -44,9 +53,11 @@ final class FrasesModel : ObservableObject {
             let elements = try self.context.fetch(fetchRequest)
             for item in elements{
                 if let frase = item.frase{
-                    self.listfrases.append(frase)
+                    if frase.isEmpty{continue}
+                    listTemp.append(frase)
                 }
             }
+            self.listfrases = listTemp
         }catch{
             print("Error al recuperar las frases desde Core Data: \(error.localizedDescription)")
         }
@@ -56,7 +67,7 @@ final class FrasesModel : ObservableObject {
     ///Aqui se actualiza el ID de la frase actualmente cargada para fines de búsqueda dentro de la tabla Frases. Al inicio,  se intenta popular la tabla Frases si esta marcada como NO populada(false).
     /// - Returns Devuelve el texto de la frase. Actualiza la static var idFraseActual con el id de la frase devuelta. Si falla devuelve una frase vacia
     func getRandomFrase()->String {
-        return self.listfrases.randomElement() ?? "Malo"
+        return self.listfrases.randomElement() ?? "Listado Vacío"
     }
 
     
@@ -105,20 +116,20 @@ final class FrasesModel : ObservableObject {
         do {
             if let fraseEntity = try context.fetch(fetchRequest).first {
                 // La frase ya existe en la tabla, solo actualizamos el estado de favorito si es necesario
-                if fraseEntity.isfav != isFav { //solo hace el cambio si el estado es distinto al que ya tiene
                     fraseEntity.isfav = isFav
                     try context.save()
-                }
+                print("Estado A: \(fraseEntity.frase ?? "") - \(fraseEntity.isfav)")
             } else {
-                // Si la frase no existe,  creamos una nueva entrada en la tabla Frases
+                // Si la frase no existe en la tabla Frase,  creamos una nueva entrada en la tabla Frases
                 //Esto quiere decir que la frase es inbuilt, porque las frases personales siempre estarán en la tabla
                 let newFrase = Frases(context: context)
                 newFrase.id = UUID().uuidString
                 newFrase.frase = frase
-                newFrase.isfav = true // Solo creamos si isFav es true
+                newFrase.isfav = isFav
                 newFrase.noinbuilt = false
                 
                 try context.save()
+                
             }
             return true
         } catch {
@@ -319,15 +330,15 @@ final class FrasesModel : ObservableObject {
             let elements = try context.fetch(fetchRequest)
             for item in elements{
                 if let nota = item.nota {
-                    if(nota.lowercased().contains(textNota.lowercased())){
-                        result.append(nota)
+                    if(nota.localizedCaseInsensitiveContains(textNota)){
+                        result.append(item.frase!)
                     }
                 }
             }
-            return result
         }catch{
-            return result
+            print(error.localizedDescription)
         }
+        return result
         
     }
     
@@ -341,7 +352,6 @@ final class FrasesModel : ObservableObject {
 
 
 //Uso de transferable para poder compartir la frases en macOS y no crashee la app
-
 struct Frase: Transferable {
     var texto: String
 

@@ -4,14 +4,26 @@ import CoreData
 
 
 struct ContentView: View{
+    
+    @StateObject private var settingModel = SettingModel() //Inicializo el modelo para cargar valores de Setting y lo inyecto en el árbol de vistas
+    
     @State var showSheetDiario = false
     @State var showSheetNotas = false
+    
+    //Codigo a cargar al inicio:
+    init(){
+        //Carga los valores de Setting para Userdefault si es la primera vez
+        if UserDefaults.standard.integer(forKey: AppCons.UD_setting_fontFrasesSize) == 0 {
+            settingModel.setValuesByDefault()
+        } 
+    }
     
     var body: some View{
         
         
         
         Home()
+            .environmentObject(settingModel)
             .onOpenURL(perform: { url in
                 switch url.description{
                     case AppCons.DeepLink_url_Diario : showSheetDiario = true

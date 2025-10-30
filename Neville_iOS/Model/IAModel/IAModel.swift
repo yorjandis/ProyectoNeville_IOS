@@ -15,17 +15,17 @@ final class IAModel :  ObservableObject{
     var model : LanguageModelSession
     
     
-    @Published var puntosClaves : [String] = [] //Salida: resumen de los puntos claves del texto
-    @Published var resumenGeneral : String = "" //Salida: resumen general del contenido
-    @Published var practicas : [String] = [] //Listado de concejos prácticos sobre el contenido
+    @Published var puntosClaves     : [String] = [] //Salida: resumen de los puntos claves del texto
+    @Published var resumenGeneral   : String = "" //Salida: resumen general del contenido
+    @Published var practicas        : [String] = [] //Listado de concejos prácticos sobre el contenido
     @Published var practicaConcreta : String = "" //UN ejemplo de aplicación práctica de: Frase, reflexión, cita, etc
-    @Published var interpretacion : String = "" //Genera una interpretación de un texto de acuerdo a las ideas fundamentales de Neville Goddard
+    @Published var interpretacion   : String = "" //Genera una interpretación de un texto de acuerdo a las ideas fundamentales de Neville Goddard
     
     @Published var dialogoConUsuario : String = ""
     
     let maxLength : Int = 4000
-    @Published var noFragmentos : Int = 0
-    @Published var fragmentoActual : Int = 0
+    @Published var noFragmentos     : Int = 0
+    @Published var fragmentoActual  : Int = 0
     
     let ideasFundamentales = """
                     La conciencia es la única realidad y la causa de toda experiencia en la vida. Todo lo que vivimos es un reflejo de nuestro estado interno, ya que el mundo exterior actúa como un espejo de lo que creemos y sentimos ser. Lo que se acepta como verdad en la mente y se siente con intensidad se materializa en el mundo objetivo. Por ello, no se atrae lo que se desea, sino lo que se cree y se siente verdadero en el presente.
