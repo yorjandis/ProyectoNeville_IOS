@@ -180,7 +180,10 @@ struct FrasesView : View{
     @State private var showAddNoteView = false
     @State private var isFav = false //muestra un corazon lleno o vacio según el valor
     @State private var animationHeart = 0
-
+    
+    //Contador para navegar por la frase
+    @State private var contadorNavegarPorFrasesAnteriores : Int = 0
+    
     private var fraseCompartir : String{
         let frase = Frase(texto: self.frase)
         return frase.texto
@@ -194,11 +197,45 @@ struct FrasesView : View{
                     .foregroundStyle(self.settingModel.colorfrase)
                     .modifier(mof_frases())
                     .onTapGesture {
-                        self.frase = frasesModel.getRandomFrase()
-                        self.isFav = frasesModel.isFavFrase(self.frase) //Actualizando el estado
+                        //Almacenando la frase anterior
+                        if self.frasesModel.fraseAnteriores.count > 9 { //Si la capacidad del arreglo supera el limite de 10 frases
+                            
+                            self.frasesModel.fraseAnteriores.removeFirst() //Remueve la primera frase
+                            self.frasesModel.fraseAnteriores.append(self.frase) //Coloca la frase actual
+                            self.contadorNavegarPorFrasesAnteriores = self.frasesModel.fraseAnteriores.count
+                        }else{ //Si no se ha superado la capacidad del arreglo, simplemente agrega la frase actual al mismo
+                            
+                            self.frasesModel.fraseAnteriores.append(self.frase) //Coloca la frase actual
+                            self.contadorNavegarPorFrasesAnteriores = self.frasesModel.fraseAnteriores.count
+                        }
+                        print(self.frasesModel.fraseAnteriores.count)
+                        
+                        //Obtiene una nueva frase
+                        self.frase = frasesModel.getRandomFrase()//Obteniendo una nueva frase.
+                        self.isFav = frasesModel.isFavFrase(self.frase) //Actualizando el estado del favorito
                         frasesModel.favStateOfCurrentFrase = self.isFav
                         frasesModel.fraseActual = self.frase //Guardando la frase actualmente visible en la variable observable
+                        
                     }
+                //Gesto de deslizar hacia la derecha: navega hacia la frase anterior(hasta un máximo de 10 frases)
+                    .gesture(DragGesture().onEnded { value in
+                        //Permite navegar a las 10 frases anteriores
+                        let start = value.startLocation
+                        let end = value.location
+                        // Detect left-to-right swipe with a threshold of 24 points
+                        if end.x > start.x + 40 {
+                            if (!self.frasesModel.fraseAnteriores.isEmpty && self.contadorNavegarPorFrasesAnteriores > 0){
+                                //Navegando por las frases hacia a atras
+                                self.contadorNavegarPorFrasesAnteriores -= 1
+                                self.frase = self.frasesModel.fraseAnteriores[self.contadorNavegarPorFrasesAnteriores]
+                                
+                                self.isFav = self.frasesModel.isFavFrase(self.frase)
+                                self.frasesModel.favStateOfCurrentFrase = self.isFav
+                                self.frasesModel.fraseActual = self.frase
+                            }
+                            
+                        }
+                    })
                     .onOpenURL(perform: { url in
                         if url.description == AppCons.DeepLink_url_Frase {
                             self.frase = UserDefaults.shared().string(forKey: AppCons.UD_shared_FraseWidgetActual) ?? ""
@@ -232,7 +269,7 @@ struct FrasesView : View{
                         
                         if #available(iOS 26.0, *)  {
                             
-                            if IAModel.isAvailable(){
+                            if IAModelAppleIntelligence.isAvailable(){
                                 NavigationLink{
                                     RespondView(nameConference: "", texto: self.frase, tipoSalida: .interpretar)
                                 }label: {
@@ -246,6 +283,14 @@ struct FrasesView : View{
                                     Label("Aplicación Práctica", systemImage: "sparkles")
                                 }
                                 .tint(.purple)
+                                
+                                NavigationLink{
+                                    ChatView(textoACargar: self.frase)
+                                }label: {
+                                    Label("Charlar con IA", systemImage: "sparkles")
+                                }
+                                .tint(.purple)
+                                
                             }
                             
                             
@@ -285,12 +330,13 @@ struct FrasesView : View{
                 
             }
             .onAppear{
-                self.frase = frasesModel.getRandomFrase()
-                //leyendo el estado isfav de la frase
-                isFav = frasesModel.isFavFrase(frase) //Obtiene el estado previo
-                frasesModel.favStateOfCurrentFrase = isFav //Actualiza el estado del favorito en la variable observable
-                frasesModel.fraseActual = self.frase //Almacenando la frase actualmente visible en Home
-                //animationHeart += 1
+                if self.frase.isEmpty{
+                    self.frase = frasesModel.getRandomFrase()
+                    //leyendo el estado isfav de la frase
+                    isFav = frasesModel.isFavFrase(frase) //Obtiene el estado previo
+                    frasesModel.favStateOfCurrentFrase = isFav //Actualiza el estado del favorito en la variable observable
+                    frasesModel.fraseActual = self.frase //Almacenando la frase actualmente visible en Home
+                } 
             }
             
             .sheet(isPresented: $showAddNoteView){ //permite modificar la nota de una frase
@@ -374,9 +420,9 @@ struct TabButtonBar : View{
                         
                     case "gear":
                         if #available(iOS 26.0, *){
-                            if IAModel.isAvailable(){
+                            if IAModelAppleIntelligence.isAvailable(){
                                 NavigationLink{
-                                        ChatView()
+                                    ChatView(textoACargar: nil)
                                 }label: {
                                     Image(systemName: "ellipsis.message")
                                         .font(.system(size: 22))

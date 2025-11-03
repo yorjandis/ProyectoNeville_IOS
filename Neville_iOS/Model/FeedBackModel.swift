@@ -55,7 +55,6 @@ struct FeedBackModel {
         }else{
             //Aumenta el contador
             UserDefaults.standard.set(count+1, forKey: AppCons.UD_setting_ReviewCounter)
-            //print("Yorj contador en : \(UserDefaults.standard.integer(forKey: AppCons.UD_setting_ReviewCounter))")
             return false
         }
         

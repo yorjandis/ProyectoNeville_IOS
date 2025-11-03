@@ -135,34 +135,38 @@ struct FrasesListView: View {
                     .swipeActions(edge: .leading, allowsFullSwipe: true){
                         
                         //Esta View no se mostrará si Apple Intelligence no esta disponible
-                        CreateViewIfAppleIntelligence {
-                            Menu{
-                                NavigationLink{
-                                    if #available(iOS 26.0, *) {
-                                        RespondView(nameConference: "", texto: frase, tipoSalida: .interpretar )
+                        if #available(iOS 26.0, *) {
+                            if IAModelAppleIntelligence.isAvailable() {
+                                Menu{
+                                    NavigationLink{
+                                            RespondView(nameConference: "", texto: frase, tipoSalida: .interpretar )
+                                    }label:{
+                                        Label("Interpretar", systemImage: "sparkles")
                                     }
+                                    .tint(.purple)
+                                    
+                                    NavigationLink{
+                                            RespondView(nameConference: "", texto: frase, tipoSalida: .practicaConcreta)
+                                    }label:{
+                                        Label("Aplicación Práctica", systemImage: "sparkles")
+                                    }
+                                    .tint(.purple)
+                                    
+                                    NavigationLink{
+                                        ChatView(textoACargar: frase)
+                                    }label: {
+                                        Label("Charlar con IA", systemImage: "sparkles")
+                                    }
+                                    .tint(.purple)
                                     
                                 }label:{
-                                    Label("Interpretar", systemImage: "sparkles")
+                                    Image(systemName: "sparkles")
                                 }
                                 .tint(.purple)
-                                
-                                NavigationLink{
-                                    if #available(iOS 26.0, *) {
-                                        RespondView(nameConference: "", texto: frase, tipoSalida: .practicaConcreta)
-                                    }
-                                    
-                                }label:{
-                                    Label("Aplicación Práctica", systemImage: "sparkles")
-                                }
-                                .tint(.purple)
-                                
-                            }label:{
-                                Image(systemName: "sparkles")
                             }
-                            .tint(.purple)
+                            
+                            
                         }
-                        
                         //Notas de la Frase
                         NavigationLink{
                              FrasesNotasAddView( frase: frase)

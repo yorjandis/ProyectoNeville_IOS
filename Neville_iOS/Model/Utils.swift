@@ -67,13 +67,12 @@ struct AppCons{
     static let DescargoDeResposabilidad = """
                 Descargo de Responsabilidad:\n
                 
-                🟣 Las respuestas generadas por Inteligencia Artificial, IA en lo adelante,  pueden contener errores y ser imprecisas.
+                🟣 La Inteligencia Artificial, IA en lo adelante, puede generar respuestas imprecisas o con errores.
                 
                 🟣 El usuario es el único responsable de la verificación y la aplicación
-                de la respuesta generada por la IA.
+                de la respuesta generada por IA.
                 
-                🟣 El desarrollador no es responsable por  los daños o pérdidas derivadas 
-                del uso o imposibilidad de uso del contenido generado por la IA.
+                🟣 El desarrollador no es responsable por  los daños o pérdidas derivadas del uso o imposibilidad de uso del contenido generado por IA.
                 
                 🟣 Para hacer uso de la IA debe aceptar estas condiciones.
                 
@@ -111,8 +110,6 @@ struct UtilFuncs{
     static func FileRead(_ fileName: String) -> String {
         var result = ""
         let temp = "\(fileName.lowercased())"
-        
-       // print("Yorj: nombre del fichero a abrir \(temp)")
         
         if let gg = Bundle.main.url(forResource: temp, withExtension: "txt") {
             if let fileContents = try? String(contentsOf: gg) {

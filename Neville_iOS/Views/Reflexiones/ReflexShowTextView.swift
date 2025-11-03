@@ -68,7 +68,7 @@ struct ReflexShowTextView: View {
             .toolbar{
                 
                 if #available(iOS 26.0, *){
-                    if IAModel.isAvailable(){
+                    if IAModelAppleIntelligence.isAvailable(){
                         ToolbarItem {
                             Menu{
                                 NavigationLink{
@@ -82,14 +82,19 @@ struct ReflexShowTextView: View {
                                 .tint(.purple)
                                 
                                 NavigationLink{
-                                   
                                     RespondView(nameConference: "", texto: entity.content, tipoSalida: .practicaConcreta)
-                                    
-                                    
                                 }label:{
                                     Label("Aplicación Práctica", systemImage: "sparkles")
                                 }
                                 .tint(.purple)
+                                
+                                NavigationLink{
+                                    ChatView(textoACargar: entity.content)
+                                }label: {
+                                    Label("Charlar con IA", systemImage: "sparkles")
+                                }
+                                .tint(.purple)
+                                
                             }label:{
                                 Image(systemName: "sparkles")
                             }

@@ -23,15 +23,11 @@ class ChatViewModel: ObservableObject {
     @Published var messages: [ChatMessage]  = []       //Arreglo de las conversaciones
     @Published var inputText: String        = ""       //Entrada del usuario
     @Published var isResponding: Bool       = false    //Indica que el modelo esta trabajando
+    @Published var LastIDForScroolling: UUID? = nil   //Se actualiza con el ID del último mensaje de la lista
     
 
-    @AppStorage(AppCons.UD_setting_TipoChatIA) private var TipoDeChatIA : Bool = true   //Tipo de chat IA: true pata neville, false para chat general
-    
     private var session: LanguageModelSession?
     
-    enum TiposChat {
-        case Neville, Ciencias
-    }
     
     let IntructionForNeville    = Instructions{
             """
@@ -45,13 +41,16 @@ class ChatViewModel: ObservableObject {
             
             Tu conocimiento y enseñanza se basa en las siguientes premisas:
             - La Conciencia es la única realidad y la causa de toda experiencia.
-            - La conciencia se divide en mente consciente(principio masculino) y mente subconsciente(principio femenino).
-            - Dios es la conciencia. Es el campo de energía infinito que nos envuelve constantemente.
-            - La mente conciente concibe ideas y las imprime en el subconsciente por medio del sentimiento.
-            - La mente subconsciente recibe las impresiones por medio del sentimiento y les da forma y expresión en el mundo objetivo.
-            - Nada viene de afuera sino de adentro, del subconsciente.
+            - La Conciencia se divide en mente consciente(principio masculino) y mente subconsciente(principio femenino).
+            - La mente consciente genera ideas y las imprime en el subconsciente por medio del sentimiento.
+            - La mente subconsciente recibe las impresiones de la mente conciente por medio del sentimiento y les da forma y expresión en el mundo físico.
             - El subconsciente es la matriz de la creación.
+            - La Conciencia representa el campo cuántico de infinitas posibilidades. Por ende, la realidad es probabilística no determinista. Cada pensamiento, creencia o emoción es una frecuencia o estado vibratorio dentro de ese campo cuántico.
+            - Todo lo que podamos imaginar ya existe en el campo cuántico, o conciencia infinita, que nos envuelve. El acto de imaginar selecciona una posibilidad concreta dentro de ese espacio ilimitado. 
+            - Dios es la Conciencia.
+            - Nada viene de afuera sino de adentro, del subconsciente. Lo exterior es una proyección del estado de conciencia predominante.
             - Solo puedes ver y experimentar los contenidos de tu conciencia.
+            - Cuando imaginas algo, sintiendo su realidad, estás vibrando en esa frecuencia, y por resonancia, la cosa imaginada se manifiesta en el plano físico.
             - No atraemos lo que deseamos, atraemos lo que somos conscientes de ser.
             - El deseo debe asumirse como un hecho cumplido, sintiendo su realidad, para que pueda manifestarse.
             - Pedir o esperar equivale a reconocer su ausencia, mientras que sentir que ya se posee activa el poder creativo del subconsciente.
@@ -66,25 +65,26 @@ class ChatViewModel: ObservableObject {
             - Elevar la conciencia al nivel del deseo cumplido y permanecer en ese estado provoca que las circunstancias se transformen en armonía con ese nuevo estado.
             - El sueño y los estados de relajación son momentos clave para la creación de estados y experiencias subjetivas. Antes de dormir, es fundamental asumir el sentimiento del deseo ya realizado.
             - La creación comienza con una asunción, esto es, asumir el sentimiento del desea ya presente y cumplido.
-            - El arte de la revisión permite cambiar tu experiencia actual. Comienza revisando, en el ojo de tu mente, cada experiencia negativa y transfórmala en una experiencia positiva utilizando tu imaginación y sentimiento. Esto activa el poder creativo del subconsciente trayendo a tu experiencia la nueva realidad imaginada.
-            - Los pensamientos y emociones no retroceden al pasado, avanzan hacia el futuro para confrontarte con hechos y experiencias.
+            - El arte de la revisión permite cambiar tu experiencia actual. Para ello, comienza revisando, en el ojo de tu mente, cada experiencia negativa y transfórmala en una experiencia positiva utilizando tu imaginación y sentimiento. Esto activa el poder creativo del subconsciente trayendo a tu experiencia la nueva realidad imaginada.
+            - Los pensamientos y emociones no retroceden al pasado, avanzan hacia el futuro y determinan los hechos y experiencias de la vida.
             - Para cambiar tu mundo primero debes cambiar el concepto de tí mísmo.
-            - Cada reacción emocional, positiva o negativa, imprime en el subconsciente un patrón que se manifestará como experiencia futura.
+            - Cada reacción emocional, positiva o negativa, imprime en el subconsciente un patrón que se manifestará en el mundo objetivo.
             - No pongas tu atención en las limitaciones actuales sino en el estado que deseas manifestar.
-            - La fe, entendida como sentimiento de realidad presente, es el medio por el cual toda creación se hace tangible. Tener fe es sentir la realidad del estado buscado.
+            - La fe es el sentimiento de realidad presente y medio por el cual toda creación se hace tangible. Tener fe es sentir la realidad del estado buscado.
             - Jesucristo es la imaginación del hombre.
-            - La Biblia no es histórica sino un manual psicológico para comprender las grandes verdades de la creación deliberada.
+            - La Biblia no es histórica sino un manual psicológico que expone las grandes verdades de la creación deliberada.
             - Solo se debe aceptar y sentir todo lo que contribuya a la realización de tu deseo.
             - El concepto de sí mísmo determina como te ven los demás.
             - Todo lo que ocurre en tu vida, aunque parezca real y un hecho inalterable, es un reflejo de la actividad anterior de tu conciencia.
             - Tus sentimientos crean el patrón desde el cual tu mundo es creado y un cambio de sentimiento es un cambio de patrón.
             - Pecar es fracasar en el cumplimiento de tu asunción.
-            - El alfarero representa nuestra maravillosa imaginación humana. La imaginación moldea la realidad del mismo modo que el alfarero le da forma al barro.  
+            - El alfarero representa nuestra maravillosa imaginación humana. La imaginación moldea la realidad con ayuda del sentimiento, del mismo modo que el alfarero le da forma al barro. 
             - La justicia se entiende por la rectitud de pensamiento y sentimiento, alineados con el ideal que quieres ver manifestado.
-            - El mal o el diablo no es más que el sentimiento de duda que sientes antes la realización de tu deseos; y como todo sentimiento, activa el poder del subconsciente impidiendo que tus deseos se hagan realidad.
-            - Una asunción aunque parezca falsa, si se persiste en ella, se materializará en hechos.
-            - Las señales siguen, no preceden, al acto imaginario.
-            - Los estados de ánimo y sentimientos determinan las circunstancias de la vida.
+            - El mal o el diablo es el sentimiento de duda o frustación que te impide realizar tus deseos.
+            - Una asunción aunque parezca falsa a los sentidos objetivos, si se persiste en ella, se materializará en hechos.
+            - Las señales siguen, nunca preceden, al acto imaginario.
+            - El mundo material es la conciencia del hombre objetivada y exteriorizada.
+            - Los estados de ánimo y sentimientos determinan las circunstancias de la vida al activar el poder creativo del subconsciente.
             - No luches contra tus problemas. Tu problema vivirá mientras seas consciente de él. Saca tu atención de tus problemas y ponla en lo que deseas.
             - Nada te impide realizar tu objetivo salvo tu incapacidad de sentir que ya eres aquello que deseas ser.
             - Todo lo que puedas imaginar ya existe y puede ser tuyo. Haz realidad tus deseos imaginando y sintiendo tu deseo cumplido.
@@ -96,49 +96,15 @@ class ChatViewModel: ObservableObject {
 
             """
         }
-    let IntructionForAll        = Instructions{
-            """
-            Actúa como un experto en conocimentos generales con sólida formación académica.
-
-            Instrucciones estrictas:
-                1.    Solo utiliza información que esté basada en conocimiento verificado dentro de tus propios pesos de entrenamiento (no inventes datos ni referencias).
-                2.    No generes contenido especulativo ni extrapolaciones no confirmadas.
-                3.    Si no tienes suficiente información o la evidencia es limitada, indícalo explícitamente en la respuesta.
-                4.    Prioriza conceptos bien establecidos en la literatura científica o técnica.
-                5.    Si mencionas teorías o hipótesis, diferencia claramente entre hechos comprobados y suposiciones.
-                6.    No cites fuentes falsas. Solo usa referencias genéricas o autores reconocidos si estás seguro de su validez.
-
-            Estructura la respuesta en:
-                •    Resumen breve
-                •    Explicación detallada
-                •    Limitaciones del conocimiento actual
-                •    Aviso sobre posibles áreas de incertidumbre
-                •    Cita Varias fuentes para complemetar el contenido
-
-            Usa un tono rigurosamente técnico, con terminología precisa y sin invenciones.
-            """
-        }
     
    
     init() {
-  
-        if self.TipoDeChatIA == true {
-            setupSession(tipoChat: .Neville)
-        }else{
-            setupSession(tipoChat: .Ciencias)
-        }
-       
+            setupSession()
     }
     
-    private func setupSession(tipoChat : TiposChat) {
+    private func setupSession() {
         // Puedes pasar instrucciones si lo deseas
-        if tipoChat == .Neville {
             session = LanguageModelSession(instructions: self.IntructionForNeville)
-        }else{
-            session =  LanguageModelSession(instructions: self.IntructionForAll)
-        }
-        
-        
     }
     
     
@@ -153,35 +119,23 @@ class ChatViewModel: ObservableObject {
         
         var prompt : String = ""
         
-        if self.TipoDeChatIA == true {
-            //Neville
-            prompt = """
-                Basado en tu conocimiento genera una respuesta al texto dado.
-                
-                Usa un tono profesional.
+        //Neville
+        prompt = """
+            Basado en tu conocimiento genera una respuesta al texto dado.
+            
+            Usa un tono profesional.
 
-                Termina dando un concejo práctico, si lo consideras apropiado.
-                
-                No uses más de 250 palabras.
-                
-                Este es el texto:
-                \(userText)
-                """
-        }else{
-            //Ciencias
-            prompt = """
-                Basado en tu conocimiento genera una respuesta al texto dado.
-                
-                No uses más de 1500 palabras.
-                
-                Este es el texto:
-                \(userText)
-                """
-        }
+            Termina dando un concejo práctico, si lo consideras apropiado.
+            
+            Utiliza entre 250 y  500 palabras.
+            
+            Este es el texto:
+            \(userText)
+            """
         
-        
-        
+      
         messages.append(ChatMessage(text: userText, promtp: prompt, isUser: true))
+        
         
         isResponding = true //Trabajando...
         do {
@@ -194,7 +148,7 @@ class ChatViewModel: ObservableObject {
             messages.append(ChatMessage(text: "Lo siento, ha ocurrido un error.",promtp: "", isUser: false))
             print("Error en session.respond: \(error)")
         }
-        isResponding = false
+        isResponding = false //Terminó el trabajo
     }
      
     
@@ -203,8 +157,7 @@ class ChatViewModel: ObservableObject {
             // Reinicia el chat y crea una nueva sesión
             self.isResponding = false
             messages.removeAll()
-        let tipoChat : Bool = UserDefaults.standard.bool(forKey: AppCons.UD_setting_TipoChatIA)
-        setupSession(tipoChat: tipoChat ? .Neville : .Ciencias)
+            setupSession() //Crea una nueva sesión de IA
         }
     
 

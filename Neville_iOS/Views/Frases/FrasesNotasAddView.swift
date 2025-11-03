@@ -18,6 +18,10 @@ struct FrasesNotasAddView: View {
     
     @State var nota : String = "" //Campo del textField
     
+    @State var showAlert: Bool = false
+    @State var alertMessage: String = ""
+    
+    
     var body: some View {
         NavigationStack {
             Form{
@@ -41,7 +45,8 @@ struct FrasesNotasAddView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Guardar"){
                         if !FrasesModel.shared.UpdateNotaAsociada(frase: frase, notaAsociada: nota){
-                            print("se ha producido un error al guardar la nota")
+                            self.alertMessage = "No se ha podido guardar la nota."
+                            self.showAlert = true
                         }
                         frasesModel.getAllFrases()
                         dimiss()
@@ -53,6 +58,9 @@ struct FrasesNotasAddView: View {
                             .foregroundStyle(.red)
                     }
                 }
+            }
+            .alert(isPresented: self.$showAlert){
+                Alert(title: Text("Adicionar Nueva nota"), message: Text(self.alertMessage))
             }
         }
         

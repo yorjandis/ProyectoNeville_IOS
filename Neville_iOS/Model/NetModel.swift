@@ -58,9 +58,7 @@ struct CheckAppStatus{
                 guard let info = Bundle.main.infoDictionary,
                       let localVersion = info["CFBundleShortVersionString"] as? String else {throw TError.errorLocalizado}
         
-        //print("localVersion: \(localVersion)")
-        
-        
+      
         
         //Chequeando la url del sitio web:
         guard let url = URL(string: urlApp) else {throw TError.errorLocalizado}
@@ -75,8 +73,7 @@ struct CheckAppStatus{
                     if i.contains(stringSeparate){
                         let lineaClave = i.components(separatedBy: stringSeparate)
                         
-                       // print("remoteVersion: \(lineaClave[1].digitos)")
-                        
+                      
                         let remoteVersion = lineaClave[1].digitos //digitos es una extensión de String que obtiene los dígitos de una cadena
                         
                         

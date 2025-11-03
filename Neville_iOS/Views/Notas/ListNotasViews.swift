@@ -347,9 +347,7 @@ struct cardNotas: View{
                     ShareLink(item: "\(nota.title ?? "")\n \(nota.nota ?? "")")
                     
                     if #available(iOS 26.0, *) {
-                        if IAModel.isAvailable(){
-
-                                    
+                        if IAModelAppleIntelligence.isAvailable(){
                                     NavigationLink{
                                         if let  temp = nota.nota{
                                             RespondView(nameConference: "", texto: temp, tipoSalida: .interpretar )
@@ -370,6 +368,13 @@ struct cardNotas: View{
                                         Label("Aplicación Práctica", systemImage: "sparkles")
                                     }
                                     .tint(.purple)
+                            
+                            NavigationLink{
+                                ChatView(textoACargar: nota.nota)
+                            }label: {
+                                Label("Charlar con IA", systemImage: "sparkles")
+                            }
+                            .tint(.purple)
                              
                         }
                     }

@@ -18,18 +18,21 @@ struct AddNotasView: View {
     //Mostrar la ventana de FeedBackReview
     @State private var sheetShowFeedBackReview: Bool = false
     
+    @State private var showAlert: Bool = false
+    @State private var alertMessage: String = ""
+    
     var body: some View {
         NavigationStack {
             Form{
-                    Section("Título"){
-                        TextField("", text: $title, axis: .vertical)
-                            .textFieldStyle(.roundedBorder)
-                        
-                    }
-                    Section("Nota"){
-                        TextField("", text: $nota, axis: .vertical)
-                            .textFieldStyle(.roundedBorder)
-                    }
+                Section("Título"){
+                    TextField("", text: $title, axis: .vertical)
+                        .textFieldStyle(.roundedBorder)
+                    
+                }
+                Section("Nota"){
+                    TextField("", text: $nota, axis: .vertical)
+                        .textFieldStyle(.roundedBorder)
+                }
             }
             .navigationTitle("Adicionar una nota")
             .navigationBarTitleDisplayMode(.inline)
@@ -46,8 +49,8 @@ struct AddNotasView: View {
                             }
                             
                         }else{
-                            print("se ha producido un error al guardar la nota")
-                            dimiss()
+                            self.alertMessage = "No se pudo guardar la nota"
+                            self.showAlert = true
                         }
                         
                     }
@@ -61,6 +64,9 @@ struct AddNotasView: View {
             }
             .sheet(isPresented: self.$sheetShowFeedBackReview) {
                 FeedbackView(showTextBotton: true)
+            }
+            .alert(isPresented: self.$showAlert){
+                Alert(title: Text("Adicionar una nota"), message: Text(self.alertMessage))
             }
         }
         

@@ -152,7 +152,6 @@ struct ContentTxtShowView: View {
                             
                         }
                         .onChange(of: self.textContentdColor) { oldValue, newValue in
-                            print(self.hexString(for: newValue)) // Verifica el valor hexadecimal que se está pasando
                             settingModel.saveColor(forkey: AppCons.UD_setting_color_textContent, color: newValue)
                         }
                     }
@@ -182,7 +181,7 @@ struct ContentTxtShowView: View {
 
                     if #available(iOS 26.0, *){
                         //Verificando si el marco FoundationModels esta disponible en el dispositivo
-                        if IAModel.isAvailable() {
+                        if IAModelAppleIntelligence.isAvailable() {
                             
                             ToolbarItemGroup{
                                 Menu{
@@ -304,7 +303,7 @@ struct ContentTxtShowView: View {
                 //Barra de opciones de IA para Ayudas y Citas:
                 if (self.type == .ayud || self.type == .citas ){
                     if #available(iOS 26.0, *){
-                        if IAModel.isAvailable(){
+                        if IAModelAppleIntelligence.isAvailable(){
                             
                             ToolbarItem {
                                 Menu{

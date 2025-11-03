@@ -30,8 +30,7 @@ struct settingView: View {
     
     
     //Tipo de chat de IA
-    @AppStorage(AppCons.UD_setting_TipoChatIA)              var tipoChatIA : Bool = true // True para Neville, False para Ciencias
-    @AppStorage(AppCons.UD_setting_AceptacionDescargoIA)    var DescargoDeIA : Bool = false // True para Neville, False para Ciencias
+    @AppStorage(AppCons.UD_setting_AceptacionDescargoIA)    var DescargoDeIA : Bool = false // Si es true se permite utilizar la IA.
     
 
     //Almacena internamente los colores de configuración. Al inicio se cargan los valores almacenados
@@ -98,7 +97,7 @@ struct settingView: View {
                         
                     }
                     if #available(iOS 26.0, *){
-                        if IAModel.isAvailable(){
+                        if IAModelAppleIntelligence.isAvailable(){
                             HStack{
                                 Text("Chat IA:")
                                     .font(.system(size:CGFloat(fontSizeChatIA)))
@@ -149,7 +148,7 @@ struct settingView: View {
                     }
                 }
                 if #available(iOS 26.0, *){
-                    if IAModel.isAvailable(){
+                    if IAModelAppleIntelligence.isAvailable(){
                         
                         Section("Utilización de la IA"){
                             VStack(spacing: 10){
@@ -160,10 +159,6 @@ struct settingView: View {
                                 }
                                 Text("Nota: Para utilizar la IA generativa en el dispositivo, debe leer y aceptar primero el Descargo de R esponsabilidad.").font(Font.footnote.bold())
                             }
-                        }
-                        
-                        Section("Tipo de Chat de IA"){
-                            Toggle(self.tipoChatIA ? "Enseñanzas de Neville" : "Propósito General", isOn: self.$tipoChatIA)
                         }
                     }
                 }

@@ -18,6 +18,8 @@ final class FrasesModel : ObservableObject {
     
     @Published var favStateOfCurrentFrase : Bool = false //Almacena el estado del favorito de la frase actualmente en la pantalla Home.
     
+    @Published var fraseAnteriores : [String] = [] //Almacena la frase anterior para poder acceder a ella.
+    
     var fraseActual : String = "" //Almacena la frase actualmente cargada en el home. Esto permite ajustar el estado del favorito en el home, si lo modificamos en el listado de frases.
     
     
@@ -118,7 +120,6 @@ final class FrasesModel : ObservableObject {
                 // La frase ya existe en la tabla, solo actualizamos el estado de favorito si es necesario
                     fraseEntity.isfav = isFav
                     try context.save()
-                print("Estado A: \(fraseEntity.frase ?? "") - \(fraseEntity.isfav)")
             } else {
                 // Si la frase no existe en la tabla Frase,  creamos una nueva entrada en la tabla Frases
                 //Esto quiere decir que la frase es inbuilt, porque las frases personales siempre estarán en la tabla

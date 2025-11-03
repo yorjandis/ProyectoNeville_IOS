@@ -20,9 +20,9 @@ struct ChatView: View {
     
     @AppStorage(AppCons.UD_setting_AceptacionDescargoIA)    var DescargoDeIA : Bool = false // True permite acceso al chet IA,false prohíbe el acceso al chat de IA
     
-    @AppStorage(AppCons.UD_setting_TipoChatIA) private var tipoDeChatIA : Bool = true   //Tipo de chat IA: true pata neville, false para chat general
-    
     @State private var lastID : UUID? = nil //Para poder desplazar la lista de mensajes en el chat hasta el último siempre
+    
+    let textoACargar : String?  //Permite cargar una frase o nota  y usarla en el chatIA para entablar una conversación.
     
     
     @FocusState private var focus
@@ -62,6 +62,8 @@ struct ChatView: View {
                                                         .background(Color.blue.opacity(0.8))
                                                         .foregroundColor(.white)
                                                         .cornerRadius(12)
+                                                        .id(msg.id) //Para propósitos de scroll
+                                                        
                                                 } else {
                                                     VStack{
                                                         Text(msg.text)
@@ -71,31 +73,20 @@ struct ChatView: View {
                                                             .foregroundStyle(.white)
                                                         MenuOpcionesRespuesta(texto: msg.text)
                                                             .padding(.vertical, 0)
-                                                        
+                                                            .id(msg.id) //Para porpósitos de scrooll
                                                     }
                                                     
                                                     Spacer()
                                                 }
                                             }
                                             .transition(.opacity)
-                                            
                                             .font(.system(size: CGFloat(fontSizeChatIA)))
                                             .padding(.horizontal)
                                             .padding(.vertical, 4)
                                         }
                                     }else{
-                                        if self.tipoDeChatIA{
                                             AdjustableGridView(rows: 4 , model: self.model)
-                                        }
                                     }
-                                    
-                                    BurbujaCarga()//Aparece mientras la IA esta procesando la información
-                                        .id(self.lastID)
-                                        .onAppear{
-                                            self.lastID = UUID()
-                                        }
-                                    
-                                    
                                 }
                                 .animation(.easeInOut(duration: 0.20), value: model.messages)
                                 
@@ -104,26 +95,26 @@ struct ChatView: View {
                             }
                             .onChange(of: model.messages.count) {old, new in
                                 //Permite correr el scroll para que se muestre la última conversación.
-                                if let _ = model.messages.last {
+                                if let lastMsg = model.messages.last {
                                     withAnimation {
-                                        if model.isResponding {
-                                            // scrollProxy.scrollTo(last.id, anchor: .bottom)
-                                            scrollProxy.scrollTo(self.lastID, anchor: .bottom)
+                                        if lastMsg.isUser {
+                                            //Si el último mensaje es del usurio, se hace scroll para ver ver su contenido
+                                            scrollProxy.scrollTo(lastMsg.id, anchor: .top)
                                         }else{
-                                            if model.messages.count > 1{
+                                            //Si el último mensaje es del boot se hace scrool para ver desde el mensaje del usuario
+                                            if model.messages.count > 1 {
                                                 scrollProxy.scrollTo(model.messages[model.messages.count-2].id, anchor: .top)
                                             }
-                                            
+                                                
                                         }
-                                        
                                     }
                                 }
                             }
-                            
                         }
                         
                         Promt()
                             .padding()
+                            
                     }
                     .onTapGesture {
                         self.focus = false
@@ -132,24 +123,10 @@ struct ChatView: View {
                 
                 
             }
-            .navigationTitle( self.tipoDeChatIA ? "Pregunta  a Neville" : "Chat General")
+            .navigationTitle("Pregunta  a Neville")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar{
                 if self.DescargoDeIA {
-                    ToolbarItem {
-                        //Switch chat type
-                        Button{
-                            withAnimation(.easeIn(duration: 0.5)) {
-                                self.tipoDeChatIA.toggle()
-                                self.model.newConversation()
-                            }
-                            
-                            
-                        }label:{
-                            Image(systemName: "repeat.circle")
-                        }
-                    }
-                    ToolbarSpacer(.fixed)
                     ToolbarItem {
                         Button{
                             withAnimation {
@@ -163,6 +140,9 @@ struct ChatView: View {
                 }
                 
             }
+            .alert(isPresented: self.$showAlert){
+                Alert(title: Text("Chat IA"), message: Text(self.alertMessage))
+            }
         }
 
     }
@@ -174,7 +154,7 @@ struct ChatView: View {
         VStack{
             
             HStack {
-                TextField("Escribe un mensaje…", text: $model.inputText)
+                TextField("Escribe un mensaje…", text: $model.inputText, axis: .vertical)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .font(.system(size: CGFloat(fontSizeChatIA)))
                     .disabled(model.isResponding)
@@ -185,7 +165,13 @@ struct ChatView: View {
                         await model.sendMessage()
                     }
                 }label:{
-                    Text("Enviar")
+                    if model.isResponding {
+                        ProgressView()
+                            .padding(.horizontal, 14)
+                    }else{
+                        Text("Enviar")
+                    }
+                    
                 }
                 .buttonStyle(.glass)
                 .foregroundStyle(.white)
@@ -194,56 +180,19 @@ struct ChatView: View {
                 
                 
             }
+            .onAppear{
+                if let texto = self.textoACargar{
+                    if !texto.isEmpty{
+                        self.model.inputText = "Hablemos sobre este texto: \(texto)"
+                    }
+                }
+            }
             
         }
         
     }
     
-    //Construye la Burbuja de Carga
-    @ViewBuilder
-    private func BurbujaCarga() -> some View {
-        if model.isResponding {
-            HStack {
-                LoadingSymbolBubble()
-                Spacer()
-            }
-            .transition(.opacity)
-            .font(.system(size: CGFloat(fontSizeChatIA)))
-            .padding(.horizontal)
-            .padding(.vertical, 4)
-        }
-    }
 
-    // Subview: animated SF Symbol inside assistant-style bubble
-    private struct LoadingSymbolBubble: View {
-        @State private var bounce: Bool = false
-
-        var body: some View {
-            HStack(spacing: 6) {
-                ForEach(0..<3) { index in
-                    Circle()
-                        .fill(Color.white)
-                        .frame(width: 8, height: 8)
-                        .offset(y: bounce ? -5 : 5)
-                        .opacity(0.9)
-                        .animation(
-                            .easeInOut(duration: 0.45)
-                                .repeatForever(autoreverses: true)
-                                .delay(Double(index) * 0.4),
-                            value: bounce
-                        )
-                }
-            }
-            .padding(12)
-            .background(Color.black.opacity(0.5))
-            .cornerRadius(12)
-            .onAppear {
-                bounce = true
-            }
-        }
-    }
-    
-    
     //Construye el menú de opciones de cada chat
     @ViewBuilder
     private func MenuOpcionesRespuesta(texto: String) -> some View {
@@ -390,7 +339,7 @@ struct DescargoResponsabilidadIA : View{
 @available(iOS 26.0, *)
 #Preview {
     NavigationStack {
-        ChatView()
+        ChatView(textoACargar: nil)
     }
 }
 

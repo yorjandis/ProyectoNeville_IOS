@@ -12,14 +12,14 @@ import RichText
 @available(iOS 26.0, *)
 struct RespondView: View {
     @Environment(\.dismiss) private var dismiss
-    @StateObject private var model : IAModel = IAModel()
+    @StateObject private var model : IAModelAppleIntelligence = IAModelAppleIntelligence()
     @State private var notasModel : NotasModel = NotasModel()
     
     @State private var isloading : Bool = false
     @State private var bounce = false //Para animar la imagend de IA en el centro de la pantalla
     
     @AppStorage(AppCons.UD_setting_fontContentSize)    var fontSizeContenido : Int = 24
-    
+    @AppStorage(AppCons.UD_setting_AceptacionDescargoIA)    var DescargoDeIA : Bool = false // Si es true se permite utilizar la IA.
     
     @State private var showAlert : Bool = false
     @State private var alertMessage : String = ""
@@ -53,7 +53,7 @@ struct RespondView: View {
             LinearGradient(colors: [.orange.opacity(0.7),  .brown], startPoint: .topLeading, endPoint: .bottomTrailing)
                 .ignoresSafeArea(edges: .bottom)
             
-            
+            if self.DescargoDeIA{
                 ScrollView {
                     
                     switch self.tipoSalida {
@@ -70,17 +70,14 @@ struct RespondView: View {
                     }
                 }
                 .redacted(reason: self.isloading ? .placeholder : []) //Mostrar un skeleton mientras se carga el contenido
-                
-            
-            //Mostrando la vista de procesamiento
-                if self.isloading{
-                    VistaDeProcesamiento().padding()
-                }
-             
-               
-
-            
-            
+                //Mostrando la vista de procesamiento
+                    if self.isloading{
+                        VistaDeProcesamiento().padding()
+                    }
+            }else{
+                DescargoResponsabilidadIA(VentanaEnSetting: false)
+            }
+  
         }
         .onAppear{
             Task { @MainActor in
@@ -360,7 +357,7 @@ struct RespondView: View {
                         self.isloading = true
                         bounce = true
                     }
-                        await self.model.executeRequestAplicacionPractica(texto: self.texto)
+                        await self.model.executeRequestListAplicacionPractica(texto: self.texto)
 
                     withAnimation {
                         self.isloading = false
