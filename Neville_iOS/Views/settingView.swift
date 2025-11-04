@@ -8,7 +8,6 @@
 import SwiftUI
 import LocalAuthentication
 import CoreData
-import RichText
 
 struct settingView: View {
     
@@ -293,7 +292,7 @@ struct settingView: View {
                     NavigationLink{
                         NavigationStack{
                             ScrollView{
-                                RichText(html: UtilFuncs.FileRead("privacy"))
+                                SelectableText(UtilFuncs.FileRead("privacy"),fontSize: 22, fonColor: UIColor(Color.primary))
                             }.navigationTitle("Ajustes - Privacy")
                         }
                     }label:{

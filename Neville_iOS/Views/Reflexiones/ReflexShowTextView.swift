@@ -32,9 +32,7 @@ struct ReflexShowTextView: View {
                 Section("Reflexión"){
                     VStack{
                         ScrollView{
-                            Text(entity.content)
-                                .multilineTextAlignment(.leading)
-                                .font(.system(size: fontSizeContent, design: .rounded))
+                            SelectableText(entity.content, fontSize: self.fontSizeContent,fonColor: UIColor(Color.primary) ,  alignment: .left)
                         }.scrollIndicators(.automatic)
                     }
                     
@@ -79,21 +77,21 @@ struct ReflexShowTextView: View {
                                 }label:{
                                     Label("Interpretar", systemImage: "sparkles")
                                 }
-                                .tint(.purple)
+                                .tint(.orange)
                                 
                                 NavigationLink{
                                     RespondView(nameConference: "", texto: entity.content, tipoSalida: .practicaConcreta)
                                 }label:{
                                     Label("Aplicación Práctica", systemImage: "sparkles")
                                 }
-                                .tint(.purple)
+                                .tint(.orange)
                                 
                                 NavigationLink{
                                     ChatView(textoACargar: entity.content)
                                 }label: {
                                     Label("Charlar con IA", systemImage: "sparkles")
                                 }
-                                .tint(.purple)
+                                .tint(.orange)
                                 
                             }label:{
                                 Image(systemName: "sparkles")

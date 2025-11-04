@@ -113,7 +113,7 @@ struct UtilFuncs{
         
         if let gg = Bundle.main.url(forResource: temp, withExtension: "txt") {
             if let fileContents = try? String(contentsOf: gg) {
-                result = fileContents.replacingOccurrences(of: "\n", with: "<br>")
+                result = fileContents //.replacingOccurrences(of: "\n", with: "<br>") //Deshabilitados la conversión de \n a <br> porque ya no utilizamos RichtEdit para vosualizar
             }
         }
         return result

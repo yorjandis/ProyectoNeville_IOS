@@ -13,6 +13,8 @@ struct FrasesListView: View {
     @Environment(\.colorScheme) var theme
     @EnvironmentObject private var frasesModel: FrasesModel
     
+    @AppStorage(AppCons.UD_setting_fontFrasesSize)     var fontSizeFrases      : Int = 24
+    
     @State private var showAddFrase = false
     @State private var subtitle = "Todas las Frases"
     
@@ -129,7 +131,7 @@ struct FrasesListView: View {
                 
                 List(self.listadoPropio, id: \.self){ frase in
                     VStack(alignment: .leading){
-                        Text(frase)
+                        SelectableText(frase, fontSize: CGFloat(self.fontSizeFrases), fonColor: UIColor(Color.primary) , alignment: .left)
                     }
                     //Modificar el campo nota de una frase
                     .swipeActions(edge: .leading, allowsFullSwipe: true){

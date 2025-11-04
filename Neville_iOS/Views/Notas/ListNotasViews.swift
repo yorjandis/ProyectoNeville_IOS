@@ -74,21 +74,29 @@ struct ListNotasViews: View {
                         
                         ToolbarItem {
                             Menu{
-                                Button("Todas las notas"){
+                                Button{
                                     withAnimation {
                                         list.removeAll()
                                         list = NotasModel().getAllNotas()
                                     }
+                                }label:{
+                                    Label("Todas las notas", systemImage: "text.magnifyingglass.rtl")
                                 }
-                                Button("Notas Favoritas"){
+                                
+                                Button{
                                     withAnimation {
                                         list.removeAll()
                                         list = NotasModel().getFavNotas()
                                     }
                                     
+                                }label:{
+                                    Label("Notas Favoritas", systemImage: "text.magnifyingglass.rtl")
                                 }
-                                Button("Buscar en Notas"){
+                                
+                                Button{
                                     showAlertSearch = true
+                                }label:{
+                                    Label("Buscar en Notas", systemImage: "text.magnifyingglass.rtl")
                                 }
                                 
                             }label: {
@@ -284,7 +292,7 @@ struct ListNotasViews: View {
 
 //Card notas:
 struct cardNotas: View{
-    let nota : Notas
+    let nota : Notas?
     @Binding var  notas : [Notas]
     @State private var expandText = false
     @State private var isfav = false
@@ -298,7 +306,7 @@ struct cardNotas: View{
         VStack(){
             HStack{
 
-                Text(nota.title ?? "")
+                Text(nota?.title ?? "")
                     .bold()
                     .fontDesign(.serif)
                     .padding(8)
@@ -314,42 +322,63 @@ struct cardNotas: View{
                         .font(.system(size: 12))
                         .foregroundStyle(LinearGradient(colors: [.orange, .green], startPoint: .topLeading, endPoint: .bottomTrailing))
                         .onTapGesture {
-                            _ = NotasModel().updateFav(NotaID: nota.id ?? "", favState: false)
+                            _ = NotasModel().updateFav(NotaID: nota?.id ?? "", favState: false)
                             withAnimation {
-                                isfav = nota.isfav ? true : false
+                                isfav = nota?.isfav ?? false ? true : false
                             }
                         }
                 }
 
                 Menu{
-                        Text("< \(nota.title ?? "") >")
+                        Text("< \(nota?.title ?? "") >")
                     
-                        Button("Editar..."){showUpdateNoteView = true}
-                        Button(nota.isfav ? "Quitar Favorito" : "Hacer Favorito"){
-                        if nota.isfav {
-                            _ = NotasModel().updateFav(NotaID: nota.id ?? "", favState: false)
+                    NavigationLink{
+                        if self.nota != nil {
+                            UpdateNotasView(NotaId: nota!.id!, title: nota!.title!, nota: nota!.nota!, notas: self.$notas)
+                        }
+                          
+                    }
+                        label:{
+                        Label("Editar...", systemImage: "highlighter.badge.ellipsis")
+                        }
+                    
+                    
+                    
+                        Button{
+                        if nota!.isfav {
+                            _ = NotasModel().updateFav(NotaID: nota!.id ?? "", favState: false)
                         }else{
-                            _ = NotasModel().updateFav(NotaID: nota.id ?? "", favState: true)
+                            _ = NotasModel().updateFav(NotaID: nota!.id ?? "", favState: true)
                         }
                             withAnimation {
-                                isfav = nota.isfav ? true : false
+                                isfav = nota!.isfav ? true : false
                             }
                         
+                        }label:{
+                            Label(nota!.isfav ? "Quitar Favorito" : "Hacer Favorito", systemImage: nota!.isfav ? "heart.slash" : "heart")
                         }
-                    NavigationLink("Generar QR..."){
-                            let isfav = nota.isfav
-                            let texto = "nota>>\(nota.title ?? "")>>\(nota.nota ?? "")>>isfav:\(isfav == true  ? "Si" : "No")"
+                    NavigationLink{
+                            let isfav = nota!.isfav
+                            let texto = "nota>>\(nota!.title ?? "")>>\(nota!.nota ?? "")>>isfav:\(isfav == true  ? "Si" : "No")"
                             GenerateQRView(footer: texto, showImage: true)
-                        }
-                    Button("Copiar Nota"){
-                        UIPasteboard.general.string = nota.nota
+                    }label:{
+                        Label("Generar QR...", systemImage: "qrcode")
                     }
-                    ShareLink(item: "\(nota.title ?? "")\n \(nota.nota ?? "")")
+                    
+                    
+                    Button{
+                        UIPasteboard.general.string = nota!.nota
+                    }label:{
+                        Label("Copiar Nota...", systemImage: "square.fill.on.square.fill")
+                    }
+                    
+                    
+                    ShareLink(item: "\(nota!.title ?? "")\n \(nota!.nota ?? "")")
                     
                     if #available(iOS 26.0, *) {
                         if IAModelAppleIntelligence.isAvailable(){
                                     NavigationLink{
-                                        if let  temp = nota.nota{
+                                        if let  temp = nota!.nota{
                                             RespondView(nameConference: "", texto: temp, tipoSalida: .interpretar )
                                         }
                                         
@@ -360,7 +389,7 @@ struct cardNotas: View{
                                     .tint(.purple)
                                     
                                     NavigationLink{
-                                        if let  temp = nota.nota{
+                                        if let  temp = nota!.nota{
                                             RespondView(nameConference: "", texto: temp, tipoSalida: .practicaConcreta)
                                         }
                                         
@@ -370,7 +399,7 @@ struct cardNotas: View{
                                     .tint(.purple)
                             
                             NavigationLink{
-                                ChatView(textoACargar: nota.nota)
+                                ChatView(textoACargar: nota!.nota)
                             }label: {
                                 Label("Charlar con IA", systemImage: "sparkles")
                             }
@@ -380,7 +409,10 @@ struct cardNotas: View{
                     }
                     
                     
-                    Button("Eliminar..."){showConfirmDialogDeleteNota = true}
+                    Button{showConfirmDialogDeleteNota = true}label:{
+                        Label("Eliminar nota...", systemImage: "trash")
+                    }
+                    .tint(.red)
    
                 }label: {
                     Image(systemName: "ellipsis")
@@ -394,13 +426,13 @@ struct cardNotas: View{
                 expandNota.toggle()
             }
             .onAppear{
-                isfav = nota.isfav
+                isfav = nota!.isfav
             }
             //Dialogo de conformación para elimnar una nota
             .confirmationDialog("Esta seguro?", isPresented: $showConfirmDialogDeleteNota){
                 Button("Eliminar Nota", role: .destructive){
                     withAnimation {
-                        NotasModel().deleteNota(nota: nota)
+                        NotasModel().deleteNota(nota: nota!)
                           notas.removeAll()
                           notas.append(contentsOf: NotasModel().getAllNotas())
                     }
@@ -409,15 +441,11 @@ struct cardNotas: View{
             } message: {
                 Text("La nota será removida!!!")
             }
-            .sheet(isPresented: $showUpdateNoteView){
-                UpdateNotasView(NotaId: nota.id ?? "", title:  nota.title ?? "", nota: nota.nota ?? "", notas: $notas)
-                    .presentationDetents([.medium])
-                    .presentationDragIndicator(.hidden)
-            }
+
             if expandNota {
                     //Divider()
                     HStack{
-                        Text(nota.nota ?? "")
+                        Text(nota!.nota ?? "")
                             .font(.system(size: 18))
                             .italic()
                             .padding(.vertical, 4)
@@ -438,7 +466,6 @@ struct cardNotas: View{
         .frame(maxWidth: .infinity)
         .background(.ultraThinMaterial)
         .clipShape(RoundedRectangle(cornerRadius: 10))
-        //.shadow(radius: 5)
         .padding(.horizontal, 10)
         .padding(.vertical, 8)
     }

@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import RichText
+
 
 
 @available(iOS 26.0, *)
@@ -15,7 +15,7 @@ struct RespondView: View {
     @StateObject private var model : IAModelAppleIntelligence = IAModelAppleIntelligence()
     @State private var notasModel : NotasModel = NotasModel()
     
-    @State private var isloading : Bool = false
+    @State private var isloading : Bool = false //Indica que se esta procesando una solicitud
     @State private var bounce = false //Para animar la imagend de IA en el centro de la pantalla
     
     @AppStorage(AppCons.UD_setting_fontContentSize)    var fontSizeContenido : Int = 24
@@ -28,8 +28,9 @@ struct RespondView: View {
     
     let nameConference : String //Nombre de la conferencia
     let texto : String
-    let tipoSalida : TiposSalida //Especifica el tipo de salida desea: Puntos Claves / Resumen General
+    let tipoSalida : TiposSalida //Especifica el tipo de salida desea: Puntos Claves / Resumen General, etc
     
+    //Prepara el contenido para compartir:
     private var creatorContentToShare : String{
         
         switch tipoSalida {
@@ -160,7 +161,7 @@ struct RespondView: View {
                     Text("Interpretando Texto")
                 }
                 
-                //Mostrando progreso solo si el texto a procesar excede de 4000 caracteres
+                //Mostrando indicador de progreso solo si el texto a procesar excede de 4000 caracteres
                 if self.texto.count > 4000{
                     Text("Completado: \(self.model.fragmentoActual)/\(self.model.noFragmentos)")
                     //Barra de Progreso
@@ -184,6 +185,7 @@ struct RespondView: View {
     private func VistaPuntosClaves() -> some View{
         VStack(alignment: .leading, spacing: 16) {
             
+           
             ForEach (self.model.puntosClaves, id: \.self){ idea in
                 ContenidoView(contenido: idea)
             }
@@ -279,14 +281,8 @@ struct RespondView: View {
 //Vista de contenido
     @ViewBuilder
     private func ContenidoView(contenido: String) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            
-            Text(contenido)
-                .font(.system(size: CGFloat(self.fontSizeContenido)))
-                .foregroundColor(.black)
-                .multilineTextAlignment(.leading)
-                .textSelection(.enabled)
-                .contentTransition(.opacity)
+        VStack(alignment: .leading) {
+            SelectableText(contenido, fontSize: CGFloat(self.fontSizeContenido), fonColor: .black, alignment: .left )
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -316,18 +312,16 @@ struct RespondView: View {
 //Vista del texto de referencia(Solo para Frases, reflexiones, citas, etc. NO conferencias):
     @ViewBuilder
     private func TextoReferenciaView() -> some View {
-        VStack(alignment: .leading){
-            Text("Texto de referencia:").font(.title2).bold().foregroundStyle(.black.opacity(0.7))
-            ScrollView{
-                Text(self.texto)
-                    .font(.body).fontDesign(.serif).italic()
-                    .foregroundColor(.black)
-                    .multilineTextAlignment(.leading)
-                    .textSelection(.enabled)
-                    .contentTransition(.opacity)
+        if self.isloading{
+            Text(self.texto)
+                .padding()
+        }else{
+            VStack(alignment: .leading){
+                SelectableText(self.texto, fontSize: CGFloat(20), fonColor: UIColor(Color.black.opacity(0.7)), alignment: .left )
             }
+            .padding()
         }
-        .padding()
+        
     }
 
 //---- FIN
@@ -335,7 +329,7 @@ struct RespondView: View {
     
     
 
-    //Funciones del botón de Regenerar Texto
+    //Funciones del botón de Regenerar Texto. Vuelce hacer una solicitud de respuesta a Apple Intelligence
     private func generarTexto(){
             switch self.tipoSalida {
             case .puntosClaves:
@@ -406,6 +400,16 @@ struct RespondView: View {
         }
             
         }
+    
+    // Función auxiliar: Convierte un tipo Color  a formato hexadecimal, para la configuración del CSS del componente RichText
+    func hexString(for color: Color) -> String {
+        let uiColor = UIColor(color)
+        var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
+        uiColor.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+        // Convertir a hexadecimal
+        return String(format: "#%02lX%02lX%02lX", lroundf(Float(red * 255)), lroundf(Float(green * 255)), lroundf(Float(blue * 255)))
+    }
+    
     
 }//fin del struct
 

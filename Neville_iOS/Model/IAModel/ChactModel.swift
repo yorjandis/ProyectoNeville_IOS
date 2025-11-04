@@ -160,5 +160,17 @@ class ChatViewModel: ObservableObject {
             setupSession() //Crea una nueva sesión de IA
         }
     
+     // Función auxiliar: Convierte un tipo Color  a formato hexadecimal, para la configuración del CSS del componente RichText
+    static func hexString(for color: Color) -> String {
+        let uiColor = UIColor(color)
+        var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
+        uiColor.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+        // Convertir a hexadecimal
+        return String(format: "#%02lX%02lX%02lX", lroundf(Float(red * 255)), lroundf(Float(green * 255)), lroundf(Float(blue * 255)))
+    }
+    
 
 }
+
+
+

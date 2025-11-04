@@ -8,7 +8,6 @@
 
 import SwiftUI
 
-
 @available(iOS 26.0, *)
 struct ChatView: View {
     
@@ -57,20 +56,22 @@ struct ChatView: View {
                                             HStack {
                                                 if msg.isUser {
                                                     Spacer()
-                                                    Text(msg.text)
-                                                        .padding()
-                                                        .background(Color.blue.opacity(0.8))
-                                                        .foregroundColor(.white)
-                                                        .cornerRadius(12)
-                                                        .id(msg.id) //Para propósitos de scroll
-                                                        
+                                                   
+                                                    VStack(alignment: .trailing) {
+                                                        SelectableText(msg.text, fontSize: CGFloat(self.fontSizeChatIA),fonColor: .white , alignment: .right)
+                                                                .padding()
+                                                                .background(Color.black.opacity(0.7))
+                                                                .cornerRadius(12)
+                                                                .id(msg.id)
+                                                    }
+ 
                                                 } else {
                                                     VStack{
-                                                        Text(msg.text)
+                                                        SelectableText(msg.text, fontSize: CGFloat(self.fontSizeChatIA),fonColor: .white , alignment : .left)
                                                             .padding()
                                                             .background(Color.black.opacity(0.5))
                                                             .cornerRadius(12)
-                                                            .foregroundStyle(.white)
+                                                        
                                                         MenuOpcionesRespuesta(texto: msg.text)
                                                             .padding(.vertical, 0)
                                                             .id(msg.id) //Para porpósitos de scrooll
@@ -163,6 +164,7 @@ struct ChatView: View {
                 Button{
                     Task {
                         await model.sendMessage()
+                        self.focus = false
                     }
                 }label:{
                     if model.isResponding {
@@ -334,6 +336,7 @@ struct DescargoResponsabilidadIA : View{
     }
     
 }
+
 
 
 @available(iOS 26.0, *)

@@ -114,13 +114,13 @@ final class IAModelAppleIntelligence :  ObservableObject{
                     self.fragmentoActual = index + 1
                     
                     let promt = """
-                Actua como un experto en comprensión y síntesis de la información.
+                Actua como un experto en comprensión y síntesis de información.
                 
-                Analiza cuidadosamente el siguiente texto y extrae las ideas claves
+                Analiza cuidadosamente el texto y extrae las ideas claves
                 
                 No agregues opiniones personales ni información que no esté en el texto.
                 
-                Usa lenguaje sencillo y un tono didáctico.
+                Usa un lenguaje sencillo y un tono didáctico.
                 
                 Texto a analizar:
                 \(fragmento)
@@ -129,9 +129,9 @@ final class IAModelAppleIntelligence :  ObservableObject{
                     
                     let respuesta : Summary = try await session.respond(to: promt, generating: Summary.self).content
                     
-                    //Filtrando las entradas de respuesta de menos de 45 caracteres. Estas no parecen que contengan significado y se deben a que se analiza un fragmento de texto.
+                    //Filtrando las entradas de respuesta que no terminen en un punto final:"." . Estas no parecen que contengan significado y se deben a que se analiza un fragmento de texto.
                     let resultFiltro = respuesta.keyPoints.filter { str in
-                        str.count > 45
+                        str.last == "."
                     }
                     self.puntosClaves += resultFiltro
                     
@@ -334,20 +334,45 @@ final class IAModelAppleIntelligence :  ObservableObject{
     
     
     
-    //Divide el texto en fragmentos de cierto tamaño,  para ser procesados por la IA. Esto se debe a que la ventana de contexto es pequeña en Apple Inteligence
+    /// Divide el texto en fragmentos de un tamaño máximo, asegurando que cada fragmento termine al final de un párrafo completo.
+    /// Esto evita que el texto quede cortado a mitad de un párrafo, lo cual es importante cuando la IA tiene una ventana de contexto limitada.
     private func dividirTexto(_ texto: String, maxLength: Int) -> [String] {
-            var fragmentos: [String] = []
-            var inicio = texto.startIndex
+        var fragmentos: [String] = []
+        var inicio = texto.startIndex
+        
+        while inicio < texto.endIndex {
+            // Calculamos el índice máximo tentativo
+            let finTentativo = texto.index(inicio, offsetBy: maxLength, limitedBy: texto.endIndex) ?? texto.endIndex
+            var finReal = finTentativo
             
-            while inicio < texto.endIndex {
-                let fin = texto.index(inicio, offsetBy: maxLength, limitedBy: texto.endIndex) ?? texto.endIndex
-                let fragmento = String(texto[inicio..<fin])
-                fragmentos.append(fragmento)
-                inicio = fin
+            // Obtenemos el fragmento tentativo
+            let rangoTentativo = inicio..<finTentativo
+            let subTexto = String(texto[rangoTentativo])
+            
+            // Buscamos el último salto de párrafo antes del límite
+            if let rangoUltimoSalto = subTexto.range(of: "\n", options: .backwards) {
+                let distancia = subTexto.distance(from: subTexto.startIndex, to: rangoUltimoSalto.lowerBound)
+                if distancia > 0 {
+                    finReal = texto.index(inicio, offsetBy: distancia)
+                }
             }
-        self.noFragmentos = fragmentos.count
-            return fragmentos
+            
+            // Creamos el fragmento con el rango calculado
+            let fragmento = String(texto[inicio..<finReal])
+            fragmentos.append(fragmento.trimmingCharacters(in: .whitespacesAndNewlines))
+            
+            // Avanzamos el inicio al final real del fragmento
+            inicio = finReal
+            
+            // Si el siguiente carácter es un salto de línea, lo saltamos
+            if inicio < texto.endIndex {
+                inicio = texto.index(after: inicio)
+            }
         }
+        
+        self.noFragmentos = fragmentos.count
+        return fragmentos
+    }
     
 
     

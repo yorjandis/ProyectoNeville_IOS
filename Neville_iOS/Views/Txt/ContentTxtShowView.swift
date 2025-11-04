@@ -9,12 +9,11 @@
 import Foundation
 import SwiftUI
 import CoreData
-import RichText
 import FoundationModels
 
 struct ContentTxtShowView: View {
     
-    @Environment(\.dismiss) private var dimiss
+    @Environment(\.dismiss) private var dismiss
     @Environment(\.managedObjectContext) private var context
     @EnvironmentObject private var modeloTxt : TxtContentModel
     @EnvironmentObject private var settingModel : SettingModel
@@ -69,9 +68,6 @@ struct ContentTxtShowView: View {
         let uiColor = UIColor(color)
         var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
         uiColor.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
-        
-        
-        
         // Convertir a hexadecimal
         return String(format: "#%02lX%02lX%02lX", lroundf(Float(red * 255)), lroundf(Float(green * 255)), lroundf(Float(blue * 255)))
     }
@@ -86,86 +82,47 @@ struct ContentTxtShowView: View {
                 }
                 ScrollView(showsIndicators: true){
                     VStack{
-                        RichText(html: self.getContent )
-                            .colorScheme(.auto)
-                            .fontType(.customName("Arial"))
-                            .customCSS("*{font-size: \(self.fontSizeContent)px; background-color: \(self.hexString(for: backgroundColor)); color: \(self.hexString(for: self.textContentdColor)) !important; }")
+                        SelectableText(self.getContent, fontSize: CGFloat(self.fontSizeContenido), fonColor: UIColor(self.textContentdColor) , alignment: .left)
                             .padding(.horizontal, 5)
-                            .task {
-                                //Se cargan y aplican los colores de fondo y de texto
-                                self.backgroundColor = SettingModel.loadColor(forkey: AppCons.UD_setting_color_fondoContent)
-                                self.textContentdColor = SettingModel.loadColor(forkey: AppCons.UD_setting_color_textContent)
-                            }
+                            
+                    }
+                    .background(self.backgroundColor)
+                    .cornerRadius(12)
+                    .onTapGesture {
+                        withAnimation {
+                            self.showColor = false
+                            self.showSlider = false
+                        }
+                       
+                    }
+                    .task {
+                        //Se cargan y aplican los colores de fondo y de texto
+                        self.backgroundColor = SettingModel.loadColor(forkey: AppCons.UD_setting_color_fondoContent)
+                        self.textContentdColor = SettingModel.loadColor(forkey: AppCons.UD_setting_color_textContent)
                     }
                     .padding(.horizontal, 5)
                     
                 }
              
+                //Coloca un boton Atras en la parte inferior
+                if(self.showColor == false && self.showSlider == false){
+                    HStack{
+                        Spacer()
+                        Image(systemName: "house")
+                            .foregroundStyle(Color.primary.opacity(0.4))
+                            .onTapGesture {
+                                self.dismiss()
+                            }
+                            .padding(.trailing, 10)
+                    }
+                    .padding(5)
+                }
+                
                 
                 
                 Divider()
                 
-                //Barra Inferior (Permitir volver, favorito, etc)
-                HStack(spacing: 30){
-                    Spacer()
-                    if showSlider {
-                        HStack{
-                            Button{
-                                withAnimation(.easeInOut) {
-                                    showSlider = false
-                                }
-                                
-                            }label: {
-                                Image(systemName: "xmark.circle")
-                                    .foregroundColor(.red.opacity(0.7))
-                            }
-                            Slider(value: $fontSizeContent, in: 18...30) { Bool in
-                                fontSizeContenido = Int(fontSizeContent)
-                            }
-                        }
-                        .padding(.horizontal, 10)
-                    }
-                    
-                    if self.showColor {
-                        //Color de fondo
-                        ColorPicker(selection: self.$backgroundColor) {
-                            HStack{
-                                Text("fondo")
-                                Image(systemName: "text.page.fill")
-                                    .foregroundStyle(self.backgroundColor)
-                            }
-                            
-                        }
-                        .onChange(of: self.backgroundColor) { oldValue, newValue in
-                            settingModel.saveColor(forkey: AppCons.UD_setting_color_fondoContent, color: newValue)
-                        }
-                        
-                        
-                        //Color de texto
-                        ColorPicker(selection: self.$textContentdColor) {
-                            HStack(spacing: 0){
-                                Text("letra")
-                                Image(systemName: "text.alignleft")
-                                    .foregroundStyle(self.textContentdColor)
-                                    
-                            }
-                            
-                        }
-                        .onChange(of: self.textContentdColor) { oldValue, newValue in
-                            settingModel.saveColor(forkey: AppCons.UD_setting_color_textContent, color: newValue)
-                        }
-                    }
-
-                    Button{
-                        dimiss()
-                    }label: {
-                        Text("Atrás")
-                    }
-                    .padding(.trailing, 30)
-                    
- 
-                }
-                .padding(10)
+                
     
             }
             .navigationBarTitle(title, displayMode: .inline)
@@ -176,7 +133,7 @@ struct ContentTxtShowView: View {
             }
             .toolbar{
                 
-                //Barra de opciones para conferencias
+                //Barra de opciones IA para conferencias
                 if (self.type == .conf) {
 
                     if #available(iOS 26.0, *){
@@ -192,7 +149,7 @@ struct ContentTxtShowView: View {
                                         Label("Puntos Claves",systemImage: "sparkles")
                                     }
                                     .tint(.orange)
-                                    .help("Genera, por IA,  un resumen de los puntos claves")
+                                    .help("Genera, por IA, un resumen de los puntos claves")
                                     
                                     //Botón que genera un resumen general del contenido
                                     NavigationLink{
@@ -315,7 +272,7 @@ struct ContentTxtShowView: View {
                                     }label:{
                                         Label("Interpretar", systemImage: "sparkles")
                                     }
-                                    .tint(.purple)
+                                    .tint(.orange)
                                     
                                     NavigationLink{
                                         
@@ -325,7 +282,7 @@ struct ContentTxtShowView: View {
                                     }label:{
                                         Label("Aplicación Práctica", systemImage: "sparkles")
                                     }
-                                    .tint(.purple)
+                                    .tint(.orange)
                                     
                                 }label:{
                                     Image(systemName: "sparkles")
@@ -338,8 +295,49 @@ struct ContentTxtShowView: View {
                     }
                 }
                 
- 
+                
+
+                //Tamaño de fuente
+                if showSlider {
+                    ToolbarItem(placement: .bottomBar) {
+                        Slider(value: $fontSizeContent, in: 18...50) { Bool in
+                            fontSizeContenido = Int(fontSizeContent)
+                        }
+                    }
+                }
+                
+                if showColor{
+
+                    ToolbarItem(placement: .bottomBar) {
+                        //Color de fondo
+                        ColorPicker(selection: self.$backgroundColor) {
+                            Label("Fondo", systemImage: "text.page.fill")
+                        }
+                        .frame(width: 120)
+                        .onChange(of: self.backgroundColor) { oldValue, newValue in
+                            settingModel.saveColor(forkey: AppCons.UD_setting_color_fondoContent, color: newValue)
+                        }
+                    }
+                    
+                    if #available(iOS 26.0, *) {
+                        ToolbarSpacer(.fixed)
+                    }
+                    
+                    ToolbarItem(placement: .bottomBar) {
+                        //Color de texto
+                        ColorPicker(selection: self.$textContentdColor) {
+                            Label("Letra", systemImage: "text.alignleft")
+                            
+                        }
+                        .frame(width: 120)
+                        .onChange(of: self.textContentdColor) { oldValue, newValue in
+                            settingModel.saveColor(forkey: AppCons.UD_setting_color_textContent, color: newValue)
+                        }
+                    }
+                }
+              
             }
+            
             .sheet(isPresented: self.$sheetShowFeedBackReview) {
                 FeedbackView(showTextBotton: true)
             }
@@ -355,3 +353,4 @@ struct ContentTxtShowView: View {
 #Preview {
     ContentView()
 }
+

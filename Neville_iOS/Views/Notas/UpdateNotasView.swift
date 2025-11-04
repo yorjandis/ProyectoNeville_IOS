@@ -19,6 +19,7 @@ struct UpdateNotasView: View {
     
     var body: some View {
         NavigationStack {
+            Divider()
             Form{
                 Section("Título"){
                     TextField("", text: $title, axis: .vertical)
@@ -26,9 +27,12 @@ struct UpdateNotasView: View {
                     
                 }
                 Section("Nota"){
-                    TextField("", text: $nota, axis: .vertical)
-                        .textFieldStyle(.roundedBorder)
-                        .multilineTextAlignment(.leading)
+                    TextEditor(text: $nota)
+                            .font(.system(size: 22))
+                            .frame(minHeight: 150)
+                            .scrollContentBackground(.hidden)
+                            .background(Color(.systemGray6))
+                            .cornerRadius(8)
                 }
             }
             .navigationTitle("Actualizar una Nota")
