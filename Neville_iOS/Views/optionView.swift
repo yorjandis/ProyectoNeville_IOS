@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+
 struct optionView: View {
     
     @EnvironmentObject var settingModel: SettingModel
@@ -32,8 +33,7 @@ struct optionView: View {
         NavigationStack{
             ZStack{
                 
-                Color(Color.black.opacity(0.7))
-                
+
                 ScrollView(.horizontal) {
                     HStack(alignment: .center, spacing: 5) {
                         primerGroup()
@@ -48,9 +48,11 @@ struct optionView: View {
                 .scrollIndicators(.hidden)
                 .frame(maxWidth: .infinity , maxHeight: .infinity)
                 .background(.ultraThinMaterial)
+                
+                
+                
+               
             }
-
-            
             .sheet(isPresented: $showNotasSheet) {
                 ListNotasViews()
             }
@@ -75,9 +77,9 @@ struct optionView: View {
             .sheet (isPresented: $showFrasesList){
                 FrasesListView()
             }
-            .sheet (isPresented: $showSetting){
+            .sheet(isPresented: $showSetting){
                 settingView()
-                    .presentationDetents( [.large] )
+                    .presentationDetents([.large])
             }
             .sheet(isPresented: $showCodeScanner){
                 //Mostrar el lector de código
@@ -116,7 +118,7 @@ struct optionView: View {
                 }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: [settingModel.colorFondo_a, settingModel.colorFondo_b]))
                 
             }
-            .padding(.top, 5)
+            .padding(.top, 20)
             
             HStack(spacing: 20){
                 
@@ -125,6 +127,8 @@ struct optionView: View {
                 }label: {
                     bloqueA("book", "Diario")
                 }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: [settingModel.colorFondo_a, settingModel.colorFondo_b]))
+                
+                
                 
                 Button{
                     showFrasesList = true
@@ -142,13 +146,15 @@ struct optionView: View {
                 }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: [settingModel.colorFondo_a, settingModel.colorFondo_b]))
                 
                 Button{
-                    showPreguntas = true
+                    showSetting = true
                 }label: {
-                    bloqueA("questionmark.bubble", "Preguntas & Respuestas")
+                    bloqueA("gear", "Ajustes")
                 }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: [settingModel.colorFondo_a, settingModel.colorFondo_b]))
+                
                 
             }
             Spacer()
+            
             HStack{
                 
                 Spacer()
@@ -158,15 +164,6 @@ struct optionView: View {
                     .fontDesign(.serif)
                 
                 Spacer()
-                
-                Button{
-                    showSetting = true 
-                }label: {
-                    Image(systemName: "gear")
-                        .foregroundStyle(.orange)
-                        .font(.system(size: 24))
-                        
-                }
                 
             }
             .padding(.vertical, 0)
@@ -193,7 +190,7 @@ struct optionView: View {
                     bloqueA("personalhotspot", "Canal Telegram")
                 }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: [settingModel.colorFondo_a, settingModel.colorFondo_b]))
             }
-            .padding(.top, 5)
+            .padding(.top, 20)
             HStack(spacing: 20){
                 Button{
                     showGame = true
@@ -203,10 +200,11 @@ struct optionView: View {
                 
                 
                 Button{
-                    showNotasSheet = true
+                    showPreguntas = true
                 }label: {
-                    bloqueA("note.text", "Notas")
+                    bloqueA("questionmark.bubble", "Preguntas & Respuestas")
                 }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: [settingModel.colorFondo_a, settingModel.colorFondo_b]))
+                
             }
             HStack(spacing: 20){
                 
@@ -234,11 +232,7 @@ struct optionView: View {
     }
     
     
-    
-    
-    
-    
-    
+
     //auxiliar
     @MainActor
     @ViewBuilder

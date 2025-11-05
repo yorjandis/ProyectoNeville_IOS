@@ -41,6 +41,11 @@ struct AppCons{
     static let UD_setting_color_fondoContent    = "settig_color_fondoContent"
     static let UD_setting_color_textContent     = "settig_color_textContent"
     
+    //Colores de IA
+    static let UD_setting_colorIA_main_a          = "settig_colorIA_main_a"
+    static let UD_setting_colorIA_main_b          = "settig_colorIA_main_b"
+    static let UD_setting_colorIA_textContent     = "settig_colorIA_textContent"
+    
     //Otros
     static let UD_setting_OrdenarEntradaDiario  = "settig_Diario_ordenarentradas" //Permite ordenar las entradas del Diario por fechaCracion/fechaModificación
     static let UD_setting_NotasFaceID           = "setting_NotasFaceID"
@@ -69,7 +74,7 @@ struct AppCons{
                 
                 🟣 La Inteligencia Artificial, IA en lo adelante, puede generar respuestas imprecisas o con errores.
                 
-                🟣 El usuario es el único responsable de la verificación y la aplicación
+                🟣 El usuario es el único responsable de la verificación y aplicación
                 de la respuesta generada por IA.
                 
                 🟣 El desarrollador no es responsable por  los daños o pérdidas derivadas del uso o imposibilidad de uso del contenido generado por IA.

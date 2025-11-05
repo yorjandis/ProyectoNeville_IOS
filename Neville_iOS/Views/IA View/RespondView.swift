@@ -48,10 +48,16 @@ struct RespondView: View {
     }
 
     
+    //Colores de IA chat:
+    @State var ColorChatIAPrimario         : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_colorIA_main_a) ?? .orange.opacity(0.7)
+    @State var ColorChatIASecundario       : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_colorIA_main_b) ?? .brown
+    @State var ColorChatIAFuente           : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_colorIA_textContent) ?? .black
+    
+    
     
     var body: some View {
         ZStack{
-            LinearGradient(colors: [.orange.opacity(0.7),  .brown], startPoint: .topLeading, endPoint: .bottomTrailing)
+            LinearGradient(colors: [self.ColorChatIAPrimario,  self.ColorChatIASecundario], startPoint: .topLeading, endPoint: .bottomTrailing)
                 .ignoresSafeArea(edges: .bottom)
             
             if self.DescargoDeIA{
@@ -282,7 +288,7 @@ struct RespondView: View {
     @ViewBuilder
     private func ContenidoView(contenido: String) -> some View {
         VStack(alignment: .leading) {
-            SelectableText(contenido, fontSize: CGFloat(self.fontSizeContenido), fonColor: .black, alignment: .left )
+            SelectableText(contenido, fontSize: CGFloat(self.fontSizeContenido), fonColor: UIColor(self.ColorChatIAFuente), alignment: .left )
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)

@@ -33,10 +33,15 @@ struct settingView: View {
     
 
     //Almacena internamente los colores de configuración. Al inicio se cargan los valores almacenados
-    @State var ColorFrase       : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_color_frases)
-    @State var ColorPrimario    : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_color_main_a)
-    @State var ColorSecundario  : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_color_main_b)
+    @State var ColorFrase       : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_color_frases) ?? .black
+    @State var ColorPrimario    : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_color_main_a) ?? .orange
+    @State var ColorSecundario  : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_color_main_b) ?? .blue.opacity(0.5)
 
+    
+    //Colores de IA chat:
+    @State var ColorChatIAPrimario         : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_colorIA_main_a) ?? .orange.opacity(0.5)
+    @State var ColorChatIASecundario       : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_colorIA_main_b) ?? .brown
+    @State var ColorChatIAFuente           : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_colorIA_textContent) ?? .black
 
     //Autenti
     private let contextLA = LAContext()
@@ -113,7 +118,7 @@ struct settingView: View {
                 
                 
                 
-                Section("Colores"){
+                Section("Colores Home"){
                     
                     ColorPicker("Color de frases", selection: $ColorFrase)
                         .bold()
@@ -146,6 +151,53 @@ struct settingView: View {
                         
                     }
                 }
+                
+                if #available(iOS 26.0, macOS 26.0, *){
+                    if IAModelAppleIntelligence.isAvailable(){
+                        Section("Colores Chat IA"){
+                            
+                            ColorPicker("Color de Texto", selection: $ColorChatIAFuente)
+                                .bold()
+                                .onChange(of: ColorChatIAFuente, initial: true) { oldValue, newValue in
+                                    settingModel.saveColor(forkey: AppCons.UD_setting_colorIA_textContent, color: newValue)
+                                }
+                            
+                            VStack(alignment: .center){
+                                ColorPicker("Color Degradado Superior", selection: $ColorChatIAPrimario)
+                                    .onChange(of: ColorChatIAPrimario, initial: true) { oldValue, newValue in
+                                        settingModel.saveColor(forkey: AppCons.UD_setting_colorIA_main_a, color: newValue)
+                                    }
+                                    .padding(.bottom, 10)
+                                ColorPicker("Color Degradado Inferior", selection: $ColorChatIASecundario)
+                                    .onChange(of: ColorChatIASecundario, initial: true) { oldValue, newValue in
+                                        settingModel.saveColor(forkey: AppCons.UD_setting_colorIA_main_b, color: newValue)
+                                        
+                                    }
+                                
+                                HStack{
+                                    Text("Muestra:").font(.footnote)
+                                    Spacer()
+                                    Text("")
+                                        .frame(width: 200 ,  height: 60)
+                                        .background(LinearGradient(colors: [ColorChatIAPrimario, ColorChatIASecundario], startPoint: .top, endPoint: .bottom))
+                                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                                }
+
+                            }
+                            
+                            Button("Aplicar Colores Por Defecto"){
+                                self.ColorChatIAFuente      = .black
+                                self.ColorChatIAPrimario    = .orange.opacity(0.5)
+                                self.ColorChatIASecundario  = .brown
+                                settingModel.saveColor(forkey: AppCons.UD_setting_colorIA_textContent, color: self.ColorChatIAFuente)
+                                settingModel.saveColor(forkey: AppCons.UD_setting_colorIA_main_a, color: self.ColorChatIAPrimario)
+                                settingModel.saveColor(forkey: AppCons.UD_setting_colorIA_main_b, color: self.ColorChatIASecundario) 
+                            }
+                        }
+                    }
+                }
+                
+                
                 if #available(iOS 26.0, *){
                     if IAModelAppleIntelligence.isAvailable(){
                         

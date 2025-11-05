@@ -71,9 +71,9 @@ extension View {
 }
 #endif
 
+
+
 //Botón Personaizado Para menus
-
-
 @ViewBuilder
 func CreateMenuItemButton(text : String,sysImageStr : String, action : @MainActor @escaping ()->()) -> some View{
     
@@ -85,3 +85,94 @@ func CreateMenuItemButton(text : String,sysImageStr : String, action : @MainActo
     
     
 }
+
+
+//Muestra una de felicitación por el cumpleaños
+@ViewBuilder
+func MostrarCumpleaños() -> some View {
+    
+    let componentes = Calendar.current.dateComponents([.day, .month], from: Date())
+    if (componentes.day == 19 && componentes.month == 2){
+        VStack{
+            Text("Feliz Cumpleaños Maestro Neville! 💖").font(.title).fontDesign(.serif)
+            Text("Gracias por tu Amor y Enseñanzas").font(.callout).fontDesign(.serif)
+        }.foregroundStyle(.black)
+    }
+}
+
+//Crea una rectángulo áureo con una image en el centro
+@ViewBuilder
+func GoldenLogoNeville() -> some View {
+    ZStack {
+        RoundedRectangle(cornerRadius: 20)
+            .fill(Color.yellow.opacity(0.2))
+            .frame(width: 80, height: 80 / 1.618) // rectángulo áureo
+
+        Image("Logo")
+            .resizable()
+            .scaledToFill()
+            .frame(width: 40, height: 40)
+            .clipShape(Circle())
+            .shadow(radius: 2)
+    }
+}
+
+//Determina si estamos en modo Debug y muestra un texto:
+@ViewBuilder
+func MostrarModoDebug() -> some View {
+#if DEBUG
+    Text("Debug Mode").padding(2)
+#else
+    EmptyView()
+#endif
+}
+
+//Muestra un botón para actualizar la app si existe una nueva actualización:
+#if os(iOS)
+@MainActor
+struct ViewIfNewUpdateAvailable : View {
+    
+    //Crea un espacio de almacenamiento fuera del ambito de la vista (del struct) pero asociado a la misma
+    //Cuando cambia ese valor SwiftUI marca la vista para regenerar el body con el nuevo valor.
+    @State private var existeNuevaVersion : Bool = false
+    
+    var body: some View {
+        VStack{
+            //Si existe una versión superior en la AppStore (lo normal), entonces:
+            if self.existeNuevaVersion{
+                Button{
+                    if let url = URL(string: "https://apps.apple.com/es/app/la-ley/id6472626696"),
+                       UIApplication.shared.canOpenURL(url){
+                        UIApplication.shared.open(url, options: [:]) { (opened) in
+                            if(opened){
+                                // print("App Store Opened")
+                            }
+                        }
+                    } else {
+                        // print("Can't Open URL on Simulator")
+                    }
+                }label: {
+                    HStack{
+                        Image(systemName: "exclamationmark.circle")
+                            .symbolEffect(.pulse, isActive: true)
+                        Text("Existe una nueva versión de la App")
+                    }
+                    .foregroundStyle(Color.black)
+                    .font(.system(size: 15))
+                    
+                }
+            }
+        }
+        .task {
+            Task{
+                self.existeNuevaVersion = await CheckAppStatus.getAppNewVersion()
+            }
+            
+            
+        }
+    }
+
+}
+#endif
+
+

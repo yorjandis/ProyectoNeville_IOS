@@ -15,31 +15,6 @@ struct Home: View {
     
     @State  private var fontSize : CGFloat = CGFloat(UserDefaults.standard.integer(forKey: AppCons.UD_setting_fontFrasesSize)) //Setting para Frases
     @State  private var fontSizeMenu : CGFloat = 24 //Setting para menu
-    
-
-    //Para chequeo de actualización de la app:
-    @State private var showTextUpdateApp = false
-
-    //Para determinar el cumpleaños de neville:
-    // Día y mes del cumpleaños 🎂
-        @State private var esCumple = false
-        @State private var fechaActual = Date()
-        private let dia = 19
-        private let mes = 2
-    
-    private func chequearCumple() {
-            let componentes = Calendar.current.dateComponents([.day, .month], from: fechaActual)
-            esCumple = (componentes.day == dia && componentes.month == mes)
-        }
-    
-    //Determinar si estamos en modo debug
-#if DEBUG
-    private let isDebug = true
-#else
-    private let isDebug = false
-#endif
-
-    
 
 
     var body: some View {
@@ -52,50 +27,19 @@ struct Home: View {
                 
                 VStack{
                     
+                    //Muestra el logo de la App dentro de un rectángulo áureo
+                    GoldenLogoNeville()
                     
                     
                     //Muestra un texto para felicitar a neville por su cumpleños(19 Frebrero)
-                    if self.esCumple{
-                        VStack{
-                            Text("Felicidades Maestro Neville! 💖").font(.title).fontDesign(.serif)
-                            Text("Gracias por tu Amor y Enseñanzas").font(.callout).fontDesign(.serif)
-                        }.foregroundStyle(.black)
-                        
-                    }
-                    
-                    
-                    
+                    MostrarCumpleaños()
                     
                     //Muestra si estamos en modo debug. Solo aparecerá en la fase de desarrollo
-                    if self.isDebug{
-                        Text("Modo Debug").padding()
-                    }
+                   // MostrarModoDebug()
                     
                     
                     //Muestra el texto para indicar nueva actualización
-                    if showTextUpdateApp {
-                        Button{
-                            if let url = URL(string: "https://apps.apple.com/es/app/la-ley/id6472626696"),
-                               UIApplication.shared.canOpenURL(url){
-                                UIApplication.shared.open(url, options: [:]) { (opened) in
-                                    if(opened){
-                                        // print("App Store Opened")
-                                    }
-                                }
-                            } else {
-                                // print("Can't Open URL on Simulator")
-                            }
-                        }label: {
-                            HStack{
-                                Image(systemName: "exclamationmark.circle")
-                                    .symbolEffect(.pulse, isActive: true)
-                                Text("Existe una nueva versión de la App")
-                            }
-                            .foregroundStyle(Color.black)
-                            .font(.system(size: 15))
-                            
-                        }
-                    }
+                    ViewIfNewUpdateAvailable()
                     
                     Spacer()
                     
@@ -110,48 +54,6 @@ struct Home: View {
                         colorFondo_b: Binding(get: { self.settingModel.colorFondo_b }, set: { self.settingModel.colorFondo_b = $0 })
                     )
                 }
-                .onAppear{
-                        self.chequearCumple()
-                    }
-                .task {
-                    do {
-                        try await CheckAppStatus().getAppNewVersion { update in
-                            if update{
-                                DispatchQueue.main.async {
-                                    showTextUpdateApp = true
-                                } 
-                            }else{
-                                DispatchQueue.main.async {
-                                    showTextUpdateApp = false
-                                }
-                            }
-                        }
-                    }catch{
-                        print(error.localizedDescription)
-                    }
-                    
-                }
-                .navigationTitle("La Ley")
-                .navigationBarTitleDisplayMode(.inline)
-                .gesture(DragGesture().onEnded{ value in
-                    let start = value.startLocation
-                    let end = value.location
-                    
-                    if start.x > end.x + 24 { //right->left
-                        withAnimation {
-                        }
-                    }else if start.y > end.y + 24 {//up
-                        
-                    }
-                    else if start.x < end.x - 24 {} //left -> right
-                    else if start.y < end.y - 24 {} //down
-                    
-                })
-                .sheet(isPresented: $showAddNoteList){
-                    ListNotasViews()
-                }
-                
-                
             }
             
             
@@ -160,9 +62,11 @@ struct Home: View {
     }
     
 
-   
-
 }//struct
+
+
+
+
 
 
 //Frases View. Cuadro de frase en la pantalla inicial
@@ -197,8 +101,14 @@ struct FrasesView : View{
                     .foregroundStyle(self.settingModel.colorfrase)
                     .modifier(mof_frases())
                     .onTapGesture {
-                        //Almacenando la frase anterior
-                        if self.frasesModel.fraseAnteriores.count > 9 { //Si la capacidad del arreglo supera el limite de 10 frases
+                        //Obtiene una nueva frase
+                        self.frase = frasesModel.getRandomFrase()//Obteniendo una nueva frase.
+                        self.isFav = frasesModel.isFavFrase(self.frase) //Actualizando el estado del favorito
+                        frasesModel.favStateOfCurrentFrase = self.isFav
+                        frasesModel.fraseActual = self.frase //Guardando la frase actualmente visible en la variable observable
+                        
+                        //Almacenando la frase en el vector de navegación de frases
+                        if self.frasesModel.fraseAnteriores.count > 9 { //Si la capacidad del arreglo supera el límite de 10 frases
                             
                             self.frasesModel.fraseAnteriores.removeFirst() //Remueve la primera frase
                             self.frasesModel.fraseAnteriores.append(self.frase) //Coloca la frase actual
@@ -208,34 +118,40 @@ struct FrasesView : View{
                             self.frasesModel.fraseAnteriores.append(self.frase) //Coloca la frase actual
                             self.contadorNavegarPorFrasesAnteriores = self.frasesModel.fraseAnteriores.count
                         }
-                        print(self.frasesModel.fraseAnteriores.count)
-                        
-                        //Obtiene una nueva frase
-                        self.frase = frasesModel.getRandomFrase()//Obteniendo una nueva frase.
-                        self.isFav = frasesModel.isFavFrase(self.frase) //Actualizando el estado del favorito
-                        frasesModel.favStateOfCurrentFrase = self.isFav
-                        frasesModel.fraseActual = self.frase //Guardando la frase actualmente visible en la variable observable
                         
                     }
-                //Gesto de deslizar hacia la derecha: navega hacia la frase anterior(hasta un máximo de 10 frases)
-                    .gesture(DragGesture().onEnded { value in
-                        //Permite navegar a las 10 frases anteriores
-                        let start = value.startLocation
-                        let end = value.location
-                        // Detect left-to-right swipe with a threshold of 24 points
-                        if end.x > start.x + 40 {
-                            if (!self.frasesModel.fraseAnteriores.isEmpty && self.contadorNavegarPorFrasesAnteriores > 0){
-                                //Navegando por las frases hacia a atras
-                                self.contadorNavegarPorFrasesAnteriores -= 1
-                                self.frase = self.frasesModel.fraseAnteriores[self.contadorNavegarPorFrasesAnteriores]
-                                
-                                self.isFav = self.frasesModel.isFavFrase(self.frase)
-                                self.frasesModel.favStateOfCurrentFrase = self.isFav
-                                self.frasesModel.fraseActual = self.frase
-                            }
+                //Gesto de deslizar izquierda a derecha: navega hacia la frase anterior(hasta un máximo de 10 frases)
+                    .gesture(
+                        DragGesture().onEnded { value in
+                            let start = value.startLocation
+                            let end = value.location
+                            let threshold: CGFloat = 40
                             
+                            // Deslizar de izquierda a derecha → ir hacia atrás
+                            if end.x > start.x + threshold {
+                                if !self.frasesModel.fraseAnteriores.isEmpty && self.contadorNavegarPorFrasesAnteriores > 0 {
+                                    self.contadorNavegarPorFrasesAnteriores -= 1
+                                    self.frase = self.frasesModel.fraseAnteriores[self.contadorNavegarPorFrasesAnteriores]
+                                    
+                                    self.isFav = self.frasesModel.isFavFrase(self.frase)
+                                    self.frasesModel.favStateOfCurrentFrase = self.isFav
+                                    self.frasesModel.fraseActual = self.frase
+                                }
+                            }
+                            // Deslizar de derecha a izquierda → ir hacia adelante
+                            else if end.x < start.x - threshold {
+                                if self.contadorNavegarPorFrasesAnteriores < self.frasesModel.fraseAnteriores.count - 1 {
+                                    self.contadorNavegarPorFrasesAnteriores += 1
+                                    
+                                    self.frase = self.frasesModel.fraseAnteriores[self.contadorNavegarPorFrasesAnteriores]
+                                    
+                                    self.isFav = self.frasesModel.isFavFrase(self.frase)
+                                    self.frasesModel.favStateOfCurrentFrase = self.isFav
+                                    self.frasesModel.fraseActual = self.frase
+                                }
+                            }
                         }
-                    })
+                    )
                     .onOpenURL(perform: { url in
                         if url.description == AppCons.DeepLink_url_Frase {
                             self.frase = UserDefaults.shared().string(forKey: AppCons.UD_shared_FraseWidgetActual) ?? ""

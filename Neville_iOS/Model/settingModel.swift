@@ -48,9 +48,9 @@ final class SettingModel : ObservableObject {
     }
     
     //Devuelve el valor de un color como Color para una clave en userdefault. Por defecto devuelve el color primario en el sistema
-    static func loadColor(forkey: String)->Color{
+    static func loadColor(forkey: String)->Color?{
         guard let userdefault = UserDefaults.standard.object(forKey: forkey) as? [CGFloat] else {
-            return Color.primary
+            return nil
         }
         
         let color = Color(.sRGB, red: userdefault[0],
@@ -84,8 +84,7 @@ final class SettingModel : ObservableObject {
     
     ///Actualiza las variables observables con los últimos colores almacenados:
     func LoadLastColors() async {
-        self.colorfrase     = SettingModel.loadColor(forkey: AppCons.UD_setting_color_frases)
-        self.colorFondo_a   = SettingModel.loadColor(forkey: AppCons.UD_setting_color_main_a)
-        self.colorFondo_b   = SettingModel.loadColor(forkey: AppCons.UD_setting_color_main_b)
-    }
+        self.colorfrase     = SettingModel.loadColor(forkey: AppCons.UD_setting_color_frases) ?? .primary
+        self.colorFondo_a   = SettingModel.loadColor(forkey: AppCons.UD_setting_color_main_a) ?? .purple
+        self.colorFondo_b   = SettingModel.loadColor(forkey: AppCons.UD_setting_color_main_b) ?? .blue.opacity(0.5)    }
 }

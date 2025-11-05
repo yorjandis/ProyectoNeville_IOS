@@ -29,45 +29,63 @@ struct ChatView: View {
     @State private var showAlert : Bool = false
     @State private var alertMessage : String = ""
     
+    //Colores de IA chat:
+    @State var ColorChatIAPrimario         : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_colorIA_main_a) ?? .orange.opacity(0.7)
+    @State var ColorChatIASecundario       : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_colorIA_main_b) ?? .brown
+    @State var ColorChatIAFuente           : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_colorIA_textContent) ?? .black
     
     var body: some View {
         
         
         if self.DescargoDeIA == false {
             ZStack{
-                LinearGradient(colors: [.orange.opacity(0.7),  .brown], startPoint: .topLeading, endPoint: .bottomTrailing)
+                LinearGradient(colors: [self.ColorChatIAPrimario,  self.ColorChatIASecundario], startPoint: .topLeading, endPoint: .bottomTrailing)
                 .ignoresSafeArea()
                 DescargoResponsabilidadIA(VentanaEnSetting: false)
             }
-           
+            
         }else{
-            ZStack{
-                
-                LinearGradient(colors: [.orange.opacity(0.7),  .brown], startPoint: .topLeading, endPoint: .bottomTrailing)
-                    .ignoresSafeArea()
-                
-                
-                    VStack {
-                        ScrollViewReader { scrollProxy in
+            
+            ContentMain()
+        }
+
+    }
+    
+    
+    @ViewBuilder
+    private func ContentMain() -> some View {
+        ZStack{
+            
+            LinearGradient(colors: [self.ColorChatIAPrimario,  self.ColorChatIASecundario], startPoint: .topLeading, endPoint: .bottomTrailing)
+                .ignoresSafeArea()
+            
+            
+                VStack {
+                    ScrollViewReader { scrollProxy in
+                        if !model.messages.isEmpty {
                             ScrollView {
                                 LazyVStack {
-                                    if !model.messages.isEmpty {
+                                    
                                         ForEach(model.messages) { msg in
                                             HStack {
                                                 if msg.isUser {
                                                     Spacer()
-                                                   
+                                                    
                                                     VStack(alignment: .trailing) {
-                                                        SelectableText(msg.text, fontSize: CGFloat(self.fontSizeChatIA),fonColor: .white , alignment: .right)
-                                                                .padding()
-                                                                .background(Color.black.opacity(0.7))
-                                                                .cornerRadius(12)
-                                                                .id(msg.id)
+                                                        SelectableText(msg.text, fontSize: CGFloat(self.fontSizeChatIA),fonColor: UIColor(self.ColorChatIAFuente) , alignment: .left)
+                                                            .padding()
+                                                            .background(Color.black.opacity(0.7))
+                                                            .cornerRadius(12)
+                                                            .frame(
+                                                                width: UIScreen.main.bounds.width * 0.8, // cada carácter reduce 5 puntos
+                                                                alignment: .trailing
+                                                            )
+                                                            .id(msg.id)
                                                     }
- 
+                                                    
                                                 } else {
                                                     VStack{
-                                                        SelectableText(msg.text, fontSize: CGFloat(self.fontSizeChatIA),fonColor: .white , alignment : .left)
+                                                        SelectableText(msg.text, fontSize: CGFloat(self.fontSizeChatIA),fonColor: UIColor(self.ColorChatIAFuente) , alignment : .left)
                                                             .padding()
                                                             .background(Color.black.opacity(0.5))
                                                             .cornerRadius(12)
@@ -85,9 +103,10 @@ struct ChatView: View {
                                             .padding(.horizontal)
                                             .padding(.vertical, 4)
                                         }
-                                    }else{
-                                            AdjustableGridView(rows: 4 , model: self.model)
-                                    }
+                                    
+                                    
+                                        
+                                    
                                 }
                                 .animation(.easeInOut(duration: 0.20), value: model.messages)
                                 
@@ -112,77 +131,92 @@ struct ChatView: View {
                                 }
                             }
                         }
-                        
-                        Promt()
-                            .padding()
-                            
-                    }
-                    .onTapGesture {
-                        self.focus = false
-                    }
-                
-                
-                
-            }
-            .navigationTitle("Pregunta  a Neville")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar{
-                if self.DescargoDeIA {
-                    ToolbarItem {
-                        Button{
-                            withAnimation {
-                                self.model.newConversation()
+                        else{
+                            ScrollView {
+                                AdjustableGridView(rows: 4 , model: self.model)
                             }
-                            
-                        }label:{
-                            Image(systemName: "square.and.pencil")
                         }
+                        
+                    }
+                    
+                    Promt()
+                        .padding(.horizontal, 5)
+                        .padding(.top, model.messages.isEmpty ? 15 : 0)
+                    
+                }
+                .onTapGesture {
+                    self.focus = false
+                }
+            
+            
+            
+        }
+        .navigationTitle("Pregunta  a Neville")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar{
+            if self.DescargoDeIA {
+                ToolbarItem {
+                    Button{
+                        withAnimation {
+                            self.model.newConversation()
+                        }
+                        
+                        print(self.model.messages.isEmpty ? "No hay mensajes" : "Hay mensajes")
+                    }label:{
+                        Image(systemName: "square.and.pencil")
                     }
                 }
-                
             }
-            .alert(isPresented: self.$showAlert){
-                Alert(title: Text("Chat IA"), message: Text(self.alertMessage))
-            }
+            
         }
-
+        .alert(isPresented: self.$showAlert){
+            Alert(title: Text("Chat IA"), message: Text(self.alertMessage))
+        }
     }
+    
     
     //Construye el Promt
     @ViewBuilder
     private func Promt() -> some View {
         
         VStack{
-            
-            HStack {
-                TextField("Escribe un mensaje…", text: $model.inputText, axis: .vertical)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .font(.system(size: CGFloat(fontSizeChatIA)))
-                    .disabled(model.isResponding)
-                    .background(RoundedRectangle(cornerRadius: 24, style: .continuous).fill(.ultraThinMaterial))
-                    .focused(self.$focus)
-                Button{
-                    Task {
-                        await model.sendMessage()
-                        self.focus = false
-                    }
-                }label:{
-                    if model.isResponding {
-                        ProgressView()
-                            .padding(.horizontal, 14)
-                    }else{
-                        Text("Enviar")
-                    }
+            HStack{
+                
+                if model.isResponding {
+                    Spacer()
+                    ProgressView()
+                        .tint(.black)
+                    Spacer()
+                }else{
+                    TextField("Escribe algo…", text: $model.inputText, axis: .vertical)
+                        .font(.system(size: 20))
+                        .disabled(model.isResponding)
+                        .padding(.vertical, 8)
+                        .padding(.leading, 20)
+                        .background(RoundedRectangle(cornerRadius: 24, style: .continuous).fill(.black.opacity(0.8)))
+                        .focused(self.$focus)
                     
+                    Button{
+                        Task {
+                            await model.sendMessage()
+                            self.focus = false
+                        }
+                    }label:{
+                        Text("Enviar").bold()
+                        
+                    }
+                    .tint(.orange)
+                    .foregroundStyle(.black)
+                    .buttonStyle(.borderedProminent)
+                    .disabled(model.inputText.trimmingCharacters(in: .whitespaces).isEmpty || model.isResponding)
                 }
-                .buttonStyle(.glass)
-                .foregroundStyle(.white)
-                .tint(.orange)
-                .disabled(model.inputText.trimmingCharacters(in: .whitespaces).isEmpty || model.isResponding)
+                
+                
                 
                 
             }
             .onAppear{
+                //Cargar en el promt el valor pasado a la variable Texto: puede ser una frase, nota o cita
                 if let texto = self.textoACargar{
                     if !texto.isEmpty{
                         self.model.inputText = "Hablemos sobre este texto: \(texto)"
@@ -246,7 +280,7 @@ struct ChatView: View {
                             "¿Qué es pecar?","Resume tu enseñanza","Dame un concejo","Tengo problemas","¿Quién es el Diablo?",
                             "¿Qué es la ley de creación?","Me pasan cosas malas","¿Cómo aplico tus enseñanzas?",
                             "Buenos días","¿Qué es la vida?","¿Cómo puedo mejorar?", "Quiero cambiar","Estoy estancado",
-                            "¿Qué es la realidad?","Háblame del Alfarero"].shuffled()
+                            "¿Qué es la realidad?","Háblame del Alfarero"]
         
         // Layout dinámico de columnas
         var gridLayout: [GridItem] {
@@ -256,7 +290,7 @@ struct ChatView: View {
         
         var body: some View {
             VStack(alignment: .leading){
-                Text("Sugerencias:").font(.subheadline).padding(.horizontal).foregroundStyle(.primary).bold()
+                Text("Sugerencias:").font(.subheadline).padding(.horizontal).foregroundStyle(.primary).bold().id(12)
                     LazyVGrid(columns: gridLayout, spacing: 10) {
                         ForEach(0..<buttonTitles.count, id: \.self) { index in
                             Button(action: {
@@ -285,57 +319,7 @@ struct ChatView: View {
 }
 
 
-//Texto de descargo de responsabilidad
-@available(iOS 26.0, macOS 26.0, *)
-@MainActor
-struct DescargoResponsabilidadIA : View{
-    @Environment(\.dismiss) var dismiss
-    @AppStorage(AppCons.UD_setting_AceptacionDescargoIA)    var DescargoDeIA : Bool = true // True para Neville, False para Ciencias
-    
-    //Uso de dismiss
-    let VentanaEnSetting: Bool
-    
-    var body: some View {
-        VStack(alignment: .center, spacing: 15){
-            Text(AppCons.DescargoDeResposabilidad)
-            .font(.body).fontDesign(.serif)
-            HStack{
-                if self.VentanaEnSetting == false {
-                    Spacer()
-                }
-                Button("Acepto"){
-                    withAnimation(.easeIn(duration: 0.5)) {
-                        self.DescargoDeIA = true
-                        if self.VentanaEnSetting == true{
-                            dismiss()
-                        }
-                            
-                    }
-                    
-                }
-                .buttonStyle(.glassProminent)
-                .tint(.blue)
-                Spacer()
-                if self.VentanaEnSetting{
-                    Button("No acepto"){
-                            self.DescargoDeIA = false
-                        if self.VentanaEnSetting == true{
-                            dismiss()
-                        }
-                    }
-                    .buttonStyle(.glass)
-                    .tint(.red)
-                }
-                
-            }
-            .padding()
-            
-            Spacer()
-        }
-        .padding()
-    }
-    
-}
+
 
 
 

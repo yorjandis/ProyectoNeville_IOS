@@ -145,21 +145,21 @@ struct FrasesListView: View {
                                     }label:{
                                         Label("Interpretar", systemImage: "sparkles")
                                     }
-                                    .tint(.purple)
+                                    .tint(.orange)
                                     
                                     NavigationLink{
                                             RespondView(nameConference: "", texto: frase, tipoSalida: .practicaConcreta)
                                     }label:{
                                         Label("Aplicación Práctica", systemImage: "sparkles")
                                     }
-                                    .tint(.purple)
+                                    .tint(.orange)
                                     
                                     NavigationLink{
                                         ChatView(textoACargar: frase)
                                     }label: {
                                         Label("Charlar con IA", systemImage: "sparkles")
                                     }
-                                    .tint(.purple)
+                                    .tint(.orange)
                                     
                                 }label:{
                                     Image(systemName: "sparkles")
