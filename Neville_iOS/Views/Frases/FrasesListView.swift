@@ -12,6 +12,7 @@ import CoreData
 struct FrasesListView: View {
     @Environment(\.colorScheme) var theme
     @EnvironmentObject private var frasesModel: FrasesModel
+    @EnvironmentObject private var settingModel: SettingModel
     
     @AppStorage(AppCons.UD_setting_fontFrasesSize)     var fontSizeFrases      : Int = 24
     
@@ -32,7 +33,7 @@ struct FrasesListView: View {
     @State private var showAlertSearchInNotaFrase = false
     @State private var textFieldNota = ""
     
-    @State var listadoPropio : [String] = []
+    @State private var listadoPropio : [String] = []
     
     //Tipos de criteros para filtrar el listado
     enum CriterioFiltro{
@@ -51,16 +52,20 @@ struct FrasesListView: View {
         case FrasesConNotas
         case ResultadosDeBusquedaEnNotas
     }
-    @State private var TiposDeBusqueda : TipoBusqueda = .TodasFrases
+    @State private var TiposDeBusquedaActual : TipoBusqueda = .TodasFrases //Almacena el tipo de listado que hay actualmente
+    @State private var CriterioFiltroActual : CriterioFiltro = .ListadoFull //Almacena el tipo de Criterio de filtro  que hay actualmente
     
     
     private func FiltrarListado(_ tipo : CriterioFiltro   = .ListadoFull){
         
+        self.listadoPropio.removeAll()
+        
         switch tipo {
-        case .Buscar: //Cuadro de búsqueda general
-            if self.textFieldFrase.isEmpty{
+            //Devuelve una lista de acuerdo al contenido del cuadro de bisqueda
+        case .Buscar:
+            if self.textFieldFrase.isEmpty{ //No hay una búsqueda activa
                 //Si el cuadro de búsqueda esta vacio se restuara el listado según el filtro seleccionado
-                switch TiposDeBusqueda {
+                switch TiposDeBusquedaActual {
                 case .FrasesPersonales:
                     self.listadoPropio =  frasesModel.getFrasesNoInbuilt()
                 case .FrasesFavoritas:
@@ -74,7 +79,7 @@ struct FrasesListView: View {
                 }
             }else{
                 
-                switch TiposDeBusqueda {
+                switch TiposDeBusquedaActual {
                 case .FrasesPersonales:
                     let temp = frasesModel.getFrasesNoInbuilt()
                     self.listadoPropio =  temp.filter{$0.localizedCaseInsensitiveContains(self.textFieldFrase)}
@@ -130,14 +135,141 @@ struct FrasesListView: View {
                 .padding(.horizontal)
                 
                 List(self.listadoPropio, id: \.self){ frase in
-                    VStack(alignment: .leading){
+                    LazyVStack(alignment: .leading){
+                        #if os(macOS)
+                        //Vista de listado de Frases desde macOS, con un Menu al final de cada frase
+                        HStack{
+                            //Mostrar Un icono de favorito si la frase es favorita
+                            if self.frasesModel.isFavFrase(frase) {
+                                Image(systemName: "heart.fill")
+                                    .foregroundStyle(.orange)
+                                    .padding(.horizontal, 5)
+                            }
+                            Text(frase)
+                                .font(.system(size: CGFloat(self.fontSizeFrases)))
+                                .foregroundStyle(.primary)
+                                .textSelection(.enabled)
+                                .padding(.vertical, 15)
+                            Spacer()
+                            Menu("..."){
+                                //Notas de la Frase
+                                Button{
+                                    showWindow(for: FrasesNotasAddView( frase: frase),
+                                               environmentObjects: [self.frasesModel],
+                                               title: "Frases",
+                                               size: CGSize(width: 400, height: 200),
+                                               isModal: true
+                                    
+                                    )
+                                     
+                                }label: {
+                                    Label("Notas",systemImage: "bookmark")
+                                    .tint(.green)
+                                    
+                                }
+                                
+                                //Ajustar el estado de favorito de una frase
+                                Button{
+                                    let current = frasesModel.isFavFrase(frase)
+                                    let newValue = !current
+                                    if frasesModel.setFavFrase(frase, newValue) {
+                                            //Recrear el listado actual solo si estamos en las frases favoritas:
+                                        print(self.CriterioFiltroActual)
+                                                withAnimation {
+                                                    FiltrarListado(self.CriterioFiltroActual)
+                                            }
+                                        
+                                    }
+                                }label: {
+                                    Label("Favorito", systemImage: "heart.fill")
+                                        .tint( frasesModel.isFavFrase(frase) ? .orange : .gray)
+                                }
+                                
+                                
+                                //Generando el QR de la frase
+                                Button{
+                                    showWindow(for: GenerateQRView(footer: frase),
+                                               environmentObjects: [self.frasesModel],
+                                               title: "Frases",
+                                               size: CGSize(width: 400, height: 200),
+                                               isModal: true
+                                    
+                                    )
+                                    
+                                }label: {
+                                    Label("Generar QR", systemImage: "qrcode")
+                                        .tint(.brown)
+                                }
+                                
+                                if #available(iOS 26.0, macOS 26.0,  *) {
+                                    if IAModelAppleIntelligence.isAvailable() {
+                                        
+                                        Button{
+                                            showWindow(for: RespondView(nameConference: "", texto: frase, tipoSalida: .interpretar),
+                                                       environmentObjects: [self.frasesModel, self.settingModel],
+                                                       size: CGSize(width: 600, height: 450),
+                                                       isModal: true,
+                                                       isIAWindows: true)
+                                            //RespondView(nameConference: "", texto: self.frase, tipoSalida: .interpretar)
+                                        }label: {
+                                            Label("Interpretar", systemImage: "sparkles")
+                                        }
+                                        .tint(.purple)
+                                        
+                                        Button{
+                                            showWindow(for: RespondView(nameConference: "", texto: frase, tipoSalida: .practicaConcreta),
+                                                       environmentObjects: [self.frasesModel, self.settingModel],
+                                                       size: CGSize(width: 600, height: 450),
+                                                       isModal: true,
+                                                       isIAWindows: true)
+                                            //RespondView(nameConference: "", texto: self.frase, tipoSalida: .practicaConcreta)
+                                        }label: {
+                                            Label("Aplicación Práctica", systemImage: "sparkles")
+                                        }
+                                        .tint(.purple)
+                                        
+                                        Button{
+                                            showWindow(for: ChatView(textoACargar: frase),
+                                                       environmentObjects: [self.frasesModel, self.settingModel],
+                                                       size: CGSize(width: 600, height: 450),
+                                                       isModal: false,
+                                                       isIAWindows: true)
+                                            
+                                        }label: {
+                                            Label("Charlar con la IA", systemImage: "sparkles")
+                                        }
+                                        .tint(.purple)
+                                        
+                                    }
+                                }
+                                
+                                //Si la Frase es personal, permite eliminarla
+                                if frasesModel.isNoInbuilt(frase: frase){
+                                    Button{
+                                        withAnimation {
+                                            if frasesModel.DeleteFraseInbuilt(frase: frase){
+                                                FiltrarListado(self.CriterioFiltroActual) //Actualizando el listado actual
+                                            }
+                                        }
+                                    }label:{
+                                        Label("Eliminar",systemImage: "minus.circle.fill")
+                                            .tint(.red.opacity(0.8))
+                                    }
+                                }
+                                
+                            }
+                        }
+                        
+                        #else
                         SelectableText(frase, fontSize: CGFloat(self.fontSizeFrases), fonColor: UIColor(Color.primary) , alignment: .left)
+                        #endif
+                        
                     }
                     //Modificar el campo nota de una frase
                     .swipeActions(edge: .leading, allowsFullSwipe: true){
                         
                         //Esta View no se mostrará si Apple Intelligence no esta disponible
-                        if #available(iOS 26.0, *) {
+                        if #available(iOS 26.0, macOS 26.0,  *) {
                             if IAModelAppleIntelligence.isAvailable() {
                                 Menu{
                                     NavigationLink{
@@ -193,20 +325,21 @@ struct FrasesListView: View {
                         
                     }
                     .swipeActions(edge: .trailing, allowsFullSwipe: true){
-                        //Solo se pueden borrar las frases personalas: NoInbuilt
+                        //Generando el QR de la frase
                         NavigationLink{
                             GenerateQRView(footer: frase)
                         }label: {
                             Image(systemName: "qrcode")
                                 .tint(.brown)
                         }
+                        
                         //Ajustar el estado de favorito de una frase
                         Button{
                             let current = frasesModel.isFavFrase(frase)
                             let newValue = !current
                             if frasesModel.setFavFrase(frase, newValue) {
                                     //Recrear el listado actual solo si estamos en las frases favoritas:
-                                    if self.TiposDeBusqueda == .FrasesFavoritas{
+                                    if self.TiposDeBusquedaActual == .FrasesFavoritas{
                                         withAnimation {
                                             FiltrarListado(.FrasesFavoritas)
                                     }
@@ -224,12 +357,12 @@ struct FrasesListView: View {
                 .backgroundStyle(.red)
                 .task{
                     //Cargando el listado completo
-                    self.FiltrarListado()
+                    self.FiltrarListado() //Por defecto carga todas las Frases
                 }
                 
+                //Actualiza la información de la cantidad de elementos en la barra de estado inferior
                 HStack{
-                   //Cambia la info en la barra de estado inferior de cuerdo al tipo de busqueda:
-                    switch self.TiposDeBusqueda{
+                    switch self.TiposDeBusquedaActual{
                     case .FrasesConNotas:
                         Text("Frases con notas: \(self.listadoPropio.count)")
                     case .TodasFrases:
@@ -245,35 +378,41 @@ struct FrasesListView: View {
                 }.padding(.horizontal)
                 
                 .navigationTitle("Listado de Frases")
+                #if os(iOS)
                 .navigationBarTitleDisplayMode(.inline)
+                #endif
                 .toolbar{
-                    
+                    //Aplica varios filtros al listado de Frases
                     ToolbarItem {
                         Menu{
                             
                             CreateMenuItemButton(text: "Todas las Frases", sysImageStr: "text.magnifyingglass") {
-                                self.TiposDeBusqueda = .TodasFrases
+                                self.TiposDeBusquedaActual = .TodasFrases //Almacenando el valor actual
+                                self.CriterioFiltroActual = .ListadoFull  //Almacenando el valor actual
                                 withAnimation {
                                     FiltrarListado(.ListadoFull)
                                 }
                             }
                             
                             CreateMenuItemButton(text: "Frases Personales", sysImageStr: "text.magnifyingglass") {
-                                self.TiposDeBusqueda = .FrasesPersonales
+                                self.TiposDeBusquedaActual = .FrasesPersonales
+                                self.CriterioFiltroActual = .FrasesPersonales
                                 withAnimation {
                                     FiltrarListado(.FrasesPersonales)
                                 }
                             }
                            
                             CreateMenuItemButton(text: "Frases Favoritas", sysImageStr: "text.magnifyingglass") {
-                                self.TiposDeBusqueda = .FrasesFavoritas
+                                self.TiposDeBusquedaActual = .FrasesFavoritas
+                                self.CriterioFiltroActual = .FrasesFavoritas
                                 withAnimation {
                                     FiltrarListado(.FrasesFavoritas)
                                 }
                             }
                             
                             CreateMenuItemButton(text: "Frases con notas", sysImageStr: "text.magnifyingglass") {
-                                self.TiposDeBusqueda = .FrasesConNotas
+                                self.TiposDeBusquedaActual = .FrasesConNotas
+                                self.CriterioFiltroActual = .FrasesConNotas
                                 withAnimation {
                                     FiltrarListado(.FrasesConNotas)
                                 }
@@ -289,13 +428,29 @@ struct FrasesListView: View {
                         }
                     }
                     
-                    if #available(iOS 26.0, *) {
+                    if #available(iOS 26.0, macOS 26.0,  *) {
                         ToolbarSpacer(.fixed)
                     }
                     ToolbarItem{
                         //Boton Adicionar una frase
                         Button{
+                            #if os(macOS)
+                            showWindow(for: FraseAddView(),
+                                       environmentObjects: [self.frasesModel],
+                                       title: "Adicionar Frase",
+                                       size: CGSize(width: 550, height: 400),
+                                       isModal: true) {
+                                //Si el listado actual es frases personales se actualiza:
+                                    Task{ @MainActor in
+                                        if self.CriterioFiltroActual == .FrasesPersonales {
+                                        FiltrarListado(self.CriterioFiltroActual) //Actualizando...
+                                    }
+                                }
+                            }
+                            #else
                             showAddFrase = true
+                            #endif
+                            
                         }label: {
                             Image(systemName: "plus")
                                 .foregroundStyle(theme ==  .dark ? .white :  .black)
@@ -316,7 +471,7 @@ struct FrasesListView: View {
                 TextField("", text: $textFieldNota)
                 Button("Buscar"){
                     if !self.textFieldNota.isEmpty{
-                        self.TiposDeBusqueda = .ResultadosDeBusquedaEnNotas
+                        self.TiposDeBusquedaActual = .ResultadosDeBusquedaEnNotas
                         FiltrarListado(.BuscarEnNotas)
                     }
                     

@@ -32,7 +32,9 @@ struct ChangePasswordView: View {
                         SecureField("Escriba aquí", text: $newPassWord).font(.system(size: 24))
                     }
                 }
+                #if os(iOS)
                 .navigationBarTitle("Cambiar contraseña")
+                #endif
                 .padding()
                 
                 HStack{

@@ -18,6 +18,7 @@ Cada entrada contiene un registro de la tabla Diario
 
 import Foundation
 import CoreData
+import Combine
 
 enum Emociones : String{
     case feliz      = "feliz",
@@ -136,6 +137,22 @@ final class DiarioModel : ObservableObject{
         return Calendar.current.isDate(date, inSameDayAs: Date())
     }
     
+    
+    //Para las funciones de calendario del diario. Utilizado en el archivo DiarioCalendarView.
+    //Devuelve un set de las fechas de las entradas, normalizadas al dia y en orden ascendente.
+    func fetchEntradasForCalendar() -> Set<Date> {
+            let request: NSFetchRequest<Diario> = Diario.fetchRequest()
+            request.sortDescriptors = [NSSortDescriptor(keyPath: \Diario.fecha, ascending: true)]
+
+            do {
+                let resultados = try context.fetch(request)
+                let fechas = resultados.compactMap { $0.fecha?.startOfDay() }
+                        return Set(fechas)
+            } catch {
+                //print("Error al obtener las entradas: \(error)")
+                return []
+            }
+        }
     
     ///Adiciona un item a la tabla Diario
     func addItem(title : String, emocion : Emociones, content : String, isFav : Bool = false )->Bool{

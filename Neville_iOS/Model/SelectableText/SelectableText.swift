@@ -6,6 +6,9 @@
 //
 
 import SwiftUI
+#if os(macOS)
+import AppKit
+#endif
 
 ///  A view that displays one or more lines of read-only selectable text.
 ///
@@ -38,7 +41,9 @@ import SwiftUI
 public struct SelectableText: View {
     private var text: String? = nil
     private var fontSize: CGFloat = 25
+
     private var fontColor: UIColor = .black
+
     private var alignment: NSTextAlignment = .left
     private var attributedText: NSAttributedString? = nil
     @State private var layoutHeight: CGFloat = .zero

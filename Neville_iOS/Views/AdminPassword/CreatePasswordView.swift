@@ -41,7 +41,13 @@ struct CreatePasswordView: View {
                 
                 HStack(){
                     Button("Cancelar"){
+                        #if os(macOS)
+                        if let window = NSApp.keyWindow {
+                            window.sheetParent?.endSheet(window)
+                        }
+                        #else
                         dismiss()
+                        #endif
                     }.buttonStyle(.bordered)
                         .tint(.red)
                     
@@ -50,7 +56,13 @@ struct CreatePasswordView: View {
                     Button("Crear Contraseña"){
                         if ( !self.password.isEmpty  && self.password == self.password2){
                             KeychainHelper.shared.savePassword(self.password)
+                            #if os(macOS)
+                            if let window = NSApp.keyWindow {
+                                window.sheetParent?.endSheet(window)
+                            }
+                            #else
                             dismiss()
+                            #endif
                         }else{
                             //Las cotraseñas no coinciden. Muestra un mensaje de alerta
                             self.showAlert = true
@@ -72,6 +84,9 @@ struct CreatePasswordView: View {
                 Alert(title: Text("Ups! Contraseña no coinciden"), message: Text("Las contraseñas no coinciden, por favor revise el texto"), dismissButton: .default(Text("Aceptar")) )
             }
         }
+        #if os(macOS)
+        .frame(width: 550, height: 400)
+        #endif
     }
 }
 

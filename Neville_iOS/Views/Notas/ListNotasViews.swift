@@ -14,8 +14,11 @@ import LocalAuthentication
 
 struct ListNotasViews: View {
     @Environment(\.dismiss) var dimiss
+    
+    @StateObject private var modelNotas = NotasModel()
+    
     @State private var showAddNoteView = false
-    @State private var list : [Notas] = NotasModel().getAllNotas()
+    //@State private var list : [Notas]  = []
     //Buscar en notas
     @State var showAlertSearch = false
     @State var textField = ""
@@ -27,9 +30,10 @@ struct ListNotasViews: View {
     @State var canOpenNotas = false
     @State var showAlert = false
     @State var alertMessage = ""
+    
     private var filtered : [Notas] {
-        if self.textFieldTitle.isEmpty {return self.list}
-        return self.list.filter{$0.title?.localizedCaseInsensitiveContains(self.textFieldTitle) ?? false}
+        if self.textFieldTitle.isEmpty {return self.modelNotas.notas}
+        return self.modelNotas.notas.filter{$0.title?.localizedCaseInsensitiveContains(self.textFieldTitle) ?? false}
     }
  
     var body: some View {
@@ -38,11 +42,17 @@ struct ListNotasViews: View {
                 ScrollView(.vertical){
                     
                     ForEach (self.filtered.reversed()){ nota in
-                        cardNotas(nota: nota, notas: $list)
+                        cardNotas(nota: nota)
+                            .environmentObject(self.modelNotas)
                     }
+                    #if os(macOS)
+                    .searchable(text: $textFieldTitle, prompt: "Buscar")
+                    #else
                     .searchable(text: $textFieldTitle, placement: .navigationBarDrawer(displayMode: .always)  , prompt:"Buscar")
+                    #endif
+                    
                     .task {
-                            list = NotasModel().getAllNotas()
+                        self.modelNotas.getAllNotasToModel()
                     }
                 }
             }else{
@@ -63,7 +73,9 @@ struct ListNotasViews: View {
                 }
                 .padding(.bottom, 20)
                 .navigationTitle("Notas")
+            #if os(iOS)
                 .navigationBarTitleDisplayMode(.inline)
+            #endif
                 .toolbar{
                     
                     //Chequea si esta habilitado la protección de las notas
@@ -76,8 +88,7 @@ struct ListNotasViews: View {
                             Menu{
                                 Button{
                                     withAnimation {
-                                        list.removeAll()
-                                        list = NotasModel().getAllNotas()
+                                        self.modelNotas.getAllNotasToModel()
                                     }
                                 }label:{
                                     Label("Todas las notas", systemImage: "text.magnifyingglass.rtl")
@@ -85,8 +96,7 @@ struct ListNotasViews: View {
                                 
                                 Button{
                                     withAnimation {
-                                        list.removeAll()
-                                        list = NotasModel().getFavNotas()
+                                        modelNotas.notas = NotasModel().getFavNotas()
                                     }
                                     
                                 }label:{
@@ -104,13 +114,25 @@ struct ListNotasViews: View {
                             }
                         }
                         
-                        if #available(iOS 26.0, *) {
+                        if #available(iOS 26.0, macOS 26.0, *) {
                             ToolbarSpacer(.fixed)
                         }
                         
                         ToolbarItem {
                             Button{
+                                #if os(macOS)
+                                
+                                showWindow(for: AddNotasView(),
+                                           environmentObjects: [self.modelNotas],
+                                           title: "Crear Nota",
+                                           size: CGSize(width: 550, height: 400),
+                                           isModal: false
+                                )
+                                
+                                #else
                                 showAddNoteView = true
+                                #endif
+                                
                             }label: {
                                 Image(systemName: "plus")
                             }
@@ -126,14 +148,13 @@ struct ListNotasViews: View {
                                 Menu{
                                     Button("Todas las notas"){
                                         withAnimation {
-                                            list.removeAll()
-                                            list = NotasModel().getAllNotas()
+                                            self.modelNotas.getAllNotasToModel()
                                         }
                                     }
                                     Button("Notas Favoritas"){
                                         withAnimation {
-                                            list.removeAll()
-                                            list = NotasModel().getFavNotas()
+                                            
+                                            self.modelNotas.notas = self.modelNotas.getFavNotas()
                                         }
                                         
                                     }
@@ -146,13 +167,24 @@ struct ListNotasViews: View {
                                 }
                             }
                             
-                            if #available(iOS 26.0, *) {
+                            if #available(iOS 26.0, macOS 26.0, *) {
                                 ToolbarSpacer(.fixed)
                             }
                             
                             ToolbarItem {
                                 Button{
+                                    #if os(macOS)
+                                    
+                                    showWindow(for: AddNotasView(),
+                                               environmentObjects: [self.modelNotas],
+                                               title: "Crear Nota",
+                                               size: CGSize(width: 550, height: 400),
+                                               isModal: false
+                                    )
+                                    
+                                    #else
                                     showAddNoteView = true
+                                    #endif
                                 }label: {
                                     Image(systemName: "plus")
                                 }
@@ -165,7 +197,8 @@ struct ListNotasViews: View {
                     
                 }
                 .sheet(isPresented: $showAddNoteView) {
-                    AddNotasView(notas: $list)
+                    AddNotasView()
+                        .environmentObject(self.modelNotas)
                         .presentationDetents([.medium])
                         .presentationDragIndicator(.hidden)
                     
@@ -175,8 +208,7 @@ struct ListNotasViews: View {
                     Button("Buscar"){
                         let temp = NotasModel().searchTextInNotas(text: textField, donde: .nota)
                         if temp.count > 0 {
-                            list.removeAll()
-                            list = temp
+                            self.modelNotas.notas = temp
                         }
                     }
                 }
@@ -185,8 +217,7 @@ struct ListNotasViews: View {
                     Button("Buscar"){
                         let temp = NotasModel().searchTextInNotas(text: textFieldTitle, donde: .titulo)
                         if temp.count > 0 {
-                            list.removeAll()
-                            list = temp
+                            self.modelNotas.notas = temp
                         }
                     }
                 }
@@ -204,9 +235,8 @@ struct ListNotasViews: View {
     //Actualiza una nota
     func updateYorj(nota : Notas){
         
-        if  NotasModel().updateNota(NotaID: nota.id ?? "", newTitle: nota.title ?? "", newNota: nota.nota ?? "") {
-            list.removeAll()
-            list.append(contentsOf: NotasModel().getAllNotas())
+        if  self.modelNotas.updateNota(NotaID: nota.id ?? "", newTitle: nota.title ?? "", newNota: nota.nota ?? "") {
+            self.modelNotas.getAllNotasToModel()
         }
         
         
@@ -293,7 +323,7 @@ struct ListNotasViews: View {
 //Card notas:
 struct cardNotas: View{
     let nota : Notas?
-    @Binding var  notas : [Notas]
+    @EnvironmentObject var modelNotas : NotasModel
     @State private var expandText = false
     @State private var isfav = false
     @State private var expandNota = false
@@ -331,16 +361,37 @@ struct cardNotas: View{
 
                 Menu{
                         Text("< \(nota?.title ?? "") >")
-                    
-                    NavigationLink{
-                        if self.nota != nil {
-                            UpdateNotasView(NotaId: nota!.id!, title: nota!.title!, nota: nota!.nota!, notas: self.$notas)
+                    #if os(macOS)
+                    Button{
+                        if self.nota?.id != nil {
+                            showWindow(for: UpdateNotasView(NotaId: nota!.id!, title: nota!.title!, nota: nota!.nota!),
+                                       environmentObjects: [self.modelNotas],
+                                       title: "Editar Nota",
+                                       size: CGSize(width: 550, height: 400),
+                                       isModal: false
+                            
+                            )
                         }
                           
                     }
                         label:{
                         Label("Editar...", systemImage: "highlighter.badge.ellipsis")
+                    }
+                    #else
+                    
+                    NavigationLink{
+                        if self.nota?.id != nil {
+                            UpdateNotasView(NotaId: nota!.id!, title: nota!.title!, nota: nota!.nota!)
+                                .environmentObject(self.modelNotas)
                         }
+                          
+                    }
+                        label:{
+                        Label("Editar...", systemImage: "highlighter.badge.ellipsis")
+                    }
+                    
+                    #endif
+                    
                     
                     
                     
@@ -367,7 +418,13 @@ struct cardNotas: View{
                     
                     
                     Button{
-                        UIPasteboard.general.string = nota!.nota
+                        #if os(macOS)
+                        NSPasteboard.general.clearContents()
+                        NSPasteboard.general.setString(nota?.nota ?? "", forType: .string)
+                        #else
+                        UIPasteboard.general.string = nota?.nota ?? ""
+                        #endif
+                        
                     }label:{
                         Label("Copiar Nota...", systemImage: "square.fill.on.square.fill")
                     }
@@ -375,7 +432,7 @@ struct cardNotas: View{
                     
                     ShareLink(item: "\(nota!.title ?? "")\n \(nota!.nota ?? "")")
                     
-                    if #available(iOS 26.0, *) {
+                    if #available(iOS 26.0, macOS 26.0, *) {
                         if IAModelAppleIntelligence.isAvailable(){
                                     NavigationLink{
                                         if let  temp = nota!.nota{
@@ -409,7 +466,9 @@ struct cardNotas: View{
                     }
                     
                     
-                    Button{showConfirmDialogDeleteNota = true}label:{
+                    Button{
+                        showConfirmDialogDeleteNota = true
+                    }label:{
                         Label("Eliminar nota...", systemImage: "trash")
                     }
                     .tint(.red)
@@ -431,10 +490,10 @@ struct cardNotas: View{
             //Dialogo de conformación para elimnar una nota
             .confirmationDialog("Esta seguro?", isPresented: $showConfirmDialogDeleteNota){
                 Button("Eliminar Nota", role: .destructive){
+                    
                     withAnimation {
-                        NotasModel().deleteNota(nota: nota!)
-                          notas.removeAll()
-                          notas.append(contentsOf: NotasModel().getAllNotas())
+                        modelNotas.deleteNota(nota: nota!)
+                        self.modelNotas.getAllNotasToModel()
                     }
 
                 }

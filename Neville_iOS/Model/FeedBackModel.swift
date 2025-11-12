@@ -7,7 +7,12 @@
 
 import SwiftUI
 import StoreKit
+#if os(iOS)
 import UIKit
+#endif
+#if os(macOS)
+import AppKit
+#endif
 
 //Yorj: es importante que este fichero solo se ejecute en el target iOS (NO watchOS)
 
@@ -17,7 +22,25 @@ import UIKit
 //Permite escribir una reseña de la App
 @MainActor func requestReview() {
 #if os(macOS)
-    SKStoreReviewController.requestReview()
+    if #available(macOS 15.0, *) {
+        // Try to get the key window's contentViewController; fall back to a temporary controller
+        let viewController: NSViewController = {
+            if let vc = NSApp.keyWindow?.contentViewController {
+                return vc
+            }
+            if let vc = NSApp.mainWindow?.contentViewController {
+                return vc
+            }
+            return NSViewController()
+        }()
+        Task{
+             AppStore.requestReview(in: viewController)
+        }
+        
+    } else {
+        // Fallback for older macOS versions
+        SKStoreReviewController.requestReview()
+    }
 #else
     guard let scene = UIApplication.shared.foregroundActiveScene else { return }
     SKStoreReviewController.requestReview(in: scene)
@@ -82,3 +105,4 @@ extension UIApplication {
     }
 }
 #endif
+

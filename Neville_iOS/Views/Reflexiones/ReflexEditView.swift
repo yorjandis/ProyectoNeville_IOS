@@ -64,7 +64,9 @@ struct ReflexEditView: View {
                 */
             }
             .navigationTitle("Editar una Reflexión")
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .alert(isPresented: $showAlert, content: {
                 Alert(title: Text("La Ley"), message: Text(AlertMessage))
             })
@@ -74,6 +76,3 @@ struct ReflexEditView: View {
     }
 }
 
-#Preview {
-    Home()
-}

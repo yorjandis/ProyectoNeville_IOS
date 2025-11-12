@@ -28,30 +28,73 @@ struct ReflexListView: View {
 
    @AppStorage("isUnicaVezReflex") var isUnicaVezReflex: Bool = true
     
-    
+    //Obtiene el estado de favorito de la reflexión
+    private func getFavState(title : String)->Bool{
+        return self.modelReflex.getFavState(title: title)
+    }
     
     var body: some View {
         NavigationStack{
             VStack{
                 List(modelReflex.list, id: \.id){item in
                     VStack(alignment: .leading){
+                        #if os(macOS)
+                        HStack{
+                            Button{
+                                showWindow(for: ReflexShowTextView(entity: item),
+                                           environmentObjects: [self.modelReflex],
+                                           title: "Reflexión: \(item.title)",
+                                           size: CGSize(width: 550, height: 400),
+                                           isModal: true
+                                )
+                                
+                               
+                            }label: {
+                                Text(item.title) //title
+                            }
+                            .buttonStyle(.plain)
+                            
+                            
+                            
+                            //En macOS: muestra un botón al final para eliminar la reflexión
+                            if !item.isInbuilt {
+                                Spacer()
+                                Button{
+                                    self.entityForDelete = item
+                                    showalertDeleteItem = true
+                                }label:{
+                                    Image(systemName: "xmark.circle")
+                                }
+                                .foregroundStyle(.red)
+                                .padding(.trailing, 10)
+                            }
+                        }
+                        
+                        
+                        #else
                         NavigationLink{
-                            EmptyView()
                            ReflexShowTextView(entity: item)
                         }label: {
                             Text(item.title) //title
                         }
+                        #endif
+                        
                         HStack{
                             Text(item.autor) //Autor
-                                .font(.caption2)
+                                .font(.body)
                                 .italic()
-                               .foregroundStyle(item.isfav ? Color.orange : Color.gray)
+                               
+                            if item.isfav{
+                                Image(systemName:"heart.fill")
+                                    .foregroundStyle(.orange)
+                            }
+                            
                         }
                     }
                     .swipeActions(edge: .leading) {
                             Button{
                                 
-                                var favState = modelReflex.getFavState(title: item.title)
+                                var favState = self.getFavState(title: item.title)
                                 favState.toggle()
                                 if modelReflex.setFavState(title: item.title, state: favState){
                                     //Actualizar el listado
@@ -62,7 +105,7 @@ struct ReflexListView: View {
                                 }
                             }label: {
                                 Image(systemName: "heart")
-                                    .tint(.orange)
+                                    .foregroundStyle(item.isfav ? .orange : .gray)
                             }
                     }
                     .swipeActions(edge: .trailing, allowsFullSwipe: false) {
@@ -81,7 +124,9 @@ struct ReflexListView: View {
                 }
             }
             .navigationTitle("Reflexiones")
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .task {
                 //Este código limpia la BD de reflexiones una sola vez
                 if self.isUnicaVezReflex{
@@ -116,17 +161,33 @@ struct ReflexListView: View {
                     }
                 }
                         
-                if #available(iOS 26.0, *) {
+                if #available(iOS 26.0, macOS 26.0, *) {
                     ToolbarSpacer(.fixed)
                 }
                                
                 ToolbarItem {
+                    #if os(macOS)
+                    Button{
+                        showWindow(for: AddReflexView(),
+                                   environmentObjects: [self.modelReflex],
+                                   title: "Nueva Reflexión",
+                                   size: CGSize(width: 550, height: 600),
+                                   isModal: false
+                        )
+                        
+                    }label: {
+                        Image(systemName: "plus")
+                            .foregroundStyle(theme ==  .dark ? .white :  .black)
+                    }
+                    #else
                     Button{
                         showSheetAddReflex = true
                     }label: {
                         Image(systemName: "plus")
                             .foregroundStyle(theme ==  .dark ? .white :  .black)
                     }
+                    #endif
+                    
                 
                 }
                 }
@@ -144,7 +205,6 @@ struct ReflexListView: View {
                 
             }
             .sheet(isPresented: $showSheetAddReflex, content: {
-                EmptyView()
                 AddReflexView()
             })
             .alert(isPresented: $showalertDeleteItem){
@@ -170,82 +230,7 @@ struct ReflexListView: View {
     }
     
     
-    
-    //Permite adicionar una nueva reflexión
-    struct AddReflexView : View {
-        @Environment(\.dismiss) private var dimiss
-        @StateObject private var modelReflex = ReflexModel.shared
-        @State private var textFielTitle = ""
-        @State private var textFielTexto = ""
-        @State private var textFielAutor = ""
-        @State private var isfav : Bool = false
-        
-        @State var showAlert = false
-        @State var alertMessage = ""
-        
-        var body: some View {
-            NavigationStack {
-                VStack(spacing: 10){
-                    Form{
-                        Section("Título"){
-                            TextField("título", text: $textFielTitle, axis: .vertical)
-                                .multilineTextAlignment(.leading)
-                                .textFieldStyle(.roundedBorder)
-                        }
-                        Section("Autor"){
-                            TextField("autor", text: $textFielAutor, axis: .vertical)
-                                .multilineTextAlignment(.leading)
-                                .textFieldStyle(.roundedBorder)
-                        }
-                        Section("Favorito"){
-                            Toggle(isOn: self.$isfav) {
-                                Label("Favorito", systemImage: "heart.fill")
-                                    .foregroundStyle( self.isfav ?  .orange : .primary)
-                            }
-                        }
-                        Section("Contenido"){
-                            TextField("Texto de la reflexión", text: $textFielTexto, axis: .vertical)
-                                .multilineTextAlignment(.leading)
-                                .textFieldStyle(.roundedBorder)
-                        }
-                    }
-                }
-                .navigationTitle("Adicionar una reflexión")
-                .navigationBarTitleDisplayMode(.inline)
-                .preferredColorScheme(.dark)
-                .toolbar{
-                    
-                   
-                    
-                    ToolbarItem {
-                        Button("Guardar"){
-                            //Validando campos
-                            guard !(self.textFielTitle).trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
-                                  !(self.textFielAutor).trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
-                                  !(self.textFielTexto).trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-                                alertMessage = "Debes rellenar todos los campos"
-                                showAlert = true
-                                return
-                            }
-                            
-                            if modelReflex.savePersonalReflex(title: self.textFielTitle, autor: self.textFielAutor, texto: self.textFielTexto, isfav: self.isfav){
-                                alertMessage = "Se ha guardado la reflexión"
-                                showAlert = true
-                                modelReflex.getArrayReflexOfTxtFile()
-                                dimiss()
-                            }else{
-                                alertMessage = "Se ha producido un error al guardar la reflexión"
-                                showAlert = true
-                            }
-                        }
-                    }
-                }
-                .alert(isPresented: $showAlert, content: {
-                    Alert(title: Text("La Ley"), message: Text(self.alertMessage))
-                })
-            }
-        }
-    }
+
     
 }
 

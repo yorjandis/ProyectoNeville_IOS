@@ -167,7 +167,9 @@ struct GamePLay: View {
                 
             }
             .navigationTitle("Compruebe lo que sabe")
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .sheet(isPresented: $showFallos){
                 viewResult(listFallifos: $listFallifos, listAciertos: $listAciertos, listado: $listado, Fallidos: $Fallos)
             }
@@ -271,7 +273,9 @@ struct viewResult: View{
                 }
             }
             .navigationTitle(viewResult.title)
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .toolbar{
                 //Solo para los fallos
                 if viewResult.type {
@@ -297,6 +301,9 @@ struct viewResult: View{
     }
     
 }
+
+
+
 
 
 

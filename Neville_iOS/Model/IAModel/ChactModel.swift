@@ -9,6 +9,7 @@ import FoundationModels
 
 import SwiftUI
 import FoundationModels   // Framework de Apple para los LLM on-device
+import Combine
 
 struct ChatMessage: Identifiable, Equatable {
     let id = UUID()
@@ -17,9 +18,9 @@ struct ChatMessage: Identifiable, Equatable {
     let isUser: Bool
 }
 
-@available(iOS 26.0, *)
+@available(iOS 26.0, macOS 26.0, *)
 @MainActor
-class ChatViewModel: ObservableObject {
+final class ChatViewModel: ObservableObject {
     @Published var messages: [ChatMessage]  = []       //Arreglo de las conversaciones
     @Published var inputText: String        = ""       //Entrada del usuario
     @Published var isResponding: Bool       = false    //Indica que el modelo esta trabajando

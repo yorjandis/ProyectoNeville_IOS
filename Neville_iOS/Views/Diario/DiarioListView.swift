@@ -11,6 +11,8 @@ import CoreData
 struct DiarioListView: View {
 
     @Environment(\.dismiss) var dimiss
+    @Environment(\.managedObjectContext) var context
+
     @StateObject private var modelDiario = DiarioModel.shared
     
     //Para filtros en fechas
@@ -70,8 +72,8 @@ struct DiarioListView: View {
         NavigationStack {
             ZStack{
                 
-                 LinearGradient(colors: [Color(red:0.45, green:0.50, blue: 0.50), .orange], startPoint: .top, endPoint: .bottom)
-                 .ignoresSafeArea()
+                LinearGradient(colors: [Color(red:0.45, green:0.50, blue: 0.50), .orange], startPoint: .top, endPoint: .bottom)
+                    .ignoresSafeArea()
                 
                 if self.canOpenDiario{
                     VStack{
@@ -85,7 +87,9 @@ struct DiarioListView: View {
                                             modelDiario.list = modelDiario.searchPorFecha(for: date)
                                         }
                                     }
+                                    
                             }
+                            .background(Color.black.opacity(0.05))
                         }
                             ScrollView(){
                                     if canOpenDiario {
@@ -134,12 +138,30 @@ struct DiarioListView: View {
                                     .symbolEffect(.pulse, isActive: true)
                             }
                             Text("Toque la imagen para acceder.").font(.footnote).padding()
+                            #if os(macOS)
+                            Button("Acceder por contraseña"){
+                                showWindow(for: LogginView(ente: "Diario", canOpen: self.$canOpenDiario),
+                                environmentObjects: [],
+                                           title: "Acceder Por contraseña",
+                                           size: CGSize(width: 550, height: 400),
+                                           isModal: true
+                                
+                                )
+                             
+                            }
+                            .buttonStyle(.bordered)
+                            .tint(.black)
+                            .padding(.vertical, 25)
+                            
+                            #else
                             NavigationLink("Acceder por contraseña"){
                              LogginView(ente: "Diario", canOpen: self.$canOpenDiario)
                             }
                             .buttonStyle(.bordered)
                             .tint(.black)
                             .padding(.vertical, 25)
+                            #endif
+                            
                             
                         }else{
                             //NO hay soporte para Biometria
@@ -198,7 +220,7 @@ struct DiarioListView: View {
                         }
                     }
                     
-                    if #available(iOS 26.0, *) {
+                    if #available(iOS 26.0, macOS 26.0, *) {
                         ToolbarSpacer(.fixed)
                     }
                     
@@ -238,37 +260,80 @@ struct DiarioListView: View {
                                     modelDiario.list =  modelDiario.filterByEmoticono(criterio: Emociones.feliz.rawValue)
                                 }
                                 }label: {
+                                    #if os(macOS)
+                                    HStack{
+                                        Text(Emociones.feliz.rawValue.capitalized)
+                                        iconoRedimensionado(nombre: Emociones.feliz.rawValue)
+                                    }
+                                    #else
                                     Label(Emociones.feliz.rawValue.capitalized, image: Emociones.feliz.rawValue)
+                                    #endif
+                                    
                                 }
                                 Button{withAnimation {
                                     modelDiario.list = modelDiario.filterByEmoticono(criterio: Emociones.neutral.rawValue)
                                 }
                                 }label: {
+                                #if os(macOS)
+                                    HStack{
+                                        Text(Emociones.neutral.rawValue.capitalized)
+                                        iconoRedimensionado(nombre: Emociones.neutral.rawValue)
+                                    }
+                                    #else
                                     Label(Emociones.neutral.rawValue.capitalized, image: Emociones.neutral.rawValue)
+                                    #endif
                                 }
                                 Button{ withAnimation {
                                     modelDiario.list = modelDiario.filterByEmoticono(criterio: Emociones.desanimado.rawValue)
                                 }
                                 }label: {
+                                #if os(macOS)
+                                    HStack{
+                                        Text(Emociones.desanimado.rawValue.capitalized)
+                                        iconoRedimensionado(nombre: Emociones.desanimado.rawValue)
+                                    }
+                                #else
                                     Label(Emociones.desanimado.rawValue.capitalized, image: Emociones.desanimado.rawValue)
+                                #endif
                                 }
                                 Button{withAnimation {
                                     modelDiario.list = modelDiario.filterByEmoticono(criterio: Emociones.enfado.rawValue)
                                 }
                                 }label: {
+                                #if os(macOS)
+                                    HStack{
+                                        Text(Emociones.enfado.rawValue.capitalized)
+                                        iconoRedimensionado(nombre: Emociones.enfado.rawValue)
+                                    }
+                                #else
                                     Label(Emociones.enfado.rawValue.capitalized, image: Emociones.enfado.rawValue)
+                                #endif
                                 }
                                 Button{withAnimation {
                                     modelDiario.list = modelDiario.filterByEmoticono(criterio: Emociones.distraido.rawValue)
                                 }
                                 }label: {
+                                #if os(macOS)
+                                    HStack{
+                                        Text(Emociones.distraido.rawValue.capitalized)
+                                        iconoRedimensionado(nombre: Emociones.distraido.rawValue)
+                                    }
+                                #else
                                     Label(Emociones.distraido.rawValue.capitalized, image: Emociones.distraido.rawValue)
+                                #endif
                                 }
                                 Button{withAnimation {
                                     modelDiario.list = modelDiario.filterByEmoticono(criterio: Emociones.sorpresa.rawValue)
                                 }
                                 }label: {
+                                #if os(macOS)
+                                    HStack{
+                                        Text(Emociones.sorpresa.rawValue.capitalized)
+                                        iconoRedimensionado(nombre: Emociones.sorpresa.rawValue)
+                                    }
+                                #else
                                     Label(Emociones.sorpresa.rawValue.capitalized, image: Emociones.sorpresa.rawValue)
+                                #endif
                                 }
                             }label: {
                                 Label("Por emoción", systemImage: "face.smiling")
@@ -402,7 +467,7 @@ struct DiarioListView: View {
                     }
                     
                     //Establecer una separación entre los items de los menus
-                    if #available(iOS 26.0, *) {
+                    if #available(iOS 26.0, macOS 26.0, *) {
                         ToolbarSpacer(.fixed)
                     }
                     
@@ -450,7 +515,9 @@ struct DiarioListView: View {
                 
             }
             .navigationTitle("Diario")
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .alert("Filtrar por Título", isPresented: $showAlertFilterByTitles) {
                 TextField("", text: $textfielTitles)
                 Button("Cancelar"){
@@ -592,25 +659,69 @@ struct cardItem: View{
                             
                             
                         }label: {
+                            #if os(macOS)
+                            HStack{
+                                Text(emociones[idx].rawValue)
+                                iconoRedimensionado(nombre: emociones[idx].rawValue)
+                            }
+                            #else
                             Label(emociones[idx].rawValue, image: emociones[idx].rawValue )
+                            #endif
+                            
                         }
                             
                     }
                     
                     
                 }label: {
+                    
+                    #if os(macOS)
+                    iconoRedimensionado(nombre: diario.emotion ?? "neutral")
+                    
+                    #else
                     Image(diario.emotion ?? "neutral")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 50)
                         .shadow(radius: 5)
+                    
+                    #endif
+                    
+                    
                 }
                 
                 //Título
                 Text(diario.title ?? "")
                     .font(.headline).bold()
                     .onTapGesture(count: 2) {
+                        #if os(macOS)
+                        showWindow(for: VStack{
+                            TextField("Nuevo título", text: $title)
+                                .foregroundStyle(theme == .dark ? .white : .black)
+                            Button("Cancelar"){
+                                if let window = NSApp.keyWindow {
+                                    window.sheetParent?.endSheet(window)
+                                }
+                            }
+                            Button("Guardar"){
+                                diarioModel.UpdateTitle(title: title, diario: diario)
+                                diarioModel.getAllItem()
+                                //Saliendo
+                                if let window = NSApp.keyWindow {
+                                    window.sheetParent?.endSheet(window)
+                                }
+                            }
+                        }.padding(10),
+                                   environmentObjects: [self.diarioModel],
+                                   title: "Editar Entrada Diario",
+                                   size: CGSize(width: 550, height: 400),
+                                   isModal: true
+                        
+                        )
+                        #else
                         showAlert = true
+                        #endif
+                        
                     }
                 Spacer()
                 
@@ -619,17 +730,14 @@ struct cardItem: View{
             
             //Contenido
                 Text(diario.content ?? "")
-                    .font(.system(size: 18))  
-                    #if os(macOS)
-                    .foregroundStyle(theme == .dark ? Color.white : Color.black)
-                    #endif
+                    .font(.system(size: 18))
+                    .foregroundStyle(.black)
                     .italic()
                     .fontDesign(.serif)
                     .fontWeight(.heavy)
                     .lineLimit(self.diarioModel.expandirEntrada == self.diario.fecha?.formatted() ? nil :  1) //Aquí es donde se contrae o se expande las lineas
                     .onTapGesture{
                         withAnimation {
-                            //expandText.toggle()
                             if self.diarioModel.expandirEntrada == self.diario.fecha?.formatted(){
                                 self.diarioModel.expandirEntrada = ""
                             }else{
@@ -638,7 +746,22 @@ struct cardItem: View{
                         }
                     }
                     .onTapGesture(count: 2) {
+                        
+                        #if os(macOS)
+                        showWindow(for: editContent(diario: $diario, textTitle:diario.title ?? "", textContent: diario.content ?? "", emoticono: diarioModel.getEmocionesFromStr(value: diario.emotion ?? "neutral")),
+                                   environmentObjects: [self.diarioModel],
+                                   title: "Editar entrada Diario",
+                                   size: CGSize(width: 550, height: 400),
+                                   isModal: false
+                        
+                        )
+                        
+                        #else
                         self.showSheet = true
+                        #endif
+                        
+                        
+                       
                     }
 
             
@@ -674,9 +797,9 @@ struct cardItem: View{
                         isfav.toggle()
                         diarioModel.UpdateFav(isFav: isfav, diario: diario)
                         animValue += 1
-                        
+                        #if os(iOS)
                         UIImpactFeedbackGenerator(style: .medium).impactOccurred() //Leve vibración al tocal el boton
-                                  
+                        #endif
                         
                     }label: {
                         Image(systemName: isfav ? "heart.fill" : "heart")
@@ -690,7 +813,18 @@ struct cardItem: View{
 
                     Menu{
                         Button{
-                            showSheet.toggle()
+                            #if os(macOS)
+                            showWindow(for: editContent(diario: $diario, textTitle:diario.title ?? "", textContent: diario.content ?? "", emoticono: diarioModel.getEmocionesFromStr(value: diario.emotion ?? "neutral")),
+                                       environmentObjects: [self.diarioModel],
+                                       title: "Editar entrada Diario",
+                                       size: CGSize(width: 550, height: 400),
+                                       isModal: false
+                                       
+                            )
+                            
+                            #else
+                            self.showSheet = true
+                            #endif
                         }label: {
                             Label("Editar", systemImage: "pencil")
                         }
@@ -771,16 +905,33 @@ struct editContent : View {
                                     emoticono = emociones[idx]
                                     
                                 }label: {
-                                    Label(emociones[idx].rawValue, image: emociones[idx].rawValue )
+                                    
+                                     #if os(macOS)
+                                     HStack{
+                                         Text(emociones[idx].rawValue)
+                                         iconoRedimensionado(nombre: emociones[idx].rawValue)
+                                     }
+                                     #else
+                                     Label(emociones[idx].rawValue, image: emociones[idx].rawValue )
+                                     #endif
                                 }
                                 
                             }
                         }label: {
-                            Image(emoticono.rawValue)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 50)
-                                .shadow(radius: 5)
+                            
+                             #if os(macOS)
+                            iconoRedimensionado(nombre: emoticono.rawValue)
+                             #else
+                             Image(emoticono.rawValue)
+                                 .resizable()
+                                 .scaledToFit()
+                                 .frame(width: 50)
+                                 .shadow(radius: 5)
+                             #endif
+                             
+                             
+                            
+                            
                         }
                         
                         
@@ -825,7 +976,9 @@ struct editContent : View {
                 }
             }
             .navigationTitle("Modificar Entrada")
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .toolbar{
                 
                 ToolbarItem {
@@ -856,6 +1009,31 @@ struct editContent : View {
     }
 }
 
+
+#if os(macOS)
+
+/// Crea un `Image` redimensionado a partir de un recurso `NSImage`.
+/// - Parameters:
+///   - nombre: Nombre del recurso de imagen en tus assets.
+///   - tamaño: Altura deseada en puntos (el ancho se ajusta manteniendo la proporción).
+///   - imagenPorDefecto: Nombre de una imagen por defecto si no se encuentra el recurso.
+/// - Returns: Un `Image` de SwiftUI redimensionado.
+func iconoRedimensionado(nombre: String?, tamaño: CGFloat = 24, imagenPorDefecto: String = "b_carpeta") -> Image {
+    // Cargar la imagen de recursos
+    guard let nsImage = NSImage(named: nombre ?? imagenPorDefecto) else {
+        return Image(nsImage: NSImage()) // Imagen vacía en caso de error
+    }
+    
+    // Mantener proporción
+    let ratio = nsImage.size.height / nsImage.size.width
+    nsImage.size.height = tamaño
+    nsImage.size.width = tamaño / ratio
+    
+    // Devolver como Image de SwiftUI
+    return Image(nsImage: nsImage)
+}
+
+#endif
 
 
 

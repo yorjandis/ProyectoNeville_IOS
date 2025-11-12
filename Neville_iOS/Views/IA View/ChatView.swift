@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-@available(iOS 26.0, *)
+@available(iOS 26.0, macOS 26.0, *)
 struct ChatView: View {
     
     @StateObject private var model = ChatViewModel()
@@ -77,7 +77,18 @@ struct ChatView: View {
                                                             .background(Color.black.opacity(0.7))
                                                             .cornerRadius(12)
                                                             .frame(
-                                                                width: UIScreen.main.bounds.width * 0.8, // cada carácter reduce 5 puntos
+                                                                width: {
+                                                                    #if os(iOS)
+                                                                    UIScreen.main.bounds.width * 0.8
+                                                                    #elseif os(macOS)
+                                                                    //Ajusta el ancho de la burbuja de chat a un valor predefinido: en función del ancho disponible o un valor fijo(700)
+                                                                    if let screenWidth = NSScreen.main?.frame.width {
+                                                                                return screenWidth * 0.3
+                                                                            } else {
+                                                                                return 700 // si no hay pantalla, usar 700 directamente
+                                                                            }
+                                                                    #endif
+                                                                }(),
                                                                 alignment: .trailing
                                                             )
                                                             .id(msg.id)
@@ -86,7 +97,7 @@ struct ChatView: View {
                                                 } else {
                                                     VStack{
                                                         SelectableText(msg.text, fontSize: CGFloat(self.fontSizeChatIA),fonColor: UIColor(self.ColorChatIAFuente) , alignment : .left)
-                                                            .padding()
+                                                            .padding(.horizontal, 10)
                                                             .background(Color.black.opacity(0.5))
                                                             .cornerRadius(12)
                                                         
@@ -152,7 +163,9 @@ struct ChatView: View {
             
         }
         .navigationTitle("Pregunta  a Neville")
+        #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
+        #endif
         .toolbar{
             if self.DescargoDeIA {
                 ToolbarItem {
@@ -192,8 +205,8 @@ struct ChatView: View {
                         .font(.system(size: 20))
                         .disabled(model.isResponding)
                         .padding(.vertical, 8)
-                        .padding(.leading, 20)
-                        .background(RoundedRectangle(cornerRadius: 24, style: .continuous).fill(.black.opacity(0.8)))
+                        .padding(.leading, 5)
+                        .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(.black.opacity(0.8)))
                         .focused(self.$focus)
                     
                     Button{
@@ -265,8 +278,13 @@ struct ChatView: View {
         // Número de filas y columnas
         
         @State  var  rows: Int
-        @State  var  columns: Int = UIDevice.current.userInterfaceIdiom == .pad ? 4 : 2 //Ajusta el No. columnas segun iOS/ipadOS
-        
+        @State var columns: Int = {
+            #if os(iOS)
+            return UIDevice.current.userInterfaceIdiom == .pad ? 4 : 2
+            #else
+            return 3 // por ejemplo, un valor fijo para macOS
+            #endif
+        }()
         
         
         @ObservedObject var model: ChatViewModel
@@ -323,7 +341,7 @@ struct ChatView: View {
 
 
 
-@available(iOS 26.0, *)
+@available(iOS 26.0, macOS 26.0, *)
 #Preview {
     NavigationStack {
         ChatView(textoACargar: nil)

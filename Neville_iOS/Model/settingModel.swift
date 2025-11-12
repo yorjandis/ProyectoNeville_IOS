@@ -8,6 +8,7 @@
 
 //Esta clase se pasará como un objeto de enviroment a toda la jerarquia de vista a nivel de la App.
 import SwiftUI
+import Combine
 
 @MainActor
 final class SettingModel : ObservableObject {

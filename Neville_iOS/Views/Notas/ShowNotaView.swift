@@ -7,7 +7,8 @@
 
 import SwiftUI
 
-struct ShowNotaView: View {
+/*
+struct ShowNotaView22: View {
     @Environment(\.dismiss) var dimiss
     let nota : Notas //La nota que se desea visualizar
     @Binding var notass : [Notas]
@@ -38,7 +39,9 @@ struct ShowNotaView: View {
             .padding(20)
         }
         .sheet(isPresented: $showUpdateNotaView){
-            UpdateNotasView(NotaId: nota.id ?? "", title: nota.title ?? "", nota: nota.nota ?? "", notas: $notass)
+            UpdateNotasView(NotaId: nota.id ?? "", title: nota.title ?? "", nota: nota.nota ?? "")
+            
+            
                 .presentationDetents([.medium])
                 .presentationDragIndicator(.hidden)
         }
@@ -46,4 +49,4 @@ struct ShowNotaView: View {
         
     }
 }
-
+*/

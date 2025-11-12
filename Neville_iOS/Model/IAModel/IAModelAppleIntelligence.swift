@@ -7,9 +7,13 @@
 
 import SwiftUI
 import FoundationModels
+import Combine
+#if os(macOS)
+import AppKit
+#endif
 
 @MainActor
-@available(iOS 26.0, *)
+@available(iOS 26.0, macOS 26.0, *)
 final class IAModelAppleIntelligence :  ObservableObject{
     
     var model : LanguageModelSession
@@ -103,6 +107,8 @@ final class IAModelAppleIntelligence :  ObservableObject{
         /*Método:
          Crea un listado de los puntos claves del contenido
          */
+        
+        print("Estoy dentro de puntos claves")
         
         self.puntosClaves.removeAll()
             
@@ -393,7 +399,7 @@ final class IAModelAppleIntelligence :  ObservableObject{
 
 
 //Estructura generable para Puntos Claves
-@available(iOS 26, *)
+@available(iOS 26.0, macOS 26.0, *)
 @Generable(description: "Estructura que representa un resumen de los puntos más importantes de un texto dado.")
 struct Summary {
     @Guide(description: "Lista de las  ideas clave del texto, en frases breves y concisas.")
@@ -401,7 +407,7 @@ struct Summary {
 }
 
 //Estructura generable para Resumen General
-@available(iOS 26, *)
+@available(iOS 26.0, macOS 26.0, *)
 @Generable(description: "Estructura que representa un resumen general y conciso de un texto dado.")
 struct ResumenG {
     @Guide(description: "Resumen general y conciso del contenido")
@@ -409,7 +415,7 @@ struct ResumenG {
 }
 
 //Estructura generable para listado de concejos prácticos
-@available(iOS 26, *)
+@available(iOS 26.0, macOS 26.0, *)
 @Generable(description: "Estructura que representa consejos prácticos derivados de las enseñanzas de una conferencia.")
 struct PracticalAdvice {
     @Guide(description: "Lista de consejos o acciones concretas que una persona puede aplicar para implementar las ideas presentadas en la conferencia.")
@@ -439,8 +445,10 @@ enum TiposSalida{
 //Create a view only if Apple Intelligence is available.
 @ViewBuilder
 func CreateViewIfAppleIntelligence<Content: View>( content: () -> Content) -> some View {
-    if #available(iOS 26.0, *), SystemLanguageModel.default.isAvailable {
-        content()
+    if #available(iOS 26.0, macOS 26.0, *) {
+        if SystemLanguageModel.default.isAvailable {
+            content()
+        }
     }
 }
 

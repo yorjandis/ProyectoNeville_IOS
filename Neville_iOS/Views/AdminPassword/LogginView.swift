@@ -49,7 +49,13 @@ struct LogginView: View {
                 Spacer()
 
                 Button("Cancel") {
+                    #if os(macOS)
+                    if let window = NSApp.keyWindow {
+                        window.sheetParent?.endSheet(window)
+                    }
+                    #else
                     dismiss()
+                    #endif
                 }
                 .buttonStyle(.bordered)
                 .tint(.red)
@@ -57,17 +63,26 @@ struct LogginView: View {
             .padding()
         }
         .padding()
+        #if os(macOS)
+        .frame(height: 400)
+        #endif
     }
 
     //Valida la contraseña
     private func validar() {
-        if let value = KeychainHelper.shared.getPassword() {
+        if let value = KeychainHelper.shared.getPassword() { //Obteniendo la contraseña del llavero
             if value == self.password { // La contraseña es válida
-                self.canOpen = true // Se pasa true al llamador para que abra el Diario
+                self.canOpen = true // Se pasa true al llamador
+                #if os(macOS)
+                if let window = NSApp.keyWindow {
+                    window.sheetParent?.endSheet(window)
+                }
+                #else
                 dismiss()
+                #endif
             } else { // No es válida
                 self.attempts += 1
-                self.canOpen = false // Se pasa false al llamador para que no abra el Diario
+                self.canOpen = false // Se pasa false al llamador
                 self.focus = true
             }
         } else {

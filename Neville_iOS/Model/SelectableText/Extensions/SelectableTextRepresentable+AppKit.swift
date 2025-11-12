@@ -14,6 +14,7 @@ struct SelectableTextRepresentable: NSViewRepresentable {
     var attributedText: NSAttributedString? = nil
     var fontSize : CGFloat
     var fontColor : UIColor = .black
+    var alignment : NSTextAlignment
     var maxLayoutWidth: CGFloat = .zero
     
     @Binding var layoutHeight: CGFloat
@@ -23,21 +24,29 @@ struct SelectableTextRepresentable: NSViewRepresentable {
         textView.isEditable = false
         textView.isSelectable = true
         textView.backgroundColor = .clear
-        textView.font = UIFont.systemFont(ofSize: self.fontSize)
-        textView.textColor = self.fontColor
         textView.textContainerInset = .zero
         textView.textContainer?.lineFragmentPadding = 0
         textView.maxLayoutWidth = self.maxLayoutWidth
         
+        // Configurar la fuente y color
+        textView.font = NSFont.systemFont(ofSize: self.fontSize)
+        textView.textColor = self.fontColor
+        
+        // Configurar alineación mediante paragraph style
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = self.alignment
+
+        // Aplicar el estilo al texto plano
+        textView.typingAttributes = [
+            .paragraphStyle: paragraphStyle,
+            .font: NSFont.systemFont(ofSize: self.fontSize),
+            .foregroundColor: self.fontColor
+        ]
+
         if let text {
             textView.string = text
         }
-        
-        if let attributedText {
-            textView.isRichText = true
-            textView.textStorage?.setAttributedString(attributedText)
-        }
-        
+
         return textView
     }
     

@@ -11,6 +11,7 @@
 import Foundation
 import CoreData
 import SwiftUI
+import Combine
 
 //Typo de contenido a manejar: Nota: Si en un futuro se adiciona más contenido se maneja aqui
 enum TipoDeContenido: String, CaseIterable{
@@ -101,11 +102,12 @@ final class TxtContentModel : ObservableObject {
         do {
             // Verificar si hay al menos un elemento que coincida con el criterio
             if let txtCont = try context.fetch(fetchRequest).first {
-                if !txtCont.nota!.isEmpty {
-                    return true
+                if let nota = txtCont.nota {
+                    return !nota.isEmpty
                 }else{
                     return false
                 }
+                
             }
             
         } catch {
@@ -123,7 +125,7 @@ final class TxtContentModel : ObservableObject {
         
         do{
             if let element = try context.fetch(fetchRequest).first {
-                return element.nota!
+                return element.nota ?? ""
             }
             return ""
         }catch{

@@ -26,6 +26,7 @@ struct QRLoadFromGaleryView: View {
         NavigationStack {
             VStack(spacing: 25) {
                 if let tt = selectedImage {
+                    #if os(iOS)
                     Image(uiImage: tt )
                         .resizable()
                         .scaledToFit()
@@ -45,6 +46,30 @@ struct QRLoadFromGaleryView: View {
                             
                         }
                     
+                    #endif
+                    
+                    #if os(macOS)
+                    Image(nsImage: tt )
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 250, height: 250)
+                        .contextMenu {
+                            ShareLink( item: Image(nsImage: tt),
+                                            preview: SharePreview("Compartir",
+                                                image: Image(systemName: "book")
+                                            )
+                             )
+                            Button("Guardar en Frases"){
+                                FrasesModel.shared.AddFrase(frase: texto)
+                            }
+                            Button("Guardar en Notas"){
+                                _ = NotasModel().addNote(nota: texto, title: "\(String(String(texto).prefix(texto.count / 3 )))...")
+                            }
+                            
+                        }
+                    #endif
+                    
+                    
                     Text(texto)
                         .multilineTextAlignment(.leading)
                         .textSelection(.enabled)
@@ -54,6 +79,7 @@ struct QRLoadFromGaleryView: View {
                 
                 Spacer()
                 
+                #if os(iOS)
                 PhotosPicker(selection: $selectedItem, matching: .images){
                     Label("Seleccionar imagen", systemImage: "photo")
                 }
@@ -76,7 +102,13 @@ struct QRLoadFromGaleryView: View {
                                     
                                     
                                 }else{
+                                    #if os(iOS)
                                     selectedImage = UIImage(systemName: "qrcode")
+                                    #endif
+                                    #if os(macOS)
+                                    selectedImage = NSImage(systemSymbolName: "qrcode", accessibilityDescription: nil)
+                                    #endif
+                                    
                                     self.texto = ""
                                 }
                             }else{
@@ -88,7 +120,7 @@ struct QRLoadFromGaleryView: View {
                     .tint(.blue)
                     .controlSize(.large)
                     .buttonStyle(.borderedProminent)
-  
+                #endif
             }
             .overlay {
                 VStack{
@@ -105,13 +137,15 @@ struct QRLoadFromGaleryView: View {
                 
             }
             .navigationTitle("Leer QR de la galería")
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
         }
         
     }
     
     
-    
+    #if os(iOS)
     //Lee una UIImage y decodifica su QR si existe, si falla retorna nil
     func detectQRCode(_ image: UIImage?) -> [CIFeature]? {
         if let image = image, let ciImage = CIImage.init(image: image){
@@ -130,6 +164,7 @@ struct QRLoadFromGaleryView: View {
         }
         return nil
     }
+    #endif
    
     
 }

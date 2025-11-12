@@ -152,11 +152,16 @@ struct ViewIfNewUpdateAvailable : View {
                         // print("Can't Open URL on Simulator")
                     }
                 }label: {
-                    HStack{
-                        Image(systemName: "exclamationmark.circle")
-                            .symbolEffect(.pulse, isActive: true)
-                        Text("Existe una nueva versión de la App")
+                    VStack{
+                        HStack{
+                            Image(systemName: "exclamationmark.circle")
+                                .symbolEffect(.pulse, isActive: true)
+                            Text("Existe una nueva versión de la App").bold()
+                            
+                        }
+                        Text("Toca aqui para actualizar").bold()
                     }
+                    
                     .foregroundStyle(Color.black)
                     .font(.system(size: 15))
                     

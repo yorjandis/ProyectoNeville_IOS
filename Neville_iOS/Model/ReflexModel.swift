@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreData
+import Combine
 
 //Representa una reflexion
 struct RefType      : Identifiable{

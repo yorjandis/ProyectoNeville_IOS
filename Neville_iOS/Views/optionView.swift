@@ -78,7 +78,7 @@ struct optionView: View {
                 FrasesListView()
             }
             .sheet(isPresented: $showSetting){
-                settingView()
+                Ajustes()
                     .presentationDetents([.large])
             }
             .sheet(isPresented: $showCodeScanner){

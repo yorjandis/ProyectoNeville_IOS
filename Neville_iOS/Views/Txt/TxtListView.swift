@@ -14,7 +14,9 @@ struct TxtListView: View {
     
     @Environment(\.colorScheme) var theme
     @Environment(\.managedObjectContext) var context
+    @EnvironmentObject private var settingModel : SettingModel
     @StateObject var modeloTxt : TxtContentModel = TxtContentModel.shared
+    
     
     let typeOfContent : TipoDeContenido //Tipo de contenido a cargar
 
@@ -83,6 +85,22 @@ struct TxtListView: View {
                                     (modeloTxt.getIsFavOfTxt(nombreTxt: nombreTxt, type: self.typeOfContent)) ? .orange : .gray, (modeloTxt.isNotaOfTxt(nombreTxt: nombreTxt, type: typeOfContent)) ? .green : .gray], startPoint: .leading, endPoint: .trailing))
                             
                             //Abrir la conferencia
+                            #if os(macOS)
+                            Button{
+                                showWindow(for: ContentTxtShowView(title: self.title, nombreTxt: nombreTxt, type: self.typeOfContent),
+                                           environmentObjects: [self.modeloTxt, self.settingModel],
+                                           title: "\(self.title) - \(nombreTxt)" ,
+                                           size: CGSize(width: 600, height: 500),
+                                           isModal: true
+                                )
+                                
+                                
+                            }label: {
+                                
+                                Text(nombreTxt)
+                            }
+                            .buttonStyle(.plain)
+                            #else
                             NavigationLink{
                                 
                                 ContentTxtShowView(title: self.title, nombreTxt: nombreTxt, type: self.typeOfContent)
@@ -90,6 +108,9 @@ struct TxtListView: View {
                             }label: {
                                 Text(nombreTxt)
                             }
+                            
+                            #endif
+                            
                         }
                     }
                         .swipeActions(edge: .leading){
@@ -116,7 +137,9 @@ struct TxtListView: View {
                 }
             }
             .navigationTitle(self.title)
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .toolbar{
                 
                 ToolbarItem{
@@ -186,7 +209,7 @@ struct TxtListView: View {
 
 //Permite ver y editar el campo nota
 struct EditNoteTxt:View {
-    @Environment(\.dismiss) var dimiss
+    @Environment(\.dismiss) var dismiss
     @EnvironmentObject var modeloTxt : TxtContentModel
     @State var entidad : String
     @State var typeOfContent : TipoDeContenido
@@ -217,15 +240,40 @@ struct EditNoteTxt:View {
                 }
             }
             .navigationTitle("Notas")
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .toolbar{
+                #if os(macOS)
+                ToolbarItem(placement: .navigation) {
+                    Button{
+                        if let window = NSApp.keyWindow {
+                            window.sheetParent?.endSheet(window)
+                        }
+                    }label:{
+                        Label("Cerrar", systemImage: "xmark.circle.fill")
+                            .foregroundStyle(.red)
+                    }
+                    .help("Cerrar")
+                }
+                #endif
                 
                 ToolbarItem {
                     Button{
                         if modeloTxt.setNotaOfTXT(nombreTxt: entidad, type: self.typeOfContent, nota: textfiel){
                             modeloTxt.getAllFileTxtOfType(type: self.typeOfContent)
                         }
-                        dimiss()
+                        #if os(macOS)
+                        if let window = NSApp.keyWindow {
+                            window.sheetParent?.endSheet(window)
+                        }else{
+                            dismiss()
+                        }
+                        #else
+                        dismiss()
+                        #endif
+                        
+                        
                     }label: {
                         Text("Guardar")
                             .foregroundStyle(.blue).bold()

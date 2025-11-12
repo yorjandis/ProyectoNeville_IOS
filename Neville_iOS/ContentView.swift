@@ -5,7 +5,7 @@ import CoreData
 
 struct ContentView: View{
     
-    @StateObject private var settingModel = SettingModel() //Inicializo el modelo para cargar valores de Setting y lo inyecto en el árbol de vistas
+    @EnvironmentObject private var settingModel: SettingModel
     
     @State var showSheetDiario = false
     @State var showSheetNotas = false
@@ -23,7 +23,7 @@ struct ContentView: View{
         
         
         Home()
-            .environmentObject(settingModel)
+            
             .onOpenURL(perform: { url in
                 switch url.description{
                     case AppCons.DeepLink_url_Diario : showSheetDiario = true

@@ -16,7 +16,7 @@ struct Neville_iOSApp: App {
  @StateObject private var networkMonitor        = NetworkMonitor() //Helper Para conexiones de red
  @StateObject private var modelTxt              = TxtContentModel()
  @StateObject private var modelFrases           = FrasesModel.shared
-
+ @StateObject private var settingModel = SettingModel() //Inicializo el modelo para cargar valores de Setting y lo inyecto en el árbol de vistas
     
     
   private let persistentStore : CoreDataController =  CoreDataController.shared
@@ -33,6 +33,7 @@ struct Neville_iOSApp: App {
                 .environmentObject(networkMonitor)
                 .environmentObject(modelTxt)
                 .environmentObject(modelFrases)
+                .environmentObject(settingModel)
                 .environment(\.managedObjectContext, persistentStore.context)
                 .task {
                     modelTxt.getAllFileTxtOfType(type: .conf) // Carga el listado de conferencias

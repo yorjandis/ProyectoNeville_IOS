@@ -10,11 +10,11 @@ import CoreData
 
 struct UpdateNotasView: View {
     @Environment(\.dismiss) var dimiss
+    @EnvironmentObject var modelNotas : NotasModel
     
     let NotaId : String //Id de la nota a actualizar
     @State var title : String
     @State var nota : String
-    @Binding var notas : [Notas]
 
     
     var body: some View {
@@ -31,18 +31,49 @@ struct UpdateNotasView: View {
                             .font(.system(size: 22))
                             .frame(minHeight: 150)
                             .scrollContentBackground(.hidden)
-                            .background(Color(.systemGray6))
+                            .background(.black.opacity(0.02))
                             .cornerRadius(8)
                 }
             }
             .navigationTitle("Actualizar una Nota")
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .toolbar{
+                
+                #if os(macOS)
+                ToolbarItem(placement: .principal) {
+                    Button("Actualizar"){
+                        if NotasModel().updateNota(NotaID: NotaId, newTitle: title, newNota: nota){
+                            self.modelNotas.getAllNotasToModel()
+                        }else{
+                            print("Error al actualizar la nota")
+                        }
+
+                            dimiss()
+
+                    }
+                }
+                
+                ToolbarItem(placement: .principal) {
+                        Button{
+                            
+                                dimiss()
+                           
+                        }label: {
+                            Text("Cancelar")
+                                .foregroundStyle(.red)
+                        }
+                }
+                #endif
+                
+                
+                
+                #if os(iOS)
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Actualizar"){
                         if NotasModel().updateNota(NotaID: NotaId, newTitle: title, newNota: nota){
-                            notas.removeAll()
-                            notas.append(contentsOf: NotasModel().getAllNotas())
+                            self.modelNotas.getAllNotasToModel()
                         }else{
                             print("Error al actualizar la nota")
                         }
@@ -58,6 +89,7 @@ struct UpdateNotasView: View {
                                 .foregroundStyle(.red)
                         }
                 }
+                #endif
             }
         }
         
@@ -65,8 +97,4 @@ struct UpdateNotasView: View {
     
     
     
-}
-
-#Preview {
-    ContentView()
 }

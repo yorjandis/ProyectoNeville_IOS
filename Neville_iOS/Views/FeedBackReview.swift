@@ -7,7 +7,9 @@
 
 import SwiftUI
 import StoreKit
+#if os(iOS)
 import UIKit
+#endif
 
 struct FeedbackView: View {
     @Environment(\.dismiss) private var dismiss
@@ -64,6 +66,7 @@ struct FeedbackView: View {
                             .cornerRadius(20) // Borde redondeado
                             .shadow(radius: 5) // Sombra opcional
                     }
+                    .buttonStyle(.plain)
                     .padding()
                 
                 Text("Al escribir una reseña ayudas a que más personas puedan disfrutar de estas enseñanzas, gracias por tu apoyo!")
@@ -87,6 +90,15 @@ struct FeedbackView: View {
                 .padding()
             }
             
+            
+            #if os(macOS)
+            Spacer()
+            Button("Cerrar"){
+                if let window = NSApp.keyWindow {
+                        window.sheetParent?.endSheet(window)
+                }
+            }
+            #endif
 
            
         }

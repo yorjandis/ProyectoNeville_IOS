@@ -9,6 +9,7 @@
 import Foundation
 import CoreData
 import SwiftUI
+import Combine
 
 //Manejo de la tabla frases
 
@@ -351,7 +352,8 @@ final class FrasesModel : ObservableObject {
 
 }//struct
 
-
+#if os(macOS)
+import UniformTypeIdentifiers
 //Uso de transferable para poder compartir la frases en macOS y no crashee la app
 struct Frase: Transferable {
     var texto: String
@@ -362,3 +364,4 @@ struct Frase: Transferable {
             }
         }
 }
+#endif

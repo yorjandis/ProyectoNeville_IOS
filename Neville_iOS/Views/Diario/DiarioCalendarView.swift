@@ -5,19 +5,24 @@
 //  Created by Yorjandis PG on 18/2/25.
 //
 //Construye un calendario donde serán seleccionado los días en que hay entradas de cierto tipo en Core Data (Entradas del Diario)
-
+#if os(macOS)
+import AppKit
+#endif
+#if os(iOS)
 import UIKit
+#endif
+
 import SwiftUI
 import CoreData
 
+
+
+//Vista del calendario
+
 struct DiarioCalendarView: View {
     
-    @StateObject private var modeloDiario = DiarioModel.shared
-    
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Diario.fecha, ascending: true)],
-        animation: .default
-    ) private var entradas: FetchedResults<Diario>
+
+    @StateObject var modeloDiario : DiarioModel = DiarioModel.shared
     
     @State private var currentMonth: Date = Date()
     
@@ -28,7 +33,7 @@ struct DiarioCalendarView: View {
     
     // Extraer solo los días con entradas en formato de fecha sin horas
     private var fechasDeEntradas: Set<Date> {
-        Set(entradas.compactMap { $0.fecha?.startOfDay() })
+        return modeloDiario.fetchEntradasForCalendar()
     }
     
     var body: some View {
@@ -110,6 +115,7 @@ struct CalendarGrid: View {
     @Binding var currentMonth: Date
     var fechasResaltadas: Set<Date>
     var onDateSelected: (Date) -> Void
+    
     @StateObject private var modelDiario = DiarioModel.shared
     
     private let columns = Array(repeating: GridItem(.flexible()), count: 7)
@@ -117,26 +123,32 @@ struct CalendarGrid: View {
     var body: some View {
         let days = generateDaysInMonth(for: currentMonth)
         
+        // ⚙️ Aquí defines el color compatible con ambas plataformas
+                #if os(macOS)
+                let highlightColor = Color(NSColor(calibratedWhite: 0, alpha: 0.6))
+                #else
+                let highlightColor = Color(UIColor(white: 0, alpha: 0.6))
+                #endif
+        
         LazyVGrid(columns: columns) {
-            ForEach(days, id: \.self) { day in
-                if let date = day {
+            ForEach(days.indices, id: \.self) { index in
+                if let date = days[index] {
                     let isHighlighted = fechasResaltadas.contains(date)
                     
                     Text(date.formatted(.dateTime.day()))
                         .frame(width: 45, height: 45)
-                        .background(isHighlighted ? Color.black.opacity(0.6) : Color.clear)
-                        .clipShape(Circle())
+                        .background(
+                            Circle()
+                                .fill(isHighlighted ? highlightColor : Color.clear)
+                        )
                         .foregroundColor(isHighlighted ? .white : .primary)
-                        .overlay{
-                            //Poner una etiqueta con el número de entradas
+                        .overlay {
                             if isHighlighted {
-                                ZStack{
-                                    Text("\(modelDiario.searchPorFecha(for: date, typeFecha: .FechaCreacion).count)")
-                                        .font(.footnote)
-                                        .foregroundStyle(Color.orange)
-                                        .bold()
-                                        .offset(x: 0 , y: +15 )
-                                }
+                                Text("\(modelDiario.searchPorFecha(for: date, typeFecha: .FechaCreacion).count)")
+                                    .font(.footnote)
+                                    .foregroundStyle(Color.orange)
+                                    .bold()
+                                    .offset(y: +15)
                             }
                         }
                         .onTapGesture {

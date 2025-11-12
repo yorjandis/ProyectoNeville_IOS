@@ -7,6 +7,11 @@
 //Muestra una imagen con un pie de página
 
 import SwiftUI
+#if os(macOS)
+import AppKit
+#endif
+
+
 
 struct GenerateQRView : View {
 
@@ -19,8 +24,14 @@ struct GenerateQRView : View {
     @State  var  showImage = true //muestra la imagen del QR ya generado
     
     @FocusState private var focusState : Bool //Para ocultar el teclado
+    #if os(iOS)
     @State private var imagen : UIImage? = UIImage(systemName: "qrcode")
+    #endif
     
+    #if os(macOS)
+    @State private var imagen : UIImage? = UIImage(systemSymbolName: "qrcode", accessibilityDescription: nil)
+    
+    #endif
     @State private var showAlert = false
     
     
@@ -39,6 +50,7 @@ struct GenerateQRView : View {
                         .padding(.top, 25)
                     Divider()
                     if showImage {
+                        #if os(iOS)
                         Image(uiImage: imagen!)
                             .resizable()
                             .scaledToFit()
@@ -62,6 +74,32 @@ struct GenerateQRView : View {
                                 
                                 
                             }
+                            #elseif os(macOS)
+                            Image(nsImage: imagen!)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 300, height: 300 )
+                            .onTapGesture {
+                                focusState = false
+                            }
+                            .contextMenu {
+                                
+                                ShareLink( item: Image(nsImage: imagen!),
+                                                preview: SharePreview("Compartir",
+                                                    image: Image(systemName: "book")
+                                                )
+                                 )
+                                Button("Guardar en Frases"){
+                                    FrasesModel.shared.AddFrase(frase: footer)
+                                }
+                                Button("Guardar en Notas"){
+                                    _ = NotasModel().addNote(nota: footer, title: "\(String(String(footer).prefix(footer.count / 3 )))...")
+                                }
+                                
+                                
+                            }
+                            #endif
+                            
                     }
                    
                         TextField("Escriba un texto...!", text: $footer, axis: .vertical)
@@ -76,11 +114,23 @@ struct GenerateQRView : View {
                                 withAnimation {
                                     showImage = false
                                 }
-                                
                             }
                     
                     Spacer()
-             
+                    
+                    
+                    #if os(macOS)
+                    //Barra inferior para cerrar la ventana modal en macOS
+                    HStack{
+                        Spacer()
+                        Button("Cerrar"){
+                            if let window = NSApp.keyWindow {
+                                    window.sheetParent?.endSheet(window)
+                                }
+                        }
+                    }
+                    .padding()
+                    #endif
 
             }
                 .onAppear {
@@ -92,7 +142,9 @@ struct GenerateQRView : View {
             }
             
             .navigationTitle("Generar Código QR")
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .toolbar{
                 Button{
                     withAnimation {
@@ -109,29 +161,40 @@ struct GenerateQRView : View {
                 Menu{
                     
                     if showImage {
+                        #if os(iOS)
                         ShareLink(
                             item: Image(uiImage: imagen!),
                                         preview: SharePreview("Compartir",
                                             image: Image(systemName: "book")
                                         )
                          )
+                        #elseif os(macOS)
+                        ShareLink(
+                            item: Image(nsImage: imagen!),
+                                        preview: SharePreview("Compartir",
+                                            image: Image(systemName: "book")
+                                        )
+                         )
+                        #endif
                         
                         
+                        #if os(iOS)
                         Button{
                             UIImageWriteToSavedPhotosAlbum(imagen!, nil, nil, nil)
                             showAlert = true
                         }label: {
                             Label("Guardar en Galeria", systemImage: "photo.badge.arrow.down.fill")
                         }
+                        #endif
                     }
                     
-                   
+                    #if os(iOS)
                     NavigationLink{
                         QRLoadFromGaleryView()
                     }label: {
                         Label("Cargar de Galeria", systemImage: "qrcode")
                     }
-                    
+                    #endif
                     
                 }label: {
                     Image(systemName: "ellipsis")
@@ -155,7 +218,7 @@ struct GenerateQRView : View {
     }
      
     
-    
+    #if os(iOS)
     //Auxiliar para cargar una imagen QR de la galería y decodificarla
     func imagePickerController(_ picker: UIImagePickerController,
                                didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
@@ -167,6 +230,7 @@ struct GenerateQRView : View {
             let ciImage = CIImage(image: pickedImage),
               let _ = detector.features(in: ciImage) as? [CIQRCodeFeature] else { return }
     }
+    #endif
  
 }
 

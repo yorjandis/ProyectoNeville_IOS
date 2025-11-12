@@ -11,7 +11,7 @@ import CoreData
 
 
 struct FrasesNotasAddView: View {
-    @Environment(\.dismiss) var dimiss
+    @Environment(\.dismiss) var dismiss
     @EnvironmentObject private var frasesModel: FrasesModel
     
     let frase : String
@@ -24,12 +24,65 @@ struct FrasesNotasAddView: View {
     
     var body: some View {
         NavigationStack {
-            Form{
-                    Section("Nota"){
-                        TextField("", text: $nota, axis: .vertical)
-                            .textFieldStyle(.roundedBorder)
-                            
+#if os(macOS)
+            HStack{
+                Button("Guardar"){
+                    if !FrasesModel.shared.UpdateNotaAsociada(frase: frase, notaAsociada: nota){
+                        self.alertMessage = "No se ha podido guardar la nota."
+                        self.showAlert = true
                     }
+                    frasesModel.getAllFrases()
+                    //Saliendo:
+                    if let window = NSApp.keyWindow {
+                            window.sheetParent?.endSheet(window)
+                    }else{
+                        dismiss()
+                    }
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(.blue.opacity(0.4))
+                
+                
+                Spacer()
+                
+                Button("Cancelar"){
+                    //Saliendo:
+                    if let window = NSApp.keyWindow {
+                            window.sheetParent?.endSheet(window)
+                    }else{
+                        dismiss()
+                    }
+                    
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(.red.opacity(0.4))
+            }.padding()
+#endif
+            Form{
+                    Section("Nota:"){
+#if os(macOS)
+                        
+                            TextEditor(text: $nota)
+                                .font(.system(size: 20))
+                                .frame(height: 150)
+                                .scrollDisabled(false)
+                                .padding(6)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                        .stroke(Color.secondary.opacity(0.2), lineWidth: 1)
+                                )
+                                .padding(.horizontal, 5)
+                        
+                        
+                    
+                        
+#else
+                    TextField("", text: $nota, axis: .vertical)
+                        .textFieldStyle(.roundedBorder)
+                        .multilineTextAlignment(.leading)
+#endif
+                    }
+                    .padding(.leading, 5)
             }
             .onAppear{
                 nota = frasesModel.GetNotaAsociadaFrase(frase: self.frase)
@@ -37,11 +90,17 @@ struct FrasesNotasAddView: View {
             Spacer()
             ScrollView(content: {
                 Text(frase)
+                    .font(.system(size: 20))
                 .padding()
             })
             .navigationTitle("Nota en Frase")
+
+            
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .toolbar{
+                #if os(iOS)
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Guardar"){
                         if !FrasesModel.shared.UpdateNotaAsociada(frase: frase, notaAsociada: nota){
@@ -49,20 +108,27 @@ struct FrasesNotasAddView: View {
                             self.showAlert = true
                         }
                         frasesModel.getAllFrases()
-                        dimiss()
+                        dismiss()
                     }
                 }
                 ToolbarItem(placement: .topBarLeading) {
-                    Button{ dimiss()}label: {
+                    Button{ dismiss()}label: {
                         Text("Cancelar")
                             .foregroundStyle(.red)
                     }
                 }
+                #endif
+                
+               
             }
             .alert(isPresented: self.$showAlert){
                 Alert(title: Text("Adicionar Nueva nota"), message: Text(self.alertMessage))
             }
         }
+        #if os(macOS)
+        .frame(minHeight: 450 ,maxHeight: 500)
+        #endif
+        
         
     }
 }
@@ -72,7 +138,3 @@ struct FrasesNotasAddView: View {
 
 
 
-
-#Preview {
-    ContentView()
-}

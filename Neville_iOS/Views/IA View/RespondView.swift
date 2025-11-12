@@ -9,7 +9,7 @@ import SwiftUI
 
 
 
-@available(iOS 26.0, *)
+@available(iOS 26.0, macOS 26.0, *)
 struct RespondView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var model : IAModelAppleIntelligence = IAModelAppleIntelligence()
@@ -20,15 +20,15 @@ struct RespondView: View {
     
     @AppStorage(AppCons.UD_setting_fontContentSize)    var fontSizeContenido : Int = 24
     @AppStorage(AppCons.UD_setting_AceptacionDescargoIA)    var DescargoDeIA : Bool = false // Si es true se permite utilizar la IA.
-    
+
     @State private var showAlert : Bool = false
     @State private var alertMessage : String = ""
     
     
-    
-    let nameConference : String //Nombre de la conferencia
-    let texto : String
-    let tipoSalida : TiposSalida //Especifica el tipo de salida desea: Puntos Claves / Resumen General, etc
+    //Parámetros
+    let nameConference  : String //Nombre de la conferencia
+    let texto           : String //Texto a procesar por la IA
+    let tipoSalida      : TiposSalida //Especifica el tipo de salida desea: Puntos Claves / Resumen General, etc
     
     //Prepara el contenido para compartir:
     private var creatorContentToShare : String{
@@ -49,9 +49,12 @@ struct RespondView: View {
 
     
     //Colores de IA chat:
-    @State var ColorChatIAPrimario         : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_colorIA_main_a) ?? .orange.opacity(0.7)
-    @State var ColorChatIASecundario       : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_colorIA_main_b) ?? .brown
-    @State var ColorChatIAFuente           : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_colorIA_textContent) ?? .black
+    @State var ColorChatIAPrimario          : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_colorIA_main_a) ?? .orange.opacity(0.7)
+    @State var ColorChatIASecundario        : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_colorIA_main_b) ?? .brown
+    @State var ColorRespondIAFuente         : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_colorIA_textRespond) ?? .black
+    @AppStorage(AppCons.UD_setting_fontChatIASize)     var fontSizeChatIA : Int = 20
+    
+    
     
     
     
@@ -77,10 +80,11 @@ struct RespondView: View {
                     }
                 }
                 .redacted(reason: self.isloading ? .placeholder : []) //Mostrar un skeleton mientras se carga el contenido
-                //Mostrando la vista de procesamiento
+                //Sobrepone una vista de procesamiento
                     if self.isloading{
                         VistaDeProcesamiento().padding()
                     }
+                
             }else{
                 DescargoResponsabilidadIA(VentanaEnSetting: false)
             }
@@ -105,6 +109,22 @@ struct RespondView: View {
         }
         .toolbar{
             if !self.isloading {
+                #if os(macOS)
+                ToolbarItem(placement: .navigation) {
+                    Button{
+                        if let window = NSApp.keyWindow {
+                            window.sheetParent?.endSheet(window)
+                        }
+                    }label:{
+                        Label("Cerrar", systemImage: "xmark.circle.fill")
+                            .foregroundStyle(.red)
+                    }
+                    .help("Cerrar")
+                }
+                
+                ToolbarSpacer(.fixed)
+                #endif
+                
                 //Share the text
                 ToolbarItem {
                     ShareLink(item: self.creatorContentToShare){
@@ -178,6 +198,19 @@ struct RespondView: View {
                     .frame(maxWidth: 300)
                 }
                 
+                #if os(macOS)
+                //Permitiendo Cancelar la operacion
+                VStack{
+                    Button("Cancelar"){
+                        if let window = NSApp.keyWindow {
+                                window.sheetParent?.endSheet(window)
+                            }
+                    }
+                    .buttonStyle(.bordered)
+                    .padding()
+                    .tint(.black).bold()
+                }.padding()
+                #endif
             }
             
         }
@@ -191,7 +224,6 @@ struct RespondView: View {
     private func VistaPuntosClaves() -> some View{
         VStack(alignment: .leading, spacing: 16) {
             
-           
             ForEach (self.model.puntosClaves, id: \.self){ idea in
                 ContenidoView(contenido: idea)
             }
@@ -231,6 +263,7 @@ struct RespondView: View {
     }
 
 
+// Mostrar una aplicación práctica de una frase, cita, nota, reflexion (no conferencia)
 @ViewBuilder
     private func VistaPracticaConcreta() -> some View {
         if !model.practicaConcreta.isEmpty{
@@ -255,7 +288,7 @@ struct RespondView: View {
     }
    
     
-
+//Interpretar una frase, cita, nota, reflexión (No conferencia)
 @ViewBuilder
     private func VistaInterpretacion() -> some View {
         
@@ -287,8 +320,15 @@ struct RespondView: View {
 //Vista de contenido
     @ViewBuilder
     private func ContenidoView(contenido: String) -> some View {
-        VStack(alignment: .leading) {
-            SelectableText(contenido, fontSize: CGFloat(self.fontSizeContenido), fonColor: UIColor(self.ColorChatIAFuente), alignment: .left )
+        
+        #if os(macOS)
+        VStack{
+            ScrollView{
+                    Text(contenido)
+                        .font(.system(size: CGFloat(self.fontSizeChatIA)))
+                        .foregroundColor(Color(self.ColorRespondIAFuente))
+                        .textSelection(.enabled)
+            }
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -297,7 +337,22 @@ struct RespondView: View {
                 .fill(Color.white.opacity(0.15))
         )
         
+        #else
+        VStack(alignment: .leading) {
+            SelectableText(contenido, fontSize: CGFloat(self.fontSizeChatIA), fonColor: UIColor(self.ColorRespondIAFuente), alignment: .left )
+        }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(Color.white.opacity(0.15))
+        )
+        
+        #endif
+        
+        
     }
+    
     
 //Vista del botón de regenerar
     @ViewBuilder
@@ -426,10 +481,4 @@ struct RespondView: View {
 
   
 
-#Preview {
-    if #available(iOS 26.0, *) {
-        RespondView(nameConference: "NameConference", texto: "Esto es un ejemplo Yor", tipoSalida: .puntosClaves)
-    }
-   
-}
 

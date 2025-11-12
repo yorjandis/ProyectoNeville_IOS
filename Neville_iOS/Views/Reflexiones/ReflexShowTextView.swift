@@ -14,35 +14,51 @@ struct ReflexShowTextView: View {
     
     @State private var fontSizeContent : CGFloat = 18
     @State private var showSlider = false
+    
+    @EnvironmentObject private var modelReflex : ReflexModel
 
 
     @AppStorage(AppCons.UD_setting_fontContentSize)  var fontSizeContenido  = 18
     
     var body: some View {
         NavigationStack {
-            Form{
-                Section("Título"){
+            VStack(alignment: .leading){
+                
                     VStack(alignment: .leading){
                         Text(entity.title)
+                            .font(.body)
                             .multilineTextAlignment(.leading)
-                        Text("Autor: \(entity.autor)").font(.footnote)
+                        
+                        Text("Autor: \(entity.autor)")
+                            .font(.body)
                     }
-                    
-                }
-                Section("Reflexión"){
-                    VStack{
+                    .padding(.horizontal, 10)
+
+                VStack(alignment: .leading){
+                    HStack{
                         ScrollView{
+                            #if os(macOS)
+                            Text(entity.content)
+                                .font(.system(size: self.fontSizeContent))
+                                .foregroundStyle(.primary)
+                                .textSelection(.enabled)
+                                .padding(.horizontal, 5)
+                            #else
                             SelectableText(entity.content, fontSize: self.fontSizeContent,fonColor: UIColor(Color.primary) ,  alignment: .left)
+                            #endif
+                            
                         }.scrollIndicators(.automatic)
+                        
+                        Spacer()
                     }
-                    
-                   
-                }
+                    .padding(.horizontal, 10)
+                    }
             }
             
                 Divider()
                 HStack{
                     Spacer()
+                    //Mostrar un control de ajuste para el tamaño de la letra
                     if showSlider {
                         HStack{
                             Button{
@@ -58,14 +74,52 @@ struct ReflexShowTextView: View {
                             }
                         }
                         .padding(.horizontal, 15)
-                        
                     }
                 }
                 .navigationTitle("Reflexiones")
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .toolbar{
+                #if os(macOS)
                 
-                if #available(iOS 26.0, *){
+                ToolbarItem {
+                    Button{
+                        var favState = modelReflex.getFavState(title: self.entity.title)
+                        favState.toggle()
+                        if modelReflex.setFavState(title: self.entity.title, state: favState){
+                            //Actualizar el listado
+                            withAnimation {
+                                modelReflex.getArrayReflexOfTxtFile()
+                            }
+                        }
+                    }label: {
+                        Image(systemName: "heart.fill")
+                            .foregroundStyle(modelReflex.getFavState(title: self.entity.title) ? .orange : .gray)
+                    }
+                }
+                
+                
+                //Añadir un boton para cerrar la ventana modal
+                ToolbarItem(placement: .navigation) {
+                    Button{
+                        if let window = NSApp.keyWindow {
+                            window.sheetParent?.endSheet(window)
+                        }
+                    }label:{
+                        Label("Cerrar", systemImage: "xmark.circle.fill")
+                            .foregroundStyle(.red)
+                    }
+                    .help("Cerrar")
+                }
+                #endif
+                
+                if #available(iOS 26.0, macOS 26.0, *) {
+                    ToolbarSpacer(.fixed)
+                }
+                
+                //Opciones de IA
+                if #available(iOS 26.0, macOS 26.0, *){
                     if IAModelAppleIntelligence.isAvailable(){
                         ToolbarItem {
                             Menu{
@@ -101,31 +155,17 @@ struct ReflexShowTextView: View {
                     }
                 }
                 
-                if #available(iOS 26.0, *) {
+                if #available(iOS 26.0, macOS 26.0, *) {
                     ToolbarSpacer(.fixed)
                 }
                 
+                //Ajuste de tamaño de letra
                 ToolbarItem {
-                    Menu{
-                        /*
-                        if entity.isInbuilt == false {
-                            NavigationLink("Editar Reflexión"){
-                                ReflexEditView(reflex: $entity)
-                            }
+                    Button("Tamaño de Letra", systemImage: "textformat") {
+                        withAnimation(.easeInOut) {
+                            showSlider.toggle()
                         }
-                        
-                        */
-                        
-                        Button("Tamaño de Letra", systemImage: "textformat") {
-                            withAnimation(.easeInOut) {
-                                showSlider.toggle()
-                            }
-                        }
-                    }label: {
-                        Image(systemName: "ellipsis")
-                            .rotationEffect(Angle(degrees: 135))
                     }
-                    
                 }
                 
                

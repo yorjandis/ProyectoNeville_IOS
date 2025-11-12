@@ -12,7 +12,7 @@ import SwiftUI
 @MainActor
 struct DescargoResponsabilidadIA : View{
     @Environment(\.dismiss) var dismiss
-    @AppStorage(AppCons.UD_setting_AceptacionDescargoIA)    var DescargoDeIA : Bool = true // True para aceptar, false para rechazo
+    @AppStorage(AppCons.UD_setting_AceptacionDescargoIA)    var DescargoDeIA : Bool = false // True para aceptar, false para rechazo
     
     //Uso de dismiss
     let VentanaEnSetting: Bool
@@ -27,7 +27,13 @@ struct DescargoResponsabilidadIA : View{
                         withAnimation(.easeIn(duration: 0.5)) {
                             self.DescargoDeIA = true
                             if self.VentanaEnSetting == true{
+                                #if os(macOS)
+                                if let window = NSApp.keyWindow {
+                                    window.sheetParent?.endSheet(window)
+                                }
+                                #else
                                 dismiss()
+                                #endif
                             }
                         }
                     }
@@ -37,7 +43,13 @@ struct DescargoResponsabilidadIA : View{
                     Button("No acepto"){
                             self.DescargoDeIA = false
                         if self.VentanaEnSetting == true{
+                            #if os(macOS)
+                            if let window = NSApp.keyWindow {
+                                window.sheetParent?.endSheet(window)
+                            }
+                            #else
                             dismiss()
+                            #endif
                         }
                     }
                     .buttonStyle(.glass)
@@ -48,6 +60,7 @@ struct DescargoResponsabilidadIA : View{
             .padding()
             
             Spacer()
+            
         }
         .padding()
     }

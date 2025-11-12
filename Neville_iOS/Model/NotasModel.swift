@@ -7,9 +7,18 @@
 
 import Foundation
 import CoreData
+import Combine
 
 //Manejo de la tabla Notas
-struct NotasModel{
+final class NotasModel : ObservableObject  {
+    
+    @Published var notas : [Notas] = [] //Listado de Notas
+    
+    
+    
+    init(){
+        getAllNotasToModel()
+    }
     
     /// Establece los campos para búsqueda contenido dentro de las notas
     enum CampoBusqueda{
@@ -18,21 +27,24 @@ struct NotasModel{
     
     private var context = CoreDataController.shared.context
     
+    
     ///Obtener la lista de notas
     /// - Returns : Devuelve un arreglo de entity Notas. De lo contrario devuelve un arreglo vacio
-    func getAllNotas()->[Notas]{
-        let defaultResult = [Notas]()
+    func getAllNotasToModel(){
+        self.notas.removeAll()
         
         let fetcRequest : NSFetchRequest<Notas> = Notas.fetchRequest()
         
         do{
-            return try  self.context.fetch(fetcRequest)
+            self.notas =  try  self.context.fetch(fetcRequest)
+           
         }
         catch{
-            return defaultResult
+            self.notas = []
         }
         
     }
+    
     
     ///Adicionar una nueva nota:
     /// - Parameter nota : Texto de la nota
@@ -60,7 +72,7 @@ struct NotasModel{
     
     
     ///Elimina una nota
-    /// - Parameter NotaID : Id de la nota a eliminar
+    /// - Parameter nota : El objeto Nota a eliminar
     func deleteNota(nota : Notas){
         context.delete(nota)
         try? context.save()
@@ -92,7 +104,7 @@ struct NotasModel{
     /// - Returns - Devuelve un arreglo de entity Notas
     func searchTextInNotas(text: String, donde buscar: CampoBusqueda)->[Notas]{
       
-        let arrayNotas = getAllNotas()
+        let arrayNotas = self.notas
         var result : [Notas] = []
         
         for item in arrayNotas {
@@ -135,7 +147,7 @@ struct NotasModel{
     ///Obtener todas las notas favoritas
     ///  - Returns : Devuelve un arreglo con todas las entity Notas favoritas
     func getFavNotas()->[Notas]{
-       let array = getAllNotas()
+        let array = self.notas
         var arrayResult = [Notas]()
         
         for item in array {
