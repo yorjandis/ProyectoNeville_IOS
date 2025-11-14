@@ -40,6 +40,9 @@ struct ContentViewMac: View {
     @EnvironmentObject var modelSetting : SettingModel
     @EnvironmentObject var modelFrases : FrasesModel
     @EnvironmentObject var modelTxt : TxtContentModel
+    @EnvironmentObject var securityModel : SecurityModel
+    
+    @Environment(\.colorScheme) var theme
     
 
   
@@ -103,6 +106,14 @@ struct ContentViewMac: View {
                 .padding(.top, 5)
             Text("La Ley").font(.title2).bold().foregroundStyle(.primary)
                 .padding(.bottom, 10)
+            Text("Imaginar Crea la Realidad")
+                .font(.title2)
+                .foregroundStyle(self.theme == .light ? .black : .orange)
+                .fontDesign(.serif)
+                .fontWeight(.heavy)
+                .shadow(color: .gray.opacity(0.5), radius: 2, x: 0, y: 1)
+                .padding(.vertical, 10)
+                .multilineTextAlignment(.center)
                 
                 
             // Items del Sidebar
@@ -112,10 +123,29 @@ struct ContentViewMac: View {
                         .tag(categoria)
                 }
                 
+                
+                //Abre la bibliografia
+                Button{
+
+                    showWindow(for: ContentTxtShowView(title: "Biografía", nombreTxt: "biografia", type: .NA ),
+                               environmentObjects: [],
+                               title: "Bibliografía",
+                               size: CGSize(width: 550, height: 400),
+                               isModal: false
+                    )
+                }label:{
+                    Label("Bibliografía", systemImage: "gear")
+                        .tag(ItemSidebar(text: .bibliografia, icono: ""))
+                }
+                .buttonStyle(.plain)
+                
                 //Abre ventana del Diario
                 Button{
+                    //Bloquear el Diario siempre antes de abrirse:
+                    self.securityModel.canOpenDiario = false
+                    
                     showWindow(for: DiarioListView(),
-                               environmentObjects: [self.context],
+                               environmentObjects: [self.context, self.securityModel],
                                title: "Diario",
                                size: CGSize(width: 550, height: 400),
                                isModal: false
@@ -127,10 +157,26 @@ struct ContentViewMac: View {
                 .buttonStyle(.plain)
                 
                 
+                //Abre ventana de Evaluación:
+                Button{
+                    showWindow(for: GamePLay(),
+                               environmentObjects: [],
+                               title: "Diario",
+                               size: CGSize(width: 550, height: 400),
+                               isModal: false
+                    )
+                }label:{
+                    Label("Evaluación", systemImage: "gear")
+                        .tag(ItemSidebar(text: .evaluacion, icono: ""))
+                }
+                .buttonStyle(.plain)
+                
+                
+                
                 //Abre ventana de Ajustes
                 Button{
                     showWindow(for: Ajustes(),
-                               environmentObjects: [self.context ,self.modelSetting, self.modelFrases, self.modelTxt],
+                               environmentObjects: [self.context ,self.modelSetting, self.modelFrases, self.modelTxt, self.securityModel],
                                title: "Ajustes",
                                size: CGSize(width: 550, height: 400),
                                isModal: false
@@ -140,6 +186,8 @@ struct ContentViewMac: View {
                         .tag(ItemSidebar(text: .ajustes, icono: ""))
                 }
                 .buttonStyle(.plain)
+                
+                
             }
             .listStyle(.sidebar)
             .onAppear {
@@ -148,16 +196,6 @@ struct ContentViewMac: View {
                     categoriaSelected = categoriasSideBar.first
                 }
             }
-            
-            Button("Ajustes"){
-                showWindow(for: Ajustes(),
-                           environmentObjects: [self.context ,self.modelSetting, self.modelFrases, self.modelTxt],
-                           title: "Ajustes",
-                           size: CGSize(width: 550, height: 400),
-                           isModal: false
-                )
-            }
-            .padding()
             
             Spacer()
             

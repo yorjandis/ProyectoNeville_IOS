@@ -269,7 +269,7 @@ struct ListNotasViews: View {
                 if KeychainHelper.shared.getPassword() != nil{
                     VStack{
                         NavigationLink("Acceder por contraseña"){
-                         LogginView(ente: "Notas", canOpen: self.$canOpenNotas)
+                            LogginView(ente: .Notas)
                            
                         }
                         .buttonStyle(.bordered)
@@ -285,7 +285,7 @@ struct ListNotasViews: View {
                     VStack{
                         Text("Parece que su dispositivo no admite biometría. Utilice el botón debajo para entrar por contraseña.")
                         NavigationLink("Acceder por contraseña"){
-                         LogginView(ente: "Notas", canOpen: self.$canOpenNotas)
+                            LogginView(ente: .Notas)
                            
                         }
                         .buttonStyle(.bordered)

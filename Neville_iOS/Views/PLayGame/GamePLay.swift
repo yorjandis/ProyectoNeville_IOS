@@ -127,7 +127,18 @@ struct GamePLay: View {
                                     if listFallifos.count > 0 {
                                         viewResult.title = "Lista de fallos"
                                         viewResult.type = true
+                                        #if os(macOS)
+                                        showWindow(for: viewResult(listFallifos: $listFallifos, listAciertos: $listAciertos, listado: $listado, Fallidos: $Fallos),
+                                        environmentObjects: [],
+                                                   title: "Lista de Fallos",
+                                                   size: CGSize(width: 500, height: 400),
+                                                   isModal: true
+                                        
+                                        )
+                                        #else
                                         showFallos = true
+                                        #endif
+                                        
                                     }
                                    
                                 }
@@ -136,7 +147,18 @@ struct GamePLay: View {
                                     if listAciertos.count > 0 {
                                         viewResult.title = "Lista de Aciertos"
                                         viewResult.type = false
+                                        
+                                        #if os(macOS)
+                                        showWindow(for: viewResult(listFallifos: $listFallifos, listAciertos: $listAciertos, listado: $listado, Fallidos: $Fallos),
+                                                   environmentObjects: [],
+                                                   title: "Lista de Fallos",
+                                                   size: CGSize(width: 500, height: 400),
+                                                   isModal: true
+                                                   
+                                        )
+                                        #else
                                         showFallos = true
+                                        #endif
                                     }
                                     
                                 }
@@ -271,6 +293,15 @@ struct viewResult: View{
                 List(viewResult.type ? listFallifos : listAciertos, id: \.self){ i in
                     Text(i)
                 }
+                
+                #if os(macOS)
+                Button("Cerrar"){
+                    if let window = NSApp.keyWindow {
+                        closeWindow(window)
+                        }
+                }
+                
+                #endif
             }
             .navigationTitle(viewResult.title)
             #if os(iOS)

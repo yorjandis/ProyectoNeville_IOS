@@ -92,13 +92,19 @@ struct UtilFuncs{
                 if success {
                     //Habilitación del contenido
                     //"el valor es satisfactorio")
-                    HabilitarContenido.wrappedValue = true
+                    // Siempre actualizar la UI en el hilo principal
+                    DispatchQueue.main.async {
+                        HabilitarContenido.wrappedValue = true
+                    }
+                    
                     
                     
                 } else {
                     //"Error en la autenticación biométrica")
                     //"el valor ha dado error")
-                    HabilitarContenido.wrappedValue = false
+                    DispatchQueue.main.async {
+                        HabilitarContenido.wrappedValue = false
+                    }
                 }
             }
             

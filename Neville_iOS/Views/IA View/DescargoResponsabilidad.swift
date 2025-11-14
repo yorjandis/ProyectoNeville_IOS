@@ -29,7 +29,7 @@ struct DescargoResponsabilidadIA : View{
                             if self.VentanaEnSetting == true{
                                 #if os(macOS)
                                 if let window = NSApp.keyWindow {
-                                    window.sheetParent?.endSheet(window)
+                                    closeWindow(window)
                                 }
                                 #else
                                 dismiss()
@@ -45,7 +45,7 @@ struct DescargoResponsabilidadIA : View{
                         if self.VentanaEnSetting == true{
                             #if os(macOS)
                             if let window = NSApp.keyWindow {
-                                window.sheetParent?.endSheet(window)
+                                closeWindow(window)
                             }
                             #else
                             dismiss()

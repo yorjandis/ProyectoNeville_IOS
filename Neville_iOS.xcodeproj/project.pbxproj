@@ -1987,6 +1987,7 @@
 		913D3DF52EBCE5AE00C2E212 /* MultiplatformModel */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = MultiplatformModel; sourceTree = "<group>"; };
 		917C30202EBCD1E5006BB36E /* La Ley_mac */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "La Ley_mac"; sourceTree = "<group>"; };
 		91901DF12EA68FD00049D0BA /* IAModel */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (913D3DDD2EBCE13C00C2E212 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = IAModel; sourceTree = "<group>"; };
+		91C2777E2EC5462E0032D5FA /* SecurityModel */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = SecurityModel; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2814,6 +2815,7 @@
 		E92F63712AB468D7007BB4BA /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				91C2777E2EC5462E0032D5FA /* SecurityModel */,
 				913D3DF52EBCE5AE00C2E212 /* MultiplatformModel */,
 				91901DF12EA68FD00049D0BA /* IAModel */,
 				916529E62E9E994B004D011C /* BiometrySupport.swift */,
@@ -3008,6 +3010,7 @@
 			fileSystemSynchronizedGroups = (
 				913D3DF52EBCE5AE00C2E212 /* MultiplatformModel */,
 				917C30202EBCD1E5006BB36E /* La Ley_mac */,
+				91C2777E2EC5462E0032D5FA /* SecurityModel */,
 			);
 			name = "La Ley_mac";
 			packageProductDependencies = (
@@ -3035,6 +3038,7 @@
 			fileSystemSynchronizedGroups = (
 				913D3DF52EBCE5AE00C2E212 /* MultiplatformModel */,
 				91901DF12EA68FD00049D0BA /* IAModel */,
+				91C2777E2EC5462E0032D5FA /* SecurityModel */,
 			);
 			name = Neville_iOS;
 			packageProductDependencies = (

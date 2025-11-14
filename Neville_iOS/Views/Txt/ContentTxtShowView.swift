@@ -167,7 +167,7 @@ struct ContentTxtShowView: View {
                 ToolbarItem(placement: .navigation) {
                     Button{
                         if let window = NSApp.keyWindow {
-                            window.sheetParent?.endSheet(window)
+                            closeWindow(window)
                         }
                     }label:{
                         Label("Cerrar", systemImage: "xmark.circle.fill")

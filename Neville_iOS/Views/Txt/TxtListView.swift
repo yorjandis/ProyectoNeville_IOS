@@ -91,7 +91,7 @@ struct TxtListView: View {
                                            environmentObjects: [self.modeloTxt, self.settingModel],
                                            title: "\(self.title) - \(nombreTxt)" ,
                                            size: CGSize(width: 600, height: 500),
-                                           isModal: true
+                                           isModal: false                      
                                 )
                                 
                                 
@@ -248,7 +248,7 @@ struct EditNoteTxt:View {
                 ToolbarItem(placement: .navigation) {
                     Button{
                         if let window = NSApp.keyWindow {
-                            window.sheetParent?.endSheet(window)
+                            closeWindow(window)
                         }
                     }label:{
                         Label("Cerrar", systemImage: "xmark.circle.fill")
@@ -265,7 +265,7 @@ struct EditNoteTxt:View {
                         }
                         #if os(macOS)
                         if let window = NSApp.keyWindow {
-                            window.sheetParent?.endSheet(window)
+                            closeWindow(window)
                         }else{
                             dismiss()
                         }

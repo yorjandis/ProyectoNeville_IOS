@@ -31,7 +31,7 @@ struct FraseAddView: View {
                         }
                         
                         if let window = NSApp.keyWindow {
-                                window.sheetParent?.endSheet(window)
+                            closeWindow(window)
                         }else{
                             self.dismiss()
                         }
@@ -46,7 +46,7 @@ struct FraseAddView: View {
                 
                 Button("Cancelar"){
                     if let window = NSApp.keyWindow {
-                            window.sheetParent?.endSheet(window)
+                        closeWindow(window)
                     }else{
                         dismiss()
                     }

@@ -15,6 +15,8 @@ struct DiarioListView: View {
 
     @StateObject private var modelDiario = DiarioModel.shared
     
+    @EnvironmentObject var securityModel : SecurityModel //Hay que pasar esta clave de entorno (macOS)
+    
     //Para filtros en fechas
     enum TypeOfSearch{case fix, interval}
     
@@ -48,7 +50,7 @@ struct DiarioListView: View {
     ("!Lo he logrado!","feliz")]
     
 
-    @State var canOpenDiario : Bool = false 
+    //@State var canOpenDiario : Bool = false
     @State var claveAcceso : String? = nil //Clave para acceder al Diario en dispisitivos son biometría
     
     //Alert:
@@ -75,7 +77,7 @@ struct DiarioListView: View {
                 LinearGradient(colors: [Color(red:0.45, green:0.50, blue: 0.50), .orange], startPoint: .top, endPoint: .bottom)
                     .ignoresSafeArea()
                 
-                if self.canOpenDiario{
+                if self.securityModel.canOpenDiario{
                     VStack{
                         Text("") //Para que las entradas no sobrepasen el area segura superior
                         
@@ -92,7 +94,7 @@ struct DiarioListView: View {
                             .background(Color.black.opacity(0.05))
                         }
                             ScrollView(){
-                                    if canOpenDiario {
+                                if self.securityModel.canOpenDiario {
                                         LazyVStack{
                                             ForEach(modelDiario.list) { item in
                                                 cardItem(diario: item)
@@ -129,7 +131,7 @@ struct DiarioListView: View {
                         
                         if BiometryCheckerSupport.checkBiometricSupport() == .available{ //Hay soporte para biometría
                             Button{
-                                UtilFuncs.autent(HabilitarContenido: self.$canOpenDiario)
+                                UtilFuncs.autent(HabilitarContenido: self.$securityModel.canOpenDiario)
                                 
                             }label:{
                                 Image(systemName: "key.viewfinder")
@@ -140,8 +142,8 @@ struct DiarioListView: View {
                             Text("Toque la imagen para acceder.").font(.footnote).padding()
                             #if os(macOS)
                             Button("Acceder por contraseña"){
-                                showWindow(for: LogginView(ente: "Diario", canOpen: self.$canOpenDiario),
-                                environmentObjects: [],
+                                showWindow(for: LogginView(ente: .Diario),
+                                           environmentObjects: [self.securityModel],
                                            title: "Acceder Por contraseña",
                                            size: CGSize(width: 550, height: 400),
                                            isModal: true
@@ -155,7 +157,7 @@ struct DiarioListView: View {
                             
                             #else
                             NavigationLink("Acceder por contraseña"){
-                             LogginView(ente: "Diario", canOpen: self.$canOpenDiario)
+                                LogginView(ente: .Diario)
                             }
                             .buttonStyle(.bordered)
                             .tint(.black)
@@ -169,13 +171,33 @@ struct DiarioListView: View {
                                 //Chequeamos si hay una clave guardada:
                                 if KeychainHelper.shared.getPassword() != nil{ //Hay una clave
                                     Text("Parece que su dispositivo no admite biometría. Utilice el botón debajo para entrar por contraseña.")
-                                    NavigationLink("Acceder por contraseña"){
-                                     LogginView(ente: "Diario", canOpen: self.$canOpenDiario)
+                                    
+                                    #if os(macOS)
+                                    Button("Acceder por contraseña"){
+                                        showWindow(for: LogginView(ente: .Diario),
+                                                   environmentObjects: [self.securityModel],
+                                                   title: "Acceder Por contraseña",
+                                                   size: CGSize(width: 550, height: 400),
+                                                   isModal: true)
                                        
                                     }
                                     .buttonStyle(.bordered)
                                     .tint(.black)
                                     .padding()
+                                    
+                                    #else
+                                    
+                                    NavigationLink("Acceder por contraseña"){
+                                        LogginView(ente: .Diario)
+                                       
+                                    }
+                                    .buttonStyle(.bordered)
+                                    .tint(.black)
+                                    .padding()
+                                    
+                                    #endif
+                                    
+                                    
                                     
                                     Text("Si no recuerda la contraseña puede consultarla en Ajustes, en un dispositivo con biometría asociado a la misma cuenta de iCloud")
                                         .font(.footnote)
@@ -203,7 +225,7 @@ struct DiarioListView: View {
            
             .toolbar{
                 
-                if canOpenDiario {
+                if self.securityModel.canOpenDiario {
                     
                     ToolbarItem {
                         Button{
@@ -700,7 +722,7 @@ struct cardItem: View{
                                 .foregroundStyle(theme == .dark ? .white : .black)
                             Button("Cancelar"){
                                 if let window = NSApp.keyWindow {
-                                    window.sheetParent?.endSheet(window)
+                                    closeWindow(window)
                                 }
                             }
                             Button("Guardar"){
@@ -708,7 +730,7 @@ struct cardItem: View{
                                 diarioModel.getAllItem()
                                 //Saliendo
                                 if let window = NSApp.keyWindow {
-                                    window.sheetParent?.endSheet(window)
+                                    closeWindow(window)
                                 }
                             }
                         }.padding(10),
@@ -803,10 +825,11 @@ struct cardItem: View{
                         
                     }label: {
                         Image(systemName: isfav ? "heart.fill" : "heart")
-                            .foregroundStyle(isfav ? .orange : .black)
+                            .foregroundStyle(.black)
                             .padding(.trailing, 10)
                             .symbolEffect(.bounce, value: animValue)
                     }
+                    .buttonStyle(.plain)
                     .onAppear{
                         isfav = diario.isFav
                     }
@@ -818,7 +841,7 @@ struct cardItem: View{
                                        environmentObjects: [self.diarioModel],
                                        title: "Editar entrada Diario",
                                        size: CGSize(width: 550, height: 400),
-                                       isModal: false
+                                       isModal: true
                                        
                             )
                             
@@ -840,7 +863,8 @@ struct cardItem: View{
                             .tint(.black)
                             .frame(width: 20, height: 20)
                     
-                }
+                }//menu
+                .buttonStyle(.plain)
                     
                 }
             }
@@ -980,6 +1004,23 @@ struct editContent : View {
             .navigationBarTitleDisplayMode(.inline)
             #endif
             .toolbar{
+                
+                #if os(macOS)
+                ToolbarItem(placement: .principal) {
+                    Button{
+                        if let window = NSApp.keyWindow {
+                            closeWindow(window)
+                        }
+                    }label:{
+                        //close
+                        Image(systemName: "xmark.circle")
+                            
+                    }
+                    .foregroundStyle(.red)
+                    .buttonStyle(.plain)
+                }
+                
+                #endif
                 
                 ToolbarItem {
                     Button(action: {

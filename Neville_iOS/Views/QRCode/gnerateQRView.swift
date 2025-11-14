@@ -125,7 +125,7 @@ struct GenerateQRView : View {
                         Spacer()
                         Button("Cerrar"){
                             if let window = NSApp.keyWindow {
-                                    window.sheetParent?.endSheet(window)
+                                closeWindow(window)
                                 }
                         }
                     }

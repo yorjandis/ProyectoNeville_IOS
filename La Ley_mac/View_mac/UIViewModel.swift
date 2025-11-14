@@ -181,3 +181,24 @@ final class WindowManager {
     }
 }
 
+
+//Función de primer nivel: Permite cerrar tanto ventanas modales como No-modales:
+/*
+ Ejemplo de uso:
+ //Dentro de la ventana modal/no-modal hija:
+ Button("Cerrar"){
+     if let window = NSApp.keyWindow {
+         closeWindow(window)
+         window.sheetParent?.endSheet(window)
+     }
+ }
+ */
+func closeWindow(_ window: NSWindow) {
+    if let parent = window.sheetParent {
+        // Es un sheet modal
+        parent.endSheet(window)
+    } else {
+        // Es una ventana normal
+        window.close()
+    }
+}

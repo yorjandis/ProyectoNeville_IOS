@@ -17,6 +17,7 @@ struct Neville_iOSApp: App {
  @StateObject private var modelTxt              = TxtContentModel()
  @StateObject private var modelFrases           = FrasesModel.shared
  @StateObject private var settingModel = SettingModel() //Inicializo el modelo para cargar valores de Setting y lo inyecto en el árbol de vistas
+ @StateObject private var securityModel = SecurityModel.shared //Almacena variables observables para
     
     
   private let persistentStore : CoreDataController =  CoreDataController.shared
@@ -30,10 +31,11 @@ struct Neville_iOSApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(settingModel)
                 .environmentObject(networkMonitor)
                 .environmentObject(modelTxt)
                 .environmentObject(modelFrases)
-                .environmentObject(settingModel)
+                .environmentObject(securityModel) //Almacena variables observables para acceso seguro: Notas protegidas y Diario
                 .environment(\.managedObjectContext, persistentStore.context)
                 .task {
                     modelTxt.getAllFileTxtOfType(type: .conf) // Carga el listado de conferencias

@@ -17,6 +17,7 @@ struct Ajustes: View {
     @EnvironmentObject private var modelTxt : TxtContentModel
     @EnvironmentObject private var modelFrases : FrasesModel
     @EnvironmentObject private var settingModel : SettingModel
+    @EnvironmentObject private var securityModel : SecurityModel
     
     private let context2 = CoreDataController.shared.context
     
@@ -46,7 +47,7 @@ struct Ajustes: View {
     
     //Autenti
     private let contextLA = LAContext()
-    @State var canOpenToggleButton = false
+    //@State var canOpenToggleButton = false
     @State var showAlert = false
     @State var alertMessage = ""
     
@@ -72,59 +73,60 @@ struct Ajustes: View {
         
         NavigationStack{
             
-            ScrollView{
+            
             #if os(macOS)
+            ScrollView{
                 VStack(alignment: .leading){
                     Group{
                         //Tamaños de Fuente
                         VStack(alignment: .leading){
                             Text("Tamaño de letra").font(.system(size: 22)).foregroundStyle(.orange)
-                                HStack{
-                                    Text("Frases:")
-                                        .font(.system(size:22))
-                                    Spacer()
-                                    Stepper(String(fontSizeFrases), value: $fontSizeFrases)
-                                    
-                                }
+                            HStack{
+                                Text("Frases:")
+                                    .font(.system(size:22))
+                                Spacer()
+                                Stepper(String(fontSizeFrases), value: $fontSizeFrases)
                                 
-                                HStack{
-                                    Text("Contenido:")
-                                        .font(.system(size:22))
-                                    Spacer()
-                                    Stepper(String(fontSizeContenido), value: $fontSizeContenido)
-                                    
-                                }
+                            }
+                            
+                            HStack{
+                                Text("Contenido:")
+                                    .font(.system(size:22))
+                                Spacer()
+                                Stepper(String(fontSizeContenido), value: $fontSizeContenido)
                                 
-                                HStack{
-                                    Text("Menu:")
-                                        .font(.system(size:22))
-                                    Spacer()
-                                    Stepper(String(fontSizeMenu), value: $fontSizeMenu)
-                                    
-                                }
+                            }
+                            
+                            HStack{
+                                Text("Menu:")
+                                    .font(.system(size:22))
+                                Spacer()
+                                Stepper(String(fontSizeMenu), value: $fontSizeMenu)
                                 
-                                HStack{
-                                    Text("Listas:")
-                                        .font(.system(size:22))
-                                    Spacer()
-                                    Stepper(String(fontSizeLista), value: $fontSizeLista)
-                                    
-                                }
-                                if #available(iOS 26.0, macOS 26.0, *){
-                                    if IAModelAppleIntelligence.isAvailable(){
-                                        HStack{
-                                            Text("Chat IA:")
-                                                .font(.system(size:22))
-                                            Spacer()
-                                            Stepper(String(fontSizeChatIA), value: $fontSizeChatIA)
-                                            
-                                        }
+                            }
+                            
+                            HStack{
+                                Text("Listas:")
+                                    .font(.system(size:22))
+                                Spacer()
+                                Stepper(String(fontSizeLista), value: $fontSizeLista)
+                                
+                            }
+                            if #available(iOS 26.0, macOS 26.0, *){
+                                if IAModelAppleIntelligence.isAvailable(){
+                                    HStack{
+                                        Text("Chat IA:")
+                                            .font(.system(size:22))
+                                        Spacer()
+                                        Stepper(String(fontSizeChatIA), value: $fontSizeChatIA)
+                                        
                                     }
                                 }
+                            }
                         }
                         .padding(.horizontal, 30)
                         .padding(.bottom, 20)
-                       
+                        
                         //Colores en Home
                         VStack(alignment: .leading){
                             
@@ -167,7 +169,7 @@ struct Ajustes: View {
                         }
                         .padding(.horizontal, 30)
                         .padding(.bottom, 20)
-
+                        
                         
                         //Colores del contenido IA
                         if #available(macOS 26.0, *){
@@ -196,7 +198,7 @@ struct Ajustes: View {
                                                 .onChange(of: ColorChatIAPrimario, initial: true) { oldValue, newValue in
                                                     settingModel.saveColor(forkey: AppCons.UD_setting_colorIA_main_a, color: newValue)
                                                 }
-                                                
+                                            
                                             ColorPicker("Color Degradado Inferior ", selection: $ColorChatIASecundario)
                                                 .frame(width: 220)
                                                 .onChange(of: ColorChatIASecundario, initial: true) { oldValue, newValue in
@@ -255,7 +257,7 @@ struct Ajustes: View {
                                                            
                                                 )
                                             }
-                                                
+                                            
                                         }
                                         Text("Nota: Para utilizar la IA generativa en el dispositivo, debe leer y aceptar primero el Descargo de Responsabilidad.").font(.system(size: 18))
                                     }
@@ -271,7 +273,7 @@ struct Ajustes: View {
                             
                             Text("Protección de Notas").font(.system(size: 22)).foregroundStyle(.orange)
                             
-                            if canOpenToggleButton {
+                            if self.securityModel.canOpenNotas {
                                 Toggle("Proteger las Notas con FaceID", isOn: $setting_NotasFaceID)
                             }else{
                                 
@@ -279,7 +281,7 @@ struct Ajustes: View {
                                 if BiometryCheckerSupport.checkBiometricSupport() == .available{
                                     
                                     Button{
-                                        UtilFuncs.autent(HabilitarContenido: self.$canOpenToggleButton)
+                                        UtilFuncs.autent(HabilitarContenido: self.$securityModel.canOpenToggleButton)
                                     }label: {
                                         Label("Opción protegida por FaceID", systemImage: "key.viewfinder")
                                     }
@@ -288,12 +290,12 @@ struct Ajustes: View {
                                     if KeychainHelper.shared.getPassword() != nil {
                                         
                                         Button("Acceder por contraseña"){
-                                            showWindow(for: LogginView(ente: "Notas",canOpen: self.$canOpenToggleButton),
-                                            environmentObjects: [],
+                                            showWindow(for: LogginView(ente: .Notas),
+                                                       environmentObjects: [self.securityModel],
                                                        title: "Acceder por contraseña",
                                                        size: CGSize(width: 550, height: 400),
                                                        isModal: true
-                                            
+                                                       
                                             )
                                             
                                         }
@@ -412,18 +414,18 @@ struct Ajustes: View {
                                     Spacer()
                                     Button("Cerrar"){
                                         if let window = NSApp.keyWindow {
-                                                window.sheetParent?.endSheet(window)
+                                            closeWindow(window)
                                         }
                                     }
                                 }
-                                .padding(15) ,
+                                    .padding(15) ,
                                            environmentObjects: [self.modelTxt, self.settingModel, self.modelFrases],
                                            title: "Información",
                                            size: CGSize(width: 500, height: 400),
                                            isModal: true
                                            
                                 )
-
+                                
                             }label: {
                                 Label("Información", systemImage: "info.circle.fill")
                                     .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
@@ -438,7 +440,7 @@ struct Ajustes: View {
                                         .foregroundStyle(.primary)
                                         .textSelection(.enabled)
                                         .padding(10)
-                                    },
+                                },
                                            environmentObjects: [],
                                            title: "Política de Privacidad",
                                            size: CGSize(width: 550, height: 400),
@@ -472,7 +474,7 @@ struct Ajustes: View {
                             
                             Button{
                                 showWindow(for: FeedbackView(showTextBotton: false),
-                                environmentObjects: [],
+                                           environmentObjects: [],
                                            title: "Enviar una Reseña a la App Store",
                                            size: CGSize(width: 550, height: 100),
                                            isModal: true
@@ -512,348 +514,344 @@ struct Ajustes: View {
                         
                     }
                     
-                   
+                    
                 }
+            }
+            .navigationTitle("Ajustes")
             #else
-                
-                VStack{
-                    Form{
-                        Section("Tamaño de letra"){
-                            HStack{
-                                Text("Frases:")
-                                    .font(.system(size:CGFloat(fontSizeFrases)))
-                                Spacer()
-                                Stepper(String(fontSizeFrases), value: $fontSizeFrases)
-                                
-                            }
+                Form{
+                    Section("Tamaño de letra"){
+                        HStack{
+                            Text("Frases:")
+                                .font(.system(size:CGFloat(fontSizeFrases)))
+                            Spacer()
+                            Stepper(String(fontSizeFrases), value: $fontSizeFrases)
                             
-                            HStack{
-                                Text("Contenido:")
-                                    .font(.system(size:CGFloat(fontSizeContenido)))
-                                Spacer()
-                                Stepper(String(fontSizeContenido), value: $fontSizeContenido)
-                                
-                            }
-                            
-                            HStack{
-                                Text("Menu:")
-                                    .font(.system(size:CGFloat(fontSizeMenu)))
-                                Spacer()
-                                Stepper(String(fontSizeMenu), value: $fontSizeMenu)
-                                
-                            }
-                            
-                            HStack{
-                                Text("Listas:")
-                                    .font(.system(size:CGFloat(fontSizeLista)))
-                                Spacer()
-                                Stepper(String(fontSizeLista), value: $fontSizeLista)
-                                
-                            }
-                            if #available(iOS 26.0, macOS 26.0, *){
-                                if IAModelAppleIntelligence.isAvailable(){
-                                    HStack{
-                                        Text("Chat IA:")
-                                            .font(.system(size:CGFloat(fontSizeChatIA)))
-                                        Spacer()
-                                        Stepper(String(fontSizeChatIA), value: $fontSizeChatIA)
-                                        
-                                    }
-                                }
-                            }
-                            
-                            
-                            
-                        }.padding(2)
+                        }
                         
-                        
-                        
-                        Section("Colores Home"){
+                        HStack{
+                            Text("Contenido:")
+                                .font(.system(size:CGFloat(fontSizeContenido)))
+                            Spacer()
+                            Stepper(String(fontSizeContenido), value: $fontSizeContenido)
                             
-                            ColorPicker("Color de frases", selection: $ColorFrase)
-                                .bold()
-                                .onChange(of: ColorFrase, initial: true) { oldValue, newValue in
-                                    settingModel.saveColor(forkey: AppCons.UD_setting_color_frases, color: newValue)
-                                }
+                        }
+                        
+                        HStack{
+                            Text("Menu:")
+                                .font(.system(size:CGFloat(fontSizeMenu)))
+                            Spacer()
+                            Stepper(String(fontSizeMenu), value: $fontSizeMenu)
                             
-                            VStack(alignment: .center){
-                                ColorPicker("Color Degradado Superior", selection: $ColorPrimario)
-                                    .onChange(of: ColorPrimario, initial: true) { oldValue, newValue in
-                                        settingModel.saveColor(forkey: AppCons.UD_setting_color_main_a, color: newValue)
-                                    }
-                                    .padding(.bottom, 10)
-                                ColorPicker("Color Degradado Inferior", selection: $ColorSecundario)
-                                    .onChange(of: ColorSecundario, initial: true) { oldValue, newValue in
-                                        settingModel.saveColor(forkey: AppCons.UD_setting_color_main_b, color: newValue)
-                                        
-                                    }
-                                
+                        }
+                        
+                        HStack{
+                            Text("Listas:")
+                                .font(.system(size:CGFloat(fontSizeLista)))
+                            Spacer()
+                            Stepper(String(fontSizeLista), value: $fontSizeLista)
+                            
+                        }
+                        if #available(iOS 26.0, macOS 26.0, *){
+                            if IAModelAppleIntelligence.isAvailable(){
                                 HStack{
-                                    Text("Muestra:").font(.footnote)
+                                    Text("Chat IA:")
+                                        .font(.system(size:CGFloat(fontSizeChatIA)))
                                     Spacer()
-                                    Text("")
-                                        .frame(width: 200 ,  height: 60)
-                                        .background(LinearGradient(colors: [ColorPrimario, ColorSecundario], startPoint: .top, endPoint: .bottom))
-                                        .clipShape(RoundedRectangle(cornerRadius: 20))
-                                }
-                                
-                                
-                                
-                            }
-                        }
-                        
-                        if #available(iOS 26.0, macOS 26.0, *){
-                            if IAModelAppleIntelligence.isAvailable(){
-                                Section("Colores Chat IA"){
+                                    Stepper(String(fontSizeChatIA), value: $fontSizeChatIA)
                                     
-                                    ColorPicker("Color de Texto Chat IA", selection: $ColorChatIAFuente)
-                                        .bold()
-                                        .onChange(of: ColorChatIAFuente, initial: true) { oldValue, newValue in
-                                            settingModel.saveColor(forkey: AppCons.UD_setting_colorIA_textContent, color: newValue)
-                                        }
-                                    
-                                    ColorPicker("Color de Texto Respuesta IA", selection: $ColorRespondIAFuente)
-                                        .bold()
-                                        .onChange(of: ColorRespondIAFuente, initial: true) { oldValue, newValue in
-                                            settingModel.saveColor(forkey: AppCons.UD_setting_colorIA_textRespond, color: newValue)
-                                        }
-                                    
-                                    VStack(alignment: .center){
-                                        ColorPicker("Color Degradado Superior", selection: $ColorChatIAPrimario)
-                                            .onChange(of: ColorChatIAPrimario, initial: true) { oldValue, newValue in
-                                                settingModel.saveColor(forkey: AppCons.UD_setting_colorIA_main_a, color: newValue)
-                                            }
-                                            .padding(.bottom, 10)
-                                        ColorPicker("Color Degradado Inferior", selection: $ColorChatIASecundario)
-                                            .onChange(of: ColorChatIASecundario, initial: true) { oldValue, newValue in
-                                                settingModel.saveColor(forkey: AppCons.UD_setting_colorIA_main_b, color: newValue)
-                                                
-                                            }
-                                        
-                                        HStack{
-                                            Text("Muestra:").font(.footnote)
-                                            Spacer()
-                                            Text("")
-                                                .frame(width: 200 ,  height: 60)
-                                                .background(LinearGradient(colors: [ColorChatIAPrimario, ColorChatIASecundario], startPoint: .top, endPoint: .bottom))
-                                                .clipShape(RoundedRectangle(cornerRadius: 20))
-                                        }
-                                        
-                                    }
-                                    
-                                    Button("Aplicar Colores Por Defecto"){
-                                        self.ColorChatIAFuente      = .white
-                                        self.ColorChatIAPrimario    = .orange.opacity(0.5)
-                                        self.ColorChatIASecundario  = .brown
-                                        settingModel.saveColor(forkey: AppCons.UD_setting_colorIA_textContent, color: self.ColorChatIAFuente)
-                                        settingModel.saveColor(forkey: AppCons.UD_setting_colorIA_main_a, color: self.ColorChatIAPrimario)
-                                        settingModel.saveColor(forkey: AppCons.UD_setting_colorIA_main_b, color: self.ColorChatIASecundario)
-                                    }
-                                }
-                            }
-                        }
-                        
-                        
-                        if #available(iOS 26.0, macOS 26.0, *){
-                            if IAModelAppleIntelligence.isAvailable(){
-                                
-                                Section("Utilización de la IA"){
-                                    VStack(spacing: 10){
-                                        HStack{
-                                            Text("(\(self.DescargoDeIA ? "Aceptado" : "No aceptado")) ")
-                                                .foregroundStyle(self.DescargoDeIA ? .green : .red).bold().font(.subheadline)
-                                            NavigationLink("Acceder al Descargo de responsabilidad"){DescargoResponsabilidadIA(VentanaEnSetting: true)}.foregroundStyle(.orange)
-                                        }
-                                        Text("Nota: Para utilizar la IA generativa en el dispositivo, debe leer y aceptar primero el Descargo de R esponsabilidad.").font(Font.footnote.bold())
-                                    }
                                 }
                             }
                         }
                         
                         
                         
-                        Section("Notas Generales"){
+                    }.padding(2)
+                    
+                    
+                    
+                    Section("Colores Home"){
+                        
+                        ColorPicker("Color de frases", selection: $ColorFrase)
+                            .bold()
+                            .onChange(of: ColorFrase, initial: true) { oldValue, newValue in
+                                settingModel.saveColor(forkey: AppCons.UD_setting_color_frases, color: newValue)
+                            }
+                        
+                        VStack(alignment: .center){
+                            ColorPicker("Color Degradado Superior", selection: $ColorPrimario)
+                                .onChange(of: ColorPrimario, initial: true) { oldValue, newValue in
+                                    settingModel.saveColor(forkey: AppCons.UD_setting_color_main_a, color: newValue)
+                                }
+                                .padding(.bottom, 10)
+                            ColorPicker("Color Degradado Inferior", selection: $ColorSecundario)
+                                .onChange(of: ColorSecundario, initial: true) { oldValue, newValue in
+                                    settingModel.saveColor(forkey: AppCons.UD_setting_color_main_b, color: newValue)
+                                    
+                                }
+                            
+                            HStack{
+                                Text("Muestra:").font(.footnote)
+                                Spacer()
+                                Text("")
+                                    .frame(width: 200 ,  height: 60)
+                                    .background(LinearGradient(colors: [ColorPrimario, ColorSecundario], startPoint: .top, endPoint: .bottom))
+                                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                            }
                             
                             
-                            if canOpenToggleButton {
-                                Toggle("Proteger las Notas con FaceID", isOn: $setting_NotasFaceID)
-                            }else{
+                            
+                        }
+                    }
+                    
+                    if #available(iOS 26.0, macOS 26.0, *){
+                        if IAModelAppleIntelligence.isAvailable(){
+                            Section("Colores Chat IA"){
                                 
-                                //Chequeando si existe soporte biométrico:
-                                if BiometryCheckerSupport.checkBiometricSupport() == .available{
-                                    
-                                    Button{
-                                        UtilFuncs.autent(HabilitarContenido: self.$canOpenToggleButton)
-                                    }label: {
-                                        Label("Opción protegida por FaceID", systemImage: "key.viewfinder")
-                                    }
-                                }else{ //NO existe biometría en el dispositivo
-                                    //Si existe una contraseña guardada se intenta acceder por contraseña
-                                    if KeychainHelper.shared.getPassword() != nil {
-                                        NavigationLink("Acceder por contraseña"){
-                                            LogginView(ente: "Notas",canOpen: self.$canOpenToggleButton)
-                                        }
-                                    }else{ //No existe contraseña guardada. Permitir crear una contraseña
-                                        NavigationLink("Crear una nueva Contraseña de Acceso"){
-                                            CreatePasswordView()
-                                        }
-                                    }
-                                }
-                            }
-                            
-                        }
-                        
-                        //Habilita una sección para recuperar la contraseña. Esta sección solo esta disponible en dispositivos con biometria y si ya previamente han almacenado una contraseña
-                        if BiometryCheckerSupport.checkBiometricSupport() == .available {
-                            //Si existe una contraseña guardada; sino no, no se muestra el botón para recuperar contraseña
-                            if KeychainHelper.shared.getPassword() != nil {
-                                Section("Contraseña Maestra"){
-                                    Button("Recupera Contraseña Para Acceder al Diario y Notas"){
-                                        //Intentando obtener la clave
-                                        if let clave = KeychainHelper.shared.getPassword() {
-                                            self.alertMessage = "La clave es: \(clave)" //Almacena la clave
-                                            UtilFuncs.autent(HabilitarContenido: self.$showAlert)
-                                        }
-                                    }
-                                    .tint(.green)
-                                    
-                                    VStack(alignment: .leading){
-                                        NavigationLink(destination: ChangePasswordView()){
-                                            Text("Cambiar La Contraseña")
-                                        }
-                                        Text("Permite modificar la contraseña para proteger el acceso al Diario y a Notas Protegidas").font(.footnote)
-                                    }
-                                    
-                                }
-                                .alert(isPresented: $showAlert) {
-                                    Alert(title: Text("La contraseña es:"), message: Text(self.alertMessage), dismissButton: .cancel())
-                                }
-                            }
-                        }
-                        
-                        
-                        
-                        
-                        
-                        Section("Contacto & Información"){
-                            NavigationLink{
-                                Form{
-                                    HStack{
-                                        Text("Versión")
-                                        Spacer()
-                                        Text("\(AppCons.appVersion ?? "")")
-                                            .foregroundStyle(.orange).bold()
-                                    }
-                                    HStack{
-                                        Text("Frases")
-                                        Spacer()
-                                        Text("\(self.getElementCount(element: "frases"))")
-                                    }.onTapGesture {self.showSheet = 1}
-                                    HStack{
-                                        Text("Conferencias")
-                                        Spacer()
-                                        Text("\(self.getElementCount(element: "conferencias"))")
-                                    }.onTapGesture {self.showSheet = 2}
-                                    HStack{
-                                        Text("Citas")
-                                        Spacer()
-                                        Text("\(self.getElementCount(element: "citas"))")
-                                    }.onTapGesture {self.showSheet = 3}
-                                    HStack{
-                                        Text("Preguntas")
-                                        Spacer()
-                                        Text("\(self.getElementCount(element: "preguntas"))")
-                                    }.onTapGesture {self.showSheet = 4}
-                                    HStack{
-                                        Text("Ayudas")
-                                        Spacer()
-                                        Text("\(self.getElementCount(element: "ayudas"))")
-                                        
-                                    }.onTapGesture {self.showSheet = 5}
-                                    
-                                    HStack{
-                                        Text("Reflexiones")
-                                        Spacer()
-                                        Text("\(ReflexModel.shared.getArrayReflexOfTxtFileGET().count)")
-                                    }.onTapGesture {self.showSheet = 6}
-                                    
-                                    HStack{
-                                        Text("Cuestionario")
-                                        Spacer()
-                                        Text("\(UtilFuncs.FileReadToArray("cuestionario").count)")
-                                    }.onTapGesture {self.showSheet = 7}
-                                    
-                                }
-                                .navigationTitle("Información")
-                            }label: {
-                                Label("Información", systemImage: "info.circle.fill")
-                                    .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
-                            }
-                            
-                            NavigationLink{
-                                NavigationStack{
-                                    ScrollView{
-                                        SelectableText(UtilFuncs.FileRead("privacy"),fontSize: 22, fonColor: UIColor(Color.primary))
-                                            .padding()
-                                    }.navigationTitle("Ajustes - Privacy")
-                                }
-                            }label:{
-                                Label("Política de Privacidad", systemImage: "square.and.pencil.circle")
-                                    .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
+                                ColorPicker("Color de Texto Chat IA", selection: $ColorChatIAFuente)
                                     .bold()
-                                    .font(.headline)
-                            }
-                            
-                            ShareLink(item: URL(string: "https://apps.apple.com/es/app/la-ley/id6472626696")!) {
-                                HStack {
-                                    Image("Icon-29")
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 24, height: 24) // Ajusta el tamaño según sea necesario
+                                    .onChange(of: ColorChatIAFuente, initial: true) { oldValue, newValue in
+                                        settingModel.saveColor(forkey: AppCons.UD_setting_colorIA_textContent, color: newValue)
+                                    }
+                                
+                                ColorPicker("Color de Texto Respuesta IA", selection: $ColorRespondIAFuente)
+                                    .bold()
+                                    .onChange(of: ColorRespondIAFuente, initial: true) { oldValue, newValue in
+                                        settingModel.saveColor(forkey: AppCons.UD_setting_colorIA_textRespond, color: newValue)
+                                    }
+                                
+                                VStack(alignment: .center){
+                                    ColorPicker("Color Degradado Superior", selection: $ColorChatIAPrimario)
+                                        .onChange(of: ColorChatIAPrimario, initial: true) { oldValue, newValue in
+                                            settingModel.saveColor(forkey: AppCons.UD_setting_colorIA_main_a, color: newValue)
+                                        }
+                                        .padding(.bottom, 10)
+                                    ColorPicker("Color Degradado Inferior", selection: $ColorChatIASecundario)
+                                        .onChange(of: ColorChatIASecundario, initial: true) { oldValue, newValue in
+                                            settingModel.saveColor(forkey: AppCons.UD_setting_colorIA_main_b, color: newValue)
+                                            
+                                        }
                                     
-                                    Text("Compartir la App")
-                                        .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
-                                        .bold()
-                                        .font(.headline)
+                                    HStack{
+                                        Text("Muestra:").font(.footnote)
+                                        Spacer()
+                                        Text("")
+                                            .frame(width: 200 ,  height: 60)
+                                            .background(LinearGradient(colors: [ColorChatIAPrimario, ColorChatIASecundario], startPoint: .top, endPoint: .bottom))
+                                            .clipShape(RoundedRectangle(cornerRadius: 20))
+                                    }
+                                    
                                 }
                                 
-                            }
-                            NavigationLink{
-                                FeedbackView(showTextBotton: false)
-                            }label:{
-                                Label("Deja una reseña!", systemImage:"bolt.heart.fill" )
-                            }
-                            
-                            Link(destination: URL(string: "mailto:info@ypgcode.es")!) {
-                                Label("Enviar Email", systemImage: "envelope.fill")
-                            }
-                            .font(.headline)
-                            
-                            Link(destination: URL(string:  "https://ypgcode.es/la-ley-neville-goddard/")!) {
-                                Label("Abrir página del proyecto", systemImage: "swiftdata")
-                                    .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
-                                    .bold()
-                                    .font(.headline)
-                            }
-                            Link(destination: URL(string:  "https://paypal.me/Yorpg?country.x=ES&locale.x=es_ES")!) {
-                                Label("Donar para este proyecto", systemImage: "dollarsign.circle.fill")
-                                    .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
-                                    .bold()
-                                    .font(.headline)
+                                Button("Aplicar Colores Por Defecto"){
+                                    self.ColorChatIAFuente      = .white
+                                    self.ColorChatIAPrimario    = .orange.opacity(0.5)
+                                    self.ColorChatIASecundario  = .brown
+                                    settingModel.saveColor(forkey: AppCons.UD_setting_colorIA_textContent, color: self.ColorChatIAFuente)
+                                    settingModel.saveColor(forkey: AppCons.UD_setting_colorIA_main_a, color: self.ColorChatIAPrimario)
+                                    settingModel.saveColor(forkey: AppCons.UD_setting_colorIA_main_b, color: self.ColorChatIASecundario)
+                                }
                             }
                         }
-                        
-                        .alert(isPresented: $showAlert) {
-                            Alert(title: Text("Configuración"), message: Text(alertMessage))
+                    }
+                    
+                    
+                    if #available(iOS 26.0, macOS 26.0, *){
+                        if IAModelAppleIntelligence.isAvailable(){
+                            
+                            Section("Utilización de la IA"){
+                                VStack(spacing: 10){
+                                    HStack{
+                                        Text("(\(self.DescargoDeIA ? "Aceptado" : "No aceptado")) ")
+                                            .foregroundStyle(self.DescargoDeIA ? .green : .red).bold().font(.subheadline)
+                                        NavigationLink("Acceder al Descargo de responsabilidad"){DescargoResponsabilidadIA(VentanaEnSetting: true)}.foregroundStyle(.orange)
+                                    }
+                                    Text("Nota: Para utilizar la IA generativa en el dispositivo, debe leer y aceptar primero el Descargo de R esponsabilidad.").font(Font.footnote.bold())
+                                }
+                            }
+                        }
+                    }
+                    
+                    
+                    
+                    Section("Notas Generales"){
+                        if self.securityModel.canOpenNotas {
+                            Toggle("Proteger las Notas con FaceID", isOn: $setting_NotasFaceID)
+                        }else{
+                            
+                            //Chequeando si existe soporte biométrico:
+                            if BiometryCheckerSupport.checkBiometricSupport() == .available{
+                                
+                                Button{
+                                    UtilFuncs.autent(HabilitarContenido: self.$securityModel.canOpenNotas)
+                                }label: {
+                                    Label("Opción protegida por FaceID", systemImage: "key.viewfinder")
+                                }
+                            }else{ //NO existe biometría en el dispositivo
+                                //Si existe una contraseña guardada se intenta acceder por contraseña
+                                if KeychainHelper.shared.getPassword() != nil {
+                                    NavigationLink("Acceder por contraseña"){
+                                        LogginView(ente: .Notas)
+                                    }
+                                }else{ //No existe contraseña guardada. Permitir crear una contraseña
+                                    NavigationLink("Crear una nueva Contraseña de Acceso"){
+                                        CreatePasswordView()
+                                    }
+                                }
+                            }
                         }
                         
                     }
-                    .navigationTitle("Ajustes")
-                    .navigationBarTitleDisplayMode(.inline)
-                   
+                    
+                    //Habilita una sección para recuperar la contraseña. Esta sección solo esta disponible en dispositivos con biometria y si ya previamente han almacenado una contraseña
+                    if BiometryCheckerSupport.checkBiometricSupport() == .available {
+                        //Si existe una contraseña guardada; sino no, no se muestra el botón para recuperar contraseña
+                        if KeychainHelper.shared.getPassword() != nil {
+                            Section("Contraseña Maestra"){
+                                Button("Recupera Contraseña Para Acceder al Diario y Notas"){
+                                    //Intentando obtener la clave
+                                    if let clave = KeychainHelper.shared.getPassword() {
+                                        self.alertMessage = "La clave es: \(clave)" //Almacena la clave
+                                        UtilFuncs.autent(HabilitarContenido: self.$showAlert)
+                                    }
+                                }
+                                .tint(.green)
+                                
+                                VStack(alignment: .leading){
+                                    NavigationLink(destination: ChangePasswordView()){
+                                        Text("Cambiar La Contraseña")
+                                    }
+                                    Text("Permite modificar la contraseña para proteger el acceso al Diario y a Notas Protegidas").font(.footnote)
+                                }
+                                
+                            }
+                            .alert(isPresented: $showAlert) {
+                                Alert(title: Text("La contraseña es:"), message: Text(self.alertMessage), dismissButton: .cancel())
+                            }
+                        }
+                    }
+                    
+                    
+                    
+                    
+                    
+                    Section("Contacto & Información"){
+                        NavigationLink{
+                            Form{
+                                HStack{
+                                    Text("Versión")
+                                    Spacer()
+                                    Text("\(AppCons.appVersion ?? "")")
+                                        .foregroundStyle(.orange).bold()
+                                }
+                                HStack{
+                                    Text("Frases")
+                                    Spacer()
+                                    Text("\(self.getElementCount(element: "frases"))")
+                                }.onTapGesture {self.showSheet = 1}
+                                HStack{
+                                    Text("Conferencias")
+                                    Spacer()
+                                    Text("\(self.getElementCount(element: "conferencias"))")
+                                }.onTapGesture {self.showSheet = 2}
+                                HStack{
+                                    Text("Citas")
+                                    Spacer()
+                                    Text("\(self.getElementCount(element: "citas"))")
+                                }.onTapGesture {self.showSheet = 3}
+                                HStack{
+                                    Text("Preguntas")
+                                    Spacer()
+                                    Text("\(self.getElementCount(element: "preguntas"))")
+                                }.onTapGesture {self.showSheet = 4}
+                                HStack{
+                                    Text("Ayudas")
+                                    Spacer()
+                                    Text("\(self.getElementCount(element: "ayudas"))")
+                                    
+                                }.onTapGesture {self.showSheet = 5}
+                                
+                                HStack{
+                                    Text("Reflexiones")
+                                    Spacer()
+                                    Text("\(ReflexModel.shared.getArrayReflexOfTxtFileGET().count)")
+                                }.onTapGesture {self.showSheet = 6}
+                                
+                                HStack{
+                                    Text("Cuestionario")
+                                    Spacer()
+                                    Text("\(UtilFuncs.FileReadToArray("cuestionario").count)")
+                                }.onTapGesture {self.showSheet = 7}
+                                
+                            }
+                            .navigationTitle("Información")
+                        }label: {
+                            Label("Información", systemImage: "info.circle.fill")
+                                .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
+                        }
+                        
+                        NavigationLink{
+                            NavigationStack{
+                                ScrollView{
+                                    SelectableText(UtilFuncs.FileRead("privacy"),fontSize: 22, fonColor: UIColor(Color.primary))
+                                        .padding()
+                                }.navigationTitle("Ajustes - Privacy")
+                            }
+                        }label:{
+                            Label("Política de Privacidad", systemImage: "square.and.pencil.circle")
+                                .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
+                                .bold()
+                                .font(.headline)
+                        }
+                        
+                        ShareLink(item: URL(string: "https://apps.apple.com/es/app/la-ley/id6472626696")!) {
+                            HStack {
+                                Image("Icon-29")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 24, height: 24) // Ajusta el tamaño según sea necesario
+                                
+                                Text("Compartir la App")
+                                    .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
+                                    .bold()
+                                    .font(.headline)
+                            }
+                            
+                        }
+                        NavigationLink{
+                            FeedbackView(showTextBotton: false)
+                        }label:{
+                            Label("Deja una reseña!", systemImage:"bolt.heart.fill" )
+                        }
+                        
+                        Link(destination: URL(string: "mailto:info@ypgcode.es")!) {
+                            Label("Enviar Email", systemImage: "envelope.fill")
+                        }
+                        .font(.headline)
+                        
+                        Link(destination: URL(string:  "https://ypgcode.es/la-ley-neville-goddard/")!) {
+                            Label("Abrir página del proyecto", systemImage: "swiftdata")
+                                .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
+                                .bold()
+                                .font(.headline)
+                        }
+                        Link(destination: URL(string:  "https://paypal.me/Yorpg?country.x=ES&locale.x=es_ES")!) {
+                            Label("Donar para este proyecto", systemImage: "dollarsign.circle.fill")
+                                .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
+                                .bold()
+                                .font(.headline)
+                        }
+                    }
+                    
+                    .alert(isPresented: $showAlert) {
+                        Alert(title: Text("Configuración"), message: Text(alertMessage))
+                    }
+                    
                 }
+            .navigationTitle("Ajustes")
+            .navigationBarTitleDisplayMode(.inline)
             #endif
-            }
+            
         }
         .alert(isPresented: $showAlert) {
             Alert(title: Text("Configuración"), message: Text(alertMessage))

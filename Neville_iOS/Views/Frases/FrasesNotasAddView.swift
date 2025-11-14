@@ -34,7 +34,7 @@ struct FrasesNotasAddView: View {
                     frasesModel.getAllFrases()
                     //Saliendo:
                     if let window = NSApp.keyWindow {
-                            window.sheetParent?.endSheet(window)
+                        closeWindow(window)
                     }else{
                         dismiss()
                     }
@@ -48,7 +48,7 @@ struct FrasesNotasAddView: View {
                 Button("Cancelar"){
                     //Saliendo:
                     if let window = NSApp.keyWindow {
-                            window.sheetParent?.endSheet(window)
+                        closeWindow(window)
                     }else{
                         dismiss()
                     }

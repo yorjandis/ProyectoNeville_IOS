@@ -14,7 +14,7 @@ struct ContentView: View{
     init(){
         //Carga los valores de Setting para Userdefault si es la primera vez
         if UserDefaults.standard.integer(forKey: AppCons.UD_setting_fontFrasesSize) == 0 {
-            settingModel.setValuesByDefault()
+            SettingModel().setValuesByDefault()
         } 
     }
     

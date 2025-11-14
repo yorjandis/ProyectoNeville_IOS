@@ -12,6 +12,7 @@ struct La_LeyApp: App {
     @StateObject private var settingModel = SettingModel()
     @StateObject private var frasesModel = FrasesModel.shared
     @StateObject private var txtcontentModel = TxtContentModel.shared
+    @StateObject private var securityModel = SecurityModel.shared
     
     private let persistentStore : CoreDataController =  CoreDataController.shared
     
@@ -22,15 +23,12 @@ struct La_LeyApp: App {
                     .environmentObject(settingModel)
                     .environmentObject(frasesModel)
                     .environmentObject(txtcontentModel)
+                    .environmentObject(securityModel) //acceso seguro a las notas protegisas y al diario
                     .environment(\.managedObjectContext, persistentStore.context)
-                    .preferredColorScheme(.light)
                     .onDisappear {
                         //Cerrando todas las ventanas hijas abiertas antes de salir
                         WindowManager.shared.closeAllChildren()
                     }
-          
-            
-
         }
     }
 }

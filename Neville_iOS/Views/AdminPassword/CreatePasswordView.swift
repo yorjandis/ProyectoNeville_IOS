@@ -43,7 +43,7 @@ struct CreatePasswordView: View {
                     Button("Cancelar"){
                         #if os(macOS)
                         if let window = NSApp.keyWindow {
-                            window.sheetParent?.endSheet(window)
+                            closeWindow(window)
                         }
                         #else
                         dismiss()
@@ -58,7 +58,7 @@ struct CreatePasswordView: View {
                             KeychainHelper.shared.savePassword(self.password)
                             #if os(macOS)
                             if let window = NSApp.keyWindow {
-                                window.sheetParent?.endSheet(window)
+                                closeWindow(window)
                             }
                             #else
                             dismiss()

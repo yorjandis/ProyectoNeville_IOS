@@ -10,20 +10,25 @@
 
 import SwiftUI
 
+enum typeEnte : String{
+    case Diario, Notas
+}
+
 struct LogginView: View {
     @Environment(\.dismiss) private var dismiss
+    
+    @EnvironmentObject var securityModel : SecurityModel
 
-    let ente: String
+    let ente: typeEnte
 
     @State private var password: String = ""
-    @Binding var canOpen: Bool
 
     @FocusState private var focus: Bool
     @State private var attempts = 0  // lo usamos para reiniciar la animación
 
     var body: some View {
         VStack {
-            Text("Desbloquear \(self.ente)")
+            Text("Desbloquear \(self.ente.rawValue)")
                 .font(.title) // ente puede ser: "Diario" o "Notas"
 
             SecureField("", text: self.$password, prompt: Text("Coloque la contraseña"))
@@ -51,7 +56,7 @@ struct LogginView: View {
                 Button("Cancel") {
                     #if os(macOS)
                     if let window = NSApp.keyWindow {
-                        window.sheetParent?.endSheet(window)
+                        closeWindow(window)
                     }
                     #else
                     dismiss()
@@ -72,22 +77,48 @@ struct LogginView: View {
     private func validar() {
         if let value = KeychainHelper.shared.getPassword() { //Obteniendo la contraseña del llavero
             if value == self.password { // La contraseña es válida
-                self.canOpen = true // Se pasa true al llamador
+                
+                //self.canOpen = true // Se pasa true al llamador
+                
+                switch self.ente {
+                case .Diario:
+                    securityModel.canOpenDiario = true
+                case .Notas:
+                    securityModel.canOpenNotas = true
+                }
+                
+                
                 #if os(macOS)
                 if let window = NSApp.keyWindow {
-                    window.sheetParent?.endSheet(window)
+                   closeWindow(window)
                 }
+                
                 #else
                 dismiss()
                 #endif
             } else { // No es válida
-                self.attempts += 1
-                self.canOpen = false // Se pasa false al llamador
+                self.attempts += 1 //Animación shake
+                
+                switch self.ente {
+                case .Diario:
+                    securityModel.canOpenDiario = false
+                case .Notas:
+                    securityModel.canOpenNotas = false
+                }
+                
+                
                 self.focus = true
             }
         } else {
-            self.attempts += 1
-            self.canOpen = false // Se pasa false al llamador para que no abra el Diario
+            self.attempts += 1 //Animación shake
+            
+            switch self.ente {
+            case .Diario:
+                securityModel.canOpenDiario = false
+            case .Notas:
+                securityModel.canOpenNotas = false
+            }
+            
             self.focus = true
         }
     }
@@ -111,7 +142,7 @@ struct ShakeEffect: GeometryEffect {
 
 #Preview {
     // Ejemplo de uso con un binding constante para previsualización.
-     LogginView(ente: "Diario", canOpen: .constant(false))
+    LogginView(ente: .Diario)
     
     
 }
