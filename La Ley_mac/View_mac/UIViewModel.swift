@@ -27,12 +27,19 @@ import AppKit
          .padding()
  */
 
+//Para permitir colocar en el parámetro size de showWindow un tamaño relativo al ancho/alto de la pantalla física, o uno fijo.
+enum WindowSize {
+    case absolute(CGSize)
+    case percentage(width: CGFloat, height: CGFloat)
+}
+
+
 @discardableResult
 func showWindow<V: View>(
     for view: V,
     environmentObjects: [AnyObject] = [],
     title: String = "Ventana",
-    size: CGSize? = nil,
+    size: WindowSize? = nil, //el tamaño puede ser relativo(un porciento) al tamaño de la ventana, o absoluto
     isModal: Bool = true,
     isIAWindows: Bool = false,
     onClose: ( @Sendable () -> Void)? = nil
@@ -62,26 +69,50 @@ func showWindow<V: View>(
     window.title = title
     window.styleMask = [.titled, .closable, .miniaturizable, .resizable]
     
-    // 3️⃣ Determinar tamaño para la ventana
+    // 3️⃣ Determinar tamaño para la ventana.
+    //El tamaño dado se puede dar en valores fijos o con valores relativos al ancho/alto de la pantalla física.
     if let size = size {
-        window.setContentSize(size) //Se pasa el tamaño de la ventana dado en el parámetro size
-    } else {
+        let resolvedSize: CGSize
+
+        switch size {
+        case .absolute(let absSize):
+            resolvedSize = absSize
+
+        case .percentage(let w, let h):
+            if let screen = NSScreen.main {
+                let frame = screen.visibleFrame
+                resolvedSize = CGSize(
+                    width: frame.width * w,
+                    height: frame.height * h
+                )
+            } else {
+                // Fallback en caso de que NSScreen falle (raro)
+                resolvedSize = CGSize(width: 800, height: 600)
+            }
+        }
+
+        window.setContentSize(resolvedSize)
+    } else { //Si no se da un valor de size (size == nil): se fija un valor predeterminado
         hosting.view.layoutSubtreeIfNeeded()
         let fittingSize = hosting.view.fittingSize
         let idealSize = CGSize(
-            width: max(fittingSize.width, 300),
-            height: max(fittingSize.height, 200)
+            width: max(fittingSize.width, 500),
+            height: max(fittingSize.height, 400)
         )
         window.setContentSize(idealSize)
     }
     
-    // 4️⃣ Restaurar o calcular posición
+    // 4️⃣ Restaurar o calcular posición (Ignora el tamaño (size) y toma siempre el pasado en el parámetro size)
     if let frameString = UserDefaults.standard.string(forKey: sharedFrameKey) {
-        // Restaurar última posición global
-        let frame = NSRectFromString(frameString)
-        window.setFrame(frame, display: true)
+        var frame = NSRectFromString(frameString)
+
         
-    } else if let screen = NSScreen.main {
+        // Mantén solo posición
+        frame.size = window.frame.size
+
+        window.setFrameOrigin(frame.origin)
+        
+    }else if let screen = NSScreen.main {
         
         // Primera vez: centrada y un poco más abajo
         let screenFrame = screen.visibleFrame
@@ -154,6 +185,9 @@ func showWindow<V: View>(
     
     return window
 }
+
+
+
 
 
 

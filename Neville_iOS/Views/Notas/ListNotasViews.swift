@@ -31,6 +31,8 @@ struct ListNotasViews: View {
     @State var showAlert = false
     @State var alertMessage = ""
     
+    
+    
     private var filtered : [Notas] {
         if self.textFieldTitle.isEmpty {return self.modelNotas.notas}
         return self.modelNotas.notas.filter{$0.title?.localizedCaseInsensitiveContains(self.textFieldTitle) ?? false}
@@ -125,7 +127,7 @@ struct ListNotasViews: View {
                                 showWindow(for: AddNotasView(),
                                            environmentObjects: [self.modelNotas],
                                            title: "Crear Nota",
-                                           size: CGSize(width: 550, height: 400),
+                                           size: .absolute(CGSize(width: 600, height: 450)),
                                            isModal: false
                                 )
                                 
@@ -178,7 +180,7 @@ struct ListNotasViews: View {
                                     showWindow(for: AddNotasView(),
                                                environmentObjects: [self.modelNotas],
                                                title: "Crear Nota",
-                                               size: CGSize(width: 550, height: 400),
+                                               size: .absolute(CGSize(width: 600, height: 450)),
                                                isModal: false
                                     )
                                     
@@ -332,6 +334,9 @@ struct cardNotas: View{
     @State private var showConfirmDialogDeleteNota = false
     @State private var showUpdateNoteView = false
     
+    @AppStorage(AppCons.UD_setting_fontListaSize)  var fontSizeLista : Int = 20
+
+    
     var body: some View{
         VStack(){
             HStack{
@@ -339,6 +344,7 @@ struct cardNotas: View{
                 Text(nota?.title ?? "")
                     .bold()
                     .fontDesign(.serif)
+                    .font(.system(size: CGFloat(self.fontSizeLista)))
                     .padding(8)
                     .onTapGesture(count: 2) {
                         showUpdateNoteView = true
@@ -367,7 +373,7 @@ struct cardNotas: View{
                             showWindow(for: UpdateNotasView(NotaId: nota!.id!, title: nota!.title!, nota: nota!.nota!),
                                        environmentObjects: [self.modelNotas],
                                        title: "Editar Nota",
-                                       size: CGSize(width: 550, height: 400),
+                                       size: .absolute(CGSize(width: 600, height: 450)),
                                        isModal: false
                             
                             )
@@ -434,34 +440,85 @@ struct cardNotas: View{
                     
                     if #available(iOS 26.0, macOS 26.0, *) {
                         if IAModelAppleIntelligence.isAvailable(){
-                                    NavigationLink{
-                                        if let  temp = nota!.nota{
-                                            RespondView(nameConference: "", texto: temp, tipoSalida: .interpretar )
-                                        }
-                                        
-
-                                    }label:{
-                                        Label("Interpretar", systemImage: "sparkles")
-                                    }
-                                    .tint(.purple)
-                                    
-                                    NavigationLink{
-                                        if let  temp = nota!.nota{
-                                            RespondView(nameConference: "", texto: temp, tipoSalida: .practicaConcreta)
-                                        }
-                                        
-                                    }label:{
-                                        Label("Aplicación Práctica", systemImage: "sparkles")
-                                    }
-                                    .tint(.purple)
                             
-                            NavigationLink{
-                                ChatView(textoACargar: nota!.nota)
-                            }label: {
-                                Label("Charlar con IA", systemImage: "sparkles")
+                            #if os(macOS)
+                            Button{
+                                if let  temp = nota!.nota{
+                                    showWindow(for: RespondView(nameConference: "", texto: temp, tipoSalida: .interpretar ),
+                                    environmentObjects: [],
+                                               title: "Interpretar Nota",
+                                               size: AppCons.size_IA_Responded,
+                                               isModal: true
+                                    )
+                                    
+                                }
+                                
+
+                            }label:{
+                                Label("Interpretar", systemImage: "sparkles")
                             }
                             .tint(.purple)
-                             
+                            
+                            Button{
+                                if let  temp = nota!.nota{
+                                    showWindow(for: RespondView(nameConference: "", texto: temp, tipoSalida: .practicaConcreta),
+                                    environmentObjects: [],
+                                               title: "Aplicación Práctica - Nota",
+                                               size: .absolute(CGSize(width: 600, height: 450)),
+                                               isModal: true
+                                    )
+                                    
+                                }
+                                
+                            }label:{
+                                Label("Aplicación Práctica", systemImage: "sparkles")
+                            }
+                            .tint(.purple)
+                    
+                    Button{
+                        if let  temp = nota!.nota{
+                            showWindow(for:   ChatView(textoACargar: nota!.nota),
+                            environmentObjects: [],
+                                       title: "Charlar - Notas",
+                                       size: .absolute(CGSize(width: 600, height: 450)),
+                                       isModal: false
+                            )
+                        }
+                    }label: {
+                        Label("Charlar con IA", systemImage: "sparkles")
+                    }
+                    .tint(.purple)
+                            
+                            #else
+                            NavigationLink{
+                                if let  temp = nota!.nota{
+                                    RespondView(nameConference: "", texto: temp, tipoSalida: .interpretar )
+                                }
+                                
+
+                            }label:{
+                                Label("Interpretar", systemImage: "sparkles")
+                            }
+                            .tint(.purple)
+                            
+                            NavigationLink{
+                                if let  temp = nota!.nota{
+                                    RespondView(nameConference: "", texto: temp, tipoSalida: .practicaConcreta)
+                                }
+                                
+                            }label:{
+                                Label("Aplicación Práctica", systemImage: "sparkles")
+                            }
+                            .tint(.purple)
+                    
+                    NavigationLink{
+                        ChatView(textoACargar: nota!.nota)
+                    }label: {
+                        Label("Charlar con IA", systemImage: "sparkles")
+                    }
+                    .tint(.purple)
+                    #endif
+ 
                         }
                     }
                     
@@ -505,22 +562,16 @@ struct cardNotas: View{
                     //Divider()
                     HStack{
                         Text(nota!.nota ?? "")
-                            .font(.system(size: 18))
-                            .italic()
+                            .font(.system(size: 20))
                             .padding(.vertical, 4)
                             .padding(.horizontal, 5)
                             .fontDesign(.serif)
-                            //.lineLimit(expandText ? nil :  1)
-                            
                             .onTapGesture {
                                     expandText.toggle()
                             }
                         Spacer()
                 }
-            
-            
             }
-            
         }
         .frame(maxWidth: .infinity)
         .background(.ultraThinMaterial)
@@ -528,9 +579,6 @@ struct cardNotas: View{
         .padding(.horizontal, 10)
         .padding(.vertical, 8)
     }
-    
-    
-    
 }
 
 

@@ -17,7 +17,7 @@ struct ChatView: View {
     
     @AppStorage(AppCons.UD_setting_fontChatIASize)  var fontSizeChatIA : Int = 20
     
-    @AppStorage(AppCons.UD_setting_AceptacionDescargoIA)    var DescargoDeIA : Bool = false // True permite acceso al chet IA,false prohíbe el acceso al chat de IA
+    @AppStorage(AppCons.UD_setting_IA_AceptacionDescargo)    var DescargoDeIA : Bool = false // True permite acceso al chet IA,false prohíbe el acceso al chat de IA
     
     @State private var lastID : UUID? = nil //Para poder desplazar la lista de mensajes en el chat hasta el último siempre
     
@@ -33,6 +33,7 @@ struct ChatView: View {
     @State var ColorChatIAPrimario         : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_colorIA_main_a) ?? .orange.opacity(0.7)
     @State var ColorChatIASecundario       : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_colorIA_main_b) ?? .brown
     @State var ColorChatIAFuente           : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_colorIA_textContent) ?? .black
+    
     
     var body: some View {
         
@@ -208,11 +209,29 @@ struct ChatView: View {
                         .padding(.leading, 5)
                         .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(.black.opacity(0.8)))
                         .focused(self.$focus)
+                        .onSubmit {
+                            if ( !self.model.inputText.trimmingCharacters(in: .whitespaces).isEmpty  && self.model.inputText.trimmingCharacters(in: .whitespaces).count >= ChatViewModel.maxCharactersContext){
+                                self.alertMessage = "El texto a enviar es demasiado largo. Se admite como máximo 4100 caracteres."
+                                self.showAlert = true
+                            }else{
+                                Task{
+                                    await model.sendMessage()
+                                    self.focus = false
+                                }
+                            }
+                            
+                            
+                        }
                     
                     Button{
-                        Task {
-                            await model.sendMessage()
-                            self.focus = false
+                        if ( !self.model.inputText.trimmingCharacters(in: .whitespaces).isEmpty  && self.model.inputText.trimmingCharacters(in: .whitespaces).count >= ChatViewModel.maxCharactersContext){
+                            self.alertMessage = "El texto a enviar es demasiado largo. Se admite como máximo 4100 caracteres."
+                            self.showAlert = true
+                        }else{
+                            Task{
+                                await model.sendMessage()
+                                self.focus = false
+                            }
                         }
                     }label:{
                         Text("Enviar").bold()

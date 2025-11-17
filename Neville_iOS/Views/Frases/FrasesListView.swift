@@ -125,6 +125,7 @@ struct FrasesListView: View {
                     
                     TextField("Buscar", text: self.$textFieldFrase)
                         .textFieldStyle(PlainTextFieldStyle())
+                        .font(.system(size: 20))
                         .padding(8)
                         .focused(self.$focused)
                         .onSubmit {
@@ -133,6 +134,9 @@ struct FrasesListView: View {
                         
                 }
                 .padding(.horizontal)
+                #if os(macOS)
+                .background(.windowBackground)
+                #endif
                 
                 List(self.listadoPropio, id: \.self){ frase in
                     LazyVStack(alignment: .leading){
@@ -146,7 +150,7 @@ struct FrasesListView: View {
                                     .padding(.horizontal, 5)
                             }
                             Text(frase)
-                                .font(.system(size: CGFloat(self.fontSizeFrases)))
+                                .font(.system(size: 22))
                                 .foregroundStyle(.primary)
                                 .textSelection(.enabled)
                                 .padding(.vertical, 15)
@@ -157,7 +161,7 @@ struct FrasesListView: View {
                                     showWindow(for: FrasesNotasAddView( frase: frase),
                                                environmentObjects: [self.frasesModel],
                                                title: "Frases",
-                                               size: CGSize(width: 400, height: 200),
+                                               size: .absolute(CGSize(width: 600, height: 450)),
                                                isModal: true
                                     
                                     )
@@ -191,7 +195,7 @@ struct FrasesListView: View {
                                     showWindow(for: GenerateQRView(footer: frase),
                                                environmentObjects: [self.frasesModel],
                                                title: "Frases",
-                                               size: CGSize(width: 400, height: 200),
+                                               size: .absolute(CGSize(width: 600, height: 450)),
                                                isModal: true
                                     
                                     )
@@ -207,7 +211,7 @@ struct FrasesListView: View {
                                         Button{
                                             showWindow(for: RespondView(nameConference: "", texto: frase, tipoSalida: .interpretar),
                                                        environmentObjects: [self.frasesModel, self.settingModel],
-                                                       size: CGSize(width: 600, height: 450),
+                                                       size: .absolute(CGSize(width: 600, height: 450)),
                                                        isModal: true,
                                                        isIAWindows: true)
                                             //RespondView(nameConference: "", texto: self.frase, tipoSalida: .interpretar)
@@ -219,7 +223,7 @@ struct FrasesListView: View {
                                         Button{
                                             showWindow(for: RespondView(nameConference: "", texto: frase, tipoSalida: .practicaConcreta),
                                                        environmentObjects: [self.frasesModel, self.settingModel],
-                                                       size: CGSize(width: 600, height: 450),
+                                                       size: .absolute(CGSize(width: 600, height: 450)),
                                                        isModal: true,
                                                        isIAWindows: true)
                                             //RespondView(nameConference: "", texto: self.frase, tipoSalida: .practicaConcreta)
@@ -231,7 +235,7 @@ struct FrasesListView: View {
                                         Button{
                                             showWindow(for: ChatView(textoACargar: frase),
                                                        environmentObjects: [self.frasesModel, self.settingModel],
-                                                       size: CGSize(width: 600, height: 450),
+                                                       size: .absolute(CGSize(width: 600, height: 450)),
                                                        isModal: false,
                                                        isIAWindows: true)
                                             
@@ -261,7 +265,10 @@ struct FrasesListView: View {
                         }
                         
                         #else
-                        SelectableText(frase, fontSize: CGFloat(self.fontSizeFrases), fonColor: UIColor(Color.primary) , alignment: .left)
+                        Text(frase)
+                            .font(.system(size: 20))
+                            .textSelection(.enabled)
+                        //SelectableText(frase) //No funciona, no se ve el texto de la frase. Puede ser porque esta embebido en una List
                         #endif
                         
                     }
@@ -438,7 +445,7 @@ struct FrasesListView: View {
                             showWindow(for: FraseAddView(),
                                        environmentObjects: [self.frasesModel],
                                        title: "Adicionar Frase",
-                                       size: CGSize(width: 550, height: 400),
+                                       size: .absolute(CGSize(width: 600, height: 450)),
                                        isModal: true) {
                                 //Si el listado actual es frases personales se actualiza:
                                     Task{ @MainActor in

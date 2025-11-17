@@ -25,7 +25,8 @@ struct ReflexListView: View {
     
     @State private var entityForDelete : RefType? //Almacena la entidad que será eliminada
 
-
+    @AppStorage(AppCons.UD_setting_fontListaSize)  var fontSizeLista : Int = 20
+    
    @AppStorage("isUnicaVezReflex") var isUnicaVezReflex: Bool = true
     
     //Obtiene el estado de favorito de la reflexión
@@ -44,13 +45,14 @@ struct ReflexListView: View {
                                 showWindow(for: ReflexShowTextView(entity: item),
                                            environmentObjects: [self.modelReflex],
                                            title: "Reflexión: \(item.title)",
-                                           size: CGSize(width: 550, height: 400),
+                                           size: .absolute(CGSize(width: 600, height: 450)),
                                            isModal: true
                                 )
                                 
                                
                             }label: {
                                 Text(item.title) //title
+                                    .font(.system(size: CGFloat(self.fontSizeLista)))
                             }
                             .buttonStyle(.plain)
                             
@@ -76,6 +78,7 @@ struct ReflexListView: View {
                            ReflexShowTextView(entity: item)
                         }label: {
                             Text(item.title) //title
+                                .font(.system(size: CGFloat(self.fontSizeLista)))
                         }
                         #endif
                         
@@ -171,7 +174,7 @@ struct ReflexListView: View {
                         showWindow(for: AddReflexView(),
                                    environmentObjects: [self.modelReflex],
                                    title: "Nueva Reflexión",
-                                   size: CGSize(width: 550, height: 600),
+                                   size: .absolute(CGSize(width: 600, height: 450)),
                                    isModal: false
                         )
                         

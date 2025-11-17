@@ -55,6 +55,15 @@ struct AppCons{
     //UserDefault compartido:(UD_shared_)
     static let UD_shared_FraseWidgetActual = "FraseWidgetActual" //Donde se almacena la frase actualmente cargada en el widget
     
+    
+    //Variables booleanas para determinar si el contenido de las ventanas se muestren el Details
+    static let UD_setting_showEnDetails_diario          = "setting_showEnDetails_diario"
+    static let UD_setting_showEnDetails_evaluacion      = "setting_showEnDetails_evaluacion"
+    static let UD_setting_showEnDetails_ajustes         = "setting_showEnDetails_ajustes"
+    static let UD_setting_showEnDetails_chat_ia         = "setting_showEnDetails_chat_ia"
+    
+    
+    
     //DeepLinks:
     static let DeepLink_url_Diario  = "widget:/com.ypg.nev.diario"
     static let DeepLink_url_Notas   = "widget:/com.ypg.nev.notas"
@@ -65,9 +74,26 @@ struct AppCons{
     static let UD_setting_showReview        = "UD_setting_showReview"   //Si es 1, se muestra la ventana, si es 2  no se muestra la ventana de review
     
     //IA:
-    static let UD_setting_TipoChatIA            = "setting_TipoChatIA"  //Tipo de Chat de IA(true : neville, false : Chat General)
-    static let UD_setting_AceptacionDescargoIA  = "AceptacionDescargoIA"  //Aceptación del Descargo de Responsabilidad(true : Acepto, false : No acepto). La funciones de IA dependerán de este acuerdo aceptado.
+    static let UD_setting_IA_AceptacionDescargo  = "AceptacionDescargoIA"  //Aceptación del Descargo de Responsabilidad(true : Acepto, false : No acepto). La funciones de IA dependerán de este acuerdo aceptado.
+    static let UD_setting_IA_TratamientoPersonal = "setting_IA_TratamientoPersonal" //Especifica si la IA puede interpretar el papel de un Maestro Personal
     
+    
+    //Tamaños de ventana para la función showWindow en macOS:
+    static let size_IA_Responded : WindowSize = .percentage(width: 0.5, height: 0.48)
+    static let size_content : WindowSize = .percentage(width: 0.5, height: 0.48)
+    
+    
+    //Devuelve un valor centalizado que indica si todas las ventanas flotantes son modales o no
+    /*
+     -Actualmente esta función no esta en uso.
+     -Deberia implementarse en Ajustes para darle al usuario la posibilidad de establecer todas las ventanas a No modales para tenerlas como ventanas independientes. O a todas modales, para inhabilitar interacción con la ventana padre
+     */
+    static func getIsWindowsModals() -> Bool {
+        return UserDefaults.standard.bool(forKey: "isAllWindowsModals")
+    }
+   
+    
+    //Descargo de responsabilidad para la utilización de la IA generativa en el dispositivo:
     static let DescargoDeResposabilidad = """
                 Descargo de Responsabilidad:\n
                 

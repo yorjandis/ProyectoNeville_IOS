@@ -22,6 +22,9 @@ struct TxtListView: View {
 
     @State var title : String //Es el título
     
+    @AppStorage(AppCons.UD_setting_fontListaSize)  var fontSizeLista : Int = 20
+    
+    
     //Para Agregar notas
     @State var showAlertAddNote = false
     @State var textFiel = ""
@@ -54,7 +57,8 @@ struct TxtListView: View {
                     
                     TextField("Buscar", text: self.$textFieldTxtTitles)
                         .textFieldStyle(PlainTextFieldStyle())
-                        .padding(8)
+                        .font(.system(size: 20))
+                        .padding(10)
                         .focused(self.$focused)
                         .onChange(of: self.focused) { oldValue, newValue in
                             //Me aseguro de hacer una copia del listado original una sola vez
@@ -75,6 +79,10 @@ struct TxtListView: View {
                         })
                 }
                 .padding(.horizontal)
+                #if os(macOS)
+                .background(.windowBackground)
+                #endif
+               
                 
                 List(modeloTxt.textList, id: \.self){nombreTxt in
                     LazyVStack(alignment: .leading) {
@@ -90,7 +98,7 @@ struct TxtListView: View {
                                 showWindow(for: ContentTxtShowView(title: self.title, nombreTxt: nombreTxt, type: self.typeOfContent),
                                            environmentObjects: [self.modeloTxt, self.settingModel],
                                            title: "\(self.title) - \(nombreTxt)" ,
-                                           size: CGSize(width: 600, height: 500),
+                                           size: .absolute(CGSize(width: 600, height: 450)),
                                            isModal: false                      
                                 )
                                 
@@ -98,6 +106,7 @@ struct TxtListView: View {
                             }label: {
                                 
                                 Text(nombreTxt)
+                                    .font(.system(size: CGFloat(self.fontSizeLista)))
                             }
                             .buttonStyle(.plain)
                             #else
@@ -107,6 +116,7 @@ struct TxtListView: View {
                                 
                             }label: {
                                 Text(nombreTxt)
+                                    .font(.system(size: CGFloat(self.fontSizeLista)))
                             }
                             
                             #endif

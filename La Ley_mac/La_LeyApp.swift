@@ -13,6 +13,7 @@ struct La_LeyApp: App {
     @StateObject private var frasesModel = FrasesModel.shared
     @StateObject private var txtcontentModel = TxtContentModel.shared
     @StateObject private var securityModel = SecurityModel.shared
+
     
     private let persistentStore : CoreDataController =  CoreDataController.shared
     

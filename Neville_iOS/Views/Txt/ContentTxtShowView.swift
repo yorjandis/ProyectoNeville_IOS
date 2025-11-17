@@ -199,7 +199,7 @@ struct ContentTxtShowView: View {
                                         showWindow(for: RespondView(nameConference: self.nombreTxt, texto: self.getContent, tipoSalida: .puntosClaves),
                                                    environmentObjects: [],
                                                    title: self.nombreTxt,
-                                                   size: CGSize(width: 550, height: 400),
+                                                   size: .absolute(CGSize(width: 600, height: 450)),
                                                    isModal: true,
                                                    isIAWindows: true
                                         )
@@ -228,7 +228,7 @@ struct ContentTxtShowView: View {
                                         showWindow(for: RespondView(nameConference: self.nombreTxt, texto: self.getContent, tipoSalida: .resumen),
                                                    environmentObjects: [self.modeloTxt],
                                                    title: self.nombreTxt,
-                                                   size: CGSize(width: 550, height: 400),
+                                                   size: .absolute(CGSize(width: 600, height: 450)),
                                                    isModal: true,
                                                    isIAWindows: true)
                                         
@@ -303,7 +303,7 @@ struct ContentTxtShowView: View {
                             showWindow(for: EditNoteTxt(entidad: nombreTxt, typeOfContent: self.type),
                                        environmentObjects: [self.modeloTxt],
                                        title: "Editar nota de Conferencia: \(self.nombreTxt)",
-                                       size: CGSize(width: 550, height: 400),
+                                       size: .absolute(CGSize(width: 600, height: 450)),
                                        isModal: true
                             )
                             
@@ -365,6 +365,37 @@ struct ContentTxtShowView: View {
                             
                             ToolbarItem {
                                 Menu{
+                                    #if os(macOS)
+                                    Button{
+                                        showWindow(for: RespondView(nameConference: "", texto: self.getContent.replacingOccurrences(of: "<br>", with: ""), tipoSalida: .interpretar ),
+                                                   environmentObjects: [self.modeloTxt],
+                                                   title: self.nombreTxt,
+                                                   size: .absolute(CGSize(width: 600, height: 450)),
+                                                   isModal: true,
+                                                   isIAWindows: true)
+                                        
+                                        
+                                        
+                                    }label:{
+                                        Label("Interpretar", systemImage: "sparkles")
+                                    }
+                                    .tint(.orange)
+                                    
+                                    Button{
+                                        showWindow(for: RespondView(nameConference: "", texto: self.getContent.replacingOccurrences(of: "<br>", with: ""), tipoSalida: .practicaConcreta),
+                                                   environmentObjects: [self.modeloTxt],
+                                                   title: self.nombreTxt,
+                                                   size: .absolute(CGSize(width: 600, height: 450)),
+                                                   isModal: true,
+                                                   isIAWindows: true)
+                                        
+                                    }label:{
+                                        Label("Aplicación Práctica", systemImage: "sparkles")
+                                    }
+                                    .tint(.orange)
+                                    
+                                    
+                                    #else
                                     NavigationLink{
                                         
                                         RespondView(nameConference: "", texto: self.getContent.replacingOccurrences(of: "<br>", with: ""), tipoSalida: .interpretar )
@@ -384,6 +415,11 @@ struct ContentTxtShowView: View {
                                         Label("Aplicación Práctica", systemImage: "sparkles")
                                     }
                                     .tint(.orange)
+                                    
+                                    
+                                    #endif
+                                    
+                                   
                                     
                                 }label:{
                                     Image(systemName: "sparkles")
@@ -426,7 +462,7 @@ struct ContentTxtShowView: View {
                             showWindow(for: EditNoteTxt(entidad: nombreTxt, typeOfContent: self.type),
                                        environmentObjects: [self.modeloTxt],
                                        title: "Editar Nota de \(self.type.rawValue)",
-                                       size: CGSize(width: 550, height: 400),
+                                       size: .absolute(CGSize(width: 600, height: 450)),
                                        isModal: true
                             )
                             

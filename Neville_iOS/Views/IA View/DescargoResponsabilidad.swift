@@ -12,7 +12,7 @@ import SwiftUI
 @MainActor
 struct DescargoResponsabilidadIA : View{
     @Environment(\.dismiss) var dismiss
-    @AppStorage(AppCons.UD_setting_AceptacionDescargoIA)    var DescargoDeIA : Bool = false // True para aceptar, false para rechazo
+    @AppStorage(AppCons.UD_setting_IA_AceptacionDescargo)    var DescargoDeIA : Bool = false // True para aceptar, false para rechazo
     
     //Uso de dismiss
     let VentanaEnSetting: Bool

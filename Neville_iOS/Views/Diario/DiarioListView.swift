@@ -145,7 +145,7 @@ struct DiarioListView: View {
                                 showWindow(for: LogginView(ente: .Diario),
                                            environmentObjects: [self.securityModel],
                                            title: "Acceder Por contraseña",
-                                           size: CGSize(width: 550, height: 400),
+                                           size: .absolute(CGSize(width: 500, height: 200)),
                                            isModal: true
                                 
                                 )
@@ -177,7 +177,7 @@ struct DiarioListView: View {
                                         showWindow(for: LogginView(ente: .Diario),
                                                    environmentObjects: [self.securityModel],
                                                    title: "Acceder Por contraseña",
-                                                   size: CGSize(width: 550, height: 400),
+                                                   size: .absolute(CGSize(width: 550, height: 400)),
                                                    isModal: true)
                                        
                                     }
@@ -221,9 +221,21 @@ struct DiarioListView: View {
                     }
                 }
             }
-            
-           
+                
             .toolbar{
+                
+                //Permite embeber en Details la ventana actualmente activa
+                #if os(macOS)
+                ToolbarItem {
+                    Button{
+                       
+                    }label:{
+                      Image(systemName: "gear")
+                    }
+                }
+                
+                #endif
+                
                 
                 if self.securityModel.canOpenDiario {
                     
@@ -736,7 +748,7 @@ struct cardItem: View{
                         }.padding(10),
                                    environmentObjects: [self.diarioModel],
                                    title: "Editar Entrada Diario",
-                                   size: CGSize(width: 550, height: 400),
+                                   size: .absolute(CGSize(width: 600, height: 450)),
                                    isModal: true
                         
                         )
@@ -773,7 +785,7 @@ struct cardItem: View{
                         showWindow(for: editContent(diario: $diario, textTitle:diario.title ?? "", textContent: diario.content ?? "", emoticono: diarioModel.getEmocionesFromStr(value: diario.emotion ?? "neutral")),
                                    environmentObjects: [self.diarioModel],
                                    title: "Editar entrada Diario",
-                                   size: CGSize(width: 550, height: 400),
+                                   size: .absolute(CGSize(width: 600, height: 450)),
                                    isModal: false
                         
                         )
@@ -840,7 +852,7 @@ struct cardItem: View{
                             showWindow(for: editContent(diario: $diario, textTitle:diario.title ?? "", textContent: diario.content ?? "", emoticono: diarioModel.getEmocionesFromStr(value: diario.emotion ?? "neutral")),
                                        environmentObjects: [self.diarioModel],
                                        title: "Editar entrada Diario",
-                                       size: CGSize(width: 550, height: 400),
+                                       size: .absolute(CGSize(width: 600, height: 450)),
                                        isModal: true
                                        
                             )

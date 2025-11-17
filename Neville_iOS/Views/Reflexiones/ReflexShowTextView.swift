@@ -123,6 +123,48 @@ struct ReflexShowTextView: View {
                     if IAModelAppleIntelligence.isAvailable(){
                         ToolbarItem {
                             Menu{
+                                #if os(macOS)
+                                
+                                Button{
+                                    showWindow(for: RespondView(nameConference: "", texto: entity.content, tipoSalida: .interpretar ),
+                                               environmentObjects: [],
+                                               title: "\(self.entity.title) - Interpretar",
+                                               size: .absolute(CGSize(width: 600, height: 450)),
+                                               isModal: true,
+                                               isIAWindows: true)
+                                }label:{
+                                    Label("Interpretar", systemImage: "sparkles")
+                                }
+                                .tint(.orange)
+                                
+                                Button{
+                                    showWindow(for:  RespondView(nameConference: "", texto: entity.content, tipoSalida: .practicaConcreta),
+                                               environmentObjects: [],
+                                               title: "\(self.entity.title) - Aplicación Práctica",
+                                               size: .absolute(CGSize(width: 600, height: 450)),
+                                               isModal: true,
+                                               isIAWindows: true)
+                                   
+                                }label:{
+                                    Label("Aplicación Práctica", systemImage: "sparkles")
+                                }
+                                .tint(.orange)
+                                
+                                Button{
+                                    showWindow(for:   ChatView(textoACargar: entity.content),
+                                               environmentObjects: [],
+                                               title: "\(self.entity.title) - Charlar",
+                                               size: .absolute(CGSize(width: 600, height: 450)),
+                                               isModal: true,
+                                               isIAWindows: true)
+                                   
+                                }label: {
+                                    Label("Charlar con IA", systemImage: "sparkles")
+                                }
+                                .tint(.orange)
+                                
+                                #else
+                                
                                 NavigationLink{
                                     
                                     RespondView(nameConference: "", texto: entity.content, tipoSalida: .interpretar )
@@ -146,6 +188,10 @@ struct ReflexShowTextView: View {
                                     Label("Charlar con IA", systemImage: "sparkles")
                                 }
                                 .tint(.orange)
+                                
+                                
+                                #endif
+                                
                                 
                             }label:{
                                 Image(systemName: "sparkles")

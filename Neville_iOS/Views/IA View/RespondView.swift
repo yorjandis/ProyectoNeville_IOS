@@ -19,7 +19,7 @@ struct RespondView: View {
     @State private var bounce = false //Para animar la imagend de IA en el centro de la pantalla
     
     @AppStorage(AppCons.UD_setting_fontContentSize)    var fontSizeContenido : Int = 24
-    @AppStorage(AppCons.UD_setting_AceptacionDescargoIA)    var DescargoDeIA : Bool = false // Si es true se permite utilizar la IA.
+    @AppStorage(AppCons.UD_setting_IA_AceptacionDescargo)    var DescargoDeIA : Bool = false // Si es true se permite utilizar la IA.
 
     @State private var showAlert : Bool = false
     @State private var alertMessage : String = ""

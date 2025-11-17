@@ -29,8 +29,16 @@ struct Ajustes: View {
     @AppStorage(AppCons.UD_setting_fontChatIASize)     var fontSizeChatIA       : Int = 24 //Tamaño de letra del chat de IA
     
     
+    //Determina si el contenido de las ventanas modales se muestren en Details
+    @AppStorage(AppCons.UD_setting_showEnDetails_diario)        var showEnDetails_diario            : Bool  = false
+    @AppStorage(AppCons.UD_setting_showEnDetails_evaluacion)    var showEnDetails_evaluacion        : Bool  = false
+    @AppStorage(AppCons.UD_setting_showEnDetails_ajustes)       var showEnDetails_ajustes           : Bool  = false
+    @AppStorage(AppCons.UD_setting_showEnDetails_chat_ia)       var showEnDetails_chat_ia           : Bool  = false
+    
+    
     //Tipo de chat de IA
-    @AppStorage(AppCons.UD_setting_AceptacionDescargoIA)    var DescargoDeIA : Bool = false // Si es true se permite utilizar la IA.
+    @AppStorage(AppCons.UD_setting_IA_AceptacionDescargo)    var DescargoDeIA : Bool = false // Si es true se permite utilizar la IA.
+    @AppStorage(AppCons.UD_setting_IA_TratamientoPersonal)    var TratamientoDeIA : Bool = true // true: Representa a Neville, false: Tratamiento impersonal
     
     
     //Almacena internamente los colores de configuración. Al inicio se cargan los valores almacenados
@@ -238,10 +246,12 @@ struct Ajustes: View {
                         if #available(macOS 26.0, *){
                             if IAModelAppleIntelligence.isAvailable(){
                                 
-                                VStack(alignment: .leading){
+                                VStack(alignment: .leading, spacing: 10){
                                     Text("Utilización de la IA").font(.system(size: 22)).foregroundStyle(.orange)
                                     
-                                    VStack(spacing: 10){
+                                    VStack(alignment: .leading ,spacing: 10){
+                                        Text("Descargo de Responsabilidad")
+                                            .font(.system(size: 20))
                                         HStack{
                                             Text("(\(self.DescargoDeIA ? "Aceptado" : "No aceptado")) ")
                                                 .foregroundStyle(self.DescargoDeIA ? .green : .red).bold().font(.subheadline)
@@ -252,15 +262,33 @@ struct Ajustes: View {
                                                 showWindow(for: DescargoResponsabilidadIA(VentanaEnSetting: true).foregroundStyle(.orange),
                                                            environmentObjects: [],
                                                            title: "Descargo de Responsabilidad",
-                                                           size: CGSize(width: 550, height: 400),
+                                                           size: .absolute(CGSize(width: 600, height: 450)),
                                                            isModal: true
                                                            
                                                 )
                                             }
                                             
                                         }
-                                        Text("Nota: Para utilizar la IA generativa en el dispositivo, debe leer y aceptar primero el Descargo de Responsabilidad.").font(.system(size: 18))
+                                        Text("Nota: Para utilizar la IA generativa en el dispositivo, debe leer y aceptar primero el Descargo de Responsabilidad.").font(.system(size: 15))
                                     }
+                                    
+                                    //Permitir Ajustar el tratamiento de la IA
+                                    VStack(alignment: .leading, spacing: 10){
+                                            Text("Papel interpretado por la IA:")
+                                            .font(.system(size: 20))
+                                        HStack{
+                                            Text("\(self.TratamientoDeIA ? "La IA representa al Maestro, como si nos hablara en persona" : "La IA se muestra de manera impersonal y despectiva")")
+                                                .font(.system(size: 15))
+                                            Spacer()
+                                            Toggle(isOn: self.$TratamientoDeIA) {
+                                                Text(self.TratamientoDeIA ? "Personal" : "Impersonal")
+                                                    .foregroundStyle(self.TratamientoDeIA ? .green : .primary)
+                                            }
+                                        }
+                                        
+                                    }
+                                    .padding(.top, 10)
+                                    
                                 }
                                 .padding(.horizontal, 30)
                                 .padding(.bottom, 20)
@@ -293,7 +321,7 @@ struct Ajustes: View {
                                             showWindow(for: LogginView(ente: .Notas),
                                                        environmentObjects: [self.securityModel],
                                                        title: "Acceder por contraseña",
-                                                       size: CGSize(width: 550, height: 400),
+                                                       size: .absolute(CGSize(width: 600, height: 450)),
                                                        isModal: true
                                                        
                                             )
@@ -304,7 +332,7 @@ struct Ajustes: View {
                                             showWindow(for: CreatePasswordView(),
                                                        environmentObjects: [],
                                                        title: "Crear una nueva Contraseña de Acceso",
-                                                       size: CGSize(width: 550, height: 400),
+                                                       size: .absolute(CGSize(width: 600, height: 450)),
                                                        isModal: true
                                                        
                                             )
@@ -350,6 +378,22 @@ struct Ajustes: View {
                                 }
                             }
                         }
+                        
+                        
+                        //Sección de interruptores para mostrar contenido en la ventana Details
+                        #if os(macOS)
+                        VStack(alignment: .leading, spacing: 15){
+                            Text("Evitar Ventana Flotante:").font(.system(size: 22)).foregroundStyle(.orange)
+                            
+                            Toggle("Chat IA", isOn: self.$showEnDetails_chat_ia)
+                            Toggle("Diario", isOn: self.$showEnDetails_diario)
+                            Toggle("Evaluación", isOn: self.$showEnDetails_evaluacion)
+                            Toggle("Ajustes", isOn: self.$showEnDetails_ajustes)
+                            
+                        }
+                        .padding(.horizontal, 30)
+                        .padding(.bottom, 20)
+                        #endif
                         
                         
                         
@@ -421,7 +465,7 @@ struct Ajustes: View {
                                     .padding(15) ,
                                            environmentObjects: [self.modelTxt, self.settingModel, self.modelFrases],
                                            title: "Información",
-                                           size: CGSize(width: 500, height: 400),
+                                           size: .absolute(CGSize(width: 600, height: 450)),
                                            isModal: true
                                            
                                 )
@@ -443,7 +487,7 @@ struct Ajustes: View {
                                 },
                                            environmentObjects: [],
                                            title: "Política de Privacidad",
-                                           size: CGSize(width: 550, height: 400),
+                                           size: .absolute(CGSize(width: 600, height: 450)),
                                            isModal: false
                                 )
                                 
@@ -476,7 +520,7 @@ struct Ajustes: View {
                                 showWindow(for: FeedbackView(showTextBotton: false),
                                            environmentObjects: [],
                                            title: "Enviar una Reseña a la App Store",
-                                           size: CGSize(width: 550, height: 100),
+                                           size: .absolute(CGSize(width: 600, height: 450)),
                                            isModal: true
                                 )
                                 
@@ -518,7 +562,7 @@ struct Ajustes: View {
                 }
             }
             .navigationTitle("Ajustes")
-            #else
+            #else //iOS,ipadOS.... NO macOS
                 Form{
                     Section("Tamaño de letra"){
                         HStack{
@@ -666,7 +710,18 @@ struct Ajustes: View {
                                             .foregroundStyle(self.DescargoDeIA ? .green : .red).bold().font(.subheadline)
                                         NavigationLink("Acceder al Descargo de responsabilidad"){DescargoResponsabilidadIA(VentanaEnSetting: true)}.foregroundStyle(.orange)
                                     }
-                                    Text("Nota: Para utilizar la IA generativa en el dispositivo, debe leer y aceptar primero el Descargo de R esponsabilidad.").font(Font.footnote.bold())
+                                    Text("Nota: Para utilizar la IA generativa en el dispositivo, debe leer y aceptar primero el Descargo de Responsabilidad.").font(Font.footnote.bold())
+                                }
+                                
+                                //Permitir Ajustar el tratamiento de la IA
+                                VStack(alignment: .leading){
+                                        Text("Papel interpretado por la IA:")
+                                    Toggle(isOn: self.$TratamientoDeIA) {
+                                        Text(self.TratamientoDeIA ? "Personal" : "Impersonal")
+                                            .foregroundStyle(self.TratamientoDeIA ? .green : .primary)
+                                    }
+                                    Text("\(self.TratamientoDeIA ? "La IA representa al Maestro, como si nos hablara en persona." : "La IA se muestra de manera impersonal y despectiva.")")
+                                        .font(.footnote)
                                 }
                             }
                         }
@@ -674,7 +729,7 @@ struct Ajustes: View {
                     
                     
                     
-                    Section("Notas Generales"){
+                    Section("Proteger Acceso a Notas"){
                         if self.securityModel.canOpenNotas {
                             Toggle("Proteger las Notas con FaceID", isOn: $setting_NotasFaceID)
                         }else{
