@@ -83,7 +83,11 @@ struct optionView: View {
             }
             .sheet(isPresented: $showCodeScanner){
                 //Mostrar el lector de código
-                ReadQRCode()
+                CodeScannerView(codeTypes: [.qr]) { qrCodeString in
+                    //administrar el QR
+                    print(qrCodeString)
+                }
+               
             }
             .sheet(isPresented: $showCodeGenerate){
                 GenerateQRView(footer: "")

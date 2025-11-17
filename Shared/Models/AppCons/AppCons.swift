@@ -77,11 +77,11 @@ struct AppCons{
     static let UD_setting_IA_AceptacionDescargo  = "AceptacionDescargoIA"  //Aceptación del Descargo de Responsabilidad(true : Acepto, false : No acepto). La funciones de IA dependerán de este acuerdo aceptado.
     static let UD_setting_IA_TratamientoPersonal = "setting_IA_TratamientoPersonal" //Especifica si la IA puede interpretar el papel de un Maestro Personal
     
-    
+    #if os(macOS)
     //Tamaños de ventana para la función showWindow en macOS:
     static let size_IA_Responded : WindowSize = .percentage(width: 0.5, height: 0.48)
     static let size_content : WindowSize = .percentage(width: 0.5, height: 0.48)
-    
+    #endif
     
     //Devuelve un valor centalizado que indica si todas las ventanas flotantes son modales o no
     /*

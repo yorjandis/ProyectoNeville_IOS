@@ -38,7 +38,9 @@ struct FrasesUpdateView: View {
                 
             }
             .navigationTitle("Actualizar Frase")
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .toolbar{
                 Button("OK"){
                     /*

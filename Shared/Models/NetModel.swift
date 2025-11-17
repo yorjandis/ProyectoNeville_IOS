@@ -7,7 +7,7 @@
 
 import Foundation
 import Network
-
+import Combine
 
 
 /// Se encarga de monitorizar la conección a internet

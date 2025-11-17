@@ -135,7 +135,7 @@ final class ChatViewModel: ObservableObject {
             - Usa un tono profesional y ameno.
             - \(self.TratamientoDeIA ? "Responde como lo haría un Maestro a su discípulo." : "Responde de manera impersonal pero amena")
             - Termina dando un concejo práctico, si lo consideras apropiado.
-            - Utiliza entre 450 y  700 palabras.
+            - Utiliza entre 350 y  550 palabras.
             
             Este es el texto:
             \(userText)
