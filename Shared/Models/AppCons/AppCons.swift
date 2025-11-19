@@ -46,8 +46,9 @@ struct AppCons{
     static let UD_setting_colorIA_textRespond     = "setting_colorIA_textRespond"   //Color de texto de la ventana de respuesta de la IA
     
     //Otros
-    static let UD_setting_OrdenarEntradaDiario  = "settig_Diario_ordenarentradas" //Permite ordenar las entradas del Diario por fechaCracion/fechaModificación
-    static let UD_setting_NotasFaceID           = "setting_NotasFaceID"
+    static let UD_setting_OrdenarEntradaDiario      = "settig_Diario_ordenarentradas" //Permite ordenar las entradas del Diario por fechaCracion/fechaModificación
+    static let UD_setting_NotasFaceID               = "setting_NotasFaceID" //Proteger las notas de FaceID
+    static let UD_setting_DiarioSiempreOpenFaceID   = "setting_DiarioSiempreOpenFaceID" //Permitir que la ventana del Diario permanezca desbloqueada
     
   
    
@@ -79,8 +80,8 @@ struct AppCons{
     
     #if os(macOS)
     //Tamaños de ventana para la función showWindow en macOS:
-    static let size_IA_Responded : WindowSize = .percentage(width: 0.5, height: 0.48)
-    static let size_content : WindowSize = .percentage(width: 0.5, height: 0.48)
+    static let windows_size_content : WindowSize = .percentage(width: 0.45, height: 0.53)
+    static let windows_size_content_small : WindowSize = .absolute(CGSize(width: 900, height: 400))
     #endif
     
     //Devuelve un valor centalizado que indica si todas las ventanas flotantes son modales o no

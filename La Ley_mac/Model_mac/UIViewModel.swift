@@ -6,7 +6,7 @@ import AppKit
  ✅ Apertura de ventanas hijas con contexto (EnvironmentObjects)
  ✅ Tamaño dinámico y posición recordada
  ✅ Compatibilidad total con MainActor y Swift 6
- ✅ Modo modal sin bloqueos del padre
+ ✅ Modo modal sin bloqueos del padre (el el modo modal no guarda la posición de la ventana. Su posición es relativa a la ventana parent)
  ✅ Código perfectamente limpio y reutilizable
  ✅ También podemos establecer si es modal (bloqueando la ventana padre) o no.
  ✅ Por último podemos ejecutar un código albritrario al cerrarse con el closure onClose.,
@@ -235,4 +235,24 @@ func closeWindow(_ window: NSWindow) {
         // Es una ventana normal
         window.close()
     }
+}
+
+
+
+//Permite saber (dentro de un ventana hija) si esta es modal o no
+/*
+ Ejemplo de uso: Dentro de la ventana hija:
+ 
+ Button("Check modal") {
+     let esModal = ventanaActualEsModal()
+     print("¿Es modal?: \(esModal)")
+ }
+ 
+ */
+func ventanaActualEsModal() -> Bool {
+    guard let window = NSApp.keyWindow else {
+        return false
+    }
+    
+    return window.isSheet || window.isModalPanel
 }

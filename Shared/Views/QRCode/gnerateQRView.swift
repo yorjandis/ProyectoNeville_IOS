@@ -15,8 +15,6 @@ import AppKit
 
 struct GenerateQRView : View {
 
-
-    
     @State var  footer : String = ""
     
     @State  var title : String = "Toque el texto para modificarlo"
@@ -24,6 +22,7 @@ struct GenerateQRView : View {
     @State  var  showImage = true //muestra la imagen del QR ya generado
     
     @FocusState private var focusState : Bool //Para ocultar el teclado
+    
     #if os(iOS)
     @State private var imagen : UIImage? = UIImage(systemName: "qrcode")
     #endif
@@ -51,30 +50,34 @@ struct GenerateQRView : View {
                     Divider()
                     if showImage {
                         #if os(iOS)
-                        Image(uiImage: imagen!)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 300, height: 300 )
-                            .onTapGesture {
-                                focusState = false
-                            }
-                            .contextMenu {
-                                
-                                ShareLink( item: Image(uiImage: imagen!),
-                                                preview: SharePreview("Compartir",
-                                                    image: Image(systemName: "book")
-                                                )
-                                 )
-                                Button("Guardar en Frases"){
-                                    FrasesModel.shared.AddFrase(frase: footer)
+                        if self.focusState == false{ //Oculta la imagen mientras se escribe en el textField
+                            Image(uiImage: imagen!)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 300, height: 300 )
+                                .onTapGesture {
+                                    focusState = false
                                 }
-                                Button("Guardar en Notas"){
-                                    _ = NotasModel().addNote(nota: footer, title: "\(String(String(footer).prefix(footer.count / 3 )))...")
+                                .contextMenu {
+                                    
+                                    ShareLink( item: Image(uiImage: imagen!),
+                                                    preview: SharePreview("Compartir",
+                                                        image: Image(systemName: "book")
+                                                    )
+                                     )
+                                    Button("Guardar en Frases"){
+                                        FrasesModel.shared.AddFrase(frase: footer)
+                                    }
+                                    Button("Guardar en Notas"){
+                                        _ = NotasModel().addNote(nota: footer, title: "\(String(String(footer).prefix(footer.count / 3 )))...")
+                                    }
+                                    
+                                    
                                 }
-                                
-                                
-                            }
-                            #elseif os(macOS)
+                        }
+                        
+                        
+                        #elseif os(macOS)
                             Image(nsImage: imagen!)
                             .resizable()
                             .scaledToFit()
@@ -133,13 +136,23 @@ struct GenerateQRView : View {
                     #endif
 
             }
-                .onAppear {
+            .onAppear {
                     if showImage {
                         imagen = getImageQR()
                     }
+                    
 
                 }
             }
+            .onTapGesture {
+                self.focusState = false
+            }
+            //Si el TextField pierde el foco se crea la imagen QR a partir del texto en self.footer
+            .onChange(of: self.focusState, { oldValue, newValue in
+                if newValue == false{
+                    imagen = getImageQR()
+                }
+            })
             
             .navigationTitle("Generar Código QR")
             #if os(iOS)

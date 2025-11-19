@@ -45,8 +45,8 @@ struct ReflexListView: View {
                                 showWindow(for: ReflexShowTextView(entity: item),
                                            environmentObjects: [self.modelReflex],
                                            title: "Reflexión: \(item.title)",
-                                           size: .absolute(CGSize(width: 600, height: 450)),
-                                           isModal: true
+                                           size: AppCons.windows_size_content,
+                                           isModal: false
                                 )
                                 
                                
@@ -58,7 +58,7 @@ struct ReflexListView: View {
                             
                             
                             
-                            //En macOS: muestra un botón al final para eliminar la reflexión
+                            //En macOS: muestra un botón para eliminar la reflexión
                             if !item.isInbuilt {
                                 Spacer()
                                 Button{
@@ -66,9 +66,27 @@ struct ReflexListView: View {
                                     showalertDeleteItem = true
                                 }label:{
                                     Image(systemName: "xmark.circle")
+                                        .foregroundStyle(.red)
                                 }
-                                .foregroundStyle(.red)
-                                .padding(.trailing, 10)
+                                
+                                .padding(.horizontal, 5)
+                                Button{
+                                    showWindow(for: AddReflexView(reflexionAActualizar: item),
+                                               environmentObjects: [self.modelReflex],
+                                               title: "Editar una Reflexión",
+                                               size: AppCons.windows_size_content,
+                                               isModal: true
+                                    )
+                                        
+                                    
+                                }label: {
+                                    //edit
+                                    Image(systemName: "square.and.pencil")
+                                        
+                                }
+                                .padding(.horizontal, 5)
+                                .foregroundStyle(.green)
+                                
                             }
                         }
                         
@@ -96,7 +114,6 @@ struct ReflexListView: View {
                     }
                     .swipeActions(edge: .leading) {
                             Button{
-                                
                                 var favState = self.getFavState(title: item.title)
                                 favState.toggle()
                                 if modelReflex.setFavState(title: item.title, state: favState){
@@ -110,6 +127,18 @@ struct ReflexListView: View {
                                 Image(systemName: "heart")
                                     .foregroundStyle(item.isfav ? .orange : .gray)
                             }
+                        
+                        if item.isInbuilt == false{
+                            NavigationLink{
+                                AddReflexView(reflexionAActualizar: item)
+                                    .environmentObject(self.modelReflex)
+                                
+                            }label: {
+                                //edit
+                                Image(systemName: "square.and.pencil")
+                            }
+                        }
+                        
                     }
                     .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                         //Solo permite eliminar las reflexiones creadas por el usuario
@@ -171,10 +200,10 @@ struct ReflexListView: View {
                 ToolbarItem {
                     #if os(macOS)
                     Button{
-                        showWindow(for: AddReflexView(),
+                        showWindow(for: AddReflexView(reflexionAActualizar: nil),
                                    environmentObjects: [self.modelReflex],
                                    title: "Nueva Reflexión",
-                                   size: .absolute(CGSize(width: 600, height: 450)),
+                                   size: AppCons.windows_size_content,
                                    isModal: false
                         )
                         
@@ -208,11 +237,11 @@ struct ReflexListView: View {
                 
             }
             .sheet(isPresented: $showSheetAddReflex, content: {
-                AddReflexView()
+                AddReflexView(reflexionAActualizar: nil)
             })
             .alert(isPresented: $showalertDeleteItem){
                     Alert(title: Text("La Ley"),
-                      message: Text("Desea eliminar la entrada?"),
+                      message: Text("Desea eliminar la reflexión?"),
                           primaryButton: .destructive(Text("Eliminar"), action: {
                         if let tt = self.entityForDelete {
                             

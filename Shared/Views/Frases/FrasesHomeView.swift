@@ -114,7 +114,7 @@ struct FrasesView : View{
                         Button{
                             showWindow(for: GenerateQRView(footer: self.frase, showImage: true),
                                        environmentObjects: [self.frasesModel],
-                                       size: .absolute(CGSize(width: 600, height: 500)),
+                                       size: AppCons.windows_size_content_small,
                                        isModal: true)
                         }label:{
                             Label("Generar QR", systemImage: "qrcode")
@@ -136,7 +136,8 @@ struct FrasesView : View{
                             #if os(macOS)
                             showWindow(for: FrasesNotasAddView(frase: self.frase),
                                        environmentObjects: [self.frasesModel],
-                                       size: .absolute(CGSize(width: 600, height: 450)),
+                                       title: "Nota de Frase",
+                                       size: AppCons.windows_size_content_small,
                                        isModal: true)
                             #else
                             showAddNoteView = true
@@ -152,7 +153,7 @@ struct FrasesView : View{
                                 Button{
                                     showWindow(for: RespondView(nameConference: "", texto: self.frase, tipoSalida: .interpretar),
                                                environmentObjects: [self.frasesModel, self.settingModel],
-                                               size: .absolute(CGSize(width: 600, height: 450)),
+                                               size: AppCons.windows_size_content,
                                                isModal: true,
                                                isIAWindows: true)
                                     //RespondView(nameConference: "", texto: self.frase, tipoSalida: .interpretar)
@@ -164,7 +165,7 @@ struct FrasesView : View{
                                 Button{
                                     showWindow(for: RespondView(nameConference: "", texto: self.frase, tipoSalida: .practicaConcreta),
                                                environmentObjects: [self.frasesModel, self.settingModel],
-                                               size: .absolute(CGSize(width: 600, height: 450)),
+                                               size: AppCons.windows_size_content,
                                                isModal: true,
                                                isIAWindows: true)
                                     //RespondView(nameConference: "", texto: self.frase, tipoSalida: .practicaConcreta)
@@ -176,7 +177,7 @@ struct FrasesView : View{
                                 Button{
                                     showWindow(for: ChatView(textoACargar: self.frase),
                                                environmentObjects: [self.frasesModel, self.settingModel],
-                                               size: .absolute(CGSize(width: 600, height: 450)),
+                                               size: AppCons.windows_size_content,
                                                isModal: false,
                                                isIAWindows: true)
                                     
@@ -222,7 +223,7 @@ struct FrasesView : View{
                                 for: FraseAddView(),
                                 environmentObjects: [self.frasesModel, self.settingModel],
                                 title: "Yorjandis",
-                                size: .absolute(CGSize(width: 600, height: 450)),
+                                size: AppCons.windows_size_content_small,
                                 isModal: true)
                             #else
                             showSheetAddFrase = true

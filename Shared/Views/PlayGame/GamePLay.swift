@@ -131,7 +131,7 @@ struct GamePLay: View {
                                         showWindow(for: viewResult(listFallifos: $listFallifos, listAciertos: $listAciertos, listado: $listado, Fallidos: $Fallos),
                                         environmentObjects: [],
                                                    title: "Lista de Fallos",
-                                                   size: .absolute(CGSize(width: 600, height: 450)),
+                                                   size: AppCons.windows_size_content_small,
                                                    isModal: true
                                         
                                         )
@@ -152,7 +152,7 @@ struct GamePLay: View {
                                         showWindow(for: viewResult(listFallifos: $listFallifos, listAciertos: $listAciertos, listado: $listado, Fallidos: $Fallos),
                                                    environmentObjects: [],
                                                    title: "Lista de Fallos",
-                                                   size: .absolute(CGSize(width: 600, height: 450)),
+                                                   size: AppCons.windows_size_content_small,
                                                    isModal: true
                                                    
                                         )

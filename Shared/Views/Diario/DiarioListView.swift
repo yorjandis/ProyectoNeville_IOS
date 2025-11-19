@@ -66,7 +66,7 @@ struct DiarioListView: View {
     
     //Ordenar las entradas del Diario por fechaCreación/fechaModificación
     @AppStorage(AppCons.UD_setting_OrdenarEntradaDiario) var ordenarEntradaDiario : Bool = true // true es fechaCreación; false es fecha de modificación
-    
+   @AppStorage(AppCons.UD_setting_DiarioSiempreOpenFaceID) var setting_DiarioSiempreOpenFaceID  : Bool = false //Para poder manejar el acceso al diario
  
     
 
@@ -145,7 +145,7 @@ struct DiarioListView: View {
                                 showWindow(for: LogginView(ente: .Diario),
                                            environmentObjects: [self.securityModel],
                                            title: "Acceder Por contraseña",
-                                           size: .absolute(CGSize(width: 500, height: 200)),
+                                           size: AppCons.windows_size_content_small,
                                            isModal: true
                                 
                                 )
@@ -177,7 +177,7 @@ struct DiarioListView: View {
                                         showWindow(for: LogginView(ente: .Diario),
                                                    environmentObjects: [self.securityModel],
                                                    title: "Acceder Por contraseña",
-                                                   size: .absolute(CGSize(width: 550, height: 400)),
+                                                   size: AppCons.windows_size_content_small,
                                                    isModal: true)
                                        
                                     }
@@ -221,7 +221,21 @@ struct DiarioListView: View {
                     }
                 }
             }
-                
+            .onDisappear{
+                //Al cerrar la ventana del Diario se chequea si la opción de mentener la ventana abierta y se ha obtenido efectivamente
+                //acceso al Diario estan en true: entonces, la variable observable que da acceso al Diario permanece en true.
+                //De lo contrario, la variable observable que da acceso al Diario se pone a false y se tiene que loggear para entrar al Diario
+                if (self.setting_DiarioSiempreOpenFaceID == true && self.securityModel.canOpenDiario == true){
+                    self.securityModel.canOpenDiario = true
+                    print("Yorjandis: 1")
+                }else{
+                    self.securityModel.canOpenDiario = false
+                    print("Yorjandis: 2")
+                }
+                //nota: La otra parte de esta función está en la raíz de la app: al abrirse la app siempre se restablece la
+                //variable observable que da acceso al Diario a false. Esto es para poder entrar por loguien en cada sesión de la app.
+                //Esta opción de mantener la ventana abierta/cerrada del Diario esta en Ajustes bajo un flag booleano.
+            }
             .toolbar{
                 
                 //Permite embeber en Details la ventana actualmente activa
@@ -529,7 +543,17 @@ struct DiarioListView: View {
                                                     modelDiario.getAllItem()
                                                 }
                                                 if FeedBackModel.checkReviewRequest() {
+                                                    #if os(macOS)
+                                                    showWindow(for: FeedbackView(showTextBotton: false),
+                                                               environmentObjects: [],
+                                                               title: "Enviar una Reseña a la App Store",
+                                                               size: AppCons.windows_size_content_small,
+                                                               isModal: true
+                                                    )
+                                                    #else
                                                     self.sheetShowFeedBackReview = true
+                                                    #endif
+                                                    
                                                 }
                                             }
                                             
@@ -748,7 +772,7 @@ struct cardItem: View{
                         }.padding(10),
                                    environmentObjects: [self.diarioModel],
                                    title: "Editar Entrada Diario",
-                                   size: .absolute(CGSize(width: 600, height: 450)),
+                                   size: AppCons.windows_size_content_small,
                                    isModal: true
                         
                         )
@@ -785,7 +809,7 @@ struct cardItem: View{
                         showWindow(for: editContent(diario: $diario, textTitle:diario.title ?? "", textContent: diario.content ?? "", emoticono: diarioModel.getEmocionesFromStr(value: diario.emotion ?? "neutral")),
                                    environmentObjects: [self.diarioModel],
                                    title: "Editar entrada Diario",
-                                   size: .absolute(CGSize(width: 600, height: 450)),
+                                   size: AppCons.windows_size_content,
                                    isModal: false
                         
                         )
@@ -852,7 +876,7 @@ struct cardItem: View{
                             showWindow(for: editContent(diario: $diario, textTitle:diario.title ?? "", textContent: diario.content ?? "", emoticono: diarioModel.getEmocionesFromStr(value: diario.emotion ?? "neutral")),
                                        environmentObjects: [self.diarioModel],
                                        title: "Editar entrada Diario",
-                                       size: .absolute(CGSize(width: 600, height: 450)),
+                                       size: AppCons.windows_size_content,
                                        isModal: true
                                        
                             )

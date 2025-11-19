@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		190C39AC2B6B8CC7008007C6 /* ModelData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E92F64512AB78EE6007BB4BA /* ModelData.xcdatamodeld */; };
 		19520A4F2B75C34F000B11CC /* AddDiario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19520A4E2B75C34F000B11CC /* AddDiario.swift */; };
 		19520A512B765E31000B11CC /* FilterByNotaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19520A502B765E30000B11CC /* FilterByNotaView.swift */; };
 		19520A532B76778B000B11CC /* FilterByDiarioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19520A522B76778B000B11CC /* FilterByDiarioView.swift */; };
@@ -31,13 +30,10 @@
 		19F804202B69CBA000A323A0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 19F8041F2B69CBA000A323A0 /* Assets.xcassets */; };
 		19F804232B69CBA000A323A0 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 19F804222B69CBA000A323A0 /* Preview Assets.xcassets */; };
 		19F804262B69CBA000A323A0 /* La Ley Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 19F804192B69CB9D00A323A0 /* La Ley Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		917C302E2EBCD70F006BB36E /* ModelData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E92F64512AB78EE6007BB4BA /* ModelData.xcdatamodeld */; };
 		91F0DD552D605B5800307453 /* watchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F0DD542D605B4B00307453 /* watchModel.swift */; };
-		E92F64532AB78EE6007BB4BA /* ModelData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E92F64512AB78EE6007BB4BA /* ModelData.xcdatamodeld */; };
 		E95B93572AAFBB2600B5E2B5 /* Neville_iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95B93562AAFBB2600B5E2B5 /* Neville_iOSApp.swift */; };
 		E95B93592AAFBB2600B5E2B5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95B93582AAFBB2600B5E2B5 /* ContentView.swift */; };
 		E95B935B2AAFBB2900B5E2B5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E95B935A2AAFBB2900B5E2B5 /* Assets.xcassets */; };
-		E95B935E2AAFBB2900B5E2B5 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E95B935D2AAFBB2900B5E2B5 /* Preview Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -132,39 +128,38 @@
 		917C301F2EBCD1E5006BB36E /* La Ley_mac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "La Ley_mac.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		91F0DD4E2D60384700307453 /* WatchComplicationLaLeyExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WatchComplicationLaLeyExtension.entitlements; sourceTree = "<group>"; };
 		91F0DD542D605B4B00307453 /* watchModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = watchModel.swift; sourceTree = "<group>"; };
-		E92F64522AB78EE6007BB4BA /* ModelData.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ModelData.xcdatamodel; sourceTree = "<group>"; };
 		E95B93532AAFBB2600B5E2B5 /* Neville_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Neville_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E95B93562AAFBB2600B5E2B5 /* Neville_iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Neville_iOSApp.swift; sourceTree = "<group>"; };
 		E95B93582AAFBB2600B5E2B5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		E95B935A2AAFBB2900B5E2B5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		E95B935D2AAFBB2900B5E2B5 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
 		911FE4562ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				ModelData.xcdatamodeld,
+				Models/AjustesModel/settingModel.swift,
 				Models/AppCons/AppCons.swift,
-				Models/BiometrySupport.swift,
+				Models/BiometricSupport/BiometrySupport.swift,
 				Models/CoreData/CoreDataController.swift,
-				Models/DiarioModel.swift,
-				Models/FeedBackModel.swift,
-				Models/FrasesModel.swift,
-				Models/GameModel.swift,
+				Models/DiarioModel/DiarioModel.swift,
+				Models/FeedBackModel/FeedBackModel.swift,
+				Models/FrasesModel/FrasesModel.swift,
+				Models/GameModel/GameModel.swift,
 				Models/IAModel/ChactModel.swift,
 				Models/IAModel/IAModelAppleIntelligence.swift,
 				Models/KeyChainModel/KeyChainModel.swift,
 				Models/MultiplatformModel/Multiplatform.swift,
-				Models/NetModel.swift,
-				Models/NotasModel.swift,
+				Models/NetModel/NetModel.swift,
+				Models/NotasModel/NotasModel.swift,
 				Models/QRCode/QRModel.swift,
 				Models/QRCode/QRReader.swift,
-				Models/ReflexModel.swift,
+				Models/ReflexModel/ReflexModel.swift,
 				Models/SecurityModel/SecurityModel.swift,
-				Models/settingModel.swift,
-				Models/TxtContentModel.swift,
-				Models/Utils.swift,
-				Models/UtilsForViews.swift,
+				Models/TextContentModel/TxtContentModel.swift,
+				Models/Utils/Utils.swift,
+				Models/UtilsForView/UtilsForViews.swift,
 				"Staff/Ayudas/ayud_como manifestar.txt",
 				"Staff/Ayudas/ayud_efectuar un tratamiento a otro.txt",
 				"Staff/Ayudas/ayud_ejercicio para la imaginacion.txt",
@@ -722,6 +717,18 @@
 				"Staff/Preguntas/preg_pregunta 36.txt",
 				Staff/privacy.txt,
 				Staff/reflexiones.txt,
+				Staff/Reflexiones/reflex_conciencia_y_realidad.txt,
+				Staff/Reflexiones/reflex_conocimiento.txt,
+				Staff/Reflexiones/reflex_deseo_tener_certeza.txt,
+				Staff/Reflexiones/reflex_estado_mental.txt,
+				Staff/Reflexiones/reflex_habito.txt,
+				Staff/Reflexiones/reflex_hacer_vs_ser.txt,
+				Staff/Reflexiones/reflex_Imaginacion_Todo.txt,
+				Staff/Reflexiones/reflex_interior_verdadero_reino.txt,
+				Staff/Reflexiones/reflex_realidad_mundo_fisico.txt,
+				Staff/Reflexiones/reflex_rechaza_todo_perturbe_paz.txt,
+				Staff/Reflexiones/reflex_sois_un_solo_espiritu.txt,
+				Staff/Reflexiones/reflex_verdad_del_amor.txt,
 				Views/AdminPassword/ChangePasswordView.swift,
 				Views/AdminPassword/CreatePasswordView.swift,
 				Views/AdminPassword/LogginView.swift,
@@ -764,7 +771,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Models/AppCons/AppCons.swift,
-				Models/Utils.swift,
+				Models/Utils/Utils.swift,
 				Staff/listfrases.txt,
 			);
 			target = 19E0BE132B0C661A00E149A5 /* FrasesWiggetExtension */;
@@ -772,10 +779,11 @@
 		911FE4582ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				ModelData.xcdatamodeld,
 				Models/AppCons/AppCons.swift,
 				Models/CoreData/CoreDataController.swift,
-				Models/Utils.swift,
-				Models/UtilsForViews.swift,
+				Models/Utils/Utils.swift,
+				Models/UtilsForView/UtilsForViews.swift,
 				Staff/listfrases.txt,
 			);
 			target = 19F804182B69CB9D00A323A0 /* La Ley Watch App */;
@@ -787,11 +795,26 @@
 			);
 			target = 917C301E2EBCD1E5006BB36E /* La Ley_mac */;
 		};
+		911FF1FC2ECB4064009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"Preview Assets.xcassets",
+			);
+			target = E95B93522AAFBB2600B5E2B5 /* Neville_iOS */;
+		};
+		911FF1FD2ECB4064009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"Preview Assets.xcassets",
+			);
+			target = 917C301E2EBCD1E5006BB36E /* La Ley_mac */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		911FE4452ECB2A7F009F83BE /* Shared */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (911FE4562ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 911FE4572ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 911FE4582ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Shared; sourceTree = "<group>"; };
 		911FE4D42ECB2E8D009F83BE /* OptionView */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (911FEB632ECB3B7F009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = OptionView; sourceTree = "<group>"; };
+		911FF1FA2ECB4064009F83BE /* Preview Content */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (911FF1FC2ECB4064009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 911FF1FD2ECB4064009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = "Preview Content"; sourceTree = "<group>"; };
 		917C30202EBCD1E5006BB36E /* La Ley_mac */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "La Ley_mac"; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
@@ -892,7 +915,6 @@
 		19F8041A2B69CB9D00A323A0 /* La Ley Watch App */ = {
 			isa = PBXGroup;
 			children = (
-				19D2F0602B6DE90600D9B62C /* La-Ley-Watch-App-Info.plist */,
 				19F8041D2B69CB9D00A323A0 /* ContentView.swift */,
 				190C39B52B6B97F3008007C6 /* model */,
 				19D04F1A2B7305A8007B66F2 /* Views */,
@@ -900,6 +922,7 @@
 				19F8041F2B69CBA000A323A0 /* Assets.xcassets */,
 				19F804212B69CBA000A323A0 /* Preview Content */,
 				19F8041B2B69CB9D00A323A0 /* La_LeyApp.swift */,
+				19D2F0602B6DE90600D9B62C /* La-Ley-Watch-App-Info.plist */,
 			);
 			path = "La Ley Watch App";
 			sourceTree = "<group>";
@@ -958,18 +981,9 @@
 				199DA0662B0EAC5800DEED62 /* Home.swift */,
 				E92F644E2AB6EF5A007BB4BA /* Views */,
 				E95B935A2AAFBB2900B5E2B5 /* Assets.xcassets */,
-				E95B935C2AAFBB2900B5E2B5 /* Preview Content */,
-				E92F64512AB78EE6007BB4BA /* ModelData.xcdatamodeld */,
+				911FF1FA2ECB4064009F83BE /* Preview Content */,
 			);
 			path = Neville_iOS;
-			sourceTree = "<group>";
-		};
-		E95B935C2AAFBB2900B5E2B5 /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				E95B935D2AAFBB2900B5E2B5 /* Preview Assets.xcassets */,
-			);
-			path = "Preview Content";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1043,6 +1057,7 @@
 			fileSystemSynchronizedGroups = (
 				911FE4452ECB2A7F009F83BE /* Shared */,
 				911FE4D42ECB2E8D009F83BE /* OptionView */,
+				911FF1FA2ECB4064009F83BE /* Preview Content */,
 				917C30202EBCD1E5006BB36E /* La Ley_mac */,
 			);
 			name = "La Ley_mac";
@@ -1166,7 +1181,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E95B935E2AAFBB2900B5E2B5 /* Preview Assets.xcassets in Resources */,
 				E95B935B2AAFBB2900B5E2B5 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1199,7 +1213,6 @@
 				19520A532B76778B000B11CC /* FilterByDiarioView.swift in Sources */,
 				19520A4F2B75C34F000B11CC /* AddDiario.swift in Sources */,
 				19F8041E2B69CB9D00A323A0 /* ContentView.swift in Sources */,
-				190C39AC2B6B8CC7008007C6 /* ModelData.xcdatamodeld in Sources */,
 				19D04F1C2B7455B8007B66F2 /* AddNota.swift in Sources */,
 				91F0DD552D605B5800307453 /* watchModel.swift in Sources */,
 				19F8041C2B69CB9D00A323A0 /* La_LeyApp.swift in Sources */,
@@ -1211,7 +1224,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				917C302E2EBCD70F006BB36E /* ModelData.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1219,7 +1231,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E92F64532AB78EE6007BB4BA /* ModelData.xcdatamodeld in Sources */,
 				199DA0672B0EAC5800DEED62 /* Home.swift in Sources */,
 				1954CDAA2B1152BC0093DDF0 /* AppIntentWidget.swift in Sources */,
 				E95B93592AAFBB2600B5E2B5 /* ContentView.swift in Sources */,
@@ -1807,19 +1818,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCVersionGroup section */
-		E92F64512AB78EE6007BB4BA /* ModelData.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				E92F64522AB78EE6007BB4BA /* ModelData.xcdatamodel */,
-			);
-			currentVersion = E92F64522AB78EE6007BB4BA /* ModelData.xcdatamodel */;
-			path = ModelData.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = E95B934B2AAFBB2600B5E2B5 /* Project object */;
 }

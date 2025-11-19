@@ -27,7 +27,17 @@ struct FraseAddView: View {
                         FrasesModel.shared.AddFrase(frase: text)
                         //Lanza la ventana de FeedBackreview si se alcanza el humbral de hitos
                         if  FeedBackModel.checkReviewRequest() {
+                            #if os(macOS)
+                            showWindow(for: FeedbackView(showTextBotton: false),
+                                       environmentObjects: [],
+                                       title: "Enviar una Reseña a la App Store",
+                                       size: AppCons.windows_size_content_small,
+                                       isModal: true
+                            )
+                            #else
                             self.sheetShowFeedBackReview = true
+                            #endif
+                            
                         }
                         
                         if let window = NSApp.keyWindow {

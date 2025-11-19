@@ -27,7 +27,12 @@ struct optionView: View {
 
     private let sizeWigth : CGFloat = 150
     
+    struct QRText: Identifiable {
+        let id = UUID()
+        let text: String
+    }
     
+    @State private var footerToQRCode : QRText?
     
     var body: some View {
         NavigationStack{
@@ -84,15 +89,29 @@ struct optionView: View {
             .sheet(isPresented: $showCodeScanner){
                 //Mostrar el lector de código
                 CodeScannerView(codeTypes: [.qr]) { qrCodeString in
-                    //administrar el QR
-                    print(qrCodeString)
+                    do{
+                      let result =  try qrCodeString.get().string
+                        self.footerToQRCode = QRText(text: result)
+                       
+                    }catch{
+                        
+                    }
+                    
                 }
                
             }
-            .sheet(isPresented: $showCodeGenerate){
-                GenerateQRView(footer: "")
+            .sheet(item: $footerToQRCode){ item in
+                GenerateQRView(footer: item.text)
                     .presentationDetents([.large])
                     .presentationDragIndicator(.hidden)
+            }
+            .sheet(isPresented: $showCodeGenerate){
+               
+                    GenerateQRView(footer: "")
+                        .presentationDetents([.large])
+                        .presentationDragIndicator(.hidden)
+                
+                
             }
             .sheet(isPresented: $showGame){
                 GamePLay()

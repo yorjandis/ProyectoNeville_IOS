@@ -56,7 +56,8 @@ struct FrasesListView: View {
     @State private var CriterioFiltroActual : CriterioFiltro = .ListadoFull //Almacena el tipo de Criterio de filtro  que hay actualmente
     
     
-    private func FiltrarListado(_ tipo : CriterioFiltro   = .ListadoFull){
+    
+    private func FiltrarListado(_ tipo : CriterioFiltro   = .ListadoFull) async {
         
         self.listadoPropio.removeAll()
         
@@ -129,7 +130,10 @@ struct FrasesListView: View {
                         .padding(8)
                         .focused(self.$focused)
                         .onSubmit {
-                            self.FiltrarListado(.Buscar)
+                            Task{
+                                await self.FiltrarListado(.Buscar)
+                            }
+                            
                         }
                         
                 }
@@ -161,7 +165,7 @@ struct FrasesListView: View {
                                     showWindow(for: FrasesNotasAddView( frase: frase),
                                                environmentObjects: [self.frasesModel],
                                                title: "Frases",
-                                               size: .absolute(CGSize(width: 600, height: 450)),
+                                               size: AppCons.windows_size_content_small,
                                                isModal: true
                                     
                                     )
@@ -177,11 +181,13 @@ struct FrasesListView: View {
                                     let current = frasesModel.isFavFrase(frase)
                                     let newValue = !current
                                     if frasesModel.setFavFrase(frase, newValue) {
-                                            //Recrear el listado actual solo si estamos en las frases favoritas:
-                                        print(self.CriterioFiltroActual)
-                                                withAnimation {
-                                                    FiltrarListado(self.CriterioFiltroActual)
-                                            }
+                                        //Recrear el listado actual solo si estamos en las frases favoritas:
+                                        //print(self.CriterioFiltroActual)
+                                        
+                                        
+                                        Task {
+                                            await FiltrarListado(CriterioFiltroActual)
+                                        }
                                         
                                     }
                                 }label: {
@@ -195,7 +201,7 @@ struct FrasesListView: View {
                                     showWindow(for: GenerateQRView(footer: frase),
                                                environmentObjects: [self.frasesModel],
                                                title: "Frases",
-                                               size: .absolute(CGSize(width: 600, height: 450)),
+                                               size: AppCons.windows_size_content_small,
                                                isModal: true
                                     
                                     )
@@ -211,7 +217,8 @@ struct FrasesListView: View {
                                         Button{
                                             showWindow(for: RespondView(nameConference: "", texto: frase, tipoSalida: .interpretar),
                                                        environmentObjects: [self.frasesModel, self.settingModel],
-                                                       size: .absolute(CGSize(width: 600, height: 450)),
+                                                       title: "Interpretar",
+                                                       size: AppCons.windows_size_content,
                                                        isModal: true,
                                                        isIAWindows: true)
                                             //RespondView(nameConference: "", texto: self.frase, tipoSalida: .interpretar)
@@ -223,7 +230,8 @@ struct FrasesListView: View {
                                         Button{
                                             showWindow(for: RespondView(nameConference: "", texto: frase, tipoSalida: .practicaConcreta),
                                                        environmentObjects: [self.frasesModel, self.settingModel],
-                                                       size: .absolute(CGSize(width: 600, height: 450)),
+                                                       title: "Aplicación Práctica",
+                                                       size: AppCons.windows_size_content,
                                                        isModal: true,
                                                        isIAWindows: true)
                                             //RespondView(nameConference: "", texto: self.frase, tipoSalida: .practicaConcreta)
@@ -235,7 +243,8 @@ struct FrasesListView: View {
                                         Button{
                                             showWindow(for: ChatView(textoACargar: frase),
                                                        environmentObjects: [self.frasesModel, self.settingModel],
-                                                       size: .absolute(CGSize(width: 600, height: 450)),
+                                                       title: "Charlar con la IA",
+                                                       size: AppCons.windows_size_content,
                                                        isModal: false,
                                                        isIAWindows: true)
                                             
@@ -252,7 +261,10 @@ struct FrasesListView: View {
                                     Button{
                                         withAnimation {
                                             if frasesModel.DeleteFraseInbuilt(frase: frase){
-                                                FiltrarListado(self.CriterioFiltroActual) //Actualizando el listado actual
+                                                Task{
+                                                    await FiltrarListado(self.CriterioFiltroActual) //Actualizando el listado actual
+                                                }
+                                                
                                             }
                                         }
                                     }label:{
@@ -345,12 +357,13 @@ struct FrasesListView: View {
                             let current = frasesModel.isFavFrase(frase)
                             let newValue = !current
                             if frasesModel.setFavFrase(frase, newValue) {
-                                    //Recrear el listado actual solo si estamos en las frases favoritas:
-                                    if self.TiposDeBusquedaActual == .FrasesFavoritas{
-                                        withAnimation {
-                                            FiltrarListado(.FrasesFavoritas)
-                                    }
-                                   
+                                //Recrear el listado actual solo si estamos en las frases favoritas:
+                                if self.TiposDeBusquedaActual == .FrasesFavoritas{
+                                  
+                                            Task {
+                                                await FiltrarListado(.FrasesFavoritas)
+                                            }
+                                 
                                 }
                                 
                             }
@@ -364,7 +377,7 @@ struct FrasesListView: View {
                 .backgroundStyle(.red)
                 .task{
                     //Cargando el listado completo
-                    self.FiltrarListado() //Por defecto carga todas las Frases
+                     await   self.FiltrarListado() //Por defecto carga todas las Frases
                 }
                 
                 //Actualiza la información de la cantidad de elementos en la barra de estado inferior
@@ -396,32 +409,33 @@ struct FrasesListView: View {
                             CreateMenuItemButton(text: "Todas las Frases", sysImageStr: "text.magnifyingglass") {
                                 self.TiposDeBusquedaActual = .TodasFrases //Almacenando el valor actual
                                 self.CriterioFiltroActual = .ListadoFull  //Almacenando el valor actual
-                                withAnimation {
-                                    FiltrarListado(.ListadoFull)
+                                Task {
+                                    await FiltrarListado(.ListadoFull)
                                 }
+                                
                             }
                             
                             CreateMenuItemButton(text: "Frases Personales", sysImageStr: "text.magnifyingglass") {
                                 self.TiposDeBusquedaActual = .FrasesPersonales
                                 self.CriterioFiltroActual = .FrasesPersonales
-                                withAnimation {
-                                    FiltrarListado(.FrasesPersonales)
+                                Task {
+                                   await FiltrarListado(.FrasesPersonales)
                                 }
                             }
                            
                             CreateMenuItemButton(text: "Frases Favoritas", sysImageStr: "text.magnifyingglass") {
                                 self.TiposDeBusquedaActual = .FrasesFavoritas
                                 self.CriterioFiltroActual = .FrasesFavoritas
-                                withAnimation {
-                                    FiltrarListado(.FrasesFavoritas)
+                                Task {
+                                    await FiltrarListado(.FrasesFavoritas)
                                 }
                             }
                             
                             CreateMenuItemButton(text: "Frases con notas", sysImageStr: "text.magnifyingglass") {
                                 self.TiposDeBusquedaActual = .FrasesConNotas
                                 self.CriterioFiltroActual = .FrasesConNotas
-                                withAnimation {
-                                    FiltrarListado(.FrasesConNotas)
+                                Task {
+                                  await  FiltrarListado(.FrasesConNotas)
                                 }
                             }
 
@@ -445,12 +459,12 @@ struct FrasesListView: View {
                             showWindow(for: FraseAddView(),
                                        environmentObjects: [self.frasesModel],
                                        title: "Adicionar Frase",
-                                       size: .absolute(CGSize(width: 600, height: 450)),
-                                       isModal: true) {
-                                //Si el listado actual es frases personales se actualiza:
+                                       size: AppCons.windows_size_content_small,
+                                       isModal: false) {
+                                //Si el listado actual es frases personales se actualiza al cerrar la ventana:
                                     Task{ @MainActor in
                                         if self.CriterioFiltroActual == .FrasesPersonales {
-                                        FiltrarListado(self.CriterioFiltroActual) //Actualizando...
+                                        await FiltrarListado(self.CriterioFiltroActual) //Actualizando...
                                     }
                                 }
                             }
@@ -479,7 +493,11 @@ struct FrasesListView: View {
                 Button("Buscar"){
                     if !self.textFieldNota.isEmpty{
                         self.TiposDeBusquedaActual = .ResultadosDeBusquedaEnNotas
-                        FiltrarListado(.BuscarEnNotas)
+                        Task{
+                            await  FiltrarListado(.BuscarEnNotas)
+                        }
+                        
+                       
                     }
                     
                 }

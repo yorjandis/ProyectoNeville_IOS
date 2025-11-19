@@ -110,18 +110,21 @@ struct RespondView: View {
         .toolbar{
             if !self.isloading {
                 #if os(macOS)
-                ToolbarItem(placement: .navigation) {
-                    Button{
-                        if let window = NSApp.keyWindow {
-                            closeWindow(window)
-                            
+                if ventanaActualEsModal(){
+                    ToolbarItem(placement: .navigation) {
+                        Button{
+                            if let window = NSApp.keyWindow {
+                                closeWindow(window)
+                                
+                            }
+                        }label:{
+                            Label("Cerrar", systemImage: "xmark.circle.fill")
+                                .foregroundStyle(.red)
                         }
-                    }label:{
-                        Label("Cerrar", systemImage: "xmark.circle.fill")
-                            .foregroundStyle(.red)
+                        .help("Cerrar")
                     }
-                    .help("Cerrar")
                 }
+                
                 
                 ToolbarSpacer(.fixed)
                 #endif

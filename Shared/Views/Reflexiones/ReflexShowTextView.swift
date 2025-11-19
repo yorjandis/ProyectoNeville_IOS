@@ -5,6 +5,8 @@
 //  Created by Yorjandis Garcia on 29/11/23.
 //
 
+//Permite mostrar el contenido de una reflexión
+
 import SwiftUI
 import CoreData
 
@@ -54,7 +56,18 @@ struct ReflexShowTextView: View {
                     .padding(.horizontal, 10)
                     }
             }
-            
+            #if os(iOS)
+            //Permite actualizar el contenido de una reflexión si se realiza una modificación en la ventana de actualizar la reflexión
+            .task {
+                let entity = modelReflex.getEntityById(id: self.entity.id) //Obtiene el objeto actualizado de Core Data
+                //Recrea un tipo RefType para poder compararlo con el actualmente cargado en la pantalla.
+                let refType = RefType(id: entity?.id ?? "", title: entity?.title ?? "", content: entity?.texto ?? "", autor: entity?.autor ?? "", isInbuilt: entity?.isInbuilt ?? false, isfav: entity?.isfav ?? false)
+ 
+                if self.entity != refType{
+                    self.entity = refType //Si son distintos entonces la reflexión actualmente cargada se reemplaza por el contenido actualizado
+                }
+            }
+            #endif
                 Divider()
                 HStack{
                     Spacer()
@@ -82,6 +95,47 @@ struct ReflexShowTextView: View {
             #endif
             .toolbar{
                 #if os(macOS)
+                if self.entity.isInbuilt == false{
+                    ToolbarItem{
+                        Button{
+                            showWindow(for: AddReflexView(reflexionAActualizar: self.entity),
+                                       environmentObjects: [self.modelReflex],
+                                       title: "Actualizar Reflexión",
+                                       size: AppCons.windows_size_content,
+                                       isModal: true) {
+                                //Actualizar el contenido de la reflexión en la ventana
+                                /*
+                                 Yor: esto es para poder actualizar el contenido de la ventana padre (ReflexShowTextView)
+                                 cuando la ventana hija (AddReflexView(reflexionAActualizar: self.entity)) modifica la reflexion.
+                                */
+                                Task{ @MainActor in
+                                    if let entity = modelReflex.getEntityById(id: self.entity.id){
+                                        //recrea un objeto de tipo Re
+                                        let refType = RefType(
+                                            id: entity.id!,
+                                            title: entity.title!,
+                                            content: entity.texto!,
+                                            autor: entity.autor!,
+                                            isInbuilt: entity.isInbuilt,
+                                            isfav: entity.isfav)
+                                        //Actualiza el objeto pasado a la ventana
+                                        self.entity = refType
+                                    }
+                                }
+                                
+                                
+                            }
+                            
+                        }label: {
+                            Image(systemName: "square.and.pencil")
+                        }
+                    }
+                }
+               
+                if #available(iOS 26.0, macOS 26.0, *){
+                    ToolbarSpacer(.fixed)
+                }
+                
                 
                 ToolbarItem {
                     Button{
@@ -100,18 +154,33 @@ struct ReflexShowTextView: View {
                 }
                 
                 
-                //Añadir un boton para cerrar la ventana modal
-                ToolbarItem(placement: .navigation) {
-                    Button{
-                        if let window = NSApp.keyWindow {
-                            closeWindow(window)
+                //Añadir un boton para cerrar la ventana modal (si es modal)
+                if ventanaActualEsModal(){
+                    ToolbarItem(placement: .navigation) {
+                        Button{
+                            if let window = NSApp.keyWindow {
+                                closeWindow(window)
+                            }
+                        }label:{
+                            Label("Cerrar", systemImage: "xmark.circle.fill")
+                                .foregroundStyle(.red)
                         }
-                    }label:{
-                        Label("Cerrar", systemImage: "xmark.circle.fill")
-                            .foregroundStyle(.red)
+                        .help("Cerrar")
                     }
-                    .help("Cerrar")
                 }
+                
+                #else
+                
+                if self.entity.isInbuilt == false{
+                    ToolbarItem{
+                        NavigationLink{
+                            AddReflexView(reflexionAActualizar: self.entity)
+                        }label: {
+                            Image(systemName: "square.and.pencil")
+                        }
+                    }
+                }
+                
                 #endif
                 
                 if #available(iOS 26.0, macOS 26.0, *) {
@@ -129,7 +198,7 @@ struct ReflexShowTextView: View {
                                     showWindow(for: RespondView(nameConference: "", texto: entity.content, tipoSalida: .interpretar ),
                                                environmentObjects: [],
                                                title: "\(self.entity.title) - Interpretar",
-                                               size: .absolute(CGSize(width: 600, height: 450)),
+                                               size: AppCons.windows_size_content,
                                                isModal: true,
                                                isIAWindows: true)
                                 }label:{
@@ -141,7 +210,7 @@ struct ReflexShowTextView: View {
                                     showWindow(for:  RespondView(nameConference: "", texto: entity.content, tipoSalida: .practicaConcreta),
                                                environmentObjects: [],
                                                title: "\(self.entity.title) - Aplicación Práctica",
-                                               size: .absolute(CGSize(width: 600, height: 450)),
+                                               size: AppCons.windows_size_content,
                                                isModal: true,
                                                isIAWindows: true)
                                    
@@ -154,7 +223,7 @@ struct ReflexShowTextView: View {
                                     showWindow(for:   ChatView(textoACargar: entity.content),
                                                environmentObjects: [],
                                                title: "\(self.entity.title) - Charlar",
-                                               size: .absolute(CGSize(width: 600, height: 450)),
+                                               size: AppCons.windows_size_content,
                                                isModal: true,
                                                isIAWindows: true)
                                    
@@ -226,6 +295,4 @@ struct ReflexShowTextView: View {
     }
 }
 
-#Preview {
-    ReflexShowTextView( entity: RefType(title: "", content: "", autor: "", isInbuilt: true, isfav: false))
-}
+

@@ -1,6 +1,6 @@
 import SwiftUI
 
-
+//Todos los posibles item que pueden aparecer en el sidebar:
 enum ItemNameSidebar: String{
     case home
     case conferencias
@@ -71,11 +71,9 @@ struct ContentViewMac: View {
         //Los items de Diario, Evaluación y Ajustes se agregan a este array dinámicamente cuando se quiera mostrar en la ventana de Details
         
         
-    ]    //["Home", "Conferencias", "Notas"]
+    ]
     
-    @State private var columnVisibility: NavigationSplitViewVisibility = .all
-
-    @State private var categoriaSelected: ItemSidebar?
+    @State private var categoriaSelected: ItemSidebar?  //Guarda el item actualmente seleccionado en el sidebar
     
     
     //Determina si el contenido de las ventanas modales se muestren en Details
@@ -83,6 +81,9 @@ struct ContentViewMac: View {
     @AppStorage(AppCons.UD_setting_showEnDetails_evaluacion)    var showEnDetails_evaluacion        : Bool  = false
     @AppStorage(AppCons.UD_setting_showEnDetails_ajustes)       var showEnDetails_ajustes           : Bool  = false
     @AppStorage(AppCons.UD_setting_showEnDetails_chat_ia)       var showEnDetails_chat_ia           : Bool  = false
+    
+    //Acceso a la opción de en Ajustes
+    @AppStorage("setting_DiarioAccesoAjustes") var setting_DiarioAccesoAjustes  : Bool = false
     
     
     var body: some View {
@@ -141,8 +142,7 @@ struct ContentViewMac: View {
                 //Abre ventana del Diario
                 Button{
                     
-                    self.securityModel.canOpenDiario = false //Bloquear el Diario siempre antes de abrirse
-                    
+                 
                     //Consulta la clave en UserDefault
                     if self.showEnDetails_diario{
                         self.categoriaSelected = ItemSidebar(text: .diario, icono: "")
@@ -155,7 +155,7 @@ struct ContentViewMac: View {
                         showWindow(for: DiarioListView(),
                                    environmentObjects: [self.context, self.securityModel],
                                    title: "Diario",
-                                   size: .absolute(CGSize(width: 600, height: 450)),
+                                   size: AppCons.windows_size_content,
                                    isModal: false
                         )
                     }
@@ -179,7 +179,7 @@ struct ContentViewMac: View {
                         showWindow(for: GamePLay(),
                                    environmentObjects: [],
                                    title: "Diario",
-                                   size: .absolute(CGSize(width: 600, height: 450)),
+                                   size: AppCons.windows_size_content,
                                    isModal: false
                         )
                     }
@@ -205,8 +205,8 @@ struct ContentViewMac: View {
                         if #available(iOS 26.0, macOS 26.0, *){
                             showWindow(for: ChatView(textoACargar: nil),
                                        environmentObjects: [],
-                                       title: "Ajustes",
-                                       size: .absolute(CGSize(width: 600, height: 450)),
+                                       title: "Chat IA",
+                                       size: AppCons.windows_size_content,
                                        isModal: false
                             )
                         }
@@ -231,9 +231,13 @@ struct ContentViewMac: View {
                         showWindow(for: Ajustes(),
                                    environmentObjects: [self.context ,self.modelSetting, self.modelFrases, self.modelTxt, self.securityModel],
                                    title: "Ajustes",
-                                   size: .absolute(CGSize(width: 600, height: 450)),
-                                   isModal: false
-                        )
+                                   size: AppCons.windows_size_content,
+                                   isModal: false) {
+                            Task{ @MainActor in
+                                self.setting_DiarioAccesoAjustes = false
+                            }
+                           
+                        }
                     }
                 }label:{
                     Label("Ajustes", systemImage: "gear")

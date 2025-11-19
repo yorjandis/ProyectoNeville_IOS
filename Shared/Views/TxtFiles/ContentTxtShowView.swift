@@ -45,7 +45,6 @@ struct ContentTxtShowView: View {
     @State private var scrollOffset: CGFloat = 0 //Para medir el desplazamiento
     private let threshold: CGFloat = 7000 // Umbrall de hito
     @State private var flagScroll : Bool = false //Si es true se detiene el proceso
-    @State private var sheetShowFeedBackReview : Bool = false
     
     //Almacenar la última posición del desplazamiento:
     
@@ -164,17 +163,20 @@ struct ContentTxtShowView: View {
             .toolbar{
                 
                 #if os(macOS)
-                ToolbarItem(placement: .navigation) {
-                    Button{
-                        if let window = NSApp.keyWindow {
-                            closeWindow(window)
+                if ventanaActualEsModal(){
+                    ToolbarItem(placement: .navigation) {
+                        Button{
+                            if let window = NSApp.keyWindow {
+                                closeWindow(window)
+                            }
+                        }label:{
+                            Label("Cerrar", systemImage: "xmark.circle.fill")
+                                .foregroundStyle(.red)
                         }
-                    }label:{
-                        Label("Cerrar", systemImage: "xmark.circle.fill")
-                            .foregroundStyle(.red)
+                        .help("Cerrar")
                     }
-                    .help("Cerrar")
                 }
+                
                 
                 
                 
@@ -199,7 +201,7 @@ struct ContentTxtShowView: View {
                                         showWindow(for: RespondView(nameConference: self.nombreTxt, texto: self.getContent, tipoSalida: .puntosClaves),
                                                    environmentObjects: [],
                                                    title: self.nombreTxt,
-                                                   size: .absolute(CGSize(width: 600, height: 450)),
+                                                   size: AppCons.windows_size_content,
                                                    isModal: true,
                                                    isIAWindows: true
                                         )
@@ -228,7 +230,7 @@ struct ContentTxtShowView: View {
                                         showWindow(for: RespondView(nameConference: self.nombreTxt, texto: self.getContent, tipoSalida: .resumen),
                                                    environmentObjects: [self.modeloTxt],
                                                    title: self.nombreTxt,
-                                                   size: .absolute(CGSize(width: 600, height: 450)),
+                                                   size: AppCons.windows_size_content,
                                                    isModal: true,
                                                    isIAWindows: true)
                                         
@@ -303,7 +305,7 @@ struct ContentTxtShowView: View {
                             showWindow(for: EditNoteTxt(entidad: nombreTxt, typeOfContent: self.type),
                                        environmentObjects: [self.modeloTxt],
                                        title: "Editar nota de Conferencia: \(self.nombreTxt)",
-                                       size: .absolute(CGSize(width: 600, height: 450)),
+                                       size: AppCons.windows_size_content_small,
                                        isModal: true
                             )
                             
@@ -370,7 +372,7 @@ struct ContentTxtShowView: View {
                                         showWindow(for: RespondView(nameConference: "", texto: self.getContent.replacingOccurrences(of: "<br>", with: ""), tipoSalida: .interpretar ),
                                                    environmentObjects: [self.modeloTxt],
                                                    title: self.nombreTxt,
-                                                   size: .absolute(CGSize(width: 600, height: 450)),
+                                                   size: AppCons.windows_size_content,
                                                    isModal: true,
                                                    isIAWindows: true)
                                         
@@ -385,7 +387,7 @@ struct ContentTxtShowView: View {
                                         showWindow(for: RespondView(nameConference: "", texto: self.getContent.replacingOccurrences(of: "<br>", with: ""), tipoSalida: .practicaConcreta),
                                                    environmentObjects: [self.modeloTxt],
                                                    title: self.nombreTxt,
-                                                   size: .absolute(CGSize(width: 600, height: 450)),
+                                                   size: AppCons.windows_size_content,
                                                    isModal: true,
                                                    isIAWindows: true)
                                         
@@ -462,7 +464,7 @@ struct ContentTxtShowView: View {
                             showWindow(for: EditNoteTxt(entidad: nombreTxt, typeOfContent: self.type),
                                        environmentObjects: [self.modeloTxt],
                                        title: "Editar Nota de \(self.type.rawValue)",
-                                       size: .absolute(CGSize(width: 600, height: 450)),
+                                       size: AppCons.windows_size_content_small,
                                        isModal: true
                             )
                             
@@ -612,11 +614,6 @@ struct ContentTxtShowView: View {
                     
                 }
               
-            }
-            
-            .sheet(isPresented: self.$sheetShowFeedBackReview) {
-                
-               // FeedbackView(showTextBotton: true)
             }
            
         }

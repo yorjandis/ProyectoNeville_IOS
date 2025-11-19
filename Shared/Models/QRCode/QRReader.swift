@@ -40,6 +40,7 @@ struct CodeScannerView: View {
 
 
 // MARK: - Representable para usar AVCaptureSession
+
 struct ScannerViewControllerRepresentable: UIViewControllerRepresentable {
     var codeTypes: [AVMetadataObject.ObjectType]
     var completion: (Result<ScanResult, ScanError>) -> Void
@@ -58,7 +59,8 @@ struct ScannerViewControllerRepresentable: UIViewControllerRepresentable {
 
     func updateUIViewController(_ uiViewController: ScannerViewController, context: Context) {}
 
-    class Coordinator: NSObject, AVCaptureMetadataOutputObjectsDelegate {
+
+    class Coordinator: NSObject, @MainActor AVCaptureMetadataOutputObjectsDelegate {
         var completion: (Result<ScanResult, ScanError>) -> Void
         weak var controller: ScannerViewController?
         var didFinish = false
@@ -67,6 +69,7 @@ struct ScannerViewControllerRepresentable: UIViewControllerRepresentable {
             self.completion = completion
         }
 
+        @MainActor
         func metadataOutput(_ output: AVCaptureMetadataOutput,
                             didOutput metadataObjects: [AVMetadataObject],
                             from connection: AVCaptureConnection) {
@@ -77,15 +80,15 @@ struct ScannerViewControllerRepresentable: UIViewControllerRepresentable {
                let value = qr.stringValue {
 
                 didFinish = true
-
-                controller?.stopSession()          // ← Detiene cámara
-                completion(.success(ScanResult(string: value)))
+                        self.controller?.stopSession()          // ← Detiene cámara
+                        self.completion(.success(ScanResult(string: value)))
             }
         }
     }
 }
 
 // MARK: - Vista controladora nativa
+
 class ScannerViewController: UIViewController {
 
     var codeTypes: [AVMetadataObject.ObjectType] = [.qr]
@@ -125,7 +128,7 @@ class ScannerViewController: UIViewController {
             
         
     }
-    
+
     func stopSession() {
         if session.isRunning {
             session.stopRunning()

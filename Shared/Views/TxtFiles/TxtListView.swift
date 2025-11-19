@@ -98,7 +98,7 @@ struct TxtListView: View {
                                 showWindow(for: ContentTxtShowView(title: self.title, nombreTxt: nombreTxt, type: self.typeOfContent),
                                            environmentObjects: [self.modeloTxt, self.settingModel],
                                            title: "\(self.title) - \(nombreTxt)" ,
-                                           size: .absolute(CGSize(width: 600, height: 450)),
+                                           size: AppCons.windows_size_content,
                                            isModal: false                      
                                 )
                                 
@@ -255,17 +255,20 @@ struct EditNoteTxt:View {
             #endif
             .toolbar{
                 #if os(macOS)
-                ToolbarItem(placement: .navigation) {
-                    Button{
-                        if let window = NSApp.keyWindow {
-                            closeWindow(window)
+                if ventanaActualEsModal(){
+                    ToolbarItem(placement: .navigation) {
+                        Button{
+                            if let window = NSApp.keyWindow {
+                                closeWindow(window)
+                            }
+                        }label:{
+                            Label("Cerrar", systemImage: "xmark.circle.fill")
+                                .foregroundStyle(.red)
                         }
-                    }label:{
-                        Label("Cerrar", systemImage: "xmark.circle.fill")
-                            .foregroundStyle(.red)
+                        .help("Cerrar")
                     }
-                    .help("Cerrar")
                 }
+                
                 #endif
                 
                 ToolbarItem {

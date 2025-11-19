@@ -127,7 +127,7 @@ struct ListNotasViews: View {
                                 showWindow(for: AddNotasView(),
                                            environmentObjects: [self.modelNotas],
                                            title: "Crear Nota",
-                                           size: .absolute(CGSize(width: 600, height: 450)),
+                                           size: AppCons.windows_size_content,
                                            isModal: false
                                 )
                                 
@@ -180,7 +180,7 @@ struct ListNotasViews: View {
                                     showWindow(for: AddNotasView(),
                                                environmentObjects: [self.modelNotas],
                                                title: "Crear Nota",
-                                               size: .absolute(CGSize(width: 600, height: 450)),
+                                               size: AppCons.windows_size_content_small,
                                                isModal: false
                                     )
                                     
@@ -373,8 +373,8 @@ struct cardNotas: View{
                             showWindow(for: UpdateNotasView(NotaId: nota!.id!, title: nota!.title!, nota: nota!.nota!),
                                        environmentObjects: [self.modelNotas],
                                        title: "Editar Nota",
-                                       size: .absolute(CGSize(width: 600, height: 450)),
-                                       isModal: false
+                                       size: AppCons.windows_size_content_small,
+                                       isModal: true
                             
                             )
                         }
@@ -447,7 +447,7 @@ struct cardNotas: View{
                                     showWindow(for: RespondView(nameConference: "", texto: temp, tipoSalida: .interpretar ),
                                     environmentObjects: [],
                                                title: "Interpretar Nota",
-                                               size: AppCons.size_IA_Responded,
+                                               size: AppCons.windows_size_content,
                                                isModal: true
                                     )
                                     
@@ -464,7 +464,7 @@ struct cardNotas: View{
                                     showWindow(for: RespondView(nameConference: "", texto: temp, tipoSalida: .practicaConcreta),
                                     environmentObjects: [],
                                                title: "Aplicación Práctica - Nota",
-                                               size: .absolute(CGSize(width: 600, height: 450)),
+                                               size: AppCons.windows_size_content,
                                                isModal: true
                                     )
                                     
@@ -480,7 +480,7 @@ struct cardNotas: View{
                             showWindow(for:   ChatView(textoACargar: nota!.nota),
                             environmentObjects: [],
                                        title: "Charlar - Notas",
-                                       size: .absolute(CGSize(width: 600, height: 450)),
+                                       size: AppCons.windows_size_content,
                                        isModal: false
                             )
                         }

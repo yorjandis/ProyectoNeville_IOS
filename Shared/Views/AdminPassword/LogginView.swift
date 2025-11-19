@@ -5,19 +5,21 @@
 //  Created by Yorjandis PG on 14/10/25.
 //
 
-// Ventana para poner la contraeña que da acceso al Diario y a las notas protegidas en los dispositivos que no admiten autenticación
+// Ventana para poner la contraseña que da acceso al Diario y a las notas protegidas en los dispositivos que no admiten autenticación
 // biométrica (macMini por ejemplo)
 
 import SwiftUI
 
 enum typeEnte : String{
-    case Diario, Notas
+    case Diario, Notas, AccesoANotasAjustes, AccesoADiarioAjustes
 }
 
 struct LogginView: View {
     @Environment(\.dismiss) private var dismiss
     
     @EnvironmentObject var securityModel : SecurityModel
+    
+    @AppStorage("setting_DiarioAccesoAjustes") var setting_DiarioAccesoAjustes  : Bool = false
 
     let ente: typeEnte
 
@@ -85,6 +87,11 @@ struct LogginView: View {
                     securityModel.canOpenDiario = true
                 case .Notas:
                     securityModel.canOpenNotas = true
+                case .AccesoANotasAjustes:
+                    print("Acceso a la opción de las notas protegidas en Ajustes")
+                case .AccesoADiarioAjustes:
+                    self.setting_DiarioAccesoAjustes = true
+                    
                 }
                 
                 
@@ -104,6 +111,10 @@ struct LogginView: View {
                     securityModel.canOpenDiario = false
                 case .Notas:
                     securityModel.canOpenNotas = false
+                case .AccesoANotasAjustes:
+                    print("Acceso protegido a las Notas en Ajustes")
+                case .AccesoADiarioAjustes:
+                    self.setting_DiarioAccesoAjustes = false
                 }
                 
                 
@@ -117,6 +128,10 @@ struct LogginView: View {
                 securityModel.canOpenDiario = false
             case .Notas:
                 securityModel.canOpenNotas = false
+            case .AccesoANotasAjustes:
+                print("Acceso protegido a las Notas en Ajustes")
+            case .AccesoADiarioAjustes:
+                self.setting_DiarioAccesoAjustes = false
             }
             
             self.focus = true

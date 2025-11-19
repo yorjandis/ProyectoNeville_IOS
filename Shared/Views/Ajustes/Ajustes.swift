@@ -21,12 +21,17 @@ struct Ajustes: View {
     
     private let context2 = CoreDataController.shared.context
     
-    @AppStorage(AppCons.UD_setting_fontFrasesSize)     var fontSizeFrases       : Int = 24
-    @AppStorage(AppCons.UD_setting_fontContentSize)    var fontSizeContenido    : Int = 18
-    @AppStorage(AppCons.UD_setting_fontMenuSize)       var fontSizeMenu         : Int = 18
-    @AppStorage(AppCons.UD_setting_fontListaSize)      var fontSizeLista        : Int = 18
-    @AppStorage(AppCons.UD_setting_NotasFaceID)        var setting_NotasFaceID  : Bool = false
-    @AppStorage(AppCons.UD_setting_fontChatIASize)     var fontSizeChatIA       : Int = 24 //Tamaño de letra del chat de IA
+    @AppStorage(AppCons.UD_setting_fontFrasesSize)          var fontSizeFrases       : Int = 24
+    @AppStorage(AppCons.UD_setting_fontContentSize)         var fontSizeContenido    : Int = 18
+    @AppStorage(AppCons.UD_setting_fontMenuSize)            var fontSizeMenu         : Int = 18
+    @AppStorage(AppCons.UD_setting_fontListaSize)           var fontSizeLista        : Int = 18
+    @AppStorage(AppCons.UD_setting_NotasFaceID)             var setting_NotasFaceID  : Bool = false
+    @AppStorage(AppCons.UD_setting_DiarioSiempreOpenFaceID) var setting_DiarioSiempreOpenFaceID  : Bool = false
+    @AppStorage(AppCons.UD_setting_fontChatIASize)          var fontSizeChatIA       : Int = 24 //Tamaño de letra del chat de IA
+    
+    //Acceso al Diario Siempre Activo:
+    //Acceso a la opción de en Ajustes
+    @AppStorage("setting_DiarioAccesoAjustes") var setting_DiarioAccesoAjustes  : Bool = false
     
     
     //Determina si el contenido de las ventanas modales se muestren en Details
@@ -37,8 +42,8 @@ struct Ajustes: View {
     
     
     //Tipo de chat de IA
-    @AppStorage(AppCons.UD_setting_IA_AceptacionDescargo)    var DescargoDeIA : Bool = false // Si es true se permite utilizar la IA.
-    @AppStorage(AppCons.UD_setting_IA_TratamientoPersonal)    var TratamientoDeIA : Bool = true // true: Representa a Neville, false: Tratamiento impersonal
+    @AppStorage(AppCons.UD_setting_IA_AceptacionDescargo)       var DescargoDeIA : Bool = false // Si es true se permite utilizar la IA.
+    @AppStorage(AppCons.UD_setting_IA_TratamientoPersonal)      var TratamientoDeIA : Bool = true // true: Representa a Neville, false: Tratamiento impersonal
     
     
     //Almacena internamente los colores de configuración. Al inicio se cargan los valores almacenados
@@ -262,7 +267,7 @@ struct Ajustes: View {
                                                 showWindow(for: DescargoResponsabilidadIA(VentanaEnSetting: true).foregroundStyle(.orange),
                                                            environmentObjects: [],
                                                            title: "Descargo de Responsabilidad",
-                                                           size: .absolute(CGSize(width: 600, height: 450)),
+                                                           size: AppCons.windows_size_content,
                                                            isModal: true
                                                            
                                                 )
@@ -309,7 +314,7 @@ struct Ajustes: View {
                                 if BiometryCheckerSupport.checkBiometricSupport() == .available{
                                     
                                     Button{
-                                        UtilFuncs.autent(HabilitarContenido: self.$securityModel.canOpenToggleButton)
+                                        UtilFuncs.autent(HabilitarContenido: self.$securityModel.canOpenToggleButtonNotas)
                                     }label: {
                                         Label("Opción protegida por FaceID", systemImage: "key.viewfinder")
                                     }
@@ -321,7 +326,7 @@ struct Ajustes: View {
                                             showWindow(for: LogginView(ente: .Notas),
                                                        environmentObjects: [self.securityModel],
                                                        title: "Acceder por contraseña",
-                                                       size: .absolute(CGSize(width: 600, height: 450)),
+                                                       size: AppCons.windows_size_content_small,
                                                        isModal: true
                                                        
                                             )
@@ -332,7 +337,7 @@ struct Ajustes: View {
                                             showWindow(for: CreatePasswordView(),
                                                        environmentObjects: [],
                                                        title: "Crear una nueva Contraseña de Acceso",
-                                                       size: .absolute(CGSize(width: 600, height: 450)),
+                                                       size: AppCons.windows_size_content_small,
                                                        isModal: true
                                                        
                                             )
@@ -344,6 +349,60 @@ struct Ajustes: View {
                         }
                         .padding(.horizontal, 30)
                         .padding(.bottom, 20)
+                        
+                        
+                        VStack(alignment: .leading){
+                            Text("Ventana Diario Siempre Abierta").font(.system(size: 22)).foregroundStyle(.orange)
+                            
+                            VStack(alignment: .leading, spacing: 15){
+                                if self.setting_DiarioAccesoAjustes {
+                                    Toggle("Diario Permanece Abierto", isOn: $setting_DiarioSiempreOpenFaceID)
+                                }else{
+                                    
+                                    //Chequeando si existe soporte biométrico:
+                                    if BiometryCheckerSupport.checkBiometricSupport() == .available{
+                                        
+                                        Button{
+                                            UtilFuncs.autent(HabilitarContenido: self.$setting_DiarioAccesoAjustes)
+                                        }label: {
+                                            Label("Opción protegida por FaceID", systemImage: "key.viewfinder")
+                                        }
+                                    }else{ //NO existe biometría en el dispositivo
+                                        //Si existe una contraseña guardada se intenta acceder por contraseña
+                                        if KeychainHelper.shared.getPassword() != nil {
+                                            Button("Acceder por contraseña"){
+                                                showWindow(for: LogginView(ente: .AccesoADiarioAjustes),
+                                                           environmentObjects: [self.securityModel],
+                                                           title: "Acceder por contraseña",
+                                                           size: AppCons.windows_size_content_small,
+                                                           isModal: true
+                                                           
+                                                )
+                                                
+                                            }
+                                        }else{ //No existe contraseña guardada. Permitir crear una contraseña
+                                            Button("Crear una nueva Contraseña de Acceso"){
+                                                showWindow(for: CreatePasswordView(),
+                                                           environmentObjects: [],
+                                                           title: "Crear una nueva Contraseña de Acceso",
+                                                           size: AppCons.windows_size_content_small,
+                                                           isModal: true
+                                                           
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                                Text("Nota: Si se activa esta función, una vez que se haya autenticado para entrar al Diario, este permanecerá abierto. Esto evita tener que poner la contraseña cada vez que se abra el diario. Si la app se cierra, esta función se restablece")
+                                    .font(.system(size: 15))
+                                    .frame(width: 600)
+                            }
+                            
+                            
+                        }
+                        .padding(.horizontal, 30)
+                        .padding(.bottom, 20)
+                        
                         
                         
                         //Habilita una sección para recuperar la contraseña. Esta sección solo esta disponible en dispositivos con biometria y si ya previamente han almacenado una contraseña
@@ -465,7 +524,7 @@ struct Ajustes: View {
                                     .padding(15) ,
                                            environmentObjects: [self.modelTxt, self.settingModel, self.modelFrases],
                                            title: "Información",
-                                           size: .absolute(CGSize(width: 600, height: 450)),
+                                           size: AppCons.windows_size_content_small,
                                            isModal: true
                                            
                                 )
@@ -487,7 +546,7 @@ struct Ajustes: View {
                                 },
                                            environmentObjects: [],
                                            title: "Política de Privacidad",
-                                           size: .absolute(CGSize(width: 600, height: 450)),
+                                           size: AppCons.windows_size_content,
                                            isModal: false
                                 )
                                 
@@ -520,7 +579,7 @@ struct Ajustes: View {
                                 showWindow(for: FeedbackView(showTextBotton: false),
                                            environmentObjects: [],
                                            title: "Enviar una Reseña a la App Store",
-                                           size: .absolute(CGSize(width: 600, height: 450)),
+                                           size: AppCons.windows_size_content_small,
                                            isModal: true
                                 )
                                 
@@ -758,6 +817,41 @@ struct Ajustes: View {
                         
                     }
                     
+                    Section("Ventana Diario Siempre Abierta"){
+                        VStack(alignment: .leading, spacing: 15){
+                            if self.setting_DiarioAccesoAjustes {
+                                Toggle("Diario Permanece Abierto", isOn: $setting_DiarioSiempreOpenFaceID)
+                            }else{
+                                
+                                //Chequeando si existe soporte biométrico:
+                                if BiometryCheckerSupport.checkBiometricSupport() == .available{
+                                    
+                                    Button{
+                                        UtilFuncs.autent(HabilitarContenido: self.$setting_DiarioAccesoAjustes)
+                                    }label: {
+                                        Label("Opción protegida por FaceID", systemImage: "key.viewfinder")
+                                    }
+                                }else{ //NO existe biometría en el dispositivo
+                                    //Si existe una contraseña guardada se intenta acceder por contraseña
+                                    if KeychainHelper.shared.getPassword() != nil {
+                                        NavigationLink("Acceder por contraseña"){
+                                            LogginView(ente: .AccesoADiario)
+                                        }
+                                    }else{ //No existe contraseña guardada. Permitir crear una contraseña
+                                        NavigationLink("Crear una nueva Contraseña de Acceso"){
+                                            CreatePasswordView()
+                                        }
+                                    }
+                                }
+                            }
+                            Text("Nota: Si se activa esta función, una vez que se haya autenticado para entrar al Diario, este permanecerá abierto. Esto evita tener que poner la contraseña cada vez que se abra el diario. Si la app se cierra, esta función se restablece")
+                                .font(.subheadline)
+                        }
+                        
+                        
+                    }
+                    
+                    
                     //Habilita una sección para recuperar la contraseña. Esta sección solo esta disponible en dispositivos con biometria y si ya previamente han almacenado una contraseña
                     if BiometryCheckerSupport.checkBiometricSupport() == .available {
                         //Si existe una contraseña guardada; sino no, no se muestra el botón para recuperar contraseña
@@ -908,6 +1002,10 @@ struct Ajustes: View {
             #endif
             
         }
+        .onDisappear(perform: {
+            //Restablecer el acceso a la opción segura del Diario
+            self.setting_DiarioAccesoAjustes = false
+        })
         .alert(isPresented: $showAlert) {
             Alert(title: Text("Configuración"), message: Text(alertMessage))
         }

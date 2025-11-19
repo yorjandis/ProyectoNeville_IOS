@@ -65,7 +65,17 @@ struct AddNotasView: View {
                             self.modelNotas.getAllNotasToModel() //Actualizando el listado
                             
                             if FeedBackModel.checkReviewRequest() {
+                            #if os(macOS)
+                                showWindow(for: FeedbackView(showTextBotton: false),
+                                           environmentObjects: [],
+                                           title: "Enviar una Reseña a la App Store",
+                                           size: AppCons.windows_size_content_small,
+                                           isModal: true
+                                )
+                            #else
                                 self.sheetShowFeedBackReview = true
+                            #endif
+                                
                             }else{
                                 dimiss()
                             }

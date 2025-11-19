@@ -163,8 +163,8 @@ struct ChatView: View {
             
             
         }
-        .navigationTitle("Pregunta  a Neville")
         #if os(iOS)
+        .navigationTitle("Pregunta  a Neville")
         .navigationBarTitleDisplayMode(.inline)
         #endif
         .toolbar{

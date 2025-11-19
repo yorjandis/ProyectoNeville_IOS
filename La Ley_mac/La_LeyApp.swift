@@ -26,6 +26,9 @@ struct La_LeyApp: App {
                     .environmentObject(txtcontentModel)
                     .environmentObject(securityModel) //acceso seguro a las notas protegisas y al diario
                     .environment(\.managedObjectContext, persistentStore.context)
+                    .task {
+                        self.securityModel.canOpenDiario = false //Al iniciar la ventana se reinicia la variabe que da acceso al diario.
+                    }
                     .onDisappear {
                         //Cerrando todas las ventanas hijas abiertas antes de salir
                         WindowManager.shared.closeAllChildren()
