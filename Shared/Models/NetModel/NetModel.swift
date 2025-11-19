@@ -40,7 +40,7 @@ struct CheckAppStatus{
    static func getAppNewVersion() async -> Bool {
         // 1️⃣ Obtener el identificador del bundle actual
         guard let bundleID = Bundle.main.bundleIdentifier else {
-            print("❌ No se encontró el bundle identifier")
+            //print("❌ No se encontró el bundle identifier")
             return false
         }
         
@@ -70,7 +70,7 @@ struct CheckAppStatus{
             guard
                 let localVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
             else {
-                print("❌ No se pudo leer la versión local")
+                //print("❌ No se pudo leer la versión local")
                 return false
             }
 

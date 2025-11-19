@@ -201,8 +201,8 @@ struct FrasesListView: View {
                                     showWindow(for: GenerateQRView(footer: frase),
                                                environmentObjects: [self.frasesModel],
                                                title: "Frases",
-                                               size: AppCons.windows_size_content_small,
-                                               isModal: true
+                                               size: AppCons.windows_size_content,
+                                               isModal: false
                                     
                                     )
                                     

@@ -174,8 +174,6 @@ struct ChatView: View {
                         withAnimation {
                             self.model.newConversation()
                         }
-                        
-                        print(self.model.messages.isEmpty ? "No hay mensajes" : "Hay mensajes")
                     }label:{
                         Image(systemName: "square.and.pencil")
                     }

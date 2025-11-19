@@ -89,7 +89,6 @@ struct DiarioListView: View {
                                             modelDiario.list = modelDiario.searchPorFecha(for: date)
                                         }
                                     }
-                                    
                             }
                             .background(Color.black.opacity(0.05))
                         }
@@ -227,10 +226,10 @@ struct DiarioListView: View {
                 //De lo contrario, la variable observable que da acceso al Diario se pone a false y se tiene que loggear para entrar al Diario
                 if (self.setting_DiarioSiempreOpenFaceID == true && self.securityModel.canOpenDiario == true){
                     self.securityModel.canOpenDiario = true
-                    print("Yorjandis: 1")
+                   
                 }else{
                     self.securityModel.canOpenDiario = false
-                    print("Yorjandis: 2")
+                    
                 }
                 //nota: La otra parte de esta función está en la raíz de la app: al abrirse la app siempre se restablece la
                 //variable observable que da acceso al Diario a false. Esto es para poder entrar por loguien en cada sesión de la app.

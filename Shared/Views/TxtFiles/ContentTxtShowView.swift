@@ -197,7 +197,7 @@ struct ContentTxtShowView: View {
                                     //Botón que genera un resumen de los puntos claves del contenido
                                     #if os(macOS)
                                     Button{
-                                        print(self.getContent)
+                                       
                                         showWindow(for: RespondView(nameConference: self.nombreTxt, texto: self.getContent, tipoSalida: .puntosClaves),
                                                    environmentObjects: [],
                                                    title: self.nombreTxt,

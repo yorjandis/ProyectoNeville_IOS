@@ -329,8 +329,7 @@ final class ReflexModel : ObservableObject{
         fetchRequest.predicate = predicate
         fetchRequest.fetchLimit = 1
         
-        print("id: \(id)")
-        
+       
         do {
             if let item = try context.fetch(fetchRequest).first{
                 item.id = id
@@ -343,11 +342,9 @@ final class ReflexModel : ObservableObject{
                 try context.save()
                 return true
             }else{
-                print("false 1")
                 return false
             }
         }catch{
-            print("false 2")
             return false
         }
     }
@@ -379,7 +376,7 @@ final class ReflexModel : ObservableObject{
             
             // Guardar cambios en Core Data
             try context.save()
-            print("Duplicados eliminados correctamente.")
+           // print("Duplicados eliminados correctamente.")
             
         } catch {
             print("Error al eliminar duplicados: \(error)")
@@ -395,8 +392,6 @@ final class ReflexModel : ObservableObject{
         let predicate : NSPredicate = NSPredicate(format: "id == %@", id)
         fetchRequest.predicate = predicate
         fetchRequest.fetchLimit = 1
-        
-        print("id: \(id)")
         
         do {
             if let item = try context.fetch(fetchRequest).first{

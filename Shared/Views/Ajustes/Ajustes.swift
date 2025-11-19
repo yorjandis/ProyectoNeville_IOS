@@ -393,7 +393,7 @@ struct Ajustes: View {
                                         }
                                     }
                                 }
-                                Text("Nota: Si se activa esta función, una vez que se haya autenticado para entrar al Diario, este permanecerá abierto. Esto evita tener que poner la contraseña cada vez que se abra el diario. Si la app se cierra, esta función se restablece")
+                                Text("Nota: Si se activa, el Diario permanece abierto una vez que se ha autentificado la primerá vez. Esto evita tener que loguearse en cada acceso al Diario. Al cerrarse la app el acceso al Diario se restablece.")
                                     .font(.system(size: 15))
                                     .frame(width: 600)
                             }
@@ -835,7 +835,7 @@ struct Ajustes: View {
                                     //Si existe una contraseña guardada se intenta acceder por contraseña
                                     if KeychainHelper.shared.getPassword() != nil {
                                         NavigationLink("Acceder por contraseña"){
-                                            LogginView(ente: .AccesoADiario)
+                                            LogginView(ente: .AccesoADiarioAjustes)
                                         }
                                     }else{ //No existe contraseña guardada. Permitir crear una contraseña
                                         NavigationLink("Crear una nueva Contraseña de Acceso"){
@@ -844,7 +844,7 @@ struct Ajustes: View {
                                     }
                                 }
                             }
-                            Text("Nota: Si se activa esta función, una vez que se haya autenticado para entrar al Diario, este permanecerá abierto. Esto evita tener que poner la contraseña cada vez que se abra el diario. Si la app se cierra, esta función se restablece")
+                            Text("Nota: Si se activa, el Diario permanece abierto una vez que se ha autentificado la primerá vez. Esto evita tener que loguearse en cada acceso al Diario. Al cerrarse la app el acceso al Diario se restablece.")
                                 .font(.subheadline)
                         }
                         

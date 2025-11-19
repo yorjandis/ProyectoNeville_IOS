@@ -135,8 +135,12 @@ struct ContentViewMac: View {
             // Items del Sidebar
             List(selection: self.$categoriaSelected) {
                 ForEach (categoriasSideBar, id: \.id) { itemSidebar in
-                    Label(itemSidebar.text.rawValue, systemImage: itemSidebar.icono)
+                    
+                    SidebarCard(iconName: "gear", title: itemSidebar.text.rawValue.capitalized)
                         .tag(itemSidebar)
+                    
+                   // Label(itemSidebar.text.rawValue, systemImage: itemSidebar.icono)
+                     //   .tag(itemSidebar)
                 }
                 
                 //Abre ventana del Diario
@@ -160,7 +164,7 @@ struct ContentViewMac: View {
                         )
                     }
                 }label:{
-                    Label("Diario", systemImage: "gear")
+                    SidebarCard(iconName: "gear", title: "Diario")
                         .tag(ItemSidebar(text: .diario, icono: ""))
                 }
                 .buttonStyle(.plain)
@@ -186,7 +190,7 @@ struct ContentViewMac: View {
                     
                     
                 }label:{
-                    Label("Evaluación", systemImage: "gear")
+                    SidebarCard(iconName: "gear", title: "Evaluación")
                         .tag(ItemSidebar(text: .evaluacion, icono: ""))
                 }
                 .buttonStyle(.plain)
@@ -212,7 +216,7 @@ struct ContentViewMac: View {
                         }
                     }
                 }label:{
-                    Label("Chat IA", systemImage: "gear")
+                    SidebarCard(iconName: "gear", title: "Chat IA")
                         .tag(ItemSidebar(text: .chatIA, icono: ""))
                 }
                 .buttonStyle(.plain)
@@ -240,7 +244,7 @@ struct ContentViewMac: View {
                         }
                     }
                 }label:{
-                    Label("Ajustes", systemImage: "gear")
+                    SidebarCard(iconName: "gear", title: "Ajustes")
                         .tag(ItemSidebar(text: .ajustes, icono: ""))
                 }
                 .buttonStyle(.plain)
@@ -333,3 +337,40 @@ struct FrasesHomeMac: View{
 
 
 
+
+struct SidebarCard: View {
+    let iconName: String       // Icono secundario
+    let title: String          // Título o texto opcional
+
+    var body: some View {
+        HStack(spacing: 5) {
+            Image(systemName: iconName)
+                .font(.title2)
+                .foregroundColor(.white)
+                .padding(2)
+                .background(
+                    Circle()
+                        .fill(Color.white.opacity(0.3))
+                )
+            Text(title)
+                .font(.headline)
+                .foregroundColor(.white)
+            
+            Spacer()
+        }
+        .padding(5)
+        .background(
+            
+            LinearGradient(
+                gradient: Gradient(colors: [Color.gray.opacity(0.7), Color.gray.opacity(0.3)]),
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+             
+        )
+
+        
+        .cornerRadius(12)
+        .shadow(color: Color.black.opacity(0.2), radius: 6, x: 0, y: 4)
+    }
+}

@@ -114,7 +114,7 @@ struct FrasesView : View{
                         Button{
                             showWindow(for: GenerateQRView(footer: self.frase, showImage: true),
                                        environmentObjects: [self.frasesModel],
-                                       size: AppCons.windows_size_content_small,
+                                       size: AppCons.windows_size_content,
                                        isModal: true)
                         }label:{
                             Label("Generar QR", systemImage: "qrcode")
