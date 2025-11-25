@@ -33,87 +33,11 @@ struct FrasesListView: View {
     @State private var showAlertSearchInNotaFrase = false
     @State private var textFieldNota = ""
     
-    @State private var listadoPropio : [String] = []
-    
-    //Tipos de criteros para filtrar el listado
-    enum CriterioFiltro{
-        case Buscar
-        case ListadoFull
-        case FrasesPersonales
-        case FrasesFavoritas
-        case FrasesConNotas
-        case BuscarEnNotas
-    }
-    
-    enum TipoBusqueda{
-        case TodasFrases
-        case FrasesPersonales
-        case FrasesFavoritas
-        case FrasesConNotas
-        case ResultadosDeBusquedaEnNotas
-    }
-    @State private var TiposDeBusquedaActual : TipoBusqueda = .TodasFrases //Almacena el tipo de listado que hay actualmente
-    @State private var CriterioFiltroActual : CriterioFiltro = .ListadoFull //Almacena el tipo de Criterio de filtro  que hay actualmente
+    //Eliminar una frase
+    @State private var showConfirmDialogDeleteFrase : Bool = false
+    @State private var TextoFraseAEliminar : String?
     
     
-    
-    private func FiltrarListado(_ tipo : CriterioFiltro   = .ListadoFull) async {
-        
-        self.listadoPropio.removeAll()
-        
-        switch tipo {
-            //Devuelve una lista de acuerdo al contenido del cuadro de bisqueda
-        case .Buscar:
-            if self.textFieldFrase.isEmpty{ //No hay una búsqueda activa
-                //Si el cuadro de búsqueda esta vacio se restuara el listado según el filtro seleccionado
-                switch TiposDeBusquedaActual {
-                case .FrasesPersonales:
-                    self.listadoPropio =  frasesModel.getFrasesNoInbuilt()
-                case .FrasesFavoritas:
-                    self.listadoPropio =   frasesModel.getAllFavFrases()
-                case .FrasesConNotas:
-                    self.listadoPropio =  frasesModel.getFrasesConNotas()
-                case .TodasFrases:
-                    self.listadoPropio =  frasesModel.listfrases
-                case .ResultadosDeBusquedaEnNotas:
-                    print("")
-                }
-            }else{
-                
-                switch TiposDeBusquedaActual {
-                case .FrasesPersonales:
-                    let temp = frasesModel.getFrasesNoInbuilt()
-                    self.listadoPropio =  temp.filter{$0.localizedCaseInsensitiveContains(self.textFieldFrase)}
-                case .FrasesFavoritas:
-                    let temp = frasesModel.getAllFavFrases()
-                    self.listadoPropio =  temp.filter{$0.localizedCaseInsensitiveContains(self.textFieldFrase)}
-                case .FrasesConNotas:
-                    let temp = frasesModel.getFrasesConNotas()
-                    self.listadoPropio =  temp.filter{$0.localizedCaseInsensitiveContains(self.textFieldFrase)}
-                case .TodasFrases:
-                    let temp = frasesModel.listfrases
-                    self.listadoPropio =  temp.filter{$0.localizedCaseInsensitiveContains(self.textFieldFrase)}
-                    
-                case .ResultadosDeBusquedaEnNotas:
-                    print("")
-                }
-            }
-        case .ListadoFull: //Obtiene el listado completo de las frases
-            self.listadoPropio =  frasesModel.listfrases
-        case .FrasesPersonales:
-            self.listadoPropio = frasesModel.getFrasesNoInbuilt()
-        case .FrasesFavoritas:
-            self.listadoPropio = frasesModel.getAllFavFrases()
-        case .FrasesConNotas:
-            self.listadoPropio = frasesModel.getFrasesConNotas()
-        case .BuscarEnNotas:
-            self.listadoPropio = frasesModel.searchTextInNotaFrases(textNota: self.textFieldNota)
-            
-        }
-        
-    }
-    
-
     
 
     var body: some View {
@@ -131,7 +55,9 @@ struct FrasesListView: View {
                         .focused(self.$focused)
                         .onSubmit {
                             Task{
-                                await self.FiltrarListado(.Buscar)
+                                print(frasesModel.buscarEn)
+                                frasesModel.criterioFiltroActual = .Buscar
+                                await frasesModel.FiltrarListado(textAbuscar: self.textFieldFrase)
                             }
                             
                         }
@@ -142,7 +68,7 @@ struct FrasesListView: View {
                 .background(.windowBackground)
                 #endif
                 
-                List(self.listadoPropio, id: \.self){ frase in
+                List(frasesModel.listfrases, id: \.self){ frase in
                     LazyVStack(alignment: .leading){
                         #if os(macOS)
                         //Vista de listado de Frases desde macOS, con un Menu al final de cada frase
@@ -160,6 +86,25 @@ struct FrasesListView: View {
                                 .padding(.vertical, 15)
                             Spacer()
                             Menu("..."){
+                                
+                                //Editar la frase: Solo si es Personal
+                                if let fraseCoreData = self.frasesModel.getFraseCoreData(fraseTexto: frase){
+                                    if fraseCoreData.noinbuilt == true{
+                                        Button{
+                                            showWindow(for: FrasesUpdateView(frase: fraseCoreData),
+                                                       environmentObjects: [self.frasesModel],
+                                                       title: "Frases",
+                                                       size: AppCons.windows_size_content_small,
+                                                       isModal: true)
+                                            
+                                        }label:{
+                                            Label("Editar Frase", systemImage: "square.and.pencil")
+                                                .tint(.green)
+                                        }
+                                    }
+                                }
+                                
+                                
                                 //Notas de la Frase
                                 Button{
                                     showWindow(for: FrasesNotasAddView( frase: frase),
@@ -178,7 +123,7 @@ struct FrasesListView: View {
                                 
                                 //Ajustar el estado de favorito de una frase
                                 Button{
-                                    let current = frasesModel.isFavFrase(frase)
+                                    let current = self.frasesModel.isFavFrase(frase)
                                     let newValue = !current
                                     if frasesModel.setFavFrase(frase, newValue) {
                                         //Recrear el listado actual solo si estamos en las frases favoritas:
@@ -186,13 +131,13 @@ struct FrasesListView: View {
                                         
                                         
                                         Task {
-                                            await FiltrarListado(CriterioFiltroActual)
+                                            await self.frasesModel.FiltrarListado()
                                         }
                                         
                                     }
                                 }label: {
                                     Label("Favorito", systemImage: "heart.fill")
-                                        .tint( frasesModel.isFavFrase(frase) ? .orange : .gray)
+                                        .tint( self.frasesModel.isFavFrase(frase) ? .orange : .gray)
                                 }
                                 
                                 
@@ -259,14 +204,8 @@ struct FrasesListView: View {
                                 //Si la Frase es personal, permite eliminarla
                                 if frasesModel.isNoInbuilt(frase: frase){
                                     Button{
-                                        withAnimation {
-                                            if frasesModel.DeleteFraseInbuilt(frase: frase){
-                                                Task{
-                                                    await FiltrarListado(self.CriterioFiltroActual) //Actualizando el listado actual
-                                                }
-                                                
-                                            }
-                                        }
+                                        self.TextoFraseAEliminar = frase
+                                        self.showConfirmDialogDeleteFrase = true
                                     }label:{
                                         Label("Eliminar",systemImage: "minus.circle.fill")
                                             .tint(.red.opacity(0.8))
@@ -275,7 +214,7 @@ struct FrasesListView: View {
                                 
                             }
                         }
-                        
+
                         #else
                         Text(frase)
                             .font(.system(size: 20))
@@ -286,7 +225,6 @@ struct FrasesListView: View {
                     }
                     //Modificar el campo nota de una frase
                     .swipeActions(edge: .leading, allowsFullSwipe: true){
-                        
                         //Esta View no se mostrará si Apple Intelligence no esta disponible
                         if #available(iOS 26.0, macOS 26.0,  *) {
                             if IAModelAppleIntelligence.isAvailable() {
@@ -317,8 +255,6 @@ struct FrasesListView: View {
                                 }
                                 .tint(.purple)
                             }
-                            
-                            
                         }
                         //Notas de la Frase
                         NavigationLink{
@@ -331,19 +267,28 @@ struct FrasesListView: View {
                         //Si la Frase es personal, permite eliminarla
                         if frasesModel.isNoInbuilt(frase: frase){
                             Button{
-                                withAnimation {
-                                    if frasesModel.DeleteFraseInbuilt(frase: frase){
-                                        frasesModel.getAllFrases() //Recargando el listado
-                                    }
-                                }
+                                self.TextoFraseAEliminar = frase
+                                self.showConfirmDialogDeleteFrase = true
                             }label:{
                                 Image(systemName: "minus.circle.fill")
                                     .tint(.red.opacity(0.8))
                             }
                         }
-                        
                     }
                     .swipeActions(edge: .trailing, allowsFullSwipe: true){
+                        //Editar la frase: Solo si es Personal
+                        if let fraseCoreData = self.frasesModel.getFraseCoreData(fraseTexto: frase){
+                            if fraseCoreData.noinbuilt == true{
+                                NavigationLink{
+                                    FrasesUpdateView(frase: fraseCoreData)
+                                }label:{
+                                    Image(systemName: "square.and.pencil")
+                                        .tint(.green)
+                                }
+                            }
+                        }
+                        
+                        
                         //Generando el QR de la frase
                         NavigationLink{
                             GenerateQRView(footer: frase)
@@ -354,45 +299,40 @@ struct FrasesListView: View {
                         
                         //Ajustar el estado de favorito de una frase
                         Button{
-                            let current = frasesModel.isFavFrase(frase)
+                            let current = self.frasesModel.isFavFrase(frase)
                             let newValue = !current
-                            if frasesModel.setFavFrase(frase, newValue) {
-                                //Recrear el listado actual solo si estamos en las frases favoritas:
-                                if self.TiposDeBusquedaActual == .FrasesFavoritas{
-                                  
-                                            Task {
-                                                await FiltrarListado(.FrasesFavoritas)
-                                            }
-                                 
+                            if self.frasesModel.setFavFrase(frase, newValue) {
+                                Task {
+                                    await self.frasesModel.FiltrarListado()
                                 }
                                 
                             }
                         }label: {
                             Image(systemName: "heart")
-                                .tint( frasesModel.isFavFrase(frase) ? .orange : .gray)
+                                .tint( self.frasesModel.isFavFrase(frase) ? .orange : .gray)
                         }
                     }
                     
                 }
                 .backgroundStyle(.red)
                 .task{
-                    //Cargando el listado completo
-                     await   self.FiltrarListado() //Por defecto carga todas las Frases
+                    //Cargando el listado completo de frases al inicio
+                    await   self.frasesModel.FiltrarListado() //Por defecto carga todas las Frases
                 }
                 
                 //Actualiza la información de la cantidad de elementos en la barra de estado inferior
                 HStack{
-                    switch self.TiposDeBusquedaActual{
+                    switch frasesModel.buscarEn{
                     case .FrasesConNotas:
-                        Text("Frases con notas: \(self.listadoPropio.count)")
+                        Text("Frases con notas: \(self.frasesModel.listfrases.count)")
                     case .TodasFrases:
-                        Text("Todas las Frases: \(self.listadoPropio.count)")
+                        Text("Todas las Frases: \(self.frasesModel.listfrases.count)")
                     case .FrasesPersonales:
-                        Text("Frases Personales: \(self.listadoPropio.count)")
+                        Text("Frases Personales: \(self.frasesModel.listfrases.count)")
                     case .FrasesFavoritas:
-                        Text("Frases Favoritas: \(self.listadoPropio.count)")
+                        Text("Frases Favoritas: \(self.frasesModel.listfrases.count)")
                     case .ResultadosDeBusquedaEnNotas:
-                        Text("Resultado de Búsqueda en Notas: \(self.listadoPropio.count)")
+                        Text("Resultado de Búsqueda en Notas: \(self.frasesModel.listfrases.count)")
                     }
                     Spacer()
                 }.padding(.horizontal)
@@ -407,35 +347,35 @@ struct FrasesListView: View {
                         Menu{
                             
                             CreateMenuItemButton(text: "Todas las Frases", sysImageStr: "text.magnifyingglass") {
-                                self.TiposDeBusquedaActual = .TodasFrases //Almacenando el valor actual
-                                self.CriterioFiltroActual = .ListadoFull  //Almacenando el valor actual
                                 Task {
-                                    await FiltrarListado(.ListadoFull)
+                                    frasesModel.criterioFiltroActual = .ListadoFull
+                                    frasesModel.buscarEn = .TodasFrases
+                                    await frasesModel.FiltrarListado()
                                 }
                                 
                             }
                             
                             CreateMenuItemButton(text: "Frases Personales", sysImageStr: "text.magnifyingglass") {
-                                self.TiposDeBusquedaActual = .FrasesPersonales
-                                self.CriterioFiltroActual = .FrasesPersonales
                                 Task {
-                                   await FiltrarListado(.FrasesPersonales)
+                                    frasesModel.criterioFiltroActual = .FrasesPersonales
+                                    frasesModel.buscarEn = .FrasesPersonales
+                                   await frasesModel.FiltrarListado()
                                 }
                             }
                            
                             CreateMenuItemButton(text: "Frases Favoritas", sysImageStr: "text.magnifyingglass") {
-                                self.TiposDeBusquedaActual = .FrasesFavoritas
-                                self.CriterioFiltroActual = .FrasesFavoritas
                                 Task {
-                                    await FiltrarListado(.FrasesFavoritas)
+                                    frasesModel.criterioFiltroActual = .FrasesFavoritas
+                                    frasesModel.buscarEn = .FrasesFavoritas
+                                    await frasesModel.FiltrarListado()
                                 }
                             }
                             
                             CreateMenuItemButton(text: "Frases con notas", sysImageStr: "text.magnifyingglass") {
-                                self.TiposDeBusquedaActual = .FrasesConNotas
-                                self.CriterioFiltroActual = .FrasesConNotas
                                 Task {
-                                  await  FiltrarListado(.FrasesConNotas)
+                                    frasesModel.criterioFiltroActual = .FrasesConNotas
+                                    frasesModel.buscarEn = .FrasesConNotas
+                                  await  frasesModel.FiltrarListado()
                                 }
                             }
 
@@ -463,9 +403,9 @@ struct FrasesListView: View {
                                        isModal: false) {
                                 //Si el listado actual es frases personales se actualiza al cerrar la ventana:
                                     Task{ @MainActor in
-                                        if self.CriterioFiltroActual == .FrasesPersonales {
-                                        await FiltrarListado(self.CriterioFiltroActual) //Actualizando...
-                                    }
+                                        
+                                            await self.frasesModel.FiltrarListado() //Actualizando...
+                                    
                                 }
                             }
                             #else
@@ -480,9 +420,7 @@ struct FrasesListView: View {
 
                     
                 }
-                
             }
-
             .sheet(isPresented: $showAddFrase){
                 FraseAddView()
                 .presentationDetents([.medium])
@@ -492,9 +430,11 @@ struct FrasesListView: View {
                 TextField("", text: $textFieldNota)
                 Button("Buscar"){
                     if !self.textFieldNota.isEmpty{
-                        self.TiposDeBusquedaActual = .ResultadosDeBusquedaEnNotas
+                        self.frasesModel.buscarEn = .ResultadosDeBusquedaEnNotas
                         Task{
-                            await  FiltrarListado(.BuscarEnNotas)
+                            self.frasesModel.criterioFiltroActual = .BuscarEnNotas
+                            self.frasesModel.buscarEn = .ResultadosDeBusquedaEnNotas
+                            await frasesModel.FiltrarListado(textAbuscar: self.textFieldNota)
                         }
                         
                        
@@ -503,12 +443,27 @@ struct FrasesListView: View {
                 }
                 
             }
+            //Dialogo de conformación para elimnar una nota
+            .confirmationDialog("Confirme que desea Eliminar la Frase", isPresented: $showConfirmDialogDeleteFrase){
+                Button("Eliminar", role: .destructive){
+                    
+                    withAnimation {
+                        if let frase = self.TextoFraseAEliminar {
+                            if frasesModel.DeleteFraseInbuilt(frase: frase){
+                                Task{
+                                    self.frasesModel.criterioFiltroActual = .FrasesPersonales
+                                    await self.frasesModel.FiltrarListado() //Actualizando el listado actual
+                                }
+                            }
+                        }
+                    }
+                }
+            } message: {
+                Text("La nota será removida!!!")
+            }
         }
-        
     }
-        
     }
-    
 
 #Preview {
     FrasesListView()

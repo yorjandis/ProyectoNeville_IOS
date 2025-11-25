@@ -26,12 +26,16 @@ struct Ajustes: View {
     @AppStorage(AppCons.UD_setting_fontMenuSize)            var fontSizeMenu         : Int = 18
     @AppStorage(AppCons.UD_setting_fontListaSize)           var fontSizeLista        : Int = 18
     @AppStorage(AppCons.UD_setting_NotasFaceID)             var setting_NotasFaceID  : Bool = false
-    @AppStorage(AppCons.UD_setting_DiarioSiempreOpenFaceID) var setting_DiarioSiempreOpenFaceID  : Bool = false
+    
     @AppStorage(AppCons.UD_setting_fontChatIASize)          var fontSizeChatIA       : Int = 24 //Tamaño de letra del chat de IA
     
     //Acceso al Diario Siempre Activo:
     //Acceso a la opción de en Ajustes
-    @AppStorage("setting_DiarioAccesoAjustes") var setting_DiarioAccesoAjustes  : Bool = false
+    @AppStorage(AppCons.UD_setting_DiarioAccesoAjustes) var setting_DiarioAccesoAjustes  : Bool = false
+    @AppStorage(AppCons.UD_setting_DiarioSiempreOpenFaceID) var setting_DiarioSiempreOpenFaceID  : Bool = false
+    
+    
+    @AppStorage(AppCons.UD_setting_theme) var setting_theme  : Theme = .auto 
     
     
     //Determina si el contenido de las ventanas modales se muestren en Details
@@ -88,6 +92,14 @@ struct Ajustes: View {
             
             
             #if os(macOS)
+            Button("Lienzo"){
+                showWindow(for: LienzoMain(),
+                environmentObjects: [],
+                           title: "Lienzo",
+                           size: .absolute(CGSize(width: 500, height: 650)),
+                           isModal: false
+                )
+            }
             ScrollView{
                 VStack(alignment: .leading){
                     Group{
@@ -136,6 +148,20 @@ struct Ajustes: View {
                                     }
                                 }
                             }
+                        }
+                        .padding(.horizontal, 30)
+                        .padding(.bottom, 20)
+                        
+                        
+                        VStack(alignment: .leading){
+                            Text("Tema General").font(.system(size: 22)).foregroundStyle(.orange)
+                            
+                            Picker("Elige el Tema:", selection: self.$setting_theme) {
+                                ForEach(Theme.allCases, id:\.self){item in
+                                    Text(item.rawValue).tag(item)
+                                }
+                            }
+                            .pickerStyle(.segmented)
                         }
                         .padding(.horizontal, 30)
                         .padding(.bottom, 20)
@@ -393,7 +419,7 @@ struct Ajustes: View {
                                         }
                                     }
                                 }
-                                Text("Nota: Si se activa, el Diario permanece abierto una vez que se ha autentificado la primerá vez. Esto evita tener que loguearse en cada acceso al Diario. Al cerrarse la app el acceso al Diario se restablece.")
+                                Text("Nota: Si se activa, el Diario permanece abierto una vez que se ha autentificado la primerá vez. Esto evita tener que loguearse en cada acceso al Diario. Al cerrarse la app el acceso al Diario se bloquea")
                                     .font(.system(size: 15))
                                     .frame(width: 600)
                             }
@@ -622,6 +648,9 @@ struct Ajustes: View {
             }
             .navigationTitle("Ajustes")
             #else //iOS,ipadOS.... NO macOS
+            NavigationLink("Lienzo"){
+                LienzoMain()
+            }
                 Form{
                     Section("Tamaño de letra"){
                         HStack{
@@ -671,6 +700,15 @@ struct Ajustes: View {
                         
                     }.padding(2)
                     
+                    Section("Tema General"){
+                        
+                        Picker("Elige el Tema:", selection: self.$setting_theme) {
+                            ForEach(Theme.allCases, id:\.self){item in
+                                Text(item.rawValue).tag(item)
+                            }
+                        }
+                        .pickerStyle(.segmented)
+                    }
                     
                     
                     Section("Colores Home"){
@@ -844,7 +882,7 @@ struct Ajustes: View {
                                     }
                                 }
                             }
-                            Text("Nota: Si se activa, el Diario permanece abierto una vez que se ha autentificado la primerá vez. Esto evita tener que loguearse en cada acceso al Diario. Al cerrarse la app el acceso al Diario se restablece.")
+                            Text("Nota: Si se activa, el Diario permanece abierto una vez que se ha autentificado la primerá vez. Esto evita tener que loguearse en cada acceso al Diario. Al cerrarse la app el acceso al Diario se bloquea.")
                                 .font(.subheadline)
                         }
                         

@@ -16,6 +16,7 @@ struct AddNotasView: View {
     
     @State      var title : String = ""
     @State      var nota : String = ""
+
     
     //Mostrar la ventana de FeedBackReview
     @State private var sheetShowFeedBackReview: Bool = false
@@ -87,6 +88,7 @@ struct AddNotasView: View {
                         
                     }
                 }
+                
                 ToolbarItem(placement: .principal) {
                     Button{ dimiss()}label: {
                         Text("Cancelar")
@@ -133,6 +135,7 @@ struct AddNotasView: View {
             .alert(isPresented: self.$showAlert){
                 Alert(title: Text("Adicionar una nota"), message: Text(self.alertMessage))
             }
+            
         }
         
     }

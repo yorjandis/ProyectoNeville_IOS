@@ -196,8 +196,10 @@ struct ChatView: View {
                 
                 if model.isResponding {
                     Spacer()
+                    
                     ProgressView()
-                        .tint(.black)
+                        .foregroundStyle(.black)
+                        .padding(.bottom, 10)
                     Spacer()
                 }else{
                     TextField("Escribe algo…", text: $model.inputText, axis: .vertical)

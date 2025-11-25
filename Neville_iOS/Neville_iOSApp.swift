@@ -25,6 +25,7 @@ struct Neville_iOSApp: App {
     
   private let persistentStore : CoreDataController =  CoreDataController.shared
     
+    @AppStorage(AppCons.UD_setting_theme) var setting_theme  : Theme = .auto
     
 
 
@@ -39,6 +40,7 @@ struct Neville_iOSApp: App {
                 .environmentObject(securityModel) //Almacena variables observables para acceso seguro: Notas protegidas y Diario
                 .environmentObject(reflexModel) 
                 .environment(\.managedObjectContext, persistentStore.context)
+                .applyTheme(self.setting_theme) //Aplicando el theme según los valores en Ajustes
                 .task {
                     modelTxt.getAllFileTxtOfType(type: .conf) // Carga el listado de conferencias
                     modelFrases.getAllFrases()

@@ -49,9 +49,10 @@ struct AppCons{
     static let UD_setting_OrdenarEntradaDiario      = "settig_Diario_ordenarentradas" //Permite ordenar las entradas del Diario por fechaCracion/fechaModificación
     static let UD_setting_NotasFaceID               = "setting_NotasFaceID" //Proteger las notas de FaceID
     static let UD_setting_DiarioSiempreOpenFaceID   = "setting_DiarioSiempreOpenFaceID" //Permitir que la ventana del Diario permanezca desbloqueada
-    
+    static let UD_setting_DiarioAccesoAjustes       = "setting_DiarioAccesoAjustes" //Bloquea/desbloquea la opción en Ajustes para lógica de loguin del Diario
   
-   
+   //Theme
+    static let UD_setting_theme                     = "setting_theme"    //Theme light/dark
     
     //UserDefault compartido:(UD_shared_)
     static let UD_shared_FraseWidgetActual = "FraseWidgetActual" //Donde se almacena la frase actualmente cargada en el widget
@@ -111,3 +112,5 @@ struct AppCons{
                 """
     
 }
+
+

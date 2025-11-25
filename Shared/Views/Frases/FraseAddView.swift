@@ -11,7 +11,9 @@ import SwiftUI
 
 struct FraseAddView: View {
     @Environment(\.dismiss) var dismiss
+    @EnvironmentObject private var frasesModel: FrasesModel
     @State private var text = ""
+    //@State private var favorito: Bool = false
     
     //Mostrar la ventana de FeedBackReview
     @State private var sheetShowFeedBackReview: Bool = false
@@ -24,7 +26,7 @@ struct FraseAddView: View {
             HStack{
                 Button("Guardar"){
                     if !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                        FrasesModel.shared.AddFrase(frase: text)
+                        frasesModel.AddFrase(frase: text)
                         //Lanza la ventana de FeedBackreview si se alcanza el humbral de hitos
                         if  FeedBackModel.checkReviewRequest() {
                             #if os(macOS)
@@ -65,8 +67,6 @@ struct FraseAddView: View {
                 .tint(.red.opacity(0.4))
             }.padding()
 #endif
-                
-                
                 Form(){
                     Section("Frase"){
                         #if os(macOS)
@@ -99,14 +99,19 @@ struct FraseAddView: View {
             .navigationTitle("Nueva Frase")
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .toolbar{
+                #if os(iOS)
                 ToolbarItem(placement: .topBarTrailing){
                     Button("Guardar"){
                         if !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                            FrasesModel.shared.AddFrase(frase: text)
+                            frasesModel.AddFrase(frase: text)
                             //Lanza la ventana de FeedBackreview si se alcanza el humbral de hitos
                             if  FeedBackModel.checkReviewRequest() {
                                 self.sheetShowFeedBackReview = true
+                            }
+                            Task{
+                                await frasesModel.FiltrarListado()
                             }
                             self.dismiss()
                         }
@@ -123,11 +128,28 @@ struct FraseAddView: View {
                     .buttonStyle(.borderedProminent)
                     .tint(.red.opacity(0.4))
                 }
+                
+                #elseif os(macOS)
+                if ventanaActualEsModal() {
+                    ToolbarItem(placement: .navigation) {
+                        Button{
+                            if let windows = NSApp.keyWindow{
+                                closeWindow(windows)
+                            }
+                            
+                        }label: {
+                            Image(systemName: "xmark.circle.fill")
+                                .foregroundStyle(.red)
+                        }
+                    }
+                }
+                #endif
+                
             }
-        #endif
             .sheet(isPresented: self.$sheetShowFeedBackReview) {
                 FeedbackView(showTextBotton: true)
             }
+           
         }
         #if os(macOS)
         .frame(minWidth: 400 , maxHeight: 450)

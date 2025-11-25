@@ -31,7 +31,10 @@ struct FrasesNotasAddView: View {
                         self.alertMessage = "No se ha podido guardar la nota."
                         self.showAlert = true
                     }
-                    frasesModel.getAllFrases()
+                    Task{
+                        await frasesModel.FiltrarListado()
+                    }
+                    
                     //Saliendo:
                     if let window = NSApp.keyWindow {
                         closeWindow(window)
@@ -103,12 +106,15 @@ struct FrasesNotasAddView: View {
                 #if os(iOS)
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Guardar"){
-                        if !FrasesModel.shared.UpdateNotaAsociada(frase: frase, notaAsociada: nota){
+                        if !frasesModel.UpdateNotaAsociada(frase: frase, notaAsociada: nota){
                             self.alertMessage = "No se ha podido guardar la nota."
                             self.showAlert = true
                         }
-                        frasesModel.getAllFrases()
-                        dismiss()
+                        Task{
+                            await frasesModel.FiltrarListado()
+                            dismiss()
+                        }
+                        
                     }
                 }
                 ToolbarItem(placement: .topBarLeading) {

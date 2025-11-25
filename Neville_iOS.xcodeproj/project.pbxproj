@@ -741,9 +741,13 @@
 				Views/Frases/FrasesListView.swift,
 				Views/Frases/FrasesNotasAddView.swift,
 				Views/Frases/FrasesUpdateView.swift,
+				Views/Frases/Untitled.swift,
 				Views/IAView/ChatView.swift,
 				Views/IAView/DescargoResponsabilidad.swift,
 				Views/IAView/RespondView.swift,
+				Views/Lienzo/Lienzo_Fondos.swift,
+				Views/Lienzo/Lienzo.swift,
+				Views/Lienzo/LienzoUtilsUI.swift,
 				Views/Notas/AddNotasView.swift,
 				Views/Notas/ListNotasViews.swift,
 				Views/Notas/ShowNotaView.swift,
@@ -1454,6 +1458,7 @@
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				ENABLE_APP_SANDBOX = YES;
+				ENABLE_FILE_ACCESS_DOWNLOADS_FOLDER = readwrite;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
 				ENABLE_OUTGOING_NETWORK_CONNECTIONS = NO;
@@ -1511,6 +1516,7 @@
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				ENABLE_APP_SANDBOX = YES;
+				ENABLE_FILE_ACCESS_DOWNLOADS_FOLDER = readwrite;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
 				ENABLE_OUTGOING_NETWORK_CONNECTIONS = NO;

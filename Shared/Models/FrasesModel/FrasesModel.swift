@@ -13,16 +13,42 @@ import Combine
 
 //Manejo de la tabla frases
 
+
+//Tipos de criteros para filtrar el listado
+enum CriterioFiltro{
+    case Buscar
+    case ListadoFull
+    case FrasesPersonales
+    case FrasesFavoritas
+    case FrasesConNotas
+    case BuscarEnNotas
+}
+
+enum DondeBuscar{
+    case TodasFrases
+    case FrasesPersonales
+    case FrasesFavoritas
+    case FrasesConNotas
+    case ResultadosDeBusquedaEnNotas
+}
+
 @MainActor
 final class FrasesModel : ObservableObject {
-    @Published var listfrases : [String] = []
+    
+    @Published var listfrases : [String] = [] //Listado de Frases a cargar
     
     @Published var favStateOfCurrentFrase : Bool = false //Almacena el estado del favorito de la frase actualmente en la pantalla Home.
     
-    @Published var fraseAnteriores : [String] = [] //Almacena la frase anterior para poder acceder a ella.
+    @Published var fraseAnteriores : [String] = [] //Arreglo que almacena la frase anterior para poder acceder a ella.
+    
+    @Published  var buscarEn : DondeBuscar = .TodasFrases //Almacena el tipo de listado que hay actualmente
+    @Published  var criterioFiltroActual : CriterioFiltro = .ListadoFull //Almacena el tipo de Criterio de filtro  que hay actualmente
+    
     
     var fraseActual : String = "" //Almacena la frase actualmente cargada en el home. Esto permite ajustar el estado del favorito en el home, si lo modificamos en el listado de frases.
-    
+   
+    ///Almacena el Id de la frase actualmente cargada. Se actualiza en: getRandomFrase()
+    static var idFraseActual : String = ""
     
     static let shared = FrasesModel() //Singleton
 
@@ -34,15 +60,13 @@ final class FrasesModel : ObservableObject {
     }
     
  
-    ///Almacena el Id de la frase actualmente cargada. Se actualiza en: getRandomFrase()
-    static var idFraseActual : String = ""
+   
+    
+
     
     
-  
-    //Nuevas funciones Yor
     
-    
-    ///Obtiene la lista de frases del fichero txt in-built +  rases personales creadas). Actualiza la variable observable: listfrases
+    ///Obtiene la lista de frases del fichero txt in-built +  frases personales creadas). Actualiza la variable observable: listfrases
     func getAllFrases(){
         self.listfrases.removeAll()
         //Extrayendo las frases inbuilt, almacenadas dentro del bundle de la App
@@ -66,11 +90,99 @@ final class FrasesModel : ObservableObject {
         }
     }
     
+    
+    ///Obtiene la lista de frases del fichero txt in-built +  frases personales creadas).
+    func getAllFrasesGet() -> [String]{
+        //Extrayendo las frases inbuilt, almacenadas dentro del bundle de la App
+       var listTemp : [String] = UtilFuncs.FileReadToArray(AppCons.FileListFrases)
+        
+        //Agregando las frases noInbuit, de la Tabla Frases
+        let fetchRequest : NSFetchRequest<Frases> = NSFetchRequest(entityName: "Frases")
+        let predicate : NSPredicate = NSPredicate(format: "noinbuilt == %@", NSNumber(value: true))
+        fetchRequest.predicate = predicate
+        do{
+            let elements = try self.context.fetch(fetchRequest)
+            for item in elements{
+                if let frase = item.frase{
+                    if frase.isEmpty{continue}
+                    listTemp.append(frase)
+                }
+            }
+            return listTemp
+        }catch{
+            print("Error al recuperar las frases desde Core Data: \(error.localizedDescription)")
+            return listTemp
+        }
+    }
+    
+    
+    //Actualiza la lista de frases de acuerdo a criterios de busqueda y filtrado
+    func FiltrarListado(textAbuscar: String = "" ) async {
+        
+        self.listfrases.removeAll()
+        
+        switch self.criterioFiltroActual {
+            //Devuelve una lista de acuerdo al contenido del cuadro de bisqueda
+        case .Buscar:
+            if textAbuscar.isEmpty{ //No hay una búsqueda activa
+                //Si el cuadro de búsqueda esta vacio se restuara el listado según el filtro seleccionado
+                switch buscarEn {
+                case .FrasesPersonales:
+                    self.listfrases =  getFrasesNoInbuilt()
+                case .FrasesFavoritas:
+                    self.listfrases =   getAllFavFrases()
+                case .FrasesConNotas:
+                    self.listfrases =  getFrasesConNotas()
+                case .TodasFrases:
+                    getAllFrases()
+                case .ResultadosDeBusquedaEnNotas:
+                    print("")
+                }
+            }else{
+                //Cuando se esté realizado una búsqueda y el cuadro de busqueda tenga un texto:
+                switch buscarEn {
+                case .FrasesPersonales:
+                    let temp = getFrasesNoInbuilt()
+                    self.listfrases =  temp.filter{$0.localizedCaseInsensitiveContains(textAbuscar)}
+                case .FrasesFavoritas:
+                    let temp = getAllFavFrases()
+                    self.listfrases =  temp.filter{$0.localizedCaseInsensitiveContains(textAbuscar)}
+                case .FrasesConNotas:
+                    let temp = getFrasesConNotas()
+                    self.listfrases =  temp.filter{$0.localizedCaseInsensitiveContains(textAbuscar)}
+                case .TodasFrases:
+                    getAllFrases()
+                    let temp = self.listfrases
+                    self.listfrases =  temp.filter{$0.localizedCaseInsensitiveContains(textAbuscar)}
+                    
+                case .ResultadosDeBusquedaEnNotas:
+                    print("")
+                }
+            }
+        case .ListadoFull: //Obtiene el listado completo de las frases
+                getAllFrases()
+        case .FrasesPersonales:
+            self.listfrases = getFrasesNoInbuilt()
+        case .FrasesFavoritas:
+            self.listfrases = getAllFavFrases()
+        case .FrasesConNotas:
+            self.listfrases = getFrasesConNotas()
+        case .BuscarEnNotas:
+            self.listfrases = searchTextInNotaFrases(textNota: textAbuscar)
+            
+        }
+        
+    }
+    
+    
+    
+    
     ///Obtiene una frase aleatoria
     ///Aqui se actualiza el ID de la frase actualmente cargada para fines de búsqueda dentro de la tabla Frases. Al inicio,  se intenta popular la tabla Frases si esta marcada como NO populada(false).
     /// - Returns Devuelve el texto de la frase. Actualiza la static var idFraseActual con el id de la frase devuelta. Si falla devuelve una frase vacia
     func getRandomFrase()->String {
-        return self.listfrases.randomElement() ?? "Listado Vacío"
+        let listTemp = getAllFrasesGet()
+        return listTemp.randomElement() ?? "Imaginar Crea la Realidad"
     }
 
     
@@ -161,6 +273,46 @@ final class FrasesModel : ObservableObject {
     }
     
 
+    //Obtiene un objeto de Frase a partir de su id:
+    func getFraseCoreData(fraseTexto : String) -> Frases?{
+        let fetchRequest : NSFetchRequest<Frases> = NSFetchRequest(entityName: "Frases")
+        let predicate : NSPredicate = NSPredicate(format: "frase == %@", fraseTexto)
+        fetchRequest.predicate = predicate
+        fetchRequest.fetchLimit = 1
+        
+        do{
+            let element : Frases? = try context.fetch(fetchRequest).first
+            return element
+        }catch {
+            return nil
+        }
+    }
+    
+    
+    ///Actualizar una Frase Personal
+    func updateFrasePersonal(frase : Frases, newText : String, newNota : String, newIsfav : Bool) -> Bool{
+        if (frase.noinbuilt == true){
+            let element = frase
+            do{
+                element.frase = newText
+                element.isfav = newIsfav
+                element.nota = newNota
+                //antes de salvar nos aseguramos que la frase sea personal
+                if context.hasChanges {
+                    try context.save()
+                    return true
+                }else{
+                    return false
+                }
+            }catch{
+                context.rollback()
+                print("Error al actualizar la Frase: \(error.localizedDescription)")
+                return false
+            }
+        }else{
+            return false
+        }
+    }
     
     ///Devuelve un arreglo con todas las frases NO inBuilt. Útil para funciones de filtrado
     func getFrasesNoInbuilt()->[String]{
@@ -230,13 +382,14 @@ final class FrasesModel : ObservableObject {
     func getFrasesConNotas()->[String]{
         
         let fetchRequest : NSFetchRequest<Frases> = Frases.fetchRequest()
-        let predicate : NSPredicate = NSPredicate(format: "nota != ''")
+        let predicate = NSPredicate(format: "nota != nil AND nota != ''")
         fetchRequest.predicate = predicate
         var result : [String] = []
         
         do{
             let elements : [Frases] = try context.fetch(fetchRequest)
             for item in elements{
+                //print("[\(item.nota ?? "nil")]")
                 result.append(item.frase ?? "")
             }
         }catch{

@@ -98,7 +98,7 @@ final class IAModelAppleIntelligence :  ObservableObject{
     
     
     
-    //Nueva función con Generación Guiada
+    //Nueva función con Generación Guiada (Conferencias)
     func executeRequestPuntosClaves(texto : String) async {
         guard !texto.isEmpty else { return }
         
@@ -108,7 +108,6 @@ final class IAModelAppleIntelligence :  ObservableObject{
          Crea un listado de los puntos claves del contenido
          */
         
-        print("Estoy dentro de puntos claves")
         
         self.puntosClaves.removeAll()
             
@@ -122,11 +121,10 @@ final class IAModelAppleIntelligence :  ObservableObject{
                     let promt = """
                 Actua como un experto en comprensión y síntesis de información.
                 
-                Analiza cuidadosamente el texto y extrae las ideas claves
-                
-                No agregues opiniones personales ni información que no esté en el texto.
-                
-                Usa un lenguaje sencillo y un tono didáctico.
+                Sigue estas directrices:
+                -Analiza cuidadosamente el texto y resume las ideas claves.
+                -No agregues opiniones personales.
+                -Usa un lenguaje sencillo y un tono profesional.
                 
                 Texto a analizar:
                 \(fragmento)
@@ -153,7 +151,7 @@ final class IAModelAppleIntelligence :  ObservableObject{
     }
     
     
-    //Produce un resumen general del contenido
+    //Produce un resumen general del contenido (Conferencias)
     func executeRequestResumenGeneral(texto : String) async {
         
         guard !texto.isEmpty else { return }
@@ -213,7 +211,7 @@ final class IAModelAppleIntelligence :  ObservableObject{
         }
     
     
-    //Produce un listado de aplicaciones prácticas de una conferencia
+    //Produce un listado de aplicaciones prácticas (Conferencias)
     func executeRequestListAplicacionPractica(texto : String) async {
         
         guard !texto.isEmpty else { return }
@@ -340,45 +338,49 @@ final class IAModelAppleIntelligence :  ObservableObject{
     
     
     
-    /// Divide el texto en fragmentos de un tamaño máximo, asegurando que cada fragmento termine al final de un párrafo completo.
-    /// Esto evita que el texto quede cortado a mitad de un párrafo, lo cual es importante cuando la IA tiene una ventana de contexto limitada.
-    private func dividirTexto(_ texto: String, maxLength: Int) -> [String] {
-        var fragmentos: [String] = []
-        var inicio = texto.startIndex
-        
-        while inicio < texto.endIndex {
-            // Calculamos el índice máximo tentativo
-            let finTentativo = texto.index(inicio, offsetBy: maxLength, limitedBy: texto.endIndex) ?? texto.endIndex
-            var finReal = finTentativo
-            
-            // Obtenemos el fragmento tentativo
-            let rangoTentativo = inicio..<finTentativo
-            let subTexto = String(texto[rangoTentativo])
-            
-            // Buscamos el último salto de párrafo antes del límite
-            if let rangoUltimoSalto = subTexto.range(of: "\n", options: .backwards) {
-                let distancia = subTexto.distance(from: subTexto.startIndex, to: rangoUltimoSalto.lowerBound)
-                if distancia > 0 {
-                    finReal = texto.index(inicio, offsetBy: distancia)
-                }
-            }
-            
-            // Creamos el fragmento con el rango calculado
-            let fragmento = String(texto[inicio..<finReal])
-            fragmentos.append(fragmento.trimmingCharacters(in: .whitespacesAndNewlines))
-            
-            // Avanzamos el inicio al final real del fragmento
-            inicio = finReal
-            
-            // Si el siguiente carácter es un salto de línea, lo saltamos
-            if inicio < texto.endIndex {
-                inicio = texto.index(after: inicio)
-            }
-        }
-        
-        self.noFragmentos = fragmentos.count
-        return fragmentos
-    }
+    
+    /// Divide el texto en fragmentos con longitud máxima, agregando los últimos N párrafos
+    /// del fragmento anterior como contexto superpuesto.
+    
+      private func dividirTexto(_ texto: String, maxLength: Int) -> [String] {
+          var fragmentos: [String] = []
+          var inicio = texto.startIndex
+          
+          while inicio < texto.endIndex {
+              // Calculamos el índice máximo tentativo
+              let finTentativo = texto.index(inicio, offsetBy: maxLength, limitedBy: texto.endIndex) ?? texto.endIndex
+              var finReal = finTentativo
+              
+              // Obtenemos el fragmento tentativo
+              let rangoTentativo = inicio..<finTentativo
+              let subTexto = String(texto[rangoTentativo])
+              
+              // Buscamos el último salto de párrafo antes del límite
+              if let rangoUltimoSalto = subTexto.range(of: "\n", options: .backwards) {
+                  let distancia = subTexto.distance(from: subTexto.startIndex, to: rangoUltimoSalto.lowerBound)
+                  if distancia > 0 {
+                      finReal = texto.index(inicio, offsetBy: distancia)
+                  }
+              }
+              
+              // Creamos el fragmento con el rango calculado
+              let fragmento = String(texto[inicio..<finReal])
+              fragmentos.append(fragmento.trimmingCharacters(in: .whitespacesAndNewlines))
+              
+              // Avanzamos el inicio al final real del fragmento
+              inicio = finReal
+              
+              // Si el siguiente carácter es un salto de línea, lo saltamos
+              if inicio < texto.endIndex {
+                  inicio = texto.index(after: inicio)
+              }
+          }
+          
+          self.noFragmentos = fragmentos.count
+          return fragmentos
+      }
+      
+   
     
 
     
@@ -400,9 +402,9 @@ final class IAModelAppleIntelligence :  ObservableObject{
 
 //Estructura generable para Puntos Claves
 @available(iOS 26.0, macOS 26.0, *)
-@Generable(description: "Estructura que representa un resumen de los puntos más importantes de un texto dado.")
+@Generable(description: "Estructura que representa un resumen de las ideas claves de un texto dado.")
 struct Summary {
-    @Guide(description: "Lista de las  ideas clave del texto, en frases breves y concisas.")
+    @Guide(description: "Listado conciso de las ideas claves del texto.")
     let keyPoints: [String]
 }
 

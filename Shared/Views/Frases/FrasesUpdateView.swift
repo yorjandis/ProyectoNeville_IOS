@@ -9,49 +9,82 @@ import SwiftUI
 import CoreData
 
 struct FrasesUpdateView: View {
-    @Environment(\.dismiss) var dimiss
+    @Environment(\.dismiss) var dismiss
     
-    @State var frase : Frases
-    @State var list : [Frases]
+    @EnvironmentObject private var frasesModel: FrasesModel
+    let frase : Frases?
+    
     @State private var text = ""
-    @State  var nota = ""
+    @State private var nota = ""
+    @State private var favorito : Bool = false
     
     var body: some View {
         NavigationStack {
             VStack{
                 Form{
+                    
+                    Section("Favorito"){
+                        Toggle("Favorito \(self.favorito ? "ON" : "OFF")", isOn: self.$favorito)
+                    }
+                    
                     Section("Frase"){
-                        TextField("Texto de la frase", text: $text, axis: .vertical)
-                            .multilineTextAlignment(.leading)
+                        TextEditor(text:  $text)
                             .font(.system(size: 22))
+                            .multilineTextAlignment(.leading)
+                            .frame(height: 120)
+                            
                     }
                     Section("Nota"){
-                        TextField("Nota de la frase", text: $nota, axis: .vertical)
-                            .multilineTextAlignment(.leading)
+                        TextEditor(text:  $nota)
                             .font(.system(size: 22))
+                            .multilineTextAlignment(.leading)
+                            .frame(height: 80)
                     }
                 }
                 .onAppear{
-                    text = frase.frase ?? ""
-                    nota = frase.nota ?? ""
+                    if let frase = self.frase {
+                        self.text = frase.frase ?? ""
+                        self.nota = frase.nota ?? ""
+                        self.favorito = frase.isfav
+                    }
+                    
                 }
                 
             }
             .navigationTitle("Actualizar Frase")
+            .padding(15)
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
             #endif
             .toolbar{
-                Button("OK"){
-                    /*
-                    FrasesModel().Update(frase: frase, fraseStr: text, nota: nota)
-                    withAnimation {
-                        list.removeAll()
-                        list = FrasesModel().GetRequest(predicate: nil)
-                        dimiss()
+                
+                #if os(macOS)
+                ToolbarItem(placement: .navigation) {
+                    Button{
+                        if let windows = NSApp.keyWindow{
+                            closeWindow(windows)
+                        }
+                        
+                    }label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundStyle(.red)
                     }
-                    */
                 }
+                #endif
+                
+                ToolbarItem(placement: .automatic) {
+                    Button("Actualizar"){
+                        if self.frasesModel.updateFrasePersonal(frase: self.frase!, newText: self.text, newNota: self.nota, newIsfav: self.favorito){
+                                Task{
+                                   await self.frasesModel.FiltrarListado()
+                                    dismiss()
+                            }
+                        }
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(Color(.blue))
+                }
+               
             }
         }
     }

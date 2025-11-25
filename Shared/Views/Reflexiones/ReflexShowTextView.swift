@@ -46,6 +46,7 @@ struct ReflexShowTextView: View {
                                 .textSelection(.enabled)
                                 .padding(.horizontal, 5)
                             #else
+                            
                             SelectableText(entity.content, fontSize: self.fontSizeContent,fonColor: UIColor(Color.primary) ,  alignment: .left)
                             #endif
                             
@@ -59,14 +60,15 @@ struct ReflexShowTextView: View {
             #if os(iOS)
             //Permite actualizar el contenido de una reflexión si se realiza una modificación en la ventana de actualizar la reflexión
             .task {
-                let entity = modelReflex.getEntityById(id: self.entity.id) //Obtiene el objeto actualizado de Core Data
-                //Recrea un tipo RefType para poder compararlo con el actualmente cargado en la pantalla.
-                let refType = RefType(id: entity?.id ?? "", title: entity?.title ?? "", content: entity?.texto ?? "", autor: entity?.autor ?? "", isInbuilt: entity?.isInbuilt ?? false, isfav: entity?.isfav ?? false)
- 
-                if self.entity != refType{
-                    self.entity = refType //Si son distintos entonces la reflexión actualmente cargada se reemplaza por el contenido actualizado
+                //Actualizando los valores de la IU con los de CoreData: Esto es para cuando se actualize la UI en la ventana de edición de la reflexión
+                if let entityCoreData = modelReflex.getEntityById(id: self.entity.id) {
+                    
+                    let entityUpdated = RefType(id: entityCoreData.id ?? UUID().uuidString, title: entityCoreData.title ?? "", content: entityCoreData.texto ?? "", autor: entityCoreData.autor ?? "", isInbuilt: entityCoreData.isInbuilt, isfav: entityCoreData.isfav)
+                     
+                    self.entity = entityUpdated
                 }
-            }
+                    
+           }    
             #endif
                 Divider()
                 HStack{
@@ -287,6 +289,8 @@ struct ReflexShowTextView: View {
                 
             }
             .onAppear {
+                print(self.entity.content)
+                //Aplicando
                 fontSizeContent = CGFloat(UserDefaults.standard.integer(forKey: AppCons.UD_setting_fontContentSize))
                 fontSizeContenido = Int(self.fontSizeContent)
             }

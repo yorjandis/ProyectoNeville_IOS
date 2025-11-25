@@ -58,15 +58,15 @@ struct ContentViewMac: View {
     
     //Listados de items en el Sidebar
     @State private var  categoriasSideBar : [ItemSidebar] = [
-        ItemSidebar(text: .home , icono: "gear"),
-        ItemSidebar(text: .conferencias, icono: "gear"),
-        ItemSidebar(text: .frases, icono: "gear"),
-        ItemSidebar(text: .citas, icono: "gear"),
+        ItemSidebar(text: .home , icono: "house"),
+        ItemSidebar(text: .conferencias, icono: "book.pages"),
+        ItemSidebar(text: .frases, icono: "book"),
+        ItemSidebar(text: .citas, icono: "quote.opening"),
         ItemSidebar(text: .ayudas, icono: "gear"),
-        ItemSidebar(text: .reflexiones, icono: "gear"),
-        ItemSidebar(text: .preguntas, icono: "gear"),
-        ItemSidebar(text: .notas, icono: "gear"),
-        ItemSidebar(text: .bibliografia, icono: "gear")
+        ItemSidebar(text: .reflexiones, icono: "magazine"),
+        ItemSidebar(text: .preguntas, icono: "questionmark.app.ar"),
+        ItemSidebar(text: .notas, icono: "list.clipboard"),
+        ItemSidebar(text: .bibliografia, icono: "person.and.background.striped.horizontal")
         //Nota:
         //Los items de Diario, Evaluación y Ajustes se agregan a este array dinámicamente cuando se quiera mostrar en la ventana de Details
         
@@ -136,7 +136,7 @@ struct ContentViewMac: View {
             List(selection: self.$categoriaSelected) {
                 ForEach (categoriasSideBar, id: \.id) { itemSidebar in
                     
-                    SidebarCard(iconName: "gear", title: itemSidebar.text.rawValue.capitalized)
+                    SidebarCard(iconName: itemSidebar.icono, title: itemSidebar.text.rawValue.capitalized)
                         .tag(itemSidebar)
                     
                    // Label(itemSidebar.text.rawValue, systemImage: itemSidebar.icono)
@@ -164,7 +164,7 @@ struct ContentViewMac: View {
                         )
                     }
                 }label:{
-                    SidebarCard(iconName: "gear", title: "Diario")
+                    SidebarCard(iconName: "long.text.page.and.pencil", title: "Diario")
                         .tag(ItemSidebar(text: .diario, icono: ""))
                 }
                 .buttonStyle(.plain)
@@ -182,7 +182,7 @@ struct ContentViewMac: View {
                         }
                         showWindow(for: GamePLay(),
                                    environmentObjects: [],
-                                   title: "Diario",
+                                   title: "Evaluación",
                                    size: AppCons.windows_size_content,
                                    isModal: false
                         )
@@ -190,7 +190,7 @@ struct ContentViewMac: View {
                     
                     
                 }label:{
-                    SidebarCard(iconName: "gear", title: "Evaluación")
+                    SidebarCard(iconName: "questionmark.text.page", title: "Evaluación")
                         .tag(ItemSidebar(text: .evaluacion, icono: ""))
                 }
                 .buttonStyle(.plain)
@@ -216,7 +216,7 @@ struct ContentViewMac: View {
                         }
                     }
                 }label:{
-                    SidebarCard(iconName: "gear", title: "Chat IA")
+                    SidebarCard(iconName: "bubble.left.and.text.bubble.right", title: "Chat IA")
                         .tag(ItemSidebar(text: .chatIA, icono: ""))
                 }
                 .buttonStyle(.plain)
@@ -348,10 +348,7 @@ struct SidebarCard: View {
                 .font(.title2)
                 .foregroundColor(.white)
                 .padding(2)
-                .background(
-                    Circle()
-                        .fill(Color.white.opacity(0.3))
-                )
+                
             Text(title)
                 .font(.headline)
                 .foregroundColor(.white)
@@ -362,7 +359,7 @@ struct SidebarCard: View {
         .background(
             
             LinearGradient(
-                gradient: Gradient(colors: [Color.gray.opacity(0.7), Color.gray.opacity(0.3)]),
+                gradient: Gradient(colors: [Color.blue.opacity(0.5), Color.blue.opacity(0.4)]),
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )

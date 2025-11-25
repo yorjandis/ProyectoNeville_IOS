@@ -181,3 +181,27 @@ struct ViewIfNewUpdateAvailable : View {
 #endif
 
 
+
+//Para aplicar el thema de colores en la app:
+//Theme
+enum Theme: String, CaseIterable{
+    case auto, light, dark
+}
+
+extension View {
+    @ViewBuilder
+    func applyTheme(_ scheme: Theme) -> some View {
+            switch scheme{
+            case .dark:
+                self.colorScheme(.dark)
+            case .light:
+                self.colorScheme(.light)
+            case .auto:
+                self // auto → hereda del sistema
+            }
+        
+    }
+}
+
+
+

@@ -108,7 +108,7 @@ struct RespondView: View {
             Alert(title: Text("Chat"), message: Text(self.alertMessage))
         }
         .toolbar{
-            if !self.isloading {
+            if (!self.isloading && self.DescargoDeIA) {
                 #if os(macOS)
                 if ventanaActualEsModal(){
                     ToolbarItem(placement: .navigation) {
@@ -130,6 +130,7 @@ struct RespondView: View {
                 #endif
                 
                 //Share the text
+                
                 ToolbarItem {
                     ShareLink(item: self.creatorContentToShare){
                         Label("", systemImage: "square.and.arrow.up")
