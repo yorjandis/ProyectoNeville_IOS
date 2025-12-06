@@ -203,5 +203,20 @@ extension View {
     }
 }
 
-
+//Extensión de Color Para expresar los colores en formato hexadecimal:
+/*
+ Ejemplo de uso:
+ let amarillo = Color(hex: 0xFFCB0CFF)
+ let verde = Color(hex: 0x38B300FF)
+ */
+extension Color {
+    init(hex: UInt32) {
+        let r = Double((hex >> 24) & 0xFF) / 255
+        let g = Double((hex >> 16) & 0xFF) / 255
+        let b = Double((hex >> 8) & 0xFF) / 255
+        let a = Double(hex & 0xFF) / 255
+        
+        self.init(red: r, green: g, blue: b, opacity: a)
+    }
+}
 

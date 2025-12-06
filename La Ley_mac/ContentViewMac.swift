@@ -17,6 +17,7 @@ enum ItemNameSidebar: String{
     case crearQR
     case ajustes
     case chatIA
+    case lienzo
 }
 
 struct ItemSidebar: Identifiable, Hashable, Equatable {
@@ -53,7 +54,8 @@ struct ContentViewMac: View {
     @State var ColorSecundario  : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_color_main_b) ?? .blue.opacity(0.5)
 
    
-    
+    //Lanzar Ventana de Novedades una sola vez:
+    @State private var  showNovedades : Bool = false
 
     
     //Listados de items en el Sidebar
@@ -86,6 +88,11 @@ struct ContentViewMac: View {
     @AppStorage("setting_DiarioAccesoAjustes") var setting_DiarioAccesoAjustes  : Bool = false
     
     
+   
+    
+    
+    
+    
     var body: some View {
         ZStack{
             
@@ -103,6 +110,37 @@ struct ContentViewMac: View {
             .navigationViewStyle(.automatic)
             
             
+        }
+        .frame(minWidth: 1200, minHeight: 800)
+        .onAppear {
+            
+            switch NovedadesModel.LanzarVentanaNovedades(){
+            case "primeraVez":
+                //Actualiza las variables iniciales del Lienzo:
+                UserDefaults.standard.set(true,forKey: LienzoModel.key_visibilidadTextoSecundario) //Visibilidad de Imagen
+                UserDefaults.standard.set(true, forKey: LienzoModel.key_visibilidadImagenLienzo)
+                LienzoModel.shared.saveColorTextoSecundario(colorTexttoSecundario: .black) //Color del Texto Secundario
+                
+                //Muestra la ventana de Resultados
+                showWindow(for: Novedades(),
+                environmentObjects: [],
+                           title: "Novedades",
+                           size: AppCons.windows_size_content_small,
+                           isModal: false
+                           
+                )
+            case "actualizacion":
+                //Muestra la ventana de resultados
+                showWindow(for: Novedades(),
+                environmentObjects: [],
+                           title: "Novedades",
+                           size: AppCons.windows_size_content_small,
+                           isModal: false
+                           
+                )
+            default:
+                print("No hacer nada mac")
+            }
         }
     }
     
@@ -127,9 +165,10 @@ struct ContentViewMac: View {
                 .foregroundStyle(self.theme == .light ? .black : .orange)
                 .fontDesign(.serif)
                 .fontWeight(.heavy)
-                .shadow(color: .gray.opacity(0.5), radius: 2, x: 0, y: 1)
+                //.shadow(color: .gray.opacity(0.5), radius: 2, x: 0, y: 1)
                 .padding(.vertical, 10)
                 .multilineTextAlignment(.center)
+                .frame(minWidth: 250)
                 
                 
             // Items del Sidebar
@@ -138,9 +177,6 @@ struct ContentViewMac: View {
                     
                     SidebarCard(iconName: itemSidebar.icono, title: itemSidebar.text.rawValue.capitalized)
                         .tag(itemSidebar)
-                    
-                   // Label(itemSidebar.text.rawValue, systemImage: itemSidebar.icono)
-                     //   .tag(itemSidebar)
                 }
                 
                 //Abre ventana del Diario
@@ -221,6 +257,24 @@ struct ContentViewMac: View {
                 }
                 .buttonStyle(.plain)
                 
+                //Abre la ventana del Lienzo
+                Button{
+                       
+                    showWindow(for: LienzoMain(texto: nil),
+                                       environmentObjects: [],
+                                       title: "Lienzo",
+                                       size: .absolute(CGSize(width: 650, height: 750)),
+                                       isModal: false
+                            )
+                        
+                    
+                }label:{
+                    SidebarCard(iconName: "heart.text.square", title: "Lienzo")
+                        .tag(ItemSidebar(text: .lienzo, icono: ""))
+                }
+                .buttonStyle(.plain)
+                
+                
                 
                 //Abre ventana de Ajustes
                 Button{
@@ -281,7 +335,7 @@ struct NavigationDetailsViewMac: View {
             case .conferencias:
                 TxtListView(typeOfContent: .conf, title: "Conferencias")
             case .frases:
-                FrasesListView()
+               FrasesListView()
             case .citas:
                 TxtListView(typeOfContent: .citas, title: "Citas")
             case .ayudas:
@@ -346,20 +400,24 @@ struct SidebarCard: View {
         HStack(spacing: 5) {
             Image(systemName: iconName)
                 .font(.title2)
-                .foregroundColor(.white)
+                .foregroundColor(.black)
                 .padding(2)
                 
             Text(title)
+                .font(.system(size: 18)).bold()
                 .font(.headline)
-                .foregroundColor(.white)
+                .foregroundColor(.black)
+                
             
             Spacer()
         }
         .padding(5)
         .background(
-            
             LinearGradient(
-                gradient: Gradient(colors: [Color.blue.opacity(0.5), Color.blue.opacity(0.4)]),
+                gradient: Gradient(colors: [
+                    Color(red: 0.55, green: 0.75, blue: 0.89), // azul claro
+                    Color(red: 0.40, green: 0.65, blue: 0.87)  // azul un poco más oscuro
+                ]),
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
@@ -370,4 +428,8 @@ struct SidebarCard: View {
         .cornerRadius(12)
         .shadow(color: Color.black.opacity(0.2), radius: 6, x: 0, y: 4)
     }
+}
+
+#Preview{
+    SidebarCard(iconName: "gear", title:"Conferencias" )
 }

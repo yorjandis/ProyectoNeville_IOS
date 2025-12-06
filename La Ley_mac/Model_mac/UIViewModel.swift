@@ -256,3 +256,30 @@ func ventanaActualEsModal() -> Bool {
     
     return window.isSheet || window.isModalPanel
 }
+
+
+
+#if os(macOS)
+
+/// Crea un `Image` redimensionado a partir de un recurso `NSImage`.
+/// - Parameters:
+///   - nombre: Nombre del recurso de imagen en tus assets.
+///   - tamaño: Altura deseada en puntos (el ancho se ajusta manteniendo la proporción).
+///   - imagenPorDefecto: Nombre de una imagen por defecto si no se encuentra el recurso.
+/// - Returns: Un `Image` de SwiftUI redimensionado.
+func iconoRedimensionado(nombre: String?, tamaño: CGFloat = 24, imagenPorDefecto: String = "b_carpeta") -> Image {
+    // Cargar la imagen de recursos
+    guard let nsImage = NSImage(named: nombre ?? imagenPorDefecto) else {
+        return Image(nsImage: NSImage()) // Imagen vacía en caso de error
+    }
+    
+    // Mantener proporción
+    let ratio = nsImage.size.height / nsImage.size.width
+    nsImage.size.height = tamaño
+    nsImage.size.width = tamaño / ratio
+    
+    // Devolver como Image de SwiftUI
+    return Image(nsImage: nsImage)
+}
+
+#endif

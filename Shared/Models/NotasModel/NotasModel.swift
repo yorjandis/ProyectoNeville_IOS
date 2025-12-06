@@ -71,6 +71,9 @@ final class NotasModel : ObservableObject  {
     }
     
     
+    
+    
+    
     ///Elimina una nota
     /// - Parameter nota : El objeto Nota a eliminar
     func deleteNota(nota : Notas){

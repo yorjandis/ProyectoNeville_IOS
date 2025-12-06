@@ -59,15 +59,18 @@ struct FrasesUpdateView: View {
             .toolbar{
                 
                 #if os(macOS)
-                ToolbarItem(placement: .navigation) {
-                    Button{
-                        if let windows = NSApp.keyWindow{
-                            closeWindow(windows)
+                if ventanaActualEsModal(){
+                    ToolbarItem(placement: .navigation) {
+                        Button{
+                            if let windows = NSApp.keyWindow{
+                                    closeWindow(windows)
+                            }
+                            
+                        }label: {
+                            Image(systemName: "xmark.circle.fill")
+                                .foregroundStyle(.red)
                         }
                         
-                    }label: {
-                        Image(systemName: "xmark.circle.fill")
-                            .foregroundStyle(.red)
                     }
                 }
                 #endif

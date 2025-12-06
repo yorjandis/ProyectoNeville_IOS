@@ -11,7 +11,7 @@ import CoreData
 
 struct FrasesListView: View {
     @Environment(\.colorScheme) var theme
-    @EnvironmentObject private var frasesModel: FrasesModel
+    @EnvironmentObject private var frasesModel: FrasesModel //El modelo ya viene con la precarga de todas las frases en su inicializador init(){}
     @EnvironmentObject private var settingModel: SettingModel
     
     @AppStorage(AppCons.UD_setting_fontFrasesSize)     var fontSizeFrases      : Int = 24
@@ -38,6 +38,7 @@ struct FrasesListView: View {
     @State private var TextoFraseAEliminar : String?
     
     
+
     
 
     var body: some View {
@@ -69,150 +70,28 @@ struct FrasesListView: View {
                 #endif
                 
                 List(frasesModel.listfrases, id: \.self){ frase in
-                    LazyVStack(alignment: .leading){
+                    VStack(alignment: .leading){
                         #if os(macOS)
                         //Vista de listado de Frases desde macOS, con un Menu al final de cada frase
                         HStack{
+                           RowFraseMenu(frase: frase, frasesModel: self.frasesModel, settingModel: self.settingModel)
+                            
+                            
                             //Mostrar Un icono de favorito si la frase es favorita
                             if self.frasesModel.isFavFrase(frase) {
                                 Image(systemName: "heart.fill")
-                                    .foregroundStyle(.orange)
+                                    .foregroundStyle(.black)
                                     .padding(.horizontal, 5)
                             }
                             Text(frase)
                                 .font(.system(size: 22))
-                                .foregroundStyle(.primary)
+                                .fontDesign(.serif)
+                                .foregroundStyle(.black).bold()
                                 .textSelection(.enabled)
                                 .padding(.vertical, 15)
+                            
                             Spacer()
-                            Menu("..."){
-                                
-                                //Editar la frase: Solo si es Personal
-                                if let fraseCoreData = self.frasesModel.getFraseCoreData(fraseTexto: frase){
-                                    if fraseCoreData.noinbuilt == true{
-                                        Button{
-                                            showWindow(for: FrasesUpdateView(frase: fraseCoreData),
-                                                       environmentObjects: [self.frasesModel],
-                                                       title: "Frases",
-                                                       size: AppCons.windows_size_content_small,
-                                                       isModal: true)
-                                            
-                                        }label:{
-                                            Label("Editar Frase", systemImage: "square.and.pencil")
-                                                .tint(.green)
-                                        }
-                                    }
-                                }
-                                
-                                
-                                //Notas de la Frase
-                                Button{
-                                    showWindow(for: FrasesNotasAddView( frase: frase),
-                                               environmentObjects: [self.frasesModel],
-                                               title: "Frases",
-                                               size: AppCons.windows_size_content_small,
-                                               isModal: true
-                                    
-                                    )
-                                     
-                                }label: {
-                                    Label("Notas",systemImage: "bookmark")
-                                    .tint(.green)
-                                    
-                                }
-                                
-                                //Ajustar el estado de favorito de una frase
-                                Button{
-                                    let current = self.frasesModel.isFavFrase(frase)
-                                    let newValue = !current
-                                    if frasesModel.setFavFrase(frase, newValue) {
-                                        //Recrear el listado actual solo si estamos en las frases favoritas:
-                                        //print(self.CriterioFiltroActual)
-                                        
-                                        
-                                        Task {
-                                            await self.frasesModel.FiltrarListado()
-                                        }
-                                        
-                                    }
-                                }label: {
-                                    Label("Favorito", systemImage: "heart.fill")
-                                        .tint( self.frasesModel.isFavFrase(frase) ? .orange : .gray)
-                                }
-                                
-                                
-                                //Generando el QR de la frase
-                                Button{
-                                    showWindow(for: GenerateQRView(footer: frase),
-                                               environmentObjects: [self.frasesModel],
-                                               title: "Frases",
-                                               size: AppCons.windows_size_content,
-                                               isModal: false
-                                    
-                                    )
-                                    
-                                }label: {
-                                    Label("Generar QR", systemImage: "qrcode")
-                                        .tint(.brown)
-                                }
-                                
-                                if #available(iOS 26.0, macOS 26.0,  *) {
-                                    if IAModelAppleIntelligence.isAvailable() {
-                                        
-                                        Button{
-                                            showWindow(for: RespondView(nameConference: "", texto: frase, tipoSalida: .interpretar),
-                                                       environmentObjects: [self.frasesModel, self.settingModel],
-                                                       title: "Interpretar",
-                                                       size: AppCons.windows_size_content,
-                                                       isModal: true,
-                                                       isIAWindows: true)
-                                            //RespondView(nameConference: "", texto: self.frase, tipoSalida: .interpretar)
-                                        }label: {
-                                            Label("Interpretar", systemImage: "sparkles")
-                                        }
-                                        .tint(.purple)
-                                        
-                                        Button{
-                                            showWindow(for: RespondView(nameConference: "", texto: frase, tipoSalida: .practicaConcreta),
-                                                       environmentObjects: [self.frasesModel, self.settingModel],
-                                                       title: "Aplicación Práctica",
-                                                       size: AppCons.windows_size_content,
-                                                       isModal: true,
-                                                       isIAWindows: true)
-                                            //RespondView(nameConference: "", texto: self.frase, tipoSalida: .practicaConcreta)
-                                        }label: {
-                                            Label("Aplicación Práctica", systemImage: "sparkles")
-                                        }
-                                        .tint(.purple)
-                                        
-                                        Button{
-                                            showWindow(for: ChatView(textoACargar: frase),
-                                                       environmentObjects: [self.frasesModel, self.settingModel],
-                                                       title: "Charlar con la IA",
-                                                       size: AppCons.windows_size_content,
-                                                       isModal: false,
-                                                       isIAWindows: true)
-                                            
-                                        }label: {
-                                            Label("Charlar con la IA", systemImage: "sparkles")
-                                        }
-                                        .tint(.purple)
-                                        
-                                    }
-                                }
-                                
-                                //Si la Frase es personal, permite eliminarla
-                                if frasesModel.isNoInbuilt(frase: frase){
-                                    Button{
-                                        self.TextoFraseAEliminar = frase
-                                        self.showConfirmDialogDeleteFrase = true
-                                    }label:{
-                                        Label("Eliminar",systemImage: "minus.circle.fill")
-                                            .tint(.red.opacity(0.8))
-                                    }
-                                }
-                                
-                            }
+
                         }
 
                         #else
@@ -223,6 +102,7 @@ struct FrasesListView: View {
                         #endif
                         
                     }
+                    #if os(iOS) || os(ipadOS)
                     //Modificar el campo nota de una frase
                     .swipeActions(edge: .leading, allowsFullSwipe: true){
                         //Esta View no se mostrará si Apple Intelligence no esta disponible
@@ -297,6 +177,14 @@ struct FrasesListView: View {
                                 .tint(.brown)
                         }
                         
+                        //Lienzo
+                        NavigationLink{
+                            LienzoMain(texto: frase)
+                        }label: {
+                            Image(systemName: "heart.text.square")
+                                .tint(.brown)
+                        }
+                        
                         //Ajustar el estado de favorito de una frase
                         Button{
                             let current = self.frasesModel.isFavFrase(frase)
@@ -312,13 +200,10 @@ struct FrasesListView: View {
                                 .tint( self.frasesModel.isFavFrase(frase) ? .orange : .gray)
                         }
                     }
-                    
+                    #endif
                 }
-                .backgroundStyle(.red)
-                .task{
-                    //Cargando el listado completo de frases al inicio
-                    await   self.frasesModel.FiltrarListado() //Por defecto carga todas las Frases
-                }
+                .scrollContentBackground(.hidden)
+                
                 
                 //Actualiza la información de la cantidad de elementos en la barra de estado inferior
                 HStack{
@@ -421,6 +306,11 @@ struct FrasesListView: View {
                     
                 }
             }
+            #if os(macOS)
+            .background{
+                LinearGradient(colors: [ .blue.opacity(0.6),.blue.opacity(0.7), .blue.opacity(0.5) ], startPoint: .topLeading, endPoint: .bottomTrailing)
+            }
+            #endif
             .sheet(isPresented: $showAddFrase){
                 FraseAddView()
                 .presentationDetents([.medium])
@@ -444,27 +334,250 @@ struct FrasesListView: View {
                 
             }
             //Dialogo de conformación para elimnar una nota
-            .confirmationDialog("Confirme que desea Eliminar la Frase", isPresented: $showConfirmDialogDeleteFrase){
-                Button("Eliminar", role: .destructive){
-                    
-                    withAnimation {
-                        if let frase = self.TextoFraseAEliminar {
-                            if frasesModel.DeleteFraseInbuilt(frase: frase){
-                                Task{
-                                    self.frasesModel.criterioFiltroActual = .FrasesPersonales
-                                    await self.frasesModel.FiltrarListado() //Actualizando el listado actual
-                                }
-                            }
-                        }
-                    }
+            .confirmationDialog(
+                "Confirme que desea Eliminar la Frase",
+                isPresented: $showConfirmDialogDeleteFrase
+            ) {
+                Button("Eliminar", role: .destructive) {
+                    eliminarFrase()
                 }
             } message: {
                 Text("La nota será removida!!!")
             }
+            
         }
     }
+    
+    
+    private func eliminarFrase() {
+        if let frase = self.TextoFraseAEliminar{
+            withAnimation {
+                if frasesModel.DeleteFraseInbuilt(frase: frase) {
+                    Task {
+                        frasesModel.criterioFiltroActual = .FrasesPersonales
+                        await frasesModel.FiltrarListado()
+                    }
+                }
+            }
+        }
+        
     }
-
-#Preview {
-    FrasesListView()
+    
 }
+
+#if os(macOS)
+fileprivate struct RowFraseMenu: View {
+
+    let frase: String
+    @ObservedObject var frasesModel: FrasesModel
+    @ObservedObject var settingModel: SettingModel
+    
+    @State private var showConfirmDialogDeleteFrase = false
+    
+    // Cache de valores precalculados
+    private let coreData: Frases?
+    private let isFav: Bool
+    private let esNoInbuilt: Bool
+    private let iaDisponible: Bool
+    
+    /// Inicialización para evitar trabajo en body
+    init(frase: String,
+         frasesModel: FrasesModel,
+         settingModel: SettingModel)
+    {
+        self.frase = frase
+        self.frasesModel = frasesModel
+        self.settingModel = settingModel
+        
+        // Cache de valores
+        self.coreData = frasesModel.getFraseCoreData(fraseTexto: frase)
+        self.isFav = frasesModel.isFavFrase(frase)
+        self.esNoInbuilt = frasesModel.isNoInbuilt(frase: frase)
+        
+        if #available(iOS 26.0, macOS 26.0, *) {
+            self.iaDisponible = IAModelAppleIntelligence.isAvailable()
+        } else {
+            self.iaDisponible = false
+        }
+    }
+    
+    var body: some View {
+        
+        Menu(""){
+            // Editar
+            if esNoInbuilt {
+                Button {
+                    if let core = coreData {
+                        showWindow(
+                            for: FrasesUpdateView(frase: core),
+                            environmentObjects: [frasesModel],
+                            title: "Frases",
+                            size: AppCons.windows_size_content_small,
+                            isModal: true
+                        )
+                    }
+                } label: {
+                    Label("Editar Frase", systemImage: "square.and.pencil")
+                        .tint(.green)
+                }
+            }
+            
+            // Notas
+            Button {
+                showWindow(
+                    for: FrasesNotasAddView(frase: frase),
+                    environmentObjects: [frasesModel],
+                    title: "Frases",
+                    size: AppCons.windows_size_content_small,
+                    isModal: true
+                )
+            } label: {
+                Label("Notas", systemImage: "bookmark")
+                    .tint(.green)
+            }
+            
+            // Favorito
+            Button {
+                let nuevoValor = !isFav
+                if frasesModel.setFavFrase(frase, nuevoValor) {
+                    Task { await frasesModel.FiltrarListado() }
+                }
+            } label: {
+                Label("Favorito", systemImage: "heart.fill")
+                    .tint(.gray)
+            }
+            
+            // QR
+            Button {
+                showWindow(
+                    for: GenerateQRView(footer: frase),
+                    environmentObjects: [frasesModel],
+                    title: "Frases",
+                    size: AppCons.windows_size_content,
+                    isModal: false
+                )
+            } label: {
+                Label("Generar QR", systemImage: "qrcode")
+                    .tint(.brown)
+            }
+            
+            Button{
+                showWindow(for: LienzoMain(texto: frase),
+                           environmentObjects: [],
+                           title: "Lienzo",
+                           size: .absolute(CGSize(width: 650, height: 750)),
+                           isModal: false
+                )
+                
+            }label:{
+                Label("Lienzo", systemImage: "heart.text.square")
+            }
+            
+            
+            
+            // Inteligencia Artificial
+            if #available(iOS 26.0, macOS 26.0, *){
+                if iaDisponible {
+                    
+                    Button {
+                        showWindow(
+                            for: RespondView(
+                                nameConference: "",
+                                texto: frase,
+                                tipoSalida: .interpretar
+                            ),
+                            environmentObjects: [frasesModel, settingModel],
+                            title: "Interpretar",
+                            size: AppCons.windows_size_content,
+                            isModal: true,
+                            isIAWindows: true
+                        )
+                    } label: {
+                        Label("Interpretar", systemImage: "sparkles")
+                    }
+                    .tint(.purple)
+                    
+                    
+                    Button {
+                        showWindow(
+                            for: RespondView(
+                                nameConference: "",
+                                texto: frase,
+                                tipoSalida: .practicaConcreta
+                            ),
+                            environmentObjects: [frasesModel, settingModel],
+                            title: "Aplicación Práctica",
+                            size: AppCons.windows_size_content,
+                            isModal: true,
+                            isIAWindows: true
+                        )
+                    } label: {
+                        Label("Aplicación Práctica", systemImage: "sparkles")
+                    }
+                    .tint(.purple)
+                    
+                    
+                    Button {
+                        showWindow(
+                            for: ChatView(textoACargar: frase),
+                            environmentObjects: [frasesModel, settingModel],
+                            title: "Charlar con la IA",
+                            size: AppCons.windows_size_content,
+                            isModal: false,
+                            isIAWindows: true
+                        )
+                    } label: {
+                        Label("Charlar con la IA", systemImage: "sparkles")
+                    }
+                    .tint(.purple)
+                }
+            }
+            
+            
+            
+            // Eliminar
+            if esNoInbuilt {
+                Button(role: .destructive) {
+                    showConfirmDialogDeleteFrase = true
+                } label: {
+                    Label("Eliminar", systemImage: "minus.circle.fill")
+                        .tint(.red.opacity(0.8))
+                }
+            }
+        }
+        .frame(width: 15)
+        .padding(.trailing, 5)
+        .confirmationDialog(
+            "Confirme que desea Eliminar la Frase",
+            isPresented: $showConfirmDialogDeleteFrase
+        ) {
+            Button("Eliminar", role: .destructive) {
+                eliminarFrase()
+            }
+        } message: {
+            Text("La nota será removida!!!")
+        }
+        
+        
+       
+        
+    }
+    
+    
+    // MARK: - Funciones internas (sin extensiones)
+    private func eliminarFrase() {
+        
+            withAnimation {
+                if frasesModel.DeleteFraseInbuilt(frase: frase) {
+                    Task {
+                        frasesModel.criterioFiltroActual = .FrasesPersonales
+                        await frasesModel.FiltrarListado()
+                    }
+                }
+            }
+        
+        
+    }
+    
+}
+#endif

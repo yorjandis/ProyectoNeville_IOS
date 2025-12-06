@@ -32,10 +32,18 @@ enum DondeBuscar{
     case ResultadosDeBusquedaEnNotas
 }
 
+//Esto es para pruebas:
+struct FraseItem : Identifiable{
+    let id = UUID()
+    let frase: String
+}
+
 @MainActor
 final class FrasesModel : ObservableObject {
     
     @Published var listfrases : [String] = [] //Listado de Frases a cargar
+    
+    @Published var listfrasesPrueba : [FraseItem] = [] //Listado de Frases a cargar
     
     @Published var favStateOfCurrentFrase : Bool = false //Almacena el estado del favorito de la frase actualmente en la pantalla Home.
     
@@ -56,17 +64,21 @@ final class FrasesModel : ObservableObject {
 
     
     private init(){
-        getAllFrases()
+       getAllFrases()
+
     }
-    
- 
-   
+
     
 
     
-    
-    
-    ///Obtiene la lista de frases del fichero txt in-built +  frases personales creadas). Actualiza la variable observable: listfrases
+    /// Carga todas las frases (in‑built + personales) y actualiza `listfrases`.
+    ///
+    /// Lee las frases incluidas en el bundle de la app y las combina con las frases personales
+    /// almacenadas en Core Data (marcadas como `noinbuilt == true`). El resultado se asigna al
+    /// listado observable `listfrases` después de limpiar su contenido previo.
+    ///
+    /// - Important: Esta función modifica el estado de `listfrases` y realiza lecturas a Core Data.
+    ///   No devuelve valor; su efecto es colateral sobre la propiedad publicada.
     func getAllFrases(){
         self.listfrases.removeAll()
         //Extrayendo las frases inbuilt, almacenadas dentro del bundle de la App
@@ -91,7 +103,14 @@ final class FrasesModel : ObservableObject {
     }
     
     
-    ///Obtiene la lista de frases del fichero txt in-built +  frases personales creadas).
+    /// Devuelve todas las frases (in‑built + personales) sin modificar `listfrases`.
+    ///
+    /// Obtiene las frases incluidas en el bundle y las concatena con las frases personales presentes
+    /// en Core Data (`noinbuilt == true`). A diferencia de `getAllFrases()`, esta función no altera
+    /// el estado interno del modelo y únicamente retorna el arreglo resultante.
+    ///
+    /// - Returns: Un arreglo con todas las frases disponibles. Si ocurre un error de lectura,
+    ///   se devuelve el acumulado parcial (que puede incluir solo las in‑built).
     func getAllFrasesGet() -> [String]{
         //Extrayendo las frases inbuilt, almacenadas dentro del bundle de la App
        var listTemp : [String] = UtilFuncs.FileReadToArray(AppCons.FileListFrases)
@@ -116,7 +135,26 @@ final class FrasesModel : ObservableObject {
     }
     
     
-    //Actualiza la lista de frases de acuerdo a criterios de busqueda y filtrado
+    /// Actualiza `listfrases` aplicando criterios de búsqueda y filtrado.
+    ///
+    /// Esta función reconstruye el listado observable `listfrases` en función del
+    /// `criterioFiltroActual` y del ámbito definido por `buscarEn`. Cuando el
+    /// `criterioFiltroActual` es `.Buscar`, el comportamiento depende del contenido
+    /// de `textAbuscar` y del origen seleccionado en `buscarEn` (todas, personales,
+    /// favoritas o con notas). Para otros criterios (`.ListadoFull`, `.FrasesPersonales`,
+    /// `.FrasesFavoritas`, `.FrasesConNotas`, `.BuscarEnNotas`) el listado se carga
+    /// directamente desde las fuentes correspondientes.
+    ///
+    /// - Parameter textAbuscar: Texto a buscar. Cuando está vacío y el criterio es `.Buscar`,
+    ///   se restaura el listado según el ámbito `buscarEn`. Cuando contiene valor, se filtra
+    ///   el conjunto correspondiente con coincidencia insensible a mayúsculas/minúsculas.
+    ///
+    /// - Important: Esta operación borra y vuelve a poblar `listfrases`. No modifica otros
+    ///   estados como `favStateOfCurrentFrase` o `fraseActual`.
+    ///
+    /// - Note: Para `.TodasFrases` en modo búsqueda, primero se carga el total con `getAllFrases()`
+    ///   y luego se aplica el filtro local sobre `listfrases`. Para `.BuscarEnNotas`, la búsqueda
+    ///   se realiza sobre el campo `nota` de las entidades `Frases` mediante `searchTextInNotaFrases(textNota:)`.
     func FiltrarListado(textAbuscar: String = "" ) async {
         
         self.listfrases.removeAll()
@@ -175,11 +213,16 @@ final class FrasesModel : ObservableObject {
     }
     
     
-    
-    
-    ///Obtiene una frase aleatoria
-    ///Aqui se actualiza el ID de la frase actualmente cargada para fines de búsqueda dentro de la tabla Frases. Al inicio,  se intenta popular la tabla Frases si esta marcada como NO populada(false).
-    /// - Returns Devuelve el texto de la frase. Actualiza la static var idFraseActual con el id de la frase devuelta. Si falla devuelve una frase vacia
+    /// Devuelve una frase aleatoria del conjunto de frases disponibles.
+    ///
+    /// La función combina las frases in‑app (in‑built) con las frases personales almacenadas en Core Data
+    /// mediante `getAllFrasesGet()` y selecciona un elemento al azar del total. Si por alguna razón
+    /// el listado resultara vacío, devuelve el texto por defecto "Imaginar Crea la Realidad".
+    ///
+    /// - Returns: Un `String` con una frase seleccionada aleatoriamente. Si no hay frases disponibles,
+    ///   se retorna una frase por defecto.
+    ///
+    /// - Note: Esta función no modifica el estado de `listfrases` ni actualiza `idFraseActual`.
     func getRandomFrase()->String {
         let listTemp = getAllFrasesGet()
         return listTemp.randomElement() ?? "Imaginar Crea la Realidad"
@@ -255,7 +298,7 @@ final class FrasesModel : ObservableObject {
     
     ///Adiciona una frase Personal (NO inBuilt) a la tabla Frases.
     /// - Parameter frase : El texto de la frase a añadir
-    func AddFrase(frase : String){
+    func AddFrase(frase : String) -> Bool{
         let entidad = Frases(context: context)
         entidad.id = UUID().uuidString
         entidad.frase = frase
@@ -266,10 +309,13 @@ final class FrasesModel : ObservableObject {
         if context.hasChanges {
             do{
                 try context.save()
+                return true
             }catch{
                 print(error.localizedDescription)
+                return false
             }
         }
+        return false
     }
     
 
@@ -377,8 +423,13 @@ final class FrasesModel : ObservableObject {
     }
     
     
-    
-    //Devuelve todas las frases con notas
+    /// Devuelve todas las frases que tienen una nota asociada.
+    ///
+    /// Realiza una consulta a Core Data filtrando por `nota != nil` y `nota != ''` y retorna
+    /// únicamente el texto de la frase de cada entidad que cumpla dicho criterio.
+    ///
+    /// - Returns: Un arreglo de `String` con las frases que poseen notas.
+    /// - Note: Esta función no modifica `listfrases`; solo consulta Core Data y construye un arreglo.
     func getFrasesConNotas()->[String]{
         
         let fetchRequest : NSFetchRequest<Frases> = Frases.fetchRequest()
@@ -518,3 +569,5 @@ struct Frase: Transferable {
         }
 }
 #endif
+
+

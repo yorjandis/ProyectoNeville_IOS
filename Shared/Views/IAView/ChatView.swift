@@ -15,6 +15,9 @@ struct ChatView: View {
     
     @State private var  notasModel : NotasModel = NotasModel()
     
+    @StateObject private var clipBoarModel : ClipboardObserver = ClipboardObserver() //Para observar cambios en el portapapales
+    
+    
     @AppStorage(AppCons.UD_setting_fontChatIASize)  var fontSizeChatIA : Int = 20
     
     @AppStorage(AppCons.UD_setting_IA_AceptacionDescargo)    var DescargoDeIA : Bool = false // True permite acceso al chet IA,false prohíbe el acceso al chat de IA
@@ -33,6 +36,19 @@ struct ChatView: View {
     @State var ColorChatIAPrimario         : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_colorIA_main_a) ?? .orange.opacity(0.7)
     @State var ColorChatIASecundario       : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_colorIA_main_b) ?? .brown
     @State var ColorChatIAFuente           : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_colorIA_textContent) ?? .black
+    
+    //manejar el texto copiado:
+    //Structura identifiable que representa un texto:
+    struct TextoCopiadoAlPortapapeles : Identifiable {
+        var id: UUID = UUID()
+        var texto : String
+    }
+    @State private var showSheetInterpretarTextoCopiadoIA : Bool = false
+    @State private var showSheetChatIATextoCopiado : Bool   = false
+    @State private var showSheetLienzoTextoCpiado  : Bool   = false
+    @State private var showSheetTextoCopiadoAlPortapapelesParaInterpretar   : TextoCopiadoAlPortapapeles? = nil
+    @State private var showSheetTtextoCopiadoAlPortapapelesParaChatIA       : TextoCopiadoAlPortapapeles? = nil
+    @State private var showSheetTtextoCopiadoAlPortapapelesParaLienzo       : TextoCopiadoAlPortapapeles? = nil
     
     
     var body: some View {
@@ -97,7 +113,8 @@ struct ChatView: View {
                                                     
                                                 } else {
                                                     VStack{
-                                                        SelectableText(msg.text, fontSize: CGFloat(self.fontSizeChatIA),fonColor: UIColor(self.ColorChatIAFuente) , alignment : .left)
+                                                        let texto = ClipboardHelper.insertarMarcaOculta(en: msg.text) //Para que funcionen las opciones de copiado de texto
+                                                        SelectableText(texto, fontSize: CGFloat(self.fontSizeChatIA),fonColor: UIColor(self.ColorChatIAFuente) , alignment : .left)
                                                             .padding(.horizontal, 10)
                                                             .background(Color.black.opacity(0.5))
                                                             .cornerRadius(12)
@@ -169,6 +186,109 @@ struct ChatView: View {
         #endif
         .toolbar{
             if self.DescargoDeIA {
+                //Barra de opciones para texto copiado:
+                ToolbarItem{
+                    //Menú de acciones con el texto copiado
+                    if let textoCopiado = self.clipBoarModel.clipboardText{
+                        VStack{
+                            Menu{
+                                Label("Texto copiado a:", systemImage: "info.circle")
+                                tint(.gray)
+                                Button{
+                                    
+                                    if NotasModel().addNote(nota: textoCopiado, title: "Nota de ChatIA", isFav: false){
+                                        self.alertMessage = "Se ha guardado el texto en Notas"
+                                        self.showAlert = true
+                                    }
+                                    
+                                }label:{
+                                    Label("Notas", systemImage: "square.on.square.dashed")
+                                }
+                                
+                                Button{
+                                    if FrasesModel.shared.AddFrase(frase: textoCopiado){
+                                            self.alertMessage = "Se ha guardado el texto en Frases"
+                                            self.showAlert = true
+                                        }
+      
+                                }label:{
+                                    Label("Frases", systemImage: "square.on.square.dashed")
+                                }
+                                
+                                Button{
+                                    #if os(macOS)
+                                   
+                                    
+                                    showWindow(for: LienzoMain(texto: textoCopiado),
+                                    environmentObjects: [],
+                                               title: "Lienzo",
+                                               size: .absolute(CGSize(width: 650, height: 750)),
+                                               isModal: false
+                                    )
+                                    
+                                    #else
+                                    
+                                    self.showSheetTtextoCopiadoAlPortapapelesParaLienzo = TextoCopiadoAlPortapapeles(texto: textoCopiado)
+                                    #endif
+                                }label:{
+                                    Label("Lienzo", systemImage: "heart.text.square")
+                                }
+                                
+                                
+                                    Button{
+                                        #if os(macOS)
+                                        
+                                        
+                                        showWindow(for: RespondView(nameConference: "", texto: textoCopiado, tipoSalida: .interpretar),
+                                                   environmentObjects: [],
+                                                   title: "Interpretar texto",
+                                                   size: AppCons.windows_size_content,
+                                                   isModal: false)
+                                        
+                                        #else
+                                        
+                                        self.showSheetTextoCopiadoAlPortapapelesParaInterpretar = TextoCopiadoAlPortapapeles(texto: textoCopiado)
+                                        #endif
+                                    }label:{
+                                        Label("Interpretar", systemImage: "sparkles")
+                                    }
+                                    .tint(.orange)
+                                    .help("Interpreta el texto copiado en el portapapeles con la IA")
+                                
+                                
+                                
+                                    Button{
+                                        #if os(macOS)
+                                        
+                                        showWindow(for: ChatView(textoACargar: textoCopiado),
+                                                   environmentObjects: [],
+                                                   title: "ChatIA - Interpretar texto",
+                                                   size: AppCons.windows_size_content,
+                                                   isModal: false)
+                                        
+                                        #else
+                                        Task{
+                                            self.showSheetTtextoCopiadoAlPortapapelesParaChatIA = TextoCopiadoAlPortapapeles(texto: textoCopiado)
+                                        }
+                                       
+                                        #endif
+                                    }label:{
+                                        Label("ChatIA", systemImage: "sparkles")
+                                    }
+                                    .tint(.orange)
+                                    .help("Permite charlar con la IA sobre el texto copiado al potapaepeles")
+                                
+                            }label: {
+                                Label("Texto Copiado a: ", systemImage: "rectangle.fill.on.rectangle.fill.circle.fill")
+                            }
+                            .tint(.green)
+                        }
+                        
+                    }
+                }
+                
+                ToolbarSpacer(.fixed)
+                
                 ToolbarItem {
                     Button{
                         withAnimation {
@@ -179,6 +299,21 @@ struct ChatView: View {
                     }
                 }
             }
+            
+        }
+        .sheet(item: $showSheetTextoCopiadoAlPortapapelesParaInterpretar){ text in
+            
+                RespondView(nameConference: "", texto: text.texto, tipoSalida: .interpretar)
+            
+        }
+        .sheet(item: $showSheetTtextoCopiadoAlPortapapelesParaChatIA){ text in
+          
+                ChatView(textoACargar: text.texto)
+            
+        }
+        .sheet(item: $showSheetTtextoCopiadoAlPortapapelesParaLienzo){ text in
+            
+                LienzoMain(texto : text.texto)
             
         }
         .alert(isPresented: self.$showAlert){

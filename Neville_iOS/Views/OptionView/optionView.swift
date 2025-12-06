@@ -14,6 +14,7 @@ struct optionView: View {
     
     @State private var showNotasSheet   = false
     @State private var showDiarioSheet  = false
+    @State private var showLienzoSheet  = false
     @State private var showFrasesList   = false
     @State private var showCodeScanner  = false
     @State private var showCodeGenerate = false
@@ -78,6 +79,9 @@ struct optionView: View {
             }
             .sheet(isPresented: $showDiarioSheet) {
                 DiarioListView()
+            }
+            .sheet(isPresented: $showLienzoSheet) {
+                LienzoMain(texto: nil)
             }
             .sheet (isPresented: $showFrasesList){
                 FrasesListView()
@@ -146,9 +150,9 @@ struct optionView: View {
             HStack(spacing: 20){
                 
                 Button{
-                    showDiarioSheet = true
+                    showLienzoSheet = true
                 }label: {
-                    bloqueA("book", "Diario")
+                    bloqueA("heart.text.square", "Lienzo")
                 }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: [settingModel.colorFondo_a, settingModel.colorFondo_b]))
                 
                 

@@ -36,12 +36,13 @@ struct AddNotasView: View {
                     TextEditor(text: $nota)
                         .font(.system(size: 22))
                         .multilineTextAlignment(.leading)
+                        .padding(12) // padding interno que mueve el cursor
                         .background(
                             RoundedRectangle(cornerRadius: 12, style: .continuous)
                              .fill(Color.black.opacity(0.05))
                         )
                         .overlay(
-                            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                            RoundedRectangle(cornerRadius: 12, style: .continuous)
                              .stroke(Color.gray.opacity(0.4), lineWidth: 0.5)
                         )
                         .frame(height: 250)
@@ -66,19 +67,15 @@ struct AddNotasView: View {
                             self.modelNotas.getAllNotasToModel() //Actualizando el listado
                             
                             if FeedBackModel.checkReviewRequest() {
-                            #if os(macOS)
+                            
                                 showWindow(for: FeedbackView(showTextBotton: false),
                                            environmentObjects: [],
                                            title: "Enviar una Reseña a la App Store",
                                            size: AppCons.windows_size_content_small,
                                            isModal: true
                                 )
-                            #else
-                                self.sheetShowFeedBackReview = true
-                            #endif
+                            
                                 
-                            }else{
-                                dimiss()
                             }
                             
                         }else{
@@ -89,16 +86,20 @@ struct AddNotasView: View {
                     }
                 }
                 
-                ToolbarItem(placement: .principal) {
-                    Button{ dimiss()}label: {
-                        Text("Cancelar")
-                            .foregroundStyle(.red)
+                if ventanaActualEsModal(){
+                    ToolbarItem(placement: .navigation) {
+                        Button{
+                            if let windows = NSApp.keyWindow{
+                                    closeWindow(windows)
+                            }
+                            
+                        }label: {
+                            Image(systemName: "xmark.circle.fill")
+                                .foregroundStyle(.red)
+                        }
+                        
                     }
                 }
-                
-                
-                
-                
                 #endif
                 
                 #if os(iOS)

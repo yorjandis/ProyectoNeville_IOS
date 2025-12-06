@@ -58,22 +58,27 @@ struct ListNotasViews: View {
                     }
                 }
             }else{
-                Spacer()
-                       autenticationView()
-                }
-            
-
-                Spacer()
-                Divider()
-                HStack(spacing: 30){
+               
                     Spacer()
-                    
-                    Button("Volver"){
-                        dimiss()
+                           autenticationView()
+            }
+                
+
+                    Spacer()
+                   
+                    Divider()
+                    HStack(spacing: 30){
+                        Spacer()
+                        #if os(iOS)
+                        Button("Volver"){
+                            dimiss()
+                        }
+                        .padding(.trailing, 20)
+                        #endif
                     }
-                    .padding(.trailing, 20)
-                }
-                .padding(.bottom, 20)
+                
+                    .padding(.bottom, 20)
+                
                 .navigationTitle("Notas")
             #if os(iOS)
                 .navigationBarTitleDisplayMode(.inline)
@@ -375,10 +380,8 @@ struct cardNotas: View{
                                        title: "Editar Nota",
                                        size: AppCons.windows_size_content_small,
                                        isModal: true
-                            
                             )
                         }
-                          
                     }
                         label:{
                         Label("Editar...", systemImage: "highlighter.badge.ellipsis")
@@ -416,11 +419,33 @@ struct cardNotas: View{
                         }
                     NavigationLink{
                             let isfav = nota!.isfav
-                            let texto = "nota>>\(nota!.title ?? "")>>\(nota!.nota ?? "")>>isfav:\(isfav == true  ? "Si" : "No")"
+                            let texto = "nota>>\(nota!.title ?? "")>>\(nota!.nota ?? "")>>\(isfav == true  ? "si" : "no")"
                             GenerateQRView(footer: texto, showImage: true)
                     }label:{
                         Label("Generar QR...", systemImage: "qrcode")
                     }
+                    
+                    #if os(macOS)
+                    Button{
+                        showWindow(for: LienzoMain(texto: nota?.nota ?? ""),
+                                   environmentObjects: [],
+                                   title: "Lienzo",
+                                   size: .absolute(CGSize(width: 650, height: 750)),
+                                   isModal: false
+                        )
+                        
+                    }label:{
+                        Label("Lienzo", systemImage: "heart.text.square")
+                    }
+                    
+                    #else
+                    NavigationLink{
+                        LienzoMain(texto: nota?.nota ?? "")
+                    }label:{
+                        Label("Lienzo", systemImage: "qrcode")
+                    }
+                    #endif
+                    
                     
                     
                     Button{
@@ -438,6 +463,7 @@ struct cardNotas: View{
                     
                     ShareLink(item: "\(nota!.title ?? "")\n \(nota!.nota ?? "")")
                     
+                    //Funciones de inteligencia: IA
                     if #available(iOS 26.0, macOS 26.0, *) {
                         if IAModelAppleIntelligence.isAvailable(){
                             
@@ -522,7 +548,6 @@ struct cardNotas: View{
                         }
                     }
                     
-                    
                     Button{
                         showConfirmDialogDeleteNota = true
                     }label:{
@@ -539,12 +564,15 @@ struct cardNotas: View{
             }
             .contentShape(Rectangle())
             .onTapGesture {
-                expandNota.toggle()
+                withAnimation {
+                    expandNota.toggle()
+                }
+                
             }
             .onAppear{
                 isfav = nota!.isfav
             }
-            //Dialogo de conformación para elimnar una nota
+            //Dialogo de confirmación para elimnar una nota
             .confirmationDialog("Esta seguro?", isPresented: $showConfirmDialogDeleteNota){
                 Button("Eliminar Nota", role: .destructive){
                     
@@ -561,15 +589,25 @@ struct cardNotas: View{
             if expandNota {
                     //Divider()
                     HStack{
-                        Text(nota!.nota ?? "")
+                        SelectableText(nota!.nota ?? "")
+                       // Text(nota!.nota ?? "")
                             .font(.system(size: 20))
+                            .fontDesign(.serif)
+                            .foregroundStyle(.black)
+                            .contentShape(RoundedRectangle(cornerRadius: 20))
                             .padding(.vertical, 4)
                             .padding(.horizontal, 5)
-                            .fontDesign(.serif)
-                            .onTapGesture {
-                                    expandText.toggle()
+                            .background{
+                                LinearGradient(
+                                    gradient: Gradient(colors: [
+                                        Color(red: 0.55, green: 0.75, blue: 0.89), // azul claro
+                                        Color(red: 0.55, green: 0.75, blue: 0.89)  // azul un poco más oscuro
+                                    ]),
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
                             }
-                        Spacer()
+                        
                 }
             }
         }
@@ -586,6 +624,4 @@ struct cardNotas: View{
 
 
 
-#Preview("Home") {
-    ListNotasViews()
-}
+

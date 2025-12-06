@@ -35,7 +35,8 @@ struct GamePLay: View {
     var body: some View {
         NavigationStack {
             ZStack(alignment: .bottom){
-                    
+                
+                
                 LinearGradient(colors: [.brown, .orange], startPoint: .bottom, endPoint: .top)
                     .ignoresSafeArea()
                 
@@ -94,13 +95,16 @@ struct GamePLay: View {
                                 }
                             }label: {
                                 Text("Falso")
-                                    .foregroundStyle(.white)
+                                    .foregroundColor(.white)
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity) // el label ocupa todo
+                                    .background(.black.opacity(0.7))
+                                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                                    .contentShape(RoundedRectangle(cornerRadius: 10)) // área táctil coincide
                                     
                             }
-                            .frame(width: 100)
-                            .padding()
-                            .background(.black.opacity(0.7))
-                            .clipShape(RoundedRectangle(cornerSize: CGSize(width: 20, height: 10)))
+                            .buttonStyle(.plain) // aplicar estilo al final
+                            .frame(width: 100, height: 50) // este frame define el tamaño real del botón
+                            
                             
                             Button{
                                 if self.opaci != 1 {
@@ -110,13 +114,16 @@ struct GamePLay: View {
                                 
                             }label: {
                                 Text("Cierto")
-                                    .foregroundStyle(.white)
-                                    
+                                    .foregroundColor(.white)
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity) // el label ocupa todo
+                                    .background(.black.opacity(0.7))
+                                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                                    .contentShape(RoundedRectangle(cornerRadius: 10)) // área táctil coincide
+                                
                             }
-                            .frame(width: 100)
-                            .padding()
-                            .background(.black.opacity(0.7))
-                            .clipShape(RoundedRectangle(cornerSize: CGSize(width: 20, height: 10)))
+                            .buttonStyle(.plain) // aplicar estilo al final
+                            .frame(width: 100, height: 50) // este frame define el tamaño real del botón
+                            
 
                             
                         }

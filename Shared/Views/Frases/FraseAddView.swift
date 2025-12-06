@@ -18,6 +18,11 @@ struct FraseAddView: View {
     //Mostrar la ventana de FeedBackReview
     @State private var sheetShowFeedBackReview: Bool = false
     
+    
+    //Alerts
+    @State private var showAlert: Bool = false
+    @State private var alertMessage: String = ""
+    
     var body: some View {
         NavigationStack {
             VStack{
@@ -26,7 +31,10 @@ struct FraseAddView: View {
             HStack{
                 Button("Guardar"){
                     if !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                        frasesModel.AddFrase(frase: text)
+                        if frasesModel.AddFrase(frase: text) == false {
+                            self.alertMessage = "No se pudo guardar la frase"
+                            self.showAlert = true
+                        }
                         //Lanza la ventana de FeedBackreview si se alcanza el humbral de hitos
                         if  FeedBackModel.checkReviewRequest() {
                             #if os(macOS)
@@ -105,15 +113,20 @@ struct FraseAddView: View {
                 ToolbarItem(placement: .topBarTrailing){
                     Button("Guardar"){
                         if !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                            frasesModel.AddFrase(frase: text)
-                            //Lanza la ventana de FeedBackreview si se alcanza el humbral de hitos
-                            if  FeedBackModel.checkReviewRequest() {
-                                self.sheetShowFeedBackReview = true
+                            if frasesModel.AddFrase(frase: text){
+                                //Lanza la ventana de FeedBackreview si se alcanza el humbral de hitos
+                                if  FeedBackModel.checkReviewRequest() {
+                                    self.sheetShowFeedBackReview = true
+                                }
+                                Task{
+                                    await frasesModel.FiltrarListado()
+                                }
+                                self.dismiss()
+                            }else{
+                                self.alertMessage = "No se pudo guardar la frase"
+                                self.showAlert = true
                             }
-                            Task{
-                                await frasesModel.FiltrarListado()
-                            }
-                            self.dismiss()
+                            
                         }
                     }
                     .buttonStyle(.borderedProminent)
@@ -148,6 +161,9 @@ struct FraseAddView: View {
             }
             .sheet(isPresented: self.$sheetShowFeedBackReview) {
                 FeedbackView(showTextBotton: true)
+            }
+            .alert(isPresented: self.$showAlert){
+                Alert(title: Text("Adicionar una Frase"), message: Text(self.alertMessage))
             }
            
         }

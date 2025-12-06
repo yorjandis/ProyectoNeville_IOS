@@ -46,24 +46,36 @@ struct UpdateNotasView: View {
                     Button("Actualizar"){
                         if NotasModel().updateNota(NotaID: NotaId, newTitle: title, newNota: nota){
                             self.modelNotas.getAllNotasToModel()
+                            
+                            
+                            
                         }else{
                             print("Error al actualizar la nota")
                         }
-
-                            dimiss()
+                        
+                        //Saliendo de la ventana
+                        if let windows = NSApp.keyWindow{
+                            if ventanaActualEsModal(){
+                                closeWindow(windows)
+                            }
+                        }
 
                     }
                 }
                 
-                ToolbarItem(placement: .principal) {
+                if ventanaActualEsModal(){
+                    ToolbarItem(placement: .navigation) {
                         Button{
+                            if let windows = NSApp.keyWindow{
+                                    closeWindow(windows)
+                            }
                             
-                                dimiss()
-                           
                         }label: {
-                            Text("Cancelar")
+                            Image(systemName: "xmark.circle.fill")
                                 .foregroundStyle(.red)
                         }
+                        
+                    }
                 }
                 #endif
                 

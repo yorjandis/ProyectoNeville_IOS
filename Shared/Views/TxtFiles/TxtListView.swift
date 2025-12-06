@@ -14,12 +14,14 @@ struct TxtListView: View {
     
     @Environment(\.colorScheme) var theme
     @Environment(\.managedObjectContext) var context
-    @EnvironmentObject private var settingModel : SettingModel
-    @StateObject var modeloTxt : TxtContentModel = TxtContentModel.shared
+    @StateObject private var settingModel : SettingModel = SettingModel()
+    @StateObject private var modeloTxt : TxtContentModel = TxtContentModel.shared
+    
+    @EnvironmentObject private var clipBoardModel : ClipboardObserver
     
     
     let typeOfContent : TipoDeContenido //Tipo de contenido a cargar
-
+    
     @State var title : String //Es el título
     
     @AppStorage(AppCons.UD_setting_fontListaSize)  var fontSizeLista : Int = 20
@@ -37,7 +39,7 @@ struct TxtListView: View {
     @State var showAlertSearchInNotas = false
     @State var textFiel3 = ""
     
-
+    
     //Buscar en la lista actual
     @State private var showAlertSearchInTitles = false
     @State private var textFieldTxtTitles = ""
@@ -45,7 +47,7 @@ struct TxtListView: View {
     @FocusState private var focused: Bool
     
     
-
+    
     var body: some View {
         
         NavigationStack{
@@ -79,77 +81,120 @@ struct TxtListView: View {
                         })
                 }
                 .padding(.horizontal)
-                #if os(macOS)
+#if os(macOS)
                 .background(.windowBackground)
-                #endif
-               
+#endif
                 
-                List(modeloTxt.textList, id: \.self){nombreTxt in
-                    LazyVStack(alignment: .leading) {
-                        HStack{
+      //En macOS: el listado se divide en dos columnas
+#if os(macOS)
+                ScrollView {
+                    let columnas: [GridItem] = [
+                        GridItem(.flexible(), spacing: 16),
+                        GridItem(.flexible(), spacing: 16)
+                    ]
+                    
+                    LazyVGrid(columns: columnas, alignment: .leading, spacing: 12) {
+                        ForEach(modeloTxt.textList, id: \.self) { nombreTxt in
+                            
+                            HStack(alignment: .center) {
+                                Image(systemName: "leaf.fill")
+                                    .padding(.horizontal, 5)
+                                    .foregroundStyle(.linearGradient(
+                                        colors: [
+                                            modeloTxt.getIsFavOfTxt(
+                                                nombreTxt: nombreTxt,
+                                                type: self.typeOfContent
+                                            ) ? .orange : .black,
+                                            modeloTxt.isNotaOfTxt(
+                                                nombreTxt: nombreTxt,
+                                                type: typeOfContent
+                                            ) ? .green : .black
+                                        ],
+                                        startPoint: .leading,
+                                        endPoint: .trailing
+                                    ))
+                                
+                                Button {
+                                    showWindow(
+                                        for: ContentTxtShowView(
+                                            title: self.title,
+                                            nombreTxt: nombreTxt,
+                                            type: self.typeOfContent
+                                        ),
+                                        environmentObjects: [self.modeloTxt, self.settingModel, self.clipBoardModel],
+                                        title: "\(self.title) - \(nombreTxt)",
+                                        size: AppCons.windows_size_content,
+                                        isModal: false
+                                    )
+                                } label: {
+                                    Text(nombreTxt)
+                                        .font(.system(size: CGFloat(self.fontSizeLista)))
+                                        .fontDesign(.serif)
+                                        .bold()
+                                        .foregroundStyle(.black)
+                                }
+                                .buttonStyle(.plain)
+                            }
+                            .padding(.vertical, 4)
+                        }
+                    }
+                    .padding()
+                }
+                
+#else
+                
+                // iOS / iPadOS conservan tu List original
+                List(modeloTxt.textList, id: \.self) { nombreTxt in
+                    VStack(alignment: .leading) {
+                        HStack {
                             Image(systemName: "leaf.fill")
                                 .padding(.horizontal, 5)
                                 .foregroundStyle(.linearGradient(colors: [
-                                    (modeloTxt.getIsFavOfTxt(nombreTxt: nombreTxt, type: self.typeOfContent)) ? .orange : .gray, (modeloTxt.isNotaOfTxt(nombreTxt: nombreTxt, type: typeOfContent)) ? .green : .gray], startPoint: .leading, endPoint: .trailing))
+                                    (modeloTxt.getIsFavOfTxt(nombreTxt: nombreTxt, type: self.typeOfContent)) ? .orange : .black,
+                                    (modeloTxt.isNotaOfTxt(nombreTxt: nombreTxt, type: typeOfContent)) ? .green : .black
+                                ], startPoint: .leading, endPoint: .trailing))
                             
-                            //Abrir la conferencia
-                            #if os(macOS)
-                            Button{
-                                showWindow(for: ContentTxtShowView(title: self.title, nombreTxt: nombreTxt, type: self.typeOfContent),
-                                           environmentObjects: [self.modeloTxt, self.settingModel],
-                                           title: "\(self.title) - \(nombreTxt)" ,
-                                           size: AppCons.windows_size_content,
-                                           isModal: false                      
-                                )
-                                
-                                
-                            }label: {
-                                
-                                Text(nombreTxt)
-                                    .font(.system(size: CGFloat(self.fontSizeLista)))
-                            }
-                            .buttonStyle(.plain)
-                            #else
-                            NavigationLink{
-                                
+                            NavigationLink {
                                 ContentTxtShowView(title: self.title, nombreTxt: nombreTxt, type: self.typeOfContent)
-                                
-                            }label: {
+                                    .environmentObject(self.modeloTxt)
+                                    .environmentObject(self.settingModel)
+                                    .environmentObject(self.clipBoardModel)
+                            } label: {
                                 Text(nombreTxt)
                                     .font(.system(size: CGFloat(self.fontSizeLista)))
                             }
-                            
-                            #endif
-                            
                         }
                     }
-                        .swipeActions(edge: .leading){
-                            Button{ //Poner favorito
-                                var temp = modeloTxt.getIsFavOfTxt(nombreTxt: nombreTxt, type: typeOfContent)
-                                temp.toggle()
-                                if TxtContentModel().setIsFavOfTxt(nombreTxt: nombreTxt, type: self.typeOfContent, isFav: temp){
-                                    
-                                 self.modeloTxt.getAllFileTxtOfType(type: self.typeOfContent) //Actualizando el listado
-
-                                }
-                            }label: {
-                                Image(systemName: "heart")
-                                    .tint(Color.orange)
+                    .swipeActions(edge: .leading) {
+                        Button {
+                            var temp = modeloTxt.getIsFavOfTxt(nombreTxt: nombreTxt, type: typeOfContent)
+                            temp.toggle()
+                            if TxtContentModel().setIsFavOfTxt(nombreTxt: nombreTxt, type: self.typeOfContent, isFav: temp) {
+                                self.modeloTxt.getAllFileTxtOfType(type: self.typeOfContent)
                             }
-                            NavigationLink{
-                                EditNoteTxt(entidad: nombreTxt, typeOfContent: self.typeOfContent)
-                            }label: {
-                                Image(systemName: "bookmark")
-                                    .tint(Color.green)
-                            }
+                        } label: {
+                            Image(systemName: "heart")
+                                .tint(Color.orange)
+                        }
+                        
+                        NavigationLink {
+                            EditNoteTxt(entidad: nombreTxt, typeOfContent: self.typeOfContent)
+                        } label: {
+                            Image(systemName: "bookmark")
+                                .tint(Color.green)
+                        }
                     }
-                    
                 }
+                
+#endif
             }
             .navigationTitle(self.title)
-            #if os(iOS)
+            .background{
+                LinearGradient(colors: [ .gray.opacity(0.4),.blue.opacity(0.2) ], startPoint: .topLeading, endPoint: .bottomTrailing)
+            }
+#if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
-            #endif
+#endif
             .toolbar{
                 
                 ToolbarItem{
@@ -175,7 +220,7 @@ struct TxtListView: View {
                         
                         CreateMenuItemButton(text: "Buscar en el contenido", sysImageStr: "text.magnifyingglass") {
                             showAlertSearchInTxt = true
-                        } 
+                        }
                         
                         CreateMenuItemButton(text: "Buscar en las notas", sysImageStr: "text.magnifyingglass") {
                             showAlertSearchInNotas = true
@@ -187,10 +232,10 @@ struct TxtListView: View {
                     }
                 }
                 
-                    
+                
             }
             .task{
-               modeloTxt.getAllFileTxtOfType(type: self.typeOfContent)
+                modeloTxt.getAllFileTxtOfType(type: self.typeOfContent)
             }
             .alert("Buscar en contenido", isPresented: $showAlertSearchInTxt){
                 TextField("", text: $textFiel2, axis: .vertical)
@@ -220,14 +265,15 @@ struct TxtListView: View {
 //Permite ver y editar el campo nota
 struct EditNoteTxt:View {
     @Environment(\.dismiss) var dismiss
-    @EnvironmentObject var modeloTxt : TxtContentModel
+    
+    @StateObject var modeloTxt : TxtContentModel = TxtContentModel.shared
     @State var entidad : String
     @State var typeOfContent : TipoDeContenido
     @FocusState  private var focus: Bool
     
     @State private var textfiel = ""
     @Environment(\.managedObjectContext) private var context
-
+    
     
     var body: some View {
         NavigationStack{
@@ -250,11 +296,11 @@ struct EditNoteTxt:View {
                 }
             }
             .navigationTitle("Notas")
-            #if os(iOS)
+#if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
-            #endif
+#endif
             .toolbar{
-                #if os(macOS)
+#if os(macOS)
                 if ventanaActualEsModal(){
                     ToolbarItem(placement: .navigation) {
                         Button{
@@ -269,22 +315,22 @@ struct EditNoteTxt:View {
                     }
                 }
                 
-                #endif
+#endif
                 
                 ToolbarItem {
                     Button{
                         if modeloTxt.setNotaOfTXT(nombreTxt: entidad, type: self.typeOfContent, nota: textfiel){
                             modeloTxt.getAllFileTxtOfType(type: self.typeOfContent)
                         }
-                        #if os(macOS)
+#if os(macOS)
                         if let window = NSApp.keyWindow {
                             closeWindow(window)
                         }else{
                             dismiss()
                         }
-                        #else
+#else
                         dismiss()
-                        #endif
+#endif
                         
                         
                     }label: {
@@ -292,14 +338,10 @@ struct EditNoteTxt:View {
                             .foregroundStyle(.blue).bold()
                     }
                 }
-
+                
             }
         }
     }
 }
 
 
-
-#Preview {
-    TxtListView(typeOfContent: .conf , title: "Lecturas")
-}

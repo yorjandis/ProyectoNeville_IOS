@@ -20,7 +20,7 @@ struct DescargoResponsabilidadIA : View{
     var body: some View {
         VStack(alignment: .center, spacing: 15){
             Text(AppCons.DescargoDeResposabilidad)
-            .font(.body).fontDesign(.serif)
+            .font(.system(size: 20)).fontDesign(.serif)
             HStack{
                 if self.DescargoDeIA == false{
                     Button("Acepto"){
@@ -58,6 +58,19 @@ struct DescargoResponsabilidadIA : View{
                 
             }
             .padding()
+            
+            Text("Valor Actual: \(self.DescargoDeIA ? "Aceptado" : "No aceptado")")
+            
+            #if os(macOS)
+            if ventanaActualEsModal(){
+                Button("Salir"){
+                    if let windows = NSApp.keyWindow{
+                        closeWindow(windows)
+                    }
+                }
+            }
+            
+            #endif
             
             Spacer()
             

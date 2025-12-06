@@ -52,7 +52,7 @@ struct Ajustes: View {
     
     //Almacena internamente los colores de configuración. Al inicio se cargan los valores almacenados
     @State var ColorFrase       : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_color_frases) ?? .black
-    @State var ColorPrimario    : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_color_main_a) ?? .orange
+    @State var ColorPrimario    : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_color_main_a) ?? .purple
     @State var ColorSecundario  : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_color_main_b) ?? .blue.opacity(0.5)
     
     
@@ -92,14 +92,6 @@ struct Ajustes: View {
             
             
             #if os(macOS)
-            Button("Lienzo"){
-                showWindow(for: LienzoMain(),
-                environmentObjects: [],
-                           title: "Lienzo",
-                           size: .absolute(CGSize(width: 500, height: 650)),
-                           isModal: false
-                )
-            }
             ScrollView{
                 VStack(alignment: .leading){
                     Group{
@@ -468,12 +460,14 @@ struct Ajustes: View {
                         //Sección de interruptores para mostrar contenido en la ventana Details
                         #if os(macOS)
                         VStack(alignment: .leading, spacing: 15){
-                            Text("Evitar Ventana Flotante:").font(.system(size: 22)).foregroundStyle(.orange)
+                            Text("Incrustar estas ventanas:").font(.system(size: 22)).foregroundStyle(.orange)
                             
                             Toggle("Chat IA", isOn: self.$showEnDetails_chat_ia)
                             Toggle("Diario", isOn: self.$showEnDetails_diario)
                             Toggle("Evaluación", isOn: self.$showEnDetails_evaluacion)
                             Toggle("Ajustes", isOn: self.$showEnDetails_ajustes)
+                            
+                            Text("Nota: Si marca una casilla, la ventana asociada se abrirá dentro de la aplicación principal").font(.system(size: 18))
                             
                         }
                         .padding(.horizontal, 30)
@@ -561,8 +555,23 @@ struct Ajustes: View {
                             }
                             .buttonStyle(PlainButtonStyle())
                             
+                            
                             Button{
-                                
+                                showWindow(for: Novedades(),
+                                           environmentObjects: [],
+                                           title: "Novedades",
+                                           size: AppCons.windows_size_content_small,
+                                           isModal: false
+                                )
+                            }label:{
+                                Label("Novedades en esta versión", systemImage: "info.circle.text.page.fill")
+                                    .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
+                                    .bold()
+                                    .font(.headline)
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                            
+                            Button{
                                 showWindow(for: ScrollView{
                                     Text(UtilFuncs.FileRead("privacy"))
                                         .font(.system(size: 22))
@@ -648,9 +657,6 @@ struct Ajustes: View {
             }
             .navigationTitle("Ajustes")
             #else //iOS,ipadOS.... NO macOS
-            NavigationLink("Lienzo"){
-                LienzoMain()
-            }
                 Form{
                     Section("Tamaño de letra"){
                         HStack{
@@ -722,11 +728,13 @@ struct Ajustes: View {
                         VStack(alignment: .center){
                             ColorPicker("Color Degradado Superior", selection: $ColorPrimario)
                                 .onChange(of: ColorPrimario, initial: true) { oldValue, newValue in
+                                    
                                     settingModel.saveColor(forkey: AppCons.UD_setting_color_main_a, color: newValue)
                                 }
                                 .padding(.bottom, 10)
                             ColorPicker("Color Degradado Inferior", selection: $ColorSecundario)
                                 .onChange(of: ColorSecundario, initial: true) { oldValue, newValue in
+                                    
                                     settingModel.saveColor(forkey: AppCons.UD_setting_color_main_b, color: newValue)
                                     
                                 }
@@ -975,6 +983,15 @@ struct Ajustes: View {
                         }label: {
                             Label("Información", systemImage: "info.circle.fill")
                                 .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
+                        }
+                        
+                        NavigationLink{
+                            Novedades()
+                        }label:{
+                            Label("Novedades en esta versión", systemImage: "info.circle.text.page.fill")
+                                .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
+                                .bold()
+                                .font(.headline)
                         }
                         
                         NavigationLink{

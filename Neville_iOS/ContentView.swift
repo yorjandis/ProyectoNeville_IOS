@@ -23,7 +23,6 @@ struct ContentView: View{
         
         
         Home()
-            
             .onOpenURL(perform: { url in
                 switch url.description{
                     case AppCons.DeepLink_url_Diario : showSheetDiario = true

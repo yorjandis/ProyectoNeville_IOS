@@ -17,6 +17,8 @@ struct Home: View {
     @State  private var fontSize : CGFloat = CGFloat(UserDefaults.standard.integer(forKey: AppCons.UD_setting_fontFrasesSize)) //Setting para Frases
     @State  private var fontSizeMenu : CGFloat = 24 //Setting para menu
 
+    //Lanzar Ventana de novedades:
+    @State private var showNovedades: Bool = false
 
     var body: some View {
         NavigationStack{
@@ -47,6 +49,7 @@ struct Home: View {
                     FrasesView()
  
                     Spacer()
+                    
                     TabButtonBar(
                         fontFrasesSize: $fontSize,
                         fontMenuSize: $fontSizeMenu,
@@ -56,9 +59,31 @@ struct Home: View {
                     )
                 }
             }
+            .onAppear {
+                switch NovedadesModel.LanzarVentanaNovedades(){
+                case "primeraVez":
+                    //Actualiza las variables iniciales del Lienzo:
+                    UserDefaults.standard.set(true,forKey: LienzoModel.key_visibilidadTextoSecundario) //Visibilidad de Imagen
+                    UserDefaults.standard.set(true, forKey: LienzoModel.key_visibilidadImagenLienzo)
+                    LienzoModel.shared.saveColorTextoSecundario(colorTexttoSecundario: .black) //Color del Texto Secundario
+                    
+                    //Muestra la ventana de Resultados
+                    self.showNovedades = true
+                case "actualizacion":
+                    //Muestra la ventana de resultados
+                    self.showNovedades = true
+                default:
+                    print("No hacer nada")
+                }
+                
+            }
             
             
         }
+        .sheet(isPresented: self.$showNovedades) {
+            Novedades()
+        }
+
         
     }
     
@@ -78,6 +103,9 @@ struct Home: View {
 struct TabButtonBar : View{
     
     @EnvironmentObject private var frasesModel : FrasesModel
+    @EnvironmentObject private var securityModel : SecurityModel
+    @EnvironmentObject private var clipBoardModel : ClipboardObserver
+    
     @State      var showOptionView = false
     @Binding    var fontFrasesSize : CGFloat //Setting
     @Binding    var fontMenuSize : CGFloat //Setting$
@@ -106,6 +134,7 @@ struct TabButtonBar : View{
                     case "book.pages.fill": //Listado de Conferencias
                         NavigationLink{
                             TxtListView(typeOfContent: .conf, title: "Lecturas")
+                                .environmentObject(self.clipBoardModel)
                         }label: {
                             makeItemlabel(image: idx)
                         }
@@ -126,7 +155,9 @@ struct TabButtonBar : View{
                         }
                         
                     case "book":
-                        NavigationLink{ DiarioListView()
+                        NavigationLink{
+                            DiarioListView()
+                                .environmentObject(securityModel)
                         }label: {makeItemlabel(image: idx)}
                         
                     case "gear":

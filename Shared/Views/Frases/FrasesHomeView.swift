@@ -115,7 +115,7 @@ struct FrasesView : View{
                             showWindow(for: GenerateQRView(footer: self.frase, showImage: true),
                                        environmentObjects: [self.frasesModel],
                                        size: AppCons.windows_size_content,
-                                       isModal: true)
+                                       isModal: false) //Debe ser una ventana no modal, de lo contrario no funciona el compartir la imagen en macOS
                         }label:{
                             Label("Generar QR", systemImage: "qrcode")
                         }
@@ -127,6 +127,27 @@ struct FrasesView : View{
                         }
                         
                         #endif
+                        #if os(macOS)
+                        Button{
+                            showWindow(for: LienzoMain(texto: self.frase),
+                                       environmentObjects: [],
+                                       title: "Lienzo",
+                                       size: .absolute(CGSize(width: 650, height: 750)),
+                                       isModal: false)
+                            
+                        }label: {
+                            Label("Lienzo", systemImage: "heart.text.square")
+                        }
+                        
+                        #else
+                        NavigationLink{
+                            LienzoMain(texto: self.frase)
+                        }label: {
+                            Label("Lienzo", systemImage: "heart.text.square")
+                        }
+                        #endif
+                        
+                        
                         
                         ShareLink(item: self.frase) {
                                         Label("Compartir frase", systemImage: "square.and.arrow.up")
@@ -146,6 +167,7 @@ struct FrasesView : View{
                             Label("Nota de la frase", systemImage: "bookmark.fill" )
                         }
                         
+                        //Funciones de Inteligencia: IA
                         if #available(iOS 26.0, macOS 26.0,  *)  {
                             
                             if IAModelAppleIntelligence.isAvailable(){

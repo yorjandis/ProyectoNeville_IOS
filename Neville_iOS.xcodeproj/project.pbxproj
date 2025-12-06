@@ -150,9 +150,12 @@
 				Models/IAModel/ChactModel.swift,
 				Models/IAModel/IAModelAppleIntelligence.swift,
 				Models/KeyChainModel/KeyChainModel.swift,
+				Models/LienzoModel/LienzoModel.swift,
 				Models/MultiplatformModel/Multiplatform.swift,
 				Models/NetModel/NetModel.swift,
 				Models/NotasModel/NotasModel.swift,
+				Models/NovedadesModel/NovedadesModel.swift,
+				Models/PortapaplesModel/PortapapelesModel.swift,
 				Models/QRCode/QRModel.swift,
 				Models/QRCode/QRReader.swift,
 				Models/ReflexModel/ReflexModel.swift,
@@ -733,15 +736,16 @@
 				Views/AdminPassword/CreatePasswordView.swift,
 				Views/AdminPassword/LogginView.swift,
 				Views/Ajustes/Ajustes.swift,
+				Views/Diario/cardItemDiario.swift,
 				Views/Diario/DiarioCalendarView.swift,
 				Views/Diario/DiarioListView.swift,
+				Views/Diario/editContent.swift,
 				Views/FeedBackReview/FeedBackReview.swift,
 				Views/Frases/FraseAddView.swift,
 				Views/Frases/FrasesHomeView.swift,
 				Views/Frases/FrasesListView.swift,
 				Views/Frases/FrasesNotasAddView.swift,
 				Views/Frases/FrasesUpdateView.swift,
-				Views/Frases/Untitled.swift,
 				Views/IAView/ChatView.swift,
 				Views/IAView/DescargoResponsabilidad.swift,
 				Views/IAView/RespondView.swift,
@@ -750,11 +754,10 @@
 				Views/Lienzo/LienzoUtilsUI.swift,
 				Views/Notas/AddNotasView.swift,
 				Views/Notas/ListNotasViews.swift,
-				Views/Notas/ShowNotaView.swift,
 				Views/Notas/UpdateNotasView.swift,
+				Views/Novedades/Novedades.swift,
 				Views/PlayGame/GamePLay.swift,
 				Views/QRCode/gnerateQRView.swift,
-				Views/QRCode/QRLoadFromGaleryView.swift,
 				Views/Reflexiones/AddReflexView.swift,
 				Views/Reflexiones/ReflexEditView.swift,
 				Views/Reflexiones/ReflexListView.swift,
@@ -813,12 +816,26 @@
 			);
 			target = 917C301E2EBCD1E5006BB36E /* La Ley_mac */;
 		};
+		914415B12EDC39E300FFC61D /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Intens/AbrirDiarioIntent.swift,
+				Intens/AbrirNotasItent.swift,
+				Intens/CrearEntradaDiarioIntent.swift,
+				Intens/CrearFraseIntent.swift,
+				Intens/CrearNotaIntent.swift,
+				Intens/Shortcuts.swift,
+				Services/LocalAutenticationForIntent.swift,
+			);
+			target = E95B93522AAFBB2600B5E2B5 /* Neville_iOS */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		911FE4452ECB2A7F009F83BE /* Shared */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (911FE4562ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 911FE4572ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 911FE4582ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Shared; sourceTree = "<group>"; };
 		911FE4D42ECB2E8D009F83BE /* OptionView */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (911FEB632ECB3B7F009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = OptionView; sourceTree = "<group>"; };
 		911FF1FA2ECB4064009F83BE /* Preview Content */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (911FF1FC2ECB4064009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 911FF1FD2ECB4064009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = "Preview Content"; sourceTree = "<group>"; };
+		914415A92EDC377200FFC61D /* Atajos */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (914415B12EDC39E300FFC61D /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Atajos; sourceTree = "<group>"; };
 		917C30202EBCD1E5006BB36E /* La Ley_mac */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "La Ley_mac"; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
@@ -986,6 +1003,7 @@
 				E92F644E2AB6EF5A007BB4BA /* Views */,
 				E95B935A2AAFBB2900B5E2B5 /* Assets.xcassets */,
 				911FF1FA2ECB4064009F83BE /* Preview Content */,
+				914415A92EDC377200FFC61D /* Atajos */,
 			);
 			path = Neville_iOS;
 			sourceTree = "<group>";
@@ -1702,6 +1720,8 @@
 				INFOPLIST_KEY_NSCameraUsageDescription = "Se requiere permisos para usar la cámara";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Se requiere permisos para usar Autenticación segura para Abrir el Diario";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Se necesita permisos para guardar la imagen";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Se necesita permisos para acceder a la galeria";
+				INFOPLIST_KEY_NSSiriUsageDescription = "Siri procesa las peticiones para crear entradas en el Diario, nuevas notas y frases";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -1743,6 +1763,8 @@
 				INFOPLIST_KEY_NSCameraUsageDescription = "Se requiere permisos para usar la cámara";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Se requiere permisos para usar Autenticación segura para Abrir el Diario";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Se necesita permisos para guardar la imagen";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Se necesita permisos para acceder a la galeria";
+				INFOPLIST_KEY_NSSiriUsageDescription = "Siri procesa las peticiones para crear entradas en el Diario, nuevas notas y frases";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

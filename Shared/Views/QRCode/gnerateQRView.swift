@@ -7,6 +7,7 @@
 //Muestra una imagen con un pie de página
 
 import SwiftUI
+import PhotosUI
 #if os(macOS)
 import AppKit
 #endif
@@ -14,12 +15,23 @@ import AppKit
 
 
 struct GenerateQRView : View {
+    
+    
 
     @State var  footer : String = ""
     
     @State  var title : String = "Toque el texto para modificarlo"
     
+    //Para importar una imagen de la galeria
+    @State private var selectedItem: PhotosPickerItem?
+     @State private var selectedImage : UIImage? //La image que se ha leído de la galeria
+    
     @State  var  showImage = true //muestra la imagen del QR ya generado
+    
+    //Para manejar el botón y el fomrato de importación de notas
+    @State private var showImportButton : Bool = false
+    @State private var formatImport : (String, String, Bool)? = nil
+    
     
     @FocusState private var focusState : Bool //Para ocultar el teclado
     
@@ -32,7 +44,7 @@ struct GenerateQRView : View {
     
     #endif
     @State private var showAlert = false
-    
+    @State private var alertMessage: String = ""
     
     
    //UIImage(data: QRModel().generateQRCode(text: string)!)!
@@ -65,14 +77,33 @@ struct GenerateQRView : View {
                                                         image: Image(systemName: "book")
                                                     )
                                      )
-                                    Button("Guardar en Frases"){
-                                        FrasesModel.shared.AddFrase(frase: footer)
-                                    }
-                                    Button("Guardar en Notas"){
-                                        _ = NotasModel().addNote(nota: footer, title: "\(String(String(footer).prefix(footer.count / 3 )))...")
-                                    }
                                     
-                                    
+                                    if self.footer.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false{
+                                        
+                                        Button("Guardar en Frases"){
+                                            if FrasesModel.shared.AddFrase(frase: footer) == false{
+                                                self.alertMessage = "Error el guardar en Frases"
+                                                self.showAlert = true
+                                            }
+                                        }
+                                        //Muestra la opción de guardar en notas si el texto del QR no tiene un formato de importación
+                                        if self.formatImport == nil{
+                                            Button("Guardar en Notas"){
+                                               
+                                                _ = NotasModel().addNote(nota: footer, title: "\(String(String(footer).prefix(footer.count / 3 )))...")
+                                            }
+                                        }
+                                        
+                                        if self.formatImport == nil{
+                                            Button("Formato de Nota"){
+                                                    let result = "nota>>NuevaNotaQR>>\(self.footer)>>no"
+                                                    self.footer = result
+                                                    imagen = getImageQR()
+                                                    showImage = true
+                                                    focusState = false
+                                            }
+                                        }
+                                    }
                                 }
                         }
                         
@@ -93,10 +124,23 @@ struct GenerateQRView : View {
                                                 )
                                  )
                                 Button("Guardar en Frases"){
-                                    FrasesModel.shared.AddFrase(frase: footer)
+                                    if FrasesModel.shared.AddFrase(frase: footer) == false{
+                                        self.alertMessage = "No se pudo guardar la frase"
+                                        self.showAlert = true
+                                    }
                                 }
                                 Button("Guardar en Notas"){
                                     _ = NotasModel().addNote(nota: footer, title: "\(String(String(footer).prefix(footer.count / 3 )))...")
+                                }
+                                
+                                if self.formatImport == nil{
+                                    Button("Formato de Nota"){
+                                            let result = "nota>>NuevaNotaQR>>\(self.footer)>>no"
+                                            self.footer = result
+                                            imagen = getImageQR()
+                                            showImage = true
+                                            focusState = false
+                                    }
                                 }
                                 
                                 
@@ -121,6 +165,100 @@ struct GenerateQRView : View {
                     
                     Spacer()
                     
+                    #if os(macOS)
+                    Button("Importar Imagen QR"){
+                        if let imageTemp = seleccionarImagen(){
+                            QRModel.leerQRConVision(from: imageTemp) { str in
+                                if let texto = str {
+                                    Task {
+                                        await MainActor.run{
+                                            self.footer = texto
+                                            imagen = getImageQR()
+                                            showImage = true
+                                            focusState = false
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                            
+
+                    }
+                    
+                    #endif
+                    
+                    #if os(iOS)
+                    //Permite leer una imagen de  QR almacenado en la galeria:
+                    PhotosPicker(selection: $selectedItem, matching: .images){
+                        Label("Importar imagen QR", systemImage: "photo")
+                    }
+                        .onChange(of: selectedItem) {
+                             
+                            Task {
+                                if let data = try? await selectedItem?.loadTransferable(type: Data.self) {
+                                    
+                                    guard let temp = UIImage(data: data) else {return}//Aqui tenemos la imagen de la galería
+                                    
+                                    //Intentanto leer la imagen cargada
+                                    if let features = detectQRCode(temp), !features.isEmpty{
+                                        for case let row as CIQRCodeFeature in features{
+                                            self.footer = row.messageString ?? ""
+                                        }
+                                        withAnimation {
+                                            self.imagen = temp
+                                        }
+                                        
+                                        
+                                    }else{
+                                        #if os(iOS)
+                                        self.imagen = UIImage(systemName: "qrcode")
+                                        #endif
+                                        #if os(macOS)
+                                        self.imagen = NSImage(systemSymbolName: "qrcode", accessibilityDescription: nil)
+                                        #endif
+                                        
+                                        self.footer = ""
+                                    }
+                                }else{
+                                    print("Fallo al cargar la imagen de la galeria")
+                                }
+                            }
+                        }
+                        .tint(.blue)
+                        .controlSize(.large)
+                        .buttonStyle(.borderedProminent)
+                    #endif
+                    Spacer()
+
+                    //Mostrar el botón de importación de Notas si se ha mostrado un QR de formato de importación de notas:
+                    if self.showImportButton{
+                        HStack{
+                            Button("Importar a Notas"){
+                                Task{
+                                    self.imagen = getImageQR() //Recrea la imagen QR a partir del texto actual. Esto es para el caso de que se modifique el texto antes de importar.
+                                    validarFormatoImportacion()
+                                    if let formato = self.formatImport{
+                                        if NotasModel().addNote(nota: formato.1, title: formato.0, isFav: formato.2){
+                                            self.alertMessage = "Nota importada correctamente"
+                                            self.showAlert = true
+                                        }
+                                    }
+                                }
+                                
+                                
+                                
+                            }
+                            .tint(.blue)
+                            .buttonStyle(.borderedProminent)
+                            
+                            Image(systemName: "info.circle")
+                                .onTapGesture {
+                                    self.alertMessage = "Formato de importación: nota>>Título de Nota>>Contenido de Nota>>Si/No     Ejemplo: nota>>Naranja>>Me encanta la naranja>>Sí"
+                                    self.showAlert = true
+                                }
+                        }
+                       
+                    }
                     
                     #if os(macOS)
                     //Barra inferior para cerrar la ventana modal en macOS
@@ -139,9 +277,8 @@ struct GenerateQRView : View {
             .onAppear {
                     if showImage {
                         imagen = getImageQR()
+                        validarFormatoImportacion() //Validar si la entrada tiene un formato de importación
                     }
-                    
-
                 }
             }
             .onTapGesture {
@@ -153,71 +290,97 @@ struct GenerateQRView : View {
                     imagen = getImageQR()
                 }
             })
+            .onChange(of: self.imagen, { _ , newValue in
+                //En cada cambio de imagen, se chequea si corresponde a un formato de importación de Notas
+                if newValue != nil{
+                    validarFormatoImportacion()
+                }
+            })
             
             .navigationTitle("Generar Código QR")
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
             #endif
             .toolbar{
-                Button{
-                    withAnimation {
-                        if !self.footer.isEmpty {
-                            imagen = getImageQR()
-                            showImage = true
-                            focusState = false
-                        } 
-                    }
-                    
-                }label: {
-                    Image(systemName: "qrcode")
-                }
-                Menu{
-                    
-                    if showImage {
-                        #if os(iOS)
-                        ShareLink(
-                            item: Image(uiImage: imagen!),
-                                        preview: SharePreview("Compartir",
-                                            image: Image(systemName: "book")
-                                        )
-                         )
-                        #elseif os(macOS)
-                        ShareLink(
-                            item: Image(nsImage: imagen!),
-                                        preview: SharePreview("Compartir",
-                                            image: Image(systemName: "book")
-                                        )
-                         )
-                        #endif
-                        
-                        
-                        #if os(iOS)
-                        Button{
-                            UIImageWriteToSavedPhotosAlbum(imagen!, nil, nil, nil)
-                            showAlert = true
-                        }label: {
-                            Label("Guardar en Galeria", systemImage: "photo.badge.arrow.down.fill")
+                ToolbarItem{
+                    Button{
+                        withAnimation {
+                            if !self.footer.isEmpty {
+                                imagen = getImageQR()
+                                showImage = true
+                                focusState = false
+                            }
                         }
-                        #endif
-                    }
-                    
-                    #if os(iOS)
-                    NavigationLink{
-                        QRLoadFromGaleryView()
+                        
                     }label: {
-                        Label("Cargar de Galeria", systemImage: "qrcode")
+                        Image(systemName: "qrcode")
                     }
-                    #endif
-                    
-                }label: {
-                    Image(systemName: "ellipsis")
-                        .rotationEffect(Angle(degrees: 135))
                 }
+                
+                if #available(iOS 26.0, macOS 26.0, *) {
+                    ToolbarSpacer(.fixed)
+                }
+                
+                ToolbarItem{
+                    Menu{
+                        
+                        if showImage {
+                            #if os(iOS)
+                            ShareLink(
+                                item: Image(uiImage: imagen!),
+                                            preview: SharePreview("Compartir",
+                                                image: Image(systemName: "book")
+                                            )
+                             )
+                            #elseif os(macOS)
+                            if let imagen = self.imagen,
+                               let url = QRModel.guardarImagenTemporalmente(imagen: imagen) {
+                                        ShareLink(
+                                            item: url,
+                                            preview: SharePreview("Compartir Imagen", image: Image(nsImage: imagen))
+                                        ) {
+                                            Label("Compartir Imagen", systemImage: "square.and.arrow.up")
+                                        }
+                                    }
+                            
+                            #endif
+                            
+                            
+                            #if os(iOS)
+                            Button{
+                                UIImageWriteToSavedPhotosAlbum(imagen!, nil, nil, nil)
+                                self.alertMessage = "Se ha guardado la imagen QR en la galería"
+                                showAlert = true
+                            }label: {
+                                Label("Guardar en Galeria", systemImage: "photo.badge.arrow.down.fill")
+                            }
+                            #endif
+                        }
+                        
+                        #if os(iOS)
+                       
+                        
+                        /*
+                        NavigationLink{
+                            QRLoadFromGaleryView()
+                        }label: {
+                            Label("Cargar de Galeria", systemImage: "qrcode")
+                        }
+                         */
+                        #endif
+                        
+                    }label: {
+                        Image(systemName: "ellipsis")
+                            .rotationEffect(Angle(degrees: 135))
+                    }
+                }
+                
+                
                 
                 
             }
             .alert(isPresented: $showAlert) {
-                Alert(title: Text("La Ley"), message: Text("Se ha guardado la imagen QR en la galería"))
+                Alert(title: Text("La Ley"), message: Text(self.alertMessage))
             }
         }
             
@@ -228,6 +391,18 @@ struct GenerateQRView : View {
     //Obtiene la imagen QR de un texto
     func getImageQR()->UIImage{
         return UIImage(data: QRModel().generateQRCode(text: self.footer)!)!
+    }
+    
+    //Función que determina si el texto dado tiene un formato de importación de Notas y, e ese caso, rellena los valores:
+    func validarFormatoImportacion(){
+        //determinar si el texto que corresponde a la image tiene un formato de importación de notas:
+        if let result = QRModel.detectFormatImportNota(text: self.footer){
+            self.formatImport = (result.1.0, result.1.1, result.1.2) //Almacenando en una estructura el título, el contenido de la nota, y su estado de favorito
+            self.showImportButton = true
+        }else{
+            self.formatImport = nil
+            self.showImportButton = false
+        }
     }
      
     
@@ -243,7 +418,28 @@ struct GenerateQRView : View {
             let ciImage = CIImage(image: pickedImage),
               let _ = detector.features(in: ciImage) as? [CIQRCodeFeature] else { return }
     }
+    
+    //Lee una UIImage y decodifica su QR si existe, si falla retorna nil
+    func detectQRCode(_ image: UIImage?) -> [CIFeature]? {
+        if let image = image, let ciImage = CIImage.init(image: image){
+            var options: [String: Any]
+            let context = CIContext()
+            options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
+            let qrDetector = CIDetector(ofType: CIDetectorTypeQRCode, context: context, options: options)
+            if ciImage.properties.keys.contains((kCGImagePropertyOrientation as String)){
+                options = [CIDetectorImageOrientation: ciImage.properties[(kCGImagePropertyOrientation as String)] ?? 1]
+            } else {
+                options = [CIDetectorImageOrientation: 1]
+            }
+            let features = qrDetector?.features(in: ciImage, options: options)
+            return features
+
+        }
+        return nil
+    }
+    
     #endif
+    
  
 }
 

@@ -14,8 +14,8 @@ import Combine
 final class SettingModel : ObservableObject {
     
     @Published var colorfrase : Color = .black
-    @Published var colorFondo_a : Color = .orange
-    @Published var colorFondo_b : Color = .blue
+    @Published var colorFondo_a : Color = .purple
+    @Published var colorFondo_b : Color = .blue.opacity(0.5)
     
     init(){
         //Cargando los últimos colores almacenados en UserDefault:
@@ -76,8 +76,8 @@ final class SettingModel : ObservableObject {
         UserDefaults.standard.setValue(1, forKey: AppCons.UD_setting_showReview) //Lleva un conteo de interacciones con el usuario, si llega a 150 se muestra una ventana de review y se resetea
         
         saveColor(forkey: AppCons.UD_setting_color_frases, color: .black)
-        saveColor(forkey: AppCons.UD_setting_color_main_a, color: .red)
-        saveColor(forkey: AppCons.UD_setting_color_main_b, color: .orange)
+        saveColor(forkey: AppCons.UD_setting_color_main_a, color: .purple)
+        saveColor(forkey: AppCons.UD_setting_color_main_b, color: .blue.opacity(0.5))
         saveColor(forkey: AppCons.UD_setting_color_fondoContent, color: .gray) //Color de fondo del ContentTxt
         saveColor(forkey: AppCons.UD_setting_color_textContent, color: .black) //Color de texto del ContentTxt
         

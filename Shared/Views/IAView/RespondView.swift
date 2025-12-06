@@ -215,6 +215,20 @@ struct RespondView: View {
                     .padding()
                     .tint(.black).bold()
                 }.padding()
+                
+                
+                //Mostrando el texto en la interfaz: Solor función de intepretar que se supone que el texto sea corto
+                if self.tipoSalida == .interpretar{
+                    VStack(alignment: .center){
+                        Text(self.texto)
+                            .foregroundStyle(.black.adaptiveTextColor())
+                            .font(.title3)
+                    }
+                    .padding(.vertical, 20)
+                }
+                
+                
+                
                 #endif
             }
             

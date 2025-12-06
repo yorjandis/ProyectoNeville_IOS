@@ -84,17 +84,7 @@ struct AppCons{
     static let windows_size_content : WindowSize = .percentage(width: 0.45, height: 0.53)
     static let windows_size_content_small : WindowSize = .absolute(CGSize(width: 900, height: 400))
     #endif
-    
-    //Devuelve un valor centalizado que indica si todas las ventanas flotantes son modales o no
-    /*
-     -Actualmente esta función no esta en uso.
-     -Deberia implementarse en Ajustes para darle al usuario la posibilidad de establecer todas las ventanas a No modales para tenerlas como ventanas independientes. O a todas modales, para inhabilitar interacción con la ventana padre
-     */
-    static func getIsWindowsModals() -> Bool {
-        return UserDefaults.standard.bool(forKey: "isAllWindowsModals")
-    }
-   
-    
+
     //Descargo de responsabilidad para la utilización de la IA generativa en el dispositivo:
     static let DescargoDeResposabilidad = """
                 Descargo de Responsabilidad:\n
