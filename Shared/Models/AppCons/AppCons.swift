@@ -99,7 +99,14 @@ struct AppCons{
                 🟣 Para hacer uso de la IA debe aceptar estas condiciones.
                 
                 Nota: Este Descargo de Responsabilidad estará disponible en Ajustes.
+                
                 """
+    
+    
+    static let zspNota  = "\u{200B}\u{200B}\u{200B}" //Prefijo oculto en formato importación de Notas
+    static let zspFrase = "\u{2063}\u{2063}\u{2063}" //Prefijo oculto en formato importación de Frases
+
+    
     
 }
 

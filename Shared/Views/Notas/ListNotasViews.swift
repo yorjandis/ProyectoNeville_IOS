@@ -418,8 +418,8 @@ struct cardNotas: View{
                             Label(nota!.isfav ? "Quitar Favorito" : "Hacer Favorito", systemImage: nota!.isfav ? "heart.slash" : "heart")
                         }
                     NavigationLink{
-                            let isfav = nota!.isfav
-                            let texto = "nota>>\(nota!.title ?? "")>>\(nota!.nota ?? "")>>\(isfav == true  ? "si" : "no")"
+                        let isfav = nota!.isfav
+                        let texto = "\(AppCons.zspNota)\(nota!.title ?? "")::\(nota!.nota ?? "")::\(isfav == true  ? "si" : "no")"
                             GenerateQRView(footer: texto, showImage: true)
                     }label:{
                         Label("Generar QR...", systemImage: "qrcode")
@@ -442,7 +442,7 @@ struct cardNotas: View{
                     NavigationLink{
                         LienzoMain(texto: nota?.nota ?? "")
                     }label:{
-                        Label("Lienzo", systemImage: "qrcode")
+                        Label("Lienzo", systemImage: "heart.text.square")
                     }
                     #endif
                     

@@ -19,6 +19,11 @@ enum PosicionElemento : String, CaseIterable, Identifiable{
     var id : String { self.rawValue }
 }
 
+//Tipo de imagen
+enum TipoDeImagenLienzo{
+    case princial, secundario
+}
+
 //ViewModel que Almacena los colores de fondo actualmente
 @MainActor
 final class LienzoModel : ObservableObject {
@@ -50,6 +55,11 @@ final class LienzoModel : ObservableObject {
     static let key_colorTextoPrincipal: String          = "colorTextoPrincipal"
     static let key_colorTextoSecundario: String         = "colorTextoSecundario"
     static let key_imagenFondoAplicada: String          = "imagenFondoAplicada"
+    
+    static let key_imagenLienzoSecundario: String               = "imagenLienzoSecundario"
+    static let key_posicionImagenLienzoSecundario: String       = "posicionImagenLienzoSecundario"
+    static let key_tamañoImagenLienzoSecundario: String         = "tamañoImagenLienzoSecundario"
+    static let key_visibilidadImagenLienzoSecundario: String    = "visibilidadImagenLienzoSecundario"
     
     
     
@@ -111,11 +121,11 @@ final class LienzoModel : ObservableObject {
         }
     }
     
-    //Valores Imagen:
+    //Valores Imagen lienzo Principal:
     @Published var imagenLienzo : UIImage? = UIImage(named: "nev-min"){
         didSet{
             Task{
-                saveImagenLienzo(imagenLienzo ?? UIImage(named: "nev-min")!)
+                saveImagenLienzo(imagenLienzo ?? UIImage(named: "nev-min")!, tipoImagenLienzo: .princial)
                  
             }
         }
@@ -133,6 +143,32 @@ final class LienzoModel : ObservableObject {
     @Published var visibilidadImagenLienzo : Bool = true{
         didSet{
             UserDefaults.standard.set(visibilidadImagenLienzo,forKey: Self.key_visibilidadImagenLienzo)
+        }
+    }
+    
+    
+    //Valores de Imagen del Lienzo Secundario:
+    @Published var imagenLienzoSecundario : UIImage? = UIImage(named: "nev-min"){
+        didSet{
+            Task{
+                saveImagenLienzo(imagenLienzoSecundario ?? UIImage(named: "nev-min")!, tipoImagenLienzo: .secundario)
+                 
+            }
+        }
+    }
+    @Published var posicionImagenLienzoSecundario : PosicionElemento = .izquierda{
+        didSet{
+            UserDefaults.standard.set(posicionImagenLienzoSecundario.rawValue,forKey: Self.key_posicionImagenLienzoSecundario)
+        }
+    }
+    @Published var tamañoImagenLienzoSecundario : CGFloat = 120{
+        didSet{
+            UserDefaults.standard.set(tamañoImagenLienzoSecundario,forKey: Self.key_tamañoImagenLienzoSecundario)
+        }
+    }
+    @Published var visibilidadImagenLienzoSecundario : Bool = true{
+        didSet{
+            UserDefaults.standard.set(visibilidadImagenLienzoSecundario,forKey: Self.key_visibilidadImagenLienzoSecundario)
         }
     }
     
@@ -171,12 +207,21 @@ final class LienzoModel : ObservableObject {
     
     private var cancellables: Set<AnyCancellable> = []
     
-    //Para almacenar y recuperar el archivo de imagen del lienzo del directorio document de la app:
+    //Para almacenar y recuperar el archivo de imagen del lienzo Principal del directorio document de la app:
     private  let fileNameImagenLienzo = "imagen_lienzo.png" //nombre de la imagen del Lienzo que será almacenada en el directorio document de la app: Buenas prácticas.
     /// URL completa del archivo en Documents
         private  var fileURLImagenLienzo: URL {
             let urls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
             return urls[0].appendingPathComponent(fileNameImagenLienzo)
+        }
+    
+    
+    //Para almacenar y recuperar el archivo de imagen del lienzo Secundario del directorio document de la app:
+    private  let fileNameImagenLienzoSecundario = "imagen_lienzo_secundario.png" //nombre de la imagen del Lienzo que será almacenada en el directorio document de la app: Buenas prácticas.
+    /// URL completa del archivo en Documents
+        private  var fileURLImagenLienzoSecundario: URL {
+            let urls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+            return urls[0].appendingPathComponent(fileNameImagenLienzoSecundario)
         }
     
     static var shared = LienzoModel() //Singleton
@@ -399,6 +444,20 @@ final class LienzoModel : ObservableObject {
         }
     }
     
+    //Devuelve una imgagen del QR con formato importación de Frases
+    func obtenerImagenQR(texto: String) -> UIImage?{
+        //Formato de importación de Frases:
+        let textoFinal = "\(AppCons.zspFrase)\(texto)"
+        
+        // Obtener el PNG Data generado por el modelo
+            guard let data = QRModel().generateQRCode(text: textoFinal) else {
+                return nil
+            }
+            
+            // Crear el UIImage a partir del PNG
+            return UIImage(data: data)
+    }
+    
     
     
     //Funcion que recupera el Estado de los elementos al inicial el Lienzo:
@@ -493,13 +552,22 @@ final class LienzoModel : ObservableObject {
         self.visibilidadTextoSecundario = visibilityTextoSecundario_tmp
         
         
-        //Cargar Valores de la imagen
-        if let imagenLienzo_tmp = loadImageLienzo(){
+        //Cargar Valores de la imagen del lienzo Principal
+        if let imagenLienzo_tmp = loadImageLienzo(tipoImagenLienzo: .princial){
             self.imagenLienzo = imagenLienzo_tmp
         }else{
             self.imagenLienzo = UIImage(named: "nev-min")
         }
         
+        //Cargar Valores de la imagen del lienzo Secundario
+        if let imagenLienzo_tmp = loadImageLienzo(tipoImagenLienzo: .secundario){
+            self.imagenLienzoSecundario = imagenLienzo_tmp
+        }else{
+            self.imagenLienzoSecundario = UIImage(named: "nev-min")
+        }
+        
+        
+        //Posición de la imagen del Lienzo Principal
         let posicionImagenLienzo_tmp = UserDefaults.standard.string(forKey: LienzoModel.key_posicionImagenLienzo) ?? "izquierda"
         //case arriba, abajo, derecha, izquierda, centro
         switch posicionImagenLienzo_tmp{
@@ -515,6 +583,23 @@ final class LienzoModel : ObservableObject {
             self.posicionImagenLienzo = .izquierda
         }
         
+        //Posición de la imagen del Lienzo Secundario:
+        let posicionImagenLienzoSecundario_tmp = UserDefaults.standard.string(forKey: LienzoModel.key_posicionImagenLienzoSecundario) ?? "izquierda"
+        //case arriba, abajo, derecha, izquierda, centro
+        switch posicionImagenLienzoSecundario_tmp{
+            case "arriba":
+            self.posicionImagenLienzoSecundario = .arriba
+        case "abajo":
+            self.posicionImagenLienzoSecundario = .abajo
+        case "derecha":
+            self.posicionImagenLienzoSecundario = .derecha
+        case "izquierda":
+            self.posicionImagenLienzoSecundario = .izquierda
+        default:
+            self.posicionImagenLienzoSecundario = .izquierda
+        }
+        
+        //Tamaño de la imagen del Lienzo Principal:
         let tamañoImagenLienzo_tmp = UserDefaults.standard.float(forKey: LienzoModel.key_tamañoImagen)
         if tamañoImagenLienzo_tmp == 0.0{
             self.tamañoImagenLienzo = 120.0
@@ -522,8 +607,21 @@ final class LienzoModel : ObservableObject {
             self.tamañoImagenLienzo = CGFloat(tamañoImagenLienzo_tmp)
         }
         
+        //Tamaño de la imagen del Lienzo Secundario:
+        let tamañoImagenLienzoSecundario_tmp = UserDefaults.standard.float(forKey: LienzoModel.key_tamañoImagenLienzoSecundario)
+        if tamañoImagenLienzoSecundario_tmp == 0.0{
+            self.tamañoImagenLienzoSecundario = 120.0
+        }else{
+            self.tamañoImagenLienzoSecundario = CGFloat(tamañoImagenLienzoSecundario_tmp)
+        }
+        
+        //Visibilidad de la imagen del lienzo Principal
         let visibilityImagenLienzo_tmp = UserDefaults.standard.bool(forKey: LienzoModel.key_visibilidadImagenLienzo)
         self.visibilidadImagenLienzo = visibilityImagenLienzo_tmp
+        
+        //Visibilidad de la imagen del lienzo Secundario:
+        let visibilityImagenLienzoSecundario_tmp = UserDefaults.standard.bool(forKey: LienzoModel.key_visibilidadImagenLienzoSecundario)
+        self.visibilidadImagenLienzoSecundario = visibilityImagenLienzoSecundario_tmp
         
 
     }
@@ -546,15 +644,23 @@ final class LienzoModel : ObservableObject {
 
         /// Elimina el archivo previo si existe (para asegurar que solo haya un archivo)
         private  func removeExistingFileIfNeeded() throws {
+            //Eliminando la imagen del lienzo principal
             let path = fileURLImagenLienzo.path
             if FileManager.default.fileExists(atPath: path) {
                 try FileManager.default.removeItem(at: fileURLImagenLienzo)
             }
+            //Eliminando la imagen del lienzo Secundario
+            let pathSecundario = fileURLImagenLienzoSecundario.path
+            if FileManager.default.fileExists(atPath: pathSecundario) {
+                try FileManager.default.removeItem(at: fileURLImagenLienzoSecundario)
+            }
+            
+            
         }
     
     /// Guarda la imagen como PNG en Documents. Antes borra cualquier archivo previo con el mismo nombre.
         /// - Devuelve true si la operación tuvo éxito.
-    private func saveImagenLienzo(_ image: UIImage) -> Bool {
+    private func saveImagenLienzo(_ image: UIImage, tipoImagenLienzo: TipoDeImagenLienzo) -> Bool {
             
             guard let data = imagePNGData(from: image) else {
                 print("ImageStorage: no se pudo obtener data PNG de la imagen.")
@@ -566,14 +672,29 @@ final class LienzoModel : ObservableObject {
                 try removeExistingFileIfNeeded()
 
                 // Escribe el nuevo archivo de forma atómica
-                try data.write(to: fileURLImagenLienzo, options: .atomic)
+                if tipoImagenLienzo == .princial{
+                    try data.write(to: fileURLImagenLienzo, options: .atomic)
+                }else if tipoImagenLienzo == .secundario{
+                    try data.write(to: fileURLImagenLienzoSecundario, options: .atomic)
+                }
+                
 
                 // Opcional: establecer exclusionFromBackup en iOS si quieres que no se suba a iCloud
                 #if os(iOS)
-                var fileURL = fileURLImagenLienzo // Copiamos a variable mutable
-                var resourceValues = URLResourceValues()
-                resourceValues.isExcludedFromBackup = true
-                try fileURL.setResourceValues(resourceValues)
+                if tipoImagenLienzo == .princial{
+                    var fileURL = fileURLImagenLienzo // Copiamos a variable mutable
+                    var resourceValues = URLResourceValues()
+                    resourceValues.isExcludedFromBackup = true
+                    try fileURL.setResourceValues(resourceValues)
+                    
+                }else if tipoImagenLienzo == .secundario{
+                    var fileURL = fileURLImagenLienzoSecundario
+                    var resourceValues = URLResourceValues()
+                    resourceValues.isExcludedFromBackup = true
+                    try fileURL.setResourceValues(resourceValues)
+                }
+                
+                
                 #endif
 
                 return true
@@ -585,19 +706,41 @@ final class LienzoModel : ObservableObject {
     
     
     /// Recupera la imagen previamente almacenada (si existe)
-        private func loadImageLienzo() -> UIImage? {
+    private func loadImageLienzo(tipoImagenLienzo : TipoDeImagenLienzo) -> UIImage? {
+        
+        if tipoImagenLienzo == .princial{
             let path = fileURLImagenLienzo.path
             guard FileManager.default.fileExists(atPath: path) else {
                 return nil
             }
+        }else if tipoImagenLienzo == .secundario {
+            let path = fileURLImagenLienzoSecundario.path
+            guard FileManager.default.fileExists(atPath: path) else {
+                return nil
+            }
+        }
+            
+            
 
             do {
-                let data = try Data(contentsOf: fileURLImagenLienzo)
-                #if os(iOS)
-                return UIImage(data: data)
-                #elseif os(macOS)
-                return NSImage(data: data)
-                #endif
+                if tipoImagenLienzo == .princial{
+                    let data = try Data(contentsOf: fileURLImagenLienzo)
+                    #if os(iOS)
+                    return UIImage(data: data)
+                    #elseif os(macOS)
+                    return NSImage(data: data)
+                    #endif
+                }else if tipoImagenLienzo == .secundario {
+                    let data = try Data(contentsOf: fileURLImagenLienzoSecundario)
+                    #if os(iOS)
+                    return UIImage(data: data)
+                    #elseif os(macOS)
+                    return NSImage(data: data)
+                    #endif
+                }else{
+                    return nil
+                }
+                
             } catch {
                 print("ImageStorage: error cargando imagen: \(error)")
                 return nil

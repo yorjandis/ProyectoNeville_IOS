@@ -81,6 +81,7 @@ func guardarImagenEnDescargasConTimestamp(_ imagen: NSImage) {
 }
 
 //Abre un cuadro de diálogo para seleccionar una imagen. Solo MacOS:
+
 func seleccionarImagen() -> NSImage? {
         let panel = NSOpenPanel()
         if #available(macOS 12.0, *) {
@@ -115,6 +116,9 @@ func seleccionarImagen() -> NSImage? {
 class ImagePickerViewModel: ObservableObject {
     @Published var selectedItem: PhotosPickerItem?
     @Published var selectedImage: UIImage?
+    
+    @Published var selectedItemImagenSecundaria: PhotosPickerItem?
+    @Published var selectedImageImageSecundaria: UIImage?
 
     // Función para cargar la imagen desde la galería
     func loadImage() {
@@ -126,6 +130,19 @@ class ImagePickerViewModel: ObservableObject {
             self.selectedImage = uiImage
         }
     }
+    
+    func loadImageSecundaria() {
+        Task {
+            guard let data = try? await selectedItemImagenSecundaria?.loadTransferable(type: Data.self),
+                  let uiImage = UIImage(data: data)
+            else { return }
+            
+            self.selectedImageImageSecundaria = uiImage
+        }
+    }
+    
+    
+    
 }
 /*
  Ejemplo de uso:

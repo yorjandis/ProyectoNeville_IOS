@@ -55,18 +55,15 @@ struct ContentTxtShowView: View {
     
     
     
-    //manejar el texto copiado:
-    //Structura identifiable que representa un texto:
-    struct TextoCopiadoAlPortapapeles : Identifiable {
-        var id: UUID = UUID()
-        var texto : String
-    }
-    @State private var showSheetInterpretarTextoCopiadoIA : Bool = false
-    @State private var showSheetChatIATextoCopiado : Bool   = false
-    @State private var showSheetLienzoTextoCpiado  : Bool   = false
-    @State private var showSheetTextoCopiadoAlPortapapelesParaInterpretar   : TextoCopiadoAlPortapapeles? = nil
-    @State private var showSheetTtextoCopiadoAlPortapapelesParaChatIA       : TextoCopiadoAlPortapapeles? = nil
-    @State private var showSheetTtextoCopiadoAlPortapapelesParaLienzo       : TextoCopiadoAlPortapapeles? = nil
+     //manejar el texto copiado:
+     @State private var showSheetInterpretarTextoCopiadoIA : Bool = false
+     @State private var showSheetChatIATextoCopiado : Bool   = false
+     @State private var showSheetLienzoTextoCpiado  : Bool   = false
+     @State private var showSheetTextoCopiadoAlPortapapelesParaInterpretar   : TextoCopiadoAlPortapapeles? = nil
+     @State private var showSheetTtextoCopiadoAlPortapapelesParaChatIA       : TextoCopiadoAlPortapapeles? = nil
+     @State private var showSheetTtextoCopiadoAlPortapapelesParaLienzo       : TextoCopiadoAlPortapapeles? = nil
+     
+    
     
     //Alertas:
     @State private var showAlert : Bool = false
@@ -215,7 +212,30 @@ struct ContentTxtShowView: View {
                 }
                 #endif
                 
-                //Barra de opciones IA para conferencias & Texto Copiado
+                
+                //Menú de acciones con el texto copiado
+                ToolbarItem{
+                    if let _ = self.clipBoarModel.clipboardText{
+                        withAnimation {
+                            TextoCopiadoView(clipBoardModel: self.clipBoarModel,
+                                             nameTxt: self.nombreTxt,
+                                             showAlert: self.$showAlert,
+                                             alertMessage: self.$alertMessage,
+                                             showSheetTextoCopiadoAlPortapapelesParaInterpretar: self.$showSheetTextoCopiadoAlPortapapelesParaInterpretar,
+                                             showSheetTtextoCopiadoAlPortapapelesParaChatIA: self.$showSheetTtextoCopiadoAlPortapapelesParaChatIA,
+                                             showSheetTtextoCopiadoAlPortapapelesParaLienzo: self.$showSheetTtextoCopiadoAlPortapapelesParaLienzo)
+                        }
+                        
+                       
+                    }
+                }
+                
+                if #available(iOS 26.0, macOS 26.0, *){
+                    ToolbarSpacer(.fixed)
+                }
+                
+                
+                //Barra de opciones IA para conferencias
                 if (self.type == .conf) {
 
                     if #available(iOS 26.0, macOS 26.0, *){
@@ -383,107 +403,15 @@ struct ContentTxtShowView: View {
                             }
                             
                             //Menú de acciones con el texto copiado
-                            if let clipBoardText = self.clipBoarModel.clipboardText{
-                                Menu{
-                                    Button{
-                                        #if os(macOS)
-                                        guard let texto = NSPasteboard.general.string(forType: .string) else {return }
-                                        #else
-                                        guard let texto = UIPasteboard.general.string else {return}
-                                        #endif
-                                        
-                                        if NotasModel().addNote(nota: texto, title: "Nota de conferencia:\(self.nombreTxt)", isFav: false){
-                                            self.alertMessage = "Se ha guardado el texto en Notas"
-                                            self.showAlert = true
-                                        }
-                                        
-                                    }label:{
-                                        Label("Notas", systemImage: "square.on.square.dashed")
-                                    }
-                                    
-                                    Button{
-                                        #if os(macOS)
-                                        guard let texto = NSPasteboard.general.string(forType: .string) else {return }
-                                        #else
-                                        guard let texto = UIPasteboard.general.string else {return}
-                                        #endif
-                                        
-                                            if FrasesModel.shared.AddFrase(frase: texto){
-                                                self.alertMessage = "Se ha guardado el texto en Frases"
-                                                self.showAlert = true
-                                            }
-          
-                                    }label:{
-                                        Label("Frases", systemImage: "square.on.square.dashed")
-                                    }
-                                    
-                                    Button{
-                                        #if os(macOS)
-                                        guard let texto = NSPasteboard.general.string(forType: .string) else {return }
-                                        
-                                        showWindow(for: LienzoMain(texto: texto),
-                                        environmentObjects: [],
-                                                   title: "Lienzo",
-                                                   size: .absolute(CGSize(width: 650, height: 750)),
-                                                   isModal: false
-                                        )
-                                        
-                                        #else
-                                        guard let texto = UIPasteboard.general.string else {return}
-                                        self.showSheetTtextoCopiadoAlPortapapelesParaLienzo = TextoCopiadoAlPortapapeles(texto: texto)
-                                        #endif
-                                    }label:{
-                                        Label("Lienzo", systemImage: "heart.text.square")
-                                    }
-                                    
-                                    if #available(iOS 26.0, macOS 26.0, *) {
-                                        Button{
-                                            #if os(macOS)
-                                            guard let texto = NSPasteboard.general.string(forType: .string) else {return }
-                                            
-                                            showWindow(for: RespondView(nameConference: "", texto: texto, tipoSalida: .interpretar),
-                                                       environmentObjects: [],
-                                                       title: "Interpretar texto",
-                                                       size: AppCons.windows_size_content,
-                                                       isModal: false)
-                                            
-                                            #else
-                                            guard let texto = UIPasteboard.general.string else {return}
-                                            self.showSheetTextoCopiadoAlPortapapelesParaInterpretar = TextoCopiadoAlPortapapeles(texto: texto)
-                                            #endif
-                                        }label:{
-                                            Label("Interpretar", systemImage: "sparkles")
-                                        }
-                                        .tint(.orange)
-                                        .help("Interpreta el texto copiado en el portapapeles con la IA")
-                                    }
-                                    
-                                    if #available(iOS 26.0, macOS 26.0, *) {
-                                        Button{
-                                            #if os(macOS)
-                                            guard let texto = NSPasteboard.general.string(forType: .string) else {return }
-                                            showWindow(for: ChatView(textoACargar: texto),
-                                                       environmentObjects: [],
-                                                       title: "ChatIA - Interpretar texto",
-                                                       size: AppCons.windows_size_content,
-                                                       isModal: false)
-                                            
-                                            #else
-                                            Task{
-                                                self.showSheetTtextoCopiadoAlPortapapelesParaChatIA = TextoCopiadoAlPortapapeles(texto: clipBoardText)
-                                            }
-                                           
-                                            #endif
-                                        }label:{
-                                            Label("ChatIA", systemImage: "sparkles")
-                                        }
-                                        .tint(.orange)
-                                        .help("Permite charlar con la IA sobre el texto copiado al potapaepeles")
-                                    }
-                                }label: {
-                                    Label("Texto Copiado a: ", systemImage: "rectangle.fill.on.rectangle.fill.circle.fill")
-                                }
-                                .tint(.green)
+                            if let _ = self.clipBoarModel.clipboardText{
+                                TextoCopiadoView(clipBoardModel: self.clipBoarModel,
+                                                 nameTxt: self.nombreTxt,
+                                                 showAlert: self.$showAlert,
+                                                 alertMessage: self.$alertMessage,
+                                                 showSheetTextoCopiadoAlPortapapelesParaInterpretar: self.$showSheetTextoCopiadoAlPortapapelesParaInterpretar,
+                                                 showSheetTtextoCopiadoAlPortapapelesParaChatIA: self.$showSheetTtextoCopiadoAlPortapapelesParaChatIA,
+                                                 showSheetTtextoCopiadoAlPortapapelesParaLienzo: self.$showSheetTtextoCopiadoAlPortapapelesParaLienzo)
+                               
                             }
                             
                             

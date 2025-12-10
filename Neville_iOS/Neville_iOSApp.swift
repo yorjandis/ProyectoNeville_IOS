@@ -34,8 +34,18 @@ struct Neville_iOSApp: App {
   private let persistentStore : CoreDataController =  CoreDataController.shared
     
     @AppStorage(AppCons.UD_setting_theme) var setting_theme  : Theme = .auto
+   
     
-    
+    /*
+     init(){
+         //Solo para macOS: esto resetea los valores de UserDefault en cada lanzamiento de la app, pero solo dentro del entorno de desarrollo.
+         #if DEBUG
+         UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
+         UserDefaults.standard.synchronize()
+         #endif
+     }
+     */
+   
     
 
 

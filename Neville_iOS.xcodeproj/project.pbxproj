@@ -740,6 +740,7 @@
 				Views/Diario/DiarioCalendarView.swift,
 				Views/Diario/DiarioListView.swift,
 				Views/Diario/editContent.swift,
+				Views/Features/Features.swift,
 				Views/FeedBackReview/FeedBackReview.swift,
 				Views/Frases/FraseAddView.swift,
 				Views/Frases/FrasesHomeView.swift,
@@ -769,8 +770,10 @@
 				"Views/SelectableTextAPI/Extensions/SelectableTextRepresentable+AppKit.swift",
 				"Views/SelectableTextAPI/Extensions/SelectableTextRepresentable+UIKit.swift",
 				Views/SelectableTextAPI/SelectableText.swift,
+				Views/TextoCopiado/TextoCopiadoView.swift,
 				Views/TxtFiles/ContentTxtShowView.swift,
 				Views/TxtFiles/TxtListView.swift,
+				Views/ViewSharedMultiplattform/ViewSharedMultiplattform.swift,
 			);
 			target = E95B93522AAFBB2600B5E2B5 /* Neville_iOS */;
 		};

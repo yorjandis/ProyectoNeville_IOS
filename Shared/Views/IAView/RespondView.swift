@@ -14,6 +14,7 @@ struct RespondView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var model : IAModelAppleIntelligence = IAModelAppleIntelligence()
     @State private var notasModel : NotasModel = NotasModel()
+    @StateObject private var clipBoarModel : ClipboardObserver = ClipboardObserver() //Para observar cambios en el portapapales
     
     @State private var isloading : Bool = false //Indica que se esta procesando una solicitud
     @State private var bounce = false //Para animar la imagend de IA en el centro de la pantalla
@@ -55,7 +56,13 @@ struct RespondView: View {
     @AppStorage(AppCons.UD_setting_fontChatIASize)     var fontSizeChatIA : Int = 20
     
     
-    
+    //manejar el texto copiado:
+    @State private var showSheetInterpretarTextoCopiadoIA : Bool = false
+    @State private var showSheetChatIATextoCopiado : Bool   = false
+    @State private var showSheetLienzoTextoCpiado  : Bool   = false
+    @State private var showSheetTextoCopiadoAlPortapapelesParaInterpretar   : TextoCopiadoAlPortapapeles? = nil
+    @State private var showSheetTtextoCopiadoAlPortapapelesParaChatIA       : TextoCopiadoAlPortapapeles? = nil
+    @State private var showSheetTtextoCopiadoAlPortapapelesParaLienzo       : TextoCopiadoAlPortapapeles? = nil
     
     
     var body: some View {
@@ -104,9 +111,7 @@ struct RespondView: View {
                 
             }
         }
-        .alert(isPresented: self.$showAlert){
-            Alert(title: Text("Chat"), message: Text(self.alertMessage))
-        }
+        
         .toolbar{
             if (!self.isloading && self.DescargoDeIA) {
                 #if os(macOS)
@@ -124,13 +129,25 @@ struct RespondView: View {
                         .help("Cerrar")
                     }
                 }
-                
-                
                 ToolbarSpacer(.fixed)
                 #endif
                 
-                //Share the text
+                ToolbarItem{
+                    if let _ = self.clipBoarModel.clipboardText{
+                         TextoCopiadoView(clipBoardModel: self.clipBoarModel,
+                                          nameTxt: nil,
+                                          showAlert: self.$showAlert,
+                                          alertMessage: self.$alertMessage,
+                                          showSheetTextoCopiadoAlPortapapelesParaInterpretar: self.$showSheetTextoCopiadoAlPortapapelesParaInterpretar,
+                                          showSheetTtextoCopiadoAlPortapapelesParaChatIA: self.$showSheetTtextoCopiadoAlPortapapelesParaChatIA,
+                                          showSheetTtextoCopiadoAlPortapapelesParaLienzo: self.$showSheetTtextoCopiadoAlPortapapelesParaLienzo)
+                    }
+                }
                 
+                
+                ToolbarSpacer(.fixed)
+                
+                //Share the text
                 ToolbarItem {
                     ShareLink(item: self.creatorContentToShare){
                         Label("", systemImage: "square.and.arrow.up")
@@ -138,24 +155,20 @@ struct RespondView: View {
                      
                 }
                 
-                ToolbarSpacer(.fixed)
-                
-                ToolbarItem {
-                    Button{
-                        
-                        if self.notasModel.addNote(nota: "\(self.creatorContentToShare ) \n\n ----Texto de Referencia---- \n \(self.tipoSalida == .interpretar ? self.texto : self.nameConference + " (Conferencia)")", title: "Nota de IA"){
-                            self.alertMessage = "Se ha guardado la respuesta en Notas"
-                            self.showAlert = true
-                        }else{
-                            self.alertMessage = "No fue posible guardar la respuesta en Notas. Inténtelo más tarde."
-                            self.showAlert = true
-                        }
-                    }label:{
-                        Image(systemName: "text.page")
-                    }
-                }
             }
             
+        }
+        .sheet(item: $showSheetTextoCopiadoAlPortapapelesParaInterpretar){ text in
+                RespondView(nameConference: "", texto: text.texto, tipoSalida: .interpretar)
+        }
+        .sheet(item: $showSheetTtextoCopiadoAlPortapapelesParaChatIA){ text in
+                ChatView(textoACargar: text.texto)
+        }
+        .sheet(item: $showSheetTtextoCopiadoAlPortapapelesParaLienzo){ text in
+                LienzoMain(texto : text.texto)
+        }
+        .alert(isPresented: self.$showAlert){
+            Alert(title: Text("Chat"), message: Text(self.alertMessage))
         }
     }
     
@@ -247,7 +260,7 @@ struct RespondView: View {
                 ContenidoView(contenido: idea)
             }
             
-            BotonRegenerarView()
+            buttomOpcionesViewContent()
             
         }
         .padding()
@@ -259,7 +272,7 @@ struct RespondView: View {
     private func VistaDeResumenGeneral() -> some View{
         VStack{
             ContenidoView(contenido: self.model.resumenGeneral)
-            BotonRegenerarView()
+            buttomOpcionesViewContent()
         }
         .padding()
 
@@ -276,7 +289,7 @@ struct RespondView: View {
 
             }
             
-            BotonRegenerarView()
+            buttomOpcionesViewContent()
         }
         .padding()
     }
@@ -290,7 +303,7 @@ struct RespondView: View {
                 
                 ContenidoView(contenido: self.model.practicaConcreta)
                 
-                BotonRegenerarView()
+                buttomOpcionesViewContent()
                 
                 Spacer()
                 
@@ -315,7 +328,7 @@ struct RespondView: View {
                 
                 ContenidoView(contenido: self.model.interpretacion)
                 
-                BotonRegenerarView()
+                buttomOpcionesViewContent()
                 
                 Spacer()
                 
@@ -339,11 +352,11 @@ struct RespondView: View {
 //Vista de contenido
     @ViewBuilder
     private func ContenidoView(contenido: String) -> some View {
-        
+        let texto = ClipboardHelper.insertarMarcaOculta(en: contenido)
         #if os(macOS)
         VStack{
             ScrollView{
-                    Text(contenido)
+                    Text(texto)
                         .font(.system(size: CGFloat(self.fontSizeChatIA)))
                         .foregroundColor(Color(self.ColorRespondIAFuente))
                         .textSelection(.enabled)
@@ -358,7 +371,8 @@ struct RespondView: View {
         
         #else
         VStack(alignment: .leading) {
-            SelectableText(contenido, fontSize: CGFloat(self.fontSizeChatIA), fonColor: UIColor(self.ColorRespondIAFuente), alignment: .left )
+            
+            SelectableText(texto, fontSize: CGFloat(self.fontSizeChatIA), fonColor: UIColor(self.ColorRespondIAFuente), alignment: .left )
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -373,10 +387,27 @@ struct RespondView: View {
     }
     
     
-//Vista del botón de regenerar
+//Vista de botones de opciones que aparecen debajo de cada respuesta de la IA
     @ViewBuilder
-    private func BotonRegenerarView() -> some View {
-        VStack{
+    private func buttomOpcionesViewContent() -> some View {
+        HStack(spacing: 25){
+            //Copiar la respuesta a notas
+            Button{
+                
+                if self.notasModel.addNote(nota: "\(self.creatorContentToShare ) \n\n ----Texto de Referencia---- \n \(self.tipoSalida == .interpretar ? self.texto : self.nameConference + " (Conferencia)")", title: "Nota de IA"){
+                    self.alertMessage = "Se ha guardado la respuesta en Notas"
+                    self.showAlert = true
+                }else{
+                    self.alertMessage = "No fue posible guardar la respuesta en Notas. Inténtelo más tarde."
+                    self.showAlert = true
+                }
+            }label:{
+                Label("", systemImage: "text.page")
+                    .font(.system(size: 24))
+            }
+            .tint(.black)
+            
+            //Regenerar Respuesta
             Button{
                 generarTexto() //Función que regenera el contenido
             }label: {

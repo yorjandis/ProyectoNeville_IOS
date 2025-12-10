@@ -38,7 +38,9 @@ struct FrasesListView: View {
     @State private var TextoFraseAEliminar : String?
     
     
-
+    //Alert
+    @State private var showAlert: Bool = false
+    @State private var alertMessage: String = ""
     
 
     var body: some View {
@@ -144,6 +146,22 @@ struct FrasesListView: View {
                                 .tint(.green)
                         }
                         
+                        //Guardar la frase a Notas
+                        Button{
+                            //Guarda la nota poniendo como titulo una parte de la cadena
+                            if  NotasModel().addNote(nota: frase, title: "\(String(frase).prefix(frase.count / 3 )))..."){
+                                self.alertMessage = "Frase almacenada en Notas"
+                                self.showAlert = true
+                            }
+                        }label: {
+                            Label("Almacenar en Notas", systemImage: "list.bullet.clipboard")
+                        }
+                        
+                        //Compartir la frase:
+                        ShareLink(item: frase) {
+                                        Label("Compartir frase", systemImage: "square.and.arrow.up")
+                                    }
+                        
                         //Si la Frase es personal, permite eliminarla
                         if frasesModel.isNoInbuilt(frase: frase){
                             Button{
@@ -154,6 +172,8 @@ struct FrasesListView: View {
                                     .tint(.red.opacity(0.8))
                             }
                         }
+                       
+                        
                     }
                     .swipeActions(edge: .trailing, allowsFullSwipe: true){
                         //Editar la frase: Solo si es Personal
@@ -344,6 +364,9 @@ struct FrasesListView: View {
             } message: {
                 Text("La nota será removida!!!")
             }
+            .alert(isPresented: self.$showAlert){
+                Alert(title: Text("La Ley"), message: Text(self.alertMessage))
+            }
             
         }
     }
@@ -373,6 +396,10 @@ fileprivate struct RowFraseMenu: View {
     @ObservedObject var settingModel: SettingModel
     
     @State private var showConfirmDialogDeleteFrase = false
+    
+    //Alert
+    @State private var showAlert: Bool = false
+    @State private var alertMessage: String = ""
     
     // Cache de valores precalculados
     private let coreData: Frases?
@@ -460,6 +487,25 @@ fileprivate struct RowFraseMenu: View {
                 Label("Generar QR", systemImage: "qrcode")
                     .tint(.brown)
             }
+            
+            //Guardar Frases en Notas
+            //Guardar la frase a Notas
+            Button{
+                //Guarda la nota poniendo como titulo una parte de la cadena
+                if  NotasModel().addNote(nota: frase, title: "\(String(frase).prefix(frase.count / 3 )))..."){
+                    self.alertMessage = "Frase almacenada en Notas"
+                    self.showAlert = true
+                }
+            }label: {
+                Label("Almacenar en Notas", systemImage: "list.bullet.clipboard")
+            }
+            
+            
+            //Compartir la frase
+            
+            ShareLink(item: frase) {
+                            Label("Compartir frase", systemImage: "square.and.arrow.up")
+                        }
             
             Button{
                 showWindow(for: LienzoMain(texto: frase),
@@ -556,6 +602,9 @@ fileprivate struct RowFraseMenu: View {
             }
         } message: {
             Text("La nota será removida!!!")
+        }
+        .alert(isPresented: self.$showAlert){
+            Alert(title: Text("La Ley"), message: Text(self.alertMessage))
         }
         
         

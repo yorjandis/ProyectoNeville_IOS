@@ -162,24 +162,59 @@ struct QRModel{
     //Ejempo de nota: nota>>título de la nota>>contenido de la nota>>No/Si
     //Devuelve una tupla compuesta: la primera parte si es true es que se ha detectado un formato de importación de Notas Válido, la segunda parte es una tupla de tres valores:
     //Primer valor: título de la nota, segundoValor: contenido de la nota, tercer valor: favorito que puede ser true o false
-    static func detectFormatImportNota(text: String) -> (Bool, (String, String, Bool))? {
-        let parts = text.split(separator: ">>")
-
-        // Validaciones iniciales claras
-        guard parts.count == 4, parts[0] == "nota" else {
+    @MainActor static func detectFormatImportNota(text: String) -> (Bool, (String, String, Bool))? {
+        
+        
+        // El texto debe comenzar con el prefijo correcto
+        guard text.hasPrefix(AppCons.zspNota) else {
+            return nil
+        }
+        
+        
+        // Dividir usando "::". Si no hay exactamente 3 partes, el formato falla.
+        let parts = text.split(separator: "::")
+        guard parts.count == 3 else {
             return nil
         }
 
         // Interpretar el último valor: Favorito de la nota
-        let flagString = parts[3].lowercased()
+        let flagString = parts[2].lowercased()
         guard flagString == "si" || flagString == "no" else {
             return nil
         }
-        let flag =  flagString == "no" ? false : true
+        let isFavorite =  flagString == "no" ? false : true
 
-        return (true, (String(parts[1]), String(parts[2]), flag))
+        //Antes de retornar elimina los 3 caracteres ocultos del texto:
+        return (true, (String(parts[0].dropFirst(3)), String(parts[1]), isFavorite))
     }
     
+    
+    @MainActor static func detectFormatImportFrase(text: String) -> (Bool, String)? {
+        
+        guard text.hasPrefix(AppCons.zspFrase) else {return nil}
+        
+        //Antes de retornar elimina los 3 caracteres ocultos al inicio de la cadena
+        return (true, String(text.dropFirst(3)))
+    }
+    
+    
+    @MainActor static func aplicarFormatoImportacion(texto: String, tipo: String) -> String{
+        //Primero limpia el texto de los caracteres ocultos utilizados
+        let textoTemp = QRModel.removeHiddenChars(texto)
+        if tipo == "nota"{
+            return "\(AppCons.zspNota)\(textoTemp)"
+        }else if tipo == "frase"{
+            return "\(AppCons.zspFrase)\(textoTemp)"
+        }else{
+            return ""
+        }
+    }
+    
+    
+    static func removeHiddenChars(_ text: String) -> String {
+        let charsToRemove: [Character] = ["\u{200B}", "\u{2063}"]
+        return String(text.filter { !charsToRemove.contains($0) })
+    }
     
     
     

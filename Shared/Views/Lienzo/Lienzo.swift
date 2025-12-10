@@ -31,11 +31,18 @@ struct LienzoMain: View {
     
 
     #if os(iOS)
-    //Para seleccionar una imagen de la galería:
+    //Para seleccionar una imagen de la galería: ImagenLienzo Principal
     @StateObject private var photosPicker = ImagePickerViewModel()
     //Para mostrar el selector de imagen dentro del context menu de la imagen en iOS:
     @State private var mostrarPicker = false
     @State private var selectedItem: PhotosPickerItem?
+    
+    //Para seleccionar una imagen de la galería: ImagenLienzo Secundario
+    @StateObject private var photosPickerImagenLienzoSecundario = ImagePickerViewModel()
+    //Para mostrar el selector de imagen dentro del context menu de la imagen en iOS:
+    @State private var mostrarPickerImagenLienzoSecundario = false
+    @State private var selectedItemImagenLienzoSecundario: PhotosPickerItem?
+    
     #endif
     
     //Aplicando la imagen de fondo:
@@ -49,12 +56,21 @@ struct LienzoMain: View {
                 //Primera fila
                 HStack{
                     VStack(){
-                        if lienzoModel.posicionImagenLienzo == .arriba {
-                            if lienzoModel.visibilidadImagenLienzo{
-                                ImagenLienzo()
+                        HStack{
+                            if lienzoModel.posicionImagenLienzoSecundario == .arriba {
+                                if lienzoModel.visibilidadImagenLienzoSecundario{
+                                   ImagenLienzoSecundario()
+                                }
+                                
                             }
-                            
+                            if lienzoModel.posicionImagenLienzo == .arriba {
+                                if lienzoModel.visibilidadImagenLienzo{
+                                    ImagenLienzo()
+                                }
+                                
+                            }
                         }
+                        
                         
                         if lienzoModel.posicionTextoPrincipal == .arriba{
                             TextoPrincipal()
@@ -74,9 +90,18 @@ struct LienzoMain: View {
                 HStack{
                     
                     VStack{
-                        if lienzoModel.posicionImagenLienzo == .izquierda{
-                            if lienzoModel.visibilidadImagenLienzo{
-                                ImagenLienzo()
+                        VStack{
+                            if lienzoModel.posicionImagenLienzo == .izquierda {
+                                if lienzoModel.visibilidadImagenLienzo{
+                                    ImagenLienzo()
+                                }
+                                
+                            }
+                            if lienzoModel.posicionImagenLienzoSecundario == .izquierda {
+                                if lienzoModel.visibilidadImagenLienzoSecundario{
+                                   ImagenLienzoSecundario()
+                                }
+                                
                             }
                         }
                         if lienzoModel.posicionTextoPrincipal == .izquierda{
@@ -105,11 +130,22 @@ struct LienzoMain: View {
                     
                     VStack{
                         
-                        if lienzoModel.posicionImagenLienzo == .derecha{
-                            if lienzoModel.visibilidadImagenLienzo{
-                                ImagenLienzo()
+                        HStack{
+                            if lienzoModel.posicionImagenLienzo == .derecha {
+                                if lienzoModel.visibilidadImagenLienzo{
+                                    ImagenLienzo()
+                                }
+                                
+                            }
+                            
+                            if lienzoModel.posicionImagenLienzoSecundario == .derecha {
+                                if lienzoModel.visibilidadImagenLienzoSecundario{
+                                   ImagenLienzoSecundario()
+                                }
+                                
                             }
                         }
+                        
                         if lienzoModel.posicionTextoPrincipal == .derecha{
                             TextoPrincipal()
                         }
@@ -138,11 +174,19 @@ struct LienzoMain: View {
                             }
                         }
                         
-                        if lienzoModel.posicionImagenLienzo == .abajo {
-                            if lienzoModel.visibilidadImagenLienzo{
-                                ImagenLienzo()
+                        HStack{
+                            if lienzoModel.posicionImagenLienzoSecundario == .abajo {
+                                if lienzoModel.visibilidadImagenLienzoSecundario{
+                                   ImagenLienzoSecundario()
+                                }
+                                
                             }
-                            
+                            if lienzoModel.posicionImagenLienzo == .abajo {
+                                if lienzoModel.visibilidadImagenLienzo{
+                                    ImagenLienzo()
+                                }
+                                
+                            }
                         }
                         
                     }
@@ -348,150 +392,311 @@ struct LienzoMain: View {
     func  PanelOpcionesDeImagen() -> some View {
         VStack(alignment: .leading ,spacing: 25){
             ScrollView(.vertical, showsIndicators: false) {
-                HStack{
-                    Picker("Posición de Imagen", selection: $lienzoModel.posicionImagenLienzo.animation()) {
-                        ForEach(PosicionElemento.allCases) { posicion in
-                            if posicion != .centro {
-                                Text(posicion.rawValue).tag(posicion)
+                
+                //Area de la Imagen de Lienzo Principal
+                VStack{
+                    Text("Imagen Principal:")
+                        .font(.title2.bold())
+                        .foregroundStyle(.orange)
+                    //Posición de la Imagen Lienzo Principal
+                    HStack{
+                        Picker("Posición de Imagen", selection: $lienzoModel.posicionImagenLienzo.animation()) {
+                            ForEach(PosicionElemento.allCases) { posicion in
+                                if posicion != .centro {
+                                    Text(posicion.rawValue).tag(posicion)
+                                }
+                                
                             }
-                            
+                        }
+                        .pickerStyle(.segmented)
+                        
+                    }
+                    
+                    //Tamaño imagen Lienzo Principal
+                    HStack{
+                        Text("Tamaño: ")
+                        Slider(value: $lienzoModel.tamañoImagenLienzo, in: 10...200)
+                        .padding(.horizontal, 5)
+                        .frame(width: 200)
+                        
+                        Image(systemName: lienzoModel.visibilidadImagenLienzo ? "eye" : "eye.slash")
+                            .foregroundStyle(lienzoModel.visibilidadImagenLienzo ? .primary : Color.orange)
+                            .onTapGesture {
+                                withAnimation {
+                                    lienzoModel.visibilidadImagenLienzo.toggle()
+                                }
+                               
+                            }.padding(.horizontal)
+                    }
+                    
+                    //Cambiar la imagen lienzo Principal por una en la galeria:iOS
+                    #if os(iOS)
+                    VStack(alignment: .leading){
+                        PhotosPicker(
+                            selection: $photosPicker.selectedItem, //La imagen se toma del viewModel
+                            matching: .images,
+                            photoLibrary: .shared()
+                        ) {
+                            Text("Cargar imagen de la galería...")
+                                    .font(.headline)
+                                    .padding()
+                                    .foregroundColor(.white)
+                                    .background(.blue)
+                                    .cornerRadius(8)
+                            }
+                            .font(.headline)
+                        Spacer()
+                      
+                    }
+                    .onChange(of: photosPicker.selectedItem) { _, _ in
+                        photosPicker.loadImage()
+                    }
+                    .onChange(of: photosPicker.selectedImage) { _, nueva in
+                        if let nueva = nueva {
+                            lienzoModel.imagenLienzo = nueva
                         }
                     }
-                    .pickerStyle(.segmented)
                     
-                }
-                
-                HStack{
-                    Text("Tamaño: ")
-                    Slider(value: $lienzoModel.tamañoImagenLienzo, in: 10...200)
-                    .padding(.horizontal, 5)
-                    .frame(width: 200)
+                    //Escoger una imagen de lienzo Principal Predeterminada: neville, addulhall, William Blake
+                    VStack(alignment: .leading, spacing: 20){
+                        Text("Imágines predeterminadas")
+                        HStack(spacing: 10){
+                            
+                            Image(uiImage: UIImage(named: "nev-min")!)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                                .onTapGesture {
+                                lienzoModel.imagenLienzo = UIImage(named: "nev-min")!
+                            }
+                                
+                            
+                            Image(uiImage: UIImage(named: "ad-min")!)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                                .onTapGesture {
+                                    lienzoModel.imagenLienzo = UIImage(named: "ad-min")!
+                                }
+                            Image(uiImage: UIImage(named: "william")!)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                                .onTapGesture {
+                                    lienzoModel.imagenLienzo = UIImage(named: "william")!
+                                }
+                             
+                        }
+                    }
+                    .padding(.vertical, 10)
                     
-                    Image(systemName: lienzoModel.visibilidadImagenLienzo ? "eye" : "eye.slash")
-                        .foregroundStyle(lienzoModel.visibilidadImagenLienzo ? .primary : Color.orange)
-                        .onTapGesture {
-                            withAnimation {
-                                lienzoModel.visibilidadImagenLienzo.toggle()
+                    #endif
+                    
+                    #if os(macOS)
+                    //Cambiar la imagen de lienzo Principal
+                    VStack{
+                        Button("Cambiar Imagen...") {
+                            if let image = seleccionarImagen(){
+                                lienzoModel.imagenLienzo = image
+                            }else{
+                                lienzoModel.imagenLienzo = UIImage(named: "nev-min")!
                             }
                            
-                        }.padding(.horizontal)
-                }
-                
-                //Cambiar la imagen por una en la galeria:iOS
-                #if os(iOS)
-                VStack(alignment: .leading){
-                    PhotosPicker(
-                        selection: $photosPicker.selectedItem, //La imagen se toma del viewModel
-                        matching: .images,
-                        photoLibrary: .shared()
-                    ) {
-                        Text("Cargar imagen de la galería...")
-                                .font(.headline)
-                                .padding()
-                                .foregroundColor(.white)
-                                .background(.blue)
-                                .cornerRadius(8)
                         }
-                        .font(.headline)
-                    Spacer()
-                  
-                }
-                .onChange(of: photosPicker.selectedItem) { _, _ in
-                    photosPicker.loadImage()
-                }
-                .onChange(of: photosPicker.selectedImage) { _, nueva in
-                    if let nueva = nueva {
-                        lienzoModel.imagenLienzo = nueva
                     }
-                }
-                
-                //Escoger una imagen Predeterminada: neville, addulhall, William Blake
-                VStack(alignment: .leading, spacing: 20){
-                    Text("Imágines predeterminadas")
-                    HStack(spacing: 10){
-                        
-                        Image(uiImage: UIImage(named: "nev-min")!)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 50, height: 50)
-                            .onTapGesture {
-                            lienzoModel.imagenLienzo = UIImage(named: "nev-min")!
-                        }
+                    
+                    //Escoger una imagen de lienzo Principal Predeterminada: neville, addulhall, William Blake
+                    VStack(spacing: 20){
+                        Text("Imágines predeterminadas")
+                        HStack(spacing: 10){
                             
-                        
-                        Image(uiImage: UIImage(named: "ad-min")!)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 50, height: 50)
-                            .onTapGesture {
-                                lienzoModel.imagenLienzo = UIImage(named: "ad-min")!
+                            Image(nsImage: UIImage(named: "nev-min")!)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                                .onTapGesture {
+                                lienzoModel.imagenLienzo = UIImage(named: "nev-min")!
                             }
-                        Image(uiImage: UIImage(named: "william")!)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 50, height: 50)
-                            .onTapGesture {
-                                lienzoModel.imagenLienzo = UIImage(named: "william")!
-                            }
-                         
+                                
+                            
+                            Image(nsImage: UIImage(named: "ad-min")!)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                                .onTapGesture {
+                                    lienzoModel.imagenLienzo = UIImage(named: "ad-min")!
+                                }
+                            Image(nsImage: UIImage(named: "william")!)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                                .onTapGesture {
+                                    lienzoModel.imagenLienzo = UIImage(named: "william")!
+                                }
+                             
+                        }
                     }
+                    .padding(.vertical, 15)
+                    
+                    #endif
                 }
-                .padding(.vertical, 10)
-                VStack(alignment: .leading){
-                    Text("Tip: Click sostenido sobre la imagen para cambiarla")
-                }
-               
                 
                 
-                #endif
-                
-                #if os(macOS)
-                //Cambiar la imagen
+                //Area de la imagen de Lienzo Secundario:
                 VStack{
-                    Button("Cambiar Imagen...") {
-                        if let image = seleccionarImagen(){
-                            lienzoModel.imagenLienzo = image
-                        }else{
-                            lienzoModel.imagenLienzo = UIImage(named: "nev-min")!
+                    Text("Imagen Secundaria:")
+                        .font(.title2.bold())
+                        .foregroundStyle(.orange)
+                    //Posición de la Imagen Lienzo Secundario
+                    HStack{
+                        Picker("Posición de Imagen", selection: $lienzoModel.posicionImagenLienzoSecundario.animation()) {
+                            ForEach(PosicionElemento.allCases) { posicion in
+                                if posicion != .centro {
+                                    Text(posicion.rawValue).tag(posicion)
+                                }
+                                
+                            }
                         }
-                       
-                    }
-                }
-                
-                //Escoger una imagen Predeterminada: neville, addulhall, William Blake
-                VStack(spacing: 20){
-                    Text("Imágines predeterminadas")
-                    HStack(spacing: 10){
+                        .pickerStyle(.segmented)
                         
-                        Image(nsImage: UIImage(named: "nev-min")!)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 50, height: 50)
+                    }
+                    
+                    //Tamaño imagen Lienzo secundario
+                    HStack{
+                        Text("Tamaño: ")
+                        Slider(value: $lienzoModel.tamañoImagenLienzoSecundario, in: 10...200)
+                        .padding(.horizontal, 5)
+                        .frame(width: 200)
+                        
+                        Image(systemName: lienzoModel.visibilidadImagenLienzoSecundario ? "eye" : "eye.slash")
+                            .foregroundStyle(lienzoModel.visibilidadImagenLienzoSecundario ? .primary : Color.orange)
                             .onTapGesture {
-                            lienzoModel.imagenLienzo = UIImage(named: "nev-min")!
+                                withAnimation {
+                                    lienzoModel.visibilidadImagenLienzoSecundario.toggle()
+                                }
+                               
+                            }.padding(.horizontal)
+                    }
+                    
+                    //Cambiar la imagen lienzo Secundario por una en la galeria:iOS
+                    #if os(iOS)
+                    VStack(alignment: .leading){
+                        PhotosPicker(
+                            selection: $photosPickerImagenLienzoSecundario.selectedItemImagenSecundaria, //La imagen se toma del viewModel
+                            matching: .images,
+                            photoLibrary: .shared()
+                        ) {
+                            Text("Cargar imagen de la galería...")
+                                    .font(.headline)
+                                    .padding()
+                                    .foregroundColor(.white)
+                                    .background(.blue)
+                                    .cornerRadius(8)
+                            }
+                            .font(.headline)
+                        Spacer()
+                      
+                    }
+                    .onChange(of: photosPickerImagenLienzoSecundario.selectedItemImagenSecundaria) { _, _ in
+                        photosPickerImagenLienzoSecundario.loadImageSecundaria()
+                    }
+                    .onChange(of: photosPickerImagenLienzoSecundario.selectedImageImageSecundaria) { _, nueva in
+                        if let nueva = nueva {
+                            lienzoModel.imagenLienzoSecundario = nueva
                         }
+                    }
+                    
+                    //Escoger una imagen de lienzo Secundario Predeterminada: neville, addulhall, William Blake
+                    VStack(alignment: .leading, spacing: 20){
+                        Text("Imágines predeterminadas")
+                        HStack(spacing: 10){
                             
-                        
-                        Image(nsImage: UIImage(named: "ad-min")!)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 50, height: 50)
-                            .onTapGesture {
-                                lienzoModel.imagenLienzo = UIImage(named: "ad-min")!
+                            Image(uiImage: UIImage(named: "nev-min")!)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                                .onTapGesture {
+                                lienzoModel.imagenLienzoSecundario = UIImage(named: "nev-min")!
                             }
-                        Image(nsImage: UIImage(named: "william")!)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 50, height: 50)
-                            .onTapGesture {
-                                lienzoModel.imagenLienzo = UIImage(named: "william")!
-                            }
-                         
+                                
+                            
+                            Image(uiImage: UIImage(named: "ad-min")!)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                                .onTapGesture {
+                                    lienzoModel.imagenLienzoSecundario = UIImage(named: "ad-min")!
+                                }
+                            Image(uiImage: UIImage(named: "william")!)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                                .onTapGesture {
+                                    lienzoModel.imagenLienzoSecundario = UIImage(named: "william")!
+                                }
+                             
+                        }
                     }
+                    .padding(.vertical, 10)
+                    VStack(alignment: .leading){
+                        Text("Tip: Click sostenido sobre la imagen para cambiarla")
+                    }
+                   
+                    
+                    
+                    #endif
+                    
+                    #if os(macOS)
+                    //Cambiar la imagen de lienzo Secundario
+                    VStack{
+                        Button("Cambiar Imagen...") {
+                            if let image = seleccionarImagen(){
+                                lienzoModel.imagenLienzoSecundario = image
+                            }else{
+                                lienzoModel.imagenLienzoSecundario = UIImage(named: "nev-min")!
+                            }
+                           
+                        }
+                    }
+                    
+                    //Escoger una imagen de lienzo Secundario Predeterminada: neville, addulhall, William Blake
+                    VStack(spacing: 20){
+                        Text("Imágines predeterminadas")
+                        HStack(spacing: 10){
+                            
+                            Image(nsImage: UIImage(named: "nev-min")!)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                                .onTapGesture {
+                                lienzoModel.imagenLienzoSecundario = UIImage(named: "nev-min")!
+                            }
+                                
+                            
+                            Image(nsImage: UIImage(named: "ad-min")!)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                                .onTapGesture {
+                                    lienzoModel.imagenLienzoSecundario = UIImage(named: "ad-min")!
+                                }
+                            Image(nsImage: UIImage(named: "william")!)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                                .onTapGesture {
+                                    lienzoModel.imagenLienzoSecundario = UIImage(named: "william")!
+                                }
+                             
+                        }
+                    }
+                    .padding(.vertical, 15)
+                    
+                    #endif
                 }
-                .padding(.vertical, 15)
+                .padding(.top, 20)
                 
-                #endif
+                
             }
             
         }
@@ -572,6 +777,7 @@ struct LienzoMain: View {
         Button("Cambiar Imagen..."){
             self.mostrarPicker = true
         }
+        
     }
     .photosPicker(
                 isPresented: $mostrarPicker,
@@ -606,6 +812,55 @@ struct LienzoMain: View {
     #endif
     }
     
+    
+    @ViewBuilder
+    func ImagenLienzoSecundario()-> some View{
+    #if os(iOS)
+        Image(uiImage: lienzoModel.imagenLienzoSecundario ?? UIImage(named: "nev-min")! )
+    .resizable()
+    .scaledToFit()
+    .cornerRadius(5)
+    .frame(width: lienzoModel.tamañoImagenLienzoSecundario, height: lienzoModel.tamañoImagenLienzoSecundario)
+    .clipped()
+    .contextMenu{
+        Button("Cambiar Imagen..."){
+            self.mostrarPickerImagenLienzoSecundario = true
+        }
+    }
+    .photosPicker(
+                isPresented: $mostrarPickerImagenLienzoSecundario,
+                selection: $selectedItemImagenLienzoSecundario,
+                matching: .images
+            )
+    .onChange(of: selectedItemImagenLienzoSecundario) { old, newValue in
+                Task {
+                    if let data = try? await newValue?.loadTransferable(type: Data.self),
+                       let uiImage = UIImage(data: data) {
+                        lienzoModel.imagenLienzoSecundario = uiImage
+                    }
+                }
+    }
+
+    #elseif os(macOS)
+        Image(nsImage: lienzoModel.imagenLienzoSecundario ?? UIImage(named: "nev-min")! )
+    .resizable()
+    .scaledToFit()
+    .cornerRadius(5)
+    .frame(width: lienzoModel.tamañoImagenLienzoSecundario, height: lienzoModel.tamañoImagenLienzoSecundario)
+    .clipped()
+    .contentShape(Rectangle())
+    .onTapGesture(count: 2) {
+        if let image = lienzoModel.imagenLienzoSecundario{
+            lienzoModel.imagenLienzoSecundario = image
+        }else{
+            lienzoModel.imagenLienzoSecundario = NSImage(named: "nev-min")
+        }
+    }
+    .help("Doble click para cambiar la imagen")
+    #endif
+    }
+    
+    
     @ViewBuilder
     func TextoPrincipal()-> some View{
         
@@ -620,6 +875,13 @@ struct LienzoMain: View {
                 .padding()
                 .onTapGesture(count: 2) {
                     self.editarTextoPrincipal = true
+                }
+                .contextMenu{
+                    Button("QR code del texto"){
+                        if let image =  self.lienzoModel.obtenerImagenQR(texto: lienzoModel.textoPrincipal){
+                            self.lienzoModel.imagenLienzoSecundario = image
+                        }
+                    }
                 }
         }
         
@@ -664,6 +926,13 @@ struct LienzoMain: View {
                 .onTapGesture(count: 2) {
                     self.editarTextoSecundario = true
                 }
+                .contextMenu{
+                    Button("QR code del texto"){
+                        if let image =  self.lienzoModel.obtenerImagenQR(texto: lienzoModel.textoSecundario){
+                            self.lienzoModel.imagenLienzoSecundario = image
+                        }
+                    }
+                }
         }
     }
     
@@ -698,12 +967,21 @@ struct LienzoMain: View {
             //Primera fila
             HStack{
                 VStack(){
-                    if lienzoModel.posicionImagenLienzo == .arriba {
-                        if lienzoModel.visibilidadImagenLienzo{
-                            ImagenLienzo()
+                    HStack{
+                        if lienzoModel.posicionImagenLienzoSecundario == .arriba {
+                            if lienzoModel.visibilidadImagenLienzoSecundario{
+                               ImagenLienzoSecundario()
+                            }
+                            
                         }
-                        
+                        if lienzoModel.posicionImagenLienzo == .arriba {
+                            if lienzoModel.visibilidadImagenLienzo{
+                                ImagenLienzo()
+                            }
+                            
+                        }
                     }
+                    
                     
                     if lienzoModel.posicionTextoPrincipal == .arriba{
                         TextoPrincipal()
@@ -723,9 +1001,18 @@ struct LienzoMain: View {
             HStack{
                 
                 VStack{
-                    if lienzoModel.posicionImagenLienzo == .izquierda{
-                        if lienzoModel.visibilidadImagenLienzo{
-                            ImagenLienzo()
+                    VStack{
+                        if lienzoModel.posicionImagenLienzo == .izquierda {
+                            if lienzoModel.visibilidadImagenLienzo{
+                                ImagenLienzo()
+                            }
+                            
+                        }
+                        if lienzoModel.posicionImagenLienzoSecundario == .izquierda {
+                            if lienzoModel.visibilidadImagenLienzoSecundario{
+                               ImagenLienzoSecundario()
+                            }
+                            
                         }
                     }
                     if lienzoModel.posicionTextoPrincipal == .izquierda{
@@ -754,16 +1041,27 @@ struct LienzoMain: View {
                 
                 VStack{
                     
-                    if lienzoModel.posicionImagenLienzo == .derecha{
-                        if lienzoModel.visibilidadImagenLienzo{
-                            ImagenLienzo()
+                    HStack{
+                        if lienzoModel.posicionImagenLienzo == .derecha {
+                            if lienzoModel.visibilidadImagenLienzo{
+                                ImagenLienzo()
+                            }
+                            
+                        }
+                        
+                        if lienzoModel.posicionImagenLienzoSecundario == .derecha {
+                            if lienzoModel.visibilidadImagenLienzoSecundario{
+                               ImagenLienzoSecundario()
+                            }
+                            
                         }
                     }
+                    
                     if lienzoModel.posicionTextoPrincipal == .derecha{
                         TextoPrincipal()
                     }
                     
-                    if lienzoModel.posicionImagenLienzo == .derecha{
+                    if lienzoModel.posicionTextoSecundario == .derecha{
                         if lienzoModel.visibilidadTextoSecundario{
                             TextoSecundario()
                         }
@@ -787,11 +1085,19 @@ struct LienzoMain: View {
                         }
                     }
                     
-                    if lienzoModel.posicionImagenLienzo == .abajo {
-                        if lienzoModel.visibilidadImagenLienzo{
-                            ImagenLienzo()
+                    HStack{
+                        if lienzoModel.posicionImagenLienzoSecundario == .abajo {
+                            if lienzoModel.visibilidadImagenLienzoSecundario{
+                               ImagenLienzoSecundario()
+                            }
+                            
                         }
-                        
+                        if lienzoModel.posicionImagenLienzo == .abajo {
+                            if lienzoModel.visibilidadImagenLienzo{
+                                ImagenLienzo()
+                            }
+                            
+                        }
                     }
                     
                 }

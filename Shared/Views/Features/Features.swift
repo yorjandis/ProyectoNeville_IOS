@@ -1,14 +1,16 @@
 //
-//  Novedades.swift
+//  Features.swift
 //  Neville_iOS
 //
-//  Created by Yorjandis PG on 2/12/25.
+//  Created by Yorjandis PG on 9/12/25.
 //
+
+
 
 import SwiftUI
 
 //Ventana de Novedades de la App
-struct Novedades: View {
+struct Features: View {
     
     @Environment(\.dismiss) var dismiss
     
@@ -19,10 +21,30 @@ struct Novedades: View {
                     VStack(alignment: .leading, spacing: 20){
                         Text("""
                         Bienvenido a una nueva Versión de La Ley
-                        Esta versión: \(AppCons.appVersion!), cuenta con las siguientes Novedades:
+                        Esta versión: \(AppCons.appVersion!), cuenta con las siguientes Características:
                         """
                         )
                         VStack(alignment: .leading, spacing: 20){
+                            //Numeros de Conferencias:
+                            Text("☘️ conferencias y  libros: 472")
+                            //Compendio de Frases:
+                            Text("☘️ Compendio de Frases: 439. Se pueden crear nuevas frases personales. Las Frases incorporadas se han extraido textualmente de toda la obra de neville. Podemos crear Frases desde Siri: [<Oye siri> en La Ley crea una frase]. Podemos compartirlas, copiarlas a Notas, marcarse como favoritas, importarlas desde QR, pasarlas al Lienzo y editar solo las frases personales. Funciones IA sobre Frases: Interpretar, aplicación práctica y chatIA. Cada Frase tiene asociada un campo de nota propio, para hacer anotaciones sobre dicha frase. Las Frases se almacenan localmente y en la nube de iCloud con nuestro Apple ID; no se eliminan aunque desintalemos la aplicación")
+                            //Notas:
+                            Text("☘️ Listado ilimitado de Notas Personales. Podemos crear Notas desde Siri: [<Oye Siri> en La Ley crea una nota]. Las notas pueden ser compartidas, exportadas a QR, al lienzo y marcarse como favoritas. Funciones de IA sobre Notas: Interpretar, Aplicación Práctica y ChatIA. El acceso a las Notas puede ser protegido por autenticación biométrica/contraseña, en Ajustes de la App. Las Notas se almacenan localmente y en la nube de iCloud con nuestro Apple ID; no se eliminan aunque desintalemos la aplicación")
+                            
+                            //Diario.
+                            Text("☘️ Diario Personal para registrar nuestras experiencias y hechos de cada día. Muy útil para llevar un registro de nuestras asunciones, deseos y experiencias con estas enseñanzas y nuestra vida. Cada entrada del Diario tiene una fecha de creación, que nunca cambia, y una fecha de modificación que puede cambiar si modificamos la entrada en el futuro. El acceso al Diario esta protegido por autentifación biométrica; y una clave personal, cifrada y almacenada en el llavero del sistema, que puede ser utiliza si el dispositivo no tiene acceso biométrico. El Diario cuenta con potentes funciones de búsqueda y filtrado para encontrar una entrada ya sea por su título o contenido. Cuanta con un práctico calendario donde podemos ver las entradas que se han creado en el mes y navegar por las entradas creadas. Las entradas del Diario se almacenan localmente y en la nube de iCloud con nuestro Apple ID; no se eliminan aunque desintalemos la aplicación")
+                            
+                            //Evaluación:
+                            Text("☘️ Evaluación: Un juego de elegir la respuesta correcta/incorrecta. Nos ayuda a consolidar y repasar lo aprendido en estas enseñansas. Las preguntas pueden tener doble sentido y ser sutiles para hacer más desafiente su interpretación.")
+                            
+                            //Funciones de QR
+                            Text("☘️ El lector y generador de QR integrado nos permite importar información como Notas, Frases, etc desde y hacia la aplicación. Se ha creado un formato propio de importación/exportación de Frase y Notas con el cual se puede compartir con amigos y la comunidad.")
+                            
+                            //Funciones de Inteligencia Artificial (IA):
+                            Text("☘️ Se han incorporado funciones de generación e interpretación de contenido (Frases, Notas, conferencias, y texto copiado) a través de IA. La IA funciona de manera local y no requiere conexión a internet. Preserva la información personal y no la expone a terceros. Se requiere aceptar un descargo de responsabilidad para poder hacer uso de la IA. La IA ha sido cuidadosamente instruida para responder solo en el contexto de las enseñansas de neville, minimizando la información errónea y sezgada. Las funciones propias de IA son: Interpretación, resumen y generación de aplicación práctica de contenidos. También es posible charlar sobre temas de las enseñanzas. La IA puede interpretar el papel del Maestro o responder de manera impersonal; esta función se puede cambiar en Ajustes de la App.")
+                            
+                            
                             //Lienzo
                             Text("☘️ Lienzo: Una forma creativa de diseñar tus propios fondos con imágines, colores y texto. Ideal para compartir frases y pensamientos en redes sociales y con amigos")
                             
@@ -53,9 +75,7 @@ struct Novedades: View {
                                         .italic()
                                     
                                 )
-                                
-                                
-                                
+
                                 Text("\n🔸Crear una nota").foregroundStyle(.orange)
                                 Text("Crea una nota de manera silenciosa, sin abrir la aplicación. \nComando de Siri:")
                                     (
@@ -76,23 +96,6 @@ struct Novedades: View {
                                 )
                                 
                             }
-                            //Correcciones y Mejoras en Frases
-                            Text("☘️ Varias correcciones y mejoras en Frases. Ahora es posible editar las frases personales. También se ha añadido, en el menú contextual, las opciones de compartir la frase y almacenarlas en Notas")
-                            Text("☘️ Nuevo en Diario: Se ha añadido una opción en Ajustes para mantener el Diario desbloqueado una vez se ha accedido al mismo. Esto evita tener que pasar la validación en cada acceso al Diario")
-                            Text("☘️ Se ha modificado las políticas de privacidad para introducir como se gestiona la privacidad en las nuevas funciones de Inteligencia Artificial")
-                            Text("☘️ Varias mejoras y correcciones en Notas")
-                            Text("☘️ Varias mejoras y correcciones en Reflexiones. Ahora es posible editar las reflexiones")
-                            Text("☘️ Se ha introducido en menú de funciones para el texto copiado en conferencias, frases, notas, respuestas de IA, etc. Esté menú aparece automáticamente una vez hayamos seleccionado un texto y copiado al portapapeles. Algunas de las funciones son: copiar en Notas, copiar en el Lienzo, copiar en la ventana de chatIA, etc")
-                            Text("☘️ Ahora es posible elegir el tema claro/oscuro en Ajustes")
-                            Text("☘️ macOS: Se ha mejorado la experiencia en el manejo y visualización de las ventanas flotantes")
-                            Text("☘️ Se ha mejorado la función de lector/generador de QR Code. Ahora puede manejar el Formato de Importación de Notas para importar notas automáticamente")
-                            Text("☘️ IA: Se ha revisado y afinado los ajustes que controlan las respuestas de la IA. Ahora es más natural y fluida. Además, se ha enriquecido el conocimiento base con más información sobre las enseñanzas de neville")
-                            Text("☘️ IA: Ahora podemos enviar el texto en el ChatIA con un enter: macOS")
-                            Text("☘️ IA: Se ha añadido una opción en Ajustes para controlar el papel interpretado por la Inteligencia Artificial: Personal o Impersonal. Si es Personal, la IA actuará como si fuera neville. Si no se siente a gusto puede cambiar al tono Impersonal")
-                            Text("☘️ Corregido: No se aplicaba el tamaño de letra a las listas de elementos. Ahora sí")
-                            Text("☘️ Se actualizó el email, en Ajustes, para enviar comentarios y sugerencias a través de la app")
-                            Text("Estas Novedades estarán en Ajustes, en el área de información")
-                                .padding(.vertical, 10)
                         }
                         
                         VStack{
@@ -103,6 +106,7 @@ struct Novedades: View {
                             .foregroundStyle(.black)
                             .buttonStyle(.borderedProminent)
                         }
+                        .padding(.vertical, 10)
                     }
                     .padding()
                     

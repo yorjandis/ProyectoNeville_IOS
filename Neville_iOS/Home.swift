@@ -38,7 +38,7 @@ struct Home: View {
                     MostrarCumpleaños()
                     
                     //Muestra si estamos en modo debug. Solo aparecerá en la fase de desarrollo
-                   MostrarModoDebug()
+                   //MostrarModoDebug()
                     
                     
                     //Muestra el texto para indicar nueva actualización

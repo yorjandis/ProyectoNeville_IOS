@@ -29,8 +29,13 @@ struct GenerateQRView : View {
     @State  var  showImage = true //muestra la imagen del QR ya generado
     
     //Para manejar el botón y el fomrato de importación de notas
-    @State private var showImportButton : Bool = false
-    @State private var formatImport : (String, String, Bool)? = nil
+    @State private var showImportButtonNotas : Bool = false
+    @State private var formatImportNotas : (String, String, Bool)? = nil
+    
+    //Para manejar el botón y el fomrato de importación de frase
+    @State private var showImportButtonFrase : Bool = false
+    @State private var formatImportFrase : String? = nil
+    
     
     
     @FocusState private var focusState : Bool //Para ocultar el teclado
@@ -87,14 +92,14 @@ struct GenerateQRView : View {
                                             }
                                         }
                                         //Muestra la opción de guardar en notas si el texto del QR no tiene un formato de importación
-                                        if self.formatImport == nil{
+                                        if self.formatImportNotas == nil{
                                             Button("Guardar en Notas"){
                                                
                                                 _ = NotasModel().addNote(nota: footer, title: "\(String(String(footer).prefix(footer.count / 3 )))...")
                                             }
                                         }
                                         
-                                        if self.formatImport == nil{
+                                        if self.formatImportNotas == nil{
                                             Button("Formato de Nota"){
                                                     let result = "nota>>NuevaNotaQR>>\(self.footer)>>no"
                                                     self.footer = result
@@ -133,9 +138,9 @@ struct GenerateQRView : View {
                                     _ = NotasModel().addNote(nota: footer, title: "\(String(String(footer).prefix(footer.count / 3 )))...")
                                 }
                                 
-                                if self.formatImport == nil{
+                                if self.formatImportNotas == nil{
                                     Button("Formato de Nota"){
-                                            let result = "nota>>NuevaNotaQR>>\(self.footer)>>no"
+                                        let result = "\(AppCons.zspNota)NuevaNotaQR::\(self.footer)::no"
                                             self.footer = result
                                             imagen = getImageQR()
                                             showImage = true
@@ -164,80 +169,16 @@ struct GenerateQRView : View {
                             }
                     
                     Spacer()
-                    
-                    #if os(macOS)
-                    Button("Importar Imagen QR"){
-                        if let imageTemp = seleccionarImagen(){
-                            QRModel.leerQRConVision(from: imageTemp) { str in
-                                if let texto = str {
-                                    Task {
-                                        await MainActor.run{
-                                            self.footer = texto
-                                            imagen = getImageQR()
-                                            showImage = true
-                                            focusState = false
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                            
-
-                    }
-                    
-                    #endif
-                    
-                    #if os(iOS)
-                    //Permite leer una imagen de  QR almacenado en la galeria:
-                    PhotosPicker(selection: $selectedItem, matching: .images){
-                        Label("Importar imagen QR", systemImage: "photo")
-                    }
-                        .onChange(of: selectedItem) {
-                             
-                            Task {
-                                if let data = try? await selectedItem?.loadTransferable(type: Data.self) {
-                                    
-                                    guard let temp = UIImage(data: data) else {return}//Aqui tenemos la imagen de la galería
-                                    
-                                    //Intentanto leer la imagen cargada
-                                    if let features = detectQRCode(temp), !features.isEmpty{
-                                        for case let row as CIQRCodeFeature in features{
-                                            self.footer = row.messageString ?? ""
-                                        }
-                                        withAnimation {
-                                            self.imagen = temp
-                                        }
-                                        
-                                        
-                                    }else{
-                                        #if os(iOS)
-                                        self.imagen = UIImage(systemName: "qrcode")
-                                        #endif
-                                        #if os(macOS)
-                                        self.imagen = NSImage(systemSymbolName: "qrcode", accessibilityDescription: nil)
-                                        #endif
-                                        
-                                        self.footer = ""
-                                    }
-                                }else{
-                                    print("Fallo al cargar la imagen de la galeria")
-                                }
-                            }
-                        }
-                        .tint(.blue)
-                        .controlSize(.large)
-                        .buttonStyle(.borderedProminent)
-                    #endif
-                    Spacer()
 
                     //Mostrar el botón de importación de Notas si se ha mostrado un QR de formato de importación de notas:
-                    if self.showImportButton{
+                    
+                    if self.showImportButtonNotas{
                         HStack{
                             Button("Importar a Notas"){
                                 Task{
                                     self.imagen = getImageQR() //Recrea la imagen QR a partir del texto actual. Esto es para el caso de que se modifique el texto antes de importar.
                                     validarFormatoImportacion()
-                                    if let formato = self.formatImport{
+                                    if let formato = self.formatImportNotas{
                                         if NotasModel().addNote(nota: formato.1, title: formato.0, isFav: formato.2){
                                             self.alertMessage = "Nota importada correctamente"
                                             self.showAlert = true
@@ -253,12 +194,43 @@ struct GenerateQRView : View {
                             
                             Image(systemName: "info.circle")
                                 .onTapGesture {
-                                    self.alertMessage = "Formato de importación: nota>>Título de Nota>>Contenido de Nota>>Si/No     Ejemplo: nota>>Naranja>>Me encanta la naranja>>Sí"
+                                    self.alertMessage = "El formato de importación de Notas permite generar un QR que se importa automáticamente a las Notas. Utilice el lector de QR incorporado para esta función"
                                     self.showAlert = true
                                 }
                         }
                        
                     }
+                    
+                    //Mostrar un botón de importación de Frases
+                    if self.showImportButtonFrase{
+                        HStack{
+                            Button("Importar a Frases"){
+                                Task{
+                                    self.imagen = getImageQR() //Recrea la imagen QR a partir del texto actual. Esto es para el caso de que se modifique el texto antes de importar.
+                                    validarFormatoImportacion()
+                                    if let frase = self.formatImportFrase{
+                                        if FrasesModel.shared.AddFrase(frase: frase){
+                                            self.alertMessage = "Frase importada correctamente"
+                                            self.showAlert = true
+                                        }
+                                    }
+                                }
+                                
+                                
+                                
+                            }
+                            .tint(.blue)
+                            .buttonStyle(.borderedProminent)
+                            
+                            Image(systemName: "info.circle")
+                                .onTapGesture {
+                                    self.alertMessage = "El formato de importación de Frase permite generar un QR que se importa automáticamente a las Frases Personales. Utilice el lector de QR incorporado para esta función"
+                                    self.showAlert = true
+                                }
+                        }
+                       
+                    }
+                    
                     
                     #if os(macOS)
                     //Barra inferior para cerrar la ventana modal en macOS
@@ -301,6 +273,7 @@ struct GenerateQRView : View {
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
             #endif
+            
             .toolbar{
                 ToolbarItem{
                     Button{
@@ -320,6 +293,75 @@ struct GenerateQRView : View {
                 if #available(iOS 26.0, macOS 26.0, *) {
                     ToolbarSpacer(.fixed)
                 }
+                
+                if #available(iOS 26.0, macOS 26.0, *) {
+                    ToolbarSpacer(.fixed)
+                }
+                
+                
+                //Importar una imagen de la galeria (iOS) o de la carpeta del sistema(macOS)
+                #if os(macOS)
+                ToolbarItem{
+                    Button("Importar Imagen QR"){
+                        
+                        if let imageTemp = seleccionarImagen(){
+                            
+                            QRModel.leerQRConVision(from: imageTemp) { str in
+                                if let texto = str {
+                                    Task {
+                                        await MainActor.run{
+                                            self.footer = texto
+                                            imagen = getImageQR()
+                                            showImage = true
+                                            focusState = false
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+               
+                 
+                #else
+                ToolbarItem{
+                    //Permite leer una imagen de  QR almacenado en la galeria:
+                    PhotosPicker(selection: $selectedItem, matching: .images){
+                        Label("Importar imagen QR", systemImage: "photo")
+                    }
+                    .onChange(of: selectedItem) {
+                        
+                        Task {
+                            if let data = try? await selectedItem?.loadTransferable(type: Data.self) {
+                                
+                                guard let temp = UIImage(data: data) else {return}//Aqui tenemos la imagen de la galería
+                                
+                                //Intentanto leer la imagen cargada
+                                if let features = detectQRCode(temp), !features.isEmpty{
+                                    for case let row as CIQRCodeFeature in features{
+                                        self.footer = row.messageString ?? ""
+                                        imagen = getImageQR()
+                                        showImage = true
+                                        focusState = false
+                                    }
+                                    
+                                }else{
+                                    
+                                    self.imagen = UIImage(systemName: "qrcode")
+                                    
+                                    self.footer = ""
+                                }
+                            }else{
+                                print("Fallo al cargar la imagen de la galeria")
+                            }
+                        }
+                    }
+                    .tint(.blue)
+                    .controlSize(.large)
+                    .buttonStyle(.borderedProminent)
+                }
+                #endif
+
                 
                 ToolbarItem{
                     Menu{
@@ -355,19 +397,35 @@ struct GenerateQRView : View {
                                 Label("Guardar en Galeria", systemImage: "photo.badge.arrow.down.fill")
                             }
                             #endif
+                            
+                            
+                            
+                            
+                            Button{
+                                self.footer =  QRModel.aplicarFormatoImportacion(texto: self.footer, tipo: "nota")
+                                imagen = getImageQR()
+                                showImage = true
+                                focusState = false
+                                validarFormatoImportacion()
+                            }label:{
+                                Label("Aplicar formato importación Notas", systemImage: "pencil.and.scribble")
+                            }
+                            
+                            Button{
+                                self.footer =   QRModel.aplicarFormatoImportacion(texto: self.footer, tipo: "frase")
+                                imagen = getImageQR()
+                                showImage = true
+                                focusState = false
+                                validarFormatoImportacion()
+                            }label:{
+                                Label("Aplicar formato importación Frases", systemImage: "pencil.and.scribble")
+                            }
+                            
+                            
+                            
                         }
                         
-                        #if os(iOS)
                        
-                        
-                        /*
-                        NavigationLink{
-                            QRLoadFromGaleryView()
-                        }label: {
-                            Label("Cargar de Galeria", systemImage: "qrcode")
-                        }
-                         */
-                        #endif
                         
                     }label: {
                         Image(systemName: "ellipsis")
@@ -379,6 +437,7 @@ struct GenerateQRView : View {
                 
                 
             }
+             
             .alert(isPresented: $showAlert) {
                 Alert(title: Text("La Ley"), message: Text(self.alertMessage))
             }
@@ -393,15 +452,26 @@ struct GenerateQRView : View {
         return UIImage(data: QRModel().generateQRCode(text: self.footer)!)!
     }
     
-    //Función que determina si el texto dado tiene un formato de importación de Notas y, e ese caso, rellena los valores:
+    //Función que determina si el texto dado tiene un formato de importación de Notas/Frases y, e ese caso, rellena los valores:
     func validarFormatoImportacion(){
         //determinar si el texto que corresponde a la image tiene un formato de importación de notas:
         if let result = QRModel.detectFormatImportNota(text: self.footer){
-            self.formatImport = (result.1.0, result.1.1, result.1.2) //Almacenando en una estructura el título, el contenido de la nota, y su estado de favorito
-            self.showImportButton = true
+            self.formatImportNotas = (result.1.0, result.1.1, result.1.2) //Almacenando en una estructura el título, el contenido de la nota, y su estado de favorito
+            self.showImportButtonNotas = true
+            self.formatImportFrase = nil
+            self.showImportButtonFrase = false
+            
+        }else if let result = QRModel.detectFormatImportFrase(text: self.footer){
+            self.formatImportFrase = result.1 //Almacenando el texto de la Frase
+            self.showImportButtonFrase = true
+            self.formatImportNotas = nil
+            self.showImportButtonNotas = false
+            
         }else{
-            self.formatImport = nil
-            self.showImportButton = false
+            self.formatImportNotas = nil
+            self.showImportButtonNotas = false
+            self.formatImportFrase = nil
+            self.showImportButtonFrase = false
         }
     }
      

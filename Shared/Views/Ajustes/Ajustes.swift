@@ -993,6 +993,15 @@ struct Ajustes: View {
                                 .bold()
                                 .font(.headline)
                         }
+                        NavigationLink{
+                            Features()
+                        }label:{
+                            Label("Caraterísticas de la App", systemImage: "info.circle.text.page.fill")
+                                .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
+                                .bold()
+                                .font(.headline)
+                        }
+                        .tint(.green)
                         
                         NavigationLink{
                             NavigationStack{
