@@ -21,7 +21,8 @@ struct Neville_iOSApp: App {
     @StateObject private var settingModel           = SettingModel() //Inicializo el modelo para cargar valores de Setting y lo inyecto en el árbol de vistas
     @StateObject private var securityModel          = SecurityModel.shared //Almacena variables observables para
     @StateObject private var reflexModel            = ReflexModel.shared //Modelo Observable para Reflexiones
-    @StateObject private var clipBoardModel        = ClipboardObserver() //Observa cambios en el portapapales
+    @StateObject private var clipBoardModel         = ClipboardObserver() //Observa cambios en el portapapales
+    @StateObject private var shareModel     =  ShareModel()//Para manejar la extensión de compartir imagen/texto
     
     //Para Las funciones de Atajo:
     @State private var showDiarioView = false //Abrir la ventana del Diario
@@ -46,10 +47,10 @@ struct Neville_iOSApp: App {
      }
      */
    
-    
+    //Claves de los ficheros
+    let keyNotaShareText    = "notaShareText"
+    let keyFraseShareText   = "fraseShareText"
 
-
-    
     var body: some Scene {
         WindowGroup {
             NavigationStack{
@@ -101,17 +102,53 @@ struct Neville_iOSApp: App {
                             .environmentObject(self.settingModel)
                             
                     }
-
-                
-                
-                
-                    //Fin de las funciones de Atajo
+                    
                 
             }
-            
-            
-                
+            .task {
+                await handleShareItem()
+            }
         }
-  
     }
+    
+    
+    func handleShareItem() async{
+        
+        if let defaults = UserDefaults(suiteName: "group.com.ypg.nev.group"){
+            
+            //Manejando el texto en Notas
+            if let texto = defaults.string(forKey: self.keyNotaShareText){
+                
+                //Detectando si tiene el formato de imprtación de Notas:
+                
+                if let textImportacionNota = QRModel.detectFormatImportNota(text: texto){
+                    _ = NotasModel().addNote(nota: textImportacionNota.1.1, title: textImportacionNota.1.0, isFav: textImportacionNota.1.2)
+                }else{
+                    _ = NotasModel().addNote(nota: texto, title: "Nota desde QR")
+                }
+
+                // Limpiar el valor para la próxima vez
+                defaults.removeObject(forKey: self.keyNotaShareText)
+            }
+            
+            //Copiando el texto en Frases
+            if let texto = defaults.string(forKey: self.keyFraseShareText){
+                
+                //Detectando formato de importación de Frases
+                if let textImportado = QRModel.detectFormatImportFrase(text: texto){
+                    _ = FrasesModel.shared.AddFrase(frase: textImportado.1)
+                }else{
+                    _ = FrasesModel.shared.AddFrase(frase: texto)
+                }
+
+                // Limpiar el valor para la próxima vez
+                defaults.removeObject(forKey: self.keyFraseShareText)
+            }
+
+        }
+
+    }
+  
+    
+    
 }

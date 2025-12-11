@@ -30,6 +30,7 @@
 		19F804202B69CBA000A323A0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 19F8041F2B69CBA000A323A0 /* Assets.xcassets */; };
 		19F804232B69CBA000A323A0 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 19F804222B69CBA000A323A0 /* Preview Assets.xcassets */; };
 		19F804262B69CBA000A323A0 /* La Ley Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 19F804192B69CB9D00A323A0 /* La Ley Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		91E107712EEA01AD00F4DB1D /* sharedios.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 91E107672EEA01AD00F4DB1D /* sharedios.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		91F0DD552D605B5800307453 /* watchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F0DD542D605B4B00307453 /* watchModel.swift */; };
 		E95B93572AAFBB2600B5E2B5 /* Neville_iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95B93562AAFBB2600B5E2B5 /* Neville_iOSApp.swift */; };
 		E95B93592AAFBB2600B5E2B5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95B93582AAFBB2600B5E2B5 /* ContentView.swift */; };
@@ -58,6 +59,13 @@
 			remoteGlobalIDString = 19F804182B69CB9D00A323A0;
 			remoteInfo = "La Ley Watch App";
 		};
+		91E1076F2EEA01AD00F4DB1D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E95B934B2AAFBB2600B5E2B5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 91E107662EEA01AD00F4DB1D;
+			remoteInfo = sharedios;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -68,6 +76,7 @@
 			dstSubfolderSpec = 13;
 			files = (
 				19E0BE212B0C661B00E149A5 /* FrasesWiggetExtension.appex in Embed Foundation Extensions */,
+				91E107712EEA01AD00F4DB1D /* sharedios.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -92,6 +101,16 @@
 				19F804262B69CBA000A323A0 /* La Ley Watch App.app in Embed Watch Content */,
 			);
 			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9113E2862EE9DA2E002AC306 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+			);
+			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -126,6 +145,8 @@
 		19F804222B69CBA000A323A0 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		9122752B2D5A925200DE3AC6 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		917C301F2EBCD1E5006BB36E /* La Ley_mac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "La Ley_mac.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		91E1074C2EE9FC8D00F4DB1D /* UniformTypeIdentifiers.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UniformTypeIdentifiers.framework; path = System/Library/Frameworks/UniformTypeIdentifiers.framework; sourceTree = SDKROOT; };
+		91E107672EEA01AD00F4DB1D /* sharedios.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = sharedios.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		91F0DD4E2D60384700307453 /* WatchComplicationLaLeyExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WatchComplicationLaLeyExtension.entitlements; sourceTree = "<group>"; };
 		91F0DD542D605B4B00307453 /* watchModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = watchModel.swift; sourceTree = "<group>"; };
 		E95B93532AAFBB2600B5E2B5 /* Neville_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Neville_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -832,14 +853,23 @@
 			);
 			target = E95B93522AAFBB2600B5E2B5 /* Neville_iOS */;
 		};
+		91E107752EEA01AD00F4DB1D /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 91E107662EEA01AD00F4DB1D /* sharedios */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		9113E29C2EE9E1D2002AC306 /* Model */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Model; sourceTree = "<group>"; };
 		911FE4452ECB2A7F009F83BE /* Shared */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (911FE4562ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 911FE4572ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 911FE4582ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Shared; sourceTree = "<group>"; };
 		911FE4D42ECB2E8D009F83BE /* OptionView */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (911FEB632ECB3B7F009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = OptionView; sourceTree = "<group>"; };
 		911FF1FA2ECB4064009F83BE /* Preview Content */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (911FF1FC2ECB4064009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 911FF1FD2ECB4064009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = "Preview Content"; sourceTree = "<group>"; };
 		914415A92EDC377200FFC61D /* Atajos */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (914415B12EDC39E300FFC61D /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Atajos; sourceTree = "<group>"; };
 		917C30202EBCD1E5006BB36E /* La Ley_mac */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "La Ley_mac"; sourceTree = "<group>"; };
+		91E107682EEA01AD00F4DB1D /* sharedios */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (91E107752EEA01AD00F4DB1D /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = sharedios; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -869,6 +899,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		917C301C2EBCD1E5006BB36E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		91E107642EEA01AD00F4DB1D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -910,6 +947,7 @@
 				9122752B2D5A925200DE3AC6 /* WebKit.framework */,
 				19E0BDEC2B0B412D00E149A5 /* WidgetKit.framework */,
 				19E0BDEE2B0B412D00E149A5 /* SwiftUI.framework */,
+				91E1074C2EE9FC8D00F4DB1D /* UniformTypeIdentifiers.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -978,6 +1016,7 @@
 				19E0BE172B0C661A00E149A5 /* FrasesWigget */,
 				19EDBBC62B7DD66000432CDE /* WatchComplicationLaLey */,
 				917C30202EBCD1E5006BB36E /* La Ley_mac */,
+				91E107682EEA01AD00F4DB1D /* sharedios */,
 				19E0BDEB2B0B412D00E149A5 /* Frameworks */,
 				E95B93542AAFBB2600B5E2B5 /* Products */,
 			);
@@ -991,6 +1030,7 @@
 				19F804192B69CB9D00A323A0 /* La Ley Watch App.app */,
 				19EDBBC32B7DD66000432CDE /* WatchComplicationLaLeyExtension.appex */,
 				917C301F2EBCD1E5006BB36E /* La Ley_mac.app */,
+				91E107672EEA01AD00F4DB1D /* sharedios.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -998,6 +1038,7 @@
 		E95B93552AAFBB2600B5E2B5 /* Neville_iOS */ = {
 			isa = PBXGroup;
 			children = (
+				9113E29C2EE9E1D2002AC306 /* Model */,
 				19E0BE052B0B508400E149A5 /* Neville_iOS.entitlements */,
 				197D2A392AF9858900486014 /* Neville-iOS-Info.plist */,
 				E95B93562AAFBB2600B5E2B5 /* Neville_iOSApp.swift */,
@@ -1074,6 +1115,7 @@
 				917C301B2EBCD1E5006BB36E /* Sources */,
 				917C301C2EBCD1E5006BB36E /* Frameworks */,
 				917C301D2EBCD1E5006BB36E /* Resources */,
+				9113E2862EE9DA2E002AC306 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
@@ -1092,6 +1134,28 @@
 			productReference = 917C301F2EBCD1E5006BB36E /* La Ley_mac.app */;
 			productType = "com.apple.product-type.application";
 		};
+		91E107662EEA01AD00F4DB1D /* sharedios */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 91E107722EEA01AD00F4DB1D /* Build configuration list for PBXNativeTarget "sharedios" */;
+			buildPhases = (
+				91E107632EEA01AD00F4DB1D /* Sources */,
+				91E107642EEA01AD00F4DB1D /* Frameworks */,
+				91E107652EEA01AD00F4DB1D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				91E107682EEA01AD00F4DB1D /* sharedios */,
+			);
+			name = sharedios;
+			packageProductDependencies = (
+			);
+			productName = sharedios;
+			productReference = 91E107672EEA01AD00F4DB1D /* sharedios.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		E95B93522AAFBB2600B5E2B5 /* Neville_iOS */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = E95B93612AAFBB2900B5E2B5 /* Build configuration list for PBXNativeTarget "Neville_iOS" */;
@@ -1107,8 +1171,10 @@
 			dependencies = (
 				19E0BE202B0C661B00E149A5 /* PBXTargetDependency */,
 				19F804252B69CBA000A323A0 /* PBXTargetDependency */,
+				91E107702EEA01AD00F4DB1D /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
+				9113E29C2EE9E1D2002AC306 /* Model */,
 				911FE4D42ECB2E8D009F83BE /* OptionView */,
 			);
 			name = Neville_iOS;
@@ -1140,6 +1206,9 @@
 					917C301E2EBCD1E5006BB36E = {
 						CreatedOnToolsVersion = 26.1;
 					};
+					91E107662EEA01AD00F4DB1D = {
+						CreatedOnToolsVersion = 26.1.1;
+					};
 					E95B93522AAFBB2600B5E2B5 = {
 						CreatedOnToolsVersion = 15.0;
 					};
@@ -1165,6 +1234,7 @@
 				19F804182B69CB9D00A323A0 /* La Ley Watch App */,
 				19EDBBC22B7DD66000432CDE /* WatchComplicationLaLeyExtension */,
 				917C301E2EBCD1E5006BB36E /* La Ley_mac */,
+				91E107662EEA01AD00F4DB1D /* sharedios */,
 			);
 		};
 /* End PBXProject section */
@@ -1196,6 +1266,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		917C301D2EBCD1E5006BB36E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		91E107652EEA01AD00F4DB1D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1252,6 +1329,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		91E107632EEA01AD00F4DB1D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E95B934F2AAFBB2600B5E2B5 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1280,6 +1364,11 @@
 			isa = PBXTargetDependency;
 			target = 19F804182B69CB9D00A323A0 /* La Ley Watch App */;
 			targetProxy = 19F804242B69CBA000A323A0 /* PBXContainerItemProxy */;
+		};
+		91E107702EEA01AD00F4DB1D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 91E107662EEA01AD00F4DB1D /* sharedios */;
+			targetProxy = 91E1076F2EEA01AD00F4DB1D /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1582,6 +1671,66 @@
 			};
 			name = Release;
 		};
+		91E107732EEA01AD00F4DB1D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = sharedios/sharedios.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 41;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = sharedios/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = sharedios;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.3.6;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.sharedios;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		91E107742EEA01AD00F4DB1D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = sharedios/sharedios.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 41;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = sharedios/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = sharedios;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.3.6;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.sharedios;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		E95B935F2AAFBB2900B5E2B5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1826,6 +1975,15 @@
 			buildConfigurations = (
 				917C30272EBCD1E7006BB36E /* Debug */,
 				917C30282EBCD1E7006BB36E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		91E107722EEA01AD00F4DB1D /* Build configuration list for PBXNativeTarget "sharedios" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				91E107732EEA01AD00F4DB1D /* Debug */,
+				91E107742EEA01AD00F4DB1D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

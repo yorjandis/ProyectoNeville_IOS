@@ -516,5 +516,3 @@ struct GenerateQRView : View {
 
 
 
-
-
