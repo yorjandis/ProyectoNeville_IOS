@@ -74,6 +74,13 @@ struct Novedades: View {
                                     +
                                     Text("\nSiri pedirá que dicte la nueva frase")
                                 )
+                                Text("\n🔸Abrir una Conferencia al azar").foregroundStyle(.orange)
+                                Text("Abre la aplicación y muestra una conferencia al azar")
+                                (
+                                    Text("<Oye Siri> en la ley abre conferencia")
+                                        .foregroundColor(.purple)
+                                        .italic()
+                                )
                                 
                             }
                             //Correcciones y Mejoras en Frases
@@ -81,6 +88,7 @@ struct Novedades: View {
                             Text("☘️ Nuevo en Diario: Se ha añadido una opción en Ajustes para mantener el Diario desbloqueado una vez se ha accedido al mismo. Esto evita tener que pasar la validación en cada acceso al Diario")
                             Text("☘️ Se ha modificado las políticas de privacidad para introducir como se gestiona la privacidad en las nuevas funciones de Inteligencia Artificial")
                             Text("☘️ Varias mejoras y correcciones en Notas")
+                            Text("☘️ Nuevo: Ahora se muestra las cinco conferencias vistas recientemente")
                             Text("☘️ Varias mejoras y correcciones en Reflexiones. Ahora es posible editar las reflexiones")
                             Text("☘️ Se ha introducido en menú de funciones para el texto copiado en conferencias, frases, notas, respuestas de IA, etc. Esté menú aparece automáticamente una vez hayamos seleccionado un texto y copiado al portapapeles. Algunas de las funciones son: copiar en Notas, copiar en el Lienzo, copiar en la ventana de chatIA, etc")
                             Text("☘️ Ahora es posible elegir el tema claro/oscuro en Ajustes")

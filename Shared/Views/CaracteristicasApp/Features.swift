@@ -30,7 +30,7 @@ struct Features: View {
                             //Compendio de Frases:
                             Text("☘️ Compendio de Frases: 439. Se pueden crear nuevas frases personales. Las Frases incorporadas se han extraido textualmente de toda la obra de neville. Podemos crear Frases desde Siri: [<Oye siri> en La Ley crea una frase]. Podemos compartirlas, copiarlas a Notas, marcarse como favoritas, importarlas desde QR, pasarlas al Lienzo y editar solo las frases personales. Funciones IA sobre Frases: Interpretar, aplicación práctica y chatIA. Cada Frase tiene asociada un campo de nota propio, para hacer anotaciones sobre dicha frase. Las Frases se almacenan localmente y en la nube de iCloud con nuestro Apple ID; no se eliminan aunque desintalemos la aplicación")
                             //Notas:
-                            Text("☘️ Listado ilimitado de Notas Personales. Podemos crear Notas desde Siri: [<Oye Siri> en La Ley crea una nota]. Las notas pueden ser compartidas, exportadas a QR, al lienzo y marcarse como favoritas. Funciones de IA sobre Notas: Interpretar, Aplicación Práctica y ChatIA. El acceso a las Notas puede ser protegido por autenticación biométrica/contraseña, en Ajustes de la App. Las Notas se almacenan localmente y en la nube de iCloud con nuestro Apple ID; no se eliminan aunque desintalemos la aplicación")
+                            Text("☘️ Notas Personales ilimitadas. Podemos crear Notas desde Siri: [<Oye Siri> en La Ley crea una nota]. Las notas pueden ser compartidas, exportadas a QR, al lienzo y marcarse como favoritas. Funciones de IA sobre Notas: Interpretar, Aplicación Práctica y ChatIA. El acceso a las Notas puede ser protegido por autenticación biométrica/contraseña, en Ajustes de la App. Las Notas se almacenan localmente y en la nube de iCloud con nuestro Apple ID; no se eliminan aunque desintalemos la aplicación")
                             
                             //Diario.
                             Text("☘️ Diario Personal para registrar nuestras experiencias y hechos de cada día. Muy útil para llevar un registro de nuestras asunciones, deseos y experiencias con estas enseñanzas y nuestra vida. Cada entrada del Diario tiene una fecha de creación, que nunca cambia, y una fecha de modificación que puede cambiar si modificamos la entrada en el futuro. El acceso al Diario esta protegido por autentifación biométrica; y una clave personal, cifrada y almacenada en el llavero del sistema, que puede ser utiliza si el dispositivo no tiene acceso biométrico. El Diario cuenta con potentes funciones de búsqueda y filtrado para encontrar una entrada ya sea por su título o contenido. Cuanta con un práctico calendario donde podemos ver las entradas que se han creado en el mes y navegar por las entradas creadas. Las entradas del Diario se almacenan localmente y en la nube de iCloud con nuestro Apple ID; no se eliminan aunque desintalemos la aplicación")
@@ -42,14 +42,14 @@ struct Features: View {
                             Text("☘️ El lector y generador de QR integrado nos permite importar información como Notas, Frases, etc desde y hacia la aplicación. Se ha creado un formato propio de importación/exportación de Frase y Notas con el cual se puede compartir con amigos y la comunidad.")
                             
                             //Funciones de Inteligencia Artificial (IA):
-                            Text("☘️ Se han incorporado funciones de generación e interpretación de contenido (Frases, Notas, conferencias, y texto copiado) a través de IA. La IA funciona de manera local y no requiere conexión a internet. Preserva la información personal y no la expone a terceros. Se requiere aceptar un descargo de responsabilidad para poder hacer uso de la IA. La IA ha sido cuidadosamente instruida para responder solo en el contexto de las enseñansas de neville, minimizando la información errónea y sezgada. Las funciones propias de IA son: Interpretación, resumen y generación de aplicación práctica de contenidos. También es posible charlar sobre temas de las enseñanzas. La IA puede interpretar el papel del Maestro o responder de manera impersonal; esta función se puede cambiar en Ajustes de la App.")
+                            Text("☘️ Inteliegncia Artifical (IA) <Premium>. Las funciones propias de IA son: Interpretación, resumen, generación de concejos prácticos y chat sobre temas de las enseñanzas. La IA funciona de manera local y no requiere conexión a internet. Preserva la información personal y no la expone a terceros. Se requiere aceptar un descargo de responsabilidad para poder hacer uso de la IA. La IA ha sido cuidadosamente instruida para responder solo en el contexto de las enseñansas de neville")
                             
                             
                             //Lienzo
-                            Text("☘️ Lienzo: Una forma creativa de diseñar tus propios fondos con imágines, colores y texto. Ideal para compartir frases y pensamientos en redes sociales y con amigos")
+                            Text("☘️ Lienzo <Premiun>: Una forma creativa de diseñar tus propios fondos con imágines, colores y texto. Ideal para compartir frases y pensamientos en redes sociales y con amigos")
                             
                             //Atajos
-                            Text("☘️ Atajos & Comandos de Siri: Se han creado varios Atajos, visible en la App Atajos, para realizar las siguientes acciones:")
+                            Text("☘️ Atajos & Comandos de Siri <Premiun>: Se han creado varios Atajos, visible en la App Atajos, para realizar las siguientes acciones:")
                             VStack(alignment: .leading, spacing: 5){
                                 Text("🔸Abrir el Diario:").foregroundStyle(.orange)
                                 Text("Abre directamente la ventana del Diario. \nComando de Siri:")
@@ -93,6 +93,13 @@ struct Features: View {
                                         .italic()
                                     +
                                     Text("\nSiri pedirá que dicte la nueva frase")
+                                )
+                                Text("\n🔸Abrir una Conferencia al azar").foregroundStyle(.orange)
+                                Text("Abre la aplicación y muestra una conferencia al azar")
+                                (
+                                    Text("<Oye Siri> en la ley abre conferencia")
+                                        .foregroundColor(.purple)
+                                        .italic()
                                 )
                                 
                             }

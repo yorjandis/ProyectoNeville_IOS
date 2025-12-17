@@ -33,6 +33,9 @@ struct Home: View {
                     //Muestra el logo de la App dentro de un rectángulo áureo
                     GoldenLogoNeville()
                     
+                    NavigationLink("Prueba Purchase"){
+                       PurchaseView()
+                    }
                     
                     //Muestra un texto para felicitar a neville por su cumpleños(19 Frebrero)
                     MostrarCumpleaños()

@@ -16,26 +16,27 @@ struct Neville_iOSApp: App {
     @Environment(\.scenePhase) private var scenePhase
     
     @StateObject private var networkMonitor         = NetworkMonitor() //Helper Para conexiones de red
-    @StateObject private var modelTxt               = TxtContentModel()
+    @StateObject private var modelTxt               = TxtContentModel.shared
     @StateObject private var modelFrases            = FrasesModel.shared
     @StateObject private var settingModel           = SettingModel() //Inicializo el modelo para cargar valores de Setting y lo inyecto en el árbol de vistas
     @StateObject private var securityModel          = SecurityModel.shared //Almacena variables observables para
     @StateObject private var reflexModel            = ReflexModel.shared //Modelo Observable para Reflexiones
     @StateObject private var clipBoardModel         = ClipboardObserver() //Observa cambios en el portapapales
-    @StateObject private var shareModel     =  ShareModel()//Para manejar la extensión de compartir imagen/texto
+    @StateObject private var shareModel             =  ShareModel()//Para manejar la extensión de compartir imagen/texto
     
-    //Para Las funciones de Atajo:
-    @State private var showDiarioView = false //Abrir la ventana del Diario
-    @State private var showNotasView = false //Abrir la ventana del Diario
-    @AppStorage("abrirDiario" ) var abrirDiario: String = ""
-    @AppStorage("abrirNotas" ) var abrirNotas: String = ""
-    @AppStorage("notaCreada") var crearNotas : String = ""
 
-    
   private let persistentStore : CoreDataController =  CoreDataController.shared
     
     @AppStorage(AppCons.UD_setting_theme) var setting_theme  : Theme = .auto
-   
+    
+    //Para Las funciones de Atajo:
+    enum ItemAtajo : Identifiable{
+       case abrirDiario, abrirNotas, abrirRandomConf
+        var id : String {String(describing: self)}
+    }
+    @State var itemAtajo : ItemAtajo? = nil //Representa un item de Atajo (conveniente para usar un solo sheet)
+    @AppStorage("AtajosiOS" ) var AtajosiOS: String = ""
+
     
     /*
      init(){
@@ -69,43 +70,48 @@ struct Neville_iOSApp: App {
                         modelFrases.getAllFrases() 
                     }
                     //Funciones de Atajo:
-                    .onChange(of: abrirDiario) { _ , newValue in
-                        if abrirDiario == "abrir" {
-                            showDiarioView = true
-                            abrirDiario = ""
-                        }
-                    }
-                    .onChange(of: abrirNotas) { _ , newValue in
-                        if abrirNotas == "abrir" {
-                            showNotasView = true
-                            abrirNotas = ""
-                        }
-                    }
-                    .onChange(of: crearNotas) { _ , newValue in
-                        let nota = crearNotas.split(separator: "$$$")
-                            if nota.count == 2 {
-                                //Creando la nota:
-                                _ =  NotasModel().addNote(nota: String(nota[1]), title: String(nota[0]))
-                               // showNotasView = true
-                                crearNotas = ""
-                            }
-                            
+                    .onChange(of: self.AtajosiOS) { _ , newValue in
                         
+                        guard !newValue.isEmpty else { return }
+                        
+                        switch newValue {
+                            case "abrirDiario":
+                                itemAtajo = .abrirDiario
+                            case "abrirNotas":
+                                itemAtajo = .abrirNotas
+                            case "abrirRamdonConf":
+                                itemAtajo = .abrirRandomConf
+                            default:
+                                itemAtajo = nil
+                            }
+
+                        AtajosiOS = "" // limpiar después
+                           
                     }
-                    .sheet(isPresented: $showDiarioView) {
-                        DiarioListView()
-                            .environmentObject(self.settingModel)
-                            
-                    }
-                    .sheet(isPresented: $showNotasView) {
-                        ListNotasViews()
-                            .environmentObject(self.settingModel)
-                            
+                    .sheet(item: self.$itemAtajo) { item in
+                        switch  item{
+                        case .abrirDiario:
+                                DiarioListView()
+                                    .environmentObject(self.settingModel)
+                        case .abrirNotas:
+                                ListNotasViews()
+                                    .environmentObject(self.settingModel)
+                        case .abrirRandomConf:
+                                if let txtConf = self.modelTxt.getRandomConferencia(){
+                                    ContentTxtShowView(title: "Conferencia", nombreTxt: txtConf, type: .conf)
+                                        .environmentObject(self.modelTxt)
+                                        .environmentObject(self.clipBoardModel)
+                                        .environmentObject(self.settingModel)
+                                }else {
+                                    Text("No se ha podido obtener una conferencia. Pruebe de nuevo")
+                                }
+                            }
                     }
                     
                 
             }
             .task {
+                //Maneja los item que se han procesado en el menú compartir del SO: iOS
                 await handleShareItem()
             }
         }

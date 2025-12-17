@@ -333,7 +333,7 @@ struct ContentTxtShowView: View {
                         Button{ //Poner favorito
                             var temp = self.getFavState
                             temp.toggle()
-                            if TxtContentModel().setIsFavOfTxt(nombreTxt: nombreTxt, type: self.type, isFav: temp){
+                            if TxtContentModel.shared.setIsFavOfTxt(nombreTxt: nombreTxt, type: self.type, isFav: temp){
                                 self.favState = temp
                              self.modeloTxt.getAllFileTxtOfType(type: self.type) //Actualizando el listado
 
@@ -513,7 +513,7 @@ struct ContentTxtShowView: View {
                         Button{ //Poner favorito
                             var temp = self.getFavState
                             temp.toggle()
-                            if TxtContentModel().setIsFavOfTxt(nombreTxt: nombreTxt, type: self.type, isFav: temp){
+                            if TxtContentModel.shared.setIsFavOfTxt(nombreTxt: nombreTxt, type: self.type, isFav: temp){
                                 self.favState = temp
                              self.modeloTxt.getAllFileTxtOfType(type: self.type) //Actualizando el listado
 

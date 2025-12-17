@@ -94,9 +94,9 @@ final class CoreDataController: Sendable {
     }
     
     private init() {
-        persistentContainer = NSPersistentCloudKitContainer(name: "ModelData")
+        persistentContainer = NSPersistentCloudKitContainer(name: "ModelData") //Nombre de la BD en icloud
         
-        let storeURL = NSPersistentContainer.defaultDirectoryURL().appendingPathComponent("ModelData.sqlite")
+        let storeURL = NSPersistentContainer.defaultDirectoryURL().appendingPathComponent("ModelData.sqlite") //Ubicación de la BD
         let description = NSPersistentStoreDescription(url: storeURL)
         
         // Habilitar el historial de cambios y notificaciones remotas

@@ -14,17 +14,8 @@ struct AbrirDiarioIntent: AppIntent {
     static  let description =  IntentDescription ( "Abre la vista del Diario" )
     static let  openAppWhenRun: Bool = true
     
-    @AppStorage("abrirDiario" ) var abrirDiario: String = ""
-    
     func perform() async throws -> some IntentResult {
-        abrirDiario = "abrir"
+        UserDefaults.standard.set("abrirDiario", forKey: "AtajosiOS")
         return .result()
     }
 }
-
-//El parámetro openAppWhenRun puede ser reemplazado por esta versión moderna, la pega es que es para iOS 26.0+
-/*
-@available(iOS 26.0, *)
-static let modosAdmitidos: IntentModes  = .foreground
-*/
-

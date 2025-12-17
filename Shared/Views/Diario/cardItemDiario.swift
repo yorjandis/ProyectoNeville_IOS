@@ -201,7 +201,8 @@ struct cardItemDiario: View{
                     .onAppear{
                         isfav = diario.isFav
                     }
-
+                    
+                    //Context Menu
                     Menu{
                         Button{
                             #if os(macOS)
@@ -229,7 +230,8 @@ struct cardItemDiario: View{
                     }label: {
                         Image(systemName: "ellipsis")
                             .tint(.black)
-                            .frame(width: 20, height: 20)
+                            .frame(width: 25, height: 25)
+                            .contentShape(Rectangle())
                     
                 }//menu
                 .buttonStyle(.plain)

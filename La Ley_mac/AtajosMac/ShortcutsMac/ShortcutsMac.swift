@@ -1,17 +1,19 @@
 //
-//  DiarioShortcuts.swift
+//  Shortcuts.swift
 //  Neville_iOS
 //
-//  Created by Yorjandis PG on 30/11/25.
+//  Created by Yorjandis PG on 16/12/25.
 //
+
+
 import AppIntents
 
-struct Shortcuts: AppShortcutsProvider {
+struct ShortcutsMac: AppShortcutsProvider {
     @AppShortcutsBuilder
     static var appShortcuts: [AppShortcut] {
         // Atajo para Abrir el Diario
         AppShortcut(
-            intent: AbrirDiarioIntent(),
+            intent: AbrirDiarioIntentMac(),
             phrases: [
                 "en \(.applicationName) abre diario",
                 "en \(.applicationName) abre mi diario"
@@ -22,7 +24,7 @@ struct Shortcuts: AppShortcutsProvider {
         
         // Atajo para Abrir las Notas
         AppShortcut(
-            intent: AbrirNotasItent(),
+            intent: AbrirNotasItentMac(),
             phrases: [
                 "en \(.applicationName) abre mis notas"
             ],
@@ -30,19 +32,9 @@ struct Shortcuts: AppShortcutsProvider {
             systemImageName: "doc.plaintext.fill"
         )
         
-        //Atajo para crear una nota:
-        AppShortcut(
-            intent: CrearNotaIntent(),
-            phrases: [
-                "en \(.applicationName) crea una nota"
-            ],
-            shortTitle: "Crear Notas",
-            systemImageName: "doc.plaintext.fill"
-        )
-        
         //Atajo para crear una frase:
         AppShortcut(
-            intent: CrearFraseIntent(),
+            intent: CrearFraseIntentMac(),
             phrases: [
                 "en \(.applicationName) crea una frase"
             ],
@@ -52,7 +44,7 @@ struct Shortcuts: AppShortcutsProvider {
         
         //Atajo para crear una entrada del Diario:
         AppShortcut(
-            intent: CrearEntradaDiarioIntent(),
+            intent: CrearEntradaDiarioIntentMac(),
             phrases: [
                 "en \(.applicationName) crea una entrada"
             ],
@@ -60,7 +52,25 @@ struct Shortcuts: AppShortcutsProvider {
             systemImageName: "doc.plaintext.fill"
         )
         
+        //Atajo para crear una nota:
+        AppShortcut(
+            intent: CrearNotaIntentMac(),
+            phrases: [
+                "en \(.applicationName) crea una nota"
+            ],
+            shortTitle: "Crear Notas",
+            systemImageName: "doc.plaintext.fill"
+        )
+        
+        //Atajo para crear una nota:
+        AppShortcut(
+            intent: GetRandomConfIntentMac(),
+            phrases: [
+                "en \(.applicationName) abre conferencia"
+            ],
+            shortTitle: "Abrir Conferencia",
+            systemImageName: "doc.plaintext.fill"
+        )
+        
     }
 }
-
-//neville

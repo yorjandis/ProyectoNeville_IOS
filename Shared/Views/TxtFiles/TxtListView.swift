@@ -46,6 +46,14 @@ struct TxtListView: View {
     @State private var listadoTemporal : [String] =  []
     @FocusState private var focused: Bool
     
+    //Mostrar/Ocultar las últimas conferencias Vistas
+    @AppStorage("ultimasConferenciasVistas") var lastConferencesViewer : Bool = false
+    
+    //Configuración de columnas
+    let columnas: [GridItem] = [
+        GridItem(.flexible(), spacing: 16),
+        GridItem(.flexible(), spacing: 16)
+    ]
     
     
     var body: some View {
@@ -87,11 +95,104 @@ struct TxtListView: View {
                 
       //En macOS: el listado se divide en dos columnas
 #if os(macOS)
+                //Listado de las últimas 5 conferencias Vistas
+                VStack{
+                    
+                    if ( self.typeOfContent == .conf && !self.modeloTxt.lastFiveConferences.isEmpty){
+                        //Para Ocultar o mostrar
+                        HStack{
+                            Text("Últimas Conferencias vistas")
+                            Image(systemName: "mount.fill")
+                                .foregroundStyle(.orange)
+                        }
+                        .padding(3)
+                        .background{
+                            Color.black
+                        }
+                        .cornerRadius(20)
+                        .onTapGesture {
+                            withAnimation{
+                                self.lastConferencesViewer.toggle()
+                            }
+                            
+                        }
+                        
+                        if self.lastConferencesViewer{
+                            VStack(spacing: 0){
+                                Group{
+                                    ScrollView {
+                                        LazyVGrid(columns: columnas, alignment: .leading, spacing: 12) {
+                                            ForEach(self.modeloTxt.lastFiveConferences, id: \.self) { nombreTxt in
+                                                VStack(alignment: .leading) {
+                                                    HStack {
+                                                        Image(systemName: "leaf.fill")
+                                                            .padding(.horizontal, 5)
+                                                            .foregroundStyle(
+                                                                .linearGradient(
+                                                                    colors: [
+                                                                        (modeloTxt.getIsFavOfTxt(
+                                                                            nombreTxt: nombreTxt,
+                                                                            type: self.typeOfContent
+                                                                        )) ? .orange : .black,
+                                                                        (modeloTxt.isNotaOfTxt(
+                                                                            nombreTxt: nombreTxt,
+                                                                            type: typeOfContent
+                                                                        )) ? .green : .black
+                                                                    ],
+                                                                    startPoint: .leading,
+                                                                    endPoint: .trailing
+                                                                )
+                                                            )
+
+                                                        Button {
+                                                            // Manejar el vector de conferencias vistas
+                                                            self.modeloTxt.handleLastFiveConferences(nombreTxt: nombreTxt)
+
+                                                            showWindow(
+                                                                for: ContentTxtShowView(
+                                                                    title: self.title,
+                                                                    nombreTxt: nombreTxt,
+                                                                    type: self.typeOfContent
+                                                                ),
+                                                                environmentObjects: [
+                                                                    self.modeloTxt,
+                                                                    self.settingModel,
+                                                                    self.clipBoardModel
+                                                                ],
+                                                                title: "\(self.title) - \(nombreTxt)",
+                                                                size: AppCons.windows_size_content,
+                                                                isModal: false,
+                                                                onClose: {
+                                                                    Task { @MainActor in
+                                                                        self.modeloTxt.saveLastFiveConferences()
+                                                                    }
+                                                                }
+                                                            )
+                                                        } label: {
+                                                            Text(nombreTxt)
+                                                                .font(.system(size: CGFloat(self.fontSizeLista)))
+                                                                .fontDesign(.serif)
+                                                                .bold()
+                                                                .foregroundStyle(.black)
+                                                        }
+                                                        .buttonStyle(.plain)
+                                                    }
+                                                }
+                                                .padding(.horizontal)
+                                            }
+                                        }
+                                    }
+                                }
+                                Divider()
+                                    .frame(width: 450, height: 2, alignment: .leading)
+                                    .foregroundStyle(.black)
+                            }
+                            .frame(height: 150)
+                        }
+                    }
+                }
+                
                 ScrollView {
-                    let columnas: [GridItem] = [
-                        GridItem(.flexible(), spacing: 16),
-                        GridItem(.flexible(), spacing: 16)
-                    ]
                     
                     LazyVGrid(columns: columnas, alignment: .leading, spacing: 12) {
                         ForEach(modeloTxt.textList, id: \.self) { nombreTxt in
@@ -115,6 +216,9 @@ struct TxtListView: View {
                                     ))
                                 
                                 Button {
+                                    //Manejar el vector de conferencias Vistas
+                                    self.modeloTxt.handleLastFiveConferences(nombreTxt: nombreTxt)
+                                    
                                     showWindow(
                                         for: ContentTxtShowView(
                                             title: self.title,
@@ -124,7 +228,12 @@ struct TxtListView: View {
                                         environmentObjects: [self.modeloTxt, self.settingModel, self.clipBoardModel],
                                         title: "\(self.title) - \(nombreTxt)",
                                         size: AppCons.windows_size_content,
-                                        isModal: false
+                                        isModal: false,onClose: {
+                                            //Salvando el vector de configuración
+                                            Task{ @MainActor in
+                                                self.modeloTxt.saveLastFiveConferences()
+                                            }  
+                                        }
                                     )
                                 } label: {
                                     Text(nombreTxt)
@@ -144,47 +253,138 @@ struct TxtListView: View {
 #else
                 
                 // iOS / iPadOS conservan tu List original
-                List(modeloTxt.textList, id: \.self) { nombreTxt in
-                    VStack(alignment: .leading) {
-                        HStack {
-                            Image(systemName: "leaf.fill")
-                                .padding(.horizontal, 5)
-                                .foregroundStyle(.linearGradient(colors: [
-                                    (modeloTxt.getIsFavOfTxt(nombreTxt: nombreTxt, type: self.typeOfContent)) ? .orange : .black,
-                                    (modeloTxt.isNotaOfTxt(nombreTxt: nombreTxt, type: typeOfContent)) ? .green : .black
-                                ], startPoint: .leading, endPoint: .trailing))
+                VStack{
+                    //Listado de las últimas 5 conferencias Vistas
+                    if ( self.typeOfContent == .conf && !self.modeloTxt.lastFiveConferences.isEmpty){
+                        //Para Ocultar o mostrar
+                        HStack{
+                            Text("Últimas Conferencias vistas")
+                            Image(systemName: "mount.fill")
+                                .foregroundStyle(.orange)
+                        }
+                        .padding()
+                        .background{
+                            Color.black
+                        }
+                        .cornerRadius(20)
+                        .onTapGesture {
+                            withAnimation{
+                                self.lastConferencesViewer.toggle()
+                            }
                             
-                            NavigationLink {
-                                ContentTxtShowView(title: self.title, nombreTxt: nombreTxt, type: self.typeOfContent)
-                                    .environmentObject(self.modeloTxt)
-                                    .environmentObject(self.settingModel)
-                                    .environmentObject(self.clipBoardModel)
-                            } label: {
-                                Text(nombreTxt)
-                                    .font(.system(size: CGFloat(self.fontSizeLista)))
+                        }
+                        
+                        if self.lastConferencesViewer{
+                            VStack(spacing: 0){
+                                Group{
+                                        List(self.modeloTxt.lastFiveConferences, id: \.self){ nombreTxt in
+                                            VStack(alignment: .leading) {
+                                                HStack {
+                                                    Image(systemName: "leaf.fill")
+                                                        .padding(.horizontal, 5)
+                                                        .foregroundStyle(.linearGradient(colors: [
+                                                            (modeloTxt.getIsFavOfTxt(nombreTxt: nombreTxt, type: self.typeOfContent)) ? .orange : .black,
+                                                            (modeloTxt.isNotaOfTxt(nombreTxt: nombreTxt, type: typeOfContent)) ? .green : .black
+                                                        ], startPoint: .leading, endPoint: .trailing))
+                                                    
+                                                    NavigationLink {
+                                                        ContentTxtShowView(title: self.title, nombreTxt: nombreTxt, type: self.typeOfContent)
+                                                            .environmentObject(self.modeloTxt)
+                                                            .environmentObject(self.settingModel)
+                                                            .environmentObject(self.clipBoardModel)
+                                                    } label: {
+                                                        Text(nombreTxt)
+                                                            .font(.system(size: CGFloat(self.fontSizeLista)))
+                                                    }
+                                                }
+                                                
+                                            }
+                                            .swipeActions(edge: .leading) {
+                                                Button {
+                                                    var temp = modeloTxt.getIsFavOfTxt(nombreTxt: nombreTxt, type: typeOfContent)
+                                                    temp.toggle()
+                                                    if TxtContentModel.shared.setIsFavOfTxt(nombreTxt: nombreTxt, type: self.typeOfContent, isFav: temp) {
+                                                        self.modeloTxt.getAllFileTxtOfType(type: self.typeOfContent)
+                                                    }
+                                                } label: {
+                                                    Image(systemName: "heart")
+                                                        .tint(Color.orange)
+                                                }
+                                                
+                                                NavigationLink {
+                                                    EditNoteTxt(entidad: nombreTxt, typeOfContent: self.typeOfContent)
+                                                } label: {
+                                                    Image(systemName: "bookmark")
+                                                        .tint(Color.green)
+                                                }
+                                            }
+                                           
+                                        }
+                                       .frame(height: CGFloat(self.modeloTxt.lastFiveConferences.count) * 73)
+                                }
+                                
                             }
                         }
                     }
-                    .swipeActions(edge: .leading) {
-                        Button {
-                            var temp = modeloTxt.getIsFavOfTxt(nombreTxt: nombreTxt, type: typeOfContent)
-                            temp.toggle()
-                            if TxtContentModel().setIsFavOfTxt(nombreTxt: nombreTxt, type: self.typeOfContent, isFav: temp) {
-                                self.modeloTxt.getAllFileTxtOfType(type: self.typeOfContent)
+                    
+                    
+                    
+                    //Listado de Conferencias
+                    List(modeloTxt.textList, id: \.self) { nombreTxt in
+                        VStack(alignment: .leading) {
+                            HStack {
+                                Image(systemName: "leaf.fill")
+                                    .padding(.horizontal, 5)
+                                    .foregroundStyle(.linearGradient(colors: [
+                                        (modeloTxt.getIsFavOfTxt(nombreTxt: nombreTxt, type: self.typeOfContent)) ? .orange : .black,
+                                        (modeloTxt.isNotaOfTxt(nombreTxt: nombreTxt, type: typeOfContent)) ? .green : .black
+                                    ], startPoint: .leading, endPoint: .trailing))
+                                
+                                NavigationLink{
+                                    ContentTxtShowView(title: self.title, nombreTxt: nombreTxt, type: self.typeOfContent)
+                                        .environmentObject(self.modeloTxt)
+                                        .environmentObject(self.settingModel)
+                                        .environmentObject(self.clipBoardModel)
+                                        .onAppear{
+                                            //"Se ha abierto una conferencia")
+                                                print(nombreTxt)
+                                                self.modeloTxt.handleLastFiveConferences(nombreTxt: nombreTxt)
+                                            
+                                        }
+                                        .onDisappear{
+                                                print(nombreTxt)
+                                                self.modeloTxt.saveLastFiveConferences()//Salva la conferencia
+                                            
+                                        }
+                                } label: {
+                                    Text(nombreTxt)
+                                        .font(.system(size: CGFloat(self.fontSizeLista)))
+                                }
+                                
                             }
-                        } label: {
-                            Image(systemName: "heart")
-                                .tint(Color.orange)
                         }
-                        
-                        NavigationLink {
-                            EditNoteTxt(entidad: nombreTxt, typeOfContent: self.typeOfContent)
-                        } label: {
-                            Image(systemName: "bookmark")
-                                .tint(Color.green)
+                        .swipeActions(edge: .leading) {
+                            Button {
+                                var temp = modeloTxt.getIsFavOfTxt(nombreTxt: nombreTxt, type: typeOfContent)
+                                temp.toggle()
+                                if TxtContentModel.shared.setIsFavOfTxt(nombreTxt: nombreTxt, type: self.typeOfContent, isFav: temp) {
+                                    self.modeloTxt.getAllFileTxtOfType(type: self.typeOfContent)
+                                }
+                            } label: {
+                                Image(systemName: "heart")
+                                    .tint(Color.orange)
+                            }
+                            
+                            NavigationLink {
+                                EditNoteTxt(entidad: nombreTxt, typeOfContent: self.typeOfContent)
+                            } label: {
+                                Image(systemName: "bookmark")
+                                    .tint(Color.green)
+                            }
                         }
                     }
                 }
+                
                 
 #endif
             }

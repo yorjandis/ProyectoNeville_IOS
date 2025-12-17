@@ -69,9 +69,11 @@ class ShareViewController: UIViewController {
 
         dispatchGroup.notify(queue: .main) {
             if let img = image {
+                //Si es una imagen, abre la vista personalizada pasandole la imagen
                 let contentView = UIHostingController(rootView: ShareExtensionView(image: img))
                 self.embed(contentView)
             } else if let txt = text {
+                //Si es un texto, abre la vista personalizada pasandole el texto
                 let contentView = UIHostingController(rootView: ShareExtensionView(texto: txt))
                 self.embed(contentView)
             } else {
@@ -80,9 +82,13 @@ class ShareViewController: UIViewController {
             }
         }
 
+        //Crea un observador de notificación que escuchará notificaciones con nombre "close" y ejecutará el closure dado: en este caso invoca un método para terminar el proceso del Share Extension
         NotificationCenter.default.addObserver(forName: NSNotification.Name("close"), object: nil, queue: nil) { _ in
             DispatchQueue.main.async { self.close() }
         }
+        
+        
+        
     }
 
     private func embed(_ controller: UIHostingController<ShareExtensionView>) {
@@ -97,6 +103,7 @@ class ShareViewController: UIViewController {
         ])
     }
 
+    //Cierra el proceso donde se ejecuta la extensión
     func close() {
         extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
     }

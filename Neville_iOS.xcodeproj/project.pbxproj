@@ -30,6 +30,8 @@
 		19F804202B69CBA000A323A0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 19F8041F2B69CBA000A323A0 /* Assets.xcassets */; };
 		19F804232B69CBA000A323A0 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 19F804222B69CBA000A323A0 /* Preview Assets.xcassets */; };
 		19F804262B69CBA000A323A0 /* La Ley Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 19F804192B69CB9D00A323A0 /* La Ley Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		915017432EF078A2007B741A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 915017422EF078A2007B741A /* StoreKit.framework */; };
+		915017452EF078B2007B741A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 915017442EF078B2007B741A /* StoreKit.framework */; };
 		91E107712EEA01AD00F4DB1D /* sharedios.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 91E107672EEA01AD00F4DB1D /* sharedios.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		91F0DD552D605B5800307453 /* watchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F0DD542D605B4B00307453 /* watchModel.swift */; };
 		E95B93572AAFBB2600B5E2B5 /* Neville_iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95B93562AAFBB2600B5E2B5 /* Neville_iOSApp.swift */; };
@@ -144,6 +146,8 @@
 		19F8041F2B69CBA000A323A0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		19F804222B69CBA000A323A0 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		9122752B2D5A925200DE3AC6 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		915017422EF078A2007B741A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		915017442EF078B2007B741A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/System/Library/Frameworks/StoreKit.framework; sourceTree = DEVELOPER_DIR; };
 		917C301F2EBCD1E5006BB36E /* La Ley_mac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "La Ley_mac.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		91E1074C2EE9FC8D00F4DB1D /* UniformTypeIdentifiers.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UniformTypeIdentifiers.framework; path = System/Library/Frameworks/UniformTypeIdentifiers.framework; sourceTree = SDKROOT; };
 		91E107672EEA01AD00F4DB1D /* sharedios.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = sharedios.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -177,6 +181,8 @@
 				Models/NotasModel/NotasModel.swift,
 				Models/NovedadesModel/NovedadesModel.swift,
 				Models/PortapaplesModel/PortapapelesModel.swift,
+				Models/PurchaseModel/PurchaseManager.swift,
+				Models/PurchaseModel/StoreKitFile.storekit,
 				Models/QRCode/QRModel.swift,
 				Models/QRCode/QRReader.swift,
 				Models/ReflexModel/ReflexModel.swift,
@@ -757,11 +763,11 @@
 				Views/AdminPassword/CreatePasswordView.swift,
 				Views/AdminPassword/LogginView.swift,
 				Views/Ajustes/Ajustes.swift,
+				Views/CaracteristicasApp/Features.swift,
 				Views/Diario/cardItemDiario.swift,
 				Views/Diario/DiarioCalendarView.swift,
 				Views/Diario/DiarioListView.swift,
 				Views/Diario/editContent.swift,
-				Views/Features/Features.swift,
 				Views/FeedBackReview/FeedBackReview.swift,
 				Views/Frases/FraseAddView.swift,
 				Views/Frases/FrasesHomeView.swift,
@@ -779,6 +785,7 @@
 				Views/Notas/UpdateNotasView.swift,
 				Views/Novedades/Novedades.swift,
 				Views/PlayGame/GamePLay.swift,
+				Views/PurchaseView/PurchaseView.swift,
 				Views/QRCode/gnerateQRView.swift,
 				Views/Reflexiones/AddReflexView.swift,
 				Views/Reflexiones/ReflexEditView.swift,
@@ -848,8 +855,9 @@
 				Intens/CrearEntradaDiarioIntent.swift,
 				Intens/CrearFraseIntent.swift,
 				Intens/CrearNotaIntent.swift,
-				Intens/Shortcuts.swift,
+				Intens/GetRandomConfIntent.swift,
 				Services/LocalAutenticationForIntent.swift,
+				Shortcuts/Shortcuts.swift,
 			);
 			target = E95B93522AAFBB2600B5E2B5 /* Neville_iOS */;
 		};
@@ -864,7 +872,7 @@
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		9113E29C2EE9E1D2002AC306 /* Model */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Model; sourceTree = "<group>"; };
-		911FE4452ECB2A7F009F83BE /* Shared */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (911FE4562ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 911FE4572ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 911FE4582ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Shared; sourceTree = "<group>"; };
+		911FE4452ECB2A7F009F83BE /* Shared */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (911FE4562ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 911FE4572ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 911FE4582ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (Models/PurchaseModel/StoreKitFile.storekit, ); path = Shared; sourceTree = "<group>"; };
 		911FE4D42ECB2E8D009F83BE /* OptionView */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (911FEB632ECB3B7F009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = OptionView; sourceTree = "<group>"; };
 		911FF1FA2ECB4064009F83BE /* Preview Content */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (911FF1FC2ECB4064009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 911FF1FD2ECB4064009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = "Preview Content"; sourceTree = "<group>"; };
 		914415A92EDC377200FFC61D /* Atajos */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (914415B12EDC39E300FFC61D /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Atajos; sourceTree = "<group>"; };
@@ -902,6 +910,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				915017452EF078B2007B741A /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -916,6 +925,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				915017432EF078A2007B741A /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -944,6 +954,8 @@
 		19E0BDEB2B0B412D00E149A5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				915017442EF078B2007B741A /* StoreKit.framework */,
+				915017422EF078A2007B741A /* StoreKit.framework */,
 				9122752B2D5A925200DE3AC6 /* WebKit.framework */,
 				19E0BDEC2B0B412D00E149A5 /* WidgetKit.framework */,
 				19E0BDEE2B0B412D00E149A5 /* SwiftUI.framework */,
@@ -1570,8 +1582,8 @@
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_FILE_ACCESS_DOWNLOADS_FOLDER = readwrite;
 				ENABLE_HARDENED_RUNTIME = YES;
-				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
-				ENABLE_OUTGOING_NETWORK_CONNECTIONS = NO;
+				ENABLE_INCOMING_NETWORK_CONNECTIONS = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
 				ENABLE_RESOURCE_ACCESS_BLUETOOTH = NO;
@@ -1588,6 +1600,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "La Ley";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSSiriUsageDescription = "Se necesita tener acceso a Siri";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -1628,8 +1641,8 @@
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_FILE_ACCESS_DOWNLOADS_FOLDER = readwrite;
 				ENABLE_HARDENED_RUNTIME = YES;
-				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
-				ENABLE_OUTGOING_NETWORK_CONNECTIONS = NO;
+				ENABLE_INCOMING_NETWORK_CONNECTIONS = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
 				ENABLE_RESOURCE_ACCESS_BLUETOOTH = NO;
@@ -1646,6 +1659,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "La Ley";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSSiriUsageDescription = "Se necesita tener acceso a Siri";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",

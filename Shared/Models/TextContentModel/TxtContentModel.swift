@@ -23,16 +23,57 @@ final class TxtContentModel : ObservableObject {
     
     @Published var textList: [String] = [] //Listado de elementos txt
     
+    @Published var lastFiveConferences: [String] = [] //Vector que contiene las últimas 5 conferencias vistas
+    
 
     private let context = CoreDataController.shared.context
 
     static let shared = TxtContentModel() //Singleton
+    
+    private init(){
+        //Cargando el vector de conferencias
+        loadLastFiveConferences()
+    }
+    
 
-    
-    
-    
-    //Nuevas funciones Yor:
+}
 
+
+//Listado de funciones
+extension TxtContentModel {
+    
+   // Trabajo con el vector de conferencias vistas: ---------------------------------------------------------------------------
+    
+    func handleLastFiveConferences(nombreTxt : String){
+        
+        //Sale si la conferencia a manejar ya esta dentro del vector
+        guard !lastFiveConferences.contains(nombreTxt) else {return}
+        
+        //Si el vector tiene espacio se agrega la conferencia, pero solo si la conferencia no esta ya dentro del vector
+        if lastFiveConferences.count < 5{
+                lastFiveConferences.insert(nombreTxt, at: 0)
+        }
+        
+        //Si el vector esta lleno se quita la primera que se añadió y se añade la actual al final:
+        if lastFiveConferences.count == 5{
+            lastFiveConferences.removeLast()
+            lastFiveConferences.insert(nombreTxt, at: 0)
+        }
+        
+    }
+    
+    //Salva la lista del vector. Debe ser llamada al salir de la vista de Lista de Conferencias
+    func saveLastFiveConferences(){
+        UserDefaults.standard.set(lastFiveConferences, forKey: "lastFiveConferences")
+    }
+    //Recupera el vector de conferencias vistas. Llamado en el init(){}
+    func loadLastFiveConferences(){
+        if let savedData = UserDefaults.standard.stringArray(forKey: "lastFiveConferences"){
+            lastFiveConferences = savedData
+        }
+    }
+    //----------------------------------------------------------------------------------------------------------------------------
+    
     
     ///Actualiza la un arreglo de String con los nombres de ficheros txt dentro del bundle según un prefijo (el prefijo se extrae de parametro de entrada)
     /// - Parameter type : Tipo de contenido a indexar. Se toma de un enum
@@ -57,7 +98,6 @@ final class TxtContentModel : ObservableObject {
             self.textList = []
         }
     }
-    
     
     ///Devuelve un arreglo de String con los nombres de ficheros txt dentro del bundle según un prefijo (el prefijo se extrae de parametro de entrada)
     /// - Parameter type : Tipo de contenido a indexar. Se toma de un enum
@@ -90,7 +130,12 @@ final class TxtContentModel : ObservableObject {
         return UtilFuncs.FileRead("\(type.rawValue)" + "\(nombreTxt)")
     }
     
-
+    //Devuelve una conferencia Aleatoria
+    func getRandomConferencia()-> String?{
+        let array = getArrayOfAllFileTxtOfType(type: .conf)
+        return array.randomElement()
+    }
+    
     //Verifica si un elemento tiene una nota
     func isNotaOfTxt(nombreTxt: String, type: TipoDeContenido) -> Bool {
         let fetchRequest = NSFetchRequest<TxtCont>(entityName: "TxtCont")
@@ -298,15 +343,6 @@ final class TxtContentModel : ObservableObject {
         }
     }
     
-    
-    
-    
-  
-    
-    
-    
-
 }
-
 
 

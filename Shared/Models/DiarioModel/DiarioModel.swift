@@ -37,6 +37,9 @@ final class DiarioModel : ObservableObject{
     
     @Published var expandirEntrada : String = ""
     
+    @Published var intentTestYor : Bool = false
+    
+    
     //Obtiene el valor de una variable de UserDefault
         private var getUserDefaultOrdenarEntradasDiario : Bool {
             return UserDefaults.standard.bool(forKey: AppCons.UD_setting_OrdenarEntradaDiario)
