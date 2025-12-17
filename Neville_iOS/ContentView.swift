@@ -4,8 +4,19 @@ import CoreData
 
 
 struct ContentView: View{
+    
+    @EnvironmentObject private var settingModel: SettingModel
+    
     @State var showSheetDiario = false
     @State var showSheetNotas = false
+    
+    //Codigo a cargar al inicio:
+    init(){
+        //Carga los valores de Setting para Userdefault si es la primera vez
+        if UserDefaults.standard.integer(forKey: AppCons.UD_setting_fontFrasesSize) == 0 {
+            SettingModel().setValuesByDefault()
+        } 
+    }
     
     var body: some View{
         

@@ -6,250 +6,108 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct Home: View {
 
-    @State  private var showAddNoteList = false //Abre la view AddNota
+    @EnvironmentObject private var settingModel : SettingModel
     
-    @State  private var isHaveNote = false //Chequea si la frase actual tiene nota
+    @State  private var showAddNoteList = false //Abre la view AddNota
     
     @State  private var fontSize : CGFloat = CGFloat(UserDefaults.standard.integer(forKey: AppCons.UD_setting_fontFrasesSize)) //Setting para Frases
     @State  private var fontSizeMenu : CGFloat = 24 //Setting para menu
-    
-    @State private var colorFrase : Color = SettingModel().loadColor(forkey: AppCons.UD_setting_color_frases)
-    
-    @State private var colorFondo_a : Color = SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_a)
-    @State private var colorFondo_b : Color = SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_b)
-    
-    //Para chequeo de actualización de la app:
-    @State private var showTextUpdateApp = false
-    
-    //Para determinar cuando se ha cambiado los colores y actualizar el fondo de pantalla.
-    @State private var isSettingChanged : Bool = false
-    
-    //Determinar si estamos en modo debug
-#if DEBUG
-    private let isDebug = true
-#else
-    private let isDebug = false
-#endif
 
+    //Lanzar Ventana de novedades:
+    @State private var showNovedades: Bool = false
 
     var body: some View {
         NavigationStack{
             
             ZStack(alignment: .bottom){
                 
+                LinearGradient(gradient: Gradient(colors: [settingModel.colorFondo_a, settingModel.colorFondo_b]), startPoint: .top, endPoint: .bottom)
+                    .ignoresSafeArea()
+                
                 VStack{
-                    //Muestra si estamos en modo debug. Solo aparecerá en la fase de desarrollo
-                    if self.isDebug{
-                        Text("Modo Debug").padding()
+                    
+                    //Muestra el logo de la App dentro de un rectángulo áureo
+                    GoldenLogoNeville()
+                    
+                    NavigationLink("Prueba Purchase"){
+                       PurchaseView()
                     }
+                    
+                    //Muestra un texto para felicitar a neville por su cumpleños(19 Frebrero)
+                    MostrarCumpleaños()
+                    
+                    //Muestra si estamos en modo debug. Solo aparecerá en la fase de desarrollo
+                   //MostrarModoDebug()
                     
                     
                     //Muestra el texto para indicar nueva actualización
-                    if showTextUpdateApp {
-                        Button{
-                            if let url = URL(string: "https://apps.apple.com/es/app/la-ley/id6472626696"),
-                               UIApplication.shared.canOpenURL(url){
-                                UIApplication.shared.open(url, options: [:]) { (opened) in
-                                    if(opened){
-                                        // print("App Store Opened")
-                                    }
-                                }
-                            } else {
-                                // print("Can't Open URL on Simulator")
-                            }
-                        }label: {
-                            HStack{
-                                Image(systemName: "exclamationmark.circle")
-                                    .symbolEffect(.pulse, isActive: true)
-                                Text("Existe una nueva versión de la App")
-                            }
-                            .foregroundStyle(Color.black)
-                            .font(.system(size: 15))
-                            
-                        }
-                    }
+                    ViewIfNewUpdateAvailable()
                     
                     Spacer()
                     
                     FrasesView()
  
                     Spacer()
-                    TabButtonBar(fontFrasesSize: $fontSize, fontMenuSize: $fontSizeMenu, colorFrase: $colorFrase, colorFondo_a: $colorFondo_a, colorFondo_b: $colorFondo_b, isSettingChanged: $isSettingChanged)
-                }
-                .task {
-                    do {
-                        try await CheckAppStatus().getAppNewVersion { update in
-                            if update{
-                                DispatchQueue.main.async {
-                                    showTextUpdateApp = true
-                                } 
-                            }else{
-                                DispatchQueue.main.async {
-                                    showTextUpdateApp = false
-                                }
-                            }
-                        }
-                    }catch{
-                        print(error.localizedDescription)
-                    }
                     
+                    TabButtonBar(
+                        fontFrasesSize: $fontSize,
+                        fontMenuSize: $fontSizeMenu,
+                        colorFrase:  Binding(get: { self.settingModel.colorfrase }, set: { self.settingModel.colorfrase = $0 }),
+                        colorFondo_a: Binding(get: { self.settingModel.colorFondo_a }, set: { self.settingModel.colorFondo_a = $0 }),
+                        colorFondo_b: Binding(get: { self.settingModel.colorFondo_b }, set: { self.settingModel.colorFondo_b = $0 })
+                    )
                 }
-                .onChange(of: self.isSettingChanged) {
-                    fontSize        = CGFloat(UserDefaults.standard.integer(forKey: AppCons.UD_setting_fontFrasesSize))
-                    colorFrase      = SettingModel().loadColor(forkey: AppCons.UD_setting_color_frases)
-                    colorFondo_a    = SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_a)
-                    colorFondo_b    = SettingModel().loadColor(forkey: AppCons.UD_setting_color_main_b)
-                }
-                .modifier(mof_ColorGradient(colorInit: $colorFondo_a, colorEnd: $colorFondo_b))
-                .navigationTitle( AppCons.appName)
-                .navigationBarTitleDisplayMode(.inline)
-                .gesture(DragGesture().onEnded{ value in
-                    let start = value.startLocation
-                    let end = value.location
+            }
+            .onAppear {
+                switch NovedadesModel.LanzarVentanaNovedades(){
+                case "primeraVez":
+                    //Actualiza las variables iniciales del Lienzo:
+                    UserDefaults.standard.set(true,forKey: LienzoModel.key_visibilidadTextoSecundario) //Visibilidad de Imagen
+                    UserDefaults.standard.set(true, forKey: LienzoModel.key_visibilidadImagenLienzo)
+                    LienzoModel.shared.saveColorTextoSecundario(colorTexttoSecundario: .black) //Color del Texto Secundario
                     
-                    if start.x > end.x + 24 { //right->left
-                        withAnimation {
-                        }
-                    }else if start.y > end.y + 24 {//up
-                        
-                    }
-                    else if start.x < end.x - 24 {} //left -> right
-                    else if start.y < end.y - 24 {} //down
-                    
-                })
-                .sheet(isPresented: $showAddNoteList){
-                    ListNotasViews()
+                    //Muestra la ventana de Resultados
+                    self.showNovedades = true
+                case "actualizacion":
+                    //Muestra la ventana de resultados
+                    self.showNovedades = true
+                default:
+                    print("No hacer nada")
                 }
-                
                 
             }
             
+            
         }
+        .sheet(isPresented: self.$showNovedades) {
+            Novedades()
+        }
+
         
     }
     
-
-   
 
 }//struct
 
 
-//Frases View
-struct FrasesView : View{
-    @EnvironmentObject private var fraseModel : FrasesModel
-    
-    @State private var  frase : String = ""
-   
-    @AppStorage(AppCons.UD_setting_fontFrasesSize) var fontSizeFrases : Int = 24
-    @State var colorFrase : Color = SettingModel().loadColor(forkey: AppCons.UD_setting_color_frases)
 
-    //Para Adicionar una nueva frase
-    @State private var showSheetAddFrase = false
-    
-    //Para notas en frases
-    @State private var showAddNoteView = false
-    @State private var isFav = false //muestra un corazon lleno o vacio según el valor
-    @State private var animationHeart = 0
 
-    
-    var body: some View{
-        
-  
-            VStack{
-                Text(self.frase)
-                    .font(.system(size: CGFloat(fontSizeFrases), design: .rounded))
-                    .foregroundStyle(colorFrase)
-                    .modifier(mof_frases())
-                    .id(self.frase)
-                    .animation(.smooth(duration: 2), value: self.frase)
-                    .onTapGesture {
-                        self.frase = fraseModel.getRandomFrase()
-                        self.isFav = FrasesModel().isFavFrase(self.frase) //Actualizando el estado
-                    }
-                    .task{
-                        self.frase = fraseModel.getRandomFrase()
-                    }
-                    .onOpenURL(perform: { url in
-                        if url.description == AppCons.DeepLink_url_Frase {
-                            frase = UserDefaults.shared().string(forKey: AppCons.UD_shared_FraseWidgetActual) ?? ""
-                        }
-                        
-                    })
-                    .contextMenu{
-                        Button("Convertir en Nota"){
-                            //Guarda la nota poniendo como titulo una parte de la cadena
-                            _ = NotasModel().addNote(nota: frase, title: "\(String(frase).prefix(frase.count / 3 )))...")
-                        }
-                        NavigationLink("Generar QR"){
-                            GenerateQRView(footer: frase, showImage: true)
-                        }
-                        Button{
-                            showAddNoteView = true
-                        }label: {
-                            Label("Adicionar una nota", systemImage: "bookmark.fill" )
-                        }
-                        Button("Nueva Frase"){
-                            showSheetAddFrase = true
-                        }
-                    }
-                
-                HStack(){
-                    Spacer()
-                    
-                    Button{
-                        var getState = FrasesModel().isFavFrase(frase) //Obtiene el estado previo
-                        getState.toggle() //Invierte su valor
-                        if FrasesModel().setFavFrase(self.frase, getState){
-                            isFav = getState
-                            animationHeart += 1
-                        }
-                        
-                        
-                    }label: {
-                        Image(systemName: isFav ? "heart.fill" : "heart")
-                            .foregroundStyle(isFav ? AppCons.favoriteColorOn : AppCons.favoriteColorOff)
-                            .symbolEffect(.bounce, value: animationHeart)
-                    }
-                    .padding(10)
-                    .padding(.trailing, 15)
-                    .onAppear{
-                        //leyendo el estado isfav de la frase
-                        isFav = FrasesModel().isFavFrase(frase) //Obtiene el estado previo
-                        animationHeart += 1
-                    }
-                }
-                
-            }
-            
-            .sheet(isPresented: $showAddNoteView){ //permite modificar la nota de una frase
-                /*
-                FrasesNotasAddView(frase: self.frase, nota: self.frase.nota ?? "")
-                    .presentationDetents([.medium])
-                    .presentationDragIndicator(.hidden)
-                //.interactiveDismissDisabled() //No deja que se oculte
-                */
-            }
-            .sheet(isPresented: $showSheetAddFrase){
-                FraseAddView()
-                    .presentationDetents([.medium])
-                    .presentationDragIndicator(.hidden)
-            }
-            
-        
-    }
 
-    
 
-}
 
 
 
 
 //CustomTabView
 struct TabButtonBar : View{
+    
+    @EnvironmentObject private var frasesModel : FrasesModel
+    @EnvironmentObject private var securityModel : SecurityModel
+    @EnvironmentObject private var clipBoardModel : ClipboardObserver
     
     @State      var showOptionView = false
     @Binding    var fontFrasesSize : CGFloat //Setting
@@ -259,10 +117,6 @@ struct TabButtonBar : View{
     
     @Binding    var colorFondo_a : Color
     @Binding    var colorFondo_b : Color
-    
-    //Actualiza la UI de Home si cambia valores en setting
-    @Binding    var isSettingChanged : Bool ////Para actualizar los valores de configuración
-    
     
 
     @State private var showSetting = false
@@ -276,67 +130,106 @@ struct TabButtonBar : View{
     var body: some View{
         
         //Creando La bottom Bar con los item del menu
-        HStack{
-            ForEach(tabButtons, id:\.self){idx in
-                switch idx{
-                case "book.pages.fill": //Listado de Conferencias
-                    NavigationLink{
-                        TxtListView(typeOfContent: .conf, title: "Lecturas")
-                    }label: {
-                        makeItemlabel(image: idx)
-                    }
+        VStack{
+            HStack{
+                ForEach(tabButtons, id:\.self){idx in
+                    switch idx{
+                    case "book.pages.fill": //Listado de Conferencias
+                        NavigationLink{
+                            TxtListView(typeOfContent: .conf, title: "Lecturas")
+                                .environmentObject(self.clipBoardModel)
+                        }label: {
+                            makeItemlabel(image: idx)
+                        }
+                        
+                    case "note.text":
+                        NavigationLink{
+                           ListNotasViews()
+                        }label: {
+                            makeItemlabel(image: idx)
+                        }
                     
-                case "note.text":
-                    NavigationLink{
-                       ListNotasViews()
-                    }label: {
-                        makeItemlabel(image: idx)
-                    }
-                
-                case "house.circle.fill":
-                    Button{              
-                       showOptionView = true
-                    }label: {
-                        makeItemlabel(image: idx)
-                            .font(.system(size: 30))
-                    }
-                    
-                case "book":
-                    NavigationLink{ DiarioListView()
-                    }label: {makeItemlabel(image: idx)}
-                    
-                case "gear":
-                    Button{ showSetting = true
-                    }label: {makeItemlabel(image: idx)}
+                    case "house.circle.fill":
+                        Button{
+                           showOptionView = true
+                        }label: {
+                            makeItemlabel(image: idx)
+                                .font(.system(size: 30))
+                        }
+                        
+                    case "book":
+                        NavigationLink{
+                            DiarioListView()
+                                .environmentObject(securityModel)
+                        }label: {makeItemlabel(image: idx)}
+                        
+                    case "gear":
+                        if #available(iOS 26.0, *){
+                            if IAModelAppleIntelligence.isAvailable(){
+                                NavigationLink{
+                                    ChatView(textoACargar: nil)
+                                }label: {
+                                    Image(systemName: "ellipsis.message")
+                                        .font(.system(size: 22))
+                                        .foregroundStyle(.black.opacity(0.7))
+                                        .padding(8)
+                                }
+                            }else{
+                                Button{ showSetting = true
+                                }label: {
+                                    makeItemlabel(image: idx)
+                                    
+                                }
+                            }
+                        }else{
+                            Button{ showSetting = true
+                            }label: {
+                                makeItemlabel(image: idx)
+                                
+                            }
+                        }
+                        
 
-                default: EmptyView()
-                    
-                }
+                    default: EmptyView()
+                        
+                    }
 
+                    
+                    //Insertando un espaciado para mantener la distancia entre los items
+                    if idx != tabButtons.last {
+                        Spacer(minLength: 0)
+                    }
+                    
+                }//ForEach
                 
-                //Insertando un espaciado para mantener la distancia entre los items
-                if idx != tabButtons.last {
-                    Spacer(minLength: 0)
-                }
-                
-            }//ForEach
-            
+            }
+            .padding(.horizontal, 25)
+            .background(LinearGradient(colors: [.gray, .cyan], startPoint: .top, endPoint: .bottom))
+            //.modifier(mof_ColorGradient(colorInit: $colorFondo_a, colorEnd: $colorFondo_b))
+            .clipShape(Capsule())
+            .shadow(color: Color.black.opacity(0.15), radius: 5, x: 5, y: 5)
+            .shadow(color: Color.black.opacity(0.15), radius: 5, x: -5, y: -5)
+            .padding(.horizontal)
+            .padding(.vertical, 5)
         }
-        .padding(.horizontal, 25)
-        .background(LinearGradient(colors: [.gray, .cyan], startPoint: .top, endPoint: .bottom))
-        //.modifier(mof_ColorGradient(colorInit: $colorFondo_a, colorEnd: $colorFondo_b))
-        .clipShape(Capsule())
-        .shadow(color: Color.black.opacity(0.15), radius: 5, x: 5, y: 5)
-        .shadow(color: Color.black.opacity(0.15), radius: 5, x: -5, y: -5)
-        .padding(.horizontal)
+        .onChange(of: self.showOptionView, { oldValue, newValue in
+            //Si se ha cerrado la ventana modal del las opciones en la tabBar:
+            if !newValue {
+                //Actualizando el estado de favorito de la frase actual
+                withAnimation {
+                    self.frasesModel.favStateOfCurrentFrase = frasesModel.isFavFrase(frasesModel.fraseActual)
+                }
+                
+            }
+        })
         
         .sheet(isPresented: $showOptionView) {
-            optionView(isSettingChanged: $isSettingChanged)
+            optionView()
                .presentationDetents([.height(280)])
                .presentationDragIndicator(.hidden)
         }
         .sheet(isPresented: $showSetting, content: {
-            settingView(isSettingChanged: $isSettingChanged)
+            Ajustes()
         })
     }
     
@@ -420,25 +313,10 @@ struct AddNotasViewInbuilt: View {
 
 
 
-///Actualiza el estado de la variable isfav: Se llama cada vez que se carga una frase nueva
-///
-///El parámetro es pasado in-line y corresponde con una variable @State de ContentView. Esto es una forma de actualizar una variable de estado desde fuera de la struct
-///
-/// - Parameter isfav : variable @State que controla el color del icono de fav para frases, en la toolBar
-func readFraseStatus( fraseEntity : Frases?, isfav : inout Bool, isHaveNote : inout Bool){
-    if let frase = fraseEntity {
-        isfav = frase.isfav
-        let nota = frase.nota
-        if nota == "" {
-            isHaveNote = false
-        }else{
-            isHaveNote = true
-        }
-    }
-}
 
 
 
 #Preview {
     ContentView()
 }
+
