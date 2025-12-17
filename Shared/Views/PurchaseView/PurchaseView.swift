@@ -15,24 +15,55 @@ struct PurchaseView: View {
     var body: some View {
         VStack{
             ZStack{
+                #if os(macOS)
+                LinearGradient(
+                    colors: [
+                        Color.purple.opacity(0.9),
+                        Color.blue.opacity(0.7),
+                        Color.blue.opacity(0.5)
+                    ],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+                .ignoresSafeArea()
+                #else
+                LinearGradient(
+                    colors: [
+                        Color.orange,
+                        Color.pink.opacity(0.8),
+                        Color.purple.opacity(0.7)
+                    ],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+                .ignoresSafeArea()
+                #endif
                 
-                LinearGradient(colors: [.orange.opacity(0.8),.purple.opacity(0.8),], startPoint: .topLeading, endPoint: .bottomTrailing)
-                    .ignoresSafeArea()
                 
                 VStack{
-                    Image(uiImage: UIImage(named: "Logo")!)
+                   
+                    Image("Logo")
                         .resizable()
-                        .frame(width: 70, height: 70)
+                        .frame(width: 60, height: 60)
                         .clipShape(Circle())
                         .overlay(Circle().stroke(Color.black, lineWidth: 3))
                         .shadow(color: .purple, radius: 3)
+                    
+                   
                     Text("🎉 La Ley Premium ✨")
                         .bold()
                         .font(.title)
                         .fontDesign(.rounded)
                         .padding(8)
-                        .background{
-                            Color.gray.opacity(0.3)
+                        .foregroundStyle(
+                            LinearGradient(
+                                colors: [.white, .orange, .cyan],
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            )
+                        )
+                        .background {
+                            Color.black.opacity(0.4)
                         }
                         .cornerRadius(20)
                     
@@ -40,40 +71,43 @@ struct PurchaseView: View {
                         .bold()
                         .font(.system(size: 20))
                         .foregroundColor(.black)
+                    
+                    Spacer()
                         
                     ScrollView{
                         VStack( alignment: .leading ,spacing: 15){
                             Text("🔵 Inteligencia Artificial (IA): Resumen, Interpretación, concejos prácticos y chat").bold()
-                                .multilineTextAlignment(.leading)
+                                
                             
                             Text("🔵 Atajos & Comandos Siri: Abrir notas, crear notas, abrir Diario, crear Entrada del Diario, abrir una conferencia al azar, etc").bold()
-                                .multilineTextAlignment(.leading)
+                                
                             Text("🔵 Opciones del Menu Compartir: Leer QR code, OCR(extraer texto de imagen), importar Notas/Frase desde QR").bold()
-                                .multilineTextAlignment(.leading)
+                                
                             Text("🔵 Lienzo: Diseña vistosas imágenes con frases y pensamientos para compartir en redes sociales y con amigos").bold()
-                                .multilineTextAlignment(.leading)
+                                
                             Text("🔵 Importar Nota/Frase por QR code. Comparte frases y notas en redes sociales utilizando un código QR").bold()
-                                .multilineTextAlignment(.leading)
+                                
                             Text("🔵 Proteger las Notas: Permite proteger el acceso a notas con biometría o contraseña.").bold()
-                                .multilineTextAlignment(.leading)
+                                
+                            Text("🔵 Menú Texto Copiado: Crea un menú con accesos útiles cuando seleccionamos y copiamos un texto en conferencias, diario, notas, etc").bold()
+                               
                              
                         }
+                        .multilineTextAlignment(.leading)
                         .font(.system(size: 20))
                         .foregroundStyle(.black)
                     }
                     .scrollIndicators(.visible)
-                    
-                    
-                    
-                    Spacer()
+
+                   Spacer()
                     
                     if !self.purchaseModel.isPremium {
                         VStack(alignment: .center){
                             Text("!Suscripción anual, muy asequible!")
                                 .bold()
                                 .font(.system(size: 20))
-                                .foregroundColor(.black)
-                                .padding(.top, 20)
+                                .foregroundColor(.white)
+                                .padding()
                             Button{
                                 Task{
                                     await self.purchaseModel.purchasePremium()
@@ -91,17 +125,10 @@ struct PurchaseView: View {
                         Text("Eres premium 🎉")
                             .bold()
                             .font(.system(size: 20))
-                            .foregroundStyle(.black)
+                            .foregroundStyle(.orange)
                             .padding()
                     }
 
-                    
-                    VStack(alignment: .center){
-                        Text("💕 El acceso a las enseñanzas de neville seguirán siendo gratis. Nada cambiará eso 💕")
-                            .bold()
-                    }
-                    
-                    
                     VStack{
                         Button{
                             Task{
@@ -119,12 +146,20 @@ struct PurchaseView: View {
                         
                     }
                     
-                    
-                    
                     Spacer()
+                    
+                    VStack(alignment: .center){
+                        Text("💕 El acceso a las enseñanzas de neville seguirán siendo gratis. Nada cambiará eso 💕")
+                            .bold()
+                            .foregroundStyle(.white)
+                    }
+                    
+                    
+                   
                 }
                 .padding()
                 
+            
                 
             }
         }

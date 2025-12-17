@@ -11,6 +11,7 @@ import SwiftUI
 struct TextoCopiadoView: View {
     
     @ObservedObject var clipBoardModel : ClipboardObserver
+    @StateObject private var purchaseModel : PurchaseManager = .shared
     
     let  nameTxt : String?  //Nombre del fichero txt
     
@@ -22,9 +23,11 @@ struct TextoCopiadoView: View {
     @Binding var showSheetTextoCopiadoAlPortapapelesParaInterpretar : TextoCopiadoAlPortapapeles?
     @Binding var showSheetTtextoCopiadoAlPortapapelesParaChatIA : TextoCopiadoAlPortapapeles?
     @Binding var showSheetTtextoCopiadoAlPortapapelesParaLienzo : TextoCopiadoAlPortapapeles?
-  
     
+ 
     var body: some View {
+        
+        if self.purchaseModel.isPremium{
             Menu{
                 Label("Texto copiado a: ", systemImage: "info.circle")
                 .tint(.gray)
@@ -128,11 +131,59 @@ struct TextoCopiadoView: View {
                 Label("Texto Copiado a: ", systemImage: "rectangle.fill.on.rectangle.fill.circle.fill")
             }
             .tint(.green)
-        
-        .alert(isPresented: $showAlert) {
-            Alert(title: Text("La ley"), message: Text(self.alertMessage))
+        }else{
+            Menu{
+                Label("Texto copiado a: ", systemImage: "info.circle")
+                .tint(.gray)
+                
+                Button{
+                    alertMessage = "Se requiere una suscripción Premium. Vaya a Ajustes -> última opción"
+                    showAlert = true
+                }label:{
+                    Label("Notas", systemImage: "square.on.square.dashed")
+                }
+                
+                Button{
+                    alertMessage = "Se requiere una suscripción Premium. Vaya a Ajustes -> última opción"
+                    showAlert = true
+                }label:{
+                    Label("Frases", systemImage: "square.on.square.dashed")
+                }
+                
+                Button{
+                    alertMessage = "Se requiere una suscripción Premium. Vaya a Ajustes -> última opción"
+                    showAlert = true
+                }label:{
+                    Label("Lienzo", systemImage: "heart.text.square")
+                }
+                
+                if #available(iOS 26.0, macOS 26.0, *) {
+                    Button{
+                       alertMessage = "Se requiere una suscripción Premium. Vaya a Ajustes -> última opción"
+                        showAlert = true
+                    }label:{
+                        Label("Interpretar", systemImage: "sparkles")
+                    }
+                    .tint(.orange)
+                    .help("Interpreta el texto copiado en el portapapeles con la IA")
+                }
+                
+                if #available(iOS 26.0, macOS 26.0, *) {
+                    Button{
+                        alertMessage = "Se requiere una suscripción Premium"
+                        showAlert = true
+                    }label:{
+                        Label("ChatIA", systemImage: "sparkles")
+                    }
+                    .tint(.orange)
+                    .help("Permite charlar con la IA sobre el texto copiado al potapaepeles")
+                }
+            }label: {
+                Label("Texto Copiado a: ", systemImage: "rectangle.fill.on.rectangle.fill.circle.fill")
+            }
+            .tint(.green)
+            
         }
-       
-         
+   
     }
 }

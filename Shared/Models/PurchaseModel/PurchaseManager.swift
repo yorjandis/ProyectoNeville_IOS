@@ -24,6 +24,7 @@ final class PurchaseManager: ObservableObject {
             await loadProducts()
             await updatePremiumStatus()
             listenForTransactions()
+            //UserDefaults.standard.set(self.isPremium, forKey: "premiumStatus")
         }
     }
 

@@ -18,6 +18,7 @@ enum ItemNameSidebar: String{
     case ajustes
     case chatIA
     case lienzo
+    case premium
 }
 
 struct ItemSidebar: Identifiable, Hashable, Equatable {
@@ -111,7 +112,7 @@ struct ContentViewMac: View {
             
             
         }
-        .frame(minWidth: 1200, minHeight: 800)
+        .frame(minWidth: 1200, minHeight: 850)
         .onAppear {
             
             switch NovedadesModel.LanzarVentanaNovedades(){
@@ -169,8 +170,8 @@ struct ContentViewMac: View {
                 .padding(.vertical, 10)
                 .multilineTextAlignment(.center)
                 .frame(minWidth: 250)
-                
-                
+            
+            
             // Items del Sidebar
             List(selection: self.$categoriaSelected) {
                 ForEach (categoriasSideBar, id: \.id) { itemSidebar in
@@ -304,6 +305,16 @@ struct ContentViewMac: View {
                 .buttonStyle(.plain)
                 
                 
+                //Abre la Ventana de Premium
+                Button{
+                    self.categoriaSelected = ItemSidebar(text: .premium, icono: "circle.dotted")
+                }label:{
+                    SidebarCard(iconName: "circle.dotted", title: "Premium")
+                        .tag(ItemSidebar(text: .premium, icono: "circle.dotted"))
+                }
+                .buttonStyle(.plain)
+                
+                
             }
             .listStyle(.sidebar)
             .onAppear {
@@ -365,7 +376,8 @@ struct NavigationDetailsViewMac: View {
                 if #available(iOS 26.0, macOS 26.0, *){
                     ChatView(textoACargar: nil)
                 }
-                
+            case .premium:
+                PurchaseView()
             default:
                 VStack{
                     Text("No implementado")
@@ -383,6 +395,8 @@ struct FrasesHomeMac: View{
     
     var body: some View {
         VStack{
+            
+            
             FrasesView()
         }
     }

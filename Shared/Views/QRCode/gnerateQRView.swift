@@ -16,7 +16,7 @@ import AppKit
 
 struct GenerateQRView : View {
     
-    
+    @StateObject private var purchasePremium : PurchaseManager = .shared
 
     @State var  footer : String = ""
     
@@ -24,7 +24,7 @@ struct GenerateQRView : View {
     
     //Para importar una imagen de la galeria
     @State private var selectedItem: PhotosPickerItem?
-     @State private var selectedImage : UIImage? //La image que se ha leído de la galeria
+    @State private var selectedImage : UIImage? //La image que se ha leído de la galeria
     
     @State  var  showImage = true //muestra la imagen del QR ya generado
     
@@ -175,19 +175,22 @@ struct GenerateQRView : View {
                     if self.showImportButtonNotas{
                         HStack{
                             Button("Importar a Notas"){
-                                Task{
-                                    self.imagen = getImageQR() //Recrea la imagen QR a partir del texto actual. Esto es para el caso de que se modifique el texto antes de importar.
-                                    validarFormatoImportacion()
-                                    if let formato = self.formatImportNotas{
-                                        if NotasModel().addNote(nota: formato.1, title: formato.0, isFav: formato.2){
-                                            self.alertMessage = "Nota importada correctamente"
-                                            self.showAlert = true
+                                if self.purchasePremium.isPremium {
+                                    Task{
+                                        self.imagen = getImageQR() //Recrea la imagen QR a partir del texto actual. Esto es para el caso de que se modifique el texto antes de importar.
+                                        validarFormatoImportacion()
+                                        if let formato = self.formatImportNotas{
+                                            if NotasModel().addNote(nota: formato.1, title: formato.0, isFav: formato.2){
+                                                self.alertMessage = "Nota importada correctamente"
+                                                self.showAlert = true
+                                            }
                                         }
                                     }
+                                }else{
+                                    self.alertMessage = "Esta función requiere Premium"
+                                    self.showAlert = true
                                 }
-                                
-                                
-                                
+  
                             }
                             .tint(.blue)
                             .buttonStyle(.borderedProminent)
@@ -205,18 +208,21 @@ struct GenerateQRView : View {
                     if self.showImportButtonFrase{
                         HStack{
                             Button("Importar a Frases"){
-                                Task{
-                                    self.imagen = getImageQR() //Recrea la imagen QR a partir del texto actual. Esto es para el caso de que se modifique el texto antes de importar.
-                                    validarFormatoImportacion()
-                                    if let frase = self.formatImportFrase{
-                                        if FrasesModel.shared.AddFrase(frase: frase){
-                                            self.alertMessage = "Frase importada correctamente"
-                                            self.showAlert = true
+                                if self.purchasePremium.isPremium{
+                                    Task{
+                                        self.imagen = getImageQR() //Recrea la imagen QR a partir del texto actual. Esto es para el caso de que se modifique el texto antes de importar.
+                                        validarFormatoImportacion()
+                                        if let frase = self.formatImportFrase{
+                                            if FrasesModel.shared.AddFrase(frase: frase){
+                                                self.alertMessage = "Frase importada correctamente"
+                                                self.showAlert = true
+                                            }
                                         }
                                     }
+                                }else{
+                                    self.alertMessage = "Esta función requiere Premium"
+                                    self.showAlert = true
                                 }
-                                
-                                
                                 
                             }
                             .tint(.blue)

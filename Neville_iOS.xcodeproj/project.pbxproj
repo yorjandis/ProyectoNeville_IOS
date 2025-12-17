@@ -181,6 +181,7 @@
 				Models/NotasModel/NotasModel.swift,
 				Models/NovedadesModel/NovedadesModel.swift,
 				Models/PortapaplesModel/PortapapelesModel.swift,
+				Models/PurchaseModel/PremiunService.swift,
 				Models/PurchaseModel/PurchaseManager.swift,
 				Models/PurchaseModel/StoreKitFile.storekit,
 				Models/QRCode/QRModel.swift,
@@ -800,6 +801,8 @@
 				Views/SelectableTextAPI/SelectableText.swift,
 				Views/TextoCopiado/TextoCopiadoView.swift,
 				Views/TxtFiles/ContentTxtShowView.swift,
+				Views/TxtFiles/EditNoteTxt.swift,
+				Views/TxtFiles/PlatFormShareView.swift,
 				Views/TxtFiles/TxtListView.swift,
 				Views/ViewSharedMultiplattform/ViewSharedMultiplattform.swift,
 			);
@@ -861,6 +864,16 @@
 			);
 			target = E95B93522AAFBB2600B5E2B5 /* Neville_iOS */;
 		};
+		918C4AF72EF3593F00974B54 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Models/PurchaseModel/PremiunService.swift,
+				Models/PurchaseModel/PurchaseManager.swift,
+				Models/PurchaseModel/StoreKitFile.storekit,
+				Views/PurchaseView/PurchaseView.swift,
+			);
+			target = 91E107662EEA01AD00F4DB1D /* sharedios */;
+		};
 		91E107752EEA01AD00F4DB1D /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -872,7 +885,7 @@
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		9113E29C2EE9E1D2002AC306 /* Model */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Model; sourceTree = "<group>"; };
-		911FE4452ECB2A7F009F83BE /* Shared */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (911FE4562ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 911FE4572ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 911FE4582ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (Models/PurchaseModel/StoreKitFile.storekit, ); path = Shared; sourceTree = "<group>"; };
+		911FE4452ECB2A7F009F83BE /* Shared */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (911FE4562ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 911FE4572ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 911FE4582ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 918C4AF72EF3593F00974B54 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (Models/PurchaseModel/StoreKitFile.storekit, ); path = Shared; sourceTree = "<group>"; };
 		911FE4D42ECB2E8D009F83BE /* OptionView */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (911FEB632ECB3B7F009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = OptionView; sourceTree = "<group>"; };
 		911FF1FA2ECB4064009F83BE /* Preview Content */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (911FF1FC2ECB4064009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 911FF1FD2ECB4064009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = "Preview Content"; sourceTree = "<group>"; };
 		914415A92EDC377200FFC61D /* Atajos */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (914415B12EDC39E300FFC61D /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Atajos; sourceTree = "<group>"; };
@@ -1027,8 +1040,8 @@
 				E95B93552AAFBB2600B5E2B5 /* Neville_iOS */,
 				19E0BE172B0C661A00E149A5 /* FrasesWigget */,
 				19EDBBC62B7DD66000432CDE /* WatchComplicationLaLey */,
-				917C30202EBCD1E5006BB36E /* La Ley_mac */,
 				91E107682EEA01AD00F4DB1D /* sharedios */,
+				917C30202EBCD1E5006BB36E /* La Ley_mac */,
 				19E0BDEB2B0B412D00E149A5 /* Frameworks */,
 				E95B93542AAFBB2600B5E2B5 /* Products */,
 			);

@@ -17,6 +17,13 @@ struct AbrirNotasItentMac : AppIntent {
     
    
     func perform() async throws -> some IntentResult {
+        
+        let hasPremium = await PremiumService.shared.hasPremiumAccess()
+        
+        guard hasPremium else {
+            throw PremiumError.noSubscription
+        }
+        
         UserDefaults.standard.set("abrirNotas", forKey: "AtajosMac")
         return .result()
     }

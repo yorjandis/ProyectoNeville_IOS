@@ -17,13 +17,14 @@ struct AbrirDiarioIntentMac: AppIntent {
     
     
     func perform() async throws -> some IntentResult {
-        UserDefaults.standard.set("abrirDiario", forKey: "AtajosMac")
-        return .result()
+        
+        let hasPremium = await PremiumService.shared.hasPremiumAccess()
+        
+        guard hasPremium else {
+            throw PremiumError.noSubscription
+        }
+
+            UserDefaults.standard.set("abrirDiario", forKey: "AtajosMac")
+            return .result()
     }
 }
-
-//El parámetro openAppWhenRun puede ser reemplazado por esta versión moderna, la pega es que es para iOS 26.0+
-/*
-@available(iOS 26.0, *)
-static let modosAdmitidos: IntentModes  = .foreground
-*/

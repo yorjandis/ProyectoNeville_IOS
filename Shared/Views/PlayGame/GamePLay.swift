@@ -63,6 +63,7 @@ struct GamePLay: View {
                         }
                         .padding(5)
                         .opacity(opaci)
+                       
                     }
                     
                 

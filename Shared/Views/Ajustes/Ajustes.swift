@@ -18,6 +18,7 @@ struct Ajustes: View {
     @EnvironmentObject private var modelFrases : FrasesModel
     @EnvironmentObject private var settingModel : SettingModel
     @EnvironmentObject private var securityModel : SecurityModel
+    @StateObject private var purchasePremium : PurchaseManager = .shared //Para las funciones Premium
     
     private let context2 = CoreDataController.shared.context
     
@@ -325,7 +326,18 @@ struct Ajustes: View {
                             Text("Protección de Notas").font(.system(size: 22)).foregroundStyle(.orange)
                             
                             if self.securityModel.canOpenNotas {
-                                Toggle("Proteger las Notas con FaceID", isOn: $setting_NotasFaceID)
+                                if self.purchasePremium.isPremium{
+                                    Toggle("Proteger las Notas con FaceID", isOn: $setting_NotasFaceID)
+                                }else{
+                                    Button("Se requiere Premium"){
+                                        showWindow(for: PurchaseView(),
+                                                   environmentObjects: [],
+                                        title: "Habilitar Premium",
+                                                   size: .percentage(width: 0.50, height: 0.50),
+                                        isModal: false)
+                                    }
+                                }
+                                
                             }else{
                                 
                                 //Chequeando si existe soporte biométrico:
@@ -369,6 +381,7 @@ struct Ajustes: View {
                         .padding(.bottom, 20)
                         
                         
+                        //Ventana del Diario siempre abierta, después del primer acceso
                         VStack(alignment: .leading){
                             Text("Ventana Diario Siempre Abierta").font(.system(size: 22)).foregroundStyle(.orange)
                             
@@ -643,6 +656,16 @@ struct Ajustes: View {
                                     .bold()
                                     .font(.headline)
                             }
+                            
+                            NavigationLink{
+                                PurchaseView()
+                            }label: {
+                                Label("Obtener funciones Premium", systemImage: "sparkles")
+                                    .foregroundStyle(.orange)
+                                    .bold()
+                                    .font(.headline)
+                            }
+                            
                             
                         }
                         .padding(.horizontal, 30)
@@ -1054,6 +1077,16 @@ struct Ajustes: View {
                                 .bold()
                                 .font(.headline)
                         }
+                        
+                        NavigationLink{
+                            PurchaseView()
+                        }label: {
+                            Label("Obtener funciones Premium", systemImage: "sparkles")
+                                .foregroundStyle(.orange)
+                                .bold()
+                                .font(.headline)
+                        }
+                        
                     }
                     
                     .alert(isPresented: $showAlert) {

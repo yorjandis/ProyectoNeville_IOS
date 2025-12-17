@@ -46,6 +46,13 @@ struct CrearNotaIntentMac : AppIntent, ProvidesDialog{
     var nota : String
 
     func perform() async throws -> some IntentResult & ReturnsValue<String> & ProvidesDialog{
+        
+        let hasPremium = await PremiumService.shared.hasPremiumAccess()
+        
+        guard hasPremium else {
+            throw PremiumError.noSubscription
+        }
+        
         // Guarda la nota:
         if  await NotasModel().addNote(nota: nota, title: titulo){
             return .result(

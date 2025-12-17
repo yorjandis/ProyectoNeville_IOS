@@ -8,7 +8,7 @@ import PhotosUI
 struct LienzoMain: View {
     
     @StateObject private var lienzoModel : LienzoModel = .shared //ViewModel para el Lienzo
-    
+    @StateObject private var purchasePremium : PurchaseManager = .shared
     let texto: String? //Si se da,  se coloca este texto en el texto principal. Para importar frase o nota
     
 
@@ -49,264 +49,272 @@ struct LienzoMain: View {
     @AppStorage(LienzoModel.key_imagenFondoAplicada) var imagenFondoAplicada: Bool = false
     
     var body: some View {
-        VStack{
-            //Área útil: la que se va a compartir
-            VStack(alignment: .center, spacing: 3){
+        
+        if self.purchasePremium.isPremium {
+            VStack{
                 
-                //Primera fila
-                HStack{
-                    VStack(){
-                        HStack{
-                            if lienzoModel.posicionImagenLienzoSecundario == .arriba {
-                                if lienzoModel.visibilidadImagenLienzoSecundario{
-                                   ImagenLienzoSecundario()
-                                }
-                                
-                            }
-                            if lienzoModel.posicionImagenLienzo == .arriba {
-                                if lienzoModel.visibilidadImagenLienzo{
-                                    ImagenLienzo()
-                                }
-                                
-                            }
-                        }
-                        
-                        
-                        if lienzoModel.posicionTextoPrincipal == .arriba{
-                            TextoPrincipal()
-                        }
-                        
-                        if lienzoModel.posicionTextoSecundario == .arriba{
-                            if lienzoModel.visibilidadTextoSecundario{
-                                TextoSecundario()
-                            }
-                        }
-                        
-                    }
+                //Área útil: la que se va a compartir
+                VStack(alignment: .center, spacing: 3){
                     
-                }
-                
-                //Segunda fila
-                HStack{
-                    
-                    VStack{
-                        VStack{
-                            if lienzoModel.posicionImagenLienzo == .izquierda {
-                                if lienzoModel.visibilidadImagenLienzo{
-                                    ImagenLienzo()
+                    //Primera fila
+                    HStack{
+                        VStack(){
+                            HStack{
+                                if lienzoModel.posicionImagenLienzoSecundario == .arriba {
+                                    if lienzoModel.visibilidadImagenLienzoSecundario{
+                                       ImagenLienzoSecundario()
+                                    }
+                                    
                                 }
-                                
-                            }
-                            if lienzoModel.posicionImagenLienzoSecundario == .izquierda {
-                                if lienzoModel.visibilidadImagenLienzoSecundario{
-                                   ImagenLienzoSecundario()
+                                if lienzoModel.posicionImagenLienzo == .arriba {
+                                    if lienzoModel.visibilidadImagenLienzo{
+                                        ImagenLienzo()
+                                    }
+                                    
                                 }
-                                
-                            }
-                        }
-                        if lienzoModel.posicionTextoPrincipal == .izquierda{
-                            TextoPrincipal()
-                        }
-                        
-                        if lienzoModel.posicionTextoSecundario == .izquierda{
-                            if lienzoModel.visibilidadTextoSecundario{
-                                TextoSecundario()
-                            }
-                        }
-                        
-                    }
-                    
-                    VStack{
-                        if lienzoModel.posicionTextoPrincipal == .centro{
-                            TextoPrincipal()
-                        }
-                        
-                        if lienzoModel.posicionTextoSecundario == .centro{
-                            if lienzoModel.visibilidadTextoSecundario{
-                                TextoSecundario()
-                            }
-                        }
-                    }
-                    
-                    VStack{
-                        
-                        HStack{
-                            if lienzoModel.posicionImagenLienzo == .derecha {
-                                if lienzoModel.visibilidadImagenLienzo{
-                                    ImagenLienzo()
-                                }
-                                
                             }
                             
-                            if lienzoModel.posicionImagenLienzoSecundario == .derecha {
-                                if lienzoModel.visibilidadImagenLienzoSecundario{
-                                   ImagenLienzoSecundario()
+                            
+                            if lienzoModel.posicionTextoPrincipal == .arriba{
+                                TextoPrincipal()
+                            }
+                            
+                            if lienzoModel.posicionTextoSecundario == .arriba{
+                                if lienzoModel.visibilidadTextoSecundario{
+                                    TextoSecundario()
+                                }
+                            }
+                            
+                        }
+                        
+                    }
+                    
+                    //Segunda fila
+                    HStack{
+                        
+                        VStack{
+                            VStack{
+                                if lienzoModel.posicionImagenLienzo == .izquierda {
+                                    if lienzoModel.visibilidadImagenLienzo{
+                                        ImagenLienzo()
+                                    }
+                                    
+                                }
+                                if lienzoModel.posicionImagenLienzoSecundario == .izquierda {
+                                    if lienzoModel.visibilidadImagenLienzoSecundario{
+                                       ImagenLienzoSecundario()
+                                    }
+                                    
+                                }
+                            }
+                            if lienzoModel.posicionTextoPrincipal == .izquierda{
+                                TextoPrincipal()
+                            }
+                            
+                            if lienzoModel.posicionTextoSecundario == .izquierda{
+                                if lienzoModel.visibilidadTextoSecundario{
+                                    TextoSecundario()
+                                }
+                            }
+                            
+                        }
+                        
+                        VStack{
+                            if lienzoModel.posicionTextoPrincipal == .centro{
+                                TextoPrincipal()
+                            }
+                            
+                            if lienzoModel.posicionTextoSecundario == .centro{
+                                if lienzoModel.visibilidadTextoSecundario{
+                                    TextoSecundario()
+                                }
+                            }
+                        }
+                        
+                        VStack{
+                            
+                            HStack{
+                                if lienzoModel.posicionImagenLienzo == .derecha {
+                                    if lienzoModel.visibilidadImagenLienzo{
+                                        ImagenLienzo()
+                                    }
+                                    
                                 }
                                 
+                                if lienzoModel.posicionImagenLienzoSecundario == .derecha {
+                                    if lienzoModel.visibilidadImagenLienzoSecundario{
+                                       ImagenLienzoSecundario()
+                                    }
+                                    
+                                }
+                            }
+                            
+                            if lienzoModel.posicionTextoPrincipal == .derecha{
+                                TextoPrincipal()
+                            }
+                            
+                            if lienzoModel.posicionTextoSecundario == .derecha{
+                                if lienzoModel.visibilidadTextoSecundario{
+                                    TextoSecundario()
+                                }
                             }
                         }
                         
-                        if lienzoModel.posicionTextoPrincipal == .derecha{
-                            TextoPrincipal()
-                        }
                         
-                        if lienzoModel.posicionTextoSecundario == .derecha{
-                            if lienzoModel.visibilidadTextoSecundario{
-                                TextoSecundario()
+                    }
+                    
+                    //Tercera fila
+                    HStack{
+                        VStack(){
+                            
+                            if lienzoModel.posicionTextoPrincipal == .abajo{
+                                TextoPrincipal()
                             }
+                            
+                            if lienzoModel.posicionTextoSecundario == .abajo{
+                                if lienzoModel.visibilidadTextoSecundario{
+                                    TextoSecundario()
+                                }
+                            }
+                            
+                            HStack{
+                                if lienzoModel.posicionImagenLienzoSecundario == .abajo {
+                                    if lienzoModel.visibilidadImagenLienzoSecundario{
+                                       ImagenLienzoSecundario()
+                                    }
+                                    
+                                }
+                                if lienzoModel.posicionImagenLienzo == .abajo {
+                                    if lienzoModel.visibilidadImagenLienzo{
+                                        ImagenLienzo()
+                                    }
+                                    
+                                }
+                            }
+                            
                         }
                     }
                     
                     
                 }
-                
-                //Tercera fila
-                HStack{
-                    VStack(){
+                .frame(width: lienzoModel.tamañoLienzoAncho, height: lienzoModel.tamañoLienzoAlto)
+                .background{
+                    //Fondo
+                    if self.imagenFondoAplicada {
+                        #if os(macOS)
+                        Image(nsImage: lienzoModel.obtenerImagenFondo() ?? NSImage(named: "fondo")!)
+                            .resizable()
+                            .scaledToFill()
+                        #else
+                        Image(uiImage: lienzoModel.obtenerImagenFondo() ?? UIImage(named: "fondo")!)
+                            .resizable()
+                            .scaledToFill()
+                            .ignoresSafeArea()
+                            
+                        #endif
                         
-                        if lienzoModel.posicionTextoPrincipal == .abajo{
-                            TextoPrincipal()
-                        }
-                        
-                        if lienzoModel.posicionTextoSecundario == .abajo{
-                            if lienzoModel.visibilidadTextoSecundario{
-                                TextoSecundario()
-                            }
-                        }
-                        
-                        HStack{
-                            if lienzoModel.posicionImagenLienzoSecundario == .abajo {
-                                if lienzoModel.visibilidadImagenLienzoSecundario{
-                                   ImagenLienzoSecundario()
-                                }
-                                
-                            }
-                            if lienzoModel.posicionImagenLienzo == .abajo {
-                                if lienzoModel.visibilidadImagenLienzo{
-                                    ImagenLienzo()
-                                }
-                                
-                            }
+                    }else{
+                        LinearGradient(colors: [self.lienzoModel.coloresFondo1, self.lienzoModel.coloresFondo2] , startPoint: .topLeading , endPoint: .bottomTrailing )
+                    }
+                    
+                }
+                .cornerRadius(20)
+                .padding(20)
+                .task {
+                    if let textotmp = self.texto{
+                        if !textotmp.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty{
+                            lienzoModel.textoPrincipal = textotmp
+                            self.lienzoModel.visibilidadTextoSecundario = false
                         }
                         
                     }
                 }
-                
-                
-            }
-            .frame(width: lienzoModel.tamañoLienzoAncho, height: lienzoModel.tamañoLienzoAlto)
-            .background{
-                //Fondo
-                if self.imagenFondoAplicada {
-                    #if os(macOS)
-                    Image(nsImage: lienzoModel.obtenerImagenFondo() ?? NSImage(named: "fondo")!)
-                        .resizable()
-                        .scaledToFill()
-                    #else
-                    Image(uiImage: lienzoModel.obtenerImagenFondo() ?? UIImage(named: "fondo")!)
-                        .resizable()
-                        .scaledToFill()
-                        .ignoresSafeArea()
-                        
-                    #endif
-                    
-                }else{
-                    LinearGradient(colors: [self.lienzoModel.coloresFondo1, self.lienzoModel.coloresFondo2] , startPoint: .topLeading , endPoint: .bottomTrailing )
-                }
-                
-            }
-            .cornerRadius(20)
-            .padding(20)
-            .task {
-                if let textotmp = self.texto{
-                    if !textotmp.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty{
-                        lienzoModel.textoPrincipal = textotmp
-                        self.lienzoModel.visibilidadTextoSecundario = false
-                    }
-                    
-                }
-            }
 
-            //Panel de Opciones
-            VStack(spacing: 0) {
-                        // Barra de pestañas horizontal
-                HStack(spacing: 10) {
-                    Spacer()
-                    
-                    Button("Fondo"){self.selectedOpcion = 0}
-                        .foregroundStyle(self.selectedOpcion == 0 ? .black : .primary)
-                        .padding(5)
-                        .contentShape(Rectangle())
-                        .background( RoundedRectangle(cornerRadius: 15)
-                            .fill(self.selectedOpcion == 0 ? .orange : .gray))
-                        .buttonStyle(.plain)
+                //Panel de Opciones
+                VStack(spacing: 0) {
+                            // Barra de pestañas horizontal
+                    HStack(spacing: 10) {
+                        Spacer()
                         
+                        Button("Fondo"){self.selectedOpcion = 0}
+                            .foregroundStyle(self.selectedOpcion == 0 ? .black : .primary)
+                            .padding(5)
+                            .contentShape(Rectangle())
+                            .background( RoundedRectangle(cornerRadius: 15)
+                                .fill(self.selectedOpcion == 0 ? .orange : .gray))
+                            .buttonStyle(.plain)
+                            
+                            
+                            
+                        Button("Texto"){self.selectedOpcion = 1}
+                            .foregroundStyle(self.selectedOpcion == 1 ? .black : .primary)
+                            .padding(5)
+                            .contentShape(Rectangle())
+                            .background( RoundedRectangle(cornerRadius: 15)
+                                .fill(self.selectedOpcion == 1 ? .orange : .gray))
+                            .buttonStyle(.plain)
                         
+                        Button("Imagen"){self.selectedOpcion = 2}
+                            .foregroundStyle(self.selectedOpcion == 2 ? .black : .primary)
+                            .padding(5)
+                            .contentShape(Rectangle())
+                            .background( RoundedRectangle(cornerRadius: 15)
+                                .fill(self.selectedOpcion == 2 ? .orange : .gray))
+                            .buttonStyle(.plain)
                         
-                    Button("Texto"){self.selectedOpcion = 1}
-                        .foregroundStyle(self.selectedOpcion == 1 ? .black : .primary)
-                        .padding(5)
-                        .contentShape(Rectangle())
-                        .background( RoundedRectangle(cornerRadius: 15)
-                            .fill(self.selectedOpcion == 1 ? .orange : .gray))
-                        .buttonStyle(.plain)
-                    
-                    Button("Imagen"){self.selectedOpcion = 2}
-                        .foregroundStyle(self.selectedOpcion == 2 ? .black : .primary)
-                        .padding(5)
-                        .contentShape(Rectangle())
-                        .background( RoundedRectangle(cornerRadius: 15)
-                            .fill(self.selectedOpcion == 2 ? .orange : .gray))
-                        .buttonStyle(.plain)
-                    
-                    //Botón Exportar imagen:
-                    Button{
-                        Task{
-                            self.imagenAExportar =  renderViewAsImage(LienzoMainExportar())
-                            self.selectedOpcion = 3
-                        }
-                       
-                    }label: {
-                        Text("Exportar")
-                            .foregroundStyle(.black)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .tint(.blue)
-                    
-                    Spacer()
-                        }
-                        .padding(.horizontal)
-                        .padding(.vertical, 8)
-                        .background(.gray.opacity(0.7))
-                        .cornerRadius(20)
-                        
-                        //Divider()
-                        
-                        // Contenido del panel
-                        ZStack {
-                            switch self.selectedOpcion {
-                            case 0:
-                                PanelOpcionesDeFondo()
-                            case 1:
-                                PanelOpcionesDeTexto()
-                            case 2:
-                                PanelOpcionesDeImagen()
-                            case 3:
-                                PanelOpcionesExportacion()
-                            default:
-                                EmptyView()
+                        //Botón Exportar imagen:
+                        Button{
+                            Task{
+                                self.imagenAExportar =  renderViewAsImage(LienzoMainExportar())
+                                self.selectedOpcion = 3
                             }
+                           
+                        }label: {
+                            Text("Exportar")
+                                .foregroundStyle(.black)
                         }
-                        //.animation(.easeInOut, value: selectedOpcion)
-                    }
-            .padding(20)   
-            
-            Spacer()
-            
+                        .buttonStyle(.borderedProminent)
+                        .tint(.blue)
+                        
+                        Spacer()
+                            }
+                            .padding(.horizontal)
+                            .padding(.vertical, 8)
+                            .background(.gray.opacity(0.7))
+                            .cornerRadius(20)
+                            
+                            //Divider()
+                            
+                            // Contenido del panel
+                            ZStack {
+                                switch self.selectedOpcion {
+                                case 0:
+                                    PanelOpcionesDeFondo()
+                                case 1:
+                                    PanelOpcionesDeTexto()
+                                case 2:
+                                    PanelOpcionesDeImagen()
+                                case 3:
+                                    PanelOpcionesExportacion()
+                                default:
+                                    EmptyView()
+                                }
+                            }
+                            //.animation(.easeInOut, value: selectedOpcion)
+                        }
+                .padding(20)
+                
+                Spacer()
+                
+            }
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text("Lienzo"), message: Text(self.alertMessage), dismissButton: .default(Text("OK")))
+            }
+        }else{
+            PurchaseView()
         }
-        .alert(isPresented: $showAlert) {
-            Alert(title: Text("Lienzo"), message: Text(self.alertMessage), dismissButton: .default(Text("OK")))
-        }
+        
+        
     }
     
     

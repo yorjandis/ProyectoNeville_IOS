@@ -15,6 +15,13 @@ struct AbrirDiarioIntent: AppIntent {
     static let  openAppWhenRun: Bool = true
     
     func perform() async throws -> some IntentResult {
+        
+        let hasPremium = await PremiumService.shared.hasPremiumAccess()
+        
+        guard hasPremium else {
+            throw PremiumError.noSubscription
+        }
+        
         UserDefaults.standard.set("abrirDiario", forKey: "AtajosiOS")
         return .result()
     }

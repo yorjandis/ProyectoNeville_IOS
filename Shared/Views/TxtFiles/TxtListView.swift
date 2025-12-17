@@ -54,7 +54,7 @@ struct TxtListView: View {
         GridItem(.flexible(), spacing: 16),
         GridItem(.flexible(), spacing: 16)
     ]
-    
+
     
     var body: some View {
         
@@ -97,26 +97,6 @@ struct TxtListView: View {
 #if os(macOS)
                 //Listado de las últimas 5 conferencias Vistas
                 VStack{
-                    
-                    if ( self.typeOfContent == .conf && !self.modeloTxt.lastFiveConferences.isEmpty){
-                        //Para Ocultar o mostrar
-                        HStack{
-                            Text("Últimas Conferencias vistas")
-                            Image(systemName: "mount.fill")
-                                .foregroundStyle(.orange)
-                        }
-                        .padding(3)
-                        .background{
-                            Color.black
-                        }
-                        .cornerRadius(20)
-                        .onTapGesture {
-                            withAnimation{
-                                self.lastConferencesViewer.toggle()
-                            }
-                            
-                        }
-                        
                         if self.lastConferencesViewer{
                             VStack(spacing: 0){
                                 Group{
@@ -190,7 +170,7 @@ struct TxtListView: View {
                             .frame(height: 150)
                         }
                     }
-                }
+                
                 
                 ScrollView {
                     
@@ -255,28 +235,10 @@ struct TxtListView: View {
                 // iOS / iPadOS conservan tu List original
                 VStack{
                     //Listado de las últimas 5 conferencias Vistas
-                    if ( self.typeOfContent == .conf && !self.modeloTxt.lastFiveConferences.isEmpty){
-                        //Para Ocultar o mostrar
-                        HStack{
-                            Text("Últimas Conferencias vistas")
-                            Image(systemName: "mount.fill")
-                                .foregroundStyle(.orange)
-                        }
-                        .padding()
-                        .background{
-                            Color.black
-                        }
-                        .cornerRadius(20)
-                        .onTapGesture {
-                            withAnimation{
-                                self.lastConferencesViewer.toggle()
-                            }
-                            
-                        }
-                        
                         if self.lastConferencesViewer{
                             VStack(spacing: 0){
                                 Group{
+                                    Text("Últimas lecturas visitadas:").font(.headline)
                                         List(self.modeloTxt.lastFiveConferences, id: \.self){ nombreTxt in
                                             VStack(alignment: .leading) {
                                                 HStack {
@@ -312,7 +274,7 @@ struct TxtListView: View {
                                                 }
                                                 
                                                 NavigationLink {
-                                                    EditNoteTxt(entidad: nombreTxt, typeOfContent: self.typeOfContent)
+                                                    EditNoteTxt(nameTxt: nombreTxt, typeOfContent: self.typeOfContent)
                                                 } label: {
                                                     Image(systemName: "bookmark")
                                                         .tint(Color.green)
@@ -320,17 +282,15 @@ struct TxtListView: View {
                                             }
                                            
                                         }
-                                       .frame(height: CGFloat(self.modeloTxt.lastFiveConferences.count) * 73)
+                                        .frame(height: CGFloat(self.modeloTxt.lastFiveConferences.count) * 73)
                                 }
                                 
                             }
                         }
-                    }
-                    
-                    
                     
                     //Listado de Conferencias
                     List(modeloTxt.textList, id: \.self) { nombreTxt in
+                        
                         VStack(alignment: .leading) {
                             HStack {
                                 Image(systemName: "leaf.fill")
@@ -376,13 +336,14 @@ struct TxtListView: View {
                             }
                             
                             NavigationLink {
-                                EditNoteTxt(entidad: nombreTxt, typeOfContent: self.typeOfContent)
+                                EditNoteTxt(nameTxt: nombreTxt, typeOfContent: self.typeOfContent)
                             } label: {
                                 Image(systemName: "bookmark")
                                     .tint(Color.green)
                             }
                         }
                     }
+                    
                 }
                 
                 
@@ -396,6 +357,27 @@ struct TxtListView: View {
             .navigationBarTitleDisplayMode(.inline)
 #endif
             .toolbar{
+                if self.typeOfContent == .conf{
+                    ToolbarItem{
+                        Button{
+                            if (!self.modeloTxt.lastFiveConferences.isEmpty){
+                                withAnimation {
+                                    self.lastConferencesViewer.toggle()
+                                }
+                               
+                            }
+                        }label:{
+                            Image(systemName: "mount.fill")
+                        }
+                        .help("Ver las últimas conferencias")
+                    }
+                    
+                    
+                    if #available(iOS 26.0, macOS 26.0, *){
+                        ToolbarSpacer(.fixed)
+                    }
+                }
+                
                 
                 ToolbarItem{
                     Menu{
@@ -459,89 +441,13 @@ struct TxtListView: View {
         }
         
     }
+    
+    
+    
+    
+    
 }
 
 
-//Permite ver y editar el campo nota
-struct EditNoteTxt:View {
-    @Environment(\.dismiss) var dismiss
-    
-    @StateObject var modeloTxt : TxtContentModel = TxtContentModel.shared
-    @State var entidad : String
-    @State var typeOfContent : TipoDeContenido
-    @FocusState  private var focus: Bool
-    
-    @State private var textfiel = ""
-    @Environment(\.managedObjectContext) private var context
-    
-    
-    var body: some View {
-        NavigationStack{
-            ZStack{
-                LinearGradient(colors: [.black.opacity(0.7), .brown], startPoint: .top, endPoint: .bottom)
-                    .ignoresSafeArea()
-                VStack(){
-                    TextField("Coloque su nota aqui", text: $textfiel, axis: .vertical)
-                        .multilineTextAlignment(.leading)
-                        .font(.title)
-                        .foregroundStyle(.white).italic().bold()
-                        .focused(self.$focus)
-                        .onAppear {
-                            textfiel = modeloTxt.getNotaOfTXT(nombreTxt: self.entidad, type: typeOfContent )
-                            self.focus = true
-                        }
-                        .padding()
-                    
-                    Spacer()
-                }
-            }
-            .navigationTitle("Notas")
-#if os(iOS)
-            .navigationBarTitleDisplayMode(.inline)
-#endif
-            .toolbar{
-#if os(macOS)
-                if ventanaActualEsModal(){
-                    ToolbarItem(placement: .navigation) {
-                        Button{
-                            if let window = NSApp.keyWindow {
-                                closeWindow(window)
-                            }
-                        }label:{
-                            Label("Cerrar", systemImage: "xmark.circle.fill")
-                                .foregroundStyle(.red)
-                        }
-                        .help("Cerrar")
-                    }
-                }
-                
-#endif
-                
-                ToolbarItem {
-                    Button{
-                        if modeloTxt.setNotaOfTXT(nombreTxt: entidad, type: self.typeOfContent, nota: textfiel){
-                            modeloTxt.getAllFileTxtOfType(type: self.typeOfContent)
-                        }
-#if os(macOS)
-                        if let window = NSApp.keyWindow {
-                            closeWindow(window)
-                        }else{
-                            dismiss()
-                        }
-#else
-                        dismiss()
-#endif
-                        
-                        
-                    }label: {
-                        Text("Guardar")
-                            .foregroundStyle(.blue).bold()
-                    }
-                }
-                
-            }
-        }
-    }
-}
 
 

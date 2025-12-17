@@ -17,6 +17,14 @@ struct GetRandomConfIntent: AppIntent {
     
     
     func perform() async throws -> some IntentResult {
+        
+        let hasPremium = await PremiumService.shared.hasPremiumAccess()
+        
+        guard hasPremium else {
+            throw PremiumError.noSubscription
+        }
+        
+        
         UserDefaults.standard.set("abrirRamdonConf", forKey: "AtajosiOS")
         return .result()
     }

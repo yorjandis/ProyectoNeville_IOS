@@ -16,7 +16,7 @@ struct ChatView: View {
     @State private var  notasModel : NotasModel = NotasModel()
     
     @StateObject private var clipBoarModel : ClipboardObserver = ClipboardObserver() //Para observar cambios en el portapapales
-    
+    @StateObject private var purchaseModel : PurchaseManager = .shared //Para las funciones Premium
     
     @AppStorage(AppCons.UD_setting_fontChatIASize)  var fontSizeChatIA : Int = 20
     
@@ -48,19 +48,21 @@ struct ChatView: View {
     
     var body: some View {
         
-        
-        if self.DescargoDeIA == false {
-            ZStack{
-                LinearGradient(colors: [self.ColorChatIAPrimario,  self.ColorChatIASecundario], startPoint: .topLeading, endPoint: .bottomTrailing)
-                .ignoresSafeArea()
-                DescargoResponsabilidadIA(VentanaEnSetting: false)
+        if self.purchaseModel.isPremium {
+            if self.DescargoDeIA == false {
+                ZStack{
+                    LinearGradient(colors: [self.ColorChatIAPrimario,  self.ColorChatIASecundario], startPoint: .topLeading, endPoint: .bottomTrailing)
+                    .ignoresSafeArea()
+                    DescargoResponsabilidadIA(VentanaEnSetting: false)
+                }
+                
+            }else{
+                
+                ContentMain()
             }
-            
         }else{
-            
-            ContentMain()
+            PurchaseView()
         }
-
     }
     
     

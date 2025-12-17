@@ -108,6 +108,12 @@ struct ContentTxtShowView: View {
         // Convertir a hexadecimal
         return String(format: "#%02lX%02lX%02lX", lroundf(Float(red * 255)), lroundf(Float(green * 255)), lroundf(Float(blue * 255)))
     }
+    
+    
+    //Muestra/oculta la sección de Notas:
+    @State private var showNotesSection: Bool = false
+    
+    
 
     var body: some View {
         NavigationStack {
@@ -117,21 +123,21 @@ struct ContentTxtShowView: View {
                     Divider()
                     .padding(0)
                 }
+                
+                //Mostrar la sección de Notas del contenido:
+                if self.showNotesSection {
+                    VStack{
+                        EditNoteTxt(nameTxt: self.nombreTxt, typeOfContent: self.type )
+                            .cornerRadius(20)
+                    }
+                    .frame(height: 200)
+                }
+                
                 ScrollView(showsIndicators: true){
                     VStack{
-                        #if os(macOS)
-                        Text(self.getContent)
-                            .font(.system(size: CGFloat(self.fontSizeContent)) )
-                            .foregroundStyle(self.textContentdColor)
-                            .textSelection(.enabled)
-                            .padding(.horizontal, 5)
-                            
-                        #else
-                        SelectableText(self.getContent, fontSize: CGFloat(self.fontSizeContenido), fonColor: UIColor(self.textContentdColor) , alignment: .left)
-                            .padding(.horizontal, 5)
-                        #endif
-                        
-                            
+                        //Esta Vista es multiplataforma (iOS/macOS) y esta en un fichero independiente
+                        SelectableTextShareView(getContent: self.getContent, fontSizeContenido: CGFloat(self.fontSizeContenido), textContentdColor: UIColor(self.textContentdColor))
+
                     }
                     .background(self.backgroundColor)
                     .cornerRadius(12)
@@ -151,9 +157,7 @@ struct ContentTxtShowView: View {
                     
                 }
              
-                #if os(macOS)
-                
-                #else
+                #if os(iOS)
                 //Coloca un boton Atras en la parte inferior
                 if(self.showColor == false && self.showSlider == false){
                     HStack{
@@ -167,8 +171,6 @@ struct ContentTxtShowView: View {
                     }
                     .padding(5)
                 }
-                
-
                 #endif
                 
                 
@@ -352,12 +354,16 @@ struct ContentTxtShowView: View {
                     ToolbarItem {
                         #if os(macOS)
                         Button{
-                            showWindow(for: EditNoteTxt(entidad: nombreTxt, typeOfContent: self.type),
-                                       environmentObjects: [self.modeloTxt],
-                                       title: "Editar nota de Conferencia: \(self.nombreTxt)",
-                                       size: AppCons.windows_size_content_small,
-                                       isModal: true
-                            )
+                            self.showNotesSection.toggle() //Muestra la sección de las notas
+                            /*
+                             showWindow(for: EditNoteTxt(nameTxt: nombreTxt, typeOfContent: self.type),
+                                        environmentObjects: [self.modeloTxt],
+                                        title: "Editar nota de Conferencia: \(self.nombreTxt)",
+                                        size: AppCons.windows_size_content_small,
+                                        isModal: true
+                             )
+                             */
+                            
                             
                         }label: {
                             Label("Nota Asociada", systemImage: self.modeloTxt.isNotaOfTxt(nombreTxt: self.nombreTxt, type: self.type) ? "bookmark.fill" : "bookmark")
@@ -366,8 +372,9 @@ struct ContentTxtShowView: View {
                         }
                         .help("Nota Asociada")
                         #else
-                        NavigationLink{
-                            EditNoteTxt(entidad: nombreTxt, typeOfContent: self.type)
+                        Button{
+                            self.showNotesSection.toggle()
+                           // EditNoteTxt(entidad: nombreTxt, typeOfContent: self.type)
                         }label: {
                             
                             Label("Nota Asociada", systemImage: self.modeloTxt.isNotaOfTxt(nombreTxt: self.nombreTxt, type: self.type) ? "bookmark.fill" : "bookmark")
@@ -532,7 +539,7 @@ struct ContentTxtShowView: View {
                         
                         #if os(macOS)
                         Button{
-                            showWindow(for: EditNoteTxt(entidad: nombreTxt, typeOfContent: self.type),
+                            showWindow(for: EditNoteTxt(nameTxt: nombreTxt, typeOfContent: self.type),
                                        environmentObjects: [self.modeloTxt],
                                        title: "Editar Nota de \(self.type.rawValue)",
                                        size: AppCons.windows_size_content_small,
@@ -545,7 +552,7 @@ struct ContentTxtShowView: View {
                         }
                         #else
                         NavigationLink{
-                            EditNoteTxt(entidad: nombreTxt, typeOfContent: self.type)
+                            EditNoteTxt(nameTxt: nombreTxt, typeOfContent: self.type)
                         }label:{
                             Image(systemName:  self.modeloTxt.isNotaOfTxt(nombreTxt: nombreTxt, type: self.type) ? "bookmark.fill" : "bookmark")
                                 .foregroundStyle(self.modeloTxt.isNotaOfTxt(nombreTxt: nombreTxt, type: self.type) ? Color.green :  Color.gray)

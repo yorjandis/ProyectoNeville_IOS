@@ -26,6 +26,14 @@ struct CrearEntradaDiarioIntent : AppIntent, ProvidesDialog{
     var contenido : String
 
     func perform() async throws -> some IntentResult & ReturnsValue<String> & ProvidesDialog{
+        //Validar estado de premium
+        let hasPremium = await PremiumService.shared.hasPremiumAccess()
+        
+        guard hasPremium else {
+            throw PremiumError.noSubscription
+        }
+        
+        
             //Validar la palabra clave
         if let pass = await KeychainHelper.shared.getPassword(){
             if pass.lowercased() == password.lowercased(){

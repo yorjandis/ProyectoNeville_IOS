@@ -15,6 +15,7 @@ struct RespondView: View {
     @StateObject private var model : IAModelAppleIntelligence = IAModelAppleIntelligence()
     @State private var notasModel : NotasModel = NotasModel()
     @StateObject private var clipBoarModel : ClipboardObserver = ClipboardObserver() //Para observar cambios en el portapapales
+    @StateObject private var purchaseModel : PurchaseManager = .shared //Para las funciones Premium
     
     @State private var isloading : Bool = false //Indica que se esta procesando una solicitud
     @State private var bounce = false //Para animar la imagend de IA en el centro de la pantalla
@@ -65,53 +66,62 @@ struct RespondView: View {
     @State private var showSheetTtextoCopiadoAlPortapapelesParaLienzo       : TextoCopiadoAlPortapapeles? = nil
     
     
+    
+    
     var body: some View {
         ZStack{
             LinearGradient(colors: [self.ColorChatIAPrimario,  self.ColorChatIASecundario], startPoint: .topLeading, endPoint: .bottomTrailing)
                 .ignoresSafeArea(edges: .bottom)
             
-            if self.DescargoDeIA{
-                ScrollView {
+            if self.purchaseModel.isPremium == true{
+                if self.DescargoDeIA{
+                    ScrollView {
+                        
+                        switch self.tipoSalida {
+                        case .puntosClaves:
+                            VistaPuntosClaves()
+                        case .resumen:
+                            VistaDeResumenGeneral()
+                        case .practicas:
+                            VistaPracticas()
+                        case .practicaConcreta:
+                            VistaPracticaConcreta()
+                        case .interpretar:
+                            VistaInterpretacion()
+                        }
+                    }
+                    .redacted(reason: self.isloading ? .placeholder : []) //Mostrar un skeleton mientras se carga el contenido
+                    //Sobrepone una vista de procesamiento
+                        if self.isloading{
+                            VistaDeProcesamiento().padding()
+                        }
                     
-                    switch self.tipoSalida {
-                    case .puntosClaves:
-                        VistaPuntosClaves()
-                    case .resumen:
-                        VistaDeResumenGeneral()
-                    case .practicas:
-                        VistaPracticas()
-                    case .practicaConcreta:
-                        VistaPracticaConcreta()
-                    case .interpretar:
-                        VistaInterpretacion()
-                    }
+                }else{
+                    DescargoResponsabilidadIA(VentanaEnSetting: false)
                 }
-                .redacted(reason: self.isloading ? .placeholder : []) //Mostrar un skeleton mientras se carga el contenido
-                //Sobrepone una vista de procesamiento
-                    if self.isloading{
-                        VistaDeProcesamiento().padding()
-                    }
-                
             }else{
-                DescargoResponsabilidadIA(VentanaEnSetting: false)
+                PurchaseView()
             }
+            
+            
   
         }
         .onAppear{
-            Task { @MainActor in
-                withAnimation {
-                    self.isloading = true
+            if self.purchaseModel.isPremium == true{
+                Task { @MainActor in
+                    withAnimation {
+                        self.isloading = true
+                    }
+                    
+                   generarTexto()
+                    
+                    withAnimation {
+                        self.isloading = false
+                    }
+                    
                 }
-                
-               generarTexto()
-                
-                withAnimation {
-                    self.isloading = false
-                }
-                
             }
         }
-        
         .toolbar{
             if (!self.isloading && self.DescargoDeIA) {
                 #if os(macOS)

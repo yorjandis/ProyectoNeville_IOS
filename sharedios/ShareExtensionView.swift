@@ -11,68 +11,121 @@ struct ShareExtensionView: View {
     
     let keyNotaShareText    = "notaShareText"
     let keyFraseShareText   = "fraseShareText"
+    @State private var hasPremium : Bool = false
+    
     
     
     var body: some View {
         NavigationStack {
             
             ZStack{
-                
                 LinearGradient(colors: [.orange, .green], startPoint: .top, endPoint: .bottom)
                     .ignoresSafeArea()
                 
-                
-                VStack{
-                    //Logo & Título
+                if self.hasPremium{
                     VStack{
-                        Image("logo") // Reemplaza con el nombre de tu imagen en Assets
-                                       .resizable()
-                                       .aspectRatio(contentMode: .fill)
-                                       .frame(width: 60, height: 60) // Tamaño del círculo
-                                       .clipShape(Circle()) // Hace la imagen circular
-                                       .overlay(
-                                           Circle().stroke(Color.black, lineWidth: 4) // Borde opcional
-                                       )
-                                       .shadow(radius: 5) // Sombra opcional
-                        Text("La Ley")
-                            .font(.title).bold()
-                            .foregroundStyle(.black)
-                    }
-
-                    //Si se trata de una imagen
-                    if let img = image {
-                        
+                        //Logo & Título
                         VStack{
-                            //Manejo de Texto
-                            Image(uiImage: img)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(maxHeight: 200)
+                            Image("logo") // Reemplaza con el nombre de tu imagen en Assets
+                                           .resizable()
+                                           .aspectRatio(contentMode: .fill)
+                                           .frame(width: 60, height: 60) // Tamaño del círculo
+                                           .clipShape(Circle()) // Hace la imagen circular
+                                           .overlay(
+                                               Circle().stroke(Color.black, lineWidth: 4) // Borde opcional
+                                           )
+                                           .shadow(radius: 5) // Sombra opcional
+                            Text("La Ley")
+                                .font(.title).bold()
+                                .foregroundStyle(.black)
+                        }
+
+                        //Si se trata de una imagen
+                        if let img = image {
                             
-                            if let textoQR = detectQRCode(from: img){
-                                GeometryReader { geometry in
-                                            ScrollView {
-                                                SelectableText(textoQR)
-                                                    .font(.title2)
-                                                    .foregroundStyle(.black)
-                                                    .padding(.vertical, 8)
-                                                    .padding(.horizontal, 14)
-                                                    .frame(maxWidth: .infinity, minHeight: geometry.size.height * 0.5) // Altura dependiente del 40% de la pantalla
-                                                    .background(
-                                                        RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                                            .fill(Color.blue.opacity(0.3))
-                                                    )
-                                                    .onAppear {
-                                                        self.textqr = textoQR // Almacenando el texto del código QR
-                                                    }
+                            VStack{
+                                //Manejo de Texto
+                                Image(uiImage: img)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(maxHeight: 200)
+                                
+                                if let textoQR = detectQRCode(from: img){
+                                    GeometryReader { geometry in
+                                                ScrollView {
+                                                    SelectableText(textoQR)
+                                                        .font(.title2)
+                                                        .foregroundStyle(.black)
+                                                        .padding(.vertical, 8)
+                                                        .padding(.horizontal, 14)
+                                                        .frame(maxWidth: .infinity, minHeight: geometry.size.height * 0.5) // Altura dependiente del 40% de la pantalla
+                                                        .background(
+                                                            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                                                .fill(Color.blue.opacity(0.3))
+                                                        )
+                                                        .onAppear {
+                                                            self.textqr = textoQR // Almacenando el texto del código QR
+                                                        }
+                                                }
+                                                .frame(width: geometry.size.width) // Ocupa todo el ancho de la pantalla
+                                    }
+                                    
+                                    Spacer()
+                                    
+                                    //Panel de opciones
+                                    VStack(spacing: 20){
+                                        
+                                        Button("OCR sobre la Imagen"){
+                                            Task{
+                                                do{
+                                                    let texto = try await ocrAccurate(from: img)
+                                                    self.textqr = texto
+                                                }catch{
+                                                    print("La imagen no parece contener texto legible")
+                                                }
                                             }
-                                            .frame(width: geometry.size.width) // Ocupa todo el ancho de la pantalla
-                                }
-                                
-                                Spacer()
-                                
-                                //Panel de opciones
-                                VStack(spacing: 20){
+                                        }
+                                        .buttonStyle(.borderedProminent)
+                                        
+                                        Button("Guardar Texto en Notas") {
+                                            
+                                            // 2. Guardar el QR en UserDefaults del App Group
+                                            if let defaults = UserDefaults(suiteName: "group.com.ypg.nev.group") {
+                                                defaults.set(textoQR, forKey: self.keyNotaShareText)
+                                            }
+                                            
+                                        }
+                                        .buttonStyle(.borderedProminent)
+                                        
+                                        Button("Guardar Texto en Frases") {
+                                            
+                                            // 2. Guardar el QR en UserDefaults del App Group
+                                            if let defaults = UserDefaults(suiteName: "group.com.ypg.nev.group") {
+                                                defaults.set(textoQR, forKey: self.keyFraseShareText)
+                                            }
+                                            
+                                        }
+                                        .buttonStyle(.borderedProminent)
+                                    }
+                                    
+                                    
+                                }else{
+                                    //Si la imagen no tiene código QR:
+                                    GeometryReader { geometry in
+                                                ScrollView {
+                                                    SelectableText(textqr)
+                                                        .font(.title2)
+                                                        .foregroundStyle(.black)
+                                                        .padding(.vertical, 8)
+                                                        .padding(.horizontal, 14)
+                                                        .frame(maxWidth: .infinity, minHeight: geometry.size.height * 0.5) // Altura dependiente del 40% de la pantalla
+                                                        .background(
+                                                            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                                                .fill(Color.blue.opacity(0.3))
+                                                        )
+                                                }
+                                                .frame(width: geometry.size.width) // Ocupa todo el ancho de la pantalla
+                                    }
                                     
                                     Button("OCR sobre la Imagen"){
                                         Task{
@@ -86,11 +139,39 @@ struct ShareExtensionView: View {
                                     }
                                     .buttonStyle(.borderedProminent)
                                     
+                                    Spacer()
+                                }
+                            }
+                            
+                        } else if !texto.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty{
+                            //manejo del texto. Permite editarlo antes de procesarlo
+                            
+                            VStack{
+                                GeometryReader { geometry in
+                                            ScrollView {
+                                                Text(texto)
+                                                    .font(.title2)
+                                                    .foregroundStyle(.black)
+                                                    .padding(.vertical, 8)
+                                                    .padding(.horizontal, 14)
+                                                    .frame(maxWidth: .infinity, minHeight: geometry.size.height * 0.5) // Altura dependiente del 50% de la pantalla
+                                                    .background(
+                                                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                                            .fill(Color.blue.opacity(0.3))
+                                                    )
+                                                    
+                                            }
+                                            .frame(width: geometry.size.width) // Ocupa todo el ancho de la pantalla
+                                }
+                                
+                                Spacer()
+                                
+                                VStack(spacing: 20){
                                     Button("Guardar Texto en Notas") {
                                         
                                         // 2. Guardar el QR en UserDefaults del App Group
                                         if let defaults = UserDefaults(suiteName: "group.com.ypg.nev.group") {
-                                            defaults.set(textoQR, forKey: self.keyNotaShareText)
+                                            defaults.set(texto, forKey: self.keyNotaShareText)
                                         }
                                         
                                     }
@@ -100,7 +181,7 @@ struct ShareExtensionView: View {
                                         
                                         // 2. Guardar el QR en UserDefaults del App Group
                                         if let defaults = UserDefaults(suiteName: "group.com.ypg.nev.group") {
-                                            defaults.set(textoQR, forKey: self.keyFraseShareText)
+                                            defaults.set(texto, forKey: self.keyFraseShareText)
                                         }
                                         
                                     }
@@ -108,117 +189,43 @@ struct ShareExtensionView: View {
                                 }
                                 
                                 
-                            }else{
-                                //Si la imagen no tiene código QR:
-                                GeometryReader { geometry in
-                                            ScrollView {
-                                                SelectableText(textqr)
-                                                    .font(.title2)
-                                                    .foregroundStyle(.black)
-                                                    .padding(.vertical, 8)
-                                                    .padding(.horizontal, 14)
-                                                    .frame(maxWidth: .infinity, minHeight: geometry.size.height * 0.5) // Altura dependiente del 40% de la pantalla
-                                                    .background(
-                                                        RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                                            .fill(Color.blue.opacity(0.3))
-                                                    )
-                                            }
-                                            .frame(width: geometry.size.width) // Ocupa todo el ancho de la pantalla
-                                }
-                                
-                                Button("OCR sobre la Imagen"){
-                                    Task{
-                                        do{
-                                            let texto = try await ocrAccurate(from: img)
-                                            self.textqr = texto
-                                        }catch{
-                                            print("La imagen no parece contener texto legible")
-                                        }
-                                    }
-                                }
-                                .buttonStyle(.borderedProminent)
-                                
-                                Spacer()
                             }
+                            
+                        }else{
+                            
+                            Text("No se ha detectado contenido que pueda ser utilizado")
+                                .font(.title2)
+                                .foregroundStyle(.orange)
                         }
                         
-                    } else if !texto.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty{
-                        //manejo del texto. Permite editarlo antes de procesarlo
-                        
-                        VStack{
-                            GeometryReader { geometry in
-                                        ScrollView {
-                                            Text(texto)
-                                                .font(.title2)
-                                                .foregroundStyle(.black)
-                                                .padding(.vertical, 8)
-                                                .padding(.horizontal, 14)
-                                                .frame(maxWidth: .infinity, minHeight: geometry.size.height * 0.5) // Altura dependiente del 50% de la pantalla
-                                                .background(
-                                                    RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                                        .fill(Color.blue.opacity(0.3))
-                                                )
-                                                
-                                        }
-                                        .frame(width: geometry.size.width) // Ocupa todo el ancho de la pantalla
-                            }
-                            
-                            Spacer()
-                            
-                            VStack(spacing: 20){
-                                Button("Guardar Texto en Notas") {
-                                    
-                                    // 2. Guardar el QR en UserDefaults del App Group
-                                    if let defaults = UserDefaults(suiteName: "group.com.ypg.nev.group") {
-                                        defaults.set(texto, forKey: self.keyNotaShareText)
-                                    }
-                                    
-                                }
-                                .buttonStyle(.borderedProminent)
-                                
-                                Button("Guardar Texto en Frases") {
-                                    
-                                    // 2. Guardar el QR en UserDefaults del App Group
-                                    if let defaults = UserDefaults(suiteName: "group.com.ypg.nev.group") {
-                                        defaults.set(texto, forKey: self.keyFraseShareText)
-                                    }
-                                    
-                                }
-                                .buttonStyle(.borderedProminent)
-                            }
-                            
-                            
-                        }
-                        
-                    }else{
-                        
-                        Text("No se ha detectado contenido que pueda ser utilizado")
-                            .font(.title2)
-                            .foregroundStyle(.orange)
-                    }
-                    
-                    Spacer()
-                    
-                    
-                    HStack{
                         Spacer()
-                        Button{
-                            close()
-                        }label:{
-                           Text("Salir")
-                                .foregroundStyle(.black)
+                        
+                        
+                        HStack{
+                            Spacer()
+                            Button{
+                                close()
+                            }label:{
+                               Text("Salir")
+                                    .foregroundStyle(.black)
+                            }
+                            .buttonStyle(.bordered)
+                            
                         }
-                        .buttonStyle(.bordered)
+                        .frame(maxWidth: .infinity)
+                        
                         
                     }
-                    .frame(maxWidth: .infinity)
-                    
-                    
+                    .padding()
+                }else{
+                    PurchaseView()
                 }
-                .padding()
+                
             }
-            //.navigationTitle("La Ley")
-            //.toolbar { Button("Salir") { close() }}
+            .task{
+                self.hasPremium = await PremiumService.shared.hasPremiumAccess()
+            }
+            
         }
     }
     

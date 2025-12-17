@@ -21,8 +21,14 @@ struct CrearFraseIntentMac : AppIntent, ProvidesDialog{
 
 
     func perform() async throws -> some IntentResult & ReturnsValue<String> & ProvidesDialog{
+        
+        let hasPremium = await PremiumService.shared.hasPremiumAccess()
+        
+        guard hasPremium else {
+            throw PremiumError.noSubscription
+        }
+        
         // Guarda la nota:
-
         if await FrasesModel.shared.AddFrase(frase: frase){
             return .result(
                 value: frase,
