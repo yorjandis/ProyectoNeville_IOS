@@ -12,6 +12,8 @@ struct PurchaseView: View {
     
     @StateObject private var purchaseModel : PurchaseManager = .shared
     
+    var mostrarLogo : Bool = true
+    
     var body: some View {
         VStack{
             ZStack{
@@ -42,14 +44,15 @@ struct PurchaseView: View {
                 
                 VStack{
                    
-                    Image("Logo")
-                        .resizable()
-                        .frame(width: 60, height: 60)
-                        .clipShape(Circle())
-                        .overlay(Circle().stroke(Color.black, lineWidth: 3))
-                        .shadow(color: .purple, radius: 3)
-                    
-                   
+                    if self.mostrarLogo{
+                        Image("Logo")
+                            .resizable()
+                            .frame(width: 60, height: 60)
+                            .clipShape(Circle())
+                            .overlay(Circle().stroke(Color.black, lineWidth: 3))
+                            .shadow(color: .purple, radius: 3)
+                    }
+
                     Text("🎉 La Ley Premium ✨")
                         .bold()
                         .font(.title)
@@ -125,7 +128,7 @@ struct PurchaseView: View {
                         Text("Eres premium 🎉")
                             .bold()
                             .font(.system(size: 20))
-                            .foregroundStyle(.orange)
+                            .foregroundStyle(.black)
                             .padding()
                     }
 
@@ -153,14 +156,9 @@ struct PurchaseView: View {
                             .bold()
                             .foregroundStyle(.white)
                     }
-                    
-                    
                    
                 }
                 .padding()
-                
-            
-                
             }
         }
         

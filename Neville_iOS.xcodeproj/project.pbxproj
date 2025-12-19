@@ -32,6 +32,7 @@
 		19F804262B69CBA000A323A0 /* La Ley Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 19F804192B69CB9D00A323A0 /* La Ley Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		915017432EF078A2007B741A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 915017422EF078A2007B741A /* StoreKit.framework */; };
 		915017452EF078B2007B741A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 915017442EF078B2007B741A /* StoreKit.framework */; };
+		918C4B0B2EF4094D00974B54 /* La Ley.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 918C4AFF2EF4094D00974B54 /* La Ley.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		91E107712EEA01AD00F4DB1D /* sharedios.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 91E107672EEA01AD00F4DB1D /* sharedios.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		91F0DD552D605B5800307453 /* watchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F0DD542D605B4B00307453 /* watchModel.swift */; };
 		E95B93572AAFBB2600B5E2B5 /* Neville_iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95B93562AAFBB2600B5E2B5 /* Neville_iOSApp.swift */; };
@@ -60,6 +61,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 19F804182B69CB9D00A323A0;
 			remoteInfo = "La Ley Watch App";
+		};
+		918C4B092EF4094D00974B54 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E95B934B2AAFBB2600B5E2B5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 918C4AFE2EF4094D00974B54;
+			remoteInfo = sharedmac;
 		};
 		91E1076F2EEA01AD00F4DB1D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -111,6 +119,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
+				918C4B0B2EF4094D00974B54 /* La Ley.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -149,6 +158,7 @@
 		915017422EF078A2007B741A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		915017442EF078B2007B741A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/System/Library/Frameworks/StoreKit.framework; sourceTree = DEVELOPER_DIR; };
 		917C301F2EBCD1E5006BB36E /* La Ley_mac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "La Ley_mac.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		918C4AFF2EF4094D00974B54 /* La Ley.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "La Ley.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		91E1074C2EE9FC8D00F4DB1D /* UniformTypeIdentifiers.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UniformTypeIdentifiers.framework; path = System/Library/Frameworks/UniformTypeIdentifiers.framework; sourceTree = SDKROOT; };
 		91E107672EEA01AD00F4DB1D /* sharedios.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = sharedios.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		91F0DD4E2D60384700307453 /* WatchComplicationLaLeyExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WatchComplicationLaLeyExtension.entitlements; sourceTree = "<group>"; };
@@ -874,6 +884,22 @@
 			);
 			target = 91E107662EEA01AD00F4DB1D /* sharedios */;
 		};
+		918C4B0F2EF4094D00974B54 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 918C4AFE2EF4094D00974B54 /* sharedmac */;
+		};
+		918C4B242EF40F2400974B54 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Models/PurchaseModel/PremiunService.swift,
+				Models/PurchaseModel/PurchaseManager.swift,
+				Views/PurchaseView/PurchaseView.swift,
+			);
+			target = 918C4AFE2EF4094D00974B54 /* sharedmac */;
+		};
 		91E107752EEA01AD00F4DB1D /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -885,11 +911,12 @@
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		9113E29C2EE9E1D2002AC306 /* Model */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Model; sourceTree = "<group>"; };
-		911FE4452ECB2A7F009F83BE /* Shared */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (911FE4562ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 911FE4572ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 911FE4582ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 918C4AF72EF3593F00974B54 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (Models/PurchaseModel/StoreKitFile.storekit, ); path = Shared; sourceTree = "<group>"; };
+		911FE4452ECB2A7F009F83BE /* Shared */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (911FE4562ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 911FE4572ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 911FE4582ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 918C4AF72EF3593F00974B54 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 918C4B242EF40F2400974B54 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (Models/PurchaseModel/StoreKitFile.storekit, ); path = Shared; sourceTree = "<group>"; };
 		911FE4D42ECB2E8D009F83BE /* OptionView */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (911FEB632ECB3B7F009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = OptionView; sourceTree = "<group>"; };
 		911FF1FA2ECB4064009F83BE /* Preview Content */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (911FF1FC2ECB4064009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 911FF1FD2ECB4064009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = "Preview Content"; sourceTree = "<group>"; };
 		914415A92EDC377200FFC61D /* Atajos */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (914415B12EDC39E300FFC61D /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Atajos; sourceTree = "<group>"; };
 		917C30202EBCD1E5006BB36E /* La Ley_mac */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "La Ley_mac"; sourceTree = "<group>"; };
+		918C4B002EF4094D00974B54 /* sharedmac */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (918C4B0F2EF4094D00974B54 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = sharedmac; sourceTree = "<group>"; };
 		91E107682EEA01AD00F4DB1D /* sharedios */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (91E107752EEA01AD00F4DB1D /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = sharedios; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
@@ -924,6 +951,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				915017452EF078B2007B741A /* StoreKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		918C4AFC2EF4094D00974B54 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1042,6 +1076,7 @@
 				19EDBBC62B7DD66000432CDE /* WatchComplicationLaLey */,
 				91E107682EEA01AD00F4DB1D /* sharedios */,
 				917C30202EBCD1E5006BB36E /* La Ley_mac */,
+				918C4B002EF4094D00974B54 /* sharedmac */,
 				19E0BDEB2B0B412D00E149A5 /* Frameworks */,
 				E95B93542AAFBB2600B5E2B5 /* Products */,
 			);
@@ -1056,6 +1091,7 @@
 				19EDBBC32B7DD66000432CDE /* WatchComplicationLaLeyExtension.appex */,
 				917C301F2EBCD1E5006BB36E /* La Ley_mac.app */,
 				91E107672EEA01AD00F4DB1D /* sharedios.appex */,
+				918C4AFF2EF4094D00974B54 /* La Ley.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1145,6 +1181,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				918C4B0A2EF4094D00974B54 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				911FE4452ECB2A7F009F83BE /* Shared */,
@@ -1158,6 +1195,28 @@
 			productName = "La Ley";
 			productReference = 917C301F2EBCD1E5006BB36E /* La Ley_mac.app */;
 			productType = "com.apple.product-type.application";
+		};
+		918C4AFE2EF4094D00974B54 /* sharedmac */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 918C4B0C2EF4094D00974B54 /* Build configuration list for PBXNativeTarget "sharedmac" */;
+			buildPhases = (
+				918C4AFB2EF4094D00974B54 /* Sources */,
+				918C4AFC2EF4094D00974B54 /* Frameworks */,
+				918C4AFD2EF4094D00974B54 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				918C4B002EF4094D00974B54 /* sharedmac */,
+			);
+			name = sharedmac;
+			packageProductDependencies = (
+			);
+			productName = sharedmac;
+			productReference = 918C4AFF2EF4094D00974B54 /* La Ley.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 		91E107662EEA01AD00F4DB1D /* sharedios */ = {
 			isa = PBXNativeTarget;
@@ -1216,7 +1275,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 2610;
+				LastSwiftUpdateCheck = 2620;
 				LastUpgradeCheck = 2610;
 				TargetAttributes = {
 					19E0BE132B0C661A00E149A5 = {
@@ -1230,6 +1289,9 @@
 					};
 					917C301E2EBCD1E5006BB36E = {
 						CreatedOnToolsVersion = 26.1;
+					};
+					918C4AFE2EF4094D00974B54 = {
+						CreatedOnToolsVersion = 26.2;
 					};
 					91E107662EEA01AD00F4DB1D = {
 						CreatedOnToolsVersion = 26.1.1;
@@ -1260,6 +1322,7 @@
 				19EDBBC22B7DD66000432CDE /* WatchComplicationLaLeyExtension */,
 				917C301E2EBCD1E5006BB36E /* La Ley_mac */,
 				91E107662EEA01AD00F4DB1D /* sharedios */,
+				918C4AFE2EF4094D00974B54 /* sharedmac */,
 			);
 		};
 /* End PBXProject section */
@@ -1291,6 +1354,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		917C301D2EBCD1E5006BB36E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		918C4AFD2EF4094D00974B54 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1354,6 +1424,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		918C4AFB2EF4094D00974B54 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		91E107632EEA01AD00F4DB1D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1389,6 +1466,11 @@
 			isa = PBXTargetDependency;
 			target = 19F804182B69CB9D00A323A0 /* La Ley Watch App */;
 			targetProxy = 19F804242B69CBA000A323A0 /* PBXContainerItemProxy */;
+		};
+		918C4B0A2EF4094D00974B54 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 918C4AFE2EF4094D00974B54 /* sharedmac */;
+			targetProxy = 918C4B092EF4094D00974B54 /* PBXContainerItemProxy */;
 		};
 		91E107702EEA01AD00F4DB1D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1698,6 +1780,76 @@
 			};
 			name = Release;
 		};
+		918C4B0D2EF4094D00974B54 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = sharedmac/sharedmac.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 41;
+				DEVELOPMENT_TEAM = NDP3AP6896;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = sharedmac/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "La Ley";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 26.2;
+				MARKETING_VERSION = 1.3.6;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.sharedmac;
+				PRODUCT_NAME = "La Ley";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		918C4B0E2EF4094D00974B54 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = sharedmac/sharedmac.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 41;
+				DEVELOPMENT_TEAM = NDP3AP6896;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = sharedmac/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "La Ley";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 26.2;
+				MARKETING_VERSION = 1.3.6;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.sharedmac;
+				PRODUCT_NAME = "La Ley";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 		91E107732EEA01AD00F4DB1D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -2002,6 +2154,15 @@
 			buildConfigurations = (
 				917C30272EBCD1E7006BB36E /* Debug */,
 				917C30282EBCD1E7006BB36E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		918C4B0C2EF4094D00974B54 /* Build configuration list for PBXNativeTarget "sharedmac" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				918C4B0D2EF4094D00974B54 /* Debug */,
+				918C4B0E2EF4094D00974B54 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

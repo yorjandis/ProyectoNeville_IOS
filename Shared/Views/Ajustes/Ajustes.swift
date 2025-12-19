@@ -657,14 +657,17 @@ struct Ajustes: View {
                                     .font(.headline)
                             }
                             
-                            NavigationLink{
-                                PurchaseView()
-                            }label: {
-                                Label("Obtener funciones Premium", systemImage: "sparkles")
-                                    .foregroundStyle(.orange)
-                                    .bold()
-                                    .font(.headline)
+                            if !self.purchasePremium.isPremium{
+                                NavigationLink{
+                                    PurchaseView()
+                                }label: {
+                                    Label("Obtener funciones Premium", systemImage: "sparkles")
+                                        .foregroundStyle(.orange)
+                                        .bold()
+                                        .font(.headline)
+                                }
                             }
+                            
                             
                             
                         }
@@ -1078,14 +1081,17 @@ struct Ajustes: View {
                                 .font(.headline)
                         }
                         
-                        NavigationLink{
-                            PurchaseView()
-                        }label: {
-                            Label("Obtener funciones Premium", systemImage: "sparkles")
-                                .foregroundStyle(.orange)
-                                .bold()
-                                .font(.headline)
+                        if !self.purchasePremium.isPremium {
+                            NavigationLink{
+                                PurchaseView()
+                            }label: {
+                                Label("Obtener funciones Premium", systemImage: "sparkles")
+                                    .foregroundStyle(.orange)
+                                    .bold()
+                                    .font(.headline)
+                            }
                         }
+                        
                         
                     }
                     

@@ -1,11 +1,19 @@
+//
+//  ShareExtensionView.swift
+//  Neville_iOS
+//
+//  Created by Yorjandis PG on 18/12/25.
+//
+
 import SwiftUI
 import Vision
-import UIKit
+import AppKit
+import CoreImage
 
 struct ShareExtensionView: View {
     
     var  texto: String = ""
-    var image: UIImage? = nil
+    var image: NSImage? = nil
     
     @State private var textqr: String = ""
     
@@ -13,6 +21,8 @@ struct ShareExtensionView: View {
     let keyFraseShareText   = "fraseShareText"
     @State private var hasPremium : Bool = false
     
+    @State private var showAlert: Bool = false
+    @State private var alertMessage: String = ""
     
     
     var body: some View {
@@ -45,7 +55,7 @@ struct ShareExtensionView: View {
                             
                             VStack{
                                 //Manejo de Texto
-                                Image(uiImage: img)
+                                Image(nsImage: img)
                                     .resizable()
                                     .scaledToFit()
                                     .frame(maxHeight: 200)
@@ -53,7 +63,8 @@ struct ShareExtensionView: View {
                                 if let textoQR = detectQRCode(from: img){
                                     GeometryReader { geometry in
                                                 ScrollView {
-                                                    SelectableText(textoQR)
+                                                    Text(textoQR)
+                                                        .textSelection(.enabled)
                                                         .font(.title2)
                                                         .foregroundStyle(.black)
                                                         .padding(.vertical, 8)
@@ -92,6 +103,8 @@ struct ShareExtensionView: View {
                                             // 2. Guardar el QR en UserDefaults del App Group
                                             if let defaults = UserDefaults(suiteName: "group.com.ypg.nev.group") {
                                                 defaults.set(textoQR, forKey: self.keyNotaShareText)
+                                                self.alertMessage = "Texto guardado en Notas"
+                                                self.showAlert = true
                                             }
                                             
                                         }
@@ -113,7 +126,8 @@ struct ShareExtensionView: View {
                                     //Si la imagen no tiene código QR:
                                     GeometryReader { geometry in
                                                 ScrollView {
-                                                    SelectableText(textqr)
+                                                    Text(textqr)
+                                                        .textSelection(.enabled)
                                                         .font(.title2)
                                                         .foregroundStyle(.black)
                                                         .padding(.vertical, 8)
@@ -218,7 +232,15 @@ struct ShareExtensionView: View {
                     }
                     .padding()
                 }else{
-                    PurchaseView(mostrarLogo: false)
+                    VStack{
+                        PurchaseView(mostrarLogo: false)
+                        Button("Cerrar"){
+                            close()
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .tint(.blue)
+                    }
+                    
                 }
                 
             }
@@ -227,6 +249,10 @@ struct ShareExtensionView: View {
             }
             
         }
+        .alert(isPresented: self.$showAlert){
+            Alert(title: Text("La Ley"), message: Text(self.alertMessage))
+        }
+        
     }
     
     
@@ -237,17 +263,36 @@ struct ShareExtensionView: View {
     
     
     
-    //Detecta y devuelve el Texto del QR contenido en una imagen. nil si no existe QR detectable
-    func detectQRCode(from image: UIImage) -> String? {
-        guard let ciImage = CIImage(image: image) else { return nil }
+    /// Detecta y devuelve el texto del QR contenido en una imagen.
+    /// Devuelve nil si no existe un QR detectable.
+    func detectQRCode(from image: NSImage) -> String? {
+        
+        // Convertimos NSImage a CGImage
+        guard let cgImage = image.cgImage(forProposedRect: nil,
+                                          context: nil,
+                                          hints: nil) else {
+            return nil
+        }
+        
+        // Convertimos CGImage a CIImage
+        let ciImage = CIImage(cgImage: cgImage)
+        
         let context = CIContext()
         let options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
-        let qrDetector = CIDetector(ofType: CIDetectorTypeQRCode, context: context, options: options)
         
-        let features = qrDetector?.features(in: ciImage) ?? []
+        guard let qrDetector = CIDetector(
+            ofType: CIDetectorTypeQRCode,
+            context: context,
+            options: options
+        ) else {
+            return nil
+        }
+        
+        let features = qrDetector.features(in: ciImage)
         
         for feature in features {
-            if let qrFeature = feature as? CIQRCodeFeature, let message = qrFeature.messageString {
+            if let qrFeature = feature as? CIQRCodeFeature,
+               let message = qrFeature.messageString {
                 return message
             }
         }
@@ -255,9 +300,22 @@ struct ShareExtensionView: View {
         return nil
     }
 
-    //Funcion OCR
-    func ocrAccurate(from image: UIImage,languages: [String] = ["es-ES", "en-US"]) async throws -> String {
-        guard let cg = image.cgImage else { return "" }
+    /// Función OCR precisa.
+    /// Devuelve el texto reconocido en la imagen.
+    /// - Parameters:
+    ///   - image: NSImage de entrada
+    ///   - languages: Idiomas de reconocimiento (por defecto español e inglés)
+    func ocrAccurate(
+        from image: NSImage,
+        languages: [String] = ["es-ES", "en-US"]
+    ) async throws -> String {
+
+        // Convertimos NSImage a CGImage
+        guard let cgImage = image.cgImage(forProposedRect: nil,
+                                          context: nil,
+                                          hints: nil) else {
+            return ""
+        }
 
         return try await withCheckedThrowingContinuation { cont in
             let request = VNRecognizeTextRequest { req, err in
@@ -265,9 +323,13 @@ struct ShareExtensionView: View {
                     cont.resume(throwing: err)
                     return
                 }
-                let obs = req.results as? [VNRecognizedTextObservation] ?? []
-                let text = obs.compactMap { $0.topCandidates(1).first?.string }
-                               .joined(separator: "\n")
+
+                let observations = req.results as? [VNRecognizedTextObservation] ?? []
+
+                let text = observations
+                    .compactMap { $0.topCandidates(1).first?.string }
+                    .joined(separator: "\n")
+
                 cont.resume(returning: text)
             }
 
@@ -275,9 +337,12 @@ struct ShareExtensionView: View {
             request.usesLanguageCorrection = true
             request.recognitionLanguages = languages
 
-            let handler = VNImageRequestHandler(cgImage: cg, orientation: .up)
+            let handler = VNImageRequestHandler(
+                cgImage: cgImage,
+                orientation: .up
+            )
 
-            // Ejecutamos directo, sin capturar handler en un closure @Sendable
+            // Ejecutamos fuera del closure para evitar problemas de concurrencia
             Task {
                 do {
                     try handler.perform([request])

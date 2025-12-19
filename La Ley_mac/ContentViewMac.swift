@@ -44,7 +44,7 @@ struct ContentViewMac: View {
     @EnvironmentObject var modelFrases : FrasesModel
     @EnvironmentObject var modelTxt : TxtContentModel
     @EnvironmentObject var securityModel : SecurityModel //Provee de reactividad al acceso a áreas protegidas: Diario, y notas Protegidas
-    
+    @StateObject private var purchasePremium : PurchaseManager = .shared
     
     
     @Environment(\.colorScheme) var theme
@@ -309,7 +309,7 @@ struct ContentViewMac: View {
                 Button{
                     self.categoriaSelected = ItemSidebar(text: .premium, icono: "circle.dotted")
                 }label:{
-                    SidebarCard(iconName: "circle.dotted", title: "Premium")
+                    SidebarCard(iconName: "circle.dotted", title: "Premium\(self.purchasePremium.isPremium ? "(activo)" : "")")
                         .tag(ItemSidebar(text: .premium, icono: "circle.dotted"))
                 }
                 .buttonStyle(.plain)
