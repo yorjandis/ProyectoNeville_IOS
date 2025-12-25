@@ -118,6 +118,7 @@ struct PurchaseView: View {
                                 
                             }label: {
                                 Text("Adquirir Premium")
+                                    .foregroundStyle(.black)
                                     .font(.title2)
                                     .bold()
                             }
@@ -156,6 +157,18 @@ struct PurchaseView: View {
                             .bold()
                             .foregroundStyle(.white)
                     }
+                    
+                    #if os(macOS)
+                    if !ventanaActualEsModalPropia() {
+                        Button("Cerrar"){
+                            if let windows = NSApp.keyWindow{
+                                closeWindowPropia(windows)
+                            }
+                        }
+                        .buttonStyle(.borderedProminent)
+                    }
+                    
+                    #endif
                    
                 }
                 .padding()
@@ -167,6 +180,26 @@ struct PurchaseView: View {
     
 }
 
+#if os(macOS)
+fileprivate func ventanaActualEsModalPropia() -> Bool {
+    guard let window = NSApp.keyWindow else {
+        return false
+    }
+    
+    return window.isSheet || window.isModalPanel
+}
+
+fileprivate func closeWindowPropia(_ window: NSWindow) {
+    if let parent = window.sheetParent {
+        // Es un sheet modal
+        parent.endSheet(window)
+    } else {
+        // Es una ventana normal
+        window.close()
+    }
+}
+
+#endif
 
 
 #Preview {

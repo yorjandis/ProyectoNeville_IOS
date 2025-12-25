@@ -22,8 +22,11 @@ struct Neville_iOSApp: App {
     @StateObject private var securityModel          = SecurityModel.shared //Almacena variables observables para
     @StateObject private var reflexModel            = ReflexModel.shared //Modelo Observable para Reflexiones
     @StateObject private var clipBoardModel         = ClipboardObserver() //Observa cambios en el portapapales
-    @StateObject private var shareModel             =  ShareModel()//Para manejar la extensión de compartir imagen/texto
+    @StateObject private var shareModel             = ShareModel()//Para manejar la extensión de compartir imagen/texto
+    @StateObject private var purchaseModel          = PurchaseManager.shared //Para manejar Las comptras en aplicación
     
+    
+    let notificationDelegate = ReminderNotificationDelegate() //Delegado para manejar las notificaciones de los recordatorios
 
   private let persistentStore : CoreDataController =  CoreDataController.shared
     
@@ -36,17 +39,20 @@ struct Neville_iOSApp: App {
     }
     @State var itemAtajo : ItemAtajo? = nil //Representa un item de Atajo (conveniente para usar un solo sheet)
     @AppStorage("AtajosiOS" ) var AtajosiOS: String = ""
+    
+    //Almacena el estado de compra en la App: suscripción premium anual: 12.99
+    @AppStorage("purchaseStatus" ) var purchaseStatus: Bool = false
 
     
-    /*
+    
      init(){
-         //Solo para macOS: esto resetea los valores de UserDefault en cada lanzamiento de la app, pero solo dentro del entorno de desarrollo.
-         #if DEBUG
-         UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
-         UserDefaults.standard.synchronize()
-         #endif
+         //Inicializar las notificaciones
+         ReminderNotificationManager.shared.requestPermission()
+         ReminderNotificationManager.shared.configureCategories()
+         
+         UNUserNotificationCenter.current().delegate = notificationDelegate
      }
-     */
+     
    
     //Claves de los ficheros
     let keyNotaShareText    = "notaShareText"
@@ -67,7 +73,8 @@ struct Neville_iOSApp: App {
                     .applyTheme(self.setting_theme) //Aplicando el theme según los valores en Ajustes
                     .task {
                         modelTxt.getAllFileTxtOfType(type: .conf)   // Carga el listado de conferencias
-                        modelFrases.getAllFrases() 
+                        modelFrases.getAllFrases()
+                       // self.purchaseStatus = purchaseModel.isPremium
                     }
                     //Funciones de Atajo:
                     .onChange(of: self.AtajosiOS) { _ , newValue in

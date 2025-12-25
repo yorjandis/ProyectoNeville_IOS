@@ -18,7 +18,9 @@ struct Ajustes: View {
     @EnvironmentObject private var modelFrases : FrasesModel
     @EnvironmentObject private var settingModel : SettingModel
     @EnvironmentObject private var securityModel : SecurityModel
-    @StateObject private var purchasePremium : PurchaseManager = .shared //Para las funciones Premium
+    //Funciones compras en la Aplicación
+    @AppStorage("purchaseStatus" ) var purchaseStatus: Bool = false
+    @State private var showSheetPremiumView: Bool = false
     
     private let context2 = CoreDataController.shared.context
     
@@ -326,7 +328,7 @@ struct Ajustes: View {
                             Text("Protección de Notas").font(.system(size: 22)).foregroundStyle(.orange)
                             
                             if self.securityModel.canOpenNotas {
-                                if self.purchasePremium.isPremium{
+                                if self.purchaseStatus{
                                     Toggle("Proteger las Notas con FaceID", isOn: $setting_NotasFaceID)
                                 }else{
                                     Button("Se requiere Premium"){
@@ -334,7 +336,7 @@ struct Ajustes: View {
                                                    environmentObjects: [],
                                         title: "Habilitar Premium",
                                                    size: .percentage(width: 0.50, height: 0.50),
-                                        isModal: false)
+                                        isModal: true)
                                     }
                                 }
                                 
@@ -657,7 +659,7 @@ struct Ajustes: View {
                                     .font(.headline)
                             }
                             
-                            if !self.purchasePremium.isPremium{
+                            if !self.purchaseStatus{
                                 NavigationLink{
                                     PurchaseView()
                                 }label: {
@@ -769,7 +771,7 @@ struct Ajustes: View {
                                 Text("Muestra:").font(.footnote)
                                 Spacer()
                                 Text("")
-                                    .frame(width: 200 ,  height: 60)
+                                    .frame(width: 200 ,  height: 120)
                                     .background(LinearGradient(colors: [ColorPrimario, ColorSecundario], startPoint: .top, endPoint: .bottom))
                                     .clipShape(RoundedRectangle(cornerRadius: 20))
                             }
@@ -862,7 +864,16 @@ struct Ajustes: View {
                     
                     Section("Proteger Acceso a Notas"){
                         if self.securityModel.canOpenNotas {
-                            Toggle("Proteger las Notas con FaceID", isOn: $setting_NotasFaceID)
+                            if self.purchaseStatus {
+                                Toggle("Proteger las Notas con FaceID", isOn: $setting_NotasFaceID)
+                            }else{
+                                Text("Acceso Premium")
+                                    .foregroundStyle(.orange).bold()
+                                    .onTapGesture {
+                                        self.showSheetPremiumView = true
+                                    }
+                            }
+                            
                         }else{
                             
                             //Chequeando si existe soporte biométrico:
@@ -1081,7 +1092,7 @@ struct Ajustes: View {
                                 .font(.headline)
                         }
                         
-                        if !self.purchasePremium.isPremium {
+                        if !self.purchaseStatus {
                             NavigationLink{
                                 PurchaseView()
                             }label: {
@@ -1132,6 +1143,10 @@ struct Ajustes: View {
                 EmptyView()
             }
         }
+        .sheet(isPresented: self.$showSheetPremiumView) {
+            PurchaseView()
+        }
+
         
     }
     

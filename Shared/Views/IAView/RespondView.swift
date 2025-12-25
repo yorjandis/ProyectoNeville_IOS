@@ -15,7 +15,8 @@ struct RespondView: View {
     @StateObject private var model : IAModelAppleIntelligence = IAModelAppleIntelligence()
     @State private var notasModel : NotasModel = NotasModel()
     @StateObject private var clipBoarModel : ClipboardObserver = ClipboardObserver() //Para observar cambios en el portapapales
-    @StateObject private var purchaseModel : PurchaseManager = .shared //Para las funciones Premium
+    
+    @AppStorage("purchaseStatus" ) var purchaseStatus: Bool = false
     
     @State private var isloading : Bool = false //Indica que se esta procesando una solicitud
     @State private var bounce = false //Para animar la imagend de IA en el centro de la pantalla
@@ -73,7 +74,7 @@ struct RespondView: View {
             LinearGradient(colors: [self.ColorChatIAPrimario,  self.ColorChatIASecundario], startPoint: .topLeading, endPoint: .bottomTrailing)
                 .ignoresSafeArea(edges: .bottom)
             
-            if self.purchaseModel.isPremium == true{
+            if self.purchaseStatus{
                 if self.DescargoDeIA{
                     ScrollView {
                         
@@ -107,7 +108,7 @@ struct RespondView: View {
   
         }
         .onAppear{
-            if self.purchaseModel.isPremium == true{
+            if self.purchaseStatus{
                 Task { @MainActor in
                     withAnimation {
                         self.isloading = true

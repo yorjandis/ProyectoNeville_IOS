@@ -44,8 +44,8 @@ struct ContentViewMac: View {
     @EnvironmentObject var modelFrases : FrasesModel
     @EnvironmentObject var modelTxt : TxtContentModel
     @EnvironmentObject var securityModel : SecurityModel //Provee de reactividad al acceso a áreas protegidas: Diario, y notas Protegidas
-    @StateObject private var purchasePremium : PurchaseManager = .shared
-    
+   // @StateObject private var purchasePremium : PurchaseManager = .shared
+    @AppStorage("purchaseStatus" ) var purchaseStatus: Bool = false
     
     @Environment(\.colorScheme) var theme
     
@@ -90,8 +90,7 @@ struct ContentViewMac: View {
     
     
    
-    
-    
+  
     
     
     var body: some View {
@@ -114,7 +113,7 @@ struct ContentViewMac: View {
         }
         .frame(minWidth: 1200, minHeight: 850)
         .onAppear {
-            
+            //Lanzar la lista de novedades al inicio
             switch NovedadesModel.LanzarVentanaNovedades(){
             case "primeraVez":
                 //Actualiza las variables iniciales del Lienzo:
@@ -124,7 +123,7 @@ struct ContentViewMac: View {
                 
                 //Muestra la ventana de Resultados
                 showWindow(for: Novedades(),
-                environmentObjects: [],
+                           environmentObjects: [],
                            title: "Novedades",
                            size: AppCons.windows_size_content_small,
                            isModal: false
@@ -133,7 +132,7 @@ struct ContentViewMac: View {
             case "actualizacion":
                 //Muestra la ventana de resultados
                 showWindow(for: Novedades(),
-                environmentObjects: [],
+                           environmentObjects: [],
                            title: "Novedades",
                            size: AppCons.windows_size_content_small,
                            isModal: false
@@ -142,7 +141,12 @@ struct ContentViewMac: View {
             default:
                 print("No hacer nada mac")
             }
+            
+            
+            
+            
         }
+        
     }
     
     //Construyendo los items del Sidebar
@@ -309,7 +313,7 @@ struct ContentViewMac: View {
                 Button{
                     self.categoriaSelected = ItemSidebar(text: .premium, icono: "circle.dotted")
                 }label:{
-                    SidebarCard(iconName: "circle.dotted", title: "Premium\(self.purchasePremium.isPremium ? "(activo)" : "")")
+                    SidebarCard(iconName: "circle.dotted", title: "Premium\(self.purchaseStatus ? "(activo)" : "")")
                         .tag(ItemSidebar(text: .premium, icono: "circle.dotted"))
                 }
                 .buttonStyle(.plain)

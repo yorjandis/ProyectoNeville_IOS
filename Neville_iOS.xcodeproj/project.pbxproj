@@ -197,6 +197,16 @@
 				Models/QRCode/QRModel.swift,
 				Models/QRCode/QRReader.swift,
 				Models/ReflexModel/ReflexModel.swift,
+				Models/RemindersModel/EnumReminderFrecuency.swift,
+				Models/RemindersModel/NotificationNames.swift,
+				Models/RemindersModel/ReminderNotiricationManager.swift,
+				Models/RemindersModel/RemindersDelegate.swift,
+				Models/RemindersModel/ReminderStoreModel.swift,
+				Models/RemindersModel/SolicitarPermisos.swift,
+				Models/RemindersModel/StoreReminderData.swift,
+				Models/RemindersModel/Views/ReminderEditorView.swift,
+				Models/RemindersModel/Views/ReminderListView.swift,
+				Models/RemindersModel/Views/VerticalSliderHoursMinutes.swift,
 				Models/SecurityModel/SecurityModel.swift,
 				Models/TextContentModel/TxtContentModel.swift,
 				Models/Utils/Utils.swift,
@@ -1276,7 +1286,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 2620;
-				LastUpgradeCheck = 2610;
+				LastUpgradeCheck = 2620;
 				TargetAttributes = {
 					19E0BE132B0C661A00E149A5 = {
 						CreatedOnToolsVersion = 15.0.1;
@@ -1787,6 +1797,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 41;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1822,6 +1833,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 41;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;

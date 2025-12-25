@@ -19,6 +19,12 @@ struct Home: View {
 
     //Lanzar Ventana de novedades:
     @State private var showNovedades: Bool = false
+    
+    
+    //Pruebas
+    @State private var showCrearRecordatorio: Bool = false
+    @State private var showListaRecordatorios: Bool = false
+
 
     var body: some View {
         NavigationStack{
@@ -33,16 +39,24 @@ struct Home: View {
                     //Muestra el logo de la App dentro de un rectángulo áureo
                     GoldenLogoNeville()
                     
-                    NavigationLink("Prueba Purchase"){
-                       PurchaseView()
-                    }
-                    
                     //Muestra un texto para felicitar a neville por su cumpleños(19 Frebrero)
                     MostrarCumpleaños()
                     
                     //Muestra si estamos en modo debug. Solo aparecerá en la fase de desarrollo
                    //MostrarModoDebug()
                     
+                    Button("Crear Recordatorio"){
+                        ReminderNotificationManager.shared.requestPermission()
+                        ReminderNotificationManager.shared.scheduleAndStore(title: "Yorjandis", message: "Esto es un ejemplo", frequency: .interval(hours: 0, minutes: 1))
+                    }
+                    
+                    Button("Lista de Recordatorios"){
+                        self.showListaRecordatorios = true
+                    }
+                    .sheet(isPresented: self.$showListaRecordatorios) {
+                        ReminderListView()
+                    }
+
                     
                     //Muestra el texto para indicar nueva actualización
                     ViewIfNewUpdateAvailable()
@@ -86,7 +100,6 @@ struct Home: View {
         .sheet(isPresented: self.$showNovedades) {
             Novedades()
         }
-
         
     }
     

@@ -16,8 +16,9 @@ import AppKit
 
 struct GenerateQRView : View {
     
-    @StateObject private var purchasePremium : PurchaseManager = .shared
-
+    //@StateObject private var purchasePremium : PurchaseManager = .shared
+    @AppStorage("purchaseStatus" ) var purchaseStatus: Bool = false
+    
     @State var  footer : String = ""
     
     @State  var title : String = "Toque el texto para modificarlo"
@@ -175,7 +176,7 @@ struct GenerateQRView : View {
                     if self.showImportButtonNotas{
                         HStack{
                             Button("Importar a Notas"){
-                                if self.purchasePremium.isPremium {
+                                if self.purchaseStatus{
                                     Task{
                                         self.imagen = getImageQR() //Recrea la imagen QR a partir del texto actual. Esto es para el caso de que se modifique el texto antes de importar.
                                         validarFormatoImportacion()
@@ -208,7 +209,7 @@ struct GenerateQRView : View {
                     if self.showImportButtonFrase{
                         HStack{
                             Button("Importar a Frases"){
-                                if self.purchasePremium.isPremium{
+                                if self.purchaseStatus{
                                     Task{
                                         self.imagen = getImageQR() //Recrea la imagen QR a partir del texto actual. Esto es para el caso de que se modifique el texto antes de importar.
                                         validarFormatoImportacion()
@@ -369,6 +370,7 @@ struct GenerateQRView : View {
                 #endif
 
                 
+                //Compartir imagen & Aplicar formatos de importación de Frases/Notas
                 ToolbarItem{
                     Menu{
                         
@@ -408,7 +410,7 @@ struct GenerateQRView : View {
                             
                             
                             Button{
-                                self.footer =  QRModel.aplicarFormatoImportacion(texto: self.footer, tipo: "nota")
+                                self.footer =  QRModel.aplicarFormatoImportacion(texto: self.footer, tipo: .Notas)
                                 imagen = getImageQR()
                                 showImage = true
                                 focusState = false
@@ -418,7 +420,7 @@ struct GenerateQRView : View {
                             }
                             
                             Button{
-                                self.footer =   QRModel.aplicarFormatoImportacion(texto: self.footer, tipo: "frase")
+                                self.footer =   QRModel.aplicarFormatoImportacion(texto: self.footer, tipo: .Frases)
                                 imagen = getImageQR()
                                 showImage = true
                                 focusState = false

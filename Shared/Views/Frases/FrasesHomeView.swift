@@ -33,9 +33,28 @@ struct FrasesView : View{
         return frase
     }
     
+    //Pruebas
+    @State private var showListaRecordatorios : Bool = false
+    
     var body: some View{
 
             VStack{
+                
+                #if os(macOS)
+                Button("Crear Recordatorio"){
+                    ReminderNotificationManager.shared.requestPermission()
+                    ReminderNotificationManager.shared.scheduleAndStore(title: "Yorjandis", message: "Esto es un ejemplo", frequency: .interval(hours: 0, minutes: 1))
+                }
+                
+                Button("Lista de Recordatorios"){
+                    showWindow(for: ReminderListView(),
+                    environmentObjects: [],
+                    title: "Recordatorios",
+                               size: .absolute(CGSize(width: 650, height: 700)),
+                    isModal: false)
+                }
+                #endif
+                
                 Text(self.frase)
                     .font(.system(size: CGFloat(fontSizeFrases), design: .rounded))
                     .foregroundStyle(self.settingModel.colorfrase)

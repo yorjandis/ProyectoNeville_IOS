@@ -19,6 +19,10 @@ import AppKit
 #endif
 
 
+enum QRTipoItemImportacion{
+    case Notas, Frases
+}
+
 struct QRModel{
 
     #if os(iOS)
@@ -159,9 +163,8 @@ struct QRModel{
     
     
     //Detectar formato de importación de Notas:
-    //Ejempo de nota: nota>>título de la nota>>contenido de la nota>>No/Si
-    //Devuelve una tupla compuesta: la primera parte si es true es que se ha detectado un formato de importación de Notas Válido, la segunda parte es una tupla de tres valores:
-    //Primer valor: título de la nota, segundoValor: contenido de la nota, tercer valor: favorito que puede ser true o false
+    //Ejempo de nota (&&& representa caracteres ocultos): &&&título de la nota::contenido de la nota::No/Si
+    //Devuelve una tupla compuesta: la primera parte si es true es que se ha detectado un formato de importación de Notas Válido, la segunda parte es una tupla de tres valores: tituloNota, contenidoNota, isfav
     @MainActor static func detectFormatImportNota(text: String) -> (Bool, (String, String, Bool))? {
         
         
@@ -188,7 +191,9 @@ struct QRModel{
         return (true, (String(parts[0].dropFirst(3)), String(parts[1]), isFavorite))
     }
     
-    
+    //Detectar formato de importación de Frases:
+    //Ejempo de nota (&&& representa caracteres ocultos): &&&ContenidoFrase
+    //Devuelve una tupla compuesta: la primera parte si es true es que se ha detectado un formato de importación de Frase Válido, la segunda parte es el contenido de la frase
     @MainActor static func detectFormatImportFrase(text: String) -> (Bool, String)? {
         
         guard text.hasPrefix(AppCons.zspFrase) else {return nil}
@@ -198,13 +203,29 @@ struct QRModel{
     }
     
     
-    @MainActor static func aplicarFormatoImportacion(texto: String, tipo: String) -> String{
+    @MainActor static func aplicarFormatoImportacion(texto: String, tipo: QRTipoItemImportacion ) -> String{
         //Primero limpia el texto de los caracteres ocultos utilizados
-        let textoTemp = QRModel.removeHiddenChars(texto)
-        if tipo == "nota"{
-            return "\(AppCons.zspNota)\(textoTemp)"
-        }else if tipo == "frase"{
-            return "\(AppCons.zspFrase)\(textoTemp)"
+        
+        let textoTemp = QRModel.removeHiddenChars(texto) //Limpia el texto de caracteres ocultos
+        
+        if tipo == .Notas{
+            //Si ya tiene un formato de importación de notas se deja tal cual
+            if let _ = QRModel.detectFormatImportNota(text: texto){
+                return texto
+            }else{
+                return "\(AppCons.zspNota)TituloNota::\(textoTemp)::no"
+            }
+
+        }else if tipo == .Frases{
+            
+            //Si el formato actual es de notas, se elimina el título de la nota y el favState
+            if let NotaFormat = QRModel.detectFormatImportNota(text: texto){
+                return "\(AppCons.zspFrase)\(NotaFormat.1.1)"//Solo devuelve el contenido de la Nota
+            }else{
+                return "\(AppCons.zspFrase)\(textoTemp)"
+            }
+            
+            
         }else{
             return ""
         }
