@@ -28,6 +28,7 @@ struct Ajustes: View {
     @AppStorage(AppCons.UD_setting_fontContentSize)         var fontSizeContenido    : Int = 18
     @AppStorage(AppCons.UD_setting_fontMenuSize)            var fontSizeMenu         : Int = 18
     @AppStorage(AppCons.UD_setting_fontListaSize)           var fontSizeLista        : Int = 18
+    @AppStorage(AppCons.UD_setting_fontReminder)            var fontReminder         : Int = 18
     @AppStorage(AppCons.UD_setting_NotasFaceID)             var setting_NotasFaceID  : Bool = false
     
     @AppStorage(AppCons.UD_setting_fontChatIASize)          var fontSizeChatIA       : Int = 24 //Tamaño de letra del chat de IA
@@ -87,7 +88,9 @@ struct Ajustes: View {
         default: 0
         }
     }
-
+    
+    //Tonos:
+    @State private var selectedSound: NotificationSound = NotificationSound.selected
     
     var body: some View {
         
@@ -132,6 +135,16 @@ struct Ajustes: View {
                                 Stepper(String(fontSizeLista), value: $fontSizeLista)
                                 
                             }
+                            
+                            HStack{
+                                Text("Recordatorios:")
+                                    .font(.system(size:CGFloat(fontReminder)))
+                                Spacer()
+                                Stepper(String(fontReminder), value: $fontReminder)
+                                
+                            }
+                            
+                            
                             if #available(iOS 26.0, macOS 26.0, *){
                                 if IAModelAppleIntelligence.isAvailable(){
                                     HStack{
@@ -437,6 +450,35 @@ struct Ajustes: View {
                         .padding(.bottom, 20)
                         
                         
+                        //Recordatorios(Premium):
+                        VStack(alignment: .leading){
+                            
+                            Text("Recordatorios").font(.system(size: 22)).foregroundStyle(.orange)
+                            
+                            HStack{
+                                NotificationSoundPicker(selection: $selectedSound) //Selector de tonos
+                            }
+                            .padding()
+                            .onChange(of: selectedSound) { _, newValue in
+                                NotificationSound.selected = newValue
+                            }
+                            //Reproducir el sonido del tono
+                            HStack{
+                               
+                                Button {
+                                    NotificationSoundPreview.shared.play(selectedSound)
+                                } label: {
+                                    Label("Reproducir sonido", systemImage: "speaker.wave.2")
+                                }
+                                .disabled(selectedSound == .default)
+                                
+                                Spacer()
+                            }
+                            
+                        }
+                        .padding(.horizontal, 30)
+                        .padding(.bottom, 20)
+                        
                         
                         //Habilita una sección para recuperar la contraseña. Esta sección solo esta disponible en dispositivos con biometria y si ya previamente han almacenado una contraseña
                         if BiometryCheckerSupport.checkBiometricSupport() == .available {
@@ -718,6 +760,17 @@ struct Ajustes: View {
                             Stepper(String(fontSizeLista), value: $fontSizeLista)
                             
                         }
+                        
+                        HStack{
+                            Text("Recordatorios:")
+                                .font(.system(size:CGFloat(fontReminder)))
+                            Spacer()
+                            Stepper(String(fontReminder), value: $fontReminder)
+                            
+                        }
+                        
+                        
+                        
                         if #available(iOS 26.0, macOS 26.0, *){
                             if IAModelAppleIntelligence.isAvailable(){
                                 HStack{
@@ -781,6 +834,7 @@ struct Ajustes: View {
                         }
                     }
                     
+                    //Colores del Chat IA
                     if #available(iOS 26.0, macOS 26.0, *){
                         if IAModelAppleIntelligence.isAvailable(){
                             Section("Colores Chat IA"){
@@ -861,7 +915,7 @@ struct Ajustes: View {
                     }
                     
                     
-                    
+                    //Proteger acceso a las Notas (Premium)
                     Section("Proteger Acceso a Notas"){
                         if self.securityModel.canOpenNotas {
                             if self.purchaseStatus {
@@ -900,6 +954,7 @@ struct Ajustes: View {
                         
                     }
                     
+                    //Ventana del Diario siempre abierte, después del primer uso:
                     Section("Ventana Diario Siempre Abierta"){
                         VStack(alignment: .leading, spacing: 15){
                             if self.setting_DiarioAccesoAjustes {
@@ -934,8 +989,30 @@ struct Ajustes: View {
                         
                     }
                     
+                    //Recordatorios(Premium):
+                    Section("Recordatorios"){
+                        HStack{
+                            NotificationSoundPicker(selection: $selectedSound) //Selector de tonos
+                        }
+                        .padding()
+                        //Reproducir el sonido del tono
+                        HStack{
+                            Spacer()
+                            Button {
+                                NotificationSoundPreview.shared.play(selectedSound)
+                            } label: {
+                                Label("Reproducir sonido", systemImage: "speaker.wave.2")
+                            }
+                            .disabled(selectedSound == .default)
+                        }
+                        .onChange(of: selectedSound) { _, newValue in
+                            NotificationSound.selected = newValue
+                        }
+                        
+                    }
                     
-                    //Habilita una sección para recuperar la contraseña. Esta sección solo esta disponible en dispositivos con biometria y si ya previamente han almacenado una contraseña
+                    
+                    //Sección:  recuperar la contraseña. Esta sección solo esta disponible en dispositivos con biometria y si ya previamente han almacenado una contraseña
                     if BiometryCheckerSupport.checkBiometricSupport() == .available {
                         //Si existe una contraseña guardada; sino no, no se muestra el botón para recuperar contraseña
                         if KeychainHelper.shared.getPassword() != nil {

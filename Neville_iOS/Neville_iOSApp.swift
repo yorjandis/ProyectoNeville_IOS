@@ -26,9 +26,8 @@ struct Neville_iOSApp: App {
     @StateObject private var purchaseModel          = PurchaseManager.shared //Para manejar Las comptras en aplicación
     
     
-    let notificationDelegate = ReminderNotificationDelegate() //Delegado para manejar las notificaciones de los recordatorios
-
-  private let persistentStore : CoreDataController =  CoreDataController.shared
+    
+    private let persistentStore : CoreDataController =  CoreDataController.shared
     
     @AppStorage(AppCons.UD_setting_theme) var setting_theme  : Theme = .auto
     
@@ -43,14 +42,15 @@ struct Neville_iOSApp: App {
     //Almacena el estado de compra en la App: suscripción premium anual: 12.99
     @AppStorage("purchaseStatus" ) var purchaseStatus: Bool = false
 
-    
+    //Para mostrar el contenido del mensaje de la notificación
+    @StateObject private var messageCenter: NotificationMessageCenter = .shared
     
      init(){
          //Inicializar las notificaciones
          ReminderNotificationManager.shared.requestPermission()
          ReminderNotificationManager.shared.configureCategories()
-         
-         UNUserNotificationCenter.current().delegate = notificationDelegate
+        
+         UNUserNotificationCenter.current().delegate = AppNotificationDelegate.shared //Para mostrar los recordatorios cuando la app esta en primer plano
      }
      
    
@@ -60,60 +60,83 @@ struct Neville_iOSApp: App {
 
     var body: some Scene {
         WindowGroup {
-            NavigationStack{
-                ContentView()
-                    .environmentObject(settingModel)
-                    .environmentObject(networkMonitor)
-                    .environmentObject(modelTxt)
-                    .environmentObject(modelFrases)
-                    .environmentObject(securityModel) //Almacena variables observables para acceso seguro: Notas protegidas y Diario
-                    .environmentObject(reflexModel)
-                    .environmentObject(clipBoardModel)
-                    .environment(\.managedObjectContext, persistentStore.context)
-                    .applyTheme(self.setting_theme) //Aplicando el theme según los valores en Ajustes
-                    .task {
-                        modelTxt.getAllFileTxtOfType(type: .conf)   // Carga el listado de conferencias
-                        modelFrases.getAllFrases()
-                       // self.purchaseStatus = purchaseModel.isPremium
-                    }
-                    //Funciones de Atajo:
-                    .onChange(of: self.AtajosiOS) { _ , newValue in
-                        
-                        guard !newValue.isEmpty else { return }
-                        
-                        switch newValue {
-                            case "abrirDiario":
-                                itemAtajo = .abrirDiario
-                            case "abrirNotas":
-                                itemAtajo = .abrirNotas
-                            case "abrirRamdonConf":
-                                itemAtajo = .abrirRandomConf
-                            default:
-                                itemAtajo = nil
-                            }
-
-                        AtajosiOS = "" // limpiar después
-                           
-                    }
-                    .sheet(item: self.$itemAtajo) { item in
-                        switch  item{
-                        case .abrirDiario:
-                                DiarioListView()
-                                    .environmentObject(self.settingModel)
-                        case .abrirNotas:
-                                ListNotasViews()
-                                    .environmentObject(self.settingModel)
-                        case .abrirRandomConf:
-                                if let txtConf = self.modelTxt.getRandomConferencia(){
-                                    ContentTxtShowView(title: "Conferencia", nombreTxt: txtConf, type: .conf)
-                                        .environmentObject(self.modelTxt)
-                                        .environmentObject(self.clipBoardModel)
-                                        .environmentObject(self.settingModel)
-                                }else {
-                                    Text("No se ha podido obtener una conferencia. Pruebe de nuevo")
+                ZStack{
+                    
+                    NotificationBannerOverlay() //Banner de notificacioens para anunciar los recordatorios
+                    
+                    NavigationStack{
+                    ContentView()
+                        .environmentObject(settingModel)
+                        .environmentObject(networkMonitor)
+                        .environmentObject(modelTxt)
+                        .environmentObject(modelFrases)
+                        .environmentObject(securityModel) //Almacena variables observables para acceso seguro: Notas protegidas y Diario
+                        .environmentObject(reflexModel)
+                        .environmentObject(clipBoardModel)
+                        .environment(\.managedObjectContext, persistentStore.context)
+                        .applyTheme(self.setting_theme) //Aplicando el theme según los valores en Ajustes
+                        .task {
+                            modelTxt.getAllFileTxtOfType(type: .conf)   // Carga el listado de conferencias
+                            modelFrases.getAllFrases()
+                           // self.purchaseStatus = purchaseModel.isPremium
+                        }
+                        //Funciones de Atajo:
+                        .onChange(of: self.AtajosiOS) { _ , newValue in
+                            
+                            guard !newValue.isEmpty else { return }
+                            
+                            switch newValue {
+                                case "abrirDiario":
+                                    itemAtajo = .abrirDiario
+                                case "abrirNotas":
+                                    itemAtajo = .abrirNotas
+                                case "abrirRamdonConf":
+                                    itemAtajo = .abrirRandomConf
+                                default:
+                                    itemAtajo = nil
                                 }
+
+                            AtajosiOS = "" // limpiar después
+                               
+                        }
+                        .onChange(of: scenePhase) {old,  phase in
+                            //almacenar el mensaje de la notificación
+                            if phase == .active {
+                                messageCenter.loadPendingMessage()
                             }
-                    }
+                        }
+                        .sheet(item: self.$itemAtajo) { item in
+                            switch  item{
+                            case .abrirDiario:
+                                    DiarioListView()
+                                        .environmentObject(self.settingModel)
+                            case .abrirNotas:
+                                    ListNotasViews()
+                                        .environmentObject(self.settingModel)
+                            case .abrirRandomConf:
+                                    if let txtConf = self.modelTxt.getRandomConferencia(){
+                                        ContentTxtShowView(title: "Conferencia", nombreTxt: txtConf, type: .conf)
+                                            .environmentObject(self.modelTxt)
+                                            .environmentObject(self.clipBoardModel)
+                                            .environmentObject(self.settingModel)
+                                    }else {
+                                        Text("No se ha podido obtener una conferencia. Pruebe de nuevo")
+                                    }
+                                }
+                        }
+                        .sheet(isPresented: $messageCenter.showMessage) {
+                            //Mostrar el contenido de la notificación actual de los recordatorios
+                            VStack {
+                                Text(messageCenter.message ?? "")
+                                    .padding()
+                            }
+                            .presentationDetents([.medium])
+                        }
+                    
+                    
+                    
+                } //ZStack
+                
                     
                 
             }

@@ -25,6 +25,7 @@ struct optionView: View {
     @State private var showAyudas       = false
     @State private var showReflex       = false
     @State private var showSetting      = false
+    @State private var showReminder     = false
 
     private let sizeWigth : CGFloat = 150
     
@@ -122,6 +123,10 @@ struct optionView: View {
                     .presentationDetents([.large])
                     .presentationDragIndicator(.hidden)
             }
+            .sheet(isPresented: self.$showReminder) {
+                ReminderListView()
+            }
+            
         }
     }
     
@@ -236,19 +241,28 @@ struct optionView: View {
             HStack(spacing: 20){
                 
                 Button{
-                    //Mostrar el lector de QR
-                    showCodeScanner = true
+                    showReminder = true
                 }label: {
-                    bloqueA("qrcode.viewfinder", "Leer QR")
+                    bloqueA("timer", "Recordatorios")
                 }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: [settingModel.colorFondo_a, settingModel.colorFondo_b]))
                 
-                Button{
-                    showCodeGenerate = true
+                Menu{
+                    Button{
+                        //Mostrar el lector de QR
+                        showCodeScanner = true
+                    }label: {
+                        bloqueA("qrcode.viewfinder", "Leer QR")
+                    }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: [settingModel.colorFondo_a, settingModel.colorFondo_b]))
+                    
+                    Button{
+                        showCodeGenerate = true
+                    }label: {
+                        bloqueA("qrcode", "Crear QR")
+                    }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: [settingModel.colorFondo_a, settingModel.colorFondo_b]))
                 }label: {
-                    bloqueA("qrcode", "Crear QR")
-                }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: [settingModel.colorFondo_a, settingModel.colorFondo_b]))
-                
-                
+                    bloqueA("qrcode.viewfinder", "Funciones QR")
+                }
+                .modifier(GradientButtonStyle(ancho: sizeWigth, colors: [settingModel.colorFondo_a, settingModel.colorFondo_b]))
             }
             Spacer()
             Text ("Recursos")

@@ -10,6 +10,9 @@ import UserNotifications
 
 @main
 struct La_LeyApp: App {
+    
+    @Environment(\.dismiss) var dismiss
+    
     @StateObject private var settingModel = SettingModel()
     @StateObject private var frasesModel = FrasesModel.shared
     @StateObject private var txtcontentModel = TxtContentModel.shared
@@ -28,19 +31,20 @@ struct La_LeyApp: App {
     
     @AppStorage("purchaseStatus" ) var purchaseStatus: Bool = false
     
-//Manejo de las notificaciones de los recordatorios:
-    let notificationDelegate = ReminderNotificationDelegate() //Delegado para manejar las notificaciones de los recordatorios
+ 
     
-    //Mostrar una vista con el contenido de la notificación de recordaorio
-    @AppStorage("pendingReminderMessage") private var pendingReminderMessage: String?
+    @Environment(\.scenePhase) private var scenePhase
     
+    //Para mostrar el contenido del mensaje de la notificación
+    @StateObject private var messageCenter: NotificationMessageCenter = .shared
     
 
     init(){
         //Inicializar las notificaciones
         ReminderNotificationManager.shared.requestPermission()
         ReminderNotificationManager.shared.configureCategories()
-        UNUserNotificationCenter.current().delegate = notificationDelegate
+        
+        UNUserNotificationCenter.current().delegate = AppNotificationDelegate.shared //Para mostrar los recordatorios cuando la app esta en primer plano
         
         /*
         //Solo para macOS: esto resetea los valores de UserDefault en cada lanzamiento de la app, pero solo dentro del entorno de desarrollo.
@@ -54,6 +58,10 @@ struct La_LeyApp: App {
     
     var body: some Scene {
         WindowGroup {
+            ZStack{
+                
+                NotificationBannerOverlay() //Banner de notificacioens para anunciar los recordatorios
+                
                 ContentViewMac()
                     .environmentObject(settingModel)
                     .environmentObject(frasesModel)
@@ -62,7 +70,7 @@ struct La_LeyApp: App {
                     .environmentObject(clipBoardObserver) //Inyectamos la clase que observa cambios en el portapapeles
                     .environment(\.managedObjectContext, persistentStore.context)
                     .applyTheme(setting_theme) //Aplicando la configuración de theme segun los valores en Ajustes
-                    .onChange(of: self.AtajosMac, { _ , newValue in  
+                    .onChange(of: self.AtajosMac, { _ , newValue in
                         //Procesa los Intents creados: Atajos de App Atajos y Siri
                         switch newValue{
                         case "abrirDiario":
@@ -100,27 +108,33 @@ struct La_LeyApp: App {
                         //Cerrando todas las ventanas hijas abiertas antes de salir
                         WindowManager.shared.closeAllChildren()
                     }
-                    .onAppear{
-                        print("123")
-                        //manejar las notificaciones de recordatorios:
-                        if let pendingReminderMessage {
-                            print("456")
-                            showWindow(for:
-                                        VStack{Text(pendingReminderMessage).padding()
-                            }.padding(),
-                                       environmentObjects: [],
-                                       title: "Mensaje de Notificaciones",
-                                       size: AppCons.windows_size_content_small,
-                                       isModal: false) {
-                                Task{ @MainActor in
-                                    self.pendingReminderMessage = nil // limpiar
+                    .onChange(of: scenePhase) { old, phase in
+                        if phase == .active {
+                            //Permite mostrar el contenido de la notificación
+                            messageCenter.loadPendingMessage()
+                        
+                            if messageCenter.showMessage{
+                                showWindow(for:
+                                    VStack {
+                                    Text(messageCenter.message ?? "")
+                                        .padding()
+                                },
+                                environmentObjects: [],
+                                title: "Mensaje de notificación",
+                                           size: AppCons.windows_size_content_small,
+                                           isModal: false){
+                                    //Deshabilita que se muestre la notificación de nuevo
+                                    Task{@MainActor in
+                                     messageCenter.showMessageSet(state: false)
+                                    }
+                                    
                                 }
-                                
                             }
                             
                         }
-                       
                     }
+            }
+               
         }
     }
     

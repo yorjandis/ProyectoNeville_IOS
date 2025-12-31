@@ -89,13 +89,6 @@ struct FeedBackModel {
 
 
 
-
-
-
-
-
-
-
 #if os(iOS)
 //Devuelve la escena activa en runtime
 extension UIApplication {

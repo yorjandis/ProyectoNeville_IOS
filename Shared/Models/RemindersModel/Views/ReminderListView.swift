@@ -13,94 +13,130 @@ struct ReminderListView: View {
     @State private var reminders: [StoredReminder] = []
     @State private var editing: StoredReminder?
     @State private var creating = false
-
+    
+    @AppStorage("purchaseStatus" ) var purchaseStatus: Bool = false
+    #if os(iOS)
+    @Environment(\.editMode) private var editMode //Para mantener la lista siempre en modo edición (y eliminar el botón editar)
+    #endif
+    
     var body: some View {
         NavigationStack {
-            ZStack{
-                
-                LinearGradient(colors: [.orange, .blue], startPoint: .topLeading, endPoint: .bottomTrailing)
+            
+            if self.purchaseStatus {
+                ZStack{
+                    
+                    LinearGradient(
+                        colors: [
+                                Color(red: 255/255, green: 223/255, blue: 186/255), // naranja pastel
+                                Color(red: 255/255, green: 250/255, blue: 205/255)  // amarillo suave
+                            ],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
                     .ignoresSafeArea()
-                VStack{
-                    List {
-                        ForEach(reminders) { reminder in
-                            VStack(alignment: .leading) {
-                                Text(reminder.title).font(.title2).bold()
-                                
-                                Text(reminder.message).font(.body)
-                                
-                                Text("Frecuencia: \(reminder.frequency.description)" )
-                                    .font(.caption)
-                                    .foregroundStyle(.blue).bold()
-                                    .padding(.top, 5)
-                                
-                                Divider()
-                                
-                                HStack {
-                                    
-                                    
-                                    Spacer()
-                                    
-                                    
-                                    
-                                    Button("Editar") {
-                                        editing = reminder
+                    
+                    VStack{
+                        
+                          Text("Recordatorios")
+                            .font(.title).bold()
+                            .foregroundStyle(.black)
+                        
+                        List {
+                            ForEach(reminders) { reminder in
+                                ReminderCardView(
+                                    reminder: reminder,
+                                    onEdit: { editing = reminder },
+                                    onDelete: {
+                                        ReminderNotificationManager.shared.cancel(id: reminder.id)
+                                        withAnimation {
+                                            load()
+                                            editing = nil
+                                        }
+                                    },
+                                    onPause: {
+                                        if reminder.isStarted {
+                                            ReminderNotificationManager.shared.pause(id: reminder.id)
+                                        } else {
+                                            ReminderNotificationManager.shared.resume(id: reminder.id)
+                                        }
+                                        withAnimation {
+                                            load()
+                                            editing = nil
+                                        }
                                     }
-                                    .tint(.orange)
-                                    .buttonStyle(.borderedProminent)
-                                    
-                                    #if os(macOS)
-                                    Button("Quitar", role: .destructive) {
-                                        ReminderNotificationManager.shared.cancel(id: reminder.id) //Cancela la notificación
-                                        load() //Actualiza la lista de notificaciones
-                                        // Asegurarnos de que no se abra la hoja de edición
-                                        editing = nil
-                                    }
-                                    .tint(.red)
-                                    .buttonStyle(.borderedProminent)
-                                    .padding(.leading, 20)
-                                    #endif
-                                    
-                                }
+                                )
+                                .listRowSeparator(.hidden)
+                                .listRowBackground(Color.clear)
                             }
-                            .padding(.vertical, 8)
-                            .swipeActions(edge: .trailing) {
-                                Button("Quitar", role: .destructive) {
-                                    ReminderNotificationManager.shared.cancel(id: reminder.id) //Cancela la notificación
-                                    load() //Actualiza la lista de notificaciones
-                                    // Asegurarnos de que no se abra la hoja de edición
-                                        editing = nil
-                                }
-                            }
+                            .onMove(perform: move)
                         }
+                        .listStyle(.plain)
+                        
+                        
                     }
-                    #if os(iOS)
-                    .listStyle(.insetGrouped)
-                    #endif
+                    .listRowInsets(EdgeInsets())
+                    .listRowBackground(Color.clear)
+                    .scrollContentBackground(.hidden)
+                    .background(
+                        LinearGradient(
+                            colors: [
+                                Color(red: 255/255, green: 223/255, blue: 186/255),
+                                Color(red: 255/255, green: 250/255, blue: 205/255)
+                            ],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
                     
                 }
-                
-            }
-            .navigationTitle("Recordatorios")
-            .toolbar {
-                Button {
-                    creating = true
-                } label: {
-                    Image(systemName: "plus")
+                .toolbar {
+                   
+                    #if os(macOS)
+                    ToolbarItem(placement: .primaryAction) {
+                        Button {
+                            creating = true
+                        } label: {
+                            Image(systemName: "plus")
+                        }
+                    }
+                    #else
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button {
+                            creating = true
+                        } label: {
+                            Image(systemName: "plus")
+                        }
+                    }
+                    #endif
+                        
                 }
+                .onAppear{
+                    #if os(iOS)
+                    editMode?.wrappedValue = .active
+                    #endif
+                    load()
+                }
+                .sheet(item: $editing) {
+                    ReminderEditorView(reminderAEditar: $0, titleAImportar: nil, textoAImportar: nil , onSave: load)
+                }
+                .sheet(isPresented: $creating) {
+                    ReminderEditorView(reminderAEditar: nil, titleAImportar: nil, textoAImportar: nil, onSave: load)
+                }
+                
+            }else{
+                PurchaseView()
             }
-            .onAppear{
-                load()
-            }
-            .sheet(item: $editing) {
-                ReminderEditorView(reminder: $0, onSave: load)
-            }
-            .sheet(isPresented: $creating) {
-                ReminderEditorView(reminder: nil, onSave: load)
-            }
+            
+           
         }
     }
 
     private func load() {
         reminders = ReminderStore.shared.load()
+    }
+    
+    private func move(from source: IndexSet, to destination: Int) {
+        reminders.move(fromOffsets: source, toOffset: destination)
+        ReminderStore.shared.save(reminders)
     }
 }

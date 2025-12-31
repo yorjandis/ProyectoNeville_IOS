@@ -24,7 +24,7 @@ final class PurchaseManager: ObservableObject {
             await loadProducts()
             await updatePremiumStatus()
             listenForTransactions()
-            //UserDefaults.standard.set(self.isPremium, forKey: "premiumStatus")
+            UserDefaults.standard.set(self.isPremium, forKey: "purchaseStatus")
         }
     }
 
@@ -50,6 +50,9 @@ extension PurchaseManager {
             switch result {
             case .success(let verification):
                 let transaction = try checkVerified(verification)
+                //Estableciendo el valor en UserDefault que indica premium
+                UserDefaults.standard.set(true, forKey: "purchaseStatus")
+                
                 await transaction.finish()
                 await updatePremiumStatus()
 

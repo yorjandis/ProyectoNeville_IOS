@@ -88,9 +88,6 @@ struct ListNotasViews: View {
                     //Chequea si esta habilitado la protección de las notas
                     if UserDefaults.standard.bool(forKey: AppCons.UD_setting_NotasFaceID) == false { //No esta habilitada la protección
                        
-                       
-                        
-                        
                         ToolbarItem {
                             Menu{
                                 Button{
@@ -444,6 +441,29 @@ struct cardNotas: View{
                     }label:{
                         Label("Lienzo", systemImage: "heart.text.square")
                     }
+                    #endif
+                    
+                    
+                    #if os(macOS)
+                    
+                    Button{
+                        showWindow(for: ReminderEditorView(reminderAEditar: nil, titleAImportar: self.nota?.title, textoAImportar: self.nota?.nota, onSave: {}),
+                                   environmentObjects: [],
+                                   title: "Lienzo",
+                                   size: .absolute(CGSize(width: 650, height: 750)),
+                                   isModal: false)
+                    }label:{
+                        Label("Recordatorios", systemImage: "heart.text.square")
+                    }
+                    
+                    #else
+                    
+                    NavigationLink{
+                        ReminderEditorView(reminderAEditar: nil, titleAImportar: self.nota?.title, textoAImportar: nota?.nota, onSave: {})
+                    }label:{
+                        Label("Recordatorios", systemImage: "heart.text.square")
+                    }
+                    
                     #endif
                     
                     

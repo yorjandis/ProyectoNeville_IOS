@@ -25,6 +25,11 @@ struct Home: View {
     @State private var showCrearRecordatorio: Bool = false
     @State private var showListaRecordatorios: Bool = false
 
+    //Recordatorios Witget:
+    @StateObject private var modelRecordatorios: SelectedReminderModel = .init() //Inicia el modelo de los recordatorios de Widgets
+    
+    
+ 
 
     var body: some View {
         NavigationStack{
@@ -43,21 +48,8 @@ struct Home: View {
                     MostrarCumpleaños()
                     
                     //Muestra si estamos en modo debug. Solo aparecerá en la fase de desarrollo
-                   //MostrarModoDebug()
-                    
-                    Button("Crear Recordatorio"){
-                        ReminderNotificationManager.shared.requestPermission()
-                        ReminderNotificationManager.shared.scheduleAndStore(title: "Yorjandis", message: "Esto es un ejemplo", frequency: .interval(hours: 0, minutes: 1))
-                    }
-                    
-                    Button("Lista de Recordatorios"){
-                        self.showListaRecordatorios = true
-                    }
-                    .sheet(isPresented: self.$showListaRecordatorios) {
-                        ReminderListView()
-                    }
+                   MostrarModoDebug()
 
-                    
                     //Muestra el texto para indicar nueva actualización
                     ViewIfNewUpdateAvailable()
                     
@@ -67,6 +59,10 @@ struct Home: View {
  
                     Spacer()
                     
+                    //Barra de Recordatorios:
+                    ReminderWidgetList_View()
+                     
+
                     TabButtonBar(
                         fontFrasesSize: $fontSize,
                         fontMenuSize: $fontSizeMenu,
@@ -75,6 +71,7 @@ struct Home: View {
                         colorFondo_b: Binding(get: { self.settingModel.colorFondo_b }, set: { self.settingModel.colorFondo_b = $0 })
                     )
                 }
+   
             }
             .onAppear {
                 switch NovedadesModel.LanzarVentanaNovedades(){

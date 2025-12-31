@@ -19,6 +19,7 @@ enum ItemNameSidebar: String{
     case chatIA
     case lienzo
     case premium
+    case recordatorios
 }
 
 struct ItemSidebar: Identifiable, Hashable, Equatable {
@@ -88,10 +89,7 @@ struct ContentViewMac: View {
     //Acceso a la opción de en Ajustes
     @AppStorage("setting_DiarioAccesoAjustes") var setting_DiarioAccesoAjustes  : Bool = false
     
-    
-   
   
-    
     
     var body: some View {
         ZStack{
@@ -108,10 +106,9 @@ struct ContentViewMac: View {
                 
             }
             .navigationViewStyle(.automatic)
-            
-            
+  
         }
-        .frame(minWidth: 1200, minHeight: 850)
+        .frame(minWidth: 1200, minHeight: 870, idealHeight: 870)
         .onAppear {
             //Lanzar la lista de novedades al inicio
             switch NovedadesModel.LanzarVentanaNovedades(){
@@ -311,6 +308,15 @@ struct ContentViewMac: View {
                 
                 //Abre la Ventana de Premium
                 Button{
+                    self.categoriaSelected = ItemSidebar(text: .recordatorios, icono: "timer")
+                }label:{
+                    SidebarCard(iconName: "timer", title: "Recordatorios")
+                        .tag(ItemSidebar(text: .recordatorios, icono: "timer"))
+                }
+                .buttonStyle(.plain)
+                
+                //Abre la Ventana de Premium
+                Button{
                     self.categoriaSelected = ItemSidebar(text: .premium, icono: "circle.dotted")
                 }label:{
                     SidebarCard(iconName: "circle.dotted", title: "Premium\(self.purchaseStatus ? "(activo)" : "")")
@@ -350,6 +356,7 @@ struct NavigationDetailsViewMac: View {
             case .conferencias:
                 TxtListView(typeOfContent: .conf, title: "Conferencias")
             case .frases:
+                
                FrasesListView()
             case .citas:
                 TxtListView(typeOfContent: .citas, title: "Citas")
@@ -380,6 +387,8 @@ struct NavigationDetailsViewMac: View {
                 if #available(iOS 26.0, macOS 26.0, *){
                     ChatView(textoACargar: nil)
                 }
+            case .recordatorios:
+                ReminderListView()
             case .premium:
                 PurchaseView()
             default:
@@ -399,9 +408,11 @@ struct FrasesHomeMac: View{
     
     var body: some View {
         VStack{
-            
-            
+            Spacer()
             FrasesView()
+            Spacer()
+            //Barra de Recordatorios:
+            ReminderWidgetList_View()
         }
     }
 }

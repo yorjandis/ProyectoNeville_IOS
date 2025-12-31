@@ -17,6 +17,7 @@ struct ChatView: View {
     
     @StateObject private var clipBoarModel : ClipboardObserver = ClipboardObserver() //Para observar cambios en el portapapales
     //@StateObject private var purchaseModel : PurchaseManager = .shared //Para las funciones Premium
+    
     @AppStorage("purchaseStatus" ) var purchaseStatus: Bool = false
     
     @AppStorage(AppCons.UD_setting_fontChatIASize)  var fontSizeChatIA : Int = 20
@@ -250,6 +251,7 @@ struct ChatView: View {
                 }else{
                     TextField("Escribe algo…", text: $model.inputText, axis: .vertical)
                         .font(.system(size: 20))
+                        .foregroundStyle(.white)
                         .disabled(model.isResponding)
                         .padding(.vertical, 8)
                         .padding(.leading, 5)

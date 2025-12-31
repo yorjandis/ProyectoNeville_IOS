@@ -9,9 +9,11 @@
 
 import Foundation
 
-struct StoredReminder: Identifiable, Codable {
+struct StoredReminder: Identifiable, Codable, Equatable, Hashable {
     let id: String
     let title: String
     let message: String
     let frequency: ReminderFrequency
+    var isStarted: Bool // NUEVO
+    var startedAt: Date? //NUEVO -> Para la barra de progreso en .interval
 }

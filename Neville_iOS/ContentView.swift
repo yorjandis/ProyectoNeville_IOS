@@ -11,10 +11,7 @@ struct ContentView: View{
     @State var showSheetNotas = false
     
     
-    //Mostrar una vista con el contenido de la notificación de recordaorio
-    @AppStorage("pendingReminderMessage") private var pendingReminderMessage: String?
-    @State var showMessage : Bool = false
-    @State var message : String?
+    
     
     
     //Codigo a cargar al inicio:
@@ -46,20 +43,6 @@ struct ContentView: View{
             .sheet(isPresented: $showSheetNotas, content: {
                 ListNotasViews()
             })
-            .onAppear{
-                if let pendingReminderMessage {
-                            message = pendingReminderMessage
-                            showMessage = true
-                            self.pendingReminderMessage = nil // limpiar
-                        }
-            }
-            .sheet(isPresented: self.$showMessage, content: {
-                        VStack{
-                            Text(self.message ?? "")
-                                .padding()
-                        }
-                        .presentationDetents([.medium])
-                    })
         
     }
     

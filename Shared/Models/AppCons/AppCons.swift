@@ -28,6 +28,7 @@ struct AppCons{
     static let UD_setting_fontContentSize  = "setting_fontContentSize"
     static let UD_setting_fontMenuSize     = "setting_fontMenuSize"
     static let UD_setting_fontListaSize    = "setting_fontListaSize"
+    static let UD_setting_fontReminder    = "setting_fontReminder"
     static let UD_setting_fontChatIASize   = "setting_fontChatIASize" //Tamaño de letra del chat de IA
  
     //Colores

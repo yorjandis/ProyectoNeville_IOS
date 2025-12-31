@@ -37,7 +37,7 @@ struct EditNoteTxt:View {
                     TextEditor(text: $textfiel)
                         .multilineTextAlignment(.leading)
                         .font(.system(size: 22))
-                        .foregroundStyle( self.isNew ? .blue : .white).italic().bold()
+                        .foregroundStyle( self.isNew ? .blue : .primary).italic().bold()
                         .padding(10)
                         .cornerRadius(20)
                         .focused(self.$focus)
