@@ -70,12 +70,12 @@ struct ReminderCardView: View {
             HStack(spacing: 5) {
                 //Pausar o Iniciar de nuevo la notificación
                 
-                Label( reminder.isStarted ? "Detener" : "Reanudar", systemImage: reminder.isStarted ? "pause.fill" : "play.fill")
-                    .buttonStyle(.plain)
-                    .onTapGesture {
-                        onPause()
-                    }
-                
+                Button{
+                    onPause()
+                }label:{
+                    Image(systemName: reminder.isStarted ? "pause.fill" : "play.fill")
+                }
+                .buttonStyle(.plain)
                 
                 
                 IntervalProgress()

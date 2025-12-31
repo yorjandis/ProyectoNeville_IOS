@@ -72,7 +72,6 @@ final class SelectedReminderModel: ObservableObject {
             queue: .main
         ) { [weak self] _ in
             Task{ @MainActor in
-                print("Yorjandis estamos aqui")
                 self?.updateSelectedReminders()
             }
             

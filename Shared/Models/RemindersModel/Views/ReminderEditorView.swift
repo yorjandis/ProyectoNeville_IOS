@@ -5,15 +5,27 @@
 //  Created by Yorjandis PG on 23/12/25.
 //
 
+/*
+ 🎯 Objetivo en ReminderEditorView
+
+ Garantizar que al editar:
+     1.    No se pierda elapsedBeforePause
+     2.    No se reinicie el progreso si no toca
+     3.    Solo se reinicie cuando realmente recreas el reminder (cambio de frecuencia)
+ 
+ // NOTA: no tocar elapsedBeforePause aquí.
+ // El progreso se gestiona fuera del editor.
+ */
+
 import SwiftUI
 
 // UI Mode Enum
 enum ReminderEditorMode: String, CaseIterable, Identifiable {
-    case interval = "Intervalo"
-    case daily = "Diario"
-    case date = "Fecha"
-    case monthly = "Mensual"
-    case yearly = "Anual"
+    case interval   = "Intervalo"
+    case daily      = "Diario"
+    case date       = "Fecha"
+    case monthly    = "Mensual"
+    case yearly     = "Anual"
 
     var id: String { rawValue }
 }
@@ -508,7 +520,8 @@ struct ReminderEditorView: View {
                     message: self.message,
                     frequency: reminderAEditar.frequency,
                     isStarted: reminderAEditar.isStarted,
-                    startedAt: reminderAEditar.startedAt
+                    startedAt: reminderAEditar.startedAt,
+                    elapsedBeforePause: reminderAEditar.elapsedBeforePause
                 )
                 //Salvando sol los datos sin recrear el recordatorio
                 ReminderStore.shared.update(reminder)

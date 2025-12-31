@@ -91,7 +91,7 @@ struct Novedades: View {
                             Text("☘️ Nuevo: Ahora se muestra las cinco conferencias vistas recientemente")
                             Text("☘️ Varias mejoras y correcciones en Reflexiones. Ahora es posible editar las reflexiones")
                             Text("☘️ Se ha introducido en menú de funciones para el texto copiado en conferencias, frases, notas, respuestas de IA, etc. Esté menú aparece automáticamente una vez hayamos seleccionado un texto y copiado al portapapeles. Algunas de las funciones son: copiar en Notas, copiar en el Lienzo, copiar en la ventana de chatIA, etc")
-                            Text("☘️ Ahora es posible elegir el tema claro/oscuro en Ajustes")
+                            Text("☘️ Nuevo: Recordatorios. Ahora podemos programar avisos para nunca olvidar las tareas esenciales: meditar, revisión del día, dar gracias, afirmaciones, etc")
                             Text("☘️ macOS: Se ha mejorado la experiencia en el manejo y visualización de las ventanas flotantes")
                             Text("☘️ Se ha mejorado la función de lector/generador de QR Code. Ahora puede manejar el Formato de Importación de Notas para importar notas automáticamente")
                             Text("☘️ IA: Se ha revisado y afinado los ajustes que controlan las respuestas de la IA. Ahora es más natural y fluida. Además, se ha enriquecido el conocimiento base con más información sobre las enseñanzas de neville")

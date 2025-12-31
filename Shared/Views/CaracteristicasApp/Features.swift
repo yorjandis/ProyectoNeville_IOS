@@ -48,6 +48,9 @@ struct Features: View {
                             //Lienzo
                             Text("☘️ Lienzo <Premiun>: Una forma creativa de diseñar tus propios fondos con imágines, colores y texto. Ideal para compartir frases y pensamientos en redes sociales y con amigos")
                             
+                            //Recordatorios:
+                            Text("☘️ Recordatorios <Premiun>: Ahora podemnos programar avisos para no olvidar realizar las tareas del día: meditaciones, leer, orar, dar gracias, afirmaciones, lista de compras, etc.")
+                            
                             //Atajos
                             Text("☘️ Atajos & Comandos de Siri <Premiun>: Se han creado varios Atajos, visible en la App Atajos, para realizar las siguientes acciones:")
                             VStack(alignment: .leading, spacing: 5){

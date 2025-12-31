@@ -7,6 +7,31 @@
 
 //maneja la persistencia de las notificaciones creadas
 
+/*
+ Logica:
+ 🔹 Detener (STOP)
+     •    ❌ Cancela la notificación
+     •    ❌ Elimina el recordatorio del store
+     •    ❌ No se puede reanudar
+ 🔹 Pausar (PAUSE)
+     •    ❌ Cancela la notificación del sistema
+     •    ✅ Mantiene el recordatorio en el store
+     •    ✅ Guarda cuánto tiempo ya ha transcurrido
+     •    ❌ No avanza el progreso mientras está pausado
+ 🔹 Reanudar (RESUME)
+     •    ✅ Reprograma la notificación
+     •    ✅ Continúa el progreso desde donde se pausó
+     •    ❌ No reinicia el contador
+ 
+ Resultado esperado:
+ Acción:    Notificación:       Progreso:       ModelStore:
+ Crear      Activa              Empieza en 0    Guardado
+ Pausar     Cancelada           Se congela      Se mantiene
+ Reanudar   Reprogramada        Continúa        Se mantiene
+ Detener    Eliminada           Desaparece      Eliminado
+
+ */
+
 import Foundation
 
 @MainActor
@@ -41,16 +66,13 @@ final class ReminderStore{
 
     //Adiciona un nuevo recordatorio
     func add(_ reminder: StoredReminder) {
-        var current = load()
-        current.append(reminder)
-        save(current)
+        var reminders = load()
+        reminders.append(reminder)
+        save(reminders)
 
     }
     
-    //Adiciona un nuevo recordatorio por su ID
-    func addPorId(_ id: String) {
-        
-    }
+ 
 
     //Remueve un recordatorio de UserDefault
     func remove(id: String) {
@@ -60,33 +82,33 @@ final class ReminderStore{
     
     // NUEVO: actualizar un reminder existente por id
     func update(_ reminder: StoredReminder) {
-        var current = load()
-        if let idx = current.firstIndex(where: { $0.id == reminder.id }) {
-            current[idx] = reminder
-            save(current)
+        var reminders = load()
+        if let idx = reminders.firstIndex(where: { $0.id == reminder.id }) {
+            reminders[idx] = reminder
+            save(reminders)
         }
     }
 
     // NUEVO: marcar un reminder como no iniciado (pausado)
     func markPaused(id: String) {
-        var current = load()
-        if let idx = current.firstIndex(where: { $0.id == id }) {
-            var r = current[idx]
+        var reminders = load()
+        if let idx = reminders.firstIndex(where: { $0.id == id }) {
+            var r = reminders[idx]
             r.isStarted = false
             r.startedAt = nil // ⬅️ limpia el progreso
-            current[idx] = r
-            save(current)
+            reminders[idx] = r
+            save(reminders)
         }
     }
     
     // NUEVO: marcar un reminder como iniciado (reanudar)
     func markStarted(id: String) {
-        var current = load()
-        if let idx = current.firstIndex(where: { $0.id == id }) {
-            var r = current[idx]
+        var reminders = load()
+        if let idx = reminders.firstIndex(where: { $0.id == id }) {
+            var r = reminders[idx]
             r.isStarted = true
-            current[idx] = r
-            save(current)
+            reminders[idx] = r
+            save(reminders)
         }
     }
     

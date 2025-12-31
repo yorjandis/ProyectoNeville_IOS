@@ -87,6 +87,8 @@ struct PurchaseView: View {
                             Text("🔵 Opciones del Menu Compartir: Leer QR code, OCR(extraer texto de imagen), importar Notas/Frase desde QR").bold()
                                 
                             Text("🔵 Lienzo: Diseña vistosas imágenes con frases y pensamientos para compartir en redes sociales y con amigos").bold()
+                            
+                            Text("🔵 Recordatorios: Programa avisos para no olvidarse de nada esencial: meditaciones, dar gracias, revisión, orar, etc.").bold()
                                 
                             Text("🔵 Importar Nota/Frase por QR code. Comparte frases y notas en redes sociales utilizando un código QR").bold()
                                 

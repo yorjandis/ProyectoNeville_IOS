@@ -15,25 +15,13 @@ struct ReminderListView: View {
     @State private var creating = false
     
     @AppStorage("purchaseStatus" ) var purchaseStatus: Bool = false
-    #if os(iOS)
-    @Environment(\.editMode) private var editMode //Para mantener la lista siempre en modo edición (y eliminar el botón editar)
-    #endif
+
     
     var body: some View {
         NavigationStack {
             
             if self.purchaseStatus {
                 ZStack{
-                    
-                    LinearGradient(
-                        colors: [
-                                Color(red: 255/255, green: 223/255, blue: 186/255), // naranja pastel
-                                Color(red: 255/255, green: 250/255, blue: 205/255)  // amarillo suave
-                            ],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
-                    .ignoresSafeArea()
                     
                     VStack{
                         
@@ -74,6 +62,7 @@ struct ReminderListView: View {
                         
                         
                     }
+                    .listRowInsets(.init())
                     .listRowInsets(EdgeInsets())
                     .listRowBackground(Color.clear)
                     .scrollContentBackground(.hidden)
@@ -111,9 +100,6 @@ struct ReminderListView: View {
                         
                 }
                 .onAppear{
-                    #if os(iOS)
-                    editMode?.wrappedValue = .active
-                    #endif
                     load()
                 }
                 .sheet(item: $editing) {
@@ -135,8 +121,9 @@ struct ReminderListView: View {
         reminders = ReminderStore.shared.load()
     }
     
+    //Permite reorganizar los elementos en la lista
     private func move(from source: IndexSet, to destination: Int) {
         reminders.move(fromOffsets: source, toOffset: destination)
-        ReminderStore.shared.save(reminders)
+        ReminderStore.shared.save(reminders) //Persiste cambios
     }
 }
