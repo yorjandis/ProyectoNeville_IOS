@@ -19,6 +19,8 @@ struct FeedbackView: View {
     
     @State private var isReviewComplete : Bool = false
     
+    @AppStorage("yorjPremium") var yorjPremium: Bool = false //Valor oculto para hacer premium la app.
+    
     var body: some View {
         VStack{
             Image("Logo")
@@ -74,6 +76,10 @@ struct FeedbackView: View {
                 Text("😊")
                     .font(.system(size: 30))
                     .multilineTextAlignment(.center)
+                    .onTapGesture(count: 4){
+                        //Hacer al desarrollador premium
+                        self.yorjPremium.toggle()
+                    }
                     
                     
             }

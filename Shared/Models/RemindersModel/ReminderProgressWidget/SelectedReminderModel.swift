@@ -81,7 +81,7 @@ final class SelectedReminderModel: ObservableObject {
     //Recarga los recordatorios según el listado de IDs. Trabajo con la función observeStoreChanges
     private func updateSelectedReminders() {
         let all = store.load() //Carga todos los recordatorios
-        selectedReminders = all.filter { selectedIDs.contains($0.id) && $0.isStarted } //Filtra solo los ID de los recordatorios selectos
+        selectedReminders = all.filter { selectedIDs.contains($0.id) }//&& $0.isStarted } //Filtra solo los ID de los recordatorios selectos
     }
     
   //Almacenando y recuperando el listado de IDs:

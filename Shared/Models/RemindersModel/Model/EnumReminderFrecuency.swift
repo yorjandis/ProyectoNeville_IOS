@@ -30,9 +30,7 @@ import Foundation
 //Constantes de Identificadores:
 enum ReminderNotificationConstants {
     static let categoryId = "REMINDER_CATEGORY"
-    static let viewActionId = "VIEW_REMINDER"
-    static let cancelActionId = "CANCEL_REMINDER"
-    static let pauseActionId = "PAUSE_REMINDER"
+    static let stopActionId = "STOP_REMINDER"
 }
 
 

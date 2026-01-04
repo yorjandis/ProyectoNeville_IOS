@@ -11,39 +11,42 @@ struct IntervalProgressView: View {
 
     let totalInterval: TimeInterval
     let startedAt: Date
-    let size : CGFloat
+    let size: CGFloat
 
     @ObservedObject private var clock = GlobalClock.shared
-    
-    @AppStorage("hideTextInProgressReminder") private var hideTextInProgressReminder: Bool = false //Para ocultar el texto del progreso
+    @AppStorage("hideTextInProgressReminder")
+    private var hideTextInProgressReminder: Bool = false
 
+    // ⏱ Elapsed SIEMPRE desde 0
     private var elapsed: TimeInterval {
-        clock.now.timeIntervalSince(startedAt)
+        max(clock.now.timeIntervalSince(startedAt), 0)
     }
 
     private var remaining: TimeInterval {
         let cycleElapsed = elapsed.truncatingRemainder(dividingBy: totalInterval)
-            return max(totalInterval - cycleElapsed, 0)
+        return max(totalInterval - cycleElapsed, 0)
     }
 
     private var progress: Double {
         let cycleElapsed = elapsed.truncatingRemainder(dividingBy: totalInterval)
-            return cycleElapsed / totalInterval
+        return cycleElapsed / totalInterval
     }
 
     var body: some View {
         ZStack {
             let lineWidth = size * 0.12
-            
+
             RoundedRectangle(cornerRadius: size * 0.35)
                 .stroke(.black.opacity(0.15), lineWidth: lineWidth)
 
-            
-            
             RoundedRectangle(cornerRadius: size * 0.35)
                 .trim(from: 0, to: progress)
                 .stroke(
-                    LinearGradient(colors: [.black.opacity(0.5), .black.opacity(0.8)], startPoint: .leading, endPoint: .trailing),
+                    LinearGradient(
+                        colors: [.black.opacity(0.5), .black.opacity(0.8)],
+                        startPoint: .leading,
+                        endPoint: .trailing
+                    ),
                     style: StrokeStyle(
                         lineWidth: lineWidth,
                         lineCap: .round,
@@ -52,7 +55,7 @@ struct IntervalProgressView: View {
                 )
                 .animation(.linear(duration: 0.4), value: progress)
 
-            if !self.hideTextInProgressReminder {
+            if !hideTextInProgressReminder {
                 Text(timeText)
                     .font(.system(
                         size: size * 0.28,
@@ -63,7 +66,6 @@ struct IntervalProgressView: View {
                     .minimumScaleFactor(0.7)
                     .padding(.horizontal, size * 0.2)
             }
-            
         }
         .frame(maxWidth: 125)
         .frame(height: size * 0.65)
@@ -75,7 +77,7 @@ struct IntervalProgressView: View {
         let secondsInMinute = 60
         let secondsInHour = 3_600
         let secondsInDay = 86_400
-        let secondsInMonth = 2_592_000 // 30 días
+        let secondsInMonth = 2_592_000
 
         let months = total / secondsInMonth
         let days = (total % secondsInMonth) / secondsInDay
@@ -84,19 +86,12 @@ struct IntervalProgressView: View {
         let seconds = total % secondsInMinute
 
         if months > 0 {
-            // 2M:05d:12h → cuando hay meses (omitimos minutos y segundos)
             return String(format: "%dM:%02dd:%02dh", months, days, hours)
-
         } else if days > 0 {
-            // 2d:23h:21m → cuando hay días
             return String(format: "%dd:%02dh:%02dm", days, hours, minutes)
-
         } else if hours > 0 {
-            // 23h:15m:23s → cuando solo quedan horas
             return String(format: "%02dh:%02dm:%02ds", hours, minutes, seconds)
-
         } else {
-            // 15m:23s → cuando solo quedan minutos
             return String(format: "%02dm:%02ds", minutes, seconds)
         }
     }

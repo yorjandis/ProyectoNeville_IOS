@@ -10,6 +10,17 @@ import UserNotifications
 //maneja los botones de la notificación cuando aparece,
 //además también tiene la lógica para que los recordatorios aparezcan cuando la app esta en foreground
 
+/*
+ •    Este método se llama:
+ •    cuando el usuario toca la notificación
+ •    cuando pulsa un botón
+ •    cuando iOS entrega la notificación
+ •    Es el único punto garantizado donde:
+ •    sabes que la notificación ocurrió
+ •    tienes acceso al reminderId
+ •    puedes programar el siguiente intervalo
+ */
+
 @MainActor
 final class AppNotificationDelegate: NSObject, @MainActor UNUserNotificationCenterDelegate {
 
@@ -34,6 +45,7 @@ final class AppNotificationDelegate: NSObject, @MainActor UNUserNotificationCent
             ]
         )
 
+        
         // No mostrar banner del sistema
         completionHandler([])
     }
@@ -47,36 +59,10 @@ final class AppNotificationDelegate: NSObject, @MainActor UNUserNotificationCent
 
         let userInfo = response.notification.request.content.userInfo
         let reminderId = userInfo["reminderId"] as? String
-        let message = userInfo["message"] as? String
 
-        switch response.actionIdentifier {
-
-        case ReminderNotificationConstants.cancelActionId:
-            if let reminderId {
-                ReminderNotificationManager.shared.cancel(id: reminderId)
-            }
-
-        case ReminderNotificationConstants.viewActionId:
-            if let message {
-                UserDefaults.standard.set(
-                    message,
-                    forKey: "pendingReminderMessage"
-                )
-
-                NotificationCenter.default.post(
-                    name: .didReceiveReminderMessage,
-                    object: nil,
-                    userInfo: ["message": message]
-                )
-            }
-
-        case ReminderNotificationConstants.pauseActionId:
-            if let reminderId {
-                ReminderNotificationManager.shared.pause(id: reminderId)
-            }
-
-        default:
-            break
+        if response.actionIdentifier == ReminderNotificationConstants.stopActionId,
+           let reminderId {
+            ReminderNotificationManager.shared.stop(id: reminderId)
         }
 
         completionHandler()

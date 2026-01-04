@@ -12,7 +12,7 @@ struct ReminderCardView: View {
     let reminder: StoredReminder
     let onEdit:     () -> Void
     let onDelete:   () -> Void
-    let onPause:    () -> Void
+    let onStop:     () -> Void
     
     @State private var ocultarTexto: Bool = true
     
@@ -28,20 +28,28 @@ struct ReminderCardView: View {
             //Contenido principal
             VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 10){
-                    //Adiciona/quita un reminder al listado de widget:
-                    Button{
-                        if self.selectedReminderModel.existingRemindersId(reminder) {
-                            self.selectedReminderModel.deselect(reminder)
-                        }else{
-                            self.selectedReminderModel.select(reminder)
+                    
+                    
+                        //Adiciona/quita un reminder al listado de widget:
+                        Button{
+                            if self.selectedReminderModel.existingRemindersId(reminder) {
+                                self.selectedReminderModel.deselect(reminder)
+                            }else{
+                                self.selectedReminderModel.select(reminder)
+                            }
+                            
+                        }label: {
+                            Image(systemName: self.selectedReminderModel.existingRemindersId(reminder) ? "pin.fill" : "pin")
                         }
-                        
-                    }label: {
-                        Image(systemName: self.selectedReminderModel.existingRemindersId(reminder) ? "pin.fill" : "pin")
-                    }
+                        .buttonStyle(.borderless)
+                    
+                    
+                    
+                    
                     Text(reminder.title)
                         .font(.title2)
                         .bold()
+                       
                 }
                 
                 
@@ -62,20 +70,23 @@ struct ReminderCardView: View {
                     .bold()
                     .padding(.top, 4)
             }
-            .foregroundStyle(.black)
+            
             
             Divider()
 
             // Acciones inferiores
             HStack(spacing: 5) {
-                //Pausar o Iniciar de nuevo la notificación
                 
-                Button{
-                    onPause()
-                }label:{
-                    Image(systemName: reminder.isStarted ? "pause.fill" : "play.fill")
-                }
-                .buttonStyle(.plain)
+                
+                    Button{
+                        onStop()
+                    }label:{
+                        Image(systemName: reminder.isStarted ? "stop.fill" : "play.fill")
+                       // Label("reminder.isStarted ? "Detener" : "Iniciar"", systemImage: reminder.isStarted ? "stop.fill" : "play.fill")
+                    }
+                    .buttonStyle(.borderless)
+                    
+               
                 
                 
                 IntervalProgress()
@@ -90,6 +101,8 @@ struct ReminderCardView: View {
                         }
                     }
                 
+               
+                
                 Spacer()
                 
                 if reminder.isStarted {
@@ -99,21 +112,24 @@ struct ReminderCardView: View {
                         Image(systemName: "pencil")
                         //Label("Editar", systemImage: "pencil")
                     }
-                    .buttonStyle(.bordered)
-                    
-                    Button{
-                        onDelete()
-                    }label:{
-                        Image(systemName: "trash")
-                        //Label("Quitar", systemImage: "trash")
-                    }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(.borderless)
                 }
+                
+                Button{
+                    onDelete()
+                }label:{
+                    Image(systemName: "trash")
+                    //Label("Quitar", systemImage: "trash")
+                }
+                .buttonStyle(.borderless)
+                .padding(.horizontal, 15)
+
                 
                 
             }
-            .foregroundStyle(.black)
+            
         }
+        .foregroundStyle(.black)
         .padding()
         .background(
                     RoundedRectangle(cornerRadius: 16, style: .continuous)

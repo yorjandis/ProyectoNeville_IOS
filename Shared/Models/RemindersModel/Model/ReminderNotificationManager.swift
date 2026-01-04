@@ -74,7 +74,7 @@ final class ReminderNotificationManager {
             let seconds = h * 3600 + m * 60
             trigger = UNTimeIntervalNotificationTrigger(
                 timeInterval: TimeInterval(seconds),
-                repeats: true //Repetitivo
+                repeats: true   // 🔥 CAMBIO CLAVE (Pasamos a false para que funcione pausar)
             )
 
         case .daily(let hour, let minute):
@@ -140,60 +140,24 @@ final class ReminderNotificationManager {
             frequency: frequency,
             isStarted: true,
             startedAt:  Date(),
-            elapsedBeforePause: 0 // reiniciar el contador de tiempo transcurrido antes de pausarse
         )
         ReminderStore.shared.add(reminder)
         
         return reminder
     }
     
-    //Botones que aparecen en la notificación.
-    //Hay que llamar a esta función al inicio de la App
-    /// Configura las categorías de notificación y las acciones utilizadas para las notificaciones de recordatorio.
-    ///
-    /// Este método registra una `UNNotificationCategory` personalizada en el sistema, lo que habilita las notificaciones accionables para recordatorios.
-    /// La categoría incluye las siguientes acciones:
-    /// - "Ver mensaje": Abre la aplicación en primer plano para mostrar el contenido del recordatorio.
-    /// - "Pausar": Pausa el recordatorio programado sin eliminarlo.
-    /// - "Eliminar notificación": Elimina la notificación programada (destructiva).
-    ///
-    /// Comportamiento:
-    /// - La categoría se identifica mediante `ReminderNotificationConstants.categoryId`.
-    /// - Las acciones se registran en el orden: Ver, Pausar, Eliminar.
-    /// - Esta configuración debe ejecutarse al principio del ciclo de vida de la aplicación (por ejemplo, al iniciarse) antes de programar las notificaciones,
-    /// para que el sistema sepa qué acciones mostrar al recibir una notificación. ///
-    /// Requisitos:
-    /// - Asegurarse de que los permisos de notificación se soliciten previamente mediante `requestPermission()`.
-    ///
-    /// Efectos secundarios:
-    /// - Llamar a `UNUserNotificationCenter.setNotificationCategories(_:)` para reemplazar el conjunto actual de categorías por uno que incluya la categoría de recordatorio.
-    ///
-    /// - Ver también: `UNNotificationCategory`, `UNNotificationAction`, `UNUserNotificationCenter.setNotificationCategories(_:)`
+    
     func configureCategories() {
 
-        let viewAction = UNNotificationAction(
-            identifier: ReminderNotificationConstants.viewActionId,
-            title: "Ver mensaje",
-            options: [.foreground]
-        )
-
-        let cancelAction = UNNotificationAction(
-            identifier: ReminderNotificationConstants.cancelActionId,
-            title: "Eliminar Notificación",
+        let stopAction = UNNotificationAction(
+            identifier: ReminderNotificationConstants.stopActionId,
+            title: "Detener",
             options: [.destructive]
         )
 
-        // NUEVO: Acción de Detener
-        let pauseAction = UNNotificationAction(
-            identifier: ReminderNotificationConstants.pauseActionId,
-            title: "Pausar",
-            options: []
-        )
-
-        // MODIFICADO: ahora incluye la acción de Pausar entre Ver y Eliminar
         let category = UNNotificationCategory(
             identifier: ReminderNotificationConstants.categoryId,
-            actions: [viewAction, pauseAction, cancelAction], // NUEVO: pauseAction
+            actions: [stopAction],   // 👈 SOLO UNA
             intentIdentifiers: [],
             options: []
         )
@@ -208,39 +172,23 @@ final class ReminderNotificationManager {
         center.removePendingNotificationRequests(withIdentifiers: [id])
     }
 
-   
-    /// Pausa un recordatorio programado y conserva su tiempo transcurrido.
-    ///
-    /// Este método realiza lo siguiente:
-    /// - Cancela la notificación pendiente con el identificador proporcionado, lo que garantiza que no se active mientras esté en pausa.
-    /// - Calcula el tiempo transcurrido desde la última vez que se inició el recordatorio (`startedAt`) y lo acumula en `elapsedBeforePause`.
-    /// - Actualiza el estado del recordatorio a pausado estableciendo `isStarted` en `false` y borrando `startedAt`.
-    /// - Conserva el recordatorio actualizado en `ReminderStore`.
-    ///
-    /// Requisitos:
-    /// - El recordatorio con el `id` proporcionado debe existir en `ReminderStore`.
-    /// - El recordatorio debe estar ejecutándose (`isStarted == true`) y tener un `startedAt` distinto de nulo.
-    ///
-    /// - Parámetro id: El identificador único del recordatorio que se pausará.
-    func pause(id: String) {
-        //intenta obtener el recordatorio almacenado, queque si esta iniciado,
-        //y le actualiza su propiedad startedAt
+
+    
+    //Detiene el recordatorio, semejante a la función de Pausa pero reiniciando el contador elapsedBeforePause.
+    func stop(id: String) {
+        // Obtiene el recordatorio y valida que esté iniciado
         guard var reminder = ReminderStore.shared.load().first(where: { $0.id == id }),
-              reminder.isStarted,
-              let startedAt = reminder.startedAt
+              reminder.isStarted
         else { return }
 
         // 1️⃣ Cancelar notificación
         removePendingNotification(id: id)
 
-        // 2️⃣ Calcular tiempo transcurrido
-        let elapsed = Date().timeIntervalSince(startedAt)
-
-        // 3️⃣ Guardar estado
-        reminder.elapsedBeforePause += elapsed
+        // 2️⃣ Reiniciar completamente el estado
         reminder.isStarted = false
         reminder.startedAt = nil
 
+        // 3️⃣ Guardar cambios
         ReminderStore.shared.update(reminder)
     }
     
@@ -267,7 +215,7 @@ final class ReminderNotificationManager {
         }
         
         let trigger: UNNotificationTrigger
-        
+
         switch reminder.frequency {
         case .interval(let h, let m):
             let seconds = h * 3600 + m * 60
@@ -315,11 +263,11 @@ final class ReminderNotificationManager {
         //reinicia el contador visual correctamente al reanudar:
         var updated = reminder
         updated.isStarted = true
-        updated.startedAt = Date().addingTimeInterval(-reminder.elapsedBeforePause) // 🔥 REANUDAR DESDE DONDE SE DEJÓ
+        
+        updated.startedAt = Date()
+        
         ReminderStore.shared.update(updated)
         
-        
-    
     }
 
     
@@ -338,6 +286,8 @@ final class ReminderNotificationManager {
         ReminderStore.shared.remove(id: id)
     }
     
+
+    
     //Notificando cambios:
     /// Publica una notificación para todo el sistema que indica que el almacén de recordatorios ha cambiado.
     ///
@@ -351,4 +301,7 @@ final class ReminderNotificationManager {
     private func notifyChange() {
         NotificationCenter.default.post(name: .reminderStoreDidChange, object: nil)
     }
+    
+    
+    
 }

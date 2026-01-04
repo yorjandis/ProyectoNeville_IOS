@@ -41,10 +41,10 @@ struct ReminderListView: View {
                                             editing = nil
                                         }
                                     },
-                                    onPause: {
+                                    onStop: {
                                         if reminder.isStarted {
-                                            ReminderNotificationManager.shared.pause(id: reminder.id)
-                                        } else {
+                                            ReminderNotificationManager.shared.stop(id: reminder.id)
+                                        }else{
                                             ReminderNotificationManager.shared.resume(id: reminder.id)
                                         }
                                         withAnimation {
@@ -52,6 +52,7 @@ struct ReminderListView: View {
                                             editing = nil
                                         }
                                     }
+                                        
                                 )
                                 .listRowSeparator(.hidden)
                                 .listRowBackground(Color.clear)
@@ -59,6 +60,8 @@ struct ReminderListView: View {
                             .onMove(perform: move)
                         }
                         .listStyle(.plain)
+                        
+                        
                         
                         
                     }

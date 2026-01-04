@@ -18,13 +18,22 @@ final class PurchaseManager: ObservableObject {
     private let premiumProductID = "com.ypg.nev.premium.anual"
     
     static let shared = PurchaseManager() //Singleton Para tener acceso global
+    
+    @AppStorage("yorjPremium") var yorjPremium: Bool = false //Valor oculto para hacer premium la app.
 
    private init() {
         Task {
             await loadProducts()
             await updatePremiumStatus()
             listenForTransactions()
-            UserDefaults.standard.set(self.isPremium, forKey: "purchaseStatus")
+             
+            //Determinar si hacemos premium al desarrollador:
+            if self.yorjPremium {
+                UserDefaults.standard.set(true, forKey: "purchaseStatus")
+            }else{
+                UserDefaults.standard.set(self.isPremium, forKey: "purchaseStatus")
+            }
+            
         }
     }
 

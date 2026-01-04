@@ -16,6 +16,5 @@ struct StoredReminder: Identifiable, Codable, Equatable, Hashable {
     let frequency: ReminderFrequency
     var isStarted: Bool // NUEVO
     var startedAt: Date? //NUEVO -> cuándo empezó el ciclo actual
-    // 🔥 NUEVO
-       var elapsedBeforePause: TimeInterval //segundos acumulados antes de pausar
 }
+
