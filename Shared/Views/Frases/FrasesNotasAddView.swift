@@ -14,7 +14,7 @@ struct FrasesNotasAddView: View {
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject private var frasesModel: FrasesModel
     
-    let frase : String
+    let frase : Frases
     
     @State var nota : String = "" //Campo del textField
     
@@ -27,7 +27,7 @@ struct FrasesNotasAddView: View {
 #if os(macOS)
             HStack{
                 Button("Guardar"){
-                    if !FrasesModel.shared.UpdateNotaAsociada(frase: frase, notaAsociada: nota){
+                    if !FrasesModel.shared.UpdateNotaAsociada(fraseID: frase.id ?? "", notaAsociada: nota){
                         self.alertMessage = "No se ha podido guardar la nota."
                         self.showAlert = true
                     }
@@ -88,11 +88,11 @@ struct FrasesNotasAddView: View {
                     .padding(.leading, 5)
             }
             .onAppear{
-                nota = frasesModel.GetNotaAsociadaFrase(frase: self.frase)
+                nota = frasesModel.GetNotaAsociadaFrase(fraseID: self.frase.id ?? "")
             }
             Spacer()
             ScrollView(content: {
-                Text(frase)
+                Text(frase.frase ?? "")
                     .font(.system(size: 20))
                 .padding()
             })
@@ -106,7 +106,7 @@ struct FrasesNotasAddView: View {
                 #if os(iOS)
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Guardar"){
-                        if !frasesModel.UpdateNotaAsociada(frase: frase, notaAsociada: nota){
+                        if !frasesModel.UpdateNotaAsociada(fraseID: frase.id ?? "", notaAsociada: nota){
                             self.alertMessage = "No se ha podido guardar la nota."
                             self.showAlert = true
                         }

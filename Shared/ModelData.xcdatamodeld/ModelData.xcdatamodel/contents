@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="24299" systemVersion="25A362" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="24512" systemVersion="25C56" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
     <entity name="Diario" representedClassName="Diario" syncable="YES" codeGenerationType="class">
         <attribute name="content" optional="YES" attributeType="String"/>
         <attribute name="emotion" optional="YES" attributeType="String"/>
@@ -10,12 +10,26 @@
         <attribute name="title" optional="YES" attributeType="String"/>
     </entity>
     <entity name="Frases" representedClassName="Frases" syncable="YES" codeGenerationType="class">
+        <attribute name="autor" optional="YES" attributeType="String"/>
         <attribute name="frase" attributeType="String" defaultValueString=""/>
         <attribute name="id" attributeType="String" defaultValueString=""/>
         <attribute name="isfav" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="isnew" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="noinbuilt" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="nota" optional="YES" attributeType="String"/>
+        <relationship name="relacionadas" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Frases" inverseName="relacionadasPor" inverseEntity="Frases"/>
+        <relationship name="relacionadasPor" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Frases" inverseName="relacionadas" inverseEntity="Frases"/>
+    </entity>
+    <entity name="GoalEntity" representedClassName="GoalEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="descriptionText" optional="YES" attributeType="String"/>
+        <attribute name="frequency" optional="YES" attributeType="Integer 32" defaultValueString="1" usesScalarValueType="YES"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="isStarted" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="startDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
+        <attribute name="totalUnits" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="unitType" optional="YES" attributeType="String"/>
+        <relationship name="units" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="UnitEntity" inverseName="goal" inverseEntity="UnitEntity"/>
     </entity>
     <entity name="Notas" representedClassName="Notas" syncable="YES" codeGenerationType="class">
         <attribute name="id" attributeType="String" defaultValueString=""/>
@@ -39,5 +53,17 @@
         <attribute name="namefile" optional="YES" attributeType="String"/>
         <attribute name="nota" optional="YES" attributeType="String"/>
         <attribute name="type" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="UnitEntity" representedClassName="UnitEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="completedDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="endDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="index" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="note" optional="YES" attributeType="String"/>
+        <attribute name="startDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="status" optional="YES" attributeType="String"/>
+        <attribute name="unitType" optional="YES" attributeType="String"/>
+        <relationship name="goal" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="GoalEntity" inverseName="units" inverseEntity="GoalEntity"/>
     </entity>
 </model>

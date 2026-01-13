@@ -172,9 +172,9 @@ struct Neville_iOSApp: App {
                 
                 //Detectando formato de importación de Frases
                 if let textImportado = QRModel.detectFormatImportFrase(text: texto){
-                    _ = FrasesModel.shared.AddFrase(frase: textImportado.1)
+                    _ = FrasesModel.shared.AddFrase(frase: textImportado.1, autor: "personal")
                 }else{
-                    _ = FrasesModel.shared.AddFrase(frase: texto)
+                    _ = FrasesModel.shared.AddFrase(frase: texto, autor: "personal")
                 }
 
                 // Limpiar el valor para la próxima vez

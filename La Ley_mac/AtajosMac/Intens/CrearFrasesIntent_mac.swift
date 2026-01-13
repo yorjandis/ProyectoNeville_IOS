@@ -18,6 +18,9 @@ struct CrearFraseIntentMac : AppIntent, ProvidesDialog{
     
     @Parameter(title: "frase",description: "El contenido de la frase")
     var frase : String
+    
+    @Parameter(title: "autor",description: "El autor de la frase")
+    var autor : String
 
 
     func perform() async throws -> some IntentResult & ReturnsValue<String> & ProvidesDialog{
@@ -29,7 +32,7 @@ struct CrearFraseIntentMac : AppIntent, ProvidesDialog{
         }
         
         // Guarda la nota:
-        if await FrasesModel.shared.AddFrase(frase: frase){
+        if await FrasesModel.shared.AddFrase(frase: frase, autor: autor){
             return .result(
                 value: frase,
                 dialog: IntentDialog("La frase ha sido creada correctamente.")

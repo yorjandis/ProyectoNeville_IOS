@@ -15,7 +15,7 @@ struct FrasesView : View{
     @EnvironmentObject private var frasesModel : FrasesModel
     @EnvironmentObject private var settingModel : SettingModel
     
-    @State private var  frase : String = "" //Texto de la Frase
+    @State private var  frase : Frases? = nil
    
     @AppStorage(AppCons.UD_setting_fontFrasesSize) var fontSizeFrases : Int = 24
     //Para Adicionar una nueva frase
@@ -30,7 +30,7 @@ struct FrasesView : View{
     @State private var contadorNavegarPorFrasesAnteriores : Int = 0
     
     private var fraseCompartir : String{
-        return frase
+        return frase?.frase ?? ""
     }
     
     //Pruebas
@@ -40,7 +40,7 @@ struct FrasesView : View{
 
             VStack{
                 
-                Text(self.frase)
+                Text(self.frase?.frase ?? "")
                     .font(.system(size: CGFloat(fontSizeFrases), design: .rounded))
                     .foregroundStyle(self.settingModel.colorfrase)
                     .modifier(mof_frases())
@@ -48,7 +48,7 @@ struct FrasesView : View{
                     .onTapGesture {
                         //Obtiene una nueva frase
                         self.frase = frasesModel.getRandomFrase()//Obteniendo una nueva frase.
-                        self.isFav = frasesModel.isFavFrase(self.frase) //Actualizando el estado del favorito
+                        self.isFav = frasesModel.isFavFrase(fraseID: self.frase?.id ?? "") //Actualizando el estado del favorito
                         frasesModel.favStateOfCurrentFrase = self.isFav
                         frasesModel.fraseActual = self.frase //Guardando la frase actualmente visible en la variable observable
                         
@@ -56,11 +56,11 @@ struct FrasesView : View{
                         if self.frasesModel.fraseAnteriores.count > 9 { //Si la capacidad del arreglo supera el límite de 10 frases
                             
                             self.frasesModel.fraseAnteriores.removeFirst() //Remueve la primera frase
-                            self.frasesModel.fraseAnteriores.append(self.frase) //Coloca la frase actual
+                            self.frasesModel.fraseAnteriores.append(self.frase!) //Coloca la frase actual
                             self.contadorNavegarPorFrasesAnteriores = self.frasesModel.fraseAnteriores.count
                         }else{ //Si no se ha superado la capacidad del arreglo, simplemente agrega la frase actual al mismo
                             
-                            self.frasesModel.fraseAnteriores.append(self.frase) //Coloca la frase actual
+                            self.frasesModel.fraseAnteriores.append(self.frase!) //Coloca la frase actual
                             self.contadorNavegarPorFrasesAnteriores = self.frasesModel.fraseAnteriores.count
                         }
                         
@@ -79,7 +79,7 @@ struct FrasesView : View{
                                     self.contadorNavegarPorFrasesAnteriores -= 1
                                     self.frase = self.frasesModel.fraseAnteriores[self.contadorNavegarPorFrasesAnteriores]
                                     
-                                    self.isFav = self.frasesModel.isFavFrase(self.frase)
+                                    self.isFav = self.frasesModel.isFavFrase(fraseID: self.frase?.id ?? "")
                                     self.frasesModel.favStateOfCurrentFrase = self.isFav
                                     self.frasesModel.fraseActual = self.frase
                                 }
@@ -91,7 +91,7 @@ struct FrasesView : View{
                                     
                                     self.frase = self.frasesModel.fraseAnteriores[self.contadorNavegarPorFrasesAnteriores]
                                     
-                                    self.isFav = self.frasesModel.isFavFrase(self.frase)
+                                    self.isFav = self.frasesModel.isFavFrase(fraseID: self.frase?.id ?? "")
                                     self.frasesModel.favStateOfCurrentFrase = self.isFav
                                     self.frasesModel.fraseActual = self.frase
                                 }
@@ -100,23 +100,25 @@ struct FrasesView : View{
                     )
                     #endif
                     .onOpenURL(perform: { url in
+                        //Navega hasta la frase actualmente seleccionada:
                         if url.description == AppCons.DeepLink_url_Frase {
-                            self.frase = UserDefaults.shared().string(forKey: AppCons.UD_shared_FraseWidgetActual) ?? ""
+                            let textoFrase = UserDefaults.shared().string(forKey: AppCons.UD_shared_FraseWidgetActual) ?? ""
+                            self.frase = self.frasesModel.getFraseCoreDataFromTextFrase(fraseText: textoFrase)
                         }
                         
                     })
                 
                     .contextMenu{
                         Button{
-                            //Guarda la nota poniendo como titulo una parte de la cadena
-                            _ = NotasModel().addNote(nota: self.frase, title: "\(String(self.frase).prefix(self.frase.count / 3 )))...")
+                            //Guarda la nota poniendo como título una parte de la cadena
+                            _ = NotasModel().addNote(nota: self.frase?.frase ?? "", title: "\(String(self.frase?.frase ?? "").prefix((self.frase?.frase ?? "").count / 3 )))...")
                         }label: {
                             Label("Almacenar en Notas", systemImage: "list.bullet.clipboard")
                         }
                         
                         #if os(macOS)
                         Button{
-                            showWindow(for: GenerateQRView(footer: self.frase, showImage: true),
+                            showWindow(for: GenerateQRView(footer: self.frase?.frase ?? "", showImage: true),
                                        environmentObjects: [self.frasesModel],
                                        size: AppCons.windows_size_content,
                                        isModal: false) //Debe ser una ventana no modal, de lo contrario no funciona el compartir la imagen en macOS
@@ -125,7 +127,7 @@ struct FrasesView : View{
                         }
                         #else
                         NavigationLink{
-                            GenerateQRView(footer: self.frase, showImage: true)
+                            GenerateQRView(footer: self.frase?.frase ?? "", showImage: true)
                         }label:{
                             Label("Generar QR", systemImage: "qrcode")
                         }
@@ -133,7 +135,7 @@ struct FrasesView : View{
                         #endif
                         #if os(macOS)
                         Button{
-                            showWindow(for: LienzoMain(texto: self.frase),
+                            showWindow(for: LienzoMain(texto: self.frase?.frase ?? ""),
                                        environmentObjects: [],
                                        title: "Lienzo",
                                        size: .absolute(CGSize(width: 650, height: 750)),
@@ -145,7 +147,7 @@ struct FrasesView : View{
                         
                         #else
                         NavigationLink{
-                            LienzoMain(texto: self.frase)
+                            LienzoMain(texto: self.frase?.frase ?? "")
                         }label: {
                             Label("Lienzo", systemImage: "heart.text.square")
                         }
@@ -155,7 +157,7 @@ struct FrasesView : View{
                         #if os(macOS)
                         
                         Button{
-                            showWindow(for: ReminderEditorView(reminderAEditar: nil, titleAImportar: nil, textoAImportar: self.frase, onSave: {}),
+                            showWindow(for: ReminderEditorView(reminderAEditar: nil, titleAImportar: nil, textoAImportar: self.frase?.frase ?? "", onSave: {}),
                                        environmentObjects: [],
                                        title: "Lienzo",
                                        size: .absolute(CGSize(width: 650, height: 750)),
@@ -167,7 +169,7 @@ struct FrasesView : View{
                         #else
                         
                         NavigationLink{
-                            ReminderEditorView(reminderAEditar: nil, titleAImportar: nil, textoAImportar: self.frase, onSave: {})
+                            ReminderEditorView(reminderAEditar: nil, titleAImportar: nil, textoAImportar: self.frase?.frase ?? "", onSave: {})
                         }label:{
                             Label("Recordatorios", systemImage: "heart.text.square")
                         }
@@ -175,13 +177,13 @@ struct FrasesView : View{
                         #endif
                         
                         
-                        ShareLink(item: self.frase) {
+                        ShareLink(item: self.frase?.frase ?? "") {
                                         Label("Compartir frase", systemImage: "square.and.arrow.up")
                                     }
                         
                         Button{
                             #if os(macOS)
-                            showWindow(for: FrasesNotasAddView(frase: self.frase),
+                            showWindow(for: FrasesNotasAddView(frase: self.frase!),
                                        environmentObjects: [self.frasesModel],
                                        title: "Nota de Frase",
                                        size: AppCons.windows_size_content_small,
@@ -199,7 +201,7 @@ struct FrasesView : View{
                             if IAModelAppleIntelligence.isAvailable(){
                                 #if os(macOS)
                                 Button{
-                                    showWindow(for: RespondView(nameConference: "", texto: self.frase, tipoSalida: .interpretar),
+                                    showWindow(for: RespondView(nameConference: "", texto: self.frase?.frase ?? "", tipoSalida: .interpretar),
                                                environmentObjects: [self.frasesModel, self.settingModel],
                                                size: AppCons.windows_size_content,
                                                isModal: true,
@@ -211,7 +213,7 @@ struct FrasesView : View{
                                 .tint(.purple)
                                 
                                 Button{
-                                    showWindow(for: RespondView(nameConference: "", texto: self.frase, tipoSalida: .practicaConcreta),
+                                    showWindow(for: RespondView(nameConference: "", texto: self.frase?.frase ?? "", tipoSalida: .practicaConcreta),
                                                environmentObjects: [self.frasesModel, self.settingModel],
                                                size: AppCons.windows_size_content,
                                                isModal: true,
@@ -223,7 +225,7 @@ struct FrasesView : View{
                                 .tint(.purple)
                                 
                                 Button{
-                                    showWindow(for: ChatView(textoACargar: self.frase),
+                                    showWindow(for: ChatView(textoACargar: self.frase?.frase ?? ""),
                                                environmentObjects: [self.frasesModel, self.settingModel],
                                                size: AppCons.windows_size_content,
                                                isModal: false,
@@ -237,21 +239,21 @@ struct FrasesView : View{
                                 
                                 #else
                                 NavigationLink{
-                                    RespondView(nameConference: "", texto: self.frase, tipoSalida: .interpretar)
+                                    RespondView(nameConference: "", texto: self.frase?.frase ?? "", tipoSalida: .interpretar)
                                 }label: {
                                     Label("Interpretar", systemImage: "sparkles")
                                 }
                                 .tint(.purple)
                                 
                                 NavigationLink{
-                                    RespondView(nameConference: "", texto: self.frase, tipoSalida: .practicaConcreta)
+                                    RespondView(nameConference: "", texto: self.frase?.frase ?? "", tipoSalida: .practicaConcreta)
                                 }label: {
                                     Label("Aplicación Práctica", systemImage: "sparkles")
                                 }
                                 .tint(.purple)
                                 
                                 NavigationLink{
-                                    ChatView(textoACargar: self.frase)
+                                    ChatView(textoACargar: self.frase?.frase ?? "")
                                 }label: {
                                     Label("Charlar con IA", systemImage: "sparkles")
                                 }
@@ -288,8 +290,8 @@ struct FrasesView : View{
                     #if os(iOS)
                     //Botón de Favorito de la frase
                     Button{
-                        let getState = frasesModel.isFavFrase(self.frase) //Obtiene el estado previo
-                        if frasesModel.setFavFrase(self.frase, !getState){
+                        let getState = frasesModel.isFavFrase(fraseID: self.frase?.id ?? "") //Obtiene el estado previo
+                        if frasesModel.setFavFrase(fraseID: self.frase?.id ?? "", !getState){
                             isFav = !getState
                             frasesModel.favStateOfCurrentFrase = isFav
                             animationHeart += 1
@@ -319,7 +321,7 @@ struct FrasesView : View{
                                     self.contadorNavegarPorFrasesAnteriores -= 1
                                     self.frase = self.frasesModel.fraseAnteriores[self.contadorNavegarPorFrasesAnteriores]
                                     
-                                    self.isFav = self.frasesModel.isFavFrase(self.frase)
+                                    self.isFav = self.frasesModel.isFavFrase(fraseID: self.frase?.id ?? "")
                                     self.frasesModel.favStateOfCurrentFrase = self.isFav
                                     self.frasesModel.fraseActual = self.frase
                                 }
@@ -332,7 +334,7 @@ struct FrasesView : View{
                                     
                                     self.frase = self.frasesModel.fraseAnteriores[self.contadorNavegarPorFrasesAnteriores]
                                     
-                                    self.isFav = self.frasesModel.isFavFrase(self.frase)
+                                    self.isFav = self.frasesModel.isFavFrase(fraseID: self.frase?.id ?? "")
                                     self.frasesModel.favStateOfCurrentFrase = self.isFav
                                     self.frasesModel.fraseActual = self.frase
                                 }
@@ -348,8 +350,8 @@ struct FrasesView : View{
                         .padding(10)
                         .padding(.trailing, 15)
                         .onTapGesture {
-                            let getState = frasesModel.isFavFrase(self.frase) //Obtiene el estado previo
-                            if frasesModel.setFavFrase(self.frase, !getState){
+                            let getState = frasesModel.isFavFrase(fraseID: self.frase?.id ?? "") //Obtiene el estado previo
+                            if frasesModel.setFavFrase(fraseID: self.frase?.id ?? "", !getState){
                                 isFav = !getState
                                 frasesModel.favStateOfCurrentFrase = isFav
                                 animationHeart += 1
@@ -361,19 +363,19 @@ struct FrasesView : View{
                 
             }
             .onAppear{
-                if self.frase.isEmpty{
+                if (self.frase?.frase ?? "").isEmpty{
                     self.frase = frasesModel.getRandomFrase()
                     //leyendo el estado isfav de la frase
-                    isFav = frasesModel.isFavFrase(frase) //Obtiene el estado previo
+                    isFav = frasesModel.isFavFrase(fraseID: self.frase?.id ?? "") //Obtiene el estado previo
                     frasesModel.favStateOfCurrentFrase = isFav //Actualiza el estado del favorito en la variable observable
                     frasesModel.fraseActual = self.frase //Almacenando la frase actualmente visible en Home
-                    self.frasesModel.fraseAnteriores.append(self.frase) //Coloca la frase en el vector de navegación
+                    self.frasesModel.fraseAnteriores.append(self.frase!) //Coloca la frase en el vector de navegación
                 }
             }
             
             .sheet(isPresented: $showAddNoteView){ //permite modificar la nota de una frase
                 
-                FrasesNotasAddView(frase: self.frase, nota: self.frasesModel.GetNotaAsociadaFrase(frase: self.frase))
+                FrasesNotasAddView(frase: self.frase!, nota: self.frasesModel.GetNotaAsociadaFrase(fraseID: self.frase?.id ?? ""))
                     .presentationDetents([.medium])
                     .presentationDragIndicator(.hidden)
                 //.interactiveDismissDisabled() //No deja que se oculte

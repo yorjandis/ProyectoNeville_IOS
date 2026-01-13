@@ -32,6 +32,7 @@
 		19F804262B69CBA000A323A0 /* La Ley Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 19F804192B69CB9D00A323A0 /* La Ley Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		915017432EF078A2007B741A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 915017422EF078A2007B741A /* StoreKit.framework */; };
 		915017452EF078B2007B741A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 915017442EF078B2007B741A /* StoreKit.framework */; };
+		915A49B92F0F21ED002D3DCA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E95B935A2AAFBB2900B5E2B5 /* Assets.xcassets */; };
 		918C4B0B2EF4094D00974B54 /* La Ley.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 918C4AFF2EF4094D00974B54 /* La Ley.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		91E107712EEA01AD00F4DB1D /* sharedios.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 91E107672EEA01AD00F4DB1D /* sharedios.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		91F0DD552D605B5800307453 /* watchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F0DD542D605B4B00307453 /* watchModel.swift */; };
@@ -181,15 +182,32 @@
 				Models/DiarioModel/DiarioModel.swift,
 				Models/FeedBackModel/FeedBackModel.swift,
 				Models/FrasesModel/FrasesModel.swift,
+				Models/FrasesModel/FrasesRelacionadasModel/FrasesRelacionadasModel.swift,
+				Models/FrasesModel/FrasesRelacionadasModel/Views/FraseRelacionadasTabView.swift,
+				Models/FrasesModel/FrasesRelacionadasModel/Views/ViewsAuxiliares/FraseActualCargadaView.swift,
+				Models/FrasesModel/FrasesRelacionadasModel/Views/ViewsAuxiliares/FrasesRelacionasListView.swift,
 				Models/GameModel/GameModel.swift,
 				Models/IAModel/ChactModel.swift,
 				Models/IAModel/IAModelAppleIntelligence.swift,
 				Models/KeyChainModel/KeyChainModel.swift,
 				Models/LienzoModel/LienzoModel.swift,
+				"Models/Metas/Models/CoreData/GoalEntity+Core.swift",
+				Models/Metas/Models/Enums/TimeUnit.swift,
+				Models/Metas/Models/Enums/UnitStatus.swift,
+				Models/Metas/Models/Logic/UnitLifecycle.swift,
+				Models/Metas/Views/CreateGoal/CreateGoalView.swift,
+				Models/Metas/Views/CreateGoal/CreateGoalViewModel.swift,
+				Models/Metas/Views/CreateGoal/ModifyGoal.swift,
+				Models/Metas/Views/Goals/GoalCardView.swift,
+				Models/Metas/Views/Goals/GoalsListView.swift,
+				Models/Metas/Views/Goals/GradientProgressBar.swift,
+				Models/Metas/Views/Goals/Helpers/DateHelper.swift,
+				Models/Metas/Views/Progreso/GoaldDetailView.swift,
+				Models/Metas/Views/Progreso/UnitCellView.swift,
+				Models/Metas/Views/UnityViews/ModifNoteUnit.swift,
 				Models/MultiplatformModel/Multiplatform.swift,
 				Models/NetModel/NetModel.swift,
 				Models/NotasModel/NotasModel.swift,
-				Models/NovedadesModel/NovedadesModel.swift,
 				Models/PortapaplesModel/PortapapelesModel.swift,
 				Models/PurchaseModel/PremiunService.swift,
 				Models/PurchaseModel/PurchaseManager.swift,
@@ -197,6 +215,7 @@
 				Models/QRCode/QRModel.swift,
 				Models/QRCode/QRReader.swift,
 				Models/ReflexModel/ReflexModel.swift,
+				Models/RelojGlobal/GlobalClock.swift,
 				Models/RemindersModel/ForegroundNotification/ForegroundNotificationViewModel.swift,
 				Models/RemindersModel/ForegroundNotification/NotificationBannerView.swift,
 				Models/RemindersModel/Model/EnumReminderFrecuency.swift,
@@ -205,7 +224,6 @@
 				Models/RemindersModel/Model/Permisos/SolicitarPermisos.swift,
 				Models/RemindersModel/Model/PersistenciaRecordatorios/ReminderStoreModel.swift,
 				Models/RemindersModel/Model/PersistenciaRecordatorios/StoreReminderData.swift,
-				Models/RemindersModel/Model/RelojGlobal/GlobalClock.swift,
 				Models/RemindersModel/Model/ReminderNotificationManager.swift,
 				Models/RemindersModel/Model/RemindersDelegate.swift,
 				Models/RemindersModel/Model/Tonos/NotificationSound.swift,
@@ -249,6 +267,7 @@
 				Models/RemindersModel/Views/ReminderCardView.swift,
 				Models/RemindersModel/Views/ReminderEditorView.swift,
 				Models/RemindersModel/Views/ReminderListView.swift,
+				Models/RunFirstTimeModel/RunFirstTimeModel.swift,
 				Models/SecurityModel/SecurityModel.swift,
 				Models/TextContentModel/TxtContentModel.swift,
 				Models/Utils/Utils.swift,
@@ -771,7 +790,7 @@
 				"Staff/Conf/conf_yo soy la causa.txt",
 				"Staff/Conf/conf_yo soy la vid.txt",
 				Staff/cuestionario.txt,
-				Staff/listfrases.txt,
+				Staff/Frases/listfrases.txt,
 				"Staff/Preguntas/preg_pregunta 1.txt",
 				"Staff/Preguntas/preg_pregunta 2.txt",
 				"Staff/Preguntas/preg_pregunta 3.txt",
@@ -837,6 +856,7 @@
 				Views/Frases/FrasesListView.swift,
 				Views/Frases/FrasesNotasAddView.swift,
 				Views/Frases/FrasesUpdateView.swift,
+				Views/Frases/RowFraseMenu.swift,
 				Views/IAView/ChatView.swift,
 				Views/IAView/DescargoResponsabilidad.swift,
 				Views/IAView/RespondView.swift,
@@ -875,7 +895,7 @@
 			membershipExceptions = (
 				Models/AppCons/AppCons.swift,
 				Models/Utils/Utils.swift,
-				Staff/listfrases.txt,
+				Staff/Frases/listfrases.txt,
 			);
 			target = 19E0BE132B0C661A00E149A5 /* FrasesWiggetExtension */;
 		};
@@ -887,7 +907,7 @@
 				Models/CoreData/CoreDataController.swift,
 				Models/Utils/Utils.swift,
 				Models/UtilsForView/UtilsForViews.swift,
-				Staff/listfrases.txt,
+				Staff/Frases/listfrases.txt,
 			);
 			target = 19F804182B69CB9D00A323A0 /* La Ley Watch App */;
 		};
@@ -1409,6 +1429,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				915A49B92F0F21ED002D3DCA /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

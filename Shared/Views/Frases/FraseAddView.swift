@@ -13,6 +13,7 @@ struct FraseAddView: View {
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject private var frasesModel: FrasesModel
     @State private var text = ""
+    @State private var autor = ""
     //@State private var favorito: Bool = false
     
     //Mostrar la ventana de FeedBackReview
@@ -31,7 +32,7 @@ struct FraseAddView: View {
             HStack{
                 Button("Guardar"){
                     if !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                        if frasesModel.AddFrase(frase: text) == false {
+                        if frasesModel.AddFrase(frase: text, autor: autor) == false {
                             self.alertMessage = "No se pudo guardar la frase"
                             self.showAlert = true
                         }
@@ -88,12 +89,26 @@ struct FraseAddView: View {
                                     RoundedRectangle(cornerRadius: 8, style: .continuous)
                                         .stroke(Color.secondary.opacity(0.2), lineWidth: 1)
                                 }
+                            
+                            TextEditor(text: $autor)
+                                .font(.system(size: 20))
+                                .scrollDisabled(false)
+                                .frame(height: 150)
+                                .padding(.bottom, 15)
+                                .overlay {
+                                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                        .stroke(Color.secondary.opacity(0.2), lineWidth: 1)
+                                }
                         }
                         .padding(.horizontal, 5)
                         
                         
                         #else
                         TextField("Texto de la frase", text: $text, axis: .vertical)
+                            .multilineTextAlignment(.leading)
+                            .font(.system(size: 22))
+                            .frame(height: 80)
+                        TextField("Autor de la frase", text: $autor, axis: .vertical)
                             .multilineTextAlignment(.leading)
                             .font(.system(size: 22))
                             .frame(height: 80)
@@ -113,7 +128,7 @@ struct FraseAddView: View {
                 ToolbarItem(placement: .topBarTrailing){
                     Button("Guardar"){
                         if !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                            if frasesModel.AddFrase(frase: text){
+                            if frasesModel.AddFrase(frase: text, autor: self.autor){
                                 //Lanza la ventana de FeedBackreview si se alcanza el humbral de hitos
                                 if  FeedBackModel.checkReviewRequest() {
                                     self.sheetShowFeedBackReview = true

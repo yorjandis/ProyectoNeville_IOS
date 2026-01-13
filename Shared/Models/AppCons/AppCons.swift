@@ -11,7 +11,7 @@ import SwiftUI
 @MainActor
 struct AppCons{
     static let appName      = "La Ley"
-    static let appVersion   = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+    static let appVersion   = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String //Versión actual de la app
     
     static let AppGroupName = "group.com.ypg.nev.group" //Nombre del contenedor AppGroup compartido
     
@@ -107,6 +107,11 @@ struct AppCons{
     static let zspNota  = "\u{200B}\u{200B}\u{200B}" //Prefijo oculto en formato importación de Notas
     static let zspFrase = "\u{2063}\u{2063}\u{2063}" //Prefijo oculto en formato importación de Frases
 
+    
+    //Claves UserDefault para las funciones de popular la tabla frase
+    static let UD_PopulandoFrases : String = "PoulandoFrases"
+    static let UD_TablaFrasesPopulada : String = "TablaFrasesPopulada"
+    
     
     
 }

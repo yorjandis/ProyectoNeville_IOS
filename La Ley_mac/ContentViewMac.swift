@@ -111,8 +111,8 @@ struct ContentViewMac: View {
         .frame(minWidth: 1200, minHeight: 870, idealHeight: 870)
         .onAppear {
             //Lanzar la lista de novedades al inicio
-            switch NovedadesModel.LanzarVentanaNovedades(){
-            case "primeraVez":
+            switch RunFirstTimeModel.CheckStatusAppRun(){
+            case .firstLaunchApp:
                 //Actualiza las variables iniciales del Lienzo:
                 UserDefaults.standard.set(true,forKey: LienzoModel.key_visibilidadTextoSecundario) //Visibilidad de Imagen
                 UserDefaults.standard.set(true, forKey: LienzoModel.key_visibilidadImagenLienzo)
@@ -126,7 +126,7 @@ struct ContentViewMac: View {
                            isModal: false
                            
                 )
-            case "actualizacion":
+            case .updateApp:
                 //Muestra la ventana de resultados
                 showWindow(for: Novedades(),
                            environmentObjects: [],

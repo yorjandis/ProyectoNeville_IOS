@@ -51,7 +51,7 @@ struct TextoCopiadoView: View {
                 Button{
                     if let texto = self.clipBoardModel.clipboardText {
                         
-                        if FrasesModel.shared.AddFrase(frase: texto){
+                        if FrasesModel.shared.AddFrase(frase: texto, autor: "personal"){
                             self.alertMessage = "Se ha guardado el texto en Frases"
                             self.showAlert = true
                         }

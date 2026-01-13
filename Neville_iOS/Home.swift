@@ -55,9 +55,22 @@ struct Home: View {
                     
                     Spacer()
                     
+                    
+                    
                     FrasesView()
  
                     Spacer()
+                    
+                    Button("Procesar"){
+                       
+                    }
+                    
+                    NavigationLink("Goals"){
+                        GoalsListView()
+                            .environment(\.managedObjectContext, CoreDataController.shared.context)
+                    }
+                    .buttonStyle(.bordered)
+                    .padding(20)
                     
                     //Barra de Recordatorios:
                     ReminderWidgetList_View()
@@ -74,20 +87,37 @@ struct Home: View {
    
             }
             .onAppear {
-                switch NovedadesModel.LanzarVentanaNovedades(){
-                case "primeraVez":
+                //Ejecutar Lógica la primera vez que se instala o se actualiza la función 
+                switch RunFirstTimeModel.CheckStatusAppRun(){
+                case .firstLaunchApp:
+                    print("Primera vez que se instala la App")
                     //Actualiza las variables iniciales del Lienzo:
                     UserDefaults.standard.set(true,forKey: LienzoModel.key_visibilidadTextoSecundario) //Visibilidad de Imagen
                     UserDefaults.standard.set(true, forKey: LienzoModel.key_visibilidadImagenLienzo)
                     LienzoModel.shared.saveColorTextoSecundario(colorTexttoSecundario: .black) //Color del Texto Secundario
                     
+                    //Popula la Tabla Frases Si es la primera Vez que se instala la App:
+                    let frasesModel = FrasesModel.shared
+                    Task{
+                        await frasesModel.PopularFrases()
+                    }
+                    
+                    
                     //Muestra la ventana de Resultados
                     self.showNovedades = true
-                case "actualizacion":
+                case .updateApp:
+                    print("La App se ha Actualizado")
                     //Muestra la ventana de resultados
                     self.showNovedades = true
+                    
+                    //Popula la Tabla Frases al actualizar si nunca se ha realizado:
+                    let frasesModel = FrasesModel.shared
+                    Task{
+                        await frasesModel.PopularFrases()
+                    }
+                    
                 default:
-                    print("No hacer nada")
+                    print("La App ni se ha instalado ni se ha actualizado")
                 }
                 
             }
@@ -227,7 +257,7 @@ struct TabButtonBar : View{
             if !newValue {
                 //Actualizando el estado de favorito de la frase actual
                 withAnimation {
-                    self.frasesModel.favStateOfCurrentFrase = frasesModel.isFavFrase(frasesModel.fraseActual)
+                    self.frasesModel.favStateOfCurrentFrase = frasesModel.isFavFrase(fraseID: frasesModel.fraseActual?.id ?? "")
                 }
                 
             }

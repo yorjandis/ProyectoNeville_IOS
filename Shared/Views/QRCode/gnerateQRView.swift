@@ -87,7 +87,7 @@ struct GenerateQRView : View {
                                     if self.footer.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false{
                                         
                                         Button("Guardar en Frases"){
-                                            if FrasesModel.shared.AddFrase(frase: footer) == false{
+                                            if FrasesModel.shared.AddFrase(frase: footer, autor: "personal") == false{
                                                 self.alertMessage = "Error el guardar en Frases"
                                                 self.showAlert = true
                                             }
@@ -130,7 +130,7 @@ struct GenerateQRView : View {
                                                 )
                                  )
                                 Button("Guardar en Frases"){
-                                    if FrasesModel.shared.AddFrase(frase: footer) == false{
+                                    if FrasesModel.shared.AddFrase(frase: footer, autor: "personal") == false{
                                         self.alertMessage = "No se pudo guardar la frase"
                                         self.showAlert = true
                                     }
@@ -214,7 +214,7 @@ struct GenerateQRView : View {
                                         self.imagen = getImageQR() //Recrea la imagen QR a partir del texto actual. Esto es para el caso de que se modifique el texto antes de importar.
                                         validarFormatoImportacion()
                                         if let frase = self.formatImportFrase{
-                                            if FrasesModel.shared.AddFrase(frase: frase){
+                                            if FrasesModel.shared.AddFrase(frase: frase, autor: "personal"){
                                                 self.alertMessage = "Frase importada correctamente"
                                                 self.showAlert = true
                                             }
