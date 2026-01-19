@@ -96,80 +96,82 @@ struct TxtListView: View {
       //En macOS: el listado se divide en dos columnas
 #if os(macOS)
                 //Listado de las últimas 5 conferencias Vistas
-                VStack{
-                        if self.lastConferencesViewer{
-                            VStack(spacing: 0){
-                                Group{
-                                    ScrollView {
-                                        LazyVGrid(columns: columnas, alignment: .leading, spacing: 12) {
-                                            ForEach(self.modeloTxt.lastFiveConferences, id: \.self) { nombreTxt in
-                                                VStack(alignment: .leading) {
-                                                    HStack {
-                                                        Image(systemName: "leaf.fill")
-                                                            .padding(.horizontal, 5)
-                                                            .foregroundStyle(
-                                                                .linearGradient(
-                                                                    colors: [
-                                                                        (modeloTxt.getIsFavOfTxt(
-                                                                            nombreTxt: nombreTxt,
-                                                                            type: self.typeOfContent
-                                                                        )) ? .orange : .black,
-                                                                        (modeloTxt.isNotaOfTxt(
-                                                                            nombreTxt: nombreTxt,
-                                                                            type: typeOfContent
-                                                                        )) ? .green : .black
-                                                                    ],
-                                                                    startPoint: .leading,
-                                                                    endPoint: .trailing
-                                                                )
-                                                            )
-
-                                                        Button {
-                                                            // Manejar el vector de conferencias vistas
-                                                            self.modeloTxt.handleLastFiveConferences(nombreTxt: nombreTxt)
-
-                                                            showWindow(
-                                                                for: ContentTxtShowView(
-                                                                    title: self.title,
-                                                                    nombreTxt: nombreTxt,
-                                                                    type: self.typeOfContent
-                                                                ),
-                                                                environmentObjects: [
-                                                                    self.modeloTxt,
-                                                                    self.settingModel,
-                                                                    self.clipBoardModel
+                if (self.typeOfContent == .conf && self.lastConferencesViewer) {
+                    VStack{
+                        
+                        VStack(spacing: 0){
+                            Group{
+                                ScrollView {
+                                    LazyVGrid(columns: columnas, alignment: .leading, spacing: 12) {
+                                        ForEach(self.modeloTxt.lastFiveConferences, id: \.self) { nombreTxt in
+                                            VStack(alignment: .leading) {
+                                                HStack {
+                                                    Image(systemName: "leaf.fill")
+                                                        .padding(.horizontal, 5)
+                                                        .foregroundStyle(
+                                                            .linearGradient(
+                                                                colors: [
+                                                                    (modeloTxt.getIsFavOfTxt(
+                                                                        nombreTxt: nombreTxt,
+                                                                        type: self.typeOfContent
+                                                                    )) ? .orange : .black,
+                                                                    (modeloTxt.isNotaOfTxt(
+                                                                        nombreTxt: nombreTxt,
+                                                                        type: typeOfContent
+                                                                    )) ? .green : .black
                                                                 ],
-                                                                title: "\(self.title) - \(nombreTxt)",
-                                                                size: AppCons.windows_size_content,
-                                                                isModal: false,
-                                                                onClose: {
-                                                                    Task { @MainActor in
-                                                                        self.modeloTxt.saveLastFiveConferences()
-                                                                    }
-                                                                }
+                                                                startPoint: .leading,
+                                                                endPoint: .trailing
                                                             )
-                                                        } label: {
-                                                            Text(nombreTxt)
-                                                                .font(.system(size: CGFloat(self.fontSizeLista)))
-                                                                .fontDesign(.serif)
-                                                                .bold()
-                                                                .foregroundStyle(.black)
-                                                        }
-                                                        .buttonStyle(.plain)
+                                                        )
+                                                    
+                                                    Button {
+                                                        // Manejar el vector de conferencias vistas
+                                                        self.modeloTxt.handleLastFiveConferences(nombreTxt: nombreTxt)
+                                                        
+                                                        showWindow(
+                                                            for: ContentTxtShowView(
+                                                                title: self.title,
+                                                                nombreTxt: nombreTxt,
+                                                                type: self.typeOfContent
+                                                            ),
+                                                            environmentObjects: [
+                                                                self.modeloTxt,
+                                                                self.settingModel,
+                                                                self.clipBoardModel
+                                                            ],
+                                                            title: "\(self.title) - \(nombreTxt)",
+                                                            size: AppCons.windows_size_content,
+                                                            isModal: false,
+                                                            onClose: {
+                                                                Task { @MainActor in
+                                                                    self.modeloTxt.saveLastFiveConferences()
+                                                                }
+                                                            }
+                                                        )
+                                                    } label: {
+                                                        Text(nombreTxt)
+                                                            .font(.system(size: CGFloat(self.fontSizeLista)))
+                                                            .fontDesign(.serif)
+                                                            .bold()
+                                                            .foregroundStyle(.black)
                                                     }
+                                                    .buttonStyle(.plain)
                                                 }
-                                                .padding(.horizontal)
                                             }
+                                            .padding(.horizontal)
                                         }
                                     }
                                 }
-                                Divider()
-                                    .frame(width: 450, height: 2, alignment: .leading)
-                                    .foregroundStyle(.black)
                             }
-                            .frame(height: 150)
+                            Divider()
+                                .frame(width: 450, height: 2, alignment: .leading)
+                                .foregroundStyle(.black)
                         }
+                        .frame(height: 150)
+                        
                     }
+                }
                 
                 
                 ScrollView {
@@ -235,7 +237,7 @@ struct TxtListView: View {
                 // iOS / iPadOS conservan tu List original
                 VStack{
                     //Listado de las últimas 5 conferencias Vistas
-                        if self.lastConferencesViewer{
+                    if ( self.typeOfContent == .conf && self.lastConferencesViewer){
                             VStack(spacing: 0){
                                 Group{
                                     Text("Últimas lecturas visitadas:").font(.headline)
@@ -307,12 +309,10 @@ struct TxtListView: View {
                                         .environmentObject(self.clipBoardModel)
                                         .onAppear{
                                             //"Se ha abierto una conferencia")
-                                                print(nombreTxt)
                                                 self.modeloTxt.handleLastFiveConferences(nombreTxt: nombreTxt)
                                             
                                         }
                                         .onDisappear{
-                                                print(nombreTxt)
                                                 self.modeloTxt.saveLastFiveConferences()//Salva la conferencia
                                             
                                         }

@@ -61,9 +61,38 @@ struct Home: View {
  
                     Spacer()
                     
-                    Button("Procesar"){
-                       
+                    Button("Para pruebas"){
+                        
+                        /*
+                         let contenidoTotal = [
+                         UtilFuncs.FileRead(AppCons.FileListFrasesJD),
+                         UtilFuncs.FileRead(AppCons.FileListFrases)
+                     ].joined(separator: "\n\n")
+                     //print(arrayFrasesTxt)
+                     _ = parsearFrasesNuevoFormato(contenidoTotal)
+                         
+                         */
+                        
+                        
+                        //Eliminando las frases
+                         let frasesModel = FrasesModel.shared
+                         if  frasesModel.deleteAllFrases() {
+                             msg("Se ha eliminado todas las frases de la tabla frases")
+                         }
+                        //Eliminando los contextos
+                        let contextoModel = ContextoModel.shared
+                        if contextoModel.DeleteAllContextos() {
+                            msg("Se ha eliminado todos los contectos de la tabla contexto")
+                        }
+                        
+                        
+                        //Forzar la función de popular Frases
+                        HashFileModel().ResetearHashGlobal()              
+                         
+                         
+  
                     }
+                    .buttonStyle(.bordered)
                     
                     NavigationLink("Goals"){
                         GoalsListView()
@@ -90,7 +119,7 @@ struct Home: View {
                 //Ejecutar Lógica la primera vez que se instala o se actualiza la función 
                 switch RunFirstTimeModel.CheckStatusAppRun(){
                 case .firstLaunchApp:
-                    print("Primera vez que se instala la App")
+                    msg("Primera vez que se instala la App")
                     //Actualiza las variables iniciales del Lienzo:
                     UserDefaults.standard.set(true,forKey: LienzoModel.key_visibilidadTextoSecundario) //Visibilidad de Imagen
                     UserDefaults.standard.set(true, forKey: LienzoModel.key_visibilidadImagenLienzo)
@@ -106,7 +135,7 @@ struct Home: View {
                     //Muestra la ventana de Resultados
                     self.showNovedades = true
                 case .updateApp:
-                    print("La App se ha Actualizado")
+                    msg("La App se ha Actualizado")
                     //Muestra la ventana de resultados
                     self.showNovedades = true
                     
@@ -117,7 +146,15 @@ struct Home: View {
                     }
                     
                 default:
-                    print("La App ni se ha instalado ni se ha actualizado")
+                    msg("La App ni se ha instalado ni se ha actualizado: Se ha iniciado en modo debug Xcode")
+                    
+                     //Popula la Tabla Frases al actualizar si nunca se ha realizado:
+                     let frasesModel = FrasesModel.shared
+                     Task{
+                         await frasesModel.PopularFrases()
+                     }
+                     
+                    
                 }
                 
             }
@@ -315,7 +352,7 @@ struct AddNotasViewInbuilt: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Guardar"){
                         if !save() {
-                            print("se ha producido un error al guardar la nota")
+                            msg("se ha producido un error al guardar la nota")
                         }
                         
                         dimiss()

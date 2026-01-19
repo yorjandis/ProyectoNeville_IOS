@@ -42,7 +42,7 @@ final class PurchaseManager: ObservableObject {
         do {
             products = try await Product.products(for: [premiumProductID])
         } catch {
-            print("Error cargando productos:", error)
+            print("Error cargando productos:", error.localizedDescription)
         }
     }
 }

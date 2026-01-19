@@ -178,7 +178,7 @@ final class NotasModel : ObservableObject  {
                 return  entity
             }
         }catch{
-            print(error.localizedDescription)
+            msg(error.localizedDescription)
             
         }
         

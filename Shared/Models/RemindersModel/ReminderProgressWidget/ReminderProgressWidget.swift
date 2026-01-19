@@ -43,7 +43,7 @@ struct ReminderProgressWidget: View {
             } else {
                 fallbackPauseView
             }
-        case .daily, .date, .monthly, .yearly:
+        case .daily,.monthly, .yearly:
             if let startedAt = reminder.startedAt,
                let progress = reminder.frequency.progressSince(startedAt: startedAt) {
                 IntervalProgressView(totalInterval: progress.total,
@@ -52,6 +52,21 @@ struct ReminderProgressWidget: View {
             } else {
                 fallbackPauseView
             }
+        case .date:
+            // 🔥 CORTE DEFINITIVO PARA FECHA FIJA
+            if reminder.frequency.nextFireDate() != nil,
+                   let startedAt = reminder.startedAt,
+                   let progress = reminder.frequency.progressSince(startedAt: startedAt) {
+
+                    IntervalProgressView(
+                        totalInterval: progress.total,
+                        startedAt: Date().addingTimeInterval(-progress.elapsed),
+                        size: 60
+                    )
+
+                } else {
+                    fallbackPauseView
+                }
         }
     }
     

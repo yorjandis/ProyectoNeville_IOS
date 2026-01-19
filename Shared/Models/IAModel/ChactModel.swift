@@ -154,7 +154,7 @@ final class ChatViewModel: ObservableObject {
             
         } catch {
             messages.append(ChatMessage(text: "Lo siento, ha ocurrido un error.",promtp: "", isUser: false))
-            print("Error en session.respond: \(error)")
+            msg("Error en session.respond: \(error)")
         }
         isResponding = false //Terminó el trabajo
     }

@@ -746,7 +746,7 @@ struct LienzoMain: View {
                             self.alertMessage = "La imagen se ha guardado en la galería"
                             self.showAlert = true
                         }catch{
-                            print(error.localizedDescription)
+                            msg(error.localizedDescription)
                         }
                      
                     }

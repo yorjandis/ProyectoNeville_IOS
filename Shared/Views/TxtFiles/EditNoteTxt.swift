@@ -114,7 +114,7 @@ struct EditNoteTxt:View {
     }
     
     private func autoSave(){
-        print("Salvando el contenido")
+        msg("Salvando el contenido")
         if self.oldContent != self.textfiel{
             if modeloTxt.setNotaOfTXT(nombreTxt: nameTxt, type: self.typeOfContent, nota: textfiel){
                 modeloTxt.getAllFileTxtOfType(type: self.typeOfContent)

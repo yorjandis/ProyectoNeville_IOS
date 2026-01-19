@@ -8,13 +8,23 @@
 //Permite adicionar una nueva frase personal
 
 import SwiftUI
+import CoreData
 
 struct FraseAddView: View {
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject private var frasesModel: FrasesModel
+    @StateObject private var contextoModel = ContextoModel.shared
+    
     @State private var text = ""
     @State private var autor = ""
-    //@State private var favorito: Bool = false
+    @State private var nota = ""
+    @State private var favorito: Bool = false
+    @State private var NewContextoName = ""
+    @State private var contextoSeleccionado: Contexto?
+    
+    
+    
+    
     
     //Mostrar la ventana de FeedBackReview
     @State private var sheetShowFeedBackReview: Bool = false
@@ -29,6 +39,7 @@ struct FraseAddView: View {
             VStack{
                 
 #if os(macOS)
+                //macOS: Botones Guardar / Camcelar
             HStack{
                 Button("Guardar"){
                     if !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
@@ -90,6 +101,10 @@ struct FraseAddView: View {
                                         .stroke(Color.secondary.opacity(0.2), lineWidth: 1)
                                 }
                             
+                            
+                        }
+                        
+                        Section("Autor"){
                             TextEditor(text: $autor)
                                 .font(.system(size: 20))
                                 .scrollDisabled(false)
@@ -100,18 +115,81 @@ struct FraseAddView: View {
                                         .stroke(Color.secondary.opacity(0.2), lineWidth: 1)
                                 }
                         }
-                        .padding(.horizontal, 5)
+                        Section("Nota"){
+                            TextEditor(text: $nota)
+                                .font(.system(size: 20))
+                                .scrollDisabled(false)
+                                .frame(height: 150)
+                                .padding(.bottom, 15)
+                                .overlay {
+                                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                        .stroke(Color.secondary.opacity(0.2), lineWidth: 1)
+                                }
+                        }
+                        Section("Favorito"){
+                            Toggle(self.favorito ? "On" : "Off", isOn: self.$favorito)
+                        }
+                       
                         
                         
                         #else
-                        TextField("Texto de la frase", text: $text, axis: .vertical)
-                            .multilineTextAlignment(.leading)
-                            .font(.system(size: 22))
-                            .frame(height: 80)
-                        TextField("Autor de la frase", text: $autor, axis: .vertical)
-                            .multilineTextAlignment(.leading)
-                            .font(.system(size: 22))
-                            .frame(height: 80)
+                        Section("Frase"){
+                            TextField("Texto de la frase", text: $text, axis: .vertical)
+                                .multilineTextAlignment(.leading)
+                                .font(.system(size: 22))
+                                .frame(height: 80)
+                        }
+                        Section("Autor"){
+                            TextField("Autor de la frase", text: $autor, axis: .vertical)
+                                .multilineTextAlignment(.leading)
+                                .font(.system(size: 22))
+                                .frame(height: 80)
+                        }
+                        
+                        Section("Contexto"){
+                            VStack{
+                                Picker("Lista de Contextos", selection: $contextoSeleccionado) {
+                                    ForEach(contextoModel.listContextos, id: \.objectID) { contexto in
+                                        Text(contexto.nombre ?? "")
+                                            .tag(Optional(contexto))
+                                            .contextMenu {
+                                                Button("Eliminar Contexto"){
+                                                    _ = self.contextoModel.deleteContexto(contextoDelete: contexto)
+                                                }
+                                            }
+                                    }
+                                }
+                                .pickerStyle(.menu)
+                                
+                                HStack{
+                                    TextField("Nuevo Contexto", text: $NewContextoName, axis: .vertical)
+                                        .multilineTextAlignment(.leading)
+                                        .font(.system(size: 22))
+                                    Button("Crear Contexto"){
+                                           _ =  self.contextoModel.addContexto(newContextoName: self.NewContextoName)
+                                        self.contextoModel.getAllContextos()
+                                    }
+                                    .disabled(self.NewContextoName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                                    .buttonStyle(.bordered)
+                                }
+                                
+                                
+                            }
+                            
+                            
+                            
+                        }
+                        
+                        Section("Nota"){
+                            TextField("Autor de la frase", text: $nota, axis: .vertical)
+                                .multilineTextAlignment(.leading)
+                                .font(.system(size: 22))
+                                .frame(height: 80)
+                        }
+                        Section("Favorito"){
+                            Toggle(self.favorito ? "On" : "Off", isOn: self.$favorito)
+                        }
+                       
                         #endif
                        
                     }
@@ -128,7 +206,7 @@ struct FraseAddView: View {
                 ToolbarItem(placement: .topBarTrailing){
                     Button("Guardar"){
                         if !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                            if frasesModel.AddFrase(frase: text, autor: self.autor){
+                            if frasesModel.AddFrase(frase: text, autor: self.autor, nota: self.nota, isfav: self.favorito){
                                 //Lanza la ventana de FeedBackreview si se alcanza el humbral de hitos
                                 if  FeedBackModel.checkReviewRequest() {
                                     self.sheetShowFeedBackReview = true
@@ -145,7 +223,7 @@ struct FraseAddView: View {
                         }
                     }
                     .buttonStyle(.borderedProminent)
-                    .tint(.blue.opacity(0.4))
+                    .tint(.blue)
                 }
                 
                 
@@ -154,7 +232,7 @@ struct FraseAddView: View {
                         self.dismiss()
                     }
                     .buttonStyle(.borderedProminent)
-                    .tint(.red.opacity(0.4))
+                    .tint(.red)
                 }
                 
                 #elseif os(macOS)

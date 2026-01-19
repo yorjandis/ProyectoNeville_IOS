@@ -118,6 +118,13 @@ struct ContentViewMac: View {
                 UserDefaults.standard.set(true, forKey: LienzoModel.key_visibilidadImagenLienzo)
                 LienzoModel.shared.saveColorTextoSecundario(colorTexttoSecundario: .black) //Color del Texto Secundario
                 
+                //Popula la Tabla Frases Si es la primera Vez que se instala la App:
+                let frasesModel = FrasesModel.shared
+                Task{
+                    await frasesModel.PopularFrases()
+                }
+                
+                
                 //Muestra la ventana de Resultados
                 showWindow(for: Novedades(),
                            environmentObjects: [],
@@ -127,6 +134,13 @@ struct ContentViewMac: View {
                            
                 )
             case .updateApp:
+                
+                //Popula la Tabla Frases Si es la primera Vez que se instala la App:
+                let frasesModel = FrasesModel.shared
+                Task{
+                    await frasesModel.PopularFrases()
+                }
+                
                 //Muestra la ventana de resultados
                 showWindow(for: Novedades(),
                            environmentObjects: [],
@@ -137,6 +151,7 @@ struct ContentViewMac: View {
                 )
             default:
                 print("No hacer nada mac")
+                
             }
             
             

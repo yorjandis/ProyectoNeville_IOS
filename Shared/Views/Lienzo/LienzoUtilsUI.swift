@@ -53,7 +53,7 @@ func guardarImagenEnDescargasConTimestamp(_ imagen: NSImage) {
     
     // Obtener carpeta Downloads
     guard let downloadsURL = FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first else {
-        print("❌ No se pudo obtener la carpeta Descargas.")
+        msg("❌ No se pudo obtener la carpeta Descargas.")
         return
     }
 
@@ -64,16 +64,16 @@ func guardarImagenEnDescargasConTimestamp(_ imagen: NSImage) {
     guard let tiffData = imagen.tiffRepresentation,
           let bitmap = NSBitmapImageRep(data: tiffData),
           let pngData = bitmap.representation(using: .png, properties: [:]) else {
-        print("❌ No se pudo convertir la imagen.")
+        msg("❌ No se pudo convertir la imagen.")
         return
     }
      
     
         do {
             try pngData.write(to: fileURL)
-            print("✔ Imagen guardada en: \(fileURL.path)")
+            msg("✔ Imagen guardada en: \(fileURL.path)")
         } catch {
-            print("❌ Error al guardar la imagen: \(error)")
+            msg("❌ Error al guardar la imagen: \(error)")
         }
     
 
@@ -228,7 +228,7 @@ func exportImageToTempURL(_ image: UIImage) -> URL? {
             try data.write(to: fileURL, options: .atomic)
             return fileURL
         } catch {
-            print("Error guardando imagen temporal: \(error)")
+            msg("Error guardando imagen temporal: \(error)")
             return nil
         }
     }
@@ -245,9 +245,9 @@ func limpiarCarpetaTemporal() {
         for archivo in archivos {
             try FileManager.default.removeItem(at: archivo)
         }
-        print("Carpeta temporal vaciada correctamente")
+        msg("Carpeta temporal vaciada correctamente")
     } catch {
-        print("Error al limpiar la carpeta temporal: \(error)")
+        msg("Error al limpiar la carpeta temporal: \(error)")
     }
 }
 
@@ -257,15 +257,15 @@ func listarCarpetaTemporal() {
     do {
         let archivos = try FileManager.default.contentsOfDirectory(at: tempDir, includingPropertiesForKeys: nil)
         if archivos.isEmpty {
-            print("La carpeta temporal está vacía.")
+            msg("La carpeta temporal está vacía.")
         } else {
-            print("Contenido de la carpeta temporal:")
+            msg("Contenido de la carpeta temporal:")
             for archivo in archivos {
-                print("- \(archivo.lastPathComponent)")
+                msg("- \(archivo.lastPathComponent)")
             }
         }
     } catch {
-        print("Error al listar la carpeta temporal: \(error)")
+        msg("Error al listar la carpeta temporal: \(error)")
     }
 }
 
@@ -298,7 +298,7 @@ func exportImageToTempURL(_ image: NSImage) -> URL? {
           let bitmap = NSBitmapImageRep(data: tiffData),
           let pngData = bitmap.representation(using: .png, properties: [:])
     else {
-        print("No se pudo convertir NSImage a PNG")
+        msg("No se pudo convertir NSImage a PNG")
         return nil
     }
 
@@ -306,7 +306,7 @@ func exportImageToTempURL(_ image: NSImage) -> URL? {
         try pngData.write(to: fileURL, options: .atomic)
         return fileURL
     } catch {
-        print("Error guardando imagen temporal: \(error)")
+        msg("Error guardando imagen temporal: \(error)")
         return nil
     }
 }

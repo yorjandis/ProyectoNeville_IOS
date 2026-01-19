@@ -181,11 +181,19 @@
 				Models/CoreData/CoreDataController.swift,
 				Models/DiarioModel/DiarioModel.swift,
 				Models/FeedBackModel/FeedBackModel.swift,
+				Models/FrasesModel/ContextoFrases/ContextoModel.swift,
+				Models/FrasesModel/ContextoFrases/ContextosFrasesModel.swift,
 				Models/FrasesModel/FrasesModel.swift,
 				Models/FrasesModel/FrasesRelacionadasModel/FrasesRelacionadasModel.swift,
 				Models/FrasesModel/FrasesRelacionadasModel/Views/FraseRelacionadasTabView.swift,
+				Models/FrasesModel/FrasesRelacionadasModel/Views/FrasesMainListRelacionadas.swift,
+				Models/FrasesModel/FrasesRelacionadasModel/Views/ViewsAuxiliares/ColorGradientFrasesRelacionas.swift,
 				Models/FrasesModel/FrasesRelacionadasModel/Views/ViewsAuxiliares/FraseActualCargadaView.swift,
 				Models/FrasesModel/FrasesRelacionadasModel/Views/ViewsAuxiliares/FrasesRelacionasListView.swift,
+				Models/FrasesModel/NuevoFormatoFrases/convertirFormatoAntiguoANuevo.swift,
+				Models/FrasesModel/NuevoFormatoFrases/FraseDTO.swift,
+				Models/FrasesModel/NuevoFormatoFrases/HashFileModel.swift,
+				Models/FrasesModel/NuevoFormatoFrases/parsearFrasesNuevoFormato.swift,
 				Models/GameModel/GameModel.swift,
 				Models/IAModel/ChactModel.swift,
 				Models/IAModel/IAModelAppleIntelligence.swift,
@@ -790,6 +798,7 @@
 				"Staff/Conf/conf_yo soy la causa.txt",
 				"Staff/Conf/conf_yo soy la vid.txt",
 				Staff/cuestionario.txt,
+				Staff/Frases/listfrases_jd.txt,
 				Staff/Frases/listfrases.txt,
 				"Staff/Preguntas/preg_pregunta 1.txt",
 				"Staff/Preguntas/preg_pregunta 2.txt",
@@ -895,6 +904,7 @@
 			membershipExceptions = (
 				Models/AppCons/AppCons.swift,
 				Models/Utils/Utils.swift,
+				Staff/Frases/listfrases_jd.txt,
 				Staff/Frases/listfrases.txt,
 			);
 			target = 19E0BE132B0C661A00E149A5 /* FrasesWiggetExtension */;
@@ -907,6 +917,7 @@
 				Models/CoreData/CoreDataController.swift,
 				Models/Utils/Utils.swift,
 				Models/UtilsForView/UtilsForViews.swift,
+				Staff/Frases/listfrases_jd.txt,
 				Staff/Frases/listfrases.txt,
 			);
 			target = 19F804182B69CB9D00A323A0 /* La Ley Watch App */;

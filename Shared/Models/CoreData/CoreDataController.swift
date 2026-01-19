@@ -88,7 +88,7 @@ final class CoreDataController: Sendable {
                 try context.save()
             } catch {
                 context.rollback()
-                print("Error al guardar en Core Data: \(error.localizedDescription)")
+                msg("Error al guardar en Core Data: \(error.localizedDescription)")
             }
         }
     }
@@ -110,13 +110,13 @@ final class CoreDataController: Sendable {
         
         persistentContainer.loadPersistentStores { (description, error) in
             if let error = error {
-                print("Error al cargar el almacén de datos con iCloud: \(error.localizedDescription)")
+                msg("Error al cargar el almacén de datos con iCloud: \(error.localizedDescription)")
             } else {
-                print("Core Data con iCloudKit cargado correctamente.")
+                msg("Core Data con iCloudKit cargado correctamente.")
             }
         }
         
         persistentContainer.viewContext.automaticallyMergesChangesFromParent = true
-        persistentContainer.viewContext.mergePolicy = NSMergePolicy(merge: .mergeByPropertyObjectTrumpMergePolicyType)
+        persistentContainer.viewContext.mergePolicy = NSMergePolicy(merge: .mergeByPropertyObjectTrumpMergePolicyType) //
     }
 }

@@ -31,7 +31,7 @@ final class NotificationSoundPreview {
             player?.prepareToPlay()
             player?.play()
         } catch {
-            print("❌ Error reproduciendo sonido:", error)
+            msg("❌ Error reproduciendo sonido:", error)
         }
     }
 

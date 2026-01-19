@@ -103,6 +103,7 @@ struct Neville_iOSApp: App {
                             //almacenar el mensaje de la notificación
                             if phase == .active {
                                 messageCenter.loadPendingMessage()
+                                ReminderStore.shared.invalidateExpiredDateReminders()
                             }
                         }
                         .sheet(item: self.$itemAtajo) { item in
@@ -150,8 +151,11 @@ struct Neville_iOSApp: App {
     
     func handleShareItem() async{
         
-        if let defaults = UserDefaults(suiteName: "group.com.ypg.nev.group"){
-            
+        guard let defaults = UserDefaults(suiteName: "group.com.ypg.nev.group") else {
+            msg("❌ No se pudo acceder al App Group")
+            return
+        }
+      
             //Manejando el texto en Notas
             if let texto = defaults.string(forKey: self.keyNotaShareText){
                 
@@ -171,8 +175,8 @@ struct Neville_iOSApp: App {
             if let texto = defaults.string(forKey: self.keyFraseShareText){
                 
                 //Detectando formato de importación de Frases
-                if let textImportado = QRModel.detectFormatImportFrase(text: texto){
-                    _ = FrasesModel.shared.AddFrase(frase: textImportado.1, autor: "personal")
+                if let textImportado = QRModel.detectFormatImportFrase(frase: texto){
+                    _ = FrasesModel.shared.AddFrase(frase: textImportado.0, autor: textImportado.1, nota: textImportado.2, isfav: textImportado.3)
                 }else{
                     _ = FrasesModel.shared.AddFrase(frase: texto, autor: "personal")
                 }
@@ -181,7 +185,7 @@ struct Neville_iOSApp: App {
                 defaults.removeObject(forKey: self.keyFraseShareText)
             }
 
-        }
+       
 
     }
   

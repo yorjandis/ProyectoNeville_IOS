@@ -50,10 +50,36 @@ final class ReminderStore{
     func load() -> [StoredReminder] {
         guard
             let data = UserDefaults.standard.data(forKey: key),
-            let reminders = try? JSONDecoder().decode([StoredReminder].self, from: data)
+            var reminders = try? JSONDecoder().decode([StoredReminder].self, from: data)
         else {
             return []
         }
+        
+        //Nuevo código:
+        let now = Date()
+            var changed = false
+
+            reminders = reminders.map { reminder in
+                guard case .date(let date) = reminder.frequency else {
+                    return reminder
+                }
+
+                if reminder.isStarted, date <= now {
+                    var r = reminder
+                    r.isStarted = false
+                    r.startedAt = nil
+                    changed = true
+                    return r
+                }
+
+                return reminder
+            }
+
+            if changed {
+                save(reminders)
+            }
+
+        
         return reminders
     }
 
@@ -108,6 +134,36 @@ final class ReminderStore{
             var r = reminders[idx]
             r.isStarted = true
             reminders[idx] = r
+            save(reminders)
+        }
+    }
+    
+    
+    //Permite invalidar un recordatorio (widget del recordatorio) em home, cuando se trata de una fecha fija
+    // y la app esta en segundo plano. Este método debe ser llamado al inicio de la App en iOS, dentro del Scene Delegate: Active
+    @MainActor
+    func invalidateExpiredDateReminders() {
+        let now = Date()
+        var reminders = load()
+        var changed = false
+
+        reminders = reminders.map { reminder in
+            guard case .date(let date) = reminder.frequency else {
+                return reminder
+            }
+
+            if reminder.isStarted, date <= now {
+                var r = reminder
+                r.isStarted = false
+                r.startedAt = nil
+                changed = true
+                return r
+            }
+
+            return reminder
+        }
+
+        if changed {
             save(reminders)
         }
     }

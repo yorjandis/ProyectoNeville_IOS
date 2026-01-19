@@ -58,6 +58,10 @@ struct Ajustes: View {
     @State var ColorFrase       : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_color_frases) ?? .black
     @State var ColorPrimario    : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_color_main_a) ?? .purple
     @State var ColorSecundario  : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_color_main_b) ?? .blue.opacity(0.5)
+    /*
+      Color(red: 1.00, green: 0.55, blue: 0.30), // naranja
+      Color(red: 1.00, green: 0.80, blue: 0.45)  // amarillo suave
+      */
     
     
     //Colores de IA chat:
@@ -289,7 +293,7 @@ struct Ajustes: View {
                                     Text("Utilización de la IA").font(.system(size: 22)).foregroundStyle(.orange)
                                     
                                     VStack(alignment: .leading ,spacing: 10){
-                                        Text("Descargo de Responsabilidad")
+                                        Text("Condiciones de Uso de la IA")
                                             .font(.system(size: 20))
                                         HStack{
                                             Text("(\(self.DescargoDeIA ? "Aceptado" : "No aceptado")) ")
@@ -297,10 +301,10 @@ struct Ajustes: View {
                                             
                                             Spacer()
                                             
-                                            Button("Acceder al Descargo de responsabilidad"){
+                                            Button("Acceder a las Condiciones de Uso de la IA"){
                                                 showWindow(for: DescargoResponsabilidadIA(VentanaEnSetting: true).foregroundStyle(.orange),
                                                            environmentObjects: [],
-                                                           title: "Descargo de Responsabilidad",
+                                                           title: "Condiciones de Uso de la IA",
                                                            size: AppCons.windows_size_content,
                                                            isModal: true
                                                            
@@ -308,7 +312,7 @@ struct Ajustes: View {
                                             }
                                             
                                         }
-                                        Text("Nota: Para utilizar la IA generativa en el dispositivo, debe leer y aceptar primero el Descargo de Responsabilidad.").font(.system(size: 15))
+                                        Text("Nota: Para utilizar la IA generativa en el dispositivo, debe leer y aceptar primero las Condiciones de Uso de la IA.").font(.system(size: 15))
                                     }
                                     
                                     //Permitir Ajustar el tratamiento de la IA
@@ -895,9 +899,9 @@ struct Ajustes: View {
                                     HStack{
                                         Text("(\(self.DescargoDeIA ? "Aceptado" : "No aceptado")) ")
                                             .foregroundStyle(self.DescargoDeIA ? .green : .red).bold().font(.subheadline)
-                                        NavigationLink("Acceder al Descargo de responsabilidad"){DescargoResponsabilidadIA(VentanaEnSetting: true)}.foregroundStyle(.orange)
+                                        NavigationLink("Acceder a las Condiciones de Uso de la IA"){DescargoResponsabilidadIA(VentanaEnSetting: true)}.foregroundStyle(.orange)
                                     }
-                                    Text("Nota: Para utilizar la IA generativa en el dispositivo, debe leer y aceptar primero el Descargo de Responsabilidad.").font(Font.footnote.bold())
+                                    Text("Nota: Para utilizar la IA generativa en el dispositivo, debe leer y aceptar primero las Condiciones de Uso de la IA.").font(Font.footnote.bold())
                                 }
                                 
                                 //Permitir Ajustar el tratamiento de la IA

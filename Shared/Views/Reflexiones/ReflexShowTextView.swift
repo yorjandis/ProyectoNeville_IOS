@@ -328,7 +328,7 @@ struct ReflexShowTextView: View {
                 
             }
             .onAppear {
-                print(self.entity.content)
+                msg(self.entity.content)
                 //Aplicando
                 fontSizeContent = CGFloat(UserDefaults.standard.integer(forKey: AppCons.UD_setting_fontContentSize))
                 fontSizeContenido = Int(self.fontSizeContent)

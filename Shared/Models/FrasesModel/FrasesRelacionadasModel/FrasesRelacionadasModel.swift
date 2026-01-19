@@ -7,6 +7,20 @@
 
 import Foundation
 import CoreData
+import Combine
+
+@MainActor
+final class FrasesRelacionadasModel : ObservableObject {
+    
+    static var shared = FrasesRelacionadasModel()
+    
+    @Published var updateUI: UUID = UUID() //Muestra/oculta el panel de frases relacionadas
+    
+    
+    private init(){
+        
+    }
+}
 
 
 //Listado de Frases Relacionadas

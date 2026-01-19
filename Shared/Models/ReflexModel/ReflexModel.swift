@@ -107,7 +107,7 @@ final class ReflexModel : ObservableObject{
                     
                     self.list.append(refType)
                 } catch {
-                    print("Error cargando \(url.lastPathComponent): \(error)")
+                    msg("Error cargando \(url.lastPathComponent): \(error)")
                 }
             }
             //Adicionando las reflexiones personales al listado
@@ -147,7 +147,7 @@ final class ReflexModel : ObservableObject{
                 
                 result.append(refType)
             } catch {
-                print("Error cargando \(url.lastPathComponent): \(error)")
+                msg("Error cargando \(url.lastPathComponent): \(error)")
             }
         }
         //Adicionando las reflexiones personales al listado
@@ -376,10 +376,10 @@ final class ReflexModel : ObservableObject{
             
             // Guardar cambios en Core Data
             try context.save()
-           // print("Duplicados eliminados correctamente.")
+           // msg("Duplicados eliminados correctamente.")
             
         } catch {
-            print("Error al eliminar duplicados: \(error)")
+            msg("Error al eliminar duplicados: \(error)")
         }
     }
     

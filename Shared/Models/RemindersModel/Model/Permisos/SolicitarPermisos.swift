@@ -22,9 +22,9 @@ final class NotificationPermissionManager {
 
         center.requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
             if let error = error {
-                print("Error solicitando permisos: \(error)")
+                msg("Error solicitando permisos: \(error)")
             }
-            print("Permiso concedido: \(granted)")
+            msg("Permiso concedido: \(granted)")
         }
     }
 }

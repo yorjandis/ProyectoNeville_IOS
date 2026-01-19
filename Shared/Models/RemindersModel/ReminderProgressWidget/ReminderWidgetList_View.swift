@@ -97,12 +97,17 @@ struct ReminderWidgetList_View : View {
                                 .padding(5)
                                 .contextMenu(menuItems: {
                                     
-                                        Button{
-                                            ReminderNotificationManager.shared.resume(id: reminder.id)
-                                        }label:{
-                                            Label("Iniciar", systemImage: "play.fill")
-                                        }
+                                    Button{
+                                        ReminderNotificationManager.shared.resume(id: reminder.id)
+                                    }label:{
+                                        Label("Iniciar", systemImage: "play.fill")
+                                    }
                                     
+                                    Button{
+                                        SelectedReminderModel.shared.deselect(reminder)
+                                    } label:{
+                                        Label("Remover Widget", systemImage: "trash")
+                                    }
                                 })
                                 .onTapGesture {
                                     #if os(macOS)
@@ -124,9 +129,9 @@ struct ReminderWidgetList_View : View {
                         }
                     }
                     .task {
-                        print("Recordatorios selectos: \(modelRecordatorios.selectedReminders.count)")
+                        //msg("Recordatorios selectos: \(modelRecordatorios.selectedReminders.count)")
                         for reminder in modelRecordatorios.selectedReminders {
-                            print("\(reminder)")
+                            msg("\(reminder)")
                         }
                     }
                 }

@@ -1,0 +1,63 @@
+id=jd_001
+autor=jd
+nota=
+fuente=
+contexto=Unidad mente-cuerpo
+texto=El producto final de una experiencia en la realidad tridimensional es una emoción
+relacionadas=
+
+id=jd_002
+autor=jd
+nota=
+fuente=
+contexto=Unidad mente-cuerpo
+texto=Es el entorno el que causa la enfermedad, activando los genes que producen los cambios en el cuerpo
+relacionadas=
+
+id=jd_003
+autor=jd
+nota=
+fuente=
+contexto=La conciencia / mente como causa primaria, Unidad mente-cuerpo
+texto=Los pensamientos son el lenguaje del cerebro y los sentimientos son el lenguaje del cuerpo. Y como piensas y sientes determina tu estado de ser. Tu estado de ser determina tus experiencias y realidad objetiva
+relacionadas=
+
+id=jd_004
+autor=jd
+nota=
+fuente=
+contexto=Ruptura de hábitos mentales y emocionales
+texto=Nada Cambia en tu vida hasta que tú cambias
+relacionadas=
+
+id=jd_005
+autor=jd
+nota=
+fuente=
+contexto=Identidad y auto-concepto
+texto=No podemos atraer nada a nuestra vida de lo que nos sentimos separados
+relacionadas=
+
+id=jd_006
+autor=jd
+nota=
+fuente=
+contexto=La emoción o el sentimiento como fuerza activadora, Persistencia y repetición consciente
+texto=Cuando superas tus emociones dominas tus creaciones
+relacionadas=
+
+id=jd_007
+autor=jd
+nota=
+fuente=
+contexto=Identidad y auto-concepto
+texto=No se trata de lo que quieres sino en quién te conviertes
+relacionadas=
+
+id=jd_008
+autor=jd
+nota=
+fuente=
+contexto=Identidad y auto-concepto
+texto=No vemos las cosas como son sino como somos
+relacionadas=

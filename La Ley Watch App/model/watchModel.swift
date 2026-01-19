@@ -49,7 +49,7 @@ final class watchModel: ObservableObject {
                 }
             }
         }catch{
-            print("Error al recuperar las frases desde Core Data: \(error.localizedDescription)")
+            msg("Error al recuperar las frases desde Core Data: \(error.localizedDescription)")
         }
     }
     
@@ -62,7 +62,7 @@ final class watchModel: ObservableObject {
             self.listNotas = try context.fetch(fetchRequest)
 
         } catch {
-            print("Failed to fetch notes: \(error)")
+            msg("Failed to fetch notes: \(error)")
         }
     }
     
@@ -73,7 +73,7 @@ final class watchModel: ObservableObject {
             return  try context.fetch(fetchRequest)
             
         } catch {
-            print("Failed to fetch notes: \(error)")
+            msg("Failed to fetch notes: \(error)")
             return []
         }
     }
@@ -87,7 +87,7 @@ final class watchModel: ObservableObject {
             return  try context.fetch(fetchRequest)
             
         }catch{
-            print("Failed to fetch notes: \(error)")
+            msg("Failed to fetch notes: \(error)")
             return []
         }
         
@@ -144,7 +144,7 @@ final class watchModel: ObservableObject {
         do {
             self.listDiario = try context.fetch(fetchRequest)
         } catch {
-            print("Failed to fetch notes: \(error)")
+            msg("Failed to fetch notes: \(error)")
         }
     }
     
@@ -158,7 +158,7 @@ final class watchModel: ObservableObject {
         do {
             return try context.fetch(fetchRequest)
         } catch {
-            print("Failed to fetch notes: \(error)")
+            msg("Failed to fetch notes: \(error)")
             return []
         }
     }
@@ -238,7 +238,7 @@ final class watchModel: ObservableObject {
         do {
             return try context.fetch(fetchRequest)
         } catch {
-            print("Error al recuperar entradas: \(error)")
+            msg("Error al recuperar entradas: \(error)")
             return []
         }
     }
@@ -259,7 +259,7 @@ final class watchModel: ObservableObject {
         do {
             return try context.fetch(fetchRequest)
         } catch {
-            print("Error al recuperar entradas: \(error)")
+            msg("Error al recuperar entradas: \(error)")
             return []
         }
     }
@@ -307,7 +307,7 @@ final class watchModel: ObservableObject {
         do {
             return try context.fetch(fetchRequest)
         } catch {
-            print("Error al recuperar entradas: \(error)")
+            msg("Error al recuperar entradas: \(error)")
             return []
         }
     }

@@ -96,7 +96,7 @@ extension TxtContentModel {
             
             self.textList = result.sorted()
         } catch {
-            print("Error al leer el directorio: \(error.localizedDescription)")
+            msg("Error al leer el directorio: \(error.localizedDescription)")
             self.textList = []
         }
     }
@@ -120,7 +120,7 @@ extension TxtContentModel {
             
             return result.sorted()
         } catch {
-            print("Error al leer el directorio: \(error.localizedDescription)")
+            msg("Error al leer el directorio: \(error.localizedDescription)")
             return  []
         }
     }
@@ -158,7 +158,7 @@ extension TxtContentModel {
             }
             
         } catch {
-            print("Error al buscar la nota: \(error.localizedDescription)")
+            msg("Error al buscar la nota: \(error.localizedDescription)")
             return false
         }
         return false
@@ -176,7 +176,7 @@ extension TxtContentModel {
             }
             return ""
         }catch{
-            print("Error al obtener la nota de un elemento: \(error.localizedDescription)")
+            msg("Error al obtener la nota de un elemento: \(error.localizedDescription)")
             return ""
         }
     }
@@ -201,7 +201,7 @@ extension TxtContentModel {
             }
             return true
         }catch{
-            print("Error al fija la nota del elemento: \(error.localizedDescription)")
+            msg("Error al fija la nota del elemento: \(error.localizedDescription)")
             return false
         }
     }
@@ -221,7 +221,7 @@ extension TxtContentModel {
             }
             return false
         } catch {
-            print("Error al buscar el estado de favorito: \(error.localizedDescription)")
+            msg("Error al buscar el estado de favorito: \(error.localizedDescription)")
             return false
         }
     }
@@ -247,7 +247,7 @@ extension TxtContentModel {
             }
             return true
         }catch{
-            print("Error al fijar el estado de favorito: \(error.localizedDescription)")
+            msg("Error al fijar el estado de favorito: \(error.localizedDescription)")
             return false
         }
         
@@ -318,7 +318,7 @@ extension TxtContentModel {
                     return content.lowercased().contains(str.lowercased())
                 }
         } catch {
-            print("Error al buscar en Core Data: \(error.localizedDescription)")
+            msg("Error al buscar en Core Data: \(error.localizedDescription)")
             return []
         }
     }
@@ -340,7 +340,7 @@ extension TxtContentModel {
                     return content.contains(str.lowercased()) ? itemNameFileOK : nil
                 }
         } catch {
-            print("Error al obtener los elementos para la búsqueda: \(error.localizedDescription)")
+            msg("Error al obtener los elementos para la búsqueda: \(error.localizedDescription)")
             return []
         }
     }

@@ -30,12 +30,15 @@ struct GenerateQRView : View {
     @State  var  showImage = true //muestra la imagen del QR ya generado
     
     //Para manejar el botón y el fomrato de importación de notas
-    @State private var showImportButtonNotas : Bool = false
-    @State private var formatImportNotas : (String, String, Bool)? = nil
+    @State private var showImportButtonNotas    : Bool = false
+    @State private var formatImportNotas        : (String, String, Bool)? = nil
     
     //Para manejar el botón y el fomrato de importación de frase
-    @State private var showImportButtonFrase : Bool = false
-    @State private var formatImportFrase : String? = nil
+    @State private var showImportButtonFrase    : Bool = false
+    @State private var formatImportFrase        : String? = nil
+    @State private var formatImportFraseAutor   : String? = nil
+    @State private var formatImportFraseNota    : String? = nil
+    @State private var formatImportFraseisFav   : Bool = false
     
     
     
@@ -172,7 +175,6 @@ struct GenerateQRView : View {
                     Spacer()
 
                     //Mostrar el botón de importación de Notas si se ha mostrado un QR de formato de importación de notas:
-                    
                     if self.showImportButtonNotas{
                         HStack{
                             Button("Importar a Notas"){
@@ -359,7 +361,7 @@ struct GenerateQRView : View {
                                     self.footer = ""
                                 }
                             }else{
-                                print("Fallo al cargar la imagen de la galeria")
+                                msg("Fallo al cargar la imagen de la galeria")
                             }
                         }
                     }
@@ -462,24 +464,28 @@ struct GenerateQRView : View {
     
     //Función que determina si el texto dado tiene un formato de importación de Notas/Frases y, e ese caso, rellena los valores:
     func validarFormatoImportacion(){
-        //determinar si el texto que corresponde a la image tiene un formato de importación de notas:
-        if let result = QRModel.detectFormatImportNota(text: self.footer){
+        
+        if let result = QRModel.detectFormatImportNota(text: self.footer){ //Chequeando formato importación de Notas
             self.formatImportNotas = (result.1.0, result.1.1, result.1.2) //Almacenando en una estructura el título, el contenido de la nota, y su estado de favorito
-            self.showImportButtonNotas = true
-            self.formatImportFrase = nil
-            self.showImportButtonFrase = false
+            self.showImportButtonNotas  = true
+            self.formatImportFrase      = nil
+            self.showImportButtonFrase  = false
             
-        }else if let result = QRModel.detectFormatImportFrase(text: self.footer){
-            self.formatImportFrase = result.1 //Almacenando el texto de la Frase
-            self.showImportButtonFrase = true
-            self.formatImportNotas = nil
-            self.showImportButtonNotas = false
+        }else if let result = QRModel.detectFormatImportFrase(frase: self.footer){ //Chequeando formato importación de Frases
+            self.formatImportFrase      = result.0 //Almacenando el texto de la Frase
+            self.formatImportFraseAutor = result.1 //Almacenando el autor de la Frase
+            self.formatImportFraseNota  = result.2 //Almacenando la nota de la Frase
+            self.formatImportFraseisFav = result.3 //Almacenando el estado favorito de la Frase
             
-        }else{
-            self.formatImportNotas = nil
-            self.showImportButtonNotas = false
-            self.formatImportFrase = nil
-            self.showImportButtonFrase = false
+            self.showImportButtonFrase  = true
+            self.formatImportNotas      = nil
+            self.showImportButtonNotas  = false
+            
+        }else{ //Si el texto no tiene ningún formato de importación, se desactivan las opciones para importar
+            self.formatImportNotas      = nil
+            self.showImportButtonNotas  = false
+            self.formatImportFrase      = nil
+            self.showImportButtonFrase  = false
         }
     }
      

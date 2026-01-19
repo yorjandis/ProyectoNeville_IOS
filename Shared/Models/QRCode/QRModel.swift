@@ -88,7 +88,7 @@ struct QRModel{
         // Crear la petición de detección de códigos de barras (QR)
         let request = VNDetectBarcodesRequest { request, error in
             if let error = error {
-                print("Error en VNDetectBarcodesRequest:", error)
+                msg("Error en VNDetectBarcodesRequest:", error)
                 DispatchQueue.main.async { completion(nil) }
                 return
             }
@@ -112,7 +112,7 @@ struct QRModel{
                  do {
                      try handler.perform([request])
                  } catch {
-                     print("Error ejecutando VNImageRequestHandler:", error)
+                     msg("Error ejecutando VNImageRequestHandler:", error)
                      DispatchQueue.main.async { completion(nil) }
                  }
              }
@@ -134,7 +134,7 @@ struct QRModel{
                    try FileManager.default.removeItem(at: fileURL)
                }
            } catch {
-               print("Error limpiando carpeta temporal: \(error)")
+               msg("Error limpiando carpeta temporal: \(error)")
                // No se detiene el proceso, solo se avisa
            }
 
@@ -151,7 +151,7 @@ struct QRModel{
                try pngData.write(to: fileURL)
                return fileURL
            } catch {
-               print("Error guardando imagen temporal: \(error)")
+               msg("Error guardando imagen temporal: \(error)")
                return nil
            }
        }
@@ -192,14 +192,26 @@ struct QRModel{
     }
     
     //Detectar formato de importación de Frases:
-    //Ejempo de nota (&&& representa caracteres ocultos): &&&ContenidoFrase
+    //Formato de Frase (&&& representa caracteres ocultos): &&&(Frase:String)&&&(autor:String)&&&(nota:String)&&&(isfav:Bool)
+    //Ejemplo: &&&Imaginar crea la Realidad&&&neville&&&esto es una nota de ejemplo&&&true
     //Devuelve una tupla compuesta: la primera parte si es true es que se ha detectado un formato de importación de Frase Válido, la segunda parte es el contenido de la frase
-    @MainActor static func detectFormatImportFrase(text: String) -> (Bool, String)? {
+    @MainActor static func detectFormatImportFrase(frase: String) -> (String, String,String,Bool)? {
         
-        guard text.hasPrefix(AppCons.zspFrase) else {return nil}
+        let textPart = frase.split(separator: AppCons.zspFrase, omittingEmptySubsequences: false)
         
-        //Antes de retornar elimina los 3 caracteres ocultos al inicio de la cadena
-        return (true, String(text.dropFirst(3)))
+        guard textPart.count == 4 else {return nil}
+        
+        //Extrayendo el valor del favorito
+        var fav : Bool = false
+        if textPart[3] == "true"{
+            fav = true
+        }
+        
+        //textPart[0]=Texto de la frase
+        //textPart[1]=autor de la frase
+        //textPart[0]=Nota de la frase
+        //textPart[0]=estado del favorito: true:false
+        return (String(textPart[0]), String(textPart[1]), String(textPart[2]), fav)
     }
     
     
@@ -217,10 +229,10 @@ struct QRModel{
             }
 
         }else if tipo == .Frases{
-            
+            //Formato de Frase (&&& representa caracteres ocultos): &&&(Frase:String)&&&(autor:String)&&&(nota:String)&&&(isfav:Bool)
             //Si el formato actual es de notas, se elimina el título de la nota y el favState
             if let NotaFormat = QRModel.detectFormatImportNota(text: texto){
-                return "\(AppCons.zspFrase)\(NotaFormat.1.1)"//Solo devuelve el contenido de la Nota
+                return "\(AppCons.zspFrase)\(NotaFormat.1.1)\(AppCons.zspFrase)autor\(AppCons.zspFrase)nota\(AppCons.zspFrase)false"//Solo devuelve el contenido de la Nota
             }else{
                 return "\(AppCons.zspFrase)\(textoTemp)"
             }

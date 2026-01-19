@@ -397,7 +397,7 @@ final class LienzoModel : ObservableObject {
     //Guarda la imagen de fondo en Document
     func saveImagenFondo(image: UIImage) -> Bool{
         guard let data = imagePNGData(from: image) else {
-            print("ImageStorage: no se pudo obtener data PNG de la imagen.")
+            msg("ImageStorage: no se pudo obtener data PNG de la imagen.")
             return false
         }
 
@@ -418,7 +418,7 @@ final class LienzoModel : ObservableObject {
 
             return true
         } catch {
-            print("ImageStorage: error guardando imagen: \(error)")
+            msg("ImageStorage: error guardando imagen: \(error)")
             return false
         }
         
@@ -439,7 +439,7 @@ final class LienzoModel : ObservableObject {
             return NSImage(data: data)
             #endif
         } catch {
-            print("ImageStorage: error cargando imagen: \(error)")
+            msg("ImageStorage: error cargando imagen: \(error)")
             return nil
         }
     }
@@ -663,7 +663,7 @@ final class LienzoModel : ObservableObject {
     private func saveImagenLienzo(_ image: UIImage, tipoImagenLienzo: TipoDeImagenLienzo) -> Bool {
             
             guard let data = imagePNGData(from: image) else {
-                print("ImageStorage: no se pudo obtener data PNG de la imagen.")
+                msg("ImageStorage: no se pudo obtener data PNG de la imagen.")
                 return false
             }
 
@@ -699,7 +699,7 @@ final class LienzoModel : ObservableObject {
 
                 return true
             } catch {
-                print("ImageStorage: error guardando imagen: \(error)")
+                msg("ImageStorage: error guardando imagen: \(error)")
                 return false
             }
         }
@@ -742,7 +742,7 @@ final class LienzoModel : ObservableObject {
                 }
                 
             } catch {
-                print("ImageStorage: error cargando imagen: \(error)")
+                msg("ImageStorage: error cargando imagen: \(error)")
                 return nil
             }
         }

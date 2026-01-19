@@ -16,6 +16,7 @@ struct FrasesUpdateView: View {
     
     @State private var text = ""
     @State private var nota = ""
+    @State private var autor = ""
     @State private var favorito : Bool = false
     
     var body: some View {
@@ -25,6 +26,13 @@ struct FrasesUpdateView: View {
                     
                     Section("Favorito"){
                         Toggle("Favorito \(self.favorito ? "ON" : "OFF")", isOn: self.$favorito)
+                    }
+                    
+                    Section("Autor"){
+                        TextEditor(text:  $autor)
+                            .font(.system(size: 22))
+                            .multilineTextAlignment(.leading)
+                            .frame(height: 50)
                     }
                     
                     Section("Frase"){
@@ -44,6 +52,7 @@ struct FrasesUpdateView: View {
                 .onAppear{
                     if let frase = self.frase {
                         self.text = frase.frase ?? ""
+                        self.autor = frase.autor ?? ""
                         self.nota = frase.nota ?? ""
                         self.favorito = frase.isfav
                     }
@@ -77,7 +86,7 @@ struct FrasesUpdateView: View {
                 
                 ToolbarItem(placement: .automatic) {
                     Button("Actualizar"){
-                        if self.frasesModel.updateFrasePersonal(frase: self.frase!, newText: self.text, newNota: self.nota, newIsfav: self.favorito){
+                        if self.frasesModel.updateFrasePersonal(frase: self.frase!, newText: self.text, newNota: self.nota, newIsfav: self.favorito, newAutor: self.autor){
                                 Task{
                                    await self.frasesModel.FiltrarListado()
                                     dismiss()

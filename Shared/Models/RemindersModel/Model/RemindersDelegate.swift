@@ -26,7 +26,6 @@ final class AppNotificationDelegate: NSObject, @MainActor UNUserNotificationCent
 
     static let shared = AppNotificationDelegate()
 
-    // 🔹 APP EN PRIMER PLANO
     func userNotificationCenter(
         _ center: UNUserNotificationCenter,
         willPresent notification: UNNotification,
@@ -35,6 +34,16 @@ final class AppNotificationDelegate: NSObject, @MainActor UNUserNotificationCent
     ) {
 
         let content = notification.request.content
+        let userInfo = content.userInfo
+        let reminderId = userInfo["reminderId"] as? String
+
+        // 🔥 Cierre automático para .date en foreground
+        if let reminderId,
+           let reminder = ReminderStore.shared.load().first(where: { $0.id == reminderId }),
+           case .date = reminder.frequency {
+
+            ReminderNotificationManager.shared.stop(id: reminderId)
+        }
 
         NotificationCenter.default.post(
             name: .didReceiveForegroundNotification,
@@ -45,12 +54,56 @@ final class AppNotificationDelegate: NSObject, @MainActor UNUserNotificationCent
             ]
         )
 
-        
-        // No mostrar banner del sistema
-        completionHandler([])
+        completionHandler([]) // sin banner
     }
+    
+    /*
+     // 🔹 APP EN PRIMER PLANO
+     func userNotificationCenter(
+         _ center: UNUserNotificationCenter,
+         willPresent notification: UNNotification,
+         withCompletionHandler completionHandler:
+         @escaping (UNNotificationPresentationOptions) -> Void
+     ) {
 
-    // 🔹 ACCIONES DE BOTONES / TAP EN NOTIFICACIÓN
+         let content = notification.request.content
+
+         NotificationCenter.default.post(
+             name: .didReceiveForegroundNotification,
+             object: nil,
+             userInfo: [
+                 "title": content.title,
+                 "message": content.body
+             ]
+         )
+
+         
+         // No mostrar banner del sistema
+         completionHandler([])
+     }
+     */
+   
+
+    /*
+     // 🔹 ACCIONES DE BOTONES / TAP EN NOTIFICACIÓN
+     func userNotificationCenter(
+         _ center: UNUserNotificationCenter,
+         didReceive response: UNNotificationResponse,
+         withCompletionHandler completionHandler: @escaping () -> Void
+     ) {
+
+         let userInfo = response.notification.request.content.userInfo
+         let reminderId = userInfo["reminderId"] as? String
+
+         if response.actionIdentifier == ReminderNotificationConstants.stopActionId,
+            let reminderId {
+             ReminderNotificationManager.shared.stop(id: reminderId)
+         }
+
+         completionHandler()
+     }
+     */
+    
     func userNotificationCenter(
         _ center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse,
@@ -60,6 +113,16 @@ final class AppNotificationDelegate: NSObject, @MainActor UNUserNotificationCent
         let userInfo = response.notification.request.content.userInfo
         let reminderId = userInfo["reminderId"] as? String
 
+        // 🔥 Cierre automático de recordatorios de fecha fija
+        if let reminderId,
+           let reminder = ReminderStore.shared.load().first(where: { $0.id == reminderId }) {
+
+            if case .date = reminder.frequency {
+                ReminderNotificationManager.shared.stop(id: reminderId)
+            }
+        }
+
+        // 🔴 Acción manual "Detener"
         if response.actionIdentifier == ReminderNotificationConstants.stopActionId,
            let reminderId {
             ReminderNotificationManager.shared.stop(id: reminderId)
@@ -67,6 +130,7 @@ final class AppNotificationDelegate: NSObject, @MainActor UNUserNotificationCent
 
         completionHandler()
     }
+    
 }
 
 

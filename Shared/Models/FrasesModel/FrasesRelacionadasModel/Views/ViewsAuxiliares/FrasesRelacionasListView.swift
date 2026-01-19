@@ -21,40 +21,62 @@ struct FrasesRelacionasListView: View {
     
     @Environment(\.managedObjectContext) var context
 
-    let fraseMain : Frases?
+    @ObservedObject var fraseMain: Frases
+    
+ 
+    
     
     var body: some View {
         
         NavigationStack{
-            
-            VStack{
-                if let frase = fraseMain {
-                    if !frase.relacionadasArray.isEmpty  {
-                        Section("Frases relacionadas") {
-                            ScrollView{
-                                ForEach(frase.relacionadasArray) { relacionada in
-                                    Text(relacionada.frase ?? "")
-                                        .contextMenu{
-                                            Button("Eliminar Relación"){
-                                                self.context.delete(relacionada)
-                                                try? context.save()
-                                                /*
-                                                 ¿Qué hace Core Data automáticamente?
-                                                 ✔️ Quita la frase de todas las relaciones
-                                                 ✔️ No deja referencias rotas
-                                                 ✔️ No necesitas limpiar nada
-                                                 Gracias a Delete Rule = Nullify
-                                                 */
-                                            }
-                                            
+            ZStack{
+                
+                ColorGradientFrasesRelacionas.backgroundGradient
+                    .ignoresSafeArea()
+                
+                VStack{
+                    if !fraseMain.relacionadasArray.isEmpty  {
+                        ScrollView {
+                            LazyVStack(spacing: 12) {
+                                ForEach(fraseMain.relacionadasArray) { relacionada in
+                                    
+                                    VStack(alignment: .leading, spacing: 6) {
+                                        Text(relacionada.frase ?? "")
+                                            .font(.title3)
+                                            .bold()
+                                            .foregroundStyle(.black)
+                                        
+                                        Text(relacionada.autor ?? "")
+                                            .font(.footnote)
+                                            .foregroundStyle(.black)
+                                    }
+                                    
+                                    .padding()
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .background(ColorGradientFrasesRelacionas.cardGradient)
+                                    .cornerRadius(14)
+                                    .shadow(
+                                        color: Color.black.opacity(0.15),
+                                        radius: 6,
+                                        x: 0,
+                                        y: 4
+                                    )
+                                    .contextMenu {
+                                        Button("Remover Relación") {
+                                            relacionada.desvincularDe(fraseMain)
+                                            try? context.save()
                                         }
+                                    }
                                 }
                             }
-                            
+                            .padding()
                         }
                     }
+                    
                 }
+                
             }
+           
 
         }
         

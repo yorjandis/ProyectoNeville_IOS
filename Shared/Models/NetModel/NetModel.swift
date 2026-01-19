@@ -40,14 +40,14 @@ struct CheckAppStatus{
    static func getAppNewVersion() async -> Bool {
         // 1️⃣ Obtener el identificador del bundle actual
         guard let bundleID = Bundle.main.bundleIdentifier else {
-            //print("❌ No se encontró el bundle identifier")
+            //msg("❌ No se encontró el bundle identifier")
             return false
         }
         
         // 2️⃣ Construir la URL de consulta a la API de iTunes
         // Ejemplo: https://itunes.apple.com/lookup?bundleId=com.apple.Pages
         guard let url = URL(string: "https://itunes.apple.com/lookup?bundleId=\(bundleID)") else {
-           // print("❌ URL inválida")
+           // msg("❌ URL inválida")
             return false
         }
 
@@ -62,7 +62,7 @@ struct CheckAppStatus{
                 let appInfo = results.first,
                 let appStoreVersion = appInfo["version"] as? String
             else {
-               // print("❌ No se pudo obtener la versión del App Store")
+               // msg("❌ No se pudo obtener la versión del App Store")
                 return false
             }
 
@@ -70,17 +70,17 @@ struct CheckAppStatus{
             guard
                 let localVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
             else {
-                //print("❌ No se pudo leer la versión local")
+                //msg("❌ No se pudo leer la versión local")
                 return false
             }
 
             // 6️⃣ Comparar versiones
             let isNew = isVersion(appStoreVersion, greaterThan: localVersion)
-           // print("📱 Versión local: \(localVersion) | 🏪 App Store: \(appStoreVersion) | Nueva: \(isNew)")
+           // msg("📱 Versión local: \(localVersion) | 🏪 App Store: \(appStoreVersion) | Nueva: \(isNew)")
             return isNew
 
         } catch {
-           // print("⚠️ Error al consultar App Store:", error)
+           // msg("⚠️ Error al consultar App Store:", error)
             return false
         }
        

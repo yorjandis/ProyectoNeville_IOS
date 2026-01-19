@@ -20,9 +20,8 @@ struct PurchaseView: View {
                 #if os(macOS)
                 LinearGradient(
                     colors: [
-                        Color.purple.opacity(0.9),
-                        Color.blue.opacity(0.7),
-                        Color.blue.opacity(0.5)
+                        Color(red: 1.00, green: 0.55, blue: 0.30),
+                        Color(red: 1.00, green: 0.80, blue: 0.45)
                     ],
                     startPoint: .top,
                     endPoint: .bottom
@@ -31,9 +30,8 @@ struct PurchaseView: View {
                 #else
                 LinearGradient(
                     colors: [
-                        Color.orange,
-                        Color.pink.opacity(0.8),
-                        Color.purple.opacity(0.7)
+                        Color(red: 1.00, green: 0.55, blue: 0.30),
+                        Color(red: 1.00, green: 0.80, blue: 0.45)
                     ],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
@@ -81,10 +79,11 @@ struct PurchaseView: View {
                         VStack( alignment: .leading ,spacing: 15){
                             Text("🔵 Inteligencia Artificial (IA): Resumen, Interpretación, concejos prácticos y chat").bold()
                                 
-                            
                             Text("🔵 Atajos & Comandos Siri: Abrir notas, crear notas, abrir Diario, crear Entrada del Diario, abrir una conferencia al azar, etc").bold()
                                 
                             Text("🔵 Opciones del Menu Compartir: Leer QR code, OCR(extraer texto de imagen), importar Notas/Frase desde QR").bold()
+                            
+                            Text("🔵 Frases Relacionadas (FR). Descubre el pensamiento común de varios autores y científicos que respaldan estas enseñanzas.").bold()
                                 
                             Text("🔵 Lienzo: Diseña vistosas imágenes con frases y pensamientos para compartir en redes sociales y con amigos").bold()
                             
@@ -111,7 +110,7 @@ struct PurchaseView: View {
                             Text("!Suscripción anual, muy asequible!")
                                 .bold()
                                 .font(.system(size: 20))
-                                .foregroundColor(.white)
+                                .foregroundColor(.black)
                                 .padding()
                             Button{
                                 Task{
@@ -157,7 +156,7 @@ struct PurchaseView: View {
                     VStack(alignment: .center){
                         Text("💕 El acceso a las enseñanzas de neville seguirán siendo gratis. Nada cambiará eso 💕")
                             .bold()
-                            .foregroundStyle(.white)
+                            .foregroundStyle(.black)
                     }
                     
                     #if os(macOS)

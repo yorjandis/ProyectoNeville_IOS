@@ -90,19 +90,23 @@ struct ShareExtensionView: View {
                                         Button("Guardar Texto en Notas") {
                                             
                                             // 2. Guardar el QR en UserDefaults del App Group
-                                            if let defaults = UserDefaults(suiteName: "group.com.ypg.nev.group") {
-                                                defaults.set(textoQR, forKey: self.keyNotaShareText)
+                                            guard let defaults = UserDefaults(suiteName: "group.com.ypg.nev.group") else {
+                                                print("❌ No se pudo acceder al App Group")
+                                                return
                                             }
-                                            
+                                                defaults.set(textoQR, forKey: self.keyNotaShareText)
                                         }
                                         .buttonStyle(.borderedProminent)
                                         
                                         Button("Guardar Texto en Frases") {
                                             
                                             // 2. Guardar el QR en UserDefaults del App Group
-                                            if let defaults = UserDefaults(suiteName: "group.com.ypg.nev.group") {
-                                                defaults.set(textoQR, forKey: self.keyFraseShareText)
+                                            guard let defaults = UserDefaults(suiteName: "group.com.ypg.nev.group") else {
+                                                print("❌ No se pudo acceder al App Group")
+                                                return
                                             }
+                                                defaults.set(textoQR, forKey: self.keyFraseShareText)
+                                            
                                             
                                         }
                                         .buttonStyle(.borderedProminent)
@@ -170,9 +174,12 @@ struct ShareExtensionView: View {
                                     Button("Guardar Texto en Notas") {
                                         
                                         // 2. Guardar el QR en UserDefaults del App Group
-                                        if let defaults = UserDefaults(suiteName: "group.com.ypg.nev.group") {
-                                            defaults.set(texto, forKey: self.keyNotaShareText)
+                                        guard let defaults = UserDefaults(suiteName: "group.com.ypg.nev.group") else {
+                                            print("❌ No se pudo acceder al App Group")
+                                            return
                                         }
+                                            defaults.set(texto, forKey: self.keyNotaShareText)
+                                        
                                         
                                     }
                                     .buttonStyle(.borderedProminent)
@@ -180,9 +187,12 @@ struct ShareExtensionView: View {
                                     Button("Guardar Texto en Frases") {
                                         
                                         // 2. Guardar el QR en UserDefaults del App Group
-                                        if let defaults = UserDefaults(suiteName: "group.com.ypg.nev.group") {
-                                            defaults.set(texto, forKey: self.keyFraseShareText)
+                                        guard let defaults = UserDefaults(suiteName: "group.com.ypg.nev.group") else {
+                                            print("❌ No se pudo acceder al App Group")
+                                            return
                                         }
+                                            defaults.set(texto, forKey: self.keyFraseShareText)
+                                        
                                         
                                     }
                                     .buttonStyle(.borderedProminent)

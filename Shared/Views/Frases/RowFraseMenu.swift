@@ -17,12 +17,19 @@ struct RowFraseMenu: View {
      let frase: Frases
      @ObservedObject var frasesModel: FrasesModel
      @ObservedObject var settingModel: SettingModel
+    @Environment(\.managedObjectContext) var context
      
      @State private var showConfirmDialogDeleteFrase = false
      
      //Alert
      @State private var showAlert: Bool = false
      @State private var alertMessage: String = ""
+    
+    
+    //Frases Relacionas:
+    @Binding  var showTabViewFrasesRelac : Bool
+    @Binding  var fraseRelacionadaMain : Frases?
+    
      
      // Cache de valores precalculados
      private let coreData: Frases?
@@ -33,11 +40,16 @@ struct RowFraseMenu: View {
      /// Inicialización para evitar trabajo en body
      init(frase: Frases,
           frasesModel: FrasesModel,
-          settingModel: SettingModel)
+          settingModel: SettingModel,
+        showTabViewFrasesRelac: Binding<Bool>,
+        fraseRelacionadaMain: Binding<Frases?>)
      {
          self.frase = frase
          self.frasesModel = frasesModel
          self.settingModel = settingModel
+         
+         self._showTabViewFrasesRelac = showTabViewFrasesRelac
+             self._fraseRelacionadaMain = fraseRelacionadaMain
          
          // Cache de valores
          self.coreData = frasesModel.getFraseCoreData(FraseID: frase.id ?? "")
@@ -107,6 +119,54 @@ struct RowFraseMenu: View {
                  Label("Favorito", systemImage: "heart.fill")
                      .tint(.gray)
              }
+             
+             //Menú de opciones para frases Relacionadas:
+              Menu{
+                  
+                   if (showTabViewFrasesRelac && fraseRelacionadaMain != nil) {
+                       Button{
+                           frase.vincularCon(self.fraseRelacionadaMain!)
+                           //Persistiendo
+                           guardarCambios()
+                       }label:{
+                           Label("Agregar Frase", systemImage: "tray.and.arrow.up.fill")
+                               .tint(.purple)
+                       }
+                   }
+
+                   //Modo edición de frases relacionadas
+                   Button{
+                       self.fraseRelacionadaMain = frase
+                       self.showTabViewFrasesRelac = true
+                   }label:{
+                   Label("Modo Edición", systemImage: "graduationcap.circle")
+                       .tint(.blue)
+                   }
+                   
+                  
+                  
+                  //Mostrar/Ocultar el ponel de frases relacionadas
+                  
+                  
+                   NavigationLink{
+                       FrasesMainListRelacionadas(fraseMain: frase)
+                   }label:{
+                       Label("Modo Lista", systemImage: "append.page")
+                           .tint(.blue)
+                   }
+
+              }label:{
+                  #if os(macOS)
+                  Label("FR - Frases Relacionadas",systemImage: "graduationcap.circle")
+                      .tint(.blue)
+                  #else
+                  Image(systemName: "graduationcap.circle")
+                      .tint(.blue)
+                  #endif
+                  
+              }
+             
+             
              
              // QR
              Button {
@@ -258,7 +318,7 @@ struct RowFraseMenu: View {
                  eliminarFrase()
              }
          } message: {
-             Text("La nota será removida!!!")
+             Text("La frase será removida!!!")
          }
          .alert(isPresented: self.$showAlert){
              Alert(title: Text("La Ley"), message: Text(self.alertMessage))
@@ -269,6 +329,19 @@ struct RowFraseMenu: View {
          
      }
      
+    
+    //Persistir cambios en las relaciones entre frases
+    func guardarCambios() {
+        guard context.hasChanges else { return }
+
+        do {
+            try context.save()
+        } catch {
+            msg("Error guardando relaciones:", error.localizedDescription)
+        }
+    }
+    
+    
      
      // MARK: - Funciones internas (sin extensiones)
      private func eliminarFrase() {

@@ -39,337 +39,347 @@ struct FrasesView : View{
     var body: some View{
 
             VStack{
-                
-                Text(self.frase?.frase ?? "")
-                    .font(.system(size: CGFloat(fontSizeFrases), design: .rounded))
-                    .foregroundStyle(self.settingModel.colorfrase)
-                    .modifier(mof_frases())
-                
-                    .onTapGesture {
-                        //Obtiene una nueva frase
-                        self.frase = frasesModel.getRandomFrase()//Obteniendo una nueva frase.
-                        self.isFav = frasesModel.isFavFrase(fraseID: self.frase?.id ?? "") //Actualizando el estado del favorito
-                        frasesModel.favStateOfCurrentFrase = self.isFav
-                        frasesModel.fraseActual = self.frase //Guardando la frase actualmente visible en la variable observable
-                        
-                        //Almacenando la frase en el vector de navegación de frases
-                        if self.frasesModel.fraseAnteriores.count > 9 { //Si la capacidad del arreglo supera el límite de 10 frases
+                if let frase = self.frase{
+                    
+                    Text(frase.frase ?? "")
+                        .font(.system(size: CGFloat(fontSizeFrases), design: .rounded))
+                        .foregroundStyle(self.settingModel.colorfrase)
+                        .modifier(mof_frases())
+                    
+                        .onTapGesture {
+                            //Obtiene una nueva frase
+                            self.frase = frasesModel.getRandomFrase()//Obteniendo una nueva frase.
+                            self.isFav = frasesModel.isFavFrase(fraseID: self.frase?.id ?? "") //Actualizando el estado del favorito
+                            frasesModel.favStateOfCurrentFrase = self.isFav
+                            frasesModel.fraseActual = self.frase //Guardando la frase actualmente visible en la variable observable
                             
-                            self.frasesModel.fraseAnteriores.removeFirst() //Remueve la primera frase
-                            self.frasesModel.fraseAnteriores.append(self.frase!) //Coloca la frase actual
-                            self.contadorNavegarPorFrasesAnteriores = self.frasesModel.fraseAnteriores.count
-                        }else{ //Si no se ha superado la capacidad del arreglo, simplemente agrega la frase actual al mismo
-                            
-                            self.frasesModel.fraseAnteriores.append(self.frase!) //Coloca la frase actual
-                            self.contadorNavegarPorFrasesAnteriores = self.frasesModel.fraseAnteriores.count
-                        }
-                        
-                    }
-                //Gesto de deslizar izquierda a derecha: navega hacia la frase anterior(hasta un máximo de 10 frases)
-                    #if os(iOS)
-                    .gesture(
-                        DragGesture().onEnded { value in
-                            let start = value.startLocation
-                            let end = value.location
-                            let threshold: CGFloat = 40
-                            
-                            // Deslizar de izquierda a derecha → ir hacia atrás
-                            if end.x > start.x + threshold {
-                                if !self.frasesModel.fraseAnteriores.isEmpty && self.contadorNavegarPorFrasesAnteriores > 0 {
-                                    self.contadorNavegarPorFrasesAnteriores -= 1
-                                    self.frase = self.frasesModel.fraseAnteriores[self.contadorNavegarPorFrasesAnteriores]
-                                    
-                                    self.isFav = self.frasesModel.isFavFrase(fraseID: self.frase?.id ?? "")
-                                    self.frasesModel.favStateOfCurrentFrase = self.isFav
-                                    self.frasesModel.fraseActual = self.frase
-                                }
+                            //Almacenando la frase en el vector de navegación de frases
+                            if self.frasesModel.fraseAnteriores.count > 9 { //Si la capacidad del arreglo supera el límite de 10 frases
+                                
+                                self.frasesModel.fraseAnteriores.removeFirst() //Remueve la primera frase
+                                self.frasesModel.fraseAnteriores.append(self.frase!) //Coloca la frase actual
+                                self.contadorNavegarPorFrasesAnteriores = self.frasesModel.fraseAnteriores.count
+                            }else{ //Si no se ha superado la capacidad del arreglo, simplemente agrega la frase actual al mismo
+                                    self.frasesModel.fraseAnteriores.append(self.frase!) //Coloca la frase actual
+                                    self.contadorNavegarPorFrasesAnteriores = self.frasesModel.fraseAnteriores.count
+     
                             }
-                            // Deslizar de derecha a izquierda → ir hacia adelante
-                            else if end.x < start.x - threshold {
-                                if self.contadorNavegarPorFrasesAnteriores < self.frasesModel.fraseAnteriores.count - 1 {
-                                    self.contadorNavegarPorFrasesAnteriores += 1
-                                    
-                                    self.frase = self.frasesModel.fraseAnteriores[self.contadorNavegarPorFrasesAnteriores]
-                                    
-                                    self.isFav = self.frasesModel.isFavFrase(fraseID: self.frase?.id ?? "")
-                                    self.frasesModel.favStateOfCurrentFrase = self.isFav
-                                    self.frasesModel.fraseActual = self.frase
-                                }
-                            }
-                        }
-                    )
-                    #endif
-                    .onOpenURL(perform: { url in
-                        //Navega hasta la frase actualmente seleccionada:
-                        if url.description == AppCons.DeepLink_url_Frase {
-                            let textoFrase = UserDefaults.shared().string(forKey: AppCons.UD_shared_FraseWidgetActual) ?? ""
-                            self.frase = self.frasesModel.getFraseCoreDataFromTextFrase(fraseText: textoFrase)
-                        }
-                        
-                    })
-                
-                    .contextMenu{
-                        Button{
-                            //Guarda la nota poniendo como título una parte de la cadena
-                            _ = NotasModel().addNote(nota: self.frase?.frase ?? "", title: "\(String(self.frase?.frase ?? "").prefix((self.frase?.frase ?? "").count / 3 )))...")
-                        }label: {
-                            Label("Almacenar en Notas", systemImage: "list.bullet.clipboard")
-                        }
-                        
-                        #if os(macOS)
-                        Button{
-                            showWindow(for: GenerateQRView(footer: self.frase?.frase ?? "", showImage: true),
-                                       environmentObjects: [self.frasesModel],
-                                       size: AppCons.windows_size_content,
-                                       isModal: false) //Debe ser una ventana no modal, de lo contrario no funciona el compartir la imagen en macOS
-                        }label:{
-                            Label("Generar QR", systemImage: "qrcode")
-                        }
-                        #else
-                        NavigationLink{
-                            GenerateQRView(footer: self.frase?.frase ?? "", showImage: true)
-                        }label:{
-                            Label("Generar QR", systemImage: "qrcode")
-                        }
-                        
-                        #endif
-                        #if os(macOS)
-                        Button{
-                            showWindow(for: LienzoMain(texto: self.frase?.frase ?? ""),
-                                       environmentObjects: [],
-                                       title: "Lienzo",
-                                       size: .absolute(CGSize(width: 650, height: 750)),
-                                       isModal: false)
                             
-                        }label: {
-                            Label("Lienzo", systemImage: "heart.text.square")
                         }
-                        
-                        #else
-                        NavigationLink{
-                            LienzoMain(texto: self.frase?.frase ?? "")
-                        }label: {
-                            Label("Lienzo", systemImage: "heart.text.square")
-                        }
-                        #endif
-                        
-                        
-                        #if os(macOS)
-                        
-                        Button{
-                            showWindow(for: ReminderEditorView(reminderAEditar: nil, titleAImportar: nil, textoAImportar: self.frase?.frase ?? "", onSave: {}),
-                                       environmentObjects: [],
-                                       title: "Lienzo",
-                                       size: .absolute(CGSize(width: 650, height: 750)),
-                                       isModal: false)
-                        }label:{
-                            Label("Recordatorios", systemImage: "heart.text.square")
-                        }
-                        
-                        #else
-                        
-                        NavigationLink{
-                            ReminderEditorView(reminderAEditar: nil, titleAImportar: nil, textoAImportar: self.frase?.frase ?? "", onSave: {})
-                        }label:{
-                            Label("Recordatorios", systemImage: "heart.text.square")
-                        }
-                        
-                        #endif
-                        
-                        
-                        ShareLink(item: self.frase?.frase ?? "") {
-                                        Label("Compartir frase", systemImage: "square.and.arrow.up")
+                    //Gesto de deslizar izquierda a derecha: navega hacia la frase anterior(hasta un máximo de 10 frases)
+                        #if os(iOS)
+                        .gesture(
+                            DragGesture().onEnded { value in
+                                let start = value.startLocation
+                                let end = value.location
+                                let threshold: CGFloat = 40
+                                
+                                // Deslizar de izquierda a derecha → ir hacia atrás
+                                if end.x > start.x + threshold {
+                                    if !self.frasesModel.fraseAnteriores.isEmpty && self.contadorNavegarPorFrasesAnteriores > 0 {
+                                        self.contadorNavegarPorFrasesAnteriores -= 1
+                                        self.frase = self.frasesModel.fraseAnteriores[self.contadorNavegarPorFrasesAnteriores]
+                                        
+                                        self.isFav = self.frasesModel.isFavFrase(fraseID: self.frase?.id ?? "")
+                                        self.frasesModel.favStateOfCurrentFrase = self.isFav
+                                        self.frasesModel.fraseActual = self.frase
                                     }
-                        
-                        Button{
-                            #if os(macOS)
-                            showWindow(for: FrasesNotasAddView(frase: self.frase!),
-                                       environmentObjects: [self.frasesModel],
-                                       title: "Nota de Frase",
-                                       size: AppCons.windows_size_content_small,
-                                       isModal: true)
-                            #else
-                            showAddNoteView = true
-                            #endif
-                        }label: {
-                            Label("Nota de la frase", systemImage: "bookmark.fill" )
-                        }
-                        
-                        //Funciones de Inteligencia: IA
-                        if #available(iOS 26.0, macOS 26.0,  *)  {
+                                }
+                                // Deslizar de derecha a izquierda → ir hacia adelante
+                                else if end.x < start.x - threshold {
+                                    if self.contadorNavegarPorFrasesAnteriores < self.frasesModel.fraseAnteriores.count - 1 {
+                                        self.contadorNavegarPorFrasesAnteriores += 1
+                                        
+                                        self.frase = self.frasesModel.fraseAnteriores[self.contadorNavegarPorFrasesAnteriores]
+                                        
+                                        self.isFav = self.frasesModel.isFavFrase(fraseID: self.frase?.id ?? "")
+                                        self.frasesModel.favStateOfCurrentFrase = self.isFav
+                                        self.frasesModel.fraseActual = self.frase
+                                    }
+                                }
+                            }
+                        )
+                        #endif
+                        .onOpenURL(perform: { url in
+                            //Navega hasta la frase actualmente seleccionada:
+                            if url.description == AppCons.DeepLink_url_Frase {
+                                let textoFrase = UserDefaults.shared().string(forKey: AppCons.UD_shared_FraseWidgetActual) ?? ""
+                                self.frase = self.frasesModel.getFraseCoreDataFromTextFrase(fraseText: textoFrase)
+                            }
                             
-                            if IAModelAppleIntelligence.isAvailable(){
+                        })
+                    
+                        .contextMenu{
+                            Button{
+                                //Guarda la nota poniendo como título una parte de la cadena
+                                _ = NotasModel().addNote(nota: self.frase?.frase ?? "", title: "\(String(self.frase?.frase ?? "").prefix((self.frase?.frase ?? "").count / 3 )))...")
+                            }label: {
+                                Label("Almacenar en Notas", systemImage: "list.bullet.clipboard")
+                            }
+                            
+                    
+                            #if os(macOS)
+                            Button{
+                                showWindow(for: GenerateQRView(footer: self.frase?.frase ?? "", showImage: true),
+                                           environmentObjects: [self.frasesModel],
+                                           size: AppCons.windows_size_content,
+                                           isModal: false) //Debe ser una ventana no modal, de lo contrario no funciona el compartir la imagen en macOS
+                            }label:{
+                                Label("Generar QR", systemImage: "qrcode")
+                            }
+                            #else
+                            NavigationLink{
+                                GenerateQRView(footer: self.frase?.frase ?? "", showImage: true)
+                            }label:{
+                                Label("Generar QR", systemImage: "qrcode")
+                            }
+                            
+                            #endif
+                            #if os(macOS)
+                            Button{
+                                showWindow(for: LienzoMain(texto: self.frase?.frase ?? ""),
+                                           environmentObjects: [],
+                                           title: "Lienzo",
+                                           size: .absolute(CGSize(width: 650, height: 750)),
+                                           isModal: false)
+                                
+                            }label: {
+                                Label("Lienzo", systemImage: "heart.text.square")
+                            }
+                            
+                            #else
+                            NavigationLink{
+                                LienzoMain(texto: self.frase?.frase ?? "")
+                            }label: {
+                                Label("Lienzo", systemImage: "heart.text.square")
+                            }
+                            #endif
+                            
+                            
+                            #if os(macOS)
+                            
+                            Button{
+                                showWindow(for: ReminderEditorView(reminderAEditar: nil, titleAImportar: nil, textoAImportar: self.frase?.frase ?? "", onSave: {}),
+                                           environmentObjects: [],
+                                           title: "Lienzo",
+                                           size: .absolute(CGSize(width: 650, height: 750)),
+                                           isModal: false)
+                            }label:{
+                                Label("Recordatorios", systemImage: "heart.text.square")
+                            }
+                            
+                            #else
+                            
+                            NavigationLink{
+                                ReminderEditorView(reminderAEditar: nil, titleAImportar: nil, textoAImportar: self.frase?.frase ?? "", onSave: {})
+                            }label:{
+                                Label("Recordatorios", systemImage: "heart.text.square")
+                            }
+                            
+                            #endif
+                            
+                            
+                            ShareLink(item: self.frase?.frase ?? "") {
+                                            Label("Compartir frase", systemImage: "square.and.arrow.up")
+                                        }
+                            
+                            Button{
                                 #if os(macOS)
-                                Button{
-                                    showWindow(for: RespondView(nameConference: "", texto: self.frase?.frase ?? "", tipoSalida: .interpretar),
-                                               environmentObjects: [self.frasesModel, self.settingModel],
-                                               size: AppCons.windows_size_content,
-                                               isModal: true,
-                                               isIAWindows: true)
-                                    //RespondView(nameConference: "", texto: self.frase, tipoSalida: .interpretar)
-                                }label: {
-                                    Label("Interpretar", systemImage: "sparkles")
-                                }
-                                .tint(.purple)
-                                
-                                Button{
-                                    showWindow(for: RespondView(nameConference: "", texto: self.frase?.frase ?? "", tipoSalida: .practicaConcreta),
-                                               environmentObjects: [self.frasesModel, self.settingModel],
-                                               size: AppCons.windows_size_content,
-                                               isModal: true,
-                                               isIAWindows: true)
-                                    //RespondView(nameConference: "", texto: self.frase, tipoSalida: .practicaConcreta)
-                                }label: {
-                                    Label("Aplicación Práctica", systemImage: "sparkles")
-                                }
-                                .tint(.purple)
-                                
-                                Button{
-                                    showWindow(for: ChatView(textoACargar: self.frase?.frase ?? ""),
-                                               environmentObjects: [self.frasesModel, self.settingModel],
-                                               size: AppCons.windows_size_content,
-                                               isModal: false,
-                                               isIAWindows: true)
-                                    
-                                }label: {
-                                    Label("Charlar con la IA", systemImage: "sparkles")
-                                }
-                                .tint(.purple)
-                                
-                                
+                                showWindow(for: FrasesNotasAddView(frase: self.frase!),
+                                           environmentObjects: [self.frasesModel],
+                                           title: "Nota de Frase",
+                                           size: AppCons.windows_size_content_small,
+                                           isModal: true)
                                 #else
-                                NavigationLink{
-                                    RespondView(nameConference: "", texto: self.frase?.frase ?? "", tipoSalida: .interpretar)
-                                }label: {
-                                    Label("Interpretar", systemImage: "sparkles")
-                                }
-                                .tint(.purple)
+                                showAddNoteView = true
+                                #endif
+                            }label: {
+                                Label("Nota de la frase", systemImage: "bookmark.fill" )
+                            }
+                            
+                            //Funciones de Inteligencia: IA
+                            if #available(iOS 26.0, macOS 26.0,  *)  {
                                 
-                                NavigationLink{
-                                    RespondView(nameConference: "", texto: self.frase?.frase ?? "", tipoSalida: .practicaConcreta)
-                                }label: {
-                                    Label("Aplicación Práctica", systemImage: "sparkles")
+                                if IAModelAppleIntelligence.isAvailable(){
+                                    #if os(macOS)
+                                    Button{
+                                        showWindow(for: RespondView(nameConference: "", texto: self.frase?.frase ?? "", tipoSalida: .interpretar),
+                                                   environmentObjects: [self.frasesModel, self.settingModel],
+                                                   size: AppCons.windows_size_content,
+                                                   isModal: true,
+                                                   isIAWindows: true)
+                                        //RespondView(nameConference: "", texto: self.frase, tipoSalida: .interpretar)
+                                    }label: {
+                                        Label("Interpretar", systemImage: "sparkles")
+                                    }
+                                    .tint(.purple)
+                                    
+                                    Button{
+                                        showWindow(for: RespondView(nameConference: "", texto: self.frase?.frase ?? "", tipoSalida: .practicaConcreta),
+                                                   environmentObjects: [self.frasesModel, self.settingModel],
+                                                   size: AppCons.windows_size_content,
+                                                   isModal: true,
+                                                   isIAWindows: true)
+                                        //RespondView(nameConference: "", texto: self.frase, tipoSalida: .practicaConcreta)
+                                    }label: {
+                                        Label("Aplicación Práctica", systemImage: "sparkles")
+                                    }
+                                    .tint(.purple)
+                                    
+                                    Button{
+                                        showWindow(for: ChatView(textoACargar: self.frase?.frase ?? ""),
+                                                   environmentObjects: [self.frasesModel, self.settingModel],
+                                                   size: AppCons.windows_size_content,
+                                                   isModal: false,
+                                                   isIAWindows: true)
+                                        
+                                    }label: {
+                                        Label("Charlar con la IA", systemImage: "sparkles")
+                                    }
+                                    .tint(.purple)
+                                    
+                                    
+                                    #else
+                                    NavigationLink{
+                                        RespondView(nameConference: "", texto: self.frase?.frase ?? "", tipoSalida: .interpretar)
+                                    }label: {
+                                        Label("Interpretar", systemImage: "sparkles")
+                                    }
+                                    .tint(.purple)
+                                    
+                                    NavigationLink{
+                                        RespondView(nameConference: "", texto: self.frase?.frase ?? "", tipoSalida: .practicaConcreta)
+                                    }label: {
+                                        Label("Aplicación Práctica", systemImage: "sparkles")
+                                    }
+                                    .tint(.purple)
+                                    
+                                    NavigationLink{
+                                        ChatView(textoACargar: self.frase?.frase ?? "")
+                                    }label: {
+                                        Label("Charlar con IA", systemImage: "sparkles")
+                                    }
+                                    .tint(.purple)
+                                    #endif
+                                    
+                                    
                                 }
-                                .tint(.purple)
                                 
-                                NavigationLink{
-                                    ChatView(textoACargar: self.frase?.frase ?? "")
-                                }label: {
-                                    Label("Charlar con IA", systemImage: "sparkles")
-                                }
-                                .tint(.purple)
+                                
+                                
+                            }
+                            
+                            Button{
+                                #if os(macOS)
+                                showWindow(
+                                    for: FraseAddView(),
+                                    environmentObjects: [self.frasesModel, self.settingModel],
+                                    title: "Yorjandis",
+                                    size: AppCons.windows_size_content_small,
+                                    isModal: true)
+                                #else
+                                showSheetAddFrase = true
                                 #endif
                                 
-                                
+                            }label: {
+                                Label("Nueva frase", systemImage: "square.and.pencil.circle")
                             }
-                            
-                            
-                            
                         }
+                    
+                    HStack(){
+                        Spacer()
                         
+                        #if os(iOS)
+                        //Botón de Favorito de la frase
                         Button{
-                            #if os(macOS)
-                            showWindow(
-                                for: FraseAddView(),
-                                environmentObjects: [self.frasesModel, self.settingModel],
-                                title: "Yorjandis",
-                                size: AppCons.windows_size_content_small,
-                                isModal: true)
-                            #else
-                            showSheetAddFrase = true
-                            #endif
-                            
-                        }label: {
-                            Label("Nueva frase", systemImage: "square.and.pencil.circle")
-                        }
-                    }
-                
-                HStack(){
-                    Spacer()
-                    
-                    #if os(iOS)
-                    //Botón de Favorito de la frase
-                    Button{
-                        let getState = frasesModel.isFavFrase(fraseID: self.frase?.id ?? "") //Obtiene el estado previo
-                        if frasesModel.setFavFrase(fraseID: self.frase?.id ?? "", !getState){
-                            isFav = !getState
-                            frasesModel.favStateOfCurrentFrase = isFav
-                            animationHeart += 1
-                        }
-                        
-                            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-                        
-                        
-                        
-                    }label: {
-                        Image(systemName: frasesModel.favStateOfCurrentFrase ? "heart.fill" : "heart")
-                            .foregroundStyle(.black)
-                            .symbolEffect(.bounce, value: animationHeart)
-                    }
-                    .padding(10)
-                    .padding(.trailing, 15)
-                    #endif
-                    
-                    #if os(macOS)
-                    
-                    //navegación de frases: Mac
-                    HStack(spacing: 5){
-                        Image(systemName: self.contadorNavegarPorFrasesAnteriores == 0 ? "arrow.left.circle" : "arrow.left.circle.fill")
-                            .foregroundStyle(.black)
-                            .onTapGesture {
-                                if !self.frasesModel.fraseAnteriores.isEmpty && self.contadorNavegarPorFrasesAnteriores > 0 {
-                                    self.contadorNavegarPorFrasesAnteriores -= 1
-                                    self.frase = self.frasesModel.fraseAnteriores[self.contadorNavegarPorFrasesAnteriores]
-                                    
-                                    self.isFav = self.frasesModel.isFavFrase(fraseID: self.frase?.id ?? "")
-                                    self.frasesModel.favStateOfCurrentFrase = self.isFav
-                                    self.frasesModel.fraseActual = self.frase
-                                }
-                            }
-                        Image(systemName: self.contadorNavegarPorFrasesAnteriores == self.frasesModel.fraseAnteriores.count-1 ? "arrow.right.circle" : "arrow.right.circle.fill")
-                            .foregroundStyle(.black)
-                            .onTapGesture {
-                                if self.contadorNavegarPorFrasesAnteriores < self.frasesModel.fraseAnteriores.count - 1 {
-                                    self.contadorNavegarPorFrasesAnteriores += 1
-                                    
-                                    self.frase = self.frasesModel.fraseAnteriores[self.contadorNavegarPorFrasesAnteriores]
-                                    
-                                    self.isFav = self.frasesModel.isFavFrase(fraseID: self.frase?.id ?? "")
-                                    self.frasesModel.favStateOfCurrentFrase = self.isFav
-                                    self.frasesModel.fraseActual = self.frase
-                                }
-                            }
-                    }
-                    .padding(.horizontal, 15)
-                    
-                    
-                    //Favoritos: Mac
-                    Image(systemName: frasesModel.favStateOfCurrentFrase ? "heart.fill" : "heart")
-                        .foregroundStyle(.black)
-                        .symbolEffect(.bounce, value: animationHeart)
-                        .padding(10)
-                        .padding(.trailing, 15)
-                        .onTapGesture {
                             let getState = frasesModel.isFavFrase(fraseID: self.frase?.id ?? "") //Obtiene el estado previo
                             if frasesModel.setFavFrase(fraseID: self.frase?.id ?? "", !getState){
                                 isFav = !getState
                                 frasesModel.favStateOfCurrentFrase = isFav
                                 animationHeart += 1
                             }
+                            
+                                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                            
+                            
+                            
+                        }label: {
+                            Image(systemName: frasesModel.favStateOfCurrentFrase ? "heart.fill" : "heart")
+                                .foregroundStyle(.black)
+                                .symbolEffect(.bounce, value: animationHeart)
                         }
-                    
-                    #endif
+                        .padding(10)
+                        .padding(.trailing, 15)
+                        #endif
+                        
+                        #if os(macOS)
+                        
+                        //navegación de frases: Mac
+                        HStack(spacing: 5){
+                            Image(systemName: self.contadorNavegarPorFrasesAnteriores == 0 ? "arrow.left.circle" : "arrow.left.circle.fill")
+                                .foregroundStyle(.black)
+                                .onTapGesture {
+                                    if !self.frasesModel.fraseAnteriores.isEmpty && self.contadorNavegarPorFrasesAnteriores > 0 {
+                                        self.contadorNavegarPorFrasesAnteriores -= 1
+                                        self.frase = self.frasesModel.fraseAnteriores[self.contadorNavegarPorFrasesAnteriores]
+                                        
+                                        self.isFav = self.frasesModel.isFavFrase(fraseID: self.frase?.id ?? "")
+                                        self.frasesModel.favStateOfCurrentFrase = self.isFav
+                                        self.frasesModel.fraseActual = self.frase
+                                    }
+                                }
+                            Image(systemName: self.contadorNavegarPorFrasesAnteriores == self.frasesModel.fraseAnteriores.count-1 ? "arrow.right.circle" : "arrow.right.circle.fill")
+                                .foregroundStyle(.black)
+                                .onTapGesture {
+                                    if self.contadorNavegarPorFrasesAnteriores < self.frasesModel.fraseAnteriores.count - 1 {
+                                        self.contadorNavegarPorFrasesAnteriores += 1
+                                        
+                                        self.frase = self.frasesModel.fraseAnteriores[self.contadorNavegarPorFrasesAnteriores]
+                                        
+                                        self.isFav = self.frasesModel.isFavFrase(fraseID: self.frase?.id ?? "")
+                                        self.frasesModel.favStateOfCurrentFrase = self.isFav
+                                        self.frasesModel.fraseActual = self.frase
+                                    }
+                                }
+                        }
+                        .padding(.horizontal, 15)
+                        
+                        
+                        //Favoritos: Mac
+                        Image(systemName: frasesModel.favStateOfCurrentFrase ? "heart.fill" : "heart")
+                            .foregroundStyle(.black)
+                            .symbolEffect(.bounce, value: animationHeart)
+                            .padding(10)
+                            .padding(.trailing, 15)
+                            .onTapGesture {
+                                let getState = frasesModel.isFavFrase(fraseID: self.frase?.id ?? "") //Obtiene el estado previo
+                                if frasesModel.setFavFrase(fraseID: self.frase?.id ?? "", !getState){
+                                    isFav = !getState
+                                    frasesModel.favStateOfCurrentFrase = isFav
+                                    animationHeart += 1
+                                }
+                            }
+                        
+                        #endif
+                    }
+                }else{
+                    EmptyView()
                 }
+                
+                
                 
             }
             .onAppear{
                 if (self.frase?.frase ?? "").isEmpty{
                     self.frase = frasesModel.getRandomFrase()
-                    //leyendo el estado isfav de la frase
-                    isFav = frasesModel.isFavFrase(fraseID: self.frase?.id ?? "") //Obtiene el estado previo
-                    frasesModel.favStateOfCurrentFrase = isFav //Actualiza el estado del favorito en la variable observable
-                    frasesModel.fraseActual = self.frase //Almacenando la frase actualmente visible en Home
-                    self.frasesModel.fraseAnteriores.append(self.frase!) //Coloca la frase en el vector de navegación
+                    if self.frase != nil {
+                        //leyendo el estado isfav de la frase
+                        isFav = frasesModel.isFavFrase(fraseID: self.frase?.id ?? "") //Obtiene el estado previo
+                        frasesModel.favStateOfCurrentFrase = isFav //Actualiza el estado del favorito en la variable observable
+                        frasesModel.fraseActual = self.frase //Almacenando la frase actualmente visible en Home
+                        self.frasesModel.fraseAnteriores.append(self.frase!) //Coloca la frase en el vector de navegación
+                    }
+                   
                 }
             }
             

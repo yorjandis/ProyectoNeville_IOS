@@ -50,7 +50,7 @@ struct UpdateNotasView: View {
                             
                             
                         }else{
-                            print("Error al actualizar la nota")
+                            msg("Error al actualizar la nota")
                         }
                         
                         //Saliendo de la ventana
@@ -87,7 +87,7 @@ struct UpdateNotasView: View {
                         if NotasModel().updateNota(NotaID: NotaId, newTitle: title, newNota: nota){
                             self.modelNotas.getAllNotasToModel()
                         }else{
-                            print("Error al actualizar la nota")
+                            msg("Error al actualizar la nota")
                         }
                         dimiss()
                     }

@@ -36,7 +36,7 @@ final class KeychainHelper {
 
         let status = SecItemAdd(query as CFDictionary, nil)
         if status != errSecSuccess {
-            print("Error al guardar en Keychain: \(status)")
+            msg("Error al guardar en Keychain: \(status)")
         }
     }
 
@@ -59,7 +59,7 @@ final class KeychainHelper {
         if status == errSecSuccess, let data = result as? Data {
             return String(data: data, encoding: .utf8)
         } else {
-            print("No se encontró la contraseña o error: \(status)")
+            msg("No se encontró la contraseña o error: \(status)")
             return nil
         }
     }

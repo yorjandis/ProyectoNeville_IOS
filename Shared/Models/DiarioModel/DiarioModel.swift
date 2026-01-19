@@ -130,7 +130,7 @@ final class DiarioModel : ObservableObject{
         do {
             return try context.fetch(fetchRequest)
         } catch {
-            print("Error al obtener las entradas: \(error.localizedDescription)")
+            msg("Error al obtener las entradas: \(error.localizedDescription)")
             return []
         }
     }
@@ -195,7 +195,7 @@ final class DiarioModel : ObservableObject{
             do{
                 try context.save()
             }catch{
-                print(error.localizedDescription)
+                msg(error.localizedDescription)
             }
         }
     }
@@ -318,7 +318,7 @@ final class DiarioModel : ObservableObject{
         do {
             return try context.fetch(fetchRequest)
         } catch {
-            print("Error al recuperar entradas: \(error)")
+            msg("Error al recuperar entradas: \(error)")
             return []
         }
     }
@@ -347,7 +347,7 @@ final class DiarioModel : ObservableObject{
         do {
             return try context.fetch(fetchRequest)
         } catch {
-            print("Error al recuperar entradas: \(error)")
+            msg("Error al recuperar entradas: \(error)")
             return []
         }
     }
@@ -404,7 +404,7 @@ final class DiarioModel : ObservableObject{
         do {
             return try context.fetch(fetchRequest)
         } catch {
-            print("Error al recuperar entradas: \(error)")
+            msg("Error al recuperar entradas: \(error)")
             return []
         }
     }

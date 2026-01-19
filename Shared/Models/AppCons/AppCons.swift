@@ -18,6 +18,8 @@ struct AppCons{
     
     //nameFile in Staff:
     static let FileListFrases           = "listfrases"
+    static let FileListFrasesJD           = "listfrases_jd"
+    
     static let FileBiografia            = "biografia"
     static let FileListIdVideoConf      = "listidvideoconf"
     static let FileListIdAudioLibros    = "listidaudiolibros"
@@ -88,18 +90,18 @@ struct AppCons{
 
     //Descargo de responsabilidad para la utilización de la IA generativa en el dispositivo:
     static let DescargoDeResposabilidad = """
-                Descargo de Responsabilidad:\n
+                Condiciones de Uso de la Inteligencia Artifical:\n
                 
-                🟣 La Inteligencia Artificial, IA en lo adelante, puede generar respuestas imprecisas o con errores.
+                La Inteligencia Artificial, IA en lo adelante, puede generar respuestas imprecisas o con errores.
+                
+                Para hacer uso de la IA debe aceptar las siguientes condiciones:
                 
                 🟣 El usuario es el único responsable de la verificación y aplicación
                 de la respuesta generada por IA.
                 
                 🟣 El desarrollador no es responsable por  los daños o pérdidas derivadas del uso o imposibilidad de uso del contenido generado por IA.
-                
-                🟣 Para hacer uso de la IA debe aceptar estas condiciones.
-                
-                Nota: Este Descargo de Responsabilidad estará disponible en Ajustes.
+                 
+                Este Descargo de Responsabilidad estará disponible en Ajustes.
                 
                 """
     

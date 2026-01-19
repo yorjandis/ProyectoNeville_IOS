@@ -88,7 +88,7 @@ struct LogginView: View {
                 case .Notas:
                     securityModel.canOpenNotas = true
                 case .AccesoANotasAjustes:
-                    print("Acceso a la opción de las notas protegidas en Ajustes")
+                    msg("Acceso a la opción de las notas protegidas en Ajustes")
                 case .AccesoADiarioAjustes:
                     self.setting_DiarioAccesoAjustes = true
                     
@@ -112,7 +112,7 @@ struct LogginView: View {
                 case .Notas:
                     securityModel.canOpenNotas = false
                 case .AccesoANotasAjustes:
-                    print("Acceso protegido a las Notas en Ajustes")
+                    msg("Acceso protegido a las Notas en Ajustes")
                 case .AccesoADiarioAjustes:
                     self.setting_DiarioAccesoAjustes = false
                 }
@@ -129,7 +129,7 @@ struct LogginView: View {
             case .Notas:
                 securityModel.canOpenNotas = false
             case .AccesoANotasAjustes:
-                print("Acceso protegido a las Notas en Ajustes")
+                msg("Acceso protegido a las Notas en Ajustes")
             case .AccesoADiarioAjustes:
                 self.setting_DiarioAccesoAjustes = false
             }

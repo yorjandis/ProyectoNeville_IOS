@@ -106,10 +106,10 @@ extension GoalEntity {
 
         do {
             try context.save()
-            print("Objetivo y sus unidades eliminados correctamente")
+            msg("Objetivo y sus unidades eliminados correctamente")
         } catch {
             context.rollback()
-            print("Error al eliminar objetivo: \(error.localizedDescription)")
+            msg("Error al eliminar objetivo: \(error.localizedDescription)")
         }
     }
 }

@@ -39,7 +39,7 @@ final class ClipboardObserver: ObservableObject {
         @MainActor
         private func stop() {
             timer?.cancel()
-            print("⏹ Clipboard monitor detenido")
+            msg("⏹ Clipboard monitor detenido")
         }
 
     init() {

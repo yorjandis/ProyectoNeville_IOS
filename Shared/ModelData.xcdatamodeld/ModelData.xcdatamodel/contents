@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="24512" systemVersion="25C56" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
+    <entity name="Contexto" representedClassName="Contexto" syncable="YES" codeGenerationType="class">
+        <attribute name="id" optional="YES" attributeType="String"/>
+        <attribute name="nombre" optional="YES" attributeType="String"/>
+        <relationship name="frases" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Frases" inverseName="contextos" inverseEntity="Frases"/>
+    </entity>
     <entity name="Diario" representedClassName="Diario" syncable="YES" codeGenerationType="class">
         <attribute name="content" optional="YES" attributeType="String"/>
         <attribute name="emotion" optional="YES" attributeType="String"/>
@@ -12,11 +17,13 @@
     <entity name="Frases" representedClassName="Frases" syncable="YES" codeGenerationType="class">
         <attribute name="autor" optional="YES" attributeType="String"/>
         <attribute name="frase" attributeType="String" defaultValueString=""/>
+        <attribute name="fuente" optional="YES" attributeType="String"/>
         <attribute name="id" attributeType="String" defaultValueString=""/>
         <attribute name="isfav" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="isnew" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="noinbuilt" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="nota" optional="YES" attributeType="String"/>
+        <relationship name="contextos" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Contexto" inverseName="frases" inverseEntity="Contexto"/>
         <relationship name="relacionadas" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Frases" inverseName="relacionadasPor" inverseEntity="Frases"/>
         <relationship name="relacionadasPor" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Frases" inverseName="relacionadas" inverseEntity="Frases"/>
     </entity>

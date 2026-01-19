@@ -19,7 +19,7 @@
      case "actualizacion":
          
      default:
-         print("No hacer nada")
+ msg("No hacer nada")
      }
      
  }
