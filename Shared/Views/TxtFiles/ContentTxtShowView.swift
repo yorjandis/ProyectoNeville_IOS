@@ -31,14 +31,16 @@ struct ContentTxtShowView: View {
     
     let type : TipoDeContenido //define el tipo de contenido a generar por IA
 
+    @State private var content: String = "" //Contenido del fichero TXT: se llena en un OnApper para que se haga una sola vez
     
     @State private var showSheetIA : Bool = false
   
     
     //Setting: Tamaño de fuente por defecto
-    @State private var fontSizeContent : CGFloat = 18
+    @State private var fontSizeContentSliderTemp : CGFloat = 18 //Valor tenmporal del Slider para evitar actualizaciones de la UI mientras se ajusta
 
-    @AppStorage(AppCons.UD_setting_fontContentSize)   var fontSizeContenido  = 18
+
+    @AppStorage(AppCons.UD_setting_fontContentSize)   var UserDefaultFontSizeContenido  = 18
     
     //Colores de Texto y fondo
     @State private var textContentdColor    : Color = Color.black
@@ -69,24 +71,8 @@ struct ContentTxtShowView: View {
     @State private var showAlert : Bool = false
     @State private var alertMessage : String = ""
     
-
-    //Yor aqui va el código para leer el contenido del fichero
-    var getContent : String {
-        if type == .NA {
-            //Este es el caso de ficheros como "biografia.txt" que no tienen prefijo
-            var texto = UtilFuncs.FileRead(self.nombreTxt)
-            //Inserta caracteres ocultos al texto:
-            texto = ClipboardHelper.insertarMarcaOculta(en: texto)
-            return texto
-        }else{
-            //Ficheros txt con prefijo
-            var texto = modeloTxt.getContentTxt(nombreTxt: self.nombreTxt, type: self.type)
-            //Inserta caracteres ocultos al texto:
-            texto = ClipboardHelper.insertarMarcaOculta(en: texto)
-            return  texto
-        }
-        
-    }
+ 
+    
     
     //Obtiene el valor del favorito del elemento actualmente listado(conferencias, citas, ayudas, preguntas, NO Bibliografia)
     private var getFavState : Bool {
@@ -136,7 +122,10 @@ struct ContentTxtShowView: View {
                 ScrollView(showsIndicators: true){
                     VStack{
                         //Esta Vista es multiplataforma (iOS/macOS) y esta en un fichero independiente
-                        SelectableTextShareView(getContent: self.getContent, fontSizeContenido: CGFloat(self.fontSizeContenido), textContentdColor: UIColor(self.textContentdColor))
+                        
+                         SelectableTextShareView(getContent: self.content, fontSizeContenido: CGFloat(self.UserDefaultFontSizeContenido), textContentdColor: UIColor(self.textContentdColor))
+                         
+                       
 
                     }
                     .background(self.backgroundColor)
@@ -147,11 +136,6 @@ struct ContentTxtShowView: View {
                             self.showSlider = false
                         }
                        
-                    }
-                    .task {
-                        //Se cargan y aplican los colores de fondo y de texto
-                        self.backgroundColor = SettingModel.loadColor(forkey: AppCons.UD_setting_color_fondoContent) ?? .black.opacity(0.7)
-                        self.textContentdColor = SettingModel.loadColor(forkey: AppCons.UD_setting_color_textContent) ?? .white
                     }
                     .padding(.horizontal, 5)
                     
@@ -185,26 +169,39 @@ struct ContentTxtShowView: View {
             .navigationBarTitleDisplayMode(.inline)
             #endif
             .onAppear {
-                fontSizeContent = CGFloat(UserDefaults.standard.integer(forKey: AppCons.UD_setting_fontContentSize))
-                fontSizeContenido = Int(self.fontSizeContent)
+                //Cargando el contenido del txt
+                self.content = self.getContent(NameTxt: self.nombreTxt)
+                
+                //Se cargan y aplican los colores de fondo y de texto
+                self.backgroundColor = SettingModel.loadColor(forkey: AppCons.UD_setting_color_fondoContent) ?? .black.opacity(0.7)
+                self.textContentdColor = SettingModel.loadColor(forkey: AppCons.UD_setting_color_textContent) ?? .white
+                
+                //Se carga el tamaño de la Fuente:
+                self.fontSizeContentSliderTemp = CGFloat(UserDefaultFontSizeContenido)
+                
+               
             }
             .toolbar{
                 
                 #if os(macOS)
                 //Coloca un botón de cerrar si la ventana es modal
-                if ventanaActualEsModal(){
-                    ToolbarItem(placement: .navigation) {
-                        Button{
-                            if let window = NSApp.keyWindow {
-                                closeWindow(window)
-                            }
-                        }label:{
-                            Label("Cerrar", systemImage: "xmark.circle.fill")
-                                .foregroundStyle(.red)
-                        }
-                        .help("Cerrar")
-                    }
-                }
+                
+                 if ventanaActualEsModal(){
+                 ToolbarItem(placement: .navigation) {
+                     Button{
+                         if let window = NSApp.keyWindow {
+                             closeWindow(window)
+                         }
+                     }label:{
+                         Label("Cerrar", systemImage: "xmark.circle.fill")
+                             .foregroundStyle(.red)
+                     }
+                     .help("Cerrar")
+                 }
+             }
+                 
+                 
+                
                 
                 
                 
@@ -216,354 +213,369 @@ struct ContentTxtShowView: View {
                 
                 
                 //Menú de acciones con el texto copiado
-                ToolbarItem{
-                    if let _ = self.clipBoarModel.clipboardText{
-                        withAnimation {
-                            TextoCopiadoView(clipBoardModel: self.clipBoarModel,
-                                             nameTxt: self.nombreTxt,
-                                             showAlert: self.$showAlert,
-                                             alertMessage: self.$alertMessage,
-                                             showSheetTextoCopiadoAlPortapapelesParaInterpretar: self.$showSheetTextoCopiadoAlPortapapelesParaInterpretar,
-                                             showSheetTtextoCopiadoAlPortapapelesParaChatIA: self.$showSheetTtextoCopiadoAlPortapapelesParaChatIA,
-                                             showSheetTtextoCopiadoAlPortapapelesParaLienzo: self.$showSheetTtextoCopiadoAlPortapapelesParaLienzo)
-                        }
+                
+                 ToolbarItem{
+                     if let _ = self.clipBoarModel.clipboardText{
+                         withAnimation {
+                             TextoCopiadoView(clipBoardModel: self.clipBoarModel,
+                                              nameTxt: self.nombreTxt,
+                                              showAlert: self.$showAlert,
+                                              alertMessage: self.$alertMessage,
+                                              showSheetTextoCopiadoAlPortapapelesParaInterpretar: self.$showSheetTextoCopiadoAlPortapapelesParaInterpretar,
+                                              showSheetTtextoCopiadoAlPortapapelesParaChatIA: self.$showSheetTtextoCopiadoAlPortapapelesParaChatIA,
+                                              showSheetTtextoCopiadoAlPortapapelesParaLienzo: self.$showSheetTtextoCopiadoAlPortapapelesParaLienzo)
+                         }
+                         
                         
-                       
-                    }
-                }
+                     }else{
+                         EmptyView()
+                     }
+                 }
+                 
+                 
+                
                 
                 if #available(iOS 26.0, macOS 26.0, *){
                     ToolbarSpacer(.fixed)
                 }
                 
+               
+                 //Barra de opciones IA para conferencias
+                 if (self.type == .conf) {
+
+                     if #available(iOS 26.0, macOS 26.0, *){
+                         //Verificando si el marco FoundationModels esta disponible en el dispositivo
+                         if IAModelAppleIntelligence.isAvailable() {
+                             
+                             ToolbarItemGroup{
+                                 Menu{
+                                     //Botón que genera un resumen de los puntos claves del contenido
+                                     #if os(macOS)
+                                     Button{
+                                        
+                                         showWindow(for: RespondView(nameConference: self.nombreTxt, texto: self.content, tipoSalida: .puntosClaves),
+                                                    environmentObjects: [],
+                                                    title: self.nombreTxt,
+                                                    size: AppCons.windows_size_content,
+                                                    isModal: true,
+                                                    isIAWindows: true
+                                         )
+                                         
+                                     }label: {
+                                         Label("Puntos Claves",systemImage: "sparkles")
+                                     }
+                                     .tint(.orange)
+                                     .help("Genera, por IA, un resumen de los puntos claves")
+                                     
+                                     #else
+                                     
+                                     NavigationLink{
+                                         RespondView(nameConference: self.nombreTxt, texto: self.content, tipoSalida: .puntosClaves)
+                                     }label: {
+                                         Label("Puntos Claves",systemImage: "sparkles")
+                                     }
+                                     .tint(.orange)
+                                     .help("Genera, por IA, un resumen de los puntos claves")
+                                     #endif
+                                     
+                                     
+                                     //Botón que genera un resumen general del contenido
+                                     #if os(macOS)
+                                     Button{
+                                         showWindow(for: RespondView(nameConference: self.nombreTxt, texto: self.content, tipoSalida: .resumen),
+                                                    environmentObjects: [self.modeloTxt],
+                                                    title: self.nombreTxt,
+                                                    size: AppCons.windows_size_content,
+                                                    isModal: true,
+                                                    isIAWindows: true)
+                                         
+                                     }label: {
+                                         Label("Resumen",systemImage: "sparkles")
+                                     }
+                                     .tint(.orange)
+                                     .help("Genera, por IA,  un resumen general del contenido")
+                                     
+                                     #else
+                                     NavigationLink{
+                                         RespondView(nameConference: self.nombreTxt, texto: self.content, tipoSalida: .resumen)
+                                     }label: {
+                                         Label("Resumen",systemImage: "sparkles")
+                                     }
+                                     .tint(.orange)
+                                     .help("Genera, por IA,  un resumen general del contenido")
+                                     
+                                     #endif
+                                     
+                                     
+                                     
+                                     //Genera concejos prácticos:
+                                     NavigationLink{
+                                         RespondView(nameConference: self.nombreTxt, texto: self.content, tipoSalida: .practicas)
+                                     }label: {
+                                         Label("Aplicación Práctica",systemImage: "sparkles")
+                                     }
+                                     .tint(.orange)
+                                     .help("Genera, por IA, una lista de concejos prácticos")
+                                     
+                                 }label: {
+                                     Image(systemName: "sparkles")
+                                         
+                                 }
+                                 .tint(.purple)
+                             }
+                             
+                         }
+                     }
+                     
+                     
+                     if #available(iOS 26.0, macOS 26.0, *) {
+                         ToolbarSpacer(.fixed)
+                     }
+                     
+                     //Favorito de conferencia
+                     ToolbarItem {
+                         
+                         Button{ //Poner favorito
+                             var temp = self.getFavState
+                             temp.toggle()
+                             if TxtContentModel.shared.setIsFavOfTxt(nombreTxt: nombreTxt, type: self.type, isFav: temp){
+                                 self.favState = temp
+                              self.modeloTxt.getAllFileTxtOfType(type: self.type) //Actualizando el listado
+
+                             }
+                         }label: {
+                             Image(systemName:  self.getFavState ? "heart.fill" : "heart")
+                                 .foregroundStyle(self.getFavState ? .orange : .gray)
+                         }
+                     }
+                     
+                     if #available(iOS 26.0, macOS 26.0, *) {
+                         ToolbarSpacer(.fixed)
+                     }
+                     
+                     //Nota Asociada de conferencia
+                     ToolbarItem {
+                         #if os(macOS)
+                         Button{
+                             self.showNotesSection.toggle() //Muestra la sección de las notas
+                             /*
+                              showWindow(for: EditNoteTxt(nameTxt: nombreTxt, typeOfContent: self.type),
+                                         environmentObjects: [self.modeloTxt],
+                                         title: "Editar nota de Conferencia: \(self.nombreTxt)",
+                                         size: AppCons.windows_size_content_small,
+                                         isModal: true
+                              )
+                              */
+                             
+                             
+                         }label: {
+                             Label("Nota Asociada", systemImage: self.modeloTxt.isNotaOfTxt(nombreTxt: self.nombreTxt, type: self.type) ? "bookmark.fill" : "bookmark")
+                                 .foregroundStyle(self.modeloTxt.getNotaOfTXT(nombreTxt: nombreTxt, type: type) == "" ? .gray : .green)
+                                 
+                         }
+                         .help("Nota Asociada")
+                         #else
+                         Button{
+                             self.showNotesSection.toggle()
+                            // EditNoteTxt(entidad: nombreTxt, typeOfContent: self.type)
+                         }label: {
+                             
+                             Label("Nota Asociada", systemImage: self.modeloTxt.isNotaOfTxt(nombreTxt: self.nombreTxt, type: self.type) ? "bookmark.fill" : "bookmark")
+                                 
+                         }
+                         .tint(self.modeloTxt.getNotaOfTXT(nombreTxt: nombreTxt, type: type) == "" ? .gray : .green)
+                         .help("Nota Asociada")
+                         
+                         #endif
+                         
+                     }
+                     
+                     if #available(iOS 26.0, macOS 26.0, *) {
+                         ToolbarSpacer(.fixed)
+                     }
+                     
+                     //Opciones de Ajuste de tamaño y color de fuente y opciones de tratamiento del texto copiado
+                     ToolbarItem {
+                         Menu{
+                             
+                             
+                             Button("Tamaño de Letra", systemImage: "textformat") {
+                                 withAnimation(.easeInOut) {
+                                     self.showColor = false
+                                     self.showSlider.toggle()
+                                 }
+                             }
+                             Button("Color de fondo y letra", systemImage: "paintpalette.fill") {
+                                 withAnimation(.easeInOut) {
+                                     self.showSlider = false
+                                     self.showColor.toggle()
+                                 }
+                             }
+                             
+                             //Menú de acciones con el texto copiado
+                             /*
+                              if let _ = self.clipBoarModel.clipboardText{
+                                  TextoCopiadoView(clipBoardModel: self.clipBoarModel,
+                                                   nameTxt: self.nombreTxt,
+                                                   showAlert: self.$showAlert,
+                                                   alertMessage: self.$alertMessage,
+                                                   showSheetTextoCopiadoAlPortapapelesParaInterpretar: self.$showSheetTextoCopiadoAlPortapapelesParaInterpretar,
+                                                   showSheetTtextoCopiadoAlPortapapelesParaChatIA: self.$showSheetTtextoCopiadoAlPortapapelesParaChatIA,
+                                                   showSheetTtextoCopiadoAlPortapapelesParaLienzo: self.$showSheetTtextoCopiadoAlPortapapelesParaLienzo)
+                                 
+                              }else{
+                                  EmptyView()
+                              }
+                              */
+                             
+                             
+                             
+                             
+                             
+                             
+                         }label: {
+                             Image(systemName: "line.3.horizontal")
+                             
+                            
+                                 
+                         }
+                         
+                         
+                     }
+                 }
                 
-                //Barra de opciones IA para conferencias
-                if (self.type == .conf) {
-
-                    if #available(iOS 26.0, macOS 26.0, *){
-                        //Verificando si el marco FoundationModels esta disponible en el dispositivo
-                        if IAModelAppleIntelligence.isAvailable() {
+               
+                
+                
+                
+                 //Barra de opciones de IA para Citas, Ayudas y Reflexiones:
+                 if (self.type == .ayud || self.type == .citas ){
+                     if #available(iOS 26.0, macOS 26.0, *){
+                         if IAModelAppleIntelligence.isAvailable(){
+                             
+                             ToolbarItem {
+                                 Menu{
+                                     #if os(macOS)
+                                     Button{
+                                         showWindow(for: RespondView(nameConference: "", texto: self.content.replacingOccurrences(of: "<br>", with: ""), tipoSalida: .interpretar ),
+                                                    environmentObjects: [self.modeloTxt],
+                                                    title: self.nombreTxt,
+                                                    size: AppCons.windows_size_content,
+                                                    isModal: true,
+                                                    isIAWindows: true)
+                                         
+                                         
+                                         
+                                     }label:{
+                                         Label("Interpretar", systemImage: "sparkles")
+                                     }
+                                     .tint(.orange)
+                                     
+                                     Button{
+                                         showWindow(for: RespondView(nameConference: "", texto: self.content.replacingOccurrences(of: "<br>", with: ""), tipoSalida: .practicaConcreta),
+                                                    environmentObjects: [self.modeloTxt],
+                                                    title: self.nombreTxt,
+                                                    size: AppCons.windows_size_content,
+                                                    isModal: true,
+                                                    isIAWindows: true)
+                                         
+                                     }label:{
+                                         Label("Aplicación Práctica", systemImage: "sparkles")
+                                     }
+                                     .tint(.orange)
+                                     
+                                     
+                                     #else
+                                     NavigationLink{
+                                         
+                                         RespondView(nameConference: "", texto: self.content.replacingOccurrences(of: "<br>", with: ""), tipoSalida: .interpretar )
+                                         
+                                         
+                                     }label:{
+                                         Label("Interpretar", systemImage: "sparkles")
+                                     }
+                                     .tint(.orange)
+                                     
+                                     NavigationLink{
+                                         
+                                         RespondView(nameConference: "", texto: self.content.replacingOccurrences(of: "<br>", with: ""), tipoSalida: .practicaConcreta)
+                                        
+                                         
+                                     }label:{
+                                         Label("Aplicación Práctica", systemImage: "sparkles")
+                                     }
+                                     .tint(.orange)
+                                     
+                                     
+                                     #endif
+                                     
+                                    
+                                     
+                                 }label:{
+                                     Image(systemName: "sparkles")
+                                 }
+                                 .tint(.purple)
+                             }
+                             
                             
-                            ToolbarItemGroup{
-                                Menu{
-                                    //Botón que genera un resumen de los puntos claves del contenido
-                                    #if os(macOS)
-                                    Button{
-                                       
-                                        showWindow(for: RespondView(nameConference: self.nombreTxt, texto: self.getContent, tipoSalida: .puntosClaves),
-                                                   environmentObjects: [],
-                                                   title: self.nombreTxt,
-                                                   size: AppCons.windows_size_content,
-                                                   isModal: true,
-                                                   isIAWindows: true
-                                        )
-                                        
-                                    }label: {
-                                        Label("Puntos Claves",systemImage: "sparkles")
-                                    }
-                                    .tint(.orange)
-                                    .help("Genera, por IA, un resumen de los puntos claves")
-                                    
-                                    #else
-                                    
-                                    NavigationLink{
-                                        RespondView(nameConference: self.nombreTxt, texto: self.getContent, tipoSalida: .puntosClaves)
-                                    }label: {
-                                        Label("Puntos Claves",systemImage: "sparkles")
-                                    }
-                                    .tint(.orange)
-                                    .help("Genera, por IA, un resumen de los puntos claves")
-                                    #endif
-                                    
-                                    
-                                    //Botón que genera un resumen general del contenido
-                                    #if os(macOS)
-                                    Button{
-                                        showWindow(for: RespondView(nameConference: self.nombreTxt, texto: self.getContent, tipoSalida: .resumen),
-                                                   environmentObjects: [self.modeloTxt],
-                                                   title: self.nombreTxt,
-                                                   size: AppCons.windows_size_content,
-                                                   isModal: true,
-                                                   isIAWindows: true)
-                                        
-                                    }label: {
-                                        Label("Resumen",systemImage: "sparkles")
-                                    }
-                                    .tint(.orange)
-                                    .help("Genera, por IA,  un resumen general del contenido")
-                                    
-                                    #else
-                                    NavigationLink{
-                                        RespondView(nameConference: self.nombreTxt, texto: self.getContent, tipoSalida: .resumen)
-                                    }label: {
-                                        Label("Resumen",systemImage: "sparkles")
-                                    }
-                                    .tint(.orange)
-                                    .help("Genera, por IA,  un resumen general del contenido")
-                                    
-                                    #endif
-                                    
-                                    
-                                    
-                                    //Genera concejos prácticos:
-                                    NavigationLink{
-                                        RespondView(nameConference: self.nombreTxt, texto: self.getContent, tipoSalida: .practicas)
-                                    }label: {
-                                        Label("Aplicación Práctica",systemImage: "sparkles")
-                                    }
-                                    .tint(.orange)
-                                    .help("Genera, por IA, una lista de concejos prácticos")
-                                    
-                                }label: {
-                                    Image(systemName: "sparkles")
-                                        
-                                }
-                                .tint(.purple)
-                            }
-                            
-                        }
-                    }
-                    
-                    
-                    if #available(iOS 26.0, macOS 26.0, *) {
-                        ToolbarSpacer(.fixed)
-                    }
-                    
-                    //Favorito de conferencia
-                    ToolbarItem {
-                        
-                        Button{ //Poner favorito
-                            var temp = self.getFavState
-                            temp.toggle()
-                            if TxtContentModel.shared.setIsFavOfTxt(nombreTxt: nombreTxt, type: self.type, isFav: temp){
-                                self.favState = temp
-                             self.modeloTxt.getAllFileTxtOfType(type: self.type) //Actualizando el listado
+                         }
+                     }
+                     
+                     if #available(iOS 26.0, macOS 26.0, *) {
+                         ToolbarSpacer(.fixed)
+                     }
+                     
+                     //Favorito para Citas, Ayudas, Reflexiones
+                     ToolbarItem {
+                         Button{ //Poner favorito
+                             var temp = self.getFavState
+                             temp.toggle()
+                             if TxtContentModel.shared.setIsFavOfTxt(nombreTxt: nombreTxt, type: self.type, isFav: temp){
+                                 self.favState = temp
+                              self.modeloTxt.getAllFileTxtOfType(type: self.type) //Actualizando el listado
 
-                            }
-                        }label: {
-                            Image(systemName:  self.getFavState ? "heart.fill" : "heart")
-                                .foregroundStyle(self.getFavState ? .orange : .gray)
-                        }
-                    }
-                    
-                    if #available(iOS 26.0, macOS 26.0, *) {
-                        ToolbarSpacer(.fixed)
-                    }
-                    
-                    //Nota Asociada de conferencia
-                    ToolbarItem {
-                        #if os(macOS)
-                        Button{
-                            self.showNotesSection.toggle() //Muestra la sección de las notas
-                            /*
+                             }
+                         }label: {
+                             Image(systemName:  self.getFavState ? "heart.fill" : "heart")
+                                 .foregroundStyle(self.getFavState ? .orange : .gray)
+                         }
+                     }
+                     
+                     if #available(iOS 26.0, macOS 26.0, *) {
+                         ToolbarSpacer(.fixed)
+                     }
+                     
+                     ToolbarItem {
+                         
+                         #if os(macOS)
+                         Button{
                              showWindow(for: EditNoteTxt(nameTxt: nombreTxt, typeOfContent: self.type),
                                         environmentObjects: [self.modeloTxt],
-                                        title: "Editar nota de Conferencia: \(self.nombreTxt)",
+                                        title: "Editar Nota de \(self.type.rawValue)",
                                         size: AppCons.windows_size_content_small,
                                         isModal: true
                              )
-                             */
-                            
-                            
-                        }label: {
-                            Label("Nota Asociada", systemImage: self.modeloTxt.isNotaOfTxt(nombreTxt: self.nombreTxt, type: self.type) ? "bookmark.fill" : "bookmark")
-                                .foregroundStyle(self.modeloTxt.getNotaOfTXT(nombreTxt: nombreTxt, type: type) == "" ? .gray : .green)
-                                
-                        }
-                        .help("Nota Asociada")
-                        #else
-                        Button{
-                            self.showNotesSection.toggle()
-                           // EditNoteTxt(entidad: nombreTxt, typeOfContent: self.type)
-                        }label: {
-                            
-                            Label("Nota Asociada", systemImage: self.modeloTxt.isNotaOfTxt(nombreTxt: self.nombreTxt, type: self.type) ? "bookmark.fill" : "bookmark")
-                                
-                        }
-                        .tint(self.modeloTxt.getNotaOfTXT(nombreTxt: nombreTxt, type: type) == "" ? .gray : .green)
-                        .help("Nota Asociada")
-                        
-                        #endif
-                        
-                    }
-                    
-                    if #available(iOS 26.0, macOS 26.0, *) {
-                        ToolbarSpacer(.fixed)
-                    }
-                    
-                    //Opciones de Ajuste de tamaño y color de fuente y opciones de tratamiento del texto copiado
-                    ToolbarItem {
-                        Menu{
-                            
-                            
-                            Button("Tamaño de Letra", systemImage: "textformat") {
-                                withAnimation(.easeInOut) {
-                                    self.showColor = false
-                                    self.showSlider.toggle()
-                                }
-                            }
-                            Button("Color de fondo y letra", systemImage: "paintpalette.fill") {
-                                withAnimation(.easeInOut) {
-                                    self.showSlider = false
-                                    self.showColor.toggle()
-                                }
-                            }
-                            
-                            //Menú de acciones con el texto copiado
-                            if let _ = self.clipBoarModel.clipboardText{
-                                TextoCopiadoView(clipBoardModel: self.clipBoarModel,
-                                                 nameTxt: self.nombreTxt,
-                                                 showAlert: self.$showAlert,
-                                                 alertMessage: self.$alertMessage,
-                                                 showSheetTextoCopiadoAlPortapapelesParaInterpretar: self.$showSheetTextoCopiadoAlPortapapelesParaInterpretar,
-                                                 showSheetTtextoCopiadoAlPortapapelesParaChatIA: self.$showSheetTtextoCopiadoAlPortapapelesParaChatIA,
-                                                 showSheetTtextoCopiadoAlPortapapelesParaLienzo: self.$showSheetTtextoCopiadoAlPortapapelesParaLienzo)
-                               
-                            }
-                            
-                            
-                            
-                            
-                            
-                        }label: {
-                            Image(systemName: "line.3.horizontal")
-                            
-                           
-                                
-                        }
-                        
-                        
-                    }
-                }
+                             
+                         }label: {
+                             Image(systemName:  self.modeloTxt.isNotaOfTxt(nombreTxt: nombreTxt, type: self.type) ? "bookmark.fill" : "bookmark")
+                                 .foregroundStyle(self.modeloTxt.isNotaOfTxt(nombreTxt: nombreTxt, type: self.type) ? Color.green :  Color.gray)
+                         }
+                         #else
+                         NavigationLink{
+                             EditNoteTxt(nameTxt: nombreTxt, typeOfContent: self.type)
+                         }label:{
+                             Image(systemName:  self.modeloTxt.isNotaOfTxt(nombreTxt: nombreTxt, type: self.type) ? "bookmark.fill" : "bookmark")
+                                 .foregroundStyle(self.modeloTxt.isNotaOfTxt(nombreTxt: nombreTxt, type: self.type) ? Color.green :  Color.gray)
+                         }
+                         #endif
+                         
+                     }
+                     
+                     
+                     
+                 }
+                 
                 
-                
-                
-                //Barra de opciones de IA para Citas, Ayudas y Reflexiones:
-                if (self.type == .ayud || self.type == .citas ){
-                    if #available(iOS 26.0, macOS 26.0, *){
-                        if IAModelAppleIntelligence.isAvailable(){
-                            
-                            ToolbarItem {
-                                Menu{
-                                    #if os(macOS)
-                                    Button{
-                                        showWindow(for: RespondView(nameConference: "", texto: self.getContent.replacingOccurrences(of: "<br>", with: ""), tipoSalida: .interpretar ),
-                                                   environmentObjects: [self.modeloTxt],
-                                                   title: self.nombreTxt,
-                                                   size: AppCons.windows_size_content,
-                                                   isModal: true,
-                                                   isIAWindows: true)
-                                        
-                                        
-                                        
-                                    }label:{
-                                        Label("Interpretar", systemImage: "sparkles")
-                                    }
-                                    .tint(.orange)
-                                    
-                                    Button{
-                                        showWindow(for: RespondView(nameConference: "", texto: self.getContent.replacingOccurrences(of: "<br>", with: ""), tipoSalida: .practicaConcreta),
-                                                   environmentObjects: [self.modeloTxt],
-                                                   title: self.nombreTxt,
-                                                   size: AppCons.windows_size_content,
-                                                   isModal: true,
-                                                   isIAWindows: true)
-                                        
-                                    }label:{
-                                        Label("Aplicación Práctica", systemImage: "sparkles")
-                                    }
-                                    .tint(.orange)
-                                    
-                                    
-                                    #else
-                                    NavigationLink{
-                                        
-                                        RespondView(nameConference: "", texto: self.getContent.replacingOccurrences(of: "<br>", with: ""), tipoSalida: .interpretar )
-                                        
-                                        
-                                    }label:{
-                                        Label("Interpretar", systemImage: "sparkles")
-                                    }
-                                    .tint(.orange)
-                                    
-                                    NavigationLink{
-                                        
-                                        RespondView(nameConference: "", texto: self.getContent.replacingOccurrences(of: "<br>", with: ""), tipoSalida: .practicaConcreta)
-                                       
-                                        
-                                    }label:{
-                                        Label("Aplicación Práctica", systemImage: "sparkles")
-                                    }
-                                    .tint(.orange)
-                                    
-                                    
-                                    #endif
-                                    
-                                   
-                                    
-                                }label:{
-                                    Image(systemName: "sparkles")
-                                }
-                                .tint(.purple)
-                            }
-                            
-                           
-                        }
-                    }
-                    
-                    if #available(iOS 26.0, macOS 26.0, *) {
-                        ToolbarSpacer(.fixed)
-                    }
-                    
-                    //Favorito para Citas, Ayudas, Reflexiones
-                    ToolbarItem {
-                        Button{ //Poner favorito
-                            var temp = self.getFavState
-                            temp.toggle()
-                            if TxtContentModel.shared.setIsFavOfTxt(nombreTxt: nombreTxt, type: self.type, isFav: temp){
-                                self.favState = temp
-                             self.modeloTxt.getAllFileTxtOfType(type: self.type) //Actualizando el listado
-
-                            }
-                        }label: {
-                            Image(systemName:  self.getFavState ? "heart.fill" : "heart")
-                                .foregroundStyle(self.getFavState ? .orange : .gray)
-                        }
-                    }
-                    
-                    if #available(iOS 26.0, macOS 26.0, *) {
-                        ToolbarSpacer(.fixed)
-                    }
-                    
-                    ToolbarItem {
-                        
-                        #if os(macOS)
-                        Button{
-                            showWindow(for: EditNoteTxt(nameTxt: nombreTxt, typeOfContent: self.type),
-                                       environmentObjects: [self.modeloTxt],
-                                       title: "Editar Nota de \(self.type.rawValue)",
-                                       size: AppCons.windows_size_content_small,
-                                       isModal: true
-                            )
-                            
-                        }label: {
-                            Image(systemName:  self.modeloTxt.isNotaOfTxt(nombreTxt: nombreTxt, type: self.type) ? "bookmark.fill" : "bookmark")
-                                .foregroundStyle(self.modeloTxt.isNotaOfTxt(nombreTxt: nombreTxt, type: self.type) ? Color.green :  Color.gray)
-                        }
-                        #else
-                        NavigationLink{
-                            EditNoteTxt(nameTxt: nombreTxt, typeOfContent: self.type)
-                        }label:{
-                            Image(systemName:  self.modeloTxt.isNotaOfTxt(nombreTxt: nombreTxt, type: self.type) ? "bookmark.fill" : "bookmark")
-                                .foregroundStyle(self.modeloTxt.isNotaOfTxt(nombreTxt: nombreTxt, type: self.type) ? Color.green :  Color.gray)
-                        }
-                        #endif
-                        
-                    }
-                    
-                    
-                    
-                }
                 
                 
 
@@ -573,9 +585,12 @@ struct ContentTxtShowView: View {
                     
                     ToolbarItem(placement: .navigation) {
                         HStack{
-                            Slider(value: $fontSizeContent, in: 18...50) { Bool in
-                                fontSizeContenido = Int(fontSizeContent)
-                            }
+                            Slider(value: self.$fontSizeContentSliderTemp, in: 18...50, onEditingChanged: { editing in
+                                if !editing {
+                                    // Se ejecuta solo cuando se deja de mover el slider
+                                    UserDefaultFontSizeContenido = Int(fontSizeContentSliderTemp)
+                                }
+                            })
                             .frame(width: 250)
                             
                             Button{
@@ -597,9 +612,12 @@ struct ContentTxtShowView: View {
                     
                     #else
                     ToolbarItem(placement: .bottomBar) {
-                        Slider(value: $fontSizeContent, in: 18...50) { Bool in
-                            fontSizeContenido = Int(fontSizeContent)
-                        }
+                        Slider(value: self.$fontSizeContentSliderTemp, in: 18...50, onEditingChanged: { editing in
+                            if !editing {
+                                // Se ejecuta solo cuando se deja de mover el slider
+                                UserDefaultFontSizeContenido = Int(fontSizeContentSliderTemp)
+                            }
+                        })
                     }
                     
                     #endif
@@ -719,6 +737,24 @@ struct ContentTxtShowView: View {
             }
         }
     }//body
+    
+    
+    //Obtiene el texto del TXT
+    private func getContent(NameTxt : String) -> String{
+        //Carga el contenido del fichero una única vez:
+        if content.isEmpty {
+            var texto: String
+            if type == .NA {
+                texto = UtilFuncs.FileRead(NameTxt)
+            } else {
+                texto = modeloTxt.getContentTxt(nombreTxt: NameTxt, type: type)
+            }
+            return texto
+
+        }
+        return ""
+    }
+    
 }
 
 

@@ -14,16 +14,45 @@ struct AppCons{
     static let appVersion   = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String //Versión actual de la app
     
     static let AppGroupName = "group.com.ypg.nev.group" //Nombre del contenedor AppGroup compartido
+
+    //NameFile: Neville
+    static let FileListFrases                   = "listfrases"
+    static let FileBiografiaNeville             = "biografia"
+    static let FileResumenEnseñanzaNeville      = "resumen_enseñanza_nevile"
+    
+    //NameFile: Joe Dispenza
+    static let FileListFrasesJD                 = "listfrases_jd"
+    static let FileBiografiaJD                  = "biografia_jd"
+    static let FileResumenDejaDeSerTu           = "resumen_libro_dejadesertu"
+    static let FilePlanDejaDeSerTu              = "plan_libro_dejadesertu"
+    static let FileResumenDesarrollaTuCerebro   = "resumen_libro_desarrollatucerebro"
+    static let FilePlanDesarrollaTuCerebro      = "plan_libro_desarrollatucerebro"
+    static let FileResumenElPLaceboEresTu       = "resumen_libro_elplaceboerestu"
+    static let FilePlanElPlaceboEresTu          = "plan_libro_elplaceboerestu"
+    static let FileResumenSuperNatural          = "resumen_libro_supernatural"
+    static let FilePlanSupernarural             = "plan_libro_supernatural"
+    static let FileResumenEnseñanzaJD           = "resumen_enseñanza_jd"
+    
+    //NameFile: Gregg Braden
+    static let FileListFrasesGregg              = "listfrases_gregg"
+    static let FileBiografiaGregg               = "biografia_gregg"
+    static let FileResumenEnseñanzaGregg        = "resumen_enseñanza_gregg"
     
     
-    //nameFile in Staff:
-    static let FileListFrases           = "listfrases"
-    static let FileListFrasesJD           = "listfrases_jd"
+    //NameFile: Bruce Lipton
+    static let FileListFrasesBruceL             = "listfrases_bruce"
+    static let FileBiografiaBruce               = "biografia_bruce"
+    static let FileResumenEnseñanzaBruce        = "resumen_enseñanzas_bruce"
+    static let FileResumenBiologiaCreencia      = "resumen_libro_biologiacreencia"
+    static let FilePlanBiologiaCrrencia         = "plan_libro_biologiacreencia"
     
-    static let FileBiografia            = "biografia"
-    static let FileListIdVideoConf      = "listidvideoconf"
-    static let FileListIdAudioLibros    = "listidaudiolibros"
-    static let FileListIdGreggVideos    = "listidgregg"
+    
+    /*
+     static let FileListIdVideoConf      = "listidvideoconf"
+     static let FileListIdAudioLibros    = "listidaudiolibros"
+     static let FileListIdGreggVideos    = "listidgregg"
+     */
+    
     
     //name values for setting:
     static let UD_setting_fontFrasesSize   = "setting_fontFrasesSize"

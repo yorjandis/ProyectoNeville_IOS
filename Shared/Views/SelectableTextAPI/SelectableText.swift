@@ -40,7 +40,7 @@ import AppKit
 /// ```
 public struct SelectableText: View {
     private var text: String? = nil
-    private var fontSize: CGFloat = 25
+    private var fontSize: CGFloat = 50
 
     private var fontColor: UIColor = .black
 
@@ -48,19 +48,44 @@ public struct SelectableText: View {
     private var attributedText: NSAttributedString? = nil
     @State private var layoutHeight: CGFloat = .zero
     
-    /// Initializes the view with plain text.
+    /// Inicializa la vista con texto plano
     /// - Parameter text: The text to be displayed.
-    public init(_ text: String, fontSize: CGFloat = 25,fonColor : UIColor = .black, alignment : NSTextAlignment = .justified) {
+    public init(text: String, fontSize: CGFloat = 25,fonColor : UIColor = .black, alignment : NSTextAlignment = .justified) {
         self.text = text
         self.fontSize = fontSize
         self.fontColor = fonColor
         self.alignment = alignment
     }
     
-    /// Initializes the view with an `AttributedString`.
+    /// Inicializa la vista con un  `AttributedString`.
     /// - Parameter attributedText: The attributed text to be displayed.
-    public init(_ attributedText: AttributedString) {
-        self.attributedText = NSAttributedString(attributedText)
+    public init(
+        _ attributedText: AttributedString,
+        fontSize: CGFloat = 25,
+        fonColor: UIColor = .black,
+        alignment: NSTextAlignment = .left
+    ) {
+        // Convertimos a NSMutableAttributedString para poder modificar atributos
+        let mutable = NSMutableAttributedString(attributedText)
+        
+        // Rango de todo el texto
+        let rango = NSRange(location: 0, length: mutable.length)
+        
+        // Fuente
+        mutable.addAttribute(.font, value: UIFont.systemFont(ofSize: fontSize), range: rango)
+        
+        // Color
+        mutable.addAttribute(.foregroundColor, value: fonColor, range: rango)
+        
+        // Alineación
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = alignment
+        mutable.addAttribute(.paragraphStyle, value: paragraphStyle, range: rango)
+        
+        self.attributedText = mutable
+        self.fontSize = fontSize
+        self.fontColor = fonColor
+        self.alignment = alignment
     }
     
     /// Initializes the view with an `NSAttributedString`.
@@ -70,42 +95,21 @@ public struct SelectableText: View {
     }
     
     public var body: some View {
-        GeometryReader { proxy in
-            SelectableTextRepresentable(
-                text: text,
-                attributedText: attributedText,
-                fontSize: self.fontSize,
-                fontColor: self.fontColor,
-                alignment: self.alignment,
-                maxLayoutWidth: proxy.maxWidth,
-                layoutHeight: $layoutHeight
-            )
-        }
-        .frame(height: layoutHeight)
+        
+         GeometryReader { proxy in
+             SelectableTextRepresentable(
+                 text: text ?? "",
+                 attributedText: attributedText,
+                 fontSize: self.fontSize,
+                 fontColor: self.fontColor,
+                 alignment: self.alignment,
+                 maxLayoutWidth: proxy.maxWidth,
+                 layoutHeight: $layoutHeight
+             )
+         }
+         .frame(height: layoutHeight)
+  
     }
 }
 
-#Preview {
-    let text = "This is SelectableText!"
-    
-#if canImport(UIKit)
-    let attributes: [NSAttributedString.Key : Any] = [
-        .foregroundColor: UIColor.systemPink,
-        .font: UIFont.preferredFont(forTextStyle: .body)
-    ]
-#elseif canImport(AppKit)
-    let attributes: [NSAttributedString.Key : Any] = [
-        .foregroundColor: NSColor.systemPink,
-        .font: NSFont.preferredFont(forTextStyle: .body)
-    ]
-#endif
-    
-    let attributedText = AttributedString(text, attributes: AttributeContainer(attributes))
-    let nsAttributedText = NSAttributedString(string: text, attributes: attributes)
-    
-    return Form {
-        SelectableText(text)
-        SelectableText(attributedText)
-        SelectableText(nsAttributedText)
-    }
-}
+

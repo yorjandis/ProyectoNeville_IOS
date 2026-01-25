@@ -7,18 +7,43 @@
 
 import SwiftUI
 
+/*
+ extension View {
+     func SelectableTextShareView(getContent : String ,fontSizeContenido : CGFloat, textContentdColor : UIColor) -> some View {
+ #if os(macOS)
+ Text(getContent)
+     .font(.system(size: CGFloat(fontSizeContenido)) )
+     .foregroundStyle(Color(textContentdColor))
+     .textSelection(.enabled)
+     .padding(.horizontal, 5)
+     
+ #else
+ SelectableText(getContent, fontSize: CGFloat(fontSizeContenido), fonColor: textContentdColor , alignment: .left)
+     .padding(.horizontal, 5)
+ #endif
+     }
+ }
+
+ */
+
 extension View {
-    func SelectableTextShareView(getContent : String ,fontSizeContenido : CGFloat, textContentdColor : UIColor) -> some View {
+    func SelectableTextShareView(getContent: String, fontSizeContenido: CGFloat, textContentdColor: UIColor ) -> some View {
+        
 #if os(macOS)
-Text(getContent)
-    .font(.system(size: CGFloat(fontSizeContenido)) )
-    .foregroundStyle(Color(textContentdColor))
-    .textSelection(.enabled)
-    .padding(.horizontal, 5)
-    
+        return Text(getContent)
+            .font(.system(size: fontSizeContenido))
+            .foregroundStyle(Color(textContentdColor))
+            .textSelection(.enabled)
+            .padding(.horizontal, 5)
+        
 #else
-SelectableText(getContent, fontSize: CGFloat(fontSizeContenido), fonColor: textContentdColor , alignment: .left)
-    .padding(.horizontal, 5)
+    
+        return SelectableText( text : getContent, fontSize:fontSizeContenido,fonColor: textContentdColor, alignment: .left)
+            .padding(.horizontal, 5)
+       
 #endif
     }
 }
+
+
+

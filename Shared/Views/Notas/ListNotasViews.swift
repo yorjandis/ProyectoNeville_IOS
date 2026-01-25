@@ -609,7 +609,7 @@ struct cardNotas: View{
             if expandNota {
                     //Divider()
                     HStack{
-                        SelectableText(nota!.nota ?? "")
+                        SelectableText(text: nota!.nota ?? "")
                        // Text(nota!.nota ?? "")
                             .font(.system(size: 20))
                             .fontDesign(.serif)

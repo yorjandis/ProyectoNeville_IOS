@@ -54,15 +54,13 @@ struct ReflexShowTextView: View {
                     HStack{
                         ScrollView{
                             #if os(macOS)
-                            let texto = ClipboardHelper.insertarMarcaOculta(en: entity.content)
-                            Text(texto)
+                            Text(entity.content)
                                 .font(.system(size: self.fontSizeContent))
                                 .foregroundStyle(.primary)
                                 .textSelection(.enabled)
                                 .padding(.horizontal, 5)
                             #else
-                            let texto = ClipboardHelper.insertarMarcaOculta(en: entity.content)
-                            SelectableText(texto, fontSize: self.fontSizeContent,fonColor: UIColor(Color.primary) ,  alignment: .left)
+                            SelectableText(text: entity.content, fontSize: self.fontSizeContent,fonColor: UIColor(Color.primary) ,  alignment: .left)
                             #endif
                             
                         }.scrollIndicators(.automatic)

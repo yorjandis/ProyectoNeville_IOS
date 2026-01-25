@@ -290,7 +290,7 @@ struct TxtListView: View {
                             }
                         }
                     
-                    //Listado de Conferencias
+                    //Listado de elementos TXT Files (conferencias, citas, preguntas, etc)
                     List(modeloTxt.textList, id: \.self) { nombreTxt in
                         
                         VStack(alignment: .leading) {
@@ -309,12 +309,15 @@ struct TxtListView: View {
                                         .environmentObject(self.clipBoardModel)
                                         .onAppear{
                                             //"Se ha abierto una conferencia")
+                                            if self.typeOfContent == .conf {
                                                 self.modeloTxt.handleLastFiveConferences(nombreTxt: nombreTxt)
-                                            
+                                            }
+                                                
                                         }
                                         .onDisappear{
+                                            if self.typeOfContent == .conf {
                                                 self.modeloTxt.saveLastFiveConferences()//Salva la conferencia
-                                            
+                                            }
                                         }
                                 } label: {
                                     Text(nombreTxt)

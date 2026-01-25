@@ -1,0 +1,26 @@
+id=otros_001
+autor=Rumi
+nota=
+fuente=
+contexto=Unidad mente-cuerpo
+texto=La bendición es lo que libera
+Más allá de las ideas sobre lo que está bien y lo que está mal, hay un campo. Allí te encontraré
+relacionadas=
+
+id=otros_002
+autor=Jalil Gibran
+nota=
+fuente=
+contexto=Unidad mente-cuerpo
+texto=La bendición es lo que libera
+Más allá de las ideas sobre lo que está bien y lo que está mal, hay un campo. Allí te encontraré
+relacionadas=
+
+id=otros_003
+autor=Santa Catalina de Siena
+nota=
+fuente=
+contexto=Unidad mente-cuerpo
+texto=La fuerza que creó los esplendores inimaginables y los horrores inconcebibles se ha refugiado en nosotros, y seguirá nuestras órdenes
+relacionadas=
+

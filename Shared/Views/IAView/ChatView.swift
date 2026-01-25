@@ -88,7 +88,7 @@ struct ChatView: View {
                                                     Spacer()
                                                     
                                                     VStack(alignment: .trailing) {
-                                                        SelectableText(msg.text, fontSize: CGFloat(self.fontSizeChatIA),fonColor: UIColor(self.ColorChatIAFuente) , alignment: .left)
+                                                        SelectableText(text : msg.text, fontSize: CGFloat(self.fontSizeChatIA),fonColor: UIColor(self.ColorChatIAFuente) , alignment: .left)
                                                             .padding()
                                                             .background(Color.black.opacity(0.7))
                                                             .cornerRadius(12)
@@ -112,8 +112,8 @@ struct ChatView: View {
                                                     
                                                 } else {
                                                     VStack{
-                                                        let texto = ClipboardHelper.insertarMarcaOculta(en: msg.text) //Para que funcionen las opciones de copiado de texto
-                                                        SelectableText(texto, fontSize: CGFloat(self.fontSizeChatIA),fonColor: UIColor(self.ColorChatIAFuente) , alignment : .left)
+                                                        
+                                                        SelectableText(text : msg.text, fontSize: CGFloat(self.fontSizeChatIA),fonColor: UIColor(self.ColorChatIAFuente) , alignment : .left)
                                                             .padding(.horizontal, 10)
                                                             .background(Color.black.opacity(0.5))
                                                             .cornerRadius(12)

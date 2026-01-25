@@ -1,0 +1,103 @@
+id=bruce_001
+autor=bruceL
+nota=
+fuente=
+contexto=
+texto=Tubiología responde a lo que crees no a lo que es real
+relacionadas=
+
+id=bruce_002
+autor=bruceL
+nota=
+fuente=Lipton, Bruce H. (2007), La biología de la creencia: la liberación del poder de la conciencia, la materia y los milagros. Madrid: Ediciones Palmyra. ISBN 9788496665187
+contexto=
+texto=Se necesita algo más que «pensamientos positivos» para mantener el control de tu cuerpo y de tu vida. Es importante para tu salud y tu bienestar que cambies tu forma de pensar y te concentres en los pensamientos vitales y positivos
+relacionadas=
+
+id=bruce_003
+autor=bruceL
+nota=
+fuente=Lipton, Bruce H. (2007), La biología de la creencia: la liberación del poder de la conciencia, la materia y los milagros. Madrid: Ediciones Palmyra. ISBN 9788496665187
+contexto=
+texto=La mente consciente es la creativa, la que puede conjurar los «pensamientos positivos». Por el contrario, la mente subconsciente es estrictamente  maquinal; repite las mismas respuestas a las señales vitales una y otra vez
+relacionadas=
+
+id=bruce_004
+autor=bruceL
+nota=
+fuente=Lipton, Bruce H. (2007), La biología de la creencia: la liberación del poder de la conciencia, la materia y los milagros. Madrid: Ediciones Palmyra. ISBN 9788496665187
+contexto=
+texto=La mente (energía) y el cuerpo (materia) están relacionados de una forma similar, aunque la medicina occidental ha tratado denodadamente de separarlas durante cientos de años
+relacionadas=
+
+id=bruce_005
+autor=bruceL
+nota=
+fuente=Lipton, Bruce H. (2007), La biología de la creencia: la liberación del poder de la conciencia, la materia y los milagros. Madrid: Ediciones Palmyra. ISBN 9788496665187
+contexto=
+texto=Las compañías farmacéuticas les ofrecen esta «educación» [refiriéndose a los médicos] para persuadir a los doctores de que «aconsejen» el uso de sus productos
+relacionadas=
+
+id=bruce_006
+autor=bruceL
+nota=
+fuente=Lipton, Bruce H. (2007), La biología de la creencia: la liberación del poder de la conciencia, la materia y los milagros. Madrid: Ediciones Palmyra. ISBN 9788496665187
+contexto=
+texto=Existen centenares y centenares de estudios científicos publicados en los últimos cincuenta años que dan pruebas consistentes de que las «fuerzas invisibles» del espectro electromagnético afectan profundamente a todas y cada una de las facetas de la regulación biológica
+relacionadas=
+
+id=bruce_007
+autor=bruceL
+nota=
+fuente=Lipton, Bruce H. (2007), La biología de la creencia: la liberación del poder de la conciencia, la materia y los milagros. Madrid: Ediciones Palmyra. ISBN 9788496665187
+contexto=
+texto=No obstante, debido a los prejuicios materialistas newtonianos, los investigadores convencionales han ignorado por completo el papel que juega la energía en la salud y en la enfermedad
+relacionadas=
+
+id=bruce_008
+autor=bruceL
+nota=
+fuente=Lipton, Bruce H. (2007), La biología de la creencia: la liberación del poder de la conciencia, la materia y los milagros. Madrid: Ediciones Palmyra. ISBN 9788496665187
+contexto=
+texto=Los físicos desecharon su fe en el universo material newtoniano, porque llegaron a darse cuenta de que el universo no está formado por materia suspendida en el espacio, sino por energía
+relacionadas=
+
+id=bruce_009
+autor=bruceL
+nota=
+fuente=Lipton, Bruce H. (2007), La biología de la creencia: la liberación del poder de la conciencia, la materia y los milagros. Madrid: Ediciones Palmyra. ISBN 9788496665187
+contexto=
+texto=El ADN no controla la biología, y el núcleo no es el cerebro de la célula. Al igual que tú y que yo, las células se adaptan al lugar en el que viven. En otras palabras: es el ambiente
+relacionadas=
+
+id=bruce_010
+autor=bruceL
+nota=
+fuente=Lipton, Bruce H. (2007), La biología de la creencia: la liberación del poder de la conciencia, la materia y los milagros. Madrid: Ediciones Palmyra. ISBN 9788496665187
+contexto=
+texto=Ahí estás tú, sosteniendo este libro físico en tus manos. y sin embargo, si aumentaras el tamaño del material del libro con un microscopio atómico, verías que no estás sujetando nada
+relacionadas=
+
+id=bruce_011
+autor=bruceL
+nota=
+fuente=Lipton, Bruce H. (2007), La biología de la creencia: la liberación del poder de la conciencia, la materia y los milagros. Madrid: Ediciones Palmyra. ISBN 9788496665187
+contexto=
+texto=Al igual que en las células aisladas, el carácter de nuestra existencia se ve determinado no por nuestros genes, sino por nuestra respuesta a las señales ambientales que impulsan la vida
+relacionadas=
+
+id=bruce_012
+autor=bruceL
+nota=
+fuente=Lipton, Bruce H. (2007), La biología de la creencia: la liberación del poder de la conciencia, la materia y los milagros. Madrid: Ediciones Palmyra. ISBN 9788496665187
+contexto=
+texto=Las experiencias vitales de los progenitores modelan el carácter genético de sus hijos
+relacionadas=
+
+id=bruce_013
+autor=bruceL
+nota=
+fuente=Lipton, Bruce H. (2007), La biología de la creencia: la liberación del poder de la conciencia, la materia y los milagros. Madrid: Ediciones Palmyra. ISBN 9788496665187
+contexto=
+texto=El continuo cambio de forma de las proteínas, que puede ocurrir miles de veces en un segundo, es el movimiento que impulsa la vida
+relacionadas=

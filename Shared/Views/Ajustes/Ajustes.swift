@@ -77,6 +77,10 @@ struct Ajustes: View {
     @State var alertMessage = ""
     
     
+    //Mostrar foto desarrollador:
+    @State private var showSheetYorj = false
+    
+    
     
     //Otros
     @State private var showSheet : Int? = nil
@@ -84,7 +88,7 @@ struct Ajustes: View {
     //Devuelve la cantidad de elementos:
     private func getElementCount(element: String) -> Int {
         switch element {
-        case "frases": modelFrases.listfrases.count
+        case "frases": modelFrases.getAllFrasesGet().count
         case "conferencias": modelTxt.getArrayOfAllFileTxtOfType(type: .conf).count
         case "citas": modelTxt.getArrayOfAllFileTxtOfType(type: .citas).count
         case "preguntas": modelTxt.getArrayOfAllFileTxtOfType(type: .preg).count
@@ -547,6 +551,46 @@ struct Ajustes: View {
                                             VStack{
                                     Form{
                                         VStack(alignment: .leading, spacing: 10){
+                                            HStack{
+                                                Text("Desarrollador")
+                                                Spacer()
+                                                Text("Yorjandi PG - Rana")
+                                                    .foregroundStyle(.orange).bold()
+                                                    .onTapGesture(count: 2) {
+                                                        #if os(macOS)
+                                                        showWindow(for: VStack{
+                                                            Image("yorj")
+                                                                .resizable()
+                                                                .scaledToFit()
+                                                                .aspectRatio(contentMode: .fill)
+                                                                .frame(width: 250, height: 250)
+                                                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                                                                .shadow(radius: 8, y: 4)
+                                                                .padding()
+                                                            
+                                                            Text("Presencia Conciente")
+                                                                .padding()
+                                                            
+                                                            Button("Cerrar"){
+                                                                if let window = NSApp.keyWindow {
+                                                                    closeWindow(window)
+                                                                    }
+                                                            }
+                                                            .padding()
+                                                            
+                                                                
+                                                        },
+                                                                   environmentObjects: [],
+                                                                   title: "Desarrollador",
+                                                                   size: AppCons.windows_size_content_small,
+                                                                   isModal: true)
+                                                        
+                                                        #else
+                                                        self.showSheetYorj = true
+                                                        #endif
+                                                        
+                                                    }
+                                            }
                                             HStack{
                                                 Text("Versión")
                                                 Spacer()
@@ -1052,10 +1096,19 @@ struct Ajustes: View {
                         NavigationLink{
                             Form{
                                 HStack{
+                                    Text("Desarrollador")
+                                    Spacer()
+                                    Text("Yorjandi PG - Rana")
+                                        .foregroundStyle(.orange).bold()
+                                        .onTapGesture(count: 2) {
+                                            self.showSheetYorj = true
+                                        }
+                                }
+                                HStack{
                                     Text("Versión")
                                     Spacer()
                                     Text("\(AppCons.appVersion ?? "")")
-                                        .foregroundStyle(.orange).bold()
+                                        
                                 }
                                 HStack{
                                     Text("Frases")
@@ -1124,7 +1177,7 @@ struct Ajustes: View {
                         NavigationLink{
                             NavigationStack{
                                 ScrollView{
-                                    SelectableText(UtilFuncs.FileRead("privacy"),fontSize: 22, fonColor: UIColor(Color.primary))
+                                    SelectableText(text : UtilFuncs.FileRead("privacy"),fontSize: 22, fonColor: UIColor(Color.primary))
                                         .padding()
                                 }.navigationTitle("Ajustes - Privacy")
                             }
@@ -1227,6 +1280,26 @@ struct Ajustes: View {
         .sheet(isPresented: self.$showSheetPremiumView) {
             PurchaseView()
         }
+        .sheet(isPresented: self.$showSheetYorj) {
+            VStack{
+                Image("yorj")
+                    .resizable()
+                    .scaledToFit()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: 250, height: 250)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                    .shadow(radius: 8, y: 4)
+                    .padding()
+                
+                Text("Presencia Conciente")
+                    .padding()
+                
+                    
+            }
+            .presentationDetents([.medium])
+        }
+       
+
 
         
     }

@@ -363,7 +363,6 @@ struct RespondView: View {
 //Vista de contenido
     @ViewBuilder
     private func ContenidoView(contenido: String) -> some View {
-        let texto = ClipboardHelper.insertarMarcaOculta(en: contenido)
         #if os(macOS)
         VStack{
             ScrollView{
@@ -383,7 +382,7 @@ struct RespondView: View {
         #else
         VStack(alignment: .leading) {
             
-            SelectableText(texto, fontSize: CGFloat(self.fontSizeChatIA), fonColor: UIColor(self.ColorRespondIAFuente), alignment: .left )
+            SelectableText(text: contenido, fontSize: CGFloat(self.fontSizeChatIA), fonColor: UIColor(self.ColorRespondIAFuente), alignment: .left )
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -439,7 +438,7 @@ struct RespondView: View {
                 .padding()
         }else{
             VStack(alignment: .leading){
-                SelectableText(self.texto, fontSize: CGFloat(20), fonColor: UIColor(Color.black.opacity(0.7)), alignment: .left )
+                SelectableText(text : self.texto, fontSize: CGFloat(20), fonColor: UIColor(Color.black.opacity(0.7)), alignment: .left )
             }
             .padding()
         }
