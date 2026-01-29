@@ -132,9 +132,10 @@ struct FrasesListView: View {
                                         frasesModel.listfrases = frasesModel.getListFrasesByAutor(autor: AutorFrase.nev.rawValue )
                                     case .jd:
                                         frasesModel.listfrases = frasesModel.getListFrasesByAutor(autor: AutorFrase.jd.rawValue)
-                                    default:
-                                        msg("No se ha seleccionado un autor")
-                                    
+                                    case .gregg:
+                                        frasesModel.listfrases = frasesModel.getListFrasesByAutor(autor: AutorFrase.gregg.rawValue)
+                                    case .bruceL:
+                                        frasesModel.listfrases = frasesModel.getListFrasesByAutor(autor: AutorFrase.bruceL.rawValue)
                                     }
                                 }
                             }
@@ -448,12 +449,13 @@ struct FrasesListView: View {
                                      
                                      //Crea un Menú para filtrar por todos los Autores Disponibles
                                      Menu{
-                                         let autores = self.frasesModel.getAllAutoresList().sorted()
-                                         ForEach (autores, id: \.self) { autor in
-                                             Button(autor){
-                                                 self.frasesModel.listfrases = self.frasesModel.getListFrasesByAutor(autor: autor)
+                                         let autores = self.frasesModel.getAllAutoresList()
+                                         ForEach(autores.sorted(by: { $0.key < $1.key }), id: \.key) { autorRaw, autorNombre in
+                                             Button(autorNombre){
+                                                 self.frasesModel.listfrases = self.frasesModel.getListFrasesByAutor(autor: autorRaw)
                                              }
                                          }
+                                         
                                      }label: {
                                          Label("Por Autor", systemImage: "text.quote")
                                      }

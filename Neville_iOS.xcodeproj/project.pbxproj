@@ -175,7 +175,6 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Staff/Enciclopedia/PensamientosYSentimientos/enc_sentimiento_como_fuerzacreativa.txt,
-				Staff/Frases/listfrases_gregg.txt,
 			);
 			target = 917C301E2EBCD1E5006BB36E /* La Ley_mac */;
 		};
@@ -292,6 +291,12 @@
 				Staff/Autores/BruceLipton/Libros/LaBiologiaDeLaCreencia/plan_libro_biologiacreencia.txt,
 				Staff/Autores/BruceLipton/Libros/LaBiologiaDeLaCreencia/resumen_libro_biologiacreencia.txt,
 				"Staff/Autores/BruceLipton/ResumenEnseñanzas/resumen_enseñanzas_bruce.txt",
+				Staff/Autores/GreggBraden/Libros/LaMatrizDivina/plan_libro_lamatrizdivina.txt,
+				Staff/Autores/GreggBraden/Libros/LaMatrizDivina/resumen_libro_lamatrizdivina.txt,
+				Staff/Autores/GreggBraden/Libros/PuramenteHumanos/plan_libro_puramente_humanos.txt,
+				Staff/Autores/GreggBraden/Libros/PuramenteHumanos/resumen_libro_puramente_humanos.txt,
+				Staff/Autores/GreggBraden/Libros/ResilienciaDesdeElCorazon/plan_libro_resiliencia_desde_corazon.txt,
+				Staff/Autores/GreggBraden/Libros/ResilienciaDesdeElCorazon/resumen_libro_resiliencia_desde_corazon.txt,
 				"Staff/Autores/GreggBraden/ResumenEnseñanzaGregg/resumen_enseñanza_gregg.txt",
 				Staff/Autores/JoeDispenza/Charlas/AccederALaVibracionDelUniverso_luis.txt,
 				Staff/Autores/JoeDispenza/Libros/DejaDeSerTu/plan_libro_dejadesertu.txt,
@@ -861,17 +866,10 @@
 				Staff/Biografias/biografia_jd.txt,
 				Staff/Biografias/biografia.txt,
 				Staff/cuestionario.txt,
-				Staff/Enciclopedia/enc_coherencia_cardiocerebral.txt,
-				Staff/Enciclopedia/enc_conciencia.txt,
-				Staff/Enciclopedia/enc_enfermedad.txt,
-				Staff/Enciclopedia/enc_entrelazamiento_cuantico_neurociencia.txt,
-				Staff/Enciclopedia/enc_epigenetica.txt,
-				Staff/Enciclopedia/enc_hormonas_estres.txt,
-				Staff/Enciclopedia/enc_meditacion_y_expresiongenica.txt,
-				Staff/Enciclopedia/enc_meditacion.txt,
-				Staff/Enciclopedia/enc_mente_universal.txt,
-				Staff/Enciclopedia/enc_menteconciente_subconciente.txt,
-				Staff/Enciclopedia/enc_tiempo.txt,
+				Staff/Enciclopedia/Epigenetica/enc_epigenetica_varios_autores.txt,
+				Staff/Enciclopedia/Epigenetica/enc_epigenetica_y_neurociencia.txt,
+				Staff/Enciclopedia/Epigenetica/enc_joedispensa_y_epigenetica.txt,
+				Staff/Enciclopedia/Epigenetica/enc_neville_y_epigenetica.txt,
 				Staff/Enciclopedia/Habitos/enc_cuanto_tarda_habito_debilitarse.txt,
 				Staff/Enciclopedia/Habitos/enc_habitos_y_ahorroenergia_cerebral.txt,
 				Staff/Enciclopedia/Habitos/enc_listado_habitos_saludables.txt,
@@ -881,11 +879,33 @@
 				Staff/Enciclopedia/Habitos/enc_romper_un_habito.txt,
 				"Staff/Enciclopedia/Habitos/enc_señales_consolidacion_habito.txt",
 				Staff/Enciclopedia/Habitos/enc_utilizar_recaida_a_tu_favor.txt,
+				Staff/Enciclopedia/Memoria/enc_memoria_episodica.txt,
+				Staff/Enciclopedia/Memoria/enc_memoria_procedimental.txt,
+				Staff/Enciclopedia/Memoria/enc_memoria_semantica.txt,
+				Staff/Enciclopedia/Memoria/enc_que_es_la_memoria.txt,
 				Staff/Enciclopedia/PensamientosYSentimientos/enc_efecto_sentimie_negativos.txt,
 				Staff/Enciclopedia/PensamientosYSentimientos/enc_pensamientos_emociones_sistemainmune.txt,
 				Staff/Enciclopedia/PensamientosYSentimientos/enc_que_es_un_pensamiento.txt,
 				Staff/Enciclopedia/PensamientosYSentimientos/enc_sentimiento_como_fuerzacreativa.txt,
+				Staff/Enciclopedia/TemasGenerales/enc_aprendizaje_asociativo.txt,
+				Staff/Enciclopedia/TemasGenerales/enc_atencion_focalizada_practica.txt,
+				Staff/Enciclopedia/TemasGenerales/enc_atencion_focalizada.txt,
+				Staff/Enciclopedia/TemasGenerales/enc_coherencia_cardiocerebral.txt,
+				Staff/Enciclopedia/TemasGenerales/enc_conciencia.txt,
+				Staff/Enciclopedia/TemasGenerales/enc_enfermedad.txt,
+				Staff/Enciclopedia/TemasGenerales/enc_entrelazamiento_cuantico_neurociencia.txt,
+				Staff/Enciclopedia/TemasGenerales/enc_hormonas_estres.txt,
+				Staff/Enciclopedia/TemasGenerales/enc_meditacion_y_expresiongenica.txt,
+				Staff/Enciclopedia/TemasGenerales/enc_meditacion.txt,
+				Staff/Enciclopedia/TemasGenerales/enc_mente_universal.txt,
+				Staff/Enciclopedia/TemasGenerales/enc_menteconciente_subconciente.txt,
+				Staff/Enciclopedia/TemasGenerales/enc_modificar_asociaciones_no_deseadas.txt,
+				Staff/Enciclopedia/TemasGenerales/enc_neuroplasticidad.txt,
+				Staff/Enciclopedia/TemasGenerales/enc_patrones_de_conducta_heredados.txt,
+				Staff/Enciclopedia/TemasGenerales/enc_patrones_sinapticos_heredados.txt,
+				Staff/Enciclopedia/TemasGenerales/enc_tiempo.txt,
 				Staff/Frases/listfrases_bruce.txt,
+				Staff/Frases/listfrases_de_gregg.txt,
 				Staff/Frases/listfrases_jd.txt,
 				Staff/Frases/listfrases_otros.txt,
 				Staff/Frases/listfrases.txt,
@@ -958,6 +978,7 @@
 				Models/AppCons/AppCons.swift,
 				Models/Utils/Utils.swift,
 				Staff/Frases/listfrases_bruce.txt,
+				Staff/Frases/listfrases_de_gregg.txt,
 				Staff/Frases/listfrases_jd.txt,
 				Staff/Frases/listfrases_otros.txt,
 				Staff/Frases/listfrases.txt,
@@ -973,6 +994,7 @@
 				Models/Utils/Utils.swift,
 				Models/UtilsForView/UtilsForViews.swift,
 				Staff/Frases/listfrases_bruce.txt,
+				Staff/Frases/listfrases_de_gregg.txt,
 				Staff/Frases/listfrases_jd.txt,
 				Staff/Frases/listfrases_otros.txt,
 				Staff/Frases/listfrases.txt,
@@ -1050,40 +1072,18 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-		91048D622F1E1E24005C70A8 /* PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
-			buildPhase = E95B934F2AAFBB2600B5E2B5 /* Sources */;
-			membershipExceptions = (
-				Staff/Frases/listfrases_gregg.txt,
-			);
-		};
-		91048D632F1E1E24005C70A8 /* PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
-			buildPhase = 19E0BE102B0C661A00E149A5 /* Sources */;
-			membershipExceptions = (
-				Staff/Frases/listfrases_gregg.txt,
-			);
-		};
-		91048D642F1E1E24005C70A8 /* PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
-			buildPhase = 19F804152B69CB9D00A323A0 /* Sources */;
-			membershipExceptions = (
-				Staff/Frases/listfrases_gregg.txt,
-			);
-		};
 		91048D662F1E1E24005C70A8 /* PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
 			buildPhase = 917C301B2EBCD1E5006BB36E /* Sources */;
 			membershipExceptions = (
 				Staff/Enciclopedia/PensamientosYSentimientos/enc_sentimiento_como_fuerzacreativa.txt,
-				Staff/Frases/listfrases_gregg.txt,
 			);
 		};
 /* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		9113E29C2EE9E1D2002AC306 /* Model */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Model; sourceTree = "<group>"; };
-		911FE4452ECB2A7F009F83BE /* Shared */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (911FE4562ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 91048D622F1E1E24005C70A8 /* PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet */, 911FE4572ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 91048D632F1E1E24005C70A8 /* PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet */, 911FE4582ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 91048D642F1E1E24005C70A8 /* PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet */, 91048D652F1E1E24005C70A8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 91048D662F1E1E24005C70A8 /* PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet */, 918C4AF72EF3593F00974B54 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 918C4B242EF40F2400974B54 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (Models/PurchaseModel/StoreKitFile.storekit, ); path = Shared; sourceTree = "<group>"; };
+		911FE4452ECB2A7F009F83BE /* Shared */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (911FE4562ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 911FE4572ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 911FE4582ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 91048D652F1E1E24005C70A8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 91048D662F1E1E24005C70A8 /* PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet */, 918C4AF72EF3593F00974B54 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 918C4B242EF40F2400974B54 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (Models/PurchaseModel/StoreKitFile.storekit, ); path = Shared; sourceTree = "<group>"; };
 		911FE4D42ECB2E8D009F83BE /* OptionView */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (91C3A3D22F24CB6600A07607 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = OptionView; sourceTree = "<group>"; };
 		911FF1FA2ECB4064009F83BE /* Preview Content */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (911FF1FC2ECB4064009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 911FF1FD2ECB4064009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = "Preview Content"; sourceTree = "<group>"; };
 		914415A92EDC377200FFC61D /* Atajos */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (914415B12EDC39E300FFC61D /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Atajos; sourceTree = "<group>"; };

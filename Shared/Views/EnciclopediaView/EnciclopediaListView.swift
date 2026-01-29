@@ -12,20 +12,28 @@ struct EnciclopediaListView: View {
     let categorias: [EnciclopediaCategoria] = [
         EnciclopediaCategoria(nombre: "Temas Generales",temas: EnciclopediaTemas.temasGenerales),
         EnciclopediaCategoria(nombre: "Pensamientos & Sentimientos", temas: EnciclopediaTemas.pensamientoYSentimientos),
-        EnciclopediaCategoria(nombre: "Hábitos", temas: EnciclopediaTemas.habitos)
+        EnciclopediaCategoria(nombre: "Hábitos", temas: EnciclopediaTemas.habitos),
+        EnciclopediaCategoria(nombre: "Epigenética", temas: EnciclopediaTemas.epigenetica),
+        EnciclopediaCategoria(nombre: "Memoria", temas: EnciclopediaTemas.memoria)
     ]
     
     var body: some View {
         NavigationStack {
-                    List(categorias) { categoria in
-                        NavigationLink(categoria.nombre) {
-                            SubListaView(categoria: categoria)
-                        }
-                    }
-                    .navigationTitle("Enciclopedia")
+            List(categorias) { categoria in
+                NavigationLink(categoria.nombre) {
+                    SubListaView(categoria: categoria)
                 }
+            }
+            Spacer()
+            VStack{
+                Text("Nota: La información de los artículos esta basada en estudios científicos recientes y la neurociencia. Su finalidad es divulgativa y no médica. No debe sustituir asesoramiento médico profesional.")
+                    .font(.body)
+            }
+            .padding()
+            .navigationTitle("Enciclopedia")
+        }
         
-    } 
+    }
 }
 
 

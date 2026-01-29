@@ -19,6 +19,8 @@ fileprivate enum TipeViewOptionTab : String,  Identifiable{
     //Gregg Braden
     case biografiaGregg, FrasesGregg
     case resumenEnseñanzaGregg
+    case resumenLaMatrizDivina, planLaMatrizDivina, resumenResilienciaDesdeCorazon, planResilienciaDesdeCorazon
+    case resumenPuramenteHumanos, planPuramenteHumanos
     //Bruce Lipton
     case biografíaBruceL,FrasesBruceL
     case resumenEnseñanzaBruceL
@@ -51,6 +53,7 @@ struct optionView: View {
             
             VStack{
                 HStack{
+                    //Neville Goddard
                     Menu{
                         Button("Conferencias"){self.showView = .conferenciasNeville}
                         Menu("Apoyo al estudio"){
@@ -70,6 +73,7 @@ struct optionView: View {
                     
                     Spacer()
                     
+                    //Recursos Didácticos
                     Menu{
                         Button("Ayudas"){self.showView = .ayudas}
                         Button("Reflexiones"){self.showView = .reflex}
@@ -88,9 +92,10 @@ struct optionView: View {
                 .padding(.top, 10)
                 
                 HStack{
+                    //Joe Dispenza
                     Menu{
-                        Button("Resumen de Charlas"){}
-                        Button("Resumen de Meditaciones"){}
+                       // Button("Resumen de Charlas"){}
+                       // Button("Resumen de Meditaciones"){}
                         //Button("Resumen de Talleres"){}
                         Menu("Análisis de Libros:"){
                             Menu("Desarrolla Tu Cerebro"){
@@ -121,7 +126,7 @@ struct optionView: View {
                     }
                     
                     Spacer()
-                    
+                    //Herramientas
                     Menu{
                         Button("Lienzo"){self.showView = .lienzo}
                         Button("Recordatorios"){self.showView = .reminder}
@@ -138,14 +143,25 @@ struct optionView: View {
                 .padding(5)
                 
                 HStack{
+                    //Gregg Braden
                     Menu{
-                        
-                        Button("Resumen de Charlas"){}
+                       // Button("Resumen de Charlas"){}
                         Menu("Análisis de Libros:"){
-                            Button("La Matríz Divina"){}
-                            Button("La Curación Expontánea de las Creencias"){}
+                            Menu("La Matriz Divina"){
+                                Button("Resumen"){self.showView = .resumenLaMatrizDivina}
+                                Button("Práctica"){self.showView = .planLaMatrizDivina}
+                            }
+                            Menu("Resiliencia desde el Corazón"){
+                                Button("Resumen"){self.showView = .resumenResilienciaDesdeCorazon}
+                                Button("Práctica"){self.showView = .planResilienciaDesdeCorazon}
+                            }
+                            Menu("Puramente Humanos"){
+                                Button("Resumen"){self.showView = .resumenPuramenteHumanos}
+                                Button("Práctica"){self.showView = .planPuramenteHumanos}
+                            }
+                            
                         }
-                        Button("Frases"){}
+                        Button("Frases"){self.showView = .FrasesGregg}
                         Button("Resumen Enseñanza"){self.showView = .resumenEnseñanzaGregg}
                         Button("Bibliografía"){self.showView = .biografiaGregg}
                         Text("----Gregg Braden----").bold()
@@ -164,17 +180,15 @@ struct optionView: View {
                             .padding(.vertical, 10)
                             .frame(maxWidth: .infinity)
                     }
-                    
-                        
-                    
                 }
                 .padding(5)
                 
                 
                 HStack{
+                    //Bruce Lipton
                     Menu{
                         
-                        Button("Resumen de Charlas"){}
+                       // Button("Resumen de Charlas"){}
                         Menu("Análisis de Libros:"){
                             Menu("La Biolgía de la Creencia"){
                                 Button("Resumen"){self.showView = .resumenLibroBiologiaCreencia}
@@ -182,7 +196,7 @@ struct optionView: View {
                             }
                             
                         }
-                        Button("Frases"){}
+                        Button("Frases"){self.showView = .FrasesBruceL}
                         Button("Resumen Enseñanza"){self.showView = .resumenEnseñanzaBruceL}
                         Button("Bibliografía"){self.showView = .biografíaBruceL}
                         Text("----Dr. Bruce Lipton----").bold()
@@ -201,9 +215,6 @@ struct optionView: View {
                             .padding(.vertical, 10)
                             .frame(maxWidth: .infinity)
                     }
-                        
-                        
-                    
                 }
                 .padding(5)
                 
@@ -221,32 +232,17 @@ struct optionView: View {
         .sheet(item: self.$showView, content: { item in
             VStack{
                 switch item{
+                 //Funciones Generales:
                 case .setting:
                     Ajustes()
                 case .notas:
                     ListNotasViews()
-                case .biografiaNeville:
-                    ContentTxtShowView(title: "Biografía", nombreTxt: AppCons.FileBiografiaNeville, type: .NA )
-                case .preguntasNeville:
-                    TxtListView(typeOfContent: .preg, title: "Preguntas")
-                case .citasNevile:
-                    TxtListView(typeOfContent: .citas, title: "Citas")
-                case .ayudas:
-                    TxtListView(typeOfContent: .ayud, title: "Ayudas")
-                case .reflex:
-                    ReflexListView()
                 case .diario:
                     DiarioListView()
                 case .lienzo:
                     LienzoMain(texto: "")
                 case .premium:
                     PurchaseView()
-                case .conferenciasNeville:
-                    TxtListView(typeOfContent: .conf, title: "Conferencias")
-                    
-                case .frasesNeville:
-                    FrasesListView(mostrarFrasesDe: .nev)
-                    
                 case .codeScanner:
                     //Mostrar el lector de código
                     CodeScannerView(codeTypes: [.qr]) { qrCodeString in
@@ -261,18 +257,12 @@ struct optionView: View {
                     }
                 case .codeGenerate:
                     GenerateQRView(footer: "")
-                case .game:
-                    GamePLay()
                 case .reminder:
                     ReminderListView()
                 case .metas:
                     GoalsListView()
-                case .biografiaJD:
-                    ContentTxtShowView(title: "Biografía Joe Dispenza", nombreTxt: AppCons.FileBiografiaJD, type: .NA )
-                case .biografiaGregg:
-                    ContentTxtShowView(title: "Biografía Gregg Braden", nombreTxt: AppCons.FileBiografiaGregg, type: .NA )
-                case .biografíaBruceL:
-                    ContentTxtShowView(title: "Biografía Dr. Bruce H. Lipton", nombreTxt: AppCons.FileBiografiaBruce, type: .NA )
+                case .enciclopedia:
+                    EnciclopediaListView()
                 case .evidenciaCientifica:
                     VStack(spacing: 25){
                         Text("🚧 en Construcción...")
@@ -303,14 +293,34 @@ struct optionView: View {
                                 """)
                         }
                     }
-                case .frasesJD:
-                    FrasesListView(mostrarFrasesDe: .jd)
-                case .FrasesGregg:
-                    EmptyView()
-                case .FrasesBruceL:
-                    EmptyView()
                 case .frases:
                     FrasesListView()
+                    
+                 //Neville Goddard:
+                case .biografiaNeville:
+                    ContentTxtShowView(title: "Biografía", nombreTxt: AppCons.FileBiografiaNeville, type: .NA )
+                case .preguntasNeville:
+                    TxtListView(typeOfContent: .preg, title: "Preguntas")
+                case .citasNevile:
+                    TxtListView(typeOfContent: .citas, title: "Citas")
+                case .ayudas:
+                    TxtListView(typeOfContent: .ayud, title: "Ayudas")
+                case .reflex:
+                    ReflexListView()
+                case .conferenciasNeville:
+                    TxtListView(typeOfContent: .conf, title: "Conferencias")
+                case .frasesNeville:
+                    FrasesListView(mostrarFrasesDe: .nev)
+                case .game:
+                    GamePLay()
+                case .resumenEnseñanzaNeville:
+                    ContentTxtShowView(title: "Resumen de la enseñanza: Neville Goddard", nombreTxt: AppCons.FileResumenEnseñanzaNeville, type: .NA )
+                
+                    //Joe Dispenza
+                case .biografiaJD:
+                    ContentTxtShowView(title: "Biografía Joe Dispenza", nombreTxt: AppCons.FileBiografiaJD, type: .NA )
+                case .frasesJD:
+                    FrasesListView(mostrarFrasesDe: .jd)
                 case .resumenDejaDeSerTu:
                     ContentTxtShowView(title: "Resumen del Libro: Deja De Ser Tu", nombreTxt: AppCons.FileResumenDejaDeSerTu, type: .NA )
                 case .planDejaDeSerTu:
@@ -329,20 +339,52 @@ struct optionView: View {
                     ContentTxtShowView(title: "Plan del Libro: SobreNatural", nombreTxt: AppCons.FilePlanSupernarural, type: .NA )
                 case .resumenEnseñanzaJD:
                     ContentTxtShowView(title: "Resumen de la enseñanza: Joe Dispenza", nombreTxt: AppCons.FileResumenEnseñanzaJD, type: .NA )
-                case .resumenEnseñanzaNeville:
-                    ContentTxtShowView(title: "Resumen de la enseñanza: Neville Goddard", nombreTxt: AppCons.FileResumenEnseñanzaNeville, type: .NA )
+                    
+                    
+                    //Gregg Braden:
+                case .biografiaGregg:
+                    ContentTxtShowView(title: "Biografía Gregg Braden", nombreTxt: AppCons.FileBiografiaGregg, type: .NA )
+                case .FrasesGregg:
+                    FrasesListView(mostrarFrasesDe: .gregg)
                 case .resumenEnseñanzaGregg:
                     ContentTxtShowView(title: "Resumen de la enseñanza: Gregg Braden", nombreTxt: AppCons.FileResumenEnseñanzaGregg, type: .NA )
+                case .resumenLaMatrizDivina:
+                    ContentTxtShowView(title: "Resumen del Libro: La Matriz Divina", nombreTxt: AppCons.FileResumenLaMatrizDivinaGregg, type: .NA )
+                case .planLaMatrizDivina:
+                    ContentTxtShowView(title: "Plan del Libro: La Matriz Divina", nombreTxt: AppCons.FilePlanLaMatrizDivinaGregg, type: .NA )
+                case .resumenResilienciaDesdeCorazon:
+                    ContentTxtShowView(title: "Resumen del Libro: Resilencia desde el Corazón", nombreTxt: AppCons.FileResumenResilenciaCorazonGregg, type: .NA )
+                case .planResilienciaDesdeCorazon:
+                    ContentTxtShowView(title: "Plan del Libro: Resilencia desde el Corazón", nombreTxt: AppCons.FilePlanResilenciaCorazonGregg, type: .NA )
+                case .resumenPuramenteHumanos:
+                    ContentTxtShowView(title: "Resumen del Libro: Puramente Humanos", nombreTxt: AppCons.FileResumenPuramenteHumanosGregg, type: .NA )
+                case .planPuramenteHumanos:
+                    ContentTxtShowView(title: "Plan del Libro: Puramente Humanos", nombreTxt: AppCons.FilePlanPuramenteHumanosGregg, type: .NA )
+                    
+                    
+                    //Bruce Lipton:
+                case .biografíaBruceL:
+                    ContentTxtShowView(title: "Biografía Dr. Bruce H. Lipton", nombreTxt: AppCons.FileBiografiaBruce, type: .NA )
+                case .FrasesBruceL:
+                    FrasesListView(mostrarFrasesDe: .bruceL)
                 case .resumenEnseñanzaBruceL:
                     ContentTxtShowView(title: "Resumen de la enseñanza: Gregg Braden", nombreTxt: AppCons.FileResumenEnseñanzaBruce, type: .NA )
-                case .enciclopedia:
-                    EnciclopediaListView()
-                    
                 case .resumenLibroBiologiaCreencia:
                     ContentTxtShowView(title: "Resumen del Libro: La Biología De La Creencia", nombreTxt: AppCons.FileResumenBiologiaCreencia, type: .NA )
                 case .planLibroBiologiaCreencia:
                     ContentTxtShowView(title: "Plan del Libro: La Biología De La Creencia", nombreTxt: AppCons.FilePlanBiologiaCrrencia, type: .NA )
                 }
+                
+                
+                
+                
+                
+                
+                
+                
+              
+                    
+                
             }
                 .presentationDetents([.large])
                 .presentationDragIndicator(.hidden)

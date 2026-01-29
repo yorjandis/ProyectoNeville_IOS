@@ -99,5 +99,5 @@ autor=bruceL
 nota=
 fuente=Lipton, Bruce H. (2007), La biología de la creencia: la liberación del poder de la conciencia, la materia y los milagros. Madrid: Ediciones Palmyra. ISBN 9788496665187
 contexto=
-texto=El continuo cambio de forma de las proteínas, que puede ocurrir miles de veces en un segundo, es el movimiento que impulsa la vida
+texto=El continuo cambio de forma de las proteínas, que puede ocurrir miles de veces en un segundo, es el movimiento que impulsa la vida de los organismos
 relacionadas=

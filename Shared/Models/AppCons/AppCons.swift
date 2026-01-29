@@ -34,9 +34,16 @@ struct AppCons{
     static let FileResumenEnseñanzaJD           = "resumen_enseñanza_jd"
     
     //NameFile: Gregg Braden
-    static let FileListFrasesGregg              = "listfrases_gregg"
-    static let FileBiografiaGregg               = "biografia_gregg"
-    static let FileResumenEnseñanzaGregg        = "resumen_enseñanza_gregg"
+    static let FileListFrasesGregg                  = "listfrases_de_gregg"
+    static let FileBiografiaGregg                   = "biografia_gregg"
+    static let FileResumenEnseñanzaGregg            = "resumen_enseñanza_gregg"
+    static let FileResumenLaMatrizDivinaGregg       = "resumen_libro_lamatrizdivina"
+    static let FilePlanLaMatrizDivinaGregg          = "plan_libro_lamatrizdivina"
+    static let FileResumenResilenciaCorazonGregg    = "resumen_libro_resiliencia_desde_corazon"
+    static let FilePlanResilenciaCorazonGregg       = "plan_libro_resiliencia_desde_corazon"
+    static let FileResumenPuramenteHumanosGregg     = "resumen_libro_puramente_humanos"
+    static let FilePlanPuramenteHumanosGregg        = "plan_libro_puramente_humanos"
+   
     
     
     //NameFile: Bruce Lipton

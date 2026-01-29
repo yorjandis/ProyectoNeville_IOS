@@ -73,7 +73,7 @@ struct Home: View {
                          
                          */
                         
-                        
+                        /*
                         //Eliminando las frases
                          let frasesModel = FrasesModel.shared
                          if  frasesModel.deleteAllFrases() {
@@ -84,7 +84,7 @@ struct Home: View {
                         if contextoModel.DeleteAllContextos() {
                             msg("Se ha eliminado todos los contectos de la tabla contexto")
                         }
-                        
+                        */
                         
                         //Forzar la función de popular Frases
                         HashFileModel().ResetearHashGlobal()              

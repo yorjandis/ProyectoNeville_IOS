@@ -42,6 +42,7 @@ struct HashFileModel {
         let contenido = UtilFuncs.FileRead(filename)
             .trimmingCharacters(in: .whitespacesAndNewlines)
         
+        
         return sha256(contenido)
     }
     
@@ -65,17 +66,21 @@ struct HashFileModel {
     @MainActor
     func VerificarHashGlobal(NameArchivosTXT : [String])->String?{
         
+       
+        
         let userDefaultsGroup = UserDefaults(suiteName: "group.com.ypg.nev.group")
 
             let hashActual = hashGlobalFrasesTXT(NameArchivosTXT) //Calcula Hash Global
             let hashGuardado = userDefaultsGroup?.string(forKey: HashFileModel.UD_HashFrasesTXT) //extrae el valor del hash global almacenado
 
+        
+        
             //Comparando...
             if hashActual == hashGuardado {
                 //TXT sin cambios. No se ejecuta el importador
                 return nil
             }else{
-                //TXT con cambios. No se ejecuta el importador
+                //TXT con cambios. Se ejecuta el importador
                 return hashActual
             }
     }

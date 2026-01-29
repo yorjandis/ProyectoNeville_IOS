@@ -203,9 +203,19 @@ final class FrasesModel : ObservableObject {
     //Volca el contenido de los ficheros de Frases, en el nuevo formato, a la tabla Frases de CoreData:
     func PopularFrases() async {
 
-        //Caculando el hash Global y determinando si se debe proseguir:
-        let  newHash = HashFileModel().VerificarHashGlobal(NameArchivosTXT: [AppCons.FileListFrases, AppCons.FileListFrasesJD])
-        guard newHash != nil else { return }
+ //Caculando el hash Global y determinando si se debe proseguir:
+ let  newHash = HashFileModel().VerificarHashGlobal(NameArchivosTXT:
+                                                     [AppCons.FileListFrases,
+                                                      AppCons.FileListFrasesJD,
+                                                      AppCons.FileListFrasesBruceL,
+                                                      AppCons.FileListFrasesGregg
+                                                     ])
+ guard newHash != nil else {
+     print("No se ha modificado ninguno de los ficheros de Frases")
+     return
+ }
+
+        
         
 
         msg("Se ha modificado los archivos de Frases. El importador comenzará ahora")
@@ -254,7 +264,9 @@ final class FrasesModel : ObservableObject {
             // 3️⃣ Leer ficheros TXT (nuevo formato)
             let contenidoTotal = [
                 UtilFuncs.FileRead(AppCons.FileListFrases),
-                UtilFuncs.FileRead(AppCons.FileListFrasesJD)
+                UtilFuncs.FileRead(AppCons.FileListFrasesJD),
+                UtilFuncs.FileRead(AppCons.FileListFrasesGregg),
+                UtilFuncs.FileRead(AppCons.FileListFrasesBruceL)
             ].joined(separator: "\n\n")
         
 
@@ -505,8 +517,9 @@ final class FrasesModel : ObservableObject {
     
     
     //Genera un listado dinámico con todos los autores disponibles en las Frases en CoreData
-    func getAllAutoresList() -> [String] {
+    func getAllAutoresList() -> [String:String] {
         var list = Set<String>()
+        var result : [String:String] = [:]
         let fetchRequest: NSFetchRequest<Frases> = Frases.fetchRequest()
         
         do {
@@ -514,10 +527,25 @@ final class FrasesModel : ObservableObject {
             for element in elements {
                 list.insert(element.autor ?? "")
             }
-            return Array(list)
+            let arrayListAutor = Array(list)
+            if !arrayListAutor.isEmpty {
+                for item in arrayListAutor {
+                    switch item {
+                    case "nev": result["nev"] = "Neville"
+                    case "jd": result["jd"] = "Dr. Joe Dispenza"
+                    case "gregg": result["gregg"] = "Gregg Braden"
+                    case "bruceL": result["bruceL"] = "Dr. Bruce H. Lipton"
+                    default:
+                        result["OtrosAutores"] = "Otros Autores"
+                    }
+                }
+            }
+            
+            
+            return result
         }catch{
             msg("Error al obtener las frases favoritas: \(error.localizedDescription)")
-            return []
+            return result
         }
         
     }

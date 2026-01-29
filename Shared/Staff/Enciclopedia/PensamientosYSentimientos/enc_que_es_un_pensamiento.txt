@@ -34,12 +34,11 @@ Pensar “mañana tengo una reunión importante” activa simultáneamente:
 🟢 2. Integración de información
 
 Un pensamiento no es solo memoria ni solo emoción. Es la integración de múltiples sistemas:
-Sistema:                            Aporta:
-Corteza sensorial                   Información del entorno
-Hipocampo                           Recuerdos
-Amígdala                            Significado emocional
-Corteza prefrontal                  Evaluación y toma de decisiones
-Ganglios basales                    Selección de acciones
+Corteza sensorial: Información del entorno
+Hipocampo: Recuerdos
+Amígdala: Significado emocional
+Corteza prefrontal: Evaluación y toma de decisiones
+Ganglios basales: Selección de acciones
 
 El pensamiento surge cuando estos sistemas trabajan juntos.
 
