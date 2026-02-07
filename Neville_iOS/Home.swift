@@ -57,7 +57,7 @@ struct Home: View {
                     
                     
                     
-                    FrasesView()
+                    FrasesHomeView()
  
                     Spacer()
                     
@@ -73,23 +73,19 @@ struct Home: View {
                          
                          */
                         
-                        /*
+                        
                         //Eliminando las frases
                          let frasesModel = FrasesModel.shared
                          if  frasesModel.deleteAllFrases() {
                              msg("Se ha eliminado todas las frases de la tabla frases")
                          }
+                        /*
                         //Eliminando los contextos
                         let contextoModel = ContextoModel.shared
                         if contextoModel.DeleteAllContextos() {
                             msg("Se ha eliminado todos los contectos de la tabla contexto")
                         }
-                        */
-                        
-                        //Forzar la función de popular Frases
-                        HashFileModel().ResetearHashGlobal()              
-                         
-                         
+                         */
   
                     }
                     .buttonStyle(.bordered)
@@ -146,7 +142,7 @@ struct Home: View {
                     }
                     
                 default:
-                    msg("La App ni se ha instalado ni se ha actualizado: Se ha iniciado en modo debug Xcode")
+                    msg("La App ni se ha instalado ni se ha actualizado: Se ha iniciado en modo debug en Xcode")
                     
                      //Popula la Tabla Frases al actualizar si nunca se ha realizado:
                      let frasesModel = FrasesModel.shared
@@ -294,7 +290,7 @@ struct TabButtonBar : View{
             if !newValue {
                 //Actualizando el estado de favorito de la frase actual
                 withAnimation {
-                    self.frasesModel.favStateOfCurrentFrase = frasesModel.isFavFrase(fraseID: frasesModel.fraseActual?.id ?? "")
+                    self.frasesModel.favStateOfCurrentFrase = frasesModel.fraseActual?.isfav ?? false
                 }
                 
             }

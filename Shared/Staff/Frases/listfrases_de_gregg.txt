@@ -67,7 +67,7 @@ autor=gregg
 nota=
 fuente=Libro: Secreto de un Modo de Orar Olvidado
 contexto=
-texto=Las antiguas tradiciones señalan que la única diferencia entre los ángeles de los Cielos y los de la Tierra es que los primeros recuerdan que son ángeles
+texto=En nuestro interior disponemos de la tecnología necesaria para conectar con la Matriz Divina. Esto se Logra a través de la coherencia cerebro-corazón
 relacionadas=
 
 id=gregg_010
@@ -91,7 +91,7 @@ autor=gregg
 nota=
 fuente=Libro: Secreto de un Modo de Orar Olvidado
 contexto=
-texto=El sentimiento es la oración», había dicho el abad tibetano, en consonancia con las enseñanzas de las tradiciones de los grandes maestros de los nativos americanos, y también de la cristiana y la judía
+texto=La Matríz Divina es el campo cuántico de infinitas posibilidades, descrito por la ciencia.
 relacionadas=
 
 id=gregg_013

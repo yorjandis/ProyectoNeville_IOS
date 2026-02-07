@@ -5,6 +5,9 @@
 //  Created by Yorjandis PG on 18/1/26.
 //
 
+//Maneja la infromación del contexto de las frases: El campo contexto de Frases
+//Nota: El contexto define el tema general al que pertenece una frase
+
 import Foundation
 import CoreData
 import Combine

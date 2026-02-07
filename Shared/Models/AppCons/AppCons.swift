@@ -54,12 +54,11 @@ struct AppCons{
     static let FilePlanBiologiaCrrencia         = "plan_libro_biologiacreencia"
     
     
-    /*
-     static let FileListIdVideoConf      = "listidvideoconf"
-     static let FileListIdAudioLibros    = "listidaudiolibros"
-     static let FileListIdGreggVideos    = "listidgregg"
-     */
+    //Fichero de Frases de Otros Autores:
+    static let FileListFrasesOtros            = "listfrases_otros"
     
+    //Fichero de Frases para temas de Salud:
+    static let FileListFrasesSalud            = "listfrases_salud"
     
     //name values for setting:
     static let UD_setting_fontFrasesSize   = "setting_fontFrasesSize"
@@ -68,6 +67,9 @@ struct AppCons{
     static let UD_setting_fontListaSize    = "setting_fontListaSize"
     static let UD_setting_fontReminder    = "setting_fontReminder"
     static let UD_setting_fontChatIASize   = "setting_fontChatIASize" //Tamaño de letra del chat de IA
+    
+    //Opciones de Frases En Setting
+    static let UD_setting_showHide_autor_in_frases  : String = "setting_showHide_autor_in_frases"
  
     //Colores
     static var favoriteColorOff : Color = Color.black
@@ -147,7 +149,7 @@ struct AppCons{
 
     
     //Claves UserDefault para las funciones de popular la tabla frase
-    static let UD_PopulandoFrases : String = "PoulandoFrases"
+    static let UD_ProgresoUI_PopulandoFrases : String = "PoulandoFrases"
     static let UD_TablaFrasesPopulada : String = "TablaFrasesPopulada"
     
     

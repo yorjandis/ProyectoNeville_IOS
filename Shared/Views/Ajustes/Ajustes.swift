@@ -70,6 +70,10 @@ struct Ajustes: View {
     @State var ColorChatIAFuente           : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_colorIA_textContent) ?? .white
     @State var ColorRespondIAFuente        : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_colorIA_textRespond) ?? .black
     
+    //Opciones de Frases
+    @AppStorage(AppCons.UD_setting_showHide_autor_in_frases) var showHideAutorInFrases : Bool = true // Muestra / oculta el aurtor en las frases del Home
+    
+    
     //Autenti
     private let contextLA = LAContext()
     //@State var canOpenToggleButton = false
@@ -934,7 +938,12 @@ struct Ajustes: View {
                         }
                     }
                     
+                    //Opciones de Frases
+                    Section("Frases"){
+                        Toggle("Mostrar Autor en Frases del Home", isOn: self.$showHideAutorInFrases)
+                    }
                     
+                    //Utilización de la IA:
                     if #available(iOS 26.0, macOS 26.0, *){
                         if IAModelAppleIntelligence.isAvailable(){
                             

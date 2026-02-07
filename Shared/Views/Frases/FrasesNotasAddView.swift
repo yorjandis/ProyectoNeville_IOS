@@ -88,7 +88,7 @@ struct FrasesNotasAddView: View {
                     .padding(.leading, 5)
             }
             .onAppear{
-                nota = frasesModel.GetNotaAsociadaFrase(fraseID: self.frase.id ?? "")
+                nota = self.frase.nota ?? ""
             }
             Spacer()
             ScrollView(content: {

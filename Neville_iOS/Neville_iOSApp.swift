@@ -57,6 +57,9 @@ struct Neville_iOSApp: App {
     //Claves de los ficheros
     let keyNotaShareText    = "notaShareText"
     let keyFraseShareText   = "fraseShareText"
+    
+    //Flag que permite mostrar la UI solo después de que CoreData se haya cargado:
+    @State private var coreDataReady: Bool = false
 
     var body: some Scene {
         WindowGroup {
@@ -64,88 +67,97 @@ struct Neville_iOSApp: App {
                     
                     NotificationBannerOverlay() //Banner de notificacioens para anunciar los recordatorios
                     
-                    NavigationStack{
-                    ContentView()
-                        .environmentObject(settingModel)
-                        .environmentObject(networkMonitor)
-                        .environmentObject(modelTxt)
-                        .environmentObject(modelFrases)
-                        .environmentObject(securityModel) //Almacena variables observables para acceso seguro: Notas protegidas y Diario
-                        .environmentObject(reflexModel)
-                        .environmentObject(clipBoardModel)
-                        .environment(\.managedObjectContext, persistentStore.context)
-                        .applyTheme(self.setting_theme) //Aplicando el theme según los valores en Ajustes
-                        .task {
-                            modelTxt.getAllFileTxtOfType(type: .conf)   // Carga el listado de conferencias
-                            modelFrases.getAllFrases()
-                           // self.purchaseStatus = purchaseModel.isPremium
-                        }
-                        //Funciones de Atajo:
-                        .onChange(of: self.AtajosiOS) { _ , newValue in
-                            
-                            guard !newValue.isEmpty else { return }
-                            
-                            switch newValue {
-                                case "abrirDiario":
-                                    itemAtajo = .abrirDiario
-                                case "abrirNotas":
-                                    itemAtajo = .abrirNotas
-                                case "abrirRamdonConf":
-                                    itemAtajo = .abrirRandomConf
-                                default:
-                                    itemAtajo = nil
-                                }
-
-                            AtajosiOS = "" // limpiar después
-                               
-                        }
-                        .onChange(of: scenePhase) {old,  phase in
-                            //almacenar el mensaje de la notificación
-                            if phase == .active {
-                                messageCenter.loadPendingMessage()
-                                ReminderStore.shared.invalidateExpiredDateReminders()
-                            }
-                        }
-                        .sheet(item: self.$itemAtajo) { item in
-                            switch  item{
-                            case .abrirDiario:
-                                    DiarioListView()
-                                        .environmentObject(self.settingModel)
-                            case .abrirNotas:
-                                    ListNotasViews()
-                                        .environmentObject(self.settingModel)
-                            case .abrirRandomConf:
-                                    if let txtConf = self.modelTxt.getRandomConferencia(){
-                                        ContentTxtShowView(title: "Conferencia", nombreTxt: txtConf, type: .conf)
-                                            .environmentObject(self.modelTxt)
-                                            .environmentObject(self.clipBoardModel)
-                                            .environmentObject(self.settingModel)
-                                    }else {
-                                        Text("No se ha podido obtener una conferencia. Pruebe de nuevo")
+                    //No inicia la app hasta que se haya cargado CoreData
+                    if self.coreDataReady {
+                        NavigationStack{
+                        ContentView()
+                            .environmentObject(settingModel)
+                            .environmentObject(networkMonitor)
+                            .environmentObject(modelTxt)
+                            .environmentObject(modelFrases)
+                            .environmentObject(securityModel) //Almacena variables observables para acceso seguro: Notas protegidas y Diario
+                            .environmentObject(reflexModel)
+                            .environmentObject(clipBoardModel)
+                            .environment(\.managedObjectContext, persistentStore.context)
+                            .applyTheme(self.setting_theme) //Aplicando el theme según los valores en Ajustes
+                            //Funciones de Atajo:
+                            .onChange(of: self.AtajosiOS) { _ , newValue in
+                                
+                                guard !newValue.isEmpty else { return }
+                                
+                                switch newValue {
+                                    case "abrirDiario":
+                                        itemAtajo = .abrirDiario
+                                    case "abrirNotas":
+                                        itemAtajo = .abrirNotas
+                                    case "abrirRamdonConf":
+                                        itemAtajo = .abrirRandomConf
+                                    default:
+                                        itemAtajo = nil
                                     }
-                                }
-                        }
-                        .sheet(isPresented: $messageCenter.showMessage) {
-                            //Mostrar el contenido de la notificación actual de los recordatorios
-                            VStack {
-                                Text(messageCenter.message ?? "")
-                                    .padding()
+
+                                AtajosiOS = "" // limpiar después
+                                   
                             }
-                            .presentationDetents([.medium])
+                            .onChange(of: scenePhase) {old,  phase in
+                                //almacenar el mensaje de la notificación
+                                if phase == .active {
+                                    messageCenter.loadPendingMessage()
+                                    ReminderStore.shared.invalidateExpiredDateReminders()
+                                }
+                            }
+                            .sheet(item: self.$itemAtajo) { item in
+                                switch  item{
+                                case .abrirDiario:
+                                        DiarioListView()
+                                            .environmentObject(self.settingModel)
+                                case .abrirNotas:
+                                        ListNotasViews()
+                                            .environmentObject(self.settingModel)
+                                case .abrirRandomConf:
+                                        if let txtConf = self.modelTxt.getRandomConferencia(){
+                                            ContentTxtShowView(title: "Conferencia", nombreTxt: txtConf, type: .conf)
+                                                .environmentObject(self.modelTxt)
+                                                .environmentObject(self.clipBoardModel)
+                                                .environmentObject(self.settingModel)
+                                        }else {
+                                            Text("No se ha podido obtener una conferencia. Pruebe de nuevo")
+                                        }
+                                    }
+                            }
+                            .sheet(isPresented: $messageCenter.showMessage) {
+                                //Mostrar el contenido de la notificación actual de los recordatorios
+                                VStack {
+                                    Text(messageCenter.message ?? "")
+                                        .padding()
+                                }
+                                .presentationDetents([.medium])
+                            }
+                    }
+                    }else{
+                        VStack{
+                            Text("No se ha podido cargar la información. Pongase en contacto con el desarrollador en este email: info@ypgcode.es")
                         }
-                    
-                    
-                    
-                } //ZStack
-                
-                    
-                
+                    }
+  
             }
-            .task {
-                //Maneja los item que se han procesado en el menú compartir del SO: iOS
-                await handleShareItem()
-            }
+                .task {
+                    //Cargar la Base Datos de Core Data:
+                    do{
+                        try await persistentStore.cargarStores()
+                        modelTxt.getAllFileTxtOfType(type: .conf)   // Carga el listado de conferencias
+                        modelFrases.getAllFrases() //Carga el Listado de Frases
+                        
+                        self.coreDataReady = true
+                    }catch{
+                        msg("❌ Error al cargar Core Data 222: \(error.localizedDescription)")
+                    }
+                    //Maneja los item que se han procesado en el menú compartir del SO: iOS
+                    await handleShareItem()
+                }
+            
         }
+        
     }
     
     

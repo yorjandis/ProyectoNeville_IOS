@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 73;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -32,7 +32,6 @@
 		19F804262B69CBA000A323A0 /* La Ley Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 19F804192B69CB9D00A323A0 /* La Ley Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		915017432EF078A2007B741A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 915017422EF078A2007B741A /* StoreKit.framework */; };
 		915017452EF078B2007B741A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 915017442EF078B2007B741A /* StoreKit.framework */; };
-		915A49B92F0F21ED002D3DCA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E95B935A2AAFBB2900B5E2B5 /* Assets.xcassets */; };
 		918C4B0B2EF4094D00974B54 /* La Ley.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 918C4AFF2EF4094D00974B54 /* La Ley.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		91E107712EEA01AD00F4DB1D /* sharedios.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 91E107672EEA01AD00F4DB1D /* sharedios.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		91F0DD552D605B5800307453 /* watchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F0DD542D605B4B00307453 /* watchModel.swift */; };
@@ -171,13 +170,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		91048D652F1E1E24005C70A8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Staff/Enciclopedia/PensamientosYSentimientos/enc_sentimiento_como_fuerzacreativa.txt,
-			);
-			target = 917C301E2EBCD1E5006BB36E /* La Ley_mac */;
-		};
 		911FE4562ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -191,6 +183,7 @@
 				Models/FeedBackModel/FeedBackModel.swift,
 				Models/FrasesModel/ContextoFrases/ContextoModel.swift,
 				Models/FrasesModel/ContextoFrases/ContextosFrasesModel.swift,
+				Models/FrasesModel/FrasesExtension/FrasesExtensionCoreData.swift,
 				Models/FrasesModel/FrasesModel.swift,
 				Models/FrasesModel/FrasesRelacionadasModel/FrasesRelacionadasModel.swift,
 				Models/FrasesModel/FrasesRelacionadasModel/Views/FraseRelacionadasTabView.swift,
@@ -866,6 +859,14 @@
 				Staff/Biografias/biografia_jd.txt,
 				Staff/Biografias/biografia.txt,
 				Staff/cuestionario.txt,
+				Staff/Enciclopedia/Ansiedad/enc_ansiedad_vs_stress_cronico.txt,
+				Staff/Enciclopedia/Ansiedad/enc_protocolo_anti_ansiedad.txt,
+				Staff/Enciclopedia/Ansiedad/enc_que_es_la_ensiedad.txt,
+				Staff/Enciclopedia/Dopamina/enc_dopamina_vs_serotonina.txt,
+				Staff/Enciclopedia/Dopamina/enc_dopamina_y_procrastinacion.txt,
+				Staff/Enciclopedia/Dopamina/enc_protocolo_anti_adicciones_digitales.txt,
+				Staff/Enciclopedia/Dopamina/enc_protocolo_dopaminergico.txt,
+				Staff/Enciclopedia/Dopamina/enc_que_es_la_dopamina.txt,
 				Staff/Enciclopedia/Epigenetica/enc_epigenetica_varios_autores.txt,
 				Staff/Enciclopedia/Epigenetica/enc_epigenetica_y_neurociencia.txt,
 				Staff/Enciclopedia/Epigenetica/enc_joedispensa_y_epigenetica.txt,
@@ -887,6 +888,9 @@
 				Staff/Enciclopedia/PensamientosYSentimientos/enc_pensamientos_emociones_sistemainmune.txt,
 				Staff/Enciclopedia/PensamientosYSentimientos/enc_que_es_un_pensamiento.txt,
 				Staff/Enciclopedia/PensamientosYSentimientos/enc_sentimiento_como_fuerzacreativa.txt,
+				Staff/Enciclopedia/Serotonina/enc_que_es_la_serotonina.txt,
+				Staff/Enciclopedia/Serotonina/enc_rutina_diario_potenciar_serotonina.txt,
+				Staff/Enciclopedia/Serotonina/enc_serotonina_y_ansiedad.txt,
 				Staff/Enciclopedia/TemasGenerales/enc_aprendizaje_asociativo.txt,
 				Staff/Enciclopedia/TemasGenerales/enc_atencion_focalizada_practica.txt,
 				Staff/Enciclopedia/TemasGenerales/enc_atencion_focalizada.txt,
@@ -908,6 +912,7 @@
 				Staff/Frases/listfrases_de_gregg.txt,
 				Staff/Frases/listfrases_jd.txt,
 				Staff/Frases/listfrases_otros.txt,
+				Staff/Frases/listfrases_salud.txt,
 				Staff/Frases/listfrases.txt,
 				Staff/privacy.txt,
 				Staff/Reflexiones/reflex_conciencia_y_realidad.txt,
@@ -934,6 +939,7 @@
 				Views/EnciclopediaView/EnciclopediaListView.swift,
 				Views/FeedBackReview/FeedBackReview.swift,
 				Views/Frases/FraseAddView.swift,
+				Views/Frases/FraseRowView.swift,
 				Views/Frases/FrasesHomeView.swift,
 				Views/Frases/FrasesListView.swift,
 				Views/Frases/FrasesNotasAddView.swift,
@@ -981,6 +987,7 @@
 				Staff/Frases/listfrases_de_gregg.txt,
 				Staff/Frases/listfrases_jd.txt,
 				Staff/Frases/listfrases_otros.txt,
+				Staff/Frases/listfrases_salud.txt,
 				Staff/Frases/listfrases.txt,
 			);
 			target = 19E0BE132B0C661A00E149A5 /* FrasesWiggetExtension */;
@@ -997,6 +1004,7 @@
 				Staff/Frases/listfrases_de_gregg.txt,
 				Staff/Frases/listfrases_jd.txt,
 				Staff/Frases/listfrases_otros.txt,
+				Staff/Frases/listfrases_salud.txt,
 				Staff/Frases/listfrases.txt,
 			);
 			target = 19F804182B69CB9D00A323A0 /* La Ley Watch App */;
@@ -1028,6 +1036,13 @@
 				Shortcuts/Shortcuts.swift,
 			);
 			target = E95B93522AAFBB2600B5E2B5 /* Neville_iOS */;
+		};
+		91495BF52F30BCE800AC2CB8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Staff/Enciclopedia/PensamientosYSentimientos/enc_sentimiento_como_fuerzacreativa.txt,
+			);
+			target = 917C301E2EBCD1E5006BB36E /* La Ley_mac */;
 		};
 		918C4AF72EF3593F00974B54 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
@@ -1071,19 +1086,9 @@
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
-/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-		91048D662F1E1E24005C70A8 /* PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
-			buildPhase = 917C301B2EBCD1E5006BB36E /* Sources */;
-			membershipExceptions = (
-				Staff/Enciclopedia/PensamientosYSentimientos/enc_sentimiento_como_fuerzacreativa.txt,
-			);
-		};
-/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		9113E29C2EE9E1D2002AC306 /* Model */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Model; sourceTree = "<group>"; };
-		911FE4452ECB2A7F009F83BE /* Shared */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (911FE4562ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 911FE4572ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 911FE4582ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 91048D652F1E1E24005C70A8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 91048D662F1E1E24005C70A8 /* PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet */, 918C4AF72EF3593F00974B54 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 918C4B242EF40F2400974B54 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (Models/PurchaseModel/StoreKitFile.storekit, ); path = Shared; sourceTree = "<group>"; };
+		911FE4452ECB2A7F009F83BE /* Shared */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (911FE4562ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 911FE4572ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 911FE4582ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 91495BF52F30BCE800AC2CB8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 918C4AF72EF3593F00974B54 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 918C4B242EF40F2400974B54 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (Models/PurchaseModel/StoreKitFile.storekit, ); path = Shared; sourceTree = "<group>"; };
 		911FE4D42ECB2E8D009F83BE /* OptionView */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (91C3A3D22F24CB6600A07607 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = OptionView; sourceTree = "<group>"; };
 		911FF1FA2ECB4064009F83BE /* Preview Content */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (911FF1FC2ECB4064009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 911FF1FD2ECB4064009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = "Preview Content"; sourceTree = "<group>"; };
 		914415A92EDC377200FFC61D /* Atajos */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (914415B12EDC39E300FFC61D /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Atajos; sourceTree = "<group>"; };
@@ -1474,6 +1479,7 @@
 				};
 			};
 			buildConfigurationList = E95B934E2AAFBB2600B5E2B5 /* Build configuration list for PBXProject "Neville_iOS" */;
+			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = es;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -1483,7 +1489,6 @@
 			mainGroup = E95B934A2AAFBB2600B5E2B5;
 			packageReferences = (
 			);
-			preferredProjectObjectVersion = 56;
 			productRefGroup = E95B93542AAFBB2600B5E2B5 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -1529,7 +1534,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				915A49B92F0F21ED002D3DCA /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1722,6 +1726,7 @@
 				INFOPLIST_FILE = WatchComplicationLaLey/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = WatchComplicationLaLey;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1753,6 +1758,7 @@
 				INFOPLIST_FILE = WatchComplicationLaLey/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = WatchComplicationLaLey;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1875,7 +1881,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.6;
 				MARKETING_VERSION = 1.3.6;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.dev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
@@ -1976,7 +1982,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 26.2;
 				MARKETING_VERSION = 1.3.6;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.sharedmac;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.dev.sharedmac;
 				PRODUCT_NAME = "La Ley";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = macosx;
@@ -2043,7 +2049,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.3.6;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.sharedios;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.dev.sharedios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;

@@ -59,7 +59,7 @@ struct FrasesListView: View {
     
     
     
-    @AppStorage(AppCons.UD_PopulandoFrases, store: UserDefaults(suiteName: "group.com.ypg.nev.group")) private var PopulandoFrases: Bool = false
+    @AppStorage(AppCons.UD_ProgresoUI_PopulandoFrases, store: UserDefaults(suiteName: "group.com.ypg.nev.group")) private var PopulandoFrases: Bool = false
     
 
     var body: some View {
@@ -141,248 +141,8 @@ struct FrasesListView: View {
                             }
                         
                         
-                        List(frasesModel.listfrases, id: \.self){ frase in
-                            VStack(alignment: .leading){
-                                #if os(macOS)
-                                //Vista de listado de Frases desde macOS, con un Menu al principio de cada frase
-                                HStack{
-                                    RowFraseMenu(frase: frase , frasesModel: self.frasesModel, settingModel: self.settingModel,showTabViewFrasesRelac: self.$showTabViewFrasesRelac, fraseRelacionadaMain: self.$fraseRelacionadaMain )
-                                    
-                                    
-                                    //Mostrar Un icono de favorito si la frase es favorita
-                                    if self.frasesModel.isFavFrase(fraseID: frase.id ?? "") {
-                                        Image(systemName: "heart.fill")
-                                            .foregroundStyle(.black)
-                                            .padding(.horizontal, 5)
-                                    }
-                                    VStack(alignment: .leading ,spacing: 2){
-                                        Text(frase.frase ?? "")
-                                            .font(.system(size: 22))
-                                            .fontDesign(.serif)
-                                            .foregroundStyle(.black).bold()
-                                            .textSelection(.enabled)
-                                            .padding(.vertical, 15)
-                                        HStack{
-                                            Text(frase.autor ?? "").font(.footnote).italic()
-                                            Spacer()
-                                            if !frase.relacionadasArray.isEmpty{
-                                                Button{
-                                                    self.fraseRelacionadaMain = frase
-                                                    self.showTabViewFrasesRelac = true
-                                                }label:{
-                                                    Image(systemName: "personalhotspot")
-                                                        .font(.footnote)
-                                                }
-                                            }
-                                            
-                                        }
-                                    }
-                                    
-                                    
-                                    Spacer()
-
-                                }
-
-                                #else
-                                VStack( alignment: .leading , spacing: 2){
-                                    
-                                    Text(frase.frase ?? "")
-                                        .font(.system(size: 20))
-                                        .textSelection(.enabled)
-                                    HStack{
-                                        Text(frase.autor ?? "").font(.footnote).italic()
-                                        Spacer()
-                                        
-                                        if !frase.relacionadasArray.isEmpty{
-                                             Button{
-                                                 self.fraseRelacionadaMain = frase
-                                                 self.showTabViewFrasesRelac = true
-                                             }label:{
-                                                 Image(systemName: "personalhotspot")
-                                                     .font(.footnote)
-                                             }
-                                         }
-                                         
-                                        
-                                        
-                                    }
-                                    
-                                    
-                                }
-                                
-                                
-                                //SelectableText(frase) //No funciona, no se ve el texto de la frase. Puede ser porque esta embebido en una List
-                                #endif
-                                
-                            }
-                            #if os(iOS) || os(ipadOS)
-                            //Modificar el campo nota de una frase
-                            .swipeActions(edge: .leading, allowsFullSwipe: true){
-                                //Esta View no se mostrará si Apple Intelligence no esta disponible
-                                if #available(iOS 26.0, macOS 26.0,  *) {
-                                    if IAModelAppleIntelligence.isAvailable() {
-                                        Menu{
-                                            NavigationLink{
-                                                RespondView(nameConference: "", texto: frase.frase ?? "", tipoSalida: .interpretar )
-                                            }label:{
-                                                Label("Interpretar", systemImage: "sparkles")
-                                            }
-                                            .tint(.orange)
-                                            
-                                            NavigationLink{
-                                                RespondView(nameConference: "", texto: frase.frase ?? "", tipoSalida: .practicaConcreta)
-                                            }label:{
-                                                Label("Aplicación Práctica", systemImage: "sparkles")
-                                            }
-                                            .tint(.orange)
-                                            
-                                            NavigationLink{
-                                                ChatView(textoACargar: frase.frase ?? "")
-                                            }label: {
-                                                Label("Charlar con IA", systemImage: "sparkles")
-                                            }
-                                            .tint(.orange)
-                                            
-                                        }label:{
-                                            Image(systemName: "sparkles")
-                                        }
-                                        .tint(.purple)
-                                    }
-                                }
-                                //Notas de la Frase
-                                NavigationLink{
-                                     FrasesNotasAddView( frase: frase)
-                                }label: {
-                                    Image(systemName: "bookmark")
-                                        .tint(.green)
-                                }
-                                
-                                //Guardar la frase a Notas
-                                Button{
-                                    
-                                     //Guarda la nota poniendo como titulo una parte de la cadena
-                                    if  NotasModel().addNote(nota: frase.frase ?? "", title: "\(String(frase.frase ?? "").prefix((frase.frase ?? "").count / 3 )))..."){
-                                         self.alertMessage = "Frase almacenada en Notas"
-                                         self.showAlert = true
-                                     }
-                                     
-                                    
-                                }label: {
-                                    Label("Almacenar en Notas", systemImage: "list.bullet.clipboard")
-                                }
-                                
-                                //Compartir la frase:
-                                ShareLink(item: frase.frase ?? "") {
-                                                Label("Compartir frase", systemImage: "square.and.arrow.up")
-                                            }
-                                
-                                //Si la Frase es personal, permite eliminarla
-                                if frasesModel.isNoInbuilt(fraseID: frase.id ?? "") ?? false{
-                                    Button{
-                                        self.TextoFraseAEliminar = frase
-                                        self.showConfirmDialogDeleteFrase = true
-                                    }label:{
-                                        Image(systemName: "minus.circle.fill")
-                                            .tint(.red.opacity(0.8))
-                                    }
-                                }
-                               
-                                
-                            }
-                            .swipeActions(edge: .trailing, allowsFullSwipe: true){
-                                
-                                //Menú de opciones para frases Relacionadas:
-                                 Menu{
-                                     
-                                      if (self.showTabViewFrasesRelac && self.fraseRelacionadaMain != nil) {
-                                          Button{
-                                              frase.vincularCon(self.fraseRelacionadaMain!)
-                                              //Persistiendo
-                                              guardarCambios()
-                                          }label:{
-                                              Label("Agregar Frase", systemImage: "tray.and.arrow.up.fill")
-                                                  .tint(.purple)
-                                          }
-                                      }
-
-                                      //Modo edición de frases relacionadas
-                                      Button{
-                                          self.fraseRelacionadaMain = frase
-                                          self.showTabViewFrasesRelac = true
-                                      }label:{
-                                      Label("Modo Edición", systemImage: "graduationcap.circle")
-                                          .tint(.blue)
-                                      }
-                                      
-                                     
-                                     
-                                     //Mostrar/Ocultar el ponel de frases relacionadas
-                                     if frase.relacionadasArray.count > 0 {
-                                         NavigationLink{
-                                             FrasesMainListRelacionadas(fraseMain: frase)
-                                         }label:{
-                                             Label("Modo Lista", systemImage: "append.page")
-                                                 .tint(.blue)
-                                         }
-                                     }
-                                      
-
-                                 }label:{
-                                     Image(systemName: "graduationcap.circle")
-                                         .tint(.blue)
-                                 }
-                                 
-
-                                //Editar la frase: Solo si es Personal
-                                if let fraseCoreData = self.frasesModel.getFraseCoreData(FraseID: frase.id ?? ""){
-                                    if fraseCoreData.noinbuilt == true{
-                                        NavigationLink{
-                                            FrasesUpdateView(frase: fraseCoreData)
-                                        }label:{
-                                            Image(systemName: "square.and.pencil")
-                                                .tint(.green)
-                                        }
-                                    }
-                                }
-                                
-                                //Generando el QR de la frase
-                                NavigationLink{
-                                    GenerateQRView(footer: frase.frase ?? "")
-                                }label: {
-                                    Image(systemName: "qrcode")
-                                        .tint(.brown)
-                                }
-                                
-                                //Lienzo
-                                NavigationLink{
-                                    LienzoMain(texto: frase.frase ?? "")
-                                }label: {
-                                    Image(systemName: "heart.text.square")
-                                        .tint(.brown)
-                                }
-                                
-                                //Ajustar el estado de favorito de una frase
-                                Button{
-                                    
-                                     let current = self.frasesModel.isFavFrase(fraseID: frase.id ?? "")
-                                     let newValue = !current
-                                     if self.frasesModel.setFavFrase(fraseID: frase.id ?? "", newValue) {
-                                         Task {
-                                             await self.frasesModel.FiltrarListado()
-                                         }
-                                         
-                                     }
-                                     
-                                    
-                                }label: {
-                                    Image(systemName: "heart")
-                                        .tint( self.frasesModel.isFavFrase(fraseID: frase.id ?? "") ? .orange : .gray)
-                                }
-                                
-                                
-                                
-                            }
-                            #endif
+                        List(frasesModel.listfrases, id: \.id){ frase in
+                            FraseRowView(frase: frase, showTabViewFrasesRelac : self.$showTabViewFrasesRelac, fraseRelacionadaMain: self.$fraseRelacionadaMain )
                         }
                         .scrollContentBackground(.hidden)
                         
@@ -409,7 +169,7 @@ struct FrasesListView: View {
                                      
                                      CreateMenuItemButton(text: "Todas las Frases", sysImageStr: "text.magnifyingglass") {
                                          Task {
-                                             frasesModel.criterioFiltroActual = .ListadoFull
+                                             frasesModel.criterioFiltroActual = .ListadoFull //Almacena información acerca del tipo de filtro
                                              frasesModel.buscarEn = .TodasFrases
                                              await frasesModel.FiltrarListado()
                                          }
@@ -458,6 +218,19 @@ struct FrasesListView: View {
                                          
                                      }label: {
                                          Label("Por Autor", systemImage: "text.quote")
+                                     }
+                                     
+                                     //Crea un Menu para filtrar por contextos disponibles:
+                                     Menu{
+                                         let autores = self.frasesModel.getAllContextosList()
+                                         ForEach(autores, id: \.self) { contexto in
+                                             Button(contexto){
+                                                self.frasesModel.listfrases = self.frasesModel.getFrasesByContexto(contexto: contexto)
+                                             }
+                                         }
+                                         
+                                     }label: {
+                                         Label("Por Contexto", systemImage: "text.quote")
                                      }
                                      
                                  }label: { //Label del Menú
@@ -515,27 +288,14 @@ struct FrasesListView: View {
                  TextField("", text: $textFieldNota)
                  Button("Buscar"){
                      if !self.textFieldNota.isEmpty{
-                         self.frasesModel.buscarEn = .ResultadosDeBusquedaEnNotas
                          Task{
                              self.frasesModel.criterioFiltroActual = .BuscarEnNotas
-                             self.frasesModel.buscarEn = .ResultadosDeBusquedaEnNotas
                              await frasesModel.FiltrarListado(textAbuscar: self.textFieldNota)
                          }
                      }
                      
                  }
                  
-             }
-             //Dialogo de conformación para elimnar una nota
-             .confirmationDialog(
-                 "Confirme que desea Eliminar la Frase",
-                 isPresented: $showConfirmDialogDeleteFrase
-             ) {
-                 Button("Eliminar", role: .destructive) {
-                     eliminarFrase()
-                 }
-             } message: {
-                 Text("La frase será removida!!!")
              }
              .alert(isPresented: self.$showAlert){
                  Alert(title: Text("La Ley"), message: Text(self.alertMessage))
@@ -547,30 +307,6 @@ struct FrasesListView: View {
     }
     
     
-    private func eliminarFrase() {
-        if let frase = self.TextoFraseAEliminar{
-            withAnimation {
-                if frasesModel.DeleteFraseInbuilt(fraseID: frase.id ?? "") {
-                    Task {
-                        frasesModel.criterioFiltroActual = .FrasesPersonales
-                        await frasesModel.FiltrarListado()
-                    }
-                }
-            }
-        }
-        
-    }
-    
-    //Persistir cambios en las relaciones entre frases
-    func guardarCambios() {
-        guard context.hasChanges else { return }
-
-        do {
-            try context.save()
-        } catch {
-            msg("Error guardando relaciones:", error.localizedDescription)
-        }
-    }
 }
 
 

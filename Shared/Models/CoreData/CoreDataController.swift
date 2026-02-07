@@ -8,115 +8,64 @@
 import Foundation
 import CoreData
 
-//Sin iCloudKit habilitado
-/*
+
 final class CoreDataController: Sendable {
-    
-    let persistentContainer: NSPersistentContainer // Ahora solo con Core Data local
-    
-    static let shared = CoreDataController() // Singleton
-    
-    // Acceso al contexto de objeto administrado
+
+    // MARK: - Propiedades
+    let persistentContainer: NSPersistentCloudKitContainer
+
+    static let shared = CoreDataController()
+
     var context: NSManagedObjectContext {
-        return persistentContainer.viewContext
+        persistentContainer.viewContext
     }
-    
-    // Guarda la información. Si falla, descarta cualquier cambio realizado
-    func save() {
-        if context.hasChanges {
-            do {
-                try context.save()
-            } catch {
-                context.rollback()
-                print("Error al guardar en Core Data: \(error.localizedDescription)")
-            }
-        }
-    }
-    
+
+    // MARK: - Init
     private init() {
-        let description = NSPersistentStoreDescription()
-        description.url = NSPersistentContainer.defaultDirectoryURL().appendingPathComponent("ModelData.sqlite")
-        
-        //__________________________
-        
-        // Mantener el historial de cambios aunque iCloud ya no esté activo
+        // Inicializa el contenedor con el nombre del modelo
+        persistentContainer = NSPersistentCloudKitContainer(name: "ModelData")
+
+        // Configurar la ubicación de la BD
+        let storeURL = NSPersistentContainer.defaultDirectoryURL().appendingPathComponent("ModelData.sqlite")
+        let description = NSPersistentStoreDescription(url: storeURL)
+
+        // Habilitar historial de cambios y notificaciones remotas
         description.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)
-        
-        persistentContainer = NSPersistentContainer(name: "ModelData")
+        description.setOption(true as NSNumber, forKey: NSPersistentStoreRemoteChangeNotificationPostOptionKey)
+
+        // Configurar CloudKit
+        description.cloudKitContainerOptions = NSPersistentCloudKitContainerOptions(
+            containerIdentifier: "iCloud.com.ypg.nev.app.icloud"
+        )
+
         persistentContainer.persistentStoreDescriptions = [description]
-        
-        persistentContainer.loadPersistentStores { (description, error) in
-            if let error = error {
-                print("Error al cargar el almacén de datos: \(error.localizedDescription)")
-            } else {
-               // print("Core Data cargado correctamente sin iCloud, pero con historial de cambios.")
-            }
-        }
-        
+
+        // Configuraciones del contexto (merge policy)
         persistentContainer.viewContext.automaticallyMergesChangesFromParent = true
         persistentContainer.viewContext.mergePolicy = NSMergePolicy(merge: .mergeByPropertyObjectTrumpMergePolicyType)
     }
-}
-*/
 
-
-//Con iCloudKit Habilitado:
-/*
- Cambios realizados:
- 1.    Se usa NSPersistentCloudKitContainer en lugar de NSPersistentContainer
- •    Este contenedor permite la sincronización con iCloud automáticamente.
- 2.    Se configura el almacén con iCloudKit
- •    Se añade NSPersistentStoreUbiquitousContainerIdentifierKey con el identificador de iCloud de la app.
- •    Se habilitan NSPersistentHistoryTrackingKey y NSPersistentStoreRemoteChangeNotificationPostOptionKey para el seguimiento de cambios y sincronización.
- 3.    Se mantiene la fusión de cambios automática
- •    Esto ayuda a resolver conflictos entre dispositivos.
- */
-
-final class CoreDataController: Sendable {
-    
-    let persistentContainer: NSPersistentCloudKitContainer
-    
-    static let shared = CoreDataController()
-    
-    var context: NSManagedObjectContext {
-        return persistentContainer.viewContext
+    // MARK: - Cargar Persistent Stores Async
+    func cargarStores() async throws {
+        // Cargar persistent stores de forma síncrona
+            persistentContainer.loadPersistentStores { description, error in
+                if let error = error {
+                    fatalError("❌ Error cargando Core Data: \(error)")
+                } else {
+                    msg("✅ Core Data cargado correctamente")
+                }
+            }
     }
-    
+
+    // MARK: - Guardar Contexto
     func save() {
         if context.hasChanges {
             do {
                 try context.save()
             } catch {
                 context.rollback()
-                msg("Error al guardar en Core Data: \(error.localizedDescription)")
+                msg("❌ Error al guardar en Core Data: \(error.localizedDescription)")
             }
         }
-    }
-    
-    private init() {
-        persistentContainer = NSPersistentCloudKitContainer(name: "ModelData") //Nombre de la BD en icloud
-        
-        let storeURL = NSPersistentContainer.defaultDirectoryURL().appendingPathComponent("ModelData.sqlite") //Ubicación de la BD
-        let description = NSPersistentStoreDescription(url: storeURL)
-        
-        // Habilitar el historial de cambios y notificaciones remotas
-        description.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)
-        description.setOption(true as NSNumber, forKey: NSPersistentStoreRemoteChangeNotificationPostOptionKey)
-        
-        // Configurar la tienda para usar CloudKit sin claves obsoletas
-        description.cloudKitContainerOptions = NSPersistentCloudKitContainerOptions(containerIdentifier: "iCloud.com.ypg.nev.app.icloud")
-        
-        persistentContainer.persistentStoreDescriptions = [description]
-        
-        persistentContainer.loadPersistentStores { (description, error) in
-            if let error = error {
-                msg("Error al cargar el almacén de datos con iCloud: \(error.localizedDescription)")
-            } else {
-                msg("Core Data con iCloudKit cargado correctamente.")
-            }
-        }
-        
-        persistentContainer.viewContext.automaticallyMergesChangesFromParent = true
-        persistentContainer.viewContext.mergePolicy = NSMergePolicy(merge: .mergeByPropertyObjectTrumpMergePolicyType) //
     }
 }

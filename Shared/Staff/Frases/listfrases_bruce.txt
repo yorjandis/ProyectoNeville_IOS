@@ -3,7 +3,7 @@ autor=bruceL
 nota=
 fuente=
 contexto=
-texto=Tubiología responde a lo que crees no a lo que es real
+texto=Tu biología responde a lo que crees no a lo que es real
 relacionadas=
 
 id=bruce_002
@@ -100,4 +100,20 @@ nota=
 fuente=Lipton, Bruce H. (2007), La biología de la creencia: la liberación del poder de la conciencia, la materia y los milagros. Madrid: Ediciones Palmyra. ISBN 9788496665187
 contexto=
 texto=El continuo cambio de forma de las proteínas, que puede ocurrir miles de veces en un segundo, es el movimiento que impulsa la vida de los organismos
+relacionadas=
+
+id=bruce_014
+autor=bruceL
+nota=
+fuente=Conferencia: tres amigos Gregg, Joe Dispenza y Bruce Lipton, TCCHE.org, 2017
+contexto=
+texto=Has nacido en el Cielo. Aquí has venido a crear, a experimentar. Estas viviendo la vida de programas. Si no te gusta el programa, la nueva biología dice que puedes reescribirlo
+relacionadas=
+
+id=bruce_015
+autor=bruceL
+nota=
+fuente=Conferencia: tres amigos Gregg, Joe Dispenza y Bruce Lipton, TCCHE.org, 2017
+contexto=
+texto=Tenemos nuestra exstencia y fuente más alla del cuerpo físico. El cuerpo es solo una antena biológica que sintoniza con la presencia que somos y emite desde el Campo Cuantico o mente de Dios
 relacionadas=

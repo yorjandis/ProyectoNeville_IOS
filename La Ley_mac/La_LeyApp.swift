@@ -56,83 +56,108 @@ struct La_LeyApp: App {
     }
 
     
+    //Flag que permite mostrar la UI solo después de que CoreData se haya cargado:
+    @State private var coreDataReady: Bool = false
+    
     var body: some Scene {
         WindowGroup {
             ZStack{
                 
                 NotificationBannerOverlay() //Banner de notificacioens para anunciar los recordatorios
                 
-                ContentViewMac()
-                    .environmentObject(settingModel)
-                    .environmentObject(frasesModel)
-                    .environmentObject(txtcontentModel)
-                    .environmentObject(securityModel) //acceso seguro a las notas protegisas y al diario
-                    .environmentObject(clipBoardObserver) //Inyectamos la clase que observa cambios en el portapapeles
-                    .environment(\.managedObjectContext, persistentStore.context)
-                    .applyTheme(setting_theme) //Aplicando la configuración de theme segun los valores en Ajustes
-                    .onChange(of: self.AtajosMac, { _ , newValue in
-                        //Procesa los Intents creados: Atajos de App Atajos y Siri
-                        switch newValue{
-                        case "abrirDiario":
-                            showWindow(for: DiarioListView(),
-                                       environmentObjects: [self.settingModel],
-                                       title: "Diario",
-                                       size: .percentage(width: 0.50, height: 0.50),
-                                       isModal: false)
-                        case "abrirNotas":
-                            showWindow(for: ListNotasViews(),
-                                       environmentObjects: [],
-                                       title: "Notas",
-                                       size: .percentage(width: 0.50, height: 0.50),
-                                       isModal: false)
-                        case "abrirRamdonConf":
-                            if let nombreTxt = self.txtcontentModel.getRandomConferencia(){
-                                showWindow(for: ContentTxtShowView(title: "Conferencias", nombreTxt: nombreTxt, type: .conf),
-                                           environmentObjects: [self.txtcontentModel, self.clipBoardObserver, self.settingModel],
-                                           title: "Conferencias",
-                                           size: .percentage(width: 0.50, height: 0.50),
-                                           isModal: false)
+                //Carga la UI solo si se ha cargado CoreData
+                if coreDataReady{
+                    NavigationStack{
+                        ContentViewMac()
+                            .environmentObject(settingModel)
+                            .environmentObject(frasesModel)
+                            .environmentObject(txtcontentModel)
+                            .environmentObject(securityModel) //acceso seguro a las notas protegisas y al diario
+                            .environmentObject(clipBoardObserver) //Inyectamos la clase que observa cambios en el portapapeles
+                            .environment(\.managedObjectContext, persistentStore.context)
+                            .applyTheme(setting_theme) //Aplicando la configuración de theme segun los valores en Ajustes
+                            .onChange(of: self.AtajosMac, { _ , newValue in
+                                //Procesa los Intents creados: Atajos de App Atajos y Siri
+                                switch newValue{
+                                case "abrirDiario":
+                                    showWindow(for: DiarioListView(),
+                                               environmentObjects: [self.settingModel],
+                                               title: "Diario",
+                                               size: .percentage(width: 0.50, height: 0.50),
+                                               isModal: false)
+                                case "abrirNotas":
+                                    showWindow(for: ListNotasViews(),
+                                               environmentObjects: [],
+                                               title: "Notas",
+                                               size: .percentage(width: 0.50, height: 0.50),
+                                               isModal: false)
+                                case "abrirRamdonConf":
+                                    if let nombreTxt = self.txtcontentModel.getRandomConferencia(){
+                                        showWindow(for: ContentTxtShowView(title: "Conferencias", nombreTxt: nombreTxt, type: .conf),
+                                                   environmentObjects: [self.txtcontentModel, self.clipBoardObserver, self.settingModel],
+                                                   title: "Conferencias",
+                                                   size: .percentage(width: 0.50, height: 0.50),
+                                                   isModal: false)
+                                    }
+                                default:
+                                    return
+                                }
+                                
+                                AtajosMac = "" //Resetea el flag
+                                
+                            })
+                            
+                            .onDisappear {
+                                //Cerrando todas las ventanas hijas abiertas antes de salir
+                                WindowManager.shared.closeAllChildren()
                             }
-                        default:
-                            return
-                        }
-                        
-                        AtajosMac = "" //Resetea el flag
-                        
-                    })
-                    .task {
-                        self.securityModel.canOpenDiario = false //Al iniciar la ventana se reinicia la variabe que da acceso al diario.
-                        self.purchaseStatus = self.purchaseManager.isPremium //Almacena al inicio el estado de la suscripción premium
-                    }
-                    .onDisappear {
-                        //Cerrando todas las ventanas hijas abiertas antes de salir
-                        WindowManager.shared.closeAllChildren()
-                    }
-                    .onChange(of: scenePhase) { old, phase in
-                        if phase == .active {
-                            //Permite mostrar el contenido de la notificación
-                            messageCenter.loadPendingMessage()
-                        
-                            if messageCenter.showMessage{
-                                showWindow(for:
-                                    VStack {
-                                    Text(messageCenter.message ?? "")
-                                        .padding()
-                                },
-                                environmentObjects: [],
-                                title: "Mensaje de notificación",
-                                           size: AppCons.windows_size_content_small,
-                                           isModal: false){
-                                    //Deshabilita que se muestre la notificación de nuevo
-                                    Task{@MainActor in
-                                     messageCenter.showMessageSet(state: false)
+                            .onChange(of: scenePhase) { old, phase in
+                                if phase == .active {
+                                    //Permite mostrar el contenido de la notificación
+                                    messageCenter.loadPendingMessage()
+                                
+                                    if messageCenter.showMessage{
+                                        showWindow(for:
+                                            VStack {
+                                            Text(messageCenter.message ?? "")
+                                                .padding()
+                                        },
+                                        environmentObjects: [],
+                                        title: "Mensaje de notificación",
+                                                   size: AppCons.windows_size_content_small,
+                                                   isModal: false){
+                                            //Deshabilita que se muestre la notificación de nuevo
+                                            Task{@MainActor in
+                                             messageCenter.showMessageSet(state: false)
+                                            }
+                                            
+                                        }
                                     }
                                     
                                 }
                             }
-                            
-                        }
                     }
+                }else{
+                    VStack{
+                        Text("No se ha podido cargar la información. Pongase en contacto con el desarrollador en este email: info@ypgcode.es")
+                    }
+                }
+                
+                
+            }
+            .task {
+                
+                //Cargar  la BD Core Data
+                do {
+                    try await self.persistentStore.cargarStores()
+                    self.frasesModel.getAllFrases() //Carga las frases
+                    self.coreDataReady = true
+                }catch{
+                    msg("❌ Error al cargar Core Data: \(error.localizedDescription)")
+                }
+                
+                self.securityModel.canOpenDiario = false //Al iniciar la ventana se reinicia la variabe que da acceso al diario.
+                self.purchaseStatus = self.purchaseManager.isPremium //Almacena al inicio el estado de la suscripción premium
             }
                
         }

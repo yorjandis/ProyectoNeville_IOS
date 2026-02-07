@@ -44,24 +44,21 @@ extension TxtContentModel {
     
    // Trabajo con el vector de conferencias vistas: ---------------------------------------------------------------------------
     
-    func handleLastFiveConferences(nombreTxt : String){
+    func handleLast3Conferences(nombreTxt : String){
         
-        if nombreTxt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty{return}
-        
-        //Sale si la conferencia a manejar ya esta dentro del vector
-        guard !lastFiveConferences.contains(nombreTxt) else {return}
-        
-        //Si el vector tiene espacio se agrega la conferencia, pero solo si la conferencia no esta ya dentro del vector
-        if lastFiveConferences.count < 6{
-            lastFiveConferences.insert(nombreTxt, at: 0)
-        }
-        
-        //Si el vector esta lleno se quita la primera que se añadió y se añade la actual al final:
-        if lastFiveConferences.count == 6{
-            lastFiveConferences.removeLast()
-            lastFiveConferences.insert(nombreTxt, at: 0)
-        }
-        
+        let cleanName = nombreTxt.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !cleanName.isEmpty else { return }
+
+            // 1. Eliminar si ya existe
+            lastFiveConferences.removeAll { $0 == cleanName }
+
+            // 2. Insertar al inicio
+            lastFiveConferences.insert(cleanName, at: 0)
+
+            // 3. Limitar a 3 elementos
+            if lastFiveConferences.count > 3 {
+                lastFiveConferences = Array(lastFiveConferences.prefix(3))
+            }
     }
     
     //Salva la lista del vector. Debe ser llamada al salir de la vista de Lista de Conferencias

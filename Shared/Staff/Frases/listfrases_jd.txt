@@ -1043,7 +1043,7 @@ autor=jd
 nota=
 fuente=
 contexto=
-texto=No necesitas esperar cambios externos: tu mente puede ser el placebo que transforma tu vida.
+texto=Si tus pensamientos pueden enfermarte, también pueden curarte.
 relacionadas=
 
 id=jd_132
@@ -2179,7 +2179,7 @@ autor=jd
 nota=
 fuente=
 contexto=
-texto=La onda ganma del cerebro corresponde al estado de superconciencia. Esto se logra con la coherencia cardíaca y cerebral
+texto=Un pensamiento es un patrón de activación neuronal y desencadena la liberación de respuestas fisiológicas en el cuerpo
 relacionadas=
 
 id=jd_274

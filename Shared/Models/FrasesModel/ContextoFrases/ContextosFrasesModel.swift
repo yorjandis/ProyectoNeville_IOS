@@ -20,6 +20,13 @@ extension Frases {
 
     //Vincular una frase con  un contexto
     func vincularConContexto(_ contexto: Contexto) {
+        
+        let actuales = contextos as? Set<Contexto> ?? []
+
+            guard !actuales.contains(contexto) else {
+                return // ya está vinculado
+            }
+        
         self.addToContextos(contexto)
         contexto.addToFrases(self)
     }

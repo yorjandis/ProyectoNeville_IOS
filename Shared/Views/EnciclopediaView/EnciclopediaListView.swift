@@ -14,7 +14,10 @@ struct EnciclopediaListView: View {
         EnciclopediaCategoria(nombre: "Pensamientos & Sentimientos", temas: EnciclopediaTemas.pensamientoYSentimientos),
         EnciclopediaCategoria(nombre: "Hábitos", temas: EnciclopediaTemas.habitos),
         EnciclopediaCategoria(nombre: "Epigenética", temas: EnciclopediaTemas.epigenetica),
-        EnciclopediaCategoria(nombre: "Memoria", temas: EnciclopediaTemas.memoria)
+        EnciclopediaCategoria(nombre: "Memoria", temas: EnciclopediaTemas.memoria),
+        EnciclopediaCategoria(nombre: "Dopamina", temas: EnciclopediaTemas.dopamina),
+        EnciclopediaCategoria(nombre: "Serotonina", temas: EnciclopediaTemas.serotonina),
+        EnciclopediaCategoria(nombre: "Ansiedad", temas: EnciclopediaTemas.ansiedad)
     ]
     
     var body: some View {

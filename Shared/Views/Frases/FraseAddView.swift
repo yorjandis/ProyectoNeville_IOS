@@ -72,7 +72,7 @@ struct FraseAddView: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .tint(.blue.opacity(0.4))
-                .disabled(self.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                .disabled(self.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || self.autor.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 
                 Spacer()
                 
@@ -224,6 +224,7 @@ struct FraseAddView: View {
                     }
                     .buttonStyle(.borderedProminent)
                     .tint(.blue)
+                    .disabled(self.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || self.autor.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
                 
                 

@@ -32,7 +32,6 @@ struct RowFraseMenu: View {
     
      
      // Cache de valores precalculados
-     private let coreData: Frases?
      private let isFav: Bool
      private let esNoInbuilt: Bool
      private let iaDisponible: Bool
@@ -52,9 +51,8 @@ struct RowFraseMenu: View {
              self._fraseRelacionadaMain = fraseRelacionadaMain
          
          // Cache de valores
-         self.coreData = frasesModel.getFraseCoreData(FraseID: frase.id ?? "")
-         self.isFav = frasesModel.isFavFrase(fraseID: frase.id ?? "")
-         self.esNoInbuilt = frasesModel.isNoInbuilt(fraseID: frase.id ?? "") ?? true
+         self.isFav = frase.isfav
+         self.esNoInbuilt = frase.isPersonal
          
          if #available(iOS 26.0, macOS 26.0, *) {
              self.iaDisponible = IAModelAppleIntelligence.isAvailable()
@@ -67,12 +65,11 @@ struct RowFraseMenu: View {
          
          Menu(""){
              // Editar
-             if esNoInbuilt {
+             if self.frase.isPersonal {
                  Button {
-                     if let core = coreData {
                          
                           showWindow(
-                              for: FrasesUpdateView(frase: core),
+                            for: FrasesUpdateView(frase: self.frase),
                               environmentObjects: [frasesModel],
                               title: "Frases",
                               size: AppCons.windows_size_content_small,
@@ -80,7 +77,7 @@ struct RowFraseMenu: View {
                           )
                           
                          
-                     }
+                     
                  } label: {
                      Label("Editar Frase", systemImage: "square.and.pencil")
                          .tint(.green)
@@ -107,13 +104,10 @@ struct RowFraseMenu: View {
              // Favorito
              Button {
                  
-                  let nuevoValor = !isFav
-                  if frasesModel.setFavFrase(fraseID: frase.id ?? "", nuevoValor) {
-                      Task {
-                          await frasesModel.FiltrarListado()
-                      }
-                  }
-                  
+                 self.frase.isfav.toggle()
+                 
+                 frasesModel.guardarCambios()
+                 
                  
              } label: {
                  Label("Favorito", systemImage: "heart.fill")
@@ -127,7 +121,7 @@ struct RowFraseMenu: View {
                        Button{
                            frase.vincularCon(self.fraseRelacionadaMain!)
                            //Persistiendo
-                           guardarCambios()
+                           frasesModel.guardarCambios()
                        }label:{
                            Label("Agregar Frase", systemImage: "tray.and.arrow.up.fill")
                                .tint(.purple)
@@ -328,34 +322,18 @@ struct RowFraseMenu: View {
         
          
      }
-     
-    
-    //Persistir cambios en las relaciones entre frases
-    func guardarCambios() {
-        guard context.hasChanges else { return }
-
-        do {
-            try context.save()
-        } catch {
-            msg("Error guardando relaciones:", error.localizedDescription)
-        }
-    }
     
     
      
      // MARK: - Funciones internas (sin extensiones)
      private func eliminarFrase() {
-         
           withAnimation {
-              if frasesModel.DeleteFraseInbuilt(fraseID: frase.id ?? "") {
+              if frasesModel.DeleteFrasePersonal(frase: frase) {
                   Task {
-                      frasesModel.criterioFiltroActual = .FrasesPersonales
-                      await frasesModel.FiltrarListado()
+                      frasesModel.listfrases.removeAll{$0 == frase}
                   }
               }
-          }
-          
-            
+          }    
      }
      
  }

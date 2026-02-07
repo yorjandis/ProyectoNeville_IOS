@@ -57,7 +57,26 @@ enum EnciclopediaTemas: String, CaseIterable {
     case memoriaEpisodica                          = "Memoria Episódica"
     case memoriaProcedimental                      = "Memoria Procedimental"
     
+    //Dopamina:
+    case queEsLaDopamina                           = "Qué es la Dopamina"
+    case protocoloDopaminergico                    = "Protocolo Dopaminérgico Diario"
+    case protocoloAntiAdiccionDigital              = "Protocolo Anti-Adicciones Digitales"
+    case dopaminaYProcrastinacion                  = "Dopamina y Procrastinación"
+    case dopaminaVersusSerotonina                  = "Dopamina vs Serotonina"
     
+    //Serotonina
+    case queEsLaSerotonina                        = "Qué es la Serotonina"
+    case serotoninaYAnsiedad                      = "Serotonina y Ansiedad"
+    case rutinaDiariaProSerotonina                = "Rutina Diaria Pro Serotonina"
+    
+    
+    //Ansiedad:
+    case queEsLaAnsiedad                          = "Qué es la Ansiedad"
+    case protocoloAntiAnsiedad                    = "Protocolo Anti-Ansiedad"
+    case ansiedadVersusStressCronico              = "Ansiedad vs Stress Crónico"
+    
+    
+    //🟢
      var getFileName : String {
         switch self{
             //Temas Generales:
@@ -109,6 +128,23 @@ enum EnciclopediaTemas: String, CaseIterable {
         case .memoriaEpisodica:                     "enc_memoria_episodica"
         case .memoriaProcedimental:                 "enc_memoria_procedimental"
             
+        //Dopamina:
+        case .queEsLaDopamina:                      "enc_que_es_la_dopamina"
+        case .protocoloDopaminergico:               "enc_protocolo_dopaminergico"
+        case .protocoloAntiAdiccionDigital:         "enc_protocolo_anti_adicciones_digitales"
+        case .dopaminaYProcrastinacion:             "enc_dopamina_y_procrastinacion"
+        case .dopaminaVersusSerotonina:             "enc_dopamina_vs_serotonina"
+            
+        //Serotonina:
+        case .queEsLaSerotonina:                    "enc_que_es_la_serotonina"
+        case .serotoninaYAnsiedad:                  "enc_serotonina_y_ansiedad"
+        case .rutinaDiariaProSerotonina:            "enc_rutina_diario_potenciar_serotonina"
+            
+        //Ansiedad:
+        case .queEsLaAnsiedad:                      "enc_que_es_la_ensiedad"
+        case .protocoloAntiAnsiedad:                "enc_protocolo_anti_ansiedad"
+        case .ansiedadVersusStressCronico:          "enc_ansiedad_vs_stress_cronico"
+        
         }
          
         
@@ -192,7 +228,40 @@ extension EnciclopediaTemas {
         ]
     }
     
+    //Temas Dopamina:
+    static var dopamina: [EnciclopediaTemas] {
+        return [
+            .queEsLaDopamina,
+            .dopaminaYProcrastinacion,
+            .dopaminaVersusSerotonina,
+            .protocoloDopaminergico,
+            .protocoloAntiAdiccionDigital
+            
+            
+        ]
+    }
+    
+    //Temas Serotonina:
+    static var serotonina: [EnciclopediaTemas] {
+        return [
+            .queEsLaSerotonina,
+            .serotoninaYAnsiedad,
+            .rutinaDiariaProSerotonina
+            
+            
+        ]
+    }
         
+    //Temas Ansiedad:
+    static var ansiedad: [EnciclopediaTemas] {
+        return [
+            .queEsLaAnsiedad,
+            .ansiedadVersusStressCronico,
+            .protocoloAntiAnsiedad
+            
+            
+        ]
+    }
     
     
 }
