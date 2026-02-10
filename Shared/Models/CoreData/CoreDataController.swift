@@ -8,7 +8,7 @@
 import Foundation
 import CoreData
 
-
+@MainActor
 final class CoreDataController: Sendable {
 
     // MARK: - Propiedades
@@ -19,6 +19,8 @@ final class CoreDataController: Sendable {
     var context: NSManagedObjectContext {
         persistentContainer.viewContext
     }
+    
+    
 
     // MARK: - Init
     private init() {
@@ -42,17 +44,18 @@ final class CoreDataController: Sendable {
 
         // Configuraciones del contexto (merge policy)
         persistentContainer.viewContext.automaticallyMergesChangesFromParent = true
-        persistentContainer.viewContext.mergePolicy = NSMergePolicy(merge: .mergeByPropertyObjectTrumpMergePolicyType)
+        
+         persistentContainer.viewContext.mergePolicy = NSMergePolicy(merge: .mergeByPropertyObjectTrumpMergePolicyType)
+         
+       
+        
     }
 
     // MARK: - Cargar Persistent Stores Async
     func cargarStores() async throws {
-        // Cargar persistent stores de forma síncrona
-            persistentContainer.loadPersistentStores { description, error in
+        persistentContainer.loadPersistentStores { _, error in
                 if let error = error {
                     fatalError("❌ Error cargando Core Data: \(error)")
-                } else {
-                    msg("✅ Core Data cargado correctamente")
                 }
             }
     }
@@ -68,4 +71,7 @@ final class CoreDataController: Sendable {
             }
         }
     }
+    
+
+    
 }

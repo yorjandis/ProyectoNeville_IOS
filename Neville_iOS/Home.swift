@@ -79,20 +79,24 @@ struct Home: View {
                          if  frasesModel.deleteAllFrases() {
                              msg("Se ha eliminado todas las frases de la tabla frases")
                          }
+                        
                         /*
                         //Eliminando los contextos
                         let contextoModel = ContextoModel.shared
                         if contextoModel.DeleteAllContextos() {
                             msg("Se ha eliminado todos los contectos de la tabla contexto")
                         }
+                         
                          */
   
                     }
                     .buttonStyle(.bordered)
                     
-                    NavigationLink("Goals"){
-                        GoalsListView()
-                            .environment(\.managedObjectContext, CoreDataController.shared.context)
+                    Button("Otra Prueba"){
+                        for frase in FrasesModel.shared.listfrases {
+                            msg("id=\(frase.id ?? "00") - texto=\(frase.frase ?? "00")")
+                        }
+                       
                     }
                     .buttonStyle(.bordered)
                     .padding(20)
@@ -121,12 +125,13 @@ struct Home: View {
                     UserDefaults.standard.set(true, forKey: LienzoModel.key_visibilidadImagenLienzo)
                     LienzoModel.shared.saveColorTextoSecundario(colorTexttoSecundario: .black) //Color del Texto Secundario
                     
-                    //Popula la Tabla Frases Si es la primera Vez que se instala la App:
-                    let frasesModel = FrasesModel.shared
-                    Task{
-                        await frasesModel.PopularFrases()
-                    }
                     
+                     //Popula la Tabla Frases Si es la primera Vez que se instala la App:
+                     let frasesModel = FrasesModel.shared
+                     Task{
+                         await frasesModel.ImportadorDeFrases()
+                     }
+
                     
                     //Muestra la ventana de Resultados
                     self.showNovedades = true
@@ -135,20 +140,26 @@ struct Home: View {
                     //Muestra la ventana de resultados
                     self.showNovedades = true
                     
-                    //Popula la Tabla Frases al actualizar si nunca se ha realizado:
-                    let frasesModel = FrasesModel.shared
-                    Task{
-                        await frasesModel.PopularFrases()
-                    }
-                    
-                default:
-                    msg("La App ni se ha instalado ni se ha actualizado: Se ha iniciado en modo debug en Xcode")
                     
                      //Popula la Tabla Frases al actualizar si nunca se ha realizado:
                      let frasesModel = FrasesModel.shared
                      Task{
-                         await frasesModel.PopularFrases()
+                         await frasesModel.ImportadorDeFrases()
                      }
+                     
+                    
+                    
+                default:
+                    msg("La App ni se ha instalado ni se ha actualizado: Se ha iniciado en modo debug en Xcode")
+                    
+                    #if DEBUG
+                     //Popula la Tabla Frases al actualizar si nunca se ha realizado:
+                     let frasesModel = FrasesModel.shared
+                     Task{
+                         await frasesModel.ImportadorDeFrases()
+                     }
+                    #endif
+                     
                      
                     
                 }
@@ -285,17 +296,6 @@ struct TabButtonBar : View{
             .padding(.horizontal)
             .padding(.vertical, 5)
         }
-        .onChange(of: self.showOptionView, { oldValue, newValue in
-            //Si se ha cerrado la ventana modal del las opciones en la tabBar:
-            if !newValue {
-                //Actualizando el estado de favorito de la frase actual
-                withAnimation {
-                    self.frasesModel.favStateOfCurrentFrase = frasesModel.fraseActual?.isfav ?? false
-                }
-                
-            }
-        })
-        
         .sheet(isPresented: $showOptionView) {
             optionView()
                .presentationDetents([.height(280)])

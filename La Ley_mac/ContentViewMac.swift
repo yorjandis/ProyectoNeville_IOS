@@ -121,7 +121,7 @@ struct ContentViewMac: View {
                 //Popula la Tabla Frases Si es la primera Vez que se instala la App:
                 let frasesModel = FrasesModel.shared
                 Task{
-                    await frasesModel.PopularFrases()
+                    await frasesModel.ImportadorDeFrases()
                 }
                 
                 
@@ -138,7 +138,7 @@ struct ContentViewMac: View {
                 //Popula la Tabla Frases Si es la primera Vez que se instala la App:
                 let frasesModel = FrasesModel.shared
                 Task{
-                    await frasesModel.PopularFrases()
+                    await frasesModel.ImportadorDeFrases()
                 }
                 
                 //Muestra la ventana de resultados
@@ -150,7 +150,13 @@ struct ContentViewMac: View {
                            
                 )
             default:
-                print("No hacer nada mac")
+                print("La App, ni se ha instalado ni reinstalado. se ha iniciado en modo debug desde Xcode")
+                //Popula la Tabla Frases Si es la primera Vez que se instala la App:
+                let frasesModel = FrasesModel.shared
+                Task{
+                    await frasesModel.ImportadorDeFrases()
+                }
+                
                 
             }
             
@@ -424,7 +430,7 @@ struct FrasesHomeMac: View{
     var body: some View {
         VStack{
             Spacer()
-            FrasesView()
+            FrasesHomeView()
             Spacer()
             //Barra de Recordatorios:
             ReminderWidgetList_View()

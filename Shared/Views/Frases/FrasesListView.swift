@@ -122,25 +122,6 @@ struct FrasesListView: View {
                         .background(.windowBackground)
                         #endif
                         
-                        VStack{}
-                            .frame(height: 0)
-                            .onAppear {
-                                if let filtrarPorAutor = self.mostrarFrasesDe{
-                                    frasesModel.listfrases.removeAll()
-                                    switch filtrarPorAutor{
-                                    case .nev :
-                                        frasesModel.listfrases = frasesModel.getListFrasesByAutor(autor: AutorFrase.nev.rawValue )
-                                    case .jd:
-                                        frasesModel.listfrases = frasesModel.getListFrasesByAutor(autor: AutorFrase.jd.rawValue)
-                                    case .gregg:
-                                        frasesModel.listfrases = frasesModel.getListFrasesByAutor(autor: AutorFrase.gregg.rawValue)
-                                    case .bruceL:
-                                        frasesModel.listfrases = frasesModel.getListFrasesByAutor(autor: AutorFrase.bruceL.rawValue)
-                                    }
-                                }
-                            }
-                        
-                        
                         List(frasesModel.listfrases, id: \.id){ frase in
                             FraseRowView(frase: frase, showTabViewFrasesRelac : self.$showTabViewFrasesRelac, fraseRelacionadaMain: self.$fraseRelacionadaMain )
                         }
@@ -299,6 +280,10 @@ struct FrasesListView: View {
              }
              .alert(isPresented: self.$showAlert){
                  Alert(title: Text("La Ley"), message: Text(self.alertMessage))
+             }
+             .task {
+                 //Carga todas las Frases al inicio:
+                 self.frasesModel.getAllFrases()
              }
              
             

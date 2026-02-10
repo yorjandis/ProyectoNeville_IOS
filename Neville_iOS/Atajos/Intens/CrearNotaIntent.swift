@@ -54,7 +54,8 @@ struct CrearNotaIntent : AppIntent, ProvidesDialog{
         }
         
         // Guarda la nota:
-        if  NotasModel().addNote(nota: nota, title: titulo){
+        
+        if  await NotasModel().addNote(nota: nota, title: titulo){
             return .result(
                 value: titulo,
                 dialog: IntentDialog("La nota «\(titulo)» ha sido creada correctamente.")

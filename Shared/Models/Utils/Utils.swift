@@ -42,10 +42,9 @@ struct UtilFuncs{
         if let gg = Bundle.main.url(forResource: temp, withExtension: "txt") {
             if let fileContents = try? String(contentsOf: gg, encoding: .utf8) {
                 //Normalizando los saltos de línea:
-                let contenidoNormalizado = fileContents.replacingOccurrences(of: "\r\n", with: "\n")
-                                               .replacingOccurrences(of: "\r", with: "\n")
+                let contenidoNormalizado = fileContents.replacingOccurrences(of: "\r\n", with: "\n").replacingOccurrences(of: "\r", with: "\n")
                 
-                result = contenidoNormalizado //.replacingOccurrences(of: "\n", with: "<br>") //Deshabilitados la conversión de \n a <br> porque ya no utilizamos RichtEdit para vosualizar
+                result = contenidoNormalizado
             }
         }
         return result

@@ -58,8 +58,6 @@ struct Neville_iOSApp: App {
     let keyNotaShareText    = "notaShareText"
     let keyFraseShareText   = "fraseShareText"
     
-    //Flag que permite mostrar la UI solo después de que CoreData se haya cargado:
-    @State private var coreDataReady: Bool = false
 
     var body: some Scene {
         WindowGroup {
@@ -68,7 +66,6 @@ struct Neville_iOSApp: App {
                     NotificationBannerOverlay() //Banner de notificacioens para anunciar los recordatorios
                     
                     //No inicia la app hasta que se haya cargado CoreData
-                    if self.coreDataReady {
                         NavigationStack{
                         ContentView()
                             .environmentObject(settingModel)
@@ -134,11 +131,7 @@ struct Neville_iOSApp: App {
                                 .presentationDetents([.medium])
                             }
                     }
-                    }else{
-                        VStack{
-                            Text("No se ha podido cargar la información. Pongase en contacto con el desarrollador en este email: info@ypgcode.es")
-                        }
-                    }
+                    
   
             }
                 .task {
@@ -148,7 +141,10 @@ struct Neville_iOSApp: App {
                         modelTxt.getAllFileTxtOfType(type: .conf)   // Carga el listado de conferencias
                         modelFrases.getAllFrases() //Carga el Listado de Frases
                         
-                        self.coreDataReady = true
+                        // ✅ Gestiona los duplicados en las frases:
+                        await modelFrases.GestionarDuplicados_en_Frases()
+                        
+                        
                     }catch{
                         msg("❌ Error al cargar Core Data 222: \(error.localizedDescription)")
                     }
@@ -161,6 +157,7 @@ struct Neville_iOSApp: App {
     }
     
     
+    //Maneja la información que entra por el menú de compartir:
     func handleShareItem() async{
         
         guard let defaults = UserDefaults(suiteName: "group.com.ypg.nev.group") else {
@@ -171,7 +168,7 @@ struct Neville_iOSApp: App {
             //Manejando el texto en Notas
             if let texto = defaults.string(forKey: self.keyNotaShareText){
                 
-                //Detectando si tiene el formato de imprtación de Notas:
+                //Detectando si tiene el formato de importación de Notas:
                 
                 if let textImportacionNota = QRModel.detectFormatImportNota(text: texto){
                     _ = NotasModel().addNote(nota: textImportacionNota.1.1, title: textImportacionNota.1.0, isFav: textImportacionNota.1.2)
@@ -196,11 +193,6 @@ struct Neville_iOSApp: App {
                 // Limpiar el valor para la próxima vez
                 defaults.removeObject(forKey: self.keyFraseShareText)
             }
-
-       
-
     }
-  
-    
-    
+
 }

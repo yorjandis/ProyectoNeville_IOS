@@ -46,13 +46,7 @@ struct La_LeyApp: App {
         
         UNUserNotificationCenter.current().delegate = AppNotificationDelegate.shared //Para mostrar los recordatorios cuando la app esta en primer plano
         
-        /*
-        //Solo para macOS: esto resetea los valores de UserDefault en cada lanzamiento de la app, pero solo dentro del entorno de desarrollo.
-        #if DEBUG
-        UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
-        UserDefaults.standard.synchronize()
-        #endif
-         */
+     
     }
 
     
@@ -158,6 +152,10 @@ struct La_LeyApp: App {
                 
                 self.securityModel.canOpenDiario = false //Al iniciar la ventana se reinicia la variabe que da acceso al diario.
                 self.purchaseStatus = self.purchaseManager.isPremium //Almacena al inicio el estado de la suscripción premium
+                
+                // ✅ Gestiona los duplicados en las frases:
+                await frasesModel.GestionarDuplicados_en_Frases()
+                
             }
                
         }

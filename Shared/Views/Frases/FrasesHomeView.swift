@@ -34,6 +34,7 @@ struct FrasesHomeView : View{
     //Contador para navegar por la frase
     @State private var contadorNavegarPorFrasesAnteriores : Int = 0
     
+    
     //Mostrar información de la frase
     @State private var showFraseInformation : Bool = false
     
@@ -62,7 +63,6 @@ struct FrasesHomeView : View{
                             //Obtiene una nueva frase
                             self.frase = frasesModel.getRandomFrase()//Obteniendo una nueva frase.
                             self.isFav = self.frase?.isfav ?? false
-                            frasesModel.favStateOfCurrentFrase = self.frase?.isfav ?? false
                             frasesModel.fraseActual = self.frase //Guardando la frase actualmente visible en la variable observable
                             
                             //Almacenando la frase en el vector de navegación de frases
@@ -93,7 +93,6 @@ struct FrasesHomeView : View{
                                         self.frase = self.frasesModel.fraseAnteriores[self.contadorNavegarPorFrasesAnteriores]
                                         
                                         self.isFav = self.frase?.isfav ?? false
-                                        self.frasesModel.favStateOfCurrentFrase = self.frase?.isfav ?? false
                                         self.frasesModel.fraseActual = self.frase
                                     }
                                 }
@@ -105,7 +104,6 @@ struct FrasesHomeView : View{
                                         self.frase = self.frasesModel.fraseAnteriores[self.contadorNavegarPorFrasesAnteriores]
                                         
                                         self.isFav = self.frase?.isfav ?? false
-                                        self.frasesModel.favStateOfCurrentFrase = self.frase?.isfav ?? false
                                         self.frasesModel.fraseActual = self.frase
                                     }
                                 }
@@ -320,7 +318,8 @@ struct FrasesHomeView : View{
                             }
                         }
                     
-                    HStack(){
+                    
+                    HStack{
                         if self.showHideAutorInFrases {
                             Text(frase.autor ?? "").font(.footnote).italic().padding(.horizontal)
                         }
@@ -333,16 +332,11 @@ struct FrasesHomeView : View{
                         Button{
                             
                             self.frase?.isfav.toggle()
-                            do{
-                                try CoreDataController.shared.context.save()
-                                animationHeart += 1
-                                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-                            }catch{
-                                msg("Error Persistiendo el favorito de la frase")
-                            }
-    
+                            self.frasesModel.guardarCambios()
+                            animationHeart += 1
+
                         }label: {
-                            Image(systemName: frasesModel.favStateOfCurrentFrase ? "heart.fill" : "heart")
+                            Image(systemName: (self.frase?.isfav ?? false) ? "heart.fill" : "heart")
                                 .foregroundStyle(.black)
                                 .symbolEffect(.bounce, value: animationHeart)
                         }
@@ -362,7 +356,6 @@ struct FrasesHomeView : View{
                                         self.frase = self.frasesModel.fraseAnteriores[self.contadorNavegarPorFrasesAnteriores]
                                         
                                         self.isFav = self.isFav
-                                        self.frasesModel.favStateOfCurrentFrase = self.isFav
                                         self.frasesModel.fraseActual = self.frase
                                     }
                                 }
@@ -375,7 +368,6 @@ struct FrasesHomeView : View{
                                         self.frase = self.frasesModel.fraseAnteriores[self.contadorNavegarPorFrasesAnteriores]
                                         
                                         self.isFav = self.frase?.isfav ?? false
-                                        self.frasesModel.favStateOfCurrentFrase = self.isFav
                                         self.frasesModel.fraseActual = self.frase
                                     }
                                 }
@@ -384,7 +376,7 @@ struct FrasesHomeView : View{
                         
                         
                         //Favoritos: Mac
-                        Image(systemName: frasesModel.favStateOfCurrentFrase ? "heart.fill" : "heart")
+                        Image(systemName: (self.frase?.isfav ?? false) ? "heart.fill" : "heart")
                             .foregroundStyle(.black)
                             .symbolEffect(.bounce, value: animationHeart)
                             .padding(10)
@@ -392,7 +384,6 @@ struct FrasesHomeView : View{
                             .onTapGesture {
                                 self.frase?.isfav.toggle()
                                 self.frasesModel.guardarCambios()
-                                frasesModel.favStateOfCurrentFrase = isFav
                                 animationHeart += 1
                                
                             }
@@ -406,13 +397,12 @@ struct FrasesHomeView : View{
                 
                 
             }
-            .onAppear{
+            .task{
                 if (self.frase?.frase ?? "").isEmpty{
                     self.frase = frasesModel.getRandomFrase()
                     if self.frase != nil {
                         //leyendo el estado isfav de la frase
                         isFav = self.frase?.isfav ?? false
-                        frasesModel.favStateOfCurrentFrase = self.frase?.isfav ?? false //Actualiza el estado del favorito en la variable observable
                         frasesModel.fraseActual = self.frase //Almacenando la frase actualmente visible en Home
                         self.frasesModel.fraseAnteriores.append(self.frase!) //Coloca la frase en el vector de navegación
                     }

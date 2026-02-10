@@ -63,6 +63,7 @@ struct HashFileModel {
     
     
     //Verifica el hash Global y determina si ha cambiado, con respecto al almacenado en UserDefault
+    //Si devuelve nil es que no ha habido cambios en los ficheros TXT
     @MainActor
     func VerificarHashGlobal(NameArchivosTXT : [String])->String?{
         

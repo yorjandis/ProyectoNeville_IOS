@@ -89,6 +89,23 @@ struct Ajustes: View {
     //Otros
     @State private var showSheet : Int? = nil
     
+    
+    
+    //Para Filtrar Frases en el Home
+    @State private var filtroFrasesHome : CriterioFraseHome = .todasFrases
+    
+    @State private var listFiltroFrasesHome: [CriterioFraseHome] = {
+        let rawValues = UserDefaults.standard.stringArray(
+            forKey: AppCons.UD_FiltroFrasesHome
+        ) ?? []
+
+        let criterios = rawValues.compactMap { CriterioFraseHome(rawValue: $0) }
+
+        return criterios.isEmpty ? [.todasFrases] : criterios
+    }()
+    
+                                                                          
+    
     //Devuelve la cantidad de elementos:
     private func getElementCount(element: String) -> Int {
         switch element {
@@ -108,7 +125,7 @@ struct Ajustes: View {
         
         NavigationStack{
             
-            
+            //🔶🔶🔶🔶🔶🔶
             #if os(macOS)
             ScrollView{
                 VStack(alignment: .leading){
@@ -172,7 +189,7 @@ struct Ajustes: View {
                         .padding(.horizontal, 30)
                         .padding(.bottom, 20)
                         
-                        
+                        //Thema
                         VStack(alignment: .leading){
                             Text("Tema General").font(.system(size: 22)).foregroundStyle(.orange)
                             
@@ -225,6 +242,56 @@ struct Ajustes: View {
                                 }
                                 
                             }
+                        }
+                        .padding(.horizontal, 30)
+                        .padding(.bottom, 20)
+                        
+                        //Frases
+                        VStack(alignment: .leading){
+                            
+                            Text("Frases").font(.system(size: 22)).foregroundStyle(.orange)
+                            
+                            Toggle("Mostrar Autor en Frases del Home", isOn: self.$showHideAutorInFrases)
+                                .padding(.vertical)
+                            
+                            //Frases
+                            VStack(alignment: .leading, spacing: 8){
+                                
+                                Text("Mostrar en Home las Frases según estos filtros:")
+                                
+                                Picker("Filtro", selection: $filtroFrasesHome) {
+                                    ForEach(CriterioFraseHome.allCases, id: \.self) { opcion in
+                                        Text(opcion.getName)
+                                            .tag(opcion)
+                                    }
+                                }
+                                .pickerStyle(.menu)
+                                .onChange(of: filtroFrasesHome) { _, newValue in
+                                    toggleFiltro(newValue)
+                                }
+                                
+                                if !listFiltroFrasesHome.isEmpty {
+                                    VStack(alignment: .leading, spacing: 6) {
+                                        ForEach(listFiltroFrasesHome, id: \.self) { criterio in
+                                            HStack(spacing: 10){
+                                                Text(criterio.getName)
+                                                    .font(.footnote)
+                                                Button {
+                                                    removeFiltro(criterio)
+                                                } label: {
+                                                    Image(systemName: "xmark.circle.fill")
+                                                        .foregroundStyle(.red)
+                                                }
+                                                .buttonStyle(.plain)
+                                                
+                                                Spacer()
+                                            }
+                                        }
+                                    }
+                                    .padding(.top, 4)
+                                }
+                            }
+                            
                         }
                         .padding(.horizontal, 30)
                         .padding(.bottom, 20)
@@ -778,6 +845,7 @@ struct Ajustes: View {
                 }
             }
             .navigationTitle("Ajustes")
+            //🔶🔶🔶🔶🔶🔶
             #else //iOS,ipadOS.... NO macOS
                 Form{
                     Section("Tamaño de letra"){
@@ -941,6 +1009,47 @@ struct Ajustes: View {
                     //Opciones de Frases
                     Section("Frases"){
                         Toggle("Mostrar Autor en Frases del Home", isOn: self.$showHideAutorInFrases)
+                        
+                        VStack(alignment: .leading, spacing: 8) {
+
+                                Text("Mostrar en Home las Frases según estos filtros:")
+                                    .font(.caption)
+
+                                Picker("Filtro", selection: $filtroFrasesHome) {
+                                    ForEach(CriterioFraseHome.allCases, id: \.self) { opcion in
+                                        Text(opcion.getName)
+                                            .tag(opcion)
+                                    }
+                                }
+                                .pickerStyle(.menu)
+                                .onChange(of: filtroFrasesHome) { _, newValue in
+                                    toggleFiltro(newValue)
+                                }
+
+                                if !listFiltroFrasesHome.isEmpty {
+                                    VStack(alignment: .leading, spacing: 6) {
+                                        ForEach(listFiltroFrasesHome, id: \.self) { criterio in
+                                            HStack {
+                                                Text(criterio.getName)
+                                                    .font(.footnote)
+
+                                                Spacer()
+
+                                                Button {
+                                                    removeFiltro(criterio)
+                                                } label: {
+                                                    Image(systemName: "xmark.circle.fill")
+                                                        .foregroundStyle(.red)
+                                                }
+                                                .buttonStyle(.plain)
+                                            }
+                                        }
+                                    }
+                                    .padding(.top, 4)
+                                }
+                            }
+                         
+                        
                     }
                     
                     //Utilización de la IA:
@@ -1307,10 +1416,42 @@ struct Ajustes: View {
             }
             .presentationDetents([.medium])
         }
-       
+    }
+    
+  //Funciones para el filtro de Frases en el Home:
+    private func toggleFiltro(_ criterio: CriterioFraseHome) {
 
+        if criterio == .todasFrases {
+            listFiltroFrasesHome = [.todasFrases]
+        } else {
+            listFiltroFrasesHome.removeAll { $0 == .todasFrases }
 
-        
+            if listFiltroFrasesHome.contains(criterio) {
+                listFiltroFrasesHome.removeAll { $0 == criterio }
+            } else {
+                listFiltroFrasesHome.append(criterio)
+            }
+        }
+
+        guardarFiltros()
+    }
+    
+    private func removeFiltro(_ criterio: CriterioFraseHome) {
+
+        listFiltroFrasesHome.removeAll { $0 == criterio }
+
+        if listFiltroFrasesHome.isEmpty {
+            listFiltroFrasesHome = [.todasFrases]
+        }
+
+        guardarFiltros()
+    }
+    
+    private func guardarFiltros() {
+        UserDefaults.standard.set(
+            listFiltroFrasesHome.map { $0.rawValue },
+            forKey: AppCons.UD_FiltroFrasesHome
+        )
     }
     
 }

@@ -13,8 +13,107 @@ import Combine
 
 //Manejo de la tabla frases
 
+//Filtro Para Frases del Home: permite filtrar que frases se mostrarán
+@MainActor
+enum CriterioFraseHome : String, CaseIterable, Hashable{
+    case todasFrases
+    case frasesPersonales
+    case frasesFavoritas
+    case frasesConNotas
+    //case FrasesSalud
+    case neville
+    case jd
+    case bruce
+    case gregg
+    case otrosAutores
+    
+    var getName : String{
+        switch self{
+        case .todasFrases : "Todas las Frases"
+        case .frasesPersonales : "Frases Personales"
+        case .frasesFavoritas : "Frases Favoritas"
+        case .frasesConNotas : "Frases con Notas"
+        case .neville : "Neville"
+        case .jd : "Joe Dispenza"
+        case .bruce : "Bruce Lipton"
+        case .gregg : "Gregg Braden"
+        case .otrosAutores : "Otros Autores"
+        }
+    }
+    
+    var getFrases : [Frases]{
+        let context = CoreDataController.shared.context
+        switch self{
+        case .todasFrases :
+            do{
+                return try Frases.fetch(.todas, context: context )
+            }catch{
+                msg(error.localizedDescription)
+                return []
+            }
+        case .frasesPersonales :
+            do{
+                return try Frases.fetch(.personales, context: context )
+            }catch{
+                msg(error.localizedDescription)
+                return []
+            }
+        case .frasesFavoritas :
+            do{
+            return try Frases.fetch(.favoritas, context: context )
+        }catch{
+            msg(error.localizedDescription)
+            return []
+        }
+        case .frasesConNotas :
+            do{
+                return try Frases.fetch(.conNotas, context: context )
+            }catch{
+                msg(error.localizedDescription)
+                return []
+            }
+        case .neville :
+            do{
+                return try Frases.fetch(.porAutor("nev"), context: context )
+            }catch{
+                msg(error.localizedDescription)
+                return []
+            }
+        case .jd :
+            do{
+                return try Frases.fetch(.porAutor("jd"), context: context )
+            }catch{
+                msg(error.localizedDescription)
+                return []
+            }
+        case .bruce :
+            do{
+                return try Frases.fetch(.porAutor("bruceL"), context: context )
+            }catch{
+                msg(error.localizedDescription)
+                return []
+            }
+        case .gregg :
+            do{
+                return try Frases.fetch(.porAutor("gregg"), context: context )
+            }catch{
+                msg(error.localizedDescription)
+                return []
+            }
+        case .otrosAutores :
+            do{
+                return try Frases.fetch(.porAutor("otros"), context: context )
+            }catch{
+                msg(error.localizedDescription)
+                return []
+            }
+        }
+   
+    }
+    
+}
 
-//FiltroPorAutores
+//FiltroPorAutores: filtra por el campo autor de una frase
 enum CriterioPorAutor : String{
     case nev
     case joeD
@@ -54,8 +153,6 @@ final class FrasesModel : ObservableObject {
     @Published var listfrases : [Frases] = [] //Listado de Frases principal
     
     @Published var listfrasesPrueba : [FraseItem] = [] //Listado de Frases a cargar
-    
-    @Published var favStateOfCurrentFrase : Bool = false //Almacena el estado del favorito de la frase actualmente en la pantalla Home.
     
     @Published var fraseAnteriores : [Frases] = [] //Arreglo que almacena la frase anterior para poder acceder a ella.
     
@@ -142,117 +239,10 @@ final class FrasesModel : ObservableObject {
         }
     }
     
-    //Resuelve las entradas Duplicadas
-    //Se consideran frases duplicadas aquellas que tiene un texto igual
-    func resolverDuplicadosFrases(context: NSManagedObjectContext) async {
-        
-        let fetchRequest: NSFetchRequest<Frases> = Frases.fetchRequest()
-        
-        let todasLasFrases: [Frases]
-        do {
-            todasLasFrases = try context.fetch(fetchRequest)
-        } catch {
-            msg("❌ Error al obtener frases para deduplicar: \(error)")
-            return
-        }
-        
-        var totalEliminadas = 0
-        
-        // 1️⃣ Paso: eliminar duplicados exactos por ID
-        var frasesPorID: [String: Frases] = [:]
-        for frase in todasLasFrases {
-            guard let id = frase.id else { continue }
-            if let existente = frasesPorID[id] {
-                // Elegimos cuál conservar según noinbuilt y metadatos
-                let conservar = frase.noinbuilt && !existente.noinbuilt ? frase : existente
-                let eliminar = (conservar == frase) ? existente : frase
-                context.delete(eliminar)
-                totalEliminadas += 1
-                frasesPorID[id] = conservar
-            } else {
-                frasesPorID[id] = frase
-            }
-        }
-        
-        // 2️⃣ Paso: eliminar duplicados por texto
-        // Agrupamos por texto limpio
-        let frasesAgrupadasPorTexto = Dictionary(grouping: frasesPorID.values) {
-            $0.frase?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        }
-        
-        for (_, grupo) in frasesAgrupadasPorTexto {
-            guard grupo.count > 1 else { continue } // si solo hay una, nada que hacer
-            
-            // Elegimos la frase a conservar
-            let fraseAConservar = grupo.sorted { f1, f2 in
-                if f1.noinbuilt != f2.noinbuilt {
-                    return f1.noinbuilt && !f2.noinbuilt
-                }
-                // Si empatan, conservamos la que tenga más metadatos
-                let meta1 = [f1.autor, f1.fuente, f1.nota].compactMap { $0 }.count
-                let meta2 = [f2.autor, f2.fuente, f2.nota].compactMap { $0 }.count
-                return meta1 > meta2
-            }.first!
-            
-            // Eliminamos el resto
-            for frase in grupo where frase != fraseAConservar {
-                context.delete(frase)
-                totalEliminadas += 1
-            }
-        }
-        
-        // Guardar cambios
-        if context.hasChanges {
-            do {
-                try context.save()
-                await MainActor.run {
-                    msg("🧹 Duplicados resueltos (ID + Texto). Eliminadas: \(totalEliminadas)")
-                }
-            } catch {
-                msg("❌ Error al guardar tras deduplicar: \(error)")
-            }
-        } else {
-            msg("No se modificó el contexto para Frases Duplicadas")
-        }
-    }
     
     
     //Volca el contenido de los ficheros de Frases, en el nuevo formato, a la tabla Frases de CoreData:
-    /**
-     Importador de frases desde los ficheros TXT a Core Data + CloudKit.
-
-     Funcionalidades principales:
-
-     1️⃣ Sincronización inicial
-        - Espera a que CloudKit sincronice los datos existentes antes de realizar cualquier importación
-        - Evita duplicados en instalaciones nuevas o reinstalaciones
-
-     2️⃣ Detección de cambios
-        - Calcula un hash global de los TXT para determinar si ha habido modificaciones
-        - Si los archivos no han cambiado, omite la importación
-
-     3️⃣ Creación y actualización de frases
-        - Crea nuevas frases si no existen en Core Data (identificadas por `id`)
-        - Actualiza frases existentes con los cambios en el TXT (texto, autor, nota, fuente)
-        - No sobrescribe frases creadas por el usuario (UUID sin "_")
-
-     4️⃣ Gestión de relaciones y contextos
-        - Actualiza las relaciones entre frases según los datos del TXT
-        - Vincula contextos a las frases, creando nuevos contextos si es necesario
-        - Evita duplicados de relaciones y contextos
-
-     5️⃣ Eliminación selectiva
-        - Elimina frases que ya no aparecen en los TXT
-        - Solo elimina frases cuyos IDs contienen exactamente un guion bajo ("_")
-        - Frases de usuario (UUID sin "_") nunca se eliminan
-
-     6️⃣ Garantías
-        - El proceso es idempotente: múltiples ejecuciones producen el mismo estado final
-        - TXT es la fuente de verdad
-        - Compatible con CloudKit: cambios se propagan correctamente entre dispositivos
-        - Seguridad frente a duplicados y pérdidas accidentales de datos de usuario
-    */
-    func PopularFrases() async {
+    func ImportadorDeFrases() async {
         
         //Helper: Verifica si una frase pertenece a los TXT o al usuario
         //nota: las frases en los TXT tiene en su id un solo carcater "_". las frases de los usuarios, en cambio, utilizan UUID() que nunca contienen el caracter "_"
@@ -263,28 +253,10 @@ final class FrasesModel : ObservableObject {
             return guionBajoCount == 1
         }
         
-        //Helper: Espera a que CloudKit haya sincronizado sus datos:
-        func esperarSincronizacionInicial(context: NSManagedObjectContext) async {
-            for _ in 0..<10 {
-                let request: NSFetchRequest<Frases> = Frases.fetchRequest()
-                request.fetchLimit = 1
-                let count = (try? context.count(for: request)) ?? 0
-                
-                if count > 0 {
-                    msg("CloudKit parece haber sincronizado datos")
-                    return
-                }
-                try? await Task.sleep(nanoseconds: 300_000_000) // 0.3s
-            }
-        }
-        
-        //Espera a que Cloud-Kit Termine de sincronizar (sino las frases se duplican):
-        await esperarSincronizacionInicial(context: self.context)
-        
-        
+
+       
         
         //🔶 Caculando el hash Global y determinando si se debe proseguir:
-        
         //Listado de ficheros de frases. El orden en que se colocan en el arreglo es irrelevante porque se ordenan antes de ser procesados
         let ficherosFrases : [String] = [AppCons.FileListFrases,
                                          AppCons.FileListFrasesJD,
@@ -292,19 +264,19 @@ final class FrasesModel : ObservableObject {
                                          AppCons.FileListFrasesGregg,
                                          AppCons.FileListFrasesOtros
         ]
+        
+        
         let  newHash = HashFileModel().VerificarHashGlobal(NameArchivosTXT: ficherosFrases)
         
-        let hashGuardado = UserDefaults(suiteName: "group.com.ypg.nev.group")?.string(forKey: HashFileModel.UD_HashFrasesTXT)
+       // msg("valor de newHash: \(String(describing: newHash))")
         
-        if hashGuardado == newHash {
-            msg("TXT sin cambios, sincronización omitida")
+        if newHash == nil {
+            msg("El importador NO procederá ⛔️, TXT sin cambios")
             return
         }
         
-        msg("Se ha modificado los archivos de Frases. El importador comenzará ahora")
+        msg("El importador comenzará ahora 🟢. Se ha modificado los archivos de Frases")
         
-        // 🔶 Resolver duplicados previos
-        await resolverDuplicadosFrases(context: self.context)
         
         // Flag temporal: Para mostrar un progreso (UI / progreso)
         UserDefaults.standard.set(true, forKey: AppCons.UD_ProgresoUI_PopulandoFrases)
@@ -321,11 +293,11 @@ final class FrasesModel : ObservableObject {
             return //Termina
         }
         
-        // 1️⃣.2️⃣ Creando un Diccionario: textoDeLaFrase → Frase (para evitar duplicados por contenido)
+        // 1️⃣.2️⃣ Creando un Diccionario: IDDeLaFrase → Frase (para evitar duplicados por contenido)
         
         //Diccionario basado en id -> Frases
         var frasesPorID: [String: Frases] = [:]
-        
+
         for frase in frasesExistentes {
             if let id = frase.id {
                 frasesPorID[id] = frase
@@ -349,7 +321,7 @@ final class FrasesModel : ObservableObject {
         }
         
         
-        // 3️⃣ Leer ficheros TXT (nuevo formato)
+        // 3️⃣ Leer, en raw, ficheros TXT (nuevo formato)
         let contenidoTotal = [
             UtilFuncs.FileRead(AppCons.FileListFrases),
             UtilFuncs.FileRead(AppCons.FileListFrasesJD),
@@ -359,37 +331,69 @@ final class FrasesModel : ObservableObject {
         ].joined(separator: "\n\n")
         
         
-        // 4️⃣ Parsear al modelo intermedio:Conviertiendo los bloques de las frases en un tipo Swift personalizado
+        // 4️⃣ Parsear al modelo intermedio:Convirtiendo los bloques de las frases en un tipo Swift personalizado
         let frasesDTO = parsearFrasesNuevoFormato(contenidoTotal)
         
-        // Conjunto de IDs presentes en los TXT
-        let idsTXT = Set(frasesDTO.map { $0.id })
         
         var frasesInsertadas = 0 //feedBack
         var frasesActualizadas = 0 //feedBack
         
-        // 5️⃣ FASE 1: Crear / actualizar frases (SIN relaciones)
+        // 5️⃣ FASE 1: Crear / actualizar frases (SIN procesar relaciones)
         
+        
+        //Recorriendo todas las frases en los extraidas de los TXT:
         for dto in frasesDTO {
+
+            let frase: Frases //Representa una entidad Frase de Core Data
             
-            let frase = frasesPorID[dto.id] ?? Frases(context: context)
+            let esNueva: Bool //flag que registra si una frase en nueva
+
+            //Si la frase del TXT ya existe en la BD de Core Data:
+            if let existente = frasesPorID[dto.id] {
+                frase = existente
+                esNueva = false
+            } else {
+                //Si la frase no esta en la BD de Core Data:
+                frase = Frases(context: context)
+                frase.id = dto.id
+                esNueva = true
+            }
+
+            var huboCambio = false //Registra si alguna frase cambió en los TXT
+
+            //Si cambió el texto de la frase en TXT
+            if frase.frase != dto.texto {
+                frase.frase = dto.texto
+                huboCambio = true
+            }
             
-            let esNueva = frase.id == nil
+            //Si cambió el autor de la Frase en TXT
+            if frase.autor != dto.autor {
+                frase.autor = dto.autor
+                huboCambio = true
+            }
             
-            frase.id     = dto.id
-            frase.frase  = dto.texto
-            frase.autor  = dto.autor
-            frase.nota   = dto.nota
-            frase.fuente = dto.fuente
-            frase.isfav  = frase.isfav
+            //Si cambió la nota de la frase en TXT
+            if frase.nota != dto.nota {
+                frase.nota = dto.nota
+                huboCambio = true
+            }
+            
+            //Si cambió la fuente de la frase en TXT
+            if frase.fuente != dto.fuente {
+                frase.fuente = dto.fuente
+                huboCambio = true
+            }
+
             frase.noinbuilt = false
-            frase.isnew  = false
-            
+            frase.isnew = false
+
             frasesPorID[dto.id] = frase
-            
+
+            // ✅ Contadores CORRECTOS
             if esNueva {
                 frasesInsertadas += 1
-            } else {
+            } else if huboCambio {
                 frasesActualizadas += 1
             }
         }
@@ -400,6 +404,14 @@ final class FrasesModel : ObservableObject {
             if context.hasChanges {
                 try context.save()
             }
+            // ✅ Almacenar el número de frases inbuilt, para luego resolver duplicados
+                let builtInCount = frasesDTO.count
+                UserDefaults.standard.set(builtInCount,forKey: AppCons.UD_FrasesInbuilt_Count) //Guarda el número de frases inbuild
+
+                await MainActor.run {
+                    msg("Insertadas: \(frasesInsertadas) | Actualizadas: \(frasesActualizadas)")
+                    msg("Total frases in-built (TXT): \(builtInCount)")
+                }
         } catch {
             msg("❌ Error guardando frases (fase 1): \(error)")
         }
@@ -452,9 +464,7 @@ final class FrasesModel : ObservableObject {
             if context.hasChanges {
                 try context.save()
             }
-            await MainActor.run {
-                msg("Insertadas: \(frasesInsertadas) | Actualizadas: \(frasesActualizadas)")
-            }
+            
         } catch {
             msg("❌ Error guardando relaciones: \(error)")
         }
@@ -484,22 +494,6 @@ final class FrasesModel : ObservableObject {
             }
         }
         
-        // 8️⃣ FASE 4: Eliminar frases de TXT obsoletas (solo IDs con un "_")
-        /*
-         Este nueva fase permite eliminar una frase en Core Data + CloudKit si hemos eliminados
-         ese id de los TXT.
-         */
-        for frase in frasesExistentes {
-
-            guard esFraseDeTXT(frase) else { continue }
-            guard let id = frase.id else { continue }
-
-            // Si el ID de la frase ya no está en el TXT → eliminar
-            if !idsTXT.contains(id) {
-                context.delete(frase)
-                msg("🗑️ Frase eliminada (TXT): \(id)")
-            }
-        }
         
         // Guardar contextos
         do {
@@ -714,12 +708,15 @@ final class FrasesModel : ObservableObject {
     
     //Obtener una Frase Aleatoria
     func getRandomFrase()->Frases? {
-        do{
-            return try Frases.fetch(.todas, context: self.context).randomElement()
-        }catch{
-            msg("No se ha podido obtener una frase aleatoria")
-            return nil
-        }
+        let filtros = UserDefaults.standard.stringArray(
+                forKey: AppCons.UD_FiltroFrasesHome
+            )?.compactMap { CriterioFraseHome(rawValue: $0) } ?? [.todasFrases]
+
+        let frasesFiltradas = Array(
+            Set(filtros.flatMap { $0.getFrases })
+        )
+
+            return frasesFiltradas.randomElement()
     }
     
     
@@ -883,6 +880,141 @@ final class FrasesModel : ObservableObject {
     //---------------------------------------------------------------------
     
     
+    
+    //Resuelve las entradas Duplicadas
+    //Se consideran frases duplicadas aquellas que tiene id igual o un texto igual
+     private func resolverDuplicadosFrases(context: NSManagedObjectContext) async -> Int {
+        
+        //Helper: Determina si una frase es del TXT: tiene un "_" en su id. Las frases antiguas estan basadas en UUID() que no contienen "_"
+        func esFraseTXT(_ frase: Frases) -> Bool {
+            guard let id = frase.id else { return false }
+            return id.filter { $0 == "_" }.count == 1
+        }
+        //--------------------------------
+        
+        let fetchRequest: NSFetchRequest<Frases> = Frases.fetchRequest()
+        
+        let todasLasFrases: [Frases]
+        do {
+            todasLasFrases = try context.fetch(fetchRequest)
+        } catch {
+            msg("❌ Error al obtener frases para deduplicar: \(error)")
+            return 0
+        }
+        
+        var totalEliminadas = 0
+        
+        // 1️⃣ Paso: eliminar duplicados exactos por ID
+        
+        //Creamos un diccionario de IDFrases -> Frase Core Data
+        var frasesPorID: [String: Frases] = [:]
+        
+        for frase in todasLasFrases {
+            guard let id = frase.id else { continue }
+            if let existente = frasesPorID[id] {
+                // Elegimos cuál conservar según noinbuilt y metadatos
+                let conservar = frase.noinbuilt && !existente.noinbuilt ? frase : existente
+                let eliminar = (conservar == frase) ? existente : frase
+                context.delete(eliminar)
+                totalEliminadas += 1
+                frasesPorID[id] = conservar
+            } else {
+                frasesPorID[id] = frase
+            }
+        }
+        
+        // 2️⃣ Paso: eliminar duplicados por texto
+        // Agrupamos por texto limpio
+        let frasesAgrupadasPorTexto = Dictionary(grouping: frasesPorID.values) {
+            $0.frase?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        }
+        
+        for (_, grupo) in frasesAgrupadasPorTexto {
+            guard grupo.count > 1 else { continue } // si solo hay una, nada que hacer
+            
+            // Elegimos la frase a conservar
+            let fraseAConservar = grupo.sorted { f1, f2 in
+
+                // 1️⃣ PRIORIDAD ABSOLUTA: ID nuevo (exactamente un "_")
+                let f1EsNueva = esFraseTXT(f1)
+                let f2EsNueva = esFraseTXT(f2)
+
+                if f1EsNueva != f2EsNueva {
+                    return f1EsNueva && !f2EsNueva
+                }
+
+                // 2️⃣ Preferimos frases creadas por el usuario
+                if f1.noinbuilt != f2.noinbuilt {
+                    return f1.noinbuilt && !f2.noinbuilt
+                }
+
+                // 3️⃣ Más metadatos gana
+                let meta1 = [f1.autor, f1.fuente, f1.nota].compactMap { $0 }.count
+                let meta2 = [f2.autor, f2.fuente, f2.nota].compactMap { $0 }.count
+
+                return meta1 > meta2
+            }.first!
+            
+            // Eliminamos el resto
+            for frase in grupo where frase != fraseAConservar {
+                context.delete(frase)
+                totalEliminadas += 1
+            }
+        }
+        
+        // Guardar cambios
+        if context.hasChanges {
+            do {
+                try context.save()
+                await MainActor.run {
+                    msg("🧹 Duplicados resueltos (ID + Texto). Eliminadas: \(totalEliminadas)")
+                }
+            } catch {
+                msg("❌ Error al guardar tras deduplicar: \(error)")
+            }
+        } else {
+            msg("No se modificó el contexto para Frases Duplicadas")
+        }
+        
+        return totalEliminadas
+    }
+    
+    
+    //Función que ejecuta el deduplicador para resolver duplicados en la BD.
+    //Primero: obtiene las frases inbuilt y luego compara su número con
+    func GestionarDuplicados_en_Frases() async {
+        
+        //Obtener el número de frases inbuild. Este valor se asigna dentro del importador, en:  5️⃣ Fase 1.
+        let UDFrasesInBuiltCount = UserDefaults.standard.integer(forKey: AppCons.UD_FrasesInbuilt_Count)
+        
+        //Si aun no se ha almacenado nada sale.
+        if UDFrasesInBuiltCount == 0 {
+            return
+        }
+
+        //Obtiene de Core Data el número de Frases Inbuilt: Tiene  un caracter "_" en su "id"
+            let request: NSFetchRequest<Frases> = Frases.fetchRequest()
+            request.predicate = NSPredicate(format: "id CONTAINS '_'")
+
+            do {
+                let count = try context.count(for: request)
+                msg("Función: Gestionar Duplicados: Numero de frases inbuilt en CoreData: \(count)")
+                msg("Función: Gestionar Duplicados: Numero de frases inbuilt en UD: \(UDFrasesInBuiltCount)")
+                
+                 if count > UDFrasesInBuiltCount {
+                     Task {
+                         await _ = resolverDuplicadosFrases(context: self.context)
+                         getAllFrases() //Actualiza el listado
+                     }
+                 }
+                 
+                
+            } catch {
+                msg("Error al lanzar la función que resuelve duplicados en frases")
+            }
+        
+    }
+    //---------------------------------------------------------------------
     
 }//struct
 

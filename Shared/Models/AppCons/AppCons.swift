@@ -105,6 +105,12 @@ struct AppCons{
     static let UD_setting_showEnDetails_ajustes         = "setting_showEnDetails_ajustes"
     static let UD_setting_showEnDetails_chat_ia         = "setting_showEnDetails_chat_ia"
     
+    //Variable que almacena el número de Frases inbuilt Actualmente:
+    static let UD_FrasesInbuilt_Count           = "UD_FrasesInbuilt_Count"
+    
+    //Para filtrar las Frases que se mostraran en el Home
+    static let UD_FiltroFrasesHome : String = "FiltroFrasesHome"
+    
     
     
     //DeepLinks:

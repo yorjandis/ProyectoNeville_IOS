@@ -10,6 +10,7 @@ import CoreData
 import Combine
 
 //Manejo de la tabla Notas
+@MainActor
 final class NotasModel : ObservableObject  {
     
     @Published var notas : [Notas] = [] //Listado de Notas

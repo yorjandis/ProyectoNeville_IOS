@@ -174,7 +174,7 @@ struct FraseRowView: View {
                 //Menú de opciones para frases Relacionadas:
                  Menu{
                      
-                      if (self.showTabViewFrasesRelac && self.fraseRelacionadaMain != nil) {
+                     if (self.showTabViewFrasesRelac && self.frase != self.fraseRelacionadaMain && self.fraseRelacionadaMain != nil) {
                           Button{
                               frase.vincularCon(self.fraseRelacionadaMain!)
                               //Persistiendo
