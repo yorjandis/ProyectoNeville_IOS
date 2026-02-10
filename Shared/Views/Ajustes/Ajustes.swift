@@ -92,7 +92,7 @@ struct Ajustes: View {
     
     
     //Para Filtrar Frases en el Home
-    @State private var filtroFrasesHome : CriterioFraseHome = .todasFrases
+    @State private var filtroFrasesHome : CriterioFraseHome = .neville
     
     @State private var listFiltroFrasesHome: [CriterioFraseHome] = {
         let rawValues = UserDefaults.standard.stringArray(
@@ -101,7 +101,7 @@ struct Ajustes: View {
 
         let criterios = rawValues.compactMap { CriterioFraseHome(rawValue: $0) }
 
-        return criterios.isEmpty ? [.todasFrases] : criterios
+        return criterios.isEmpty ? [.neville] : criterios
     }()
     
                                                                           
@@ -259,7 +259,7 @@ struct Ajustes: View {
                                 
                                 Text("Mostrar en Home las Frases según estos filtros:")
                                 
-                                Picker("Filtro", selection: $filtroFrasesHome) {
+                                Picker("Adicionar al Filtro", selection: $filtroFrasesHome) {
                                     ForEach(CriterioFraseHome.allCases, id: \.self) { opcion in
                                         Text(opcion.getName)
                                             .tag(opcion)
@@ -1015,7 +1015,7 @@ struct Ajustes: View {
                                 Text("Mostrar en Home las Frases según estos filtros:")
                                     .font(.caption)
 
-                                Picker("Filtro", selection: $filtroFrasesHome) {
+                                Picker("Adicionar al Filtro", selection: $filtroFrasesHome) {
                                     ForEach(CriterioFraseHome.allCases, id: \.self) { opcion in
                                         Text(opcion.getName)
                                             .tag(opcion)
@@ -1029,11 +1029,11 @@ struct Ajustes: View {
                                 if !listFiltroFrasesHome.isEmpty {
                                     VStack(alignment: .leading, spacing: 6) {
                                         ForEach(listFiltroFrasesHome, id: \.self) { criterio in
-                                            HStack {
+                                            HStack(spacing: 25){
                                                 Text(criterio.getName)
                                                     .font(.footnote)
 
-                                                Spacer()
+                                                
 
                                                 Button {
                                                     removeFiltro(criterio)
@@ -1042,6 +1042,8 @@ struct Ajustes: View {
                                                         .foregroundStyle(.red)
                                                 }
                                                 .buttonStyle(.plain)
+                                                
+                                                Spacer()
                                             }
                                         }
                                     }

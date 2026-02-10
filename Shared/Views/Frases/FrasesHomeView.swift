@@ -62,20 +62,23 @@ struct FrasesHomeView : View{
                         .onTapGesture {
                             //Obtiene una nueva frase
                             self.frase = frasesModel.getRandomFrase()//Obteniendo una nueva frase.
-                            self.isFav = self.frase?.isfav ?? false
-                            frasesModel.fraseActual = self.frase //Guardando la frase actualmente visible en la variable observable
-                            
-                            //Almacenando la frase en el vector de navegación de frases
-                            if self.frasesModel.fraseAnteriores.count > 9 { //Si la capacidad del arreglo supera el límite de 10 frases
+                            if self.frase != nil {
+                                self.isFav = self.frase?.isfav ?? false
+                                frasesModel.fraseActual = self.frase //Guardando la frase actualmente visible en la variable observable
                                 
-                                self.frasesModel.fraseAnteriores.removeFirst() //Remueve la primera frase
-                                self.frasesModel.fraseAnteriores.append(self.frase!) //Coloca la frase actual
-                                self.contadorNavegarPorFrasesAnteriores = self.frasesModel.fraseAnteriores.count
-                            }else{ //Si no se ha superado la capacidad del arreglo, simplemente agrega la frase actual al mismo
+                                //Almacenando la frase en el vector de navegación de frases
+                                if self.frasesModel.fraseAnteriores.count > 9 { //Si la capacidad del arreglo supera el límite de 10 frases
+                                    
+                                    self.frasesModel.fraseAnteriores.removeFirst() //Remueve la primera frase
                                     self.frasesModel.fraseAnteriores.append(self.frase!) //Coloca la frase actual
                                     self.contadorNavegarPorFrasesAnteriores = self.frasesModel.fraseAnteriores.count
-     
+                                }else{ //Si no se ha superado la capacidad del arreglo, simplemente agrega la frase actual al mismo
+                                        self.frasesModel.fraseAnteriores.append(self.frase!) //Coloca la frase actual
+                                        self.contadorNavegarPorFrasesAnteriores = self.frasesModel.fraseAnteriores.count
+         
+                                }
                             }
+                            
                             
                         }
                     //Gesto de deslizar izquierda a derecha: navega hacia la frase anterior(hasta un máximo de 10 frases)

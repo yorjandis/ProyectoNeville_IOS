@@ -11,7 +11,7 @@ autor=salud
 nota=
 fuente=
 contexto=
-texto=Caminar después de comer ayuda a regular la glucosa y mejora la digestión
+texto=Caminar después de comer ayuda a regular la glucosa y mejora la digestión60
 relacionadas=
 
 id=salud_003

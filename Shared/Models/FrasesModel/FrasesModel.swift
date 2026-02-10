@@ -20,7 +20,7 @@ enum CriterioFraseHome : String, CaseIterable, Hashable{
     case frasesPersonales
     case frasesFavoritas
     case frasesConNotas
-    //case FrasesSalud
+    case frasesSalud
     case neville
     case jd
     case bruce
@@ -38,6 +38,7 @@ enum CriterioFraseHome : String, CaseIterable, Hashable{
         case .bruce : "Bruce Lipton"
         case .gregg : "Gregg Braden"
         case .otrosAutores : "Otros Autores"
+        case .frasesSalud : "Tips de Salud"
         }
     }
     
@@ -107,7 +108,15 @@ enum CriterioFraseHome : String, CaseIterable, Hashable{
                 msg(error.localizedDescription)
                 return []
             }
+        case .frasesSalud :
+            do{
+                return try Frases.fetch(.porAutor("salud"), context: context )
+            }catch{
+                msg(error.localizedDescription)
+                return []
+            }
         }
+        
    
     }
     
@@ -120,6 +129,7 @@ enum CriterioPorAutor : String{
     case bruceL
     case greggB
     case personal
+    case salud
     case otros
 }
 
@@ -262,7 +272,8 @@ final class FrasesModel : ObservableObject {
                                          AppCons.FileListFrasesJD,
                                          AppCons.FileListFrasesBruceL,
                                          AppCons.FileListFrasesGregg,
-                                         AppCons.FileListFrasesOtros
+                                         AppCons.FileListFrasesOtros,
+                                         AppCons.FileListFrasesSalud
         ]
         
         
@@ -328,6 +339,7 @@ final class FrasesModel : ObservableObject {
             UtilFuncs.FileRead(AppCons.FileListFrasesGregg),
             UtilFuncs.FileRead(AppCons.FileListFrasesBruceL),
             UtilFuncs.FileRead(AppCons.FileListFrasesOtros),
+            UtilFuncs.FileRead(AppCons.FileListFrasesSalud)
         ].joined(separator: "\n\n")
         
         
@@ -666,6 +678,7 @@ final class FrasesModel : ObservableObject {
                     case "jd": result["jd"] = "Dr. Joe Dispenza"
                     case "gregg": result["gregg"] = "Gregg Braden"
                     case "bruceL": result["bruceL"] = "Dr. Bruce H. Lipton"
+                    case "salud": result["salud"] = "Tip de Salud"
                     default:
                         result["OtrosAutores"] = "Otros Autores"
                     }
@@ -686,7 +699,7 @@ final class FrasesModel : ObservableObject {
     func getListFrasesByAutor(autor: String) -> [Frases] {
         let fetchRequest: NSFetchRequest<Frases> = Frases.fetchRequest() //Prepara la consulta
         
-        let autoresPermitidos = ["nev", "bruceL", "gregg", "jd"] //lista de autores permitidos
+        let autoresPermitidos = ["nev", "bruceL", "gregg", "jd", "salud"] //lista de autores permitidos
         
         if autoresPermitidos.contains(autor) {
             // Caso 1: el autor está en la lista de autores permitidos → se devuelve las Frases de ese autor
@@ -1002,6 +1015,7 @@ final class FrasesModel : ObservableObject {
                 msg("Función: Gestionar Duplicados: Numero de frases inbuilt en UD: \(UDFrasesInBuiltCount)")
                 
                  if count > UDFrasesInBuiltCount {
+                     msg("La cantidad en Core Data es > que en UserDefault. Se procederá a resolver duplicados")
                      Task {
                          await _ = resolverDuplicadosFrases(context: self.context)
                          getAllFrases() //Actualiza el listado
