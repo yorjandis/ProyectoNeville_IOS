@@ -3,29 +3,83 @@ import SwiftUI
 //Todos los posibles item que pueden aparecer en el sidebar:
 enum ItemNameSidebar: String{
     case home
-    case conferencias
-    case frases
-    case citas
+    //NevilleGodard:
+    case bibliografiaNeville
+    case resumenEnseñanzaNeville
+    case conferenciasNeville
+    case frasesNeville
+    case citasNeville
+    case preguntasNeville
+    case evaluacionNeville
+    
+    //Joe Dispenza:
+    case bibliografiaJoe
+    case resumenEnseñanzaJoe
+    case frasesJoe
+    
+    case analisisLibroSobrenatural
+    case practicaLibroSobrenatural
+    
+    case analisisLibroElPlaceboEresTu
+    case practicaLibroElPlaceboEresTu
+    
+    case analisisLibroDejaDeSerTu
+    case practicaLibroDejaDeSerTu
+    
+    case analisisLibroDesarrollaTuCerebro
+    case practicaLibroDesarrollaTuCerebro
+    
+    //Gregg Braden:
+    case bibliografiaGregg
+    case resumenEnseñanzaGregg
+    case frasesGregg
+    case analisisLibroPuramenteHumanos
+    case practicaLibroPuramenteHumanos
+    
+    case analisisLibroResilienciaDesdeCorazon
+    case practicaLibroResilienciaDesdeCorazon
+    
+    case analisisLibroLaMatrizDivina
+    case practicaLibroLaMatrizDivina
+    
+    //Bruce Lipton:
+    case bibliografiaBruce
+    case resumenEnseñanzaBruce
+    case frasesBruce
+    case analisisLibroBiologiaCreencia
+    case practicaLibroBiologiaCreencia
+    
+    
+    
+    //Recursos Didácticos:
+    case frasesGenerales
     case ayudas
     case reflexiones
-    case preguntas
     case notas
     case diario
-    case bibliografia
-    case evaluacion
+    case enciclopedia
+    case evidenciaCientifica
+    
+    //Productividad:
     case canalTelegram
     case crearQR
-    case ajustes
+    case metas
+    case recordatorios
     case chatIA
     case lienzo
+    
+    //Ajustes:
+    case ajustes
+    
+    //Premium
     case premium
-    case recordatorios
 }
 
 struct ItemSidebar: Identifiable, Hashable, Equatable {
     var id = UUID()
     var text: ItemNameSidebar
     let icono: String
+    
     static func == (lhs: ItemSidebar, rhs: ItemSidebar) -> Bool {
             lhs.id == rhs.id
         }
@@ -34,6 +88,8 @@ struct ItemSidebar: Identifiable, Hashable, Equatable {
             hasher.combine(id)
         }
 }
+
+
 
 
 
@@ -59,25 +115,7 @@ struct ContentViewMac: View {
     //Lanzar Ventana de Novedades una sola vez:
     @State private var  showNovedades : Bool = false
 
-    
-    //Listados de items en el Sidebar
-    @State private var  categoriasSideBar : [ItemSidebar] = [
-        ItemSidebar(text: .home , icono: "house"),
-        ItemSidebar(text: .conferencias, icono: "book.pages"),
-        ItemSidebar(text: .frases, icono: "book"),
-        ItemSidebar(text: .citas, icono: "quote.opening"),
-        ItemSidebar(text: .ayudas, icono: "gear"),
-        ItemSidebar(text: .reflexiones, icono: "magazine"),
-        ItemSidebar(text: .preguntas, icono: "questionmark.app.ar"),
-        ItemSidebar(text: .notas, icono: "list.clipboard"),
-        ItemSidebar(text: .bibliografia, icono: "person.and.background.striped.horizontal")
-        //Nota:
-        //Los items de Diario, Evaluación y Ajustes se agregan a este array dinámicamente cuando se quiera mostrar en la ventana de Details
-        
-        
-    ]
-    
-    @State private var categoriaSelected: ItemSidebar?  //Guarda el item actualmente seleccionado en el sidebar
+    @State private var categoriaSelected: ItemNameSidebar = .home
     
     
     //Determina si el contenido de las ventanas modales se muestren en Details
@@ -92,78 +130,79 @@ struct ContentViewMac: View {
   
     
     var body: some View {
-        ZStack{
-            
-            LinearGradient(colors: [self.modelSetting.colorFondo_a, self.modelSetting.colorFondo_b], startPoint: .top, endPoint: .bottom)
-            
-            NavigationSplitView{
+            ZStack{
                 
-                ContentSidebar()
+                LinearGradient(colors: [self.modelSetting.colorFondo_a, self.modelSetting.colorFondo_b], startPoint: .top, endPoint: .bottom)
                 
-            } detail: {
-                
-                NavigationDetailsViewMac(sidebarItemSelected: self.$categoriaSelected)
-                
+                NavigationSplitView{
+                    
+                    ContentSidebar()
+                    
+                } detail: {
+                        NavigationDetailsViewMac(sidebarItemSelected: self.$categoriaSelected )
+       
+                }
+                .navigationViewStyle(.automatic)
+      
             }
-            .navigationViewStyle(.automatic)
-  
-        }
-        .frame(minWidth: 1200, minHeight: 870, idealHeight: 870)
-        .onAppear {
-            //Lanzar la lista de novedades al inicio
-            switch RunFirstTimeModel.CheckStatusAppRun(){
-            case .firstLaunchApp:
-                //Actualiza las variables iniciales del Lienzo:
-                UserDefaults.standard.set(true,forKey: LienzoModel.key_visibilidadTextoSecundario) //Visibilidad de Imagen
-                UserDefaults.standard.set(true, forKey: LienzoModel.key_visibilidadImagenLienzo)
-                LienzoModel.shared.saveColorTextoSecundario(colorTexttoSecundario: .black) //Color del Texto Secundario
-                
-                //Popula la Tabla Frases Si es la primera Vez que se instala la App:
-                let frasesModel = FrasesModel.shared
-                Task{
-                    await frasesModel.ImportadorDeFrases()
+            .frame(minWidth: 1200, minHeight: 870, idealHeight: 870)
+            .onAppear {
+                //Lanzar la lista de novedades al inicio
+                switch RunFirstTimeModel.CheckStatusAppRun(){
+                case .firstLaunchApp:
+                    //Actualiza las variables iniciales del Lienzo:
+                    UserDefaults.standard.set(true,forKey: LienzoModel.key_visibilidadTextoSecundario) //Visibilidad de Imagen
+                    UserDefaults.standard.set(true, forKey: LienzoModel.key_visibilidadImagenLienzo)
+                    LienzoModel.shared.saveColorTextoSecundario(colorTexttoSecundario: .black) //Color del Texto Secundario
+                    
+                    //Muestra la ventana de Resultados
+                    showWindow(for: Novedades(),
+                               environmentObjects: [],
+                               title: "Novedades",
+                               size: AppCons.windows_size_content_small,
+                               isModal: false
+                               
+                    )
+                    
+                    //Popula la Tabla Frases Si es la primera Vez que se instala la App:
+                    let frasesModel = FrasesModel.shared
+                    Task{
+                        await frasesModel.ImportadorDeFrases()
+                    }
+                    
+                    
+                    
+                case .updateApp:
+                    //Muestra la ventana de novedades
+                    showWindow(for: Novedades(),
+                               environmentObjects: [],
+                               title: "Novedades",
+                               size: AppCons.windows_size_content_small,
+                               isModal: false
+                               
+                    )
+                    
+                    //Popula la Tabla Frases Si es la primera Vez que se instala la App:
+                    let frasesModel = FrasesModel.shared
+                    Task{
+                        await frasesModel.ImportadorDeFrases()
+                    }
+                    
+                    
+                default:
+                    print("La App, ni se ha instalado ni reinstalado. se ha iniciado en modo debug desde Xcode")
+                    
+                    #if DEBUG
+                    //Popula la Tabla Frases Si es la primera Vez que se instala la App:
+                    let frasesModel = FrasesModel.shared
+                    Task{
+                        await frasesModel.ImportadorDeFrases()
+                    }
+                    #endif
                 }
-                
-                
-                //Muestra la ventana de Resultados
-                showWindow(for: Novedades(),
-                           environmentObjects: [],
-                           title: "Novedades",
-                           size: AppCons.windows_size_content_small,
-                           isModal: false
-                           
-                )
-            case .updateApp:
-                
-                //Popula la Tabla Frases Si es la primera Vez que se instala la App:
-                let frasesModel = FrasesModel.shared
-                Task{
-                    await frasesModel.ImportadorDeFrases()
-                }
-                
-                //Muestra la ventana de resultados
-                showWindow(for: Novedades(),
-                           environmentObjects: [],
-                           title: "Novedades",
-                           size: AppCons.windows_size_content_small,
-                           isModal: false
-                           
-                )
-            default:
-                print("La App, ni se ha instalado ni reinstalado. se ha iniciado en modo debug desde Xcode")
-                //Popula la Tabla Frases Si es la primera Vez que se instala la App:
-                let frasesModel = FrasesModel.shared
-                Task{
-                    await frasesModel.ImportadorDeFrases()
-                }
-                
-                
+
             }
-            
-            
-            
-            
-        }
+        
         
     }
     
@@ -194,171 +233,249 @@ struct ContentViewMac: View {
                 .frame(minWidth: 250)
             
             
-            // Items del Sidebar
-            List(selection: self.$categoriaSelected) {
-                ForEach (categoriasSideBar, id: \.id) { itemSidebar in
+
+            ScrollView {
+                LazyVStack(alignment: .leading, spacing: 15) {
                     
-                    SidebarCard(iconName: itemSidebar.icono, title: itemSidebar.text.rawValue.capitalized)
-                        .tag(itemSidebar)
-                }
-                
-                //Abre ventana del Diario
-                Button{
+                    SidebarCard(iconName: "house", title: "home", onTap: {
+                        self.categoriaSelected = .home
+                    }){}
                     
-                 
-                    //Consulta la clave en UserDefault
-                    if self.showEnDetails_diario{
-                        self.categoriaSelected = ItemSidebar(text: .diario, icono: "")
-                    }else{
-                        //Primero vuelve a cargar home si tenemos cargado en Details una ventana de home, diario o ajustes
-                        if (self.categoriaSelected?.text == .diario){
-                            self.categoriaSelected = ItemSidebar(text: .home, icono: "")
-                        }
+                    //Neville Goddard
+                    SidebarCard(iconName: "person.circle", title: "Neville Goddard", isExpandable: true){
                         
-                        showWindow(for: DiarioListView(),
-                                   environmentObjects: [self.context, self.securityModel],
-                                   title: "Diario",
-                                   size: AppCons.windows_size_content,
-                                   isModal: false
-                        )
+                        SidebarCard(iconName: "quote.opening", title: "Bibliografía", onTap: {
+                            self.categoriaSelected = .bibliografiaNeville
+                        }){}
+                        
+                        SidebarCard(iconName: "quote.opening", title: "Resumen de Enseñanza", onTap: {
+                            self.categoriaSelected = .resumenEnseñanzaNeville
+                        }){}
+                        
+                        SidebarCard(iconName: "quote.opening", title: "Frases", onTap: {
+                            self.categoriaSelected = .frasesNeville
+                        }){}
+                        
+                        SidebarCard(iconName: "quote.opening", title: "Conferencias", onTap: {
+                            self.categoriaSelected = .conferenciasNeville
+                        }){}
+                        
+                        SidebarCard(iconName: "quote.opening", title: "Citas", onTap: {
+                            self.categoriaSelected = .citasNeville
+                        }){}
+                        
+                        SidebarCard(iconName: "quote.opening", title: "Preguntas", onTap: {
+                            self.categoriaSelected = .preguntasNeville
+                        }){}
+                        
+                        SidebarCard(iconName: "text.book.closed", title: "Evaluación", onTap: {
+                            self.categoriaSelected = .evaluacionNeville
+                        }){}
+                        
+                        
                     }
-                }label:{
-                    SidebarCard(iconName: "long.text.page.and.pencil", title: "Diario")
-                        .tag(ItemSidebar(text: .diario, icono: ""))
-                }
-                .buttonStyle(.plain)
-                
-                
-                //Abre ventana de Evaluación:
-                Button{
                     
-                    if self.showEnDetails_evaluacion {
-                        self.categoriaSelected = ItemSidebar(text: .evaluacion, icono: "")
-                    }else{
-                        //Primero vuelve a cargar home si tenemos cargado en Details una ventana de home, diario o ajustes
-                        if (self.categoriaSelected?.text == .evaluacion){
-                            self.categoriaSelected = ItemSidebar(text: .home, icono: "")
-                        }
-                        showWindow(for: GamePLay(),
-                                   environmentObjects: [],
-                                   title: "Evaluación",
-                                   size: AppCons.windows_size_content,
-                                   isModal: false
-                        )
-                    }
-                    
-                    
-                }label:{
-                    SidebarCard(iconName: "questionmark.text.page", title: "Evaluación")
-                        .tag(ItemSidebar(text: .evaluacion, icono: ""))
-                }
-                .buttonStyle(.plain)
-                
-                
-                //Abre la ventana de chatIA
-                Button{
-                    
-                    if self.showEnDetails_chat_ia {
-                        self.categoriaSelected = ItemSidebar(text: .chatIA, icono: "")
-                    }else{
-                        //Primero vuelve a cargar home si tenemos cargado en Details una ventana de home, diario o ajustes
-                        if (self.categoriaSelected?.text == .chatIA){
-                            self.categoriaSelected = ItemSidebar(text: .chatIA, icono: "")
-                        }
-                        if #available(iOS 26.0, macOS 26.0, *){
-                            showWindow(for: ChatView(textoACargar: nil),
-                                       environmentObjects: [],
-                                       title: "Chat IA",
-                                       size: AppCons.windows_size_content,
-                                       isModal: false
-                            )
-                        }
-                    }
-                }label:{
-                    SidebarCard(iconName: "bubble.left.and.text.bubble.right", title: "Chat IA")
-                        .tag(ItemSidebar(text: .chatIA, icono: ""))
-                }
-                .buttonStyle(.plain)
-                
-                //Abre la ventana del Lienzo
-                Button{
+                    //Joe Dispenza:
+                    SidebarCard(iconName: "person.circle", title: "Joe Dispenza", isExpandable: true){
                        
-                    showWindow(for: LienzoMain(texto: nil),
-                                       environmentObjects: [],
-                                       title: "Lienzo",
-                                       size: .absolute(CGSize(width: 650, height: 750)),
-                                       isModal: false
-                            )
+                        SidebarCard(iconName: "quote.opening", title: "Bibliografía", onTap: {
+                            self.categoriaSelected = .bibliografiaJoe
+                        }){}
                         
-                    
-                }label:{
-                    SidebarCard(iconName: "heart.text.square", title: "Lienzo")
-                        .tag(ItemSidebar(text: .lienzo, icono: ""))
-                }
-                .buttonStyle(.plain)
-                
-                
-                
-                //Abre ventana de Ajustes
-                Button{
-                    
-                    if self.showEnDetails_ajustes {
-                        self.categoriaSelected = ItemSidebar(text: .ajustes, icono: "")
-                    }else{
-                        //Primero vuelve a cargar home si tenemos cargado en Details una ventana de home, diario o ajustes
-                        if (self.categoriaSelected?.text == .ajustes){
-                            self.categoriaSelected = ItemSidebar(text: .home, icono: "")
+                        SidebarCard(iconName: "quote.opening", title: "Resumen de Enseñanza", onTap: {
+                            self.categoriaSelected = .resumenEnseñanzaJoe
+                        }){}
+                        
+                        SidebarCard(iconName: "quote.opening", title: "Frases", onTap: {
+                            self.categoriaSelected = .frasesJoe
+                        }){}
+                        //Libro SobreNatural:
+                        SidebarCard(iconName: "quote.opening", title: "Libro: SobreNatural", isExpandable: true){
+                            SidebarCard(iconName: "quote.opening", title: "Resumen", onTap: {
+                                self.categoriaSelected = .analisisLibroSobrenatural
+                            }){}
+                            
+                            SidebarCard(iconName: "quote.opening", title: "Práctica", onTap: {
+                                self.categoriaSelected = .practicaLibroSobrenatural
+                            }){}
                         }
-                        showWindow(for: Ajustes(),
-                                   environmentObjects: [self.context ,self.modelSetting, self.modelFrases, self.modelTxt, self.securityModel],
-                                   title: "Ajustes",
-                                   size: AppCons.windows_size_content,
-                                   isModal: false) {
-                            Task{ @MainActor in
-                                self.setting_DiarioAccesoAjustes = false
-                            }
-                           
+                        //Libro Deja de Ser Tu:
+                        SidebarCard(iconName: "quote.opening", title: "Libro: Deja de Ser Tú", isExpandable: true){
+                            SidebarCard(iconName: "quote.opening", title: "Resumen", onTap: {
+                                self.categoriaSelected = .analisisLibroDejaDeSerTu
+                            }){}
+                            
+                            SidebarCard(iconName: "quote.opening", title: "Práctica", onTap: {
+                                self.categoriaSelected = .practicaLibroDejaDeSerTu
+                            }){}
                         }
+                        //Libro El placebo eres Tu:
+                        SidebarCard(iconName: "quote.opening", title: "Libro: El PLacebo eres Tú", isExpandable: true){
+                            SidebarCard(iconName: "quote.opening", title: "Resumen", onTap: {
+                                self.categoriaSelected = .analisisLibroElPlaceboEresTu
+                            }){}
+                            
+                            SidebarCard(iconName: "quote.opening", title: "Práctica", onTap: {
+                                self.categoriaSelected = .practicaLibroElPlaceboEresTu
+                            }){}
+                        }
+                        //Libro Desarrolla tu cerebro:
+                        SidebarCard(iconName: "quote.opening", title: "Libro: Desarrolla tu Cerebro", isExpandable: true){
+                            SidebarCard(iconName: "quote.opening", title: "Resumen", onTap: {
+                                self.categoriaSelected = .analisisLibroDesarrollaTuCerebro
+                            }){}
+                            
+                            SidebarCard(iconName: "quote.opening", title: "Práctica", onTap: {
+                                self.categoriaSelected = .practicaLibroDesarrollaTuCerebro
+                            }){}
+                        }
+                        
+                        
                     }
-                }label:{
-                    SidebarCard(iconName: "gear", title: "Ajustes")
-                        .tag(ItemSidebar(text: .ajustes, icono: ""))
+                     
+                    //Gregg:
+                    SidebarCard(iconName: "person.circle", title: "Gregg Braden", isExpandable: true){
+                        
+                        SidebarCard(iconName: "quote.opening", title: "Bibliografía", onTap: {
+                            self.categoriaSelected = .bibliografiaGregg
+                        }){}
+                        
+                        SidebarCard(iconName: "quote.opening", title: "Resumen de Enseñanza", onTap: {
+                            self.categoriaSelected = .resumenEnseñanzaGregg
+                        }){}
+                        
+                        SidebarCard(iconName: "quote.opening", title: "Frases", onTap: {
+                            self.categoriaSelected = .frasesGregg
+                        }){}
+                        
+                        //Libro Puramente Humanos:
+                        SidebarCard(iconName: "quote.opening", title: "Libro: Puramente Humanos", isExpandable: true){
+                            SidebarCard(iconName: "quote.opening", title: "Resumen", onTap: {
+                                self.categoriaSelected = .analisisLibroPuramenteHumanos
+                            }){}
+                            
+                            SidebarCard(iconName: "quote.opening", title: "Práctica", onTap: {
+                                self.categoriaSelected = .practicaLibroPuramenteHumanos
+                            }){}
+                        }
+                        //Libro Resiliencia desde el Corazón:
+                        SidebarCard(iconName: "quote.opening", title: "Libro: Resiliencia desde el Corazón", isExpandable: true){
+                            SidebarCard(iconName: "quote.opening", title: "Resumen", onTap: {
+                                self.categoriaSelected = .analisisLibroResilienciaDesdeCorazon
+                            }){}
+                            
+                            SidebarCard(iconName: "quote.opening", title: "Práctica", onTap: {
+                                self.categoriaSelected = .practicaLibroResilienciaDesdeCorazon
+                            }){}
+                        }
+                        //Libro La Matriz Divina:
+                        SidebarCard(iconName: "quote.opening", title: "Libro: La Matriz Divina", isExpandable: true){
+                            SidebarCard(iconName: "quote.opening", title: "Resumen", onTap: {
+                                self.categoriaSelected = .analisisLibroLaMatrizDivina
+                            }){}
+                            
+                            SidebarCard(iconName: "quote.opening", title: "Práctica", onTap: {
+                                self.categoriaSelected = .practicaLibroLaMatrizDivina
+                            }){}
+                        }
+                        
+                    }
+                    
+                    
+                    //Bruce Lipton:
+                    SidebarCard(iconName: "person.circle", title: "Dr. Bruce H. Lipton", isExpandable: true){
+                        SidebarCard(iconName: "quote.opening", title: "Bibliografía", onTap: {
+                            self.categoriaSelected = .bibliografiaBruce
+                        }){}
+                        
+                        SidebarCard(iconName: "quote.opening", title: "Resumen de Enseñanza", onTap: {
+                            self.categoriaSelected = .resumenEnseñanzaBruce
+                        }){}
+                        
+                        SidebarCard(iconName: "quote.opening", title: "Frases", onTap: {
+                            self.categoriaSelected = .frasesBruce
+                        }){}
+                        
+                        //Libro La Biología de la Creencia:
+                        SidebarCard(iconName: "quote.opening", title: "Libro: La biología de la Creencia", isExpandable: true){
+                            SidebarCard(iconName: "quote.opening", title: "Resumen", onTap: {
+                                self.categoriaSelected = .analisisLibroBiologiaCreencia
+                            }){}
+                            
+                            SidebarCard(iconName: "quote.opening", title: "Práctica", onTap: {
+                                self.categoriaSelected = .practicaLibroBiologiaCreencia
+                            }){}
+                        }
+                        
+                    }
+                    
+                    //Recursos Didácticos:
+                    SidebarCard(iconName: "person.circle", title: "Recursos Didácticos", isExpandable: true){
+                        SidebarCard(iconName: "quote.opening", title: "Frases", onTap: {
+                            self.categoriaSelected = .frasesGenerales
+                        }){}
+                        SidebarCard(iconName: "quote.opening", title: "Notas", onTap: {
+                            self.categoriaSelected = .notas
+                        }){}
+                        SidebarCard(iconName: "quote.opening", title: "Enciclopedia", onTap: {
+                            self.categoriaSelected = .enciclopedia
+                        }){}
+                        SidebarCard(iconName: "quote.opening", title: "Evidencia Científica", onTap: {
+                            self.categoriaSelected = .evidenciaCientifica
+                        }){}
+                        SidebarCard(iconName: "quote.opening", title: "Reflexiones", onTap: {
+                            self.categoriaSelected = .reflexiones
+                        }){}
+                        SidebarCard(iconName: "quote.opening", title: "Ayudas", onTap: {
+                            self.categoriaSelected = .ayudas
+                        }){}
+                        SidebarCard(iconName: "quote.opening", title: "Diario", onTap: {
+                            self.categoriaSelected = .diario
+                        }){}
+                        SidebarCard(iconName: "quote.opening", title: "ChatIA", onTap: {
+                            self.categoriaSelected = .chatIA
+                        }){}
+                    }
+                    
+                  //Productividad:
+                    SidebarCard(iconName: "person.circle", title: "Productividad", isExpandable: true){
+                        SidebarCard(iconName: "quote.opening", title: "Generador de QR", onTap: {
+                            self.categoriaSelected = .crearQR
+                        }){}
+                        SidebarCard(iconName: "quote.opening", title: "Metas", onTap: {
+                            self.categoriaSelected = .metas
+                        }){}
+                        SidebarCard(iconName: "quote.opening", title: "Recordartorios", onTap: {
+                            self.categoriaSelected = .recordatorios
+                        }){}
+                        SidebarCard(iconName: "quote.opening", title: "Lienzo", onTap: {
+                            self.categoriaSelected = .lienzo
+                        }){}
+                    }
+                    
+                    //Ajustes:
+                    SidebarCard(iconName: "gear", title: "Ajustes", onTap: {
+                        self.categoriaSelected = .ajustes
+                    }){}
+                    
+                    //Premium:
+                    SidebarCard(iconName: "quote.opening", title: "Versión Extendida", onTap: {
+                        self.categoriaSelected = .premium
+                    }){}
+                    
                 }
-                .buttonStyle(.plain)
-                
-                
-                //Abre la Ventana de Premium
-                Button{
-                    self.categoriaSelected = ItemSidebar(text: .recordatorios, icono: "timer")
-                }label:{
-                    SidebarCard(iconName: "timer", title: "Recordatorios")
-                        .tag(ItemSidebar(text: .recordatorios, icono: "timer"))
-                }
-                .buttonStyle(.plain)
-                
-                //Abre la Ventana de Premium
-                Button{
-                    self.categoriaSelected = ItemSidebar(text: .premium, icono: "circle.dotted")
-                }label:{
-                    SidebarCard(iconName: "circle.dotted", title: "Premium\(self.purchaseStatus ? "(activo)" : "")")
-                        .tag(ItemSidebar(text: .premium, icono: "circle.dotted"))
-                }
-                .buttonStyle(.plain)
-                
-                
+                .padding(.horizontal, 8)
+                .padding(.vertical, 4)
             }
-            .listStyle(.sidebar)
-            .onAppear {
-                //Seleccionando el primer Item en el sidebar
-                if categoriaSelected == nil {
-                    categoriaSelected = categoriasSideBar.first
-                }
-            }
+            
             
             Spacer()
             
         }
     }
+    
+    
+
     
 }
 
@@ -367,51 +484,160 @@ struct ContentViewMac: View {
 //Mira el contenido de un arreglo de de tipos sidebarItemSelected.
 struct NavigationDetailsViewMac: View {
     
-    @Binding var sidebarItemSelected : ItemSidebar?
+    @Binding var sidebarItemSelected : ItemNameSidebar
     
     var body: some View {
         VStack{
-            switch self.sidebarItemSelected?.text{
+            switch self.sidebarItemSelected{
             case .home:
-                FrasesHomeMac(sidebarItemSelected: self.$sidebarItemSelected)
-            case .conferencias:
+                FrasesHomeMac()
+            //Neville Goddard:
+            case .bibliografiaNeville:
+                ContentTxtShowView(title: "Biografía", nombreTxt: AppCons.FileBiografiaNeville, type: .NA )
+            case .resumenEnseñanzaNeville:
+                ContentTxtShowView(title: "Resumen de la enseñanza: Neville Goddard", nombreTxt: AppCons.FileResumenEnseñanzaNeville, type: .NA )
+            case .frasesNeville:
+                FrasesListView(mostrarFrasesDe: .nev)
+            case .conferenciasNeville:
                 TxtListView(typeOfContent: .conf, title: "Conferencias")
-            case .frases:
-                
-               FrasesListView()
-            case .citas:
+            case .citasNeville:
                 TxtListView(typeOfContent: .citas, title: "Citas")
-            case .ayudas:
-                TxtListView(typeOfContent: .ayud, title: "Ayudas")
-            case .reflexiones:
-                ReflexListView()
-            case .preguntas:
+            case .preguntasNeville:
                 TxtListView(typeOfContent: .preg, title: "Preguntas")
+            case .evaluacionNeville:
+                GamePLay()
+            
+            //Joe Dispenza:
+            case .bibliografiaJoe:
+                ContentTxtShowView(title: "Biografía", nombreTxt: AppCons.FileBiografiaJD, type: .NA )
+            case .resumenEnseñanzaJoe:
+                ContentTxtShowView(title: "Resumen de la enseñanza: Joe Dispenza", nombreTxt: AppCons.FileResumenEnseñanzaJD, type: .NA )
+            case .frasesJoe:
+                FrasesListView(mostrarFrasesDe: .jd)
+            case .analisisLibroSobrenatural:
+                ContentTxtShowView(title: "Análisis del Libro: SobreNatural", nombreTxt: AppCons.FileResumenSuperNatural, type: .NA )
+            case .practicaLibroSobrenatural:
+                ContentTxtShowView(title: "Práctica del Libro: SobreNatural", nombreTxt: AppCons.FilePlanSupernarural, type: .NA )
+            case .analisisLibroDejaDeSerTu:
+                ContentTxtShowView(title: "Análisis del Libro: Deja de ser tú", nombreTxt: AppCons.FileResumenDejaDeSerTu, type: .NA )
+            case .practicaLibroDejaDeSerTu:
+                ContentTxtShowView(title: "Práctica del Libro: Deja de ser tú", nombreTxt: AppCons.FilePlanDejaDeSerTu, type: .NA )
+            case .analisisLibroElPlaceboEresTu:
+                ContentTxtShowView(title: "Análisis del Libro: El placebo eres tú", nombreTxt: AppCons.FileResumenElPLaceboEresTu, type: .NA )
+            case .practicaLibroElPlaceboEresTu:
+                ContentTxtShowView(title: "Práctica del Libro: El placebo eres tú", nombreTxt: AppCons.FilePlanElPlaceboEresTu, type: .NA )
+            case .analisisLibroDesarrollaTuCerebro:
+                ContentTxtShowView(title: "Análisis del Libro: Desarrolla tu cerebro", nombreTxt: AppCons.FileResumenDesarrollaTuCerebro, type: .NA )
+            case .practicaLibroDesarrollaTuCerebro:
+                ContentTxtShowView(title: "Práctica del Libro: Desarrolla tu cerebro", nombreTxt: AppCons.FilePlanDesarrollaTuCerebro, type: .NA )
+            
+            //Greeg Braden:
+            case .bibliografiaGregg:
+                ContentTxtShowView(title: "Biografía", nombreTxt: AppCons.FileBiografiaGregg, type: .NA )
+            case .resumenEnseñanzaGregg:
+                ContentTxtShowView(title: "Resumen de la enseñanza: Joe Dispenza", nombreTxt: AppCons.FileResumenEnseñanzaGregg, type: .NA )
+            case .frasesGregg:
+                FrasesListView(mostrarFrasesDe: .gregg)
+            case .analisisLibroPuramenteHumanos:
+                ContentTxtShowView(title: "Análisis del Libro: Puramente Humanos", nombreTxt: AppCons.FileResumenPuramenteHumanosGregg, type: .NA )
+            case .practicaLibroPuramenteHumanos:
+                ContentTxtShowView(title: "Práctica del Libro: Puramente Humanos", nombreTxt: AppCons.FilePlanPuramenteHumanosGregg, type: .NA )
+            case .analisisLibroResilienciaDesdeCorazon:
+                ContentTxtShowView(title: "Análisis del Libro: Resiliencia desde el Corazón", nombreTxt: AppCons.FileResumenResilenciaCorazonGregg, type: .NA )
+            case .practicaLibroResilienciaDesdeCorazon:
+                ContentTxtShowView(title: "Práctica del Libro: Resiliencia desde el Corazón", nombreTxt: AppCons.FilePlanResilenciaCorazonGregg, type: .NA )
+            case .analisisLibroLaMatrizDivina:
+                ContentTxtShowView(title: "Análisis del Libro: La Matriz Divina", nombreTxt: AppCons.FileResumenLaMatrizDivinaGregg, type: .NA )
+            case .practicaLibroLaMatrizDivina:
+                ContentTxtShowView(title: "Práctica del Libro: La Matriz Divina", nombreTxt: AppCons.FilePlanLaMatrizDivinaGregg, type: .NA )
+                
+              
+            //Bruce Lipton:
+            case .bibliografiaBruce:
+                ContentTxtShowView(title: "Biografía", nombreTxt: AppCons.FileBiografiaBruce, type: .NA )
+            case .resumenEnseñanzaBruce:
+                ContentTxtShowView(title: "Resumen de la enseñanza: Joe Dispenza", nombreTxt: AppCons.FileResumenEnseñanzaBruce, type: .NA )
+            case .frasesBruce:
+                FrasesListView(mostrarFrasesDe: .bruceL)
+            case .analisisLibroBiologiaCreencia:
+                ContentTxtShowView(title: "Análisis del Libro: La Biología de la Creencia", nombreTxt: AppCons.FileResumenBiologiaCreencia, type: .NA )
+            case .practicaLibroBiologiaCreencia:
+                ContentTxtShowView(title: "Práctica del Libro: La Biología de la Creencia", nombreTxt: AppCons.FilePlanBiologiaCrrencia, type: .NA )
+                
+                
+            //Recursos Didácticos:
+            case .frasesGenerales:
+               FrasesListView()
             case .notas:
                 VStack{
                         ListNotasViews()
                 }
                 .background(.blue.opacity(0.4))
-                
-            case .bibliografia:
-                ContentTxtShowView(title: "Biografía", nombreTxt: "biografia", type: .NA )
+            case .enciclopedia:
+                    EnciclopediaListView()
+                    
+            case .evidenciaCientifica:
+                VStack(spacing: 25){
+                    Text("🚧 en Construcción...")
+                    Text("Objetivo: Mostrar Evidencia y base científica sobre los temas abordados en estas enseñanzas.")
+                    Text("Algunos de los temas que requieren una base científica (La lista puede cambiar):")
+                    ScrollView{
+                        Text("""
+                            🔶Existencia del Campo Cuántico/Matriz Divina/Mente Universar/Dios
+                            🔶El Pensamiento lleva energía e información
+                            🔶Los Pensamiento influyen en nuestra biología
+                            🔶Los pensamientos y emociones cambian la estructura física del cerebro
+                            🔶Somos más energía que materia
+                            🔶Entrelazamiento cuántico
+                            🔶Un pensamiento produce la secreción de sustancias químicas
+                            🔶El cuerpo puede almacenar una emoción
+                            🔶Nuestras emociones pueden causar enfermedades
+                            🔶Neuroplasticidad
+                            🔶Neurogénesis
+                            🔶El corazón emite una firma magnética
+                            🔶El corazón tiene neuronas propias y piensa y siente independientemente
+                            🔶La Coherencia cardiaca normaliza las frecuencias cerebrales
+                            🔶El corazón influje en la quimica cerebral
+                            🔶El ADN puede modificarse con nuestros pensamientos
+                            🔶La epigenética señala al gen que crea la enfemedad
+                            🔶Los pensamientos influyen en la expresión génica
+                            🔶Los pensamientos y emociones negativas rompen la coherencia de ondas cerebrales
+                            🔶El hombre lleva más tiempo sobre la tierra del que esta registrado en el pasado
+                            """)
+                    }
+                }
+            case .reflexiones:
+                ReflexListView()
+            case .ayudas:
+                TxtListView(typeOfContent: .ayud, title: "Ayudas")
             case .diario: //si se ha fijado abrir el diario en la ventana Details (en Ajustes)
                     DiarioListView()
-            case .evaluacion:
-                GamePLay()
+            case .chatIA:
+                if #available(iOS 26.0, macOS 26.0, *){
+                    ChatView(textoACargar: nil)
+                }
+                
+            //Productividad:
+            case .crearQR:
+                GenerateQRView(footer: "")
+            case .metas:
+                GoalsListView()
+            case .recordatorios:
+                ReminderListView()
+            case .lienzo:
+                LienzoMain(texto: "")
+
+                //Ajustes:
             case .ajustes:
                 VStack{
                     Ajustes()
                 }
                 .background(.black.opacity(0.8))
-            case .chatIA:
-                if #available(iOS 26.0, macOS 26.0, *){
-                    ChatView(textoACargar: nil)
-                }
-            case .recordatorios:
-                ReminderListView()
+            
+           //Premium
             case .premium:
                 PurchaseView()
+                
             default:
                 VStack{
                     Text("No implementado")
@@ -425,7 +651,6 @@ struct NavigationDetailsViewMac: View {
 
 //Pantalla de frases del home
 struct FrasesHomeMac: View{
-    @Binding var sidebarItemSelected : ItemSidebar? //De momento no utilizado
     
     var body: some View {
         VStack{
@@ -440,46 +665,86 @@ struct FrasesHomeMac: View{
 
 
 
-
-
-struct SidebarCard: View {
-    let iconName: String       // Icono secundario
-    let title: String          // Título o texto opcional
-
+struct SidebarCard<Content: View>: View {
+    
+    let iconName: String
+    let title: String
+    
+    var isExpandable: Bool = false
+    
+    var onTap: (() -> Void)? = nil
+    
+    @ViewBuilder var content: () -> Content
+    
+    @State private var isExpanded: Bool = false
+    
     var body: some View {
-        HStack(spacing: 5) {
-            Image(systemName: iconName)
-                .font(.title2)
-                .foregroundColor(.black)
-                .padding(2)
-                
-            Text(title)
-                .font(.system(size: 18)).bold()
-                .font(.headline)
-                .foregroundColor(.black)
-                
-            
-            Spacer()
-        }
-        .padding(5)
-        .background(
-            LinearGradient(
-                gradient: Gradient(colors: [
-                    Color(red: 0.55, green: 0.75, blue: 0.89), // azul claro
-                    Color(red: 0.40, green: 0.65, blue: 0.87)  // azul un poco más oscuro
-                ]),
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-             
-        )
-
         
-        .cornerRadius(12)
-        .shadow(color: Color.black.opacity(0.2), radius: 6, x: 0, y: 4)
+        Button{
+            if !isExpandable {
+                onTap?()
+            }else{
+                withAnimation{
+                    isExpanded.toggle()
+                }
+                
+            }
+        }label: {
+            VStack(spacing: 0) {
+                
+                HStack(spacing: 8) {
+                    
+                    Image(systemName: iconName)
+                        .font(.title2)
+                        .foregroundColor(.black)
+                    
+                    Text(title)
+                        .font(.system(size: 18, weight: .bold))
+                        .foregroundColor(.black)
+                    
+                    Spacer()
+                    
+                    if isExpandable {
+                        Image(systemName: isExpanded ? "chevron.down" : "chevron.right")
+                            .font(.system(size: 15, weight: .bold))
+                            .foregroundColor(.black)
+                    }
+                }
+                .padding(6)
+                .background(backgroundGradient)
+                .cornerRadius(12)
+                .shadow(color: .black.opacity(0.2), radius: 6, x: 0, y: 4)
+                .contentShape(Rectangle())
+                
+                // Sub-items
+                if isExpandable && isExpanded {
+                    VStack(alignment: .leading, spacing: 4) {
+                            content()
+                    }
+                    .padding(.leading, 20)
+                    .padding(.top, 4)
+                    
+                }
+            }
+        }
+        .buttonStyle(.plain)
+        
+       
     }
+    
+    private var backgroundGradient: some View {
+        LinearGradient(
+            gradient: Gradient(colors: [
+                Color(red: 0.55, green: 0.75, blue: 0.89),
+                Color(red: 0.40, green: 0.65, blue: 0.87)
+            ]),
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
+    }
+
+    
+    
+   
 }
 
-#Preview{
-    SidebarCard(iconName: "gear", title:"Conferencias" )
-}

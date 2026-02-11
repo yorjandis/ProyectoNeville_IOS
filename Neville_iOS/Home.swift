@@ -54,52 +54,11 @@ struct Home: View {
                     ViewIfNewUpdateAvailable()
                     
                     Spacer()
-                    
-                    
-                    
+
                     FrasesHomeView()
  
                     Spacer()
-                    
-                    Button("Para pruebas"){
-                        
-                        /*
-                         let contenidoTotal = [
-                         UtilFuncs.FileRead(AppCons.FileListFrasesJD),
-                         UtilFuncs.FileRead(AppCons.FileListFrases)
-                     ].joined(separator: "\n\n")
-                     //print(arrayFrasesTxt)
-                     _ = parsearFrasesNuevoFormato(contenidoTotal)
-                         
-                         */
-                        
-                        
-                        //Eliminando las frases
-                         let frasesModel = FrasesModel.shared
-                         if  frasesModel.deleteAllFrases() {
-                             msg("Se ha eliminado todas las frases de la tabla frases")
-                         }
-                        
-                        /*
-                        //Eliminando los contextos
-                        let contextoModel = ContextoModel.shared
-                        if contextoModel.DeleteAllContextos() {
-                            msg("Se ha eliminado todos los contectos de la tabla contexto")
-                        }
-                         
-                         */
-  
-                    }
-                    .buttonStyle(.bordered)
-                    
-                    Button("Otra Prueba"){
-                        for frase in FrasesModel.shared.listfrases {
-                            msg("id=\(frase.id ?? "00") - texto=\(frase.frase ?? "00")")
-                        }
-                       
-                    }
-                    .buttonStyle(.bordered)
-                    .padding(20)
+
                     
                     //Barra de Recordatorios:
                     ReminderWidgetList_View()
@@ -108,7 +67,7 @@ struct Home: View {
                     TabButtonBar(
                         fontFrasesSize: $fontSize,
                         fontMenuSize: $fontSizeMenu,
-                        colorFrase:  Binding(get: { self.settingModel.colorfrase }, set: { self.settingModel.colorfrase = $0 }),
+                        colorFrase:  Binding(get:  { self.settingModel.colorfrase }, set: { self.settingModel.colorfrase = $0 }),
                         colorFondo_a: Binding(get: { self.settingModel.colorFondo_a }, set: { self.settingModel.colorFondo_a = $0 }),
                         colorFondo_b: Binding(get: { self.settingModel.colorFondo_b }, set: { self.settingModel.colorFondo_b = $0 })
                     )

@@ -96,10 +96,6 @@ struct TxtListView: View {
       //En macOS: el listado se divide en dos columnas
 #if os(macOS)
                 //Listado de las últimas 5 conferencias Vistas
-                
-                //Desbloquear Yorj
-                
-                
                  if (self.typeOfContent == .conf && self.showLastConferences) {
                      VStack{
                          
@@ -176,11 +172,7 @@ struct TxtListView: View {
                          
                      }
                  }
-                 
-                 
-                 
-                
-                
+  
                  ScrollView {
                      LazyVGrid(columns: columnas, alignment: .leading, spacing: 12) {
                          ForEach(Array(modeloTxt.textList), id: \.self) { nombreTxt in
@@ -244,14 +236,8 @@ struct TxtListView: View {
                      }
                      .padding()
                  }
-                 
-                 
-                 
-                
-               
-                
+            
 #else
-                
                 // iOS / iPadOS conservan tu List original
                 VStack{
                     //Listado de las últimas 5 conferencias Vistas
@@ -378,8 +364,6 @@ struct TxtListView: View {
 #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
 #endif
-            //Desbloquear Yorj
-            /*
              .toolbar{
                  if self.typeOfContent == .conf{
                      ToolbarItem{
@@ -459,9 +443,7 @@ struct TxtListView: View {
                  }
                  
              }
-             */
-            
-            
+  
         }
         
     }

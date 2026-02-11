@@ -2391,3 +2391,11 @@ contexto=
 texto=Principio de neurociancia: Las neuronas que se activan juntas se conectan más fuerte
 relacionadas=
 
+id=jd_300
+autor=jd
+nota=
+fuente=
+contexto=
+texto=Si sigues pensando de la misma forma tu vida se mantrendrá igual y seguirás teniendo las mismas experiencias. Mismos pensamientos generan los mismos químicos que producen los mismos sentimienos y emociones. Si quieres que tu vida cambie tienes que cambiar la forma de pensar y reaccionar
+relacionadas=
+

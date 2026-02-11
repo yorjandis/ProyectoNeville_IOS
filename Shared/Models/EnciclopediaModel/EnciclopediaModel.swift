@@ -9,7 +9,7 @@ import Foundation
 
 
 
-enum EnciclopediaTemas: String, CaseIterable {
+enum EnciclopediaTemas: String, CaseIterable, Hashable {
     //Temas generales:
     case coherenciaCardioCerebral                   = "Coherencia Cardio-Cerebral"
     case hormonasStress                             = "Las Hormonas del Estres"
@@ -184,7 +184,6 @@ extension EnciclopediaTemas {
             .efectosSentimientosNegativos,
             .sentimientoComoFuerzaCreadora,
             .pensamientosSentimientosSistemaInmune,
-            .sentimientoComoFuerzaCreadora
         ]
     }
     

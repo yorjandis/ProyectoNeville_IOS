@@ -106,7 +106,7 @@ struct Ajustes: View {
     
                                                                           
     
-    //Devuelve la cantidad de elementos:
+    //Devuelve la cantidad de elementos, para Información:
     private func getElementCount(element: String) -> Int {
         switch element {
         case "frases": modelFrases.getAllFrasesGet().count
@@ -253,44 +253,48 @@ struct Ajustes: View {
                             
                             Toggle("Mostrar Autor en Frases del Home", isOn: self.$showHideAutorInFrases)
                                 .padding(.vertical)
-                            
-                            //Frases
-                            VStack(alignment: .leading, spacing: 8){
-                                
-                                Text("Mostrar en Home las Frases según estos filtros:")
-                                
-                                Picker("Adicionar al Filtro", selection: $filtroFrasesHome) {
-                                    ForEach(CriterioFraseHome.allCases, id: \.self) { opcion in
-                                        Text(opcion.getName)
-                                            .tag(opcion)
-                                    }
-                                }
-                                .pickerStyle(.menu)
-                                .onChange(of: filtroFrasesHome) { _, newValue in
-                                    toggleFiltro(newValue)
-                                }
-                                
-                                if !listFiltroFrasesHome.isEmpty {
-                                    VStack(alignment: .leading, spacing: 6) {
-                                        ForEach(listFiltroFrasesHome, id: \.self) { criterio in
-                                            HStack(spacing: 10){
-                                                Text(criterio.getName)
-                                                    .font(.footnote)
-                                                Button {
-                                                    removeFiltro(criterio)
-                                                } label: {
-                                                    Image(systemName: "xmark.circle.fill")
-                                                        .foregroundStyle(.red)
+
+                            VStack(alignment: .leading, spacing: 8) {
+
+                                    Text("Filtro de Frases en Home:")
+                                HStack{
+                                    
+                                    Spacer()
+                                    
+                                        Menu("Añadir al Filtro:"){
+                                            ForEach(CriterioFraseHome.allCases, id: \.self) { opcion in
+                                                Button(opcion.getName){
+                                                    toggleFiltro(opcion)
                                                 }
-                                                .buttonStyle(.plain)
-                                                
-                                                Spacer()
                                             }
                                         }
-                                    }
-                                    .padding(.top, 4)
+                                        .buttonStyle(.bordered)
                                 }
-                            }
+
+                                    if !listFiltroFrasesHome.isEmpty {
+                                        VStack(alignment: .leading, spacing: 6) {
+                                            ForEach(listFiltroFrasesHome, id: \.self) { criterio in
+                                                HStack(spacing: 25){
+                                                    Button {
+                                                        removeFiltro(criterio)
+                                                    } label: {
+                                                        Image(systemName: "xmark.circle.fill")
+                                                            .foregroundStyle(.red)
+                                                    }
+                                                    .buttonStyle(.plain)
+                                                    .padding(.horizontal, 5)
+                                                    
+                                                    Text(criterio.getName)
+                                                        .font(.footnote)
+
+                                                    Spacer()
+                                                }
+                                            }
+                                        }
+                                        .padding(.top, 4)
+                                    }
+                                }
+                            
                             
                         }
                         .padding(.horizontal, 30)
@@ -1012,29 +1016,25 @@ struct Ajustes: View {
                         
                         VStack(alignment: .leading, spacing: 8) {
 
-                                Text("Mostrar en Home las Frases según estos filtros:")
-                                    .font(.caption)
-
-                                Picker("Adicionar al Filtro", selection: $filtroFrasesHome) {
-                                    ForEach(CriterioFraseHome.allCases, id: \.self) { opcion in
-                                        Text(opcion.getName)
-                                            .tag(opcion)
-                                    }
-                                }
-                                .pickerStyle(.menu)
-                                .onChange(of: filtroFrasesHome) { _, newValue in
-                                    toggleFiltro(newValue)
-                                }
+                                Text("Filtro de Frases en Home:")
+                            HStack{
+                                
+                                Spacer()
+                                
+                                 Menu("Añadir al Filtro:"){
+                                     ForEach(CriterioFraseHome.allCases, id: \.self) { opcion in
+                                         Button(opcion.getName){
+                                             toggleFiltro(opcion)
+                                         }
+                                     }
+                                 }
+                                 .buttonStyle(.bordered)
+                            }
 
                                 if !listFiltroFrasesHome.isEmpty {
                                     VStack(alignment: .leading, spacing: 6) {
                                         ForEach(listFiltroFrasesHome, id: \.self) { criterio in
                                             HStack(spacing: 25){
-                                                Text(criterio.getName)
-                                                    .font(.footnote)
-
-                                                
-
                                                 Button {
                                                     removeFiltro(criterio)
                                                 } label: {
@@ -1042,7 +1042,11 @@ struct Ajustes: View {
                                                         .foregroundStyle(.red)
                                                 }
                                                 .buttonStyle(.plain)
+                                                .padding(.horizontal, 5)
                                                 
+                                                Text(criterio.getName)
+                                                    .font(.footnote)
+
                                                 Spacer()
                                             }
                                         }
@@ -1428,9 +1432,7 @@ struct Ajustes: View {
         } else {
             listFiltroFrasesHome.removeAll { $0 == .todasFrases }
 
-            if listFiltroFrasesHome.contains(criterio) {
-                listFiltroFrasesHome.removeAll { $0 == criterio }
-            } else {
+            if !listFiltroFrasesHome.contains(criterio) {
                 listFiltroFrasesHome.append(criterio)
             }
         }
@@ -1443,7 +1445,7 @@ struct Ajustes: View {
         listFiltroFrasesHome.removeAll { $0 == criterio }
 
         if listFiltroFrasesHome.isEmpty {
-            listFiltroFrasesHome = [.todasFrases]
+            listFiltroFrasesHome = [.neville]
         }
 
         guardarFiltros()

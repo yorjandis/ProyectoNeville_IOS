@@ -12,9 +12,9 @@ import CoreData
 
 
 struct FrasesListView: View {
-    
+    //"nev", "bruceL", "gregg", "jd", "salud"
     enum AutorFrase : String{
-        case nev, jd, gregg, bruceL
+        case nev, jd, gregg, bruceL, salud
     }
     
     @Environment(\.colorScheme) private var theme
@@ -95,8 +95,6 @@ struct FrasesListView: View {
                         
                     }else{
                         
-                        //-----Listado de frases:
-                        
                         //Búsqueda:
                         HStack {
                             Image(systemName: "magnifyingglass")
@@ -122,6 +120,7 @@ struct FrasesListView: View {
                         .background(.windowBackground)
                         #endif
                         
+                        //Listado de Frases:
                         List(frasesModel.listfrases, id: \.id){ frase in
                             FraseRowView(frase: frase, showTabViewFrasesRelac : self.$showTabViewFrasesRelac, fraseRelacionadaMain: self.$fraseRelacionadaMain )
                         }
@@ -283,7 +282,12 @@ struct FrasesListView: View {
              }
              .task {
                  //Carga todas las Frases al inicio:
-                 self.frasesModel.getAllFrases()
+                 if self.mostrarFrasesDe != nil{
+                     self.frasesModel.listfrases = self.frasesModel.getListFrasesByAutor(autor: self.mostrarFrasesDe!.rawValue)
+                 }else{
+                     self.frasesModel.getAllFrases()
+                 }
+                 
              }
              
             

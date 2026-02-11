@@ -41,6 +41,16 @@ final class CoreDataController: Sendable {
         )
 
         persistentContainer.persistentStoreDescriptions = [description]
+        
+        #if os(macOS)
+        //Solo en macOS, carga la BD en el init
+        persistentContainer.loadPersistentStores { _, error in
+                if let error = error {
+                    fatalError("❌ Error cargando Core Data: \(error)")
+                }
+            }
+        
+        #endif
 
         // Configuraciones del contexto (merge policy)
         persistentContainer.viewContext.automaticallyMergesChangesFromParent = true

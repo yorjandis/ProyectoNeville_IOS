@@ -48,10 +48,6 @@ struct La_LeyApp: App {
         
      
     }
-
-    
-    //Flag que permite mostrar la UI solo después de que CoreData se haya cargado:
-    @State private var coreDataReady: Bool = false
     
     var body: some Scene {
         WindowGroup {
@@ -59,8 +55,7 @@ struct La_LeyApp: App {
                 
                 NotificationBannerOverlay() //Banner de notificacioens para anunciar los recordatorios
                 
-                //Carga la UI solo si se ha cargado CoreData
-                if coreDataReady{
+                
                     NavigationStack{
                         ContentViewMac()
                             .environmentObject(settingModel)
@@ -131,24 +126,11 @@ struct La_LeyApp: App {
                                 }
                             }
                     }
-                }else{
-                    VStack{
-                        Text("No se ha podido cargar la información. Pongase en contacto con el desarrollador en este email: info@ypgcode.es")
-                    }
-                }
-                
-                
             }
             .task {
-                
-                //Cargar  la BD Core Data
-                do {
-                    try await self.persistentStore.cargarStores()
+
                     self.frasesModel.getAllFrases() //Carga las frases
-                    self.coreDataReady = true
-                }catch{
-                    msg("❌ Error al cargar Core Data: \(error.localizedDescription)")
-                }
+                
                 
                 self.securityModel.canOpenDiario = false //Al iniciar la ventana se reinicia la variabe que da acceso al diario.
                 self.purchaseStatus = self.purchaseManager.isPremium //Almacena al inicio el estado de la suscripción premium

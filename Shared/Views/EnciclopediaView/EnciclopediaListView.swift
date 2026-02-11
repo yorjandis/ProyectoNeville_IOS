@@ -20,25 +20,104 @@ struct EnciclopediaListView: View {
         EnciclopediaCategoria(nombre: "Ansiedad", temas: EnciclopediaTemas.ansiedad)
     ]
     
+    #if os(macOS)
+    
+    @State private var categoriaSeleccionadaID: EnciclopediaCategoria.ID?
+    @State private var temaSeleccionado: EnciclopediaTemas?
+
+    private var categoriaSeleccionada: EnciclopediaCategoria? {
+        categorias.first { $0.id == categoriaSeleccionadaID }
+    }
+
     var body: some View {
-        NavigationStack {
-            List(categorias) { categoria in
-                NavigationLink(categoria.nombre) {
-                    SubListaView(categoria: categoria)
+
+        VStack(spacing: 0) {
+
+            // 🔝 PANEL SUPERIOR
+            HStack(spacing: 0) {
+
+                // COLUMNA IZQUIERDA — CATEGORÍAS
+                List(categorias,
+                     selection: $categoriaSeleccionadaID) { categoria in
+                    Text(categoria.nombre)
+                        .tag(categoria.id)   // 🔥 CLAVE
+                }
+                .frame(minWidth: 250)
+
+                Divider()
+
+                // COLUMNA DERECHA — TEMAS
+                Group {
+                    if let categoria = categoriaSeleccionada {
+                        List(categoria.temas,
+                             id: \.self,
+                             selection: $temaSeleccionado) { tema in
+                            Text(tema.rawValue)
+                                .tag(tema)   // 🔥 CLAVE
+                        }
+                    } else {
+                        VStack {
+                            Spacer()
+                            Text("Selecciona una categoría")
+                                .foregroundStyle(.secondary)
+                            Spacer()
+                        }
+                    }
                 }
             }
-            Spacer()
-            VStack{
-                Text("Nota: La información de los artículos esta basada en estudios científicos recientes y la neurociencia. Su finalidad es divulgativa y no médica. No debe sustituir asesoramiento médico profesional.")
-                    .font(.body)
-            }
-            .padding()
-            .navigationTitle("Enciclopedia")
-        }
-        
-    }
-}
+            .frame(height: 300)
 
+            Divider()
+
+            // 🔽 PANEL INFERIOR — CONTENIDO
+            Group {
+                if let tema = temaSeleccionado {
+                    ContentTxtShowView(
+                        title: tema.rawValue,
+                        nombreTxt: tema.getFileName,
+                        type: .NA
+                    )
+                    .id(tema)   // 🔥 CLAVE
+                } else {
+                    VStack {
+                        Spacer()
+                        Text("Selecciona un ítem para ver el contenido")
+                            .foregroundStyle(.secondary)
+                        Spacer()
+                    }
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+        .navigationTitle("Enciclopedia")
+        .onAppear {
+            if categoriaSeleccionadaID == nil {
+                categoriaSeleccionadaID = categorias.first?.id
+            }
+        }
+    }
+    
+    #else
+    
+    // 📱 iOS mantiene navegación clásica
+    
+    private var content: some View {
+        List(categorias) { categoria in
+            NavigationLink(categoria.nombre) {
+                SubListaView(categoria: categoria)
+            }
+        }
+        .navigationTitle("Enciclopedia")
+    }
+    
+    var body: some View {
+        NavigationStack {
+            content
+        }
+    }
+    
+    #endif
+}
 
 fileprivate struct SubListaView: View {
     let categoria: EnciclopediaCategoria
@@ -57,7 +136,7 @@ fileprivate struct SubListaView: View {
 
 
 //Modelo para las Categorias:
-struct EnciclopediaCategoria: Identifiable {
+struct EnciclopediaCategoria: Identifiable, Hashable {
     let id = UUID()
     let nombre: String
     let temas: [EnciclopediaTemas]
