@@ -75,6 +75,15 @@ enum EnciclopediaTemas: String, CaseIterable, Hashable {
     case protocoloAntiAnsiedad                    = "Protocolo Anti-Ansiedad"
     case ansiedadVersusStressCronico              = "Ansiedad vs Stress Crónico"
     
+    //Emociones:
+    case queSonLasEmociones                       = "Qué son las Emociones"
+    case almacenamientoEmociones                  = "Almacenamiento de Emociones"
+    case componentesDeUnaEmocion                  = "Componenetes de una Emoción"
+    case controlEmocion                           = "Control de una Emoción"
+    case interocepcionYEmocion                    = "Interocepción y Emoción"
+    case protocoloParaReinterprearEmocion         = "Protocolo para Reinterpretar una Emoción"
+    
+    
     
     //🟢
      var getFileName : String {
@@ -144,6 +153,15 @@ enum EnciclopediaTemas: String, CaseIterable, Hashable {
         case .queEsLaAnsiedad:                      "enc_que_es_la_ensiedad"
         case .protocoloAntiAnsiedad:                "enc_protocolo_anti_ansiedad"
         case .ansiedadVersusStressCronico:          "enc_ansiedad_vs_stress_cronico"
+            
+        //Emociones:
+        case .queSonLasEmociones:                   "enc_que_es_una_emocion"
+        case .almacenamientoEmociones:              "enc_almacenamiento_emociones"
+        case .componentesDeUnaEmocion:              "enc_componentes_de_una_emocion"
+        case .controlEmocion:                       "enc_control_emociones"
+        case .interocepcionYEmocion:                "enc_interocepcion_y_emocion"
+        case .protocoloParaReinterprearEmocion:     "enc_protocolo_practico_reinterpretar_emociones"
+            
         
         }
          
@@ -257,6 +275,20 @@ extension EnciclopediaTemas {
             .queEsLaAnsiedad,
             .ansiedadVersusStressCronico,
             .protocoloAntiAnsiedad
+            
+            
+        ]
+    }
+    
+    //Temas Emociones:
+    static var emociones: [EnciclopediaTemas] {
+        return [
+            .queSonLasEmociones,
+            .almacenamientoEmociones,
+            .componentesDeUnaEmocion,
+            .interocepcionYEmocion,
+            .controlEmocion,
+            .protocoloParaReinterprearEmocion  
             
             
         ]

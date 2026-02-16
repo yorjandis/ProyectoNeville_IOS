@@ -5,7 +5,7 @@
 //  Created by Yorjandis PG on 6/11/25.
 //
 
-//Unificando el uso de UIColor para que pueda ejecutarse en macOS con el mismo nombre que en macOS.
+//Unificando el uso de UIColor y UIFont para que pueda ejecutarse en macOS con el mismo nombre que en macOS.
 
 #if os(macOS)
 import AppKit

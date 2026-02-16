@@ -494,6 +494,20 @@ struct LienzoMain: View {
                                 .onTapGesture {
                                     lienzoModel.imagenLienzo = UIImage(named: "william")!
                                 }
+                            Image(nsImage: UIImage(named: "jd-min")!)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                                .onTapGesture {
+                                    lienzoModel.imagenLienzo = UIImage(named: "jd-min")!
+                                }
+                            Image(nsImage: UIImage(named: "bruce-min")!)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                                .onTapGesture {
+                                    lienzoModel.imagenLienzo = UIImage(named: "bruce-min")!
+                                }
                              
                         }
                     }
@@ -541,6 +555,20 @@ struct LienzoMain: View {
                                 .frame(width: 50, height: 50)
                                 .onTapGesture {
                                     lienzoModel.imagenLienzo = UIImage(named: "william")!
+                                }
+                            Image(nsImage: UIImage(named: "jd-min")!)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                                .onTapGesture {
+                                    lienzoModel.imagenLienzo = UIImage(named: "jd-min")!
+                                }
+                            Image(nsImage: UIImage(named: "bruce-min")!)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                                .onTapGesture {
+                                    lienzoModel.imagenLienzo = UIImage(named: "bruce-min")!
                                 }
                              
                         }

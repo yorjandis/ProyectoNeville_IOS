@@ -9,6 +9,13 @@
 
 import SwiftUI
 
+
+
+
+
+
+
+
 struct GoalCardView: View {
 
     @ObservedObject var goal: GoalEntity
@@ -28,6 +35,8 @@ struct GoalCardView: View {
     
     @State private var expandirNotas: Bool = false
     
+    
+ 
     
     
     
@@ -56,8 +65,9 @@ struct GoalCardView: View {
             //Título con subtitulo del objetivo
             VStack(alignment: .leading, spacing: 8){
                 Text(goal.wrappedTitle)
+                    .font(.platFormSize(iOS: 20, mac: 24))
                     .font(.headline).bold()
-                    .foregroundStyle(.orange)
+                    .foregroundStyle(.black)
                     .onTapGesture(count: 2) {
                         self.showModifyGoalView = true
                     }
@@ -70,7 +80,9 @@ struct GoalCardView: View {
                         HStack(spacing: 10){
                             Text("Completado!").font(.title2).bold()
                             Image(systemName: "checkmark.circle.fill")
-                                .foregroundStyle(.green).bold()
+                                .foregroundStyle(
+                                    Color(red: 0.0, green: 0.35, blue: 0.2)
+                                ).bold()
                                 .font(.system(size: 44))
                         }
                         
@@ -223,7 +235,20 @@ struct GoalCardView: View {
             try? context.save()
         }
         .padding(5)
+        #if os(macOS)
+        .background(
+            LinearGradient(
+                gradient: Gradient(colors: [
+                    .gray.opacity(0.8),
+                    .blue.opacity(0.8)
+                ]),
+                startPoint: .top,
+                endPoint: .bottom
+            )
+                )
+        #else
         .background(.thinMaterial)
+        #endif
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .sheet(isPresented: self.$showSheetProgress) {
             GoalDetailView(goal: self.goal)

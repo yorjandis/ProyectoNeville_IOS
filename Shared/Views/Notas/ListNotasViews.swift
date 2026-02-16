@@ -40,45 +40,56 @@ struct ListNotasViews: View {
  
     var body: some View {
         NavigationStack {
-            if ( canOpenNotas == true  ||   UserDefaults.standard.bool(forKey: AppCons.UD_setting_NotasFaceID) == false) {
-                ScrollView(.vertical){
-                    
-                    ForEach (self.filtered.reversed()){ nota in
-                        cardNotas(nota: nota)
-                            .environmentObject(self.modelNotas)
-                    }
-                    #if os(macOS)
-                    .searchable(text: $textFieldTitle, prompt: "Buscar")
-                    #else
-                    .searchable(text: $textFieldTitle, placement: .navigationBarDrawer(displayMode: .always)  , prompt:"Buscar")
-                    #endif
-                    
-                    .task {
-                        self.modelNotas.getAllNotasToModel()
-                    }
-                }
-            }else{
-               
-                    Spacer()
-                           autenticationView()
-            }
+            ZStack{
                 
-
-                    Spacer()
-                   
-                    Divider()
-                    HStack(spacing: 30){
-                        Spacer()
-                        #if os(iOS)
-                        Button("Volver"){
-                            dimiss()
+                LinearGradient.FondoListado()
+                    .ignoresSafeArea()
+                
+                VStack{
+                    if ( canOpenNotas == true  ||   UserDefaults.standard.bool(forKey: AppCons.UD_setting_NotasFaceID) == false) {
+                        ScrollView(.vertical){
+                            
+                            ForEach (self.filtered.reversed()){ nota in
+                                cardNotas(nota: nota)
+                                    .environmentObject(self.modelNotas)
+                            }
+                            #if os(macOS)
+                            .searchable(text: $textFieldTitle, prompt: "Buscar")
+                            #else
+                            .searchable(text: $textFieldTitle, placement: .navigationBarDrawer(displayMode: .always)  , prompt:"Buscar")
+                            #endif
+                            
+                            .task {
+                                self.modelNotas.getAllNotasToModel()
+                            }
                         }
-                        .padding(.trailing, 20)
-                        #endif
+                    }else{
+                       
+                            Spacer()
+                                   autenticationView()
                     }
+                        
+
+                            Spacer()
+                           
+                            Divider()
+                            HStack(spacing: 30){
+                                Spacer()
+                                #if os(iOS)
+                                Button("Volver"){
+                                    dimiss()
+                                }
+                                .foregroundStyle(.black)
+                                .buttonStyle(.bordered)
+                                .padding(.trailing, 20)
+                                #endif
+                            }
+                        
+                            .padding(.bottom, 20)
+                }
                 
-                    .padding(.bottom, 20)
                 
+            }
                 .navigationTitle("Notas")
             #if os(iOS)
                 .navigationBarTitleDisplayMode(.inline)
@@ -347,12 +358,20 @@ struct cardNotas: View{
                     .bold()
                     .fontDesign(.serif)
                     .font(.system(size: CGFloat(self.fontSizeLista)))
+                    .foregroundStyle(.black)
+                    .bold()
                     .padding(8)
                     .onTapGesture(count: 2) {
-                        showUpdateNoteView = true
+                        withAnimation {
+                            showUpdateNoteView = true
+                        }
+                        
                     }
                     .onTapGesture {
+                        withAnimation {
                             expandNota.toggle()
+                        }
+                            
                     }
                 Spacer()
                 if isfav {
@@ -536,33 +555,38 @@ struct cardNotas: View{
                     .tint(.purple)
                             
                             #else
-                            NavigationLink{
-                                if let  temp = nota!.nota{
-                                    RespondView(nameConference: "", texto: temp, tipoSalida: .interpretar )
+                            Menu{
+                                NavigationLink{
+                                    if let  temp = nota!.nota{
+                                        RespondView(nameConference: "", texto: temp, tipoSalida: .interpretar )
+                                    }
+                                    
+                                    
+                                }label:{
+                                    Label("Interpretar", systemImage: "sparkles")
                                 }
+                                .tint(.purple)
                                 
-
-                            }label:{
-                                Label("Interpretar", systemImage: "sparkles")
-                            }
-                            .tint(.purple)
-                            
-                            NavigationLink{
-                                if let  temp = nota!.nota{
-                                    RespondView(nameConference: "", texto: temp, tipoSalida: .practicaConcreta)
+                                NavigationLink{
+                                    if let  temp = nota!.nota{
+                                        RespondView(nameConference: "", texto: temp, tipoSalida: .practicaConcreta)
+                                    }
+                                    
+                                }label:{
+                                    Label("Aplicación Práctica", systemImage: "sparkles")
                                 }
+                                .tint(.purple)
                                 
+                                NavigationLink{
+                                    ChatView(textoACargar: nota!.nota)
+                                }label: {
+                                    Label("Charlar con IA", systemImage: "sparkles")
+                                }
+                                .tint(.purple)
                             }label:{
-                                Label("Aplicación Práctica", systemImage: "sparkles")
+                                Label("Funciones IA", systemImage: "sparkles")
                             }
-                            .tint(.purple)
-                    
-                    NavigationLink{
-                        ChatView(textoACargar: nota!.nota)
-                    }label: {
-                        Label("Charlar con IA", systemImage: "sparkles")
-                    }
-                    .tint(.purple)
+                           
                     #endif
  
                         }

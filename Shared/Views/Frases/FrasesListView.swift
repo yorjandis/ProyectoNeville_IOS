@@ -64,201 +64,206 @@ struct FrasesListView: View {
 
     var body: some View {
         NavigationStack{
-            VStack {
+            ZStack{
                 
-                //Si esta trabajando en popular las frases, entonces se muestra una barra de progreso
-                if self.PopulandoFrases {
+                LinearGradient.FondoListado()
+                    .ignoresSafeArea()
+                
+                VStack {
                     
-                    ProgressView()
-                    
-                }else{
-                    //Muestra un panel superior de Frases Relacionadas
-                    if self.showTabViewFrasesRelac {
+                    //Si esta trabajando en popular las frases, entonces se muestra una barra de progreso
+                    if self.PopulandoFrases {
                         
-                        if self.fraseRelacionadaMain != nil{
-                            FraseRelacionadasTabView(frase: self.fraseRelacionadaMain!, showTabViewFrasesRelac: self.$showTabViewFrasesRelac, ModoListado: self.$ModoListado)
-                        }
-                        
-                     }
-
-                    //Si el modo Listado de frases Relacionadas esta activo:
-                    if self.ModoListado {
-                        
-                        if self.fraseRelacionadaMain != nil {
-                            ScrollView{
-                                
-                                FrasesRelacionasListView(fraseMain: self.fraseRelacionadaMain!)
-                            }
-                            
-                        }
-                        
+                        ProgressView()
                         
                     }else{
-                        
-                        //Búsqueda:
-                        HStack {
-                            Image(systemName: "magnifyingglass")
-                                .foregroundColor(.gray)
+                        //Muestra un panel superior de Frases Relacionadas
+                        if self.showTabViewFrasesRelac {
                             
-                            TextField("Buscar", text: self.$textFieldFrase)
-                                .textFieldStyle(PlainTextFieldStyle())
-                                .font(.system(size: 20))
-                                .padding(8)
-                                .focused(self.$focused)
-                                .onSubmit {
-                                    Task{
-                                        msg(frasesModel.buscarEn)
-                                        frasesModel.criterioFiltroActual = .Buscar
-                                        await frasesModel.FiltrarListado(textAbuscar: self.textFieldFrase)
-                                    }
+                            if self.fraseRelacionadaMain != nil{
+                                FraseRelacionadasTabView(frase: self.fraseRelacionadaMain!, showTabViewFrasesRelac: self.$showTabViewFrasesRelac, ModoListado: self.$ModoListado)
+                            }
+                            
+                         }
+
+                        //Si el modo Listado de frases Relacionadas esta activo:
+                        if self.ModoListado {
+                            
+                            if self.fraseRelacionadaMain != nil {
+                                ScrollView{
                                     
+                                    FrasesRelacionasListView(fraseMain: self.fraseRelacionadaMain!)
                                 }
                                 
-                        }
-                        .padding(.horizontal)
-                        #if os(macOS)
-                        .background(.windowBackground)
-                        #endif
-                        
-                        //Listado de Frases:
-                        List(frasesModel.listfrases, id: \.id){ frase in
-                            FraseRowView(frase: frase, showTabViewFrasesRelac : self.$showTabViewFrasesRelac, fraseRelacionadaMain: self.$fraseRelacionadaMain )
-                        }
-                        .scrollContentBackground(.hidden)
-                        
-                        
-                        //Actualiza la información de la cantidad de elementos en la barra de estado inferior
-                        HStack{
-                            Text("Frases: \(self.frasesModel.listfrases.count)")
-                            Spacer()
-                        }.padding(.horizontal)
-                        
-                        .navigationTitle("Listado de Frases")
-                        #if os(iOS)
-                        .navigationBarTitleDisplayMode(.inline)
-                        #endif
-                         .toolbar{
-                             
-                             if #available(iOS 26.0, macOS 26.0,  *) {
-                                 ToolbarSpacer(.fixed)
-                             }
-                             
-                             //Aplica varios filtros al listado de Frases
-                             ToolbarItem {
-                                 Menu{
-                                     
-                                     CreateMenuItemButton(text: "Todas las Frases", sysImageStr: "text.magnifyingglass") {
-                                         Task {
-                                             frasesModel.criterioFiltroActual = .ListadoFull //Almacena información acerca del tipo de filtro
-                                             frasesModel.buscarEn = .TodasFrases
-                                             await frasesModel.FiltrarListado()
-                                         }
-                                         
-                                     }
-                                     
-                                     
-                                     
-                                     CreateMenuItemButton(text: "Frases Personales", sysImageStr: "text.magnifyingglass") {
-                                         Task {
-                                             frasesModel.criterioFiltroActual = .FrasesPersonales
-                                             frasesModel.buscarEn = .FrasesPersonales
-                                            await frasesModel.FiltrarListado()
-                                         }
-                                     }
+                            }
+                            
+                            
+                        }else{
+                            
+                            //Búsqueda:
+                            HStack {
+                                Image(systemName: "magnifyingglass")
+                                    .foregroundColor(.black)
+                                
+                                TextField("Buscar", text: self.$textFieldFrase)
+                                    .textFieldStyle(PlainTextFieldStyle())
+                                    .font(.system(size: 20))
+                                    .foregroundStyle(.black)
+                                    .padding(8)
+                                    .focused(self.$focused)
+                                    .onSubmit {
+                                        Task{
+                                            msg(frasesModel.buscarEn)
+                                            frasesModel.criterioFiltroActual = .Buscar
+                                            await frasesModel.FiltrarListado(textAbuscar: self.textFieldFrase)
+                                        }
+                                        
+                                    }
                                     
-                                     CreateMenuItemButton(text: "Frases Favoritas", sysImageStr: "text.magnifyingglass") {
-                                         Task {
-                                             frasesModel.criterioFiltroActual = .FrasesFavoritas
-                                             frasesModel.buscarEn = .FrasesFavoritas
-                                             await frasesModel.FiltrarListado()
-                                         }
-                                     }
-                                     
-                                     CreateMenuItemButton(text: "Frases con notas", sysImageStr: "text.magnifyingglass") {
-                                         Task {
-                                             frasesModel.criterioFiltroActual = .FrasesConNotas
-                                             frasesModel.buscarEn = .FrasesConNotas
-                                           await  frasesModel.FiltrarListado()
-                                         }
-                                     }
-
-                                     CreateMenuItemButton(text: "Buscar en nota de frase", sysImageStr: "text.magnifyingglass") {
-                                         subtitle = "Búsqueda en nota de Frase"
-                                         showAlertSearchInNotaFrase = true
-                                     }
-                                     
-                                     //Crea un Menú para filtrar por todos los Autores Disponibles
-                                     Menu{
-                                         let autores = self.frasesModel.getAllAutoresList()
-                                         ForEach(autores.sorted(by: { $0.key < $1.key }), id: \.key) { autorRaw, autorNombre in
-                                             Button(autorNombre){
-                                                 self.frasesModel.listfrases = self.frasesModel.getListFrasesByAutor(autor: autorRaw)
-                                             }
-                                         }
-                                         
-                                     }label: {
-                                         Label("Por Autor", systemImage: "text.quote")
-                                     }
-                                     
-                                     //Crea un Menu para filtrar por contextos disponibles:
-                                     Menu{
-                                         let autores = self.frasesModel.getAllContextosList()
-                                         ForEach(autores, id: \.self) { contexto in
-                                             Button(contexto){
-                                                self.frasesModel.listfrases = self.frasesModel.getFrasesByContexto(contexto: contexto)
-                                             }
-                                         }
-                                         
-                                     }label: {
-                                         Label("Por Contexto", systemImage: "text.quote")
-                                     }
-                                     
-                                 }label: { //Label del Menú
-                                     Image(systemName: "line.3.horizontal.decrease")
-                                         .foregroundStyle(.primary)
+                            }
+                            .padding(.horizontal)
+                            #if os(macOS)
+                            .background(.windowBackground)
+                            #endif
+                            
+                            //Listado de Frases:
+                            List(frasesModel.listfrases, id: \.id){ frase in
+                                FraseRowView(frase: frase, showTabViewFrasesRelac : self.$showTabViewFrasesRelac, fraseRelacionadaMain: self.$fraseRelacionadaMain )
+                                    .foregroundStyle(.black).bold()
+                                    .listRowBackground(Color.clear)
+                            }
+                            .scrollContentBackground(.hidden)
+                            .background(Color.clear)
+                            
+                            //Actualiza la información de la cantidad de elementos en la barra de estado inferior
+                            HStack{
+                                Text("Frases: \(self.frasesModel.listfrases.count)")
+                                    .foregroundStyle(.black)
+                                Spacer()
+                            }.padding(.horizontal)
+                            
+                            .navigationTitle("Listado de Frases")
+                            #if os(iOS)
+                            .navigationBarTitleDisplayMode(.inline)
+                            #endif
+                             .toolbar{
+                                 
+                                 if #available(iOS 26.0, macOS 26.0,  *) {
+                                     ToolbarSpacer(.fixed)
                                  }
-                             }
-                             
-                             if #available(iOS 26.0, macOS 26.0,  *) {
-                                 ToolbarSpacer(.fixed)
-                             }
-                             ToolbarItem{
-                                 //Boton Adicionar una frase
-                                 Button{
-                                     #if os(macOS)
-                                     showWindow(for: FraseAddView(),
-                                                environmentObjects: [self.frasesModel],
-                                                title: "Adicionar Frase",
-                                                size: AppCons.windows_size_content_small,
-                                                isModal: false) {
-                                         //Si el listado actual es frases personales se actualiza al cerrar la ventana:
-                                             Task{ @MainActor in
-                                                 
-                                                     await self.frasesModel.FiltrarListado() //Actualizando...
+                                 
+                                 //Aplica varios filtros al listado de Frases
+                                 ToolbarItem {
+                                     Menu{
+                                         
+                                         CreateMenuItemButton(text: "Todas las Frases", sysImageStr: "text.magnifyingglass") {
+                                             Task {
+                                                 frasesModel.criterioFiltroActual = .ListadoFull //Almacena información acerca del tipo de filtro
+                                                 frasesModel.buscarEn = .TodasFrases
+                                                 await frasesModel.FiltrarListado()
+                                             }
                                              
                                          }
-                                     }
-                                     #else
-                                     showAddFrase = true
-                                     #endif
-                                     
-                                 }label: {
-                                     Image(systemName: "plus")
-                                         .foregroundStyle(theme ==  .dark ? .white :  .black)
-                                 }
-                             }
+                                         
+                                         
+                                         
+                                         CreateMenuItemButton(text: "Frases Personales", sysImageStr: "text.magnifyingglass") {
+                                             Task {
+                                                 frasesModel.criterioFiltroActual = .FrasesPersonales
+                                                 frasesModel.buscarEn = .FrasesPersonales
+                                                await frasesModel.FiltrarListado()
+                                             }
+                                         }
+                                        
+                                         CreateMenuItemButton(text: "Frases Favoritas", sysImageStr: "text.magnifyingglass") {
+                                             Task {
+                                                 frasesModel.criterioFiltroActual = .FrasesFavoritas
+                                                 frasesModel.buscarEn = .FrasesFavoritas
+                                                 await frasesModel.FiltrarListado()
+                                             }
+                                         }
+                                         
+                                         CreateMenuItemButton(text: "Frases con notas", sysImageStr: "text.magnifyingglass") {
+                                             Task {
+                                                 frasesModel.criterioFiltroActual = .FrasesConNotas
+                                                 frasesModel.buscarEn = .FrasesConNotas
+                                               await  frasesModel.FiltrarListado()
+                                             }
+                                         }
 
-                             
-                         }
-                        
+                                         CreateMenuItemButton(text: "Buscar en nota de frase", sysImageStr: "text.magnifyingglass") {
+                                             subtitle = "Búsqueda en nota de Frase"
+                                             showAlertSearchInNotaFrase = true
+                                         }
+                                         
+                                         //Crea un Menú para filtrar por todos los Autores Disponibles
+                                         Menu{
+                                             let autores = self.frasesModel.getAllAutoresList()
+                                             ForEach(autores.sorted(by: { $0.key < $1.key }), id: \.key) { autorRaw, autorNombre in
+                                                 Button(autorNombre){
+                                                     self.frasesModel.listfrases = self.frasesModel.getListFrasesByAutor(autor: autorRaw)
+                                                 }
+                                             }
+                                             
+                                         }label: {
+                                             Label("Por Autor", systemImage: "text.quote")
+                                         }
+                                         
+                                         //Crea un Menu para filtrar por contextos disponibles:
+                                         Menu{
+                                             let autores = self.frasesModel.getAllContextosList()
+                                             ForEach(autores, id: \.self) { contexto in
+                                                 Button(contexto){
+                                                    self.frasesModel.listfrases = self.frasesModel.getFrasesByContexto(contexto: contexto)
+                                                 }
+                                             }
+                                             
+                                         }label: {
+                                             Label("Por Contexto", systemImage: "text.quote")
+                                         }
+                                         
+                                     }label: { //Label del Menú
+                                         Image(systemName: "line.3.horizontal.decrease")
+                                             .foregroundStyle(.primary)
+                                     }
+                                 }
+                                 
+                                 if #available(iOS 26.0, macOS 26.0,  *) {
+                                     ToolbarSpacer(.fixed)
+                                 }
+                                 ToolbarItem{
+                                     //Boton Adicionar una frase
+                                     Button{
+                                         #if os(macOS)
+                                         showWindow(for: FraseAddView(),
+                                                    environmentObjects: [self.frasesModel],
+                                                    title: "Adicionar Frase",
+                                                    size: AppCons.windows_size_content_small,
+                                                    isModal: false) {
+                                             //Si el listado actual es frases personales se actualiza al cerrar la ventana:
+                                                 Task{ @MainActor in
+                                                     
+                                                         await self.frasesModel.FiltrarListado() //Actualizando...
+                                                 
+                                             }
+                                         }
+                                         #else
+                                         showAddFrase = true
+                                         #endif
+                                         
+                                     }label: {
+                                         Image(systemName: "plus")
+                                             .foregroundStyle(theme ==  .dark ? .white :  .black)
+                                     }
+                                 }
+
+                                 
+                             }
+                            
+                        }
                     }
                 }
             }
-            #if os(macOS)
-            .background{
-                LinearGradient(colors: [ .blue.opacity(0.6),.blue.opacity(0.7), .blue.opacity(0.5) ], startPoint: .topLeading, endPoint: .bottomTrailing)
-            }
-            #endif
              .sheet(isPresented: $showAddFrase){
                  FraseAddView()
                  .presentationDetents([.medium])

@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@MainActor
 struct ColorGradientFrasesRelacionas{
     
     static let backgroundGradient = LinearGradient.Oceano()

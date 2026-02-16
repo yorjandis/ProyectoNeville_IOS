@@ -20,7 +20,7 @@ func msg(_ items: Any..., separator: String = " ", terminator: String = "\n") {
      */
 }
 
-//Show messages only in debug mode: Dump
+//Show messages (utilice Dump) only in debug mode: Dump
 func dmsg<T>(_ value: T, name: String? = nil, maxDepth: Int = 5) {
     #if DEBUG
     Swift.dump(value, name: name, maxDepth: maxDepth)
@@ -52,16 +52,7 @@ func log(_ level: LogLevel = .debug, _ message: String) {
 }
 
 
-//Custom Modifier: crea un gradiente de 3 color: Observe que el último color es opcional, si es nil solo se utiliza los dos primeros.
-struct mof_ColorGradient : ViewModifier {
 
-    @Binding var colorInit : Color
-    @Binding var colorEnd : Color
-    
-    func body(content : Content)->some View{content
-        .background( LinearGradient(gradient: Gradient(colors: [colorInit, colorEnd]), startPoint: .top, endPoint: .bottom))
-    }
-}
 
 
 //Custom Modifier: Para frases
@@ -101,19 +92,7 @@ extension Bundle {
 }
 
 
-//Modificador personalizado: Aplicar glass effect a una View en dependencia si estamos en iOS 26+ / iOS 18-
-#if os(iOS)
-extension View {
-    @ViewBuilder
-    func applyGlassEffect() -> some View {
-        if #available(iOS 26, *){
-            self.glassEffect()
-        }else{
-            self.background(.ultraThinMaterial)
-        }
-    }
-}
-#endif
+
 
 
 
@@ -131,7 +110,7 @@ func CreateMenuItemButton(text : String,sysImageStr : String, action : @MainActo
 }
 
 
-//Muestra una de felicitación por el cumpleaños
+//Muestra una vista de felicitación por el cumpleaños
 @ViewBuilder
 func MostrarCumpleaños() -> some View {
     
@@ -247,193 +226,7 @@ extension View {
     }
 }
 
-//Extensión de Color Para expresar los colores en formato hexadecimal:
-/*
- Ejemplo de uso:
- let amarillo = Color(hex: 0xFFCB0CFF)
- let verde = Color(hex: 0x38B300FF)
- */
-extension Color {
-    init(hex: UInt32) {
-        let r = Double((hex >> 24) & 0xFF) / 255
-        let g = Double((hex >> 16) & 0xFF) / 255
-        let b = Double((hex >> 8) & 0xFF) / 255
-        let a = Double(hex & 0xFF) / 255
-        
-        self.init(red: r, green: g, blue: b, opacity: a)
-    }
-}
 
 
-//Colores Gradientes predefinidos:
-extension LinearGradient {
-    /*
-     Colores cálidos y energéticos, perfectos para pantallas de bienvenida.
-     💡 Sensación: vitalidad, optimismo, energía matinal
-     */
-    static func Amanecer(_ startPoint : UnitPoint = .top, _ endPoint : UnitPoint = .bottom   ) -> Self {
-        LinearGradient(
-            gradient: Gradient(colors: [
-                Color(red: 1.00, green: 0.55, blue: 0.30), // naranja
-                Color(red: 1.00, green: 0.80, blue: 0.45)  // amarillo suave
-            ]),
-            startPoint: startPoint,
-            endPoint: endPoint
-        )
-    }
-    
-    /*
-     Ideal para apps relajantes o de bienestar.
-     💡 Sensación: calma, frescura, limpieza.
-     */
-    static func Oceano(_ startPoint : UnitPoint = .top, _ endPoint : UnitPoint = .bottom   ) -> Self {
-        LinearGradient(
-            gradient: Gradient(colors: [
-                Color(red: 0.00, green: 0.65, blue: 0.80), // azul turquesa
-                Color(red: 0.20, green: 0.85, blue: 0.75)  // verde agua
-            ]),
-            startPoint: startPoint,
-            endPoint: endPoint
-        )
-    }
-    
-    
-    /*
-     Muy buena opción para apps ecológicas, salud o productividad.
-     💡 Sensación: equilibrio, naturaleza, crecimiento.
-     */
-    static func Bosque(_ startPoint : UnitPoint = .top, _ endPoint : UnitPoint = .bottom   ) -> Self {
-        LinearGradient(
-            gradient: Gradient(colors: [
-                Color(red: 0.10, green: 0.60, blue: 0.35), // verde bosque
-                Color(red: 0.40, green: 0.80, blue: 0.50)  // verde lima natural
-            ]),
-            startPoint: startPoint,
-            endPoint: endPoint
-        )
-    }
-    
-    /*
-     Transmite profundidad y elegancia sin perder viveza.
-     💡 Sensación: creatividad, introspección, sofisticación.
-     */
-    static func AtardecerVioleta(_ startPoint : UnitPoint = .top, _ endPoint : UnitPoint = .bottom   ) -> Self {
-        LinearGradient(
-            gradient: Gradient(colors: [
-                Color(red: 0.55, green: 0.30, blue: 0.85), // violeta
-                Color(red: 0.95, green: 0.40, blue: 0.55)  // rosa coral
-            ]),
-            startPoint: startPoint,
-            endPoint: endPoint
-        )
-    }
-    
-    /*
-     Muy luminosa y natural, excelente para dashboards.
-     💡 Sensación: renovación, ligereza, frescura.
-     */
-    static func Primavera(_ startPoint : UnitPoint = .top, _ endPoint : UnitPoint = .bottom   ) -> Self {
-        LinearGradient(
-            gradient: Gradient(colors: [
-                Color(red: 0.55, green: 0.85, blue: 0.40), // verde claro
-                Color(red: 0.75, green: 0.95, blue: 0.65)  // verde pastel
-            ]),
-            startPoint: startPoint,
-            endPoint: endPoint
-        )
-    }
-    
-    /*
-     Potente y llamativa, ideal para métricas o estados activos.
-     💡 Sensación: acción, intensidad, dinamismo.
-     */
-    static func Fuego(_ startPoint : UnitPoint = .top, _ endPoint : UnitPoint = .bottom   ) -> Self {
-        LinearGradient(
-            gradient: Gradient(colors: [
-                Color(red: 0.55, green: 0.85, blue: 0.40), // verde claro
-                Color(red: 0.75, green: 0.95, blue: 0.65)  // verde pastel
-            ]),
-            startPoint: startPoint,
-            endPoint: endPoint
-        )
-    }
-    
-    /*
-     Elegante y tecnológico, excelente para dashboards y apps financieras.
-     💡 Sensación: profundidad, confianza, estabilidad.
-     */
-    static func AzulTecnologico(_ startPoint : UnitPoint = .top, _ endPoint : UnitPoint = .bottom   ) -> Self {
-        LinearGradient(
-            gradient: Gradient(colors: [
-                Color(red: 0.05, green: 0.20, blue: 0.45), // azul profundo
-                        Color(red: 0.15, green: 0.40, blue: 0.70)  // azul petróleo
-            ]),
-            startPoint: startPoint,
-            endPoint: endPoint
-        )
-    }
-    
-    /*
-     Minimalista, ideal para interfaces profesionales y fondos neutros.
-     💡 Sensación: precisión, tecnología, sobriedad.
-     */
-    static func GrisMetalizado(_ startPoint : UnitPoint = .top, _ endPoint : UnitPoint = .bottom   ) -> Self {
-        LinearGradient(
-            gradient: Gradient(colors: [
-                Color(red: 0.30, green: 0.32, blue: 0.35), // gris acero oscuro
-                        Color(red: 0.60, green: 0.62, blue: 0.65)  // gris aluminio
-            ]),
-            startPoint: startPoint,
-            endPoint: endPoint
-        )
-    }
-    
-    /*
-     Natural pero sofisticado, muy bueno para bienestar y longevidad.
-     💡 Sensación: equilibrio, salud, serenidad profunda.
-     */
-    static func JadeProfundo(_ startPoint : UnitPoint = .top, _ endPoint : UnitPoint = .bottom   ) -> Self {
-        LinearGradient(
-            gradient: Gradient(colors: [
-                Color(red: 0.00, green: 0.45, blue: 0.40), // jade oscuro
-                        Color(red: 0.20, green: 0.70, blue: 0.60)  // jade vivo
-            ]),
-            startPoint: startPoint,
-            endPoint: endPoint
-        )
-    }
-    
-    /*
-     Ultra moderno, perfecto para modo oscuro real y enfoque total.
-     💡 Sensación: elegancia, silencio visual, concentración.
-     */
-    static func NegroMate(_ startPoint : UnitPoint = .top, _ endPoint : UnitPoint = .bottom   ) -> Self {
-        LinearGradient(
-            gradient: Gradient(colors: [
-                Color(red: 0.05, green: 0.05, blue: 0.06), // negro mate
-                Color(red: 0.18, green: 0.18, blue: 0.20)  // grafito
-            ]),
-            startPoint: startPoint,
-            endPoint: endPoint
-        )
-    }
-    
-    /*
-     Orgánico y cálido, muy alineado con diseño bio-inspirado.
-     💡 Sensación: arraigo, calidez, autenticidad.
-     */
-    static func BarroNatural(_ startPoint : UnitPoint = .top, _ endPoint : UnitPoint = .bottom   ) -> Self {
-        LinearGradient(
-            gradient: Gradient(colors: [
-                Color(red: 0.55, green: 0.30, blue: 0.20), // barro oscuro
-                Color(red: 0.75, green: 0.45, blue: 0.30)  // terracota
-            ]),
-            startPoint: startPoint,
-            endPoint: endPoint
-        )
-    }
-    
-    
-    
-    
-}
+
+

@@ -39,6 +39,7 @@ struct GoalsListView: View {
                         }
                     }
                 }
+                .padding(.top, 15)
                 
             }
             .navigationTitle("Objetivos")

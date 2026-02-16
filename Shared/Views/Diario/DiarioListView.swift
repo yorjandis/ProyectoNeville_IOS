@@ -68,7 +68,8 @@ struct DiarioListView: View {
     @AppStorage(AppCons.UD_setting_OrdenarEntradaDiario) var ordenarEntradaDiario : Bool = true // true es fechaCreación; false es fecha de modificación
     @AppStorage(AppCons.UD_setting_DiarioSiempreOpenFaceID) var setting_DiarioSiempreOpenFaceID  : Bool = false //Para poder manejar el acceso al diario
  
-    
+    //Almacena la contraeña de acceso en el Llavero, si existe:
+    @State private var hasPassword = false
 
     var body: some View {
         NavigationStack {
@@ -76,6 +77,10 @@ struct DiarioListView: View {
                 
                 LinearGradient(colors: [Color(red:0.45, green:0.50, blue: 0.50), .orange], startPoint: .top, endPoint: .bottom)
                     .ignoresSafeArea()
+                    .onAppear{
+                        //Lee la contraseña de acceso del diario
+                        hasPassword = KeychainHelper.shared.getPassword() != nil
+                    }
                 
                 
                 if self.securityModel.canOpenDiario{
@@ -170,7 +175,7 @@ struct DiarioListView: View {
                             //NO hay soporte para Biometria
                             VStack{
                                 //Chequeamos si hay una clave guardada:
-                                if KeychainHelper.shared.getPassword() != nil{ //Hay una clave
+                                if self.hasPassword{ //Hay una clave
                                     Text("Parece que su dispositivo no admite biometría. Utilice el botón debajo para entrar por contraseña.")
                                     
                                     #if os(macOS)

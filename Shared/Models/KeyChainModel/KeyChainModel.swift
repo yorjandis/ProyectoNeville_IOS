@@ -12,56 +12,53 @@ import Security
 
 @MainActor
 final class KeychainHelper {
+   
+    
+    private let account = "com.yorgandis.Neville"
+    private let service = "com.yorgandis.Neville"
+    private let synchronizable = true
+    
     static let shared = KeychainHelper()
+    
     private init() {}
     
     // Guardar contraseña
-    func savePassword(_ password: String, account: String = "com.yorgandis.Neville", service: String = "com.yorgandis.Neville", syncWithiCloud: Bool = true) {
-        guard let passwordData = password.data(using: .utf8) else { return }
+    func savePassword(_ password: String) {
+        guard let data = password.data(using: .utf8) else { return }
 
-        // Primero eliminamos cualquier valor previo
-        deletePassword(account: account, service: service)
-
-        var query: [String: Any] = [
+        let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrAccount as String: account,
             kSecAttrService as String: service,
-            kSecValueData as String: passwordData
+            kSecAttrSynchronizable as String: synchronizable ? kCFBooleanTrue! : kCFBooleanFalse!,
+            kSecValueData as String: data
         ]
 
-        // 🔹 Esto habilita la sincronización con iCloud Keychain
-        if syncWithiCloud {
-            query[kSecAttrSynchronizable as String] = kCFBooleanTrue
-        }
-
+        SecItemDelete(query as CFDictionary)
         let status = SecItemAdd(query as CFDictionary, nil)
-        if status != errSecSuccess {
-            msg("Error al guardar en Keychain: \(status)")
-        }
+
+        msg("Save status:", status)
     }
 
-    // Recuperar contraseña
-    func getPassword(account: String = "com.yorgandis.Neville", service: String = "com.yorgandis.Neville") -> String? {
-        var query: [String: Any] = [
+    func getPassword() -> String? {
+        let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrAccount as String: account,
             kSecAttrService as String: service,
-            kSecReturnData as String: kCFBooleanTrue!,
+            kSecAttrSynchronizable as String: synchronizable ? kCFBooleanTrue! : kCFBooleanFalse!,
+            kSecReturnData as String: true,
             kSecMatchLimit as String: kSecMatchLimitOne
         ]
-
-        // Intentar también buscar en iCloud Keychain
-        query[kSecAttrSynchronizable as String] = kSecAttrSynchronizableAny
 
         var result: AnyObject?
         let status = SecItemCopyMatching(query as CFDictionary, &result)
 
-        if status == errSecSuccess, let data = result as? Data {
-            return String(data: data, encoding: .utf8)
-        } else {
-            msg("No se encontró la contraseña o error: \(status)")
-            return nil
-        }
+        print("Read status:", status)
+
+        guard status == errSecSuccess,
+              let data = result as? Data else { return nil }
+
+        return String(decoding: data, as: UTF8.self)
     }
 
     // Eliminar contraseña

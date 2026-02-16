@@ -952,11 +952,13 @@ struct Ajustes: View {
                                     .background(LinearGradient(colors: [ColorPrimario, ColorSecundario], startPoint: .top, endPoint: .bottom))
                                     .clipShape(RoundedRectangle(cornerRadius: 20))
                             }
-                            
-                            
-                            
+                            Button("Yorj"){
+                                print(self.ColorPrimario)
+                                print(self.ColorSecundario)
+                            }
                         }
                     }
+                    
                     
                     //Colores del Chat IA
                     if #available(iOS 26.0, macOS 26.0, *){

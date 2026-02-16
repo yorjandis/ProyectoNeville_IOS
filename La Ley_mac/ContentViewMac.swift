@@ -210,6 +210,9 @@ struct ContentViewMac: View {
     @ViewBuilder
     func ContentSidebar() -> some View {
         Group {
+            Button("TEST"){
+                KeychainHelper.shared.deletePassword()
+            }
             Image("Logo")
                 .resizable()
                 .scaledToFill()
@@ -577,35 +580,7 @@ struct NavigationDetailsViewMac: View {
                     EnciclopediaListView()
                     
             case .evidenciaCientifica:
-                VStack(spacing: 25){
-                    Text("🚧 en Construcción...")
-                    Text("Objetivo: Mostrar Evidencia y base científica sobre los temas abordados en estas enseñanzas.")
-                    Text("Algunos de los temas que requieren una base científica (La lista puede cambiar):")
-                    ScrollView{
-                        Text("""
-                            🔶Existencia del Campo Cuántico/Matriz Divina/Mente Universar/Dios
-                            🔶El Pensamiento lleva energía e información
-                            🔶Los Pensamiento influyen en nuestra biología
-                            🔶Los pensamientos y emociones cambian la estructura física del cerebro
-                            🔶Somos más energía que materia
-                            🔶Entrelazamiento cuántico
-                            🔶Un pensamiento produce la secreción de sustancias químicas
-                            🔶El cuerpo puede almacenar una emoción
-                            🔶Nuestras emociones pueden causar enfermedades
-                            🔶Neuroplasticidad
-                            🔶Neurogénesis
-                            🔶El corazón emite una firma magnética
-                            🔶El corazón tiene neuronas propias y piensa y siente independientemente
-                            🔶La Coherencia cardiaca normaliza las frecuencias cerebrales
-                            🔶El corazón influje en la quimica cerebral
-                            🔶El ADN puede modificarse con nuestros pensamientos
-                            🔶La epigenética señala al gen que crea la enfemedad
-                            🔶Los pensamientos influyen en la expresión génica
-                            🔶Los pensamientos y emociones negativas rompen la coherencia de ondas cerebrales
-                            🔶El hombre lleva más tiempo sobre la tierra del que esta registrado en el pasado
-                            """)
-                    }
-                }
+                EvidenciaCientificaView()
             case .reflexiones:
                 ReflexListView()
             case .ayudas:

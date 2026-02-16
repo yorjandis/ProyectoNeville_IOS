@@ -60,6 +60,25 @@ struct AppCons{
     //Fichero de Frases para temas de Salud:
     static let FileListFrasesSalud            = "listfrases_salud"
     
+    
+    //Nombre de ficheros para Evidencias Cientifica
+    static let campoCuantico                                : String = "evi_campo_cuantico"
+    static let coherenciaCorazonCerebro                     : String = "evi_coherencia_corazon_cerebro"
+    static let campoMagneticoEnCorazon                      : String = "evi_corazon_campo_magnetico"
+    static let efectoEmocionSobreExpresionGenica            : String = "evi_emociones_afectan_expresion_genica"
+    static let emocionesNegativasYCoherenciaCerebral        : String = "evi_emociones_negativas_y_coherencia_cerebral"
+    static let entrelazamientoCuantico                      : String = "evi_entrelazamiento_cuantico"
+    static let membranaCelularComoProcesador                : String = "evi_membrana_celular_como_procesador"
+    static let neurogenesis                                 : String = "evi_neurogenesis"
+    static let neuronasCardiacas                            : String = "evi_neuronas_cardiacas"
+    static let neuroPlasticidad                             : String = "evi_neuroplasticidad"
+    static let nevilleYLaCiencia                            : String = "evi_neville_y_ciencia"
+    static let pensamientosInfluyenEnLaBiologia             : String = "evi_pensamiento_influye_biologia"
+    static let pensamientosLLevanEnergiaEInformacion        : String = "evi_pensamiento_lleva_energia_info"
+    static let pensamientosCambianLaAnatomia                : String = "evi_pensamientos_modifican_anatomia"
+    static let somosMasEnergiaQueMateria                    : String = "evi_somos_mas_energia_que_materia"
+    
+    
     //name values for setting:
     static let UD_setting_fontFrasesSize   = "setting_fontFrasesSize"
     static let UD_setting_fontContentSize  = "setting_fontContentSize"
@@ -79,6 +98,7 @@ struct AppCons{
     static let UD_setting_color_main_b          = "settig_color_main_b"
     static let UD_setting_color_fondoContent    = "settig_color_fondoContent"
     static let UD_setting_color_textContent     = "settig_color_textContent"
+    
     
     //Colores de IA
     static let UD_setting_colorIA_main_a          = "settig_colorIA_main_a"

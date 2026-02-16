@@ -587,7 +587,7 @@ autor=bruceL
 nota=
 fuente=Serie: Evolución Interior. Por Bruce Lipton. Gaia.com
 contexto=
-texto=Según la física cuántica: La mente, la conciencia y los campos de energía con las que dan forma a nuestras experiencias
+texto=Según la física cuántica: La mente, la conciencia y los campos de energía son las que dan forma a nuestras experiencias
 relacionadas=
 
 id=bruce_076
@@ -596,4 +596,12 @@ nota=
 fuente=Serie: Evolución Interior. Por Bruce Lipton. Gaia.com
 contexto=
 texto=No son los genes los que controlan las funciones celulares; son las SEÑALES DEL ENTORNO, captadas por la membrana celular,  las que modulan la expresión de los genes, que a su vez producen las proteinas responsables de la estructura y función de la célula. Los genes son simplemente plantillas para producir proteinas. Por tanto si cambiamos estas señales, nuestra biología cambiará. Nuestro entorno determina nuestra biología
+relacionadas=
+
+id=bruce_077
+autor=bruceL
+nota=
+fuente=Serie: Evolución Interior. Por Bruce Lipton. Gaia.com
+contexto=
+texto=La función de la mente es crear coherencia entre tus creencias y tu realidad. Si tus creencias son mayormente negativas entonces tu estado mental lo reflejará en tu experiencia cotidiana. Por el contrario, si tus creencias son positivas y empoderadoras, tu mente creará experiencias de vida positivas y grandiosas, en coherencia con dichas creencias. En cosecuencia, los pensamientos pueden mejorar tu salud o favorecer la enfermedad según tu sistema de creencias
 relacionadas=

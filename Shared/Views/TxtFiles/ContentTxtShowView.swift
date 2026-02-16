@@ -86,15 +86,6 @@ struct ContentTxtShowView: View {
     
     @State private var favState : Bool = false
     
-    // Función para convertir el color a formato hexadecimal
-    func hexStringo(for color: Color) -> String {
-        let uiColor = UIColor(color)
-        var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
-        uiColor.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
-        // Convertir a hexadecimal
-        return String(format: "#%02lX%02lX%02lX", lroundf(Float(red * 255)), lroundf(Float(green * 255)), lroundf(Float(blue * 255)))
-    }
-    
     
     //Muestra/oculta la sección de Notas:
     @State private var showNotesSection: Bool = false
@@ -103,67 +94,73 @@ struct ContentTxtShowView: View {
 
     var body: some View {
         NavigationStack {
-            
-            VStack {
-                VStack{
-                    Divider()
-                    .padding(0)
-                }
+            ZStack{
                 
-                //Mostrar la sección de Notas del contenido:
-                if self.showNotesSection {
-                    VStack{
-                        EditNoteTxt(nameTxt: self.nombreTxt, typeOfContent: self.type )
-                            .cornerRadius(20)
-                    }
-                    .frame(height: 200)
-                }
+                LinearGradient.NegroMate()
+                    .ignoresSafeArea()
                 
-                ScrollView(showsIndicators: true){
+                VStack {
                     VStack{
-                        //Esta Vista es multiplataforma (iOS/macOS) y esta en un fichero independiente
-                        
-                         SelectableTextShareView(getContent: self.content, fontSizeContenido: CGFloat(self.UserDefaultFontSizeContenido), textContentdColor: UIColor(self.textContentdColor))
-                         
-                       
-
+                        Divider()
+                        .padding(0)
                     }
-                    .background(self.backgroundColor)
-                    .cornerRadius(12)
-                    .onTapGesture {
-                        withAnimation {
-                            self.showColor = false
-                            self.showSlider = false
-                        }
-                       
-                    }
-                    .padding(.horizontal, 5)
                     
-                }
-             
-                #if os(iOS)
-                //Coloca un boton Atras en la parte inferior
-                if(self.showColor == false && self.showSlider == false){
-                    HStack{
-                        Spacer()
-                        Image(systemName: "house")
-                            .foregroundStyle(Color.primary.opacity(0.4))
-                            .onTapGesture {
-                                self.dismiss()
-                            }
-                            .padding(.trailing, 10)
+                    //Mostrar la sección de Notas del contenido:
+                    if self.showNotesSection {
+                        VStack{
+                            EditNoteTxt(nameTxt: self.nombreTxt, typeOfContent: self.type )
+                                .cornerRadius(20)
+                        }
+                        .frame(height: 200)
                     }
-                    .padding(5)
+                    
+                    ScrollView(showsIndicators: true){
+                        VStack{
+                            //Esta Vista es multiplataforma (iOS/macOS) y esta en un fichero independiente
+                            
+                             SelectableTextShareView(getContent: self.content, fontSizeContenido: CGFloat(self.UserDefaultFontSizeContenido), textContentdColor: UIColor(self.textContentdColor))
+                             
+                           
+
+                        }
+                        .background(self.backgroundColor)
+                        .cornerRadius(12)
+                        .onTapGesture {
+                            withAnimation {
+                                self.showColor = false
+                                self.showSlider = false
+                            }
+                           
+                        }
+                        .padding(.horizontal, 5)
+                        
+                    }
+                 
+                    #if os(iOS)
+                    //Coloca un boton Atras en la parte inferior
+                    if(self.showColor == false && self.showSlider == false){
+                        HStack{
+                            Spacer()
+                            Image(systemName: "house")
+                                .foregroundStyle(Color.primary.opacity(0.4))
+                                .onTapGesture {
+                                    self.dismiss()
+                                }
+                                .padding(.trailing, 10)
+                        }
+                        .padding(5)
+                    }
+                    #endif
+                    
+                    
+                    
+                    Divider()
+                    
+                    
+        
                 }
-                #endif
-                
-                
-                
-                Divider()
-                
-                
-    
             }
+            
             #if os(iOS)
             .navigationBarTitle(title)
             .navigationBarTitleDisplayMode(.inline)

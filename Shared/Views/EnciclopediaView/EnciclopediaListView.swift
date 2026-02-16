@@ -17,7 +17,9 @@ struct EnciclopediaListView: View {
         EnciclopediaCategoria(nombre: "Memoria", temas: EnciclopediaTemas.memoria),
         EnciclopediaCategoria(nombre: "Dopamina", temas: EnciclopediaTemas.dopamina),
         EnciclopediaCategoria(nombre: "Serotonina", temas: EnciclopediaTemas.serotonina),
-        EnciclopediaCategoria(nombre: "Ansiedad", temas: EnciclopediaTemas.ansiedad)
+        EnciclopediaCategoria(nombre: "Ansiedad", temas: EnciclopediaTemas.ansiedad),
+        EnciclopediaCategoria(nombre: "Emociones", temas: EnciclopediaTemas.emociones)
+        
     ]
     
     #if os(macOS)
@@ -30,65 +32,72 @@ struct EnciclopediaListView: View {
     }
 
     var body: some View {
+        ZStack{
+            
+            LinearGradient.FondoListado()
+                .ignoresSafeArea()
+            
+            VStack(spacing: 0) {
 
-        VStack(spacing: 0) {
+                // 🔝 PANEL SUPERIOR
+                HStack(spacing: 0) {
 
-            // 🔝 PANEL SUPERIOR
-            HStack(spacing: 0) {
+                    // COLUMNA IZQUIERDA — CATEGORÍAS
+                    List(categorias,
+                         selection: $categoriaSeleccionadaID) { categoria in
+                        Text(categoria.nombre)
+                            .tag(categoria.id)   // 🔥 CLAVE
+                    }
+                    .frame(minWidth: 250)
 
-                // COLUMNA IZQUIERDA — CATEGORÍAS
-                List(categorias,
-                     selection: $categoriaSeleccionadaID) { categoria in
-                    Text(categoria.nombre)
-                        .tag(categoria.id)   // 🔥 CLAVE
+                    Divider()
+
+                    // COLUMNA DERECHA — TEMAS
+                    Group {
+                        if let categoria = categoriaSeleccionada {
+                            List(categoria.temas,
+                                 id: \.self,
+                                 selection: $temaSeleccionado) { tema in
+                                Text(tema.rawValue)
+                                    .tag(tema)   // 🔥 CLAVE
+                            }
+                        } else {
+                            VStack {
+                                Spacer()
+                                Text("Selecciona una categoría")
+                                    .foregroundStyle(.secondary)
+                                Spacer()
+                            }
+                        }
+                    }
                 }
-                .frame(minWidth: 250)
+                .frame(height: 300)
 
                 Divider()
 
-                // COLUMNA DERECHA — TEMAS
+                // 🔽 PANEL INFERIOR — CONTENIDO
                 Group {
-                    if let categoria = categoriaSeleccionada {
-                        List(categoria.temas,
-                             id: \.self,
-                             selection: $temaSeleccionado) { tema in
-                            Text(tema.rawValue)
-                                .tag(tema)   // 🔥 CLAVE
-                        }
+                    if let tema = temaSeleccionado {
+                        ContentTxtShowView(
+                            title: tema.rawValue,
+                            nombreTxt: tema.getFileName,
+                            type: .NA
+                        )
+                        .id(tema)   // 🔥 CLAVE
                     } else {
                         VStack {
                             Spacer()
-                            Text("Selecciona una categoría")
+                            Text("Selecciona un ítem para ver el contenido")
                                 .foregroundStyle(.secondary)
                             Spacer()
                         }
                     }
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-            .frame(height: 300)
-
-            Divider()
-
-            // 🔽 PANEL INFERIOR — CONTENIDO
-            Group {
-                if let tema = temaSeleccionado {
-                    ContentTxtShowView(
-                        title: tema.rawValue,
-                        nombreTxt: tema.getFileName,
-                        type: .NA
-                    )
-                    .id(tema)   // 🔥 CLAVE
-                } else {
-                    VStack {
-                        Spacer()
-                        Text("Selecciona un ítem para ver el contenido")
-                            .foregroundStyle(.secondary)
-                        Spacer()
-                    }
-                }
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            
         }
+
         .navigationTitle("Enciclopedia")
         .onAppear {
             if categoriaSeleccionadaID == nil {
@@ -102,17 +111,40 @@ struct EnciclopediaListView: View {
     // 📱 iOS mantiene navegación clásica
     
     private var content: some View {
-        List(categorias) { categoria in
-            NavigationLink(categoria.nombre) {
-                SubListaView(categoria: categoria)
+        VStack{
+            Text("Enciclopedia").font(.title)
+                .foregroundStyle(.black)
+                .bold()
+                .padding()
+            
+            List(categorias) { categoria in
+                NavigationLink(categoria.nombre) {
+                    SubListaView(categoria: categoria)
+                }
+                .listRowBackground(Color.clear)
             }
+            .scrollContentBackground(.hidden)
+            .background(Color.clear)
+            
+            Text("""
+                Los temas ilustran las últimas investigaciones publicadas en revistas científicas: Nature, Cell, Neuron,Science, PubMed, etc. El contenido de cada tema será revisado y actualizado con frecuencia.
+                """)
+            .padding()
         }
-        .navigationTitle("Enciclopedia")
+        
     }
     
     var body: some View {
         NavigationStack {
-            content
+            ZStack{
+                
+                LinearGradient.FondoListado()
+                    .ignoresSafeArea()
+                
+                content
+                    .foregroundStyle(.black).bold()
+            }
+           
         }
     }
     
@@ -123,13 +155,23 @@ fileprivate struct SubListaView: View {
     let categoria: EnciclopediaCategoria
     
     var body: some View {
-        List(categoria.temas, id: \.self) { item in
-            NavigationLink(item.rawValue) {
-                ContentTxtShowView(title: item.rawValue,
-                                   nombreTxt: item.getFileName,
-                                   type: .NA)
+        ZStack{
+            LinearGradient.FondoListado()
+                .ignoresSafeArea()
+            
+            List(categoria.temas, id: \.self) { item in
+                NavigationLink(item.rawValue) {
+                    ContentTxtShowView(title: item.rawValue,
+                                       nombreTxt: item.getFileName,
+                                       type: .NA)
+                }
+                .listRowBackground(Color.clear)
+                .foregroundStyle(.black).bold()
             }
+            .scrollContentBackground(.hidden)
+            .background(Color.clear)
         }
+        
         .navigationTitle(categoria.nombre)
     }
 }

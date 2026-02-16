@@ -37,7 +37,6 @@
 		91F0DD552D605B5800307453 /* watchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F0DD542D605B4B00307453 /* watchModel.swift */; };
 		E95B93572AAFBB2600B5E2B5 /* Neville_iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95B93562AAFBB2600B5E2B5 /* Neville_iOSApp.swift */; };
 		E95B93592AAFBB2600B5E2B5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95B93582AAFBB2600B5E2B5 /* ContentView.swift */; };
-		E95B935B2AAFBB2900B5E2B5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E95B935A2AAFBB2900B5E2B5 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -166,7 +165,6 @@
 		E95B93532AAFBB2600B5E2B5 /* Neville_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Neville_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E95B93562AAFBB2600B5E2B5 /* Neville_iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Neville_iOSApp.swift; sourceTree = "<group>"; };
 		E95B93582AAFBB2600B5E2B5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		E95B935A2AAFBB2900B5E2B5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -180,6 +178,7 @@
 				Models/CoreData/CoreDataController.swift,
 				Models/DiarioModel/DiarioModel.swift,
 				Models/EnciclopediaModel/EnciclopediaModel.swift,
+				Models/EvidenciaCientificaModel/EvidenciaCientificaModel.swift,
 				Models/FeedBackModel/FeedBackModel.swift,
 				Models/FrasesModel/ContextoFrases/ContextoModel.swift,
 				Models/FrasesModel/ContextoFrases/ContextosFrasesModel.swift,
@@ -280,6 +279,9 @@
 				Models/SecurityModel/SecurityModel.swift,
 				Models/TextContentModel/TxtContentModel.swift,
 				Models/Utils/Utils.swift,
+				Models/UtilsForView/Colors/HelperColors.swift,
+				Models/UtilsForView/Fonts/HelperFont.swift,
+				Models/UtilsForView/UIView/HelperView.swift,
 				Models/UtilsForView/UtilsForViews.swift,
 				Staff/Autores/BruceLipton/Libros/LaBiologiaDeLaCreencia/plan_libro_biologiacreencia.txt,
 				Staff/Autores/BruceLipton/Libros/LaBiologiaDeLaCreencia/resumen_libro_biologiacreencia.txt,
@@ -867,6 +869,12 @@
 				Staff/Enciclopedia/Dopamina/enc_protocolo_anti_adicciones_digitales.txt,
 				Staff/Enciclopedia/Dopamina/enc_protocolo_dopaminergico.txt,
 				Staff/Enciclopedia/Dopamina/enc_que_es_la_dopamina.txt,
+				Staff/Enciclopedia/Emociones/enc_almacenamiento_emociones.txt,
+				Staff/Enciclopedia/Emociones/enc_componentes_de_una_emocion.txt,
+				Staff/Enciclopedia/Emociones/enc_control_emociones.txt,
+				Staff/Enciclopedia/Emociones/enc_interocepcion_y_emocion.txt,
+				Staff/Enciclopedia/Emociones/enc_protocolo_practico_reinterpretar_emociones.txt,
+				Staff/Enciclopedia/Emociones/enc_que_es_una_emocion.txt,
 				Staff/Enciclopedia/Epigenetica/enc_epigenetica_varios_autores.txt,
 				Staff/Enciclopedia/Epigenetica/enc_epigenetica_y_neurociencia.txt,
 				Staff/Enciclopedia/Epigenetica/enc_joedispensa_y_epigenetica.txt,
@@ -908,6 +916,22 @@
 				Staff/Enciclopedia/TemasGenerales/enc_patrones_de_conducta_heredados.txt,
 				Staff/Enciclopedia/TemasGenerales/enc_patrones_sinapticos_heredados.txt,
 				Staff/Enciclopedia/TemasGenerales/enc_tiempo.txt,
+				Staff/EvidenciaCientifica/evi_campo_cuantico.txt,
+				Staff/EvidenciaCientifica/evi_coherencia_corazon_cerebro.txt,
+				Staff/EvidenciaCientifica/evi_corazon_campo_magnetico.txt,
+				Staff/EvidenciaCientifica/evi_emociones_afectan_expresion_genica.txt,
+				Staff/EvidenciaCientifica/evi_emociones_negativas_y_coherencia_cerebral.txt,
+				Staff/EvidenciaCientifica/evi_entrelazamiento_cuantico.txt,
+				Staff/EvidenciaCientifica/evi_membrana_celular_como_procesador.txt,
+				Staff/EvidenciaCientifica/evi_neurogenesis.txt,
+				Staff/EvidenciaCientifica/evi_neuronas_cardiacas.txt,
+				Staff/EvidenciaCientifica/evi_neuroplasticidad.txt,
+				Staff/EvidenciaCientifica/evi_neville_y_ciencia.txt,
+				Staff/EvidenciaCientifica/evi_pensamiento_influye_biologia.txt,
+				Staff/EvidenciaCientifica/evi_pensamiento_lleva_energia_info.txt,
+				Staff/EvidenciaCientifica/evi_pensamientos_modifican_anatomia.txt,
+				Staff/EvidenciaCientifica/evi_somos_mas_energia_que_materia.txt,
+				Staff/EvidenciaCientifica/evi_universo_es_mental.txt,
 				Staff/Frases/listfrases_bruce.txt,
 				Staff/Frases/listfrases_de_gregg.txt,
 				Staff/Frases/listfrases_jd.txt,
@@ -937,6 +961,7 @@
 				Views/Diario/DiarioListView.swift,
 				Views/Diario/editContent.swift,
 				Views/EnciclopediaView/EnciclopediaListView.swift,
+				Views/EvidenciaCientifica/EvidenciaCientifica.swift,
 				Views/FeedBackReview/FeedBackReview.swift,
 				Views/Frases/FraseAddView.swift,
 				Views/Frases/FraseRowView.swift,
@@ -1283,7 +1308,6 @@
 				E95B93582AAFBB2600B5E2B5 /* ContentView.swift */,
 				199DA0662B0EAC5800DEED62 /* Home.swift */,
 				E92F644E2AB6EF5A007BB4BA /* Views */,
-				E95B935A2AAFBB2900B5E2B5 /* Assets.xcassets */,
 				911FF1FA2ECB4064009F83BE /* Preview Content */,
 				914415A92EDC377200FFC61D /* Atajos */,
 			);
@@ -1555,7 +1579,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E95B935B2AAFBB2900B5E2B5 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1881,7 +1904,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.6;
 				MARKETING_VERSION = 1.3.6;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.dev;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;

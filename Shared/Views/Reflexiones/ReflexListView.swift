@@ -36,125 +36,137 @@ struct ReflexListView: View {
     
     var body: some View {
         NavigationStack{
-            VStack{
-                List(modelReflex.list, id: \.id){item in
-                    VStack(alignment: .leading){
-                        #if os(macOS)
-                        HStack{
-                            Button{
-                                showWindow(for: ReflexShowTextView(entity: item),
-                                           environmentObjects: [self.modelReflex],
-                                           title: "Reflexión: \(item.title)",
-                                           size: AppCons.windows_size_content,
-                                           isModal: false
-                                )
+            ZStack{
+                
+                LinearGradient.FondoListado()
+                    .ignoresSafeArea()
+                
+                VStack{
+                    List(modelReflex.list, id: \.id){item in
+                        VStack(alignment: .leading){
+                            #if os(macOS)
+                            HStack{
+                                Button{
+                                    showWindow(for: ReflexShowTextView(entity: item),
+                                               environmentObjects: [self.modelReflex],
+                                               title: "Reflexión: \(item.title)",
+                                               size: AppCons.windows_size_content,
+                                               isModal: false
+                                    )
+                                    
+                                   
+                                }label: {
+                                    Text(item.title) //title
+                                        .font(.system(size: CGFloat(self.fontSizeLista)))
+                                }
+                                .buttonStyle(.plain)
                                 
-                               
+                                
+                                
+                                //En macOS: muestra un botón para eliminar la reflexión
+                                if !item.isInbuilt {
+                                    Spacer()
+                                    Button{
+                                        self.entityForDelete = item
+                                        showalertDeleteItem = true
+                                    }label:{
+                                        Image(systemName: "xmark.circle")
+                                            .foregroundStyle(.red)
+                                    }
+                                    
+                                    .padding(.horizontal, 5)
+                                    Button{
+                                        showWindow(for: AddReflexView(reflexionAActualizar: item),
+                                                   environmentObjects: [self.modelReflex],
+                                                   title: "Editar una Reflexión",
+                                                   size: AppCons.windows_size_content,
+                                                   isModal: true
+                                        )
+                                            
+                                        
+                                    }label: {
+                                        //edit
+                                        Image(systemName: "square.and.pencil")
+                                            
+                                    }
+                                    .padding(.horizontal, 5)
+                                    .foregroundStyle(.green)
+                                    
+                                }
+                            }
+                            
+                            
+                            #else
+                            NavigationLink{
+                               ReflexShowTextView(entity: item)
                             }label: {
                                 Text(item.title) //title
                                     .font(.system(size: CGFloat(self.fontSizeLista)))
                             }
-                            .buttonStyle(.plain)
+                            #endif
                             
-                            
-                            
-                            //En macOS: muestra un botón para eliminar la reflexión
-                            if !item.isInbuilt {
-                                Spacer()
-                                Button{
-                                    self.entityForDelete = item
-                                    showalertDeleteItem = true
-                                }label:{
-                                    Image(systemName: "xmark.circle")
-                                        .foregroundStyle(.red)
+                            HStack{
+                                Text(item.autor) //Autor
+                                    .font(.body)
+                                    .italic()
+                                   
+                                if item.isfav{
+                                    Image(systemName:"heart.fill")
+                                        .foregroundStyle(.orange)
                                 }
                                 
-                                .padding(.horizontal, 5)
+                            }
+                        }
+                        .listRowBackground(Color.clear)
+                        .swipeActions(edge: .leading) {
                                 Button{
-                                    showWindow(for: AddReflexView(reflexionAActualizar: item),
-                                               environmentObjects: [self.modelReflex],
-                                               title: "Editar una Reflexión",
-                                               size: AppCons.windows_size_content,
-                                               isModal: true
-                                    )
-                                        
+                                    var favState = self.getFavState(title: item.title)
+                                    favState.toggle()
+                                    if modelReflex.setFavState(title: item.title, state: favState){
+                                        //Actualizar el listado
+                                        withAnimation {
+                                            modelReflex.getArrayReflexOfTxtFile()
+                                        }
+                                       
+                                    }
+                                }label: {
+                                    Image(systemName: "heart")
+                                        .foregroundStyle(item.isfav ? .orange : .gray)
+                                }
+                            
+                            if item.isInbuilt == false{
+                                NavigationLink{
+                                    AddReflexView(reflexionAActualizar: item)
+                                        .environmentObject(self.modelReflex)
                                     
                                 }label: {
                                     //edit
                                     Image(systemName: "square.and.pencil")
-                                        
                                 }
-                                .padding(.horizontal, 5)
-                                .foregroundStyle(.green)
-                                
-                            }
-                        }
-                        
-                        
-                        #else
-                        NavigationLink{
-                           ReflexShowTextView(entity: item)
-                        }label: {
-                            Text(item.title) //title
-                                .font(.system(size: CGFloat(self.fontSizeLista)))
-                        }
-                        #endif
-                        
-                        HStack{
-                            Text(item.autor) //Autor
-                                .font(.body)
-                                .italic()
-                               
-                            if item.isfav{
-                                Image(systemName:"heart.fill")
-                                    .foregroundStyle(.orange)
                             }
                             
                         }
-                    }
-                    .swipeActions(edge: .leading) {
-                            Button{
-                                var favState = self.getFavState(title: item.title)
-                                favState.toggle()
-                                if modelReflex.setFavState(title: item.title, state: favState){
-                                    //Actualizar el listado
-                                    withAnimation {
-                                        modelReflex.getArrayReflexOfTxtFile()
-                                    }
-                                   
+                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                            //Solo permite eliminar las reflexiones creadas por el usuario
+                            if !item.isInbuilt {
+                                Button{
+                                    self.entityForDelete = item
+                                    showalertDeleteItem = true
+                                }label: {
+                                    Image(systemName: "minus.circle")
+                                        .tint(.red)
                                 }
-                            }label: {
-                                Image(systemName: "heart")
-                                    .foregroundStyle(item.isfav ? .orange : .gray)
-                            }
-                        
-                        if item.isInbuilt == false{
-                            NavigationLink{
-                                AddReflexView(reflexionAActualizar: item)
-                                    .environmentObject(self.modelReflex)
-                                
-                            }label: {
-                                //edit
-                                Image(systemName: "square.and.pencil")
                             }
                         }
                         
                     }
-                    .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                        //Solo permite eliminar las reflexiones creadas por el usuario
-                        if !item.isInbuilt {
-                            Button{
-                                self.entityForDelete = item
-                                showalertDeleteItem = true
-                            }label: {
-                                Image(systemName: "minus.circle")
-                                    .tint(.red)
-                            }
-                        }
-                    }
-                    
+                    .scrollContentBackground(.hidden)
+                    .background(Color.clear)
                 }
+                .foregroundStyle(.black)
+                .bold()
             }
+            
             .navigationTitle("Reflexiones")
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
