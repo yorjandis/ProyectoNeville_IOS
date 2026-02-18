@@ -113,6 +113,8 @@ enum MetasPreestablecidas: String, CaseIterable, Identifiable {
     case PracticarIncomodidadVoluntaria
     case EspaciosOrdenadosDiarios
     case CaminarDescalzoSobreTierra_Hierba
+    
+    
     var id: String { self.rawValue }
     
     var getDescription: String {

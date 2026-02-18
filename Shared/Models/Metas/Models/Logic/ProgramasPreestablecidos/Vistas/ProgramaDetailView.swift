@@ -44,7 +44,7 @@ struct ProgramaDetailView: View {
                 
                 ForEach(programa.unidadesNotes) { unidad in
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(unidad.name)
+                        Text("\(unidad.name) \(self.showExpanded == unidad.name ? "v" : ">")")
                             .font(.headline)
                             .onTapGesture {
                                 withAnimation {

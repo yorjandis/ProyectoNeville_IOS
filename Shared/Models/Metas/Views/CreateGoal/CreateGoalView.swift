@@ -55,6 +55,11 @@ struct CreateGoalView: View {
 
                    
                 }
+                #if os(macOS)
+                .tabViewStyle(.automatic)   // o .windowToolbarStyle() en macOS 14+
+                #else
+                .tabViewStyle(.automatic)
+                #endif
                 .navigationTitle("Nueva Meta")
                 .toolbar {
                     ToolbarItem(placement: .confirmationAction) {
@@ -182,33 +187,55 @@ struct CreateGoalView: View {
     
     @ViewBuilder
     private func MetasPreestablecidasView() -> some View {
-        //Listado de Metas Preestablecidas
-        VStack(alignment: .leading){
+        VStack(alignment: .leading) {
+            
             Text("Seleccione una Meta Personalizada:")
-               .font(.title2)
-            List(self.metasOrdenadas, id: \.self) { meta in
-                    VStack(alignment: .leading, spacing: 5){
-                        Text("\(meta.getMeta.titulo)")
-                            .font(.title2)
-                            .foregroundStyle(.orange)
-                            .bold()
+                .font(.title2)
+                .padding(.bottom, 8)
+            
+            ScrollView {
+                LazyVStack(spacing: 16) {   // 👈 separación entre tarjetas
+                    
+                    ForEach(self.metasOrdenadas, id: \.self) { meta in
                         
-                        Text("\(meta.getMeta.description)")
-                            .font(.title3)
-                        
-                        Button("Preparar esta Meta"){
-                            self.vm.title = meta.getDescription
-                            self.vm.description = meta.getMeta.description
-                            self.vm.amount = meta.getMeta.noUnidades
-                            self.vm.unidadesInfo = meta.getMeta.unidadesInfo
-                            self.selectedTab = 0
+                        VStack(alignment: .leading, spacing: 10) {
+                            
+                            Text(meta.getMeta.titulo)
+                                .font(.title2)
+                                .foregroundStyle(.orange)
+                                .bold()
+                            
+                            Text(meta.getMeta.description)
+                                .font(.body)
+                                .foregroundStyle(.secondary)
+                            
+                            Button("Cargar esta Meta") {
+                                self.vm.title = meta.getDescription
+                                self.vm.description = meta.getMeta.description
+                                self.vm.amount = meta.getMeta.noUnidades
+                                self.vm.unidadesInfo = meta.getMeta.unidadesInfo
+                                self.selectedTab = 0
+                            }
+                            .buttonStyle(.bordered)
+                            
                         }
-                        .buttonStyle(.bordered)
+                        .padding(16)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(
+                            RoundedRectangle(cornerRadius: 16)
+                                .fill(.background)
+                                .shadow(color: .black.opacity(0.08), radius: 5, x: 0, y: 2)
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 16)
+                                .stroke(.quaternary, lineWidth: 1)
+                        )
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-    
                 }
+                .padding(.vertical, 8)
+            }
         }
+        .padding()
     }
     
     @ViewBuilder

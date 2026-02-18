@@ -10,43 +10,67 @@ import SwiftUI
 struct ProgramasListView: View {
     
     @StateObject private var viewModel = ProgramasViewModel()
-    
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
-        NavigationStack {
-            List(viewModel.programas) { programa in
-                VStack(alignment: .leading, spacing: 5){
-                    Text(programa.title)
-                        .font(.headline)
-                    Text(programa.description)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(2)
+        
+        VStack(alignment: .leading) {
+            
+            Text("Programas")
+                .font(.largeTitle)
+                .bold()
+                .padding(.bottom, 8)
+            
+            ScrollView {
+                LazyVStack(spacing: 16) {
                     
-                    NavigationLink {
-                        ProgramaDetailView(programa: programa)
-                    } label: {
-                        HStack{
-                            Text("Detalles del Programa")
-                                .font(.headline)
+                    ForEach(viewModel.programas) { programa in
+                        
+                        VStack(alignment: .leading, spacing: 12) {
+                            
+                            Text(programa.title)
+                                .font(.title2)
+                                .bold()
+                            
+                            Text(programa.description)
+                                .font(.body)
+                                .foregroundStyle(.secondary)
+                                .lineLimit(3)
+                            
+                            NavigationLink {
+                                ProgramaDetailView(programa: programa)
+                            } label: {
+                                Label("Detalles del Programa", systemImage: "info.circle")
+                                    .font(.headline)
+                            }
+                            .buttonStyle(.bordered)
+                            
+                            HStack {
+                                Spacer()
+                                
+                                Button("Comenzar Programa") {
+                                    viewModel.createProgramaPreestablecido(programa: programa)
+                                    dismiss()
+                                }
+                                .buttonStyle(.bordered)
+                            }
                         }
+                        .padding(16)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(
+                            RoundedRectangle(cornerRadius: 18)
+                                .fill(.background)
+                                .shadow(color: .black.opacity(0.08), radius: 6, x: 0, y: 3)
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 18)
+                                .stroke(.quaternary, lineWidth: 1)
+                        )
                     }
-                    .padding(5)
-                    
-                    HStack{
-                       Spacer()
-                        Button("Comenzar Programa"){
-                            viewModel.createProgramaPreestablecido(programa: programa)
-                            dismiss()
-                        }
-                        .buttonStyle(.bordered)
-                    }
-                    
                 }
-                
+                .padding(.vertical, 8)
             }
-            .navigationTitle("Programas")
         }
+        .padding()
     }
 }
