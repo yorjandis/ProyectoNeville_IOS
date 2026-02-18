@@ -35,6 +35,8 @@ struct GoalCardView: View {
     
     @State private var expandirNotas: Bool = false
     
+    @State private var NotasGenerales: String = ""
+    
     
  
     
@@ -74,6 +76,34 @@ struct GoalCardView: View {
                 
                 //Mostrar El tiempo que falta para la próxima unidad:
                 HStack{
+                    //🔥 Mostrar un botón para archivar/Actualizar la unidad
+                    if let id = goal.id {
+                        if goal.isCompleted && goal.isStarted {
+                            Button("Archivar"){
+                                if GoalEntity.isArchived(id: id, context: self.context){
+                                    //Actualizar:
+                                    do{
+                                        try goal.updateArchivedVersion(context: self.context)
+                                    }catch{
+                                        msg("Error en la función actualizar (archivar)")
+                                    }
+                                }else{
+                                    //Archivar:
+                                    do{
+                                        try goal.archive(context: self.context)
+                                    }catch{
+                                        msg("Error en la función archivar")
+                                    }
+                                }
+                            }
+                            .buttonStyle(.bordered)
+                            .padding(.horizontal)
+                        }
+                        
+                        
+                    }
+                    
+                    
                     Spacer()
                     if goal.isCompleted && goal.isStarted {
                         //Mostrar un indicador de que se ha completado el objetivo:
@@ -81,7 +111,7 @@ struct GoalCardView: View {
                             Text("Completado!").font(.title2).bold()
                             Image(systemName: "checkmark.circle.fill")
                                 .foregroundStyle(
-                                    Color(red: 0.0, green: 0.35, blue: 0.2)
+                                    .green.opacity(0.7)
                                 ).bold()
                                 .font(.system(size: 44))
                         }
@@ -149,9 +179,9 @@ struct GoalCardView: View {
                         self.expandirNotas.toggle()
                     }
                 }label: {
-                    Image(systemName: "info.square")
+                    Image(systemName: "info.circle")
                         .foregroundStyle(.black)
-                        .font(.system(size: 20))
+                        .font(.system(size: 28))
                 }
                 .padding(.trailing, 15)
                 
@@ -182,12 +212,12 @@ struct GoalCardView: View {
                                     Image(systemName: "circle.fill")
                                         .font(.system(size: 10))
                                         .foregroundStyle( goal.hasLostUnits ? .orange : .green)
-                                        .offset(y: 10)
+                                        .offset(y: 8)
                                 
                                 
                             })
                             .frame(width: 35, height: 30)
-                            .offset(y: -5)
+                            .offset(y: -2)
                     }
                 }
 
@@ -198,8 +228,9 @@ struct GoalCardView: View {
                     }
                     
                 }label: {
-                    Image(systemName: "trash")
+                    Image(systemName: "trash.circle")
                         .foregroundStyle(.black)
+                        .font(.system(size: 28))
                 }
                 .padding(.horizontal, 15)
             }
@@ -210,18 +241,45 @@ struct GoalCardView: View {
                 VStack{
                     GoalDetailView(goal: self.goal)
                 }
-                .frame(height: 200)
+                .frame(height: 300)
             }
             
             if self.expandirNotas{
                 VStack(alignment: .leading){
-                    Text("Notas Generales:").font(.title2.bold()).foregroundStyle(.orange)
-                        .padding(.bottom, 5)
-                    
-                    Text("\(self.goal.descriptionText  ?? "")")
-                        .font(.body).bold()
+                    VStack(alignment: .leading) {
+                        //Contenido de la nota
+                        Text("Notas Generales:")
+                            .font(.title2.bold())
+                            .foregroundStyle(.orange)
+                            .padding(.bottom, 5)
+                        
+                        ScrollView{
+                            TextEditor(text: self.$NotasGenerales)
+                                .font(.platFormSize(iOS: 22, mac: 24))
+                                .padding(3)
+                                .frame(minHeight: 200)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .fill(Color.black.opacity(0.3))
+                                )
+                        }
+                        
+                        Button("Guardar"){
+                            goal.descriptionText = self.NotasGenerales
+                            
+                            do{
+                                try self.context.save()
+                            }catch{
+                                msg("Error al actualizar la descripción de la Meta")
+                            }
+                        }
+                        .buttonStyle(.bordered)
+                    }
+                    .onAppear{
+                        self.NotasGenerales = self.goal.descriptionText ?? ""
+                    }
                 }
-                .padding()
+                .padding(1)
                 
             }
             

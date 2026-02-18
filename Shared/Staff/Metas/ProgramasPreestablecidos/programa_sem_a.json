@@ -1,0 +1,22 @@
+{
+  "title": "Dieta semanal A",
+  "detalles":"Programa de 7 unidades, cada unidad corresponde a un día de la semana",
+  "description": "Programa orientado a mejorar la sensibilidad a la insulina y optimizar energía.",
+  "noUnidades": 7,
+  "tipoUnidad": "dias",
+  "frecuencia": 1,
+  "unidadesNotes": [
+    {
+      "name": "Lunes",
+      "note": "Entrenamiento matutino de Fuerza\nDesayuno tardío (post-entreno):\n* 3 huevos\n* 150 gramos de claras adicionales (opcional si buscas más proteínas)\n* 100 gramos pan integral\n* 1 tomate Grande\n* 10 ml de AOVE\n* 250 gramos de yogurt griego natutal\n* 100 gramos de frutos rojos\n* 20 gramos de nueces\n\nObjetivo Metabólico:\nRecarga de glucógeno + Estimulación de nMTOR controlado tras haber activado AMPK durante el entrenamiento\n\nCena:\n* 200 gramos de Salmón\n* 150 gramos de patata cocida\n* 200 gramos de espárragods\n* ensalada verde grande (150 gramos)\n* 10 ml de AOVE\n\nObjetivo Metabólico:\nOmega 3 -> Disminuye inflamación -> Disminución de activación de JNK/NF-kB -> disminución de bloqueo de IRS"
+    },
+    {
+      "name": "Martes",
+      "note":"Desayuno tardío:\n* 100 gramos de avena\n* "
+    },
+    {
+      "name": "Miércoles",
+      "note":"Desayuno Tardío:\n"
+    }
+  ]
+}

@@ -34,6 +34,7 @@
 		915017452EF078B2007B741A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 915017442EF078B2007B741A /* StoreKit.framework */; };
 		918C4B0B2EF4094D00974B54 /* La Ley.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 918C4AFF2EF4094D00974B54 /* La Ley.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		91E107712EEA01AD00F4DB1D /* sharedios.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 91E107672EEA01AD00F4DB1D /* sharedios.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		91E52D8C2F4327CE0054C032 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 91E52D8B2F4327CE0054C032 /* Assets.xcassets */; };
 		91F0DD552D605B5800307453 /* watchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F0DD542D605B4B00307453 /* watchModel.swift */; };
 		E95B93572AAFBB2600B5E2B5 /* Neville_iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95B93562AAFBB2600B5E2B5 /* Neville_iOSApp.swift */; };
 		E95B93592AAFBB2600B5E2B5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95B93582AAFBB2600B5E2B5 /* ContentView.swift */; };
@@ -160,6 +161,7 @@
 		918C4AFF2EF4094D00974B54 /* La Ley.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "La Ley.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		91E1074C2EE9FC8D00F4DB1D /* UniformTypeIdentifiers.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UniformTypeIdentifiers.framework; path = System/Library/Frameworks/UniformTypeIdentifiers.framework; sourceTree = SDKROOT; };
 		91E107672EEA01AD00F4DB1D /* sharedios.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = sharedios.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		91E52D8B2F4327CE0054C032 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		91F0DD4E2D60384700307453 /* WatchComplicationLaLeyExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WatchComplicationLaLeyExtension.entitlements; sourceTree = "<group>"; };
 		91F0DD542D605B4B00307453 /* watchModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = watchModel.swift; sourceTree = "<group>"; };
 		E95B93532AAFBB2600B5E2B5 /* Neville_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Neville_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -200,9 +202,20 @@
 				Models/KeyChainModel/KeyChainModel.swift,
 				Models/LienzoModel/LienzoModel.swift,
 				"Models/Metas/Models/CoreData/GoalEntity+Core.swift",
+				Models/Metas/Models/Enums/MetasPreestablecidas.swift,
 				Models/Metas/Models/Enums/TimeUnit.swift,
 				Models/Metas/Models/Enums/UnitStatus.swift,
+				Models/Metas/Models/Logic/ProgramasPreestablecidos/ProgramasLoader.swift,
+				Models/Metas/Models/Logic/ProgramasPreestablecidos/ProgramasPreestablecidosModel.swift,
+				Models/Metas/Models/Logic/ProgramasPreestablecidos/ProgramasViewModel.swift,
+				Models/Metas/Models/Logic/ProgramasPreestablecidos/Vistas/ProgramaDetailView.swift,
+				Models/Metas/Models/Logic/ProgramasPreestablecidos/Vistas/ProgramasListView.swift,
 				Models/Metas/Models/Logic/UnitLifecycle.swift,
+				Models/Metas/Models/MetasArchivadas/ArchivedGoal.swift,
+				Models/Metas/Models/MetasArchivadas/Vistas/ArchivedGoalCardView.swift,
+				Models/Metas/Models/MetasArchivadas/Vistas/ArchivedGoalDetailView.swift,
+				Models/Metas/Models/MetasArchivadas/Vistas/ArchivedGoalsListView.swift,
+				Models/Metas/Models/MetasArchivadas/Vistas/ArchivedUnitCellView.swift,
 				Models/Metas/Views/CreateGoal/CreateGoalView.swift,
 				Models/Metas/Views/CreateGoal/CreateGoalViewModel.swift,
 				Models/Metas/Views/CreateGoal/ModifyGoal.swift,
@@ -938,6 +951,7 @@
 				Staff/Frases/listfrases_otros.txt,
 				Staff/Frases/listfrases_salud.txt,
 				Staff/Frases/listfrases.txt,
+				Staff/Metas/ProgramasPreestablecidos/programa_sem_a.json,
 				Staff/privacy.txt,
 				Staff/Reflexiones/reflex_conciencia_y_realidad.txt,
 				Staff/Reflexiones/reflex_conocimiento.txt,
@@ -1301,6 +1315,7 @@
 		E95B93552AAFBB2600B5E2B5 /* Neville_iOS */ = {
 			isa = PBXGroup;
 			children = (
+				91E52D8B2F4327CE0054C032 /* Assets.xcassets */,
 				9113E29C2EE9E1D2002AC306 /* Model */,
 				19E0BE052B0B508400E149A5 /* Neville_iOS.entitlements */,
 				197D2A392AF9858900486014 /* Neville-iOS-Info.plist */,
@@ -1579,6 +1594,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				91E52D8C2F4327CE0054C032 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

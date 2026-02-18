@@ -88,7 +88,7 @@ struct UnitCellView: View {
             statusEmoji = "🟠"
         }
 
-        return "Unidad \(unit.index) \(statusEmoji)"
+        return "\(unit.name ?? "Unidad") \(statusEmoji)"
         
     }
     

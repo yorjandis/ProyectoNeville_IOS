@@ -97,13 +97,13 @@ struct LienzoMain: View {
                             VStack{
                                 if lienzoModel.posicionImagenLienzo == .izquierda {
                                     if lienzoModel.visibilidadImagenLienzo{
-                                        ImagenLienzo()
+                                        ImagenLienzo().padding(.leading, 3)
                                     }
                                     
                                 }
                                 if lienzoModel.posicionImagenLienzoSecundario == .izquierda {
                                     if lienzoModel.visibilidadImagenLienzoSecundario{
-                                       ImagenLienzoSecundario()
+                                       ImagenLienzoSecundario().padding(.leading, 3)
                                     }
                                     
                                 }
@@ -137,14 +137,14 @@ struct LienzoMain: View {
                             HStack{
                                 if lienzoModel.posicionImagenLienzo == .derecha {
                                     if lienzoModel.visibilidadImagenLienzo{
-                                        ImagenLienzo()
+                                        ImagenLienzo().padding(.leading, 3)
                                     }
                                     
                                 }
                                 
                                 if lienzoModel.posicionImagenLienzoSecundario == .derecha {
                                     if lienzoModel.visibilidadImagenLienzoSecundario{
-                                       ImagenLienzoSecundario()
+                                        ImagenLienzoSecundario().padding(.leading, 3)
                                     }
                                     
                                 }
@@ -466,11 +466,10 @@ struct LienzoMain: View {
                         }
                     }
                     
-                    //Escoger una imagen de lienzo Principal Predeterminada: neville, addulhall, William Blake
+                    //Seleccionar una imagen Predeterminada: neville, addulhall, William Blake..
                     VStack(alignment: .leading, spacing: 20){
                         Text("Imágines predeterminadas")
                         HStack(spacing: 10){
-                            
                             Image(uiImage: UIImage(named: "nev-min")!)
                                 .resizable()
                                 .scaledToFill()
@@ -494,19 +493,26 @@ struct LienzoMain: View {
                                 .onTapGesture {
                                     lienzoModel.imagenLienzo = UIImage(named: "william")!
                                 }
-                            Image(nsImage: UIImage(named: "jd-min")!)
+                            Image(uiImage: UIImage(named: "jd")!)
                                 .resizable()
                                 .scaledToFill()
                                 .frame(width: 50, height: 50)
                                 .onTapGesture {
-                                    lienzoModel.imagenLienzo = UIImage(named: "jd-min")!
+                                    lienzoModel.imagenLienzo = UIImage(named: "jd")!
                                 }
-                            Image(nsImage: UIImage(named: "bruce-min")!)
+                            Image(uiImage: UIImage(named: "bruce")!)
                                 .resizable()
                                 .scaledToFill()
                                 .frame(width: 50, height: 50)
                                 .onTapGesture {
-                                    lienzoModel.imagenLienzo = UIImage(named: "bruce-min")!
+                                    lienzoModel.imagenLienzo = UIImage(named: "bruce")!
+                                }
+                            Image(uiImage: UIImage(named: "gregg")!)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                                .onTapGesture {
+                                    lienzoModel.imagenLienzo = UIImage(named: "gregg")!
                                 }
                              
                         }
@@ -556,19 +562,26 @@ struct LienzoMain: View {
                                 .onTapGesture {
                                     lienzoModel.imagenLienzo = UIImage(named: "william")!
                                 }
-                            Image(nsImage: UIImage(named: "jd-min")!)
+                            Image(nsImage: UIImage(named: "jd")!)
                                 .resizable()
                                 .scaledToFill()
                                 .frame(width: 50, height: 50)
                                 .onTapGesture {
-                                    lienzoModel.imagenLienzo = UIImage(named: "jd-min")!
+                                    lienzoModel.imagenLienzo = UIImage(named: "jd")!
                                 }
-                            Image(nsImage: UIImage(named: "bruce-min")!)
+                            Image(nsImage: UIImage(named: "bruce")!)
                                 .resizable()
                                 .scaledToFill()
                                 .frame(width: 50, height: 50)
                                 .onTapGesture {
-                                    lienzoModel.imagenLienzo = UIImage(named: "bruce-min")!
+                                    lienzoModel.imagenLienzo = UIImage(named: "bruce")!
+                                }
+                            Image(nsImage: UIImage(named: "gregg")!)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                                .onTapGesture {
+                                    lienzoModel.imagenLienzo = UIImage(named: "gregg")!
                                 }
                              
                         }
@@ -671,6 +684,27 @@ struct LienzoMain: View {
                                 .onTapGesture {
                                     lienzoModel.imagenLienzoSecundario = UIImage(named: "william")!
                                 }
+                            Image(uiImage: UIImage(named: "jd")!)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                                .onTapGesture {
+                                    lienzoModel.imagenLienzoSecundario = UIImage(named: "jd")!
+                                }
+                            Image(uiImage: UIImage(named: "bruce")!)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                                .onTapGesture {
+                                    lienzoModel.imagenLienzoSecundario = UIImage(named: "bruce")!
+                                }
+                            Image(uiImage: UIImage(named: "gregg")!)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                                .onTapGesture {
+                                    lienzoModel.imagenLienzoSecundario = UIImage(named: "gregg")!
+                                }
                              
                         }
                     }
@@ -724,7 +758,27 @@ struct LienzoMain: View {
                                 .onTapGesture {
                                     lienzoModel.imagenLienzoSecundario = UIImage(named: "william")!
                                 }
-                             
+                            Image(nsImage: UIImage(named: "jd")!)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                                .onTapGesture {
+                                    lienzoModel.imagenLienzoSecundario = UIImage(named: "jd")!
+                                }
+                            Image(nsImage: UIImage(named: "bruce")!)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                                .onTapGesture {
+                                    lienzoModel.imagenLienzoSecundario = UIImage(named: "bruce")!
+                                }
+                            Image(nsImage: UIImage(named: "gregg")!)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                                .onTapGesture {
+                                    lienzoModel.imagenLienzoSecundario = UIImage(named: "gregg")!
+                                }
                         }
                     }
                     .padding(.vertical, 15)

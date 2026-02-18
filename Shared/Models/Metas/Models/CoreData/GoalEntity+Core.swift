@@ -32,66 +32,91 @@ extension GoalEntity {
 }
 
 
-//Crear las unidades de tiempo de un Objetivo
+//Inicia una Meta personalizada/Preestablecida
 extension GoalEntity {
 
-    //Inicia un Onjetivo y ficha la primera unidad
+    //Inicia un Objetivo y ficha la primera unidad
     func start() {
         guard !isStarted else { return }
+        
+
         isStarted = true
         startDate = Date()
         
-        // Genera todas las unidades
-        generateUnits()
         
         // Marca automáticamente la primera unidad como completada
             if let firstUnit = unitsArray.first {
                 firstUnit.status = UnitStatus.completed.rawValue
-                firstUnit.completedDate = Date.now
-                try? self.managedObjectContext?.save()
+                firstUnit.completedDate = Date()
             }
+
+    }
+    
+    //Crear e inicia la Meta Para un Programa Preestablecido:
+    func startProgramaPreestablecido(unitNotes : [UnidadesInfo] = []) {
+        guard !isStarted else { return }
+        
+        guard managedObjectContext != nil else { return }
+        
+        isStarted = true
+        startDate = Date()
+        
+        // Genera todas las unidades
+        generateUnits(DetallesUnidades: unitNotes)
+        
+
     }
 
     
-    //Genera todas las unidades de un Objetivo
-    private func generateUnits() {
+    func generateUnits(DetallesUnidades: [UnidadesInfo] = []) {
         guard let context = self.managedObjectContext else { return }
 
-        let calendar = Calendar.current       // ✅ Aquí se define
+        let calendar = Calendar.current
         let now = Date()
         let baseStart = timeUnit.alignedStart(from: now)
         
-        for index in 1...totalUnits {
+        let step = frequencyValue
+        
+        for index in 1...Int(totalUnits) {
             let unit = UnitEntity(context: context)
             unit.id = UUID()
             unit.index = Int32(index)
             unit.status = "pending"
-            unit.unitType = self.unitType //Almacena el tipo de unidad: horas, dias, meses, años
-            unit.note = ""
-            unit.name = String(index) //Unidad 1, 2, 3, 4, ...
-            unit.goal = self   // ✅ MISMO CONTEXTO
+            unit.unitType = self.unitType
+            unit.goal = self
             
-            let step = frequencyValue
+            // 👇 Lógica de nombre y nota
+            if index - 1 < DetallesUnidades.count {
+                let info = DetallesUnidades[index - 1]
+                unit.name = info.name
+                unit.note = info.note
+            } else {
+                // Lógica por defecto
+                unit.name = "Unidad \(index)"
+                unit.note = ""
+            }
 
-            unit.startDate = calendar.date(
+            // 👇 Fechas
+            if let startDate = calendar.date(
                 byAdding: timeUnit.calendarComponent,
-                value: (Int(index) - 1) * step,
+                value: (index - 1) * step,
                 to: baseStart
-            )
-
-            unit.endDate = calendar.date(
-                byAdding: timeUnit.calendarComponent,
-                value: step,
-                to: unit.startDate!
-            )
-            
-            
+            ) {
+                unit.startDate = startDate
+                unit.endDate = calendar.date(
+                    byAdding: timeUnit.calendarComponent,
+                    value: step,
+                    to: startDate
+                )
+            }
         }
-        
- 
-        
     }
+    
+    
 }
+
+
+
 
 
 //Borra un objetivo y todas sus unidades:
@@ -282,4 +307,120 @@ extension GoalEntity {
     var hasLostUnits: Bool {
         unitsArray.contains { $0.unitStatus == .lost }
     }
+}
+
+
+//Archiva una Meta Completada!
+extension GoalEntity {
+
+    func archive(context: NSManagedObjectContext) throws  {
+            guard isCompleted else { return }
+            guard let goalID = self.id else { return }
+            
+            // 🔎 1. Comprobar si ya existe en el histórico
+            let request: NSFetchRequest<ArchivedGoalEntity> = ArchivedGoalEntity.fetchRequest()
+            request.predicate = NSPredicate(format: "id == %@", goalID as CVarArg)
+            request.fetchLimit = 1
+            
+            let existing = try context.fetch(request)
+            
+            guard existing.isEmpty else {
+                msg("⚠️ La meta ya está archivada")
+                return
+            }
+            
+            // 🟣 2. Crear meta archivada
+            let archivedGoal = ArchivedGoalEntity(context: context)
+            archivedGoal.id = goalID
+            archivedGoal.title = self.title
+            archivedGoal.descriptionText = self.descriptionText
+            archivedGoal.totalUnits = self.totalUnits
+            archivedGoal.unitType = self.unitType
+            archivedGoal.frequency = self.frequency
+            archivedGoal.completionDate = Date()
+            
+            // 🟣 3. Copiar unidades
+            for unit in unitsArray {
+                let archivedUnit = ArchivedUnitEntity(context: context)
+                archivedUnit.id = unit.id
+                archivedUnit.name = unit.name
+                archivedUnit.index = unit.index
+                archivedUnit.status = unit.status
+                archivedUnit.startDate = unit.startDate
+                archivedUnit.endDate = unit.endDate
+                archivedUnit.completedDate = unit.completedDate
+                archivedUnit.note = unit.note
+                archivedUnit.goal = archivedGoal
+            }
+            
+            try context.save()
+        }
+    
+}
+
+//Actualizar una meta archivada
+
+extension GoalEntity {
+    
+    func updateArchivedVersion(context: NSManagedObjectContext) throws {
+        guard let goalID = self.id else { return }
+        
+        // 🔎 1. Buscar meta archivada
+        let request: NSFetchRequest<ArchivedGoalEntity> = ArchivedGoalEntity.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", goalID as CVarArg)
+        request.fetchLimit = 1
+        
+        guard let archivedGoal = try context.fetch(request).first else {
+            msg("⚠️ No existe versión archivada para actualizar")
+            return
+        }
+        
+        // 🟣 2. Actualizar propiedades principales
+        archivedGoal.title = self.title
+        archivedGoal.descriptionText = self.descriptionText
+        archivedGoal.totalUnits = self.totalUnits
+        archivedGoal.unitType = self.unitType
+        archivedGoal.frequency = self.frequency
+        archivedGoal.completionDate = Date()
+        
+        // 🟣 3. Eliminar unidades archivadas antiguas
+        if let oldUnits = archivedGoal.units as? Set<ArchivedUnitEntity> {
+            for unit in oldUnits {
+                context.delete(unit)
+            }
+        }
+        
+        // 🟣 4. Copiar nuevamente las unidades actuales
+        for unit in unitsArray {
+            let archivedUnit = ArchivedUnitEntity(context: context)
+            archivedUnit.id = unit.id
+            archivedUnit.index = unit.index
+            archivedUnit.status = unit.status
+            archivedUnit.startDate = unit.startDate
+            archivedUnit.endDate = unit.endDate
+            archivedUnit.completedDate = unit.completedDate
+            archivedUnit.note = unit.note
+            archivedUnit.goal = archivedGoal
+        }
+        
+        try context.save()
+    }
+}
+
+//Saber si la unidad esta archivada:
+extension  GoalEntity {
+    
+    static func isArchived(id: UUID, context : NSManagedObjectContext)  -> Bool {
+        
+        let request: NSFetchRequest<ArchivedGoalEntity> = ArchivedGoalEntity.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+        do{
+            let result =  try context.fetch(request)
+            return !result.isEmpty
+        }catch{
+            return false
+        }
+    }
+    
+    
 }

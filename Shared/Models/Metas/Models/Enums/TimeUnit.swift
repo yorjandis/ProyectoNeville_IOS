@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-enum TimeUnit: String, CaseIterable {
+enum TimeUnit: String, CaseIterable, Codable {
     case minutos, horas, dias, meses, años
 
     var calendarComponent: Calendar.Component {
@@ -19,6 +19,22 @@ enum TimeUnit: String, CaseIterable {
         case .años: return .year
         }
     }
+    
+    func description(for value: Int) -> String {
+            switch self {
+            case .minutos:
+                return value == 1 ? "minuto" : "minutos"
+            case .dias:
+                return value == 1 ? "día" : "días"
+            case .meses:
+                return value == 1 ? "mes" : "meses"
+            case .años:
+                return value == 1 ? "año" : "años"
+            case .horas:
+                return value == 1 ? "hora" : "horas"
+            }
+        }
+    
 }
 //Asigna una prioridad a cada unidad de tiempo, para poder organizarlas en la lista de objetivos:
 //comenzando por los objetivos de horas, seguido por dias, meses y años.

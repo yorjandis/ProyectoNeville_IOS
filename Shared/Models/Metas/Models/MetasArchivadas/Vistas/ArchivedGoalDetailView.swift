@@ -1,24 +1,22 @@
 //
-//  GoaldDetailView.swift
+//  ArchivedGoalDetailView.swift
 //  Neville_iOS
 //
-//  Created by Yorjandis PG on 7/1/26.
+//  Created by Yorjandis PG on 17/2/26.
 //
-
-//DETALLE DE OBJETIVO + GRID DE UNIDADES
 
 import SwiftUI
 
-struct GoalDetailView: View {
 
-    @ObservedObject var goal: GoalEntity
+struct ArchivedGoalDetailView: View {
+
+    @ObservedObject var goal: ArchivedGoalEntity
     @Environment(\.managedObjectContext) private var context
-    
-    @ObservedObject var clock = GlobalClock.shared //Reloj
+
 
     let columns = Array(repeating: GridItem(.flexible(), spacing:8), count: 3)
     
-    @State private var selectedUnit: UnitEntity? //Para mostrar inforación de una unidad
+    @State private var selectedUnit: ArchivedUnitEntity? //Para mostrar inforación de una unidad
     
     @State private var note : String = ""
     
@@ -44,7 +42,7 @@ struct GoalDetailView: View {
             if let showUnit = self.selectedUnit {
                 VStack(alignment: .leading){
                     HStack{
-                        Text("Unidad \(showUnit.name ?? "") \(showUnit.unitStatus == .lost ? "🟠" : "🟢" )").bold()
+                        Text("Unidad \(showUnit.name  ?? "") \(showUnit.status == "lost" ? "🟠" : "🟢" )").bold()
                         Spacer()
                         Text("Fichado:").bold()
                         Text("\(self.getDateFormated(date: showUnit.completedDate))")
@@ -57,7 +55,8 @@ struct GoalDetailView: View {
                                 //Guardar la nota si esta se ha modificado
                                 if self.note != self.selectedUnit?.note ?? ""{
                                     do{
-                                        try self.selectedUnit?.updateNoteUnit(note: self.note)
+                                        self.selectedUnit?.note = self.note
+                                        try context.save()
                                     }catch{
                                         self.showAlert = true
                                     }
@@ -74,13 +73,13 @@ struct GoalDetailView: View {
                         //Contenido de la nota
                         ScrollView{
                             TextEditor(text: self.$note)
-                                .font(.platFormSize(iOS: 20, mac: 22))
+                                .font(.platFormSize(iOS: 22, mac: 24))
                                 .padding(3)
-                                    .frame(minHeight: 200)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 12)
-                                            .fill(Color.black.opacity(0.3))
-                                    )
+                                .frame(minHeight: 200)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .fill(Color.black.opacity(0.3))
+                                )
                         }
                         
                             
@@ -105,7 +104,7 @@ struct GoalDetailView: View {
                 ScrollView{
                     LazyVGrid(columns: columns, spacing: 10) {
                         ForEach(goal.unitsArray) { unit in
-                            UnitCellView(unit: unit)
+                            ArchivedUnitCellView(unit: unit)
                                 .contextMenu{
                                     Button("Nota de esta Unidad"){
                                         withAnimation {
@@ -119,10 +118,6 @@ struct GoalDetailView: View {
                 }
             }
         }
-        .onAppear {
-            //Actualiza el estado de las unidades perdidas:
-            updateLostUnits()
-        }
         .alert(isPresented: self.$showAlert){
             Alert(title: Text("La ley - Metas"), message: Text("No se puede actualizar la nota"))
         }
@@ -131,10 +126,5 @@ struct GoalDetailView: View {
     
 
 
-private func updateLostUnits() {
-    for unit in goal.unitsArray {
-        unit.updateLostIfNeeded(now: clock.now)
-    }
-    try? context.save()
-}
+
 }

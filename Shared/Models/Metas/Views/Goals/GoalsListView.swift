@@ -19,6 +19,8 @@ struct GoalsListView: View {
     ) private var goals: FetchedResults<GoalEntity>
 
     @State private var showCreateGoal = false
+    
+    @State private var showHistorial = false
 
     var body: some View {
         NavigationStack {
@@ -42,17 +44,51 @@ struct GoalsListView: View {
                 .padding(.top, 15)
                 
             }
-            .navigationTitle("Objetivos")
+            .navigationTitle("Metas")
             .toolbar {
-                Button {
-                    showCreateGoal = true
-                } label: {
-                    Image(systemName: "plus")
+
+                ToolbarItem{
+                    Button{
+                        #if os(macOS)
+                        
+                        showWindow(for: ArchivedGoalsListView(context: self.context),
+                                    environmentObjects: [],
+                         title: "Historial de Metas",
+                                    size: AppCons.windows_size_content,
+                         isModal: true)
+                         
+                        #else
+                        self.showHistorial = true
+                        #endif
+                        
+                    }label:{
+                        Image(systemName: "clock")
+                    }
                 }
+                
+                if #available(iOS 26.0, macOS 26.0, *) {
+                    ToolbarSpacer(.fixed)
+                }
+                
+                ToolbarItem{
+                    Button {
+                        showCreateGoal = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                }
+                
+                
+                
             }
             .sheet(isPresented: $showCreateGoal) {
                 CreateGoalView()
                     .environment(\.managedObjectContext, context)
+            }
+            .sheet(isPresented: self.$showHistorial){
+                #if os(iOS) || os(ipadOS)
+                ArchivedGoalsListView()
+                #endif
             }
         }
     }
