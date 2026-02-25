@@ -33,18 +33,31 @@ struct UtilFuncs{
     }
     
     ///Lee el contenido de un fichero Txt, ubicado en el bundle de la app, y lo devuelve como String
+    ///Puede omitir un número de líneas al inicio del fichero
     /// - Parameter - fileName: el nombre del fichero, sin la extensión
     ///  - Returns - Devuelve el contenido del fichero
-    static func FileRead(_ fileName: String) -> String {
+    static func FileRead(_ fileName: String, omittingFirstLines linesToOmit: Int = 0) -> String {
         var result = ""
         let temp = "\(fileName.lowercased())"
         
         if let gg = Bundle.main.url(forResource: temp, withExtension: "txt") {
             if let fileContents = try? String(contentsOf: gg, encoding: .utf8) {
-                //Normalizando los saltos de línea:
-                let contenidoNormalizado = fileContents.replacingOccurrences(of: "\r\n", with: "\n").replacingOccurrences(of: "\r", with: "\n")
                 
-                result = contenidoNormalizado
+                // Normalizando los saltos de línea
+                let contenidoNormalizado = fileContents
+                    .replacingOccurrences(of: "\r\n", with: "\n")
+                    .replacingOccurrences(of: "\r", with: "\n")
+                
+                if linesToOmit > 0 {
+                    let lineas = contenidoNormalizado.components(separatedBy: "\n")
+                    
+                    // Evita crash si linesToOmit es mayor que el número de líneas
+                    let lineasFiltradas = lineas.dropFirst(min(linesToOmit, lineas.count))
+                    
+                    result = lineasFiltradas.joined(separator: "\n")
+                } else {
+                    result = contenidoNormalizado
+                }
             }
         }
         return result

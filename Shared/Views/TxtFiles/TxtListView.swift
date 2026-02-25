@@ -133,7 +133,9 @@ struct TxtListView: View {
                                                              for: ContentTxtShowView(
                                                                  title: self.title,
                                                                  nombreTxt: nombreTxt,
-                                                                 type: self.typeOfContent
+                                                                 type: self.typeOfContent, blocks: [
+                                                                    ContentBlock(content: .text(UtilFuncs.FileRead("\(typeOfContent.rawValue)\(nombreTxt)")))
+                                                                 ]
                                                              ),
                                                              environmentObjects: [
                                                                  self.modeloTxt,
@@ -205,7 +207,9 @@ struct TxtListView: View {
                                           for: ContentTxtShowView(
                                               title: self.title,
                                               nombreTxt: nombreTxt,
-                                              type: self.typeOfContent
+                                              type: self.typeOfContent,blocks: [
+                                                ContentBlock(content: .text(UtilFuncs.FileRead("\(typeOfContent.rawValue)\(nombreTxt)")))
+                                             ]
                                           ),
                                           environmentObjects: [self.modeloTxt, self.settingModel, self.clipBoardModel],
                                           title: "\(self.title) - \(nombreTxt)",
@@ -259,7 +263,9 @@ struct TxtListView: View {
                                                         ], startPoint: .leading, endPoint: .trailing))
                                                     
                                                     NavigationLink {
-                                                        ContentTxtShowView(title: self.title, nombreTxt: nombreTxt, type: self.typeOfContent)
+                                                        ContentTxtShowView(title: self.title,nombreTxt: "",  type: self.typeOfContent, blocks: [
+                                                            ContentBlock(content: .text(UtilFuncs.FileRead("\(typeOfContent.rawValue)\(nombreTxt)")))
+                                                        ])
                                                             .environmentObject(self.modeloTxt)
                                                             .environmentObject(self.settingModel)
                                                             .environmentObject(self.clipBoardModel)
@@ -308,7 +314,9 @@ struct TxtListView: View {
                                     ], startPoint: .leading, endPoint: .trailing))
                                 
                                 NavigationLink{
-                                    ContentTxtShowView(title: self.title, nombreTxt: nombreTxt, type: self.typeOfContent)
+                                    ContentTxtShowView(title: self.title, nombreTxt: nombreTxt, type: self.typeOfContent, blocks: [
+                                        ContentBlock(content: .text(UtilFuncs.FileRead("\(self.typeOfContent.rawValue)\(nombreTxt)")))
+                                    ])
                                         .environmentObject(self.modeloTxt)
                                         .environmentObject(self.settingModel)
                                         .environmentObject(self.clipBoardModel)
@@ -317,7 +325,7 @@ struct TxtListView: View {
                                             if self.typeOfContent == .conf {
                                                 self.modeloTxt.handleLast3Conferences(nombreTxt: nombreTxt)
                                             }
-                                                
+                                            
                                         }
                                         .onDisappear{
                                             if self.typeOfContent == .conf {

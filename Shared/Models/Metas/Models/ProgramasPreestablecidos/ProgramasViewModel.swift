@@ -10,21 +10,48 @@ import SwiftUI
 import Combine
 
 @MainActor
-final class ProgramasViewModel: ObservableObject {
-    
-    @Published var programas: [ProgramasPreestablecido] = []
+class ProgramasViewModel: ObservableObject {
+
+    @Published var programasAgrupados:
+        [(String, [ProgramasPreestablecido])] = []
     
     let context = CoreDataController.shared.context
-    
-    private let repository = ProgramasRepository()
-    
+
     init() {
-        load()
+        cargarProgramas()
+    }
+
+    private func cargarProgramas() {
+
+        let grupos = ProgramaArchivo.agrupados
+
+        programasAgrupados = grupos.map { grupo in
+
+            let modelos = grupo.1.compactMap {
+                cargarJSON(nombre: $0.rawValue)
+            }
+
+            return (grupo.0, modelos)
+        }
+    }
+
+    private func cargarJSON(nombre: String) -> ProgramasPreestablecido? {
+
+        guard let url = Bundle.main.url(
+            forResource: nombre,
+            withExtension: "json"
+        ) else { return nil }
+
+        do {
+            let data = try Data(contentsOf: url)
+            return try JSONDecoder()
+                .decode(ProgramasPreestablecido.self, from: data)
+        } catch {
+            print(error)
+            return nil
+        }
     }
     
-    private func load() {
-        programas = repository.loadAll()
-    }
     
     //Crear Metas para Programa preestablecidas, y los Inicia:
     func createProgramaPreestablecido(programa : ProgramasPreestablecido) {
@@ -38,10 +65,9 @@ final class ProgramasViewModel: ObservableObject {
          goal.frequency = Int32(programa.frecuencia)
          goal.isStarted = false
         
-        msg(programa.unidadesNotes)
-        
+      
         // genera unidades
-        goal.startProgramaPreestablecido(unitNotes: programa.unidadesNotes)
+        goal.startProgramaPreestablecido(unitNotes: programa.unidadesinfo)
         
          
         //Salvando el contexto
@@ -55,4 +81,8 @@ final class ProgramasViewModel: ObservableObject {
         
     }
     
+    
 }
+
+
+

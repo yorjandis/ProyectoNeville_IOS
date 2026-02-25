@@ -102,12 +102,18 @@ enum CriterioFraseHome : String, CaseIterable, Hashable{
                 return []
             }
         case .otrosAutores :
-            do{
-                return try Frases.fetch(.porAutor("otros"), context: context )
-            }catch{
-                msg(error.localizedDescription)
+            let autoresExcluidos = ["nev", "jd", "bruceL", "gregg", "salud"]
+
+            let request: NSFetchRequest<Frases> = Frases.fetchRequest()
+            request.predicate = NSPredicate(format: "NOT (autor IN %@)", autoresExcluidos)
+
+            do {
+                return try context.fetch(request)
+            } catch {
+                print("Error al hacer fetch: \(error)")
                 return []
             }
+            
         case .frasesSalud :
             do{
                 return try Frases.fetch(.porAutor("salud"), context: context )
@@ -115,6 +121,8 @@ enum CriterioFraseHome : String, CaseIterable, Hashable{
                 msg(error.localizedDescription)
                 return []
             }
+      
+            
         }
         
    

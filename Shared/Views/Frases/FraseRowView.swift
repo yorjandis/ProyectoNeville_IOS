@@ -235,7 +235,7 @@ struct FraseRowView: View {
                 
                 //Lienzo
                 NavigationLink{
-                    LienzoMain(texto: frase.frase ?? "")
+                    LienzoMain(texto: frase.frase ?? "", imagenPrimariaACargar: LienzoModel.getImagenAutor(autor: self.frase.autor ?? ""))
                 }label: {
                     Image(systemName: "heart.text.square")
                         .tint(.brown)

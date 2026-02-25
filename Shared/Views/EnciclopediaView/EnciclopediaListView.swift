@@ -78,10 +78,9 @@ struct EnciclopediaListView: View {
                 // 🔽 PANEL INFERIOR — CONTENIDO
                 Group {
                     if let tema = temaSeleccionado {
-                        ContentTxtShowView(
-                            title: tema.rawValue,
-                            nombreTxt: tema.getFileName,
-                            type: .NA
+                        ContentTxtShowView(title: tema.rawValue,nombreTxt: tema.getFileName,type: .NA, blocks: [
+                            ContentBlock(content: .text(UtilFuncs.FileRead(tema.getFileName)))
+                        ]
                         )
                         .id(tema)   // 🔥 CLAVE
                     } else {
@@ -161,9 +160,10 @@ fileprivate struct SubListaView: View {
             
             List(categoria.temas, id: \.self) { item in
                 NavigationLink(item.rawValue) {
-                    ContentTxtShowView(title: item.rawValue,
-                                       nombreTxt: item.getFileName,
-                                       type: .NA)
+                    ContentTxtShowView(title: item.rawValue, nombreTxt: "",type: .NA, blocks: [
+                                        ContentBlock(content: .text(UtilFuncs.FileRead(item.getFileName)))
+                                       ])
+                    
                 }
                 .listRowBackground(Color.clear)
                 .foregroundStyle(.black).bold()

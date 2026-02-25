@@ -8,10 +8,15 @@
 
 import SwiftUI
 
+
+
+
 @available(iOS 26.0, macOS 26.0, *)
 struct ChatView: View {
     
-    @StateObject private var model = ChatViewModel()
+
+    
+    @StateObject private var model = ChatViewModel.shared
     
     @State private var  notasModel : NotasModel = NotasModel()
     
@@ -26,7 +31,12 @@ struct ChatView: View {
     
     @State private var lastID : UUID? = nil //Para poder desplazar la lista de mensajes en el chat hasta el último siempre
     
+    
+    @State private var autor : Autores = .neville
+    
     let textoACargar : String?  //Permite cargar una frase o nota  y usarla en el chatIA para entablar una conversación.
+    
+    
     
     
     @FocusState private var focus
@@ -161,7 +171,9 @@ struct ChatView: View {
                         }
                         else{
                             ScrollView {
-                                AdjustableGridView(rows: 4 , model: self.model)
+                                if self.autor == .neville {
+                                    AdjustableGridView_neville( autor : self.$autor ,rows : 11 , model: self.model)
+                                }
                             }
                         }
                         
@@ -180,11 +192,37 @@ struct ChatView: View {
             
         }
         #if os(iOS)
-        .navigationTitle("Pregunta  a Neville")
+        .navigationTitle("Pregunta  a \(self.autor.getNombre)")
         .navigationBarTitleDisplayMode(.inline)
         #endif
         .toolbar{
             if self.DescargoDeIA {
+                
+                //Cambiar instrucciones de conversación
+                ToolbarItem{
+                    Menu{
+                        Button("Neville"){
+                            self.autor = .neville
+                            self.model.newConversation()
+                        }
+                        Button("Joe Dispenza"){
+                            self.autor = .JoeDispenza
+                            self.model.newConversation()
+                        }
+                        Button("Bruce Lipton"){
+                            self.autor = .bruce
+                            self.model.newConversation()
+                        }
+                        Button("Gregg Braden"){
+                            self.autor = .gregg
+                            self.model.newConversation()
+                        }
+                    }label: {
+                        Image(systemName: "figure")
+                    }
+                }
+                
+                ToolbarSpacer(.fixed)
                 //Barra de opciones para texto copiado:
                 ToolbarItem{
                     //Menú de acciones con el texto copiado
@@ -201,17 +239,25 @@ struct ChatView: View {
                 
                 ToolbarSpacer(.fixed)
                 
+                //Boton Nueva Conversación
                 ToolbarItem {
                     Button{
                         withAnimation {
                             self.model.newConversation()
                         }
+                        
+                        
                     }label:{
                         Image(systemName: "square.and.pencil")
                     }
                 }
             }
             
+        }
+        .task {
+            //🔥 Carga una sesión por defecto
+            self.autor = .neville
+            model.newConversation()
         }
         .sheet(item: $showSheetTextoCopiadoAlPortapapelesParaInterpretar){ text in
             
@@ -225,7 +271,7 @@ struct ChatView: View {
         }
         .sheet(item: $showSheetTtextoCopiadoAlPortapapelesParaLienzo){ text in
             
-                LienzoMain(texto : text.texto)
+                LienzoMain(texto : text.texto, imagenPrimariaACargar: nil)
             
         }
         .alert(isPresented: self.$showAlert){
@@ -263,7 +309,7 @@ struct ChatView: View {
                                 self.showAlert = true
                             }else{
                                 Task{
-                                    await model.sendMessage()
+                                    await model.sendMessage(autor: self.autor, questionUser: model.inputText)
                                     self.focus = false
                                 }
                             }
@@ -277,7 +323,7 @@ struct ChatView: View {
                             self.showAlert = true
                         }else{
                             Task{
-                                await model.sendMessage()
+                                await model.sendMessage(autor: self.autor, questionUser: model.inputText)
                                 self.focus = false
                             }
                         }
@@ -341,11 +387,13 @@ struct ChatView: View {
     
   
 //Vista que muestra un menu de opciones
-    fileprivate struct AdjustableGridView: View {
+    fileprivate struct AdjustableGridView_neville: View {
         // Número de filas y columnas
         
+        @Binding var autor : Autores
+        
         @State  var  rows: Int
-        @State var columns: Int = {
+        @State  var columns: Int = {
             #if os(iOS)
             return UIDevice.current.userInterfaceIdiom == .pad ? 4 : 2
             #else
@@ -381,7 +429,7 @@ struct ChatView: View {
                             Button(action: {
                                 Task{
                                     model.inputText = buttonTitles[index]
-                                    await model.sendMessage()
+                                    await model.sendMessage(autor: self.autor, questionUser: model.inputText)
                                 }
                             }) {
                                 Text(buttonTitles[index])

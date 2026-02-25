@@ -21,6 +21,15 @@ struct CreateGoalView: View {
         }
     }
     
+    var getTitulo : String {
+        switch selectedTab{
+        case 0: return "Meta Personalizada"
+        case 1: return "Hábitos Saludables"
+        case 2: return "Programas"
+        default: return "Meta Personalizada"
+        }
+    }
+    
     
     //Ocultar el teclado:
     @FocusState private var focusedField: Field?
@@ -36,18 +45,27 @@ struct CreateGoalView: View {
                 TabView(selection: self.$selectedTab) {
 
                     MetasHome()
+                    #if os(macOS)
+                        .frame(width: 500, height: 600)
+                    #endif
                         .tabItem {
                             Label("Personalizado", systemImage: "gear")
                         }
                         .tag(0)
                     
                     MetasPreestablecidasView()
+                        #if os(macOS)
+                        .frame(width: 500, height: 600)
+                        #endif
                         .tabItem {
-                            Label("Metas Saludables", systemImage: "list.bullet")
+                            Label("Hábitos Saludables", systemImage: "list.bullet")
                         }
                         .tag(1)
                     
                     ProgramasPreestablecidos()
+                        #if os(macOS)
+                        .frame(width: 500, height: 600)
+                        #endif
                         .tabItem {
                             Label("Programas", systemImage: "list.bullet")
                         }
@@ -60,21 +78,24 @@ struct CreateGoalView: View {
                 #else
                 .tabViewStyle(.automatic)
                 #endif
-                .navigationTitle("Nueva Meta")
+                .navigationTitle("\(self.getTitulo)")
                 .toolbar {
-                    ToolbarItem(placement: .confirmationAction) {
-                        Button("Crear Meta") {
-                            createGoal()
-                            dismiss()
+                    if selectedTab == 0 {
+                        ToolbarItem(placement: .confirmationAction) {
+                            Button("Crear Meta") {
+                                createGoal()
+                                dismiss()
+                            }
+                            .disabled(!vm.isValid)
                         }
-                        .disabled(!vm.isValid)
-                    }
 
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button("Cancelar") {
-                            dismiss()
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button("Cancelar") {
+                                dismiss()
+                            }
                         }
                     }
+                    
                 }
             }
     }
@@ -82,160 +103,204 @@ struct CreateGoalView: View {
 
     @ViewBuilder
     private func MetasHome() -> some View {
-        VStack{
-            ScrollView {
-                VStack(alignment: .leading, spacing: 28) {
+        ZStack{
+            
+            LinearGradient.JadeProfundo()
+                .ignoresSafeArea()
+            
+            VStack{
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 28) {
 
-                        Text("Título de la Meta")
-                            .font(.headline)
-                            .foregroundStyle(.orange)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                         
-                    TextField("", text: $vm.title, prompt: Text("Eje. Meditar todos los días"), axis: .vertical)
-                        .textFieldStyle(.roundedBorder)
+                            Text("Título de la Meta")
+                                .font(.headline)
+                                .foregroundStyle(.black)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                             
+                        TextField(
+                            "",
+                            text: $vm.title,
+                            prompt: Text("Eje. Meditar todos los días"),
+                            axis: .vertical
+                        )
+                        .font(.platFormSize(iOS: 22, mac: 24))
+                        .foregroundStyle(.black).bold()
+                        .padding(12)
+                        .background(LinearGradient.JadeProfundo())
+                        .cornerRadius(10)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(Color.gray.opacity(0.4))
+                        )
                         .focused($focusedField, equals: .title)
-                    
-                    
-                    //Configuración de la Meta
-                    VStack(alignment: .leading, spacing: 5){
-                        Text("Configurar:")
-                            .font(.headline)
-                            .foregroundStyle(.orange)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                        
-                        HStack{
-                            Text("Unidades:")
-                            //Cantidad de Unidades
-                            Picker("", selection: $vm.amount) {
-                                ForEach(0...365, id: \.self) { number in
-                                    Text("\(number)")
-                                }
-                            }
-                            #if os(macOS)
-                            .pickerStyle(.automatic)
-                            #else
-                            .pickerStyle(.wheel)
-                            #endif
-                            .frame(width: 80, height: 120)
-                            .labelsHidden()
                             
-                            Text("Frecuencia:")
-                            Picker("", selection: $vm.frequency) {
-                                ForEach(1...30, id: \.self) {
-                                    Text("\($0)")
+                        
+                        
+                        //Configuración de la Meta
+                        VStack(alignment: .leading, spacing: 5){
+                            Text("Configurar:")
+                                .font(.headline)
+                                .foregroundStyle(.black)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                
+                            
+                            HStack{
+                                Text("Unidades:")
+                                //Cantidad de Unidades
+                                Picker("", selection: $vm.amount) {
+                                    ForEach(0...365, id: \.self) { number in
+                                        Text("\(number)")
+                                    }
                                 }
+                                #if os(macOS)
+                                .pickerStyle(.automatic)
+                                #else
+                                .pickerStyle(.wheel)
+                                #endif
+                                .frame(width: 80, height: 120)
+                                .labelsHidden()
+                                
+                                Text("Frecuencia:")
+                                Picker("", selection: $vm.frequency) {
+                                    ForEach(1...30, id: \.self) {
+                                        Text("\($0)")
+                                    }
+                                }
+                                #if os(macOS)
+                                .pickerStyle(.automatic)
+                                #else
+                                .pickerStyle(.wheel)
+                                #endif
+                                .frame(width: 80, height: 120)
+                                .labelsHidden()
                             }
-                            #if os(macOS)
-                            .pickerStyle(.automatic)
-                            #else
-                            .pickerStyle(.wheel)
-                            #endif
-                            .frame(width: 80, height: 120)
-                            .labelsHidden()
+                            
+                            HStack{
+                                Text("Tipo de Unidad:")
+                                //Tipo: Minuos, horas, dias, meses, años
+                                Picker("", selection: $vm.unit) {
+                                    ForEach(TimeUnit.allCases, id: \.self) {
+                                        Text($0.rawValue.capitalized)
+                                    }
+                                }
+                                .pickerStyle(.menu)
+                                .labelsHidden()
+                            }
+
                         }
                         
-                        HStack{
-                            Text("Tipo de Unidad:")
-                            //Tipo: Minuos, horas, dias, meses, años
-                            Picker("", selection: $vm.unit) {
-                                ForEach(TimeUnit.allCases, id: \.self) {
-                                    Text($0.rawValue.capitalized)
-                                }
-                            }
-                            .pickerStyle(.menu)
-                            .labelsHidden()
+                        
+                        // Descripción:
+                        VStack{
+                            Text("Descripción:")
+                                .font(.headline)
+                                .foregroundStyle(.black)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            
+                            TextEditor(text: $vm.description)
+                                .font(.platFormSize(iOS: 22, mac: 24))
+                                .foregroundStyle(.black)
+                                .scrollContentBackground(.hidden)
+                                .padding(12)
+                                .frame(height: 150)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .fill(LinearGradient.JadeProfundo())
+                                )
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .stroke(Color.gray.opacity(0.4))
+                                )
+                                .focused($focusedField, equals: .title)
                         }
 
-                    }
-                    
-                    
-                    // Descripción:
-                    VStack{
-                        Text("Descripción:")
-                            .font(.headline)
-                            .foregroundStyle(.orange)
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                        //Resumen:
+                        VStack{
+                            Text("Resumen: Meta a completar en \(vm.amount) \(vm.getTextoForUNidades(number: vm.amount)). Cada unidad deberá realizarse cada \(vm.frequency) \(vm.unit.description(for: vm.frequency))")
+                                .bold()
+                        }
+                            
                         
-                        TextEditor(text: $vm.description)
-                            .font(.platFormSize(iOS: 22, mac: 24))
-                            .frame(height: 130)
-                            .padding(8)
-                            .background(
-                                RoundedRectangle(cornerRadius: 8)
-                                    .stroke(.gray.opacity(0.4))
-                            )
-                            .focused($focusedField, equals: .description)
                     }
-
-                    //Resumen:
-                    VStack{
-                        Text("Resumen: Meta a completar en \(vm.amount) \(vm.getTextoForUNidades(number: vm.amount)). Cada unidad deberá realizarse cada \(vm.frequency) \(vm.unit.description(for: vm.frequency))")
+                    .onTapGesture {
+                        focusedField = nil
                     }
-                        
-                    
                 }
-
+                .onTapGesture {
+                    focusedField = nil
+                }
+                
             }
-            .onTapGesture {
-                focusedField = nil
-            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding()
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding()
+        
     }
     
     
     @ViewBuilder
     private func MetasPreestablecidasView() -> some View {
-        VStack(alignment: .leading) {
+        ZStack{
+            LinearGradient.BarroNatural()
+                .ignoresSafeArea()
             
-            Text("Seleccione una Meta Personalizada:")
-                .font(.title2)
-                .padding(.bottom, 8)
-            
-            ScrollView {
-                LazyVStack(spacing: 16) {   // 👈 separación entre tarjetas
-                    
-                    ForEach(self.metasOrdenadas, id: \.self) { meta in
+            VStack(alignment: .leading) {
+                
+                Text("Listado de Hábitos:")
+                    .font(.title2)
+                    .padding(.bottom, 8)
+                
+                ScrollView {
+                    LazyVStack(spacing: 16) {   // 👈 separación entre tarjetas
                         
-                        VStack(alignment: .leading, spacing: 10) {
+                        ForEach(self.metasOrdenadas, id: \.self) { meta in
                             
-                            Text(meta.getMeta.titulo)
-                                .font(.title2)
-                                .foregroundStyle(.orange)
-                                .bold()
-                            
-                            Text(meta.getMeta.description)
-                                .font(.body)
-                                .foregroundStyle(.secondary)
-                            
-                            Button("Cargar esta Meta") {
-                                self.vm.title = meta.getDescription
-                                self.vm.description = meta.getMeta.description
-                                self.vm.amount = meta.getMeta.noUnidades
-                                self.vm.unidadesInfo = meta.getMeta.unidadesInfo
-                                self.selectedTab = 0
+                            VStack(alignment: .leading, spacing: 10) {
+                                
+                                Text(meta.getMeta.titulo)
+                                    .font(.title2)
+                                    .foregroundStyle(.black)
+                                    .bold()
+                                
+                                Text(meta.getMeta.description)
+                                    .font(.body)
+                                    .bold()
+                                    .foregroundStyle(.black)
+                                
+                                HStack{
+                                    Spacer()
+                                    Button("Cargar en Metas") {
+                                        self.vm.title = meta.getDescription
+                                        self.vm.description = meta.getMeta.description
+                                        self.vm.amount = meta.getMeta.noUnidades
+                                        self.vm.unidadesInfo = meta.getMeta.unidadesInfo
+                                        self.selectedTab = 0
+                                    }
+                                    .tint(.black)
+                                    .buttonStyle(.bordered)
+                                }
+                                
+                                
                             }
-                            .buttonStyle(.bordered)
-                            
+                            .padding(16)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(
+                                RoundedRectangle(cornerRadius: 16)
+                                    .fill(LinearGradient.Oceano())
+                                    .shadow(color: .black.opacity(0.08), radius: 5, x: 0, y: 2)
+                            )
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 16)
+                                    .stroke(.quaternary, lineWidth: 1)
+                            )
                         }
-                        .padding(16)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(
-                            RoundedRectangle(cornerRadius: 16)
-                                .fill(.background)
-                                .shadow(color: .black.opacity(0.08), radius: 5, x: 0, y: 2)
-                        )
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 16)
-                                .stroke(.quaternary, lineWidth: 1)
-                        )
                     }
+                    .padding(.vertical, 8)
                 }
-                .padding(.vertical, 8)
             }
+            .padding()
         }
-        .padding()
+        
     }
     
     @ViewBuilder

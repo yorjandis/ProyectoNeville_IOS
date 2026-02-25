@@ -208,7 +208,7 @@ struct RowFraseMenu: View {
              
              Button{
                  
-                  showWindow(for: LienzoMain(texto: frase.frase ?? ""),
+                 showWindow(for: LienzoMain(texto: frase.frase ?? "", imagenPrimariaACargar: LienzoModel.getImagenAutor(autor: frase.autor ?? "nev")),
                              environmentObjects: [],
                              title: "Lienzo",
                              size: .absolute(CGSize(width: 650, height: 750)),

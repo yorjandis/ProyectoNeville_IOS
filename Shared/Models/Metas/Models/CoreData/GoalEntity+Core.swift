@@ -89,11 +89,11 @@ extension GoalEntity {
             if index - 1 < DetallesUnidades.count {
                 let info = DetallesUnidades[index - 1]
                 unit.name = info.name
-                unit.note = info.note
+                unit.info = info.info
             } else {
                 // Lógica por defecto
                 unit.name = "Unidad \(index)"
-                unit.note = ""
+                unit.info = ""
             }
 
             // 👇 Fechas
@@ -350,6 +350,7 @@ extension GoalEntity {
                 archivedUnit.endDate = unit.endDate
                 archivedUnit.completedDate = unit.completedDate
                 archivedUnit.note = unit.note
+                archivedUnit.info = unit.info
                 archivedUnit.goal = archivedGoal
             }
             

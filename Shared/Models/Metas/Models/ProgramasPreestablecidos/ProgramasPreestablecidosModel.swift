@@ -9,27 +9,79 @@
 
 import SwiftUI
 
+
+
+
+//Archivos json de programas Preestablecidos
+enum ProgramaArchivo: String, CaseIterable {
+    case prog_dieta_semanal_1
+    case prog_dieta_semanal_2
+    case prog_dejar_fumar_1
+    case prog_dejar_fumar_2
+    case prog_dejar_alcohol_1
+    case prog_dejar_alcohol_2
+    case prog_respiracion_buteyko
+    case prog_anti_ansiedad
+    case prog_anti_ansiedad_2
+    case prog_reset_dopaminergico_1
+    case prog_reset_dopaminergico_2
+    case prog_regulacion_digital_menores_1
+    case prog_regulacion_digital_menores_2
+    
+}
+
+//Creamos los grupos Base: elimnando los números al final de los programas
+extension ProgramaArchivo{
+    var grupoBase: String {
+        rawValue.replacingOccurrences(
+            of: "_\\d+$",
+            with: "",
+            options: .regularExpression
+        )
+    }
+}
+
+//Agrupación Automática final:
+extension ProgramaArchivo {
+
+    static var agrupados: [(String, [ProgramaArchivo])] {
+
+        let dic = Dictionary(grouping: allCases) {
+            $0.grupoBase
+        }
+
+        return dic
+            .map { ($0.key, $0.value.sorted { $0.rawValue < $1.rawValue }) }
+            .sorted { $0.0 < $1.0 }
+    }
+}
+
+
+
+
+
+
 //Modelo del Json
 struct UnidadesInfo: Codable, Identifiable {
     let id: UUID
     let name: String
-    let note: String
+    let info: String
     
     enum CodingKeys: String, CodingKey {
             case name
-            case note
+            case info
         }
         
-        init(name: String, note: String) {
+        init(name: String, info: String) {
             self.id = UUID()
             self.name = name
-            self.note = note
+            self.info = info
         }
         
         init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             self.name = try container.decode(String.self, forKey: .name)
-            self.note = try container.decode(String.self, forKey: .note)
+            self.info = try container.decode(String.self, forKey: .info)
             self.id = UUID() // 👈 generado automáticamente
         }
 }
@@ -39,7 +91,7 @@ struct ProgramasPreestablecido: Codable, Identifiable {
     let title: String
     let detalles : String
     let description: String
-    let unidadesNotes: [UnidadesInfo]
+    let unidadesinfo: [UnidadesInfo]
     let noUnidades: Int
     let tipoUnidad : TimeUnit
     let frecuencia : Int
@@ -48,7 +100,7 @@ struct ProgramasPreestablecido: Codable, Identifiable {
             case title
             case detalles
             case description
-            case unidadesNotes
+            case unidadesinfo
             case noUnidades
             case tipoUnidad
             case frecuencia
@@ -60,7 +112,7 @@ struct ProgramasPreestablecido: Codable, Identifiable {
         self.title = try container.decode(String.self, forKey: .title)
         self.detalles = try container.decode(String.self, forKey: .detalles)
         self.description = try container.decode(String.self, forKey: .description)
-        self.unidadesNotes = try container.decode([UnidadesInfo].self, forKey: .unidadesNotes)
+        self.unidadesinfo = try container.decode([UnidadesInfo].self, forKey: .unidadesinfo)
         self.noUnidades = try container.decode(Int.self, forKey: .noUnidades)
         self.tipoUnidad = try container.decode(TimeUnit.self, forKey: .tipoUnidad)
         self.frecuencia = try container.decode(Int.self, forKey: .frecuencia)
@@ -80,7 +132,7 @@ struct ProgramasPreestablecido: Codable, Identifiable {
         self.title = title
         self.detalles = detalles
         self.description = description
-        self.unidadesNotes = unidadesNotes
+        self.unidadesinfo = unidadesNotes
         self.noUnidades = noUnidades
         self.tipoUnidad = tipoUnidad
         self.frecuencia = frecuencia
@@ -88,8 +140,3 @@ struct ProgramasPreestablecido: Codable, Identifiable {
 }
 
 
-
-//Archivos json de programas Preestablecidos
-enum ProgramaArchivo: String, CaseIterable {
-    case dietaSemanalA = "programa_sem_a"
-}

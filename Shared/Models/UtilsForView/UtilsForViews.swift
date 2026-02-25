@@ -118,8 +118,13 @@ func MostrarCumpleaños() -> some View {
     if (componentes.day == 19 && componentes.month == 2){
         VStack{
             Text("Feliz Cumpleaños Maestro Neville! 💖").font(.title).fontDesign(.serif)
+                .frame(maxWidth: .infinity)
             Text("Gracias por tu Amor y Enseñanzas").font(.callout).fontDesign(.serif)
-        }.foregroundStyle(.black)
+                .frame(maxWidth: .infinity)
+        }
+        .multilineTextAlignment(.center)
+        .foregroundStyle(.black)
+        
     }
 }
 

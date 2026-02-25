@@ -82,7 +82,7 @@ struct La_LeyApp: App {
                                                isModal: false)
                                 case "abrirRamdonConf":
                                     if let nombreTxt = self.txtcontentModel.getRandomConferencia(){
-                                        showWindow(for: ContentTxtShowView(title: "Conferencias", nombreTxt: nombreTxt, type: .conf),
+                                        showWindow(for: ContentTxtShowView(title: "Conferencias", nombreTxt: nombreTxt, type: .conf, blocks: [ContentBlock(content: .text(UtilFuncs.FileRead("conf_\(nombreTxt)")))]),
                                                    environmentObjects: [self.txtcontentModel, self.clipBoardObserver, self.settingModel],
                                                    title: "Conferencias",
                                                    size: .percentage(width: 0.50, height: 0.50),

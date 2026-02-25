@@ -11,13 +11,19 @@ import SwiftUI
 struct ArchivedGoalDetailView: View {
 
     @ObservedObject var goal: ArchivedGoalEntity
+    #if os(macOS)
+    let context = CoreDataController.shared.context
+    #else
     @Environment(\.managedObjectContext) private var context
+    #endif
+    
 
 
     let columns = Array(repeating: GridItem(.flexible(), spacing:8), count: 3)
     
     @State private var selectedUnit: ArchivedUnitEntity? //Para mostrar inforación de una unidad
     
+    @State private var showNoteOrInfo : Bool = false //true para mostrar las notas, false para mostrar la info de la unidad
     @State private var note : String = ""
     
     @State private var showAlert: Bool = false
@@ -49,7 +55,14 @@ struct ArchivedGoalDetailView: View {
                     }
                     VStack(alignment: .leading){
                         HStack{
-                            Text("Nota:").bold()
+                            Button("Notas:"){self.showNoteOrInfo = true}
+                                .buttonStyle(.bordered)
+                                .foregroundStyle(self.showNoteOrInfo == true ? .green : Color.primary)
+                            
+                            Button("info"){self.showNoteOrInfo = false}
+                                .buttonStyle(.bordered)
+                                .foregroundStyle(self.showNoteOrInfo == false ? .green : Color.primary)
+                            
                             Spacer()
                             Button("Cerrar"){
                                 //Guardar la nota si esta se ha modificado
@@ -72,14 +85,26 @@ struct ArchivedGoalDetailView: View {
                         
                         //Contenido de la nota
                         ScrollView{
-                            TextEditor(text: self.$note)
-                                .font(.platFormSize(iOS: 22, mac: 24))
-                                .padding(3)
-                                .frame(minHeight: 200)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 12)
-                                        .fill(Color.black.opacity(0.3))
-                                )
+                            if self.showNoteOrInfo{
+                                TextEditor(text: self.$note)
+                                    .font(.platFormSize(iOS: 22, mac: 24))
+                                    .padding(3)
+                                    .frame(maxWidth: .infinity, minHeight: 200)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 12)
+                                            .fill(Color.black.opacity(0.3))
+                                    )
+                            }else{
+                                Text(self.selectedUnit?.info ?? "")
+                                    .font(.platFormSize(iOS: 22, mac: 24))
+                                    .padding(3)
+                                    .frame(maxWidth: .infinity, minHeight: 200)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 12)
+                                            .fill(Color.black.opacity(0.3))
+                                    )
+                            }
+                            
                         }
                         
                             
@@ -106,7 +131,7 @@ struct ArchivedGoalDetailView: View {
                         ForEach(goal.unitsArray) { unit in
                             ArchivedUnitCellView(unit: unit)
                                 .contextMenu{
-                                    Button("Nota de esta Unidad"){
+                                    Button("Datos de la Unidad"){
                                         withAnimation {
                                             selectedUnit = unit
                                         }

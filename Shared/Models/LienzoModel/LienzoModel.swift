@@ -747,9 +747,25 @@ final class LienzoModel : ObservableObject {
             }
         }
     
+    
+    //Devuelve una imagen predeterminada según el autor en una frase
+    
     //------------------ FIN --------------------
  
-    
+    //Devuelve el nombre del fichero de imagen interno segun el autor
+    static func getImagenAutor(autor: String) -> String {
+        //case nev,jd, gregg, bruceL, salud
+        switch autor {
+        case "nev": return "nev-min"
+        case "jd": return "jd"
+        case "gregg": return "gregg"
+        case "bruceL": return "bruce"
+        case "salud": return "salud"
+        default:
+            return "escritor"
+        }
+        
+    }
 
     
 }

@@ -64,7 +64,7 @@ struct TextoCopiadoView: View {
                     #if os(macOS)
                     
                     if let texto = self.clipBoardModel.clipboardText{
-                        showWindow(for: LienzoMain(texto: texto),
+                        showWindow(for: LienzoMain(texto: texto, imagenPrimariaACargar: nil),
                         environmentObjects: [],
                                    title: "Lienzo",
                                    size: .absolute(CGSize(width: 650, height: 750)),

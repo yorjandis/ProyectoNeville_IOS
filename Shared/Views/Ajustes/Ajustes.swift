@@ -629,7 +629,7 @@ struct Ajustes: View {
                                             HStack{
                                                 Text("Desarrollador")
                                                 Spacer()
-                                                Text("Yorjandi PG - Rana")
+                                                Text("Yorjandi PG")
                                                     .foregroundStyle(.orange).bold()
                                                     .onTapGesture(count: 2) {
                                                         #if os(macOS)
@@ -643,7 +643,7 @@ struct Ajustes: View {
                                                                 .shadow(radius: 8, y: 4)
                                                                 .padding()
                                                             
-                                                            Text("Presencia Conciente")
+                                                            Text("Yorjandi PG")
                                                                 .padding()
                                                             
                                                             Button("Cerrar"){
@@ -1224,7 +1224,7 @@ struct Ajustes: View {
                                 HStack{
                                     Text("Desarrollador")
                                     Spacer()
-                                    Text("Yorjandi PG - Rana")
+                                    Text("Yorjandi PG")
                                         .foregroundStyle(.orange).bold()
                                         .onTapGesture(count: 2) {
                                             self.showSheetYorj = true
@@ -1417,7 +1417,7 @@ struct Ajustes: View {
                     .shadow(radius: 8, y: 4)
                     .padding()
                 
-                Text("Presencia Conciente")
+                Text("Yorjandi PG")
                     .padding()
                 
                     

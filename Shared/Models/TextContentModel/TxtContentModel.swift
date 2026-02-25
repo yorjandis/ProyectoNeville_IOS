@@ -39,7 +39,7 @@ final class TxtContentModel : ObservableObject {
 }
 
 
-//Listado de funciones
+//Vector de conferencias
 extension TxtContentModel {
     
    // Trabajo con el vector de conferencias vistas: ---------------------------------------------------------------------------

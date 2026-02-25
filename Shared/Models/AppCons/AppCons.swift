@@ -52,6 +52,20 @@ struct AppCons{
     static let FileResumenEnseñanzaBruce        = "resumen_enseñanzas_bruce"
     static let FileResumenBiologiaCreencia      = "resumen_libro_biologiacreencia"
     static let FilePlanBiologiaCrrencia         = "plan_libro_biologiacreencia"
+        //Resumen de la serie: Evolución Interior:
+    static let FileSerieEvolucionInterior_1     = "bruce_evolucion_interior_1"
+    static let FileSerieEvolucionInterior_2     = "bruce_evolucion_interior_2"
+    static let FileSerieEvolucionInterior_3     = "bruce_evolucion_interior_3"
+    static let FileSerieEvolucionInterior_4     = "bruce_evolucion_interior_4"
+    static let FileSerieEvolucionInterior_5     = "bruce_evolucion_interior_5"
+    static let FileSerieEvolucionInterior_6     = "bruce_evolucion_interior_6"
+    static let FileSerieEvolucionInterior_7     = "bruce_evolucion_interior_7"
+    static let FileSerieEvolucionInterior_8     = "bruce_evolucion_interior_8"
+    static let FileSerieEvolucionInterior_9     = "bruce_evolucion_interior_9"
+    static let FileSerieEvolucionInterior_10     = "bruce_evolucion_interior_10"
+    static let FileSerieEvolucionInterior_11     = "bruce_evolucion_interior_11"
+    static let FileSerieEvolucionInterior_12     = "bruce_evolucion_interior_12"
+    static let FileSerieEvolucionInterior_13     = "bruce_evolucion_interior_13"
     
     
     //Fichero de Frases de Otros Autores:

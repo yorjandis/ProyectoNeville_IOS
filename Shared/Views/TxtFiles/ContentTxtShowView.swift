@@ -30,6 +30,8 @@ struct ContentTxtShowView: View {
     let nombreTxt : String //Nombre del fichero txt a abrir, sin el prefijo
     
     let type : TipoDeContenido //define el tipo de contenido a generar por IA
+    
+    var blocks : [ContentBlock] = []
 
     @State private var content: String = "" //Contenido del fichero TXT: se llena en un OnApper para que se haga una sola vez
     
@@ -43,8 +45,8 @@ struct ContentTxtShowView: View {
     @AppStorage(AppCons.UD_setting_fontContentSize)   var UserDefaultFontSizeContenido  = 18
     
     //Colores de Texto y fondo
-    @State private var textContentdColor    : Color = Color.black
-    @State private var backgroundColor      : Color = Color.teal
+    @State private var textContentdColor    : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_color_textContent) ?? .white
+    @State private var backgroundColor      : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_color_fondoContent) ?? .black.opacity(0.7)
     
 
     @State private var showSlider   = false         //Para mostrar el Ajuste de tamaño de fuente
@@ -96,7 +98,7 @@ struct ContentTxtShowView: View {
         NavigationStack {
             ZStack{
                 
-                LinearGradient.NegroMate()
+                LinearGradient(colors: [self.backgroundColor], startPoint: .top, endPoint: .bottom)
                     .ignoresSafeArea()
                 
                 VStack {
@@ -114,27 +116,7 @@ struct ContentTxtShowView: View {
                         .frame(height: 200)
                     }
                     
-                    ScrollView(showsIndicators: true){
-                        VStack{
-                            //Esta Vista es multiplataforma (iOS/macOS) y esta en un fichero independiente
-                            
-                             SelectableTextShareView(getContent: self.content, fontSizeContenido: CGFloat(self.UserDefaultFontSizeContenido), textContentdColor: UIColor(self.textContentdColor))
-                             
-                           
-
-                        }
-                        .background(self.backgroundColor)
-                        .cornerRadius(12)
-                        .onTapGesture {
-                            withAnimation {
-                                self.showColor = false
-                                self.showSlider = false
-                            }
-                           
-                        }
-                        .padding(.horizontal, 5)
-                        
-                    }
+                    DynamicContentView(blocks: self.blocks, fontSize: CGFloat(self.UserDefaultFontSizeContenido), fontColor: UIColor( self.textContentdColor))
                  
                     #if os(iOS)
                     //Coloca un boton Atras en la parte inferior
@@ -168,10 +150,6 @@ struct ContentTxtShowView: View {
             .onAppear {
                 //Cargando el contenido del txt
                 self.content = self.getContent(NameTxt: self.nombreTxt)
-                
-                //Se cargan y aplican los colores de fondo y de texto
-                self.backgroundColor = SettingModel.loadColor(forkey: AppCons.UD_setting_color_fondoContent) ?? .black.opacity(0.7)
-                self.textContentdColor = SettingModel.loadColor(forkey: AppCons.UD_setting_color_textContent) ?? .white
                 
                 //Se carga el tamaño de la Fuente:
                 self.fontSizeContentSliderTemp = CGFloat(UserDefaultFontSizeContenido)
@@ -724,7 +702,7 @@ struct ContentTxtShowView: View {
             }
             .sheet(item: $showSheetTtextoCopiadoAlPortapapelesParaLienzo){ text in
                 if #available(iOS 26.0, macOS 26.0, *){
-                    LienzoMain(texto : text.texto)
+                    LienzoMain(texto : text.texto, imagenPrimariaACargar: nil)
                 }else{
                     EmptyView()
                 }

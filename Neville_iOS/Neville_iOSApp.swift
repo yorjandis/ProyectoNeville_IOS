@@ -113,7 +113,9 @@ struct Neville_iOSApp: App {
                                             .environmentObject(self.settingModel)
                                 case .abrirRandomConf:
                                         if let txtConf = self.modelTxt.getRandomConferencia(){
-                                            ContentTxtShowView(title: "Conferencia", nombreTxt: txtConf, type: .conf)
+                                            ContentTxtShowView(title: "Conferencia", nombreTxt: txtConf, type: .conf, blocks: [
+                                                ContentBlock(content: .text(UtilFuncs.FileRead("conf_\(txtConf)")))
+                                            ])
                                                 .environmentObject(self.modelTxt)
                                                 .environmentObject(self.clipBoardModel)
                                                 .environmentObject(self.settingModel)

@@ -172,7 +172,7 @@ struct FrasesHomeView : View{
                             #endif
                             #if os(macOS)
                             Button{
-                                showWindow(for: LienzoMain(texto: self.frase?.frase ?? ""),
+                                showWindow(for: LienzoMain(texto: self.frase?.frase ?? "", imagenPrimariaACargar: LienzoModel.getImagenAutor(autor: self.frase?.autor ?? "nev" )),
                                            environmentObjects: [],
                                            title: "Lienzo",
                                            size: .absolute(CGSize(width: 650, height: 750)),
@@ -184,7 +184,7 @@ struct FrasesHomeView : View{
                             
                             #else
                             NavigationLink{
-                                LienzoMain(texto: self.frase?.frase ?? "")
+                                LienzoMain(texto: self.frase?.frase ?? "",imagenPrimariaACargar: LienzoModel.getImagenAutor(autor: self.frase?.autor ?? ""))
                             }label: {
                                 Label("Lienzo", systemImage: "heart.text.square")
                             }
@@ -236,72 +236,75 @@ struct FrasesHomeView : View{
                             if #available(iOS 26.0, macOS 26.0,  *)  {
                                 
                                 if IAModelAppleIntelligence.isAvailable(){
+                                    Menu{
                                     #if os(macOS)
-                                    Button{
-                                        showWindow(for: RespondView(nameConference: "", texto: self.frase?.frase ?? "", tipoSalida: .interpretar),
-                                                   environmentObjects: [self.frasesModel, self.settingModel],
-                                                   size: AppCons.windows_size_content,
-                                                   isModal: true,
-                                                   isIAWindows: true)
-                                        //RespondView(nameConference: "", texto: self.frase, tipoSalida: .interpretar)
-                                    }label: {
-                                        Label("Interpretar", systemImage: "sparkles")
-                                    }
-                                    .tint(.purple)
-                                    
-                                    Button{
-                                        showWindow(for: RespondView(nameConference: "", texto: self.frase?.frase ?? "", tipoSalida: .practicaConcreta),
-                                                   environmentObjects: [self.frasesModel, self.settingModel],
-                                                   size: AppCons.windows_size_content,
-                                                   isModal: true,
-                                                   isIAWindows: true)
-                                        //RespondView(nameConference: "", texto: self.frase, tipoSalida: .practicaConcreta)
-                                    }label: {
-                                        Label("Aplicación Práctica", systemImage: "sparkles")
-                                    }
-                                    .tint(.purple)
-                                    
-                                    Button{
-                                        showWindow(for: ChatView(textoACargar: self.frase?.frase ?? ""),
-                                                   environmentObjects: [self.frasesModel, self.settingModel],
-                                                   size: AppCons.windows_size_content,
-                                                   isModal: false,
-                                                   isIAWindows: true)
+                                        Button{
+                                            showWindow(for: RespondView(nameConference: "", texto: self.frase?.frase ?? "", tipoSalida: .interpretar),
+                                                       environmentObjects: [self.frasesModel, self.settingModel],
+                                                       size: AppCons.windows_size_content,
+                                                       isModal: true,
+                                                       isIAWindows: true)
+                                            //RespondView(nameConference: "", texto: self.frase, tipoSalida: .interpretar)
+                                        }label: {
+                                            Label("Interpretar", systemImage: "sparkles")
+                                        }
+                                        .tint(.purple)
                                         
-                                    }label: {
-                                        Label("Charlar con la IA", systemImage: "sparkles")
-                                    }
-                                    .tint(.purple)
-                                    
-                                    
+                                        Button{
+                                            showWindow(for: RespondView(nameConference: "", texto: self.frase?.frase ?? "", tipoSalida: .practicaConcreta),
+                                                       environmentObjects: [self.frasesModel, self.settingModel],
+                                                       size: AppCons.windows_size_content,
+                                                       isModal: true,
+                                                       isIAWindows: true)
+                                            //RespondView(nameConference: "", texto: self.frase, tipoSalida: .practicaConcreta)
+                                        }label: {
+                                            Label("Aplicación Práctica", systemImage: "sparkles")
+                                        }
+                                        .tint(.purple)
+                                        
+                                        Button{
+                                            showWindow(for: ChatView(textoACargar: self.frase?.frase ?? ""),
+                                                       environmentObjects: [self.frasesModel, self.settingModel],
+                                                                                        size: AppCons.windows_size_content,
+                                                       isModal: false,
+                                                       isIAWindows: true)
+                                            
+                                        }label: {
+                                            Label("Charlar con la IA", systemImage: "sparkles")
+                                        }
+                                        .tint(.purple)
+                                        
+                                        
                                     #else
-                                    NavigationLink{
-                                        RespondView(nameConference: "", texto: self.frase?.frase ?? "", tipoSalida: .interpretar)
-                                    }label: {
-                                        Label("Interpretar", systemImage: "sparkles")
-                                    }
-                                    .tint(.purple)
-                                    
-                                    NavigationLink{
-                                        RespondView(nameConference: "", texto: self.frase?.frase ?? "", tipoSalida: .practicaConcreta)
-                                    }label: {
-                                        Label("Aplicación Práctica", systemImage: "sparkles")
-                                    }
-                                    .tint(.purple)
-                                    
-                                    NavigationLink{
-                                        ChatView(textoACargar: self.frase?.frase ?? "")
-                                    }label: {
-                                        Label("Charlar con IA", systemImage: "sparkles")
-                                    }
-                                    .tint(.purple)
+                                        NavigationLink{
+                                            RespondView(nameConference: "", texto: self.frase?.frase ?? "", tipoSalida: .interpretar)
+                                        }label: {
+                                            Label("Interpretar", systemImage: "sparkles")
+                                        }
+                                        .tint(.purple)
+                                        
+                                        NavigationLink{
+                                            RespondView(nameConference: "", texto: self.frase?.frase ?? "", tipoSalida: .practicaConcreta)
+                                        }label: {
+                                            Label("Aplicación Práctica", systemImage: "sparkles")
+                                        }
+                                        .tint(.purple)
+                                        
+                                        NavigationLink{
+                                            ChatView(textoACargar: self.frase?.frase ?? "")
+                                        }label: {
+                                            Label("Charlar con IA", systemImage: "sparkles")
+                                        }
+                                        .tint(.purple)
                                     #endif
+                                    }label:{
+                                        Label("Funciones IA", systemImage: "sparkles")
+                                    }
+                                    
                                     
                                     
                                 }
-                                
-                                
-                                
+
                             }
                             
                             Button{

@@ -18,7 +18,9 @@ struct GoalDetailView: View {
 
     let columns = Array(repeating: GridItem(.flexible(), spacing:8), count: 3)
     
-    @State private var selectedUnit: UnitEntity? //Para mostrar inforación de una unidad
+    @State private var selectedUnit: UnitEntity? //Para mostrar Información de una unidad
+    
+    @State private var showNotaOinfo : Bool = false //True para nota, false para info
     
     @State private var note : String = ""
     
@@ -42,17 +44,30 @@ struct GoalDetailView: View {
             
             
             if let showUnit = self.selectedUnit {
+                //Muestra información de la unidad:
                 VStack(alignment: .leading){
                     HStack{
-                        Text("Unidad \(showUnit.name ?? "") \(showUnit.unitStatus == .lost ? "🟠" : "🟢" )").bold()
+                        Text("\(showUnit.name ?? "") \(showUnit.unitStatus == .lost ? "🟠" : "🟢" )").bold()
                         Spacer()
-                        Text("Fichado:").bold()
-                        Text("\(self.getDateFormated(date: showUnit.completedDate))")
+                        if showUnit.unitStatus != .pending {
+                            Text("Fichado:").bold()
+                            Text("\(self.getDateFormated(date: showUnit.completedDate))")
+                        }
+                        
                     }
+                    
                     VStack(alignment: .leading){
                         HStack{
-                            Text("Nota:").bold()
+                            Button("Notas:"){self.showNotaOinfo = true }
+                                .buttonStyle(.bordered)
+                                .foregroundStyle(self.showNotaOinfo ? .green : Color.primary)
+                            
+                            Button("Info"){self.showNotaOinfo = false  }
+                                .buttonStyle(.bordered)
+                                .foregroundStyle(self.showNotaOinfo == false ? .green : Color.primary)
+                            
                             Spacer()
+                            
                             Button("Cerrar"){
                                 //Guardar la nota si esta se ha modificado
                                 if self.note != self.selectedUnit?.note ?? ""{
@@ -72,15 +87,28 @@ struct GoalDetailView: View {
                         }
                         
                         //Contenido de la nota
+                        
                         ScrollView{
-                            TextEditor(text: self.$note)
-                                .font(.platFormSize(iOS: 20, mac: 22))
-                                .padding(3)
+                            if self.showNotaOinfo{
+                                TextEditor(text: self.$note)
+                                    .font(.platFormSize(iOS: 20, mac: 22))
+                                    .padding(3)
                                     .frame(minHeight: 200)
                                     .background(
                                         RoundedRectangle(cornerRadius: 12)
                                             .fill(Color.black.opacity(0.3))
                                     )
+                            }else{
+                                Text(self.selectedUnit?.info ?? "")
+                                    .font(.platFormSize(iOS: 20, mac: 22))
+                                    .padding(3)
+                                    .frame(minHeight: 200)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 12)
+                                            .fill(Color.black.opacity(0.3))
+                                    )
+                            }
+                            
                         }
                         
                             
@@ -107,12 +135,12 @@ struct GoalDetailView: View {
                         ForEach(goal.unitsArray) { unit in
                             UnitCellView(unit: unit)
                                 .contextMenu{
-                                    Button("Nota de esta Unidad"){
+                                    Button("Datos de la Unidad"){
                                         withAnimation {
                                             selectedUnit = unit
                                         }
-                                        
                                     }
+                                    
                                 }
                         }
                     }

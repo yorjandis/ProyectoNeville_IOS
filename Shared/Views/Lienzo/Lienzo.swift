@@ -10,9 +10,10 @@ struct LienzoMain: View {
     @StateObject private var lienzoModel : LienzoModel = .shared //ViewModel para el Lienzo
     //@StateObject private var purchasePremium : PurchaseManager = .shared
     @AppStorage("purchaseStatus" ) var purchaseStatus: Bool = false
+    
     let texto: String? //Si se da,  se coloca este texto en el texto principal. Para importar frase o nota
     
-
+    let imagenPrimariaACargar : String? //Si se da se carga una imagen
 
     //Almacena la imagen a exportar:
     @State private var imagenAExportar : UIImage?
@@ -227,8 +228,12 @@ struct LienzoMain: View {
                             lienzoModel.textoPrincipal = textotmp
                             self.lienzoModel.visibilidadTextoSecundario = false
                         }
-                        
                     }
+                    
+                    if let imagen = self.imagenPrimariaACargar {
+                        lienzoModel.imagenLienzo = UIImage(named:imagen) ?? UIImage(named:"nev-min")
+                    }
+                    
                 }
 
                 //Panel de Opciones
@@ -469,52 +474,67 @@ struct LienzoMain: View {
                     //Seleccionar una imagen Predeterminada: neville, addulhall, William Blake..
                     VStack(alignment: .leading, spacing: 20){
                         Text("Imágines predeterminadas")
-                        HStack(spacing: 10){
-                            Image(uiImage: UIImage(named: "nev-min")!)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 50, height: 50)
-                                .onTapGesture {
-                                lienzoModel.imagenLienzo = UIImage(named: "nev-min")!
-                            }
+                        ScrollView(.horizontal){
+                            HStack(spacing: 10){
+                                Image(uiImage: UIImage(named: "nev-min")!)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 50, height: 50)
+                                    .onTapGesture {
+                                    lienzoModel.imagenLienzo = UIImage(named: "nev-min")!
+                                }
+                                    
                                 
-                            
-                            Image(uiImage: UIImage(named: "ad-min")!)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 50, height: 50)
-                                .onTapGesture {
-                                    lienzoModel.imagenLienzo = UIImage(named: "ad-min")!
-                                }
-                            Image(uiImage: UIImage(named: "william")!)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 50, height: 50)
-                                .onTapGesture {
-                                    lienzoModel.imagenLienzo = UIImage(named: "william")!
-                                }
-                            Image(uiImage: UIImage(named: "jd")!)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 50, height: 50)
-                                .onTapGesture {
-                                    lienzoModel.imagenLienzo = UIImage(named: "jd")!
-                                }
-                            Image(uiImage: UIImage(named: "bruce")!)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 50, height: 50)
-                                .onTapGesture {
-                                    lienzoModel.imagenLienzo = UIImage(named: "bruce")!
-                                }
-                            Image(uiImage: UIImage(named: "gregg")!)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 50, height: 50)
-                                .onTapGesture {
-                                    lienzoModel.imagenLienzo = UIImage(named: "gregg")!
-                                }
-                             
+                                Image(uiImage: UIImage(named: "ad-min")!)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 50, height: 50)
+                                    .onTapGesture {
+                                        lienzoModel.imagenLienzo = UIImage(named: "ad-min")!
+                                    }
+                                Image(uiImage: UIImage(named: "william")!)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 50, height: 50)
+                                    .onTapGesture {
+                                        lienzoModel.imagenLienzo = UIImage(named: "william")!
+                                    }
+                                Image(uiImage: UIImage(named: "jd")!)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 50, height: 50)
+                                    .onTapGesture {
+                                        lienzoModel.imagenLienzo = UIImage(named: "jd")!
+                                    }
+                                Image(uiImage: UIImage(named: "bruce")!)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 50, height: 50)
+                                    .onTapGesture {
+                                        lienzoModel.imagenLienzo = UIImage(named: "bruce")!
+                                    }
+                                Image(uiImage: UIImage(named: "gregg")!)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 50, height: 50)
+                                    .onTapGesture {
+                                        lienzoModel.imagenLienzo = UIImage(named: "gregg")!
+                                    }
+                                Image(uiImage: UIImage(named: "salud")!)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 50, height: 50)
+                                    .onTapGesture {
+                                        lienzoModel.imagenLienzo = UIImage(named: "salud")!
+                                    }
+                                Image(uiImage: UIImage(named: "escritor")!)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 50, height: 50)
+                                    .onTapGesture {
+                                        lienzoModel.imagenLienzo = UIImage(named: "escritor")!
+                                    }
+                        }
                         }
                     }
                     .padding(.vertical, 10)
@@ -537,54 +557,70 @@ struct LienzoMain: View {
                     //Escoger una imagen de lienzo Principal Predeterminada: neville, addulhall, William Blake
                     VStack(spacing: 20){
                         Text("Imágines predeterminadas")
-                        HStack(spacing: 10){
-                            
-                            Image(nsImage: UIImage(named: "nev-min")!)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 50, height: 50)
-                                .onTapGesture {
-                                lienzoModel.imagenLienzo = UIImage(named: "nev-min")!
-                            }
+                        ScrollView(.horizontal){
+                            HStack(spacing: 10){
+                                Image(nsImage: UIImage(named: "nev-min")!)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 50, height: 50)
+                                    .onTapGesture {
+                                    lienzoModel.imagenLienzo = UIImage(named: "nev-min")!
+                                }
+                                    
                                 
-                            
-                            Image(nsImage: UIImage(named: "ad-min")!)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 50, height: 50)
-                                .onTapGesture {
-                                    lienzoModel.imagenLienzo = UIImage(named: "ad-min")!
-                                }
-                            Image(nsImage: UIImage(named: "william")!)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 50, height: 50)
-                                .onTapGesture {
-                                    lienzoModel.imagenLienzo = UIImage(named: "william")!
-                                }
-                            Image(nsImage: UIImage(named: "jd")!)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 50, height: 50)
-                                .onTapGesture {
-                                    lienzoModel.imagenLienzo = UIImage(named: "jd")!
-                                }
-                            Image(nsImage: UIImage(named: "bruce")!)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 50, height: 50)
-                                .onTapGesture {
-                                    lienzoModel.imagenLienzo = UIImage(named: "bruce")!
-                                }
-                            Image(nsImage: UIImage(named: "gregg")!)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 50, height: 50)
-                                .onTapGesture {
-                                    lienzoModel.imagenLienzo = UIImage(named: "gregg")!
-                                }
-                             
+                                Image(nsImage: UIImage(named: "ad-min")!)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 50, height: 50)
+                                    .onTapGesture {
+                                        lienzoModel.imagenLienzo = UIImage(named: "ad-min")!
+                                    }
+                                Image(nsImage: UIImage(named: "william")!)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 50, height: 50)
+                                    .onTapGesture {
+                                        lienzoModel.imagenLienzo = UIImage(named: "william")!
+                                    }
+                                Image(nsImage: UIImage(named: "jd")!)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 50, height: 50)
+                                    .onTapGesture {
+                                        lienzoModel.imagenLienzo = UIImage(named: "jd")!
+                                    }
+                                Image(nsImage: UIImage(named: "bruce")!)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 50, height: 50)
+                                    .onTapGesture {
+                                        lienzoModel.imagenLienzo = UIImage(named: "bruce")!
+                                    }
+                                Image(nsImage: UIImage(named: "gregg")!)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 50, height: 50)
+                                    .onTapGesture {
+                                        lienzoModel.imagenLienzo = UIImage(named: "gregg")!
+                                    }
+                                Image(nsImage: UIImage(named: "salud")!)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 50, height: 50)
+                                    .onTapGesture {
+                                        lienzoModel.imagenLienzo = UIImage(named: "salud")!
+                                    }
+                                Image(nsImage: UIImage(named: "escritor")!)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 50, height: 50)
+                                    .onTapGesture {
+                                        lienzoModel.imagenLienzo = UIImage(named: "escritor")!
+                                    }
+                                 
+                            }
                         }
+                        
                     }
                     .padding(.vertical, 15)
                     
@@ -659,53 +695,67 @@ struct LienzoMain: View {
                     //Escoger una imagen de lienzo Secundario Predeterminada: neville, addulhall, William Blake
                     VStack(alignment: .leading, spacing: 20){
                         Text("Imágines predeterminadas")
-                        HStack(spacing: 10){
-                            
-                            Image(uiImage: UIImage(named: "nev-min")!)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 50, height: 50)
-                                .onTapGesture {
-                                lienzoModel.imagenLienzoSecundario = UIImage(named: "nev-min")!
-                            }
+                        ScrollView(.horizontal){
+                            HStack(spacing: 10){
+                                Image(uiImage: UIImage(named: "nev-min")!)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 50, height: 50)
+                                    .onTapGesture {
+                                    lienzoModel.imagenLienzoSecundario = UIImage(named: "nev-min")!
+                                }
+                                    
                                 
-                            
-                            Image(uiImage: UIImage(named: "ad-min")!)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 50, height: 50)
-                                .onTapGesture {
-                                    lienzoModel.imagenLienzoSecundario = UIImage(named: "ad-min")!
-                                }
-                            Image(uiImage: UIImage(named: "william")!)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 50, height: 50)
-                                .onTapGesture {
-                                    lienzoModel.imagenLienzoSecundario = UIImage(named: "william")!
-                                }
-                            Image(uiImage: UIImage(named: "jd")!)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 50, height: 50)
-                                .onTapGesture {
-                                    lienzoModel.imagenLienzoSecundario = UIImage(named: "jd")!
-                                }
-                            Image(uiImage: UIImage(named: "bruce")!)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 50, height: 50)
-                                .onTapGesture {
-                                    lienzoModel.imagenLienzoSecundario = UIImage(named: "bruce")!
-                                }
-                            Image(uiImage: UIImage(named: "gregg")!)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 50, height: 50)
-                                .onTapGesture {
-                                    lienzoModel.imagenLienzoSecundario = UIImage(named: "gregg")!
-                                }
-                             
+                                Image(uiImage: UIImage(named: "ad-min")!)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 50, height: 50)
+                                    .onTapGesture {
+                                        lienzoModel.imagenLienzoSecundario = UIImage(named: "ad-min")!
+                                    }
+                                Image(uiImage: UIImage(named: "william")!)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 50, height: 50)
+                                    .onTapGesture {
+                                        lienzoModel.imagenLienzoSecundario = UIImage(named: "william")!
+                                    }
+                                Image(uiImage: UIImage(named: "jd")!)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 50, height: 50)
+                                    .onTapGesture {
+                                        lienzoModel.imagenLienzoSecundario = UIImage(named: "jd")!
+                                    }
+                                Image(uiImage: UIImage(named: "bruce")!)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 50, height: 50)
+                                    .onTapGesture {
+                                        lienzoModel.imagenLienzoSecundario = UIImage(named: "bruce")!
+                                    }
+                                Image(uiImage: UIImage(named: "gregg")!)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 50, height: 50)
+                                    .onTapGesture {
+                                        lienzoModel.imagenLienzoSecundario = UIImage(named: "gregg")!
+                                    }
+                                Image(uiImage: UIImage(named: "salud")!)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 50, height: 50)
+                                    .onTapGesture {
+                                        lienzoModel.imagenLienzoSecundario = UIImage(named: "salud")!
+                                    }
+                                Image(uiImage: UIImage(named: "escritor")!)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 50, height: 50)
+                                    .onTapGesture {
+                                        lienzoModel.imagenLienzoSecundario = UIImage(named: "escritor")!
+                                    }
+                        }
                         }
                     }
                     .padding(.vertical, 10)
@@ -733,52 +783,67 @@ struct LienzoMain: View {
                     //Escoger una imagen de lienzo Secundario Predeterminada: neville, addulhall, William Blake
                     VStack(spacing: 20){
                         Text("Imágines predeterminadas")
-                        HStack(spacing: 10){
-                            
-                            Image(nsImage: UIImage(named: "nev-min")!)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 50, height: 50)
-                                .onTapGesture {
-                                lienzoModel.imagenLienzoSecundario = UIImage(named: "nev-min")!
-                            }
+                        ScrollView(.horizontal){
+                            HStack(spacing: 10){
+                                Image(nsImage: UIImage(named: "nev-min")!)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 50, height: 50)
+                                    .onTapGesture {
+                                    lienzoModel.imagenLienzoSecundario = UIImage(named: "nev-min")!
+                                }
+                                    
                                 
-                            
-                            Image(nsImage: UIImage(named: "ad-min")!)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 50, height: 50)
-                                .onTapGesture {
-                                    lienzoModel.imagenLienzoSecundario = UIImage(named: "ad-min")!
-                                }
-                            Image(nsImage: UIImage(named: "william")!)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 50, height: 50)
-                                .onTapGesture {
-                                    lienzoModel.imagenLienzoSecundario = UIImage(named: "william")!
-                                }
-                            Image(nsImage: UIImage(named: "jd")!)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 50, height: 50)
-                                .onTapGesture {
-                                    lienzoModel.imagenLienzoSecundario = UIImage(named: "jd")!
-                                }
-                            Image(nsImage: UIImage(named: "bruce")!)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 50, height: 50)
-                                .onTapGesture {
-                                    lienzoModel.imagenLienzoSecundario = UIImage(named: "bruce")!
-                                }
-                            Image(nsImage: UIImage(named: "gregg")!)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 50, height: 50)
-                                .onTapGesture {
-                                    lienzoModel.imagenLienzoSecundario = UIImage(named: "gregg")!
-                                }
+                                Image(nsImage: UIImage(named: "ad-min")!)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 50, height: 50)
+                                    .onTapGesture {
+                                        lienzoModel.imagenLienzoSecundario = UIImage(named: "ad-min")!
+                                    }
+                                Image(nsImage: UIImage(named: "william")!)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 50, height: 50)
+                                    .onTapGesture {
+                                        lienzoModel.imagenLienzoSecundario = UIImage(named: "william")!
+                                    }
+                                Image(nsImage: UIImage(named: "jd")!)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 50, height: 50)
+                                    .onTapGesture {
+                                        lienzoModel.imagenLienzoSecundario = UIImage(named: "jd")!
+                                    }
+                                Image(nsImage: UIImage(named: "bruce")!)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 50, height: 50)
+                                    .onTapGesture {
+                                        lienzoModel.imagenLienzoSecundario = UIImage(named: "bruce")!
+                                    }
+                                Image(nsImage: UIImage(named: "gregg")!)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 50, height: 50)
+                                    .onTapGesture {
+                                        lienzoModel.imagenLienzoSecundario = UIImage(named: "gregg")!
+                                    }
+                                Image(nsImage: UIImage(named: "salud")!)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 50, height: 50)
+                                    .onTapGesture {
+                                        lienzoModel.imagenLienzoSecundario = UIImage(named: "salud")!
+                                    }
+                                Image(nsImage: UIImage(named: "escritor")!)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 50, height: 50)
+                                    .onTapGesture {
+                                        lienzoModel.imagenLienzoSecundario = UIImage(named: "escritor")!
+                                    }
+                        }
                         }
                     }
                     .padding(.vertical, 15)

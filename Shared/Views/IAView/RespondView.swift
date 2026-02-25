@@ -176,7 +176,7 @@ struct RespondView: View {
                 ChatView(textoACargar: text.texto)
         }
         .sheet(item: $showSheetTtextoCopiadoAlPortapapelesParaLienzo){ text in
-                LienzoMain(texto : text.texto)
+                LienzoMain(texto : text.texto, imagenPrimariaACargar: nil)
         }
         .alert(isPresented: self.$showAlert){
             Alert(title: Text("Chat"), message: Text(self.alertMessage))

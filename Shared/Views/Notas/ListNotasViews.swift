@@ -42,7 +42,7 @@ struct ListNotasViews: View {
         NavigationStack {
             ZStack{
                 
-                LinearGradient.FondoListado()
+                LinearGradient.JadeProfundo()
                     .ignoresSafeArea()
                 
                 VStack{
@@ -358,7 +358,12 @@ struct cardNotas: View{
                     .bold()
                     .fontDesign(.serif)
                     .font(.system(size: CGFloat(self.fontSizeLista)))
+                #if os(macOS)
+                    .foregroundStyle(Color.primary)
+                #else
                     .foregroundStyle(.black)
+                #endif
+                    
                     .bold()
                     .padding(8)
                     .onTapGesture(count: 2) {
@@ -443,7 +448,7 @@ struct cardNotas: View{
                     
                     #if os(macOS)
                     Button{
-                        showWindow(for: LienzoMain(texto: nota?.nota ?? ""),
+                        showWindow(for: LienzoMain(texto: nota?.nota ?? "", imagenPrimariaACargar: nil),
                                    environmentObjects: [],
                                    title: "Lienzo",
                                    size: .absolute(CGSize(width: 650, height: 750)),
@@ -456,7 +461,7 @@ struct cardNotas: View{
                     
                     #else
                     NavigationLink{
-                        LienzoMain(texto: nota?.nota ?? "")
+                        LienzoMain(texto: nota?.nota ?? "", imagenPrimariaACargar: nil)
                     }label:{
                         Label("Lienzo", systemImage: "heart.text.square")
                     }

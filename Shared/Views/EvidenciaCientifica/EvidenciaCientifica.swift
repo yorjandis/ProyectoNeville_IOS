@@ -23,7 +23,9 @@ struct EvidenciaCientificaView: View {
                         ForEach(EvidenciaCientificaListado.allCases, id: \.rawValue) { evidencia in
                             #if os(macOS)
                             Button(evidencia.getTitle){
-                                showWindow(for: ContentTxtShowView(title: evidencia.getTitle, nombreTxt: evidencia.rawValue, type: .NA),
+                                showWindow(for: ContentTxtShowView(title: evidencia.getTitle, nombreTxt: "", type: .NA, blocks: [
+                                    ContentBlock(content: .text(UtilFuncs.FileRead(evidencia.rawValue)))
+                                ]),
                                            environmentObjects: [ClipboardObserver()],
                                 title: "Evidencia Científica",
                                            size: .absolute(CGSize(width: 1200, height: 800)),
@@ -31,7 +33,11 @@ struct EvidenciaCientificaView: View {
                             }
                             #else
                             NavigationLink("🟢 \(evidencia.getTitle)") {
-                                ContentTxtShowView(title: evidencia.getTitle, nombreTxt: evidencia.rawValue, type: .NA)
+
+                                ContentTxtShowView(title: evidencia.getTitle, nombreTxt: "", type: .NA, blocks: [
+                                     ContentBlock(content: .text(UtilFuncs.FileRead(evidencia.rawValue)))
+                                 ])
+
                             }
                             .font(.body)
                             // 2. Importante: Forzar el alineado del item individual

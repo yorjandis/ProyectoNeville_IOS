@@ -25,8 +25,12 @@ fileprivate enum TipeViewOptionTab : String,  Identifiable{
     case biografíaBruceL,FrasesBruceL
     case resumenEnseñanzaBruceL
     case resumenLibroBiologiaCreencia, planLibroBiologiaCreencia
+    case serieEvolucionInterior_1, serieEvolucionInterior_2, serieEvolucionInterior_3, serieEvolucionInterior_4, serieEvolucionInterior_5
+    case serieEvolucionInterior_6, serieEvolucionInterior_7, serieEvolucionInterior_8, serieEvolucionInterior_9, serieEvolucionInterior_10
+    case serieEvolucionInterior_11, serieEvolucionInterior_12, serieEvolucionInterior_13
+    
     //Cases Futuros
-   // case resumenEnseñanzaNeville, ResumenEnseñanzaGregg, ResumenEnseñanzaBruceL
+   
     var id: String { rawValue }
 }
 
@@ -64,7 +68,7 @@ struct optionView: View {
                         Button("Frases"){self.showView = .frasesNeville}
                         Button("Resumen Enseñanza"){self.showView = .resumenEnseñanzaNeville}
                         Button("Bibliografía"){self.showView = .biografiaNeville}
-                        Text("----Neville Goddard----").bold()
+                        Label("Neville Goddard", image: "nev-min")
                     }label: {
                         Text("Neville Goddard")
                             .padding(.vertical, 10)
@@ -118,7 +122,7 @@ struct optionView: View {
                         Button("Frases"){self.showView = .frasesJD}
                         Button("Resumen Enseñanza"){self.showView = .resumenEnseñanzaJD}
                         Button("Bibliografía"){self.showView = .biografiaJD }
-                        Text("----Dr. Joe Dispenza----").bold()
+                        Label("Dr. Joe Dispenza", image: "jd")
                     }label: {
                         Text("Joe Dispenza")
                             .padding(.vertical, 10)
@@ -164,7 +168,7 @@ struct optionView: View {
                         Button("Frases"){self.showView = .FrasesGregg}
                         Button("Resumen Enseñanza"){self.showView = .resumenEnseñanzaGregg}
                         Button("Bibliografía"){self.showView = .biografiaGregg}
-                        Text("----Gregg Braden----").bold()
+                        Label("Gregg Braden", image: "gregg")
                     }label: {
                         Text("Gregg Braden")
                             .padding(.vertical, 10)
@@ -188,6 +192,22 @@ struct optionView: View {
                     //Bruce Lipton
                     Menu{
                         
+                        Menu("Resumen Serie: Evolución Interior"){
+                            Button("Capitulo 13"){self.showView = .serieEvolucionInterior_13}
+                            Button("Capitulo 12"){self.showView = .serieEvolucionInterior_12}
+                            Button("Capitulo 11"){self.showView = .serieEvolucionInterior_11}
+                            Button("Capitulo 10"){self.showView = .serieEvolucionInterior_10}
+                            Button("Capitulo 9"){self.showView = .serieEvolucionInterior_9}
+                            Button("Capitulo 8"){self.showView = .serieEvolucionInterior_8}
+                            Button("Capitulo 7"){self.showView = .serieEvolucionInterior_7}
+                            Button("Capitulo 6"){self.showView = .serieEvolucionInterior_6}
+                            Button("Capitulo 5"){self.showView = .serieEvolucionInterior_5}
+                            Button("Capitulo 4"){self.showView = .serieEvolucionInterior_4}
+                            Button("Capitulo 3"){self.showView = .serieEvolucionInterior_3}
+                            Button("Capitulo 2"){self.showView = .serieEvolucionInterior_2}
+                            Button("Capitulo 1"){self.showView = .serieEvolucionInterior_1}
+                            
+                        }
                        // Button("Resumen de Charlas"){}
                         Menu("Análisis de Libros:"){
                             Menu("La Biolgía de la Creencia"){
@@ -199,7 +219,7 @@ struct optionView: View {
                         Button("Frases"){self.showView = .FrasesBruceL}
                         Button("Resumen Enseñanza"){self.showView = .resumenEnseñanzaBruceL}
                         Button("Bibliografía"){self.showView = .biografíaBruceL}
-                        Text("----Dr. Bruce Lipton----").bold()
+                        Label("Dr. Bruce Lipton", image: "bruce")
                     }label: {
                         Text("Bruce Lipton")
                             .padding(.vertical, 10)
@@ -240,7 +260,7 @@ struct optionView: View {
                 case .diario:
                     DiarioListView()
                 case .lienzo:
-                    LienzoMain(texto: "")
+                    LienzoMain(texto: "", imagenPrimariaACargar: nil)
                 case .premium:
                     PurchaseView()
                 case .codeScanner:
@@ -270,7 +290,10 @@ struct optionView: View {
                     
                  //Neville Goddard:
                 case .biografiaNeville:
-                    ContentTxtShowView(title: "Biografía", nombreTxt: AppCons.FileBiografiaNeville, type: .NA )
+                    ContentTxtShowView(title: "Biografía de Neville Goddard", nombreTxt: AppCons.FileBiografiaNeville, type: .NA, blocks: [
+                        ContentBlock(content: .imageLocal(name: "nev-min", size: 150)),
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileBiografiaNeville)))
+                    ])
                 case .preguntasNeville:
                     TxtListView(typeOfContent: .preg, title: "Preguntas")
                 case .citasNevile:
@@ -286,65 +309,166 @@ struct optionView: View {
                 case .game:
                     GamePLay()
                 case .resumenEnseñanzaNeville:
-                    ContentTxtShowView(title: "Resumen de la enseñanza: Neville Goddard", nombreTxt: AppCons.FileResumenEnseñanzaNeville, type: .NA )
+                    ContentTxtShowView(title: "Resumen de la enseñanza: Neville Goddard", nombreTxt: AppCons.FileResumenEnseñanzaNeville, type: .NA, blocks:   [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenEnseñanzaNeville)))
+                    ])
                 
                     //Joe Dispenza
                 case .biografiaJD:
-                    ContentTxtShowView(title: "Biografía Joe Dispenza", nombreTxt: AppCons.FileBiografiaJD, type: .NA )
+                    ContentTxtShowView(title: "Biografía Joe Dispenza", nombreTxt: AppCons.FileBiografiaJD, type: .NA, blocks:   [
+                        ContentBlock(content: .imageLocal(name: "jd", size: 100)),
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileBiografiaJD)))
+                    ])
                 case .frasesJD:
                     FrasesListView(mostrarFrasesDe: .jd)
                 case .resumenDejaDeSerTu:
-                    ContentTxtShowView(title: "Resumen del Libro: Deja De Ser Tu", nombreTxt: AppCons.FileResumenDejaDeSerTu, type: .NA )
+                    ContentTxtShowView(title: "Resumen del Libro: Deja De Ser Tu", nombreTxt: AppCons.FileResumenDejaDeSerTu, type: .NA, blocks:   [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenDejaDeSerTu)))
+                    ] )
                 case .planDejaDeSerTu:
-                    ContentTxtShowView(title: "Plan del Libro: Deja De Ser Tu", nombreTxt: AppCons.FilePlanDejaDeSerTu, type: .NA )
+                    ContentTxtShowView(title: "Plan del Libro: Deja De Ser Tu", nombreTxt: AppCons.FilePlanDejaDeSerTu, type: .NA, blocks:   [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FilePlanDejaDeSerTu)))
+                    ])
                 case .resumenDesarrollaTuCerebro:
-                    ContentTxtShowView(title: "Resumen del Libro: Desarrolla Tu Cerebro", nombreTxt: AppCons.FileResumenDesarrollaTuCerebro, type: .NA )
+                    ContentTxtShowView(title: "Resumen del Libro: Desarrolla Tu Cerebro", nombreTxt: AppCons.FileResumenDesarrollaTuCerebro, type: .NA, blocks:   [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenDesarrollaTuCerebro)))
+                    ]  )
                 case .planDesarrollaTuCerebro:
-                    ContentTxtShowView(title: "Plan del Libro: Desarrolla Tu Cerebro", nombreTxt: AppCons.FilePlanDesarrollaTuCerebro, type: .NA )
+                    ContentTxtShowView(title: "Plan del Libro: Desarrolla Tu Cerebro", nombreTxt: AppCons.FilePlanDesarrollaTuCerebro, type: .NA, blocks:   [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FilePlanDesarrollaTuCerebro)))
+                    ]  )
                 case .resumenElPlaceboEresTu:
-                    ContentTxtShowView(title: "Resumen del Libro: El Placebo Eres Tu", nombreTxt: AppCons.FileResumenElPLaceboEresTu, type: .NA )
+                    ContentTxtShowView(title: "Resumen del Libro: El Placebo Eres Tu", nombreTxt: AppCons.FileResumenElPLaceboEresTu, type: .NA, blocks:   [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenElPLaceboEresTu)))
+                    ]  )
                 case .planElPlacevoEresTu:
-                    ContentTxtShowView(title: "Plan del Libro: El Placebo Eres Tu", nombreTxt: AppCons.FilePlanElPlaceboEresTu, type: .NA )
+                    ContentTxtShowView(title: "Plan del Libro: El Placebo Eres Tu", nombreTxt: AppCons.FilePlanElPlaceboEresTu, type: .NA, blocks:   [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FilePlanElPlaceboEresTu)))
+                    ]  )
                 case .resumenSuperNatural:
-                    ContentTxtShowView(title: "Resumen del Libro: SobreNatural", nombreTxt: AppCons.FileResumenSuperNatural, type: .NA )
+                    ContentTxtShowView(title: "Resumen del Libro: SobreNatural", nombreTxt: AppCons.FileResumenSuperNatural, type: .NA, blocks:   [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenSuperNatural)))
+                    ]  )
                 case .planSuperNatural:
-                    ContentTxtShowView(title: "Plan del Libro: SobreNatural", nombreTxt: AppCons.FilePlanSupernarural, type: .NA )
+                    ContentTxtShowView(title: "Plan del Libro: SobreNatural", nombreTxt: AppCons.FilePlanSupernarural, type: .NA, blocks:   [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FilePlanSupernarural)))
+                    ]  )
                 case .resumenEnseñanzaJD:
-                    ContentTxtShowView(title: "Resumen de la enseñanza: Joe Dispenza", nombreTxt: AppCons.FileResumenEnseñanzaJD, type: .NA )
+                    ContentTxtShowView(title: "Resumen de la enseñanza: Joe Dispenza", nombreTxt: AppCons.FileResumenEnseñanzaJD, type: .NA, blocks:   [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenEnseñanzaJD)))
+                    ]  )
                     
                     
                     //Gregg Braden:
                 case .biografiaGregg:
-                    ContentTxtShowView(title: "Biografía Gregg Braden", nombreTxt: AppCons.FileBiografiaGregg, type: .NA )
+                    ContentTxtShowView(title: "Biografía Gregg Braden", nombreTxt: AppCons.FileBiografiaGregg, type: .NA, blocks:   [
+                        ContentBlock(content: .imageLocal(name: "gregg", size: 100)),
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileBiografiaGregg)))
+                    ]  )
                 case .FrasesGregg:
                     FrasesListView(mostrarFrasesDe: .gregg)
                 case .resumenEnseñanzaGregg:
-                    ContentTxtShowView(title: "Resumen de la enseñanza: Gregg Braden", nombreTxt: AppCons.FileResumenEnseñanzaGregg, type: .NA )
+                    ContentTxtShowView(title: "Resumen de la enseñanza: Gregg Braden", nombreTxt: AppCons.FileResumenEnseñanzaGregg, type: .NA, blocks:   [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenEnseñanzaGregg)))
+                    ]  )
                 case .resumenLaMatrizDivina:
-                    ContentTxtShowView(title: "Resumen del Libro: La Matriz Divina", nombreTxt: AppCons.FileResumenLaMatrizDivinaGregg, type: .NA )
+                    ContentTxtShowView(title: "Resumen del Libro: La Matriz Divina", nombreTxt: AppCons.FileResumenLaMatrizDivinaGregg, type: .NA, blocks:   [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenLaMatrizDivinaGregg)))
+                    ]  )
                 case .planLaMatrizDivina:
-                    ContentTxtShowView(title: "Plan del Libro: La Matriz Divina", nombreTxt: AppCons.FilePlanLaMatrizDivinaGregg, type: .NA )
+                    ContentTxtShowView(title: "Plan del Libro: La Matriz Divina", nombreTxt: AppCons.FilePlanLaMatrizDivinaGregg, type: .NA, blocks:   [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FilePlanLaMatrizDivinaGregg)))
+                    ]  )
                 case .resumenResilienciaDesdeCorazon:
-                    ContentTxtShowView(title: "Resumen del Libro: Resilencia desde el Corazón", nombreTxt: AppCons.FileResumenResilenciaCorazonGregg, type: .NA )
+                    ContentTxtShowView(title: "Resumen del Libro: Resilencia desde el Corazón", nombreTxt: AppCons.FileResumenResilenciaCorazonGregg, type: .NA, blocks:   [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenResilenciaCorazonGregg)))
+                    ]  )
                 case .planResilienciaDesdeCorazon:
-                    ContentTxtShowView(title: "Plan del Libro: Resilencia desde el Corazón", nombreTxt: AppCons.FilePlanResilenciaCorazonGregg, type: .NA )
+                    ContentTxtShowView(title: "Plan del Libro: Resilencia desde el Corazón", nombreTxt: AppCons.FilePlanResilenciaCorazonGregg, type: .NA, blocks:   [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FilePlanResilenciaCorazonGregg)))
+                    ]  )
                 case .resumenPuramenteHumanos:
-                    ContentTxtShowView(title: "Resumen del Libro: Puramente Humanos", nombreTxt: AppCons.FileResumenPuramenteHumanosGregg, type: .NA )
+                    ContentTxtShowView(title: "Resumen del Libro: Puramente Humanos", nombreTxt: AppCons.FileResumenPuramenteHumanosGregg, type: .NA, blocks:   [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenPuramenteHumanosGregg)))
+                    ]  )
                 case .planPuramenteHumanos:
-                    ContentTxtShowView(title: "Plan del Libro: Puramente Humanos", nombreTxt: AppCons.FilePlanPuramenteHumanosGregg, type: .NA )
+                    ContentTxtShowView(title: "Plan del Libro: Puramente Humanos", nombreTxt: AppCons.FilePlanPuramenteHumanosGregg, type: .NA, blocks:   [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FilePlanPuramenteHumanosGregg)))
+                    ]  )
                     
                     
                     //Bruce Lipton:
                 case .biografíaBruceL:
-                    ContentTxtShowView(title: "Biografía Dr. Bruce H. Lipton", nombreTxt: AppCons.FileBiografiaBruce, type: .NA )
+                    ContentTxtShowView(title: "Biografía Dr. Bruce H. Lipton", nombreTxt: AppCons.FileBiografiaBruce, type: .NA, blocks:   [
+                        ContentBlock(content: .imageLocal(name: "bruce", size: 100)),
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileBiografiaBruce)))
+                    ]  )
                 case .FrasesBruceL:
                     FrasesListView(mostrarFrasesDe: .bruceL)
                 case .resumenEnseñanzaBruceL:
-                    ContentTxtShowView(title: "Resumen de la enseñanza: Gregg Braden", nombreTxt: AppCons.FileResumenEnseñanzaBruce, type: .NA )
+                    ContentTxtShowView(title: "Resumen de la enseñanza: Gregg Braden", nombreTxt: AppCons.FileResumenEnseñanzaBruce, type: .NA, blocks:   [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenEnseñanzaBruce)))
+                    ]  )
                 case .resumenLibroBiologiaCreencia:
-                    ContentTxtShowView(title: "Resumen del Libro: La Biología De La Creencia", nombreTxt: AppCons.FileResumenBiologiaCreencia, type: .NA )
+                    ContentTxtShowView(title: "Resumen del Libro: La Biología De La Creencia", nombreTxt: AppCons.FileResumenBiologiaCreencia, type: .NA, blocks:   [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenBiologiaCreencia)))
+                    ]  )
                 case .planLibroBiologiaCreencia:
-                    ContentTxtShowView(title: "Plan del Libro: La Biología De La Creencia", nombreTxt: AppCons.FilePlanBiologiaCrrencia, type: .NA )
+                    ContentTxtShowView(title: "Plan del Libro: La Biología De La Creencia", nombreTxt: AppCons.FilePlanBiologiaCrrencia, type: .NA, blocks:   [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FilePlanBiologiaCrrencia)))
+                    ]  )
+                case .serieEvolucionInterior_1:
+                    ContentTxtShowView(title: "Serie Evolución Interior: Capítulo 1", nombreTxt: AppCons.FileSerieEvolucionInterior_1, type: .NA, blocks:   [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieEvolucionInterior_1)))
+                    ]  )
+                case .serieEvolucionInterior_2:
+                    ContentTxtShowView(title: "Serie Evolución Interior: Capítulo 2", nombreTxt: AppCons.FileSerieEvolucionInterior_2, type: .NA, blocks:   [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieEvolucionInterior_2)))
+                    ]  )
+                case .serieEvolucionInterior_3:
+                    ContentTxtShowView(title: "Serie Evolución Interior: Capítulo 3", nombreTxt: AppCons.FileSerieEvolucionInterior_3, type: .NA, blocks:   [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieEvolucionInterior_3)))
+                    ]  )
+                case .serieEvolucionInterior_4:
+                    ContentTxtShowView(title: "Serie Evolución Interior: Capítulo 4", nombreTxt: AppCons.FileSerieEvolucionInterior_4, type: .NA, blocks:   [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieEvolucionInterior_4)))
+                    ]  )
+                case .serieEvolucionInterior_5:
+                    ContentTxtShowView(title: "Serie Evolución Interior: Capítulo 5", nombreTxt: AppCons.FileSerieEvolucionInterior_5, type: .NA, blocks:   [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieEvolucionInterior_5)))
+                    ]  )
+                case .serieEvolucionInterior_6:
+                    ContentTxtShowView(title: "Serie Evolución Interior: Capítulo 6", nombreTxt: AppCons.FileSerieEvolucionInterior_6, type: .NA, blocks:   [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieEvolucionInterior_6)))
+                    ]  )
+                case .serieEvolucionInterior_7:
+                    ContentTxtShowView(title: "Serie Evolución Interior: Capítulo 7", nombreTxt: AppCons.FileSerieEvolucionInterior_7, type: .NA, blocks:   [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieEvolucionInterior_7)))
+                    ]  )
+                case .serieEvolucionInterior_8:
+                    ContentTxtShowView(title: "Serie Evolución Interior: Capítulo 8", nombreTxt: AppCons.FileSerieEvolucionInterior_8, type: .NA, blocks:   [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieEvolucionInterior_8)))
+                    ]  )
+                case .serieEvolucionInterior_9:
+                    ContentTxtShowView(title: "Serie Evolución Interior: Capítulo 9", nombreTxt: AppCons.FileSerieEvolucionInterior_9, type: .NA, blocks:   [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieEvolucionInterior_9)))
+                    ]  )
+                case .serieEvolucionInterior_10:
+                    ContentTxtShowView(title: "Serie Evolución Interior: Capítulo 10", nombreTxt: AppCons.FileSerieEvolucionInterior_10, type: .NA, blocks:   [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieEvolucionInterior_10)))
+                    ]  )
+                case .serieEvolucionInterior_11:
+                    ContentTxtShowView(title: "Serie Evolución Interior: Capítulo 11", nombreTxt: AppCons.FileSerieEvolucionInterior_11, type: .NA, blocks:   [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieEvolucionInterior_11)))
+                    ]  )
+                case .serieEvolucionInterior_12:
+                    ContentTxtShowView(title: "Serie Evolución Interior: Capítulo 12", nombreTxt: AppCons.FileSerieEvolucionInterior_12, type: .NA, blocks:   [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieEvolucionInterior_12)))
+                    ]  )
+                case .serieEvolucionInterior_13:
+                    ContentTxtShowView(title: "Serie Evolución Interior: Capítulo 13", nombreTxt: AppCons.FileSerieEvolucionInterior_13, type: .NA, blocks:   [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieEvolucionInterior_13)))
+                    ]  )
                 }
                 
                 
@@ -362,222 +486,10 @@ struct optionView: View {
                 .presentationDragIndicator(.hidden)
             
         })
-        /*
-         .sheet(isPresented: $showNotasSheet) {
-             ListNotasViews()
-         }
-         .sheet(isPresented: $showBiografia) {
-             ContentTxtShowView(title: "Biografía", nombreTxt: "biografia", type: .NA )
-         }
-         .sheet(isPresented: $showPreguntas) {
-             TxtListView(typeOfContent: .preg, title: "Preguntas")
-         }
-         .sheet(isPresented: $showCitas) {
-             TxtListView(typeOfContent: .citas, title: "Citas")
-         }
-         .sheet(isPresented: $showAyudas) {
-             TxtListView(typeOfContent: .ayud, title: "Ayudas")
-         }
-         .sheet(isPresented: $showReflex) {
-             ReflexListView()
-         }
-         .sheet(isPresented: $showDiarioSheet) {
-             DiarioListView()
-         }
-         .sheet(isPresented: $showLienzoSheet) {
-             LienzoMain(texto: nil)
-         }
-         .sheet (isPresented: $showFrasesList){
-             FrasesListView()
-         }
-         .sheet(isPresented: $showSetting){
-             Ajustes()
-                 .presentationDetents([.large])
-         }
-         .sheet(isPresented: $showCodeScanner){
-             //Mostrar el lector de código
-             CodeScannerView(codeTypes: [.qr]) { qrCodeString in
-                 do{
-                   let result =  try qrCodeString.get().string
-                     self.footerToQRCode = QRText(text: result)
-                    
-                 }catch{
-                     
-                 }
-                 
-             }
-            
-         }
-         .sheet(item: $footerToQRCode){ item in
-             GenerateQRView(footer: item.text)
-                 .presentationDetents([.large])
-                 .presentationDragIndicator(.hidden)
-         }
-         .sheet(isPresented: $showCodeGenerate){
-            
-                 GenerateQRView(footer: "")
-                     .presentationDetents([.large])
-                     .presentationDragIndicator(.hidden)
-             
-             
-         }
-         .sheet(isPresented: $showGame){
-             GamePLay()
-                 .presentationDetents([.large])
-                 .presentationDragIndicator(.hidden)
-         }
-         .sheet(isPresented: self.$showReminder) {
-             ReminderListView()
-         }
-         */
         
     }
     
-    
-    /*
-     @ViewBuilder
-     func primerGroup()-> some View{
-         VStack(spacing: 20){
-             HStack(spacing: 20){
-                 
-                 Button{
-                     showReflex = true
-                 }label: {
-                     bloqueA("infinity", "Reflexiones")
-                 }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: [settingModel.colorFondo_a, settingModel.colorFondo_b]))
-                 
-                 Button{
-                     showAyudas = true
-                 }label: {
-                     bloqueA("flag.2.crossed.fill", "Ayudas")
-                 }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: [settingModel.colorFondo_a, settingModel.colorFondo_b]))
-                 
-             }
-             .padding(.top, 20)
-             
-             HStack(spacing: 20){
-                 
-                 Button{
-                     showLienzoSheet = true
-                 }label: {
-                     bloqueA("heart.text.square", "Lienzo")
-                 }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: [settingModel.colorFondo_a, settingModel.colorFondo_b]))
-                 
-                 
-                 
-                 Button{
-                     showFrasesList = true
-                 }label: {
-                     bloqueA("bookmark.fill", "Frases")
-                 }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: [settingModel.colorFondo_a, settingModel.colorFondo_b]))
-                 
-             }
-             
-             HStack(spacing: 20){
-                 Button{
-                     showCitas = true
-                 }label: {
-                     bloqueA("doc.append", "Citas")
-                 }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: [settingModel.colorFondo_a, settingModel.colorFondo_b]))
-                 
-                 Button{
-                     showSetting = true
-                 }label: {
-                     bloqueA("gear", "Ajustes")
-                 }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: [settingModel.colorFondo_a, settingModel.colorFondo_b]))
-                 
-                 
-             }
-             Spacer()
-             
-             HStack{
-                 
-                 Spacer()
-                 
-                 Text ("     Inicio")
-                     .font(.title2)
-                     .fontDesign(.serif)
-                 
-                 Spacer()
-                 
-             }
-             .padding(.vertical, 0)
-             
-             
-             
-         }
-         
-     }
-     
-     
-     @ViewBuilder
-     func  segundoGrupo()-> some View {
-         VStack(spacing: 20){
-             
-             HStack(spacing: 20){
-                 Button{
-                     showBiografia = true
-                 }label: {
-                     bloqueA("person.text.rectangle", "Bibliografia")
-                 }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: [settingModel.colorFondo_a, settingModel.colorFondo_b]))
-                 
-                 Link(destination: URL(string: "https://t.me/+rODRAz2S6nVmMmY0")!){
-                     bloqueA("personalhotspot", "Canal Telegram")
-                 }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: [settingModel.colorFondo_a, settingModel.colorFondo_b]))
-             }
-             .padding(.top, 20)
-             HStack(spacing: 20){
-                 Button{
-                     showGame = true
-                 }label: {
-                     bloqueA("gamecontroller", "Evaluación")
-                 }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: [settingModel.colorFondo_a, settingModel.colorFondo_b]))
-                 
-                 
-                 Button{
-                     showPreguntas = true
-                 }label: {
-                     bloqueA("questionmark.bubble", "Preguntas & Respuestas")
-                 }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: [settingModel.colorFondo_a, settingModel.colorFondo_b]))
-                 
-             }
-             HStack(spacing: 20){
-                 
-                 Button{
-                     showReminder = true
-                 }label: {
-                     bloqueA("timer", "Recordatorios")
-                 }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: [settingModel.colorFondo_a, settingModel.colorFondo_b]))
-                 
-                 Menu{
-                     Button{
-                         //Mostrar el lector de QR
-                         showCodeScanner = true
-                     }label: {
-                         bloqueA("qrcode.viewfinder", "Leer QR")
-                     }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: [settingModel.colorFondo_a, settingModel.colorFondo_b]))
-                     
-                     Button{
-                         showCodeGenerate = true
-                     }label: {
-                         bloqueA("qrcode", "Crear QR")
-                     }.modifier(GradientButtonStyle(ancho: sizeWigth, colors: [settingModel.colorFondo_a, settingModel.colorFondo_b]))
-                 }label: {
-                     bloqueA("qrcode.viewfinder", "Funciones QR")
-                 }
-                 .modifier(GradientButtonStyle(ancho: sizeWigth, colors: [settingModel.colorFondo_a, settingModel.colorFondo_b]))
-             }
-             Spacer()
-             Text ("Recursos")
-                 .font(.title2)
-                 .fontDesign(.serif)
-             
-         }
-     }
-     
-     */
-    
-    
+
 
     //auxiliar
     @MainActor

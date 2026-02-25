@@ -354,7 +354,7 @@ struct ReflexShowTextView: View {
             }
             .sheet(item: $showSheetTtextoCopiadoAlPortapapelesParaLienzo){ text in
                 if #available(iOS 26.0, macOS 26.0, *){
-                    LienzoMain(texto : text.texto)
+                    LienzoMain(texto : text.texto, imagenPrimariaACargar: nil)
                 }else{
                     VStack{
                         Text("Necesita iOS 26.0 / macOS 26.0 o más reciente para usar esta función")
