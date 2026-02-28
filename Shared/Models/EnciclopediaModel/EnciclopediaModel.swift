@@ -83,7 +83,11 @@ enum EnciclopediaTemas: String, CaseIterable, Hashable {
     case interocepcionYEmocion                    = "Interocepción y Emoción"
     case protocoloParaReinterprearEmocion         = "Protocolo para Reinterpretar una Emoción"
     
-    
+    //Ritmo Circadiano:
+    case ritmoCircadiano                       = "El Ritmo Circadiano"
+    case genesRelojPerifericos                 = "Activación de Genes Reloj Periféricos"
+    case protocoloNormalizarRitmoCircadiano    = "Protocolo para Normalizar Ritmo Circadiano"
+    case protocoloNormalizarRitmoCircadiano2    = "Protocolo para Ritmo Circadiano -> Variante optimizada para rendimiento cognitivo"
     
     //🟢
      var getFileName : String {
@@ -161,8 +165,12 @@ enum EnciclopediaTemas: String, CaseIterable, Hashable {
         case .controlEmocion:                       "enc_control_emociones"
         case .interocepcionYEmocion:                "enc_interocepcion_y_emocion"
         case .protocoloParaReinterprearEmocion:     "enc_protocolo_practico_reinterpretar_emociones"
-            
-        
+           
+        //Ritmo Circadiano:
+        case .ritmoCircadiano:                      "enc_ritmo_circadiano"
+        case .genesRelojPerifericos:                 "enc_genes_reloj_perifericos"
+        case .protocoloNormalizarRitmoCircadiano:    "enc_protocolo_normalizar_ritmo_circadiano"
+        case .protocoloNormalizarRitmoCircadiano2:    "enc_protocolo_normalizar_ritmo_circadiano_2"
         }
          
         
@@ -196,7 +204,7 @@ extension EnciclopediaTemas {
     }
     
     //Temas sobre Pensamientos & Sentimientos
-    static var pensamientoYSentimientos : [EnciclopediaTemas]{
+    static var temasPensamientoYSentimientos : [EnciclopediaTemas]{
         return [
             .queEsUnPensamiento,
             .efectosSentimientosNegativos,
@@ -206,7 +214,7 @@ extension EnciclopediaTemas {
     }
     
     //Temas sobre Hábitos
-    static var habitos: [EnciclopediaTemas] {
+    static var temasHabitos: [EnciclopediaTemas] {
             return [
                 .neurocienciaDeLosHabitos,
                 .habitosYAhorroDeEnergia,
@@ -222,7 +230,7 @@ extension EnciclopediaTemas {
         }
     
     //Temas Epigenética
-    static var epigenetica: [EnciclopediaTemas] {
+    static var temasEpigenetica: [EnciclopediaTemas] {
         return [
             .epigeneticaYNeurociencia,
             .epigeneticaSegunVariosAutores,
@@ -234,7 +242,7 @@ extension EnciclopediaTemas {
     }
        
     //Temas Memoria
-    static var memoria: [EnciclopediaTemas] {
+    static var temasMemoria: [EnciclopediaTemas] {
         return [
             .queEsLaMemoria,
             .memoriaSemantica,
@@ -246,7 +254,7 @@ extension EnciclopediaTemas {
     }
     
     //Temas Dopamina:
-    static var dopamina: [EnciclopediaTemas] {
+    static var temasDopamina: [EnciclopediaTemas] {
         return [
             .queEsLaDopamina,
             .dopaminaYProcrastinacion,
@@ -259,7 +267,7 @@ extension EnciclopediaTemas {
     }
     
     //Temas Serotonina:
-    static var serotonina: [EnciclopediaTemas] {
+    static var temasSerotonina: [EnciclopediaTemas] {
         return [
             .queEsLaSerotonina,
             .serotoninaYAnsiedad,
@@ -270,7 +278,7 @@ extension EnciclopediaTemas {
     }
         
     //Temas Ansiedad:
-    static var ansiedad: [EnciclopediaTemas] {
+    static var temasAnsiedad: [EnciclopediaTemas] {
         return [
             .queEsLaAnsiedad,
             .ansiedadVersusStressCronico,
@@ -281,7 +289,7 @@ extension EnciclopediaTemas {
     }
     
     //Temas Emociones:
-    static var emociones: [EnciclopediaTemas] {
+    static var temasEmociones: [EnciclopediaTemas] {
         return [
             .queSonLasEmociones,
             .almacenamientoEmociones,
@@ -294,5 +302,14 @@ extension EnciclopediaTemas {
         ]
     }
     
+    //Temas Ritmo Circadiano
+    static var temasRitmoCircadianos: [EnciclopediaTemas] {
+        return [
+            .ritmoCircadiano,
+            .genesRelojPerifericos,
+            .protocoloNormalizarRitmoCircadiano,
+            .protocoloNormalizarRitmoCircadiano2
+        ]
+    }
     
 }

@@ -11,14 +11,15 @@ struct EnciclopediaListView: View {
     
     let categorias: [EnciclopediaCategoria] = [
         EnciclopediaCategoria(nombre: "Temas Generales",temas: EnciclopediaTemas.temasGenerales),
-        EnciclopediaCategoria(nombre: "Pensamientos & Sentimientos", temas: EnciclopediaTemas.pensamientoYSentimientos),
-        EnciclopediaCategoria(nombre: "Hábitos", temas: EnciclopediaTemas.habitos),
-        EnciclopediaCategoria(nombre: "Epigenética", temas: EnciclopediaTemas.epigenetica),
-        EnciclopediaCategoria(nombre: "Memoria", temas: EnciclopediaTemas.memoria),
-        EnciclopediaCategoria(nombre: "Dopamina", temas: EnciclopediaTemas.dopamina),
-        EnciclopediaCategoria(nombre: "Serotonina", temas: EnciclopediaTemas.serotonina),
-        EnciclopediaCategoria(nombre: "Ansiedad", temas: EnciclopediaTemas.ansiedad),
-        EnciclopediaCategoria(nombre: "Emociones", temas: EnciclopediaTemas.emociones)
+        EnciclopediaCategoria(nombre: "Pensamientos & Sentimientos", temas: EnciclopediaTemas.temasPensamientoYSentimientos),
+        EnciclopediaCategoria(nombre: "Hábitos", temas: EnciclopediaTemas.temasHabitos),
+        EnciclopediaCategoria(nombre: "Epigenética", temas: EnciclopediaTemas.temasEpigenetica),
+        EnciclopediaCategoria(nombre: "Memoria", temas: EnciclopediaTemas.temasMemoria),
+        EnciclopediaCategoria(nombre: "Dopamina", temas: EnciclopediaTemas.temasDopamina),
+        EnciclopediaCategoria(nombre: "Serotonina", temas: EnciclopediaTemas.temasSerotonina),
+        EnciclopediaCategoria(nombre: "Ansiedad", temas: EnciclopediaTemas.temasAnsiedad),
+        EnciclopediaCategoria(nombre: "Emociones", temas: EnciclopediaTemas.temasEmociones),
+        EnciclopediaCategoria(nombre: "Ritmo Circadiano", temas: EnciclopediaTemas.temasRitmoCircadianos)
         
     ]
     
@@ -78,7 +79,7 @@ struct EnciclopediaListView: View {
                 // 🔽 PANEL INFERIOR — CONTENIDO
                 Group {
                     if let tema = temaSeleccionado {
-                        ContentTxtShowView(title: tema.rawValue,nombreTxt: tema.getFileName,type: .NA, blocks: [
+                        ContentTxtShowView(title: tema.rawValue,nombreTxt: "" ,type: .NA, blocks: [
                             ContentBlock(content: .text(UtilFuncs.FileRead(tema.getFileName)))
                         ]
                         )

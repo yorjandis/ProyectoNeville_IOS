@@ -263,7 +263,7 @@ struct TxtListView: View {
                                                         ], startPoint: .leading, endPoint: .trailing))
                                                     
                                                     NavigationLink {
-                                                        ContentTxtShowView(title: self.title,nombreTxt: "",  type: self.typeOfContent, blocks: [
+                                                        ContentTxtShowView(title: self.title,nombreTxt: nombreTxt,  type: self.typeOfContent, blocks: [
                                                             ContentBlock(content: .text(UtilFuncs.FileRead("\(typeOfContent.rawValue)\(nombreTxt)")))
                                                         ])
                                                             .environmentObject(self.modeloTxt)

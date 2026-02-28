@@ -28,6 +28,11 @@ enum ProgramaArchivo: String, CaseIterable {
     case prog_regulacion_digital_menores_1
     case prog_regulacion_digital_menores_2
     
+    case prog_visualizacion_creativa_neville_1
+    case prog_visualizacion_creativa_neville_2
+    case prog_visualizacion_creativa_neville_3
+    
+    
 }
 
 //Creamos los grupos Base: elimnando los números al final de los programas

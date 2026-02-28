@@ -546,7 +546,7 @@ struct NavigationDetailsViewMac: View {
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileBiografiaNeville)))
                 ]  )
             case .resumenEnseñanzaNeville:
-                ContentTxtShowView(title: "Resumen de la enseñanza: Neville Goddard", nombreTxt: AppCons.FileResumenEnseñanzaNeville, type: .NA, blocks:   [
+                ContentTxtShowView(title: "Resumen de la enseñanza: Neville Goddard", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenEnseñanzaNeville)))
                 ]  )
             case .frasesNeville:
@@ -563,78 +563,82 @@ struct NavigationDetailsViewMac: View {
             //Joe Dispenza:
             case .bibliografiaJoe:
                 ContentTxtShowView(title: "Biografía", nombreTxt: AppCons.FileBiografiaJD, type: .NA, blocks:   [
+                    ContentBlock(content: .imageLocal(name: "jd", size: 100)),
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileBiografiaJD)))
                 ]  )
             case .resumenEnseñanzaJoe:
-                ContentTxtShowView(title: "Resumen de la enseñanza: Joe Dispenza", nombreTxt: AppCons.FileResumenEnseñanzaJD, type: .NA, blocks:   [
+                ContentTxtShowView(title: "Resumen de la enseñanza: Joe Dispenza", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenEnseñanzaJD)))
                 ]  )
             case .frasesJoe:
                 FrasesListView(mostrarFrasesDe: .jd)
             case .analisisLibroSobrenatural:
-                ContentTxtShowView(title: "Análisis del Libro: SobreNatural", nombreTxt: AppCons.FileResumenSuperNatural, type: .NA, blocks:   [
+                ContentTxtShowView(title: "Análisis del Libro: SobreNatural", nombreTxt:"", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenSuperNatural)))
                 ]  )
             case .practicaLibroSobrenatural:
-                ContentTxtShowView(title: "Práctica del Libro: SobreNatural", nombreTxt: AppCons.FilePlanSupernarural, type: .NA, blocks:   [
+                ContentTxtShowView(title: "Práctica del Libro: SobreNatural", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FilePlanSupernarural)))
                 ]  )
             case .analisisLibroDejaDeSerTu:
-                ContentTxtShowView(title: "Análisis del Libro: Deja de ser tú", nombreTxt: AppCons.FileResumenDejaDeSerTu, type: .NA, blocks:   [
+                ContentTxtShowView(title: "Análisis del Libro: Deja de ser tú", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenDejaDeSerTu)))
                 ]  )
             case .practicaLibroDejaDeSerTu:
-                ContentTxtShowView(title: "Práctica del Libro: Deja de ser tú", nombreTxt: AppCons.FilePlanDejaDeSerTu, type: .NA, blocks:   [
+                ContentTxtShowView(title: "Práctica del Libro: Deja de ser tú", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FilePlanDejaDeSerTu)))
                 ]  )
             case .analisisLibroElPlaceboEresTu:
-                ContentTxtShowView(title: "Análisis del Libro: El placebo eres tú", nombreTxt: AppCons.FileResumenElPLaceboEresTu, type: .NA, blocks:   [
+                ContentTxtShowView(title: "Análisis del Libro: El placebo eres tú", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenElPLaceboEresTu)))
                 ]  )
             case .practicaLibroElPlaceboEresTu:
-                ContentTxtShowView(title: "Práctica del Libro: El placebo eres tú", nombreTxt: AppCons.FilePlanElPlaceboEresTu, type: .NA, blocks:   [
+                ContentTxtShowView(title: "Práctica del Libro: El placebo eres tú", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FilePlanElPlaceboEresTu)))
                 ]  )
             case .analisisLibroDesarrollaTuCerebro:
-                ContentTxtShowView(title: "Análisis del Libro: Desarrolla tu cerebro", nombreTxt: AppCons.FileResumenDesarrollaTuCerebro, type: .NA, blocks:   [
+                ContentTxtShowView(title: "Análisis del Libro: Desarrolla tu cerebro", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenDesarrollaTuCerebro)))
                 ]  )
             case .practicaLibroDesarrollaTuCerebro:
-                ContentTxtShowView(title: "Práctica del Libro: Desarrolla tu cerebro", nombreTxt: AppCons.FilePlanDesarrollaTuCerebro, type: .NA, blocks:   [
+                ContentTxtShowView(title: "Práctica del Libro: Desarrolla tu cerebro", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FilePlanDesarrollaTuCerebro)))
                 ]  )
             
             //Greeg Braden:
             case .bibliografiaGregg:
-                ContentTxtShowView(title: "Biografía", nombreTxt: AppCons.FileBiografiaGregg, type: .NA )
+                ContentTxtShowView(title: "Biografía", nombreTxt: "", type: .NA, blocks: [
+                    ContentBlock(content: .imageLocal(name: "gregg", size: 100)),
+                    ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileBiografiaGregg)))
+                ])
             case .resumenEnseñanzaGregg:
-                ContentTxtShowView(title: "Resumen de la enseñanza: Joe Dispenza", nombreTxt: AppCons.FileResumenEnseñanzaGregg, type: .NA, blocks:   [
+                ContentTxtShowView(title: "Resumen de la enseñanza: Gregg Braden", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenEnseñanzaGregg)))
                 ]  )
             case .frasesGregg:
                 FrasesListView(mostrarFrasesDe: .gregg)
             case .analisisLibroPuramenteHumanos:
-                ContentTxtShowView(title: "Análisis del Libro: Puramente Humanos", nombreTxt: AppCons.FileResumenPuramenteHumanosGregg, type: .NA, blocks:   [
+                ContentTxtShowView(title: "Análisis del Libro: Puramente Humanos", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenPuramenteHumanosGregg)))
                 ]  )
             case .practicaLibroPuramenteHumanos:
-                ContentTxtShowView(title: "Práctica del Libro: Puramente Humanos", nombreTxt: AppCons.FilePlanPuramenteHumanosGregg, type: .NA, blocks:   [
+                ContentTxtShowView(title: "Práctica del Libro: Puramente Humanos", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FilePlanPuramenteHumanosGregg)))
                 ]  )
             case .analisisLibroResilienciaDesdeCorazon:
-                ContentTxtShowView(title: "Análisis del Libro: Resiliencia desde el Corazón", nombreTxt: AppCons.FileResumenResilenciaCorazonGregg, type: .NA, blocks:   [
+                ContentTxtShowView(title: "Análisis del Libro: Resiliencia desde el Corazón", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenResilenciaCorazonGregg)))
                 ]  )
             case .practicaLibroResilienciaDesdeCorazon:
-                ContentTxtShowView(title: "Práctica del Libro: Resiliencia desde el Corazón", nombreTxt: AppCons.FilePlanResilenciaCorazonGregg, type: .NA, blocks:   [
+                ContentTxtShowView(title: "Práctica del Libro: Resiliencia desde el Corazón", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FilePlanResilenciaCorazonGregg)))
                 ]  )
             case .analisisLibroLaMatrizDivina:
-                ContentTxtShowView(title: "Análisis del Libro: La Matriz Divina", nombreTxt: AppCons.FileResumenLaMatrizDivinaGregg, type: .NA, blocks:   [
+                ContentTxtShowView(title: "Análisis del Libro: La Matriz Divina", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FilePlanLaMatrizDivinaGregg)))
                 ]  )
             case .practicaLibroLaMatrizDivina:
-                ContentTxtShowView(title: "Práctica del Libro: La Matriz Divina", nombreTxt: AppCons.FilePlanLaMatrizDivinaGregg, type: .NA, blocks:   [
+                ContentTxtShowView(title: "Práctica del Libro: La Matriz Divina", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FilePlanLaMatrizDivinaGregg)))
                 ]  )
                 
@@ -642,20 +646,21 @@ struct NavigationDetailsViewMac: View {
             //Bruce Lipton:
             case .bibliografiaBruce:
                 ContentTxtShowView(title: "Biografía", nombreTxt: AppCons.FileBiografiaBruce, type: .NA, blocks:   [
+                    ContentBlock(content: .imageLocal(name: "bruce", size: 100)),
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileBiografiaBruce)))
                 ]  )
             case .resumenEnseñanzaBruce:
-                ContentTxtShowView(title: "Resumen de la enseñanza: Joe Dispenza", nombreTxt: AppCons.FileResumenEnseñanzaBruce, type: .NA, blocks:   [
+                ContentTxtShowView(title: "Resumen de la enseñanza: Bruce Lipton", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenEnseñanzaBruce)))
                 ]  )
             case .frasesBruce:
                 FrasesListView(mostrarFrasesDe: .bruceL)
             case .analisisLibroBiologiaCreencia:
-                ContentTxtShowView(title: "Análisis del Libro: La Biología de la Creencia", nombreTxt: AppCons.FileResumenBiologiaCreencia, type: .NA, blocks:   [
+                ContentTxtShowView(title: "Análisis del Libro: La Biología de la Creencia", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenBiologiaCreencia)))
                 ]  )
             case .practicaLibroBiologiaCreencia:
-                ContentTxtShowView(title: "Práctica del Libro: La Biología de la Creencia", nombreTxt: AppCons.FilePlanBiologiaCrrencia, type: .NA, blocks:   [
+                ContentTxtShowView(title: "Práctica del Libro: La Biología de la Creencia", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FilePlanBiologiaCrrencia)))
                 ]  )
             case .serieEvolucionInterior_1:

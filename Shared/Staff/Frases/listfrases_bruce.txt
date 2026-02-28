@@ -603,5 +603,13 @@ autor=bruceL
 nota=
 fuente=Serie: Evolución Interior. Por Bruce Lipton. Gaia.com
 contexto=
-texto=La función de la mente es crear coherencia entre tus creencias y tu realidad. Si tus creencias son mayormente negativas entonces tu estado mental lo reflejará en tu experiencia cotidiana. Por el contrario, si tus creencias son positivas y empoderadoras, tu mente creará experiencias de vida positivas y grandiosas, en coherencia con dichas creencias. En cosecuencia, los pensamientos pueden mejorar tu salud o favorecer la enfermedad según tu sistema de creencias
+texto=La función de la mente es crear coherencia entre tus creencias (programas subconcientes) y tu realidad. Si tus creencias son mayormente negativas entonces tu estado mental lo reflejará en tu experiencia cotidiana. Por el contrario, si tus creencias son positivas y empoderadoras, tu mente creará experiencias de vida positivas y grandiosas, en coherencia con dichas creencias. En cosecuencia, los pensamientos pueden mejorar tu salud o favorecer la enfermedad según tu sistema de creencias
+relacionadas=
+
+id=bruce_078
+autor=bruceL
+nota=
+fuente=Serie: Evolución Interior. Por Bruce Lipton. Gaia.com
+contexto=
+texto=La epigenética no modifica al gen, solo cambia la lectura que hace de ese gen. Por tanto, la epigenética dicta la forma en que se expresa el gen y puede originar muchas variaciones (proteinas) a partir de un mismo gen. La epigenética representa las señales ambientales, tanto internas como externas al orgnanismo, que actual sobre las células y regulan la expresión de genes
 relacionadas=
