@@ -18,8 +18,11 @@ struct Ajustes: View {
     @EnvironmentObject private var modelFrases : FrasesModel
     @EnvironmentObject private var settingModel : SettingModel
     @EnvironmentObject private var securityModel : SecurityModel
+    
     //Funciones compras en la Aplicación
     @AppStorage("purchaseStatus" ) var purchaseStatus: Bool = false
+    @AppStorage("yorjPremium",store: UserDefaults(suiteName: AppCons.AppGroupName))var yorjPremium: Bool = false
+
     @State private var showSheetPremiumView: Bool = false
     
     private let context2 = CoreDataController.shared.context
@@ -264,7 +267,15 @@ struct Ajustes: View {
                                         Menu("Añadir al Filtro:"){
                                             ForEach(CriterioFraseHome.allCases, id: \.self) { opcion in
                                                 Button(opcion.getName){
-                                                    toggleFiltro(opcion)
+                                                    if (self.purchaseStatus || self.yorjPremium){
+                                                        toggleFiltro(opcion)
+                                                    }else{
+                                                        if opcion.rawValue != "neville"{
+                                                            self.alertMessage = "Disponible en Versión Extendida"
+                                                            self.showAlert = true
+                                                        }
+                                                    }
+                                                    
                                                 }
                                             }
                                         }
@@ -424,13 +435,13 @@ struct Ajustes: View {
                             Text("Protección de Notas").font(.system(size: 22)).foregroundStyle(.orange)
                             
                             if self.securityModel.canOpenNotas {
-                                if self.purchaseStatus{
+                                if (self.purchaseStatus || self.yorjPremium){
                                     Toggle("Proteger las Notas con FaceID", isOn: $setting_NotasFaceID)
                                 }else{
-                                    Button("Se requiere Premium"){
+                                    Button("Se requiere Versión Extendida"){
                                         showWindow(for: PurchaseView(),
                                                    environmentObjects: [],
-                                        title: "Habilitar Premium",
+                                        title: "Habilitar Versión Extendida",
                                                    size: .percentage(width: 0.50, height: 0.50),
                                         isModal: true)
                                     }
@@ -533,7 +544,7 @@ struct Ajustes: View {
                         .padding(.bottom, 20)
                         
                         
-                        //Recordatorios(Premium):
+                        //Recordatorios(Versión Extendida):
                         VStack(alignment: .leading){
                             
                             Text("Recordatorios").font(.system(size: 22)).foregroundStyle(.orange)
@@ -737,14 +748,14 @@ struct Ajustes: View {
                             
                             
                             Button{
-                                showWindow(for: Novedades(),
+                                showWindow(for: Features(),
                                            environmentObjects: [],
                                            title: "Novedades",
                                            size: AppCons.windows_size_content_small,
                                            isModal: false
                                 )
                             }label:{
-                                Label("Novedades en esta versión", systemImage: "info.circle.text.page.fill")
+                                Label("Caraterísticas de la App", systemImage: "info.circle.text.page.fill")
                                     .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
                                     .bold()
                                     .font(.headline)
@@ -828,7 +839,7 @@ struct Ajustes: View {
                                 NavigationLink{
                                     PurchaseView()
                                 }label: {
-                                    Label("Obtener funciones Premium", systemImage: "sparkles")
+                                    Label("Obtener Versión Extendida", systemImage: "sparkles")
                                         .foregroundStyle(.orange)
                                         .bold()
                                         .font(.headline)
@@ -1026,7 +1037,15 @@ struct Ajustes: View {
                                  Menu("Añadir al Filtro:"){
                                      ForEach(CriterioFraseHome.allCases, id: \.self) { opcion in
                                          Button(opcion.getName){
-                                             toggleFiltro(opcion)
+                                             if (self.purchaseStatus || self.yorjPremium){
+                                                 toggleFiltro(opcion)
+                                             }else{
+                                                 if opcion.rawValue != "neville"{
+                                                     self.alertMessage = "Disponible en Versión Extendida"
+                                                     self.showAlert = true
+                                                 }
+                                             }
+                                             
                                          }
                                      }
                                  }
@@ -1092,10 +1111,10 @@ struct Ajustes: View {
                     //Proteger acceso a las Notas (Premium)
                     Section("Proteger Acceso a Notas"){
                         if self.securityModel.canOpenNotas {
-                            if self.purchaseStatus {
+                            if (self.purchaseStatus || self.yorjPremium) {
                                 Toggle("Proteger las Notas con FaceID", isOn: $setting_NotasFaceID)
                             }else{
-                                Text("Acceso Premium")
+                                Text("Acceso a Versión Extendida")
                                     .foregroundStyle(.orange).bold()
                                     .onTapGesture {
                                         self.showSheetPremiumView = true
@@ -1281,15 +1300,17 @@ struct Ajustes: View {
                             Label("Información", systemImage: "info.circle.fill")
                                 .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
                         }
+                        /*
+                         NavigationLink{
+                             Novedades()
+                         }label:{
+                             Label("Novedades en esta versión", systemImage: "info.circle.text.page.fill")
+                                 .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
+                                 .bold()
+                                 .font(.headline)
+                         }
+                         */
                         
-                        NavigationLink{
-                            Novedades()
-                        }label:{
-                            Label("Novedades en esta versión", systemImage: "info.circle.text.page.fill")
-                                .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
-                                .bold()
-                                .font(.headline)
-                        }
                         NavigationLink{
                             Features()
                         }label:{
@@ -1356,7 +1377,7 @@ struct Ajustes: View {
                             NavigationLink{
                                 PurchaseView()
                             }label: {
-                                Label("Obtener funciones Premium", systemImage: "sparkles")
+                                Label("Obtener funciones Extendidas", systemImage: "sparkles")
                                     .foregroundStyle(.orange)
                                     .bold()
                                     .font(.headline)

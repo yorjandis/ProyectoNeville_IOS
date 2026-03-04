@@ -10,6 +10,7 @@ struct LienzoMain: View {
     @StateObject private var lienzoModel : LienzoModel = .shared //ViewModel para el Lienzo
     //@StateObject private var purchasePremium : PurchaseManager = .shared
     @AppStorage("purchaseStatus" ) var purchaseStatus: Bool = false
+    @AppStorage("yorjPremium",store: UserDefaults(suiteName: AppCons.AppGroupName))var yorjPremium: Bool = false
     
     let texto: String? //Si se da,  se coloca este texto en el texto principal. Para importar frase o nota
     
@@ -52,7 +53,7 @@ struct LienzoMain: View {
     
     var body: some View {
         
-        if self.purchaseStatus {
+        if (self.purchaseStatus || self.yorjPremium) {
             VStack{
                 
                 //Área útil: la que se va a compartir

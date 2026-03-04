@@ -38,6 +38,7 @@ struct CrearNotaIntent : AppIntent, ProvidesDialog{
     static let title: LocalizedStringResource = "Crear Nota"
     static let description = IntentDescription("Crear una nueva nota")
     //static let openAppWhenRun: Bool = true //Activar esto si deseas que se abra la App
+    @AppStorage("yorjPremium",store: UserDefaults(suiteName: "group.com.ypg.nev.group"))var yorjPremium: Bool = false
     
     @Parameter(title: "Título",description: "El título de la nota")
     var titulo : String
@@ -49,7 +50,7 @@ struct CrearNotaIntent : AppIntent, ProvidesDialog{
         
         let hasPremium = await PremiumService.shared.hasPremiumAccess()
         
-        guard hasPremium else {
+        guard (hasPremium || self.yorjPremium) else {
             throw PremiumError.noSubscription
         }
         

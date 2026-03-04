@@ -58,13 +58,14 @@ struct ReminderEditorView: View {
     @State private var alertMessage = ""
     
     @AppStorage("purchaseStatus" ) var purchaseStatus: Bool = false
+    @AppStorage("yorjPremium",store: UserDefaults(suiteName: AppCons.AppGroupName))var yorjPremium: Bool = false
     
     //Tonos:
     @State private var selectedSound: NotificationSound = .selected
 
     var body: some View {
         NavigationStack{
-            if self.purchaseStatus {
+            if (self.purchaseStatus || self.yorjPremium) {
                 VStack{
                     #if os(macOS)
                     

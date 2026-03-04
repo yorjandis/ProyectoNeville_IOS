@@ -16,11 +16,12 @@ struct ReminderWidgetList_View : View {
     @AppStorage("hideTextInProgressReminder") private var hideTextInProgressReminder: Bool = false
     
     @AppStorage("purchaseStatus" ) var purchaseStatus: Bool = false
+    @AppStorage("yorjPremium",store: UserDefaults(suiteName: AppCons.AppGroupName))var yorjPremium: Bool = false
     
     @State private var showSheet: Bool = false
     
     var body: some View {
-        if purchaseStatus {
+        if (self.purchaseStatus || self.yorjPremium) {
             VStack{
                 
                 ScrollView(.horizontal) {

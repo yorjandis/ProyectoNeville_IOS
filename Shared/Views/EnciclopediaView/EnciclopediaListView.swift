@@ -35,7 +35,7 @@ struct EnciclopediaListView: View {
     var body: some View {
         ZStack{
             
-            LinearGradient.FondoListado()
+            LinearGradient.AzulTecnologico()
                 .ignoresSafeArea()
             
             VStack(spacing: 0) {
@@ -81,14 +81,14 @@ struct EnciclopediaListView: View {
                     if let tema = temaSeleccionado {
                         ContentTxtShowView(title: tema.rawValue,nombreTxt: "" ,type: .NA, blocks: [
                             ContentBlock(content: .text(UtilFuncs.FileRead(tema.getFileName)))
-                        ]
+                        ], checkPremium: true
                         )
                         .id(tema)   // 🔥 CLAVE
                     } else {
                         VStack {
                             Spacer()
                             Text("Selecciona un ítem para ver el contenido")
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(.black).bold()
                             Spacer()
                         }
                     }
@@ -163,7 +163,7 @@ fileprivate struct SubListaView: View {
                 NavigationLink(item.rawValue) {
                     ContentTxtShowView(title: item.rawValue, nombreTxt: "",type: .NA, blocks: [
                                         ContentBlock(content: .text(UtilFuncs.FileRead(item.getFileName)))
-                                       ])
+                                       ], checkPremium: true)
                     
                 }
                 .listRowBackground(Color.clear)

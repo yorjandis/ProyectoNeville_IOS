@@ -14,6 +14,8 @@ struct PurchaseView: View {
     
     var mostrarLogo : Bool = true
     
+    var mostrarBotonCerrarMacOS : Bool = false
+    
     var body: some View {
         VStack{
             ZStack{
@@ -51,7 +53,7 @@ struct PurchaseView: View {
                             .shadow(color: .purple, radius: 3)
                     }
 
-                    Text("🎉 La Ley Premium ✨")
+                    Text("🎉 Versión Extendida ✨")
                         .bold()
                         .font(.title)
                         .fontDesign(.rounded)
@@ -68,7 +70,7 @@ struct PurchaseView: View {
                         }
                         .cornerRadius(20)
                     
-                    Text("Desbloquea todas las Funciones!")
+                    Text("Accede a todo el contenido")
                         .bold()
                         .font(.system(size: 20))
                         .foregroundColor(.black)
@@ -76,26 +78,33 @@ struct PurchaseView: View {
                     Spacer()
                         
                     ScrollView{
-                        VStack( alignment: .leading ,spacing: 15){
-                            Text("🔵 Inteligencia Artificial (IA): Resumen, Interpretación, concejos prácticos y chat").bold()
-                                
-                            Text("🔵 Atajos & Comandos Siri: Abrir notas, crear notas, abrir Diario, crear Entrada del Diario, abrir una conferencia al azar, etc").bold()
-                                
-                            Text("🔵 Opciones del Menu Compartir: Leer QR code, OCR(extraer texto de imagen), importar Notas/Frase desde QR").bold()
+                        VStack(alignment: .leading, spacing: 15) {
                             
-                            Text("🔵 Frases Relacionadas (FR). Descubre el pensamiento común de varios autores y científicos que respaldan estas enseñanzas.").bold()
-                                
-                            Text("🔵 Lienzo: Diseña vistosas imágenes con frases y pensamientos para compartir en redes sociales y con amigos").bold()
+                            Text("🔵 Contenido exclusivo de grandes referentes: Accede a las frases y enseñanzas de  Joe Dispenza, Bruce Lipton y Gregg Braden").bold()
                             
-                            Text("🔵 Recordatorios: Programa avisos para no olvidarse de nada esencial: meditaciones, dar gracias, revisión, orar, etc.").bold()
-                                
-                            Text("🔵 Importar Nota/Frase por QR code. Comparte frases y notas en redes sociales utilizando un código QR").bold()
-                                
-                            Text("🔵 Proteger las Notas: Permite proteger el acceso a notas con biometría o contraseña.").bold()
-                                
-                            Text("🔵 Menú Texto Copiado: Crea un menú con accesos útiles cuando seleccionamos y copiamos un texto en conferencias, diario, notas, etc").bold()
-                               
-                             
+                            Text("🔵 Metas y transformación personal: Define objetivos claros, mide tu progreso y adopta hábitos respaldados por la neurociencia. Incluye programas prácticos para reprogramar patrones negativos y empoderarte.").bold()
+                            
+                            Text("🔵 Lienzo creativo: Diseña imágenes impactantes con tus frases favoritas para compartir en redes o usar como tarjetas personales de enfoque y motivación.").bold()
+                            
+                            Text("🔵 Recordatorios inteligentes: Programa avisos para tus prácticas esenciales como meditar, agradecer, visualizar o revisar tus metas.").bold()
+                            
+                            Text("🔵 Enciclopedia: Amplio catálogo de contenido educativo y práctico sobre diferentes temas. Basado en las últimas investigaciones de la neurociencia y la meditación. Aprende cómo funcionan los hábitos, la mente, la epigenética, las hormonas del estrés, los ritmos circadianos y muchos otros.").bold()
+                            
+                            Text("🔵 Evidencia científica: Resumen de investigaciones que respaldan estas enseñanzas, debidamente acotados para su fácil consulta").bold()
+                            
+                            Text("🔵 Inteligencia Artificial integrada: Obtén resúmenes, interpretaciones, consejos prácticos y un chat para resolver dudas al instante. En el chat, podemos escoger el autor que responderá y las respuestas se basará en su particular campo de conocimientos.").bold()
+                            
+                            Text("🔵 Atajos y comandos con Siri: Crea notas, añade entradas al diario o abre contenido usando solo tu voz, sin entrar en la app.").bold()
+                            
+                            Text("🔵 Importación desde cualquier lugar: Guarda texto o imágenes desde webs y apps con el menú compartir. Incluye OCR y lectura de códigos QR.").bold()
+                            
+                            Text("🔵 Frases Relacionadas (FR): Conecta ideas de distintos autores y tus propias reflexiones para crear un mapa visual del pensamiento compartido.").bold()
+                            
+                            Text("🔵 Comparte con QR: Genera códigos QR para compartir notas y frases fácilmente en redes sociales o con amigos.").bold()
+                            
+                            Text("🔵 Notas protegidas: Bloquea el acceso a tus notas con biometría o contraseña para mantener tu contenido seguro.").bold()
+                            
+                            Text("🔵 Menú inteligente de texto copiado: Selecciona cualquier fragmento dentro de la app y accede a acciones rápidas como guardar en Notas o Frases al instante.").bold()
                         }
                         .multilineTextAlignment(.leading)
                         .font(.system(size: 20))
@@ -118,7 +127,7 @@ struct PurchaseView: View {
                                 }
                                 
                             }label: {
-                                Text("Adquirir Premium")
+                                Text("Acceder a la Versión Extendida")
                                     .foregroundStyle(.black)
                                     .font(.title2)
                                     .bold()
@@ -127,7 +136,7 @@ struct PurchaseView: View {
                             .tint(.blue.opacity(0.6))
                         }
                     }else{
-                        Text("Eres premium 🎉")
+                        Text("Versión Extendida Habilitada! 🎉")
                             .bold()
                             .font(.system(size: 20))
                             .foregroundStyle(.black)
@@ -154,21 +163,22 @@ struct PurchaseView: View {
                     Spacer()
                     
                     VStack(alignment: .center){
-                        Text("💕 El acceso a las enseñanzas de neville seguirán siendo gratis. Nada cambiará eso 💕")
+                        Text("💕 Las enseñanzas de neville seguirán disponibles. Nada cambiará eso 💕")
                             .bold()
                             .foregroundStyle(.black)
                     }
                     
                     #if os(macOS)
-                    if !ventanaActualEsModalPropia() {
-                        Button("Cerrar"){
-                            if let windows = NSApp.keyWindow{
-                                closeWindowPropia(windows)
+                    if self.mostrarBotonCerrarMacOS {
+                        if !ventanaActualEsModalPropia() {
+                            Button("Cerrar"){
+                                if let windows = NSApp.keyWindow{
+                                    closeWindowPropia(windows)
+                                }
                             }
+                            .buttonStyle(.borderedProminent)
                         }
-                        .buttonStyle(.borderedProminent)
                     }
-                    
                     #endif
                    
                 }

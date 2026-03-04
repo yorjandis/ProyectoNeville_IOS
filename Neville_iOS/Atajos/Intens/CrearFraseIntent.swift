@@ -14,6 +14,7 @@ struct CrearFraseIntent : AppIntent, ProvidesDialog{
     static let title: LocalizedStringResource = "Crear Frase"
     static let description = IntentDescription("Crear una nueva frase")
     //static let openAppWhenRun: Bool = true //Activar esto si deseas que se abra la App
+    @AppStorage("yorjPremium",store: UserDefaults(suiteName: "group.com.ypg.nev.group"))var yorjPremium: Bool = false
     
     @Parameter(title: "frase",description: "El contenido de la frase")
     var frase : String
@@ -26,7 +27,7 @@ struct CrearFraseIntent : AppIntent, ProvidesDialog{
         
         let hasPremium = await PremiumService.shared.hasPremiumAccess()
         
-        guard hasPremium else {
+        guard ( hasPremium || self.yorjPremium) else {
             throw PremiumError.noSubscription
         }
         

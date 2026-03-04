@@ -170,7 +170,7 @@ final class FrasesModel : ObservableObject {
     
     @Published var listfrases : [Frases] = [] //Listado de Frases principal
     
-    @Published var listfrasesPrueba : [FraseItem] = [] //Listado de Frases a cargar
+    //@Published var listfrasesPrueba : [FraseItem] = [] //Listado de Frases a cargar
     
     @Published var fraseAnteriores : [Frases] = [] //Arreglo que almacena la frase anterior para poder acceder a ella.
     
@@ -586,7 +586,6 @@ final class FrasesModel : ObservableObject {
                     self.listfrases =  getFrasesConNotas()
                 case .TodasFrases:
                     getAllFrases()
-                    
                 }
             }else{
                 //Cuando se esté realizado una búsqueda y el cuadro de busqueda tenga un texto:

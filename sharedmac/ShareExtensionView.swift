@@ -16,6 +16,7 @@ struct ShareExtensionView: View {
     var image: NSImage? = nil
     
     @State private var textqr: String = ""
+    @AppStorage("yorjPremium",store: UserDefaults(suiteName: "group.com.ypg.nev.group"))var yorjPremium: Bool = false
     
     let keyNotaShareText    = "notaShareText"
     let keyFraseShareText   = "fraseShareText"
@@ -32,7 +33,7 @@ struct ShareExtensionView: View {
                 LinearGradient(colors: [.orange, .green], startPoint: .top, endPoint: .bottom)
                     .ignoresSafeArea()
                 
-                if self.hasPremium{
+                if (self.hasPremium || self.yorjPremium){
                     VStack{
                         //Logo & Título
                         VStack{

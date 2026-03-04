@@ -19,7 +19,8 @@ struct FeedbackView: View {
     
     @State private var isReviewComplete : Bool = false
     
-    @AppStorage("yorjPremium") var yorjPremium: Bool = false //Valor oculto para hacer premium la app.
+    @AppStorage("yorjPremium",store: UserDefaults(suiteName: AppCons.AppGroupName))var yorjPremium: Bool = false
+
     
     var body: some View {
         VStack{

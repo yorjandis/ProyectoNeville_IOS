@@ -29,11 +29,28 @@ struct Features: View {
                             Text("☘️ conferencias y  libros: 472")
                             //Compendio de Frases:
                             Text("☘️ Compendio de Frases: 439. Se pueden crear nuevas frases personales. Las Frases incorporadas se han extraido textualmente de toda la obra de neville. ")
+                            
+                            //Autores:
+                            Text("☘️ Se ha incorporado las enseñanzas de varios autores: Joe Dispenza, Bruce Lipton y Gregg Braden. Los aportes en sus respectivos campos de especialziación apoyan las enseñanzas de Neville y nos empoderan para llevar una vida más saludable y en armonía.")
+                            
+                            //Enciclopedia:
+                            Text("☘️ Enciclopedia de conocimientos. Se ha creado un espacio de aprendisaje y nuevo conocimiento relacionado con las enseñanzas.")
+                            
+                            //Evidencia científica:
+                            Text("☘️ Evidencia Científica: Un resumen, debidamente acotado y en crecimiento, sobre las investigaciones y estudios científicos que apoyan estas enseñanzas")
+                            
                             //Notas:
                             Text("☘️ Notas Personales ilimitadas. Podemos crear Notas desde Siri: [<Oye Siri> en La Ley crea una nota]. Las notas pueden ser compartidas, exportadas a QR, al lienzo y marcarse como favoritas. Admiten funciones IA: Interpretar, Aplicación Práctica y ChatIA.")
                             
-                            //Diario.
-                            Text("☘️ Diario Personal para registrar nuestras experiencias y hechos de cada día. Muy útil para llevar un registro de nuestras asunciones, deseos y experiencias con estas enseñanzas y nuestra vida. ")
+                            //Diario:
+                            Text("☘️ Diario Personal para registrar nuestras experiencias y hechos de cada día. Muy útil para llevar un registro de nuestras asunciones, deseos y experiencias con estas enseñanzas y nuestra vida.")
+                            
+                            //Metas:
+                            Text("☘️ Metas permite crear objetivos y seguir su progreso. Cada objetivo es creado con la información necesaria para que pueda lograrse de manera óptima. Puedes ajustar parámetros como los días y la frecuencia que tomará lograr el objetivo. También se puede elegir entre un amplio catálogo de hábitos saludables y programas de empoderamiento y convertirlos en objetivos a alcanzar.")
+                            
+                            //Recordatorios:
+                            Text("☘️ Los recordatorios son una forma de programar avisos para no olvidarse de nada. Además resultan útiles para sesiones de meditación, entrenamiento, etc")
+                            
                             
                             //Evaluación:
                             Text("☘️ Evaluación: Un juego de elegir la respuesta correcta/incorrecta. Nos ayuda a consolidar y repasar lo aprendido en estas enseñansas. Las preguntas pueden tener doble sentido y ser sutiles para hacer más desafiente su interpretación.")
@@ -42,17 +59,17 @@ struct Features: View {
                             Text("☘️ El lector y generador de QR integrado nos permite importar información como Notas, Frases, etc desde y hacia la aplicación. Se ha creado un formato propio de importación/exportación de Frase y Notas con el cual se puede compartir con amigos y la comunidad.")
                             
                             //Funciones de Inteligencia Artificial (IA):
-                            Text("☘️ Inteliegncia Artifical (IA) <Premium>. Las funciones propias de IA son: Interpretación, resumen, generación de concejos prácticos y chat sobre temas de las enseñanzas. La IA funciona de manera local y no requiere conexión a internet.La IA ha sido cuidadosamente instruida para responder solo en el contexto de las enseñansas de neville")
+                            Text("☘️ Inteliegncia Artifical (IA) <Versión Extendida>. Las funciones propias de IA son: Interpretación, resumen, generación de concejos prácticos y chat sobre temas de las enseñanzas. La IA funciona de manera local y no requiere conexión a internet.La IA ha sido cuidadosamente instruida para responder solo en el contexto de las enseñansas de neville")
                             
                             
                             //Lienzo
-                            Text("☘️ Lienzo <Premiun>: Una forma creativa de diseñar tus propios fondos con imágines, colores y texto. Ideal para compartir frases y pensamientos en redes sociales y con amigos")
+                            Text("☘️ Lienzo <Versión Extendida>: Una forma creativa de diseñar tus propios fondos con imágines, colores y texto. Ideal para compartir frases y pensamientos en redes sociales y con amigos")
                             
                             //Recordatorios:
-                            Text("☘️ Recordatorios <Premiun>: Ahora podemnos programar avisos para no olvidar realizar las tareas del día: meditaciones, leer, orar, dar gracias, afirmaciones, lista de compras, etc.")
+                            Text("☘️ Recordatorios <Versión Extendida>: Ahora podemnos programar avisos para no olvidar realizar las tareas del día: meditaciones, leer, orar, dar gracias, afirmaciones, lista de compras, etc.")
                             
                             //Atajos
-                            Text("☘️ Atajos & Comandos de Siri <Premiun>: Se han creado varios Atajos, visible en la App Atajos, para realizar las siguientes acciones:")
+                            Text("☘️ Atajos & Comandos de Siri <Versión Extendida>: Se han creado varios Atajos, visible en la App Atajos, para realizar las siguientes acciones:")
                             VStack(alignment: .leading, spacing: 5){
                                 Text("🔸Abrir el Diario:").foregroundStyle(.orange)
                                 Text("Abre directamente la ventana del Diario. \nComando de Siri:")

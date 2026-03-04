@@ -14,13 +14,13 @@ struct GetRandomConfIntent: AppIntent {
     static  let description =  IntentDescription ( "Abre la app en una conferencia aleatoria" )
     
     static let  openAppWhenRun: Bool = true //Abre la App cuando se invoca el Intent
-    
+    @AppStorage("yorjPremium",store: UserDefaults(suiteName: "group.com.ypg.nev.group"))var yorjPremium: Bool = false
     
     func perform() async throws -> some IntentResult {
         
         let hasPremium = await PremiumService.shared.hasPremiumAccess()
         
-        guard hasPremium else {
+        guard (hasPremium || self.yorjPremium) else {
             throw PremiumError.noSubscription
         }
         

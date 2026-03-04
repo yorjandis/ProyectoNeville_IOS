@@ -25,7 +25,7 @@ struct EvidenciaCientificaView: View {
                             Button(evidencia.getTitle){
                                 showWindow(for: ContentTxtShowView(title: evidencia.getTitle, nombreTxt: "", type: .NA, blocks: [
                                     ContentBlock(content: .text(UtilFuncs.FileRead(evidencia.rawValue)))
-                                ]),
+                                ], checkPremium: true),
                                            environmentObjects: [ClipboardObserver()],
                                 title: "Evidencia Científica",
                                            size: .absolute(CGSize(width: 1200, height: 800)),
@@ -36,7 +36,7 @@ struct EvidenciaCientificaView: View {
 
                                 ContentTxtShowView(title: evidencia.getTitle, nombreTxt: "", type: .NA, blocks: [
                                      ContentBlock(content: .text(UtilFuncs.FileRead(evidencia.rawValue)))
-                                 ])
+                                 ], checkPremium: true)
 
                             }
                             .font(.body)

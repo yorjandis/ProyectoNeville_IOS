@@ -8,6 +8,7 @@
 //Para determinar si somos premium dentro de App Intent
 
 import StoreKit
+import SwiftUI
 
 actor PremiumService {
 
@@ -16,6 +17,7 @@ actor PremiumService {
     private let premiumProductID = "com.ypg.nev.premium.anual"
 
     func hasPremiumAccess() async -> Bool {
+        
         guard let result = await Transaction.latest(for: premiumProductID) else {
             return false
         }
@@ -36,7 +38,7 @@ enum PremiumError: Error, CustomLocalizedStringResourceConvertible {
     var localizedStringResource: LocalizedStringResource {
         switch self {
         case .noSubscription:
-            return "Esta función requiere una suscripción Premium activa."
+            return "Esta función solo esta presente en la versión extendida"
         }
     }
 }

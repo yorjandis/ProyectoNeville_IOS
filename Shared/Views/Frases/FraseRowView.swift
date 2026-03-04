@@ -16,6 +16,9 @@ struct FraseRowView: View {
     @ObservedObject var frase: Frases
     @Environment(\.managedObjectContext) private var context
     
+    @AppStorage("purchaseStatus" ) var purchaseStatus: Bool = false
+    @AppStorage("yorjPremium",store: UserDefaults(suiteName: AppCons.AppGroupName))var yorjPremium: Bool = false
+    
     @Binding var showTabViewFrasesRelac : Bool
     @Binding var fraseRelacionadaMain : Frases?
     
@@ -172,45 +175,59 @@ struct FraseRowView: View {
             .swipeActions(edge: .trailing, allowsFullSwipe: true){
                 
                 //Menú de opciones para frases Relacionadas:
-                 Menu{
-                     
-                     if (self.showTabViewFrasesRelac && self.frase != self.fraseRelacionadaMain && self.fraseRelacionadaMain != nil) {
-                          Button{
-                              frase.vincularCon(self.fraseRelacionadaMain!)
-                              //Persistiendo
-                              FrasesModel.shared.guardarCambios()
-                          }label:{
-                              Label("Agregar Frase", systemImage: "tray.and.arrow.up.fill")
-                                  .tint(.purple)
-                          }
-                      }
+                
+                    Menu{
+                        
+                        if (self.purchaseStatus || self.yorjPremium){
+                            if (self.showTabViewFrasesRelac && self.frase != self.fraseRelacionadaMain && self.fraseRelacionadaMain != nil) {
+                                 Button{
+                                     frase.vincularCon(self.fraseRelacionadaMain!)
+                                     //Persistiendo
+                                     FrasesModel.shared.guardarCambios()
+                                 }label:{
+                                     Label("Agregar Frase", systemImage: "tray.and.arrow.up.fill")
+                                         .tint(.purple)
+                                 }
+                             }
 
-                      //Modo edición de frases relacionadas
-                      Button{
-                          self.fraseRelacionadaMain = frase
-                          self.showTabViewFrasesRelac = true
-                      }label:{
-                      Label("Frases Relacionadas", systemImage: "graduationcap.circle")
-                          .tint(.blue)
-                      }
-                      
-                     
-                     
-                     //Mostrar/Ocultar el ponel de frases relacionadas
-                     if frase.relacionadasArray.count > 0 {
-                         NavigationLink{
-                             FrasesMainListRelacionadas(fraseMain: frase)
-                         }label:{
-                             Label("Modo Lista", systemImage: "append.page")
+                             //Modo edición de frases relacionadas
+                             Button{
+                                 self.fraseRelacionadaMain = frase
+                                 self.showTabViewFrasesRelac = true
+                             }label:{
+                             Label("Frases Relacionadas", systemImage: "graduationcap.circle")
                                  .tint(.blue)
-                         }
-                     }
-                      
+                             }
 
-                 }label:{
-                     Image(systemName: "graduationcap.circle")
-                         .tint(.blue)
-                 }
+                            //Mostrar/Ocultar el ponel de frases relacionadas
+                            if frase.relacionadasArray.count > 0 {
+                                NavigationLink{
+                                    FrasesMainListRelacionadas(fraseMain: frase)
+                                }label:{
+                                    Label("Modo Lista", systemImage: "append.page")
+                                        .tint(.blue)
+                                }
+                            }
+                        }else{
+                            Button{
+                                self.alertMessage = "Las Frases Relacionadas están disponibles en la Versión Extendida"
+                                self.showAlert = true
+                            }label:{
+                                Label("Frases Relacionadas", systemImage: "graduationcap.circle")
+                                    .tint(.blue)
+                            }
+                        }
+                        
+                        
+                        
+                         
+
+                    }label:{
+                        Image(systemName: "graduationcap.circle")
+                            .tint(.blue)
+                    }
+               
+                 
                  
 
                 //Editar la frase: Solo si es Personal

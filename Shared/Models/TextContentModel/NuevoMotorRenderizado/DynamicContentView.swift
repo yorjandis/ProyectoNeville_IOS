@@ -13,31 +13,30 @@ import SwiftUI
      let blocks: [ContentBlock]
      let fontSize: CGFloat
      let fontColor: UIColor
-     
-     //Preprocesa primero los bloques para convertir los bloques de texto largo en varios bloques
-     private var processedBlocks: [ContentBlock] {
-            blocks.expandedTextBlocks()
-          }
+
+     @State private var processedBlocks: [ContentBlock] = []
      
      var body: some View {
          ScrollView {
-             //Si existe un solo bloque LazyVStack no lo muestra correctamwente.
-             if self.processedBlocks.count == 1 {
-                 VStack(alignment: .leading, spacing: 16){
-                     ForEach(processedBlocks) { block in
-                         BlockView(block: block, fontSize: self.fontSize, fontColor: self.fontColor)
-                     }
-                 }
-                 .padding()
-             }else{
-                 LazyVStack(alignment: .leading, spacing: 16) {
-                     ForEach(processedBlocks) { block in
-                         BlockView(block: block, fontSize: self.fontSize, fontColor: self.fontColor)
-                     }
-                 }
-                 .padding()
-             }
-             
+              //Si existe un solo bloque LazyVStack no lo muestra correctamwente.
+              if self.processedBlocks.count == 1 {
+                  VStack(alignment: .leading, spacing: 16){
+                      ForEach(processedBlocks) { block in
+                          BlockView(block: block, fontSize: self.fontSize, fontColor: self.fontColor)
+                      }
+                  }
+                  .padding()
+              }else{
+                  LazyVStack(alignment: .leading, spacing: 16) {
+                      ForEach(processedBlocks) { block in
+                          BlockView(block: block, fontSize: self.fontSize, fontColor: self.fontColor)
+                      }
+                  }
+                  .padding()
+              }
+         }
+         .onAppear{
+             self.processedBlocks = self.blocks.expandedTextBlocks()
          }
      }
  }

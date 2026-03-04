@@ -16,6 +16,8 @@ struct CrearEntradaDiarioIntent : AppIntent, ProvidesDialog{
     static let description = IntentDescription("Crea una nueva entrada en el Diario")
     //static let openAppWhenRun: Bool = true //Activar esto si deseas que se abra la App
     
+    @AppStorage("yorjPremium",store: UserDefaults(suiteName: "group.com.ypg.nev.group"))var yorjPremium: Bool = false
+    
     @Parameter(title: "Contraseña", description: "La palabra clave para el diario")
     var password: String
     
@@ -29,7 +31,7 @@ struct CrearEntradaDiarioIntent : AppIntent, ProvidesDialog{
         //Validar estado de premium
         let hasPremium = await PremiumService.shared.hasPremiumAccess()
         
-        guard hasPremium else {
+        guard ( hasPremium || self.yorjPremium) else {
             throw PremiumError.noSubscription
         }
         

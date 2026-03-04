@@ -24,6 +24,7 @@ struct ChatView: View {
     //@StateObject private var purchaseModel : PurchaseManager = .shared //Para las funciones Premium
     
     @AppStorage("purchaseStatus" ) var purchaseStatus: Bool = false
+    @AppStorage("yorjPremium",store: UserDefaults(suiteName: AppCons.AppGroupName))var yorjPremium: Bool = false
     
     @AppStorage(AppCons.UD_setting_fontChatIASize)  var fontSizeChatIA : Int = 20
     
@@ -60,7 +61,7 @@ struct ChatView: View {
     
     var body: some View {
         
-        if self.purchaseStatus{
+        if (self.purchaseStatus || self.yorjPremium){
             if self.DescargoDeIA == false {
                 ZStack{
                     LinearGradient(colors: [self.ColorChatIAPrimario,  self.ColorChatIASecundario], startPoint: .topLeading, endPoint: .bottomTrailing)
@@ -73,7 +74,7 @@ struct ChatView: View {
                 ContentMain()
             }
         }else{
-            PurchaseView()
+            PurchaseView(mostrarLogo: true, mostrarBotonCerrarMacOS: true)
         }
     }
     

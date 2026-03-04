@@ -87,12 +87,12 @@ struct CreateGoalView: View {
                                 dismiss()
                             }
                             .disabled(!vm.isValid)
-                        }
-
-                        ToolbarItem(placement: .cancellationAction) {
-                            Button("Cancelar") {
-                                dismiss()
-                            }
+                        } 
+                    }
+                    
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Cancelar") {
+                            dismiss()
                         }
                     }
                     

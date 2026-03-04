@@ -17,6 +17,7 @@ struct RespondView: View {
     @StateObject private var clipBoarModel : ClipboardObserver = ClipboardObserver() //Para observar cambios en el portapapales
     
     @AppStorage("purchaseStatus" ) var purchaseStatus: Bool = false
+    @AppStorage("yorjPremium",store: UserDefaults(suiteName: AppCons.AppGroupName))var yorjPremium: Bool = false
     
     @State private var isloading : Bool = false //Indica que se esta procesando una solicitud
     @State private var bounce = false //Para animar la imagend de IA en el centro de la pantalla
@@ -74,7 +75,7 @@ struct RespondView: View {
             LinearGradient(colors: [self.ColorChatIAPrimario,  self.ColorChatIASecundario], startPoint: .topLeading, endPoint: .bottomTrailing)
                 .ignoresSafeArea(edges: .bottom)
             
-            if self.purchaseStatus{
+            if (self.purchaseStatus || self.yorjPremium){
                 if self.DescargoDeIA{
                     ScrollView {
                         
@@ -101,14 +102,14 @@ struct RespondView: View {
                     DescargoResponsabilidadIA(VentanaEnSetting: false)
                 }
             }else{
-                PurchaseView()
+                PurchaseView(mostrarLogo: true, mostrarBotonCerrarMacOS: true)
             }
             
             
   
         }
         .onAppear{
-            if self.purchaseStatus{
+            if (self.purchaseStatus || self.yorjPremium){
                 Task { @MainActor in
                     withAnimation {
                         self.isloading = true

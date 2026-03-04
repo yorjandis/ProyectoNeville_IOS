@@ -18,6 +18,7 @@ struct GenerateQRView : View {
     
     //@StateObject private var purchasePremium : PurchaseManager = .shared
     @AppStorage("purchaseStatus" ) var purchaseStatus: Bool = false
+    @AppStorage("yorjPremium",store: UserDefaults(suiteName: AppCons.AppGroupName))var yorjPremium: Bool = false
     
     @State var  footer : String = ""
     
@@ -59,20 +60,68 @@ struct GenerateQRView : View {
    //UIImage(data: QRModel().generateQRCode(text: string)!)!
     
     var body: some View {
-        NavigationStack{
-            ZStack{
-                LinearGradient(colors: [.black.opacity(0.5), .brown.opacity(0.7)], startPoint: .top, endPoint: .bottom)
-                    .ignoresSafeArea()
-                
-                VStack(spacing: 10){
-                    Text(title)
-                        .padding(5)
-                        .padding(.top, 25)
-                    Divider()
-                    if showImage {
-                        #if os(iOS)
-                        if self.focusState == false{ //Oculta la imagen mientras se escribe en el textField
-                            Image(uiImage: imagen!)
+        
+        if (self.purchaseStatus || self.yorjPremium){
+            NavigationStack{
+                ZStack{
+                    LinearGradient(colors: [.black.opacity(0.5), .brown.opacity(0.7)], startPoint: .top, endPoint: .bottom)
+                        .ignoresSafeArea()
+                    
+                    VStack(spacing: 10){
+                        Text(title)
+                            .padding(5)
+                            .padding(.top, 25)
+                        Divider()
+                        if showImage {
+                            #if os(iOS)
+                            if self.focusState == false{ //Oculta la imagen mientras se escribe en el textField
+                                Image(uiImage: imagen!)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 300, height: 300 )
+                                    .onTapGesture {
+                                        focusState = false
+                                    }
+                                    .contextMenu {
+                                        
+                                        ShareLink( item: Image(uiImage: imagen!),
+                                                        preview: SharePreview("Compartir",
+                                                            image: Image(systemName: "book")
+                                                        )
+                                         )
+                                        
+                                        if self.footer.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false{
+                                            
+                                            Button("Guardar en Frases"){
+                                                if FrasesModel.shared.AddFrase(frase: footer, autor: "personal") == false{
+                                                    self.alertMessage = "Error el guardar en Frases"
+                                                    self.showAlert = true
+                                                }
+                                            }
+                                            //Muestra la opción de guardar en notas si el texto del QR no tiene un formato de importación
+                                            if self.formatImportNotas == nil{
+                                                Button("Guardar en Notas"){
+                                                   
+                                                    _ = NotasModel().addNote(nota: footer, title: "\(String(String(footer).prefix(footer.count / 3 )))...")
+                                                }
+                                            }
+                                            
+                                            if self.formatImportNotas == nil{
+                                                Button("Formato de Nota"){
+                                                        let result = "nota>>NuevaNotaQR>>\(self.footer)>>no"
+                                                        self.footer = result
+                                                        imagen = getImageQR()
+                                                        showImage = true
+                                                        focusState = false
+                                                }
+                                            }
+                                        }
+                                    }
+                            }
+                            
+                            
+                            #elseif os(macOS)
+                                Image(nsImage: imagen!)
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 300, height: 300 )
@@ -81,377 +130,336 @@ struct GenerateQRView : View {
                                 }
                                 .contextMenu {
                                     
-                                    ShareLink( item: Image(uiImage: imagen!),
+                                    ShareLink( item: Image(nsImage: imagen!),
                                                     preview: SharePreview("Compartir",
                                                         image: Image(systemName: "book")
                                                     )
                                      )
+                                    Button("Guardar en Frases"){
+                                        if FrasesModel.shared.AddFrase(frase: footer, autor: "personal") == false{
+                                            self.alertMessage = "No se pudo guardar la frase"
+                                            self.showAlert = true
+                                        }
+                                    }
+                                    Button("Guardar en Notas"){
+                                        _ = NotasModel().addNote(nota: footer, title: "\(String(String(footer).prefix(footer.count / 3 )))...")
+                                    }
                                     
-                                    if self.footer.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false{
-                                        
-                                        Button("Guardar en Frases"){
-                                            if FrasesModel.shared.AddFrase(frase: footer, autor: "personal") == false{
-                                                self.alertMessage = "Error el guardar en Frases"
-                                                self.showAlert = true
+                                    if self.formatImportNotas == nil{
+                                        Button("Formato de Nota"){
+                                            let result = "\(AppCons.zspNota)NuevaNotaQR::\(self.footer)::no"
+                                                self.footer = result
+                                                imagen = getImageQR()
+                                                showImage = true
+                                                focusState = false
+                                        }
+                                    }
+                                    
+                                    
+                                }
+                                #endif
+                                
+                        }
+                       
+                            TextField("Escriba un texto...!", text: $footer, axis: .vertical)
+                                .font(.title2)
+                                .padding(.horizontal, 10)
+                                .lineLimit(12)
+                                .multilineTextAlignment(.center)
+                                .textFieldStyle(.roundedBorder)
+                                .padding(.top, 20)
+                                .focused($focusState)
+                                .onTapGesture {
+                                    withAnimation {
+                                        showImage = false
+                                    }
+                                }
+                        
+                        Spacer()
+
+                        //Mostrar el botón de importación de Notas si se ha mostrado un QR de formato de importación de notas:
+                        if self.showImportButtonNotas{
+                            HStack{
+                                Button("Importar a Notas"){
+                                    if (self.purchaseStatus || self.yorjPremium){
+                                        Task{
+                                            self.imagen = getImageQR() //Recrea la imagen QR a partir del texto actual. Esto es para el caso de que se modifique el texto antes de importar.
+                                            validarFormatoImportacion()
+                                            if let formato = self.formatImportNotas{
+                                                if NotasModel().addNote(nota: formato.1, title: formato.0, isFav: formato.2){
+                                                    self.alertMessage = "Nota importada correctamente"
+                                                    self.showAlert = true
+                                                }
                                             }
                                         }
-                                        //Muestra la opción de guardar en notas si el texto del QR no tiene un formato de importación
-                                        if self.formatImportNotas == nil{
-                                            Button("Guardar en Notas"){
-                                               
-                                                _ = NotasModel().addNote(nota: footer, title: "\(String(String(footer).prefix(footer.count / 3 )))...")
+                                    }else{
+                                        self.alertMessage = "Esta función requiere Premium"
+                                        self.showAlert = true
+                                    }
+      
+                                }
+                                .tint(.blue)
+                                .buttonStyle(.borderedProminent)
+                                
+                                Image(systemName: "info.circle")
+                                    .onTapGesture {
+                                        self.alertMessage = "El formato de importación de Notas permite generar un QR que se importa automáticamente a las Notas. Utilice el lector de QR incorporado para esta función"
+                                        self.showAlert = true
+                                    }
+                            }
+                           
+                        }
+                        
+                        //Mostrar un botón de importación de Frases
+                        if self.showImportButtonFrase{
+                            HStack{
+                                Button("Importar a Frases"){
+                                    if (self.purchaseStatus || self.yorjPremium){
+                                        Task{
+                                            self.imagen = getImageQR() //Recrea la imagen QR a partir del texto actual. Esto es para el caso de que se modifique el texto antes de importar.
+                                            validarFormatoImportacion()
+                                            if let frase = self.formatImportFrase{
+                                                if FrasesModel.shared.AddFrase(frase: frase, autor: "personal"){
+                                                    self.alertMessage = "Frase importada correctamente"
+                                                    self.showAlert = true
+                                                }
                                             }
                                         }
-                                        
-                                        if self.formatImportNotas == nil{
-                                            Button("Formato de Nota"){
-                                                    let result = "nota>>NuevaNotaQR>>\(self.footer)>>no"
-                                                    self.footer = result
-                                                    imagen = getImageQR()
-                                                    showImage = true
-                                                    focusState = false
+                                    }else{
+                                        self.alertMessage = "Esta función requiere Premium"
+                                        self.showAlert = true
+                                    }
+                                    
+                                }
+                                .tint(.blue)
+                                .buttonStyle(.borderedProminent)
+                                
+                                Image(systemName: "info.circle")
+                                    .onTapGesture {
+                                        self.alertMessage = "El formato de importación de Frase permite generar un QR que se importa automáticamente a las Frases Personales. Utilice el lector de QR incorporado para esta función"
+                                        self.showAlert = true
+                                    }
+                            }
+                           
+                        }
+                        
+                        
+                        #if os(macOS)
+                        //Barra inferior para cerrar la ventana modal en macOS
+                        HStack{
+                            Spacer()
+                            Button("Cerrar"){
+                                if let window = NSApp.keyWindow {
+                                    closeWindow(window)
+                                    }
+                            }
+                        }
+                        .padding()
+                        #endif
+
+                }
+                .onAppear {
+                        if showImage {
+                            imagen = getImageQR()
+                            validarFormatoImportacion() //Validar si la entrada tiene un formato de importación
+                        }
+                    }
+                }
+                .onTapGesture {
+                    self.focusState = false
+                }
+                //Si el TextField pierde el foco se crea la imagen QR a partir del texto en self.footer
+                .onChange(of: self.focusState, { oldValue, newValue in
+                    if newValue == false{
+                        imagen = getImageQR()
+                    }
+                })
+                .onChange(of: self.imagen, { _ , newValue in
+                    //En cada cambio de imagen, se chequea si corresponde a un formato de importación de Notas
+                    if newValue != nil{
+                        validarFormatoImportacion()
+                    }
+                })
+                
+                .navigationTitle("Generar Código QR")
+                #if os(iOS)
+                .navigationBarTitleDisplayMode(.inline)
+                #endif
+                
+                .toolbar{
+                    ToolbarItem{
+                        Button{
+                            withAnimation {
+                                if !self.footer.isEmpty {
+                                    imagen = getImageQR()
+                                    showImage = true
+                                    focusState = false
+                                }
+                            }
+                            
+                        }label: {
+                            Image(systemName: "qrcode")
+                        }
+                    }
+                    
+                    if #available(iOS 26.0, macOS 26.0, *) {
+                        ToolbarSpacer(.fixed)
+                    }
+                    
+                    if #available(iOS 26.0, macOS 26.0, *) {
+                        ToolbarSpacer(.fixed)
+                    }
+                    
+                    
+                    //Importar una imagen de la galeria (iOS) o de la carpeta del sistema(macOS)
+                    #if os(macOS)
+                    ToolbarItem{
+                        Button("Importar Imagen QR"){
+                            
+                            if let imageTemp = seleccionarImagen(){
+                                
+                                QRModel.leerQRConVision(from: imageTemp) { str in
+                                    if let texto = str {
+                                        Task {
+                                            await MainActor.run{
+                                                self.footer = texto
+                                                imagen = getImageQR()
+                                                showImage = true
+                                                focusState = false
                                             }
                                         }
                                     }
                                 }
-                        }
-                        
-                        
-                        #elseif os(macOS)
-                            Image(nsImage: imagen!)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 300, height: 300 )
-                            .onTapGesture {
-                                focusState = false
                             }
-                            .contextMenu {
-                                
-                                ShareLink( item: Image(nsImage: imagen!),
+                        }
+                    }
+                   
+                     
+                    #else
+                    ToolbarItem{
+                        //Permite leer una imagen de  QR almacenado en la galeria:
+                        PhotosPicker(selection: $selectedItem, matching: .images){
+                            Label("Importar imagen QR", systemImage: "photo")
+                        }
+                        .onChange(of: selectedItem) {
+                            
+                            Task {
+                                if let data = try? await selectedItem?.loadTransferable(type: Data.self) {
+                                    
+                                    guard let temp = UIImage(data: data) else {return}//Aqui tenemos la imagen de la galería
+                                    
+                                    //Intentanto leer la imagen cargada
+                                    if let features = detectQRCode(temp), !features.isEmpty{
+                                        for case let row as CIQRCodeFeature in features{
+                                            self.footer = row.messageString ?? ""
+                                            imagen = getImageQR()
+                                            showImage = true
+                                            focusState = false
+                                        }
+                                        
+                                    }else{
+                                        
+                                        self.imagen = UIImage(systemName: "qrcode")
+                                        
+                                        self.footer = ""
+                                    }
+                                }else{
+                                    msg("Fallo al cargar la imagen de la galeria")
+                                }
+                            }
+                        }
+                        .tint(.blue)
+                        .controlSize(.large)
+                        .buttonStyle(.borderedProminent)
+                    }
+                    #endif
+
+                    
+                    //Compartir imagen & Aplicar formatos de importación de Frases/Notas
+                    ToolbarItem{
+                        Menu{
+                            
+                            if showImage {
+                                #if os(iOS)
+                                ShareLink(
+                                    item: Image(uiImage: imagen!),
                                                 preview: SharePreview("Compartir",
                                                     image: Image(systemName: "book")
                                                 )
                                  )
-                                Button("Guardar en Frases"){
-                                    if FrasesModel.shared.AddFrase(frase: footer, autor: "personal") == false{
-                                        self.alertMessage = "No se pudo guardar la frase"
-                                        self.showAlert = true
-                                    }
-                                }
-                                Button("Guardar en Notas"){
-                                    _ = NotasModel().addNote(nota: footer, title: "\(String(String(footer).prefix(footer.count / 3 )))...")
-                                }
-                                
-                                if self.formatImportNotas == nil{
-                                    Button("Formato de Nota"){
-                                        let result = "\(AppCons.zspNota)NuevaNotaQR::\(self.footer)::no"
-                                            self.footer = result
-                                            imagen = getImageQR()
-                                            showImage = true
-                                            focusState = false
-                                    }
-                                }
-                                
-                                
-                            }
-                            #endif
-                            
-                    }
-                   
-                        TextField("Escriba un texto...!", text: $footer, axis: .vertical)
-                            .font(.title2)
-                            .padding(.horizontal, 10)
-                            .lineLimit(12)
-                            .multilineTextAlignment(.center)
-                            .textFieldStyle(.roundedBorder)
-                            .padding(.top, 20)
-                            .focused($focusState)
-                            .onTapGesture {
-                                withAnimation {
-                                    showImage = false
-                                }
-                            }
-                    
-                    Spacer()
-
-                    //Mostrar el botón de importación de Notas si se ha mostrado un QR de formato de importación de notas:
-                    if self.showImportButtonNotas{
-                        HStack{
-                            Button("Importar a Notas"){
-                                if self.purchaseStatus{
-                                    Task{
-                                        self.imagen = getImageQR() //Recrea la imagen QR a partir del texto actual. Esto es para el caso de que se modifique el texto antes de importar.
-                                        validarFormatoImportacion()
-                                        if let formato = self.formatImportNotas{
-                                            if NotasModel().addNote(nota: formato.1, title: formato.0, isFav: formato.2){
-                                                self.alertMessage = "Nota importada correctamente"
-                                                self.showAlert = true
+                                #elseif os(macOS)
+                                if let imagen = self.imagen,
+                                   let url = QRModel.guardarImagenTemporalmente(imagen: imagen) {
+                                            ShareLink(
+                                                item: url,
+                                                preview: SharePreview("Compartir Imagen", image: Image(nsImage: imagen))
+                                            ) {
+                                                Label("Compartir Imagen", systemImage: "square.and.arrow.up")
                                             }
                                         }
-                                    }
-                                }else{
-                                    self.alertMessage = "Esta función requiere Premium"
-                                    self.showAlert = true
+                                
+                                #endif
+                                
+                                
+                                #if os(iOS)
+                                Button{
+                                    UIImageWriteToSavedPhotosAlbum(imagen!, nil, nil, nil)
+                                    self.alertMessage = "Se ha guardado la imagen QR en la galería"
+                                    showAlert = true
+                                }label: {
+                                    Label("Guardar en Galeria", systemImage: "photo.badge.arrow.down.fill")
                                 }
-  
-                            }
-                            .tint(.blue)
-                            .buttonStyle(.borderedProminent)
-                            
-                            Image(systemName: "info.circle")
-                                .onTapGesture {
-                                    self.alertMessage = "El formato de importación de Notas permite generar un QR que se importa automáticamente a las Notas. Utilice el lector de QR incorporado para esta función"
-                                    self.showAlert = true
-                                }
-                        }
-                       
-                    }
-                    
-                    //Mostrar un botón de importación de Frases
-                    if self.showImportButtonFrase{
-                        HStack{
-                            Button("Importar a Frases"){
-                                if self.purchaseStatus{
-                                    Task{
-                                        self.imagen = getImageQR() //Recrea la imagen QR a partir del texto actual. Esto es para el caso de que se modifique el texto antes de importar.
-                                        validarFormatoImportacion()
-                                        if let frase = self.formatImportFrase{
-                                            if FrasesModel.shared.AddFrase(frase: frase, autor: "personal"){
-                                                self.alertMessage = "Frase importada correctamente"
-                                                self.showAlert = true
-                                            }
-                                        }
-                                    }
-                                }else{
-                                    self.alertMessage = "Esta función requiere Premium"
-                                    self.showAlert = true
+                                #endif
+                                
+                                
+                                
+                                
+                                Button{
+                                    self.footer =  QRModel.aplicarFormatoImportacion(texto: self.footer, tipo: .Notas)
+                                    imagen = getImageQR()
+                                    showImage = true
+                                    focusState = false
+                                    validarFormatoImportacion()
+                                }label:{
+                                    Label("Aplicar formato importación Notas", systemImage: "pencil.and.scribble")
                                 }
                                 
-                            }
-                            .tint(.blue)
-                            .buttonStyle(.borderedProminent)
-                            
-                            Image(systemName: "info.circle")
-                                .onTapGesture {
-                                    self.alertMessage = "El formato de importación de Frase permite generar un QR que se importa automáticamente a las Frases Personales. Utilice el lector de QR incorporado para esta función"
-                                    self.showAlert = true
+                                Button{
+                                    self.footer =   QRModel.aplicarFormatoImportacion(texto: self.footer, tipo: .Frases)
+                                    imagen = getImageQR()
+                                    showImage = true
+                                    focusState = false
+                                    validarFormatoImportacion()
+                                }label:{
+                                    Label("Aplicar formato importación Frases", systemImage: "pencil.and.scribble")
                                 }
+                                
+                                
+                                
+                            }
+                            
+                           
+                            
+                        }label: {
+                            Image(systemName: "ellipsis")
+                                .rotationEffect(Angle(degrees: 135))
                         }
-                       
                     }
                     
                     
-                    #if os(macOS)
-                    //Barra inferior para cerrar la ventana modal en macOS
-                    HStack{
-                        Spacer()
-                        Button("Cerrar"){
-                            if let window = NSApp.keyWindow {
-                                closeWindow(window)
-                                }
-                        }
-                    }
-                    .padding()
-                    #endif
-
-            }
-            .onAppear {
-                    if showImage {
-                        imagen = getImageQR()
-                        validarFormatoImportacion() //Validar si la entrada tiene un formato de importación
-                    }
+                    
+                    
                 }
-            }
-            .onTapGesture {
-                self.focusState = false
-            }
-            //Si el TextField pierde el foco se crea la imagen QR a partir del texto en self.footer
-            .onChange(of: self.focusState, { oldValue, newValue in
-                if newValue == false{
-                    imagen = getImageQR()
-                }
-            })
-            .onChange(of: self.imagen, { _ , newValue in
-                //En cada cambio de imagen, se chequea si corresponde a un formato de importación de Notas
-                if newValue != nil{
-                    validarFormatoImportacion()
-                }
-            })
-            
-            .navigationTitle("Generar Código QR")
-            #if os(iOS)
-            .navigationBarTitleDisplayMode(.inline)
-            #endif
-            
-            .toolbar{
-                ToolbarItem{
-                    Button{
-                        withAnimation {
-                            if !self.footer.isEmpty {
-                                imagen = getImageQR()
-                                showImage = true
-                                focusState = false
-                            }
-                        }
-                        
-                    }label: {
-                        Image(systemName: "qrcode")
-                    }
-                }
-                
-                if #available(iOS 26.0, macOS 26.0, *) {
-                    ToolbarSpacer(.fixed)
-                }
-                
-                if #available(iOS 26.0, macOS 26.0, *) {
-                    ToolbarSpacer(.fixed)
-                }
-                
-                
-                //Importar una imagen de la galeria (iOS) o de la carpeta del sistema(macOS)
-                #if os(macOS)
-                ToolbarItem{
-                    Button("Importar Imagen QR"){
-                        
-                        if let imageTemp = seleccionarImagen(){
-                            
-                            QRModel.leerQRConVision(from: imageTemp) { str in
-                                if let texto = str {
-                                    Task {
-                                        await MainActor.run{
-                                            self.footer = texto
-                                            imagen = getImageQR()
-                                            showImage = true
-                                            focusState = false
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-               
                  
-                #else
-                ToolbarItem{
-                    //Permite leer una imagen de  QR almacenado en la galeria:
-                    PhotosPicker(selection: $selectedItem, matching: .images){
-                        Label("Importar imagen QR", systemImage: "photo")
-                    }
-                    .onChange(of: selectedItem) {
-                        
-                        Task {
-                            if let data = try? await selectedItem?.loadTransferable(type: Data.self) {
-                                
-                                guard let temp = UIImage(data: data) else {return}//Aqui tenemos la imagen de la galería
-                                
-                                //Intentanto leer la imagen cargada
-                                if let features = detectQRCode(temp), !features.isEmpty{
-                                    for case let row as CIQRCodeFeature in features{
-                                        self.footer = row.messageString ?? ""
-                                        imagen = getImageQR()
-                                        showImage = true
-                                        focusState = false
-                                    }
-                                    
-                                }else{
-                                    
-                                    self.imagen = UIImage(systemName: "qrcode")
-                                    
-                                    self.footer = ""
-                                }
-                            }else{
-                                msg("Fallo al cargar la imagen de la galeria")
-                            }
-                        }
-                    }
-                    .tint(.blue)
-                    .controlSize(.large)
-                    .buttonStyle(.borderedProminent)
+                .alert(isPresented: $showAlert) {
+                    Alert(title: Text("La Ley"), message: Text(self.alertMessage))
                 }
-                #endif
-
-                
-                //Compartir imagen & Aplicar formatos de importación de Frases/Notas
-                ToolbarItem{
-                    Menu{
-                        
-                        if showImage {
-                            #if os(iOS)
-                            ShareLink(
-                                item: Image(uiImage: imagen!),
-                                            preview: SharePreview("Compartir",
-                                                image: Image(systemName: "book")
-                                            )
-                             )
-                            #elseif os(macOS)
-                            if let imagen = self.imagen,
-                               let url = QRModel.guardarImagenTemporalmente(imagen: imagen) {
-                                        ShareLink(
-                                            item: url,
-                                            preview: SharePreview("Compartir Imagen", image: Image(nsImage: imagen))
-                                        ) {
-                                            Label("Compartir Imagen", systemImage: "square.and.arrow.up")
-                                        }
-                                    }
-                            
-                            #endif
-                            
-                            
-                            #if os(iOS)
-                            Button{
-                                UIImageWriteToSavedPhotosAlbum(imagen!, nil, nil, nil)
-                                self.alertMessage = "Se ha guardado la imagen QR en la galería"
-                                showAlert = true
-                            }label: {
-                                Label("Guardar en Galeria", systemImage: "photo.badge.arrow.down.fill")
-                            }
-                            #endif
-                            
-                            
-                            
-                            
-                            Button{
-                                self.footer =  QRModel.aplicarFormatoImportacion(texto: self.footer, tipo: .Notas)
-                                imagen = getImageQR()
-                                showImage = true
-                                focusState = false
-                                validarFormatoImportacion()
-                            }label:{
-                                Label("Aplicar formato importación Notas", systemImage: "pencil.and.scribble")
-                            }
-                            
-                            Button{
-                                self.footer =   QRModel.aplicarFormatoImportacion(texto: self.footer, tipo: .Frases)
-                                imagen = getImageQR()
-                                showImage = true
-                                focusState = false
-                                validarFormatoImportacion()
-                            }label:{
-                                Label("Aplicar formato importación Frases", systemImage: "pencil.and.scribble")
-                            }
-                            
-                            
-                            
-                        }
-                        
-                       
-                        
-                    }label: {
-                        Image(systemName: "ellipsis")
-                            .rotationEffect(Angle(degrees: 135))
-                    }
-                }
-                
-                
-                
-                
             }
-             
-            .alert(isPresented: $showAlert) {
-                Alert(title: Text("La Ley"), message: Text(self.alertMessage))
-            }
+        }else{
+            PurchaseView()
         }
+        
+       
             
 
     }

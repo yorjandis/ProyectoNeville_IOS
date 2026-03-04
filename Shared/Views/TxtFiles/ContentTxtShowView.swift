@@ -22,7 +22,9 @@ struct ContentTxtShowView: View {
     
     @EnvironmentObject private var clipBoarModel : ClipboardObserver
     
-    
+    //Funciones premium
+    @AppStorage("purchaseStatus" ) var purchaseStatus: Bool = false
+    @AppStorage("yorjPremium",store: UserDefaults(suiteName: AppCons.AppGroupName))var yorjPremium: Bool = false
 
     
     let title : String 
@@ -32,6 +34,8 @@ struct ContentTxtShowView: View {
     let type : TipoDeContenido //define el tipo de contenido a generar por IA
     
     var blocks : [ContentBlock] = []
+    
+    var  checkPremium : Bool = false
 
     @State private var content: String = "" //Contenido del fichero TXT: se llena en un OnApper para que se haga una sola vez
     
@@ -98,49 +102,20 @@ struct ContentTxtShowView: View {
         NavigationStack {
             ZStack{
                 
-                LinearGradient(colors: [self.backgroundColor], startPoint: .top, endPoint: .bottom)
-                    .ignoresSafeArea()
-                
-                VStack {
-                    VStack{
-                        Divider()
-                        .padding(0)
+              LinearGradient(colors: [self.backgroundColor], startPoint: .top, endPoint: .bottom)
+              .ignoresSafeArea()
+                if self.checkPremium{
+                    if (self.purchaseStatus || self.yorjPremium) {
+                        Content()
+                    }else{
+                        PurchaseView()
                     }
                     
-                    //Mostrar la sección de Notas del contenido:
-                    if self.showNotesSection {
-                        VStack{
-                            EditNoteTxt(nameTxt: self.nombreTxt, typeOfContent: self.type )
-                                .cornerRadius(20)
-                        }
-                        .frame(height: 200)
-                    }
                     
-                    DynamicContentView(blocks: self.blocks, fontSize: CGFloat(self.UserDefaultFontSizeContenido), fontColor: UIColor( self.textContentdColor))
-                 
-                    #if os(iOS)
-                    //Coloca un boton Atras en la parte inferior
-                    if(self.showColor == false && self.showSlider == false){
-                        HStack{
-                            Spacer()
-                            Image(systemName: "house")
-                                .foregroundStyle(Color.primary.opacity(0.4))
-                                .onTapGesture {
-                                    self.dismiss()
-                                }
-                                .padding(.trailing, 10)
-                        }
-                        .padding(5)
-                    }
-                    #endif
-                    
-                    
-                    
-                    Divider()
-                    
-                    
-        
+                }else{
+                    Content()
                 }
+                
             }
             
             #if os(iOS)
@@ -148,9 +123,6 @@ struct ContentTxtShowView: View {
             .navigationBarTitleDisplayMode(.inline)
             #endif
             .onAppear {
-                //Cargando el contenido del txt
-                self.content = self.getContent(NameTxt: self.nombreTxt)
-                
                 //Se carga el tamaño de la Fuente:
                 self.fontSizeContentSliderTemp = CGFloat(UserDefaultFontSizeContenido)
                 
@@ -729,6 +701,52 @@ struct ContentTxtShowView: View {
         }
         return ""
     }
+    
+    
+    @ViewBuilder
+    func Content() -> some View{
+        VStack {
+            VStack{
+                Divider()
+                .padding(0)
+            }
+            
+            //Mostrar la sección de Notas del contenido:
+            if self.showNotesSection {
+                VStack{
+                    EditNoteTxt(nameTxt: self.nombreTxt, typeOfContent: self.type )
+                        .cornerRadius(20)
+                }
+                .frame(height: 200)
+            }
+            
+            DynamicContentView(blocks: self.blocks, fontSize: CGFloat(self.UserDefaultFontSizeContenido), fontColor: UIColor( self.textContentdColor))
+         
+            #if os(iOS)
+            //Coloca un boton Atras en la parte inferior
+            if(self.showColor == false && self.showSlider == false){
+                HStack{
+                    Spacer()
+                    Image(systemName: "house")
+                        .foregroundStyle(Color.primary.opacity(0.4))
+                        .onTapGesture {
+                            self.dismiss()
+                        }
+                        .padding(.trailing, 10)
+                }
+                .padding(5)
+            }
+            #endif
+            
+            
+            
+            Divider()
+            
+            
+
+        }
+    }
+    
     
 }
 

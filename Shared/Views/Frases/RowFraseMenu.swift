@@ -19,6 +19,9 @@ struct RowFraseMenu: View {
      @ObservedObject var settingModel: SettingModel
     @Environment(\.managedObjectContext) var context
      
+    @AppStorage("purchaseStatus" ) var purchaseStatus: Bool = false
+    @AppStorage("yorjPremium",store: UserDefaults(suiteName: AppCons.AppGroupName))var yorjPremium: Bool = false
+    
      @State private var showConfirmDialogDeleteFrase = false
      
      //Alert
@@ -117,44 +120,53 @@ struct RowFraseMenu: View {
              //Menú de opciones para frases Relacionadas:
               Menu{
                   
-                   if (showTabViewFrasesRelac && fraseRelacionadaMain != nil) {
-                       Button{
-                           frase.vincularCon(self.fraseRelacionadaMain!)
-                           //Persistiendo
-                           frasesModel.guardarCambios()
-                       }label:{
-                           Label("Agregar Frase", systemImage: "tray.and.arrow.up.fill")
-                               .tint(.purple)
-                       }
-                   }
+                  if (self.purchaseStatus || self.yorjPremium){
+                      if (showTabViewFrasesRelac && fraseRelacionadaMain != nil) {
+                          Button{
+                              frase.vincularCon(self.fraseRelacionadaMain!)
+                              //Persistiendo
+                              frasesModel.guardarCambios()
+                          }label:{
+                              Label("Agregar Frase", systemImage: "tray.and.arrow.up.fill")
+                                  .tint(.purple)
+                          }
+                      }
 
-                   //Modo edición de frases relacionadas
-                   Button{
-                       self.fraseRelacionadaMain = frase
-                       self.showTabViewFrasesRelac = true
-                   }label:{
-                   Label("Modo Edición", systemImage: "graduationcap.circle")
-                       .tint(.blue)
-                   }
+                      //Modo edición de frases relacionadas
+                      Button{
+                          self.fraseRelacionadaMain = frase
+                          self.showTabViewFrasesRelac = true
+                      }label:{
+                      Label("Modo Edición", systemImage: "graduationcap.circle")
+                          .tint(.blue)
+                      }
+                      
+                     
+                     
+                     //Mostrar/Ocultar el ponel de frases relacionadas
+                     
+                     
+                      NavigationLink{
+                          FrasesMainListRelacionadas(fraseMain: frase)
+                      }label:{
+                          Label("Modo Lista", systemImage: "append.page")
+                              .tint(.blue)
+                      }
+                  }else{
+                      Button{
+                          self.alertMessage = "Las Frases Relacionadas solo están disponibles en la Versión Extendida"
+                          self.showAlert = true
+                      }label: {
+                          Label("FR - Frases Relacionadas",systemImage: "graduationcap.circle")
+                              .tint(.blue)
+                      }
+                  }
+                  
                    
-                  
-                  
-                  //Mostrar/Ocultar el ponel de frases relacionadas
-                  
-                  
-                   NavigationLink{
-                       FrasesMainListRelacionadas(fraseMain: frase)
-                   }label:{
-                       Label("Modo Lista", systemImage: "append.page")
-                           .tint(.blue)
-                   }
 
               }label:{
                   #if os(macOS)
                   Label("FR - Frases Relacionadas",systemImage: "graduationcap.circle")
-                      .tint(.blue)
-                  #else
-                  Image(systemName: "graduationcap.circle")
                       .tint(.blue)
                   #endif
                   

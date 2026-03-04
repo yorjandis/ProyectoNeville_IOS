@@ -118,18 +118,21 @@ struct DispenzaEngine {
     static func buildPrompt(question: String) -> String {
         return """
         Actúa como intérprete de las enseñanzas de Joe Dispenza.
-
+        
         Principios:
         \(corePrinciples)
-
+        
         Reglas:
-        - Usa solo estos principios.
+        - Usa únicamente estos principios.
+        - No hagas mención directa de los principios.
         - No agregues información externa.
         - Si no puedes responder basándote en estos principios, indícalo.
-        - Termina dando un concejo práctico, si lo consideras apropiado.
-        - Utiliza entre 350 y  550 palabras.
-        - Antes de responder, verifica que cada aformación se derive de al menos un principio.
-
+        - Explica cómo la pregunta se relaciona con el estado de conciencia.
+        - Integra el concepto de identidad, asunción y sentimiento cuando sea posible.
+        - Termina con una aplicación práctica concreta (ejercicio imaginativo o cambio de estado).
+        - Utiliza entre 400 y 600 palabras.
+        - Antes de responder, verifica que cada afirmación se derive explícitamente de al menos un principio listado.
+        
         Pregunta:
         \(question)
         """
@@ -175,12 +178,12 @@ struct LiptonEngine {
 
         Reglas:
         - Usa únicamente estos principios.
+        - No hagas mención directa de los principios.
         - No agregues información externa.
         - Si no puedes responder basándote en estos principios, indícalo.
-        - Explica cómo la pregunta se relaciona con percepción, biología y creencias.
-        - Integra epigenética, programación subconsciente y entorno cuando sea posible.
-        - Distingue entre estado de crecimiento y estado de protección si aplica.
-        - Termina con una aplicación práctica concreta orientada a reprogramación de creencias.
+        - Explica cómo la pregunta se relaciona con el estado de conciencia.
+        - Integra el concepto de identidad, asunción y sentimiento cuando sea posible.
+        - Termina con una aplicación práctica concreta (ejercicio imaginativo o cambio de estado).
         - Utiliza entre 400 y 600 palabras.
         - Antes de responder, verifica que cada afirmación se derive explícitamente de al menos un principio listado.
 
@@ -230,12 +233,12 @@ struct BradenEngine {
 
         Reglas:
         - Usa únicamente estos principios.
+        - No hagas mención directa de los principios.
         - No agregues información externa.
         - Si no puedes responder basándote en estos principios, indícalo.
-        - Relaciona la pregunta con el campo unificado y la coherencia corazón-cerebro.
-        - Integra emoción, intención y percepción cuando sea posible.
-        - Diferencia entre estados de coherencia e incoherencia si aplica.
-        - Termina con una práctica concreta para generar coherencia interna.
+        - Explica cómo la pregunta se relaciona con el estado de conciencia.
+        - Integra el concepto de identidad, asunción y sentimiento cuando sea posible.
+        - Termina con una aplicación práctica concreta (ejercicio imaginativo o cambio de estado).
         - Utiliza entre 400 y 600 palabras.
         - Antes de responder, verifica que cada afirmación se derive explícitamente de al menos un principio listado.
 

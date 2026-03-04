@@ -13,12 +13,13 @@ struct AbrirNotasItent : AppIntent {
     static let description = IntentDescription("Abre el listado de las notas")
     static let openAppWhenRun: Bool = true
     
-
+    @AppStorage("yorjPremium",store: UserDefaults(suiteName: "group.com.ypg.nev.group"))var yorjPremium: Bool = false
+    
     func perform() async throws -> some IntentResult {
         
         let hasPremium = await PremiumService.shared.hasPremiumAccess()
         
-        guard hasPremium else {
+        guard (hasPremium || self.yorjPremium) else {
             throw PremiumError.noSubscription
         }
         

@@ -19,7 +19,7 @@ final class PurchaseManager: ObservableObject {
     
     static let shared = PurchaseManager() //Singleton Para tener acceso global
     
-    @AppStorage("yorjPremium") var yorjPremium: Bool = false //Valor oculto para hacer premium la app.
+    @AppStorage("yorjPremium",store: UserDefaults(suiteName: "group.com.ypg.nev.group"))var yorjPremium: Bool = false
 
    private init() {
         Task {

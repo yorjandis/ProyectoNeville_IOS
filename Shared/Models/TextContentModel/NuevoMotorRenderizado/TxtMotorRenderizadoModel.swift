@@ -52,7 +52,7 @@ extension String {
 }
 
 
-//Toma el arreglo de bloques para mostrar y procesa los de tipo .text para convetirlos en varios ContentBlock según la cantidad de párrafos.
+//Toma el arreglo de bloques para mostrar y procesa los de tipo .text para convertirlos en varios ContentBlock según la cantidad de párrafos.
 extension Array where Element == ContentBlock {
     
     func expandedTextBlocks() -> [ContentBlock] {

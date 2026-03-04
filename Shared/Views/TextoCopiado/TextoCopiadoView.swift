@@ -13,6 +13,7 @@ struct TextoCopiadoView: View {
     @ObservedObject var clipBoardModel : ClipboardObserver
     //@StateObject private var purchaseModel : PurchaseManager = .shared
     @AppStorage("purchaseStatus" ) var purchaseStatus: Bool = false
+    @AppStorage("yorjPremium",store: UserDefaults(suiteName: AppCons.AppGroupName))var yorjPremium: Bool = false
     
     let  nameTxt : String?  //Nombre del fichero txt
     
@@ -28,7 +29,7 @@ struct TextoCopiadoView: View {
  
     var body: some View {
         
-        if self.purchaseStatus{
+        if (self.purchaseStatus || self.yorjPremium) {
             Menu{
                 Label("Texto copiado a: ", systemImage: "info.circle")
                 .tint(.gray)
