@@ -239,7 +239,7 @@ struct FrasesHomeView : View{
                                     Menu{
                                     #if os(macOS)
                                         Button{
-                                            showWindow(for: RespondView(nameConference: "", texto: self.frase?.frase ?? "", tipoSalida: .interpretar),
+                                            showWindow(for: RespondView(nameConference: "", texto: self.frase?.frase ?? "", tipoSalida: .interpretar, autorRespuesta: self.frase?.autor ?? "nev"),
                                                        environmentObjects: [self.frasesModel, self.settingModel],
                                                        size: AppCons.windows_size_content,
                                                        isModal: true,
@@ -251,7 +251,7 @@ struct FrasesHomeView : View{
                                         .tint(.purple)
                                         
                                         Button{
-                                            showWindow(for: RespondView(nameConference: "", texto: self.frase?.frase ?? "", tipoSalida: .practicaConcreta),
+                                            showWindow(for: RespondView(nameConference: "", texto: self.frase?.frase ?? "", tipoSalida: .practicaConcreta, autorRespuesta: self.frase?.autor ?? "nev"),
                                                        environmentObjects: [self.frasesModel, self.settingModel],
                                                        size: AppCons.windows_size_content,
                                                        isModal: true,
@@ -277,14 +277,14 @@ struct FrasesHomeView : View{
                                         
                                     #else
                                         NavigationLink{
-                                            RespondView(nameConference: "", texto: self.frase?.frase ?? "", tipoSalida: .interpretar)
+                                            RespondView(nameConference: "", texto: self.frase?.frase ?? "", tipoSalida: .interpretar, autorRespuesta: frase.autor ?? "nev")
                                         }label: {
                                             Label("Interpretar", systemImage: "sparkles")
                                         }
                                         .tint(.purple)
                                         
                                         NavigationLink{
-                                            RespondView(nameConference: "", texto: self.frase?.frase ?? "", tipoSalida: .practicaConcreta)
+                                            RespondView(nameConference: "", texto: self.frase?.frase ?? "", tipoSalida: .practicaConcreta, autorRespuesta: self.frase?.autor ?? "nev" )
                                         }label: {
                                             Label("Aplicación Práctica", systemImage: "sparkles")
                                         }

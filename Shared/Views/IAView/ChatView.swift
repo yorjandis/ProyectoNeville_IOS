@@ -262,7 +262,7 @@ struct ChatView: View {
         }
         .sheet(item: $showSheetTextoCopiadoAlPortapapelesParaInterpretar){ text in
             
-                RespondView(nameConference: "", texto: text.texto, tipoSalida: .interpretar)
+            RespondView(nameConference: "", texto: text.texto, tipoSalida: .interpretar, autorRespuesta: "nev")
             
         }
         .sheet(item: $showSheetTtextoCopiadoAlPortapapelesParaChatIA){ text in

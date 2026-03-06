@@ -46,27 +46,56 @@ struct CrearNotaIntent : AppIntent, ProvidesDialog{
     @Parameter(title: "Nota",description: "El contenido de la nota")
     var nota : String
 
-    func perform() async throws -> some IntentResult & ReturnsValue<String> & ProvidesDialog{
+    
+    func perform() async throws -> some IntentResult & ProvidesDialog {
         
         let hasPremium = await PremiumService.shared.hasPremiumAccess()
         
-        guard (hasPremium || self.yorjPremium) else {
-            throw PremiumError.noSubscription
+        
+         
+           guard (hasPremium || self.yorjPremium) else {
+               throw PremiumError.noSubscription
+           }
+
+        //Comprobando que no se haya ya la BD... Porque si la App esta abierta la BD ya se ha cargado y da problemas
+        let coordinator = await CoreDataController.shared
+            .persistentContainer
+            .persistentStoreCoordinator
+
+        if coordinator.persistentStores.isEmpty {
+            try await CoreDataController.shared.cargarStores()
         }
         
-        // Guarda la nota:
+        let context = await CoreDataController.shared.persistentContainer.newBackgroundContext()
         
-        if  await NotasModel().addNote(nota: nota, title: titulo){
+        do {
+
+            let entity = Notas(context: context)
+            entity.id = UUID().uuidString
+            entity.title = titulo
+            entity.nota = nota
+            entity.isfav = false
+
+            try context.save()
+            
+           await  CoreDataController.shared.context.refreshAllObjects()
+
             return .result(
-                value: titulo,
                 dialog: IntentDialog("La nota «\(titulo)» ha sido creada correctamente.")
             )
-        }else{
-            return .result(value: titulo, dialog: IntentDialog("Ha habido un problema al guadar la nota. Inténtelo más tarde."))
-                
-        }
-    }
 
+        } catch {
+
+            return .result(
+                dialog: IntentDialog("No se pudo guardar la nota.")
+            )
+
+        }
+        
+        
+    }
+    
+    
 }
 
 

@@ -173,6 +173,31 @@ enum GradientesPreselect{
 
 //Colores Gradientes predefinidos:
 extension LinearGradient {
+    
+    //Color grisAzulMate
+    @MainActor static func FondoGrizAzulMate(_ startPoint : UnitPoint = .top, _ endPoint : UnitPoint = .bottom   ) -> Self {
+        
+        LinearGradient(
+            colors: [Color(red: 0.58, green: 0.67, blue: 0.75)],
+            startPoint: .top,
+            endPoint: .bottom
+        )
+    }
+    
+    //Color oscuro para fondo
+    @MainActor static func FondoOscuro(_ startPoint : UnitPoint = .top, _ endPoint : UnitPoint = .bottom   ) -> Self {
+
+        LinearGradient(
+            colors: [
+                Color(red: 0.45, green: 0.55, blue: 0.55).opacity(0.4),
+                        Color.gray.opacity(0.6)
+            ],
+            startPoint: .top,
+            endPoint: .bottom
+        )
+    }
+    
+    
     /*
      Colores cálidos y energéticos, perfectos para pantallas de bienvenida.
      💡 Sensación: vitalidad, optimismo, energía matinal

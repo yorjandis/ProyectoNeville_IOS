@@ -245,7 +245,8 @@ struct RowFraseMenu: View {
                               for: RespondView(
                                   nameConference: "",
                                   texto: frase.frase ?? "",
-                                  tipoSalida: .interpretar
+                                  tipoSalida: .interpretar,
+                                  autorRespuesta: frase.autor ?? "nev"
                               ),
                               environmentObjects: [frasesModel, settingModel],
                               title: "Interpretar",
@@ -267,7 +268,8 @@ struct RowFraseMenu: View {
                               for: RespondView(
                                   nameConference: "",
                                   texto: frase.frase ?? "",
-                                  tipoSalida: .practicaConcreta
+                                  tipoSalida: .practicaConcreta,
+                                  autorRespuesta: frase.autor ?? "nev"
                               ),
                               environmentObjects: [frasesModel, settingModel],
                               title: "Aplicación Práctica",

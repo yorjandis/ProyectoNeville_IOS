@@ -12,7 +12,7 @@ import CoreImage
 
 struct ShareExtensionView: View {
     
-    var  texto: String = ""
+    @State var  texto: String = ""
     var image: NSImage? = nil
     
     @State private var textqr: String = ""
@@ -21,6 +21,9 @@ struct ShareExtensionView: View {
     let keyNotaShareText    = "notaShareText"
     let keyFraseShareText   = "fraseShareText"
     @State private var hasPremium : Bool = false
+    
+    @State private var showEditor : Bool = false
+    
     
     @State private var showAlert: Bool = false
     @State private var alertMessage: String = ""
@@ -64,20 +67,43 @@ struct ShareExtensionView: View {
                                 if let textoQR = detectQRCode(from: img){
                                     GeometryReader { geometry in
                                                 ScrollView {
-                                                    Text(textoQR)
-                                                        .textSelection(.enabled)
-                                                        .font(.title2)
-                                                        .foregroundStyle(.black)
-                                                        .padding(.vertical, 8)
-                                                        .padding(.horizontal, 14)
-                                                        .frame(maxWidth: .infinity, minHeight: geometry.size.height * 0.5) // Altura dependiente del 40% de la pantalla
-                                                        .background(
-                                                            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                                                .fill(Color.blue.opacity(0.3))
-                                                        )
-                                                        .onAppear {
-                                                            self.textqr = textoQR // Almacenando el texto del código QR
+                                                    
+                                                    if self.showEditor {
+                                                        
+                                                        TextEditor(text: self.$textqr)
+                                                            .frame(height: 200)
+                                                            .clipShape(RoundedRectangle(cornerRadius: 20))
+                                                        HStack{
+                                                            Spacer()
+                                                            Button("Guardar"){
+                                                                self.showEditor = false
+                                                            }
                                                         }
+                                                        
+                                                    }else{
+                                                        Text(textoQR)
+                                                            .textSelection(.enabled)
+                                                            .font(.title2)
+                                                            .foregroundStyle(.black)
+                                                            .padding(.vertical, 8)
+                                                            .padding(.horizontal, 14)
+                                                            .frame(maxWidth: .infinity, minHeight: geometry.size.height * 0.5) // Altura dependiente del 40% de la pantalla
+                                                            .background(
+                                                                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                                                    .fill(Color.blue.opacity(0.3))
+                                                            )
+                                                            .onAppear {
+                                                                self.textqr = textoQR // Almacenando el texto del código QR
+                                                            }
+                                                        HStack{
+                                                            Spacer()
+                                                            Button("Editar"){
+                                                                self.showEditor = true
+                                                            }
+                                                        }
+                                                    }
+                                                    
+                                                    
                                                 }
                                                 .frame(width: geometry.size.width) // Ocupa todo el ancho de la pantalla
                                     }
@@ -97,7 +123,8 @@ struct ShareExtensionView: View {
                                                 }
                                             }
                                         }
-                                        .buttonStyle(.borderedProminent)
+                                        .foregroundStyle(.black)
+                                        .buttonStyle(.bordered)
                                         
                                         Button("Guardar Texto en Notas") {
                                             
@@ -112,7 +139,8 @@ struct ShareExtensionView: View {
                                             
                                             
                                         }
-                                        .buttonStyle(.borderedProminent)
+                                        .foregroundStyle(.black)
+                                        .buttonStyle(.bordered)
                                         
                                         Button("Guardar Texto en Frases") {
                                             
@@ -125,7 +153,8 @@ struct ShareExtensionView: View {
                                             
                                             
                                         }
-                                        .buttonStyle(.borderedProminent)
+                                        .foregroundStyle(.black)
+                                        .buttonStyle(.bordered)
                                     }
                                     
                                     
@@ -133,17 +162,38 @@ struct ShareExtensionView: View {
                                     //Si la imagen no tiene código QR:
                                     GeometryReader { geometry in
                                                 ScrollView {
-                                                    Text(textqr)
-                                                        .textSelection(.enabled)
-                                                        .font(.title2)
-                                                        .foregroundStyle(.black)
-                                                        .padding(.vertical, 8)
-                                                        .padding(.horizontal, 14)
-                                                        .frame(maxWidth: .infinity, minHeight: geometry.size.height * 0.5) // Altura dependiente del 40% de la pantalla
-                                                        .background(
-                                                            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                                                .fill(Color.blue.opacity(0.3))
-                                                        )
+                                                    
+                                                    if self.showEditor {
+                                                        TextEditor(text: self.$textqr)
+                                                            .frame(height: 200)
+                                                            .clipShape(RoundedRectangle(cornerRadius: 20))
+                                                        HStack{
+                                                            Spacer()
+                                                            Button("Guardar"){
+                                                                self.showEditor = false
+                                                            }
+                                                        }
+                                                    }else{
+                                                        Text(textqr)
+                                                            .textSelection(.enabled)
+                                                            .font(.title2)
+                                                            .foregroundStyle(.black)
+                                                            .padding(.vertical, 8)
+                                                            .padding(.horizontal, 14)
+                                                            .frame(maxWidth: .infinity, minHeight: geometry.size.height * 0.5) // Altura dependiente del 40% de la pantalla
+                                                            .background(
+                                                                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                                                    .fill(Color.blue.opacity(0.3))
+                                                            )
+                                                        HStack{
+                                                            Spacer()
+                                                            Button("Editar"){
+                                                                self.showEditor = true
+                                                            }
+                                                        }
+                                                    }
+                                                    
+                                                    
                                                 }
                                                 .frame(width: geometry.size.width) // Ocupa todo el ancho de la pantalla
                                     }
@@ -158,7 +208,8 @@ struct ShareExtensionView: View {
                                             }
                                         }
                                     }
-                                    .buttonStyle(.borderedProminent)
+                                    .foregroundStyle(.black)
+                                    .buttonStyle(.bordered)
                                     
                                     Spacer()
                                 }
@@ -170,16 +221,37 @@ struct ShareExtensionView: View {
                             VStack{
                                 GeometryReader { geometry in
                                             ScrollView {
-                                                Text(texto)
-                                                    .font(.title2)
-                                                    .foregroundStyle(.black)
-                                                    .padding(.vertical, 8)
-                                                    .padding(.horizontal, 14)
-                                                    .frame(maxWidth: .infinity, minHeight: geometry.size.height * 0.5) // Altura dependiente del 50% de la pantalla
-                                                    .background(
-                                                        RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                                            .fill(Color.blue.opacity(0.3))
-                                                    )
+                                                
+                                                if self.showEditor {
+                                                    TextEditor(text: self.$texto)
+                                                        .frame(height: 200)
+                                                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                                                    HStack{
+                                                        Spacer()
+                                                        Button("Guardar"){
+                                                            self.showEditor = false
+                                                        }
+                                                    }
+                                                }else{
+                                                    Text(texto)
+                                                        .font(.title2)
+                                                        .foregroundStyle(.black)
+                                                        .padding(.vertical, 8)
+                                                        .padding(.horizontal, 14)
+                                                        .frame(maxWidth: .infinity, minHeight: geometry.size.height * 0.5) // Altura dependiente del 50% de la pantalla
+                                                        .background(
+                                                            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                                                .fill(Color.blue.opacity(0.3))
+                                                        )
+                                                    HStack{
+                                                        Spacer()
+                                                        Button("Editar"){
+                                                            self.showEditor = true
+                                                        }
+                                                    }
+                                                }
+                                                
+                                                
                                                     
                                             }
                                             .frame(width: geometry.size.width) // Ocupa todo el ancho de la pantalla
@@ -199,7 +271,8 @@ struct ShareExtensionView: View {
                                         
                                         
                                     }
-                                    .buttonStyle(.borderedProminent)
+                                    .foregroundStyle(.black)
+                                    .buttonStyle(.bordered)
                                     
                                     Button("Guardar Texto en Frases") {
                                         
@@ -212,7 +285,8 @@ struct ShareExtensionView: View {
                                         
                                         
                                     }
-                                    .buttonStyle(.borderedProminent)
+                                    .foregroundStyle(.black)
+                                    .buttonStyle(.bordered)
                                 }
                                 
                                 
@@ -236,6 +310,7 @@ struct ShareExtensionView: View {
                                Text("Salir")
                                     .foregroundStyle(.black)
                             }
+                            .foregroundStyle(.black)
                             .buttonStyle(.bordered)
                             
                         }
@@ -250,7 +325,8 @@ struct ShareExtensionView: View {
                         Button("Cerrar"){
                             close()
                         }
-                        .buttonStyle(.borderedProminent)
+                        .foregroundStyle(.black)
+                        .buttonStyle(.bordered)
                         .tint(.blue)
                     }
                     

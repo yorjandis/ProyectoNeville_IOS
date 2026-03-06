@@ -67,8 +67,27 @@ struct ProgramaDetailView: View {
                             
                         }
                     }
+                    
+                    
+                    
+                    
                 }
                 .padding()
+            }
+        }
+        .toolbar{
+            ToolbarItem{
+            #if os(macOS)
+                
+                if ventanaActualEsModal() {
+                    Button("Cerrar"){
+                        if let windows = NSApp.keyWindow{
+                            closeWindow(windows)
+                        }
+                    }
+                    .buttonStyle(.borderedProminent)
+                }
+            #endif
             }
         }
         

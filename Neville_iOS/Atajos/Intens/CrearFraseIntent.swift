@@ -23,25 +23,67 @@ struct CrearFraseIntent : AppIntent, ProvidesDialog{
     var autor : String
 
 
-    func perform() async throws -> some IntentResult & ReturnsValue<String> & ProvidesDialog{
+    func perform() async throws -> some IntentResult & ProvidesDialog{
         
         let hasPremium = await PremiumService.shared.hasPremiumAccess()
         
-        guard ( hasPremium || self.yorjPremium) else {
-            throw PremiumError.noSubscription
+        
+         
+           guard (hasPremium || self.yorjPremium) else {
+               throw PremiumError.noSubscription
+           }
+
+        
+        //Comprobando que no se haya ya la BD... Porque si la App esta abierta la BD ya se ha cargado y da problemas
+        let coordinator = await CoreDataController.shared
+            .persistentContainer
+            .persistentStoreCoordinator
+
+        if coordinator.persistentStores.isEmpty {
+            try await CoreDataController.shared.cargarStores()
         }
         
+        let context = await CoreDataController.shared.persistentContainer.newBackgroundContext()
+
+
         
-        // Guarda la nota:
-        if await FrasesModel.shared.AddFrase(frase: frase, autor: autor){
+        do {
+
+            let entidad = Frases(context: context)
+            entidad.id = UUID().uuidString
+            entidad.frase = frase
+            entidad.isfav = false
+            entidad.noinbuilt = true //Se marca como una frase NO inbuilt
+            entidad.nota = ""
+            entidad.autor = autor
+
+            try context.save()
+
             return .result(
-                value: frase,
                 dialog: IntentDialog("La frase ha sido creada correctamente.")
             )
-        }else{
-            return .result(value: frase, dialog: IntentDialog("Ha habido un problema al guadar la frase. Inténtelo más tarde."))
-                
+
+        } catch {
+
+            return .result(
+                dialog: IntentDialog("No se pudo guardar la frase, intentelo más tarde.")
+            )
+
         }
+        
+        /*
+         // Guarda la nota:
+         if await FrasesModel.shared.AddFrase(frase: frase, autor: autor){
+             return .result(
+                 value: frase,
+                 dialog: IntentDialog("La frase ha sido creada correctamente.")
+             )
+         }else{
+             return .result(value: frase, dialog: IntentDialog("Ha habido un problema al guadar la frase. Inténtelo más tarde."))
+                 
+         }
+         */
+        
     }
 
 }

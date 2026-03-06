@@ -24,6 +24,9 @@ final class CoreDataController: Sendable {
 
     // MARK: - Init
     private init() {
+        
+        
+        
         // Inicializa el contenedor con el nombre del modelo
         persistentContainer = NSPersistentCloudKitContainer(name: "ModelData")
 
@@ -51,13 +54,17 @@ final class CoreDataController: Sendable {
             }
         
         #endif
+        
+        
 
         // Configuraciones del contexto (merge policy)
         persistentContainer.viewContext.automaticallyMergesChangesFromParent = true
         
          persistentContainer.viewContext.mergePolicy = NSMergePolicy(merge: .mergeByPropertyObjectTrumpMergePolicyType)
          
-       
+        //Esto evita crashes cuando el contexto intenta acceder a objetos que aún están sincronizándose.
+        persistentContainer.viewContext.shouldDeleteInaccessibleFaults = true
+        
         
     }
 

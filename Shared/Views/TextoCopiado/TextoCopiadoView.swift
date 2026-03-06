@@ -86,7 +86,7 @@ struct TextoCopiadoView: View {
                     Button{
                         #if os(macOS)
                         if let texto = NSPasteboard.general.string(forType: .string){
-                            showWindow(for: RespondView(nameConference: "", texto: texto, tipoSalida: .interpretar),
+                            showWindow(for: RespondView(nameConference: "", texto: texto, tipoSalida: .interpretar, autorRespuesta: "nev"),
                                        environmentObjects: [],
                                        title: "Interpretar texto",
                                        size: AppCons.windows_size_content,

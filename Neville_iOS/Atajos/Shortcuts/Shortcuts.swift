@@ -60,7 +60,7 @@ struct Shortcuts: AppShortcutsProvider {
             systemImageName: "doc.plaintext.fill"
         )
         
-        //Atajo para crear una nota:
+        //Atajo abrir una conferencia a la azar neville
         AppShortcut(
             intent: GetRandomConfIntent(),
             phrases: [

@@ -137,19 +137,23 @@ struct Neville_iOSApp: App {
   
             }
                 .task {
-                    //Cargar la Base Datos de Core Data:
-                    do{
-                        try await persistentStore.cargarStores()
-                        modelTxt.getAllFileTxtOfType(type: .conf)   // Carga el listado de conferencias
-                        modelFrases.getAllFrases() //Carga el Listado de Frases
-                        
-                        // ✅ Gestiona los duplicados en las frases:
-                        await modelFrases.GestionarDuplicados_en_Frases()
-                        
-                        
-                    }catch{
-                        msg("❌ Error al cargar Core Data 222: \(error.localizedDescription)")
+                    //Cargar la Base Datos de Core Data: Si aun no se ha cargado la BD... Porque es posible que se haya cargado en la ejecución de los Intent
+                    if CoreDataController.shared.persistentContainer.persistentStoreCoordinator.persistentStores.isEmpty {
+                        do{
+                            try await persistentStore.cargarStores()
+                            modelTxt.getAllFileTxtOfType(type: .conf)   // Carga el listado de conferencias
+                            modelFrases.getAllFrases() //Carga el Listado de Frases
+                            
+                            // ✅ Gestiona los duplicados en las frases:
+                            await modelFrases.GestionarDuplicados_en_Frases()
+                            
+                            
+                        }catch{
+                            msg("❌ Error al cargar Core Data 222: \(error.localizedDescription)")
+                        }
                     }
+                    
+                    
                     //Maneja los item que se han procesado en el menú compartir del SO: iOS
                     await handleShareItem()
                 }
@@ -175,7 +179,7 @@ struct Neville_iOSApp: App {
                 if let textImportacionNota = QRModel.detectFormatImportNota(text: texto){
                     _ = NotasModel().addNote(nota: textImportacionNota.1.1, title: textImportacionNota.1.0, isFav: textImportacionNota.1.2)
                 }else{
-                    _ = NotasModel().addNote(nota: texto, title: "Nota desde QR")
+                    _ = NotasModel().addNote(nota: texto, title: "Nota desde Menú Compartir")
                 }
 
                 // Limpiar el valor para la próxima vez

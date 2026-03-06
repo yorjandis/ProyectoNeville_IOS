@@ -214,9 +214,6 @@ struct ContentViewMac: View {
     @ViewBuilder
     func ContentSidebar() -> some View {
         Group {
-            Button("TEST"){
-                KeychainHelper.shared.deletePassword()
-            }
             Image("Logo")
                 .resizable()
                 .scaledToFill()

@@ -20,7 +20,7 @@ struct RespondView: View {
     @AppStorage("yorjPremium",store: UserDefaults(suiteName: AppCons.AppGroupName))var yorjPremium: Bool = false
     
     @State private var isloading : Bool = false //Indica que se esta procesando una solicitud
-    @State private var bounce = false //Para animar la imagend de IA en el centro de la pantalla
+    
     
     @AppStorage(AppCons.UD_setting_fontContentSize)    var fontSizeContenido : Int = 24
     @AppStorage(AppCons.UD_setting_IA_AceptacionDescargo)    var DescargoDeIA : Bool = false // Si es true se permite utilizar la IA.
@@ -30,9 +30,11 @@ struct RespondView: View {
     
     
     //Parámetros
-    let nameConference  : String //Nombre de la conferencia
+    let nameConference  : String? //Nombre de la conferencia
     let texto           : String //Texto a procesar por la IA
-    let tipoSalida      : TiposSalida //Especifica el tipo de salida desea: Puntos Claves / Resumen General, etc
+    @State var tipoSalida      : TiposSalida //Especifica el tipo de salida desea: Puntos Claves / Resumen General, etc
+    @State var autorRespuesta : String = "nev"  //El autor que procesará la respuesta: Por defecto es "nev"
+    @State private var autorOriginal : String = ""
     
     //Prepara el contenido para compartir:
     private var creatorContentToShare : String{
@@ -68,6 +70,30 @@ struct RespondView: View {
     @State private var showSheetTtextoCopiadoAlPortapapelesParaLienzo       : TextoCopiadoAlPortapapeles? = nil
     
     
+    @State private var showSheetInfo : Bool = false
+    
+    //Obtiene el nombre completo del autor
+    private func getNameAutor(autorRaw: String) -> String{
+        switch autorRaw {
+        case "nev": return "Neville Goddard"
+        case "jd": return "Dr. Joe Dispenza"
+        case "bruceL": return "Dr. Bruce H. Lipton"
+        case "gregg": return "Greegg Braden"
+        default: return "Desconocido"
+        }
+    }
+    
+    //Obtiene el nombre del fichero de imagen del autor en Assets
+    private func getImageAutor(autorRaw: String) -> String{
+        switch autorRaw {
+        case "nev": return "nev-min"
+        case "jd": return "jd"
+        case "bruceL": return "bruce"
+        case "gregg": return "gregg"
+        default: return "salud"
+        }
+    }
+    
     
     
     var body: some View {
@@ -76,27 +102,91 @@ struct RespondView: View {
                 .ignoresSafeArea(edges: .bottom)
             
             if (self.purchaseStatus || self.yorjPremium){
+                
                 if self.DescargoDeIA{
-                    ScrollView {
+                    
+                    VStack{
+                        HStack{
+                            Text("Segun Autor: \(self.getNameAutor(autorRaw: self.autorRespuesta))").bold()
+                            Spacer()
+                            
+                            Menu{
+                                Text("Autores:")
+                                
+                                Button{
+                                    self.isloading = true
+                                    self.autorRespuesta = "nev"
+                                    generarTexto(tipoSalida: self.tipoSalida, autor: "nev")
+                                    
+                                }label:{
+                                    Label("Neville Goddard", image: "nev-min")
+                                }
+                                
+                                
+                                Button{
+                                    self.isloading = true
+                                    self.autorRespuesta = "jd"
+                                    generarTexto(tipoSalida: self.tipoSalida, autor: "jd")
+                                }label:{
+                                    Label("Dr. Joe Dispenza", image: "jd")
+                                }
+                                
+                                Button{
+                                    self.isloading = true
+                                    self.autorRespuesta = "bruceL"
+                                    generarTexto(tipoSalida: self.tipoSalida, autor: "bruceL")
+                                }label:{
+                                    Label("Dr. Bruce Lipton", image: "bruce")
+                                }
+                                
+                                Button{
+                                    self.isloading = true
+                                    self.autorRespuesta = "gregg"
+                                    generarTexto(tipoSalida: self.tipoSalida, autor: "gregg")
+                                }label:{
+                                    Label("Gregg Braden", image: "gregg")
+                                }
+                                
+                            }label: {
+                                Image(self.getImageAutor(autorRaw: self.autorRespuesta))
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 50, height: 50)
+                                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                            }
+                            .buttonStyle(.plain)
+                            .disabled(self.isloading)
+                            
+                            
+                            
+                        }
+                        .padding()
+                        .redacted(reason: self.isloading ? .placeholder : []) //Mostrar un skeleton mientras se carga el contenido
                         
-                        switch self.tipoSalida {
-                        case .puntosClaves:
-                            VistaPuntosClaves()
-                        case .resumen:
-                            VistaDeResumenGeneral()
-                        case .practicas:
-                            VistaPracticas()
-                        case .practicaConcreta:
-                            VistaPracticaConcreta()
-                        case .interpretar:
-                            VistaInterpretacion()
+                        if self.isloading {
+                            
+                            VistaDeProcesamiento().padding()
+                            Spacer()
+                            
+                        }else{
+                            ScrollView {
+                                switch self.tipoSalida {
+                                case .puntosClaves:
+                                    VistaPuntosClaves()
+                                case .resumen:
+                                    VistaDeResumenGeneral()
+                                case .practicas:
+                                    VistaPracticas()
+                                case .practicaConcreta:
+                                    VistaPracticaConcreta()
+                                case .interpretar:
+                                    VistaInterpretacion()
+                                }
+                            }
+                            .redacted(reason: self.isloading ? .placeholder : []) //Mostrar un skeleton mientras se carga el contenido
                         }
                     }
-                    .redacted(reason: self.isloading ? .placeholder : []) //Mostrar un skeleton mientras se carga el contenido
-                    //Sobrepone una vista de procesamiento
-                        if self.isloading{
-                            VistaDeProcesamiento().padding()
-                        }
+                    
                     
                 }else{
                     DescargoResponsabilidadIA(VentanaEnSetting: false)
@@ -110,19 +200,14 @@ struct RespondView: View {
         }
         .onAppear{
             if (self.purchaseStatus || self.yorjPremium){
-                Task { @MainActor in
-                    withAnimation {
-                        self.isloading = true
-                    }
+                
+                    self.autorOriginal = self.autorRespuesta //Almacena el autor original, si lo hay.
                     
-                   generarTexto()
-                    
-                    withAnimation {
-                        self.isloading = false
-                    }
-                    
+                    //Procesar el texto
+                    generarTexto(tipoSalida: self.tipoSalida)
+ 
                 }
-            }
+            
         }
         .toolbar{
             if (!self.isloading && self.DescargoDeIA) {
@@ -144,6 +229,18 @@ struct RespondView: View {
                 ToolbarSpacer(.fixed)
                 #endif
                 
+                ToolbarSpacer(.fixed)
+                
+                ToolbarItem{
+                    Button{
+                        self.showSheetInfo = true
+                    }label: {
+                        Label("", systemImage: "info.circle")
+                    }
+                }
+                
+                ToolbarSpacer(.fixed)
+                
                 ToolbarItem{
                     if let _ = self.clipBoarModel.clipboardText{
                          TextoCopiadoView(clipBoardModel: self.clipBoarModel,
@@ -159,6 +256,7 @@ struct RespondView: View {
                 
                 ToolbarSpacer(.fixed)
                 
+                
                 //Share the text
                 ToolbarItem {
                     ShareLink(item: self.creatorContentToShare){
@@ -171,13 +269,43 @@ struct RespondView: View {
             
         }
         .sheet(item: $showSheetTextoCopiadoAlPortapapelesParaInterpretar){ text in
-                RespondView(nameConference: "", texto: text.texto, tipoSalida: .interpretar)
+                RespondView(nameConference: "", texto: text.texto, tipoSalida: .interpretar, autorRespuesta: "nev")
         }
         .sheet(item: $showSheetTtextoCopiadoAlPortapapelesParaChatIA){ text in
                 ChatView(textoACargar: text.texto)
         }
         .sheet(item: $showSheetTtextoCopiadoAlPortapapelesParaLienzo){ text in
                 LienzoMain(texto : text.texto, imagenPrimariaACargar: nil)
+        }
+        .sheet(isPresented: self.$showSheetInfo){
+            ZStack{
+                LinearGradient.FondoGrizAzulMate()
+                    .ignoresSafeArea()
+                VStack{
+                    ScrollView{
+                        Text("""
+                            ☘️ Información sobre la IA utilizada:
+                            
+                            La Inteligencia Artificial se basa en los modelos preinstalados en el dispositivo. Apple garantiza que su acceso es seguro y no involucra procesamiento fuera del dispositivo.
+                            
+                            El modelo es capaz de generar respuestas creativas y eficaces basadas en los conocimientos y enseñanzas de varios autores (Neville Goddard, Joe Dispenza, Bruce Lipton y Gregg Braden). Sin embargo, se recomienda revisar con cuidado cada respuesta y tomar desiciones informadas acerca de ellas.
+                            
+                            Los modelos han sido cuidadosamente instruidos y revisados para aminorar los sezgos, errores y que solo responda dentro de los límites del campo de conocimientos establecido para cada autor.
+                            
+                            Si siente que una respuesta no resuena con usted, o no es correcta, la mejor desición es seguir su instinto propio.
+                            
+                            La optimización del modelo es un proceso continuo, en cada actualización de la "La Ley" será revisado y actualizado.
+                            """)
+                        .foregroundStyle(.black)
+                        .bold()
+                        .font(.title2)
+                    }
+                   
+                   
+                }
+                .padding()
+            }
+            
         }
         .alert(isPresented: self.$showAlert){
             Alert(title: Text("Chat"), message: Text(self.alertMessage))
@@ -190,31 +318,47 @@ struct RespondView: View {
     private func VistaDeProcesamiento() -> some View{
         VStack{
             VStack{
-                Image(systemName: "sparkles")
-                    .padding()
-                    .font(.system(size: 30))
-                    .foregroundStyle(.white)
-                    .offset(y: bounce ? -5 : 5) // movimiento hacia arriba y abajo
-                                .animation(
-                                    .easeInOut(duration: 0.8)
-                                        .repeatForever(autoreverses: true),
-                                    value: bounce
-                                )
-                                .onAppear {
-                                    bounce = true
-                                }
-                //Text(self.tipoSalida == .puntosClaves ? "Generando Puntos Claves" : "Creando  Resumen")
+
+              
+                
+                 Image(systemName: "sparkles")
+                             .padding()
+                             .font(.system(size: 30))
+                             .foregroundStyle(.black)
+  
+
                 switch self.tipoSalida {
                 case .puntosClaves:
-                    Text("Generando Puntos Claves")
+                    VStack(alignment: .center){
+                        Text("Generando Puntos Claves").bold()
+                        //Text("Procesando: \(self.model.fragmentoActual) \\ \(self.model.noFragmentos)").bold()
+                        LinearProgressBar(actual: self.model.fragmentoActual, total: self.model.noFragmentos)
+                            .padding()
+                    }
+                    
+                    
                 case .resumen:
-                    Text("Creando Resumen")
+                    VStack(alignment: .center, spacing: 10){
+                        Text("Creando Resumen").bold()
+                        //Text("Procesando: \(self.model.fragmentoActual) \\ \(self.model.noFragmentos)").bold()
+                        LinearProgressBar(actual: self.model.fragmentoActual, total: self.model.noFragmentos)
+                            .padding()
+                    }
+                    
+                    
                 case .practicas:
-                    Text("Generando Concejos Prácticos")
+                    VStack(alignment: .center, spacing: 10){
+                        Text("Generando Concejos Prácticos").bold()
+                        //Text("Procesando: \(self.model.fragmentoActual) \\ \(self.model.noFragmentos)").bold()
+                        LinearProgressBar(actual: self.model.fragmentoActual, total: self.model.noFragmentos)
+                            .padding()
+                    }
+                    
+                    
                 case .practicaConcreta:
-                    Text("Generando Aplicación Práctica")
+                    Text("Generando Aplicación Práctica \nSegún las enseñanzas de: \n \(self.getNameAutor(autorRaw: self.autorRespuesta))")
                 case .interpretar:
-                    Text("Interpretando Texto")
+                    Text("Interpretando Texto \nSegún las enseñanzas de: \n \(self.getNameAutor(autorRaw: self.autorRespuesta))")
                 }
                 
                 //Mostrando indicador de progreso solo si el texto a procesar excede de 4000 caracteres
@@ -337,14 +481,14 @@ struct RespondView: View {
     private func VistaInterpretacion() -> some View {
         
             VStack{
-                
                 ContenidoView(contenido: self.model.interpretacion)
                 
                 buttomOpcionesViewContent()
                 
                 Spacer()
                 
-                VStack{
+                VStack(alignment: .leading){
+                    
                     TextoReferenciaView()
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -382,7 +526,6 @@ struct RespondView: View {
         
         #else
         VStack(alignment: .leading) {
-            
             SelectableText(text: contenido, fontSize: CGFloat(self.fontSizeChatIA), fonColor: UIColor(self.ColorRespondIAFuente), alignment: .left )
         }
         .padding()
@@ -402,30 +545,101 @@ struct RespondView: View {
     @ViewBuilder
     private func buttomOpcionesViewContent() -> some View {
         HStack(spacing: 25){
-            //Copiar la respuesta a notas
-            Button{
-                
-                if self.notasModel.addNote(nota: "\(self.creatorContentToShare ) \n\n ----Texto de Referencia---- \n \(self.tipoSalida == .interpretar ? self.texto : self.nameConference + " (Conferencia)")", title: "Nota de IA"){
-                    self.alertMessage = "Se ha guardado la respuesta en Notas"
-                    self.showAlert = true
-                }else{
-                    self.alertMessage = "No fue posible guardar la respuesta en Notas. Inténtelo más tarde."
-                    self.showAlert = true
-                }
-            }label:{
-                Label("", systemImage: "text.page")
-                    .font(.system(size: 24))
-            }
-            .tint(.black)
             
-            //Regenerar Respuesta
-            Button{
-                generarTexto() //Función que regenera el contenido
-            }label: {
-                Label("", systemImage: "arrow.triangle.2.circlepath")
-                    .font(.system(size: 24))
+            Menu{
+                //Copiar la respuesta a notas
+                Button{
+                    if let nameConferencia = self.nameConference {
+                        if self.notasModel.addNote(nota: "\(self.creatorContentToShare ) \n\n ----Texto de Referencia---- \n \(self.tipoSalida == .interpretar ? self.texto : nameConferencia + " (Conferencia)")", title: "Nota de IA"){
+                            self.alertMessage = "Se ha guardado la respuesta en Notas"
+                            self.showAlert = true
+                        }else{
+                            self.alertMessage = "No fue posible guardar la respuesta en Notas. Inténtelo más tarde."
+                            self.showAlert = true
+                        }
+                    }
+                    
+                }label:{
+                    Label("Guardar en Notas", systemImage: "list.clipboard")
+                }
+                .foregroundStyle(.black)
+                .buttonStyle(.bordered)
+                
+                //Cambiar de Autor
+                Menu{
+                    Button("Neville Goddard"){
+                        self.isloading = true
+                        self.autorRespuesta = "nev"
+                        generarTexto(tipoSalida: self.tipoSalida, autor: "nev")
+                        
+                    }
+                    Button("Dr. Joe Dispenza"){
+                        self.isloading = true
+                        self.autorRespuesta = "jd"
+                        generarTexto(tipoSalida: self.tipoSalida, autor: "jd")
+                    }
+                    Button("Dr. Bruce Lipton"){
+                        self.isloading = true
+                        self.autorRespuesta = "bruceL"
+                        generarTexto(tipoSalida: self.tipoSalida, autor: "bruceL")
+                    }
+                    
+                    Button("Gregg Braden"){
+                        self.isloading = true
+                        self.autorRespuesta = "gregg"
+                        generarTexto(tipoSalida: self.tipoSalida, autor: "gregg")
+                    }
+                }label: {
+                    Label("Cambiar Autor...", systemImage: "person")
+                }
+                .foregroundStyle(.black)
+                .buttonStyle(.bordered)
+                
+                //Regenerar Respuesta
+                Button{
+                    generarTexto(tipoSalida: tipoSalida, autor: self.autorRespuesta) //Función que regenera el contenido
+                }label: {
+                    Label("Regenerar Respuesta", systemImage: "arrow.triangle.2.circlepath")
+                        .font(.system(size: 24))
+                }
+                .tint(.black)
+                
+                Menu{
+                    Button("Interpretar"){
+                        self.tipoSalida = .interpretar
+                        self.generarTexto(tipoSalida: self.tipoSalida)
+                    }
+                    Button("Práctica Concreta"){
+                        self.tipoSalida = .practicaConcreta
+                        self.generarTexto(tipoSalida: self.tipoSalida)
+                    }
+                    Button("Listado de prácticas"){
+                        self.tipoSalida = .practicas
+                        self.generarTexto(tipoSalida: self.tipoSalida)
+                    }
+                    Button("Puntos Claves"){
+                        self.tipoSalida = .puntosClaves
+                        self.generarTexto(tipoSalida: self.tipoSalida)
+                    }
+                    Button("Resumen"){
+                        self.tipoSalida = .resumen
+                        self.generarTexto(tipoSalida: self.tipoSalida)
+                    }
+                    
+                }label:{
+                    Label("Cambiar Operación...", systemImage: "swirl.circle.righthalf.filled.inverse")
+                }
+                .foregroundStyle(.black)
+                .buttonStyle(.bordered)
+                
+            }label:{
+                Text("Opciones...")
             }
-            .tint(.black)
+            .buttonStyle(.bordered)
+            
+            
+            
+            
         }
         .padding(.horizontal)
         .frame(maxWidth: .infinity, alignment: .trailing)
@@ -433,35 +647,84 @@ struct RespondView: View {
     
 //Vista del texto de referencia(Solo para Frases, reflexiones, citas, etc. NO conferencias):
     @ViewBuilder
-    private func TextoReferenciaView() -> some View {
+    private func TextoReferenciaView() -> some View{
         if self.isloading{
             Text(self.texto)
                 .padding()
         }else{
             VStack(alignment: .leading){
-                SelectableText(text : self.texto, fontSize: CGFloat(20), fonColor: UIColor(Color.black.opacity(0.7)), alignment: .left )
+                SelectableText(text : "\(self.texto) (\(self.getNameAutor(autorRaw: self.autorOriginal)))" , fontSize: CGFloat(20), fonColor: UIColor(Color.black.opacity(0.7)), alignment: .left )
             }
             .padding()
         }
         
     }
 
+//Barra de progreso
+    
+    struct LinearProgressBar: View {
+        
+        let actual: Int
+        let total: Int
+        
+        private var progress: CGFloat {
+            guard total > 0 else { return 0 }
+            return CGFloat(actual) / CGFloat(total)
+        }
+        
+        var body: some View {
+            GeometryReader { geo in
+                
+                ZStack(alignment: .leading) {
+                    
+                    // Fondo
+                    Rectangle()
+                        .foregroundColor(.gray.opacity(0.3))
+                    
+                    // Progreso
+                    Rectangle()
+                        .foregroundColor(.black)
+                        .frame(width: geo.size.width * progress)
+                }
+                .cornerRadius(4)
+            }
+            .frame(height: 10)
+        }
+    }
+    
+    
 //---- FIN
     
     
     
 
     //Funciones del botón de Regenerar Texto. Vuelce hacer una solicitud de respuesta a Apple Intelligence
-    private func generarTexto(){
-            switch self.tipoSalida {
+    private func generarTexto(tipoSalida : TiposSalida ,  autor: String = "nev"){
+            switch tipoSalida {
+                
             case .puntosClaves:
                 Task { @MainActor in
+                    
+                    
                     withAnimation {
                         self.isloading = true
-                        bounce = true
+                       
                     }
+                    
+                    
+                    
+                    if let nameConferencia = self.nameConference{
+                        let nombreNormalizado = "conf_\(nameConferencia.lowercased())"
+                        let contenidoFile = UtilFuncs.FileRead(nombreNormalizado)
+                        
+                        await self.model.executeRequestPuntosClaves(texto: contenidoFile)
+                        
+                    }else{
+                        
                         await self.model.executeRequestPuntosClaves(texto: self.texto)
-
+                    }
+                    
+                    
                     withAnimation {
                         self.isloading = false
                     }
@@ -469,37 +732,61 @@ struct RespondView: View {
                 }
             case .practicas:
                 Task { @MainActor in
+                    
                     withAnimation {
                         self.isloading = true
-                        bounce = true
+                        
                     }
-                        await self.model.executeRequestListAplicacionPractica(texto: self.texto)
-
+                    
+                    if let nameConferencia = self.nameConference{
+                        let nombreNormalizado = "conf_\(nameConferencia.lowercased())"
+                        let contenidoFile = UtilFuncs.FileRead(nombreNormalizado)
+                        
+                        await self.model.executeRequestListAplicacionPractica(texto: contenidoFile, autor: self.autorRespuesta)
+                        
+                    }else{
+                        await self.model.executeRequestListAplicacionPractica(texto: self.texto, autor: self.autorRespuesta)
+                    }
+                    
                     withAnimation {
                         self.isloading = false
                     }
                     
                 }
+                //Solo Para Textos cortos (Frases, notas)
             case .practicaConcreta:
                 Task { @MainActor in
                     withAnimation {
                         self.isloading = true
-                        bounce = true
+                       
                     }
-                        await self.model.executeRequestPracticaConcreta(texto: self.texto)
+                    await self.model.executeRequestPracticaConcreta(texto: self.texto, autor: self.autorRespuesta)
 
                     withAnimation {
                         self.isloading = false
                     }
                     
                 }
+                
             case .resumen:
                 Task { @MainActor in
+                    
                     withAnimation {
                         self.isloading = true
-                        bounce = true
+                       
                     }
+                    
+                    if let nameConferencia = self.nameConference{
+                        let nombreNormalizado = "conf_\(nameConferencia.lowercased())"
+                        let contenidoFile = UtilFuncs.FileRead(nombreNormalizado)
+                        
+                        await self.model.executeRequestResumenGeneral(texto: contenidoFile)
+                        
+                    }else{
                         await self.model.executeRequestResumenGeneral(texto: self.texto)
+                    }
+                    
+
 
                     withAnimation {
                         self.isloading = false
@@ -510,9 +797,10 @@ struct RespondView: View {
                 Task { @MainActor in
                     withAnimation {
                         self.isloading = true
-                        bounce = true
+                        
                     }
-                        await self.model.executeRequestInterpretaTexto(texto: self.texto)
+                    
+                    await self.model.executeRequestInterpretaTexto(texto: self.texto, autor: self.autorRespuesta)
 
                     withAnimation {
                         self.isloading = false
@@ -522,6 +810,8 @@ struct RespondView: View {
         }
             
         }
+    
+    
     
     // Función auxiliar: Convierte un tipo Color  a formato hexadecimal, para la configuración del CSS del componente RichText
     func hexString(for color: Color) -> String {

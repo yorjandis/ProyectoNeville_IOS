@@ -105,7 +105,7 @@ struct CreateGoalView: View {
     private func MetasHome() -> some View {
         ZStack{
             
-            LinearGradient.JadeProfundo()
+            LinearGradient.FondoGrizAzulMate()
                 .ignoresSafeArea()
             
             VStack{
@@ -124,9 +124,9 @@ struct CreateGoalView: View {
                             axis: .vertical
                         )
                         .font(.platFormSize(iOS: 22, mac: 24))
-                        .foregroundStyle(.black).bold()
+                        .foregroundStyle(.white).bold()
                         .padding(12)
-                        .background(LinearGradient.JadeProfundo())
+                        .background(Color.black.opacity(0.7))
                         .cornerRadius(10)
                         .overlay(
                             RoundedRectangle(cornerRadius: 12)
@@ -150,6 +150,7 @@ struct CreateGoalView: View {
                                 Picker("", selection: $vm.amount) {
                                     ForEach(0...365, id: \.self) { number in
                                         Text("\(number)")
+                                            .foregroundStyle(.black)
                                     }
                                 }
                                 #if os(macOS)
@@ -164,6 +165,7 @@ struct CreateGoalView: View {
                                 Picker("", selection: $vm.frequency) {
                                     ForEach(1...30, id: \.self) {
                                         Text("\($0)")
+                                            .foregroundStyle(.black)
                                     }
                                 }
                                 #if os(macOS)
@@ -181,6 +183,7 @@ struct CreateGoalView: View {
                                 Picker("", selection: $vm.unit) {
                                     ForEach(TimeUnit.allCases, id: \.self) {
                                         Text($0.rawValue.capitalized)
+                                            .foregroundStyle(.black)
                                     }
                                 }
                                 .pickerStyle(.menu)
@@ -199,13 +202,13 @@ struct CreateGoalView: View {
                             
                             TextEditor(text: $vm.description)
                                 .font(.platFormSize(iOS: 22, mac: 24))
-                                .foregroundStyle(.black)
+                                .foregroundStyle(.white)
                                 .scrollContentBackground(.hidden)
                                 .padding(12)
                                 .frame(height: 150)
                                 .background(
                                     RoundedRectangle(cornerRadius: 12)
-                                        .fill(LinearGradient.JadeProfundo())
+                                        .fill(Color.black.opacity(0.7))
                                 )
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 12)
@@ -217,7 +220,7 @@ struct CreateGoalView: View {
                         //Resumen:
                         VStack{
                             Text("Resumen: Meta a completar en \(vm.amount) \(vm.getTextoForUNidades(number: vm.amount)). Cada unidad deberá realizarse cada \(vm.frequency) \(vm.unit.description(for: vm.frequency))")
-                                .bold()
+                                .foregroundStyle(.black).bold()
                         }
                             
                         
@@ -233,7 +236,9 @@ struct CreateGoalView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding()
+            
         }
+        .cornerRadius(20)
         
     }
     
@@ -241,7 +246,7 @@ struct CreateGoalView: View {
     @ViewBuilder
     private func MetasPreestablecidasView() -> some View {
         ZStack{
-            LinearGradient.BarroNatural()
+            LinearGradient.FondoOscuro()
                 .ignoresSafeArea()
             
             VStack(alignment: .leading) {
@@ -299,13 +304,13 @@ struct CreateGoalView: View {
                 }
             }
             .padding()
-        }
+        }.cornerRadius(20)
         
     }
     
     @ViewBuilder
     private func ProgramasPreestablecidos() -> some View {
-        ProgramasListView()
+        ProgramasListView().cornerRadius(20)
     }
     
     

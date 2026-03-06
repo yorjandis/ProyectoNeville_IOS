@@ -514,7 +514,7 @@ struct cardNotas: View{
                             #if os(macOS)
                             Button{
                                 if let  temp = nota!.nota{
-                                    showWindow(for: RespondView(nameConference: "", texto: temp, tipoSalida: .interpretar ),
+                                    showWindow(for: RespondView(nameConference: "", texto: temp, tipoSalida: .interpretar, autorRespuesta: "nev" ),
                                     environmentObjects: [],
                                                title: "Interpretar Nota",
                                                size: AppCons.windows_size_content,
@@ -531,7 +531,7 @@ struct cardNotas: View{
                             
                             Button{
                                 if let  temp = nota!.nota{
-                                    showWindow(for: RespondView(nameConference: "", texto: temp, tipoSalida: .practicaConcreta),
+                                    showWindow(for: RespondView(nameConference: "", texto: temp, tipoSalida: .practicaConcreta, autorRespuesta: "nev"),
                                     environmentObjects: [],
                                                title: "Aplicación Práctica - Nota",
                                                size: AppCons.windows_size_content,
@@ -563,7 +563,7 @@ struct cardNotas: View{
                             Menu{
                                 NavigationLink{
                                     if let  temp = nota!.nota{
-                                        RespondView(nameConference: "", texto: temp, tipoSalida: .interpretar )
+                                        RespondView(nameConference: "", texto: temp, tipoSalida: .interpretar, autorRespuesta: "nev" )
                                     }
                                     
                                     
@@ -574,7 +574,7 @@ struct cardNotas: View{
                                 
                                 NavigationLink{
                                     if let  temp = nota!.nota{
-                                        RespondView(nameConference: "", texto: temp, tipoSalida: .practicaConcreta)
+                                        RespondView(nameConference: "", texto: temp, tipoSalida: .practicaConcreta, autorRespuesta: "nev")
                                     }
                                     
                                 }label:{

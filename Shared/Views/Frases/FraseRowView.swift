@@ -106,14 +106,14 @@ struct FraseRowView: View {
                     if IAModelAppleIntelligence.isAvailable() {
                         Menu{
                             NavigationLink{
-                                RespondView(nameConference: "", texto: frase.frase ?? "", tipoSalida: .interpretar )
+                                RespondView(nameConference: "", texto: frase.frase ?? "", tipoSalida: .interpretar, autorRespuesta: frase.autor ?? "nev" )
                             }label:{
                                 Label("Interpretar", systemImage: "sparkles")
                             }
                             .tint(.orange)
                             
                             NavigationLink{
-                                RespondView(nameConference: "", texto: frase.frase ?? "", tipoSalida: .practicaConcreta)
+                                RespondView(nameConference: "", texto: frase.frase ?? "", tipoSalida: .practicaConcreta, autorRespuesta: frase.autor ?? "nev")
                             }label:{
                                 Label("Aplicación Práctica", systemImage: "sparkles")
                             }

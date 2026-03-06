@@ -217,7 +217,7 @@ struct ContentTxtShowView: View {
                                      #else
                                      
                                      NavigationLink{
-                                         RespondView(nameConference: self.nombreTxt, texto: self.content, tipoSalida: .puntosClaves)
+                                         RespondView(nameConference: self.nombreTxt, texto: self.content, tipoSalida: .puntosClaves, autorRespuesta: "nev")
                                      }label: {
                                          Label("Puntos Claves",systemImage: "sparkles")
                                      }
@@ -257,7 +257,7 @@ struct ContentTxtShowView: View {
                                      
                                      //Genera concejos prácticos:
                                      NavigationLink{
-                                         RespondView(nameConference: self.nombreTxt, texto: self.content, tipoSalida: .practicas)
+                                         RespondView(nameConference: self.nombreTxt, texto: self.content, tipoSalida: .practicas, autorRespuesta: "nev")
                                      }label: {
                                          Label("Aplicación Práctica",systemImage: "sparkles")
                                      }
@@ -404,7 +404,7 @@ struct ContentTxtShowView: View {
                                  Menu{
                                      #if os(macOS)
                                      Button{
-                                         showWindow(for: RespondView(nameConference: "", texto: self.content.replacingOccurrences(of: "<br>", with: ""), tipoSalida: .interpretar ),
+                                         showWindow(for: RespondView(nameConference: "", texto: self.content.replacingOccurrences(of: "<br>", with: ""), tipoSalida: .interpretar, autorRespuesta: "nev" ),
                                                     environmentObjects: [self.modeloTxt],
                                                     title: self.nombreTxt,
                                                     size: AppCons.windows_size_content,
@@ -419,7 +419,7 @@ struct ContentTxtShowView: View {
                                      .tint(.orange)
                                      
                                      Button{
-                                         showWindow(for: RespondView(nameConference: "", texto: self.content.replacingOccurrences(of: "<br>", with: ""), tipoSalida: .practicaConcreta),
+                                         showWindow(for: RespondView(nameConference: "", texto: self.content.replacingOccurrences(of: "<br>", with: ""), tipoSalida: .practicaConcreta, autorRespuesta: "nev"),
                                                     environmentObjects: [self.modeloTxt],
                                                     title: self.nombreTxt,
                                                     size: AppCons.windows_size_content,
@@ -435,7 +435,7 @@ struct ContentTxtShowView: View {
                                      #else
                                      NavigationLink{
                                          
-                                         RespondView(nameConference: "", texto: self.content.replacingOccurrences(of: "<br>", with: ""), tipoSalida: .interpretar )
+                                         RespondView(nameConference: "", texto: self.content.replacingOccurrences(of: "<br>", with: ""), tipoSalida: .interpretar, autorRespuesta: "nev" )
                                          
                                          
                                      }label:{
@@ -445,7 +445,7 @@ struct ContentTxtShowView: View {
                                      
                                      NavigationLink{
                                          
-                                         RespondView(nameConference: "", texto: self.content.replacingOccurrences(of: "<br>", with: ""), tipoSalida: .practicaConcreta)
+                                         RespondView(nameConference: "", texto: self.content.replacingOccurrences(of: "<br>", with: ""), tipoSalida: .practicaConcreta, autorRespuesta: "nev")
                                         
                                          
                                      }label:{
@@ -660,7 +660,7 @@ struct ContentTxtShowView: View {
             }
             .sheet(item: $showSheetTextoCopiadoAlPortapapelesParaInterpretar){ text in
                 if #available(iOS 26.0, macOS 26.0, *){
-                    RespondView(nameConference: "", texto: text.texto, tipoSalida: .interpretar)
+                    RespondView(nameConference: "", texto: text.texto, tipoSalida: .interpretar, autorRespuesta: "nev")
                 }else{
                     EmptyView()
                 }

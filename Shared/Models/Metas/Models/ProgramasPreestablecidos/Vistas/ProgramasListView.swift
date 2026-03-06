@@ -16,7 +16,7 @@ struct ProgramasListView: View {
         NavigationStack {
             ZStack{
                 
-                LinearGradient.BarroNatural()
+                LinearGradient.FondoOscuro()
                     .ignoresSafeArea()
                 
                 List {
@@ -77,7 +77,7 @@ struct ProgramasListView: View {
         var body: some View {
             ZStack{
                 
-                LinearGradient.BarroNatural()
+                LinearGradient.FondoOscuro()
                     .ignoresSafeArea()
                 VStack{
                     ScrollView {
@@ -146,7 +146,23 @@ struct ProgramasListView: View {
                    
                     
                     HStack {
-
+                        #if os(macOS)
+                        Button{
+                            showWindow(for: ProgramaDetailView(programa: programa),
+                            environmentObjects: [],
+                                       title: "Información del Programa",
+                                       size: .percentage(width: 0.4, height: 0.7),
+                                       isModal: true
+                            )
+                            
+                        } label: {
+                            Label("Detalles...", systemImage: "info.circle")
+                                .font(.headline)
+                        }
+                        .tint(.black)
+                        .buttonStyle(.bordered)
+                        
+                        #else
                         NavigationLink {
                             ProgramaDetailView(programa: programa)
                         } label: {
@@ -155,6 +171,9 @@ struct ProgramasListView: View {
                         }
                         .tint(.black)
                         .buttonStyle(.bordered)
+                        
+                        #endif
+                        
 
                         Spacer()
                         

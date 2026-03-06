@@ -31,21 +31,44 @@ struct CrearEntradaDiarioIntent : AppIntent, ProvidesDialog{
         //Validar estado de premium
         let hasPremium = await PremiumService.shared.hasPremiumAccess()
         
-        guard ( hasPremium || self.yorjPremium) else {
-            throw PremiumError.noSubscription
+        
+         
+           guard (hasPremium || self.yorjPremium) else {
+               throw PremiumError.noSubscription
+           }
+
+        
+        //Comprobando que no se haya ya la BD... Porque si la App esta abierta la BD ya se ha cargado y da problemas
+        let coordinator = await CoreDataController.shared
+            .persistentContainer
+            .persistentStoreCoordinator
+
+        if coordinator.persistentStores.isEmpty {
+            try await CoreDataController.shared.cargarStores()
         }
+        
+        let context = await CoreDataController.shared.persistentContainer.newBackgroundContext()
         
         
             //Validar la palabra clave
         if let pass = await KeychainHelper.shared.getPassword(){
             if pass.lowercased() == password.lowercased(){
-                if  await DiarioModel.shared.addItem(title: titulo, emocion: .neutral, content: contenido) {
-                    return .result(value: titulo, dialog: IntentDialog("La entrada ha sido añadida al Diario."))
-                }else{
-                    return .result(value: titulo, dialog: IntentDialog("Ha habido un problema al guadar la entrada del Diario. Inténtelo más tarde."))
-                }
+                
+                let diario : Diario = Diario(context: context)
+                diario.id = UUID()
+                diario.title = titulo
+                diario.emotion = "neutral"
+                diario.isFav = false
+                diario.content = contenido
+                diario.fecha = Date.now
+                diario.fechaM = Date.now
+                
+                try context.save()
+                
+                return .result(value: titulo, dialog: IntentDialog("Se ha creado la entrada en el diario."))
+                
             }else{
-                return .result(value: titulo, dialog: IntentDialog("La contraseña no es correcta"))
+                return .result(value: titulo, dialog: IntentDialog("La contraseña no es correcta."))
             }
         }else{
             return .result(value: titulo, dialog: IntentDialog("No se ha podido obtener la contraseña."))

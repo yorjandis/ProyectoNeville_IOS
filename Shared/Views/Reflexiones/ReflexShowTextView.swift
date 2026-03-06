@@ -234,7 +234,7 @@ struct ReflexShowTextView: View {
                                 #if os(macOS)
                                 
                                 Button{
-                                    showWindow(for: RespondView(nameConference: "", texto: entity.content, tipoSalida: .interpretar ),
+                                    showWindow(for: RespondView(nameConference: "", texto: entity.content, tipoSalida: .interpretar, autorRespuesta: "nev" ),
                                                environmentObjects: [],
                                                title: "\(self.entity.title) - Interpretar",
                                                size: AppCons.windows_size_content,
@@ -246,7 +246,7 @@ struct ReflexShowTextView: View {
                                 .tint(.orange)
                                 
                                 Button{
-                                    showWindow(for:  RespondView(nameConference: "", texto: entity.content, tipoSalida: .practicaConcreta),
+                                    showWindow(for:  RespondView(nameConference: "", texto: entity.content, tipoSalida: .practicaConcreta, autorRespuesta: entity.autor ?? "nev"),
                                                environmentObjects: [],
                                                title: "\(self.entity.title) - Aplicación Práctica",
                                                size: AppCons.windows_size_content,
@@ -275,7 +275,7 @@ struct ReflexShowTextView: View {
                                 
                                 NavigationLink{
                                     
-                                    RespondView(nameConference: "", texto: entity.content, tipoSalida: .interpretar )
+                                    RespondView(nameConference: "", texto: entity.content, tipoSalida: .interpretar, autorRespuesta: entity.autor)
                                    
                                     
                                 }label:{
@@ -284,7 +284,7 @@ struct ReflexShowTextView: View {
                                 .tint(.orange)
                                 
                                 NavigationLink{
-                                    RespondView(nameConference: "", texto: entity.content, tipoSalida: .practicaConcreta)
+                                    RespondView(nameConference: "", texto: entity.content, tipoSalida: .practicaConcreta, autorRespuesta: entity.autor)
                                 }label:{
                                     Label("Aplicación Práctica", systemImage: "sparkles")
                                 }
@@ -333,7 +333,7 @@ struct ReflexShowTextView: View {
             }
             .sheet(item: $showSheetTextoCopiadoAlPortapapelesParaInterpretar){ text in
                 if #available(iOS 26.0, macOS 26.0, *){
-                    RespondView(nameConference: "", texto: text.texto, tipoSalida: .interpretar)
+                    RespondView(nameConference: "", texto: text.texto, tipoSalida: .interpretar, autorRespuesta: "nev")
                 }else{
                     VStack{
                         Text("Necesita iOS 26.0 / macOS 26.0 o más reciente para usar esta función")
