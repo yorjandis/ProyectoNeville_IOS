@@ -30,7 +30,7 @@ struct RespondView: View {
     
     
     //Parámetros
-    let nameConference  : String? //Nombre de la conferencia
+    let nameConference  : String? //Nombre de la conferencia / fichero txt
     let texto           : String //Texto a procesar por la IA
     @State var tipoSalida      : TiposSalida //Especifica el tipo de salida desea: Puntos Claves / Resumen General, etc
     @State var autorRespuesta : String = "nev"  //El autor que procesará la respuesta: Por defecto es "nev"
@@ -95,7 +95,6 @@ struct RespondView: View {
     }
     
     
-    
     var body: some View {
         ZStack{
             LinearGradient(colors: [self.ColorChatIAPrimario,  self.ColorChatIASecundario], startPoint: .topLeading, endPoint: .bottomTrailing)
@@ -119,7 +118,12 @@ struct RespondView: View {
                                     generarTexto(tipoSalida: self.tipoSalida, autor: "nev")
                                     
                                 }label:{
+                                    #if os(macOS)
+                                    iconMenu(nombre: "nev-min", title: "Neville Goddard")
+                                    #else
                                     Label("Neville Goddard", image: "nev-min")
+                                    #endif
+                                    
                                 }
                                 
                                 
@@ -128,7 +132,12 @@ struct RespondView: View {
                                     self.autorRespuesta = "jd"
                                     generarTexto(tipoSalida: self.tipoSalida, autor: "jd")
                                 }label:{
+                                    #if os(macOS)
+                                    iconMenu(nombre: "jd", title: "Dr. Joe Dispenza")
+                                    #else
                                     Label("Dr. Joe Dispenza", image: "jd")
+                                    #endif
+                                    
                                 }
                                 
                                 Button{
@@ -136,7 +145,11 @@ struct RespondView: View {
                                     self.autorRespuesta = "bruceL"
                                     generarTexto(tipoSalida: self.tipoSalida, autor: "bruceL")
                                 }label:{
+                                    #if os(macOS)
+                                    iconMenu(nombre: "bruce", title: "Dr. Bruce Lipton")
+                                    #else
                                     Label("Dr. Bruce Lipton", image: "bruce")
+                                    #endif
                                 }
                                 
                                 Button{
@@ -144,7 +157,11 @@ struct RespondView: View {
                                     self.autorRespuesta = "gregg"
                                     generarTexto(tipoSalida: self.tipoSalida, autor: "gregg")
                                 }label:{
+                                    #if os(macOS)
+                                    iconMenu(nombre: "gregg", title: "Gregg Braden")
+                                    #else
                                     Label("Gregg Braden", image: "gregg")
+                                    #endif
                                 }
                                 
                             }label: {
@@ -318,8 +335,6 @@ struct RespondView: View {
     private func VistaDeProcesamiento() -> some View{
         VStack{
             VStack{
-
-              
                 
                  Image(systemName: "sparkles")
                              .padding()
@@ -328,6 +343,7 @@ struct RespondView: View {
   
 
                 switch self.tipoSalida {
+                    
                 case .puntosClaves:
                     VStack(alignment: .center){
                         Text("Generando Puntos Claves").bold()
@@ -357,6 +373,7 @@ struct RespondView: View {
                     
                 case .practicaConcreta:
                     Text("Generando Aplicación Práctica \nSegún las enseñanzas de: \n \(self.getNameAutor(autorRaw: self.autorRespuesta))")
+                    
                 case .interpretar:
                     Text("Interpretando Texto \nSegún las enseñanzas de: \n \(self.getNameAutor(autorRaw: self.autorRespuesta))")
                 }
@@ -413,7 +430,7 @@ struct RespondView: View {
         VStack(alignment: .leading, spacing: 16) {
             
             ForEach (self.model.puntosClaves, id: \.self){ idea in
-                ContenidoView(contenido: idea)
+                ContenidoView(respuestaIA: idea)
             }
             
             buttomOpcionesViewContent()
@@ -427,7 +444,7 @@ struct RespondView: View {
 @ViewBuilder
     private func VistaDeResumenGeneral() -> some View{
         VStack{
-            ContenidoView(contenido: self.model.resumenGeneral)
+            ContenidoView(respuestaIA: self.model.resumenGeneral)
             buttomOpcionesViewContent()
         }
         .padding()
@@ -441,7 +458,7 @@ struct RespondView: View {
         VStack(alignment: .leading, spacing: 16) {
             
             ForEach (self.model.practicas, id: \.self){ idea in
-                ContenidoView(contenido: idea)
+                ContenidoView(respuestaIA: idea)
 
             }
             
@@ -457,7 +474,7 @@ struct RespondView: View {
         if !model.practicaConcreta.isEmpty{
             VStack{
                 
-                ContenidoView(contenido: self.model.practicaConcreta)
+                ContenidoView(respuestaIA: self.model.practicaConcreta)
                 
                 buttomOpcionesViewContent()
                 
@@ -481,7 +498,7 @@ struct RespondView: View {
     private func VistaInterpretacion() -> some View {
         
             VStack{
-                ContenidoView(contenido: self.model.interpretacion)
+                ContenidoView(respuestaIA: self.model.interpretacion)
                 
                 buttomOpcionesViewContent()
                 
@@ -507,11 +524,11 @@ struct RespondView: View {
     
 //Vista de contenido
     @ViewBuilder
-    private func ContenidoView(contenido: String) -> some View {
+    private func ContenidoView(respuestaIA: String) -> some View {
         #if os(macOS)
         VStack{
             ScrollView{
-                    Text(texto)
+                    Text(respuestaIA)
                         .font(.system(size: CGFloat(self.fontSizeChatIA)))
                         .foregroundColor(Color(self.ColorRespondIAFuente))
                         .textSelection(.enabled)
@@ -526,7 +543,7 @@ struct RespondView: View {
         
         #else
         VStack(alignment: .leading) {
-            SelectableText(text: contenido, fontSize: CGFloat(self.fontSizeChatIA), fonColor: UIColor(self.ColorRespondIAFuente), alignment: .left )
+            SelectableText(text: respuestaIA, fontSize: CGFloat(self.fontSizeChatIA), fonColor: UIColor(self.ColorRespondIAFuente), alignment: .left )
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -700,19 +717,17 @@ struct RespondView: View {
 
     //Funciones del botón de Regenerar Texto. Vuelce hacer una solicitud de respuesta a Apple Intelligence
     private func generarTexto(tipoSalida : TiposSalida ,  autor: String = "nev"){
+        
+        withAnimation {
+            self.isloading = true
+           
+        }
+        
             switch tipoSalida {
                 
             case .puntosClaves:
                 Task { @MainActor in
-                    
-                    
-                    withAnimation {
-                        self.isloading = true
-                       
-                    }
-                    
-                    
-                    
+
                     if let nameConferencia = self.nameConference{
                         let nombreNormalizado = "conf_\(nameConferencia.lowercased())"
                         let contenidoFile = UtilFuncs.FileRead(nombreNormalizado)
@@ -732,11 +747,7 @@ struct RespondView: View {
                 }
             case .practicas:
                 Task { @MainActor in
-                    
-                    withAnimation {
-                        self.isloading = true
-                        
-                    }
+
                     
                     if let nameConferencia = self.nameConference{
                         let nombreNormalizado = "conf_\(nameConferencia.lowercased())"
@@ -753,13 +764,11 @@ struct RespondView: View {
                     }
                     
                 }
+                
                 //Solo Para Textos cortos (Frases, notas)
             case .practicaConcreta:
                 Task { @MainActor in
-                    withAnimation {
-                        self.isloading = true
-                       
-                    }
+
                     await self.model.executeRequestPracticaConcreta(texto: self.texto, autor: self.autorRespuesta)
 
                     withAnimation {
@@ -770,11 +779,7 @@ struct RespondView: View {
                 
             case .resumen:
                 Task { @MainActor in
-                    
-                    withAnimation {
-                        self.isloading = true
-                       
-                    }
+
                     
                     if let nameConferencia = self.nameConference{
                         let nombreNormalizado = "conf_\(nameConferencia.lowercased())"
@@ -795,10 +800,7 @@ struct RespondView: View {
                 }
             case .interpretar:
                 Task { @MainActor in
-                    withAnimation {
-                        self.isloading = true
-                        
-                    }
+
                     
                     await self.model.executeRequestInterpretaTexto(texto: self.texto, autor: self.autorRespuesta)
 

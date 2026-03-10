@@ -50,22 +50,24 @@ struct ArchivedGoalCardView: View {
                 HStack(spacing: 10) {
                     Spacer()
                     
-                    Text("Completado")
+                    Text("Cumplimiento: \(String(format: "%.2f", goal.completionRate)) %")
                         .font(.title2)
                         .bold()
-
-                    Image(systemName: "checkmark.circle.fill")
-                        .foregroundStyle(
-                            .green.opacity(0.7)
-                        )
-                        .font(.system(size: 32))
+                    /*
+                     Image(systemName: "checkmark.circle.fill")
+                     .foregroundStyle(
+                     .green.opacity(0.7)
+                     )
+                     .font(.system(size: 32))
+                     */
+                    
                 }
             }
 
             // Barra de progreso
             HStack {
                 Text("\(Int(goal.progressRatio * 100))%")
-                LabeledGradientProgressBar(progress: goal.progressRatio)
+                LabeledGradientProgressBar(progress: goal.progressRatio, lostUnits: goal.lostUnitIndexes, totalUnits: Int(goal.totalUnits))
                     .padding(1)
             }
 
@@ -176,8 +178,11 @@ struct ArchivedGoalCardView: View {
             Button("Cancelar", role: .cancel) {}
 
             Button("Eliminar", role: .destructive) {
-                context.delete(goal)
-                try? context.save()
+                withAnimation {
+                    context.delete(goal)
+                    try? context.save()
+                }
+                
             }
 
         } message: {

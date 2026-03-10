@@ -18,7 +18,8 @@ extension ArchivedGoalEntity {
 
     var progressRatio: Double {
         guard totalUnits > 0 else { return 0 }
-        let completed = unitsArray.filter { $0.status == UnitStatus.completed.rawValue }.count
+        let completed = unitsArray.filter { $0.status == UnitStatus.completed.rawValue ||
+            $0.status == UnitStatus.lost.rawValue }.count
         return Double(completed) / Double(totalUnits)
     }
 
@@ -31,6 +32,28 @@ extension ArchivedGoalEntity {
         return "\(completed)/\(totalUnits)"
     }
     
+    var lostUnitIndexes: [Int] {
+            unitsArray
+                .filter { $0.status == UnitStatus.lost.rawValue }
+                .map { Int($0.index) - 1 }
+        }
     
+    //Obtiene el progreso real
+    var completionRate: Double {
+
+        let completed = unitsArray.filter {
+            $0.status == UnitStatus.completed.rawValue
+        }.count
+
+        let progressed = unitsArray.filter {
+            $0.status == UnitStatus.completed.rawValue ||
+            $0.status == UnitStatus.lost.rawValue
+        }.count
+
+        guard progressed > 0 else { return 0 }
+
+        let rate = Double(completed) / Double(progressed)
+        return rate
+    }
     
 }

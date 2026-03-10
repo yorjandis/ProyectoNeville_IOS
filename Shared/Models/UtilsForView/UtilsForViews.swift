@@ -235,3 +235,56 @@ extension View {
 
 
 
+#if os(macOS)
+//Para redimencionar los iconos dentro de un menu
+func iconMenu(nombre: String?, title: String, tamaño: CGFloat = 24, imagenPorDefecto: String = "b_carpeta") -> some View {
+    // Cargar la imagen de recursos
+    guard let nsImage = NSImage(named: nombre ?? imagenPorDefecto) else {
+        return AnyView(Image(nsImage: NSImage())) // Imagen vacía en caso de error
+    }
+    
+    // Mantener proporción
+    let ratio = nsImage.size.height / nsImage.size.width
+    nsImage.size.height = tamaño
+    nsImage.size.width = tamaño / ratio
+    
+    // Devolver como Image de SwiftUI
+    return AnyView( HStack(spacing: 0){
+        Text(title)
+        Image(nsImage: nsImage)
+            .resizable()
+            .clipShape(RoundedRectangle(cornerRadius: 10))
+    })
+
+}
+
+#endif
+
+#if os(iOS)
+func iconoRedimensionado(nombre: String?, tamaño: CGFloat = 24, imagenPorDefecto: String = "b_carpeta") -> Image {
+    
+    // Cargar la imagen desde Assets
+    guard let uiImage = UIImage(named: nombre ?? imagenPorDefecto) else {
+        return Image(uiImage: UIImage())
+    }
+    
+    // Mantener proporción
+    let ratio = uiImage.size.height / uiImage.size.width
+    let nuevoAncho = tamaño / ratio
+    let nuevoAlto = tamaño
+    
+    let nuevoSize = CGSize(width: nuevoAncho, height: nuevoAlto)
+    
+    // Redimensionar usando contexto gráfico
+    let renderer = UIGraphicsImageRenderer(size: nuevoSize)
+    
+    let imagenRedimensionada = renderer.image { _ in
+        uiImage.draw(in: CGRect(origin: .zero, size: nuevoSize))
+    }
+    
+    return Image(uiImage: imagenRedimensionada)
+}
+
+#endif
+
+

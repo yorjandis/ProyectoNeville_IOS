@@ -76,7 +76,7 @@ struct ArchivedGoalsListView: View {
                 }
                 
             }
-            .navigationTitle("Historial de Metas")
+            .navigationTitle("Metas Archivadas")
         }
     }
 }

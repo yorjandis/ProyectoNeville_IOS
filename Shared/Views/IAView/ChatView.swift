@@ -59,6 +59,8 @@ struct ChatView: View {
     @State private var showSheetTtextoCopiadoAlPortapapelesParaLienzo       : TextoCopiadoAlPortapapeles? = nil
     
     
+    
+    
     var body: some View {
         
         if (self.purchaseStatus || self.yorjPremium){
@@ -172,9 +174,7 @@ struct ChatView: View {
                         }
                         else{
                             ScrollView {
-                                if self.autor == .neville {
                                     AdjustableGridView_neville( autor : self.$autor ,rows : 11 , model: self.model)
-                                }
                             }
                         }
                         
@@ -199,28 +199,71 @@ struct ChatView: View {
         .toolbar{
             if self.DescargoDeIA {
                 
+               
+                
                 //Cambiar instrucciones de conversación
                 ToolbarItem{
-                    Menu{
-                        Button("Neville"){
-                            self.autor = .neville
-                            self.model.newConversation()
-                        }
-                        Button("Joe Dispenza"){
-                            self.autor = .JoeDispenza
-                            self.model.newConversation()
-                        }
-                        Button("Bruce Lipton"){
-                            self.autor = .bruce
-                            self.model.newConversation()
-                        }
-                        Button("Gregg Braden"){
-                            self.autor = .gregg
-                            self.model.newConversation()
-                        }
-                    }label: {
-                        Image(systemName: "figure")
-                    }
+
+                     Menu{
+                         Text("Cambiar Autor")
+                         Button{
+                             self.autor = .neville
+                             self.model.newConversation()
+                         }label:{
+                             #if os(macOS)
+                             iconMenu(nombre: "nev-min", title: "Neville")
+                             #else
+                             Label("Neville Goddard", image: "nev-min")
+                             #endif
+                         }
+                         
+                         
+                         Button{
+                             self.autor = .JoeDispenza
+                             self.model.newConversation()
+                         }label:{
+                             #if os(macOS)
+                             iconMenu(nombre: "jd", title: "Joe Dispenza")
+                             #else
+                             Label("Joe Dispenza", image: "jd")
+                             #endif
+                         }
+                         
+                         Button{
+                             self.autor = .bruce
+                             self.model.newConversation()
+                         }label:{
+                             #if os(macOS)
+                             iconMenu(nombre: "bruce", title: "Bruce lipton")
+                             #else
+                             Label("Bruce lipton", image: "bruce")
+                             #endif
+                             
+                         }
+                         
+                         Button{
+                             self.autor = .gregg
+                             self.model.newConversation()
+                         }label:{
+                             #if os(macOS)
+                             iconMenu(nombre: "gregg", title: "Gregg Braden")
+                             #else
+                             Label("Gregg Braden", image: "gregg")
+                             #endif
+                            
+                         }
+                         
+                     }label: {
+
+                          switch self.autor {
+                          case .neville: iconoRedimensionado(nombre: "nev-min")
+                          case .JoeDispenza: iconoRedimensionado(nombre: "jd")
+                          case .bruce: iconoRedimensionado(nombre: "bruce")
+                          case .gregg: iconoRedimensionado(nombre: "gregg")
+                          }  
+                     }
+                     
+                   
                 }
                 
                 ToolbarSpacer(.fixed)
@@ -406,16 +449,177 @@ struct ChatView: View {
         @ObservedObject var model: ChatViewModel
         
         
+        //Obtiene las sugerencias según el autor:
         
-        // Ejemplo: 6 botones
-        @State private var  buttonTitles = ["Cuenta una fábula",
-                            "¿Qué es la conciencia?","Quiero dejar de fumar","¿Qué es la revisión?",
-                            "Me siento frustado","¿Cómo manifiesto mis deseos?","¿Cómo debo orar?",
-                            "¿Qué es pecar?","Resume tu enseñanza","Dame un concejo","Tengo problemas","¿Quién es el Diablo?",
-                            "¿Qué es la ley de creación?","Me pasan cosas malas","¿Cómo aplico tus enseñanzas?",
-                            "Buenos días","¿Qué es la vida?","¿Cómo puedo mejorar?", "Quiero cambiar","Estoy estancado",
-                            "¿Qué es la realidad?","Háblame del Alfarero"]
-        
+        private func GetSugerencias(autor: Autores) -> [String] {
+            switch autor{
+            case .neville:
+                return ["Cuenta una fábula",
+                        "¿Qué es la conciencia?","Quiero dejar de fumar","¿Qué es la revisión?",
+                        "Me siento frustado","¿Cómo manifiesto mis deseos?","¿Cómo debo orar?",
+                        "¿Qué es pecar?","Resume tu enseñanza","Dame un concejo","Tengo problemas","¿Quién es el Diablo?",
+                        "¿Qué es la ley de creación?","Me pasan cosas malas","¿Cómo aplico tus enseñanzas?",
+                        "Buenos días","¿Qué es la vida?","¿Cómo puedo mejorar?", "Quiero cambiar","Estoy estancado",
+                        "¿Qué es la realidad?","Háblame del Alfarero"]
+            case .JoeDispenza:
+                return [
+                    "¿Qué pensamientos debería cultivar cada día?",
+                    "¿Qué emociones debería practicar diariamente?",
+                    "¿Qué patrones mentales debería fortalecer?",
+                    "¿Qué futuro debería imaginar con claridad?",
+                    "¿Qué estado emocional debería mantener la mayor parte del tiempo?",
+                    "¿Qué emociones del pasado debería soltar?",
+                    "¿Cómo puedo pasar del modo supervivencia al modo creación?",
+                    "¿Dónde debería enfocar mi atención cada día?",
+                    "¿Qué pensamiento nuevo debería entrenar?",
+                    "¿Qué emoción elevada debería generar ahora?",
+                    "¿Qué intención clara debería establecer hoy?",
+                    "¿Qué rasgos de personalidad debería desarrollar?",
+                    "¿Qué comportamientos diarios debería adoptar?",
+                    "¿Qué emociones deberían formar mi identidad?",
+                    "¿En qué debería concentrar mi atención sostenida?",
+                    "¿Cómo debería observar mis pensamientos automáticos?",
+                    "¿Qué creencias limitantes debería cuestionar?",
+                    "¿Qué futuro debería ensayar mentalmente?",
+                    "¿Cómo debería sentirse mi futuro ideal?",
+                    "¿Cómo puedo sentir gratitud antes de lograr algo?",
+                    "¿Qué emoción debería cultivar hoy?",
+                    "¿Cómo puedo alinear pensamientos y emociones?",
+                    "¿Qué energía debería proyectar hacia mi entorno?",
+                    "¿Cómo puedo responder en vez de reaccionar?",
+                    "¿Qué posibilidades debería explorar ahora?",
+                    "¿Qué hábitos mentales debería romper?",
+                    "¿Qué pensamientos automáticos debería reemplazar?",
+                    "¿Cómo puedo crear desde mi estado interno?",
+                    "¿Cómo puedo liberar emociones de estrés?",
+                    "¿Qué incomodidades debería aceptar para crecer?",
+                    "¿Cómo puedo aprovechar lo desconocido para evolucionar?",
+                    "¿Qué pequeñas acciones diarias generan mayor transformación?",
+                    "¿Cómo actuaría mi mejor versión en esta situación?",
+                    "¿Qué expectativas positivas debería instalar en mi mente?",
+                    "¿Cómo debería vivir hoy si mi objetivo ya fuera real?",
+                    "¿Qué cambio interno produciría mayor impacto en mi vida?","¿Cómo identificar pensamientos automáticos dominantes?",
+                    "¿Cómo interrumpir rápidamente un pensamiento negativo?",
+                    "¿Cuánto tarda en formarse una nueva red neuronal?",
+                    "¿Cómo distinguir visualización efectiva de fantasía?",
+                    "¿Errores comunes al ensayar mentalmente el futuro?",
+                    "¿Cómo generar emociones elevadas desde estrés crónico?",
+                    "¿Cómo liberar emociones almacenadas en el cuerpo?",
+                    "¿Cuánto tarda el cuerpo en dejar la adicción al estrés?",
+                    "¿Cómo saber si el cuerpo domina la mente?",
+                    "¿Qué indica coherencia emocional real?",
+                    "¿Estructura ideal de meditación diaria?",
+                    "¿Cómo reconocer estados alfa o theta?",
+                    "¿Importa más duración o calidad de meditación?",
+                    "¿Cómo manejar pensamientos intrusivos al meditar?",
+                    "¿Cómo entrenar atención sostenida?",
+                    "¿Cómo sentir el futuro antes de que ocurra?",
+                    "¿Cómo saber si el cuerpo cree en el futuro?",
+                    "¿Qué pesa más: intención o emoción?",
+                    "¿Mejor un resultado concreto o un estado?",
+                    "¿Cómo proteger el estado interno del entorno?",
+                    "¿Cómo inducir coherencia corazón-cerebro?",
+                    "¿Cuánto mantener coherencia para cambios biológicos?",
+                    "¿Diferencias fisiológicas en coherencia?",
+                    "¿Qué respiración favorece la coherencia?",
+                    "¿Cómo detectar coherencia sin instrumentos?",
+                    "¿Qué cambios medibles hay en el campo personal?",
+                    "¿Cómo estabilizar energía en entornos estresantes?",
+                    "¿Puede la coherencia grupal influir en el entorno?",
+                    "¿Cómo distinguir creación consciente de coincidencia?",
+                    "¿Qué papel tiene la expectativa?",
+                    "¿Primer hábito para cambiar personalidad?",
+                    "¿Cómo evitar recaer en patrones emocionales?",
+                    "¿Cómo atravesar la incomodidad del cambio?",
+                    "¿Cómo debilitar patrones automáticos?",
+                    "¿Qué evidencia epigenética habéis observado?",
+                    "¿Señal clara de transformación biológica?"
+                ]
+            case .bruce:
+                return [
+                    "¿Cómo influye mi entorno diario en el comportamiento de mis células?",
+                    "¿De qué manera mis pensamientos pueden afectar la salud de mi cuerpo?",
+                    "¿Qué tipo de señales estoy enviando a mi biología a través de mis emociones?",
+                    "¿Cómo puedo crear un entorno que favorezca el crecimiento y la regeneración celular?",
+                    "¿Qué creencias tengo sobre mi salud que podrían estar influyendo en mi biología?",
+                    "¿Cómo puedo identificar creencias limitantes que afectan mi bienestar?",
+                    "¿De qué manera mis percepciones del mundo influyen en mi estado físico?",
+                    "¿Cómo puedo reinterpretar una situación estresante para reducir su impacto biológico?",
+                    "¿Qué hábitos diarios ayudan a mantener mi cuerpo en un estado de crecimiento en lugar de supervivencia?",
+                    "¿Cómo influye el estrés en la capacidad de mi cuerpo para regenerarse?",
+                    "¿Qué prácticas me ayudan a activar emociones que favorecen la salud?",
+                    "¿Cómo puedo reducir las señales de miedo en mi vida cotidiana?",
+                    "¿Qué tipo de pensamientos generan coherencia entre mi mente y mi cuerpo?",
+                    "¿Cómo puedo desarrollar una percepción más positiva de mi entorno?",
+                    "¿De qué manera mi identidad personal influye en mis decisiones de salud?",
+                    "¿Cómo influyen mis relaciones sociales en mi biología?",
+                    "¿Qué tipo de entorno social favorece mi bienestar físico y mental?",
+                    "¿Cómo puedo reprogramar patrones subconscientes que ya no me sirven?",
+                    "¿Qué papel juega la repetición en el cambio de mis creencias?",
+                    "¿Qué nuevas creencias quiero instalar para mejorar mi salud?",
+                    "¿Cómo puedo observar los programas subconscientes que aprendí en mi infancia?",
+                    "¿Qué pensamientos automáticos dirigen la mayoría de mis decisiones diarias?",
+                    "¿Cómo puedo usar la conciencia para modificar mis respuestas automáticas?",
+                    "¿Cómo influye mi interpretación de los eventos en mis reacciones físicas?",
+                    "¿Qué señales químicas produce mi cuerpo cuando experimento emociones positivas?",
+                    "¿Cómo puedo entrenar mi mente para interpretar el entorno de forma más constructiva?",
+                    "¿Qué prácticas me ayudan a generar coherencia entre pensamiento, emoción y cuerpo?",
+                    "¿Cómo puedo crear rutinas que refuercen nuevas percepciones positivas?",
+                    "¿De qué manera la información que consumo influye en mi percepción del mundo?",
+                    "¿Cómo puedo educar mi mente para favorecer estados de bienestar?",
+                    "¿Qué cambios en mi entorno podrían mejorar mi salud celular?",
+                    "¿Cómo puedo reconocer cuándo mi cuerpo está en modo supervivencia?",
+                    "¿Qué acciones me ayudan a volver a un estado de crecimiento?",
+                    "¿Cómo puedo cultivar emociones de amor, gratitud o conexión en mi vida diaria?",
+                    "¿Qué prácticas diarias ayudan a fortalecer la conexión mente-cuerpo?",
+                    "¿Cómo puedo recordar que mi biología no está determinada únicamente por mis genes?"
+                ]
+                
+            case .gregg:
+                return [
+                    "¿Cómo puedo sentir en este momento mi conexión con el campo que une toda la creación?",
+                    "¿De qué manera mis pensamientos y emociones afectan al sistema interconectado del universo?",
+                    "¿Qué pensamiento estoy emitiendo ahora mismo hacia el campo de conciencia?",
+                    "¿Qué emoción está generando mi corazón en este momento?",
+                    "¿Cómo puedo crear coherencia entre lo que pienso y lo que siento?",
+                    "¿Qué emoción quiero transmitir al campo para influir positivamente en mi realidad?",
+                    "¿Cómo se sentiría mi vida si el resultado que deseo ya hubiese ocurrido?",
+                    "¿Qué creencia actual está moldeando mi experiencia de hoy?",
+                    "¿Qué señales internas estoy enviando a mi ADN a través de mis pensamientos y emociones?",
+                    "¿Cómo puedo practicar la gratitud ahora mismo para generar coherencia?",
+                    "¿Estoy actuando desde el miedo o desde la confianza en este momento?",
+                    "¿Cuál es mi intención clara en esta situación específica?",
+                    "¿Cómo puedo vivir mi oración como una experiencia ya cumplida?",
+                    "¿Qué cambiaría si percibiera el tiempo como algo no estrictamente lineal?",
+                    "¿Qué sabiduría antigua podría ayudarme a comprender mejor este momento de mi vida?",
+                    "¿Qué estado interno puedo cultivar para fortalecer mi resiliencia?",
+                    "¿Cómo está influyendo mi percepción actual en la respuesta de mi cuerpo?",
+                    "¿En qué quiero enfocar mi atención de manera sostenida hoy?",
+                    "¿Cómo puedo asumir responsabilidad personal dentro de la unidad de la vida?",
+                    "¿Qué cambio interior puedo hacer hoy que contribuya al cambio global?",
+                    "¿Qué me está diciendo mi intuición en este momento?",
+                    "¿Mis emociones actuales son coherentes con la intención que tengo?",
+                    "¿Qué patrón interno podría estar reflejándose en mi realidad externa?",
+                    "¿Cómo puedo cooperar mejor con las personas y sistemas a mi alrededor?",
+                    "¿Qué contribución estoy haciendo al estado de la conciencia colectiva?",
+                    "¿Qué emoción dominante estoy cultivando durante el día?",
+                    "¿Qué resultado deseo experimentar y cómo se siente emocionalmente?",
+                    "¿Qué historia mental estoy repitiendo que podría estar limitando mi experiencia?",
+                    "¿Cómo puedo transformar el miedo en curiosidad o compasión?",
+                    "¿Qué pequeña acción coherente puedo tomar ahora para alinear mente y corazón?",
+                    "¿Cómo cambiaría mi realidad si creyera plenamente en mi capacidad de influir en el campo?",
+                    "¿Qué prácticas diarias pueden fortalecer la coherencia corazón-cerebro?",
+                    "¿Cómo puedo usar la respiración para generar coherencia emocional?",
+                    "¿Qué parte de mi vida necesita más gratitud y reconocimiento?",
+                    "¿Qué intención quiero enviar al mundo hoy?",
+                    "¿Qué estado emocional quiero aportar a la conciencia colectiva?"
+                    ]
+            }
+            
+        }
+            
+
+            
         // Layout dinámico de columnas
         var gridLayout: [GridItem] {
             Array(repeating: GridItem(.flexible(), spacing: 16), count: columns)
@@ -424,16 +628,19 @@ struct ChatView: View {
         
         var body: some View {
             VStack(alignment: .leading){
+                
+                let sugerencias  = GetSugerencias(autor: self.autor)
+                
                 Text("Sugerencias:").font(.subheadline).padding(.horizontal).foregroundStyle(.primary).bold().id(12)
                     LazyVGrid(columns: gridLayout, spacing: 10) {
-                        ForEach(0..<buttonTitles.count, id: \.self) { index in
+                        ForEach(0..<sugerencias.count, id: \.self) { index in
                             Button(action: {
                                 Task{
-                                    model.inputText = buttonTitles[index]
+                                    model.inputText = sugerencias[index]
                                     await model.sendMessage(autor: self.autor, questionUser: model.inputText)
                                 }
                             }) {
-                                Text(buttonTitles[index])
+                                Text(sugerencias[index])
                                     .font(.system(size: 14))
                                     .frame(maxWidth: .infinity, minHeight: 40)
                                     .foregroundColor(.primary)

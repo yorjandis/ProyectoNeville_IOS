@@ -34,16 +34,26 @@ struct GoalsListView: View {
                         .ignoresSafeArea()
                     ScrollView {
                         LazyVStack(spacing: 16) {
-                            ForEach(goals.sorted {
-                                //Ordena la lista poniendo primero objetivos de: Horas -> Dias -> Meses -> Años
-                                guard let firstUnit = TimeUnit(rawValue: $0.unitType ?? ""),
-                                      let secondUnit = TimeUnit(rawValue: $1.unitType ?? "")
-                                else { return false }
-                                return firstUnit.priority < secondUnit.priority
-                            }) { goal in
+                            /*
+                             //Habilitar para mostrar las targetas por tipo de unidad: primero minutos, luego, horas, dias...
+                             ForEach(goals.sorted {
+                                 //Ordena la lista poniendo primero objetivos de: Horas -> Dias -> Meses -> Años
+                                 guard let firstUnit = TimeUnit(rawValue: $0.unitType ?? ""),
+                                       let secondUnit = TimeUnit(rawValue: $1.unitType ?? "")
+                                 else { return false }
+                                 return firstUnit.priority < secondUnit.priority
+                             }) { goal in
+                                 GoalCardView(goal: goal)
+                                     .padding(.horizontal, 8)
+                             }
+                             */
+                            
+                            //Ordenarmiento de las targetas por urgencia: las que vencen primero se colocan arriba
+                            ForEach(goals.sorted(by: GoalEntity.urgencySort)) { goal in
                                 GoalCardView(goal: goal)
                                     .padding(.horizontal, 8)
                             }
+                            
                         }
                     }
                     .padding(.top, 15)
@@ -67,7 +77,7 @@ struct GoalsListView: View {
                             #endif
                             
                         }label:{
-                            Image(systemName: "clock")
+                            Image(systemName: "tray.2")
                         }
                     }
                     

@@ -38,7 +38,9 @@ struct GoalCardView: View {
     @State private var NotasGenerales: String = ""
     
     
- 
+    @State private var alertMessage : String = ""
+    @State private var showAlert : Bool = false
+    
     
     
     
@@ -76,44 +78,20 @@ struct GoalCardView: View {
                 
                 //Mostrar El tiempo que falta para la próxima unidad:
                 HStack{
-                    //🔥 Mostrar un botón para archivar/Actualizar la unidad
-                    if let id = goal.id {
-                        if goal.isCompleted && goal.isStarted {
-                            Button("Archivar"){
-                                if GoalEntity.isArchived(id: id, context: self.context){
-                                    //Actualizar:
-                                    do{
-                                        try goal.updateArchivedVersion(context: self.context)
-                                    }catch{
-                                        msg("Error en la función actualizar (archivar)")
-                                    }
-                                }else{
-                                    //Archivar:
-                                    do{
-                                        try goal.archive(context: self.context)
-                                    }catch{
-                                        msg("Error en la función archivar")
-                                    }
-                                }
-                            }
-                            .buttonStyle(.bordered)
-                            .padding(.horizontal)
-                        }
-                        
-                        
-                    }
-                    
-                    
+
                     Spacer()
                     if goal.isCompleted && goal.isStarted {
                         //Mostrar un indicador de que se ha completado el objetivo:
                         HStack(spacing: 10){
                             Text("Completado!").font(.title2).bold()
-                            Image(systemName: "checkmark.circle.fill")
-                                .foregroundStyle(
-                                    .green.opacity(0.7)
-                                ).bold()
-                                .font(.system(size: 44))
+                            /*
+                             Image(systemName: "checkmark.circle.fill")
+                                 .foregroundStyle(
+                                     .green.opacity(0.7)
+                                 ).bold()
+                                 .font(.system(size: 44))
+                             */
+                            
                         }
                         
                     }else{
@@ -155,7 +133,7 @@ struct GoalCardView: View {
             //Barra de Progreso:
             HStack{
                 Text("\(Int(goal.progressRatio * 100))%")
-                LabeledGradientProgressBar(progress: goal.progressRatio)
+                LabeledGradientProgressBar(progress: goal.progressRatio, lostUnits: goal.lostUnitIndexes, totalUnits: Int(goal.totalUnits))
                     .padding(1)
             }
             .onReceive(clock.$now) { _ in
@@ -165,11 +143,35 @@ struct GoalCardView: View {
             
             //Barra de acciones:
             HStack {
-                Text("Completado: \(progressText)")
-                    .font(.body)
+                Text("Progreso: \(progressText)")
+                    .font(.footnote)
                     .foregroundStyle(.primary).bold()
                 
                 Spacer()
+                
+                //Botón Archivar Meta:
+                //🔥 Mostrar un botón para archivar/Actualizar la unidad
+                    if goal.isCompleted && goal.isStarted {
+                        Button{
+                                do{
+                                    try goal.archive(context: self.context)
+                                    self.alertMessage = "La Meta ha sido archivada"
+                                    self.showAlert = true
+                                    goal.deleteGoal(context: self.context)
+                                }catch{
+                                    msg("Error en la función archivar")
+                                    self.alertMessage = "La Meta no ha podido archivarse. Intentelo más tarde"
+                                    self.showAlert = true
+                                }
+                            
+                        }label:{
+                            Image(systemName: "tray.and.arrow.up")
+                        }
+                        .buttonStyle(.bordered)
+                        .padding(.horizontal)
+                        .help("Archivar la Meta")
+                    }
+               
                 
                 
                 //Botón Notas Adjuntas:
@@ -315,6 +317,9 @@ struct GoalCardView: View {
             ModifyGoal(goal: self.goal)
                 .presentationDetents([.medium])
         }
+        .alert(isPresented: self.$showAlert){
+            Alert(title: Text("La Ley"), message: Text(self.alertMessage))
+        }
         .alert("Eliminar objetivo", isPresented: $showDeleteConfirmation) {
             Button("Cancelar", role: .cancel) { }
             Button("Eliminar", role: .destructive) {
@@ -325,6 +330,7 @@ struct GoalCardView: View {
         } message: {
             Text("¿Estás seguro de que quieres eliminar este objetivo y su progreso?")
         }
+        
     }
 
     private var progressText: String {

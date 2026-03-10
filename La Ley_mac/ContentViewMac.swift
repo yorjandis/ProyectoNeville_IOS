@@ -457,7 +457,7 @@ struct ContentViewMac: View {
                     }
                     
                     //Recursos Didácticos:
-                    SidebarCard(iconName: "person.circle", title: "Recursos Didácticos", isExpandable: true){
+                    SidebarCard(iconName: "graduationcap.circle", title: "Recursos Didácticos", isExpandable: true){
                         SidebarCard(iconName: "quote.opening", title: "Frases", onTap: {
                             self.categoriaSelected = .frasesGenerales
                         }){}

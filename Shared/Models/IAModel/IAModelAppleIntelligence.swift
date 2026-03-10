@@ -21,9 +21,9 @@ final class IAModelAppleIntelligence :  ObservableObject{
     
     @Published var puntosClaves     : [String] = [] //Salida: resumen de los puntos claves del texto
     @Published var resumenGeneral   : String = "" //Salida: resumen general del contenido
-    @Published var practicas        : [String] = [] //Listado de concejos prácticos sobre el contenido
-    @Published var practicaConcreta : String = "" //UN ejemplo de aplicación práctica de: Frase, reflexión, cita, etc
-    @Published var interpretacion   : String = "" //Genera una interpretación de un texto de acuerdo a las ideas fundamentales de Neville Goddard
+    @Published var practicas        : [String] = [] //Salida: Listado de concejos prácticos sobre el contenido
+    @Published var practicaConcreta : String = "" //Salida: UN ejemplo de aplicación práctica de: Frase, reflexión, cita, etc
+    @Published var interpretacion   : String = "" //Salida: Interpretación de un texto de acuerdo a las ideas fundamentales de Neville Goddard
     
     @Published var dialogoConUsuario : String = ""
     
@@ -311,8 +311,6 @@ final class IAModelAppleIntelligence :  ObservableObject{
         case "gregg": principios = BradenEngine.corePrinciples
         default: principios = NevilleEngine.corePrinciples
         }
-        
-        
         
         let prompt = """
         Basado en estos principios:

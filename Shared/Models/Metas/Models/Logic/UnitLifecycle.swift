@@ -48,7 +48,8 @@ extension GoalEntity {
     var progressRatio: Double {
         guard totalUnits > 0 else { return 0.0 }
         
-        let completed = unitsArray.filter { $0.unitStatus == .completed }.count
+        let completed = unitsArray.filter { $0.unitStatus == .completed || $0.unitStatus == .lost }.count
+        
         let ratio = Double(completed) / Double(totalUnits)
         
         // Asegurarse de que no sea NaN o infinito

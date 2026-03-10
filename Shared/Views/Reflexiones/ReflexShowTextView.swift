@@ -246,7 +246,7 @@ struct ReflexShowTextView: View {
                                 .tint(.orange)
                                 
                                 Button{
-                                    showWindow(for:  RespondView(nameConference: "", texto: entity.content, tipoSalida: .practicaConcreta, autorRespuesta: entity.autor ?? "nev"),
+                                    showWindow(for:  RespondView(nameConference: "", texto: entity.content, tipoSalida: .practicaConcreta, autorRespuesta: entity.autor),
                                                environmentObjects: [],
                                                title: "\(self.entity.title) - Aplicación Práctica",
                                                size: AppCons.windows_size_content,

@@ -425,3 +425,56 @@ extension  GoalEntity {
     
     
 }
+
+
+//Para determinar las posiciones de las unidades perdidas: Para señalizar esto en la barra de progreso
+extension GoalEntity {
+
+    /// Índices de unidades perdidas (0...n)
+    var lostUnitIndexes: [Int] {
+        unitsArray
+            .filter { $0.unitStatus == .lost }
+            .map { Int($0.index) - 1 }
+    }
+}
+
+//Para Ordenar las targetas de Metas por urgencia: Primero las que requieran fichaje inmediato
+extension GoalEntity {
+
+    /// Fecha relevante para ordenar metas por urgencia
+    var urgencyDate: Date? {
+
+        // Si hay una unidad que ya se puede completar
+        if let unit = nextPendingUnit {
+            return unit.endDate
+        }
+
+        // Si no hay unidad disponible aún, tomar la próxima futura
+        if let futureUnit = unitsArray.first(where: { $0.unitStatus == .pending }) {
+            return futureUnit.startDate
+        }
+
+        return nil
+    }
+    //Comparador de Urgencia:
+    static func urgencySort(_ g1: GoalEntity, _ g2: GoalEntity) -> Bool {
+
+            // Completadas siempre al final
+            if g1.isCompleted && !g2.isCompleted { return false }
+            if !g1.isCompleted && g2.isCompleted { return true }
+
+            let d1 = g1.urgencyDate ?? .distantFuture
+            let d2 = g2.urgencyDate ?? .distantFuture
+
+            if d1 != d2 {
+                return d1 < d2
+            }
+
+            // fallback: prioridad temporal
+            let u1 = TimeUnit(rawValue: g1.unitType ?? "")?.priority ?? 99
+            let u2 = TimeUnit(rawValue: g2.unitType ?? "")?.priority ?? 99
+
+            return u1 < u2
+        }
+    
+}

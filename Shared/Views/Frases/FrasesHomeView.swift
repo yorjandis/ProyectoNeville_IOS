@@ -244,7 +244,7 @@ struct FrasesHomeView : View{
                                                        size: AppCons.windows_size_content,
                                                        isModal: true,
                                                        isIAWindows: true)
-                                            //RespondView(nameConference: "", texto: self.frase, tipoSalida: .interpretar)
+                                            
                                         }label: {
                                             Label("Interpretar", systemImage: "sparkles")
                                         }
@@ -256,7 +256,7 @@ struct FrasesHomeView : View{
                                                        size: AppCons.windows_size_content,
                                                        isModal: true,
                                                        isIAWindows: true)
-                                            //RespondView(nameConference: "", texto: self.frase, tipoSalida: .practicaConcreta)
+                                           
                                         }label: {
                                             Label("Aplicación Práctica", systemImage: "sparkles")
                                         }

@@ -56,6 +56,7 @@ struct ShareExtensionView: View {
                                     .scaledToFit()
                                     .frame(maxHeight: 200)
                                 
+                                //Detectando automáticamente el código QR, si existe
                                 if let textoQR = detectQRCode(from: img){
                                     GeometryReader { geometry in
                                                 ScrollView {
@@ -198,6 +199,36 @@ struct ShareExtensionView: View {
                                     }
                                     .foregroundStyle(.black)
                                     .buttonStyle(.bordered)
+                                    
+                                    //Si se devuelve texto se muestran los botones:
+                                    if !self.textqr.isEmpty {
+                                        Button("Guardar Texto en Notas") {
+                                            
+                                            // 2. Guardar el QR en UserDefaults del App Group
+                                            guard let defaults = UserDefaults(suiteName: "group.com.ypg.nev.group") else {
+                                                print("❌ No se pudo acceder al App Group")
+                                                return
+                                            }
+                                                defaults.set(textqr, forKey: self.keyNotaShareText)
+                                        }
+                                        .foregroundStyle(.black)
+                                        .buttonStyle(.bordered)
+                                        
+                                        Button("Guardar Texto en Frases") {
+                                            
+                                            // 2. Guardar el QR en UserDefaults del App Group
+                                            guard let defaults = UserDefaults(suiteName: "group.com.ypg.nev.group") else {
+                                                print("❌ No se pudo acceder al App Group")
+                                                return
+                                            }
+                                                defaults.set(textqr, forKey: self.keyFraseShareText)
+                                            
+                                            
+                                        }
+                                        .foregroundStyle(.black)
+                                        .buttonStyle(.bordered)
+                                    }
+                                    
                                     
                                     Spacer()
                                 }
