@@ -846,13 +846,27 @@ struct NavigationDetailsViewMac: View {
 //Pantalla de frases del home
 struct FrasesHomeMac: View{
     
+    @AppStorage("MostrarMetasEnHome") var MostrarMetasEnHome: Bool = false
+    // Fuerza la recreación del gadget de metas cuando Home reaparece.
+    @State private var goalsGadgetRefreshID = UUID()
+    
     var body: some View {
         VStack{
             Spacer()
             FrasesHomeView()
             Spacer()
+            
+            //Barra de gadgets de Metas:
+            if self.MostrarMetasEnHome {
+                GoalsGadgetWidgetListView()
+                    .id(goalsGadgetRefreshID)
+            }
+            
             //Barra de Recordatorios:
             ReminderWidgetList_View()
+        }
+        .onAppear{
+            self.goalsGadgetRefreshID = UUID()
         }
     }
 }

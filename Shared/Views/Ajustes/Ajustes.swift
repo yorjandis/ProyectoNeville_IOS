@@ -22,6 +22,9 @@ struct Ajustes: View {
     //Funciones compras en la Aplicación
     @AppStorage("purchaseStatus" ) var purchaseStatus: Bool = false
     @AppStorage("yorjPremium",store: UserDefaults(suiteName: AppCons.AppGroupName))var yorjPremium: Bool = false
+    
+    //Permite mostrar/Ocultar Metas en Home
+    @AppStorage("MostrarMetasEnHome") var MostrarMetasEnHome: Bool = false
 
     @State private var showSheetPremiumView: Bool = false
     
@@ -573,6 +576,13 @@ struct Ajustes: View {
                         .padding(.horizontal, 30)
                         .padding(.bottom, 20)
                         
+                        
+                        VStack(alignment: .leading){
+                            Text("Metas").font(.system(size: 22)).foregroundStyle(.orange)
+                            Toggle("Mostrar Las Metas en Home", isOn: self.$MostrarMetasEnHome)
+                        }
+                        .padding(.horizontal, 30)
+                        .padding(.bottom, 20)
                         
                         //Habilita una sección para recuperar la contraseña. Esta sección solo esta disponible en dispositivos con biometria y si ya previamente han almacenado una contraseña
                         if BiometryCheckerSupport.checkBiometricSupport() == .available {
@@ -1207,6 +1217,15 @@ struct Ajustes: View {
                             NotificationSound.selected = newValue
                         }
                         
+                    }
+                    
+                    //Metas
+                    Section("Metas"){
+                        HStack{
+                            Toggle(isOn: self.$MostrarMetasEnHome) {
+                             Text("Mostrar Metas en Home")
+                            }
+                        }
                     }
                     
                     

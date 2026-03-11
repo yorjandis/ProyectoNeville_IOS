@@ -32,52 +32,27 @@ struct cardItemDiario: View{
     @State private var animValue = 0
     
 
-   private let emociones : [Emociones] = [.neutral,.feliz,.enfado,.desanimado,.distraido,.sorpresa]
-    
-    
     var body: some View{
         VStack(spacing: 20){
             //EmotioIcon
             HStack{
                 Menu{
-                    ForEach(0..<6){idx in
-                        Button{
-                            diarioModel.UpdateEmoticono(emoticono:  emociones[idx], diario: diario)
+                    ForEach(Emociones.allCases, id: \.self) { emocion in
+                        Button {
+                            diarioModel.UpdateEmoticono(emoticono: emocion, diario: diario)
                             withAnimation {
                                 diarioModel.getAllItem()
                             }
-                            
-                            
-                        }label: {
-                            #if os(macOS)
-                            HStack{
-                                Text(emociones[idx].rawValue)
-                                iconoRedimensionado(nombre: emociones[idx].rawValue)
+                        } label: {
+                            HStack {
+                                Text(emocion.rawValue)
+                                Text(emocion.emoji)
                             }
-                            #else
-                            Label(emociones[idx].rawValue, image: emociones[idx].rawValue )
-                            #endif
-                            
                         }
-                            
                     }
-                    
-                    
                 }label: {
-                    
-                    #if os(macOS)
-                    iconoRedimensionado(nombre: diario.emotion ?? "neutral")
-                    
-                    #else
-                    Image(diario.emotion ?? "neutral")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 50)
-                        .shadow(radius: 5)
-                    
-                    #endif
-                    
-                    
+                    Text(Emociones.emoji(from: diario.emotion))
+                        .font(.system(size: 40))
                 }
                 
                 //Título

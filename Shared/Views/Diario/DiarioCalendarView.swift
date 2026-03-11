@@ -115,9 +115,10 @@ struct CalendarGrid: View {
     @Binding var currentMonth: Date
     var fechasResaltadas: Set<Date>
     var onDateSelected: (Date) -> Void
-    
+
     @StateObject private var modelDiario = DiarioModel.shared
-    
+    @State private var showFutureDateAlert: Bool = false
+
     private let columns = Array(repeating: GridItem(.flexible()), count: 7)
     
     var body: some View {
@@ -134,7 +135,7 @@ struct CalendarGrid: View {
             ForEach(days.indices, id: \.self) { index in
                 if let date = days[index] {
                     let isHighlighted = fechasResaltadas.contains(date)
-                    
+
                     Text(date.formatted(.dateTime.day()))
                         .frame(width: 45, height: 45)
                         .background(
@@ -151,6 +152,25 @@ struct CalendarGrid: View {
                                     .offset(y: +15)
                             }
                         }
+                        .onTapGesture(count: 2) {
+                            let calendar = Calendar.current
+                            let selectedDay = calendar.startOfDay(for: date)
+                            let today = calendar.startOfDay(for: Date.now)
+
+                            guard selectedDay <= today else {
+                                showFutureDateAlert = true
+                                return
+                            }
+
+                            if modelDiario.addItem(
+                                title: "Título",
+                                emocion: .neutral,
+                                content: "Nuevo Contenido!",
+                                fechaCreacion: selectedDay
+                            ) {
+                                onDateSelected(date)
+                            }
+                        }
                         .onTapGesture {
                             if isHighlighted {
                                 onDateSelected(date)
@@ -161,6 +181,11 @@ struct CalendarGrid: View {
                         .frame(width: 40, height: 40)
                 }
             }
+        }
+        .alert("Fecha no válida", isPresented: $showFutureDateAlert) {
+            Button("Aceptar", role: .cancel) { }
+        } message: {
+            Text("No se puede crear una entrada en una fecha futura.")
         }
     }
     

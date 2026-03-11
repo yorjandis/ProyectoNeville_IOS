@@ -23,8 +23,6 @@ struct editContent : View {
     @State  var textContent : String
     @State  var emoticono : Emociones
     
-    private let emociones : [Emociones] = [.neutral,.feliz,.enfado,.desanimado,.distraido,.sorpresa]
-    
     enum Focustext{
         case title
         case content
@@ -37,38 +35,19 @@ struct editContent : View {
                 Section("Título"){
                     HStack(spacing: 5){
                         Menu{
-                            ForEach(0..<6){idx in
-                                Button{
-                                    emoticono = emociones[idx]
-                                    
-                                }label: {
-                                    
-                                     #if os(macOS)
-                                     HStack{
-                                         Text(emociones[idx].rawValue)
-                                         iconoRedimensionado(nombre: emociones[idx].rawValue)
-                                     }
-                                     #else
-                                     Label(emociones[idx].rawValue, image: emociones[idx].rawValue )
-                                     #endif
+                            ForEach(Emociones.allCases, id: \.self) { emocion in
+                                Button {
+                                    emoticono = emocion
+                                } label: {
+                                    HStack {
+                                        Text(emocion.rawValue)
+                                        Text(emocion.emoji)
+                                    }
                                 }
-                                
                             }
                         }label: {
-                            
-                             #if os(macOS)
-                            iconoRedimensionado(nombre: emoticono.rawValue)
-                             #else
-                             Image(emoticono.rawValue)
-                                 .resizable()
-                                 .scaledToFit()
-                                 .frame(width: 50)
-                                 .shadow(radius: 5)
-                             #endif
-                             
-                             
-                            
-                            
+                            Text(emoticono.emoji)
+                                .font(.system(size: 40))
                         }
                         
                         

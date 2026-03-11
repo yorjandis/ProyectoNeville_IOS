@@ -20,13 +20,38 @@ import Foundation
 import CoreData
 import Combine
 
-enum Emociones : String{
+enum Emociones : String, CaseIterable{
     case feliz      = "feliz",
+         triste     = "triste",
          enfado     = "enfadado",
          desanimado = "desanimado",
          sorpresa   = "sorpresa",
          distraido  = "distraido",
-         neutral    = "neutral"
+         neutral    = "neutral",
+         enamorado  = "enamorado",
+         enfermo    = "enfermo",
+         pensativo  = "pensativo",
+         festivo    = "Festivo"
+
+    var emoji: String {
+        switch self {
+        case .neutral: "🙂"
+        case .feliz: "😊"
+        case .triste: "🥺"
+        case .enfado: "😤"
+        case .desanimado: "😔"
+        case .distraido: "🙄"
+        case .sorpresa: "😮"
+        case .enamorado: "🥰"
+        case .enfermo: "🤒"
+        case .pensativo: "🤔"
+        case .festivo: "🥳"
+        }
+    }
+
+    static func emoji(from rawValue: String?) -> String {
+        Emociones(rawValue: rawValue ?? "")?.emoji ?? Emociones.neutral.emoji
+    }
 }
 
 
@@ -59,15 +84,7 @@ final class DiarioModel : ObservableObject{
     
     //Obtiene el valor enum de Emociones a partir de una cadena de texto
     func getEmocionesFromStr(value : String)->Emociones{
-        switch value{
-        case "feliz"        : Emociones.feliz
-        case "enfadado"     : Emociones.enfado
-        case "desanimado"   : Emociones.desanimado
-        case "sorpresa"     : Emociones.sorpresa
-        case "distraido"    : Emociones.distraido
-        case "neutral"      : Emociones.neutral
-        default             : Emociones.neutral  //By default
-        }
+        Emociones(rawValue: value) ?? .neutral
     }
     
     
@@ -159,15 +176,20 @@ final class DiarioModel : ObservableObject{
     
     ///Adiciona un item a la tabla Diario
     func addItem(title : String, emocion : Emociones, content : String, isFav : Bool = false )->Bool{
+        return addItem(title: title, emocion: emocion, content: content, fechaCreacion: Date.now, isFav: isFav)
+    }
+
+    ///Adiciona un item a la tabla Diario con fecha de creación personalizada.
+    func addItem(title : String, emocion : Emociones, content : String, fechaCreacion: Date, isFav : Bool = false )->Bool{
         let diario : Diario = Diario(context: context)
         diario.id = UUID()
         diario.title = title
         diario.emotion = emocion.rawValue
         diario.isFav = isFav
         diario.content = content
-        diario.fecha = Date.now
+        diario.fecha = Calendar.current.startOfDay(for: fechaCreacion)
         diario.fechaM = Date.now
-        
+
         if context.hasChanges {
             try? context.save()
             return true

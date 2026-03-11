@@ -510,6 +510,7 @@ struct optionView: View {
                 case .videosTutoriales:
                     VStack{
                         Text("Lista de Videos Tutoriales de la las funciones extendidas")
+                        //Barra de gadgets de Metas:
                     }
                     
                 }

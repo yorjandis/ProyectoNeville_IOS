@@ -221,6 +221,7 @@
 				Models/Metas/Views/CreateGoal/CreateGoalView.swift,
 				Models/Metas/Views/CreateGoal/CreateGoalViewModel.swift,
 				Models/Metas/Views/CreateGoal/ModifyGoal.swift,
+				Models/Metas/Views/Goals/ActiveGoalsGadgetCarouselView.swift,
 				Models/Metas/Views/Goals/GoalCardView.swift,
 				Models/Metas/Views/Goals/GoalsListView.swift,
 				Models/Metas/Views/Goals/GradientProgressBar.swift,

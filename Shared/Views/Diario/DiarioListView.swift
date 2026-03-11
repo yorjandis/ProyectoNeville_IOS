@@ -306,84 +306,17 @@ struct DiarioListView: View {
                             
                             
                             Menu{
-                                Button{withAnimation {
-                                    modelDiario.list =  modelDiario.filterByEmoticono(criterio: Emociones.feliz.rawValue)
-                                }
-                                }label: {
-                                    #if os(macOS)
-                                    HStack{
-                                        Text(Emociones.feliz.rawValue.capitalized)
-                                        iconoRedimensionado(nombre: Emociones.feliz.rawValue)
+                                ForEach(Emociones.allCases, id: \.self) { emocion in
+                                    Button {
+                                        withAnimation {
+                                            modelDiario.list = modelDiario.filterByEmoticono(criterio: emocion.rawValue)
+                                        }
+                                    } label: {
+                                        HStack {
+                                            Text(emocion.rawValue.capitalized)
+                                            Text(emocion.emoji)
+                                        }
                                     }
-                                    #else
-                                    Label(Emociones.feliz.rawValue.capitalized, image: Emociones.feliz.rawValue)
-                                    #endif
-                                    
-                                }
-                                Button{withAnimation {
-                                    modelDiario.list = modelDiario.filterByEmoticono(criterio: Emociones.neutral.rawValue)
-                                }
-                                }label: {
-                                #if os(macOS)
-                                    HStack{
-                                        Text(Emociones.neutral.rawValue.capitalized)
-                                        iconoRedimensionado(nombre: Emociones.neutral.rawValue)
-                                    }
-                                    #else
-                                    Label(Emociones.neutral.rawValue.capitalized, image: Emociones.neutral.rawValue)
-                                    #endif
-                                }
-                                Button{ withAnimation {
-                                    modelDiario.list = modelDiario.filterByEmoticono(criterio: Emociones.desanimado.rawValue)
-                                }
-                                }label: {
-                                #if os(macOS)
-                                    HStack{
-                                        Text(Emociones.desanimado.rawValue.capitalized)
-                                        iconoRedimensionado(nombre: Emociones.desanimado.rawValue)
-                                    }
-                                #else
-                                    Label(Emociones.desanimado.rawValue.capitalized, image: Emociones.desanimado.rawValue)
-                                #endif
-                                }
-                                Button{withAnimation {
-                                    modelDiario.list = modelDiario.filterByEmoticono(criterio: Emociones.enfado.rawValue)
-                                }
-                                }label: {
-                                #if os(macOS)
-                                    HStack{
-                                        Text(Emociones.enfado.rawValue.capitalized)
-                                        iconoRedimensionado(nombre: Emociones.enfado.rawValue)
-                                    }
-                                #else
-                                    Label(Emociones.enfado.rawValue.capitalized, image: Emociones.enfado.rawValue)
-                                #endif
-                                }
-                                Button{withAnimation {
-                                    modelDiario.list = modelDiario.filterByEmoticono(criterio: Emociones.distraido.rawValue)
-                                }
-                                }label: {
-                                #if os(macOS)
-                                    HStack{
-                                        Text(Emociones.distraido.rawValue.capitalized)
-                                        iconoRedimensionado(nombre: Emociones.distraido.rawValue)
-                                    }
-                                #else
-                                    Label(Emociones.distraido.rawValue.capitalized, image: Emociones.distraido.rawValue)
-                                #endif
-                                }
-                                Button{withAnimation {
-                                    modelDiario.list = modelDiario.filterByEmoticono(criterio: Emociones.sorpresa.rawValue)
-                                }
-                                }label: {
-                                #if os(macOS)
-                                    HStack{
-                                        Text(Emociones.sorpresa.rawValue.capitalized)
-                                        iconoRedimensionado(nombre: Emociones.sorpresa.rawValue)
-                                    }
-                                #else
-                                    Label(Emociones.sorpresa.rawValue.capitalized, image: Emociones.sorpresa.rawValue)
-                                #endif
                                 }
                             }label: {
                                 Label("Por emoción", systemImage: "face.smiling")

@@ -7,6 +7,23 @@
 
 //Extensiones del Modelo Core Data:
 
+/*
+🟢 Reglas de negocio Yor:
+ Si alineas al calendario, y el usuario inicia una meta horaria a las 10:37, la unidad 1 será:
+   •    10:00 - 11:00
+ Eso significa que completas una unidad cuyo intervalo empezó antes del inicio real de la meta.
+
+ Eso puede ser correcto si tu regla es:
+
+ “la meta entra en la unidad natural actual”.
+
+ Por ejemplo:
+     •    si empieza a las 10:37, entra en la franja de 10:00–11:00
+ */
+
+
+
+
 import CoreData
 import SwiftUI
 
@@ -37,91 +54,144 @@ extension GoalEntity {
 
 //Inicia una Meta personalizada/Preestablecida
 extension GoalEntity {
+    
+    private func rescheduleUnits(from referenceDate: Date, alignToCalendar: Bool = true) {
+        let calendar = Calendar.current
+        let baseStart = alignToCalendar
+            ? timeUnit.alignedStart(from: referenceDate)
+            : referenceDate
+
+        let step = frequencyValue
+
+        for unit in unitsArray {
+            let index = max(Int(unit.index) - 1, 0)
+
+            guard let startDate = calendar.date(
+                byAdding: timeUnit.calendarComponent,
+                value: index * step,
+                to: baseStart
+            ) else {
+                continue
+            }
+
+            unit.startDate = startDate
+            unit.endDate = calendar.date(
+                byAdding: timeUnit.calendarComponent,
+                value: step,
+                to: startDate
+            )
+        }
+    }
 
     //Inicia un Objetivo y ficha la primera unidad
     func start() {
         guard !isStarted else { return }
-        
 
         isStarted = true
-        startDate = Date()
-        
-        
-        // Marca automáticamente la primera unidad como completada
-            if let firstUnit = unitsArray.first {
-                firstUnit.status = UnitStatus.completed.rawValue
-                firstUnit.completedDate = Date()
-            }
-        
+        let now = Date()
+        startDate = now
+
+        rescheduleUnits(from: now, alignToCalendar: true)
+
+        if let firstUnit = unitsArray.first {
+            firstUnit.status = UnitStatus.completed.rawValue
+            firstUnit.completedDate = now
+        }
+
         if let context = managedObjectContext, context.hasChanges {
             try? context.save()
         }
-
     }
     
     //Crear e inicia la Meta Para un Programa Preestablecido:
-    func startProgramaPreestablecido(unitNotes : [UnidadesInfo] = []) {
+    func startProgramaPreestablecido(unitNotes: [UnidadesInfo] = []) {
         guard !isStarted else { return }
-        
         guard managedObjectContext != nil else { return }
-        
+
         isStarted = true
-        startDate = Date()
-        
-        // Genera todas las unidades
+        let now = Date()
+        startDate = now
+
         generateUnits(DetallesUnidades: unitNotes)
-        
+        rescheduleUnits(from: now, alignToCalendar: true)
+
         if let context = managedObjectContext, context.hasChanges {
             try? context.save()
         }
-        
-
     }
 
-    
     func generateUnits(DetallesUnidades: [UnidadesInfo] = []) {
         guard let context = self.managedObjectContext else { return }
 
-        let calendar = Calendar.current
-        let now = Date()
-        let baseStart = timeUnit.alignedStart(from: now)
-        
-        let step = frequencyValue
-        
         for index in 1...Int(totalUnits) {
             let unit = UnitEntity(context: context)
             unit.id = UUID()
             unit.index = Int32(index)
-            unit.status = "pending"
+            unit.status = UnitStatus.pending.rawValue
             unit.unitType = self.unitType
             unit.goal = self
-            
-            // 👇 Lógica de nombre y nota
+
             if index - 1 < DetallesUnidades.count {
                 let info = DetallesUnidades[index - 1]
                 unit.name = info.name
                 unit.info = info.info
             } else {
-                // Lógica por defecto
                 unit.name = "Unidad \(index)"
                 unit.info = ""
             }
 
-            // 👇 Fechas
-            if let startDate = calendar.date(
-                byAdding: timeUnit.calendarComponent,
-                value: (index - 1) * step,
-                to: baseStart
-            ) {
-                unit.startDate = startDate
-                unit.endDate = calendar.date(
-                    byAdding: timeUnit.calendarComponent,
-                    value: step,
-                    to: startDate
-                )
-            }
+            // No asignar fechas aquí
+            unit.startDate = nil
+            unit.endDate = nil
         }
     }
+    
+    /*
+     func generateUnits(DetallesUnidades: [UnidadesInfo] = []) {
+         guard let context = self.managedObjectContext else { return }
+
+         let calendar = Calendar.current
+         let now = Date()
+         let baseStart = timeUnit.alignedStart(from: now)
+         
+         let step = frequencyValue
+         
+         for index in 1...Int(totalUnits) {
+             let unit = UnitEntity(context: context)
+             unit.id = UUID()
+             unit.index = Int32(index)
+             unit.status = "pending"
+             unit.unitType = self.unitType
+             unit.goal = self
+             
+             // 👇 Lógica de nombre y nota
+             if index - 1 < DetallesUnidades.count {
+                 let info = DetallesUnidades[index - 1]
+                 unit.name = info.name
+                 unit.info = info.info
+             } else {
+                 // Lógica por defecto
+                 unit.name = "Unidad \(index)"
+                 unit.info = ""
+             }
+
+             // 👇 Fechas
+             if let startDate = calendar.date(
+                 byAdding: timeUnit.calendarComponent,
+                 value: (index - 1) * step,
+                 to: baseStart
+             ) {
+                 unit.startDate = startDate
+                 unit.endDate = calendar.date(
+                     byAdding: timeUnit.calendarComponent,
+                     value: step,
+                     to: startDate
+                 )
+             }
+         }
+     }
+     */
+    
     
     
 }
@@ -302,35 +372,30 @@ extension GoalEntity {
  •    Años → 1 de enero
  */
 extension TimeUnit {
+    func alignedStart(from date: Date) -> Date {
+        let calendar = Calendar.current
 
-        func alignedStart(from date: Date) -> Date {
-            let calendar = Calendar.current
+        switch self {
+        case .minutos:
+            let comps = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: date)
+            return calendar.date(from: comps) ?? date
 
-            switch self {
-            case .minutos:
-                let components = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: date)
-                return calendar.date(from: components)!
-                
-            case .horas:
-                // Alinea a la hora actual sin añadir nada
-                let components = calendar.dateComponents([.year, .month, .day, .hour], from: date)
-                return calendar.date(from: components)!
+        case .horas:
+            let comps = calendar.dateComponents([.year, .month, .day, .hour], from: date)
+            return calendar.date(from: comps) ?? date
 
-            case .dias:
-                // Inicio del día actual
-                return calendar.startOfDay(for: date)
+        case .dias:
+            return calendar.startOfDay(for: date)
 
-            case .meses:
-                // Inicio del mes actual
-                let comps = calendar.dateComponents([.year, .month], from: date)
-                return calendar.date(from: comps)!
+        case .meses:
+            let comps = calendar.dateComponents([.year, .month], from: date)
+            return calendar.date(from: comps) ?? date
 
-            case .años:
-                // Inicio del año actual
-                let comps = calendar.dateComponents([.year], from: date)
-                return calendar.date(from: comps)!
-            }
+        case .años:
+            let comps = calendar.dateComponents([.year], from: date)
+            return calendar.date(from: comps) ?? date
         }
+    }
 }
 
 

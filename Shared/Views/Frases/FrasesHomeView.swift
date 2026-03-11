@@ -50,15 +50,26 @@ struct FrasesHomeView : View{
     @State private var showListaRecordatorios : Bool = false
     
     var body: some View{
-
+        
             VStack{
                 if let frase = self.frase{
                     
-                    Text(frase.frase ?? "")
-                        .font(.system(size: CGFloat(fontSizeFrases), design: .rounded))
-                        .foregroundStyle(self.settingModel.colorfrase)
-                        .modifier(mof_frases())
-                    
+                    GeometryReader { geometry in
+                        ScrollView(.vertical, showsIndicators: false) {
+                            VStack(spacing: 0) {
+                                Spacer(minLength: 0)
+
+                                Text(frase.frase ?? "")
+                                    .font(.system(size: CGFloat(fontSizeFrases), design: .rounded))
+                                    .foregroundStyle(self.settingModel.colorfrase)
+                                    .modifier(mof_frases())
+                                    .frame(maxWidth: .infinity, alignment: .center)
+
+                                Spacer(minLength: 0)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .frame(minHeight: geometry.size.height)
+                        }
                         .onTapGesture {
                             //Obtiene una nueva frase
                             self.frase = frasesModel.getRandomFrase()//Obteniendo una nueva frase.
@@ -83,7 +94,7 @@ struct FrasesHomeView : View{
                         }
                     //Gesto de deslizar izquierda a derecha: navega hacia la frase anterior(hasta un máximo de 10 frases)
                         #if os(iOS)
-                        .gesture(
+                        .simultaneousGesture(
                             DragGesture().onEnded { value in
                                 let start = value.startLocation
                                 let end = value.location
@@ -129,7 +140,6 @@ struct FrasesHomeView : View{
                             }
                             
                         })
-                    
                         .contextMenu{
                             
                             //Information about frases
@@ -323,7 +333,7 @@ struct FrasesHomeView : View{
                                 Label("Nueva frase", systemImage: "square.and.pencil.circle")
                             }
                         }
-                    
+                    }
                     
                     HStack{
                         if self.showHideAutorInFrases {

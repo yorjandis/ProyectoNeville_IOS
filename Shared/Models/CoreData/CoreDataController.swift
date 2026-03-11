@@ -8,6 +8,10 @@
 import Foundation
 import CoreData
 
+extension Notification.Name {
+    static let coreDataStoresDidLoad = Notification.Name("coreDataStoresDidLoad")
+}
+
 @MainActor
 final class CoreDataController: Sendable {
 
@@ -48,11 +52,12 @@ final class CoreDataController: Sendable {
         #if os(macOS)
         //Solo en macOS, carga la BD en el init
         persistentContainer.loadPersistentStores { _, error in
-                if let error = error {
-                    fatalError("❌ Error cargando Core Data: \(error)")
-                }
+            if let error = error {
+                fatalError("❌ Error cargando Core Data: \(error)")
             }
-        
+            NotificationCenter.default.post(name: .coreDataStoresDidLoad, object: nil)
+        }
+
         #endif
         
         
@@ -70,11 +75,17 @@ final class CoreDataController: Sendable {
 
     // MARK: - Cargar Persistent Stores Async
     func cargarStores() async throws {
-        persistentContainer.loadPersistentStores { _, error in
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            persistentContainer.loadPersistentStores { _, error in
                 if let error = error {
-                    fatalError("❌ Error cargando Core Data: \(error)")
+                    continuation.resume(throwing: error)
+                    return
                 }
+
+                NotificationCenter.default.post(name: .coreDataStoresDidLoad, object: nil)
+                continuation.resume(returning: ())
             }
+        }
     }
 
     // MARK: - Guardar Contexto

@@ -12,6 +12,8 @@ struct Home: View {
 
     @EnvironmentObject private var settingModel : SettingModel
     
+    @AppStorage("MostrarMetasEnHome") var MostrarMetasEnHome: Bool = false
+    
     @State  private var showAddNoteList = false //Abre la view AddNota
     
     @State  private var fontSize : CGFloat = CGFloat(UserDefaults.standard.integer(forKey: AppCons.UD_setting_fontFrasesSize)) //Setting para Frases
@@ -27,9 +29,9 @@ struct Home: View {
 
     //Recordatorios Witget:
     @StateObject private var modelRecordatorios: SelectedReminderModel = .init() //Inicia el modelo de los recordatorios de Widgets
-    
-    
- 
+
+    // Fuerza la recreación del gadget de metas cuando Home reaparece.
+    @State private var goalsGadgetRefreshID = UUID()
 
     var body: some View {
         NavigationStack{
@@ -60,9 +62,15 @@ struct Home: View {
                     Spacer()
 
                     
+                    //Barra de gadgets de Metas:
+                    if self.MostrarMetasEnHome {
+                        GoalsGadgetWidgetListView()
+                            .id(goalsGadgetRefreshID)
+                    }
+                    
+
                     //Barra de Recordatorios:
-                    ReminderWidgetList_View()
-                     
+                   ReminderWidgetList_View()
 
                     TabButtonBar(
                         fontFrasesSize: $fontSize,
@@ -75,6 +83,9 @@ struct Home: View {
    
             }
             .onAppear {
+                // Refresca el gadget de metas cada vez que Home vuelve a aparecer.
+                goalsGadgetRefreshID = UUID()
+
                 //Ejecutar Lógica la primera vez que se instala o se actualiza la función 
                 switch RunFirstTimeModel.CheckStatusAppRun(){
                 case .firstLaunchApp:
