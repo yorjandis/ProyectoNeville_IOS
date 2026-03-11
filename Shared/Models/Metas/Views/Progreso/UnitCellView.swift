@@ -46,7 +46,13 @@ struct UnitCellView: View {
             guard !isLocked else { return } // bloqueada
                 unit.markCompleted(context: context)
         }
-        
+        .onAppear {
+            updateLostStatusIfNeeded()
+        }
+        .onChange(of: clock.now) { _, _ in
+            updateLostStatusIfNeeded()
+        }
+
 
     }
 
@@ -75,13 +81,7 @@ struct UnitCellView: View {
         let statusEmoji: String
         switch unit.unitStatus {
         case .pending:
-            if clock.now > (unit.endDate ?? Date()) {
-                statusEmoji = "🟠" // Unidad perdida
-                unit.status = UnitStatus.lost.rawValue
-                try? context.save()
-            } else {
-                statusEmoji = "🟤"
-            }
+            statusEmoji = clock.now > (unit.endDate ?? Date()) ? "🟠" : "⚪️"
         case .completed:
             statusEmoji = "🟢"
         case .lost:
@@ -89,8 +89,17 @@ struct UnitCellView: View {
         }
 
         return "\(unit.name ?? "Unidad") \(statusEmoji)"
-        
+
     }
-    
-    
+
+    private func updateLostStatusIfNeeded() {
+        let previousStatus = unit.status
+        unit.updateLostIfNeeded(now: clock.now)
+
+        if previousStatus != unit.status {
+            try? context.save()
+        }
+    }
+
+
 }

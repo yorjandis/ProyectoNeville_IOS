@@ -863,6 +863,11 @@ struct Ajustes: View {
             //🔶🔶🔶🔶🔶🔶
             #else //iOS,ipadOS.... NO macOS
                 Form{
+                    
+                    Section{
+                        Text("\(String(describing: self.yorjPremium))")
+                    }
+                    
                     Section("Tamaño de letra"){
                         HStack{
                             Text("Frases:")
@@ -1401,6 +1406,9 @@ struct Ajustes: View {
             //Restablecer el acceso a la opción segura del Diario
             self.setting_DiarioAccesoAjustes = false
         })
+        .onChange(of: yorjPremium) { _, _ in
+            PurchaseManager.shared.syncPremiumFlags()
+        }
         .alert(isPresented: $showAlert) {
             Alert(title: Text("Configuración"), message: Text(alertMessage))
         }
@@ -1475,10 +1483,12 @@ struct Ajustes: View {
     }
     
     private func guardarFiltros() {
-        UserDefaults.standard.set(
-            listFiltroFrasesHome.map { $0.rawValue },
-            forKey: AppCons.UD_FiltroFrasesHome
-        )
+        let values = listFiltroFrasesHome.map { $0.rawValue }
+
+        UserDefaults.standard.set(values, forKey: AppCons.UD_FiltroFrasesHome)
+        UserDefaults(suiteName: AppCons.AppGroupName)?.set(values, forKey: AppCons.UD_FiltroFrasesHome)
+        NSUbiquitousKeyValueStore.default.set(values, forKey: AppCons.UD_FiltroFrasesHome)
+        NSUbiquitousKeyValueStore.default.synchronize()
     }
     
 }

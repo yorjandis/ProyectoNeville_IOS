@@ -10,6 +10,7 @@ import CoreData
 
 struct ArchivedGoalsListView: View {
     
+    @State private var searchText: String = ""
     
 
     #if os(macOS)
@@ -56,7 +57,7 @@ struct ArchivedGoalsListView: View {
                 VStack{
                     ScrollView {
                         LazyVStack(spacing: 16) {
-                            ForEach(archivedGoals) { goal in
+                            ForEach(filteredArchivedGoals) { goal in
                                 ArchivedGoalCardView(goal: goal)
                                     .padding(.horizontal, 8)
                             }
@@ -77,8 +78,26 @@ struct ArchivedGoalsListView: View {
                 
             }
             .navigationTitle("Metas Archivadas")
+            .searchable(text: $searchText, prompt: "Buscar meta por título")
+        }
+    }
+    
+    private var filteredArchivedGoals: [ArchivedGoalEntity] {
+        #if os(macOS)
+        let goals = archivedGoals
+        #else
+        let goals = Array(archivedGoals)
+        #endif
+        
+        let sortedGoals = goals.sorted {
+            ($0.completionDate ?? .distantPast) > ($1.completionDate ?? .distantPast)
+        }
+        
+        guard !searchText.isEmpty else { return sortedGoals }
+        
+        return sortedGoals.filter { goal in
+            goal.wrappedTitle.localizedCaseInsensitiveContains(searchText)
         }
     }
 }
-
 

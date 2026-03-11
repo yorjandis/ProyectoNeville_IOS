@@ -35,6 +35,8 @@ extension UnitEntity {
 
     //Actualiza el estado de las unidades perdidas
     func updateLostIfNeeded(now: Date) {
+        guard goal?.isStarted == true else { return }
+
         if unitStatus == .pending && now > endDate ?? Date.now {
             status = UnitStatus.lost.rawValue
         }
@@ -47,11 +49,13 @@ extension GoalEntity {
     //Calcula el progreso de una unidad: para barra de progreso
     var progressRatio: Double {
         guard totalUnits > 0 else { return 0.0 }
-        
-        let completed = unitsArray.filter { $0.unitStatus == .completed || $0.unitStatus == .lost }.count
-        
-        let ratio = Double(completed) / Double(totalUnits)
-        
+
+        let progressed = unitsSet.filter {
+            $0.unitStatus == .completed || $0.unitStatus == .lost
+        }.count
+
+        let ratio = Double(progressed) / Double(totalUnits)
+
         // Asegurarse de que no sea NaN o infinito
         if ratio.isFinite {
             return ratio
@@ -62,7 +66,7 @@ extension GoalEntity {
 
     //Determina si todas las unidades de un objetivo han sido completadas
     var isCompleted: Bool {
-        unitsArray.allSatisfy {
+        unitsSet.allSatisfy {
             $0.unitStatus != .pending
         }
     }

@@ -70,10 +70,7 @@ struct ProgramasListView: View {
         
         let programas: [ProgramasPreestablecido]
         @Environment(\.dismiss) private var dismiss
-        @StateObject private var viewModel = ProgramasViewModel()
-        
-        
-        
+
         var body: some View {
             ZStack{
                 
@@ -122,8 +119,7 @@ struct ProgramasListView: View {
         
         @Environment(\.dismiss) var dismiss
         
-        @StateObject private var viewModel = ProgramasViewModel()
-        
+        @Environment(\.managedObjectContext) private var context
         
         let programa : ProgramasPreestablecido
         
@@ -178,7 +174,10 @@ struct ProgramasListView: View {
                         Spacer()
                         
                         Button{
-                            viewModel.createProgramaPreestablecido(programa: programa)
+                            ProgramasViewModel.createProgramaPreestablecido(
+                                programa: programa,
+                                context: context
+                            )
                             dismiss()
                         }label: {
                             Label("Comenzar Programa", systemImage: "figure.run.circle")

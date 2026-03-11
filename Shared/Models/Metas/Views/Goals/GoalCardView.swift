@@ -136,10 +136,6 @@ struct GoalCardView: View {
                 LabeledGradientProgressBar(progress: goal.progressRatio, lostUnits: goal.lostUnitIndexes, totalUnits: Int(goal.totalUnits))
                     .padding(1)
             }
-            .onReceive(clock.$now) { _ in
-                // Esto fuerza que la vista se redibuje cuando el reloj cambia
-            }
-            
             
             //Barra de acciones:
             HStack {
@@ -287,12 +283,11 @@ struct GoalCardView: View {
             
         }
         .onReceive(clock.$now) { now in
-            //Forzar actualización de unidades perdidas globalmente:
-            //Así el estado se mantiene siempre consistente.
-            goal.unitsArray.forEach {
-                $0.updateLostIfNeeded(now: now)
+            // Forzar actualización de unidades perdidas globalmente,
+            // guardando solo si hubo cambios reales.
+            if goal.refreshLostUnits(now: now), context.hasChanges {
+                try? context.save()
             }
-            try? context.save()
         }
         .padding(5)
         #if os(macOS)
@@ -334,7 +329,7 @@ struct GoalCardView: View {
     }
 
     private var progressText: String {
-        let completed = goal.unitsArray.filter { $0.unitStatus == .completed }.count
+        let completed = goal.unitsSet.filter { $0.unitStatus == .completed }.count
         return "\(completed)/\(goal.totalUnits)"
     }
     

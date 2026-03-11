@@ -111,6 +111,9 @@ struct FeedbackView: View {
         }
         .padding()
         .preferredColorScheme(.dark)
+        .onChange(of: yorjPremium) { _, _ in
+            PurchaseManager.shared.syncPremiumFlags()
+        }
         .alert(isPresented: self.$isReviewComplete){
             Alert(title: Text("La Ley"),
                   message: Text("No se volverá a mostrar esta ventana"),

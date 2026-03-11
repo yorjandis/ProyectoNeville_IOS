@@ -51,17 +51,32 @@ import SwiftUI
      }
      
      func updateNSView(_ nsView: NSTextView, context: Context) {
-         if let text {
+         if let baseView = nsView as? BaseTextView {
+             baseView.maxLayoutWidth = self.maxLayoutWidth
+         }
+
+         if let text, nsView.string != text {
              nsView.string = text
          }
-         
-         if let attributedText {
+
+         if nsView.textColor != self.fontColor {
+             nsView.textColor = self.fontColor
+         }
+
+         if nsView.font?.pointSize != self.fontSize {
+             nsView.font = NSFont.systemFont(ofSize: self.fontSize)
+         }
+
+         if let attributedText, nsView.attributedString() != attributedText {
              nsView.isRichText = true
              nsView.textStorage?.setAttributedString(attributedText)
          }
-         
-         DispatchQueue.main.async {
-             self.layoutHeight = nsView.intrinsicContentSize.height
+
+         let newHeight = nsView.intrinsicContentSize.height
+         if abs(self.layoutHeight - newHeight) > 0.5 {
+             DispatchQueue.main.async {
+                 self.layoutHeight = newHeight
+             }
          }
      }
  }

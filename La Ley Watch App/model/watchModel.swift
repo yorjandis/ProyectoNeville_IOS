@@ -21,35 +21,263 @@ final class watchModel: ObservableObject {
     @Published var listNotas : [Notas] = []
     
     @Published var listDiario : [Diario] = []
-    
-    
-    
+
+    private var homeFrasesCache: [Frases] = []
+    private var homeFrasesCacheKey: String = ""
+
     private init() {
         self.getNotas()
         self.getDiarioEntradas()
     }
 
     //------FRASES-----
-    ///Obtiene la lista de frases del fichero txt in-built(De momento no muestra las frases personales, deben ser solicitadas desde iOS):
-    /// - Returns: Devuelve un  arreglo de cadenas con las frases cargadas del txt en Staff
-    func getfrasesArrayFromTxtFile(){
-        self.listfrases.removeAll()
-        //Extrayendo las frases inbuilt, almacenadas dentro del bundle de la App
-        self.listfrases = UtilFuncs.FileReadToArray(AppCons.FileListFrases)
+    /// Devuelve el texto de una frase aleatoria para Home con el autor al final.
+    func getRandomFraseDisplayForHome() -> String {
         
-        //Agregando las frases noInbuit, de la Tabla Frases
-        let fetchRequest : NSFetchRequest<Frases> = NSFetchRequest(entityName: "Frases")
-        let predicate : NSPredicate = NSPredicate(format: "noinbuilt == %@", NSNumber(value: true))
-        fetchRequest.predicate = predicate
-        do{
+        refreshHomeFrasesIfNeeded()
+
+        if let item = homeFrasesCache.randomElement(),
+           let frase = item.frase?.trimmingCharacters(in: .whitespacesAndNewlines),
+           !frase.isEmpty {
+            let autor = displayNameForAutor(item.autor)
+            return autor.isEmpty ? frase : "\(frase)\n\n— \(autor)"
+        }
+
+        // Fallback seguro si Core Data aún no está poblado en watch.
+        // Se aplican los mismos filtros de Ajustes para no quedarse solo en AppCons.FileListFrases.
+        if let item = fallbackFrasesForHome().randomElement() {
+            let autor = displayNameForAutor(item.autorCode)
+            return autor.isEmpty ? item.texto : "\(item.texto)\n\n— \(autor)"
+        }
+
+        return ""
+    }
+
+    private func displayNameForAutor(_ code: String?) -> String {
+        switch code {
+        case "nev": return "Neville"
+        case "jd": return "Joe Dispenza"
+        case "bruceL": return "Bruce Lipton"
+        case "gregg": return "Gregg Braden"
+        case "salud": return "Salud"
+        case let value? where !value.isEmpty: return value
+        default: return ""
+        }
+    }
+
+    /// Mantiene compatibilidad con el flujo antiguo del watch.
+    func getfrasesArrayFromTxtFile() {
+        self.listfrases.removeAll()
+        self.listfrases = UtilFuncs.FileReadToArray(AppCons.FileListFrases)
+
+        let fetchRequest: NSFetchRequest<Frases> = NSFetchRequest(entityName: "Frases")
+        fetchRequest.predicate = NSPredicate(format: "noinbuilt == %@", NSNumber(value: true))
+
+        do {
             let elements = try self.context.fetch(fetchRequest)
-            for item in elements{
-                if let frase = item.frase{
+            for item in elements {
+                if let frase = item.frase {
                     self.listfrases.append(frase)
                 }
             }
-        }catch{
+        } catch {
             msg("Error al recuperar las frases desde Core Data: \(error.localizedDescription)")
+        }
+    }
+
+    private var hasPremiumAccess: Bool {
+        NSUbiquitousKeyValueStore.default.synchronize()
+        let sharedDefaults = UserDefaults(suiteName: AppCons.AppGroupName)
+        let purchaseStatusStandard = UserDefaults.standard.bool(forKey: "purchaseStatus")
+        let purchaseStatusShared = sharedDefaults?.bool(forKey: "purchaseStatus") ?? false
+        let purchaseStatusCloud = NSUbiquitousKeyValueStore.default.bool(forKey: "purchaseStatus")
+        return purchaseStatusStandard || purchaseStatusShared || purchaseStatusCloud
+    }
+
+    private var hasYorjPremiumAccess: Bool {
+        NSUbiquitousKeyValueStore.default.synchronize()
+        let sharedDefaults = UserDefaults(suiteName: AppCons.AppGroupName)
+        let yorjPremiumStandard = UserDefaults.standard.bool(forKey: "yorjPremium")
+        let yorjPremiumShared = sharedDefaults?.bool(forKey: "yorjPremium") ?? false
+        let yorjPremiumCloud = NSUbiquitousKeyValueStore.default.bool(forKey: "yorjPremium")
+        return yorjPremiumStandard || yorjPremiumShared || yorjPremiumCloud
+    }
+
+    var yorjPremiumAccessValue: Bool {
+        hasYorjPremiumAccess
+    }
+
+    private var canUseExtendedHomeFilters: Bool {
+        hasPremiumAccess || hasYorjPremiumAccess
+    }
+
+    private let supportedHomeFilterValues: Set<String> = [
+        "todasFrases",
+        "frasesPersonales",
+        "frasesFavoritas",
+        "frasesConNotas",
+        "frasesSalud",
+        "neville",
+        "jd",
+        "bruce",
+        "gregg",
+        "otrosAutores"
+    ]
+
+    private func effectiveHomeFilters() -> [String] {
+        NSUbiquitousKeyValueStore.default.synchronize()
+        let sharedDefaults = UserDefaults(suiteName: AppCons.AppGroupName)
+        let cloudFilters = NSUbiquitousKeyValueStore.default.array(forKey: AppCons.UD_FiltroFrasesHome) as? [String] ?? []
+        let sharedFilters = sharedDefaults?.stringArray(forKey: AppCons.UD_FiltroFrasesHome) ?? []
+        let standardFilters = UserDefaults.standard.stringArray(forKey: AppCons.UD_FiltroFrasesHome) ?? []
+
+        let sourceFilters = !cloudFilters.isEmpty ? cloudFilters : (!sharedFilters.isEmpty ? sharedFilters : standardFilters)
+        let filters = sourceFilters.filter { supportedHomeFilterValues.contains($0) }
+        let resolvedFilters = filters.isEmpty ? ["neville"] : filters
+
+        if canUseExtendedHomeFilters {
+            return resolvedFilters
+        }
+
+        let freeFilters = resolvedFilters.filter { $0 == "neville" }
+        return freeFilters.isEmpty ? ["neville"] : freeFilters
+    }
+
+    
+    private func refreshHomeFrasesIfNeeded() {
+        let key = "\(canUseExtendedHomeFilters)|\(effectiveHomeFilters().sorted().joined(separator: ","))"
+
+        guard homeFrasesCache.isEmpty || homeFrasesCacheKey != key else {
+            return
+        }
+
+        homeFrasesCacheKey = key
+
+        var deduped: [NSManagedObjectID: Frases] = [:]
+        for filter in effectiveHomeFilters() {
+            for frase in fetchFrasesForHome(filterRawValue: filter) {
+                deduped[frase.objectID] = frase
+            }
+        }
+
+        homeFrasesCache = Array(deduped.values)
+    }
+
+    private func fallbackFrasesForHome() -> [(texto: String, autorCode: String)] {
+        let filters = effectiveHomeFilters()
+        var items: [(texto: String, autorCode: String)] = []
+        var seenTexts = Set<String>()
+
+        for filter in filters {
+            for fileName in fileNamesForFallback(filterRawValue: filter) {
+                for frase in parseFrasesFromFile(fileName: fileName) {
+                    guard !frase.texto.isEmpty else { continue }
+                    if seenTexts.insert(frase.texto).inserted {
+                        items.append(frase)
+                    }
+                }
+            }
+        }
+
+        return items
+    }
+
+    private func fileNamesForFallback(filterRawValue: String) -> [String] {
+        switch filterRawValue {
+        case "todasFrases":
+            return [
+                AppCons.FileListFrases,
+                AppCons.FileListFrasesJD,
+                AppCons.FileListFrasesBruceL,
+                AppCons.FileListFrasesGregg,
+                AppCons.FileListFrasesOtros,
+                AppCons.FileListFrasesSalud
+            ]
+        case "neville":
+            return [AppCons.FileListFrases]
+        case "jd":
+            return [AppCons.FileListFrasesJD]
+        case "bruce":
+            return [AppCons.FileListFrasesBruceL]
+        case "gregg":
+            return [AppCons.FileListFrasesGregg]
+        case "otrosAutores":
+            return [AppCons.FileListFrasesOtros]
+        case "frasesSalud":
+            return [AppCons.FileListFrasesSalud]
+        default:
+            // filtros de Core Data (favoritas, con notas, personales) no tienen equivalente directo en txt.
+            return []
+        }
+    }
+
+    private func parseFrasesFromFile(fileName: String) -> [(texto: String, autorCode: String)] {
+        let rawContent = UtilFuncs.FileRead(fileName)
+        guard !rawContent.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            return []
+        }
+
+        let blocks = rawContent
+            .components(separatedBy: "\n\n")
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
+
+        var result: [(texto: String, autorCode: String)] = []
+
+        for block in blocks {
+            var texto = ""
+            var autor = ""
+
+            for line in block.components(separatedBy: .newlines) {
+                let trimmed = line.trimmingCharacters(in: .whitespacesAndNewlines)
+                if trimmed.hasPrefix("texto=") {
+                    texto = String(trimmed.dropFirst("texto=".count)).trimmingCharacters(in: .whitespacesAndNewlines)
+                } else if trimmed.hasPrefix("autor=") {
+                    autor = String(trimmed.dropFirst("autor=".count)).trimmingCharacters(in: .whitespacesAndNewlines)
+                }
+            }
+
+            if !texto.isEmpty {
+                result.append((texto: texto, autorCode: autor))
+            }
+        }
+
+        return result
+    }
+
+    private func fetchFrasesForHome(filterRawValue: String) -> [Frases] {
+        let request: NSFetchRequest<Frases> = Frases.fetchRequest()
+
+        switch filterRawValue {
+        case "todasFrases":
+            break
+        case "frasesPersonales":
+            request.predicate = NSPredicate(format: "noinbuilt == YES")
+        case "frasesFavoritas":
+            request.predicate = NSPredicate(format: "isfav == YES")
+        case "frasesConNotas":
+            request.predicate = NSPredicate(format: "nota != nil AND nota != ''")
+        case "frasesSalud":
+            request.predicate = NSPredicate(format: "autor == %@", "salud")
+        case "neville":
+            request.predicate = NSPredicate(format: "autor == %@", "nev")
+        case "jd":
+            request.predicate = NSPredicate(format: "autor == %@", "jd")
+        case "bruce":
+            request.predicate = NSPredicate(format: "autor == %@", "bruceL")
+        case "gregg":
+            request.predicate = NSPredicate(format: "autor == %@", "gregg")
+        case "otrosAutores":
+            request.predicate = NSPredicate(format: "NOT (autor IN %@)", ["nev", "jd", "bruceL", "gregg", "salud"])
+        default:
+            request.predicate = NSPredicate(format: "autor == %@", "nev")
+        }
+
+        do {
+            return try context.fetch(request)
+        } catch {
+            msg("Error al obtener frases para Home en watch: \(error)")
+            return []
         }
     }
     
@@ -108,27 +336,26 @@ final class watchModel: ObservableObject {
     
     //Buscar en los textos de los títulos de las notas
     func searchTextInNotas(text: String, donde buscar: TipoBusqueda)->[Notas]{
-        
-        let arrayNotas = getNotasGet()
-        var result : [Notas] = []
-        
-        for item in arrayNotas {
-            
-            switch buscar{
-            case .contenido:
-                let temp = item.nota?.lowercased() ?? ""
-                if temp.contains(text.lowercased()){
-                    result.append(item)
-                }
-            case .titulo:
-                let temp = item.title?.lowercased() ?? ""
-                if temp.contains(text.lowercased()){
-                    result.append(item)
-                }
-            }
+        let trimmedText = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedText.isEmpty else {
+            return getNotasGet()
         }
-        
-        return result
+
+        let fetchRequest: NSFetchRequest<Notas> = Notas.fetchRequest()
+
+        switch buscar {
+        case .contenido:
+            fetchRequest.predicate = NSPredicate(format: "nota CONTAINS[cd] %@", trimmedText)
+        case .titulo:
+            fetchRequest.predicate = NSPredicate(format: "title CONTAINS[cd] %@", trimmedText)
+        }
+
+        do {
+            return try context.fetch(fetchRequest)
+        } catch {
+            msg("Failed to search notes: \(error)")
+            return []
+        }
     }
     
     
@@ -192,28 +419,27 @@ final class watchModel: ObservableObject {
     //Busca en los títulos o el contenido
     //Buscar en los textos de los títulos de las notas
     func searchTextInDiario(text: String, donde buscar: TipoBusqueda)->[Diario]{
-        
-        let arrayDiario = getDiarioEntradasGet()
-        
-        var result : [Diario] = []
-        
-        for item in arrayDiario {
-            
-            switch buscar{
-            case .contenido:
-                let temp = item.content?.lowercased() ?? ""
-                if temp.contains(text.lowercased()){
-                    result.append(item)
-                }
-            case .titulo:
-                let temp = item.title?.lowercased() ?? ""
-                if temp.contains(text.lowercased()){
-                    result.append(item)
-                }
-            }
+        let trimmedText = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedText.isEmpty else {
+            return getDiarioEntradasGet()
         }
-        
-        return result
+
+        let fetchRequest: NSFetchRequest<Diario> = Diario.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Diario.fechaM, ascending: false)]
+
+        switch buscar {
+        case .contenido:
+            fetchRequest.predicate = NSPredicate(format: "content CONTAINS[cd] %@", trimmedText)
+        case .titulo:
+            fetchRequest.predicate = NSPredicate(format: "title CONTAINS[cd] %@", trimmedText)
+        }
+
+        do {
+            return try context.fetch(fetchRequest)
+        } catch {
+            msg("Failed to search diario: \(error)")
+            return []
+        }
     }
     
     //Busca entradas por emociones

@@ -5,6 +5,9 @@
 //  Created by Yorjandis PG on 17/2/26.
 //
 
+import Foundation
+import CoreData
+
 extension ArchivedGoalEntity {
 
     var wrappedTitle: String {
@@ -54,6 +57,30 @@ extension ArchivedGoalEntity {
 
         let rate = Double(completed) / Double(progressed)
         return rate
+    }
+
+    @discardableResult
+    func restoreAsActiveGoal(context: NSManagedObjectContext) throws -> GoalEntity {
+        let activeGoal = GoalEntity(context: context)
+        activeGoal.id = UUID()
+        activeGoal.title = self.title
+        activeGoal.descriptionText = self.descriptionText
+        activeGoal.totalUnits = self.totalUnits
+        activeGoal.unitType = self.unitType
+        activeGoal.frequency = self.frequency
+        activeGoal.isStarted = false
+        activeGoal.startDate = Date()
+
+        let unitDetails = unitsArray.map { unit in
+            UnidadesInfo(
+                name: unit.name ?? "Unidad \(unit.index)",
+                info: unit.info ?? ""
+            )
+        }
+
+        activeGoal.generateUnits(DetallesUnidades: unitDetails)
+        try context.save()
+        return activeGoal
     }
     
 }

@@ -21,9 +21,12 @@ extension GoalEntity {
         TimeUnit(rawValue: unitType ?? "dias") ?? .dias
     }
 
+    var unitsSet: Set<UnitEntity> {
+        units as? Set<UnitEntity> ?? []
+    }
+
     var unitsArray: [UnitEntity] {
-        let set = units as? Set<UnitEntity> ?? []
-        return set.sorted { $0.index < $1.index }
+        unitsSet.sorted { $0.index < $1.index }
     }
     
     var frequencyValue: Int {
@@ -49,6 +52,10 @@ extension GoalEntity {
                 firstUnit.status = UnitStatus.completed.rawValue
                 firstUnit.completedDate = Date()
             }
+        
+        if let context = managedObjectContext, context.hasChanges {
+            try? context.save()
+        }
 
     }
     
@@ -63,6 +70,10 @@ extension GoalEntity {
         
         // Genera todas las unidades
         generateUnits(DetallesUnidades: unitNotes)
+        
+        if let context = managedObjectContext, context.hasChanges {
+            try? context.save()
+        }
         
 
     }
@@ -150,20 +161,37 @@ extension GoalEntity {
  */
 extension GoalEntity {
 
+    private func firstPendingUnit(availableAt now: Date?) -> UnitEntity? {
+        unitsSet
+            .filter { unit in
+                guard unit.unitStatus == .pending else { return false }
+                guard let now else { return true }
+                return (unit.startDate ?? now) <= now
+            }
+            .min(by: { $0.index < $1.index })
+    }
+
     /// Retorna la siguiente unidad pendiente que se puede marcar
     var nextPendingUnit: UnitEntity? {
-        unitsArray.first { $0.unitStatus == .pending && $0.startDate ?? Date() <= Date() }
+        firstPendingUnit(availableAt: Date())
     }
 
     /// Retorna un string con el tiempo restante hasta la próxima unidad
     func timeUntilNextUnit(now: Date) -> String? {
-        guard let nextUnit = unitsArray.first(where: { $0.unitStatus == .pending }),
+        guard isStarted else { return nil }
+
+        guard let nextUnit = firstPendingUnit(availableAt: nil),
               let start = nextUnit.startDate else {
             return nil
         }
 
         if now >= start {
             return "Listo"
+        }
+        
+        let secondsRemaining = Int(ceil(start.timeIntervalSince(now)))
+        if secondsRemaining < 60 {
+            return "Próxima unidad en \(max(secondsRemaining, 0))s"
         }
 
         switch timeUnit {
@@ -181,22 +209,21 @@ extension GoalEntity {
             let hours = Int(seconds / 3600)
             let minutes = Int((seconds.truncatingRemainder(dividingBy: 3600)) / 60)
             
-            var hour    : String = ""
-            var minutes_temp : String = ""
+            var hour: String = ""
+            var minutesTemp: String = ""
             if hours != 0 {
                 hour = "\(hours)hr y "
             }
             if minutes != 0 {
-                minutes_temp = "\(minutes)min"
+                minutesTemp = "\(minutes)min"
             }
             
-            return "Próxima unidad en \(hour)\(minutes_temp)"
-            
+            return "Próxima unidad en \(hour)\(minutesTemp)"
 
         case .meses:
             let diff = Calendar.current.dateComponents([.day, .hour], from: now, to: start)
-            var day     : String = ""
-            var hour    : String = ""
+            var day: String = ""
+            var hour: String = ""
             if diff.day != 0 {
                 day = "\(diff.day ?? 0)\((diff.day ?? 0) == 1 ? "día" : "días") y "
             }
@@ -205,15 +232,12 @@ extension GoalEntity {
             }
             
             return "Próxima unidad en \(day)\(hour)"
-            
-            
-            
 
         case .años:
             let diff = Calendar.current.dateComponents([.month, .day, .hour], from: now, to: start)
-            var month   : String = ""
-            var day     : String = ""
-            var hour    : String = ""
+            var month: String = ""
+            var day: String = ""
+            var hour: String = ""
             
             if diff.month != 0 {
                 month = "\(diff.month ?? 0)\((diff.month ?? 0) == 1 ? "mes" : "meses") y "
@@ -228,9 +252,22 @@ extension GoalEntity {
             return "Próxima unidad en \(month) \(day) \(hour)"
         }
     }
-    
-    
-    
+
+    @discardableResult
+    func refreshLostUnits(now: Date) -> Bool {
+        guard isStarted else { return false }
+
+        var didChange = false
+        for unit in unitsSet {
+            guard unit.unitStatus == .pending else { continue }
+            if now > (unit.endDate ?? Date.now) {
+                unit.status = UnitStatus.lost.rawValue
+                didChange = true
+            }
+        }
+        return didChange
+    }
+
     func nextExpirationDate(from now: Date) -> Date? {
         guard let unit = nextPendingUnit,
               let start = unit.startDate else { return nil }
@@ -241,9 +278,6 @@ extension GoalEntity {
             to: start
         )
     }
-    
-    
-    
 }
 
 
@@ -305,7 +339,7 @@ extension GoalEntity {
 
     /// Indica si el objetivo tiene al menos una unidad perdida
     var hasLostUnits: Bool {
-        unitsArray.contains { $0.unitStatus == .lost }
+        unitsSet.contains { $0.unitStatus == .lost }
     }
 }
 
@@ -432,9 +466,10 @@ extension GoalEntity {
 
     /// Índices de unidades perdidas (0...n)
     var lostUnitIndexes: [Int] {
-        unitsArray
+        unitsSet
             .filter { $0.unitStatus == .lost }
             .map { Int($0.index) - 1 }
+            .sorted()
     }
 }
 
@@ -450,7 +485,7 @@ extension GoalEntity {
         }
 
         // Si no hay unidad disponible aún, tomar la próxima futura
-        if let futureUnit = unitsArray.first(where: { $0.unitStatus == .pending }) {
+        if let futureUnit = firstPendingUnit(availableAt: nil) {
             return futureUnit.startDate
         }
 

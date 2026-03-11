@@ -24,6 +24,8 @@ struct GoalsListView: View {
     @State private var showCreateGoal = false
     
     @State private var showHistorial = false
+    
+    @State private var searchText: String = ""
 
     var body: some View {
         NavigationStack {
@@ -49,7 +51,7 @@ struct GoalsListView: View {
                              */
                             
                             //Ordenarmiento de las targetas por urgencia: las que vencen primero se colocan arriba
-                            ForEach(goals.sorted(by: GoalEntity.urgencySort)) { goal in
+                            ForEach(filteredGoals) { goal in
                                 GoalCardView(goal: goal)
                                     .padding(.horizontal, 8)
                             }
@@ -60,6 +62,7 @@ struct GoalsListView: View {
                     
                 }
                 .navigationTitle("Metas")
+                .searchable(text: $searchText, prompt: "Buscar meta por título")
                 .toolbar {
 
                     ToolbarItem{
@@ -110,6 +113,16 @@ struct GoalsListView: View {
             }
             
             
+        }
+    }
+    
+    private var filteredGoals: [GoalEntity] {
+        let sortedGoals = Array(goals).sorted(by: GoalEntity.urgencySort)
+        
+        guard !searchText.isEmpty else { return sortedGoals }
+        
+        return sortedGoals.filter { goal in
+            goal.wrappedTitle.localizedCaseInsensitiveContains(searchText)
         }
     }
 }

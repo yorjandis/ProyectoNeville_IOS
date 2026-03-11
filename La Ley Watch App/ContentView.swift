@@ -139,6 +139,9 @@ struct ContentView: View {
             .sheet(isPresented: $showSheetOptionsFilter) {
                FilterByDiarioView()
             }
+            .task {
+                modelWatch.getDiarioEntradas()
+            }
         }
         
         //Aux: Devuelve el emoticono segun el texto: Para funciones de filtrado
@@ -157,33 +160,49 @@ struct ContentView: View {
     
 
     struct Frases : View {
-        @State private var frase : String = UtilFuncs.FileReadToArray("listfrases").randomElement() ?? ""
+        @StateObject private var modelWatch = watchModel.shared
+        @State private var frase: String = ""
+        
+        @State private var showAlert: Bool = false
+
         var body: some View {
             ZStack{
                 LinearGradient(colors: [.red, .orange], startPoint: .bottom, endPoint: .top)
-                
+
                 VStack(alignment: .center){
                     Text("La Ley").bold()
                         .padding(.bottom, 10)
+
                     ScrollView{
                         Text(frase)
                             .italic()
                             .padding(.horizontal, 5)
-                            .padding(.bottom, 20)
+                            .padding(.bottom, 8)
                             .frame(maxWidth: .infinity, alignment: .center)
                             .multilineTextAlignment(.center)
-                            .onTapGesture {
-                                frase = UtilFuncs.FileReadToArray("listfrases").randomElement() ?? ""
-                            }
                     }
-                    
+                    .onTapGesture {
+                       cargarNuevaFrase()
+                    }
+
                 }
                 .padding(.top, 10)
                 .fontDesign(.serif)
                 .font(.system(size: 20))
                 .foregroundStyle(.black)
             }
-            
+            .onAppear {
+                if frase.isEmpty {
+                    cargarNuevaFrase()
+                }
+            }
+            .alert(isPresented: self.$showAlert){
+                Alert(title: Text("Prueba"), message: Text("\(String(describing: modelWatch.yorjPremiumAccessValue))"))
+            }
+        }
+
+        private func cargarNuevaFrase() {
+            frase = modelWatch.getRandomFraseDisplayForHome()
         }
     }
     

@@ -47,19 +47,35 @@ import SwiftUI
      }
      
      func updateUIView(_ uiView: UITextView, context: Context) {
-         if let text {
+         if let baseView = uiView as? BaseTextView {
+            baseView.maxLayoutWidth = self.maxLayoutWidth
+        }
+
+         if let text, uiView.text != text {
              uiView.text = text
+         }
+
+         if uiView.textColor != self.fontColor {
              uiView.textColor = self.fontColor
+         }
+
+         if uiView.font?.pointSize != self.fontSize {
              uiView.font = UIFont.systemFont(ofSize: self.fontSize)
+         }
+
+         if uiView.textAlignment != self.alignment {
              uiView.textAlignment = self.alignment
          }
-         
-         if let attributedText {
+
+         if let attributedText, uiView.attributedText != attributedText {
              uiView.attributedText = attributedText
          }
-         
-         DispatchQueue.main.async {
-             self.layoutHeight = uiView.intrinsicContentSize.height
+
+         let newHeight = uiView.intrinsicContentSize.height
+         if abs(self.layoutHeight - newHeight) > 0.5 {
+             DispatchQueue.main.async {
+                 self.layoutHeight = newHeight
+             }
          }
      }
  }

@@ -20,7 +20,7 @@ struct GoalDetailView: View {
     
     @State private var selectedUnit: UnitEntity? //Para mostrar Información de una unidad
     
-    @State private var showNotaOinfo : Bool = false //True para nota, false para info
+    @State private var showNotaOinfo : Bool = true //True para nota, false para info
     
     @State private var note : String = ""
     
@@ -62,9 +62,13 @@ struct GoalDetailView: View {
                                 .buttonStyle(.bordered)
                                 .foregroundStyle(self.showNotaOinfo ? .green : Color.primary)
                             
-                            Button("Info"){self.showNotaOinfo = false  }
-                                .buttonStyle(.bordered)
-                                .foregroundStyle(self.showNotaOinfo == false ? .green : Color.primary)
+                            //Solo muestra el botón de información si tiene contenido
+                            if (self.selectedUnit?.info ?? "" != "") {
+                                Button("Info"){self.showNotaOinfo = false  }
+                                    .buttonStyle(.bordered)
+                                    .foregroundStyle(self.showNotaOinfo == false ? .green : Color.primary)
+                            }
+                            
                             
                             Spacer()
                             
@@ -160,9 +164,8 @@ struct GoalDetailView: View {
 
 
 private func updateLostUnits() {
-    for unit in goal.unitsArray {
-        unit.updateLostIfNeeded(now: clock.now)
+    if goal.refreshLostUnits(now: clock.now), context.hasChanges {
+        try? context.save()
     }
-    try? context.save()
 }
 }

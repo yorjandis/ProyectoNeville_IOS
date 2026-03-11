@@ -16,6 +16,13 @@ import SwiftUI
 
      @State private var processedBlocks: [ContentBlock] = []
      
+     init(blocks: [ContentBlock], fontSize: CGFloat, fontColor: UIColor) {
+         self.blocks = blocks
+         self.fontSize = fontSize
+         self.fontColor = fontColor
+         _processedBlocks = State(initialValue: blocks.expandedTextBlocks())
+     }
+     
      var body: some View {
          ScrollView {
               //Si existe un solo bloque LazyVStack no lo muestra correctamwente.
@@ -34,9 +41,6 @@ import SwiftUI
                   }
                   .padding()
               }
-         }
-         .onAppear{
-             self.processedBlocks = self.blocks.expandedTextBlocks()
          }
      }
  }

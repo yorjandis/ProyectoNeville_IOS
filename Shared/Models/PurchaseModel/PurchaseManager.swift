@@ -26,13 +26,7 @@ final class PurchaseManager: ObservableObject {
             await loadProducts()
             await updatePremiumStatus()
             listenForTransactions()
-             
-            //Determinar si hacemos premium al desarrollador:
-            if self.yorjPremium {
-                UserDefaults.standard.set(true, forKey: "purchaseStatus")
-            }else{
-                UserDefaults.standard.set(self.isPremium, forKey: "purchaseStatus")
-            }
+            syncPremiumFlags()
             
         }
     }
@@ -117,6 +111,8 @@ extension PurchaseManager {
                 print("Transacción no verificada")
             }
         }
+
+        syncPremiumFlags()
     }
 }
 
@@ -149,3 +145,24 @@ extension PurchaseManager {
     }
 }
 
+extension PurchaseManager {
+    func syncPremiumFlags() {
+        let hasPremiumAccess = yorjPremium || isPremium
+
+        UserDefaults.standard.set(hasPremiumAccess, forKey: "purchaseStatus")
+
+        if let sharedDefaults = UserDefaults(suiteName: "group.com.ypg.nev.group") {
+            sharedDefaults.set(hasPremiumAccess, forKey: "purchaseStatus")
+            sharedDefaults.set(yorjPremium, forKey: "yorjPremium")
+        }
+
+        syncPremiumToCloud()
+    }
+
+    private func syncPremiumToCloud() {
+        let store = NSUbiquitousKeyValueStore.default
+        store.set(yorjPremium || isPremium, forKey: "purchaseStatus")
+        store.set(yorjPremium, forKey: "yorjPremium")
+        store.synchronize()
+    }
+}

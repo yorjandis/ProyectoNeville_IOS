@@ -27,6 +27,8 @@ struct ArchivedGoalCardView: View {
     @State private var expandirUnidades: Bool = false
     @State private var expandirNotas: Bool = false
     @State private var showDeleteConfirmation: Bool = false
+    @State private var showRestoreConfirmation: Bool = false
+    @State private var showRestoreError: Bool = false
     
     @State private var NotasGenerales : String = ""
 
@@ -51,15 +53,8 @@ struct ArchivedGoalCardView: View {
                     Spacer()
                     
                     Text("Cumplimiento: \(String(format: "%.2f", goal.completionRate)) %")
-                        .font(.title2)
+                        .font(.footnote)
                         .bold()
-                    /*
-                     Image(systemName: "checkmark.circle.fill")
-                     .foregroundStyle(
-                     .green.opacity(0.7)
-                     )
-                     .font(.system(size: 32))
-                     */
                     
                 }
             }
@@ -75,11 +70,23 @@ struct ArchivedGoalCardView: View {
             HStack {
 
                 Text("Completado: \(goal.completedUnitsText)")
-                    .font(.body)
+                    .font(.footnote)
                     .bold()
 
                 Spacer()
+                
+                //Restaurar una Meta:
+                Button {
+                    self.showRestoreConfirmation = true
+                } label: {
+                    Image(systemName: "arrow.clockwise.circle")
+                        .foregroundStyle(.black)
+                        .font(.system(size: 28))
+                }
+                .padding(.horizontal, 15)
+                .help("Recargar como meta activa")
 
+                
                 Button {
                     withAnimation {
                         expandirUnidades = false
@@ -109,6 +116,8 @@ struct ArchivedGoalCardView: View {
                         .frame(width: 35, height: 30)
                         .offset(y: -2)
                 }
+
+                
 
                 Button {
                     showDeleteConfirmation = true
@@ -172,6 +181,12 @@ struct ArchivedGoalCardView: View {
         .background(.thinMaterial)
         #endif
         .clipShape(RoundedRectangle(cornerRadius: 12))
+        .alert("No se pudo recargar la meta",
+               isPresented: $showRestoreError) {
+            Button("Aceptar", role: .cancel) {}
+        } message: {
+            Text("Inténtalo nuevamente en unos segundos.")
+        }
         .alert("Eliminar meta archivada",
                isPresented: $showDeleteConfirmation) {
 
@@ -187,6 +202,24 @@ struct ArchivedGoalCardView: View {
 
         } message: {
             Text("¿Eliminar permanentemente esta meta del historial?")
+        }
+        .alert("Reactivar Meta",
+               isPresented: $showRestoreConfirmation) {
+
+            Button("Cancelar", role: .cancel) {}
+
+            Button("Reactivar", role: .destructive) {
+                do {
+                    try goal.restoreAsActiveGoal(context: context)
+                } catch {
+                    context.rollback()
+                    showRestoreError = true
+                }
+                
+            }
+
+        } message: {
+            Text("La meta se volverá a cargar como activa. ¿Desea continuar?")
         }
     }
 }
