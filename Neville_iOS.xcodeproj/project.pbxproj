@@ -1014,6 +1014,7 @@
 				Views/Diario/cardItemDiario.swift,
 				Views/Diario/DiarioCalendarView.swift,
 				Views/Diario/DiarioListView.swift,
+				Views/Diario/DiarioStatsView.swift,
 				Views/Diario/editContent.swift,
 				Views/EnciclopediaView/EnciclopediaListView.swift,
 				Views/EvidenciaCientifica/EvidenciaCientifica.swift,

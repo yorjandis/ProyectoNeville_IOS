@@ -22,6 +22,7 @@ struct editContent : View {
     @State  var textTitle : String
     @State  var textContent : String
     @State  var emoticono : Emociones
+    var onEntryUpdated: (Date?) -> Void = { _ in }
     
     enum Focustext{
         case title
@@ -119,7 +120,7 @@ struct editContent : View {
                 ToolbarItem {
                     Button(action: {
                         diarioModel.UpdateItem(diario: diario, title: textTitle, content: textContent, emoticono: emoticono)
-                        diarioModel.getAllItem()
+                        onEntryUpdated(diario.fecha)
                         dimiss()
                     }) {
                         Text("Guardar")

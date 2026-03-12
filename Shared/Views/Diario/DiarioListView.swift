@@ -62,6 +62,9 @@ struct DiarioListView: View {
     
     
     @State private var showCalendar: Bool = false   //Mostrar/Ocultar el calendario. Por defecto aparece oculto
+    @State private var showDiarioStats: Bool = false
+    @State private var selectedCalendarDate: Date? = nil
+    @State private var calendarRefreshTrigger: Int = 0
     
     
     //Ordenar las entradas del Diario por fechaCreación/fechaModificación
@@ -90,8 +93,14 @@ struct DiarioListView: View {
                         //Calendario:
                         if self.showCalendar {
                             VStack{
-                                    DiarioCalendarView { date in
+                                    DiarioCalendarView(
+                                        refreshTrigger: calendarRefreshTrigger,
+                                        onMonthEntriesLoaded: { _ in
+                                            selectedCalendarDate = nil
+                                        }
+                                    ) { date in
                                         withAnimation {
+                                            selectedCalendarDate = Calendar.current.startOfDay(for: date)
                                             modelDiario.list = modelDiario.searchPorFecha(for: date)
                                         }
                                     }
@@ -102,7 +111,19 @@ struct DiarioListView: View {
                                 if self.securityModel.canOpenDiario {
                                         LazyVStack{
                                             ForEach(modelDiario.list) { item in
-                                                cardItemDiario(diario: item)
+                                                cardItemDiario(
+                                                    diario: item,
+                                                    onEntryDeleted: { deletedDate in
+                                                        withAnimation {
+                                                            refreshAfterEntryDeletion(deletedDate)
+                                                        }
+                                                    },
+                                                    onEntryUpdated: { updatedDate in
+                                                        withAnimation {
+                                                            refreshAfterEntryUpdate(updatedDate)
+                                                        }
+                                                    }
+                                                )
                                                     .padding(15)
                                                     .frame(maxWidth: .infinity)
                                                     .foregroundStyle(Color.black)
@@ -118,6 +139,7 @@ struct DiarioListView: View {
                             .scrollIndicators(.hidden)
                     }
                     .onAppear{
+                        selectedCalendarDate = nil
                         self.modelDiario.getAllItem()
                     }
                     
@@ -254,6 +276,17 @@ struct DiarioListView: View {
                 
                 
                 if self.securityModel.canOpenDiario {
+                    ToolbarItem {
+                        Button {
+                            self.showDiarioStats = true
+                        } label: {
+                            Label("Estadísticas", systemImage: "chart.xyaxis.line")
+                        }
+                    }
+                    
+                    if #available(iOS 26.0, macOS 26.0, *) {
+                        ToolbarSpacer(.fixed)
+                    }
                     
                     ToolbarItem {
                         Button{
@@ -261,6 +294,7 @@ struct DiarioListView: View {
                                 self.showCalendar.toggle()
                                 //Si oculta el calendario se muestra todos los items
                                 if self.showCalendar == false {
+                                    selectedCalendarDate = nil
                                     modelDiario.getAllItem()
                                 }
                             }
@@ -281,6 +315,7 @@ struct DiarioListView: View {
                             //Ordenar por fecha de creación/modificación
                             Button{
                                 self.ordenarEntradaDiario.toggle()
+                                selectedCalendarDate = nil
                                 modelDiario.getAllItem()
                             }label:{
                                 Label("Ordenar Por fecha de \(self.ordenarEntradaDiario ? "Modificación" : "Creación")", systemImage: "text.magnifyingglass")
@@ -289,6 +324,7 @@ struct DiarioListView: View {
                             //Mostrar todas las entradas
                             Button{
                                 withAnimation {
+                                    selectedCalendarDate = nil
                                     modelDiario.getAllItem()
                                 }
                                 
@@ -594,6 +630,9 @@ struct DiarioListView: View {
             .sheet(isPresented: self.$sheetShowFeedBackReview, content: {
                 FeedbackView(showTextBotton: true)
             })
+            .sheet(isPresented: $showDiarioStats) {
+                DiarioStatsView()
+            }
             .alert("Diario", isPresented: $showAlert) {
                 
             } message: {
@@ -602,8 +641,26 @@ struct DiarioListView: View {
   
          }
     }
-    
 
+    private func refreshAfterEntryDeletion(_ : Date?) {
+        calendarRefreshTrigger += 1
+
+        if let selectedCalendarDate {
+            modelDiario.list = modelDiario.searchPorFecha(for: selectedCalendarDate)
+            return
+        }
+
+        modelDiario.getAllItem()
+    }
+
+    private func refreshAfterEntryUpdate(_ : Date?) {
+        if let selectedCalendarDate {
+            modelDiario.list = modelDiario.searchPorFecha(for: selectedCalendarDate)
+            return
+        }
+
+        modelDiario.getAllItem()
+    }
 
 }
 

@@ -66,9 +66,9 @@ final class DiarioModel : ObservableObject{
     
     
     //Obtiene el valor de una variable de UserDefault
-        private var getUserDefaultOrdenarEntradasDiario : Bool {
-            return UserDefaults.standard.bool(forKey: AppCons.UD_setting_OrdenarEntradaDiario)
-        }
+    private var getUserDefaultOrdenarEntradasDiario : Bool {
+        return UserDefaults.standard.bool(forKey: AppCons.UD_setting_OrdenarEntradaDiario)
+    }
     
     
     
@@ -81,6 +81,11 @@ final class DiarioModel : ObservableObject{
     private init(){
         getAllItem()
     }
+
+    private func defaultSortDescriptors(ascending: Bool = false) -> [NSSortDescriptor] {
+        let keyPath: KeyPath<Diario, Date?> = getUserDefaultOrdenarEntradasDiario ? \Diario.fecha : \Diario.fechaM
+        return [NSSortDescriptor(keyPath: keyPath, ascending: ascending)]
+    }
     
     //Obtiene el valor enum de Emociones a partir de una cadena de texto
     func getEmocionesFromStr(value : String)->Emociones{
@@ -92,14 +97,8 @@ final class DiarioModel : ObservableObject{
     ///Obtiene todos los item de la tabla Diario. Devuelve un arreglo
     func getAllItem(){
         let fechtRequest : NSFetchRequest<Diario> = Diario.fetchRequest()
-        // Ordenar por fecha descendente (del más reciente al más antiguo)
-        if self.getUserDefaultOrdenarEntradasDiario{
-            //Ordena por fecha de Creación
-            fechtRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Diario.fecha, ascending: false)]
-        }else{
-            //Ordena por fecha de Modificación
-            fechtRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Diario.fechaM, ascending: false)]
-        }
+        fechtRequest.fetchBatchSize = 100
+        fechtRequest.sortDescriptors = defaultSortDescriptors()
         
         
         do{
@@ -112,18 +111,12 @@ final class DiarioModel : ObservableObject{
     ///Obtiene todos los item de la tabla Diario. Devuelve un arreglo
     func getAllItemGET() -> [Diario]{
         let fechtRequest : NSFetchRequest<Diario> = Diario.fetchRequest()
-        // Ordenar por fecha descendente (del más reciente al más antiguo)
-        if self.getUserDefaultOrdenarEntradasDiario{
-            //Ordena por fecha de Creación
-            fechtRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Diario.fecha, ascending: false)]
-        }else{
-            //Ordena por fecha de Modificación
-            fechtRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Diario.fechaM, ascending: false)]
-        }
+        fechtRequest.fetchBatchSize = 100
+        // Retorna en orden ascendente para preservar el resultado actual de reversed().
+        fechtRequest.sortDescriptors = defaultSortDescriptors(ascending: true)
 
         do{
-            let temp =  try context.fetch(fechtRequest)
-            return temp.reversed()
+            return try context.fetch(fechtRequest)
         }catch{
             return []
         }
@@ -133,6 +126,7 @@ final class DiarioModel : ObservableObject{
     //Usado en las funciones del Calendario
     func getEntriesByMonth(forDate date: Date) -> [Diario] {
         let fetchRequest: NSFetchRequest<Diario> = Diario.fetchRequest()
+        fetchRequest.fetchBatchSize = 100
         
         let calendar = Calendar.current
         let components = calendar.dateComponents([.year, .month], from: date)
@@ -151,6 +145,14 @@ final class DiarioModel : ObservableObject{
             return []
         }
     }
+
+    //Devuelve el número de entradas por día para el mes de la fecha indicada.
+    func getEntryCountByCreationDay(forMonth date: Date) -> [Date: Int] {
+        let calendar = Calendar.current
+        let monthEntries = getEntriesByMonth(forDate: date)
+        let normalized = monthEntries.compactMap { $0.fecha }.map { calendar.startOfDay(for: $0) }
+        return Dictionary(grouping: normalized, by: { $0 }).mapValues(\.count)
+    }
     
     //Determinar si una fecha dada corresponde a la fecha actua:
     func isToday(_ date: Date) -> Bool {
@@ -162,6 +164,7 @@ final class DiarioModel : ObservableObject{
     //Devuelve un set de las fechas de las entradas, normalizadas al dia y en orden ascendente.
     func fetchEntradasForCalendar() -> Set<Date> {
             let request: NSFetchRequest<Diario> = Diario.fetchRequest()
+            request.fetchBatchSize = 200
             request.sortDescriptors = [NSSortDescriptor(keyPath: \Diario.fecha, ascending: true)]
 
             do {
@@ -260,66 +263,66 @@ final class DiarioModel : ObservableObject{
     
     //Filtrar por título: Case Insentitive
     func filterByTitle(criterio : String)->[Diario]{
-         var result : [Diario] = []
-         let listDiarios = self.getAllItemGET()
-        
-        for diario in listDiarios {
-            let temp = diario.title?.lowercased() ?? ""
-            if temp.contains(criterio.lowercased()){
-                result.append(diario)
-            }
+        if criterio.isEmpty {
+            return getAllItemGET()
         }
-
-        return result
+        let fetchRequest: NSFetchRequest<Diario> = Diario.fetchRequest()
+        fetchRequest.fetchBatchSize = 100
+        fetchRequest.sortDescriptors = defaultSortDescriptors(ascending: true)
+        fetchRequest.predicate = NSPredicate(format: "title CONTAINS[cd] %@", criterio)
+        do {
+            return try context.fetch(fetchRequest)
+        } catch {
+            return []
+        }
     }
     
     //Filtrar por contenido: Case Insentitive
     func filterByContent(criterio : String)->[Diario]{
-         var result : [Diario] = []
-         let listDiarios = self.getAllItemGET()
-        
-        for diario in listDiarios {
-            let temp = diario.content?.lowercased() ?? ""
-            if temp.contains(criterio.lowercased()){
-                result.append(diario)
-            }
+        if criterio.isEmpty {
+            return getAllItemGET()
         }
-
-        return result
+        let fetchRequest: NSFetchRequest<Diario> = Diario.fetchRequest()
+        fetchRequest.fetchBatchSize = 100
+        fetchRequest.sortDescriptors = defaultSortDescriptors(ascending: true)
+        fetchRequest.predicate = NSPredicate(format: "content CONTAINS[cd] %@", criterio)
+        do {
+            return try context.fetch(fetchRequest)
+        } catch {
+            return []
+        }
     }
     
     //Filtrar por emoticono: Case Insentitive
     func filterByEmoticono(criterio : String)->[Diario]{
-         var result : [Diario] = []
-         let listDiarios = self.getAllItemGET()
-        
-        for diario in listDiarios {
-            if diario.emotion == criterio {
-                result.append(diario)
-            }
+        let fetchRequest: NSFetchRequest<Diario> = Diario.fetchRequest()
+        fetchRequest.fetchBatchSize = 100
+        fetchRequest.sortDescriptors = defaultSortDescriptors(ascending: true)
+        fetchRequest.predicate = NSPredicate(format: "emotion == %@", criterio)
+        do {
+            return try context.fetch(fetchRequest)
+        } catch {
+            return []
         }
-
-        return result
     }
     
     //Filtrar por Favorito: Devuelve todas las entradas favoritas
     func filterByFav()->[Diario]{
-         var result : [Diario] = []
-         let listDiarios = self.getAllItemGET()
-        
-        for diario in listDiarios {
-            
-            if diario.isFav {
-                result.append(diario)
-            }
+        let fetchRequest: NSFetchRequest<Diario> = Diario.fetchRequest()
+        fetchRequest.fetchBatchSize = 100
+        fetchRequest.sortDescriptors = defaultSortDescriptors(ascending: true)
+        fetchRequest.predicate = NSPredicate(format: "isFav == YES")
+        do {
+            return try context.fetch(fetchRequest)
+        } catch {
+            return []
         }
-
-        return result
     }
     
     //Buscar por fecha de creación
     func searchPorFecha(for date: Date, typeFecha : TypeFecha = .FechaCreacion ) -> [Diario] {
         let fetchRequest: NSFetchRequest<Diario> = Diario.fetchRequest()
+        fetchRequest.fetchBatchSize = 100
         
         // Obtener el rango de la fecha (00:00 - 23:59)
         let calendar = Calendar.current
@@ -348,6 +351,7 @@ final class DiarioModel : ObservableObject{
     //Buscar en un rango de fechas
     func searchPorRangoFecha(from startDate: Date, to endDate: Date, typeFecha : TypeFecha = .FechaCreacion ) -> [Diario] {
         let fetchRequest: NSFetchRequest<Diario> = Diario.fetchRequest()
+        fetchRequest.fetchBatchSize = 100
         
         
         // Obtener el comienzo del día de startDate y el final del día de endDate
@@ -378,6 +382,7 @@ final class DiarioModel : ObservableObject{
     //Buscar según antiguedad:
     func searchPorAntiguedad(for antiguedad: Antiguedad, typeFecha : TypeFecha = .FechaCreacion ) -> [Diario] {
         let fetchRequest: NSFetchRequest<Diario> = Diario.fetchRequest()
+        fetchRequest.fetchBatchSize = 100
         
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: Date()) // Inicio del día actual

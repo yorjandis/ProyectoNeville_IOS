@@ -27,14 +27,15 @@ struct DiarioCalendarView: View {
     @State private var currentMonth: Date = Date()
     
     @State private var hideCalendar: Bool = false //Oculta el calendario pero deja la cabezera
+    @State private var fechasDeEntradas: Set<Date> = []
+    @State private var conteoEntradasPorDia: [Date: Int] = [:]
+    @State private var shouldSelectDayFromDatePicker: Bool = false
+    @State private var selectedDay: Date? = nil
     
-    // Closure que se ejecutará cuando se seleccione una fecha con entrada
+    var refreshTrigger: Int
+    var onMonthEntriesLoaded: (Date) -> Void = { _ in }
+    // Closure que se ejecutará cuando se seleccione una fecha
     var onDateSelected: (Date) -> Void
-    
-    // Extraer solo los días con entradas en formato de fecha sin horas
-    private var fechasDeEntradas: Set<Date> {
-        return modeloDiario.fetchEntradasForCalendar()
-    }
     
     var body: some View {
         VStack {
@@ -59,7 +60,7 @@ struct DiarioCalendarView: View {
                 .padding()
                 
                 // Reemplazar el texto por un selector de fecha
-                DatePicker("", selection: $currentMonth, displayedComponents: [.date])
+                DatePicker("", selection: datePickerSelection, displayedComponents: [.date])
                     .datePickerStyle(.compact)
                     .labelsHidden()
                     .frame(width: 120) // Ajustar el ancho según sea necesario
@@ -84,22 +85,40 @@ struct DiarioCalendarView: View {
             if !self.hideCalendar {
                 CalendarGrid(
                     currentMonth: $currentMonth,
-                    fechasResaltadas: fechasDeEntradas,
+                    fechasResaltadas: $fechasDeEntradas,
+                    entryCountsByDay: $conteoEntradasPorDia,
+                    selectedDay: $selectedDay,
                     onDateSelected: onDateSelected
                 )
                 .onAppear{
-                    //Al Aparecer carga las entradas para la fecha dada
-                    modeloDiario.list = modeloDiario.getEntriesByMonth(forDate: self.currentMonth)
+                    reloadMonthData(for: self.currentMonth)
                 }
             }
             
         }
         .padding()
         .onChange(of: self.currentMonth) { oldValue, newValue in
-                //Carga las entradas para ese mes
-                modeloDiario.list = modeloDiario.getEntriesByMonth(forDate: newValue)
-            
+            reloadMonthData(for: newValue)
+            if shouldSelectDayFromDatePicker {
+                selectEntriesForDatePickerSelection(newValue)
+                shouldSelectDayFromDatePicker = false
+            } else {
+                selectedDay = nil
+            }
         }
+        .onChange(of: refreshTrigger) { _, _ in
+            reloadMonthData(for: currentMonth)
+        }
+    }
+
+    private var datePickerSelection: Binding<Date> {
+        Binding(
+            get: { currentMonth },
+            set: { newValue in
+                currentMonth = newValue
+                shouldSelectDayFromDatePicker = true
+            }
+        )
     }
     
     // Cambia el mes actual sumando o restando 1 mes
@@ -108,12 +127,30 @@ struct DiarioCalendarView: View {
             currentMonth = newMonth
         }
     }
+
+    private func reloadMonthData(for date: Date) {
+        let entries = modeloDiario.getEntriesByMonth(forDate: date)
+        let calendar = Calendar.current
+        let normalizedDays = entries.compactMap { $0.fecha }.map { calendar.startOfDay(for: $0) }
+        fechasDeEntradas = Set(normalizedDays)
+        conteoEntradasPorDia = Dictionary(grouping: normalizedDays, by: { $0 }).mapValues(\.count)
+        modeloDiario.list = entries
+        onMonthEntriesLoaded(date)
+    }
+
+    private func selectEntriesForDatePickerSelection(_ date: Date) {
+        let selectedDay = Calendar.current.startOfDay(for: date)
+        self.selectedDay = selectedDay
+        onDateSelected(selectedDay)
+    }
 }
 
 //Crea la estructura del calendario
 struct CalendarGrid: View {
     @Binding var currentMonth: Date
-    var fechasResaltadas: Set<Date>
+    @Binding var fechasResaltadas: Set<Date>
+    @Binding var entryCountsByDay: [Date: Int]
+    @Binding var selectedDay: Date?
     var onDateSelected: (Date) -> Void
 
     @StateObject private var modelDiario = DiarioModel.shared
@@ -134,7 +171,12 @@ struct CalendarGrid: View {
         LazyVGrid(columns: columns) {
             ForEach(days.indices, id: \.self) { index in
                 if let date = days[index] {
+                    let calendar = Calendar.current
                     let isHighlighted = fechasResaltadas.contains(date)
+                    let entryCount = entryCountsByDay[date] ?? 0
+                    let isSelected = selectedDay.map { calendar.isDate($0, inSameDayAs: date) } ?? false
+                    let today = calendar.startOfDay(for: Date.now)
+                    let isFutureDay = calendar.startOfDay(for: date) > today
 
                     Text(date.formatted(.dateTime.day()))
                         .frame(width: 45, height: 45)
@@ -142,10 +184,22 @@ struct CalendarGrid: View {
                             Circle()
                                 .fill(isHighlighted ? highlightColor : Color.clear)
                         )
-                        .foregroundColor(isHighlighted ? .white : .primary)
+                        .foregroundColor(isHighlighted ? .white : (isFutureDay ? .secondary : .primary))
+                        .opacity(isFutureDay ? 0.45 : 1)
+                        .overlay {
+                            Circle()
+                                .stroke(
+                                    isSelected ? Color.black : Color.clear,
+                                    style: StrokeStyle(
+                                        lineWidth: 3,
+                                        dash: [2, 4] // patrón de puntos
+                                    )
+                                )
+                                .frame(width: 50, height: 50)
+                        }
                         .overlay {
                             if isHighlighted {
-                                Text("\(modelDiario.searchPorFecha(for: date, typeFecha: .FechaCreacion).count)")
+                                Text("\(entryCount)")
                                     .font(.footnote)
                                     .foregroundStyle(Color.orange)
                                     .bold()
@@ -154,10 +208,10 @@ struct CalendarGrid: View {
                         }
                         .onTapGesture(count: 2) {
                             let calendar = Calendar.current
-                            let selectedDay = calendar.startOfDay(for: date)
+                            let normalizedSelectedDay = calendar.startOfDay(for: date)
                             let today = calendar.startOfDay(for: Date.now)
 
-                            guard selectedDay <= today else {
+                            guard normalizedSelectedDay <= today else {
                                 showFutureDateAlert = true
                                 return
                             }
@@ -166,15 +220,18 @@ struct CalendarGrid: View {
                                 title: "Título",
                                 emocion: .neutral,
                                 content: "Nuevo Contenido!",
-                                fechaCreacion: selectedDay
+                                fechaCreacion: normalizedSelectedDay
                             ) {
-                                onDateSelected(date)
+                                selectedDay = normalizedSelectedDay
+                                entryCountsByDay[normalizedSelectedDay, default: 0] += 1
+                                fechasResaltadas.insert(normalizedSelectedDay)
+                                onDateSelected(normalizedSelectedDay)
                             }
                         }
                         .onTapGesture {
-                            if isHighlighted {
-                                onDateSelected(date)
-                            }
+                            let normalizedSelectedDay = Calendar.current.startOfDay(for: date)
+                            selectedDay = normalizedSelectedDay
+                            onDateSelected(normalizedSelectedDay)
                         }
                 } else {
                     Text("")

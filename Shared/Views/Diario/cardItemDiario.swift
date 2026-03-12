@@ -13,6 +13,8 @@ struct cardItemDiario: View{
     @Environment(\.colorScheme) var theme
     
     @State var diario : Diario //Entrada a mostrar
+    var onEntryDeleted: (Date?) -> Void = { _ in }
+    var onEntryUpdated: (Date?) -> Void = { _ in }
     
     @StateObject private var diarioModel = DiarioModel.shared
     
@@ -70,7 +72,7 @@ struct cardItemDiario: View{
                             }
                             Button("Guardar"){
                                 diarioModel.UpdateTitle(title: title, diario: diario)
-                                diarioModel.getAllItem()
+                                onEntryUpdated(diario.fecha)
                                 //Saliendo
                                 if let window = NSApp.keyWindow {
                                     closeWindow(window)
@@ -113,7 +115,7 @@ struct cardItemDiario: View{
                     .onTapGesture(count: 2) {
                         
                         #if os(macOS)
-                        showWindow(for: editContent(diario: $diario, textTitle:diario.title ?? "", textContent: diario.content ?? "", emoticono: diarioModel.getEmocionesFromStr(value: diario.emotion ?? "neutral")),
+                        showWindow(for: editContent(diario: $diario, textTitle:diario.title ?? "", textContent: diario.content ?? "", emoticono: diarioModel.getEmocionesFromStr(value: diario.emotion ?? "neutral"), onEntryUpdated: onEntryUpdated),
                                    environmentObjects: [self.diarioModel],
                                    title: "Editar entrada Diario",
                                    size: AppCons.windows_size_content,
@@ -181,7 +183,7 @@ struct cardItemDiario: View{
                     Menu{
                         Button{
                             #if os(macOS)
-                            showWindow(for: editContent(diario: $diario, textTitle:diario.title ?? "", textContent: diario.content ?? "", emoticono: diarioModel.getEmocionesFromStr(value: diario.emotion ?? "neutral")),
+                            showWindow(for: editContent(diario: $diario, textTitle:diario.title ?? "", textContent: diario.content ?? "", emoticono: diarioModel.getEmocionesFromStr(value: diario.emotion ?? "neutral"), onEntryUpdated: onEntryUpdated),
                                        environmentObjects: [self.diarioModel],
                                        title: "Editar entrada Diario",
                                        size: AppCons.windows_size_content,
@@ -223,20 +225,21 @@ struct cardItemDiario: View{
             }
             Button("Guardar"){
                 diarioModel.UpdateTitle(title: title, diario: diario)
-                diarioModel.getAllItem()
+                onEntryUpdated(diario.fecha)
             }
             
         }
         .alert("¿Desea eliminar la entrada? \n Esta acción no puede deshacerse", isPresented: $showAlertDeleteEntry, actions: {
             Button("Eliminar", role: .destructive){
                 withAnimation {
+                    let deletedDate = diario.fecha
                     diarioModel.DeleteItem(diario: diario)
-                    diarioModel.getAllItem()
+                    onEntryDeleted(deletedDate)
                 }
             }
         })
         .sheet(isPresented: $showSheet){
-            editContent(diario: $diario, textTitle:diario.title ?? "", textContent: diario.content ?? "", emoticono: diarioModel.getEmocionesFromStr(value: diario.emotion ?? "neutral"))
+            editContent(diario: $diario, textTitle:diario.title ?? "", textContent: diario.content ?? "", emoticono: diarioModel.getEmocionesFromStr(value: diario.emotion ?? "neutral"), onEntryUpdated: onEntryUpdated)
         }
         
     }
