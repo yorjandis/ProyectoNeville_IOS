@@ -61,6 +61,7 @@ struct cardItemDiario: View{
                 Text(diario.title ?? "")
                     .font(.headline).bold()
                     .onTapGesture(count: 2) {
+                        self.title = diario.title ?? ""
                         #if os(macOS)
                         showWindow(for: VStack{
                             TextField("Nuevo título", text: $title)

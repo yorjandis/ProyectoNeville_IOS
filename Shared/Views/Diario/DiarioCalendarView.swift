@@ -107,7 +107,7 @@ struct DiarioCalendarView: View {
             }
         }
         .onChange(of: refreshTrigger) { _, _ in
-            reloadMonthData(for: currentMonth)
+            reloadMonthData(for: currentMonth, preserveSelectedDay: true)
         }
     }
 
@@ -128,12 +128,23 @@ struct DiarioCalendarView: View {
         }
     }
 
-    private func reloadMonthData(for date: Date) {
+    private func reloadMonthData(for date: Date, preserveSelectedDay: Bool = false) {
         let entries = modeloDiario.getEntriesByMonth(forDate: date)
         let calendar = Calendar.current
         let normalizedDays = entries.compactMap { $0.fecha }.map { calendar.startOfDay(for: $0) }
         fechasDeEntradas = Set(normalizedDays)
         conteoEntradasPorDia = Dictionary(grouping: normalizedDays, by: { $0 }).mapValues(\.count)
+
+        if preserveSelectedDay, let selectedDay {
+            let normalizedSelectedDay = calendar.startOfDay(for: selectedDay)
+            if calendar.isDate(normalizedSelectedDay, equalTo: date, toGranularity: .month) {
+                onDateSelected(normalizedSelectedDay)
+                return
+            } else {
+                self.selectedDay = nil
+            }
+        }
+
         modeloDiario.list = entries
         onMonthEntriesLoaded(date)
     }

@@ -27,6 +27,10 @@ struct Home: View {
     @State private var showCrearRecordatorio: Bool = false
     @State private var showListaRecordatorios: Bool = false
 
+    #if os(iOS)
+    @State private var showLectorEtiquetas: Bool = false
+    #endif
+
     //Recordatorios Witget:
     @StateObject private var modelRecordatorios: SelectedReminderModel = .init() //Inicia el modelo de los recordatorios de Widgets
 
@@ -58,7 +62,21 @@ struct Home: View {
                     Spacer()
 
                     FrasesHomeView()
- 
+
+                    #if os(iOS)
+                    Button {
+                        showLectorEtiquetas = true
+                    } label: {
+                        Label("Lector de Etiquetas", systemImage: "camera.viewfinder")
+                            .font(.headline)
+                            .foregroundStyle(.black)
+                            .padding(.horizontal, 14)
+                            .padding(.vertical, 10)
+                            .background(.white.opacity(0.8))
+                            .clipShape(Capsule())
+                    }
+                    #endif
+
                     Spacer()
 
                     
@@ -141,6 +159,11 @@ struct Home: View {
         .sheet(isPresented: self.$showNovedades) {
             Novedades()
         }
+        #if os(iOS)
+        .sheet(isPresented: $showLectorEtiquetas) {
+            LectorEtiquetasView()
+        }
+        #endif
         
     }
     

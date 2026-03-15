@@ -65,6 +65,74 @@ struct FrasesHomeView : View{
                                     .modifier(mof_frases())
                                     .frame(maxWidth: .infinity, alignment: .center)
 
+                                HStack{
+                                    if self.showHideAutorInFrases {
+                                        Text(frase.autor ?? "").font(.footnote).italic().padding(.horizontal)
+                                    }
+                                    
+                                    Spacer()
+                                    
+                                    #if os(iOS)
+                                    //Botón de Favorito de la frase
+                                    Button{
+                                        self.frase?.isfav.toggle()
+                                        self.frasesModel.guardarCambios()
+                                        animationHeart += 1
+
+                                    }label: {
+                                        Image(systemName: (self.frase?.isfav ?? false) ? "heart.fill" : "heart")
+                                            .foregroundStyle(.black)
+                                            .symbolEffect(.bounce, value: animationHeart)
+                                    }
+                                    .padding(10)
+                                    .padding(.trailing, 15)
+                                    #endif
+                                    
+                                    #if os(macOS)
+                                    //navegación de frases: Mac
+                                    HStack(spacing: 5){
+                                        Image(systemName: self.contadorNavegarPorFrasesAnteriores == 0 ? "arrow.left.circle" : "arrow.left.circle.fill")
+                                            .foregroundStyle(.black)
+                                            .onTapGesture {
+                                                if !self.frasesModel.fraseAnteriores.isEmpty && self.contadorNavegarPorFrasesAnteriores > 0 {
+                                                    self.contadorNavegarPorFrasesAnteriores -= 1
+                                                    self.frase = self.frasesModel.fraseAnteriores[self.contadorNavegarPorFrasesAnteriores]
+                                                    
+                                                    self.isFav = self.isFav
+                                                    self.frasesModel.fraseActual = self.frase
+                                                }
+                                            }
+                                        Image(systemName: self.contadorNavegarPorFrasesAnteriores == self.frasesModel.fraseAnteriores.count-1 ? "arrow.right.circle" : "arrow.right.circle.fill")
+                                            .foregroundStyle(.black)
+                                            .onTapGesture {
+                                                if self.contadorNavegarPorFrasesAnteriores < self.frasesModel.fraseAnteriores.count - 1 {
+                                                    self.contadorNavegarPorFrasesAnteriores += 1
+                                                    
+                                                    self.frase = self.frasesModel.fraseAnteriores[self.contadorNavegarPorFrasesAnteriores]
+                                                    
+                                                    self.isFav = self.frase?.isfav ?? false
+                                                    self.frasesModel.fraseActual = self.frase
+                                                }
+                                            }
+                                    }
+                                    .padding(.horizontal, 15)
+                                    
+                                    //Favoritos: Mac
+                                    Image(systemName: (self.frase?.isfav ?? false) ? "heart.fill" : "heart")
+                                        .foregroundStyle(.black)
+                                        .symbolEffect(.bounce, value: animationHeart)
+                                        .padding(10)
+                                        .padding(.trailing, 15)
+                                        .onTapGesture {
+                                            self.frase?.isfav.toggle()
+                                            self.frasesModel.guardarCambios()
+                                            animationHeart += 1
+                                           
+                                        }
+                                    #endif
+                                }
+                                .padding(.top, 4)
+
                                 Spacer(minLength: 0)
                             }
                             .frame(maxWidth: .infinity)
@@ -334,78 +402,7 @@ struct FrasesHomeView : View{
                             }
                         }
                     }
-                    
-                    HStack{
-                        if self.showHideAutorInFrases {
-                            Text(frase.autor ?? "").font(.footnote).italic().padding(.horizontal)
-                        }
-                        
-                        
-                        Spacer()
-                        
-                        #if os(iOS)
-                        //Botón de Favorito de la frase
-                        Button{
-                            
-                            self.frase?.isfav.toggle()
-                            self.frasesModel.guardarCambios()
-                            animationHeart += 1
 
-                        }label: {
-                            Image(systemName: (self.frase?.isfav ?? false) ? "heart.fill" : "heart")
-                                .foregroundStyle(.black)
-                                .symbolEffect(.bounce, value: animationHeart)
-                        }
-                        .padding(10)
-                        .padding(.trailing, 15)
-                        #endif
-                        
-                        #if os(macOS)
-                        
-                        //navegación de frases: Mac
-                        HStack(spacing: 5){
-                            Image(systemName: self.contadorNavegarPorFrasesAnteriores == 0 ? "arrow.left.circle" : "arrow.left.circle.fill")
-                                .foregroundStyle(.black)
-                                .onTapGesture {
-                                    if !self.frasesModel.fraseAnteriores.isEmpty && self.contadorNavegarPorFrasesAnteriores > 0 {
-                                        self.contadorNavegarPorFrasesAnteriores -= 1
-                                        self.frase = self.frasesModel.fraseAnteriores[self.contadorNavegarPorFrasesAnteriores]
-                                        
-                                        self.isFav = self.isFav
-                                        self.frasesModel.fraseActual = self.frase
-                                    }
-                                }
-                            Image(systemName: self.contadorNavegarPorFrasesAnteriores == self.frasesModel.fraseAnteriores.count-1 ? "arrow.right.circle" : "arrow.right.circle.fill")
-                                .foregroundStyle(.black)
-                                .onTapGesture {
-                                    if self.contadorNavegarPorFrasesAnteriores < self.frasesModel.fraseAnteriores.count - 1 {
-                                        self.contadorNavegarPorFrasesAnteriores += 1
-                                        
-                                        self.frase = self.frasesModel.fraseAnteriores[self.contadorNavegarPorFrasesAnteriores]
-                                        
-                                        self.isFav = self.frase?.isfav ?? false
-                                        self.frasesModel.fraseActual = self.frase
-                                    }
-                                }
-                        }
-                        .padding(.horizontal, 15)
-                        
-                        
-                        //Favoritos: Mac
-                        Image(systemName: (self.frase?.isfav ?? false) ? "heart.fill" : "heart")
-                            .foregroundStyle(.black)
-                            .symbolEffect(.bounce, value: animationHeart)
-                            .padding(10)
-                            .padding(.trailing, 15)
-                            .onTapGesture {
-                                self.frase?.isfav.toggle()
-                                self.frasesModel.guardarCambios()
-                                animationHeart += 1
-                               
-                            }
-                        
-                        #endif
-                    }
                 }else{
                     EmptyView()
                 }
