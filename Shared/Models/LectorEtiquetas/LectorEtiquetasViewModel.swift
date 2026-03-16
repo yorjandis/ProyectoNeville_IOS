@@ -14,6 +14,13 @@ final class LectorEtiquetasViewModel: ObservableObject {
     @Published var isAnalizando: Bool = false
     @Published var errorMessage: String?
 
+    @Published var selectedSource: LectorEtiquetasDataSource = .openFoodFacts
+    @Published var offlineInfoMessage: String?
+    @Published var offlineErrorMessage: String?
+    @Published var offlineDatabasePath: String?
+    @Published var isPreparingOfflineDatabase: Bool = false
+    @Published var isOfflineDatabaseReady: Bool = false
+
     private let service: LectorEtiquetasService
 
     init(service: LectorEtiquetasService = LectorEtiquetasService()) {
@@ -21,21 +28,54 @@ final class LectorEtiquetasViewModel: ObservableObject {
     }
 
     func analizar(codigoBarras: String) async {
-        self.isAnalizando = true
-        self.errorMessage = nil
+        isAnalizando = true
+        errorMessage = nil
 
         do {
-            self.resultado = try await service.analizar(codigoBarras: codigoBarras)
+            resultado = try await service.analizar(codigoBarras: codigoBarras, source: selectedSource)
         } catch {
-            self.errorMessage = error.localizedDescription
+            errorMessage = error.localizedDescription
         }
 
-        self.isAnalizando = false
+        isAnalizando = false
+    }
+
+    func analizarOffline(codigoBarras: String) async {
+        isAnalizando = true
+        errorMessage = nil
+
+        do {
+            resultado = try await service.analizar(codigoBarras: codigoBarras, source: .offlineSQLite)
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+
+        isAnalizando = false
+    }
+
+    func prepararBaseOffline() async {
+        isPreparingOfflineDatabase = true
+        offlineErrorMessage = nil
+        offlineInfoMessage = nil
+
+        do {
+            let status = try await service.prepareOfflineDatabase()
+            offlineDatabasePath = status.databaseURL.path
+            isOfflineDatabaseReady = true
+            offlineInfoMessage = status.didCopy
+                ? "Base offline instalada/actualizada. Versión: \(status.installedVersion)."
+                : "Base offline lista. Versión: \(status.installedVersion)."
+        } catch {
+            isOfflineDatabaseReady = false
+            offlineErrorMessage = error.localizedDescription
+        }
+
+        isPreparingOfflineDatabase = false
     }
 
     func limpiarResultado() {
-        self.resultado = nil
-        self.errorMessage = nil
+        resultado = nil
+        errorMessage = nil
     }
 }
 #endif

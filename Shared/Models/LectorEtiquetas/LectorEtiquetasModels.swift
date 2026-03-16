@@ -7,6 +7,22 @@
 
 import Foundation
 
+enum LectorEtiquetasDataSource: String, Codable, CaseIterable, Identifiable {
+    case openFoodFacts
+    case offlineSQLite
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .openFoodFacts:
+            return "API OpenFoodFacts"
+        case .offlineSQLite:
+            return "BD Offline"
+        }
+    }
+}
+
 enum NivelRiesgoEtiqueta: Int, Codable, Comparable {
     case bajo = 0
     case medio = 1
@@ -185,7 +201,15 @@ struct OpenFoodFactsEcologicalData: Codable, Hashable {
     let ecoscoreGrade: String
 }
 
+struct EtiquetaPerfilAlimentario: Codable, Hashable {
+    let esVegano: Bool?
+    let esVegetariano: Bool?
+    let esOrganico: Bool?
+    let contieneGluten: Bool?
+}
+
 struct OpenFoodFactsMetadata: Codable, Hashable {
+    let source: LectorEtiquetasDataSource
     let productName: String
     let barcode: String
     let allergens: String
@@ -193,6 +217,7 @@ struct OpenFoodFactsMetadata: Codable, Hashable {
     let allFields: [OpenFoodFactsFieldItem]
     let nutrimentsFormatted: [OpenFoodFactsNutrimentItem]
     let ecologicalData: OpenFoodFactsEcologicalData
+    let dietaryProfile: EtiquetaPerfilAlimentario?
 }
 
 struct ResultadoAnalisisEtiqueta: Codable {
@@ -242,6 +267,7 @@ struct EtiquetaResumenProducto: Hashable {
     let nombreProducto: String
     let codigoBarras: String
     let alergenos: [String]
+    let perfilAlimentario: EtiquetaPerfilAlimentario
     let aditivosDetectados: [String]
     let nutrientesClave: [EtiquetaNutrienteClave]
     let evaluacionEcologica: EtiquetaEvaluacionEcologica
@@ -258,6 +284,12 @@ extension ResultadoAnalisisEtiqueta {
             nombreProducto: nombreProducto,
             codigoBarras: metadata.barcode,
             alergenos: Self.parseList(from: metadata.allergens),
+            perfilAlimentario: metadata.dietaryProfile ?? EtiquetaPerfilAlimentario(
+                esVegano: nil,
+                esVegetariano: nil,
+                esOrganico: nil,
+                contieneGluten: nil
+            ),
             aditivosDetectados: Self.parseAditivos(from: hallazgos),
             nutrientesClave: Self.extractNutrientesClave(from: metadata.nutrimentsFormatted),
             evaluacionEcologica: Self.evaluateEcologico(metadata.ecologicalData)

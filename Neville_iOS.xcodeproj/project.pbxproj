@@ -33,6 +33,7 @@
 		915017432EF078A2007B741A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 915017422EF078A2007B741A /* StoreKit.framework */; };
 		915017452EF078B2007B741A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 915017442EF078B2007B741A /* StoreKit.framework */; };
 		918C4B0B2EF4094D00974B54 /* La Ley.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 918C4AFF2EF4094D00974B54 /* La Ley.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		919F40A52F66C559009FF35B /* LaLeyBackgroundDownloadExtension.appex in Embed ExtensionKit Extensions */ = {isa = PBXBuildFile; fileRef = 919F409D2F66C559009FF35B /* LaLeyBackgroundDownloadExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		91E107712EEA01AD00F4DB1D /* sharedios.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 91E107672EEA01AD00F4DB1D /* sharedios.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		91E52D8C2F4327CE0054C032 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 91E52D8B2F4327CE0054C032 /* Assets.xcassets */; };
 		91F0DD552D605B5800307453 /* watchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F0DD542D605B4B00307453 /* watchModel.swift */; };
@@ -68,6 +69,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 918C4AFE2EF4094D00974B54;
 			remoteInfo = sharedmac;
+		};
+		919F40A32F66C559009FF35B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E95B934B2AAFBB2600B5E2B5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 919F409C2F66C559009FF35B;
+			remoteInfo = LaLeyBackgroundDownloadExtension;
 		};
 		91E1076F2EEA01AD00F4DB1D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -124,6 +132,17 @@
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		919F40AA2F66C559009FF35B /* Embed ExtensionKit Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(EXTENSIONS_FOLDER_PATH)";
+			dstSubfolderSpec = 16;
+			files = (
+				919F40A52F66C559009FF35B /* LaLeyBackgroundDownloadExtension.appex in Embed ExtensionKit Extensions */,
+			);
+			name = "Embed ExtensionKit Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -159,6 +178,11 @@
 		915017442EF078B2007B741A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/System/Library/Frameworks/StoreKit.framework; sourceTree = DEVELOPER_DIR; };
 		917C301F2EBCD1E5006BB36E /* La Ley_mac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "La Ley_mac.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		918C4AFF2EF4094D00974B54 /* La Ley.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "La Ley.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		919F34D72F66BCD1009FF35B /* BackgroundDownloadHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundDownloadHandler.swift; sourceTree = "<group>"; };
+		919F34D82F66BCD1009FF35B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		919F34D92F66BCD1009FF35B /* BackgroundDownloadExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BackgroundDownloadExtension.entitlements; sourceTree = "<group>"; };
+		919F34DA2F66BCF1009FF35B /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		919F409D2F66C559009FF35B /* LaLeyBackgroundDownloadExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.extensionkit-extension"; includeInIndex = 0; path = LaLeyBackgroundDownloadExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		91E1074C2EE9FC8D00F4DB1D /* UniformTypeIdentifiers.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UniformTypeIdentifiers.framework; path = System/Library/Frameworks/UniformTypeIdentifiers.framework; sourceTree = SDKROOT; };
 		91E107672EEA01AD00F4DB1D /* sharedios.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = sharedios.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		91E52D8B2F4327CE0054C032 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -210,6 +234,10 @@
 				Models/LectorEtiquetas/LectorEtiquetasRiskEvaluator.swift,
 				Models/LectorEtiquetas/LectorEtiquetasService.swift,
 				Models/LectorEtiquetas/LectorEtiquetasViewModel.swift,
+				Models/LectorEtiquetas/ManagedAssets/DatabaseBootstrapper.swift,
+				Models/LectorEtiquetas/ManagedAssets/LectorEtiquetasManagedAssetsConfig.swift,
+				Models/LectorEtiquetas/ManagedAssets/ManagedAssetsSupportError.swift,
+				Models/LectorEtiquetas/OfflineOpenFoodFactsDatabase.swift,
 				Models/LectorEtiquetas/OpenFoodFactsClient.swift,
 				Models/LectorEtiquetas/OpenFoodFactsRiskEngine.swift,
 				Models/LectorEtiquetas/VisionEtiquetaTextRecognizer.swift,
@@ -1134,6 +1162,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Staff/Enciclopedia/PensamientosYSentimientos/enc_sentimiento_como_fuerzacreativa.txt,
+				Views/LectorEtiquetas/LectorEtiquetasView.swift,
 			);
 			target = 917C301E2EBCD1E5006BB36E /* La Ley_mac */;
 		};
@@ -1163,6 +1192,13 @@
 			);
 			target = 918C4AFE2EF4094D00974B54 /* sharedmac */;
 		};
+		919F40A92F66C559009FF35B /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 919F409C2F66C559009FF35B /* LaLeyBackgroundDownloadExtension */;
+		};
 		91C3A3D22F24CB6600A07607 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -1187,6 +1223,7 @@
 		914415A92EDC377200FFC61D /* Atajos */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (914415B12EDC39E300FFC61D /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Atajos; sourceTree = "<group>"; };
 		917C30202EBCD1E5006BB36E /* La Ley_mac */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "La Ley_mac"; sourceTree = "<group>"; };
 		918C4B002EF4094D00974B54 /* sharedmac */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (918C4B0F2EF4094D00974B54 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = sharedmac; sourceTree = "<group>"; };
+		919F409E2F66C559009FF35B /* LaLeyBackgroundDownloadExtension */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (919F40A92F66C559009FF35B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = LaLeyBackgroundDownloadExtension; sourceTree = "<group>"; };
 		91E107682EEA01AD00F4DB1D /* sharedios */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (91E107752EEA01AD00F4DB1D /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = sharedios; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
@@ -1225,6 +1262,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		918C4AFC2EF4094D00974B54 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		919F409A2F66C559009FF35B /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1326,6 +1370,17 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		919F34C82F66BC6B009FF35B /* BackgroundDownloadExtension */ = {
+			isa = PBXGroup;
+			children = (
+				919F34D72F66BCD1009FF35B /* BackgroundDownloadHandler.swift */,
+				919F34D82F66BCD1009FF35B /* Info.plist */,
+				919F34D92F66BCD1009FF35B /* BackgroundDownloadExtension.entitlements */,
+				919F34DA2F66BCF1009FF35B /* README.md */,
+			);
+			path = BackgroundDownloadExtension;
+			sourceTree = "<group>";
+		};
 		E92F644E2AB6EF5A007BB4BA /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -1347,8 +1402,10 @@
 				91E107682EEA01AD00F4DB1D /* sharedios */,
 				917C30202EBCD1E5006BB36E /* La Ley_mac */,
 				918C4B002EF4094D00974B54 /* sharedmac */,
+				919F409E2F66C559009FF35B /* LaLeyBackgroundDownloadExtension */,
 				19E0BDEB2B0B412D00E149A5 /* Frameworks */,
 				E95B93542AAFBB2600B5E2B5 /* Products */,
+				919F34C82F66BC6B009FF35B /* BackgroundDownloadExtension */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1362,6 +1419,7 @@
 				917C301F2EBCD1E5006BB36E /* La Ley_mac.app */,
 				91E107672EEA01AD00F4DB1D /* sharedios.appex */,
 				918C4AFF2EF4094D00974B54 /* La Ley.appex */,
+				919F409D2F66C559009FF35B /* LaLeyBackgroundDownloadExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1488,6 +1546,28 @@
 			productReference = 918C4AFF2EF4094D00974B54 /* La Ley.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		919F409C2F66C559009FF35B /* LaLeyBackgroundDownloadExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 919F40A62F66C559009FF35B /* Build configuration list for PBXNativeTarget "LaLeyBackgroundDownloadExtension" */;
+			buildPhases = (
+				919F40992F66C559009FF35B /* Sources */,
+				919F409A2F66C559009FF35B /* Frameworks */,
+				919F409B2F66C559009FF35B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				919F409E2F66C559009FF35B /* LaLeyBackgroundDownloadExtension */,
+			);
+			name = LaLeyBackgroundDownloadExtension;
+			packageProductDependencies = (
+			);
+			productName = LaLeyBackgroundDownloadExtension;
+			productReference = 919F409D2F66C559009FF35B /* LaLeyBackgroundDownloadExtension.appex */;
+			productType = "com.apple.product-type.extensionkit-extension";
+		};
 		91E107662EEA01AD00F4DB1D /* sharedios */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 91E107722EEA01AD00F4DB1D /* Build configuration list for PBXNativeTarget "sharedios" */;
@@ -1519,6 +1599,7 @@
 				E95B93512AAFBB2600B5E2B5 /* Resources */,
 				19E0BDFE2B0B412F00E149A5 /* Embed Foundation Extensions */,
 				19F804272B69CBA000A323A0 /* Embed Watch Content */,
+				919F40AA2F66C559009FF35B /* Embed ExtensionKit Extensions */,
 			);
 			buildRules = (
 			);
@@ -1526,6 +1607,7 @@
 				19E0BE202B0C661B00E149A5 /* PBXTargetDependency */,
 				19F804252B69CBA000A323A0 /* PBXTargetDependency */,
 				91E107702EEA01AD00F4DB1D /* PBXTargetDependency */,
+				919F40A42F66C559009FF35B /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				9113E29C2EE9E1D2002AC306 /* Model */,
@@ -1545,7 +1627,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 2620;
+				LastSwiftUpdateCheck = 2630;
 				LastUpgradeCheck = 2620;
 				TargetAttributes = {
 					19E0BE132B0C661A00E149A5 = {
@@ -1562,6 +1644,9 @@
 					};
 					918C4AFE2EF4094D00974B54 = {
 						CreatedOnToolsVersion = 26.2;
+					};
+					919F409C2F66C559009FF35B = {
+						CreatedOnToolsVersion = 26.3;
 					};
 					91E107662EEA01AD00F4DB1D = {
 						CreatedOnToolsVersion = 26.1.1;
@@ -1593,6 +1678,7 @@
 				917C301E2EBCD1E5006BB36E /* La Ley_mac */,
 				91E107662EEA01AD00F4DB1D /* sharedios */,
 				918C4AFE2EF4094D00974B54 /* sharedmac */,
+				919F409C2F66C559009FF35B /* LaLeyBackgroundDownloadExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -1631,6 +1717,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		918C4AFD2EF4094D00974B54 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		919F409B2F66C559009FF35B /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1701,6 +1794,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		919F40992F66C559009FF35B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		91E107632EEA01AD00F4DB1D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1742,6 +1842,11 @@
 			target = 918C4AFE2EF4094D00974B54 /* sharedmac */;
 			targetProxy = 918C4B092EF4094D00974B54 /* PBXContainerItemProxy */;
 		};
+		919F40A42F66C559009FF35B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 919F409C2F66C559009FF35B /* LaLeyBackgroundDownloadExtension */;
+			targetProxy = 919F40A32F66C559009FF35B /* PBXContainerItemProxy */;
+		};
 		91E107702EEA01AD00F4DB1D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 91E107662EEA01AD00F4DB1D /* sharedios */;
@@ -1758,7 +1863,7 @@
 				CODE_SIGN_ENTITLEMENTS = FrasesWiggetExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 41;
+				CURRENT_PROJECT_VERSION = 42;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FrasesWigget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = FrasesWigget;
@@ -1768,7 +1873,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.3.6;
+				MARKETING_VERSION = 1.3.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.FrasesWigget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1786,7 +1891,7 @@
 				CODE_SIGN_ENTITLEMENTS = FrasesWiggetExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 41;
+				CURRENT_PROJECT_VERSION = 42;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FrasesWigget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = FrasesWigget;
@@ -1796,7 +1901,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.3.6;
+				MARKETING_VERSION = 1.3.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.FrasesWigget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1814,7 +1919,7 @@
 				CODE_SIGN_ENTITLEMENTS = WatchComplicationLaLeyExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 41;
+				CURRENT_PROJECT_VERSION = 42;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WatchComplicationLaLey/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = WatchComplicationLaLey;
@@ -1826,7 +1931,7 @@
 					"@executable_path/../../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MARKETING_VERSION = 1.3.6;
+				MARKETING_VERSION = 1.3.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.watchkitapp.WatchComplicationLaLey;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -1846,7 +1951,7 @@
 				CODE_SIGN_ENTITLEMENTS = WatchComplicationLaLeyExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 41;
+				CURRENT_PROJECT_VERSION = 42;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WatchComplicationLaLey/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = WatchComplicationLaLey;
@@ -1858,7 +1963,7 @@
 					"@executable_path/../../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MARKETING_VERSION = 1.3.6;
+				MARKETING_VERSION = 1.3.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.watchkitapp.WatchComplicationLaLey;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -1878,7 +1983,7 @@
 				CODE_SIGN_ENTITLEMENTS = "La Ley Watch App/La Ley Watch App.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 41;
+				CURRENT_PROJECT_VERSION = 42;
 				DEVELOPMENT_ASSET_PATHS = "\"La Ley Watch App/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -1890,7 +1995,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3.6;
+				MARKETING_VERSION = 1.3.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -1910,7 +2015,7 @@
 				CODE_SIGN_ENTITLEMENTS = "La Ley Watch App/La Ley Watch App.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 41;
+				CURRENT_PROJECT_VERSION = 42;
 				DEVELOPMENT_ASSET_PATHS = "\"La Ley Watch App/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -1922,7 +2027,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3.6;
+				MARKETING_VERSION = 1.3.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -1943,7 +2048,7 @@
 				CODE_SIGN_ENTITLEMENTS = "La Ley_mac/La Ley_mac.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 41;
+				CURRENT_PROJECT_VERSION = 42;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				ENABLE_APP_SANDBOX = YES;
@@ -1973,7 +2078,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.6;
-				MARKETING_VERSION = 1.3.6;
+				MARKETING_VERSION = 1.3.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
@@ -2002,7 +2107,7 @@
 				CODE_SIGN_ENTITLEMENTS = "La Ley_mac/La Ley_mac.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 41;
+				CURRENT_PROJECT_VERSION = 42;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				ENABLE_APP_SANDBOX = YES;
@@ -2032,7 +2137,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.6;
-				MARKETING_VERSION = 1.3.6;
+				MARKETING_VERSION = 1.3.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
@@ -2058,7 +2163,7 @@
 				CODE_SIGN_ENTITLEMENTS = sharedmac/sharedmac.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 41;
+				CURRENT_PROJECT_VERSION = 42;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				ENABLE_APP_SANDBOX = YES;
@@ -2074,7 +2179,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 26.2;
-				MARKETING_VERSION = 1.3.6;
+				MARKETING_VERSION = 1.3.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.dev.sharedmac;
 				PRODUCT_NAME = "La Ley";
 				REGISTER_APP_GROUPS = YES;
@@ -2094,7 +2199,7 @@
 				CODE_SIGN_ENTITLEMENTS = sharedmac/sharedmac.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 41;
+				CURRENT_PROJECT_VERSION = 42;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				ENABLE_APP_SANDBOX = YES;
@@ -2110,7 +2215,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 26.2;
-				MARKETING_VERSION = 1.3.6;
+				MARKETING_VERSION = 1.3.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.sharedmac;
 				PRODUCT_NAME = "La Ley";
 				REGISTER_APP_GROUPS = YES;
@@ -2124,13 +2229,73 @@
 			};
 			name = Release;
 		};
+		919F40A72F66C559009FF35B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = LaLeyBackgroundDownloadExtension/LaLeyBackgroundDownloadExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 42;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LaLeyBackgroundDownloadExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = LaLeyBackgroundDownloadExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.3.7;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.LaLeyBackgroundDownloadExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		919F40A82F66C559009FF35B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = LaLeyBackgroundDownloadExtension/LaLeyBackgroundDownloadExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 42;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LaLeyBackgroundDownloadExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = LaLeyBackgroundDownloadExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.3.7;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.LaLeyBackgroundDownloadExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		91E107732EEA01AD00F4DB1D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = sharedios/sharedios.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 41;
+				CURRENT_PROJECT_VERSION = 42;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = sharedios/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = sharedios;
@@ -2141,7 +2306,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.3.6;
+				MARKETING_VERSION = 1.3.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.dev.sharedios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -2160,7 +2325,7 @@
 				CODE_SIGN_ENTITLEMENTS = sharedios/sharedios.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 41;
+				CURRENT_PROJECT_VERSION = 42;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = sharedios/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = sharedios;
@@ -2171,7 +2336,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.3.6;
+				MARKETING_VERSION = 1.3.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.sharedios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -2315,7 +2480,7 @@
 				CODE_SIGN_ENTITLEMENTS = Neville_iOS/Neville_iOS.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 41;
+				CURRENT_PROJECT_VERSION = 42;
 				DEVELOPMENT_ASSET_PATHS = "\"Neville_iOS/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -2337,7 +2502,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3.6;
+				MARKETING_VERSION = 1.3.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2358,7 +2523,7 @@
 				CODE_SIGN_ENTITLEMENTS = Neville_iOS/Neville_iOS.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 41;
+				CURRENT_PROJECT_VERSION = 42;
 				DEVELOPMENT_ASSET_PATHS = "\"Neville_iOS/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -2380,7 +2545,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3.6;
+				MARKETING_VERSION = 1.3.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2437,6 +2602,15 @@
 			buildConfigurations = (
 				918C4B0D2EF4094D00974B54 /* Debug */,
 				918C4B0E2EF4094D00974B54 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		919F40A62F66C559009FF35B /* Build configuration list for PBXNativeTarget "LaLeyBackgroundDownloadExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				919F40A72F66C559009FF35B /* Debug */,
+				919F40A82F66C559009FF35B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

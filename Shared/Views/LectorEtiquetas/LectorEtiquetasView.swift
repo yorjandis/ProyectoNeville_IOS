@@ -54,6 +54,9 @@ struct LectorEtiquetasView: View {
             .sheet(isPresented: $showBarcodeScanner) {
                 barcodeScannerSheet
             }
+            .onChange(of: viewModel.selectedSource) { _, _ in
+                clearSearchStateForModeChange()
+            }
         }
     }
 
@@ -74,7 +77,7 @@ struct LectorEtiquetasView: View {
                 .font(.system(.title2, design: .rounded, weight: .bold))
                 .foregroundStyle(Color.primary)
 
-            Text("Consulta OpenFoodFacts por código de barras y analiza información relevante de forma clara.")
+            Text("Consulta por código de barras usando API de OpenFoodFacts o base SQLite offline.")
                 .font(.system(.subheadline, design: .rounded))
                 .foregroundStyle(.secondary)
         }
@@ -86,6 +89,13 @@ struct LectorEtiquetasView: View {
             VStack(alignment: .leading, spacing: 12) {
                 Text("Código de barras")
                     .font(.system(.headline, design: .rounded, weight: .semibold))
+
+                Picker("Fuente de datos", selection: $viewModel.selectedSource) {
+                    ForEach(LectorEtiquetasDataSource.allCases) { source in
+                        Text(source.title).tag(source)
+                    }
+                }
+                .pickerStyle(.segmented)
 
                 TextField("Ejemplo: 8410076475898", text: $barcodeInput)
                     .keyboardType(.numberPad)
@@ -100,28 +110,97 @@ struct LectorEtiquetasView: View {
                     }
                     .clipShape(RoundedRectangle(cornerRadius: 10))
 
-                HStack(spacing: 10) {
-                    Button {
-                        Task {
-                            await viewModel.analizar(codigoBarras: barcodeInput)
+                if viewModel.selectedSource == .openFoodFacts || viewModel.isOfflineDatabaseReady {
+                    HStack(spacing: 10) {
+                        Button {
+                            Task {
+                                await viewModel.analizar(codigoBarras: barcodeInput)
+                            }
+                        } label: {
+                            Label(viewModel.selectedSource == .offlineSQLite ? "Buscar offline" : "Buscar", systemImage: "barcode.viewfinder")
+                                .frame(maxWidth: .infinity)
                         }
-                    } label: {
-                        Label("Buscar", systemImage: "barcode.viewfinder")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .tint(Color.blue)
-                    .disabled(barcodeInput.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || viewModel.isAnalizando)
+                        .buttonStyle(.borderedProminent)
+                        .tint(Color.blue)
+                        .disabled(
+                            barcodeInput.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
+                            viewModel.isAnalizando
+                        )
 
-                    Button {
-                        showBarcodeScanner = true
-                    } label: {
-                        Label("Escanear", systemImage: "camera")
-                            .frame(maxWidth: .infinity)
+                        Button {
+                            showBarcodeScanner = true
+                        } label: {
+                            Label("Escanear", systemImage: "camera")
+                                .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(.bordered)
+                        .tint(Color.blue)
+                        .disabled(viewModel.isAnalizando)
                     }
-                    .buttonStyle(.bordered)
-                    .tint(Color.blue)
-                    .disabled(viewModel.isAnalizando)
+                }
+
+                if viewModel.selectedSource == .offlineSQLite {
+                    if viewModel.isOfflineDatabaseReady {
+                        Button {
+                            Task { await viewModel.analizarOffline(codigoBarras: barcodeInput) }
+                        } label: {
+                            Label("Chequear en BD offline", systemImage: "shippingbox")
+                                .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .tint(Color.indigo)
+                        .disabled(
+                            barcodeInput.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
+                            viewModel.isAnalizando
+                        )
+                    }
+
+                    Divider()
+
+                    VStack(alignment: .leading, spacing: 8) {
+                        Button {
+                            Task { await viewModel.prepararBaseOffline() }
+                        } label: {
+                            Label("Descargar y verificar BD offline", systemImage: "square.and.arrow.down")
+                                .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(.bordered)
+                        .tint(Color.indigo)
+                        .disabled(viewModel.isAnalizando || viewModel.isPreparingOfflineDatabase)
+
+                        if !viewModel.isOfflineDatabaseReady {
+                            Text("Primero descarga y verifica la BD offline para habilitar escaneo y búsqueda.")
+                                .font(.system(.footnote, design: .rounded))
+                                .foregroundStyle(.secondary)
+                        }
+
+                        if viewModel.isPreparingOfflineDatabase {
+                            ProgressView("Preparando base SQLite offline...")
+                                .font(.system(.footnote, design: .rounded))
+                        }
+
+                        if let infoMessage = viewModel.offlineInfoMessage {
+                            Text(infoMessage)
+                                .font(.system(.footnote, design: .rounded))
+                                .foregroundStyle(.green)
+                        }
+
+                        if let databasePath = viewModel.offlineDatabasePath {
+                            Text("Ruta SQLite")
+                                .font(.system(.caption, design: .rounded, weight: .bold))
+                                .foregroundStyle(.secondary)
+                            Text(databasePath)
+                                .font(.caption2.monospaced())
+                                .textSelection(.enabled)
+                                .foregroundStyle(.secondary)
+                        }
+
+                        if let errorMessage = viewModel.offlineErrorMessage {
+                            Text(errorMessage)
+                                .font(.system(.footnote, design: .rounded))
+                                .foregroundStyle(.red)
+                        }
+                    }
                 }
             }
         }
@@ -133,7 +212,7 @@ struct LectorEtiquetasView: View {
             card {
                 HStack(spacing: 10) {
                     ProgressView()
-                    Text("Consultando OpenFoodFacts...")
+                    Text(viewModel.selectedSource == .offlineSQLite ? "Consultando base SQLite offline..." : "Consultando OpenFoodFacts...")
                         .font(.system(.subheadline, design: .rounded))
                 }
             }
@@ -155,6 +234,7 @@ struct LectorEtiquetasView: View {
             VStack(alignment: .leading, spacing: 12) {
                 headerSection(resultado)
                 productoSection(resumen)
+                perfilSection(resumen)
                 ecologicoSection(resumen)
                 aditivosSection(resultado)
                 nutricionSection(resumen)
@@ -166,7 +246,7 @@ struct LectorEtiquetasView: View {
     private func headerSection(_ resultado: ResultadoAnalisisEtiqueta) -> some View {
         card {
             HStack {
-                Text("Resultado del análisis")
+                Text("Resultado (\(resultado.metadata?.source.title ?? "N/A"))")
                     .font(.system(.headline, design: .rounded, weight: .semibold))
 
                 Spacer()
@@ -266,6 +346,20 @@ struct LectorEtiquetasView: View {
                     title: "Alérgenos",
                     value: resumen.alergenos.isEmpty ? "No informados" : resumen.alergenos.joined(separator: ", ")
                 )
+            }
+        }
+    }
+
+    private func perfilSection(_ resumen: EtiquetaResumenProducto) -> some View {
+        card {
+            VStack(alignment: .leading, spacing: 10) {
+                Text("Perfil alimentario")
+                    .font(.system(.headline, design: .rounded, weight: .semibold))
+
+                infoRow(title: "Vegano", value: boolText(resumen.perfilAlimentario.esVegano))
+                infoRow(title: "Vegetariano", value: boolText(resumen.perfilAlimentario.esVegetariano))
+                infoRow(title: "Orgánico", value: boolText(resumen.perfilAlimentario.esOrganico))
+                infoRow(title: "Contiene gluten", value: boolText(resumen.perfilAlimentario.contieneGluten))
             }
         }
     }
@@ -401,6 +495,17 @@ struct LectorEtiquetasView: View {
         case "medio": return .orange
         default: return .green
         }
+    }
+
+    private func boolText(_ value: Bool?) -> String {
+        guard let value else { return "No disponible" }
+        return value ? "Sí" : "No"
+    }
+
+    private func clearSearchStateForModeChange() {
+        barcodeInput = ""
+        expandedAditivos.removeAll()
+        viewModel.limpiarResultado()
     }
 
     private var barcodeScannerSheet: some View {

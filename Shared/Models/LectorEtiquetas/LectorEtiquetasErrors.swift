@@ -16,6 +16,8 @@ enum LectorEtiquetasError: Error, LocalizedError {
     case reconocimientoNoDisponible
     case ocrSinResultados
     case ocrFallido(Error)
+    case baseOfflineNoDisponible
+    case productoNoEncontradoEnBaseOffline
 
     var errorDescription: String? {
         switch self {
@@ -35,6 +37,10 @@ enum LectorEtiquetasError: Error, LocalizedError {
             return "No fue posible extraer texto legible de la etiqueta."
         case .ocrFallido(let error):
             return "Error de OCR: \(error.localizedDescription)"
+        case .baseOfflineNoDisponible:
+            return "La base de datos offline no está disponible todavía. Descárgala y verifícala."
+        case .productoNoEncontradoEnBaseOffline:
+            return "No se encontró el producto en la base de datos offline para ese código."
         }
     }
 }
