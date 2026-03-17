@@ -17,6 +17,7 @@ struct LectorEtiquetasView: View {
     @State private var barcodeInput: String = ""
     @State private var showBarcodeScanner: Bool = false
     @State private var expandedAditivos: Set<String> = []
+    @State private var showNutritionInfoSheet: Bool = false
 
     var body: some View {
         NavigationStack {
@@ -46,13 +47,36 @@ struct LectorEtiquetasView: View {
                     Button("Limpiar") {
                         barcodeInput = ""
                         expandedAditivos.removeAll()
+                        viewModel.offlineNameMatches = []
                         viewModel.limpiarResultado()
                     }
                     .disabled(viewModel.isAnalizando)
                 }
+
+                if viewModel.selectedSource == .offlineSQLite, viewModel.isOfflineDatabaseReady {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Menu {
+                            Button("Chequear BD offline", systemImage: "shippingbox") {
+                                Task { await viewModel.buscar(query: barcodeInput) }
+                            }
+                            .disabled(barcodeInput.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || viewModel.isAnalizando)
+
+                            Button("Revalidar BD offline", systemImage: "arrow.clockwise") {
+                                Task { await viewModel.prepararBaseOffline() }
+                            }
+                            .disabled(viewModel.isAnalizando || viewModel.isPreparingOfflineDatabase)
+                        } label: {
+                            Image(systemName: "ellipsis.circle")
+                        }
+                    }
+                }
             }
             .sheet(isPresented: $showBarcodeScanner) {
                 barcodeScannerSheet
+            }
+            .sheet(isPresented: $showNutritionInfoSheet) {
+                NutritionInfoSheetView()
+                    .presentationDetents([.medium])
             }
             .onChange(of: viewModel.selectedSource) { _, _ in
                 clearSearchStateForModeChange()
@@ -80,6 +104,10 @@ struct LectorEtiquetasView: View {
             Text("Consulta por código de barras usando API de OpenFoodFacts o base SQLite offline.")
                 .font(.system(.subheadline, design: .rounded))
                 .foregroundStyle(.secondary)
+
+            Text("DEBUG · Ítems BD offline: \(viewModel.offlineItemsCount.map(String.init) ?? "N/D")")
+                .font(.system(.caption2, design: .monospaced))
+                .foregroundStyle(.secondary)
         }
         .padding(.horizontal, 4)
     }
@@ -97,8 +125,13 @@ struct LectorEtiquetasView: View {
                 }
                 .pickerStyle(.segmented)
 
-                TextField("Ejemplo: 8410076475898", text: $barcodeInput)
-                    .keyboardType(.numberPad)
+                TextField(
+                    viewModel.selectedSource == .offlineSQLite
+                        ? "Código de barras o nombre de producto"
+                        : "Ejemplo: 8410076475898",
+                    text: $barcodeInput
+                )
+                    .keyboardType(viewModel.selectedSource == .offlineSQLite ? .default : .numberPad)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
                     .padding(.horizontal, 12)
@@ -114,10 +147,10 @@ struct LectorEtiquetasView: View {
                     HStack(spacing: 10) {
                         Button {
                             Task {
-                                await viewModel.analizar(codigoBarras: barcodeInput)
+                                await viewModel.buscar(query: barcodeInput)
                             }
                         } label: {
-                            Label(viewModel.selectedSource == .offlineSQLite ? "Buscar offline" : "Buscar", systemImage: "barcode.viewfinder")
+                            Label("Buscar", systemImage: "magnifyingglass")
                                 .frame(maxWidth: .infinity)
                         }
                         .buttonStyle(.borderedProminent)
@@ -140,33 +173,46 @@ struct LectorEtiquetasView: View {
                 }
 
                 if viewModel.selectedSource == .offlineSQLite {
-                    if viewModel.isOfflineDatabaseReady {
-                        Button {
-                            Task { await viewModel.analizarOffline(codigoBarras: barcodeInput) }
-                        } label: {
-                            Label("Chequear en BD offline", systemImage: "shippingbox")
-                                .frame(maxWidth: .infinity)
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .tint(Color.indigo)
-                        .disabled(
-                            barcodeInput.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
-                            viewModel.isAnalizando
-                        )
-                    }
-
                     Divider()
 
                     VStack(alignment: .leading, spacing: 8) {
-                        Button {
-                            Task { await viewModel.prepararBaseOffline() }
-                        } label: {
-                            Label("Descargar y verificar BD offline", systemImage: "square.and.arrow.down")
-                                .frame(maxWidth: .infinity)
+                        if !viewModel.isOfflineDatabaseReady {
+                            Button {
+                                Task { await viewModel.prepararBaseOffline() }
+                            } label: {
+                                Label("Descargar y verificar BD offline", systemImage: "square.and.arrow.down")
+                                    .frame(maxWidth: .infinity)
+                            }
+                            .buttonStyle(.bordered)
+                            .tint(Color.indigo)
+                            .disabled(viewModel.isAnalizando || viewModel.isPreparingOfflineDatabase)
+                        } else {
+                            if !viewModel.offlineNameMatches.isEmpty {
+                                VStack(alignment: .leading, spacing: 6) {
+                                    Text("Resultados")
+                                        .font(.system(.caption, design: .rounded, weight: .bold))
+                                        .foregroundStyle(.secondary)
+                                    ForEach(viewModel.offlineNameMatches) { match in
+                                        Button {
+                                            barcodeInput = match.barcode
+                                            Task { await viewModel.buscar(query: match.barcode) }
+                                        } label: {
+                                            VStack(alignment: .leading, spacing: 2) {
+                                                Text(match.productName)
+                                                    .font(.system(.subheadline, design: .rounded, weight: .semibold))
+                                                    .foregroundStyle(.primary)
+                                                Text("\(match.barcode)\(match.brands.map { " • \($0)" } ?? "")")
+                                                    .font(.system(.caption, design: .rounded))
+                                                    .foregroundStyle(.secondary)
+                                            }
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                            .padding(.vertical, 4)
+                                        }
+                                        .buttonStyle(.plain)
+                                    }
+                                }
+                            }
                         }
-                        .buttonStyle(.bordered)
-                        .tint(Color.indigo)
-                        .disabled(viewModel.isAnalizando || viewModel.isPreparingOfflineDatabase)
 
                         if !viewModel.isOfflineDatabaseReady {
                             Text("Primero descarga y verifica la BD offline para habilitar escaneo y búsqueda.")
@@ -182,18 +228,24 @@ struct LectorEtiquetasView: View {
                         if let infoMessage = viewModel.offlineInfoMessage {
                             Text(infoMessage)
                                 .font(.system(.footnote, design: .rounded))
-                                .foregroundStyle(.green)
+                                .foregroundStyle(.black).bold()
                         }
 
-                        if let databasePath = viewModel.offlineDatabasePath {
-                            Text("Ruta SQLite")
-                                .font(.system(.caption, design: .rounded, weight: .bold))
-                                .foregroundStyle(.secondary)
-                            Text(databasePath)
-                                .font(.caption2.monospaced())
-                                .textSelection(.enabled)
-                                .foregroundStyle(.secondary)
-                        }
+                        /*
+                         #if DEBUG
+                         if let databasePath = viewModel.offlineDatabasePath {
+                             Text("Ruta SQLite")
+                                 .font(.system(.caption, design: .rounded, weight: .bold))
+                                 .foregroundStyle(.secondary)
+                             Text(databasePath)
+                                 .font(.caption2.monospaced())
+                                 .textSelection(.enabled)
+                                 .foregroundStyle(.secondary)
+                         }
+                         #endif
+                         */
+                        
+                        
 
                         if let errorMessage = viewModel.offlineErrorMessage {
                             Text(errorMessage)
@@ -232,9 +284,8 @@ struct LectorEtiquetasView: View {
         if let resultado = viewModel.resultado,
            let resumen = resultado.resumenProducto() {
             VStack(alignment: .leading, spacing: 12) {
-                headerSection(resultado)
+                headerSection(resultado, resumen: resumen)
                 productoSection(resumen)
-                perfilSection(resumen)
                 ecologicoSection(resumen)
                 aditivosSection(resultado)
                 nutricionSection(resumen)
@@ -243,21 +294,41 @@ struct LectorEtiquetasView: View {
         }
     }
 
-    private func headerSection(_ resultado: ResultadoAnalisisEtiqueta) -> some View {
+    private func headerSection(_ resultado: ResultadoAnalisisEtiqueta, resumen: EtiquetaResumenProducto) -> some View {
         card {
-            HStack {
-                Text("Resultado (\(resultado.metadata?.source.title ?? "N/A"))")
-                    .font(.system(.headline, design: .rounded, weight: .semibold))
+            VStack(alignment: .leading, spacing: 10) {
+                HStack {
+                    Text("Resultado (\(resultado.metadata?.source.title ?? "N/A"))")
+                        .font(.system(.headline, design: .rounded, weight: .semibold))
 
-                Spacer()
+                    Spacer()
 
-                Text(resultado.nivelGeneral.badgeText)
-                    .font(.system(.caption, design: .rounded, weight: .bold))
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 5)
-                    .background(resultado.nivelGeneral.badgeColor.opacity(0.18))
-                    .foregroundStyle(resultado.nivelGeneral.badgeColor)
-                    .clipShape(Capsule())
+                    Text(resultado.nivelGeneral.badgeText)
+                        .font(.system(.caption, design: .rounded, weight: .bold))
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 5)
+                        .background(resultado.nivelGeneral.badgeColor.opacity(0.18))
+                        .foregroundStyle(resultado.nivelGeneral.badgeColor)
+                        .clipShape(Capsule())
+                }
+
+                HStack(spacing: 8) {
+                    headerBadge(
+                        title: "Nutrition Grade",
+                        value: resumen.nutritionGrade.map { "Grade \($0)" } ?? "N/D",
+                        color: nutritionGradeColor(resumen.nutritionGrade),
+                        action: { showNutritionInfoSheet = true }
+                    )
+                    
+                    Spacer()
+                    
+                    headerBadge(
+                        title: "NOVA",
+                        value: resumen.novaGroup.map { "Grupo \($0)" } ?? "N/D",
+                        color: novaGroupColor(resumen.novaGroup),
+                        action: { showNutritionInfoSheet = true }
+                    )
+                }
             }
         }
     }
@@ -312,10 +383,6 @@ struct LectorEtiquetasView: View {
                                     Text(aditivo.detalle)
                                         .font(.system(.caption, design: .rounded))
                                         .foregroundStyle(.primary)
-
-                                    Text("Detectado en: \(aditivo.textoDetectado)")
-                                        .font(.system(.caption2, design: .rounded))
-                                        .foregroundStyle(.secondary)
                                 }
                                 .padding(.top, 2)
                             }
@@ -336,30 +403,61 @@ struct LectorEtiquetasView: View {
 
     private func productoSection(_ resumen: EtiquetaResumenProducto) -> some View {
         card {
-            VStack(alignment: .leading, spacing: 10) {
+            VStack(alignment: .leading, spacing: 12) {
                 Text("Producto")
                     .font(.system(.headline, design: .rounded, weight: .semibold))
 
-                infoRow(title: "Nombre", value: resumen.nombreProducto)
+                HStack(alignment: .top, spacing: 12) {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+                            .fill(Color.white.opacity(0.55))
+
+                        if let imageURL = resumen.imageURL {
+                            AsyncImage(url: imageURL) { phase in
+                                switch phase {
+                                case .empty:
+                                    ProgressView()
+                                case .success(let image):
+                                    image
+                                        .resizable()
+                                        .scaledToFit()
+                                        .padding(8)
+                                        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                                case .failure:
+                                    Image(systemName: "photo")
+                                        .font(.system(size: 30))
+                                        .foregroundStyle(.secondary)
+                                @unknown default:
+                                    EmptyView()
+                                }
+                            }
+                        } else {
+                            Image(systemName: "photo")
+                                .font(.system(size: 30))
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    .frame(width: 132, height: 132)
+                    .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+
+                    VStack(alignment: .leading, spacing: 8) {
+                        infoRow(title: "Nombre del producto", value: resumen.nombreProducto)
+                        estadoRow(title: "Vegano", value: resumen.perfilAlimentario.esVegano)
+                        estadoRow(title: "Vegetariano", value: resumen.perfilAlimentario.esVegetariano)
+                        estadoRow(title: "Orgánico", value: resumen.perfilAlimentario.esOrganico)
+                        estadoRow(title: "Contiene gluten", value: resumen.perfilAlimentario.contieneGluten, isNegativeWhenTrue: true)
+                    }
+                }
+
                 infoRow(title: "Código de barras", value: resumen.codigoBarras)
-                infoRow(
-                    title: "Alérgenos",
-                    value: resumen.alergenos.isEmpty ? "No informados" : resumen.alergenos.joined(separator: ", ")
-                )
-            }
-        }
-    }
-
-    private func perfilSection(_ resumen: EtiquetaResumenProducto) -> some View {
-        card {
-            VStack(alignment: .leading, spacing: 10) {
-                Text("Perfil alimentario")
-                    .font(.system(.headline, design: .rounded, weight: .semibold))
-
-                infoRow(title: "Vegano", value: boolText(resumen.perfilAlimentario.esVegano))
-                infoRow(title: "Vegetariano", value: boolText(resumen.perfilAlimentario.esVegetariano))
-                infoRow(title: "Orgánico", value: boolText(resumen.perfilAlimentario.esOrganico))
-                infoRow(title: "Contiene gluten", value: boolText(resumen.perfilAlimentario.contieneGluten))
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Alérgenos")
+                        .font(.system(.caption, design: .rounded, weight: .bold))
+                        .foregroundStyle(.secondary)
+                    Text(resumen.alergenos.isEmpty ? "No informados" : resumen.alergenos.joined(separator: ", "))
+                        .font(.system(.subheadline, design: .rounded))
+                        .foregroundStyle(.red)
+                }
             }
         }
     }
@@ -450,12 +548,81 @@ struct LectorEtiquetasView: View {
         }
     }
 
+    private func estadoRow(title: String, value: Bool?, isNegativeWhenTrue: Bool = false) -> some View {
+        HStack(spacing: 8) {
+            Text(title)
+                .font(.system(.caption, design: .rounded, weight: .bold))
+                .foregroundStyle(.secondary)
+            Spacer(minLength: 6)
+
+            if let value {
+                let isPositive = isNegativeWhenTrue ? !value : value
+                Image(systemName: isPositive ? "checkmark.circle.fill" : "nosign")
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundStyle(isPositive ? .green : .red)
+            } else {
+                Text("N/D")
+                    .font(.system(.caption, design: .rounded))
+                    .foregroundStyle(.secondary)
+            }
+        }
+    }
+
+    private func headerBadge(title: String, value: String, color: Color, action: (() -> Void)? = nil) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(title)
+                .font(.system(.caption2, design: .rounded, weight: .bold))
+                .foregroundStyle(.secondary)
+            Group {
+                if let action {
+                    Button(action: action) {
+                        Text(value)
+                            .font(.system(.caption, design: .rounded, weight: .semibold))
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(color.opacity(0.15))
+                            .foregroundStyle(color)
+                            .clipShape(Capsule())
+                    }
+                    .buttonStyle(.plain)
+                } else {
+                    Text(value)
+                        .font(.system(.caption, design: .rounded, weight: .semibold))
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(color.opacity(0.15))
+                        .foregroundStyle(color)
+                        .clipShape(Capsule())
+                }
+            }
+        }
+    }
+
+    private func nutritionGradeColor(_ grade: String?) -> Color {
+        switch grade?.uppercased() {
+        case "A", "B": return .green
+        case "C": return .orange
+        case "D", "E": return .red
+        default: return .secondary
+        }
+    }
+
+    private func novaGroupColor(_ group: Int?) -> Color {
+        switch group {
+        case 1: return .green
+        case 2: return .yellow
+        case 3: return .orange
+        case 4: return .red
+        default: return .secondary
+        }
+    }
+
     private func card<Content: View>(@ViewBuilder content: () -> Content) -> some View {
         content()
             .padding(14)
             .frame(maxWidth: .infinity, alignment: .leading)
             .foregroundStyle(.black)
-            .background(Color.green.opacity(0.80))
+            .background(Color.white)
             .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
             .overlay {
                 RoundedRectangle(cornerRadius: 16, style: .continuous)
@@ -465,7 +632,7 @@ struct LectorEtiquetasView: View {
     }
 
     private func aditivoIdentifier(_ aditivo: HallazgoRiesgoEtiqueta) -> String {
-        "\(aditivo.titulo)|\(aditivo.textoDetectado)"
+        "\(aditivo.titulo)|\(aditivo.detalle)"
     }
 
     private func aditivoDisplayTitle(_ title: String) -> String {
@@ -505,6 +672,7 @@ struct LectorEtiquetasView: View {
     private func clearSearchStateForModeChange() {
         barcodeInput = ""
         expandedAditivos.removeAll()
+        viewModel.offlineNameMatches = []
         viewModel.limpiarResultado()
     }
 
@@ -515,13 +683,51 @@ struct LectorEtiquetasView: View {
                 let code = scan.string.trimmingCharacters(in: .whitespacesAndNewlines)
                 barcodeInput = code
                 Task {
-                    await viewModel.analizar(codigoBarras: code)
+                    await viewModel.buscar(query: code)
                 }
             case .failure:
                 viewModel.errorMessage = "No se pudo leer el código de barras."
             }
         }
         .ignoresSafeArea()
+    }
+}
+
+private struct NutritionInfoSheetView: View {
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Cómo interpretar Nutrition Grade y NOVA")
+                    .font(.title3.bold())
+
+                Text("Nutrition Grade (A-E)")
+                    .font(.headline)
+                Text("Resume la calidad nutricional global del producto. A es mejor perfil nutricional y E es el menos favorable.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+
+                Text("Interpretación rápida:")
+                    .font(.subheadline.bold())
+                Text("A/B: favorable • C: intermedio • D/E: menos favorable")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+
+                Divider()
+
+                Text("NOVA (1-4)")
+                    .font(.headline)
+                Text("Clasifica el nivel de procesamiento del alimento.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+
+                Text("Interpretación rápida:")
+                    .font(.subheadline.bold())
+                Text("1: mínimamente procesado • 2: ingrediente culinario • 3: procesado • 4: ultraprocesado")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+            .padding()
+        }
     }
 }
 

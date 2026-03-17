@@ -59,7 +59,7 @@ struct OpenFoodFactsClient {
     private func makeURL(for barcode: String) -> URL? {
         var comps = URLComponents(string: "\(baseURL)/\(barcode)")
         comps?.queryItems = [
-            URLQueryItem(name: "fields", value: "code,product_name,brands,categories,quantity,allergens,ingredients_text,nutriments,nutriscore_grade,nova_group,ecoscore_grade,labels,labels_tags,countries,countries_tags,origins,origins_tags,certifications,certifications_tags")
+            URLQueryItem(name: "fields", value: "code,product_name,brands,categories,quantity,allergens,ingredients_text,nutriments,nutriscore_grade,nova_group,ecoscore_grade,labels,labels_tags,countries,countries_tags,origins,origins_tags,certifications,certifications_tags,image_url,image_front_url")
         ]
         return comps?.url
     }

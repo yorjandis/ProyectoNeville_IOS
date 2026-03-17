@@ -266,6 +266,9 @@ struct EtiquetaEvaluacionEcologica: Codable, Hashable {
 struct EtiquetaResumenProducto: Hashable {
     let nombreProducto: String
     let codigoBarras: String
+    let imageURL: URL?
+    let nutritionGrade: String?
+    let novaGroup: Int?
     let alergenos: [String]
     let perfilAlimentario: EtiquetaPerfilAlimentario
     let aditivosDetectados: [String]
@@ -283,6 +286,9 @@ extension ResultadoAnalisisEtiqueta {
         return EtiquetaResumenProducto(
             nombreProducto: nombreProducto,
             codigoBarras: metadata.barcode,
+            imageURL: Self.extractImageURL(from: metadata.allFields),
+            nutritionGrade: Self.extractNutritionGrade(from: metadata.allFields),
+            novaGroup: Self.extractNovaGroup(from: metadata.allFields),
             alergenos: Self.parseList(from: metadata.allergens),
             perfilAlimentario: metadata.dietaryProfile ?? EtiquetaPerfilAlimentario(
                 esVegano: nil,
@@ -326,6 +332,41 @@ extension ResultadoAnalisisEtiqueta {
             guard let best = bestNutriment(for: descriptor, in: nutriments) else { return nil }
             return EtiquetaNutrienteClave(id: descriptor.id, titulo: descriptor.titulo, valor: best.valueText)
         }
+    }
+
+    private static func extractImageURL(from fields: [OpenFoodFactsFieldItem]) -> URL? {
+        let dictionary = Dictionary(uniqueKeysWithValues: fields.map { ($0.key, $0.value) })
+        let preferredKeys = ["image_url", "image_front_url", "image_path"]
+
+        for key in preferredKeys {
+            guard let rawValue = dictionary[key]?.trimmingCharacters(in: .whitespacesAndNewlines),
+                  !rawValue.isEmpty else { continue }
+            if rawValue.hasPrefix("http://") || rawValue.hasPrefix("https://") {
+                return URL(string: rawValue)
+            }
+
+            let normalizedPath = rawValue.hasPrefix("/") ? String(rawValue.dropFirst()) : rawValue
+            return URL(string: "https://images.openfoodfacts.org/\(normalizedPath)")
+        }
+
+        return nil
+    }
+
+    private static func extractNutritionGrade(from fields: [OpenFoodFactsFieldItem]) -> String? {
+        let dictionary = Dictionary(uniqueKeysWithValues: fields.map { ($0.key, $0.value) })
+        let raw = (dictionary["nutrition_grade"] ?? dictionary["nutriscore_grade"])?
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .lowercased()
+        guard let raw, ["a", "b", "c", "d", "e"].contains(raw) else { return nil }
+        return raw.uppercased()
+    }
+
+    private static func extractNovaGroup(from fields: [OpenFoodFactsFieldItem]) -> Int? {
+        let dictionary = Dictionary(uniqueKeysWithValues: fields.map { ($0.key, $0.value) })
+        guard let raw = dictionary["nova_group"]?.trimmingCharacters(in: .whitespacesAndNewlines),
+              let value = Int(raw),
+              (1...4).contains(value) else { return nil }
+        return value
     }
 
     private static func bestNutriment(

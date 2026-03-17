@@ -31,7 +31,7 @@ actor DatabaseBootstrapper {
         let assetPack = try await manager.assetPack(withID: LectorEtiquetasManagedAssetsConfig.assetPackID)
         try await manager.ensureLocalAvailability(of: assetPack)
 
-        let sourceURL = try manager.url(for: FilePath(LectorEtiquetasManagedAssetsConfig.sqliteRelativePath))
+        let sourceURL = try resolveSQLiteURL(manager: manager)
         let destinationURL = try makeDestinationDatabaseURL()
 
         let defaults = UserDefaults(suiteName: LectorEtiquetasManagedAssetsConfig.appGroupID)
@@ -50,6 +50,69 @@ actor DatabaseBootstrapper {
         }
 
         return Result(databaseURL: destinationURL, didCopy: needsCopy, installedVersion: assetPack.version)
+    }
+
+    @available(iOS 26.0, *)
+    private func resolveSQLiteURL(manager: AssetPackManager) throws -> URL {
+        let fileManager = FileManager.default
+        let configuredPath = LectorEtiquetasManagedAssetsConfig.sqliteRelativePath
+        let sqliteFileName = LectorEtiquetasManagedAssetsConfig.sqliteFileName
+        let baseDirectory = (configuredPath as NSString).deletingLastPathComponent
+        let assetPackID = LectorEtiquetasManagedAssetsConfig.assetPackID
+
+        let pathCandidates = [
+            configuredPath,
+            sqliteFileName,
+            "\(assetPackID)/\(configuredPath)",
+            "asset-pack/\(assetPackID)/\(configuredPath)"
+        ]
+
+        for candidatePath in pathCandidates {
+            if let candidateURL = try? manager.url(for: FilePath(candidatePath)),
+               fileManager.fileExists(atPath: candidateURL.path) {
+                return candidateURL
+            }
+        }
+
+        // Variantes donde url(for:) devuelve carpeta y hay que anexar el archivo.
+        var directoryURLs: [URL] = []
+        let directoryCandidates = [
+            baseDirectory,
+            assetPackID,
+            "\(assetPackID)/\(baseDirectory)",
+            "asset-pack/\(assetPackID)",
+            "asset-pack/\(assetPackID)/\(baseDirectory)"
+        ]
+
+        for directoryPath in directoryCandidates where !directoryPath.isEmpty {
+            if let directoryURL = try? manager.url(for: FilePath(directoryPath)) {
+                let candidate = directoryURL.appendingPathComponent(sqliteFileName, isDirectory: false)
+                if fileManager.fileExists(atPath: candidate.path) {
+                    return candidate
+                }
+                directoryURLs.append(directoryURL)
+            }
+        }
+
+        // Último fallback: buscar recursivamente por nombre de archivo.
+        for directoryURL in directoryURLs {
+            if let enumerator = fileManager.enumerator(
+                at: directoryURL,
+                includingPropertiesForKeys: [.isRegularFileKey],
+                options: [.skipsHiddenFiles]
+            ) {
+                for case let fileURL as URL in enumerator {
+                    if fileURL.lastPathComponent == sqliteFileName {
+                        return fileURL
+                    }
+                }
+            }
+        }
+
+        throw CocoaError(.fileNoSuchFile, userInfo: [
+            NSFilePathErrorKey: configuredPath,
+            NSLocalizedDescriptionKey: "No se encontró la SQLite del asset pack. Ruta configurada: \(configuredPath)."
+        ])
     }
 
     private func makeDestinationDatabaseURL() throws -> URL {

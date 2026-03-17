@@ -7,6 +7,14 @@
 
 import Foundation
 
+struct OfflineProductSuggestion: Identifiable, Hashable {
+    let barcode: String
+    let productName: String
+    let brands: String?
+
+    var id: String { barcode }
+}
+
 final class LectorEtiquetasService: @unchecked Sendable {
     private let openFoodFactsClient: OpenFoodFactsClient
     private let riskEngine: OpenFoodFactsRiskEngine
@@ -26,7 +34,11 @@ final class LectorEtiquetasService: @unchecked Sendable {
         try await offlineDatabase.ensureDatabaseAvailable()
     }
 
-    func analizar(codigoBarras: String, source: LectorEtiquetasDataSource) async throws -> ResultadoAnalisisEtiqueta {
+    func analizar(
+        codigoBarras: String,
+        source: LectorEtiquetasDataSource,
+        preferredOfflineDatabasePath: String? = nil
+    ) async throws -> ResultadoAnalisisEtiqueta {
         let barcode = normalizedBarcode(from: codigoBarras)
 
         guard !barcode.isEmpty, barcode.allSatisfy(\.isNumber) else {
@@ -37,8 +49,22 @@ final class LectorEtiquetasService: @unchecked Sendable {
         case .openFoodFacts:
             return try await analizarOpenFoodFacts(barcode: barcode)
         case .offlineSQLite:
-            return try await analizarOffline(barcode: barcode)
+            return try await analizarOffline(barcode: barcode, preferredOfflineDatabasePath: preferredOfflineDatabasePath)
         }
+    }
+
+    func buscarProductosOffline(
+        nombre: String,
+        preferredOfflineDatabasePath: String? = nil
+    ) async throws -> [OfflineProductSuggestion] {
+        let preferredURL = preferredOfflineDatabasePath.map(URL.init(fileURLWithPath:))
+        let matches = try await offlineDatabase.searchProducts(byName: nombre, preferredDatabaseURL: preferredURL)
+        return matches.map { OfflineProductSuggestion(barcode: $0.barcode, productName: $0.productName, brands: $0.brands) }
+    }
+
+    func contarProductosOffline(preferredOfflineDatabasePath: String?) async throws -> Int {
+        let preferredURL = preferredOfflineDatabasePath.map(URL.init(fileURLWithPath:))
+        return try await offlineDatabase.countProducts(preferredDatabaseURL: preferredURL)
     }
 
     private func analizarOpenFoodFacts(barcode: String) async throws -> ResultadoAnalisisEtiqueta {
@@ -79,8 +105,12 @@ final class LectorEtiquetasService: @unchecked Sendable {
         return resultado
     }
 
-    private func analizarOffline(barcode: String) async throws -> ResultadoAnalisisEtiqueta {
-        let record = try await offlineDatabase.fetchProduct(by: barcode)
+    private func analizarOffline(
+        barcode: String,
+        preferredOfflineDatabasePath: String?
+    ) async throws -> ResultadoAnalisisEtiqueta {
+        let preferredURL = preferredOfflineDatabasePath.map(URL.init(fileURLWithPath:))
+        let record = try await offlineDatabase.fetchProduct(by: barcode, preferredDatabaseURL: preferredURL)
         let product = buildOfflineProduct(from: record)
         var resultado = riskEngine.analyze(product: product)
 
@@ -171,6 +201,7 @@ final class LectorEtiquetasService: @unchecked Sendable {
         appendField("quantity", record.quantity, into: &fields)
         appendField("nutrition_grade", record.nutritionGrade, into: &fields)
         appendField("nova_group", record.novaGroup.map(String.init), into: &fields)
+        appendField("image_path", record.imagePath, into: &fields)
         appendField("additive_ecodes", record.additiveEcodes, into: &fields)
         appendField("allergens_text", record.allergensText, into: &fields)
         appendField("allergens_tags", record.allergensTags, into: &fields)

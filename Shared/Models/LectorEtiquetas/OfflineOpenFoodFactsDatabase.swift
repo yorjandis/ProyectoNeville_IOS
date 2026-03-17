@@ -37,6 +37,14 @@ actor OfflineOpenFoodFactsDatabase {
         let hasGluten: Bool?
     }
 
+    struct ProductMatch: Sendable, Hashable, Identifiable {
+        let barcode: String
+        let productName: String
+        let brands: String?
+
+        var id: String { barcode }
+    }
+
     private let bootstrapper: DatabaseBootstrapper
 
     init(bootstrapper: DatabaseBootstrapper = DatabaseBootstrapper()) {
@@ -52,9 +60,92 @@ actor OfflineOpenFoodFactsDatabase {
         )
     }
 
-    func fetchProduct(by barcode: String) async throws -> ProductRecord {
+    func fetchProduct(by barcode: String, preferredDatabaseURL: URL? = nil) async throws -> ProductRecord {
+        if let preferredDatabaseURL, FileManager.default.fileExists(atPath: preferredDatabaseURL.path) {
+            return try queryProduct(barcode: barcode, databaseURL: preferredDatabaseURL)
+        }
         let status = try await ensureDatabaseAvailable()
         return try queryProduct(barcode: barcode, databaseURL: status.databaseURL)
+    }
+
+    func searchProducts(
+        byName name: String,
+        limit: Int = 12,
+        preferredDatabaseURL: URL? = nil
+    ) async throws -> [ProductMatch] {
+        let normalized = normalizeSearchName(name)
+        guard !normalized.isEmpty else { return [] }
+
+        let databaseURL: URL
+        if let preferredDatabaseURL, FileManager.default.fileExists(atPath: preferredDatabaseURL.path) {
+            databaseURL = preferredDatabaseURL
+        } else {
+            let status = try await ensureDatabaseAvailable()
+            databaseURL = status.databaseURL
+        }
+
+        var db: OpaquePointer?
+        guard sqlite3_open_v2(databaseURL.path, &db, SQLITE_OPEN_READONLY, nil) == SQLITE_OK else {
+            defer { sqlite3_close(db) }
+            throw LectorEtiquetasError.baseOfflineNoDisponible
+        }
+        defer { sqlite3_close(db) }
+
+        let sql = """
+        SELECT barcode, product_name, brands
+        FROM products
+        WHERE search_name LIKE ?
+        ORDER BY product_name ASC
+        LIMIT ?;
+        """
+
+        var statement: OpaquePointer?
+        guard sqlite3_prepare_v2(db, sql, -1, &statement, nil) == SQLITE_OK else {
+            throw LectorEtiquetasError.baseOfflineNoDisponible
+        }
+        defer { sqlite3_finalize(statement) }
+
+        let pattern = "%\(normalized)%"
+        sqlite3_bind_text(statement, 1, pattern, -1, sqliteTransientDestructor)
+        sqlite3_bind_int(statement, 2, Int32(max(limit, 1)))
+
+        var matches: [ProductMatch] = []
+        while sqlite3_step(statement) == SQLITE_ROW {
+            let barcode = stringColumn(statement, index: 0) ?? ""
+            let productName = stringColumn(statement, index: 1) ?? "Producto sin nombre"
+            let brands = stringColumn(statement, index: 2)
+            guard !barcode.isEmpty else { continue }
+            matches.append(ProductMatch(barcode: barcode, productName: productName, brands: brands))
+        }
+
+        return matches
+    }
+
+    func countProducts(preferredDatabaseURL: URL?) throws -> Int {
+        guard let preferredDatabaseURL,
+              FileManager.default.fileExists(atPath: preferredDatabaseURL.path) else {
+            throw LectorEtiquetasError.baseOfflineNoDisponible
+        }
+
+        var db: OpaquePointer?
+        guard sqlite3_open_v2(preferredDatabaseURL.path, &db, SQLITE_OPEN_READONLY, nil) == SQLITE_OK else {
+            defer { sqlite3_close(db) }
+            throw LectorEtiquetasError.baseOfflineNoDisponible
+        }
+        defer { sqlite3_close(db) }
+
+        let sql = "SELECT COUNT(*) FROM products;"
+        var statement: OpaquePointer?
+        guard sqlite3_prepare_v2(db, sql, -1, &statement, nil) == SQLITE_OK else {
+            throw LectorEtiquetasError.baseOfflineNoDisponible
+        }
+        defer { sqlite3_finalize(statement) }
+
+        guard sqlite3_step(statement) == SQLITE_ROW else {
+            throw LectorEtiquetasError.baseOfflineNoDisponible
+        }
+
+        return Int(sqlite3_column_int(statement, 0))
     }
 
     private func queryProduct(barcode: String, databaseURL: URL) throws -> ProductRecord {
@@ -134,5 +225,13 @@ actor OfflineOpenFoodFactsDatabase {
     private func boolColumn(_ statement: OpaquePointer?, index: Int32) -> Bool? {
         guard let value = intColumn(statement, index: index) else { return nil }
         return value != 0
+    }
+
+    private func normalizeSearchName(_ text: String) -> String {
+        let folded = text
+            .folding(options: [.diacriticInsensitive, .caseInsensitive], locale: .current)
+            .lowercased()
+        let cleaned = folded.replacingOccurrences(of: "[^a-z0-9\\s]", with: " ", options: .regularExpression)
+        return cleaned.replacingOccurrences(of: "\\s+", with: " ", options: .regularExpression).trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }

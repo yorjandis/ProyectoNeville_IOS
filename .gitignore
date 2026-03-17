@@ -1,0 +1,5 @@
+# Base de datos SQLite
+*.sqlite
+
+# Librerías Android AAR
+*.aar

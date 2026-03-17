@@ -16,4 +16,5 @@ enum LectorEtiquetasManagedAssetsConfig {
     nonisolated static let sqliteFileName = "openfoodfacts_compact.sqlite"
 
     nonisolated static let versionDefaultsKey = "managed_assets.openfoodfacts.version"
+    nonisolated static let databasePathDefaultsKey = "managed_assets.openfoodfacts.database_path"
 }

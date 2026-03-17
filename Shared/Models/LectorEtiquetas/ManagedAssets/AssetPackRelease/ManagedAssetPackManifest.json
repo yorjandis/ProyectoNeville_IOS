@@ -1,0 +1,14 @@
+{
+    "assetPackID": "openfoodfacts-compact-db",
+    "downloadPolicy": {
+        "onDemand": {}
+    },
+    "fileSelectors": [
+        {
+            "directory": "database"
+        }
+    ],
+    "platforms": [
+        "iOS"
+    ]
+}
