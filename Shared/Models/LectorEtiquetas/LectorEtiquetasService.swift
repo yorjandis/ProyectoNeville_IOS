@@ -90,7 +90,7 @@ final class LectorEtiquetasService: @unchecked Sendable {
                 certificationsTags: payload.product.certificationsTags ?? [],
                 ecoscoreGrade: payload.product.ecoscoreGrade ?? ""
             ),
-            dietaryProfile: nil
+            dietaryProfile: inferDietaryProfile(from: payload.product)
         )
 
         resultado = ResultadoAnalisisEtiqueta(
@@ -180,6 +180,7 @@ final class LectorEtiquetasService: @unchecked Sendable {
             ),
             labels: record.isOrganic == true ? "organic" : nil,
             labelsTags: record.isOrganic == true ? ["en:organic"] : nil,
+            ingredientsAnalysisTags: nil,
             countries: nil,
             countriesTags: nil,
             origins: nil,
@@ -267,6 +268,72 @@ final class LectorEtiquetasService: @unchecked Sendable {
         value
             .trimmingCharacters(in: .whitespacesAndNewlines)
             .replacingOccurrences(of: " ", with: "")
+    }
+
+    private func inferDietaryProfile(from product: OpenFoodFactsProduct) -> EtiquetaPerfilAlimentario {
+        let normalizedLabelTags = (product.labelsTags ?? []).map(normalizeTag)
+        let normalizedAnalysisTags = (product.ingredientsAnalysisTags ?? []).map(normalizeTag)
+        let allTags = Set(normalizedLabelTags + normalizedAnalysisTags)
+        let normalizedLabels = normalizeFreeText(product.labels ?? "")
+        let normalizedAllergens = normalizeFreeText(product.allergens ?? "")
+
+        let esVegano: Bool? = {
+            if allTags.contains("en:vegan") { return true }
+            if allTags.contains("en:non-vegan") { return false }
+            if normalizedLabels.contains("vegano") || normalizedLabels.contains("vegan") { return true }
+            return nil
+        }()
+
+        let esVegetariano: Bool? = {
+            if allTags.contains("en:vegetarian") { return true }
+            if allTags.contains("en:non-vegetarian") { return false }
+            if normalizedLabels.contains("vegetariano") || normalizedLabels.contains("vegetarian") { return true }
+            return nil
+        }()
+
+        let esOrganico: Bool? = {
+            if allTags.contains(where: { $0.contains("organic") || $0.contains("bio") }) { return true }
+            if normalizedLabels.contains("organico") || normalizedLabels.contains("orgánico") || normalizedLabels.contains("ecologico") || normalizedLabels.contains("ecológico") || normalizedLabels.contains("bio") {
+                return true
+            }
+            return nil
+        }()
+
+        let contieneGluten: Bool? = {
+            if allTags.contains("en:no-gluten") || allTags.contains("en:gluten-free") {
+                return false
+            }
+            if normalizedLabels.contains("sin gluten") || normalizedLabels.contains("gluten free") {
+                return false
+            }
+
+            let glutenMarkers = ["gluten", "trigo", "wheat", "cebada", "barley", "centeno", "rye", "espelta", "spelt", "kamut", "triticale", "semola", "semolina"]
+            if glutenMarkers.contains(where: { normalizedAllergens.contains($0) }) {
+                return true
+            }
+            return nil
+        }()
+
+        return EtiquetaPerfilAlimentario(
+            esVegano: esVegano,
+            esVegetariano: esVegetariano,
+            esOrganico: esOrganico,
+            contieneGluten: contieneGluten
+        )
+    }
+
+    private func normalizeTag(_ value: String) -> String {
+        value
+            .folding(options: [.diacriticInsensitive, .caseInsensitive], locale: .current)
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .lowercased()
+    }
+
+    private func normalizeFreeText(_ value: String) -> String {
+        value
+            .folding(options: [.diacriticInsensitive, .caseInsensitive], locale: .current)
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .lowercased()
     }
 
     private func translateIngredientsToSpanish(_ ingredients: [String]) -> [String] {

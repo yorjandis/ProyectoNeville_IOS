@@ -18,11 +18,14 @@ struct LectorEtiquetasView: View {
     @State private var showBarcodeScanner: Bool = false
     @State private var expandedAditivos: Set<String> = []
     @State private var showNutritionInfoSheet: Bool = false
+    @State private var isBarcodeCardExpanded: Bool = true
+
+    private let proprietaryRiskEngine = DefaultLectorEtiquetasFoodRiskScoringEngine()
 
     var body: some View {
         NavigationStack {
             ZStack {
-                backgroundGradient
+                LinearGradient(colors: [.orange.opacity(0.3), .orange.opacity(0.8)], startPoint: .top, endPoint: .bottom)
                     .ignoresSafeArea()
 
                 ScrollView {
@@ -46,6 +49,7 @@ struct LectorEtiquetasView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Limpiar") {
                         barcodeInput = ""
+                        isBarcodeCardExpanded = true
                         expandedAditivos.removeAll()
                         viewModel.offlineNameMatches = []
                         viewModel.limpiarResultado()
@@ -81,6 +85,11 @@ struct LectorEtiquetasView: View {
             .onChange(of: viewModel.selectedSource) { _, _ in
                 clearSearchStateForModeChange()
             }
+            .onChange(of: viewModel.resultado != nil) { _, hasResult in
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    isBarcodeCardExpanded = !hasResult
+                }
+            }
         }
     }
 
@@ -97,9 +106,17 @@ struct LectorEtiquetasView: View {
 
     private var HeadSection: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text("Lector de Alimentos")
-                .font(.system(.title2, design: .rounded, weight: .bold))
-                .foregroundStyle(Color.primary)
+            HStack{
+                Text("Lector de Alimentos")
+                    .font(.system(.title2, design: .rounded, weight: .bold))
+                    .foregroundStyle(Color.primary)
+                
+                Text("(Beta)")
+                    .font(.body)
+                    .foregroundStyle(.red.opacity(0.8)).bold()
+                    .padding(.horizontal)
+            }
+            
 
             Text("Consulta por código de barras usando API de OpenFoodFacts o base SQLite offline.")
                 .font(.system(.subheadline, design: .rounded))
@@ -113,146 +130,179 @@ struct LectorEtiquetasView: View {
     }
 
     private var barcodeCard: some View {
-        card {
+        let canCollapse = viewModel.resultado != nil
+
+        return card {
             VStack(alignment: .leading, spacing: 12) {
-                Text("Código de barras")
-                    .font(.system(.headline, design: .rounded, weight: .semibold))
+                HStack(alignment: .top) {
+                    Text("Código de barras")
+                        .font(.system(.headline, design: .rounded, weight: .semibold))
 
-                Picker("Fuente de datos", selection: $viewModel.selectedSource) {
-                    ForEach(LectorEtiquetasDataSource.allCases) { source in
-                        Text(source.title).tag(source)
-                    }
-                }
-                .pickerStyle(.segmented)
+                    Spacer()
 
-                TextField(
-                    viewModel.selectedSource == .offlineSQLite
-                        ? "Código de barras o nombre de producto"
-                        : "Ejemplo: 8410076475898",
-                    text: $barcodeInput
-                )
-                    .keyboardType(viewModel.selectedSource == .offlineSQLite ? .default : .numberPad)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 10)
-                    .background(Color.white.opacity(0.88))
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 10)
-                            .stroke(Color.blue.opacity(0.22), lineWidth: 1)
-                    }
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
-
-                if viewModel.selectedSource == .openFoodFacts || viewModel.isOfflineDatabaseReady {
-                    HStack(spacing: 10) {
+                    if canCollapse {
                         Button {
-                            Task {
-                                await viewModel.buscar(query: barcodeInput)
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                isBarcodeCardExpanded.toggle()
                             }
                         } label: {
-                            Label("Buscar", systemImage: "magnifyingglass")
-                                .frame(maxWidth: .infinity)
+                            Image(systemName: isBarcodeCardExpanded ? "chevron.up.circle" : "chevron.down.circle")
+                                .font(.system(size: 15, weight: .medium))
+                                .foregroundStyle(.secondary)
+                                .padding(.top, 1)
                         }
-                        .buttonStyle(.borderedProminent)
-                        .tint(Color.blue)
-                        .disabled(
-                            barcodeInput.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
-                            viewModel.isAnalizando
-                        )
-
-                        Button {
-                            showBarcodeScanner = true
-                        } label: {
-                            Label("Escanear", systemImage: "camera")
-                                .frame(maxWidth: .infinity)
-                        }
-                        .buttonStyle(.bordered)
-                        .tint(Color.blue)
-                        .disabled(viewModel.isAnalizando)
+                        .buttonStyle(.plain)
+                        .accessibilityLabel(isBarcodeCardExpanded ? "Colapsar tarjeta" : "Expandir tarjeta")
                     }
                 }
 
-                if viewModel.selectedSource == .offlineSQLite {
-                    Divider()
+                if isBarcodeCardExpanded || !canCollapse {
+                    Picker("", selection: $viewModel.selectedSource) {
+                        ForEach(LectorEtiquetasDataSource.allCases) { source in
+                            Text(source.title).tag(source)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    .padding(6)
+                    .background(Color.blue.opacity(0.72))
+                    .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+                            .stroke(Color.blue.opacity(0.18), lineWidth: 1)
+                    }
 
-                    VStack(alignment: .leading, spacing: 8) {
-                        if !viewModel.isOfflineDatabaseReady {
+                    TextField(
+                        viewModel.selectedSource == .offlineSQLite
+                            ? "Código de barras o nombre de producto"
+                            : "Ejemplo: 8410076475898",
+                        text: $barcodeInput
+                    )
+                        .keyboardType(viewModel.selectedSource == .offlineSQLite ? .default : .numberPad)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 10)
+                        .foregroundStyle(.white)
+                        .background(Color.black.opacity(0.6))
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color.blue.opacity(0.22), lineWidth: 1)
+                        }
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+
+                    if viewModel.selectedSource == .openFoodFacts || viewModel.isOfflineDatabaseReady {
+                        HStack(spacing: 10) {
                             Button {
-                                Task { await viewModel.prepararBaseOffline() }
+                                Task {
+                                    await viewModel.buscar(query: barcodeInput)
+                                }
                             } label: {
-                                Label("Descargar y verificar BD offline", systemImage: "square.and.arrow.down")
+                                Label("Buscar", systemImage: "magnifyingglass")
                                     .frame(maxWidth: .infinity)
                             }
                             .buttonStyle(.bordered)
-                            .tint(Color.indigo)
-                            .disabled(viewModel.isAnalizando || viewModel.isPreparingOfflineDatabase)
-                        } else {
-                            if !viewModel.offlineNameMatches.isEmpty {
-                                VStack(alignment: .leading, spacing: 6) {
-                                    Text("Resultados")
-                                        .font(.system(.caption, design: .rounded, weight: .bold))
-                                        .foregroundStyle(.secondary)
-                                    ForEach(viewModel.offlineNameMatches) { match in
-                                        Button {
-                                            barcodeInput = match.barcode
-                                            Task { await viewModel.buscar(query: match.barcode) }
-                                        } label: {
-                                            VStack(alignment: .leading, spacing: 2) {
-                                                Text(match.productName)
-                                                    .font(.system(.subheadline, design: .rounded, weight: .semibold))
-                                                    .foregroundStyle(.primary)
-                                                Text("\(match.barcode)\(match.brands.map { " • \($0)" } ?? "")")
-                                                    .font(.system(.caption, design: .rounded))
-                                                    .foregroundStyle(.secondary)
+                            .tint(Color.blue)
+                            .disabled(
+                                barcodeInput.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
+                                viewModel.isAnalizando
+                            )
+
+                            Button {
+                                showBarcodeScanner = true
+                            } label: {
+                                Label("Escanear", systemImage: "camera")
+                                    .frame(maxWidth: .infinity)
+                            }
+                            .buttonStyle(.bordered)
+                            .tint(Color.blue)
+                            .disabled(viewModel.isAnalizando)
+                        }
+                    }
+
+                    if viewModel.selectedSource == .offlineSQLite {
+                        Divider()
+
+                        VStack(alignment: .leading, spacing: 8) {
+                            if !viewModel.isOfflineDatabaseReady {
+                                Button {
+                                    Task { await viewModel.prepararBaseOffline() }
+                                } label: {
+                                    Label("Descargar y verificar BD offline", systemImage: "square.and.arrow.down")
+                                        .frame(maxWidth: .infinity)
+                                }
+                                .buttonStyle(.bordered)
+                                .tint(Color.indigo)
+                                .disabled(viewModel.isAnalizando || viewModel.isPreparingOfflineDatabase)
+                            } else {
+                                if !viewModel.offlineNameMatches.isEmpty {
+                                    VStack(alignment: .leading, spacing: 6) {
+                                        Text("Resultados")
+                                            .font(.system(.caption, design: .rounded, weight: .bold))
+                                            .foregroundStyle(.secondary)
+                                        ForEach(viewModel.offlineNameMatches) { match in
+                                            Button {
+                                                barcodeInput = match.barcode
+                                                Task { await viewModel.buscar(query: match.barcode) }
+                                            } label: {
+                                                VStack(alignment: .leading, spacing: 2) {
+                                                    Text(match.productName)
+                                                        .font(.system(.subheadline, design: .rounded, weight: .semibold))
+                                                        .foregroundStyle(.primary)
+                                                    Text("\(match.barcode)\(match.brands.map { " • \($0)" } ?? "")")
+                                                        .font(.system(.caption, design: .rounded))
+                                                        .foregroundStyle(.secondary)
+                                                }
+                                                .frame(maxWidth: .infinity, alignment: .leading)
+                                                .padding(.vertical, 4)
                                             }
-                                            .frame(maxWidth: .infinity, alignment: .leading)
-                                            .padding(.vertical, 4)
+                                            .buttonStyle(.plain)
                                         }
-                                        .buttonStyle(.plain)
                                     }
                                 }
                             }
-                        }
 
-                        if !viewModel.isOfflineDatabaseReady {
-                            Text("Primero descarga y verifica la BD offline para habilitar escaneo y búsqueda.")
-                                .font(.system(.footnote, design: .rounded))
-                                .foregroundStyle(.secondary)
-                        }
+                            if !viewModel.isOfflineDatabaseReady {
+                                Text("Primero descarga y verifica la BD offline para habilitar escaneo y búsqueda.")
+                                    .font(.system(.footnote, design: .rounded))
+                                    .foregroundStyle(.secondary)
+                            }
 
-                        if viewModel.isPreparingOfflineDatabase {
-                            ProgressView("Preparando base SQLite offline...")
-                                .font(.system(.footnote, design: .rounded))
-                        }
+                            if viewModel.isPreparingOfflineDatabase {
+                                ProgressView("Preparando base SQLite offline...")
+                                    .font(.system(.footnote, design: .rounded))
+                            }
 
-                        if let infoMessage = viewModel.offlineInfoMessage {
-                            Text(infoMessage)
-                                .font(.system(.footnote, design: .rounded))
-                                .foregroundStyle(.black).bold()
-                        }
+                            if let infoMessage = viewModel.offlineInfoMessage {
+                                Text(infoMessage)
+                                    .font(.system(.footnote, design: .rounded))
+                                    .foregroundStyle(.black).bold()
+                            }
 
-                        /*
-                         #if DEBUG
-                         if let databasePath = viewModel.offlineDatabasePath {
-                             Text("Ruta SQLite")
-                                 .font(.system(.caption, design: .rounded, weight: .bold))
-                                 .foregroundStyle(.secondary)
-                             Text(databasePath)
-                                 .font(.caption2.monospaced())
-                                 .textSelection(.enabled)
-                                 .foregroundStyle(.secondary)
-                         }
-                         #endif
-                         */
-                        
-                        
+                            /*
+                             #if DEBUG
+                             if let databasePath = viewModel.offlineDatabasePath {
+                                 Text("Ruta SQLite")
+                                     .font(.system(.caption, design: .rounded, weight: .bold))
+                                     .foregroundStyle(.secondary)
+                                 Text(databasePath)
+                                     .font(.caption2.monospaced())
+                                     .textSelection(.enabled)
+                                     .foregroundStyle(.secondary)
+                             }
+                             #endif
+                             */
 
-                        if let errorMessage = viewModel.offlineErrorMessage {
-                            Text(errorMessage)
-                                .font(.system(.footnote, design: .rounded))
-                                .foregroundStyle(.red)
+                            if let errorMessage = viewModel.offlineErrorMessage {
+                                Text(errorMessage)
+                                    .font(.system(.footnote, design: .rounded))
+                                    .foregroundStyle(.red)
+                            }
                         }
                     }
+                } else {
+                    Text("Tarjeta colapsada")
+                        .font(.system(.footnote, design: .rounded))
+                        .foregroundStyle(.secondary)
                 }
             }
         }
@@ -295,7 +345,19 @@ struct LectorEtiquetasView: View {
     }
 
     private func headerSection(_ resultado: ResultadoAnalisisEtiqueta, resumen: EtiquetaResumenProducto) -> some View {
-        card {
+        let proprietaryRisk = proprietaryRiskEngine.score(
+            input: LectorEtiquetasFoodRiskScoringInput(
+                hallazgos: resultado.hallazgos,
+                perfilAlimentario: resumen.perfilAlimentario,
+                evaluacionEcologica: resumen.evaluacionEcologica,
+                nutrientesDetectados: resultado.nutrientesDetectados,
+                nutrimentsFormatted: resultado.metadata?.nutrimentsFormatted ?? [],
+                alergenos: resumen.alergenos,
+                ingredientesDetectadosCount: resultado.ingredientesDetectados.count
+            )
+        )
+
+        return card {
             VStack(alignment: .leading, spacing: 10) {
                 HStack {
                     Text("Resultado (\(resultado.metadata?.source.title ?? "N/A"))")
@@ -303,25 +365,32 @@ struct LectorEtiquetasView: View {
 
                     Spacer()
 
-                    Text(resultado.nivelGeneral.badgeText)
+                    Text(proprietaryRisk.classification.title)
                         .font(.system(.caption, design: .rounded, weight: .bold))
                         .padding(.horizontal, 10)
                         .padding(.vertical, 5)
-                        .background(resultado.nivelGeneral.badgeColor.opacity(0.18))
-                        .foregroundStyle(resultado.nivelGeneral.badgeColor)
+                        .background(proprietaryRisk.classification.badgeColor.opacity(0.18))
+                        .foregroundStyle(.black).bold()
                         .clipShape(Capsule())
                 }
 
                 HStack(spacing: 8) {
                     headerBadge(
-                        title: "Nutrition Grade",
+                        title: "Score:",
+                        value: "\(proprietaryRisk.score)/100",
+                        color: proprietaryRisk.classification.badgeColor
+                    )
+
+                    Spacer()
+
+                    headerBadge(
+                        title: "Nutri-score",
                         value: resumen.nutritionGrade.map { "Grade \($0)" } ?? "N/D",
                         color: nutritionGradeColor(resumen.nutritionGrade),
                         action: { showNutritionInfoSheet = true }
                     )
-                    
-                    Spacer()
-                    
+                    .padding(.horizontal, 15)
+
                     headerBadge(
                         title: "NOVA",
                         value: resumen.novaGroup.map { "Grupo \($0)" } ?? "N/D",
@@ -381,7 +450,7 @@ struct LectorEtiquetasView: View {
                             if expanded {
                                 VStack(alignment: .leading, spacing: 6) {
                                     Text(aditivo.detalle)
-                                        .font(.system(.caption, design: .rounded))
+                                        .font(.system(.body, design: .rounded))
                                         .foregroundStyle(.primary)
                                 }
                                 .padding(.top, 2)
@@ -445,52 +514,81 @@ struct LectorEtiquetasView: View {
                         estadoRow(title: "Vegano", value: resumen.perfilAlimentario.esVegano)
                         estadoRow(title: "Vegetariano", value: resumen.perfilAlimentario.esVegetariano)
                         estadoRow(title: "Orgánico", value: resumen.perfilAlimentario.esOrganico)
-                        estadoRow(title: "Contiene gluten", value: resumen.perfilAlimentario.contieneGluten, isNegativeWhenTrue: true)
+                        siNoRow(title: "Contiene gluten", value: resumen.perfilAlimentario.contieneGluten)
                     }
                 }
 
                 infoRow(title: "Código de barras", value: resumen.codigoBarras)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Alérgenos")
-                        .font(.system(.caption, design: .rounded, weight: .bold))
+                    Text("Alergenos:")
+                        .font(.system(.body, design: .rounded, weight: .bold))
                         .foregroundStyle(.secondary)
                     Text(resumen.alergenos.isEmpty ? "No informados" : resumen.alergenos.joined(separator: ", "))
                         .font(.system(.subheadline, design: .rounded))
-                        .foregroundStyle(.red)
+                        .foregroundStyle(.black)
                 }
             }
         }
     }
 
     private func nutricionSection(_ resumen: EtiquetaResumenProducto) -> some View {
-        card {
+        let nutritionEvaluation = buildNutritionEvaluation(from: resumen.nutrientesClave)
+        let nutrientNameColumnWidth: CGFloat = 128
+
+        return card {
             VStack(alignment: .leading, spacing: 10) {
                 Text("Información nutricional")
                     .font(.system(.headline, design: .rounded, weight: .semibold))
 
-                if resumen.nutrientesClave.isEmpty {
-                    Text("No hay información nutricional disponible.")
+                if nutritionEvaluation.insights.isEmpty {
+                    Text("No hay información nutricional suficiente para evaluar por 100g.")
                         .font(.system(.footnote, design: .rounded))
                         .foregroundStyle(.secondary)
                 } else {
-                    Grid(alignment: .leading, horizontalSpacing: 14, verticalSpacing: 8) {
-                        GridRow {
-                            Text("Nutriente")
-                                .font(.system(.caption, design: .rounded, weight: .bold))
-                                .foregroundStyle(.secondary)
-                            Text("Valor")
-                                .font(.system(.caption, design: .rounded, weight: .bold))
-                                .foregroundStyle(.secondary)
-                        }
+                    if let totalScore = nutritionEvaluation.totalScore {
+                        Text("Puntuación global: \(totalScore, format: .number.precision(.fractionLength(1)))/10")
+                            .font(.system(.subheadline, design: .rounded, weight: .bold))
+                            .foregroundStyle(.black).bold()
+                    }
 
-                        ForEach(resumen.nutrientesClave) { nutriente in
-                            Divider().gridCellUnsizedAxes(.horizontal)
+                    HStack{
+                        Spacer()
+                        Text("Por 100g")
+                            .font(.system(.caption, design: .rounded, weight: .bold))
+                            .foregroundStyle(.secondary)
+                    }
+                    
 
-                            GridRow {
-                                Text(nutriente.titulo)
-                                    .font(.system(.subheadline, design: .rounded, weight: .medium))
-                                Text(nutriente.valor)
-                                    .font(.system(.subheadline, design: .rounded))
+                    ForEach(nutritionEvaluation.insights) { insight in
+                        Divider()
+
+                        HStack(alignment: .center, spacing: 12) {
+                            VStack(alignment: .leading, spacing: 3) {
+                                HStack(alignment: .firstTextBaseline, spacing: 10) {
+                                    Text(insight.title)
+                                        .font(.system(.subheadline, design: .rounded, weight: .semibold))
+                                        .frame(width: nutrientNameColumnWidth, alignment: .leading)
+
+                                    Text(insight.rawValueText)
+                                        .font(.system(.subheadline, design: .rounded, weight: .bold))
+                                        .foregroundStyle(.secondary)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                }
+                                
+                                Text(insight.levelDescription)
+                                    .font(.system(.subheadline, design: .rounded, weight: .bold))
+                                    .foregroundStyle(.black).bold()//insight.level.color)
+                            }
+
+                            Spacer(minLength: 8)
+
+                            VStack(alignment: .trailing, spacing: 6) {
+                                Text("\(insight.score, format: .number.precision(.fractionLength(1)))/10")
+                                    .font(.system(.caption, design: .rounded, weight: .bold))
+                                    .foregroundStyle(.primary)
+
+                                nutritionTrafficLine(level: insight.level)
+                                    .frame(width: 130)
                             }
                         }
                     }
@@ -515,7 +613,7 @@ struct LectorEtiquetasView: View {
                         .padding(.horizontal, 8)
                         .padding(.vertical, 4)
                         .background(ecologico.estado.color.opacity(0.20))
-                        .foregroundStyle(ecologico.estado.color)
+                        .foregroundStyle(.black)
                         .clipShape(Capsule())
                 }
 
@@ -551,18 +649,43 @@ struct LectorEtiquetasView: View {
     private func estadoRow(title: String, value: Bool?, isNegativeWhenTrue: Bool = false) -> some View {
         HStack(spacing: 8) {
             Text(title)
-                .font(.system(.caption, design: .rounded, weight: .bold))
+                .font(.system(.body, design: .rounded, weight: .bold))
                 .foregroundStyle(.secondary)
             Spacer(minLength: 6)
 
             if let value {
                 let isPositive = isNegativeWhenTrue ? !value : value
-                Image(systemName: isPositive ? "checkmark.circle.fill" : "nosign")
-                    .font(.system(size: 16, weight: .semibold))
-                    .foregroundStyle(isPositive ? .green : .red)
+                Text(isPositive ? "Si" : "No")
+                    .font(.system(.body, design: .rounded, weight: .bold))
+                    .foregroundStyle(.black)
+                /*
+                 Image(systemName: isPositive ? "checkmark.circle.fill" : "nosign")
+                     .font(.system(size: 16, weight: .semibold))
+                     .foregroundStyle(isPositive ? .green : .red)
+                 */
+                
             } else {
                 Text("N/D")
-                    .font(.system(.caption, design: .rounded))
+                    .font(.system(.body, design: .rounded))
+                    .foregroundStyle(.secondary)
+            }
+        }
+    }
+
+    private func siNoRow(title: String, value: Bool?) -> some View {
+        HStack(spacing: 8) {
+            Text(title)
+                .font(.system(.body, design: .rounded, weight: .bold))
+                .foregroundStyle(.secondary)
+            Spacer(minLength: 6)
+
+            if let value {
+                Text(value ? "Si" : "No")
+                    .font(.system(.body, design: .rounded, weight: .bold))
+                    .foregroundStyle(.black)
+            } else {
+                Text("N/D")
+                    .font(.system(.body, design: .rounded))
                     .foregroundStyle(.secondary)
             }
         }
@@ -577,21 +700,21 @@ struct LectorEtiquetasView: View {
                 if let action {
                     Button(action: action) {
                         Text(value)
-                            .font(.system(.caption, design: .rounded, weight: .semibold))
+                            .font(.system(.body, design: .rounded, weight: .bold))
                             .padding(.horizontal, 8)
                             .padding(.vertical, 4)
                             .background(color.opacity(0.15))
-                            .foregroundStyle(color)
+                            .foregroundStyle(.black)
                             .clipShape(Capsule())
                     }
                     .buttonStyle(.plain)
                 } else {
                     Text(value)
-                        .font(.system(.caption, design: .rounded, weight: .semibold))
+                        .font(.system(.body, design: .rounded, weight: .bold))
                         .padding(.horizontal, 8)
                         .padding(.vertical, 4)
                         .background(color.opacity(0.15))
-                        .foregroundStyle(color)
+                        .foregroundStyle(.black)
                         .clipShape(Capsule())
                 }
             }
@@ -617,12 +740,204 @@ struct LectorEtiquetasView: View {
         }
     }
 
+    private func buildNutritionEvaluation(from nutrients: [EtiquetaNutrienteClave]) -> NutritionEvaluation {
+        let byID = Dictionary(uniqueKeysWithValues: nutrients.map { ($0.id, $0) })
+
+        guard let input = parseFoodNutritionInput(from: byID) else {
+            return NutritionEvaluation(insights: [], totalScore: nil)
+        }
+
+        let scorer = FoodScorer()
+        guard let score = try? scorer.score(input) else {
+            return NutritionEvaluation(insights: [], totalScore: nil)
+        }
+
+        let insights: [NutritionInsight] = [
+            NutritionInsight(
+                id: NutritionScoringTarget.proteinas.id,
+                title: byID[NutritionScoringTarget.proteinas.id]?.titulo ?? "Proteína",
+                rawValueText: byID[NutritionScoringTarget.proteinas.id]?.valor ?? "N/D",
+                score: score.proteinScore,
+                level: proteinConcentrationLevel(input.protein),
+                levelDescription: "\(proteinConcentrationLevel(input.protein).label)"
+            ),
+            NutritionInsight(
+                id: NutritionScoringTarget.grasasSaturadas.id,
+                title: byID[NutritionScoringTarget.grasasSaturadas.id]?.titulo ?? "Grasas saturadas",
+                rawValueText: byID[NutritionScoringTarget.grasasSaturadas.id]?.valor ?? "N/D",
+                score: score.saturatedFatScore,
+                level: saturatedFatConcentrationLevel(input.saturatedFat),
+                levelDescription: "\(saturatedFatConcentrationLevel(input.saturatedFat).label)"
+            ),
+            NutritionInsight(
+                id: NutritionScoringTarget.fibra.id,
+                title: byID[NutritionScoringTarget.fibra.id]?.titulo ?? "Fibra",
+                rawValueText: byID[NutritionScoringTarget.fibra.id]?.valor ?? "N/D",
+                score: score.fiberScore,
+                level: fiberConcentrationLevel(input.fiber),
+                levelDescription: "\(fiberConcentrationLevel(input.fiber).label)"
+            ),
+            NutritionInsight(
+                id: NutritionScoringTarget.azucar.id,
+                title: byID[NutritionScoringTarget.azucar.id]?.titulo ?? "Azúcar",
+                rawValueText: byID[NutritionScoringTarget.azucar.id]?.valor ?? "N/D",
+                score: score.sugarScore,
+                level: sugarConcentrationLevel(input.sugar),
+                levelDescription: "\(sugarConcentrationLevel(input.sugar).label)"
+            ),
+            NutritionInsight(
+                id: NutritionScoringTarget.sal.id,
+                title: byID[NutritionScoringTarget.sal.id]?.titulo ?? "Sal",
+                rawValueText: byID[NutritionScoringTarget.sal.id]?.valor ?? "N/D",
+                score: score.saltScore,
+                level: saltConcentrationLevel(input.salt),
+                levelDescription: "\(saltConcentrationLevel(input.salt).label)"
+            ),
+            NutritionInsight(
+                id: NutritionScoringTarget.valorEnergetico.id,
+                title: byID[NutritionScoringTarget.valorEnergetico.id]?.titulo ?? "Valor calórico",
+                rawValueText: byID[NutritionScoringTarget.valorEnergetico.id]?.valor ?? "N/D",
+                score: score.kcalScore,
+                level: kcalConcentrationLevel(input.kcal),
+                levelDescription: score.calorieLabel
+            )
+        ]
+
+        return NutritionEvaluation(insights: insights, totalScore: score.totalScore)
+    }
+
+    private func nutritionTrafficLine(level: NutritionConcentrationLevel) -> some View {
+        GeometryReader { proxy in
+            let markerX = level.markerPosition * proxy.size.width
+
+            ZStack(alignment: .leading) {
+                HStack(spacing: 0) {
+                    Rectangle().fill(Color.green)
+                    Rectangle().fill(Color.yellow)
+                    Rectangle().fill(Color.red)
+                }
+                .frame(height: 8)
+                .clipShape(Capsule())
+
+                Circle()
+                    .fill(Color.gray)
+                    .frame(width: 14, height: 14)
+                    .overlay {
+                        Circle()
+                            .stroke(Color.black.opacity(0.25), lineWidth: 1)
+                    }
+                    .offset(x: max(0, min(proxy.size.width - 14, markerX - 7)))
+            }
+        }
+        .frame(height: 14)
+    }
+
+    private func parseFoodNutritionInput(from byID: [String: EtiquetaNutrienteClave]) -> FoodNutritionInput? {
+        guard
+            let proteinRaw = byID[NutritionScoringTarget.proteinas.id]?.valor,
+            let saturatedFatRaw = byID[NutritionScoringTarget.grasasSaturadas.id]?.valor,
+            let fiberRaw = byID[NutritionScoringTarget.fibra.id]?.valor,
+            let sugarRaw = byID[NutritionScoringTarget.azucar.id]?.valor,
+            let saltRaw = byID[NutritionScoringTarget.sal.id]?.valor,
+            let kcalRaw = byID[NutritionScoringTarget.valorEnergetico.id]?.valor,
+            let protein = extractGrams(from: proteinRaw),
+            let saturatedFat = extractGrams(from: saturatedFatRaw),
+            let fiber = extractGrams(from: fiberRaw),
+            let sugar = extractGrams(from: sugarRaw),
+            let salt = extractGrams(from: saltRaw),
+            let kcal = extractEnergyKcal(from: kcalRaw)
+        else {
+            return nil
+        }
+
+        return FoodNutritionInput(
+            protein: protein,
+            saturatedFat: saturatedFat,
+            fiber: fiber,
+            sugar: sugar,
+            salt: salt,
+            kcal: kcal
+        )
+    }
+
+    private func proteinConcentrationLevel(_ value: Double) -> NutritionConcentrationLevel {
+        if value < 6 { return .baja }
+        if value < 15 { return .media }
+        return .alta
+    }
+
+    private func saturatedFatConcentrationLevel(_ value: Double) -> NutritionConcentrationLevel {
+        if value < 2 { return .baja }
+        if value < 8 { return .media }
+        return .alta
+    }
+
+    private func fiberConcentrationLevel(_ value: Double) -> NutritionConcentrationLevel {
+        if value < 2 { return .baja }
+        if value < 6 { return .media }
+        return .alta
+    }
+
+    private func sugarConcentrationLevel(_ value: Double) -> NutritionConcentrationLevel {
+        if value < 5 { return .baja }
+        if value < 15 { return .media }
+        return .alta
+    }
+
+    private func saltConcentrationLevel(_ value: Double) -> NutritionConcentrationLevel {
+        if value < 0.3 { return .baja }
+        if value < 1 { return .media }
+        return .alta
+    }
+
+    private func kcalConcentrationLevel(_ value: Double) -> NutritionConcentrationLevel {
+        if value < 150 { return .baja }
+        if value < 300 { return .media }
+        return .alta
+    }
+
+    private func extractEnergyKcal(from rawValue: String) -> Double? {
+        guard let numericValue = firstNumericValue(in: rawValue) else { return nil }
+        let normalized = normalizeNutrientText(rawValue)
+        if normalized.contains("kj") && !normalized.contains("kcal") {
+            return numericValue / 4.184
+        }
+        return numericValue
+    }
+
+    private func extractGrams(from rawValue: String) -> Double? {
+        guard let numericValue = firstNumericValue(in: rawValue) else { return nil }
+        let normalized = normalizeNutrientText(rawValue)
+        if normalized.contains("mg") {
+            return numericValue / 1000
+        }
+        return numericValue
+    }
+
+    private func firstNumericValue(in rawValue: String) -> Double? {
+        let pattern = #"-?\d+(?:[.,]\d+)?"#
+        guard let regex = try? NSRegularExpression(pattern: pattern) else { return nil }
+        let range = NSRange(rawValue.startIndex..<rawValue.endIndex, in: rawValue)
+        guard let match = regex.firstMatch(in: rawValue, range: range),
+              let matchRange = Range(match.range, in: rawValue) else { return nil }
+
+        let token = rawValue[matchRange].replacingOccurrences(of: ",", with: ".")
+        return Double(token)
+    }
+
+    private func normalizeNutrientText(_ text: String) -> String {
+        text
+            .folding(options: [.diacriticInsensitive, .caseInsensitive], locale: .current)
+            .replacingOccurrences(of: " ", with: "")
+            .lowercased()
+    }
+
     private func card<Content: View>(@ViewBuilder content: () -> Content) -> some View {
         content()
             .padding(14)
             .frame(maxWidth: .infinity, alignment: .leading)
             .foregroundStyle(.black)
-            .background(Color.white)
+            .background(Color.white.opacity(0.5))
             .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
             .overlay {
                 RoundedRectangle(cornerRadius: 16, style: .continuous)
@@ -671,6 +986,7 @@ struct LectorEtiquetasView: View {
 
     private func clearSearchStateForModeChange() {
         barcodeInput = ""
+        isBarcodeCardExpanded = true
         expandedAditivos.removeAll()
         viewModel.offlineNameMatches = []
         viewModel.limpiarResultado()
@@ -731,6 +1047,70 @@ private struct NutritionInfoSheetView: View {
     }
 }
 
+private struct NutritionEvaluation {
+    let insights: [NutritionInsight]
+    let totalScore: Double?
+}
+
+private struct NutritionInsight: Identifiable {
+    let id: String
+    let title: String
+    let rawValueText: String
+    let score: Double
+    let level: NutritionConcentrationLevel
+    let levelDescription: String
+}
+
+private enum NutritionConcentrationLevel {
+    case baja
+    case media
+    case alta
+
+    var label: String {
+        switch self {
+        case .baja: return "Baja cantidad"
+        case .media: return "Cantidad media"
+        case .alta: return "Alta cantidad"
+        }
+    }
+
+    var color: Color {
+        switch self {
+        case .baja: return .green
+        case .media: return .yellow
+        case .alta: return .red
+        }
+    }
+
+    var markerPosition: CGFloat {
+        switch self {
+        case .baja: return 0.16
+        case .media: return 0.50
+        case .alta: return 0.84
+        }
+    }
+}
+
+private enum NutritionScoringTarget: CaseIterable {
+    case proteinas
+    case fibra
+    case grasasSaturadas
+    case azucar
+    case sal
+    case valorEnergetico
+
+    var id: String {
+        switch self {
+        case .proteinas: return "proteinas"
+        case .fibra: return "fibra"
+        case .grasasSaturadas: return "grasas_saturadas"
+        case .azucar: return "azucar"
+        case .sal: return "sal"
+        case .valorEnergetico: return "valor_energetico"
+        }
+    }
+}
+
 private extension NivelRiesgoEtiqueta {
     var badgeText: String {
         switch self {
@@ -747,6 +1127,17 @@ private extension NivelRiesgoEtiqueta {
         case .medio: return .yellow
         case .alto: return .orange
         case .critico: return .red
+        }
+    }
+}
+
+private extension LectorEtiquetasFoodRiskClassification {
+    var badgeColor: Color {
+        switch self {
+        case .excelente: return .green
+        case .bueno: return .orange
+        case .malo: return .red
+        case .informacionInsuficiente: return .yellow
         }
     }
 }

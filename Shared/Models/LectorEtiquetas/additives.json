@@ -3223,7 +3223,7 @@
             "4-Butanodioico",
             "Ácido Hidroxibutanodioico"
         ],
-        "toxicidad": "medio"
+        "toxicidad": "bajo"
     },
     {
         "e_code": "E297",
@@ -3656,7 +3656,7 @@
         "aliases": [
             "Ácido Cítrico Anhidro"
         ],
-        "toxicidad": "medio"
+        "toxicidad": "bajo"
     },
     {
         "e_code": "E331",
@@ -3668,7 +3668,7 @@
         "aliases": [
             "Citrato de Sodio"
         ],
-        "toxicidad": "medio"
+        "toxicidad": "bajo"
     },
     {
         "e_code": "E332",
@@ -3814,7 +3814,7 @@
         "e_type": "Acidulante - Regulador de acidez",
         "halal_status": "Halal",
         "id": 244,
-        "info": "Es un acidulante natural y regulador de la acidez de los alimentos. Se obtiene por extracción de rocas minerales. Los fosfatos son las sales del ácido fosfórico. La unión de este último con el calcio permite obtener fosfatos cálcicos E341. \n El ácido fosfórico puro es una sustancia corrosiva, nociva por ingestión y por contacto o incluso por inhalación. \n En grandes dosis puede provocar hiperactividad y problemas digestivos.",
+        "info": "Es un acidulante natural y regulador de la acidez de los alimentos. Se obtiene por extracción de rocas minerales. Los fosfatos son las sales del ácido fosfórico. La unión de este último con el calcio permite obtener fosfatos cálcicos E341. \n El ácido fosfórico puro es una sustancia corrosiva, nociva por ingestión y por contacto o incluso por inhalación. \nEn grandes dosis puede provocar hiperactividad y problemas digestivos. A largo plazo puede reducir el equilibrio natural de calcio y fósforo en el organismo. Es fácil consumir una elevada cantidad debido a los numerosos alimentos que lo contienen.",
         "title": "Calcium Phosphates",
         "aliases": [
             "Ortofosfatos de Calcio",

@@ -545,12 +545,12 @@ private enum NutrienteClaveDescriptor: CaseIterable {
 
     var titulo: String {
         switch self {
-        case .proteinas: return "Proteínas"
-        case .fibra: return "Fibra"
-        case .valorEnergetico: return "Valor energético"
-        case .grasasSaturadas: return "Grasas saturadas"
-        case .azucar: return "Azúcar"
-        case .sal: return "Sal"
+        case .proteinas: return "Proteínas:"
+        case .fibra: return "Fibra:"
+        case .valorEnergetico: return "Kilocalorias:"
+        case .grasasSaturadas: return "Grasas saturadas:"
+        case .azucar: return "Azúcar:"
+        case .sal: return "Sal:"
         }
     }
 

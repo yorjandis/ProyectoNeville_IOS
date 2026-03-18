@@ -59,7 +59,7 @@ struct OpenFoodFactsClient {
     private func makeURL(for barcode: String) -> URL? {
         var comps = URLComponents(string: "\(baseURL)/\(barcode)")
         comps?.queryItems = [
-            URLQueryItem(name: "fields", value: "code,product_name,brands,categories,quantity,allergens,ingredients_text,nutriments,nutriscore_grade,nova_group,ecoscore_grade,labels,labels_tags,countries,countries_tags,origins,origins_tags,certifications,certifications_tags,image_url,image_front_url")
+            URLQueryItem(name: "fields", value: "code,product_name,brands,categories,quantity,allergens,ingredients_text,ingredients_analysis_tags,nutriments,nutriscore_grade,nova_group,ecoscore_grade,labels,labels_tags,countries,countries_tags,origins,origins_tags,certifications,certifications_tags,image_url,image_front_url")
         ]
         return comps?.url
     }
@@ -209,6 +209,7 @@ struct OpenFoodFactsProduct: Decodable {
     let nutriments: OpenFoodFactsNutriments?
     let labels: String?
     let labelsTags: [String]?
+    let ingredientsAnalysisTags: [String]?
     let countries: String?
     let countriesTags: [String]?
     let origins: String?
@@ -225,6 +226,7 @@ struct OpenFoodFactsProduct: Decodable {
         case nutriments
         case labels
         case labelsTags = "labels_tags"
+        case ingredientsAnalysisTags = "ingredients_analysis_tags"
         case countries
         case countriesTags = "countries_tags"
         case origins

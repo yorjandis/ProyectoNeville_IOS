@@ -9,7 +9,7 @@
 // Mantiene las mismas firmas de funciones
 
 import SwiftUI
-import AVFoundation
+@preconcurrency import AVFoundation
 
 
 // MARK: - Compatibilidad con CodeScanner original
@@ -95,6 +95,7 @@ class ScannerViewController: UIViewController {
     var captureDelegate: AVCaptureMetadataOutputObjectsDelegate?
 
     private let session = AVCaptureSession()
+    private let sessionQueue = DispatchQueue(label: "com.neville.qr.session", qos: .userInitiated)
     private var previewLayer: AVCaptureVideoPreviewLayer!
 
     override func viewDidLoad() {
@@ -122,15 +123,17 @@ class ScannerViewController: UIViewController {
         previewLayer.frame = view.layer.bounds
         view.layer.addSublayer(previewLayer)
 
-        Task{
-            self.session.startRunning()
+        let session = self.session
+        sessionQueue.async {
+            guard !session.isRunning else { return }
+            session.startRunning()
         }
-            
-        
     }
 
     func stopSession() {
-        if session.isRunning {
+        let session = self.session
+        sessionQueue.async {
+            guard session.isRunning else { return }
             session.stopRunning()
         }
     }
