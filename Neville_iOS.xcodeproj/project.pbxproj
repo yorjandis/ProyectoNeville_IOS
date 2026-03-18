@@ -1871,7 +1871,7 @@
 				CODE_SIGN_ENTITLEMENTS = FrasesWiggetExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 47;
+				CURRENT_PROJECT_VERSION = 49;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FrasesWigget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = FrasesWigget;
@@ -1899,7 +1899,7 @@
 				CODE_SIGN_ENTITLEMENTS = FrasesWiggetExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 47;
+				CURRENT_PROJECT_VERSION = 49;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FrasesWigget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = FrasesWigget;
@@ -1927,7 +1927,7 @@
 				CODE_SIGN_ENTITLEMENTS = WatchComplicationLaLeyExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 47;
+				CURRENT_PROJECT_VERSION = 49;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WatchComplicationLaLey/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = WatchComplicationLaLey;
@@ -1959,7 +1959,7 @@
 				CODE_SIGN_ENTITLEMENTS = WatchComplicationLaLeyExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 47;
+				CURRENT_PROJECT_VERSION = 49;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WatchComplicationLaLey/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = WatchComplicationLaLey;
@@ -1991,7 +1991,7 @@
 				CODE_SIGN_ENTITLEMENTS = "La Ley Watch App/La Ley Watch App.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 47;
+				CURRENT_PROJECT_VERSION = 49;
 				DEVELOPMENT_ASSET_PATHS = "\"La Ley Watch App/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -2023,7 +2023,7 @@
 				CODE_SIGN_ENTITLEMENTS = "La Ley Watch App/La Ley Watch App.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 47;
+				CURRENT_PROJECT_VERSION = 49;
 				DEVELOPMENT_ASSET_PATHS = "\"La Ley Watch App/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -2056,7 +2056,7 @@
 				CODE_SIGN_ENTITLEMENTS = "La Ley_mac/La Ley_mac.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 47;
+				CURRENT_PROJECT_VERSION = 49;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				ENABLE_APP_SANDBOX = YES;
@@ -2115,7 +2115,7 @@
 				CODE_SIGN_ENTITLEMENTS = "La Ley_mac/La Ley_mac.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 47;
+				CURRENT_PROJECT_VERSION = 49;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				ENABLE_APP_SANDBOX = YES;
@@ -2171,7 +2171,7 @@
 				CODE_SIGN_ENTITLEMENTS = sharedmac/sharedmac.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 47;
+				CURRENT_PROJECT_VERSION = 49;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				ENABLE_APP_SANDBOX = YES;
@@ -2207,7 +2207,7 @@
 				CODE_SIGN_ENTITLEMENTS = sharedmac/sharedmac.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 47;
+				CURRENT_PROJECT_VERSION = 49;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				ENABLE_APP_SANDBOX = YES;
@@ -2243,7 +2243,7 @@
 				CODE_SIGN_ENTITLEMENTS = LaLeyBackgroundDownloadExtension/LaLeyBackgroundDownloadExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 47;
+				CURRENT_PROJECT_VERSION = 49;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = LaLeyBackgroundDownloadExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = LaLeyBackgroundDownloadExtension;
@@ -2273,7 +2273,7 @@
 				CODE_SIGN_ENTITLEMENTS = LaLeyBackgroundDownloadExtension/LaLeyBackgroundDownloadExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 47;
+				CURRENT_PROJECT_VERSION = 49;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = LaLeyBackgroundDownloadExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = LaLeyBackgroundDownloadExtension;
@@ -2303,7 +2303,7 @@
 				CODE_SIGN_ENTITLEMENTS = sharedios/sharedios.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 47;
+				CURRENT_PROJECT_VERSION = 49;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = sharedios/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = sharedios;
@@ -2333,7 +2333,7 @@
 				CODE_SIGN_ENTITLEMENTS = sharedios/sharedios.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 47;
+				CURRENT_PROJECT_VERSION = 49;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = sharedios/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = sharedios;
@@ -2488,7 +2488,7 @@
 				CODE_SIGN_ENTITLEMENTS = Neville_iOS/Neville_iOS.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 47;
+				CURRENT_PROJECT_VERSION = 49;
 				DEVELOPMENT_ASSET_PATHS = "\"Neville_iOS/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -2531,7 +2531,7 @@
 				CODE_SIGN_ENTITLEMENTS = Neville_iOS/Neville_iOS.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 47;
+				CURRENT_PROJECT_VERSION = 49;
 				DEVELOPMENT_ASSET_PATHS = "\"Neville_iOS/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;

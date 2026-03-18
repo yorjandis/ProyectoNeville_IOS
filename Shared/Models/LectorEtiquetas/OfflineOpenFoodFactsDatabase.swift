@@ -51,8 +51,8 @@ actor OfflineOpenFoodFactsDatabase {
         self.bootstrapper = bootstrapper
     }
 
-    func ensureDatabaseAvailable() async throws -> AvailabilityStatus {
-        let result = try await bootstrapper.bootstrapDatabase()
+    func ensureDatabaseAvailable(forceCopy: Bool = false) async throws -> AvailabilityStatus {
+        let result = try await bootstrapper.bootstrapDatabase(forceCopy: forceCopy)
         return AvailabilityStatus(
             databaseURL: result.databaseURL,
             didCopy: result.didCopy,

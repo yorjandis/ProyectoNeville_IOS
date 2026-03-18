@@ -66,7 +66,7 @@ struct LectorEtiquetasView: View {
                             .disabled(barcodeInput.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || viewModel.isAnalizando)
 
                             Button("Revalidar BD offline", systemImage: "arrow.clockwise") {
-                                Task { await viewModel.prepararBaseOffline() }
+                                Task { await viewModel.prepararBaseOffline(forceRefresh: true) }
                             }
                             .disabled(viewModel.isAnalizando || viewModel.isPreparingOfflineDatabase)
                         } label: {
@@ -411,7 +411,7 @@ struct LectorEtiquetasView: View {
                     .font(.system(.headline, design: .rounded, weight: .semibold))
 
                 if aditivos.isEmpty {
-                    Text("No se detectaron aditivos de la base additives.json.")
+                    Text("No se detectaron aditivos") // de la base additives.json
                         .font(.system(.footnote, design: .rounded))
                         .foregroundStyle(.secondary)
                 } else {

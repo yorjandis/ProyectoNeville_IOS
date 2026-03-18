@@ -95,13 +95,13 @@ final class LectorEtiquetasViewModel: ObservableObject {
         isAnalizando = false
     }
 
-    func prepararBaseOffline() async {
+    func prepararBaseOffline(forceRefresh: Bool = false) async {
         isPreparingOfflineDatabase = true
         offlineErrorMessage = nil
         offlineInfoMessage = nil
 
         do {
-            let status = try await service.prepareOfflineDatabase()
+            let status = try await service.prepareOfflineDatabase(forceCopy: forceRefresh)
             offlineDatabasePath = status.databaseURL.path
             isOfflineDatabaseReady = true
             saveOfflineDatabasePath(status.databaseURL.path)

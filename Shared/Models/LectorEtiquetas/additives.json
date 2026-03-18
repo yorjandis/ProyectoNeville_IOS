@@ -3248,7 +3248,7 @@
             "Vitamin C",
             "Ascorbic acid"
         ],
-        "toxicidad": "alto"
+        "toxicidad": "bajo"
     },
     {
         "e_code": "E301",
@@ -3550,12 +3550,13 @@
         "halal_status": "Dudoso",
         "id": 225,
         "info": "Es un emulsionante alimentario natural. La lecitina natural está presente en todas las células vivas y es un componente importante de las células nerviosas y cerebrales. \n La lecitina comercial proviene principalmente del aceite de soja, que puede modificarse genéticamente. Otras fuentes son las yemas de huevo y las semillas de legumbres, incluidos el maní y el maíz, que también pueden ser transgénicas. \n Se utiliza para mezclar agua y aceite/grasa. \n Las lecitinas suelen presentarse como no tóxicas. Una sobredosis puede alterar el estómago, afectar el apetito y provocar sudoración intensa.",
-        "title": "Lecithin",
+        "title": "Lecitinas",
         "aliases": [
             "Fosfolípidos de Lecitina",
-            "Fosfátidos de Lecitina"
+            "Fosfátidos de Lecitina"´
+            "lécithines"
         ],
-        "toxicidad": "alto"
+        "toxicidad": "bajo"
     },
     {
         "e_code": "E323",
@@ -4599,6 +4600,7 @@
         "aliases": [
             "Goma Xantán",
             "Goma Xantano",
+            "gomme de xanthane",
             "Goma Xántica",
             "Goma de Maíz"
         ],

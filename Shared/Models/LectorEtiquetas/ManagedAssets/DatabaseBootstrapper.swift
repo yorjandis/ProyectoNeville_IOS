@@ -18,15 +18,15 @@ actor DatabaseBootstrapper {
         let installedVersion: Int
     }
 
-    func bootstrapDatabase() async throws -> Result {
+    func bootstrapDatabase(forceCopy: Bool = false) async throws -> Result {
         guard #available(iOS 26.0, *) else {
             throw ManagedAssetsSupportError.featureUnavailable
         }
-        return try await bootstrapDatabase_iOS26()
+        return try await bootstrapDatabase_iOS26(forceCopy: forceCopy)
     }
 
     @available(iOS 26.0, *)
-    private func bootstrapDatabase_iOS26() async throws -> Result {
+    private func bootstrapDatabase_iOS26(forceCopy: Bool) async throws -> Result {
         let manager = AssetPackManager.shared
         let assetPack = try await manager.assetPack(withID: LectorEtiquetasManagedAssetsConfig.assetPackID)
         try await manager.ensureLocalAvailability(of: assetPack)
@@ -39,7 +39,7 @@ actor DatabaseBootstrapper {
 
         let fileManager = FileManager.default
         let fileExists = fileManager.fileExists(atPath: destinationURL.path)
-        let needsCopy = !fileExists || currentVersion != assetPack.version
+        let needsCopy = forceCopy || !fileExists || currentVersion != assetPack.version
 
         if needsCopy {
             if fileExists {
@@ -142,7 +142,7 @@ actor DatabaseBootstrapper {
         let installedVersion: Int
     }
 
-    func bootstrapDatabase() async throws -> Result {
+    func bootstrapDatabase(forceCopy: Bool = false) async throws -> Result {
         throw ManagedAssetsSupportError.featureUnavailable
     }
 }

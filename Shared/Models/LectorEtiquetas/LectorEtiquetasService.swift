@@ -30,8 +30,8 @@ final class LectorEtiquetasService: @unchecked Sendable {
         self.offlineDatabase = offlineDatabase
     }
 
-    func prepareOfflineDatabase() async throws -> OfflineOpenFoodFactsDatabase.AvailabilityStatus {
-        try await offlineDatabase.ensureDatabaseAvailable()
+    func prepareOfflineDatabase(forceCopy: Bool = false) async throws -> OfflineOpenFoodFactsDatabase.AvailabilityStatus {
+        try await offlineDatabase.ensureDatabaseAvailable(forceCopy: forceCopy)
     }
 
     func analizar(
