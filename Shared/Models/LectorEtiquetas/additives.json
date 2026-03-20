@@ -3553,7 +3553,7 @@
         "title": "Lecitinas",
         "aliases": [
             "Fosfolípidos de Lecitina",
-            "Fosfátidos de Lecitina"´
+            "Fosfátidos de Lecitina",
             "lécithines"
         ],
         "toxicidad": "bajo"
@@ -4897,7 +4897,7 @@
             "Pektine","Polisacáridos Pécticos",
             "Pectins"
         ],
-        "toxicidad": "bajo"
+        "toxicidad": "medio"
     },
     {
         "e_code": "E440A",

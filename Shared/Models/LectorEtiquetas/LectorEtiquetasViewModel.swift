@@ -22,6 +22,8 @@ final class LectorEtiquetasViewModel: ObservableObject {
     @Published var isOfflineDatabaseReady: Bool = false
     @Published var offlineNameMatches: [OfflineProductSuggestion] = []
     @Published var offlineItemsCount: Int?
+    @Published var hasPendingOfflineUpdate: Bool = false
+    @Published var pendingOfflineVersion: Int?
 
     private let service: LectorEtiquetasService
 
@@ -108,6 +110,8 @@ final class LectorEtiquetasViewModel: ObservableObject {
             offlineInfoMessage = status.didCopy
                 ? "Base offline instalada/actualizada. Versión: \(status.installedVersion)."
                 : "Base offline lista. Versión: \(status.installedVersion)."
+            hasPendingOfflineUpdate = false
+            pendingOfflineVersion = nil
             await refreshOfflineItemsCount()
         } catch {
             if let path = offlineDatabasePath, FileManager.default.fileExists(atPath: path) {
@@ -120,6 +124,22 @@ final class LectorEtiquetasViewModel: ObservableObject {
         }
 
         isPreparingOfflineDatabase = false
+    }
+
+    func verificarActualizacionOffline() async -> Bool {
+        do {
+            let status = try await service.checkOfflineDatabaseUpdate()
+            hasPendingOfflineUpdate = status.hasUpdate
+            pendingOfflineVersion = status.hasUpdate ? status.latestVersion : nil
+            if status.hasUpdate {
+                let installed = status.installedVersion.map(String.init) ?? "N/D"
+                offlineInfoMessage = "Nueva versión disponible (\(status.latestVersion), actual: \(installed))."
+            }
+            return status.hasUpdate
+        } catch {
+            offlineErrorMessage = error.localizedDescription
+            return false
+        }
     }
 
     func limpiarResultado() {
@@ -139,6 +159,7 @@ final class LectorEtiquetasViewModel: ObservableObject {
         offlineDatabasePath = path
         isOfflineDatabaseReady = true
         offlineInfoMessage = "Base offline OK"
+        Task { _ = await verificarActualizacionOffline() }
     }
 
     private func saveOfflineDatabasePath(_ path: String) {

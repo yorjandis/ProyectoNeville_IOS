@@ -19,13 +19,18 @@ struct LectorEtiquetasView: View {
     @State private var expandedAditivos: Set<String> = []
     @State private var showNutritionInfoSheet: Bool = false
     @State private var isBarcodeCardExpanded: Bool = true
+    @State private var currentProductImageIndex: Int = 0
+    @State private var expandedProductImage: ExpandedProductImage?
+    @State private var selectedNutrientInfoTarget: NutritionScoringTarget?
+    @State private var selectedPrincipalScoreInfo: PrincipalScoreInfo?
+    @State private var showOfflineUpdatePrompt: Bool = false
 
     private let proprietaryRiskEngine = DefaultLectorEtiquetasFoodRiskScoringEngine()
 
     var body: some View {
         NavigationStack {
             ZStack {
-                LinearGradient(colors: [.orange.opacity(0.3), .orange.opacity(0.8)], startPoint: .top, endPoint: .bottom)
+                backgroundGradient
                     .ignoresSafeArea()
 
                 ScrollView {
@@ -50,6 +55,10 @@ struct LectorEtiquetasView: View {
                     Button("Limpiar") {
                         barcodeInput = ""
                         isBarcodeCardExpanded = true
+                        currentProductImageIndex = 0
+                        expandedProductImage = nil
+                        selectedNutrientInfoTarget = nil
+                        selectedPrincipalScoreInfo = nil
                         expandedAditivos.removeAll()
                         viewModel.offlineNameMatches = []
                         viewModel.limpiarResultado()
@@ -58,6 +67,18 @@ struct LectorEtiquetasView: View {
                 }
 
                 if viewModel.selectedSource == .offlineSQLite, viewModel.isOfflineDatabaseReady {
+                    if viewModel.hasPendingOfflineUpdate {
+                        ToolbarItem(placement: .topBarTrailing) {
+                            Button {
+                                Task { await viewModel.prepararBaseOffline(forceRefresh: true) }
+                            } label: {
+                                Image(systemName: "arrow.down.circle.fill")
+                            }
+                            .help("Descargar actualización de la BD offline")
+                            .disabled(viewModel.isAnalizando || viewModel.isPreparingOfflineDatabase)
+                        }
+                    }
+
                     ToolbarItem(placement: .topBarTrailing) {
                         Menu {
                             Button("Chequear BD offline", systemImage: "shippingbox") {
@@ -65,8 +86,15 @@ struct LectorEtiquetasView: View {
                             }
                             .disabled(barcodeInput.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || viewModel.isAnalizando)
 
-                            Button("Revalidar BD offline", systemImage: "arrow.clockwise") {
-                                Task { await viewModel.prepararBaseOffline(forceRefresh: true) }
+                            Button("Buscar actualización", systemImage: "arrow.clockwise") {
+                                Task {
+                                    let hasUpdate = await viewModel.verificarActualizacionOffline()
+                                    if hasUpdate {
+                                        showOfflineUpdatePrompt = true
+                                    } else {
+                                        viewModel.offlineInfoMessage = "No hay una nueva versión disponible."
+                                    }
+                                }
                             }
                             .disabled(viewModel.isAnalizando || viewModel.isPreparingOfflineDatabase)
                         } label: {
@@ -82,13 +110,48 @@ struct LectorEtiquetasView: View {
                 NutritionInfoSheetView()
                     .presentationDetents([.medium])
             }
+            .sheet(item: $selectedNutrientInfoTarget) { target in
+                NutrientDetailSheetView(target: target)
+                    .presentationDetents([.medium])
+            }
+            .sheet(item: $selectedPrincipalScoreInfo) { info in
+                PrincipalScoreDetailSheetView(info: info)
+                    .presentationDetents([.medium])
+            }
+            .sheet(item: $expandedProductImage, onDismiss: {
+                expandedProductImage = nil
+            }) { item in
+                ExpandedProductImageGallerySheetView(
+                    imageURLs: item.imageURLs,
+                    initialIndex: item.initialIndex
+                )
+                .presentationDetents([.medium])
+            }
+            .alert("Nueva versión de BD offline disponible", isPresented: $showOfflineUpdatePrompt) {
+                Button("Luego", role: .cancel) {}
+                Button("Descargar ahora") {
+                    Task { await viewModel.prepararBaseOffline(forceRefresh: true) }
+                }
+            } message: {
+                let versionText = viewModel.pendingOfflineVersion.map(String.init) ?? "más reciente"
+                Text("Se detectó una nueva versión (\(versionText)). ¿Quieres descargarla y verificarla ahora?")
+            }
             .onChange(of: viewModel.selectedSource) { _, _ in
                 clearSearchStateForModeChange()
+                if viewModel.selectedSource == .offlineSQLite, viewModel.isOfflineDatabaseReady {
+                    Task {
+                        let hasUpdate = await viewModel.verificarActualizacionOffline()
+                        if hasUpdate {
+                            showOfflineUpdatePrompt = true
+                        }
+                    }
+                }
             }
             .onChange(of: viewModel.resultado != nil) { _, hasResult in
                 withAnimation(.easeInOut(duration: 0.2)) {
                     isBarcodeCardExpanded = !hasResult
                 }
+                currentProductImageIndex = 0
             }
         }
     }
@@ -96,8 +159,8 @@ struct LectorEtiquetasView: View {
     private var backgroundGradient: some View {
         LinearGradient(
             colors: [
-                .blue.opacity(0.3),
-                .blue.opacity(0.7),
+                Color(red: 0.88, green: 0.96, blue: 0.86),
+                Color(red: 0.66, green: 0.82, blue: 0.64),
             ],
             startPoint: .top,
             endPoint: .bottom
@@ -107,24 +170,26 @@ struct LectorEtiquetasView: View {
     private var HeadSection: some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack{
-                Text("Lector de Alimentos")
+                Text("Inspector de Alimentos")
                     .font(.system(.title2, design: .rounded, weight: .bold))
-                    .foregroundStyle(Color.primary)
+                    .foregroundStyle(Color.black)
                 
                 Text("(Beta)")
                     .font(.body)
                     .foregroundStyle(.red.opacity(0.8)).bold()
-                    .padding(.horizontal)
+                    .padding(.horizontal, 2)
             }
             
+            /*
+             Text("Consulta por código de barras usando API de OpenFoodFacts o base SQLite offline.")
+                 .font(.system(.subheadline, design: .rounded))
+                 .foregroundStyle(.black)
 
-            Text("Consulta por código de barras usando API de OpenFoodFacts o base SQLite offline.")
-                .font(.system(.subheadline, design: .rounded))
-                .foregroundStyle(.secondary)
-
-            Text("DEBUG · Ítems BD offline: \(viewModel.offlineItemsCount.map(String.init) ?? "N/D")")
-                .font(.system(.caption2, design: .monospaced))
-                .foregroundStyle(.secondary)
+             Text("DEBUG · Ítems BD offline: \(viewModel.offlineItemsCount.map(String.init) ?? "N/D")")
+                 .font(.system(.caption2, design: .monospaced))
+                 .foregroundStyle(.black)
+             */
+           
         }
         .padding(.horizontal, 4)
     }
@@ -278,20 +343,6 @@ struct LectorEtiquetasView: View {
                                     .foregroundStyle(.black).bold()
                             }
 
-                            /*
-                             #if DEBUG
-                             if let databasePath = viewModel.offlineDatabasePath {
-                                 Text("Ruta SQLite")
-                                     .font(.system(.caption, design: .rounded, weight: .bold))
-                                     .foregroundStyle(.secondary)
-                                 Text(databasePath)
-                                     .font(.caption2.monospaced())
-                                     .textSelection(.enabled)
-                                     .foregroundStyle(.secondary)
-                             }
-                             #endif
-                             */
-
                             if let errorMessage = viewModel.offlineErrorMessage {
                                 Text(errorMessage)
                                     .font(.system(.footnote, design: .rounded))
@@ -300,9 +351,24 @@ struct LectorEtiquetasView: View {
                         }
                     }
                 } else {
-                    Text("Tarjeta colapsada")
-                        .font(.system(.footnote, design: .rounded))
-                        .foregroundStyle(.secondary)
+                    HStack{
+                        Text("Escanear o Buscar")
+                            .font(.system(.footnote, design: .rounded))
+                            .foregroundStyle(.secondary)
+                        
+                        Spacer()
+                        
+                        Button {
+                            showBarcodeScanner = true
+                        } label: {
+                            Label("Escanear", systemImage: "camera")
+                                .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(.bordered)
+                        .tint(Color.blue)
+                        .disabled(viewModel.isAnalizando)
+                    }
+                    
                 }
             }
         }
@@ -356,6 +422,11 @@ struct LectorEtiquetasView: View {
                 ingredientesDetectadosCount: resultado.ingredientesDetectados.count
             )
         )
+        let principalScoreInfo = buildPrincipalScoreInfo(
+            resultado: resultado,
+            resumen: resumen,
+            risk: proprietaryRisk
+        )
 
         return card {
             VStack(alignment: .leading, spacing: 10) {
@@ -365,13 +436,18 @@ struct LectorEtiquetasView: View {
 
                     Spacer()
 
-                    Text(proprietaryRisk.classification.title)
-                        .font(.system(.caption, design: .rounded, weight: .bold))
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 5)
-                        .background(proprietaryRisk.classification.badgeColor.opacity(0.18))
-                        .foregroundStyle(.black).bold()
-                        .clipShape(Capsule())
+                    Button {
+                        selectedPrincipalScoreInfo = principalScoreInfo
+                    } label: {
+                        Text(proprietaryRisk.classification.title)
+                            .font(.system(.caption, design: .rounded, weight: .bold))
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 5)
+                            .background(proprietaryRisk.classification.badgeColor.opacity(0.18))
+                            .foregroundStyle(.black).bold()
+                            .clipShape(Capsule())
+                    }
+                    .buttonStyle(.plain)
                 }
 
                 HStack(spacing: 8) {
@@ -383,20 +459,21 @@ struct LectorEtiquetasView: View {
 
                     Spacer()
 
-                    headerBadge(
-                        title: "Nutri-score",
-                        value: resumen.nutritionGrade.map { "Grade \($0)" } ?? "N/D",
-                        color: nutritionGradeColor(resumen.nutritionGrade),
+                    //Valor de Nutri Scrore
+                    nutriScoreImageBadge(
+                        grade: resumen.nutritionGrade,
                         action: { showNutritionInfoSheet = true }
                     )
                     .padding(.horizontal, 15)
 
                     headerBadge(
                         title: "NOVA",
-                        value: resumen.novaGroup.map { "Grupo \($0)" } ?? "N/D",
+                        value: novaBadgeValue(resumen.novaGroup),
                         color: novaGroupColor(resumen.novaGroup),
+                        showsBackground: false,
                         action: { showNutritionInfoSheet = true }
                     )
+                    
                 }
             }
         }
@@ -477,35 +554,7 @@ struct LectorEtiquetasView: View {
                     .font(.system(.headline, design: .rounded, weight: .semibold))
 
                 HStack(alignment: .top, spacing: 12) {
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 12, style: .continuous)
-                            .fill(Color.white.opacity(0.55))
-
-                        if let imageURL = resumen.imageURL {
-                            AsyncImage(url: imageURL) { phase in
-                                switch phase {
-                                case .empty:
-                                    ProgressView()
-                                case .success(let image):
-                                    image
-                                        .resizable()
-                                        .scaledToFit()
-                                        .padding(8)
-                                        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-                                case .failure:
-                                    Image(systemName: "photo")
-                                        .font(.system(size: 30))
-                                        .foregroundStyle(.secondary)
-                                @unknown default:
-                                    EmptyView()
-                                }
-                            }
-                        } else {
-                            Image(systemName: "photo")
-                                .font(.system(size: 30))
-                                .foregroundStyle(.secondary)
-                        }
-                    }
+                    productImageGallery(resumen.imageURLs)
                     .frame(width: 132, height: 132)
                     .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
 
@@ -531,6 +580,84 @@ struct LectorEtiquetasView: View {
         }
     }
 
+    @ViewBuilder
+    private func productImageGallery(_ imageURLs: [URL]) -> some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .fill(Color.white.opacity(0.55))
+
+            if imageURLs.isEmpty {
+                Image(systemName: "photo")
+                    .font(.system(size: 30))
+                    .foregroundStyle(.secondary)
+            } else {
+                VStack(spacing: 6) {
+                    TabView(selection: $currentProductImageIndex) {
+                        ForEach(Array(imageURLs.enumerated()), id: \.offset) { index, imageURL in
+                            productAsyncImage(
+                                imageURL,
+                                imageURLs: imageURLs,
+                                index: index
+                            )
+                            .tag(index)
+                        }
+                    }
+                    .tabViewStyle(.page(indexDisplayMode: .never))
+
+                    if imageURLs.count > 1 {
+                        HStack(spacing: 5) {
+                            ForEach(Array(imageURLs.indices), id: \.self) { index in
+                                Circle()
+                                    .fill(index == currentProductImageIndex ? Color.primary.opacity(0.6) : Color.secondary.opacity(0.25))
+                                    .frame(width: 5, height: 5)
+                            }
+                        }
+                        .padding(.bottom, 4)
+                    }
+                }
+                .padding(6)
+                .onChange(of: imageURLs.count) { _, newCount in
+                    if currentProductImageIndex >= newCount {
+                        currentProductImageIndex = 0
+                    }
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func productAsyncImage(
+        _ imageURL: URL,
+        imageURLs: [URL],
+        index: Int
+    ) -> some View {
+        AsyncImage(url: imageURL) { phase in
+            switch phase {
+            case .empty:
+                ProgressView()
+            case .success(let image):
+                image
+                    .resizable()
+                    .scaledToFit()
+                    .padding(4)
+                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+            case .failure:
+                Image(systemName: "photo")
+                    .font(.system(size: 30))
+                    .foregroundStyle(.secondary)
+            @unknown default:
+                EmptyView()
+            }
+        }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            expandedProductImage = ExpandedProductImage(
+                imageURLs: imageURLs,
+                initialIndex: index
+            )
+        }
+    }
+
     private func nutricionSection(_ resumen: EtiquetaResumenProducto) -> some View {
         let nutritionEvaluation = buildNutritionEvaluation(from: resumen.nutrientesClave)
         let nutrientNameColumnWidth: CGFloat = 128
@@ -541,16 +668,31 @@ struct LectorEtiquetasView: View {
                     .font(.system(.headline, design: .rounded, weight: .semibold))
 
                 if nutritionEvaluation.insights.isEmpty {
-                    Text("No hay información nutricional suficiente para evaluar por 100g.")
-                        .font(.system(.footnote, design: .rounded))
-                        .foregroundStyle(.secondary)
-                } else {
-                    if let totalScore = nutritionEvaluation.totalScore {
-                        Text("Puntuación global: \(totalScore, format: .number.precision(.fractionLength(1)))/10")
-                            .font(.system(.subheadline, design: .rounded, weight: .bold))
-                            .foregroundStyle(.black).bold()
-                    }
+                    if resumen.nutrientesClave.isEmpty {
+                        Text("No hay información nutricional disponible.")
+                            .font(.system(.footnote, design: .rounded))
+                            .foregroundStyle(.secondary)
+                    } else {
+                        Text("Información parcial: falta al menos un nutriente clave para evaluar todos los indicadores.")
+                            .font(.system(.footnote, design: .rounded))
+                            .foregroundStyle(.secondary)
 
+                        Divider()
+
+                        ForEach(resumen.nutrientesClave) { nutrient in
+                            HStack(alignment: .firstTextBaseline, spacing: 10) {
+                                Text(nutrient.titulo)
+                                    .font(.system(.subheadline, design: .rounded, weight: .semibold))
+                                    .frame(width: nutrientNameColumnWidth, alignment: .leading)
+
+                                Text(nutrient.valor)
+                                    .font(.system(.subheadline, design: .rounded, weight: .bold))
+                                    .foregroundStyle(.secondary)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                            }
+                        }
+                    }
+                } else {
                     HStack{
                         Spacer()
                         Text("Por 100g")
@@ -564,17 +706,22 @@ struct LectorEtiquetasView: View {
 
                         HStack(alignment: .center, spacing: 12) {
                             VStack(alignment: .leading, spacing: 3) {
-                                HStack(alignment: .firstTextBaseline, spacing: 10) {
-                                    Text(insight.title)
-                                        .font(.system(.subheadline, design: .rounded, weight: .semibold))
-                                        .frame(width: nutrientNameColumnWidth, alignment: .leading)
+                                HStack(spacing: 4) {
+                                    Button {
+                                        selectedNutrientInfoTarget = insight.target
+                                    } label: {
+                                        Text(insight.title)
+                                            .font(.system(.subheadline, design: .rounded, weight: .semibold))
+                                            .foregroundStyle(.primary)
+                                    }
+                                    .buttonStyle(.plain)
 
                                     Text(insight.rawValueText)
                                         .font(.system(.subheadline, design: .rounded, weight: .bold))
                                         .foregroundStyle(.secondary)
-                                        .frame(maxWidth: .infinity, alignment: .leading)
                                 }
-                                
+                                .frame(maxWidth: .infinity, alignment: .leading)
+
                                 Text(insight.levelDescription)
                                     .font(.system(.subheadline, design: .rounded, weight: .bold))
                                     .foregroundStyle(.black).bold()//insight.level.color)
@@ -583,11 +730,7 @@ struct LectorEtiquetasView: View {
                             Spacer(minLength: 8)
 
                             VStack(alignment: .trailing, spacing: 6) {
-                                Text("\(insight.score, format: .number.precision(.fractionLength(1)))/10")
-                                    .font(.system(.caption, design: .rounded, weight: .bold))
-                                    .foregroundStyle(.primary)
-
-                                nutritionTrafficLine(level: insight.level)
+                                nutritionTrafficLine(markerPosition: insight.markerPosition)
                                     .frame(width: 130)
                             }
                         }
@@ -691,7 +834,13 @@ struct LectorEtiquetasView: View {
         }
     }
 
-    private func headerBadge(title: String, value: String, color: Color, action: (() -> Void)? = nil) -> some View {
+    private func headerBadge(
+        title: String,
+        value: String,
+        color: Color,
+        showsBackground: Bool = true,
+        action: (() -> Void)? = nil
+    ) -> some View {
         VStack(alignment: .leading, spacing: 2) {
             Text(title)
                 .font(.system(.caption2, design: .rounded, weight: .bold))
@@ -703,7 +852,7 @@ struct LectorEtiquetasView: View {
                             .font(.system(.body, design: .rounded, weight: .bold))
                             .padding(.horizontal, 8)
                             .padding(.vertical, 4)
-                            .background(color.opacity(0.15))
+                            .background(showsBackground ? color.opacity(0.15) : .clear)
                             .foregroundStyle(.black)
                             .clipShape(Capsule())
                     }
@@ -713,11 +862,57 @@ struct LectorEtiquetasView: View {
                         .font(.system(.body, design: .rounded, weight: .bold))
                         .padding(.horizontal, 8)
                         .padding(.vertical, 4)
-                        .background(color.opacity(0.15))
+                        .background(showsBackground ? color.opacity(0.15) : .clear)
                         .foregroundStyle(.black)
                         .clipShape(Capsule())
                 }
             }
+            .padding(.top, 10)
+        }
+    }
+
+    private func nutriScoreImageBadge(grade: String?, action: (() -> Void)? = nil) -> some View {
+        let imageName = nutriScoreAssetName(for: grade)
+        return VStack(alignment: .leading, spacing: 2) {
+            
+            Text("")
+                .font(.system(.caption2, design: .rounded, weight: .bold))
+                .foregroundStyle(.secondary)
+
+            Group {
+                if let action {
+                    Button(action: action) {
+                        Image(imageName)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 100, height: 60)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 4)
+                            .background(Color.white.opacity(0.75))
+                            .clipShape(Capsule())
+                    }
+                    .buttonStyle(.plain)
+                } else {
+                    Image(imageName)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 100, height: 60)
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 4)
+                        .background(Color.white.opacity(0.75))
+                        .clipShape(Capsule())
+                }
+            }
+        }
+    }
+
+    private func nutriScoreAssetName(for grade: String?) -> String {
+        switch grade?.trimmingCharacters(in: .whitespacesAndNewlines).uppercased() {
+        case "A": return "nutriscore_a"
+        case "B": return "nutriscore_b"
+        case "C": return "nutriscore_c"
+        case "D": return "nutriscore_d"
+        default: return "nutriscore_nd"
         }
     }
 
@@ -740,84 +935,134 @@ struct LectorEtiquetasView: View {
         }
     }
 
+    private func novaBadgeValue(_ group: Int?) -> String {
+        switch group {
+        case 1: return "1️⃣"
+        case 2: return "2️⃣"
+        case 3: return "3️⃣"
+        case 4: return "4️⃣"
+        default: return "N/D"
+        }
+    }
+
     private func buildNutritionEvaluation(from nutrients: [EtiquetaNutrienteClave]) -> NutritionEvaluation {
         let byID = Dictionary(uniqueKeysWithValues: nutrients.map { ($0.id, $0) })
 
-        guard let input = parseFoodNutritionInput(from: byID) else {
-            return NutritionEvaluation(insights: [], totalScore: nil)
-        }
-
-        let scorer = FoodScorer()
-        guard let score = try? scorer.score(input) else {
-            return NutritionEvaluation(insights: [], totalScore: nil)
-        }
+        let proteinGrams = byID[NutritionScoringTarget.proteinas.id].flatMap { extractGrams(from: $0.valor) }
+        let calories = byID[NutritionScoringTarget.valorEnergetico.id].flatMap { extractEnergyKcal(from: $0.valor) }
 
         let insights: [NutritionInsight] = [
-            NutritionInsight(
-                id: NutritionScoringTarget.proteinas.id,
+            makeProteinNutritionInsight(
                 title: byID[NutritionScoringTarget.proteinas.id]?.titulo ?? "Proteína",
                 rawValueText: byID[NutritionScoringTarget.proteinas.id]?.valor ?? "N/D",
-                score: score.proteinScore,
-                level: proteinConcentrationLevel(input.protein),
-                levelDescription: "\(proteinConcentrationLevel(input.protein).label)"
+                proteinGrams: proteinGrams,
+                calories: calories
             ),
-            NutritionInsight(
-                id: NutritionScoringTarget.grasasSaturadas.id,
+            makeNutritionInsight(
+                target: .grasasSaturadas,
                 title: byID[NutritionScoringTarget.grasasSaturadas.id]?.titulo ?? "Grasas saturadas",
                 rawValueText: byID[NutritionScoringTarget.grasasSaturadas.id]?.valor ?? "N/D",
-                score: score.saturatedFatScore,
-                level: saturatedFatConcentrationLevel(input.saturatedFat),
-                levelDescription: "\(saturatedFatConcentrationLevel(input.saturatedFat).label)"
+                value: byID[NutritionScoringTarget.grasasSaturadas.id].flatMap { extractGrams(from: $0.valor) }
             ),
-            NutritionInsight(
-                id: NutritionScoringTarget.fibra.id,
+            makeNutritionInsight(
+                target: .fibra,
                 title: byID[NutritionScoringTarget.fibra.id]?.titulo ?? "Fibra",
                 rawValueText: byID[NutritionScoringTarget.fibra.id]?.valor ?? "N/D",
-                score: score.fiberScore,
-                level: fiberConcentrationLevel(input.fiber),
-                levelDescription: "\(fiberConcentrationLevel(input.fiber).label)"
+                value: byID[NutritionScoringTarget.fibra.id].flatMap { extractGrams(from: $0.valor) }
             ),
-            NutritionInsight(
-                id: NutritionScoringTarget.azucar.id,
+            makeNutritionInsight(
+                target: .azucar,
                 title: byID[NutritionScoringTarget.azucar.id]?.titulo ?? "Azúcar",
                 rawValueText: byID[NutritionScoringTarget.azucar.id]?.valor ?? "N/D",
-                score: score.sugarScore,
-                level: sugarConcentrationLevel(input.sugar),
-                levelDescription: "\(sugarConcentrationLevel(input.sugar).label)"
+                value: byID[NutritionScoringTarget.azucar.id].flatMap { extractGrams(from: $0.valor) }
             ),
-            NutritionInsight(
-                id: NutritionScoringTarget.sal.id,
+            makeNutritionInsight(
+                target: .sal,
                 title: byID[NutritionScoringTarget.sal.id]?.titulo ?? "Sal",
                 rawValueText: byID[NutritionScoringTarget.sal.id]?.valor ?? "N/D",
-                score: score.saltScore,
-                level: saltConcentrationLevel(input.salt),
-                levelDescription: "\(saltConcentrationLevel(input.salt).label)"
+                value: byID[NutritionScoringTarget.sal.id].flatMap { extractGrams(from: $0.valor) }
             ),
-            NutritionInsight(
-                id: NutritionScoringTarget.valorEnergetico.id,
+            makeNutritionInsight(
+                target: .valorEnergetico,
                 title: byID[NutritionScoringTarget.valorEnergetico.id]?.titulo ?? "Valor calórico",
                 rawValueText: byID[NutritionScoringTarget.valorEnergetico.id]?.valor ?? "N/D",
-                score: score.kcalScore,
-                level: kcalConcentrationLevel(input.kcal),
-                levelDescription: score.calorieLabel
+                value: calories
             )
         ]
+        .compactMap { $0 }
 
-        return NutritionEvaluation(insights: insights, totalScore: score.totalScore)
+        return NutritionEvaluation(insights: insights)
     }
 
-    private func nutritionTrafficLine(level: NutritionConcentrationLevel) -> some View {
+    private func makeProteinNutritionInsight(
+        title: String,
+        rawValueText: String,
+        proteinGrams: Double?,
+        calories: Double?
+    ) -> NutritionInsight? {
+        guard let proteinGrams else { return nil }
+
+        let safeCalories = calories ?? 0
+        let level = classifyProteinLevelByEnergyPercentage(proteinGrams: proteinGrams, calories: safeCalories)
+        let markerPosition = proteinMarkerPosition(proteinGrams: proteinGrams)
+
+        return NutritionInsight(
+            id: NutritionScoringTarget.proteinas.id,
+            target: .proteinas,
+            title: title,
+            rawValueText: rawValueText,
+            level: level,
+            markerPosition: markerPosition,
+            levelDescription: nutrientLevelDescription(level: level, target: .proteinas)
+        )
+    }
+
+    private func makeNutritionInsight(
+        target: NutritionScoringTarget,
+        title: String,
+        rawValueText: String,
+        value: Double?
+    ) -> NutritionInsight? {
+        guard let value else { return nil }
+
+        let level = nutrientConcentrationLevel(for: value, target: target)
+        return NutritionInsight(
+            id: target.id,
+            target: target,
+            title: title,
+            rawValueText: rawValueText,
+            level: level,
+            markerPosition: nutrientMarkerPosition(for: value, target: target),
+            levelDescription: nutrientLevelDescription(level: level, target: target)
+        )
+    }
+
+    private func nutritionTrafficLine(markerPosition: CGFloat) -> some View {
         GeometryReader { proxy in
-            let markerX = level.markerPosition * proxy.size.width
+            let markerX = markerPosition * proxy.size.width
 
             ZStack(alignment: .leading) {
-                HStack(spacing: 0) {
-                    Rectangle().fill(Color.green)
-                    Rectangle().fill(Color.yellow)
-                    Rectangle().fill(Color.red)
-                }
-                .frame(height: 8)
-                .clipShape(Capsule())
+                Capsule()
+                    .fill(
+                        LinearGradient(
+                            stops: [
+                                .init(color: Color(red: 0.18, green: 0.72, blue: 0.34), location: 0.00),
+                                .init(color: Color(red: 0.43, green: 0.80, blue: 0.27), location: 0.24),
+                                .init(color: Color(red: 0.95, green: 0.82, blue: 0.22), location: 0.50),
+                                .init(color: Color(red: 0.94, green: 0.57, blue: 0.17), location: 0.76),
+                                .init(color: Color(red: 0.88, green: 0.30, blue: 0.19), location: 1.00)
+                            ],
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                    )
+                    .frame(height: 8)
+                    .overlay {
+                        Capsule()
+                            .fill(Color.white.opacity(0.12))
+                            .blur(radius: 1.2)
+                            .padding(.horizontal, 1)
+                    }
 
                 Circle()
                     .fill(Color.gray)
@@ -832,68 +1077,99 @@ struct LectorEtiquetasView: View {
         .frame(height: 14)
     }
 
-    private func parseFoodNutritionInput(from byID: [String: EtiquetaNutrienteClave]) -> FoodNutritionInput? {
-        guard
-            let proteinRaw = byID[NutritionScoringTarget.proteinas.id]?.valor,
-            let saturatedFatRaw = byID[NutritionScoringTarget.grasasSaturadas.id]?.valor,
-            let fiberRaw = byID[NutritionScoringTarget.fibra.id]?.valor,
-            let sugarRaw = byID[NutritionScoringTarget.azucar.id]?.valor,
-            let saltRaw = byID[NutritionScoringTarget.sal.id]?.valor,
-            let kcalRaw = byID[NutritionScoringTarget.valorEnergetico.id]?.valor,
-            let protein = extractGrams(from: proteinRaw),
-            let saturatedFat = extractGrams(from: saturatedFatRaw),
-            let fiber = extractGrams(from: fiberRaw),
-            let sugar = extractGrams(from: sugarRaw),
-            let salt = extractGrams(from: saltRaw),
-            let kcal = extractEnergyKcal(from: kcalRaw)
-        else {
-            return nil
+    private func nutrientConcentrationLevel(for value: Double, target: NutritionScoringTarget) -> NutritionConcentrationLevel {
+        let config = nutrientDialConfig(for: target)
+        if value <= config.lowUpperBound {
+            return .baja
+        }
+        if value <= config.mediumUpperBound {
+            return .media
+        }
+        return .alta
+    }
+
+    // Clasificación pura y reusable: porcentaje de energía aportada por proteína.
+    private func classifyProteinLevelByEnergyPercentage(
+        proteinGrams: Double,
+        calories: Double
+    ) -> NutritionConcentrationLevel {
+        guard let proteinEnergyPct = proteinEnergyPercentage(proteinGrams: proteinGrams, calories: calories) else {
+            return .baja
         }
 
-        return FoodNutritionInput(
-            protein: protein,
-            saturatedFat: saturatedFat,
-            fiber: fiber,
-            sugar: sugar,
-            salt: salt,
-            kcal: kcal
-        )
-    }
-
-    private func proteinConcentrationLevel(_ value: Double) -> NutritionConcentrationLevel {
-        if value < 6 { return .baja }
-        if value < 15 { return .media }
+        if proteinEnergyPct < 12 {
+            return .baja
+        }
+        if proteinEnergyPct < 20 {
+            return .media
+        }
         return .alta
     }
 
-    private func saturatedFatConcentrationLevel(_ value: Double) -> NutritionConcentrationLevel {
-        if value < 2 { return .baja }
-        if value < 8 { return .media }
-        return .alta
+    private func proteinEnergyPercentage(proteinGrams: Double, calories: Double) -> Double? {
+        guard calories > 0 else { return nil }
+        return (proteinGrams * 4 / calories) * 100
     }
 
-    private func fiberConcentrationLevel(_ value: Double) -> NutritionConcentrationLevel {
-        if value < 2 { return .baja }
-        if value < 6 { return .media }
-        return .alta
+    private func proteinMarkerPosition(proteinGrams: Double) -> CGFloat {
+        let config = nutrientDialConfig(for: .proteinas)
+        return markerPosition(for: proteinGrams, config: config)
     }
 
-    private func sugarConcentrationLevel(_ value: Double) -> NutritionConcentrationLevel {
-        if value < 5 { return .baja }
-        if value < 15 { return .media }
-        return .alta
+    private func nutrientMarkerPosition(for value: Double, target: NutritionScoringTarget) -> CGFloat {
+        let config = nutrientDialConfig(for: target)
+        return markerPosition(for: value, config: config)
     }
 
-    private func saltConcentrationLevel(_ value: Double) -> NutritionConcentrationLevel {
-        if value < 0.3 { return .baja }
-        if value < 1 { return .media }
-        return .alta
+    private func markerPosition(for value: Double, config: NutritionDialConfig) -> CGFloat {
+        let clampedValue = max(0, min(value, config.maxReference))
+        let normalized = clampedValue / config.maxReference
+        let oriented = config.higherIsBetter ? (1 - normalized) : normalized
+        return CGFloat((oriented * 0.92) + 0.04)
     }
 
-    private func kcalConcentrationLevel(_ value: Double) -> NutritionConcentrationLevel {
-        if value < 150 { return .baja }
-        if value < 300 { return .media }
-        return .alta
+    private func nutrientLevelDescription(level: NutritionConcentrationLevel, target: NutritionScoringTarget) -> String {
+        if target == .fibra {
+            switch level {
+            case .baja: return "Fibra escasa"
+            case .media: return "Buena fuente de fibra"
+            case .alta: return "Alta en fibra"
+            }
+        }
+
+        if target == .proteinas {
+            switch level {
+            case .baja: return "Aporte proteico bajo"
+            case .media: return "Aporte proteico medio"
+            case .alta: return "Aporte proteico alto"
+            }
+        }
+
+        switch level {
+        case .media:
+            return "Concentración media"
+        case .baja:
+            return nutrientDialConfig(for: target).higherIsBetter ? "Concentración baja (a mejorar)" : "Concentración baja (favorable)"
+        case .alta:
+            return nutrientDialConfig(for: target).higherIsBetter ? "Concentración alta (favorable)" : "Concentración alta (a vigilar)"
+        }
+    }
+
+    private func nutrientDialConfig(for target: NutritionScoringTarget) -> NutritionDialConfig {
+        switch target {
+        case .proteinas:
+            return NutritionDialConfig(lowUpperBound: 5, mediumUpperBound: 10, maxReference: 30, higherIsBetter: false)
+        case .fibra:
+            return NutritionDialConfig(lowUpperBound: 3, mediumUpperBound: 6, maxReference: 20, higherIsBetter: false)
+        case .grasasSaturadas:
+            return NutritionDialConfig(lowUpperBound: 1.5, mediumUpperBound: 5, maxReference: 15, higherIsBetter: false)
+        case .azucar:
+            return NutritionDialConfig(lowUpperBound: 5, mediumUpperBound: 22.5, maxReference: 50, higherIsBetter: false)
+        case .sal:
+            return NutritionDialConfig(lowUpperBound: 0.3, mediumUpperBound: 1.5, maxReference: 3, higherIsBetter: false)
+        case .valorEnergetico:
+            return NutritionDialConfig(lowUpperBound: 120, mediumUpperBound: 225, maxReference: 500, higherIsBetter: false)
+        }
     }
 
     private func extractEnergyKcal(from rawValue: String) -> Double? {
@@ -937,11 +1213,11 @@ struct LectorEtiquetasView: View {
             .padding(14)
             .frame(maxWidth: .infinity, alignment: .leading)
             .foregroundStyle(.black)
-            .background(Color.white.opacity(0.5))
+            .background(Color(red: 0.97, green: 0.99, blue: 0.96).opacity(0.92))
             .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
             .overlay {
                 RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .stroke(Color.white.opacity(0.45), lineWidth: 1)
+                    .stroke(Color(red: 0.74, green: 0.86, blue: 0.74).opacity(0.55), lineWidth: 1)
             }
             .shadow(color: Color.black.opacity(0.06), radius: 8, x: 0, y: 4)
     }
@@ -979,6 +1255,80 @@ struct LectorEtiquetasView: View {
         }
     }
 
+    private func buildPrincipalScoreInfo(
+        resultado: ResultadoAnalisisEtiqueta,
+        resumen: EtiquetaResumenProducto,
+        risk: LectorEtiquetasFoodRiskScoreResult
+    ) -> PrincipalScoreInfo {
+        var criteria: [String] = []
+
+        criteria.append("Criterios evaluados: \(risk.criteriosEvaluados). Sin datos: \(risk.criteriosSinDatos).")
+
+        let aditivos = resultado.hallazgos.filter { $0.categoria == .aditivoDeRiesgo }
+        let highOrCriticalCount = aditivos.filter { $0.nivel == .alto || $0.nivel == .critico }.count
+        let mediumCount = aditivos.filter { $0.nivel == .medio }.count
+
+        if highOrCriticalCount >= 1 || mediumCount >= 3 {
+            criteria.append("Aditivos de riesgo: se activó la regla crítica (>=1 alto/crítico o >=3 medios), con máxima penalización.")
+        } else if aditivos.isEmpty {
+            criteria.append("Aditivos de riesgo: no se detectaron aditivos relevantes.")
+        } else {
+            criteria.append("Aditivos de riesgo detectados: \(aditivos.count) (medios: \(mediumCount), altos/críticos: \(highOrCriticalCount)).")
+        }
+
+        if let esOrganico = resumen.perfilAlimentario.esOrganico {
+            criteria.append("Perfil orgánico: \(esOrganico ? "declarado" : "no declarado") en metadatos del producto.")
+        } else {
+            criteria.append("Perfil orgánico: sin dato directo; se usó evaluación ecológica (\(resumen.evaluacionEcologica.estado.titulo.lowercased())).")
+        }
+
+        if let contieneGluten = resumen.perfilAlimentario.contieneGluten {
+            criteria.append("Gluten: \(contieneGluten ? "presente" : "no detectado") según perfil alimentario.")
+        } else if let glutenFinding = resultado.hallazgos
+            .filter({ $0.categoria == .indicioGluten })
+            .max(by: { $0.nivel.rawValue < $1.nivel.rawValue }) {
+            criteria.append("Gluten: indicio \(glutenFinding.nivel.badgeText.lowercased()) por análisis de ingredientes.")
+        } else if containsGlutenKeyword(in: resumen.alergenos) {
+            criteria.append("Gluten: marcador detectado en alérgenos declarados.")
+        } else {
+            criteria.append("Gluten: sin evidencia concluyente (aplica criterio conservador).")
+        }
+
+        if let sugar = highestFindingLevel(in: resultado.hallazgos, categories: [.excesoAzucar]) {
+            criteria.append("Azúcar: riesgo \(sugar.badgeText.lowercased()).")
+        }
+        if let salt = highestFindingLevel(in: resultado.hallazgos, categories: [.excesoSal, .sodioElevado]) {
+            criteria.append("Sal/Sodio: riesgo \(salt.badgeText.lowercased()).")
+        }
+        if let satFat = highestFindingLevel(in: resultado.hallazgos, categories: [.excesoGrasaSaturada]) {
+            criteria.append("Grasa saturada: riesgo \(satFat.badgeText.lowercased()).")
+        }
+
+        return PrincipalScoreInfo(
+            title: risk.classification.title,
+            scoreText: "\(risk.score)/100",
+            criteria: criteria
+        )
+    }
+
+    private func highestFindingLevel(
+        in hallazgos: [HallazgoRiesgoEtiqueta],
+        categories: [CategoriaRiesgoEtiqueta]
+    ) -> NivelRiesgoEtiqueta? {
+        hallazgos
+            .filter { categories.contains($0.categoria) }
+            .map(\.nivel)
+            .max()
+    }
+
+    private func containsGlutenKeyword(in allergens: [String]) -> Bool {
+        let markers = ["gluten", "trigo", "wheat", "cebada", "barley", "centeno", "rye", "espelta", "spelt"]
+        return allergens.contains { allergen in
+            let normalized = allergen.folding(options: [.diacriticInsensitive, .caseInsensitive], locale: .current).lowercased()
+            return markers.contains(where: { normalized.contains($0) })
+        }
+    }
+
     private func boolText(_ value: Bool?) -> String {
         guard let value else { return "No disponible" }
         return value ? "Sí" : "No"
@@ -987,6 +1337,11 @@ struct LectorEtiquetasView: View {
     private func clearSearchStateForModeChange() {
         barcodeInput = ""
         isBarcodeCardExpanded = true
+        currentProductImageIndex = 0
+        expandedProductImage = nil
+        selectedNutrientInfoTarget = nil
+        selectedPrincipalScoreInfo = nil
+        showOfflineUpdatePrompt = false
         expandedAditivos.removeAll()
         viewModel.offlineNameMatches = []
         viewModel.limpiarResultado()
@@ -1047,17 +1402,152 @@ private struct NutritionInfoSheetView: View {
     }
 }
 
+private struct NutrientDetailSheetView: View {
+    let target: NutritionScoringTarget
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 12) {
+                Text(target.infoTitle)
+                    .font(.title3.bold())
+
+                Text("Función")
+                    .font(.headline)
+                Text(target.functionSummary)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+
+                Text("Concentración y salud")
+                    .font(.headline)
+                Text(target.concentrationSummary)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+
+                Text("Cantidad recomendada")
+                    .font(.headline)
+                Text(target.recommendedAmountSummary)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+            .padding()
+        }
+    }
+}
+
+private struct PrincipalScoreDetailSheetView: View {
+    let info: PrincipalScoreInfo
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Score principal")
+                    .font(.title3.bold())
+
+                Text("Resultado: \(info.title) (\(info.scoreText))")
+                    .font(.headline)
+
+                Text("Criterios aplicados")
+                    .font(.headline)
+
+                ForEach(Array(info.criteria.enumerated()), id: \.offset) { _, item in
+                    Text("• \(item)")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .padding()
+        }
+    }
+}
+
+private struct PrincipalScoreInfo: Identifiable {
+    let id = UUID()
+    let title: String
+    let scoreText: String
+    let criteria: [String]
+}
+
+private struct ExpandedProductImage: Identifiable {
+    let id = UUID()
+    let imageURLs: [URL]
+    let initialIndex: Int
+}
+
+private struct ExpandedProductImageGallerySheetView: View {
+    let imageURLs: [URL]
+    let initialIndex: Int
+
+    @State private var currentIndex: Int
+
+    init(imageURLs: [URL], initialIndex: Int) {
+        self.imageURLs = imageURLs
+        self.initialIndex = initialIndex
+        _currentIndex = State(initialValue: max(0, min(initialIndex, max(0, imageURLs.count - 1))))
+    }
+
+    var body: some View {
+        VStack(spacing: 10) {
+            if imageURLs.isEmpty {
+                Image(systemName: "photo")
+                    .font(.system(size: 40))
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else {
+                TabView(selection: $currentIndex) {
+                    ForEach(Array(imageURLs.enumerated()), id: \.offset) { index, imageURL in
+                        AsyncImage(url: imageURL) { phase in
+                            switch phase {
+                            case .empty:
+                                ProgressView()
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            case .success(let image):
+                                image
+                                    .resizable()
+                                    .scaledToFit()
+                                    .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                                    .padding(.horizontal, 16)
+                                    .padding(.vertical, 8)
+                            case .failure:
+                                Image(systemName: "photo")
+                                    .font(.system(size: 40))
+                                    .foregroundStyle(.secondary)
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            @unknown default:
+                                EmptyView()
+                            }
+                        }
+                        .tag(index)
+                    }
+                }
+                .tabViewStyle(.page(indexDisplayMode: .never))
+
+                if imageURLs.count > 1 {
+                    HStack(spacing: 6) {
+                        ForEach(Array(imageURLs.indices), id: \.self) { index in
+                            Circle()
+                                .fill(index == currentIndex ? Color.primary.opacity(0.7) : Color.secondary.opacity(0.25))
+                                .frame(width: 6, height: 6)
+                        }
+                    }
+                    .padding(.bottom, 6)
+                }
+            }
+        }
+        .padding(.bottom, 12)
+    }
+}
+
 private struct NutritionEvaluation {
     let insights: [NutritionInsight]
-    let totalScore: Double?
 }
 
 private struct NutritionInsight: Identifiable {
     let id: String
+    let target: NutritionScoringTarget
     let title: String
     let rawValueText: String
-    let score: Double
     let level: NutritionConcentrationLevel
+    let markerPosition: CGFloat
     let levelDescription: String
 }
 
@@ -1065,33 +1555,16 @@ private enum NutritionConcentrationLevel {
     case baja
     case media
     case alta
-
-    var label: String {
-        switch self {
-        case .baja: return "Baja cantidad"
-        case .media: return "Cantidad media"
-        case .alta: return "Alta cantidad"
-        }
-    }
-
-    var color: Color {
-        switch self {
-        case .baja: return .green
-        case .media: return .yellow
-        case .alta: return .red
-        }
-    }
-
-    var markerPosition: CGFloat {
-        switch self {
-        case .baja: return 0.16
-        case .media: return 0.50
-        case .alta: return 0.84
-        }
-    }
 }
 
-private enum NutritionScoringTarget: CaseIterable {
+private struct NutritionDialConfig {
+    let lowUpperBound: Double
+    let mediumUpperBound: Double
+    let maxReference: Double
+    let higherIsBetter: Bool
+}
+
+private enum NutritionScoringTarget: CaseIterable, Identifiable {
     case proteinas
     case fibra
     case grasasSaturadas
@@ -1148,6 +1621,70 @@ private extension EstadoEcologicoEtiqueta {
         case .confirmado: return .green
         case .probable: return .orange
         case .noConfirmado: return .black
+        }
+    }
+}
+
+private extension NutritionScoringTarget {
+    var infoTitle: String {
+        switch self {
+        case .proteinas: return "Proteínas"
+        case .fibra: return "Fibra"
+        case .grasasSaturadas: return "Grasas saturadas"
+        case .azucar: return "Azúcar"
+        case .sal: return "Sal"
+        case .valorEnergetico: return "Valor calórico"
+        }
+    }
+
+    var functionSummary: String {
+        switch self {
+        case .proteinas:
+            return "Ayudan a reparar y mantener músculo, piel, enzimas y hormonas."
+        case .fibra:
+            return "Mejora el tránsito intestinal, la saciedad y el control de glucosa."
+        case .grasasSaturadas:
+            return "Aportan energía, pero no son esenciales frente a grasas insaturadas."
+        case .azucar:
+            return "Fuente rápida de energía; el exceso desplaza nutrientes de mejor calidad."
+        case .sal:
+            return "Necesaria en pequeñas cantidades para equilibrio hídrico y función nerviosa."
+        case .valorEnergetico:
+            return "Representa la energía total del alimento para cubrir requerimientos diarios."
+        }
+    }
+
+    var concentrationSummary: String {
+        switch self {
+        case .proteinas:
+            return "Un aporte adecuado favorece masa muscular y saciedad. Muy bajo puede ser insuficiente según contexto dietético."
+        case .fibra:
+            return "Concentración baja suele asociarse a menor saciedad y peor salud digestiva. Buena o alta favorece salud metabólica e intestinal."
+        case .grasasSaturadas:
+            return "Concentraciones altas y frecuentes se asocian a mayor riesgo cardiovascular. Conviene priorizar niveles bajos o moderados."
+        case .azucar:
+            return "Concentraciones altas aumentan carga glucémica y exceso calórico. Se recomienda mantenerla baja, especialmente en ultraprocesados."
+        case .sal:
+            return "Concentraciones altas elevan riesgo de hipertensión en consumo habitual. Es preferible una concentración baja."
+        case .valorEnergetico:
+            return "Mayor densidad energética facilita exceder calorías si la porción no se controla; depende del patrón global de alimentación."
+        }
+    }
+
+    var recommendedAmountSummary: String {
+        switch self {
+        case .proteinas:
+            return "Adultos: ~0.8 g/kg/día como mínimo (aprox. 10-35% de la energía diaria)."
+        case .fibra:
+            return "Objetivo general: 14 g por cada 1000 kcal (aprox. 25-38 g/día en adultos)."
+        case .grasasSaturadas:
+            return "Limitar a <10% de las calorías diarias; idealmente sustituir por grasas insaturadas."
+        case .azucar:
+            return "Azúcares libres/añadidos: <10% de las calorías; idealmente <5% si es posible."
+        case .sal:
+            return "Límite recomendado: <5 g de sal al día (≈2 g de sodio)."
+        case .valorEnergetico:
+            return "Depende de edad, sexo y actividad. Referencia habitual en etiquetado: ~2000 kcal/día."
         }
     }
 }

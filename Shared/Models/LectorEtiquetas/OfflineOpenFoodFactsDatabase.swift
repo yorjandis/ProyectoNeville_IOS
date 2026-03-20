@@ -10,6 +10,12 @@ actor OfflineOpenFoodFactsDatabase {
         let installedVersion: Int
     }
 
+    struct UpdateStatus: Sendable {
+        let latestVersion: Int
+        let installedVersion: Int?
+        let hasUpdate: Bool
+    }
+
     struct ProductRecord: Sendable {
         let barcode: String
         let productName: String
@@ -57,6 +63,15 @@ actor OfflineOpenFoodFactsDatabase {
             databaseURL: result.databaseURL,
             didCopy: result.didCopy,
             installedVersion: result.installedVersion
+        )
+    }
+
+    func checkForAvailableUpdate() async throws -> UpdateStatus {
+        let status = try await bootstrapper.checkForAvailableUpdate()
+        return UpdateStatus(
+            latestVersion: status.latestVersion,
+            installedVersion: status.installedVersion,
+            hasUpdate: status.hasUpdate
         )
     }
 

@@ -18,11 +18,24 @@ actor DatabaseBootstrapper {
         let installedVersion: Int
     }
 
+    struct UpdateStatus {
+        let latestVersion: Int
+        let installedVersion: Int?
+        let hasUpdate: Bool
+    }
+
     func bootstrapDatabase(forceCopy: Bool = false) async throws -> Result {
         guard #available(iOS 26.0, *) else {
             throw ManagedAssetsSupportError.featureUnavailable
         }
         return try await bootstrapDatabase_iOS26(forceCopy: forceCopy)
+    }
+
+    func checkForAvailableUpdate() async throws -> UpdateStatus {
+        guard #available(iOS 26.0, *) else {
+            throw ManagedAssetsSupportError.featureUnavailable
+        }
+        return try await checkForAvailableUpdate_iOS26()
     }
 
     @available(iOS 26.0, *)
@@ -50,6 +63,23 @@ actor DatabaseBootstrapper {
         }
 
         return Result(databaseURL: destinationURL, didCopy: needsCopy, installedVersion: assetPack.version)
+    }
+
+    @available(iOS 26.0, *)
+    private func checkForAvailableUpdate_iOS26() async throws -> UpdateStatus {
+        let manager = AssetPackManager.shared
+        let assetPack = try await manager.assetPack(withID: LectorEtiquetasManagedAssetsConfig.assetPackID)
+        let defaults = UserDefaults(suiteName: LectorEtiquetasManagedAssetsConfig.appGroupID)
+        let installedVersion = (defaults?.object(forKey: LectorEtiquetasManagedAssetsConfig.versionDefaultsKey) as? NSNumber)?.intValue
+        let destinationURL = try makeDestinationDatabaseURL()
+        let hasLocalDatabase = FileManager.default.fileExists(atPath: destinationURL.path)
+        let hasUpdate = hasLocalDatabase && ((installedVersion ?? assetPack.version) < assetPack.version)
+
+        return UpdateStatus(
+            latestVersion: assetPack.version,
+            installedVersion: installedVersion,
+            hasUpdate: hasUpdate
+        )
     }
 
     @available(iOS 26.0, *)
@@ -142,7 +172,17 @@ actor DatabaseBootstrapper {
         let installedVersion: Int
     }
 
+    struct UpdateStatus {
+        let latestVersion: Int
+        let installedVersion: Int?
+        let hasUpdate: Bool
+    }
+
     func bootstrapDatabase(forceCopy: Bool = false) async throws -> Result {
+        throw ManagedAssetsSupportError.featureUnavailable
+    }
+
+    func checkForAvailableUpdate() async throws -> UpdateStatus {
         throw ManagedAssetsSupportError.featureUnavailable
     }
 }

@@ -266,7 +266,7 @@ struct EtiquetaEvaluacionEcologica: Codable, Hashable {
 struct EtiquetaResumenProducto: Hashable {
     let nombreProducto: String
     let codigoBarras: String
-    let imageURL: URL?
+    let imageURLs: [URL]
     let nutritionGrade: String?
     let novaGroup: Int?
     let alergenos: [String]
@@ -274,6 +274,10 @@ struct EtiquetaResumenProducto: Hashable {
     let aditivosDetectados: [String]
     let nutrientesClave: [EtiquetaNutrienteClave]
     let evaluacionEcologica: EtiquetaEvaluacionEcologica
+
+    var imageURL: URL? {
+        imageURLs.first
+    }
 }
 
 extension ResultadoAnalisisEtiqueta {
@@ -286,7 +290,7 @@ extension ResultadoAnalisisEtiqueta {
         return EtiquetaResumenProducto(
             nombreProducto: nombreProducto,
             codigoBarras: metadata.barcode,
-            imageURL: Self.extractImageURL(from: metadata.allFields),
+            imageURLs: Self.extractImageURLs(from: metadata.allFields, source: metadata.source),
             nutritionGrade: Self.extractNutritionGrade(from: metadata.allFields),
             novaGroup: Self.extractNovaGroup(from: metadata.allFields),
             alergenos: Self.parseList(from: metadata.allergens),
@@ -334,22 +338,46 @@ extension ResultadoAnalisisEtiqueta {
         }
     }
 
-    private static func extractImageURL(from fields: [OpenFoodFactsFieldItem]) -> URL? {
+    private static func extractImageURLs(
+        from fields: [OpenFoodFactsFieldItem],
+        source: LectorEtiquetasDataSource
+    ) -> [URL] {
         let dictionary = Dictionary(uniqueKeysWithValues: fields.map { ($0.key, $0.value) })
-        let preferredKeys = ["image_url", "image_front_url", "image_path"]
 
+        if source == .offlineSQLite,
+           let offlineImagePath = dictionary["image_path"]?.trimmingCharacters(in: .whitespacesAndNewlines),
+           !offlineImagePath.isEmpty {
+            return offlineImagePath
+                .split(separator: "|")
+                .compactMap { partialPath -> URL? in
+                    let value = String(partialPath).trimmingCharacters(in: .whitespacesAndNewlines)
+                    guard !value.isEmpty else { return nil }
+                    if value.hasPrefix("http://") || value.hasPrefix("https://") {
+                        return URL(string: value)
+                    }
+                    let path = value.hasPrefix("/") ? value : "/\(value)"
+                    return URL(string: "https://images.openfoodfacts.org/images/products\(path)")
+                }
+        }
+
+        let preferredKeys = ["image_url", "image_front_url", "image_path"]
         for key in preferredKeys {
             guard let rawValue = dictionary[key]?.trimmingCharacters(in: .whitespacesAndNewlines),
                   !rawValue.isEmpty else { continue }
             if rawValue.hasPrefix("http://") || rawValue.hasPrefix("https://") {
-                return URL(string: rawValue)
+                if let url = URL(string: rawValue) {
+                    return [url]
+                }
+                continue
             }
 
             let normalizedPath = rawValue.hasPrefix("/") ? String(rawValue.dropFirst()) : rawValue
-            return URL(string: "https://images.openfoodfacts.org/\(normalizedPath)")
+            if let url = URL(string: "https://images.openfoodfacts.org/\(normalizedPath)") {
+                return [url]
+            }
         }
 
-        return nil
+        return []
     }
 
     private static func extractNutritionGrade(from fields: [OpenFoodFactsFieldItem]) -> String? {

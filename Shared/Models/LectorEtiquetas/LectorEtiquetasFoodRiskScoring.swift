@@ -124,6 +124,17 @@ struct DefaultLectorEtiquetasFoodRiskScoringEngine: LectorEtiquetasFoodRiskScori
     }
 
     func score(input: LectorEtiquetasFoodRiskScoringInput) -> LectorEtiquetasFoodRiskScoreResult {
+        let additiveFindings = input.hallazgos.filter { $0.categoria == .aditivoDeRiesgo }
+
+        if hasCriticalAdditivePattern(additiveFindings) {
+            return LectorEtiquetasFoodRiskScoreResult(
+                score: 0,
+                classification: .malo,
+                criteriosEvaluados: 1,
+                criteriosSinDatos: 0
+            )
+        }
+
         if isInsufficientInformation(input: input) {
             return LectorEtiquetasFoodRiskScoreResult(
                 score: config.insufficientInfoLowScore,
@@ -136,8 +147,6 @@ struct DefaultLectorEtiquetasFoodRiskScoringEngine: LectorEtiquetasFoodRiskScori
         var score = 100.0
         var criteriosEvaluados = 0
         var criteriosSinDatos = 0
-
-        let additiveFindings = input.hallazgos.filter { $0.categoria == .aditivoDeRiesgo }
         if input.ingredientesDetectadosCount > 0 {
             criteriosEvaluados += 1
             if additiveFindings.isEmpty {
@@ -290,6 +299,16 @@ struct DefaultLectorEtiquetasFoodRiskScoringEngine: LectorEtiquetasFoodRiskScori
         case .alto: return 6
         case .critico: return 10
         }
+    }
+
+    private func hasCriticalAdditivePattern(_ findings: [HallazgoRiesgoEtiqueta]) -> Bool {
+        let highOrCriticalCount = findings.filter { $0.nivel == .alto || $0.nivel == .critico }.count
+        if highOrCriticalCount >= 1 {
+            return true
+        }
+
+        let mediumCount = findings.filter { $0.nivel == .medio }.count
+        return mediumCount >= 3
     }
 
     private func glutenPenaltyFromFinding(_ level: NivelRiesgoEtiqueta) -> Double {

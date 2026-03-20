@@ -34,6 +34,10 @@ final class LectorEtiquetasService: @unchecked Sendable {
         try await offlineDatabase.ensureDatabaseAvailable(forceCopy: forceCopy)
     }
 
+    func checkOfflineDatabaseUpdate() async throws -> OfflineOpenFoodFactsDatabase.UpdateStatus {
+        try await offlineDatabase.checkForAvailableUpdate()
+    }
+
     func analizar(
         codigoBarras: String,
         source: LectorEtiquetasDataSource,
