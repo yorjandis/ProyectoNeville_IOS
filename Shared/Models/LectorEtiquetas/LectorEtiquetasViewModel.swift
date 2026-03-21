@@ -158,7 +158,11 @@ final class LectorEtiquetasViewModel: ObservableObject {
 
         offlineDatabasePath = path
         isOfflineDatabaseReady = true
-        offlineInfoMessage = "Base offline OK"
+
+        let installedVersion = (defaults.object(forKey: LectorEtiquetasManagedAssetsConfig.versionDefaultsKey) as? NSNumber)?.intValue
+        let versionText = installedVersion.map(String.init) ?? "N/D"
+        offlineInfoMessage = "BD offline activa. Versión instalada: \(versionText)."
+
         Task { _ = await verificarActualizacionOffline() }
     }
 

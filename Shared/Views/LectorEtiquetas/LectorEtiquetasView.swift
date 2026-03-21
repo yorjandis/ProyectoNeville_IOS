@@ -18,6 +18,7 @@ struct LectorEtiquetasView: View {
     @State private var showBarcodeScanner: Bool = false
     @State private var expandedAditivos: Set<String> = []
     @State private var showNutritionInfoSheet: Bool = false
+    @State private var showHealthyEatingGuideSheet: Bool = false
     @State private var isBarcodeCardExpanded: Bool = true
     @State private var currentProductImageIndex: Int = 0
     @State private var expandedProductImage: ExpandedProductImage?
@@ -49,6 +50,16 @@ struct LectorEtiquetasView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Cerrar") { dismiss() }
+                }
+
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        showHealthyEatingGuideSheet = true
+                    } label: {
+                        Image(systemName: "info.circle")
+                    }
+                    .help("Guía para elegir alimentos saludables")
+                    .disabled(viewModel.isAnalizando)
                 }
 
                 ToolbarItem(placement: .topBarTrailing) {
@@ -108,6 +119,10 @@ struct LectorEtiquetasView: View {
             }
             .sheet(isPresented: $showNutritionInfoSheet) {
                 NutritionInfoSheetView()
+                    .presentationDetents([.medium])
+            }
+            .sheet(isPresented: $showHealthyEatingGuideSheet) {
+                HealthyEatingGuideSheetView()
                     .presentationDetents([.medium])
             }
             .sheet(item: $selectedNutrientInfoTarget) { target in
@@ -200,7 +215,7 @@ struct LectorEtiquetasView: View {
         return card {
             VStack(alignment: .leading, spacing: 12) {
                 HStack(alignment: .top) {
-                    Text("Código de barras")
+                    Text("Escanear o buscar por nombre")
                         .font(.system(.headline, design: .rounded, weight: .semibold))
 
                     Spacer()
@@ -352,7 +367,7 @@ struct LectorEtiquetasView: View {
                     }
                 } else {
                     HStack{
-                        Text("Escanear o Buscar")
+                        Text( viewModel.selectedSource == .offlineSQLite ?   "Off-Line" : "Online")
                             .font(.system(.footnote, design: .rounded))
                             .foregroundStyle(.secondary)
                         
@@ -419,7 +434,8 @@ struct LectorEtiquetasView: View {
                 nutrientesDetectados: resultado.nutrientesDetectados,
                 nutrimentsFormatted: resultado.metadata?.nutrimentsFormatted ?? [],
                 alergenos: resumen.alergenos,
-                ingredientesDetectadosCount: resultado.ingredientesDetectados.count
+                ingredientesDetectadosCount: resultado.ingredientesDetectados.count,
+                novaGroup: resumen.novaGroup
             )
         )
         let principalScoreInfo = buildPrincipalScoreInfo(
@@ -440,12 +456,17 @@ struct LectorEtiquetasView: View {
                         selectedPrincipalScoreInfo = principalScoreInfo
                     } label: {
                         Text(proprietaryRisk.classification.title)
-                            .font(.system(.caption, design: .rounded, weight: .bold))
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 5)
-                            .background(proprietaryRisk.classification.badgeColor.opacity(0.18))
-                            .foregroundStyle(.black).bold()
+                            .font(.system(.title3, design: .rounded, weight: .heavy))
+                            .padding(.horizontal, 14)
+                            .padding(.vertical, 8)
+                            .background(proprietaryRisk.classification.badgeColor.opacity(0.28))
+                            .overlay {
+                                Capsule()
+                                    .stroke(proprietaryRisk.classification.badgeColor.opacity(0.55), lineWidth: 1.2)
+                            }
+                            .foregroundStyle(.black)
                             .clipShape(Capsule())
+                            .shadow(color: proprietaryRisk.classification.badgeColor.opacity(0.2), radius: 3, x: 0, y: 1)
                     }
                     .buttonStyle(.plain)
                 }
@@ -1262,46 +1283,88 @@ struct LectorEtiquetasView: View {
     ) -> PrincipalScoreInfo {
         var criteria: [String] = []
 
-        criteria.append("Criterios evaluados: \(risk.criteriosEvaluados). Sin datos: \(risk.criteriosSinDatos).")
+        criteria.append("Analizamos \(risk.criteriosEvaluados) criterios y hubo \(risk.criteriosSinDatos) sin datos suficientes.")
 
         let aditivos = resultado.hallazgos.filter { $0.categoria == .aditivoDeRiesgo }
         let highOrCriticalCount = aditivos.filter { $0.nivel == .alto || $0.nivel == .critico }.count
         let mediumCount = aditivos.filter { $0.nivel == .medio }.count
+        let hasAdditiveRiskAtOrAboveMedium = mediumCount > 0 || highOrCriticalCount > 0
+
+        let inferredContainsGluten: Bool? = {
+            if let contains = resumen.perfilAlimentario.contieneGluten { return contains }
+            if resultado.hallazgos.contains(where: { $0.categoria == .indicioGluten }) { return true }
+            if containsGlutenKeyword(in: resumen.alergenos) { return true }
+            return nil
+        }()
+
+        let isOrganic = resumen.perfilAlimentario.esOrganico
+
+        if let novaGroup = resumen.novaGroup,
+           (1...2).contains(novaGroup),
+           !hasAdditiveRiskAtOrAboveMedium {
+            let novaDescription = novaGroup == 1 ? "alimento sin procesar o mínimamente procesado (NOVA 1)" : "alimento mínimamente procesado (NOVA 2)"
+            criteria.append("Se aplicó una regla prioritaria porque es un \(novaDescription).")
+            criteria.append("No contiene aditivos de riesgo medio, alto o crítico.")
+
+            if let inferredContainsGluten {
+                criteria.append("Gluten: \(inferredContainsGluten ? "presente" : "no detectado").")
+            } else {
+                criteria.append("Gluten: sin dato concluyente.")
+            }
+
+            if let isOrganic {
+                criteria.append(isOrganic ? "Se declara como orgánico." : "No se declara como orgánico.")
+            } else {
+                criteria.append("Orgánico: sin dato disponible.")
+            }
+
+            let overrideClassification: LectorEtiquetasFoodRiskClassification = (
+                inferredContainsGluten == false && isOrganic == true
+            ) ? .excelente : .bueno
+
+            criteria.append("Por esta combinación, la calificación final es \(overrideClassification.title).")
+
+            return PrincipalScoreInfo(
+                title: risk.classification.title,
+                scoreText: "\(risk.score)/100",
+                criteria: criteria
+            )
+        }
 
         if highOrCriticalCount >= 1 || mediumCount >= 3 {
-            criteria.append("Aditivos de riesgo: se activó la regla crítica (>=1 alto/crítico o >=3 medios), con máxima penalización.")
+            criteria.append("Contiene aditivos de mayor o moderado riesgo (al menos 1 alto/crítico o 3 medios), por eso aplica penalización máxima.")
         } else if aditivos.isEmpty {
-            criteria.append("Aditivos de riesgo: no se detectaron aditivos relevantes.")
+            criteria.append("No se detectaron aditivos de riesgo relevantes.")
         } else {
-            criteria.append("Aditivos de riesgo detectados: \(aditivos.count) (medios: \(mediumCount), altos/críticos: \(highOrCriticalCount)).")
+            criteria.append("Se detectaron \(aditivos.count) aditivos, pero sin llegar al umbral de penalización máxima (medios: \(mediumCount), altos/críticos: \(highOrCriticalCount)).")
         }
 
         if let esOrganico = resumen.perfilAlimentario.esOrganico {
-            criteria.append("Perfil orgánico: \(esOrganico ? "declarado" : "no declarado") en metadatos del producto.")
+            criteria.append(esOrganico ? "El producto se declara como orgánico." : "El producto no se declara como orgánico.")
         } else {
-            criteria.append("Perfil orgánico: sin dato directo; se usó evaluación ecológica (\(resumen.evaluacionEcologica.estado.titulo.lowercased())).")
+            criteria.append("No hay dato directo de orgánico; usamos señales ecológicas y el resultado fue: \(resumen.evaluacionEcologica.estado.titulo.lowercased()).")
         }
 
         if let contieneGluten = resumen.perfilAlimentario.contieneGluten {
-            criteria.append("Gluten: \(contieneGluten ? "presente" : "no detectado") según perfil alimentario.")
+            criteria.append("Gluten: \(contieneGluten ? "presente" : "no detectado") según la información del producto.")
         } else if let glutenFinding = resultado.hallazgos
             .filter({ $0.categoria == .indicioGluten })
             .max(by: { $0.nivel.rawValue < $1.nivel.rawValue }) {
-            criteria.append("Gluten: indicio \(glutenFinding.nivel.badgeText.lowercased()) por análisis de ingredientes.")
+            criteria.append("Gluten: se encontraron indicios \(glutenFinding.nivel.badgeText.lowercased()) en ingredientes.")
         } else if containsGlutenKeyword(in: resumen.alergenos) {
-            criteria.append("Gluten: marcador detectado en alérgenos declarados.")
+            criteria.append("Gluten: aparece en la sección de alérgenos del producto.")
         } else {
-            criteria.append("Gluten: sin evidencia concluyente (aplica criterio conservador).")
+            criteria.append("Gluten: no hay evidencia clara; se aplica una evaluación conservadora.")
         }
 
         if let sugar = highestFindingLevel(in: resultado.hallazgos, categories: [.excesoAzucar]) {
-            criteria.append("Azúcar: riesgo \(sugar.badgeText.lowercased()).")
+            criteria.append("Azúcar: nivel \(sugar.badgeText.lowercased()), lo que impacta negativamente el score.")
         }
         if let salt = highestFindingLevel(in: resultado.hallazgos, categories: [.excesoSal, .sodioElevado]) {
-            criteria.append("Sal/Sodio: riesgo \(salt.badgeText.lowercased()).")
+            criteria.append("Sal/Sodio: nivel \(salt.badgeText.lowercased()), considerado en la puntuación final.")
         }
         if let satFat = highestFindingLevel(in: resultado.hallazgos, categories: [.excesoGrasaSaturada]) {
-            criteria.append("Grasa saturada: riesgo \(satFat.badgeText.lowercased()).")
+            criteria.append("Grasa saturada: nivel \(satFat.badgeText.lowercased()), con efecto en la calificación.")
         }
 
         return PrincipalScoreInfo(
@@ -1394,6 +1457,42 @@ private struct NutritionInfoSheetView: View {
                 Text("Interpretación rápida:")
                     .font(.subheadline.bold())
                 Text("1: mínimamente procesado • 2: ingrediente culinario • 3: procesado • 4: ultraprocesado")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+            .padding()
+        }
+    }
+}
+
+private struct HealthyEatingGuideSheetView: View {
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Guía rápida de alimentación saludable")
+                    .font(.title3.bold())
+
+                Text("Cómo elegir mejor")
+                    .font(.headline)
+                Text("Prioriza alimentos frescos o mínimamente procesados (NOVA 1-2), listas cortas de ingredientes y pocos aditivos de riesgo.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+
+                Text("Cómo leer una etiqueta")
+                    .font(.headline)
+                Text("1) Mira el procesamiento (NOVA). 2) Revisa azúcar, sal y grasas saturadas por 100 g. 3) Verifica fibra y proteína. 4) Si tienes sensibilidad, confirma alérgenos (por ejemplo gluten).")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+
+                Text("Hábitos saludables (pros)")
+                    .font(.headline)
+                Text("Mejor energía diaria, mayor saciedad, mejor salud digestiva y metabólica, y menor riesgo cardiovascular a largo plazo.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+
+                Text("Hábitos nocivos (contras)")
+                    .font(.headline)
+                Text("Exceso frecuente de ultraprocesados, azúcar, sal y grasas saturadas puede aumentar fatiga, apetito desregulado y riesgo de enfermedades crónicas.")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }

@@ -38,6 +38,7 @@ struct LectorEtiquetasFoodRiskScoringInput {
     let nutrimentsFormatted: [OpenFoodFactsNutrimentItem]
     let alergenos: [String]
     let ingredientesDetectadosCount: Int
+    let novaGroup: Int?
 }
 
 enum LectorEtiquetasFoodRiskClassification: String, Codable {
@@ -125,6 +126,16 @@ struct DefaultLectorEtiquetasFoodRiskScoringEngine: LectorEtiquetasFoodRiskScori
 
     func score(input: LectorEtiquetasFoodRiskScoringInput) -> LectorEtiquetasFoodRiskScoreResult {
         let additiveFindings = input.hallazgos.filter { $0.categoria == .aditivoDeRiesgo }
+
+        if let novaClassification = classificationFromNovaOverride(input: input, additiveFindings: additiveFindings) {
+            let score = novaClassification == .excelente ? config.excelenteMinScore : config.buenoMinScore
+            return LectorEtiquetasFoodRiskScoreResult(
+                score: score,
+                classification: novaClassification,
+                criteriosEvaluados: 2,
+                criteriosSinDatos: 0
+            )
+        }
 
         if hasCriticalAdditivePattern(additiveFindings) {
             return LectorEtiquetasFoodRiskScoreResult(
@@ -309,6 +320,48 @@ struct DefaultLectorEtiquetasFoodRiskScoringEngine: LectorEtiquetasFoodRiskScori
 
         let mediumCount = findings.filter { $0.nivel == .medio }.count
         return mediumCount >= 3
+    }
+
+    private func classificationFromNovaOverride(
+        input: LectorEtiquetasFoodRiskScoringInput,
+        additiveFindings: [HallazgoRiesgoEtiqueta]
+    ) -> LectorEtiquetasFoodRiskClassification? {
+        guard let nova = input.novaGroup, (1...2).contains(nova) else { return nil }
+        guard !hasAdditiveRiskAtOrAboveMedium(additiveFindings) else { return nil }
+
+        let containsGluten = inferredContainsGluten(input: input)
+        let isOrganic = input.perfilAlimentario.esOrganico
+
+        // Regla prioritaria NOVA 1/2:
+        // - Excelente solo si gluten == false y orgánico == true.
+        // - Bueno en cualquier otro caso (incluye valores faltantes).
+        if containsGluten == false, isOrganic == true {
+            return .excelente
+        }
+
+        return .bueno
+    }
+
+    private func hasAdditiveRiskAtOrAboveMedium(_ findings: [HallazgoRiesgoEtiqueta]) -> Bool {
+        findings.contains { finding in
+            finding.nivel == .medio || finding.nivel == .alto || finding.nivel == .critico
+        }
+    }
+
+    private func inferredContainsGluten(input: LectorEtiquetasFoodRiskScoringInput) -> Bool? {
+        if let containsGluten = input.perfilAlimentario.contieneGluten {
+            return containsGluten
+        }
+
+        if input.hallazgos.contains(where: { $0.categoria == .indicioGluten }) {
+            return true
+        }
+
+        if containsGlutenMarkers(in: input.alergenos) {
+            return true
+        }
+
+        return nil
     }
 
     private func glutenPenaltyFromFinding(_ level: NivelRiesgoEtiqueta) -> Double {
