@@ -16,6 +16,7 @@ import SwiftUI
 enum ProgramaArchivo: String, CaseIterable {
     case prog_dieta_semanal_1
     case prog_dieta_semanal_2
+    case prog_dieta_semanal_3
     case prog_dejar_fumar_1
     case prog_dejar_fumar_2
     case prog_dejar_alcohol_1
@@ -31,8 +32,7 @@ enum ProgramaArchivo: String, CaseIterable {
     case prog_visualizacion_creativa_neville_1
     case prog_visualizacion_creativa_neville_2
     case prog_visualizacion_creativa_neville_3
-    
-    
+ 
 }
 
 //Creamos los grupos Base: elimnando los números al final de los programas

@@ -313,7 +313,7 @@
     },
     {
         "e_code": "E1104",
-        "e_type": "Flavour enhancer",
+        "e_type": "Edulcorante",
         "halal_status": "Dudoso",
         "id": 17,
         "info": "Las lipasas son enzimas especializadas en la transformación de triglicéridos en glicerol y ácidos grasos. \n Son producidos por las glándulas de la lengua y el páncreas e inician la digestión de las grasas de la dieta. \n Comercialmente suelen ser de origen animal (páncreas de cerdo), pero también pueden ser sintetizados biológicamente por microorganismos.",
@@ -1045,7 +1045,7 @@
     },
     {
         "e_code": "E1443",
-        "e_type": "Unknown",
+        "e_type": "Desconocido",
         "halal_status": "Dudoso",
         "id": 65,
         "info": "Desconocido",
@@ -5904,7 +5904,7 @@
     },
     {
         "e_code": "E490",
-        "e_type": "Unknown",
+        "e_type": "Desconocido",
         "halal_status": "Dudoso",
         "id": 388,
         "info": "Desconocido",
@@ -5941,7 +5941,7 @@
     },
     {
         "e_code": "E493",
-        "e_type": " Emulsifier  - Antifoam",
+        "e_type": "Emulsionante  - Antiespumante",
         "halal_status": "Dudoso",
         "id": 391,
         "info": "Se ha elaborado a partir de sorbitol (E420) y ácido láurico, un ácido graso saturado. El origen de este ácido es más frecuentemente vegetal (y transgénico), pero aún es posible una fuente animal, porcina y/o bovina. \n En dosis altas: lesiones de órganos, diarrea, cálculos en la vejiga. \n Estas dosis se alcanzarían a partir de 150 gramos de pasta fina o 300 gramos de postre o dulce.",
@@ -5989,7 +5989,7 @@
     },
     {
         "e_code": "E497",
-        "e_type": "Unknown",
+        "e_type": "Desconocido",
         "halal_status": "Dudoso",
         "id": 395,
         "info": "Desconocido",
@@ -6021,7 +6021,7 @@
     },
     {
         "e_code": "E500",
-        "e_type": "Anticaking - Regulator of acidity",
+        "e_type": "Antiaglomerante - Regulador de la acidez",
         "halal_status": "Halal",
         "id": 398,
         "info": "Sal sódica del ácido carbónico. Sustancia natural, presente como depósitos salinos que deja el agua de lagos alcalinos. \n También se sintetiza mediante el proceso Solvay o mediante electrólisis del agua de mar.  Hoy en día, el proceso Solvay es una parte importante del mercado global. Las principales características de este proceso son el uso de amoniaco y dióxido de carbono (E290) con cloruro de sodio. \n No se han encontrado efectos secundarios. En grandes dosis puede irritar, corroer el tracto gastrointestinal, alteraciones electrolíticas, vómitos, diarrea y conmociones cerebrales.",
@@ -6044,7 +6044,7 @@
     },
     {
         "e_code": "E501",
-        "e_type": "Anticaking - Regulator of acidity",
+        "e_type": "Antiaglomerante - Regulador de la acidez",
         "halal_status": "Halal",
         "id": 399,
         "info": "Sal potásica del ácido carbónico. Hoy en día, el carbonato de potasio comercial se prepara mediante electrólisis del cloruro de potasio (E508). \n El hidróxido de potasio resultante (E525) se carboniza luego con dióxido de carbono (E290) para formar carbonato de potasio. \n No se han encontrado efectos secundarios. En grandes dosis puede irritar el tracto digestivo.",
@@ -6062,7 +6062,7 @@
     },
     {
         "e_code": "E503",
-        "e_type": "Raising agent - Acidity regulator",
+        "e_type": "Agente gasificante - Regulador de acidez",
         "halal_status": "Halal",
         "id": 400,
         "info": "El carbonato de amonio se prepara mediante sublimación de una mezcla de sulfato de amonio y carbonato de calcio, o haciendo pasar dióxido de carbono gaseoso a través de una columna de absorción que contiene una solución acuosa de amoníaco y provoca una destilación. \n El carbonato de amonio se descompone lentamente en varios productos. En el aire ambiente, pero también en agua caliente, libera amoniaco y dióxido de carbono. \n En dosis elevadas puede deteriorar el equilibrio ácido/base del organismo, el pH de la orina. Pérdida de magnesio, calcio y fosfato. Puede irritar el tracto digestivo.",
@@ -6080,7 +6080,7 @@
     },
     {
         "e_code": "E504",
-        "e_type": "Raising agent - Acidity regulator",
+        "e_type": "Agente gasificante - Regulador de acidez",
         "halal_status": "Halal",
         "id": 401,
         "info": "El carbonato de magnesio suele obtenerse mediante extracción del mineral. \n El carbonato de magnesio también se puede sintetizar exponiendo una suspensión de hidróxido de magnesio a dióxido de carbono bajo presión, produciendo bicarbonato de magnesio soluble. \n Se divide en 2 clases: Carbonato de Magnesio y Bicarbonato de Magnesio. \n No se han encontrado efectos secundarios.",
@@ -6092,7 +6092,7 @@
     },
     {
         "e_code": "E505",
-        "e_type": "Acidity regulator",
+        "e_type": "Regulador de Acidez",
         "halal_status": "Dudoso",
         "id": 402,
         "info": "Es una sal de hierro, existente en su estado natural u obtenida sintéticamente. El carbonato de hierro alimentario se prepararía tratando soluciones de sales de hierro con sales de carbonato alcalino. \n  No se han encontrado efectos secundarios. \n La ingestión de altas dosis de hierro es tóxica. Atención a personas con hemocromatosis.",
@@ -6124,7 +6124,7 @@
     },
     {
         "e_code": "E508",
-        "e_type": "Stabiliser - Flavour enhancer",
+        "e_type": "Estabilizador - Edulcorante",
         "halal_status": "Halal",
         "id": 404,
         "info": "Sal de ácido clorhídrico combinada con este metal.  Se presenta en forma de cristales descoloridos, alargados, prismáticos o cúbicos, o polvo blanco granular. Sin olor. \n En dosis bajas, no se han encontrado efectos secundarios. Aunque a algunas personas les provoca problemas digestivos.  Pero en grandes dosis puede provocar diarrea, úlceras intestinales y hemorragias.",
@@ -6136,7 +6136,7 @@
     },
     {
         "e_code": "E509",
-        "e_type": "Stabiliser - Flavour enhancer",
+        "e_type": "Estabilizador - Edulcorante",
         "halal_status": "Halal",
         "id": 405,
         "info": "El cloruro de calcio existe en su estado natural. Pero normalmente se deriva de la sal del ácido clorhídrico (E507).  Se fabrica comercialmente de 3 formas: \n (1) refinando aguas naturales saladas, \n (2) por reacción de hidróxido de calcio con cloruro de amonio en el proceso sintético de Solvay, y \n (3) por reacción del ácido clorhídrico con carbonato de calcio. \n  En grandes cantidades puede provocar: trastornos digestivos, náuseas, vómitos, diarrea, úlceras y hemorragias intestinales, trastornos del sistema cardíaco.",
@@ -6148,7 +6148,7 @@
     },
     {
         "e_code": "E510",
-        "e_type": "Stabiliser - Flavour enhancer",
+        "e_type": "Estabilizador - Edulcorante",
         "halal_status": "Halal",
         "id": 406,
         "info": "El cloruro de amonio es la sal amoniacal del ácido clorhídrico. En la naturaleza aparece en regiones volcánicas, instalándose en las rocas cercanas a las chimeneas del volcán. También se encuentra en minas profundas.  \n El cloruro de amonio se prepara industrialmente mediante la reacción de amoníaco con cloruro de hidrógeno. \n Puede producirse industrialmente de varias formas, en particular mediante el proceso Solvay.  \n El cloruro de amonio como aditivo alimentario se considera, según las fuentes consultadas, nocivo o inofensivo. \n En grandes cantidades puede provocar: Dolor de cabeza, náuseas y vómitos.",
@@ -6160,7 +6160,7 @@
     },
     {
         "e_code": "E511",
-        "e_type": "Stabiliser - Flavour enhancer",
+        "e_type": "Estabilizador - Edulcorante",
         "halal_status": "Halal",
         "id": 407,
         "info": "El cloruro de magnesio es la sal magnésica del ácido clorhídrico. Es un compuesto de origen natural, en particular extraído del agua de mar por hidrólisis, o de minas (carnalita, bischofita) o derivado sintéticamente de la sal de ácido clorhídrico (E507). \n En dosis bajas, no se han encontrado efectos secundarios. En grandes dosis podría provocar molestias digestivas y diarrea. \n Se debe tener precaución en caso de tomar antibióticos, ya que puede disminuir la eficacia de algunos de ellos.",
@@ -6174,7 +6174,7 @@
     },
     {
         "e_code": "E512",
-        "e_type": "Stabiliser - Flavour enhancer",
+        "e_type": "Estabilizador - Edulcorante",
         "halal_status": "Halal",
         "id": 408,
         "info": "Se obtiene del derivado de la sal del Ácido Clorhídrico (E507). \n El cloruro de estaño se puede preparar disolviendo estaño metálico en ácido clorhídrico; la reacción lleva tiempo. \n Está demostrado que el cloruro de estaño puro es peligroso por ingestión. En grandes dosis podría provocar molestias digestivas y diarrea.",
@@ -6187,7 +6187,7 @@
     },
     {
         "e_code": "E513",
-        "e_type": "Acidity regulator",
+        "e_type": "Regulador de la acidez",
         "halal_status": "Halal",
         "id": 409,
         "info": "El ácido sulfúrico se fabrica sintéticamente, principalmente a partir de azufre, oxígeno y agua, mediante un proceso llamado contacto con un catalizador, pero también se implementan otros procesos a menor escala. \n El ácido sulfúrico puro es muy corrosivo y nocivo por ingestión, contacto e inhalación. \n Es el vitriolo y el ácido de las baterías de los coches. \n En grandes dosis es letal para un adulto: entre una cucharadita y media onza (aproximadamente 15 ml). Existe un efecto cancerígeno y/o cancerígeno por inhalación. \n Normalmente no se utiliza en productos alimenticios. Se utiliza para elaborar fertilizantes y detergentes.",
@@ -6264,7 +6264,7 @@
     },
     {
         "e_code": "E519",
-        "e_type": "Colour fixative - Preservative ",
+        "e_type": "Fijador de color - Conservante",
         "halal_status": "Halal",
         "id": 415,
         "info": "El sulfato de cobre es una sal de cobre del ácido sulfúrico, puede ser de forma natural o sintética. Se divide en dos clases: Sulfato de Cobre y Sulfato Ácido de Cobre. \n El cobre es un elemento mineral paradójico, beneficioso en forma de oligoelementos, pero que puede llegar a ser, en determinadas condiciones, muy tóxico para los seres humanos y determinados animales. \n A veces se utiliza para purificar el agua potable. \n El sulfato de cobre es un producto tóxico para el ser humano y para el medio ambiente. \n En grandes dosis puede provocar toxicidad renal, causa de trastornos sanguíneos, también provoca trastornos gastrointestinales-intestinales y se considera neurotóxico.",
@@ -6276,7 +6276,7 @@
     },
     {
         "e_code": "E520",
-        "e_type": "Firming agent",
+        "e_type": "Agente Endurecedor",
         "halal_status": "Dudoso",
         "id": 416,
         "info": "Sal de aluminio del ácido sulfúrico, puede ser natural o sintética. \n La forma anhidra existe naturalmente en forma de un mineral raro (millosevichita), que se encuentra, por ejemplo, en un ambiente volcánico y en la quema de desechos de las minas de carbón. A veces se utiliza para purificar el agua potable. y también en cosméticos y algunos medicamentos.  \n En grandes dosis se sospecha que favorece la aparición de la enfermedad de Alzheimer o de Parkinson. \n También puede causar toxicidad renal.",
@@ -6288,7 +6288,7 @@
     },
     {
         "e_code": "E521",
-        "e_type": "Firming agent",
+        "e_type": "Agente Endurecedor",
         "halal_status": "Dudoso",
         "id": 417,
         "info": "Sal de aluminio y ácido sulfúrico de sodio, pueden ser de forma natural o sintética.  Rara vez se obtiene de forma natural gracias a las formas minerales naturales conocidas del sulfato de aluminio y sodio que son la mendozita y la tamarugita. Generalmente se produce sintéticamente mediante una unión de sulfato de sodio y sulfato de aluminio. \n  A veces se utiliza para purificar el agua potable. y también en azúcar refinada y como aditivo alimentario.  En grandes dosis se sospecha que favorece la aparición de la enfermedad de Alzheimer o de Parkinson. También puede causar toxicidad renal.",
@@ -6300,7 +6300,7 @@
     },
     {
         "e_code": "E522",
-        "e_type": "Stabiliser - Regulator of acidity",
+        "e_type": "Estabilizador - Regulador de la acidez",
         "halal_status": "Dudoso",
         "id": 418,
         "info": "Elaborado a partir de sulfato de aluminio natural. \n Se utiliza como fuente de ácido en la levadura en polvo para productos de panadería horneados a alta temperatura. También estabiliza los colores. \n A veces se utiliza para purificar el agua potable. \n Utilizado en polvos para hornear industriales. La ingesta diaria aceptable es de hasta 0, 6 mg/kg de peso corporal. \n El aluminio inhibe la absorción de vitaminas B. \n También puede influir en la función hepática en concentraciones elevadas. \n En grandes dosis se sospecha que favorece la aparición de la enfermedad de Alzheimer o de Parkinson. \n También puede causar toxicidad renal.",
@@ -6312,7 +6312,7 @@
     },
     {
         "e_code": "E523",
-        "e_type": "Firming agent - Stabiliser",
+        "e_type": "Agente reafirmante - Estabilizador",
         "halal_status": "Dudoso",
         "id": 419,
         "info": "Sal de aluminio y amonio del ácido sulfúrico, puede ser natural o sintética. \n A veces se utiliza para purificar el agua potable.  Se sabe que el sulfato puro de aluminio y amonio es peligroso por ingestión e inhalación. \n La ingestión crónica puede afectar el cerebro y los huesos. \n En grandes dosis se sospecha que favorece la aparición de la enfermedad de Alzheimer o de Parkinson. \n También puede causar toxicidad renal. \n Un efecto secundario del aluminio es que inhibe la absorción de vitamina B.",
@@ -6324,7 +6324,7 @@
     },
     {
         "e_code": "E524",
-        "e_type": "Stabiliser - Regulator of acidity",
+        "e_type": "Estabilizador - Regulador de la acidez",
         "halal_status": "Halal",
         "id": 420,
         "info": "Elaborado a partir de sal natural. Se obtiene por electrólisis del cloruro de sodio. \n Álcali fuerte utilizado como regulador de la acidez. También se utiliza para potenciar el pelado industrial de frutas, también para ennegrecer aceitunas y en la preparación de caramelo. \n Se encuentra en muchos productos, incluidos productos de panadería, productos de cacao, crema de café y aceitunas negras. No se ha determinado la ingesta diaria admisible. \n En dosis bajas es seguro e inofensivo. Pero en dosis elevadas puede provocar irritación del tracto digestivo. \n Es un metal pesado nocivo por bioacumulación y en dosis muy bajas.",
@@ -6339,7 +6339,7 @@
     },
     {
         "e_code": "E525",
-        "e_type": "Stabiliser - Regulator of acidity",
+        "e_type": "Estabilizador - Regulador de la acidez",
         "halal_status": "Halal",
         "id": 421,
         "info": "Elaborado a partir de la sal natural cloruro de potasio. El hidróxido de potasio se produce por electrólisis del cloruro de potasio. \n Álcali fuerte utilizado como regulador de la acidez. \n También se utiliza para potenciar el pelado industrial de frutos y para ennegrecer aceitunas. \n Se encuentra en productos como productos de panadería, productos de cacao, aceitunas negras y achiote de color (E160b). No se ha determinado la ingesta diaria admisible. \n El sodio no existe como cuerpo puro en la naturaleza, pero es muy abundante en forma de compuestos, por ejemplo, en la sal de mesa, compuesta esencialmente de cloruro de sodio. \n En dosis bajas es seguro e inofensivo. Pero en dosis elevadas puede provocar irritación del tracto digestivo.",
@@ -6366,7 +6366,7 @@
     },
     {
         "e_code": "E527",
-        "e_type": "Stabiliser - Regulator of acidity",
+        "e_type": "Estabilizador - Regulador de la acidez",
         "halal_status": "Halal",
         "id": 423,
         "info": "Preparado a partir del amoníaco y el agua. El hidróxido de amonio es una solución formada a partir de amoníaco, un gas con un olor extremadamente irritante. \n La producción industrial se realiza principalmente por síntesis directa a partir de dihidrógeno y nitroso. \n Se desaconseja este aditivo, ya que puede haber riesgos de reacciones cutáneas, trastornos digestivos, úlceras y trastornos sanguíneos. \n Los resultados sugieren que la exposición al amoníaco puede promover el cáncer gástrico inducido por otras sustancias. \n Este aditivo se utiliza para productos alimentarios, farmacéuticos, cosméticos y otros.",
@@ -6382,7 +6382,7 @@
     },
     {
         "e_code": "E528",
-        "e_type": "Stabiliser - Regulator of acidity",
+        "e_type": "Estabilizador - Regulador de la acidez",
         "halal_status": "Halal",
         "id": 424,
         "info": "Elaborado a partir de minerales naturales. Álcali fuerte utilizado como regulador de la acidez. El hidróxido de magnesio existe en forma mineral natural, pero la mayor parte de su uso industrial resultaría de la producción sintética, especialmente debido al agua de mar. \n Este aditivo se utiliza para productos alimentarios, farmacéuticos, cosméticos y otros.  En dosis bajas, no se han encontrado efectos secundarios. Sin embargo, en grandes dosis puede provocar irritación del tracto digestivo o efecto laxante. \n Tenga en cuenta que puede alterar la absorción de ácido fólico (vitamina B9) y hierro.",
@@ -6396,7 +6396,7 @@
     },
     {
         "e_code": "E529",
-        "e_type": "Stabiliser - Regulator of acidity",
+        "e_type": "Estabilizador - Regulador de la acidez",
         "halal_status": "Halal",
         "id": 425,
         "info": "Elaborado a partir de tiza y utilizado como regulador de acidez. El óxido de calcio se obtiene por calcinación de carbonato de calcio (E170). \n La cal es un producto potencialmente peligroso, utilizado principalmente en la industria y la agricultura. \n También se utiliza en la preparación de tripas para embutidos (como cobertura, no como relleno). Se encuentra en productos de cacao, productos de panadería, intestinos.\n Hidrófilo, se utiliza para secar y destruir materia orgánica rica en agua. Al mezclar grandes cantidades de cal viva y agua, el calor liberado es tal que el agua puede hervir.  \n En dosis bajas, no se han encontrado efectos secundarios.",
@@ -6409,7 +6409,7 @@
     },
     {
         "e_code": "E530",
-        "e_type": "Stabiliser - Regulator of acidity",
+        "e_type": "Estabilizador - Regulador de la acidez",
         "halal_status": "Halal",
         "id": 426,
         "info": "El óxido de calcio se obtiene por calcinación de carbonato de magnesio (E504).  El óxido de magnesio existe en forma mineral natural, pero también se sintetiza. \n Se encuentra en productos de cacao y productos de panadería. No se ha determinado la ingesta diaria admisible. \n El magnesio actúa como laxante en altas concentraciones. El magnesio actúa como laxante en alta concentración. \n El óxido de magnesio forma parte de los productos farmacéuticos y se utiliza como antiácido para tratar la acidez de estómago, como laxante rápido en alta concentración.  En dosis bajas, no se han encontrado efectos secundarios.",
@@ -6423,7 +6423,7 @@
     },
     {
         "e_code": "E535",
-        "e_type": "Stabiliser - Anticaking",
+        "e_type": "Estabilizador - Antiaglomerante",
         "halal_status": "Halal",
         "id": 427,
         "info": "El ferrocianuro de sodio es un producto sintético. Se fabrica industrialmente a partir de cianuro de hidrógeno, cloruro de hierro e hidróxido de calcio. \n Es interesante observar que las sales de ferrocianuro se vuelven inestables y tóxicas en soluciones ácidas. \n Como aditivo alimentario, no se conocen efectos secundarios en dosis inferiores a la ingesta diaria. \n El uso es muy limitado, en parte debido al fuerte color amarillo.",
@@ -6436,7 +6436,7 @@
     },
     {
         "e_code": "E536",
-        "e_type": "Stabiliser - Anticaking",
+        "e_type": "Estabilizador - Antiaglomerante",
         "halal_status": "Halal",
         "id": 428,
         "info": "El ferrocianuro de potasio es un producto sintético. Se fabrica industrialmente a partir de cianuro de hidrógeno, cloruro ferroso e hidróxido de calcio y carbonato de potasio. \n Se utiliza como antiaglomerante y para eliminar el cobre del vino tinto. El cobre se utiliza como fungicida en las uvas. \n  Es interesante observar que las sales de ferrocianuro se vuelven inestables y tóxicas en soluciones ácidas. \n Como aditivo alimentario, no se conocen efectos secundarios en dosis inferiores a la ingesta diaria.",
@@ -6449,7 +6449,7 @@
     },
     {
         "e_code": "E537",
-        "e_type": "Stabiliser - Anticaking",
+        "e_type": "Estabilizador - Antiaglomerante",
         "halal_status": "Dudoso",
         "id": 429,
         "info": "El ferrocianuro de potasio es un producto sintético. Se fabrica industrialmente a partir de cianuro de hidrógeno, cloruro ferroso (E526), hidróxido de calcio y carbonato de calcio. \n  Es interesante observar que las sales de ferrocianuro se vuelven inestables y tóxicas en soluciones ácidas. \n  Como aditivo alimentario, no se conocen efectos secundarios en dosis inferiores a la ingesta diaria.",
@@ -6462,7 +6462,7 @@
     },
     {
         "e_code": "E538",
-        "e_type": "Stabiliser - Anticaking",
+        "e_type": "Estabilizador - Antiaglomerante",
         "halal_status": "Dudoso",
         "id": 430,
         "info": "El ferrocianuro de calcio es un producto sintético. Se fabrica industrialmente a partir de cianuro de hidrógeno, cloruro ferroso (E526), ​​hidróxido de calcio y carbonato de calcio. \n Es interesante observar que las sales de ferrocianuro se vuelven inestables y tóxicas en soluciones ácidas. \n Como aditivo alimentario, no se conocen efectos secundarios en dosis inferiores a la ingesta diaria.",
@@ -6475,7 +6475,7 @@
     },
     {
         "e_code": "E539",
-        "e_type": "Antioxidants - Sequestrant ",
+        "e_type": "Antioxidante - Secuestrante",
         "halal_status": "Dudoso",
         "id": 431,
         "info": "Sal sódica del ácido tiosulfúrico, sintética. A escala industrial, se produce principalmente a partir de residuos líquidos de la producción de sulfuro de sodio o de la producción de tintes azufrados. \n La toxicología del tiosulfato de sodio no se ha investigado completamente. Se puede informar que el compuesto puro tiene baja toxicidad. \n  El tiosulfato de sodio se descompone en contacto con ácidos y calor, con emisión de dióxido de azufre, entre otros. Es mejor evitar cocinar con este aditivo.",
@@ -6487,7 +6487,7 @@
     },
     {
         "e_code": "E540",
-        "e_type": "Stabiliser - Regulator of acidity",
+        "e_type": "Estabilizador - Regulador de la acidez",
         "halal_status": "Halal",
         "id": 432,
         "info": "Aditivo sintético, se obtiene a partir de un derivado del ácido fosfórico. \n El ácido fosfórico puro es una sustancia corrosiva, nociva por ingestión y por contacto o incluso por inhalación. \n  Es un aditivo que existe en muchos alimentos, es importante tener en cuenta su elevado consumo.",
@@ -6500,7 +6500,7 @@
     },
     {
         "e_code": "E541",
-        "e_type": "Stabiliser - Regulator of acidity",
+        "e_type": "Estabilizador - Regulador de la acidez",
         "halal_status": "Halal",
         "id": 433,
         "info": "Producido sintéticamente a partir de aluminio, ácido fosfórico e hidróxido de sodio. \n .Sal de aluminio y sodio del ácido fosfórico, a base de aluminio o de óxido de aluminio, de ácido fosfórico y de carbonato o hidróxido de sodio. \n Se divide en 2 clases: Fosfato ácido de sodio y aluminio (E541i) y Fosfato básico de sodio y aluminio (E541ii). \n  Se considera aditivo tóxico ya que existen riesgos de acumulación de aluminio en ciertos tejidos, varios estudios reportan efectos neurotóxicos, posible contribución con el Alzheimer y el Parkinson. \n En casos de grandes dosis existen riesgos como toxinas en los riñones y el corazón.",
@@ -6515,7 +6515,7 @@
     },
     {
         "e_code": "E542",
-        "e_type": "Emulsifier - Agente antiaglomerante ",
+        "e_type": "Emulsionante - Agente antiaglomerante ",
         "halal_status": "Dudoso",
         "id": 434,
         "info": "Producido a partir de huesos de animales. Consiste en fosfato tricálcico, derivado del vapor a presión o de la calcinación de hueso o hueso triturado de cerdo. \n Los fosfatos se pueden convertir en polifosfatos, provocando trastornos digestivos y bloqueando muchas enzimas. \n Se considera que se detectaron evidencias de que la encefalopatía espongiforme bovina (la condición llamada \"vacas locas\") podría ser causada por la adición de este aditivo en la alimentación del ganado.",
@@ -6543,7 +6543,7 @@
     },
     {
         "e_code": "E544",
-        "e_type": "Stabiliser - Regulator of acidity",
+        "e_type": "Estabilizador - Regulador de la acidez",
         "halal_status": "Dudoso",
         "id": 436,
         "info": "Se produce calentando fosfato cálcico. Utilizado como emulsionante y estabilizador. Se obtiene a partir de un derivado del ácido fosfórico (E338). \n En grandes dosis puede provocar hiperactividad y problemas digestivos. \n Generalmente se utiliza para aumentar la masa de alimentos como carnes y embutidos que se venden al peso.",
@@ -6556,7 +6556,7 @@
     },
     {
         "e_code": "E545",
-        "e_type": "Stabiliser - Regulator of acidity",
+        "e_type": "Estabilizador - Regulador de la acidez",
         "halal_status": "Halal",
         "id": 437,
         "info": "Sal inorgánica de ácido polifosfórico y amoniaco. El polifosfato de amonio se puede preparar haciendo reaccionar ácido fosfórico concentrado con amoníaco. \n  El polifosfato de amonio también se utilizaría como fertilizante químico y retardante de llama en pinturas (pigmentos, aglutinantes y biocidas) y en la fabricación/procesamiento de pulpa y papel. \n También se utiliza como nutriente para levaduras y aumenta las propiedades aglutinantes del agua.",
@@ -6569,7 +6569,7 @@
     },
     {
         "e_code": "E546",
-        "e_type": "Stabiliser - Regulator of acidity",
+        "e_type": "Estabilizador - Regulador de la acidez",
         "halal_status": "Dudoso",
         "id": 438,
         "info": "Los fosfatos son las sales naturales del ácido fosfórico (E338). Los difosfatos constan de dos moléculas de fosfatos condensados ​​formados por calentamiento de fosfato. \n La atención con este aditivo puede provocar pérdida de calcio óseo. \n En los niños puede provocar hiperactividad y otros trastornos del comportamiento. Algunos estudios dicen que puede promover la actividad de carcinógenos conocidos.",
@@ -6635,7 +6635,7 @@
     },
     {
         "e_code": "E553a",
-        "e_type": "anti-caking agent",
+        "e_type": "Agente antiaglomerante",
         "halal_status": "Halal",
         "id": 443,
         "info": "agente antiaglomerante",
@@ -6648,7 +6648,7 @@
     },
     {
         "e_code": "E553b",
-        "e_type": "anti-caking agent",
+        "e_type": "Agente antiaglomerante",
         "halal_status": "Halal",
         "id": 444,
         "info": "agente antiaglomerante",
@@ -6766,7 +6766,7 @@
     },
     {
         "e_code": "E561",
-        "e_type": "Unknown",
+        "e_type": "Desconocido",
         "halal_status": "Dudoso",
         "id": 452,
         "info": "Desconocido",
@@ -6779,7 +6779,7 @@
     },
     {
         "e_code": "E562",
-        "e_type": "Unknown",
+        "e_type": "Desconocido",
         "halal_status": "Dudoso",
         "id": 453,
         "info": "Desconocido",
@@ -6802,7 +6802,7 @@
     },
     {
         "e_code": "E563",
-        "e_type": "Unknown",
+        "e_type": "Desconocido",
         "halal_status": "Dudoso",
         "id": 454,
         "info": "Desconocido",
@@ -6812,7 +6812,7 @@
     },
     {
         "e_code": "E565",
-        "e_type": "Unknown",
+        "e_type": "Desconocido",
         "halal_status": "Dudoso",
         "id": 455,
         "info": "Desconocido",
@@ -6822,7 +6822,7 @@
     },
     {
         "e_code": "E566",
-        "e_type": "Unknown",
+        "e_type": "Desconocido",
         "halal_status": "Dudoso",
         "id": 456,
         "info": "Desconocido",
@@ -6905,7 +6905,7 @@
     },
     {
         "e_code": "E574",
-        "e_type": "Stabiliser - Regulator of acidity",
+        "e_type": "Estabilizador - Regulador de la acidez",
         "halal_status": "Dudoso",
         "id": 461,
         "info": "El ácido glucónico y las sales y ésteres de gluconato provienen de la oxidación de la glucosa, existen en abundancia en la naturaleza: plantas, frutas y otros alimentos como arroz, carne, lácteos, miel y vinagre. \n Comercialmente es posible fabricarlo en la transformación de glucosa en ácido glucónico. \n Es muy utilizado en la limpieza de botellas de vidrio antes de llenar la bebida o comida. También se utiliza en cosmética y farmacia. \n No se han encontrado efectos secundarios.",
@@ -6919,7 +6919,7 @@
     },
     {
         "e_code": "E575",
-        "e_type": "Stabiliser - Regulator of acidity",
+        "e_type": "Estabilizador - Regulador de la acidez",
         "halal_status": "Dudoso",
         "id": 462,
         "info": "Se adquiere a partir de derivados del ácido glucónico (E574). También se utiliza en equipos de procesamiento para evitar la precipitación de calcio y magnesio.  \n El ácido glucónico proviene de la oxidación de la glucosa, existen en abundancia en la naturaleza: plantas, frutas y otros alimentos como arroz, carne, lácteos, miel y vinagre. \n Comercialmente es posible su fabricación mediante la transformación de glucosa en ácido glucónico.  La glucono-delta-lactona se puede obtener sometiendo el ácido glucónico a evaporación. \n No se han encontrado efectos secundarios.",
@@ -6931,7 +6931,7 @@
     },
     {
         "e_code": "E576",
-        "e_type": "Stabiliser - Regulator of acidity",
+        "e_type": "Estabilizador - Regulador de la acidez",
         "halal_status": "Halal",
         "id": 463,
         "info": "Se adquiere a partir de derivados del ácido glucónico (E574). \n  El ácido glucónico proviene de la oxidación de la glucosa, existen en abundancia en la naturaleza: plantas, frutas y otros alimentos como arroz, carne, lácteos, miel y vinagre. También se utiliza como nutriente para la levadura. \n Comercialmente es posible su fabricación mediante la transformación de glucosa en ácido glucónico.   Para la fabricación de gluconato de sodio se encuentran: hidróxido de sodio, carbonato de sodio, glucosa, gluconato de calcio y ácido glucónico. \n No se han encontrado efectos secundarios.",
@@ -6943,7 +6943,7 @@
     },
     {
         "e_code": "E577",
-        "e_type": "Stabiliser - Regulator of acidity",
+        "e_type": "Estabilizador - Regulador de la acidez",
         "halal_status": "Halal",
         "id": 464,
         "info": "Sal potásica del ácido glucónico. Secuestrante (une metales) en muchos productos. Se adquiere a partir de derivados del ácido glucónico (E574). \n El ácido glucónico proviene de la oxidación de la glucosa, existen en abundancia en la naturaleza: plantas, frutas y otros alimentos como arroz, carne, lácteos, miel y vinagre. \n Comercialmente es posible su fabricación mediante la transformación de glucosa en ácido glucónico. \n No se han encontrado efectos secundarios.",
@@ -6955,7 +6955,7 @@
     },
     {
         "e_code": "E578",
-        "e_type": "Stabiliser - Regulator of acidity",
+        "e_type": "Estabilizador - Regulador de la acidez",
         "halal_status": "Halal",
         "id": 465,
         "info": "Sal cálcica del ácido glucónico. Es un agente antiaglomerante y fortalece la estructura de las conservas vegetales. \n Se adquiere a partir de derivados del ácido glucónico (E574).   El ácido glucónico proviene de la oxidación de la glucosa, existen en abundancia en la naturaleza: plantas, frutas y otros alimentos como arroz, carne, lácteos, miel y vinagre.  \n Comercialmente es posible su fabricación mediante la transformación de glucosa en ácido glucónico. \n No se han encontrado efectos secundarios.",
@@ -6967,7 +6967,7 @@
     },
     {
         "e_code": "E579",
-        "e_type": "Stabiliser - Regulator of acidity",
+        "e_type": "Estabilizador - Regulador de la acidez",
         "halal_status": "Halal",
         "id": 466,
         "info": "Sal de hierro del ácido glucónico. Utilizado como complemento de color y hierro. \n Se adquiere a partir de derivados del ácido glucónico (E574).  \n El ácido glucónico proviene de la oxidación de la glucosa, existen en abundancia en la naturaleza: plantas, frutas y otros alimentos como arroz, carne, lácteos, miel y vinagre. \n Es comercialmente posible fabricarlo mediante la conversión de glucosa en ácido glucónico. \n No se han encontrado efectos secundarios.",
@@ -6980,7 +6980,7 @@
     },
     {
         "e_code": "E580",
-        "e_type": "Unknown",
+        "e_type": "Desconocido",
         "halal_status": "Dudoso",
         "id": 467,
         "info": "Desconocido",
@@ -7003,7 +7003,7 @@
     },
     {
         "e_code": "E585",
-        "e_type": "Stabiliser - Regulator of acidity",
+        "e_type": "Estabilizador - Regulador de la acidez",
         "halal_status": "Dudoso",
         "id": 468,
         "info": "Sal férrica del ácido láctico. Los lactatos son las sales del ácido láctico.  El lactato de hierro se produce por la interacción del lactato de calcio con el sulfato ferroso o por la acción directa del ácido láctico sobre los depósitos de hierro. \n Aunque se suele decir que el lactato de hierro no representa ningún peligro, aunque la sustancia pura es tóxica y deriva del ácido láctico, posiblemente transgénica. \n Este aditivo es muy utilizado en aceitunas negras para mantener su color oscuro, para evitar ese color verdoso.",
@@ -7028,7 +7028,7 @@
     },
     {
         "e_code": "E598",
-        "e_type": "Unknown",
+        "e_type": "Desconocido",
         "halal_status": "Dudoso",
         "id": 470,
         "info": "Desconocido",
@@ -7038,7 +7038,7 @@
     },
     {
         "e_code": "E599",
-        "e_type": "Unknown",
+        "e_type": "Desconocido",
         "halal_status": "Dudoso",
         "id": 471,
         "info": "Desconocido",
@@ -7061,7 +7061,7 @@
     },
     {
         "e_code": "E620",
-        "e_type": "Flavour enhancer",
+        "e_type": "Edulcorante",
         "halal_status": "Dudoso",
         "id": 472,
         "info": "Aminoácido natural (componente básico de las proteínas). \n El ácido glutámico es un aminoácido no esencial y el principal neurotransmisor excitador del sistema nervioso central de los mamíferos, y tiene un papel importante en el aprendizaje y la memoria. \n Está presente de forma natural en muchas proteínas animales y vegetales como quesos, tomates y algas. \n Preparado comercialmente a partir de melaza mediante fermentación bacteriana. \n En dosis bajas es potencialmente excitotóxico y neurotóxico ya que es capaz de destruir muy rápidamente las neuronas del cerebro. \n En grandes dosis puede provocar reacciones alérgicas y ataques de asma.",
@@ -7073,7 +7073,7 @@
     },
     {
         "e_code": "E621",
-        "e_type": "Flavour enhancer",
+        "e_type": "Edulcorante",
         "halal_status": "Dudoso",
         "id": 473,
         "info": "Un aminoácido no esencial, aislado por primera vez en 1865. \n El glutamato de sodio, que se deriva de las sales del ácido glutámico (E620), se forma cuando este último se une químicamente al sodio. \n El ácido glutámico es un aminoácido no esencial y el principal neurotransmisor excitador del sistema nervioso central de los mamíferos, y tiene un papel importante en el aprendizaje y la memoria. Está presente de forma natural en muchas proteínas animales y vegetales como quesos, tomates y algas. \n En dosis bajas es potencialmente excitotóxico y neurotóxico ya que es capaz de destruir muy rápidamente las neuronas del cerebro. \n En grandes dosis puede provocar reacciones alérgicas y ataques de asma.",
@@ -7090,7 +7090,7 @@
     },
     {
         "e_code": "E622",
-        "e_type": "Flavour enhancer",
+        "e_type": "Edulcorante",
         "halal_status": "Dudoso",
         "id": 474,
         "info": "El glutamato de potasio, que se deriva de las sales del ácido glutámico (E620), se forma cuando este último se une químicamente al potasio.  \n El ácido glutámico es un aminoácido no esencial y el principal neurotransmisor excitador del sistema nervioso central de los mamíferos, y tiene un papel importante en el aprendizaje y la memoria. \n Está presente de forma natural en muchas proteínas animales y vegetales como quesos, tomates y algas.    \n En dosis bajas es potencialmente excitotóxico y neurotóxico ya que es capaz de destruir muy rápidamente las neuronas del cerebro. \n En grandes dosis puede provocar reacciones alérgicas y ataques de asma. \n Los glutamatos no se pueden utilizar en productos destinados a niños menores de 12 semanas. Aunque se han informado muchos efectos secundarios de los glutamatos, estos no lo han sido científicamente.",
@@ -7107,7 +7107,7 @@
     },
     {
         "e_code": "E623",
-        "e_type": "Flavour enhancer",
+        "e_type": "Edulcorante",
         "halal_status": "Dudoso",
         "id": 475,
         "info": "Sal de calcio del ácido glutámico, un aminoácido natural (componente básico de las proteínas). \n El glutamato de calcio, que se deriva de las sales del ácido glutámico (E620), se forma cuando este último se une químicamente al calcio. \n El ácido glutámico es un aminoácido no esencial y el principal neurotransmisor excitador del sistema nervioso central de los mamíferos, y tiene un papel importante en el aprendizaje y la memoria. Está presente de forma natural en muchas proteínas animales y vegetales como quesos, tomates y algas.    En dosis bajas es potencialmente excitotóxico y neurotóxico ya que es capaz de destruir muy rápidamente las neuronas del cerebro. En grandes dosis puede provocar reacciones alérgicas y ataques de asma.",
@@ -7124,7 +7124,7 @@
     },
     {
         "e_code": "E624",
-        "e_type": "Flavour enhancer",
+        "e_type": "Edulcorante",
         "halal_status": "Dudoso",
         "id": 476,
         "info": "El glutamato de amonio, que se deriva de las sales del ácido glutámico (E620), se forma cuando este último se une químicamente al amonio.  El ácido glutámico es un aminoácido no esencial y el principal neurotransmisor excitador del sistema nervioso central de los mamíferos, y tiene un papel importante en el aprendizaje y la memoria. \n Está presente de forma natural en muchas proteínas animales y vegetales como quesos, tomates y algas.    \n En dosis bajas es potencialmente excitotóxico y neurotóxico ya que es capaz de destruir muy rápidamente las neuronas del cerebro. \n En grandes dosis puede provocar reacciones alérgicas y ataques de asma.",
@@ -7141,7 +7141,7 @@
     },
     {
         "e_code": "E625",
-        "e_type": "Flavour enhancer",
+        "e_type": "Edulcorante",
         "halal_status": "Dudoso",
         "id": 477,
         "info": "El glutamato de magnesio, que se deriva de las sales del ácido glutámico (E620), se forma cuando este último se une químicamente al magnesio.  El ácido glutámico es un aminoácido no esencial y el principal neurotransmisor excitador del sistema nervioso central de los mamíferos, y tiene un papel importante en el aprendizaje y la memoria. \n Está presente de forma natural en muchas proteínas animales y vegetales como quesos, tomates y algas.    \n En dosis bajas es potencialmente excitotóxico y neurotóxico ya que es capaz de destruir muy rápidamente las neuronas del cerebro. \n En grandes dosis puede provocar reacciones alérgicas y ataques de asma.",
@@ -7157,7 +7157,7 @@
     },
     {
         "e_code": "E626",
-        "e_type": "Flavour enhancer",
+        "e_type": "Edulcorante",
         "halal_status": "Dudoso",
         "id": 478,
         "info": "El ácido guanílico es un ácido natural que forma parte del ARN, una de las moléculas portadoras genéticas de la célula. \n Comercialmente, el ácido guanílico puede aislarse a partir de ARN mediante la degradación enzimática que generalmente se obtiene de levaduras o sardinas, pero también puede biosintetizarse directamente a partir de microorganismos o enzimas. \n Principalmente sin riesgo conocido. Pero también es mejor evitarlo ya que la producción comercial de ácido guanílico puede ser transgénica. \n También es recomendable evitarlo: asmáticos, bebés y niños pequeños, mujeres embarazadas o en período de lactancia. \n Los nucleótidos se obtienen comercialmente a partir de células de levadura Torula. \n Como los guanilatos se metabolizan en purinas, las personas que padecen gota deben evitarlos. \n Sin embargo, las concentraciones utilizadas son generalmente tan bajas que no es de esperar ningún efecto. El ácido guanílico y los guanilatos se obtienen generalmente a partir de levaduras, pero en parte también a partir de pescado.",
@@ -7170,7 +7170,7 @@
     },
     {
         "e_code": "E627",
-        "e_type": "Flavour enhancer",
+        "e_type": "Edulcorante",
         "halal_status": "Dudoso",
         "id": 479,
         "info": "Sal sódica del ácido guanílico, un ácido natural, que forma parte del ARN, una de las moléculas portadoras genéticas de la célula. Por tanto, forma parte de todas las células de todos los organismos vivos. \n Preparado comercialmente a partir de extracto de levadura o sardinas. Un potenciador del sabor que tiene un sabor umami específico pero que realza fuertemente muchos otros sabores, reduciendo así las cantidades de sal necesarias en un producto. \n No se ha determinado la ingesta diaria admisible. Los guanilatos no se pueden utilizar en productos destinados a niños menores de 12 semanas. Las personas asmáticas deben evitar el ácido guanílico y los guanilatos. \n Como los guanilatos se metabolizan en purinas, las personas que padecen gota deben evitarlos. Sin embargo, las concentraciones utilizadas son generalmente tan bajas que no es de esperar ningún efecto. \n El ácido guanílico y los guanilatos se obtienen generalmente a partir de levaduras, pero en parte también a partir de pescado.",
@@ -7183,7 +7183,7 @@
     },
     {
         "e_code": "E628",
-        "e_type": "Flavour enhancer",
+        "e_type": "Edulcorante",
         "halal_status": "Dudoso",
         "id": 480,
         "info": "Sal potásica del ácido guanílico, un ácido natural, que forma parte del ARN, una de las moléculas portadoras genéticas de la célula. \n Por tanto, forma parte de todas las células de todos los organismos vivos. Preparado comercialmente a partir de extracto de levadura o sardinas. \n Un potenciador del sabor que tiene un sabor umami específico pero que realza fuertemente muchos otros sabores, reduciendo así las cantidades de sal necesarias en un producto. \n Se utiliza en muchos productos, principalmente en productos bajos en sal/sodio. Los guanilatos no se pueden utilizar en productos destinados a niños menores de 12 semanas. \n Las personas asmáticas deben evitar el ácido guanílico y los guanilatos. Como los guanilatos se metabolizan en purinas, las personas que padecen gota deben evitarlos. Sin embargo, las concentraciones utilizadas son generalmente tan bajas que no es de esperar ningún efecto. \n El ácido guanílico y los guanilatos se obtienen generalmente a partir de levaduras, pero en parte también a partir de pescado.",
@@ -7196,7 +7196,7 @@
     },
     {
         "e_code": "E629",
-        "e_type": "Flavour enhancer",
+        "e_type": "Edulcorante",
         "halal_status": "Dudoso",
         "id": 481,
         "info": "Los guanilatos son derivados del ácido guanílico que se forman mediante un enlace químico con el calcio. \n El ácido guanílico es un ácido natural que forma parte del ARN, una de las moléculas que llevan el código genético en todas las células de los organismos vivos. \n Comercialmente, el ácido guanílico puede aislarse a partir de ARN mediante la degradación enzimática que generalmente se obtiene de levaduras o sardinas, pero también puede biosintetizarse directamente a partir de microorganismos o enzimas.    Principalmente sin riesgo conocido. Pero también es mejor evitarlo ya que la producción comercial de ácido guanílico puede ser transgénica. \n También es recomendable evitarlo: asmáticos, bebés y niños pequeños, mujeres embarazadas o en período de lactancia. \n Los nucleótidos se obtienen comercialmente a partir de células de levadura Torula.",
@@ -7209,7 +7209,7 @@
     },
     {
         "e_code": "E630",
-        "e_type": "Flavour enhancer",
+        "e_type": "Edulcorante",
         "halal_status": "Dudoso",
         "id": 482,
         "info": "El ácido inosínico es un nucleótido obtenido comercialmente de la levadura Torula. \n El ácido inosínico se produce naturalmente en el tejido muscular. También ocurre durante la descomposición de la carne. \n  Comercialmente, se prepara a partir de carne, pescado o mediante fermentación bacteriana potencialmente transgénica. \n En pequeñas dosis no se encontraron efectos secundarios. En grandes dosis puede provocar: hiperactividad, irritación de mucosas, insomnio, alergias y se recomienda evitar en pacientes que padezcan enfermedades renales.  \n Los nucleótidos se obtienen comercialmente a partir de células de levadura Torula.",
@@ -7222,7 +7222,7 @@
     },
     {
         "e_code": "E631",
-        "e_type": "Flavour enhancer",
+        "e_type": "Edulcorante",
         "halal_status": "Dudoso",
         "id": 483,
         "info": "Los inosinatos son las sales del ácido inosínico, que unen químicamente este último con el sodio. \n El ácido inosínico es un nucleótido obtenido comercialmente de la levadura Torula. \n El ácido inosínico se produce naturalmente en el tejido muscular. También ocurre durante la descomposición de la carne. \n Comercialmente, se prepara a partir de carne, pescado o mediante fermentación bacteriana potencialmente transgénica. \n En pequeñas dosis no se encontraron efectos secundarios. En grandes dosis puede provocar: hiperactividad, irritación de mucosas, insomnio, alergias y se recomienda evitar en pacientes que padezcan enfermedades renales. \n Los nucleótidos se obtienen comercialmente a partir de células de levadura Torula.",
@@ -7235,7 +7235,7 @@
     },
     {
         "e_code": "E632",
-        "e_type": "Flavour enhancer",
+        "e_type": "Edulcorante",
         "halal_status": "Dudoso",
         "id": 484,
         "info": "Los inosinatos son las sales del ácido inosínico, que unen químicamente este último con el potasio. \n El ácido inosínico es un nucleótido obtenido comercialmente de la levadura Torula. \n El ácido inosínico se produce naturalmente en el tejido muscular. También ocurre durante la descomposición de la carne. \n Comercialmente, se prepara a partir de carne, pescado o mediante fermentación bacteriana potencialmente transgénica. \n En pequeñas dosis no se encontraron efectos secundarios. En grandes dosis puede provocar: hiperactividad, irritación de mucosas, insomnio, alergias y se recomienda evitar en pacientes que padezcan enfermedades renales. \n Los nucleótidos se obtienen comercialmente a partir de células de levadura Torula.",
@@ -7248,7 +7248,7 @@
     },
     {
         "e_code": "E633",
-        "e_type": "Flavour enhancer",
+        "e_type": "Edulcorante",
         "halal_status": "Dudoso",
         "id": 485,
         "info": "Los inosinatos son las sales del ácido inosínico, que unen químicamente este último con el potasio. \n El ácido inosínico es un nucleótido obtenido comercialmente de la levadura Torula. \n El ácido inosínico se produce naturalmente en el tejido muscular. También ocurre durante la descomposición de la carne. \n Comercialmente, se prepara a partir de carne, pescado o mediante fermentación bacteriana potencialmente transgénica. \n En pequeñas dosis no se encontraron efectos secundarios. En grandes dosis puede provocar: hiperactividad, irritación de mucosas, insomnio, alergias y se recomienda evitar en pacientes que padezcan enfermedades renales. \n Los nucleótidos se obtienen comercialmente a partir de células de levadura Torula.",
@@ -7261,7 +7261,7 @@
     },
     {
         "e_code": "E634",
-        "e_type": "Flavour enhancer",
+        "e_type": "Edulcorante",
         "halal_status": "Dudoso",
         "id": 486,
         "info": "Los ribonucleótidos son una mezcla de guanilatos e inosinatos. \nLos guanilatos e inosinatos son las sales de los ácidos guanílico e inosínico. Estos ácidos naturales se pueden producir utilizando tecnologías transgénicas. Es difícil determinar caso por caso y en qué medida. \n Los aditivos fabricados en sistemas cerrados con ayuda de microorganismos transgénicos no están etiquetados como tales, ya que se considera que el aditivo ha sido purificado y ya no contiene microorganismos. En el caso de que los microorganismos en cuestión hayan recibido nutrientes (sustrato) de plantas transgénicas, el aditivo no se identifica como tal. \n No recomendado en niños y mujeres embarazadas. Nuestro organismo una vez metabolizado lo transforma en ácido úrico, el cual se deposita en los tejidos y puede provocar gota (dolor en las articulaciones). En grandes dosis puede provocar hiperactividad, asma, reacciones cutáneas, insomnio, alergia e irritación de las mucosas. \n Es un nucleótido obtenido comercialmente de células de levadura Torula.",
@@ -7275,7 +7275,7 @@
     },
     {
         "e_code": "E635",
-        "e_type": "Flavour enhancer",
+        "e_type": "Edulcorante",
         "halal_status": "Dudoso",
         "id": 487,
         "info": "Los ribonucleótidos son una mezcla de guanilatos e inosinatos. \n Los guanilatos e inosinatos son sales guanílicas y ácido inosínico. Estos ácidos naturales se pueden producir utilizando tecnologías transgénicas. \n En pequeñas dosis no se encontraron efectos secundarios. En grandes dosis puede provocar: hiperactividad, irritación de mucosas, insomnio, alergias y se recomienda evitar en pacientes que padezcan enfermedades renales. \n Los nucleótidos se obtienen comercialmente a partir de células de levadura Torula.",
@@ -7290,7 +7290,7 @@
     },
     {
         "e_code": "E636",
-        "e_type": "Flavour enhancer",
+        "e_type": "Edulcorante",
         "halal_status": "Halal",
         "id": 488,
         "info": "El maltol natural se encuentra en la corteza de los alerces jóvenes, las agujas de pino, la achicoria y los alquitranes de madera.  El maltol se produce por síntesis para su uso en perfumería y alimentos aromáticos. \n En dosis bajas no se han encontrado efectos secundarios. Pero en grandes dosis puede provocar dolor abdominal benigno. Hay informes donde existe un riesgo cancerígeno.",
@@ -7302,7 +7302,7 @@
     },
     {
         "e_code": "E637",
-        "e_type": "Flavour enhancer",
+        "e_type": "Edulcorante",
         "halal_status": "Halal",
         "id": 489,
         "info": "El etil maltol se deriva etilénicamente del Maltol (E636), siendo 6 veces más dulce que el propio maltol.  El maltol natural se encuentra en la corteza de los alerces jóvenes, las agujas de pino, la achicoria y los alquitranes de madera.  El maltol se produce por síntesis para su uso en perfumería y alimentos aromáticos. \n  En dosis bajas no se han encontrado efectos secundarios. \n Pero en grandes dosis puede provocar dolor abdominal benigno. \n Hay informes donde existe un riesgo cancerígeno.",
@@ -7315,7 +7315,7 @@
     },
     {
         "e_code": "E638",
-        "e_type": "Flavour enhancer",
+        "e_type": "Edulcorante",
         "halal_status": "Dudoso",
         "id": 490,
         "info": "El aspartato de sodio es la sal sódica del ácido aspártico, uno de los 20 aminoácidos que forman las proteínas. Desempeña un papel en las funciones del sistema nervioso (¿neurotransmisor?) Y en la producción y liberación de hormonas. El ácido aspártico se puede encontrar de forma natural en determinadas verduras, frutos secos, carnes, caña de azúcar/remolacha azucarera. \n También se presenta en forma de complementos dietéticos, para consumir de forma controlada. \n Se sabe muy poco sobre este aditivo. Se han informado efectos secundarios gastrointestinales benignos, incluida diarrea. \n Debido a la falta de estudios a largo plazo, las sales de L-aspartato deben evitarse en niños, mujeres embarazadas y lactantes.",
@@ -7328,7 +7328,7 @@
     },
     {
         "e_code": "E639",
-        "e_type": "Flavour enhancer",
+        "e_type": "Edulcorante",
         "halal_status": "Dudoso",
         "id": 491,
         "info": "Aminoácido no esencial producido por las células musculares. Entre otras cosas, es útil para el sistema nervioso, la inmunidad, la energía y el metabolismo del azúcar. \n Se encuentra principalmente en carnes y pescados. Hasta la fecha no se conocen efectos secundarios. \n Este aditivo también se utiliza en productos farmacéuticos y cosméticos.",
@@ -7341,7 +7341,7 @@
     },
     {
         "e_code": "E640",
-        "e_type": "Flavour enhancer",
+        "e_type": "Edulcorante",
         "halal_status": "Dudoso",
         "id": 492,
         "info": "La glicina es un aminoácido no esencial que se encuentra en muchas proteínas y abunda en la gelatina (E428), la caña de azúcar, los cacahuetes, las almendras, la carne y el pescado. En particular, desempeña un papel de neurotransmisor en el sistema nervioso central. \n Descubierto en 1820 hirviendo gelatina y ácido sulfúrico (E513), la producción comercial es sintética y diversificada. \n Hasta la fecha no se conocen efectos secundarios.",
@@ -7356,7 +7356,7 @@
     },
     {
         "e_code": "E641",
-        "e_type": "Flavour enhancer",
+        "e_type": "Edulcorante",
         "halal_status": "Dudoso",
         "id": 493,
         "info": "La leucina es un aminoácido esencial de sabor dulce que se encuentra en los gérmenes de trigo, patatas, pescado/atún, carne y maní. \n El control de la glucosa en sangre es una de sus múltiples funciones. Puede fabricarse de diversas formas, incluido el aislamiento de gluten, caseína o queratina (proteínas animales), la hidrólisis de proteínas (edestino, hemoglobina, zeína), la bromación seguida de la aminación del ácido isocaproico a partir de hidantoína. \n En dosis bajas no se han encontrado efectos secundarios, pero en dosis grandes puede provocar malestar estomacal, impedir la absorción de otros aminoácidos y provocar un aumento de los niveles de amoníaco en sangre, que puede resultar tóxico para el hígado y los riñones.",
@@ -7374,7 +7374,7 @@
     },
     {
         "e_code": "E642",
-        "e_type": "Flavour enhancer",
+        "e_type": "Edulcorante",
         "halal_status": "Dudoso",
         "id": 494,
         "info": "La lisina es un aminoácido esencial. La lisina comercial suele elaborarse mediante fermentación microbiológica. \n También existe un proceso de síntesis que combina técnicas químicas y microbiológicas de caprolactama y L-ACL-hidrolasa. No se encontró ningún efecto secundario. \n Dado que el producto químico es un aminoácido unido al ácido clorhídrico, a priori no es tóxico. \n Se utiliza en algunos productos farmacéuticos y cosméticos.",
@@ -7388,7 +7388,7 @@
     },
     {
         "e_code": "E650",
-        "e_type": "Flavour enhancer",
+        "e_type": "Edulcorante",
         "halal_status": "Dudoso",
         "id": 495,
         "info": "Los acetatos son las sales del ácido acético E260, que se unen químicamente a este último con potasio, sodio, calcio, amoníaco o zinc para formar acetatos. \n El acetato de zinc generalmente se reporta sin peligro conocido, en la dosis de los alimentos. Algunos autores recomiendan precaución.   \n Se utiliza en el chicle para refrescar el aliento y combatir la placa bacteriana. También se utiliza como complemento dietético, en compresas frías y en el tratamiento del acné.",
@@ -7404,7 +7404,7 @@
     },
     {
         "e_code": "E701",
-        "e_type": "antibiotic",
+        "e_type": "Antibiótico",
         "halal_status": "Dudoso",
         "id": 496,
         "info": "antibiótico",
@@ -7414,7 +7414,7 @@
     },
     {
         "e_code": "E702",
-        "e_type": "antibiotic",
+        "e_type": "Antibiótico",
         "halal_status": "Dudoso",
         "id": 497,
         "info": "antibiótico",
@@ -7437,7 +7437,7 @@
     },
     {
         "e_code": "E703",
-        "e_type": "antibiotic",
+        "e_type": "Antibiótico",
         "halal_status": "Dudoso",
         "id": 498,
         "info": "antibiótico",
@@ -7460,7 +7460,7 @@
     },
     {
         "e_code": "E704",
-        "e_type": "antibiotic",
+        "e_type": "Antibiótico",
         "halal_status": "Dudoso",
         "id": 499,
         "info": "antibiótico",
@@ -7483,7 +7483,7 @@
     },
     {
         "e_code": "E705",
-        "e_type": "antibiotic",
+        "e_type": "Antibiótico",
         "halal_status": "Dudoso",
         "id": 500,
         "info": "antibiótico",
@@ -7506,7 +7506,7 @@
     },
     {
         "e_code": "E706",
-        "e_type": "antibiotic",
+        "e_type": "Antibiótico",
         "halal_status": "Dudoso",
         "id": 501,
         "info": "antibiótico",
@@ -7529,7 +7529,7 @@
     },
     {
         "e_code": "E707",
-        "e_type": "antibiotic",
+        "e_type": "Antibiótico",
         "halal_status": "Dudoso",
         "id": 502,
         "info": "antibiótico",
@@ -7552,7 +7552,7 @@
     },
     {
         "e_code": "E708",
-        "e_type": "antibiotic",
+        "e_type": "Antibiótico",
         "halal_status": "Dudoso",
         "id": 503,
         "info": "antibiótico",
@@ -7595,7 +7595,7 @@
     },
     {
         "e_code": "E712",
-        "e_type": "Antibiotic",
+        "e_type": "Antibiótico",
         "halal_status": "Dudoso",
         "id": 506,
         "info": "antibiótico",
@@ -7616,7 +7616,7 @@
     },
     {
         "e_code": "E713",
-        "e_type": "antibiotic",
+        "e_type": "Antibiótico",
         "halal_status": "Dudoso",
         "id": 507,
         "info": "antibiótico",
@@ -7639,7 +7639,7 @@
     },
     {
         "e_code": "E714",
-        "e_type": "antibiotic",
+        "e_type": "Antibiótico",
         "halal_status": "Dudoso",
         "id": 508,
         "info": "antibiótico",
@@ -7662,7 +7662,7 @@
     },
     {
         "e_code": "E715",
-        "e_type": "antibiotic",
+        "e_type": "Antibiótico",
         "halal_status": "Dudoso",
         "id": 509,
         "info": "antibiótico",
@@ -7685,7 +7685,7 @@
     },
     {
         "e_code": "E716",
-        "e_type": "antibiotic",
+        "e_type": "Antibiótico",
         "halal_status": "Dudoso",
         "id": 510,
         "info": "antibiótico",
@@ -7708,7 +7708,7 @@
     },
     {
         "e_code": "E717",
-        "e_type": "antibiotic",
+        "e_type": "Antibiótico",
         "halal_status": "Dudoso",
         "id": 511,
         "info": "antibiótico",
@@ -7731,7 +7731,7 @@
     },
     {
         "e_code": "E900",
-        "e_type": "Antifoam",
+        "e_type": "Antiespumante",
         "halal_status": "Halal",
         "id": 512,
         "info": "Se obtiene por hidrólisis y policondensación de diclorodimetilsilano y clorotrimetilsilano. (Se utiliza especialmente en implantes mamarios). \n Se divide en 2 clases: polidimetilsiloxano y polimetilfenilsiloxano. \n También se utiliza en tratamientos para el cabello y en productos farmacéuticos.  \n En dosis bajas no se han encontrado efectos secundarios. Pero en grandes dosis puede provocar problemas renales, hepáticos y del sistema nervioso. \n Hay informes donde existe un riesgo cancerígeno.",
@@ -7756,7 +7756,7 @@
     },
     {
         "e_code": "E900A",
-        "e_type": "Antifoam",
+        "e_type": "Antiespumante",
         "halal_status": "Dudoso",
         "id": 513,
         "info": "Se obtiene por hidrólisis y policondensación de diclorodimetilsilano y clorotrimetilsilano. (Se utiliza especialmente en implantes mamarios).  \n  También se utiliza en tratamientos para el cabello y en productos farmacéuticos.\n En dosis bajas no se han encontrado efectos secundarios. \n Pero en grandes dosis puede provocar problemas renales, hepáticos y del sistema nervioso. \n Hay informes donde existe un riesgo cancerígeno.",
@@ -7781,7 +7781,7 @@
     },
     {
         "e_code": "E900B",
-        "e_type": "Antifoam",
+        "e_type": "Antiespumante",
         "halal_status": "Dudoso",
         "id": 514,
         "info": "Se obtiene por hidrólisis y policondensación de diclorodimetilsilano y clorotrimetilsilano. (Se utiliza especialmente en implantes mamarios).  \n También se utiliza en tratamientos capilares y productos farmacéuticos. \n En dosis bajas no se han encontrado efectos secundarios. \n Pero en grandes dosis puede provocar problemas renales, hepáticos y del sistema nervioso. \n Hay informes donde existe un riesgo cancerígeno.",
@@ -7806,7 +7806,7 @@
     },
     {
         "e_code": "E901",
-        "e_type": "Glazing agent",
+        "e_type": "Agente de Glaseado",
         "halal_status": "Dudoso",
         "id": 515,
         "info": "Polímero natural producido por las abejas. La cera de abejas es la cera particular secretada por las abejas melíferas, que utilizan para construir panales. \n Inicialmente, la cera de abejas puede contener impurezas porque tiene una fuerte afinidad por los contaminantes industriales y los pesticidas.    \n Se divide en 2 clases: cera de abejas blanca y cera de abejas amarilla. \n En dosis bajas, no se han encontrado efectos secundarios. \n Pero hay que decir que en algunos casos esta sustancia no es reabsorbida por el organismo, siendo de difícil digestión. \n Y también a veces se reporta alergia a nivel de cosméticos con esta sustancia. \n No se ha determinado la ingesta diaria admisible.",
@@ -7818,7 +7818,7 @@
     },
     {
         "e_code": "E902",
-        "e_type": "Glazing agent",
+        "e_type": "Agente de Glaseado",
         "halal_status": "Dudoso",
         "id": 516,
         "info": "Polímero natural producido a partir de los árboles mexicanos Euphorbia antisyphilitica, E. cerifera y Pedilanthus pavonis. \n  La cera se extrae mediante tratamiento con ácido sulfúrico y, naturalmente, contiene casi un 50% de hidrocarburos. \n Se utiliza como recubrimiento y en chicles. También se encuentra en repostería. \n  No se encontraron efectos secundarios.",
@@ -7831,7 +7831,7 @@
     },
     {
         "e_code": "E903",
-        "e_type": "Glazing agent",
+        "e_type": "Agente de Glaseado",
         "halal_status": "Halal",
         "id": 517,
         "info": "La cera de carnauba proviene de las hojas de una palmera ubicada parcialmente en el noreste de Brasil, Copernicia prunifera. \n Esta cera se obtiene trillando las hojas, seguido de su refinamiento y, en ocasiones, descoloramiento. \n  En dosis bajas, no se han encontrado efectos secundarios. Pero hay que decir que en algunos casos puede provocar pequeñas reacciones alérgicas. \n Se utiliza como recubrimiento y en productos de goma de mascar. También se encuentra en productos de repostería, café y panadería. \n La cera de carnauba también se utiliza mucho en cosmética y puede provocar eccema.",
@@ -7845,7 +7845,7 @@
     },
     {
         "e_code": "E904",
-        "e_type": "Glazing agent",
+        "e_type": "Agente de Glaseado",
         "halal_status": "Dudoso",
         "id": 518,
         "info": "La Shellac es una laca que resulta de la secreción de una cochinilla asiática, Kerria lacca. \n La resina obtenida es de color amarillo/rojo ámbar, generalmente se presenta en forma de escamas que se disuelven en alcohol de 95°. \n La mezcla obtenida se puede utilizar en la fabricación de armarios o en la fabricación de violines para barnizar la madera. \n Otras aplicaciones son la industria alimentaria, productos farmacéuticos, fabricación de adhesivos o tintas. \n Se divide en 2 clases: Goma Laca Blanca y Goma Laca Naranja.   \n No se han encontrado efectos secundarios. Pero a veces se sospecha que son alergénicos. \n Tiene potencial alergénico por contacto, existiendo casos comprobados de reacciones alérgicas cuando se utiliza como ingrediente cosmético.",
@@ -7861,7 +7861,7 @@
     },
     {
         "e_code": "E905",
-        "e_type": "Glazing agent",
+        "e_type": "Agente de Glaseado",
         "halal_status": "Halal",
         "id": 519,
         "info": "Las parafinas se obtienen actualmente en refinerías de petróleo. No se pegan. No son aglutinantes, a diferencia de la cera de abejas (E901) y algunas ceras vegetales.  \n La cera microcristalina se produce a partir de residuos cuando se acondicionan los aceites de motor. La cera blanca e inodoro se utiliza como base para ungüentos o como conservante para objetos metálicos. \n No se han encontrado efectos secundarios en dosis bajas. Pero en algunos casos puede haber cierta dificultad en la absorción de muchos nutrientes, minerales y vitaminas. \n Cuidado con las mujeres embarazadas, es mejor evitarlo. \n Se sabe que el aditivo contiene trazas de al menos un hidrocarburo aromático policíclico (PAH), el benzo(a)pireno, que es muy tóxico.",
@@ -7893,7 +7893,7 @@
     },
     {
         "e_code": "E905A",
-        "e_type": "Glazing agent",
+        "e_type": "Agente de Glaseado",
         "halal_status": "Dudoso",
         "id": 520,
         "info": "Un aceite mineral es una mezcla derivada de la destilación de ciertos combustibles fósiles. Se obtiene por destilación de carbón, petróleo o determinadas pizarras bituminosas y sirve principalmente como lubricante para piezas mecánicas de máquinas y motores. \n Fuera de la UE, a veces se utiliza en la industria alimentaria, especialmente en confitería. Según la FDA de EE.UU. (2015), el aceite mineral que se ingiere en o cerca de las comidas interfiere con la absorción de la provitamina A y de las vitaminas liposolubles A, D y K, y en consecuencia con la utilización de calcio y fósforo. \n Los aceites minerales de hidrocarburos aromáticos pueden ser mutagénicos y cancerígenos. \n Ingesta diaria: Hasta 20 mg/kg de peso corporal.",
@@ -7925,7 +7925,7 @@
     },
     {
         "e_code": "E905B",
-        "e_type": "Glazing agent",
+        "e_type": "Agente de Glaseado",
         "halal_status": "Dudoso",
         "id": 521,
         "info": "Mezcla sintética de hidrocarburos utilizada como recubrimiento, lubricante, disolvente, antiespumante y en chicles. \n Vaselina, como parafina, un destilado de aceite. Su composición depende del origen del petróleo y del proceso de refinación. Las categorías muy refinadas se utilizan en farmacia y cosmética. \n Las categorías menos refinadas se utilizan industrialmente y pueden contener impurezas como carcinógenos aromáticos policíclicos. Es posible un efecto laxante. \n Puede irritar o interferir con la digestión, inhibir la absorción de grasas y vitaminas liposolubles. Puede ser peligroso en dosis altas. Es posible que se produzca una alergia de contacto (dermatitis).",
@@ -7957,7 +7957,7 @@
     },
     {
         "e_code": "E905C",
-        "e_type": "Glazing agent",
+        "e_type": "Agente de Glaseado",
         "halal_status": "Dudoso",
         "id": 522,
         "info": "Las parafinas se obtienen actualmente en refinerías de petróleo. No se pegan. \n No son aglutinantes, a diferencia de la cera de abejas (E901) y algunas ceras vegetales. La cera microcristalina se produce a partir de residuos cuando se acondicionan los aceites de motor. \n La cera blanca e inodoro se utiliza como base para ungüentos o como conservante para objetos metálicos. \n No se han encontrado efectos secundarios en dosis bajas. Pero en algunos casos puede haber cierta dificultad en la absorción de muchos nutrientes, minerales y vitaminas. \n Cuidado con las mujeres embarazadas, es mejor evitarlo. \n Se sabe que el aditivo contiene trazas de al menos un hidrocarburo aromático policíclico (PAH), el benzo(a)pireno, que es muy tóxico.",
@@ -7989,7 +7989,7 @@
     },
     {
         "e_code": "E905D",
-        "e_type": "Glazing agent",
+        "e_type": "Agente de Glaseado",
         "halal_status": "Dudoso",
         "id": 523,
         "info": "Un aceite mineral es una mezcla derivada de la destilación de ciertos combustibles fósiles. \n Se obtiene por destilación de carbón, petróleo o determinadas pizarras bituminosas y sirve principalmente como lubricante para piezas mecánicas de máquinas y motores. Fuera de la UE, a veces se utiliza en la industria alimentaria, especialmente en confitería. \n Los aceites minerales de hidrocarburos aromáticos pueden ser mutagénicos y cancerígenos. \n Ingesta diaria: Hasta 20 mg/kg de peso corporal.",
@@ -8023,7 +8023,7 @@
     },
     {
         "e_code": "E905E",
-        "e_type": "Glazing agent",
+        "e_type": "Agente de Glaseado",
         "halal_status": "Dudoso",
         "id": 524,
         "info": "Un aceite mineral es una mezcla derivada de la destilación de ciertos combustibles fósiles. \n Se obtiene por destilación de carbón, petróleo o determinadas pizarras bituminosas y sirve principalmente como lubricante para piezas mecánicas de máquinas y motores. Fuera de la UE, a veces se utiliza en la industria alimentaria, especialmente en confitería. \n Los aceites minerales de hidrocarburos aromáticos pueden ser mutagénicos y cancerígenos. \n Ingesta diaria: Hasta 20 mg/kg de peso corporal.",
@@ -8057,7 +8057,7 @@
     },
     {
         "e_code": "E905F",
-        "e_type": "Glazing agent",
+        "e_type": "Agente de Glaseado",
         "halal_status": "Dudoso",
         "id": 525,
         "info": "Un aceite mineral es una mezcla derivada de la destilación de ciertos combustibles fósiles. \n Se obtiene por destilación de carbón, petróleo o determinadas pizarras bituminosas y sirve principalmente como lubricante para piezas mecánicas de máquinas y motores. \n Los aceites minerales de hidrocarburos aromáticos pueden ser mutagénicos y cancerígenos. Ingesta diaria: Hasta 20 mg/kg de peso corporal.",
@@ -8092,7 +8092,7 @@
     },
     {
         "e_code": "E905G",
-        "e_type": "Glazing agent",
+        "e_type": "Agente de Glaseado",
         "halal_status": "Dudoso",
         "id": 526,
         "info": "Un aceite mineral es una mezcla derivada de la destilación de ciertos combustibles fósiles. \n Se obtiene por destilación de carbón, petróleo o determinadas pizarras bituminosas y sirve principalmente como lubricante para piezas mecánicas de máquinas y motores. \n Los aceites minerales de hidrocarburos aromáticos pueden ser mutagénicos y cancerígenos.",
@@ -8127,7 +8127,7 @@
     },
     {
         "e_code": "E906",
-        "e_type": "Glazing agent",
+        "e_type": "Agente de Glaseado",
         "halal_status": "Dudoso",
         "id": 530,
         "info": "La resina de benjuí es un sólido de color marrón rojizo con olor a vainilla, es una resina balsámica obtenida de la corteza de varias especies de árboles Styrax. \n Se utiliza en perfumes, ciertos tipos de incienso y en medicina (ver tintura de benjuí). \n Su componente principal suele ser el ácido benzoico. No se encontró ningún efecto secundario. \n Es poco probable que la sustancia pura y/o su tinte causen irritación, alergia o dermatitis de contacto. \n Rara vez se utiliza como aditivo alimentario. Se utiliza en cosmética, perfumería y farmacia.",
@@ -8140,7 +8140,7 @@
     },
     {
         "e_code": "E907",
-        "e_type": "Glazing agent",
+        "e_type": "Agente de Glaseado",
         "halal_status": "Halal",
         "id": 531,
         "info": "Se obtiene del petróleo. Es una mezcla de hidrocarburos sintetizada a partir de 1-deceno puro.  \n El polideceno también se encuentra en aceites de motor para automóviles, cosméticos, champús, barras de labios y algunos productos farmacéuticos, como cremas para el cuidado de la piel y barras antiolores. \n La toxicidad de este aditivo es elevada porque en dosis elevadas puede provocar una mala absorción de vitaminas y minerales. \n Puede provocar hemorragias en mujeres embarazadas. \n Estudios recientes de la OMS demostraron que se encontraron trazas de aceites minerales en el hígado y la linfa.",
@@ -8153,7 +8153,7 @@
     },
     {
         "e_code": "E908",
-        "e_type": "Glazing agent",
+        "e_type": "Agente de Glaseado",
         "halal_status": "Dudoso",
         "id": 532,
         "info": "La cera de salvado de arroz es una cera vegetal extraída del aceite de salvado de arroz (Oryza sativa). \n Sus principales componentes son los ácidos alifáticos (ácidos céreos) y los ésteres. El aceite de salvado de arroz se obtiene elaborando arroz blanco o pulido (que en realidad es el endospermo de Oryza sativa L., semilla de pasto). \n Una cera refinada extraída del salvado de arroz. El refinado implica uno o más tratamientos químicos y la consiguiente pérdida de aporte nutricional. \n El uso de disolventes durante el proceso de producción implica también la presencia de trazas residuales generalmente tóxicas. \n La cera de salvado de arroz se encuentra en una variedad de usos, como revestimiento de papel, textiles, revestimientos de frutas y verduras, productos farmacéuticos, chicles y cosméticos.",
@@ -8165,7 +8165,7 @@
     },
     {
         "e_code": "E909",
-        "e_type": "Glazing agent",
+        "e_type": "Agente de Glaseado",
         "halal_status": "Dudoso",
         "id": 533,
         "info": "El blanco de la ballena es una sustancia blanca que se encuentra en la cabeza de ciertos cetáceos, como el cachalote. El órgano correspondiente se llama órgano de espermaceti. \n Se extrae del aceite de espermaceti mediante cristalización durante un tratamiento a presión y una solución química alcalina. \n Por sus propiedades, el blanco de la ballena era muy buscado para la realización de velas, jabones, cosméticos, lubricantes o excipientes farmacéuticos similares.",
@@ -8177,7 +8177,7 @@
     },
     {
         "e_code": "E910",
-        "e_type": "Glazing agent",
+        "e_type": "Agente de Glaseado",
         "halal_status": "Dudoso",
         "id": 534,
         "info": "Un aminoácido natural que contiene azufre, derivado de la cistina, que el cuerpo necesita para producir glutatión, uno de los principales antioxidantes del cuerpo. \n Ésteres de un ácido graso y un alcohol de cadena larga. Estos aceites tienen propiedades similares a las de los triglicéridos, pero no son digeribles. \n Se encuentran en algunos peces como el reloj naranja. \n Los ésteres de cera también se encuentran en determinadas plantas, especialmente en la jojoba, y en algunas bacterias, como determinadas Acinetobacter, en las que se utilizan como reservas de energía. \n En forma compuesta (E920 y E921) se utiliza en harinas y productos de panadería (excepto integrales), donde se utiliza como agente mejorador y en cubitos de caldo de pollo, donde se utiliza como aromatizante. \n Actualmente no se han encontrado efectos secundarios.",
@@ -8189,7 +8189,7 @@
     },
     {
         "e_code": "E911",
-        "e_type": "Glazing agent",
+        "e_type": "Agente de Glaseado",
         "halal_status": "Dudoso",
         "id": 535,
         "info": "Los ésteres metílicos de los ácidos grasos son ésteres alifáticos orgánicos preparados esencialmente mediante la reacción de un ácido carboxílico (derivado de grasas y aceites naturales) y metanol. \n Están compuestos por ácidos grasos de origen animal o vegetal. \n Se utilizan indirectamente en una amplia gama de alimentos, productos farmacéuticos, cosméticos y aplicaciones industriales, especialmente como biocombustibles diésel o biodiésel. \n Nadie ha podido participar en este momento. Puede derivarse de aceites vegetales como el de colza y, por tanto, de una biotecnología transgénica.",
@@ -8213,7 +8213,7 @@
     },
     {
         "e_code": "E913",
-        "e_type": "Glazing agent",
+        "e_type": "Agente de Glaseado",
         "halal_status": "Dudoso",
         "id": 537,
         "info": "Grasa amarilla secretada por las glándulas sebáceas de las ovejas y extraída de su lana. \n Utilizado como auxiliar emoliente, cosmético y farmacéutico. \n Esta mezcla compleja de ésteres de alcoholes y ácidos grasos se clasifica químicamente como cera y sirve naturalmente como agente impermeabilizante para los animales de lana. \n Se utiliza como glaseado en algunos dulces tradicionales y para dar una capa brillante a caramelos y chicles. También se utiliza para producir vitamina D3, cosmética natural, bálsamos, pomadas hidratantes, productos emolientes, barras de labios, cacao, reparadores de labios y cremas extra hidratantes. \n Su toxicidad es muy baja, aunque en algunos casos puede provocar reacciones alérgicas de pequeña intensidad. \n Hay poca información sobre su uso en alimentos.",
@@ -8244,7 +8244,7 @@
     },
     {
         "e_code": "E914",
-        "e_type": "Glazing agent",
+        "e_type": "Agente de Glaseado",
         "halal_status": "Dudoso",
         "id": 538,
         "info": "Producto sintético de origen petroquímico. El polietileno es un plástico translúcido lechoso, firme y flexible preparado mediante la polimerización de etileno líquido. \n Lávese bien las manos después de pelar la fruta tratada con este aditivo. Mala absorción de vitaminas y minerales. \n Puede provocar sangrado en mujeres embarazadas si se consumen grandes cantidades. En 1991, estudios de la FAO y la OMS demostraron que había trazas de aceites minerales en el hígado y la linfa, y en 1995 este mismo Comité demostró que se podían observar ciertas lesiones tanto en ratas como en humanos debido a residuos de dichos aceites. La sustancia pura (en forma de polvo) muestra algunos signos de actividad cancerígena en animales de laboratorio, pero no está clasificada como cancerígena en humanos.",
@@ -8256,7 +8256,7 @@
     },
     {
         "e_code": "E915",
-        "e_type": "Glazing agent",
+        "e_type": "Agente de Glaseado",
         "halal_status": "Dudoso",
         "id": 539,
         "info": "La colofonia es el residuo sólido que se obtiene tras la destilación de la trementina, oleorresina, sustancia extraída de las coníferas y, en particular, del pino (género Pinus). \n También se utiliza para dar sabor cítrico. \n La colofonia es un irritante y alérgeno para la piel (dermatitis) y las vías respiratorias (asma), en forma pura o mediante sus productos de degradación, sin que sus mecanismos de acción sean aún bien conocidos. \n La colofonia pura es peligrosa si se ingiere, puede ser tóxica para los pulmones y la piel.    \n El éster de colofonia se utiliza en la fabricación de bebidas y chicles, en la industria de revestimientos (fabricación de lacas, pinturas, barnices), farmacéutica (ver colofonia) y cosmética.",
@@ -8549,7 +8549,7 @@
     },
     {
         "e_code": "E940",
-        "e_type": "Propellant",
+        "e_type": "Propulsor",
         "halal_status": "Dudoso",
         "id": 563,
         "info": "El diclorodifluorometano E940 está catalogado como propulsor de gas. \n Se utiliza como aditivo para alimentos y cosméticos. \n El diclorodifluorometano también se vende con el nombre de Freón-12 o R12 según la lista de gases fluorados y refrigerantes, es un clorofluorocarbono peligroso para la capa de ozono y se utiliza como propulsor en aerosoles hasta que se prohibió su fabricación en 1995. \n Se trata de un gas de efecto invernadero que se utiliza como propulsor en aerosoles. \n Según las fuentes consultadas, el aditivo E940 puede considerarse tóxico, no es especialmente bueno para la salud humana pero presenta pocos riesgos en dosis bajas, en cambio, en dosis grandes puede ser cancerígeno.",
@@ -8594,7 +8594,7 @@
     },
     {
         "e_code": "E943A",
-        "e_type": "Propellant",
+        "e_type": "Propulsor",
         "halal_status": "Dudoso",
         "id": 566,
         "info": "El butano se obtiene a partir de fracciones de petróleo mediante destilación a presión de G.P.L (gases licuados de petróleo). \n También es un componente de los cigarrillos encendidos. El butano se utiliza o se pretende utilizar para desplazar o suprimir el oxígeno en el procesamiento, almacenamiento o envasado de bebidas y otros alimentos, con excepción de la carne fresca. \n Es una hélice de bombas de repostería fabricada con aceite vegetal. No se conocen hasta la fecha efectos secundarios en el uso de alimentos. \n Existen efectos cancerígenos en animales de laboratorio. En dosis altas, el butano puro es potencialmente narcótico. El butano E 943a contiene cantidades residuales muy pequeñas y nocivas: metano y butadieno (un carcinógeno conocido).",
@@ -8610,7 +8610,7 @@
     },
     {
         "e_code": "E943B",
-        "e_type": "Propellant ",
+        "e_type": "Propulsor ",
         "halal_status": "Dudoso",
         "id": 567,
         "info": "El hidrocarburo se encuentra en forma gaseosa en condiciones normales de temperatura y presión. \n La principal fuente de isobutano es el refinado del petróleo crudo mediante craqueo catalítico o reformado y los yacimientos de gas natural. \n Muy inflamable. Puede encenderse en presencia de electricidad estática. Es particularmente un propulsor en bombas de pastelería a base de aceite vegetal. \n Este gas es inodoro e incoloro y el olor es tan fuerte que los cilindros se agregan posteriormente para mayor seguridad en caso de fuga de gas. \n Se utiliza como combustible, disolvente, refrigerante y aditivo alimentario. \n Se utiliza en aerosoles como aerosoles de aceite, mantequilla, crema y otros productos.",
@@ -8626,7 +8626,7 @@
     },
     {
         "e_code": "E944",
-        "e_type": "Propellant ",
+        "e_type": "Propulsor ",
         "halal_status": "Dudoso",
         "id": 570,
         "info": "Gas derivado de otros productos petrolíferos por procesos termoquímicos del gas o del petróleo. \n Se utiliza comúnmente como fuente de energía química por combustión en motores de combustión interna, barbacoas y calderas. \n Se utiliza como combustible, disolvente, refrigerante y aditivo alimentario. \n Se utiliza, entre otras cosas, para pulverizar aceites vegetales y emulsiones acuosas. \n También se utiliza como propulsor en cosmética, productos farmacéuticos, así como combustible o carburante.",
@@ -8640,7 +8640,7 @@
     },
     {
         "e_code": "E945",
-        "e_type": "Propellant ",
+        "e_type": "Propulsor ",
         "halal_status": "Dudoso",
         "id": 571,
         "info": "El cloropentafluoroetano es un clorofluorocarbono (CFC) que se utiliza como refrigerante. Es un gas transparente, incoloro y de olor etéreo. \n Los vapores pueden causar mareos o asfixia sin previo aviso. \n El contacto con este gas o gas licuado puede provocar quemaduras, lesiones graves y/o congelación. \n Está prohibido por el Protocolo de Montreal debido a su potencial para destruir el ozono. Esta prohibición no afecta a los alimentos industriales ni a determinadas aplicaciones médicas.",
@@ -8658,7 +8658,7 @@
     },
     {
         "e_code": "E946",
-        "e_type": "Propellant ",
+        "e_type": "Propulsor ",
         "halal_status": "Dudoso",
         "id": 572,
         "info": "Gas transparente e incoloro con olor etéreo (débil). Los vapores de octafluorociclobutano pueden causar mareos o asfixia sin previo aviso. \n El fuego puede producir gases irritantes, corrosivos y/o tóxicos. \n En los animales, los efectos agudos de este gas puro por inhalación son: posibilidad de arritmia cardíaca, posibilidad de broncoconstricción.",
@@ -8671,7 +8671,7 @@
     },
     {
         "e_code": "E948",
-        "e_type": "Propellant",
+        "e_type": "Propulsor",
         "halal_status": "Dudoso",
         "id": 573,
         "info": "Gas natural. El oxígeno, comúnmente conocido como oxígeno, es un gas transparente, incoloro, inodoro, insípido y no inflamable. Se obtiene por destilación del aire. \n Se utiliza en aerosoles como aerosoles de aceite, mantequilla, crema y otros productos. También se utiliza para embalaje. \n \n No se ha determinado la ingesta diaria admisible.",
@@ -8684,7 +8684,7 @@
     },
     {
         "e_code": "E949",
-        "e_type": "Packaging gas",
+        "e_type": "Gas de embalaje",
         "halal_status": "Dudoso",
         "id": 574,
         "info": "Gas natural. El hidrógeno, comúnmente conocido como hidrógeno, es un gas natural incoloro e inodoro, muy abundante, presente en el agua y en todos los componentes orgánicos. \n Se obtiene mediante catálisis de gas natural. Es el elemento más abundante del universo. \n Se utiliza en aerosoles como aerosoles de aceite, mantequilla, crema y otros productos. También se utiliza para embalaje.",
@@ -8697,7 +8697,7 @@
     },
     {
         "e_code": "E950",
-        "e_type": "Flavour enhancer",
+        "e_type": "Edulcorante",
         "halal_status": "Halal",
         "id": 575,
         "info": "Este aditivo es aproximadamente 200 veces más dulce que el azúcar y estable al calor. \n Al tener un sabor amargo se suele combinar con otros edulcorantes como el Aspartamo y la Sucralosa. \n\n Según un estudio de 2005 probado en ratones, se interpreta que su consumo a largo plazo podría ser cancerígeno (con mayor incidencia de cáncer en los machos) y estar relacionado con problemas neurológicos, hiperglucemia y secreción de insulina.",
@@ -8762,7 +8762,7 @@
     },
     {
         "e_code": "E954",
-        "e_type": "Sweetener ",
+        "e_type": "Edulcorante ",
         "halal_status": "Halal",
         "id": 579,
         "info": "Este aditivo edulcorante artificial se puede producir a partir de tolueno (metilbenceno), ácido antranílico (reacción sucesiva con ácido nitroso, dióxido de azufre, cloro y amoníaco). \n Se han observado efectos cancerígenos en cobayas. Posteriormente, estudios adicionales bajo la presión de la industria alimentaria condujeron a la eliminación de esta advertencia. \n En dosis bajas puede presentar grandes riesgos de alergias. En grandes dosis provoca cáncer de vejiga en ratas. \n Este producto contiene sacarina, que provoca cáncer en animales de laboratorio.",
@@ -8781,7 +8781,7 @@
     },
     {
         "e_code": "E955",
-        "e_type": "Sweetener ",
+        "e_type": "Edulcorante ",
         "halal_status": "Dudoso",
         "id": 580,
         "info": "Edulcorante sintético bajo en calorías. Es hasta 600 veces más dulce que el azúcar. \n En grandes dosis provoca la destrucción del sistema inmunológico afectando principalmente al hígado y los riñones. \n Hay muchos estudios que demuestran que puede provocar daños graves en el ADN.",
@@ -8792,7 +8792,7 @@
             "1'",
             "6'-Triclorogalactosacarosa"
         ],
-        "toxicidad": "bajo"
+        "toxicidad": "alto"
     },
     {
         "e_code": "E956",
@@ -8834,7 +8834,7 @@
     },
     {
         "e_code": "E959",
-        "e_type": "Sweetener ",
+        "e_type": "Edulcorante",
         "halal_status": "Dudoso",
         "id": 584,
         "info": "Artificialmente más dulce que el azúcar de la semilla de pomelo. \n Edulcorante sintético y potenciador del sabor. Se obtiene por síntesis de una sustancia llamada 'neohesperidina' presente en las naranjas amargas. \n Se suele utilizar junto con otros edulcorantes. Es hasta 1800 veces más dulce que el azúcar normal. Su sabor es persistente, con un ligero sabor a regaliz y se utiliza para enmascarar sabores amargos. \n El NHDC a menudo se presenta como no peligroso. Pero en grandes dosis provoca náuseas y migrañas.",

@@ -51,7 +51,7 @@ final class LectorEtiquetasViewModel: ObservableObject {
 
         guard isOfflineDatabaseReady else {
             offlineNameMatches = []
-            errorMessage = "Primero descarga y verifica la BD offline."
+            errorMessage = "Primero descarga la BD offline."
             return
         }
 
@@ -104,9 +104,11 @@ final class LectorEtiquetasViewModel: ObservableObject {
 
         do {
             let status = try await service.prepareOfflineDatabase(forceCopy: forceRefresh)
-            offlineDatabasePath = status.databaseURL.path
+            let resolvedPath = status.databaseURL.path
+            _ = try await service.contarProductosOffline(preferredOfflineDatabasePath: resolvedPath)
+            offlineDatabasePath = resolvedPath
             isOfflineDatabaseReady = true
-            saveOfflineDatabasePath(status.databaseURL.path)
+            saveOfflineDatabasePath(resolvedPath)
             offlineInfoMessage = status.didCopy
                 ? "Base offline instalada/actualizada. Versión: \(status.installedVersion)."
                 : "Base offline lista. Versión: \(status.installedVersion)."
@@ -114,7 +116,7 @@ final class LectorEtiquetasViewModel: ObservableObject {
             pendingOfflineVersion = nil
             await refreshOfflineItemsCount()
         } catch {
-            if let path = offlineDatabasePath, FileManager.default.fileExists(atPath: path) {
+            if let path = offlineDatabasePath, isUsableFilePath(path) {
                 isOfflineDatabaseReady = true
             } else {
                 isOfflineDatabaseReady = false
@@ -150,7 +152,7 @@ final class LectorEtiquetasViewModel: ObservableObject {
     private func restoreOfflineDatabaseState() {
         let defaults = UserDefaults.standard
         guard let path = defaults.string(forKey: LectorEtiquetasManagedAssetsConfig.databasePathDefaultsKey),
-              FileManager.default.fileExists(atPath: path) else {
+              isUsableFilePath(path) else {
             isOfflineDatabaseReady = false
             offlineDatabasePath = nil
             return
@@ -159,7 +161,8 @@ final class LectorEtiquetasViewModel: ObservableObject {
         offlineDatabasePath = path
         isOfflineDatabaseReady = true
 
-        let installedVersion = (defaults.object(forKey: LectorEtiquetasManagedAssetsConfig.versionDefaultsKey) as? NSNumber)?.intValue
+        let sharedDefaults = UserDefaults(suiteName: LectorEtiquetasManagedAssetsConfig.appGroupID)
+        let installedVersion = (sharedDefaults?.object(forKey: LectorEtiquetasManagedAssetsConfig.versionDefaultsKey) as? NSNumber)?.intValue
         let versionText = installedVersion.map(String.init) ?? "N/D"
         offlineInfoMessage = "BD offline activa. Versión instalada: \(versionText)."
 
@@ -179,8 +182,15 @@ final class LectorEtiquetasViewModel: ObservableObject {
         do {
             offlineItemsCount = try await service.contarProductosOffline(preferredOfflineDatabasePath: offlineDatabasePath)
         } catch {
+            isOfflineDatabaseReady = false
             offlineItemsCount = nil
         }
+    }
+
+    private func isUsableFilePath(_ path: String) -> Bool {
+        var isDirectory: ObjCBool = false
+        let exists = FileManager.default.fileExists(atPath: path, isDirectory: &isDirectory)
+        return exists && !isDirectory.boolValue
     }
 }
 #endif

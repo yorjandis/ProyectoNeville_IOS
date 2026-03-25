@@ -9,6 +9,7 @@ import Foundation
 
 #if os(iOS) && canImport(BackgroundAssets)
 import BackgroundAssets
+import SQLite3
 import System
 
 actor DatabaseBootstrapper {
@@ -46,19 +47,30 @@ actor DatabaseBootstrapper {
 
         let sourceURL = try resolveSQLiteURL(manager: manager)
         let destinationURL = try makeDestinationDatabaseURL()
+        guard isUsableSQLiteDatabase(at: sourceURL) else {
+            throw CocoaError(.fileReadCorruptFile, userInfo: [
+                NSFilePathErrorKey: sourceURL.path,
+                NSLocalizedDescriptionKey: "El asset descargado no contiene una base SQLite válida con tabla products."
+            ])
+        }
 
         let defaults = UserDefaults(suiteName: LectorEtiquetasManagedAssetsConfig.appGroupID)
         let currentVersion = defaults?.integer(forKey: LectorEtiquetasManagedAssetsConfig.versionDefaultsKey)
 
-        let fileManager = FileManager.default
-        let fileExists = fileManager.fileExists(atPath: destinationURL.path)
-        let needsCopy = forceCopy || !fileExists || currentVersion != assetPack.version
+        let destinationIsValidDatabase = isUsableSQLiteDatabase(at: destinationURL)
+        let needsCopy = forceCopy || !destinationIsValidDatabase || currentVersion != assetPack.version
 
         if needsCopy {
-            if fileExists {
-                try fileManager.removeItem(at: destinationURL)
+            if FileManager.default.fileExists(atPath: destinationURL.path) {
+                try FileManager.default.removeItem(at: destinationURL)
             }
-            try fileManager.copyItem(at: sourceURL, to: destinationURL)
+            try FileManager.default.copyItem(at: sourceURL, to: destinationURL)
+            guard isUsableSQLiteDatabase(at: destinationURL) else {
+                throw CocoaError(.fileReadCorruptFile, userInfo: [
+                    NSFilePathErrorKey: destinationURL.path,
+                    NSLocalizedDescriptionKey: "La base SQLite copiada no es válida o no contiene la tabla products."
+                ])
+            }
             defaults?.set(assetPack.version, forKey: LectorEtiquetasManagedAssetsConfig.versionDefaultsKey)
         }
 
@@ -72,7 +84,7 @@ actor DatabaseBootstrapper {
         let defaults = UserDefaults(suiteName: LectorEtiquetasManagedAssetsConfig.appGroupID)
         let installedVersion = (defaults?.object(forKey: LectorEtiquetasManagedAssetsConfig.versionDefaultsKey) as? NSNumber)?.intValue
         let destinationURL = try makeDestinationDatabaseURL()
-        let hasLocalDatabase = FileManager.default.fileExists(atPath: destinationURL.path)
+        let hasLocalDatabase = isUsableSQLiteDatabase(at: destinationURL)
         let hasUpdate = hasLocalDatabase && ((installedVersion ?? assetPack.version) < assetPack.version)
 
         return UpdateStatus(
@@ -99,7 +111,7 @@ actor DatabaseBootstrapper {
 
         for candidatePath in pathCandidates {
             if let candidateURL = try? manager.url(for: FilePath(candidatePath)),
-               fileManager.fileExists(atPath: candidateURL.path) {
+               isUsableSQLiteDatabase(at: candidateURL) {
                 return candidateURL
             }
         }
@@ -117,7 +129,7 @@ actor DatabaseBootstrapper {
         for directoryPath in directoryCandidates where !directoryPath.isEmpty {
             if let directoryURL = try? manager.url(for: FilePath(directoryPath)) {
                 let candidate = directoryURL.appendingPathComponent(sqliteFileName, isDirectory: false)
-                if fileManager.fileExists(atPath: candidate.path) {
+                if isUsableSQLiteDatabase(at: candidate) {
                     return candidate
                 }
                 directoryURLs.append(directoryURL)
@@ -132,7 +144,7 @@ actor DatabaseBootstrapper {
                 options: [.skipsHiddenFiles]
             ) {
                 for case let fileURL as URL in enumerator {
-                    if fileURL.lastPathComponent == sqliteFileName {
+                    if fileURL.lastPathComponent == sqliteFileName, isUsableSQLiteDatabase(at: fileURL) {
                         return fileURL
                     }
                 }
@@ -162,6 +174,43 @@ actor DatabaseBootstrapper {
         try fileManager.createDirectory(at: appSupport, withIntermediateDirectories: true)
 
         return appSupport.appendingPathComponent(LectorEtiquetasManagedAssetsConfig.sqliteFileName)
+    }
+
+    private func isRegularFile(at url: URL) -> Bool {
+        var isDirectory: ObjCBool = false
+        let exists = FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory)
+        return exists && !isDirectory.boolValue
+    }
+
+    private func isUsableSQLiteDatabase(at url: URL) -> Bool {
+        guard isRegularFile(at: url), hasSQLiteHeader(at: url) else { return false }
+
+        var db: OpaquePointer?
+        guard sqlite3_open_v2(url.path, &db, SQLITE_OPEN_READONLY, nil) == SQLITE_OK else {
+            sqlite3_close(db)
+            return false
+        }
+        defer { sqlite3_close(db) }
+
+        let sql = "SELECT 1 FROM sqlite_master WHERE type='table' AND name='products' LIMIT 1;"
+        var statement: OpaquePointer?
+        guard sqlite3_prepare_v2(db, sql, -1, &statement, nil) == SQLITE_OK else {
+            sqlite3_finalize(statement)
+            return false
+        }
+        defer { sqlite3_finalize(statement) }
+
+        return sqlite3_step(statement) == SQLITE_ROW
+    }
+
+    private func hasSQLiteHeader(at url: URL) -> Bool {
+        guard let handle = try? FileHandle(forReadingFrom: url) else { return false }
+        defer { try? handle.close() }
+
+        guard let bytes = try? handle.read(upToCount: 16), bytes.count == 16 else {
+            return false
+        }
+        return bytes == Data("SQLite format 3\u{0}".utf8)
     }
 }
 #else
