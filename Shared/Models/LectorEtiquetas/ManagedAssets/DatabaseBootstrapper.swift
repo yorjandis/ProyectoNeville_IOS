@@ -43,7 +43,14 @@ actor DatabaseBootstrapper {
     private func bootstrapDatabase_iOS26(forceCopy: Bool) async throws -> Result {
         let manager = AssetPackManager.shared
         let assetPack = try await manager.assetPack(withID: LectorEtiquetasManagedAssetsConfig.assetPackID)
-        try await manager.ensureLocalAvailability(of: assetPack)
+        if #available(iOS 26.4, *) {
+            try await manager.ensureLocalAvailability(of: assetPack, requireLatestVersion: forceCopy)
+        } else {
+            if forceCopy {
+                _ = try await manager.checkForUpdates()
+            }
+            try await manager.ensureLocalAvailability(of: assetPack)
+        }
 
         let sourceURL = try resolveSQLiteURL(manager: manager)
         let destinationURL = try makeDestinationDatabaseURL()
@@ -85,7 +92,17 @@ actor DatabaseBootstrapper {
         let installedVersion = (defaults?.object(forKey: LectorEtiquetasManagedAssetsConfig.versionDefaultsKey) as? NSNumber)?.intValue
         let destinationURL = try makeDestinationDatabaseURL()
         let hasLocalDatabase = isUsableSQLiteDatabase(at: destinationURL)
-        let hasUpdate = hasLocalDatabase && ((installedVersion ?? assetPack.version) < assetPack.version)
+
+        // Solo consulta estado; no dispara descarga ni actualización automática.
+        let assetPackStatus: AssetPack.Status
+        if #available(iOS 26.4, *) {
+            assetPackStatus = try await manager.status(relativeTo: assetPack)
+        } else {
+            assetPackStatus = try await manager.status(ofAssetPackWithID: LectorEtiquetasManagedAssetsConfig.assetPackID)
+        }
+        let hasUpdateByStatus = assetPackStatus.contains(.updateAvailable) || assetPackStatus.contains(.outOfDate)
+        let hasUpdateByVersion = installedVersion.map { $0 < assetPack.version } ?? false
+        let hasUpdate = hasLocalDatabase && (hasUpdateByStatus || hasUpdateByVersion)
 
         return UpdateStatus(
             latestVersion: assetPack.version,

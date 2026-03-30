@@ -167,6 +167,7 @@ final class LectorEtiquetasViewModel: ObservableObject {
         offlineInfoMessage = "BD offline activa. Versión instalada: \(versionText)."
 
         Task { _ = await verificarActualizacionOffline() }
+
     }
 
     private func saveOfflineDatabasePath(_ path: String) {

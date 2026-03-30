@@ -32,14 +32,6 @@
 		19F804262B69CBA000A323A0 /* La Ley Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 19F804192B69CB9D00A323A0 /* La Ley Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		915017432EF078A2007B741A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 915017422EF078A2007B741A /* StoreKit.framework */; };
 		915017452EF078B2007B741A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 915017442EF078B2007B741A /* StoreKit.framework */; };
-		9173AB7E2F72097F0015A9FD /* Version.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 9173AB7D2F72097F0015A9FD /* Version.xcconfig */; };
-		9173AB7F2F72097F0015A9FD /* Version.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 9173AB7D2F72097F0015A9FD /* Version.xcconfig */; };
-		9173AB802F72097F0015A9FD /* Version.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 9173AB7D2F72097F0015A9FD /* Version.xcconfig */; };
-		9173AB812F72097F0015A9FD /* Version.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 9173AB7D2F72097F0015A9FD /* Version.xcconfig */; };
-		9173AB822F72097F0015A9FD /* Version.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 9173AB7D2F72097F0015A9FD /* Version.xcconfig */; };
-		9173AB832F72097F0015A9FD /* Version.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 9173AB7D2F72097F0015A9FD /* Version.xcconfig */; };
-		9173AB842F72097F0015A9FD /* Version.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 9173AB7D2F72097F0015A9FD /* Version.xcconfig */; };
-		9173AB852F72097F0015A9FD /* Version.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 9173AB7D2F72097F0015A9FD /* Version.xcconfig */; };
 		918C4B0B2EF4094D00974B54 /* La Ley.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 918C4AFF2EF4094D00974B54 /* La Ley.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		919F40A52F66C559009FF35B /* LaLeyBackgroundDownloadExtension.appex in Embed ExtensionKit Extensions */ = {isa = PBXBuildFile; fileRef = 919F409D2F66C559009FF35B /* LaLeyBackgroundDownloadExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		91E107712EEA01AD00F4DB1D /* sharedios.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 91E107672EEA01AD00F4DB1D /* sharedios.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -1173,7 +1165,6 @@
 		91495BF52F30BCE800AC2CB8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Models/LectorEtiquetas/ManagedAssets/AssetPackRelease/database/openfoodfacts_compact.sqlite,
 				Models/LectorEtiquetas/ManagedAssets/AssetPackRelease/ManagedAssetPackManifest.json,
 				Models/LectorEtiquetas/ManagedAssets/AssetPackRelease/README_UPLOAD.md,
 				Models/LectorEtiquetas/ManagedAssets/AssetPackRelease/update_offline_db.sh,
@@ -1646,7 +1637,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 2630;
-				LastUpgradeCheck = 2620;
+				LastUpgradeCheck = 2640;
 				TargetAttributes = {
 					19E0BE132B0C661A00E149A5 = {
 						CreatedOnToolsVersion = 15.0.1;
@@ -1706,7 +1697,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9173AB802F72097F0015A9FD /* Version.xcconfig in Resources */,
 				19E0BE1D2B0C661B00E149A5 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1716,7 +1706,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				19EDBBCA2B7DD66200432CDE /* Assets.xcassets in Resources */,
-				9173AB822F72097F0015A9FD /* Version.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1724,7 +1713,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9173AB812F72097F0015A9FD /* Version.xcconfig in Resources */,
 				19F804232B69CBA000A323A0 /* Preview Assets.xcassets in Resources */,
 				19F804202B69CBA000A323A0 /* Assets.xcassets in Resources */,
 			);
@@ -1734,7 +1722,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9173AB7E2F72097F0015A9FD /* Version.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1742,7 +1729,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9173AB842F72097F0015A9FD /* Version.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1750,7 +1736,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9173AB852F72097F0015A9FD /* Version.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1758,7 +1743,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9173AB832F72097F0015A9FD /* Version.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1766,7 +1750,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9173AB7F2F72097F0015A9FD /* Version.xcconfig in Resources */,
 				91E52D8C2F4327CE0054C032 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -19,11 +19,13 @@ struct LectorEtiquetasView: View {
     @State private var expandedAditivos: Set<String> = []
     @State private var showNutritionInfoSheet: Bool = false
     @State private var showHealthyEatingGuideSheet: Bool = false
+    @State private var showLabelInterpretationSheet: Bool = false
     @State private var isBarcodeCardExpanded: Bool = true
     @State private var currentProductImageIndex: Int = 0
     @State private var expandedProductImage: ExpandedProductImage?
     @State private var selectedNutrientInfoTarget: NutritionScoringTarget?
     @State private var selectedPrincipalScoreInfo: PrincipalScoreInfo?
+    @State private var selectedNutritionConsumptionWarning: NutritionConsumptionWarning?
     @State private var showOfflineUpdatePrompt: Bool = false
 
     private let proprietaryRiskEngine = DefaultLectorEtiquetasFoodRiskScoringEngine()
@@ -40,12 +42,13 @@ struct LectorEtiquetasView: View {
                         barcodeCard
                         statusSection
                         resultadoSection
+                        disclaimerSection
                     }
                     .padding(.horizontal, 16)
                     .padding(.vertical, 20)
                 }
             }
-            .navigationTitle("Lector")
+            //.navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -61,6 +64,11 @@ struct LectorEtiquetasView: View {
                     .help("Guía para elegir alimentos saludables")
                     .disabled(viewModel.isAnalizando)
                 }
+                
+                if #available(iOS 26.0, *) {
+                    ToolbarSpacer(.fixed)
+                }
+                
 
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Limpiar") {
@@ -125,12 +133,20 @@ struct LectorEtiquetasView: View {
                 HealthyEatingGuideSheetView()
                     .presentationDetents([.medium])
             }
+            .sheet(isPresented: $showLabelInterpretationSheet) {
+                LabelInterpretationSheetView()
+                    .presentationDetents([.medium, .large])
+            }
             .sheet(item: $selectedNutrientInfoTarget) { target in
                 NutrientDetailSheetView(target: target)
                     .presentationDetents([.medium])
             }
             .sheet(item: $selectedPrincipalScoreInfo) { info in
                 PrincipalScoreDetailSheetView(info: info)
+                    .presentationDetents([.medium])
+            }
+            .sheet(item: $selectedNutritionConsumptionWarning) { warning in
+                NutritionConsumptionWarningSheetView(warning: warning)
                     .presentationDetents([.medium])
             }
             .sheet(item: $expandedProductImage, onDismiss: {
@@ -474,6 +490,38 @@ struct LectorEtiquetasView: View {
         }
     }
 
+    private var disclaimerSection: some View {
+        card {
+            VStack(alignment: .leading, spacing: 8) {
+                Label("Nota Importante", systemImage: "exclamationmark.triangle.fill")
+                    .font(.system(.body, design: .rounded, weight: .semibold))
+                    .foregroundStyle(.blue)
+
+                Text("Esta información es solo orientativa y no definitiva ni concluyente. Puede variar en futuras actualizaciones.")
+                    .font(.system(.body, design: .rounded))
+                    .foregroundStyle(.secondary)
+                
+                Text("Los valores obtenidos por consulta online de la API y los obtenidos de la BD offline pueden diferir.")
+                    .font(.system(.body, design: .rounded))
+                    .foregroundStyle(.secondary)
+
+                Text("Lee siempre la etiqueta del producto.")
+                    .font(.system(.body, design: .rounded, weight: .semibold))
+                    .foregroundStyle(.primary)
+
+                Button {
+                    showLabelInterpretationSheet = true
+                } label: {
+                    Label("Cómo leer la etiqueta de un producto", systemImage: "book.pages")
+                        .font(.system(.subheadline, design: .rounded, weight: .semibold))
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.bordered)
+                .tint(.blue)
+            }
+        }
+    }
+
     private func headerSection(_ resultado: ResultadoAnalisisEtiqueta, resumen: EtiquetaResumenProducto) -> some View {
         let proprietaryRisk = proprietaryRiskEngine.score(
             input: LectorEtiquetasFoodRiskScoringInput(
@@ -554,12 +602,20 @@ struct LectorEtiquetasView: View {
 
         return card {
             VStack(alignment: .leading, spacing: 10) {
-                Text("Aditivos detectados")
-                    .font(.system(.headline, design: .rounded, weight: .semibold))
+                HStack{
+                    Text("Aditivos detectados")
+                        .font(.system(.body, design: .rounded, weight: .semibold))
+                    Spacer()
+                    if aditivos.isEmpty {
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundStyle(.green)
+                    }
+                }
 
                 if aditivos.isEmpty {
                     Text("No se detectaron aditivos") // de la base additives.json
-                        .font(.system(.footnote, design: .rounded))
+                        .font(.system(.body, design: .rounded))
+                        .bold()
                         .foregroundStyle(.secondary)
                 } else {
                     ForEach(aditivos, id: \.self) { aditivo in
@@ -802,6 +858,18 @@ struct LectorEtiquetasView: View {
                             VStack(alignment: .trailing, spacing: 6) {
                                 nutritionTrafficLine(markerPosition: insight.markerPosition)
                                     .frame(width: 130)
+
+                                if let warning = consumptionWarning(for: insight) {
+                                    Button {
+                                        selectedNutritionConsumptionWarning = warning
+                                    } label: {
+                                        Image(systemName: "info.circle.fill")
+                                            .font(.system(size: 15, weight: .semibold))
+                                            .foregroundStyle(.red)
+                                    }
+                                    .buttonStyle(.plain)
+                                    .accessibilityLabel("Ver advertencia de consumo para \(insight.title)")
+                                }
                             }
                         }
                     }
@@ -845,6 +913,46 @@ struct LectorEtiquetasView: View {
                     }
                 }
             }
+        }
+    }
+
+    private func consumptionWarning(for insight: NutritionInsight) -> NutritionConsumptionWarning? {
+        let grams = extractGrams(from: insight.rawValueText)
+
+        switch insight.target {
+        case .azucar:
+            guard let grams else { return nil }
+            if grams > 15 {
+                return NutritionConsumptionWarning(
+                    nutrientTitle: insight.title,
+                    valueText: insight.rawValueText,
+                    warningText: "Azúcar mayor de 15 g por 100 g: se recomienda evitar su consumo por su mayor impacto metabólico."
+                )
+            }
+            if grams >= 5 {
+                return NutritionConsumptionWarning(
+                    nutrientTitle: insight.title,
+                    valueText: insight.rawValueText,
+                    warningText: "Azúcar entre 5 g y 15 g por 100 g: se recomienda moderar su consumo en grandes cantidades o con frecuencia."
+                )
+            }
+            return nil
+        case .grasasSaturadas:
+            guard let grams, grams >= 5 else { return nil }
+            return NutritionConsumptionWarning(
+                nutrientTitle: insight.title,
+                valueText: insight.rawValueText,
+                warningText: "Grasas saturadas iguales o mayores a 5 g por 100 g: se aconseja regular su consumo habitual por mayor riesgo cardiovascular."
+            )
+        case .sal:
+            guard let grams, grams > 1.5 else { return nil }
+            return NutritionConsumptionWarning(
+                nutrientTitle: insight.title,
+                valueText: insight.rawValueText,
+                warningText: "Sal mayor de 1.5 g por 100 g: se recomienda vigilar su consumo y no exceder 5 g de sal al día, salvo pérdida elevada por sudoración excesiva."
+            )
+        default:
+            return nil
         }
     }
 
@@ -1091,31 +1199,51 @@ private struct HealthyEatingGuideSheetView: View {
                     .font(.title3.bold())
 
                 Text("Cómo elegir mejor")
-                    .font(.headline)
+                    .font(.body)
                 Text("Prioriza alimentos frescos o mínimamente procesados (NOVA 1-2), listas cortas de ingredientes y pocos aditivos de riesgo.")
-                    .font(.subheadline)
+                    .font(.body)
                     .foregroundStyle(.secondary)
 
                 Text("Cómo leer una etiqueta")
-                    .font(.headline)
-                Text("1) Mira el procesamiento (NOVA). 2) Revisa azúcar, sal y grasas saturadas por 100 g. 3) Verifica fibra y proteína. 4) Si tienes sensibilidad, confirma alérgenos (por ejemplo gluten).")
-                    .font(.subheadline)
+                    .font(.body)
+                Text("1) Mira el procesamiento (NOVA). 2) Revisa azúcar, sal y grasas saturadas por 100 g. 3) Verifica fibra y proteína. 4) Si tienes sensibilidad, confirma alérgenos (por ejemplo gluten). 5) Revisa presencia de aditivos.")
+                    .font(.body)
                     .foregroundStyle(.secondary)
 
-                Text("Hábitos saludables (pros)")
-                    .font(.headline)
-                Text("Mejor energía diaria, mayor saciedad, mejor salud digestiva y metabólica, y menor riesgo cardiovascular a largo plazo.")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-
-                Text("Hábitos nocivos (contras)")
-                    .font(.headline)
                 Text("Exceso frecuente de ultraprocesados, azúcar, sal y grasas saturadas puede aumentar fatiga, apetito desregulado y riesgo de enfermedades crónicas.")
-                    .font(.subheadline)
+                    .font(.body)
                     .foregroundStyle(.secondary)
             }
             .padding()
         }
+    }
+}
+
+private struct LabelInterpretationSheetView: View {
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack{
+                    Text("Cómo leer la etiqueta")
+                        .font(.title3.bold())
+                    Text("💡")
+                        .font(.title3.bold())
+                }
+
+                Text("Empieza por el tamaño de porción y revisa también los valores por 100 g o 100 ml para comparar productos de forma justa. Un alimento puede parecer ligero por porción, pero resultar alto en azúcar, sal o grasa al mirar la referencia estándar.")
+                    .font(.title2)
+                    .foregroundStyle(.secondary)
+
+                Text("Después observa la lista de ingredientes en orden de cantidad: los primeros son los que más aporta el producto. Si aparecen azúcares añadidos, harinas refinadas o varios aditivos en los primeros lugares, suele indicar mayor procesamiento y menor calidad nutricional global.")
+                    .font(.title2)
+                    .foregroundStyle(.secondary)
+
+                Text("Por último, interpreta el conjunto: combinación de nutrientes críticos (azúcar, sodio, grasas saturadas), fibra, proteína y nivel de procesamiento (NOVA), junto con alérgenos si tienes sensibilidad. Usa esta app como orientación inicial y confirma siempre en la etiqueta física del envase antes de decidir su consumo.")
+                    .font(.title2)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .padding()
     }
 }
 
@@ -1188,6 +1316,39 @@ private struct ExpandedProductImage: Identifiable {
     let id = UUID()
     let imageURLs: [URL]
     let initialIndex: Int
+}
+
+private struct NutritionConsumptionWarning: Identifiable {
+    let id = UUID()
+    let nutrientTitle: String
+    let valueText: String
+    let warningText: String
+}
+
+private struct NutritionConsumptionWarningSheetView: View {
+    let warning: NutritionConsumptionWarning
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 12) {
+                Label("Advertencia de consumo", systemImage: "exclamationmark.triangle.fill")
+                    .font(.system(.title3, design: .rounded, weight: .bold))
+                    .foregroundStyle(.red)
+
+                Text(warning.nutrientTitle)
+                    .font(.system(.headline, design: .rounded, weight: .semibold))
+
+                Text("Valor reportado: \(warning.valueText) por 100 g")
+                    .font(.system(.subheadline, design: .rounded))
+                    .foregroundStyle(.secondary)
+
+                Text(warning.warningText)
+                    .font(.system(.body, design: .rounded))
+                    .foregroundStyle(.primary)
+            }
+            .padding()
+        }
+    }
 }
 
 private struct ExpandedProductImageGallerySheetView: View {

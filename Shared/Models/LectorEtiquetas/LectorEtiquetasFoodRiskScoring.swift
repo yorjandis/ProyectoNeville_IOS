@@ -126,12 +126,19 @@ struct DefaultLectorEtiquetasFoodRiskScoringEngine: LectorEtiquetasFoodRiskScori
 
     func score(input: LectorEtiquetasFoodRiskScoringInput) -> LectorEtiquetasFoodRiskScoreResult {
         let additiveFindings = input.hallazgos.filter { $0.categoria == .aditivoDeRiesgo }
+        let exceedsSaturatedFatExcellentThreshold = hasSaturatedFatAboveFiveGramsPer100g(input: input)
 
         if let novaClassification = classificationFromNovaOverride(input: input, additiveFindings: additiveFindings) {
-            let score = novaClassification == .excelente ? config.excelenteMinScore : config.buenoMinScore
+            let adjustedNovaClassification: LectorEtiquetasFoodRiskClassification
+            if novaClassification == .excelente, exceedsSaturatedFatExcellentThreshold {
+                adjustedNovaClassification = .bueno
+            } else {
+                adjustedNovaClassification = novaClassification
+            }
+            let score = adjustedNovaClassification == .excelente ? config.excelenteMinScore : config.buenoMinScore
             return LectorEtiquetasFoodRiskScoreResult(
                 score: score,
-                classification: novaClassification,
+                classification: adjustedNovaClassification,
                 criteriosEvaluados: 2,
                 criteriosSinDatos: 0
             )
@@ -294,10 +301,16 @@ struct DefaultLectorEtiquetasFoodRiskScoringEngine: LectorEtiquetasFoodRiskScori
         } else {
             classification = .malo
         }
+        let adjustedClassification: LectorEtiquetasFoodRiskClassification
+        if classification == .excelente, exceedsSaturatedFatExcellentThreshold {
+            adjustedClassification = .bueno
+        } else {
+            adjustedClassification = classification
+        }
 
         return LectorEtiquetasFoodRiskScoreResult(
             score: boundedScore,
-            classification: classification,
+            classification: adjustedClassification,
             criteriosEvaluados: criteriosEvaluados,
             criteriosSinDatos: criteriosSinDatos
         )
@@ -541,7 +554,7 @@ struct DefaultLectorEtiquetasFoodRiskScoringEngine: LectorEtiquetasFoodRiskScori
         switch base {
         case .por100g:
             if grams >= 8 { return .critico }
-            if grams >= 5 { return .alto }
+            if grams > 5 { return .alto }
             if grams >= 1.5 { return .medio }
             return .bajo
         case .porPorcion:
@@ -554,6 +567,20 @@ struct DefaultLectorEtiquetasFoodRiskScoringEngine: LectorEtiquetasFoodRiskScori
             if grams >= 1.5 { return .medio }
             return .bajo
         }
+    }
+
+    private func hasSaturatedFatAboveFiveGramsPer100g(input: LectorEtiquetasFoodRiskScoringInput) -> Bool {
+        guard let measurement = bestMeasurement(
+            canonicalName: "grasa_saturada",
+            aliases: ["saturatedfat"],
+            nutrients: input.nutrientesDetectados,
+            formattedNutrients: input.nutrimentsFormatted
+        ) else {
+            return false
+        }
+
+        guard measurement.base == .por100g else { return false }
+        return measurement.grams > 5
     }
 
     private func fiberLevel(for measurement: NutrientMeasurement) -> FiberLevel {
