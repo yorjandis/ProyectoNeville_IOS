@@ -285,7 +285,15 @@ final class FrasesModel : ObservableObject {
         ]
         
         
-        let  newHash = HashFileModel().VerificarHashGlobal(NameArchivosTXT: ficherosFrases)
+        let requestBuiltInCount: NSFetchRequest<Frases> = Frases.fetchRequest()
+        requestBuiltInCount.predicate = NSPredicate(format: "noinbuilt == %@", false as NSNumber)
+        let builtInCountActual = (try? context.count(for: requestBuiltInCount)) ?? 0
+        let forceImport = builtInCountActual == 0
+
+        let newHash = HashFileModel().VerificarHashGlobal(
+            NameArchivosTXT: ficherosFrases,
+            forceImport: forceImport
+        )
         
        // msg("valor de newHash: \(String(describing: newHash))")
         
@@ -1052,6 +1060,5 @@ struct Frase: Transferable {
     }
 }
 #endif
-
 
 

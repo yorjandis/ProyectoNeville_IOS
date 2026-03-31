@@ -96,6 +96,8 @@ struct ContentTxtShowView: View {
     //Muestra/oculta la sección de Notas:
     @State private var showNotesSection: Bool = false
     
+    @State private var showSheetPremium: Bool = false
+    
     
 
     var body: some View {
@@ -108,7 +110,7 @@ struct ContentTxtShowView: View {
                     if (self.purchaseStatus || self.yorjPremium) {
                         Content()
                     }else{
-                        PurchaseView()
+                        PremiumPreviewContent()
                     }
                     
                     
@@ -679,6 +681,9 @@ struct ContentTxtShowView: View {
                     EmptyView()
                 }
             }
+            .sheet(isPresented: self.$showSheetPremium, content: {
+                PurchaseView()
+            })
             .alert(isPresented: self.$showAlert) {
                 Alert(title: Text("La Ley"), message: Text(self.alertMessage))
             }
@@ -702,6 +707,49 @@ struct ContentTxtShowView: View {
         return ""
     }
     
+    private var premiumPreviewText: String {
+        let plainText = blocks.compactMap { block -> String? in
+            switch block.content {
+            case .text(let value), .markdown(let value), .quote(let value), .code(let value):
+                return value
+            case .attributed(let value):
+                return String(value.characters)
+            case .bulletList(let items):
+                return items.joined(separator: " ")
+            case .link(let title, _):
+                return title
+            default:
+                return nil
+            }
+        }
+        .joined(separator: " ")
+        .trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        guard !plainText.isEmpty else {
+            return "Disponible en la Versión Extendida"
+        }
+        
+        let preview = String(plainText.prefix(400))
+        return "\(preview)... \n\n[ Contenido Disponible en la Versión Extendida ]"
+    }
+    
+    @ViewBuilder
+    func PremiumPreviewContent() -> some View {
+        ScrollView {
+            Text(self.premiumPreviewText)
+                .font(.system(size: CGFloat(self.UserDefaultFontSizeContenido)))
+                .foregroundStyle(self.textContentdColor)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding()
+            Button("Acceder a la Versión Extendida"){
+                self.showSheetPremium = true
+            }
+            .tint(.black)
+            .foregroundStyle(.white)
+            .buttonStyle(.bordered)
+            
+        }
+    }
     
     @ViewBuilder
     func Content() -> some View{

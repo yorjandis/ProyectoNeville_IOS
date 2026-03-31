@@ -22,6 +22,9 @@ struct FrasesHomeView : View{
    
     @AppStorage(AppCons.UD_setting_fontFrasesSize) var fontSizeFrases : Int = 24
     @AppStorage(AppCons.UD_setting_showHide_autor_in_frases) var showHideAutorInFrases : Bool = true // Muestra / oculta el aurtor en las frases del Home
+    @AppStorage(AppCons.UD_ProgresoUI_PopulandoFrases) private var populandoFrases: Bool = false
+    @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
+    @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) private var yorjPremium: Bool = false
     
     //Para Adicionar una nueva frase
     @State private var showSheetAddFrase = false
@@ -48,6 +51,8 @@ struct FrasesHomeView : View{
     
     //Pruebas
     @State private var showListaRecordatorios : Bool = false
+
+    var authorFilter: String? = nil
     
     var body: some View{
         
@@ -140,7 +145,7 @@ struct FrasesHomeView : View{
                         }
                         .onTapGesture {
                             //Obtiene una nueva frase
-                            self.frase = frasesModel.getRandomFrase()//Obteniendo una nueva frase.
+                            self.frase = self.getRandomFraseByScope()
                             if self.frase != nil {
                                 self.isFav = self.frase?.isfav ?? false
                                 frasesModel.fraseActual = self.frase //Guardando la frase actualmente visible en la variable observable
@@ -411,15 +416,11 @@ struct FrasesHomeView : View{
                 
             }
             .task{
-                if (self.frase?.frase ?? "").isEmpty{
-                    self.frase = frasesModel.getRandomFrase()
-                    if self.frase != nil {
-                        //leyendo el estado isfav de la frase
-                        isFav = self.frase?.isfav ?? false
-                        frasesModel.fraseActual = self.frase //Almacenando la frase actualmente visible en Home
-                        self.frasesModel.fraseAnteriores.append(self.frase!) //Coloca la frase en el vector de navegación
-                    }
-                   
+                self.cargarFraseInicialSiEsNecesario()
+            }
+            .onChange(of: self.populandoFrases) { _, isPopulating in
+                if !isPopulating {
+                    self.cargarFraseInicialSiEsNecesario()
                 }
             }
             
@@ -446,7 +447,31 @@ struct FrasesHomeView : View{
     }
 
     
+    private func cargarFraseInicialSiEsNecesario() {
+        guard (self.frase?.frase ?? "").isEmpty else { return }
+        guard let fraseInicial = self.getRandomFraseByScope() else { return }
+
+        self.frase = fraseInicial
+        self.isFav = fraseInicial.isfav
+        frasesModel.fraseActual = fraseInicial
+
+        if let fraseID = fraseInicial.id,
+           !self.frasesModel.fraseAnteriores.contains(where: { $0.id == fraseID }) {
+            self.frasesModel.fraseAnteriores.append(fraseInicial)
+            self.contadorNavegarPorFrasesAnteriores = max(self.frasesModel.fraseAnteriores.count - 1, 0)
+        }
+    }
+
+    private func getRandomFraseByScope() -> Frases? {
+        // Sin Premium, solo se permiten frases de Neville.
+        guard (self.purchaseStatus || self.yorjPremium) else {
+            return self.frasesModel.getListFrasesByAutor(autor: "nev").randomElement()
+        }
+
+        if let authorFilter, !authorFilter.isEmpty {
+            return self.frasesModel.getListFrasesByAutor(autor: authorFilter).randomElement()
+        }
+        return self.frasesModel.getRandomFrase()
+    }
 
 }
-
-
