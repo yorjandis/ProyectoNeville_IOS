@@ -1177,6 +1177,7 @@
 		91495BF52F30BCE800AC2CB8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Models/LectorEtiquetas/ManagedAssets/AssetPackRelease/database/openfoodfacts_compact.sqlite,
 				Models/LectorEtiquetas/ManagedAssets/AssetPackRelease/ManagedAssetPackManifest.json,
 				Models/LectorEtiquetas/ManagedAssets/AssetPackRelease/README_UPLOAD.md,
 				Models/LectorEtiquetas/ManagedAssets/AssetPackRelease/update_offline_db.sh,

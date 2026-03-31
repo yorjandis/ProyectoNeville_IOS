@@ -742,7 +742,17 @@ struct ContentTxtShowView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
             Button("Acceder a la Versión Extendida"){
+                
+                
+                #if os(macOS)
+                showWindow(for: PurchaseView(),
+                environmentObjects: [],
+                title: "Versión Extendida",
+                size: WindowSize.absolute(CGSize(width: 500, height: 600)),
+                isModal: false)
+                #else
                 self.showSheetPremium = true
+                #endif
             }
             .tint(.black)
             .foregroundStyle(.white)

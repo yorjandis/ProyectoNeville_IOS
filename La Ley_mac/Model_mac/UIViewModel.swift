@@ -47,12 +47,8 @@ func showWindow<V: View>(
 {
     
     // 🔹 Clave única para TODAS las ventanas secundarias
-    var sharedFrameKey : String = "sharedWindowFrame" //Guarda la posición y tamaño de las ventanas generales
-    
-    //Si se trata de una ventana de IA, se utilza una clave distinta. Para separar las ventanas generales de las ventanas de IA.
-    if isIAWindows {
-        sharedFrameKey = "sharedWindowFrameIA" //Guarda la posición y tamaño de las ventanas IA
-    }
+    // Inmutable para evitar capturas mutables en cierres @Sendable.
+    let sharedFrameKey: String = isIAWindows ? "sharedWindowFrameIA" : "sharedWindowFrame"
     
     
     // 1️⃣ Envolver la vista con los environmentObjects

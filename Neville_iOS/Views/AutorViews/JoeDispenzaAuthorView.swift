@@ -87,7 +87,9 @@ struct JoeDispenzaAuthorView: View {
                             Button("Las Frases y enseñanzas del Dr. Joe Dispenza están disponibles en la Versión Extendida"){
                                 self.showSheetPremiun = true
                             }
+                            .font(.system(size: 22))
                             .buttonStyle(.plain)
+                            .frame(maxWidth: .infinity, alignment: .center)
                             Spacer()
                         }
                         .padding(12)

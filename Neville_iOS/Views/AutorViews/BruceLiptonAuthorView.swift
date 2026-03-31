@@ -113,7 +113,9 @@ struct BruceLiptonAuthorView: View {
                             Button("Las Frases y enseñanzas de Dr. Bruce Lipton están disponibles en la Versión Extendida"){
                                 self.showSheetPremiun = true
                             }
+                            .font(.system(size: 22))
                             .buttonStyle(.plain)
+                            .frame(maxWidth: .infinity, alignment: .center)
                             Spacer()
                         }
                         .padding(12)
@@ -176,7 +178,9 @@ struct BruceLiptonAuthorView: View {
                             }
                         }
                         .navigationTitle("Serie Evolución Interior")
+#if !os(macOS)
                         .navigationBarTitleDisplayMode(.inline)
+#endif
                     }
                 case .serieEvolucionInterior1:
                     ContentTxtShowView(title: "Serie Evolución Interior: Capítulo 1", nombreTxt: AppCons.FileSerieEvolucionInterior_1, type: .NA, blocks: [

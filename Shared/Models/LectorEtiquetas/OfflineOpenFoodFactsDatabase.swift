@@ -1,8 +1,6 @@
 import Foundation
 import SQLite3
 
-private let sqliteTransientDestructor = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
-
 actor OfflineOpenFoodFactsDatabase {
     struct AvailabilityStatus: Sendable {
         let databaseURL: URL
@@ -121,7 +119,7 @@ actor OfflineOpenFoodFactsDatabase {
         defer { sqlite3_finalize(statement) }
 
         let pattern = "%\(normalized)%"
-        sqlite3_bind_text(statement, 1, pattern, -1, sqliteTransientDestructor)
+        sqlite3_bind_text(statement, 1, pattern, -1, unsafeBitCast(-1, to: sqlite3_destructor_type.self))
         sqlite3_bind_int(statement, 2, Int32(max(limit, 1)))
 
         var matches: [ProductMatch] = []
@@ -188,7 +186,7 @@ actor OfflineOpenFoodFactsDatabase {
         }
         defer { sqlite3_finalize(statement) }
 
-        sqlite3_bind_text(statement, 1, barcode, -1, sqliteTransientDestructor)
+        sqlite3_bind_text(statement, 1, barcode, -1, unsafeBitCast(-1, to: sqlite3_destructor_type.self))
 
         guard sqlite3_step(statement) == SQLITE_ROW else {
             throw LectorEtiquetasError.productoNoEncontradoEnBaseOffline

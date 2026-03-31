@@ -86,7 +86,9 @@ struct GreggBradenAuthorView: View {
                             Button("Las Frases y enseñanzas de Gregg Braden están disponibles en la Versión Extendida"){
                                 self.showSheetPremiun = true
                             }
+                            .font(.system(size: 22))
                             .buttonStyle(.plain)
+                            .frame(maxWidth: .infinity, alignment: .center)
                             Spacer()
                         }
                         .padding(12)
