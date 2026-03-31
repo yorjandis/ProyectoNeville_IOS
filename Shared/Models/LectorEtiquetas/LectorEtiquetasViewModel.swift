@@ -14,7 +14,7 @@ final class LectorEtiquetasViewModel: ObservableObject {
     @Published var isAnalizando: Bool = false
     @Published var errorMessage: String?
 
-    @Published var selectedSource: LectorEtiquetasDataSource = .openFoodFacts
+    @Published var selectedSource: LectorEtiquetasDataSource = .offlineSQLite
     @Published var offlineInfoMessage: String?
     @Published var offlineErrorMessage: String?
     @Published var offlineDatabasePath: String?

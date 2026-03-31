@@ -48,7 +48,6 @@ struct LectorEtiquetasView: View {
                     .padding(.vertical, 20)
                 }
             }
-            //.navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -186,6 +185,7 @@ struct LectorEtiquetasView: View {
             }
             .overlay(alignment: .bottomTrailing) {
                 floatingScanButton
+                    .offset(y : -100)
             }
         }
     }
@@ -309,7 +309,7 @@ struct LectorEtiquetasView: View {
                             Button {
                                 handleScanButtonTapped()
                             } label: {
-                                Label("Escanear", systemImage: "camera")
+                                Label("Escanear", systemImage: "barcode.viewfinder")
                                     .frame(maxWidth: .infinity)
                             }
                             .buttonStyle(.bordered)
@@ -400,7 +400,7 @@ struct LectorEtiquetasView: View {
                         Button {
                             handleScanButtonTapped()
                         } label: {
-                            Label("Escanear", systemImage: "camera")
+                            Label("Escanear", systemImage: "barcode.viewfinder")
                                 .frame(maxWidth: .infinity)
                         }
                         .buttonStyle(.bordered)
@@ -421,7 +421,7 @@ struct LectorEtiquetasView: View {
                     Button {
                         handleScanButtonTapped()
                     } label: {
-                        Image(systemName: "camera.fill")
+                        Image(systemName: "barcode.viewfinder")
                             .font(.system(size: 20, weight: .semibold))
                             .frame(width: 36, height: 36   )
                     }
@@ -430,7 +430,7 @@ struct LectorEtiquetasView: View {
                     Button {
                         handleScanButtonTapped()
                     } label: {
-                        Image(systemName: "camera.fill")
+                        Image(systemName: "barcode.viewfinder")
                             .font(.system(size: 20, weight: .semibold))
                             .foregroundStyle(.white)
                             .frame(width: 36, height: 36)
