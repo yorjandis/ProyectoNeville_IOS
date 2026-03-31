@@ -113,14 +113,17 @@ struct JoeDispenzaAuthorView: View {
 
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 12) {
-                                card(title: "Desarrolla Tu Cerebro",title2: "Resumen", title3: "Práctica", resumenAction: { route = .resumenDesarrollaTuCerebro }, practicaAction: { route = .planDesarrollaTuCerebro })
-                                card(title: "Deja De Ser Tu", title2: "Resumen", title3: "Práctica", resumenAction: { route = .resumenDejaDeSerTu }, practicaAction: { route = .planDejaDeSerTu })
-                                card(title: "El Placebo Eres Tu",title2: "Resumen", title3: "Práctica",  resumenAction: { route = .resumenElPlaceboEresTu }, practicaAction: { route = .planElPlaceboEresTu })
-                                card(title: "SobreNatural",title2: "Resumen", title3: "Práctica",  resumenAction: { route = .resumenSuperNatural }, practicaAction: { route = .planSuperNatural })
+                                card(title: "Desarrolla Tu Cerebro",buttonTitle1: "Resumen", buttonTitle2: "Práctica", buttonAction1: { route = .resumenDesarrollaTuCerebro }, buttonAction2: { route = .planDesarrollaTuCerebro })
+                                card(title: "Deja De Ser Tu", buttonTitle1: "Resumen", buttonTitle2: "Práctica", buttonAction1: { route = .resumenDejaDeSerTu }, buttonAction2: { route = .planDejaDeSerTu })
+                                card(title: "El Placebo Eres Tu",buttonTitle1: "Resumen", buttonTitle2: "Práctica",  buttonAction1: { route = .resumenElPlaceboEresTu }, buttonAction2: { route = .planElPlaceboEresTu })
+                                card(title: "SobreNatural",buttonTitle1: "Resumen", buttonTitle2: "Práctica",  buttonAction1: { route = .resumenSuperNatural }, buttonAction2: { route = .planSuperNatural })
                             }
                             .padding(.vertical, 2)
                         }
                     }
+                    
+                    
+                    
                 }
                 .padding(16)
             }
@@ -180,48 +183,5 @@ struct JoeDispenzaAuthorView: View {
         }
     }
 
-    @ViewBuilder
-    private func card(
-        title: String,
-        title2: String,
-        title3: String = "",
-        resumenAction: @escaping () -> Void,
-        practicaAction: (() -> Void)? = nil
-    ) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(title)
-                .font(.headline)
-                .lineLimit(2)
-                .multilineTextAlignment(.leading)
-                .foregroundStyle(.black)
-
-            
-            HStack(spacing: 10) {
-                Button("Resumen") {
-                    resumenAction()
-                }
-                .buttonStyle(.bordered)
-                .tint(.black)
-                .foregroundStyle(.white)
-
-                if let practicaAction {
-                    Button("Práctica") {
-                        practicaAction()
-                    }
-                    .buttonStyle(.bordered)
-                    .tint(.black)
-                    .foregroundStyle(.white)
-                }
-            }
-            
-        }
-        .padding(12)
-        .frame(height: 90, alignment: .topLeading)
-        .background(Color.blue.opacity(0.8))
-        .clipShape(RoundedRectangle(cornerRadius: 14))
-        .overlay {
-            RoundedRectangle(cornerRadius: 14)
-                .stroke(.white.opacity(0.22), lineWidth: 1)
-        }
-    }
+   
 }

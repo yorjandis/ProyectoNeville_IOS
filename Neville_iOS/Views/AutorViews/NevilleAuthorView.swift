@@ -78,10 +78,10 @@ struct NevilleAuthorView: View {
 
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 12) {
-                                card(title: "Conferencias", title2: "Lista de Conferencias", resumenAction: { route = .conferencias })
-                                card(title: "Citas", title2: "Citas", resumenAction: { route = .citas })
-                                card(title: "Preguntas", title2: "Preguntas", resumenAction: { route = .preguntas })
-                                card(title: "Evaluación", title2: "Evaluación", resumenAction: { route = .game })
+                                card(title: "", buttonTitle1: "Conferencias", buttonTitle2: "", buttonAction1: { route = .conferencias })
+                                card(title: "", buttonTitle1: "Citas",buttonTitle2: "", buttonAction1: { route = .citas })
+                                card(title: "", buttonTitle1: "Preguntas",buttonTitle2: "", buttonAction1: { route = .preguntas })
+                                card(title: "", buttonTitle1: "Evaluación",buttonTitle2: "", buttonAction1: { route = .game })
                             }
                             .padding(.vertical, 2)
                         }
@@ -118,48 +118,4 @@ struct NevilleAuthorView: View {
         }
     }
 
-    @ViewBuilder
-    private func card(
-        title: String,
-        title2: String,
-        title3: String = "" ,
-        resumenAction: @escaping () -> Void,
-        practicaAction: (() -> Void)? = nil
-    ) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(title)
-                .font(.headline)
-                .lineLimit(2)
-                .multilineTextAlignment(.leading)
-                .foregroundStyle(.white)
-
-            VStack(alignment: .leading, spacing: 10) {
-                Button(title2) {
-                    resumenAction()
-                }
-                .buttonStyle(.bordered)
-                .tint(.black)
-                .foregroundStyle(.white)
-
-                if let practicaAction {
-                    Button(title3) {
-                        practicaAction()
-                    }
-                    .buttonStyle(.bordered)
-                    .tint(.black)
-                    .foregroundStyle(.white)
-                }
-                
-            }
-            
-        }
-        .padding(12)
-        .frame(height: 90, alignment: .topLeading)
-        .background(Color.blue.opacity(0.8))
-        .clipShape(RoundedRectangle(cornerRadius: 14))
-        .overlay {
-            RoundedRectangle(cornerRadius: 14)
-                .stroke(.white.opacity(0.22), lineWidth: 1)
-        }
-    }
 }

@@ -43,6 +43,7 @@
 		918C4B0B2EF4094D00974B54 /* La Ley.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 918C4AFF2EF4094D00974B54 /* La Ley.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		919F40A52F66C559009FF35B /* LaLeyBackgroundDownloadExtension.appex in Embed ExtensionKit Extensions */ = {isa = PBXBuildFile; fileRef = 919F409D2F66C559009FF35B /* LaLeyBackgroundDownloadExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		91E107712EEA01AD00F4DB1D /* sharedios.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 91E107672EEA01AD00F4DB1D /* sharedios.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		91E2A7A42F7C5E37007A162A /* cardTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91E2A7A22F7C5E2C007A162A /* cardTemplate.swift */; };
 		91E52D8C2F4327CE0054C032 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 91E52D8B2F4327CE0054C032 /* Assets.xcassets */; };
 		91F0DD552D605B5800307453 /* watchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F0DD542D605B4B00307453 /* watchModel.swift */; };
 		E95B93572AAFBB2600B5E2B5 /* Neville_iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95B93562AAFBB2600B5E2B5 /* Neville_iOSApp.swift */; };
@@ -143,8 +144,8 @@
 		919F40AA2F66C559009FF35B /* Embed ExtensionKit Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
-			dstPath = "$(EXTENSIONS_FOLDER_PATH)";
-			dstSubfolderSpec = 16;
+			dstPath = Extensions;
+			dstSubfolderSpec = 1;
 			files = (
 				919F40A52F66C559009FF35B /* LaLeyBackgroundDownloadExtension.appex in Embed ExtensionKit Extensions */,
 			);
@@ -198,6 +199,7 @@
 		919F409D2F66C559009FF35B /* LaLeyBackgroundDownloadExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.extensionkit-extension"; includeInIndex = 0; path = LaLeyBackgroundDownloadExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		91E1074C2EE9FC8D00F4DB1D /* UniformTypeIdentifiers.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UniformTypeIdentifiers.framework; path = System/Library/Frameworks/UniformTypeIdentifiers.framework; sourceTree = SDKROOT; };
 		91E107672EEA01AD00F4DB1D /* sharedios.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = sharedios.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		91E2A7A22F7C5E2C007A162A /* cardTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = cardTemplate.swift; sourceTree = "<group>"; };
 		91E52D8B2F4327CE0054C032 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		91F0DD4E2D60384700307453 /* WatchComplicationLaLeyExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WatchComplicationLaLeyExtension.entitlements; sourceTree = "<group>"; };
 		91F0DD542D605B4B00307453 /* watchModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = watchModel.swift; sourceTree = "<group>"; };
@@ -1177,10 +1179,7 @@
 		91495BF52F30BCE800AC2CB8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Models/LectorEtiquetas/ManagedAssets/AssetPackRelease/database/openfoodfacts_compact.sqlite,
-				Models/LectorEtiquetas/ManagedAssets/AssetPackRelease/ManagedAssetPackManifest.json,
-				Models/LectorEtiquetas/ManagedAssets/AssetPackRelease/README_UPLOAD.md,
-				Models/LectorEtiquetas/ManagedAssets/AssetPackRelease/update_offline_db.sh,
+				Models/LectorEtiquetas/ManagedAssets/AssetPackRelease,
 				Staff/Enciclopedia/PensamientosYSentimientos/enc_sentimiento_como_fuerzacreativa.txt,
 				Views/LectorEtiquetas/LectorEtiquetasView.swift,
 				Views/LectorEtiquetas/LectorEtiquetasViewHelper.swift,
@@ -1238,7 +1237,7 @@
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		9113E29C2EE9E1D2002AC306 /* Model */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Model; sourceTree = "<group>"; };
-		911FE4452ECB2A7F009F83BE /* Shared */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (911FE4562ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 911FE4572ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 911FE4582ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 91495BF52F30BCE800AC2CB8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 918C4AF72EF3593F00974B54 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 918C4B242EF40F2400974B54 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Shared; sourceTree = "<group>"; };
+		911FE4452ECB2A7F009F83BE /* Shared */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (911FE4562ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 911FE4572ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 911FE4582ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 91495BF52F30BCE800AC2CB8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 918C4AF72EF3593F00974B54 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 918C4B242EF40F2400974B54 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (Models/LectorEtiquetas/ManagedAssets/AssetPackRelease, ); path = Shared; sourceTree = "<group>"; };
 		911FE4D42ECB2E8D009F83BE /* OptionView */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (91C3A3D22F24CB6600A07607 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = OptionView; sourceTree = "<group>"; };
 		911FF1FA2ECB4064009F83BE /* Preview Content */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (911FF1FC2ECB4064009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 911FF1FD2ECB4064009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = "Preview Content"; sourceTree = "<group>"; };
 		914415A92EDC377200FFC61D /* Atajos */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (914415B12EDC39E300FFC61D /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Atajos; sourceTree = "<group>"; };
@@ -1394,6 +1393,7 @@
 		911F24222F7B7153009A77BE /* AutorViews */ = {
 			isa = PBXGroup;
 			children = (
+				91E2A7A22F7C5E2C007A162A /* cardTemplate.swift */,
 				911F24262F7B7D31009A77BE /* NevilleAuthorView.swift */,
 				911F24292F7B7D31009A77BE /* JoeDispenzaAuthorView.swift */,
 				911F242C2F7B7D31009A77BE /* GreggBradenAuthorView.swift */,
@@ -1852,6 +1852,7 @@
 			files = (
 				199DA0672B0EAC5800DEED62 /* Home.swift in Sources */,
 				911F242B2F7B7D31009A77BE /* JoeDispenzaAuthorView.swift in Sources */,
+				91E2A7A42F7C5E37007A162A /* cardTemplate.swift in Sources */,
 				911F24272F7B7D31009A77BE /* NevilleAuthorView.swift in Sources */,
 				911F24302F7B7D31009A77BE /* BruceLiptonAuthorView.swift in Sources */,
 				911F242D2F7B7D31009A77BE /* GreggBradenAuthorView.swift in Sources */,

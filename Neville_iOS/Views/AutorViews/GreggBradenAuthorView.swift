@@ -112,9 +112,9 @@ struct GreggBradenAuthorView: View {
 
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 12) {
-                                card(title: "La Matriz Divina",title2: "Resumen", title3: "Práctica", resumenAction: { route = .resumenLaMatrizDivina }, practicaAction: { route = .planLaMatrizDivina })
-                                card(title: "Resiliencia Desde El Corazón",title2: "Resumen", title3: "Práctica", resumenAction: { route = .resumenResilienciaDesdeCorazon }, practicaAction: { route = .planResilienciaDesdeCorazon })
-                                card(title: "Puramente Humanos",title2: "Resumen", title3: "Práctica", resumenAction: { route = .resumenPuramenteHumanos }, practicaAction: { route = .planPuramenteHumanos })
+                                card(title: "La Matriz Divina",buttonTitle1: "Resumen", buttonTitle2: "Práctica", buttonAction1: { route = .resumenLaMatrizDivina }, buttonAction2: { route = .planLaMatrizDivina })
+                                card(title: "Resiliencia Desde El Corazón",buttonTitle1: "Resumen", buttonTitle2: "Práctica", buttonAction1: { route = .resumenResilienciaDesdeCorazon }, buttonAction2: { route = .planResilienciaDesdeCorazon })
+                                card(title: "Puramente Humanos",buttonTitle1: "Resumen", buttonTitle2: "Práctica", buttonAction1: { route = .resumenPuramenteHumanos }, buttonAction2: { route = .planPuramenteHumanos })
                             }
                             .padding(.vertical, 2)
                         }
@@ -170,50 +170,5 @@ struct GreggBradenAuthorView: View {
         }
     }
 
-    @ViewBuilder
-    private func card(
-        title: String,
-        title2: String,
-        title3: String = "",
-        resumenAction: @escaping () -> Void,
-        practicaAction: (() -> Void)? = nil
-    ) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(title)
-                .font(.headline)
-                .lineLimit(2)
-                .multilineTextAlignment(.leading)
-                .foregroundStyle(.black)
-            
-            HStack(spacing: 10) {
-                Button("Resumen") {
-                    resumenAction()
-                }
-                .buttonStyle(.bordered)
-                .tint(.black)
-                .foregroundStyle(.white)
 
-                if !title3.isEmpty {
-                    Button("Práctica") {
-                        if let practicaAction {
-                            practicaAction()
-                        }
-                    }
-                    .buttonStyle(.bordered)
-                    .tint(.black)
-                    .foregroundStyle(.white)
-                }
-            }
-
-            
-        }
-        .padding(12)
-        .frame(height: 90, alignment: .topLeading)
-        .background(Color.blue.opacity(0.8))
-        .clipShape(RoundedRectangle(cornerRadius: 14))
-        .overlay {
-            RoundedRectangle(cornerRadius: 14)
-                .stroke(.white.opacity(0.22), lineWidth: 1)
-        }
-    }
 }

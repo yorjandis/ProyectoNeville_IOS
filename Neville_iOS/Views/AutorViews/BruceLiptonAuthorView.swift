@@ -139,8 +139,8 @@ struct BruceLiptonAuthorView: View {
 
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 12) {
-                                card(title: "La Biología De La Creencia", title2: "Resumen", title3: "Práctica", resumenAction: { route = .resumenLibroBiologiaCreencia }, practicaAction: { route = .planLibroBiologiaCreencia })
-                                card(title: "Serie Evolución Interior",title2: "Capítulos", resumenAction: { route = .serieEvolucionInteriorMenu })
+                                card(title: "La Biología De La Creencia", buttonTitle1: "Resumen", buttonTitle2: "Práctica", buttonAction1: { route = .resumenLibroBiologiaCreencia }, buttonAction2: { route = .planLibroBiologiaCreencia })
+                                card(title: "Serie Evolución Interior",buttonTitle1: "Capítulos", buttonAction1: { route = .serieEvolucionInteriorMenu })
                             }
                             .padding(.vertical, 2)
                         }
@@ -241,53 +241,6 @@ struct BruceLiptonAuthorView: View {
         }
         .sheet(isPresented: self.$showSheetPremiun) {
             PurchaseView()
-        }
-    }
-
-    @ViewBuilder
-    private func card(
-        title: String,
-        title2: String,
-        title3: String = "",
-        resumenAction: @escaping () -> Void,
-        practicaAction: (() -> Void)? = nil
-    ) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(title)
-                .font(.headline)
-                .lineLimit(2)
-                .multilineTextAlignment(.leading)
-                .foregroundStyle(.white)
-
-            HStack(spacing: 10){
-                Button(title2) {
-                    resumenAction()
-                }
-                .buttonStyle(.bordered)
-                .tint(.black)
-                .foregroundStyle(.white)
-                
-                if !title3.isEmpty {
-                    Button(title3) {
-                        if let practicaAction {
-                            practicaAction()
-                        }
-                        
-                    }
-                    .buttonStyle(.bordered)
-                    .tint(.black)
-                    .foregroundStyle(.white)
-                }
-            }
-            
-        }
-        .padding(12)
-        .frame(height: 90, alignment: .topLeading)
-        .background(Color.blue.opacity(0.8))
-        .clipShape(RoundedRectangle(cornerRadius: 14))
-        .overlay {
-            RoundedRectangle(cornerRadius: 14)
-                .stroke(.white.opacity(0.22), lineWidth: 1)
         }
     }
 }
