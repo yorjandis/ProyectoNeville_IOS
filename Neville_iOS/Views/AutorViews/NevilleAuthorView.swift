@@ -18,7 +18,7 @@ struct NevilleAuthorView: View {
         NavigationStack {
             ZStack {
             LinearGradient(
-                colors: [Color.blue.opacity(0.35), Color.blue.opacity(0.5)],
+                colors: GradientesPreselect.G_natural_7.getColors,
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
@@ -42,12 +42,14 @@ struct NevilleAuthorView: View {
                                 .font(.title)
                                 .fontWeight(.bold)
                                 .frame(maxWidth: .infinity, alignment: .leading)
-                                .foregroundStyle(.white)
+                                .foregroundStyle(.black)
 
                             Button("Bibliografía") {
                                 route = .biografia
                             }
                             .buttonStyle(.bordered)
+                            .tint(.black)
+                            .foregroundStyle(.white)
                             
                             Button("Resumen de enseñanza") {
                                 route = .resumenEnsenanza
@@ -64,17 +66,17 @@ struct NevilleAuthorView: View {
                     Text("Frases y Citas")
                         .font(.title3)
                         .fontWeight(.semibold)
-                        .foregroundStyle(.white)
-                    FrasesHomeView(authorFilter: "nev")
+                        .foregroundStyle(.black)
+                    FrasesHomeView(authorFilter: "nev", colorTextAutor: .black)
                         .frame(height: 270)
-                        .background(LinearGradient.JadeProfundo())
+                        .background(LinearGradient(colors: [Color.black.opacity(0.1), Color.black.opacity(0.2)], startPoint: .top, endPoint: .bottom))
                         .clipShape(RoundedRectangle(cornerRadius: 16))
 
                     VStack(alignment: .leading, spacing: 10) {
-                        Text("Análisis de Libros")
+                        Text("Enseñanzas")
                             .font(.title3)
                             .fontWeight(.semibold)
-                            .foregroundStyle(.white)
+                            .foregroundStyle(.black)
 
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 12) {

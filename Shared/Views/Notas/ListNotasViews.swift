@@ -43,6 +43,9 @@ struct ListNotasViews: View {
             ZStack{
                 
                 LinearGradient.JadeProfundo()
+                
+                LinearGradient(colors: GradientesPreselect.G_natural_1.getColors,
+                               startPoint: .top, endPoint: .bottom)
                     .ignoresSafeArea()
                 
                 VStack{

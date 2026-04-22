@@ -27,6 +27,11 @@
         <attribute name="nombre" optional="YES" attributeType="String"/>
         <relationship name="frases" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Frases" inverseName="contextos" inverseEntity="Frases"/>
     </entity>
+    <entity name="CalmUserPhrase" representedClassName="CalmUserPhrase" syncable="YES" codeGenerationType="class">
+        <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="phrase" attributeType="String" defaultValueString=""/>
+    </entity>
     <entity name="Diario" representedClassName="Diario" syncable="YES" codeGenerationType="class">
         <attribute name="content" optional="YES" attributeType="String"/>
         <attribute name="emotion" optional="YES" attributeType="String"/>

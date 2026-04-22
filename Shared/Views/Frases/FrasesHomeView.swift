@@ -52,7 +52,9 @@ struct FrasesHomeView : View{
     //Pruebas
     @State private var showListaRecordatorios : Bool = false
 
-    var authorFilter: String? = nil
+    //Parámetros para las vistas de autores:
+    var authorFilter: String? = nil //Filtro de frases de autores, restringido por acceso premium
+    var colorTextAutor : Color? = .white //Color del texto del autor
     
     var body: some View{
         
@@ -66,7 +68,7 @@ struct FrasesHomeView : View{
 
                                 Text(frase.frase ?? "")
                                     .font(.system(size: CGFloat(fontSizeFrases), design: .rounded))
-                                    .foregroundStyle(self.settingModel.colorfrase)
+                                    .foregroundStyle( self.colorTextAutor != nil ? self.colorTextAutor!  : self.settingModel.colorfrase)
                                     .modifier(mof_frases())
                                     .frame(maxWidth: .infinity, alignment: .center)
 

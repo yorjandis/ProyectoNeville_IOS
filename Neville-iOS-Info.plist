@@ -5,6 +5,7 @@
     <key>UIBackgroundModes</key>
     <array>
         <string>remote-notification</string>
+        <string>audio</string>
     </array>
 
     <key>CFBundleURLTypes</key>
@@ -25,5 +26,7 @@
     <true/>
     <key>BAUsesAppleHosting</key>
     <true/>
+    <key>NSAppleMusicUsageDescription</key>
+    <string>Neville necesita acceso a tu biblioteca musical para que puedas seleccionar música personalizada en Espacio Calma.</string>
 </dict>
 </plist>

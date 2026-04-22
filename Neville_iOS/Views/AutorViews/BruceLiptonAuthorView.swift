@@ -6,6 +6,8 @@ struct BruceLiptonAuthorView: View {
         case resumenEnsenanza
         case resumenLibroBiologiaCreencia
         case planLibroBiologiaCreencia
+        case resumenLibroBiologiaTransformacion
+        case planLibroBiologiaTransformacion
         case serieEvolucionInteriorMenu
         case serieEvolucionInterior1
         case serieEvolucionInterior2
@@ -54,7 +56,7 @@ struct BruceLiptonAuthorView: View {
         NavigationStack {
             ZStack {
             LinearGradient(
-                colors: [Color.blue.opacity(0.7), Color.blue.opacity(0.4)],
+                colors: GradientesPreselect.G_natural_7.getColors,
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
@@ -78,12 +80,14 @@ struct BruceLiptonAuthorView: View {
                                 .font(.title)
                                 .fontWeight(.bold)
                                 .frame(maxWidth: .infinity, alignment: .leading)
-                                .foregroundStyle(.white)
+                                .foregroundStyle(.black)
 
                             Button("Bibliografía") {
                                 route = .biografia
                             }
                             .buttonStyle(.bordered)
+                            .tint(.black)
+                            .foregroundStyle(.white)
                             
                             Button("Resumen de enseñanza") {
                                 route = .resumenEnsenanza
@@ -99,12 +103,12 @@ struct BruceLiptonAuthorView: View {
                     Text("Frases y Citas")
                         .font(.title3)
                         .fontWeight(.semibold)
-                        .foregroundStyle(.white)
+                        .foregroundStyle(.black)
                     
                     if (self.purchaseStatus || self.yorjPremium){
-                        FrasesHomeView(authorFilter: "bruceL")
+                        FrasesHomeView(authorFilter: "bruceL", colorTextAutor: .black)
                             .frame(height: 320)
-                            .background(LinearGradient.JadeProfundo())
+                            .background(LinearGradient(colors: [Color.black.opacity(0.08), Color.black.opacity(0.08)], startPoint: .top, endPoint: .bottom))
                             .clipShape(RoundedRectangle(cornerRadius: 16))
                     }else{
                         
@@ -132,14 +136,28 @@ struct BruceLiptonAuthorView: View {
                     
 
                     VStack(alignment: .leading, spacing: 10) {
-                        Text("Análisis de Libros")
+                        Text("Resumen de Libros")
                             .font(.title3)
                             .fontWeight(.semibold)
-                            .foregroundStyle(.white)
+                            .foregroundStyle(.black)
 
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 12) {
                                 card(title: "La Biología De La Creencia", buttonTitle1: "Resumen", buttonTitle2: "Práctica", buttonAction1: { route = .resumenLibroBiologiaCreencia }, buttonAction2: { route = .planLibroBiologiaCreencia })
+                                card(title: "La Biología de la Transformación", buttonTitle1: "Resumen", buttonTitle2: "Práctica", buttonAction1: { route = .resumenLibroBiologiaTransformacion }, buttonAction2: { route = .planLibroBiologiaTransformacion })
+                            }
+                            .padding(.vertical, 2)
+                        }
+                    }
+                    
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("Enseñanzas")
+                            .font(.title3)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(.black)
+
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 12) {
                                 card(title: "Serie Evolución Interior",buttonTitle1: "Capítulos", buttonAction1: { route = .serieEvolucionInteriorMenu })
                             }
                             .padding(.vertical, 2)
@@ -169,6 +187,14 @@ struct BruceLiptonAuthorView: View {
                 case .planLibroBiologiaCreencia:
                     ContentTxtShowView(title: "Plan del Libro: La Biología De La Creencia", nombreTxt: AppCons.FilePlanBiologiaCrrencia, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FilePlanBiologiaCrrencia)))
+                    ], checkPremium: true)
+                case .resumenLibroBiologiaTransformacion:
+                    ContentTxtShowView(title: "Resumen del Libro: La Biología de la Transformación", nombreTxt: AppCons.FileResumenBiologiaTransformacion, type: .NA, blocks: [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenBiologiaTransformacion)))
+                    ], checkPremium: true)
+                case .planLibroBiologiaTransformacion:
+                    ContentTxtShowView(title: "Plan del Libro: La Biología de la Transformación", nombreTxt: AppCons.FilePlanBiologiaTransformacion, type: .NA, blocks: [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FilePlanBiologiaTransformacion)))
                     ], checkPremium: true)
                 case .serieEvolucionInteriorMenu:
                     NavigationStack {

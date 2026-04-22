@@ -32,6 +32,18 @@ struct AppCons{
     static let FileResumenSuperNatural          = "resumen_libro_supernatural"
     static let FilePlanSupernarural             = "plan_libro_supernatural"
     static let FileResumenEnseñanzaJD           = "resumen_enseñanza_jd"
+    static let FileSerieLaFormula_1             = "episodio_1_resumen"
+    static let FileSerieLaFormula_2             = "episodio_2_resumen"
+    static let FileSerieLaFormula_3             = "episodio_3_resumen"
+    static let FileSerieLaFormula_4             = "episodio_4_resumen"
+    static let FileSerieLaFormula_5             = "episodio_5_resumen"
+    static let FileSerieLaFormula_6             = "episodio_6_resumen"
+    static let FileSerieLaFormula_7             = "episodio_7_resumen"
+    static let FileSerieLaFormula_8             = "episodio_8_resumen"
+    static let FileSerieLaFormula_9             = "episodio_9_resumen"
+    static let FileSerieLaFormula_10            = "episodio_10_resumen"
+    static let FileSerieLaFormula_11            = "episodio_11_resumen"
+    static let FileSerieLaFormula_12            = "episodio_12_resumen"
     
     //NameFile: Gregg Braden
     static let FileListFrasesGregg                  = "listfrases_de_gregg"
@@ -52,6 +64,8 @@ struct AppCons{
     static let FileResumenEnseñanzaBruce        = "resumen_enseñanzas_bruce"
     static let FileResumenBiologiaCreencia      = "resumen_libro_biologiacreencia"
     static let FilePlanBiologiaCrrencia         = "plan_libro_biologiacreencia"
+    static let FileResumenBiologiaTransformacion = "resumen_libro_biologiatransformacion"
+    static let FilePlanBiologiaTransformacion    = "plan_libro_biologiatransformacion"
         //Resumen de la serie: Evolución Interior:
     static let FileSerieEvolucionInterior_1     = "bruce_evolucion_interior_1"
     static let FileSerieEvolucionInterior_2     = "bruce_evolucion_interior_2"

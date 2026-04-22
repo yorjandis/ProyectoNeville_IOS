@@ -1218,6 +1218,29 @@ struct Ajustes: View {
                         }
                         
                     }
+
+                    Section("Espacio Calma") {
+                        if (self.purchaseStatus || self.yorjPremium) {
+                            NavigationLink {
+                                CalmResourcesManagerView()
+                            } label: {
+                                Label("Agrega tus propios fondos y música", systemImage: "photo.on.rectangle.angled")
+                            }
+
+                            NavigationLink {
+                                CalmPhraseManagerView()
+                            } label: {
+                                Label("Gestiona tus frases personalizadas", systemImage: "quote.bubble")
+                            }
+                        } else {
+                            Button {
+                                self.showSheetPremiumView = true
+                            } label: {
+                                Label("Disponible en Versión Extendida", systemImage: "sparkles")
+                                    .foregroundStyle(.orange)
+                            }
+                        }
+                    }
                     
                     //Metas
                     Section("Metas"){
@@ -1515,5 +1538,3 @@ struct Ajustes: View {
 extension Int: @retroactive Identifiable {
     public var id: Int { return self }
 }
-
-

@@ -49,7 +49,7 @@ func card(
     }
     .padding(12)
     .frame(height: 90, alignment: .topLeading)
-    .background(Color.blue.opacity(0.8))
+    .background(Color.blue.opacity(0.5))
     .clipShape(RoundedRectangle(cornerRadius: 14))
     .overlay {
         RoundedRectangle(cornerRadius: 14)

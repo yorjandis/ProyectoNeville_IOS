@@ -23,6 +23,9 @@ fileprivate enum TipeViewOptionTab: String, Identifiable {
     case premium
     case evidenciaCientifica
     case enciclopedia
+    case espacioCalma
+    case ritualMatutino
+    case lectorEtiquetas
 
     case autorNeville
     case autorJoeDispenza
@@ -38,6 +41,7 @@ struct optionView: View {
     @EnvironmentObject var settingModel: SettingModel
 
     @State private var showView: TipeViewOptionTab? = nil
+    @State private var showEspacioCalmaFullScreen: Bool = false
 
     @AppStorage("purchaseStatus") var purchaseStatus: Bool = false
     @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) var yorjPremium: Bool = false
@@ -68,7 +72,6 @@ struct optionView: View {
                         Button("Reflexiones") { self.showView = .reflex }
                         Button("Evidencia Científica") { self.showView = .evidenciaCientifica }
                         Button("Enciclopedia") { self.showView = .enciclopedia }
-                        Button("Notas") { self.showView = .notas }
                         Button("Frases") { self.showView = .frases }
                     } label: {
                         Text("Recursos Didácticos")
@@ -94,6 +97,22 @@ struct optionView: View {
                         Button("Lienzo") { self.showView = .lienzo }
                         Button("Recordatorios") { self.showView = .reminder }
                         Button("Metas") { self.showView = .metas }
+                        Button("Lector de Etiquetas") { self.showView = .lectorEtiquetas }
+                        Button("Notas") { self.showView = .notas }
+                        Button("Espacio de calma") {
+                            if self.purchaseStatus || self.yorjPremium {
+                                self.showEspacioCalmaFullScreen = true
+                            } else {
+                                self.showView = .premium
+                            }
+                        }
+                        Button("Ritual Matutino") {
+                            if self.purchaseStatus || self.yorjPremium {
+                                self.showView = .ritualMatutino
+                            } else {
+                                self.showView = .premium
+                            }
+                        }
                         Button("Lector QR") { self.showView = .codeScanner }
                         Button("Generador QR") { self.showView = .codeGenerate }
                     } label: {
@@ -164,6 +183,10 @@ struct optionView: View {
         }
         .preferredColorScheme(.dark)
         .background(LinearGradient.AzulTecnologico())
+        .fullScreenCover(isPresented: self.$showEspacioCalmaFullScreen) {
+            EspacioCalmaView()
+                .ignoresSafeArea()
+        }
         .sheet(item: self.$showView) { item in
             VStack {
                 switch item {
@@ -202,6 +225,12 @@ struct optionView: View {
                     GoalsListView()
                 case .enciclopedia:
                     EnciclopediaListView()
+                case .espacioCalma:
+                    EmptyView()
+                case .ritualMatutino:
+                    MorningRitualMainView()
+                case .lectorEtiquetas:
+                    LectorEtiquetasView()
                 case .evidenciaCientifica:
                     EvidenciaCientificaView()
                 case .frases:

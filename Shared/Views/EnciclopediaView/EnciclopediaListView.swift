@@ -138,7 +138,7 @@ struct EnciclopediaListView: View {
         NavigationStack {
             ZStack{
                 
-                LinearGradient.FondoListado()
+                LinearGradient(colors: GradientesPreselect.G_natural_3.getColors, startPoint: .top, endPoint: .bottom)
                     .ignoresSafeArea()
                 
                 content
@@ -156,7 +156,7 @@ fileprivate struct SubListaView: View {
     
     var body: some View {
         ZStack{
-            LinearGradient.FondoListado()
+            LinearGradient(colors: GradientesPreselect.G_natural_3.getColors, startPoint: .top, endPoint: .bottom)
                 .ignoresSafeArea()
             
             List(categoria.temas, id: \.self) { item in

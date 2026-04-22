@@ -12,11 +12,41 @@ struct JoeDispenzaAuthorView: View {
         case planElPlaceboEresTu
         case resumenSuperNatural
         case planSuperNatural
+        case serieLaFormulaMenu
+        case serieLaFormula1
+        case serieLaFormula2
+        case serieLaFormula3
+        case serieLaFormula4
+        case serieLaFormula5
+        case serieLaFormula6
+        case serieLaFormula7
+        case serieLaFormula8
+        case serieLaFormula9
+        case serieLaFormula10
+        case serieLaFormula11
+        case serieLaFormula12
 
         var id: String { rawValue }
     }
 
     @State private var route: Route?
+
+    private var serieLaFormulaCapitulos: [(title: String, route: Route)] {
+        [
+            ("Capítulo 1", .serieLaFormula1),
+            ("Capítulo 2", .serieLaFormula2),
+            ("Capítulo 3", .serieLaFormula3),
+            ("Capítulo 4", .serieLaFormula4),
+            ("Capítulo 5", .serieLaFormula5),
+            ("Capítulo 6", .serieLaFormula6),
+            ("Capítulo 7", .serieLaFormula7),
+            ("Capítulo 8", .serieLaFormula8),
+            ("Capítulo 9", .serieLaFormula9),
+            ("Capítulo 10", .serieLaFormula10),
+            ("Capítulo 11", .serieLaFormula11),
+            ("Capítulo 12", .serieLaFormula12)
+        ]
+    }
     
     //Funciones premium
     @AppStorage("purchaseStatus" ) var purchaseStatus: Bool = false
@@ -28,7 +58,7 @@ struct JoeDispenzaAuthorView: View {
         NavigationStack {
             ZStack {
             LinearGradient(
-                colors: [Color.blue.opacity(0.35), Color.blue.opacity(0.5)],
+                colors: GradientesPreselect.G_natural_7.getColors,
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
@@ -52,12 +82,14 @@ struct JoeDispenzaAuthorView: View {
                                 .font(.title)
                                 .fontWeight(.bold)
                                 .frame(maxWidth: .infinity, alignment: .leading)
-                                .foregroundStyle(.white)
+                                .foregroundStyle(.black)
 
                             Button("Bibliografía") {
                                 route = .biografia
                             }
                             .buttonStyle(.bordered)
+                            .tint(.black)
+                            .foregroundStyle(.white)
                             
                             Button("Resumen de enseñanza") {
                                 route = .resumenEnsenanza
@@ -73,12 +105,12 @@ struct JoeDispenzaAuthorView: View {
                     Text("Frases y Citas")
                         .font(.title3)
                         .fontWeight(.semibold)
-                        .foregroundStyle(.white)
+                        .foregroundStyle(.black)
                     
                     if purchaseStatus || self.yorjPremium{
-                        FrasesHomeView(authorFilter: "jd")
+                        FrasesHomeView(authorFilter: "jd", colorTextAutor: .black)
                             .frame(height: 270)
-                            .background(LinearGradient.JadeProfundo())
+                            .background(LinearGradient(colors: [Color.black.opacity(0.1), Color.black.opacity(0.2)], startPoint: .top, endPoint: .bottom))
                             .clipShape(RoundedRectangle(cornerRadius: 16))
                     }else{
                         
@@ -106,10 +138,10 @@ struct JoeDispenzaAuthorView: View {
                     
 
                     VStack(alignment: .leading, spacing: 10) {
-                        Text("Análisis de Libros")
+                        Text("Resumen de Libros")
                             .font(.title3)
                             .fontWeight(.semibold)
-                            .foregroundStyle(.white)
+                            .foregroundStyle(.black)
 
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 12) {
@@ -121,9 +153,20 @@ struct JoeDispenzaAuthorView: View {
                             .padding(.vertical, 2)
                         }
                     }
-                    
-                    
-                    
+
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("Enseñanzas")
+                            .font(.title3)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(.black)
+
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 12) {
+                                card(title: "Serie La Fórmula", buttonTitle1: "Capítulos", buttonAction1: { route = .serieLaFormulaMenu })
+                            }
+                            .padding(.vertical, 2)
+                        }
+                    }
                 }
                 .padding(16)
             }
@@ -172,6 +215,66 @@ struct JoeDispenzaAuthorView: View {
                 case .planSuperNatural:
                     ContentTxtShowView(title: "Plan del Libro: SobreNatural", nombreTxt: AppCons.FilePlanSupernarural, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FilePlanSupernarural)))
+                    ], checkPremium: true)
+                case .serieLaFormulaMenu:
+                    NavigationStack {
+                        List(serieLaFormulaCapitulos, id: \.title) { capitulo in
+                            Button(capitulo.title) {
+                                route = capitulo.route
+                            }
+                        }
+                        .navigationTitle("Serie La Fórmula")
+#if !os(macOS)
+                        .navigationBarTitleDisplayMode(.inline)
+#endif
+                    }
+                case .serieLaFormula1:
+                    ContentTxtShowView(title: "Serie La Fórmula: Capítulo 1", nombreTxt: AppCons.FileSerieLaFormula_1, type: .NA, blocks: [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieLaFormula_1)))
+                    ], checkPremium: true)
+                case .serieLaFormula2:
+                    ContentTxtShowView(title: "Serie La Fórmula: Capítulo 2", nombreTxt: AppCons.FileSerieLaFormula_2, type: .NA, blocks: [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieLaFormula_2)))
+                    ], checkPremium: true)
+                case .serieLaFormula3:
+                    ContentTxtShowView(title: "Serie La Fórmula: Capítulo 3", nombreTxt: AppCons.FileSerieLaFormula_3, type: .NA, blocks: [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieLaFormula_3)))
+                    ], checkPremium: true)
+                case .serieLaFormula4:
+                    ContentTxtShowView(title: "Serie La Fórmula: Capítulo 4", nombreTxt: AppCons.FileSerieLaFormula_4, type: .NA, blocks: [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieLaFormula_4)))
+                    ], checkPremium: true)
+                case .serieLaFormula5:
+                    ContentTxtShowView(title: "Serie La Fórmula: Capítulo 5", nombreTxt: AppCons.FileSerieLaFormula_5, type: .NA, blocks: [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieLaFormula_5)))
+                    ], checkPremium: true)
+                case .serieLaFormula6:
+                    ContentTxtShowView(title: "Serie La Fórmula: Capítulo 6", nombreTxt: AppCons.FileSerieLaFormula_6, type: .NA, blocks: [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieLaFormula_6)))
+                    ], checkPremium: true)
+                case .serieLaFormula7:
+                    ContentTxtShowView(title: "Serie La Fórmula: Capítulo 7", nombreTxt: AppCons.FileSerieLaFormula_7, type: .NA, blocks: [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieLaFormula_7)))
+                    ], checkPremium: true)
+                case .serieLaFormula8:
+                    ContentTxtShowView(title: "Serie La Fórmula: Capítulo 8", nombreTxt: AppCons.FileSerieLaFormula_8, type: .NA, blocks: [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieLaFormula_8)))
+                    ], checkPremium: true)
+                case .serieLaFormula9:
+                    ContentTxtShowView(title: "Serie La Fórmula: Capítulo 9", nombreTxt: AppCons.FileSerieLaFormula_9, type: .NA, blocks: [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieLaFormula_9)))
+                    ], checkPremium: true)
+                case .serieLaFormula10:
+                    ContentTxtShowView(title: "Serie La Fórmula: Capítulo 10", nombreTxt: AppCons.FileSerieLaFormula_10, type: .NA, blocks: [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieLaFormula_10)))
+                    ], checkPremium: true)
+                case .serieLaFormula11:
+                    ContentTxtShowView(title: "Serie La Fórmula: Capítulo 11", nombreTxt: AppCons.FileSerieLaFormula_11, type: .NA, blocks: [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieLaFormula_11)))
+                    ], checkPremium: true)
+                case .serieLaFormula12:
+                    ContentTxtShowView(title: "Serie La Fórmula: Capítulo 12", nombreTxt: AppCons.FileSerieLaFormula_12, type: .NA, blocks: [
+                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieLaFormula_12)))
                     ], checkPremium: true)
                 }
             }

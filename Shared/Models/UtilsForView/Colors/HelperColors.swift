@@ -106,7 +106,12 @@ enum GradientesPreselect{
     case GrisMetalizado, JadeProfundo, NegroMate, BarroNatural
     case FondoListado, AmanecerFondo, OceanoFondo
     
-     var getColors : [Color]{
+    //Colores Galaxys
+    case G_verde_azul_1, G_verde_gris_1, G_natural_1, G_natural_2, G_azul_violeta_1
+    case G_violeta_azul_1, G_natural_3, G_natural_4, G_natural_5, G_natural_6, G_natural_7
+    
+    
+    var getColors : [Color]{
         switch self {
         case .Amanecer : [
             Color(red: 1.00, green: 0.55, blue: 0.30), // naranja
@@ -127,11 +132,11 @@ enum GradientesPreselect{
         case .Primavera: [
             Color(red: 0.55, green: 0.85, blue: 0.40), // verde claro
             Color(red: 0.75, green: 0.95, blue: 0.65)  // verde pastel]
-            ]
+        ]
         case .Fuego: [
             Color(red: 0.75, green: 0.20, blue: 0.15),
-                Color(red: 0.90, green: 0.45, blue: 0.20),
-                Color(red: 0.95, green: 0.65, blue: 0.35)
+            Color(red: 0.90, green: 0.45, blue: 0.20),
+            Color(red: 0.95, green: 0.65, blue: 0.35)
         ]
         case .AzulTecnologico: [
             Color(red: 0.05, green: 0.20, blue: 0.45), // azul profundo
@@ -164,7 +169,61 @@ enum GradientesPreselect{
         case .FondoListado: [
             Color.platformColor(coloriOS: Color(rgbRed: 183, green: 123, blue: 206), colorMac: Color(rgbRed: 237, green: 184, blue: 130)),
             Color.platformColor(coloriOS: Color(rgbRed: 164, green: 158, blue: 207), colorMac: Color(rgbRed: 243, green: 214, blue: 177))
-            ]
+        ]
+            
+            //Colores Galaxy:
+        case .G_verde_azul_1: [
+            Color(red: 0.85, green: 0.69, blue: 0.00),
+            Color(red: 0.48, green: 0.64, blue: 0.55)
+        ]
+        case .G_verde_gris_1: [
+            Color(red: 0.72, green: 0.69, blue: 0.32),
+            Color(red: 0.48, green: 0.48, blue: 0.43)
+        ]
+        case .G_natural_1: [
+            Color(red: 0.72, green: 0.59, blue: 0.32),
+            Color(red: 0.48, green: 0.48, blue: 0.62)
+        ]
+        case .G_natural_2: [
+            Color(red: 1.00, green: 0.52, blue: 0.84),
+            Color(red: 0.39, green: 0.43, blue: 0.62)
+        ]
+        case .G_azul_violeta_1: [
+            Color(red: 0.41, green: 0.50, blue: 0.84),
+            Color(red: 0.52, green: 0.32, blue: 0.72)
+        ]
+        case .G_violeta_azul_1: [
+            Color(red: 0.20, green: 0.19, blue: 0.51),
+            Color(red: 0.37, green: 0.66, blue: 0.77)
+        ]
+        case .G_natural_3: [
+            Color(red: 0.60, green: 0.65, blue: 0.46),
+            Color(red: 0.31, green: 0.55, blue: 0.65),
+            Color(red: 0.38, green: 0.66, blue: 0.79)
+        ]
+        case .G_natural_4: [
+            Color(red: 0.69, green: 0.37, blue: 0.64),
+            Color(red: 0.60, green: 0.51, blue: 0.65),
+            Color(red: 0.52, green: 0.53, blue: 0.85)
+        ]
+        case .G_natural_5:[
+            Color(red: 0.32, green: 0.64, blue: 0.75),
+            Color(red: 0.47, green: 0.55, blue: 0.78),
+            Color(red: 0.52, green: 0.53, blue: 0.54)
+        ]
+        case .G_natural_6: [
+            Color(red: 0.47, green: 0.63, blue: 0.55),
+            Color(red: 0.27, green: 0.49, blue: 0.58)
+        ]
+        case .G_natural_7: [
+            Color(red: 0.29, green: 0.44, blue: 0.50),
+            Color(red: 0.46, green: 0.51, blue: 0.83)
+            /*
+             Color(red: 0.26, green: 0.51, blue: 0.76),
+             Color(red: 0.46, green: 0.51, blue: 0.83)
+             */
+            
+        ]
         }
     }
     
@@ -173,7 +232,7 @@ enum GradientesPreselect{
 
 //Colores Gradientes predefinidos:
 extension LinearGradient {
-    
+
     //Color grisAzulMate
     @MainActor static func FondoGrizAzulMate(_ startPoint : UnitPoint = .top, _ endPoint : UnitPoint = .bottom   ) -> Self {
         
