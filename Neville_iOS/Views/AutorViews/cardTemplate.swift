@@ -1,14 +1,6 @@
-//
-//  cardTemplate.swift
-//  Neville_iOS
-//
-//  Created by Yorjandis PG on 31/03/2026.
-//
-
 import SwiftUI
 
-
-//Plantilla de targeta con título, y dos botones con acciones
+// Plantilla de tarjeta con título y hasta dos botones con acciones.
 @MainActor
 @ViewBuilder
 func card(
@@ -25,7 +17,6 @@ func card(
             .multilineTextAlignment(.leading)
             .foregroundStyle(.black)
 
-        
         HStack(spacing: 10) {
             Button(buttonTitle1) {
                 buttonAction1()
@@ -36,16 +27,13 @@ func card(
 
             if !buttonTitle2.isEmpty {
                 Button(buttonTitle2) {
-                    if let buttonAction2 = buttonAction2 {
-                        buttonAction2()
-                    }
+                    buttonAction2?()
                 }
                 .buttonStyle(.bordered)
                 .tint(.black)
                 .foregroundStyle(.white)
             }
         }
-        
     }
     .padding(12)
     .frame(height: 90, alignment: .topLeading)

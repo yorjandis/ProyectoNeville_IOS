@@ -77,10 +77,12 @@ private final class MorningRitualStore: ObservableObject {
     @Published private(set) var sessions: [MorningRitualSession] = []
     @Published private(set) var settings: MorningRitualSettings = .init()
 
-    private let defaults: UserDefaults
+    private let sharedDefaults: UserDefaults?
+    private let standardDefaults: UserDefaults
 
     init() {
-        self.defaults = UserDefaults(suiteName: AppCons.AppGroupName) ?? .standard
+        self.sharedDefaults = UserDefaults(suiteName: AppCons.AppGroupName)
+        self.standardDefaults = .standard
         self.loadAll()
     }
 
@@ -125,29 +127,79 @@ private final class MorningRitualStore: ObservableObject {
         }
     }
 
-    private func loadAll() {
-        if let data = defaults.data(forKey: MorningRitualConstants.sessionsKey),
-           let decoded = try? JSONDecoder().decode([MorningRitualSession].self, from: data) {
-            self.sessions = decoded.sorted { $0.completedAtEpochMillis > $1.completedAtEpochMillis }
-        }
+    func reload() {
+        loadAll()
+    }
 
-        if let data = defaults.data(forKey: MorningRitualConstants.settingsKey),
-           let decoded = try? JSONDecoder().decode(MorningRitualSettings.self, from: data) {
-            self.settings = decoded
-        }
+    private func loadAll() {
+        let sharedSessions = decodeSessions(from: sharedDefaults)
+        let standardSessions = decodeSessions(from: standardDefaults)
+        sessions = mergeSessions(sharedSessions, standardSessions)
+
+        let sharedSettings = decodeSettings(from: sharedDefaults)
+        let standardSettings = decodeSettings(from: standardDefaults)
+        settings = sharedSettings ?? standardSettings ?? .init()
+
+        mirrorSessionsAcrossContainers()
+        mirrorSettingsAcrossContainers()
     }
 
     private func persistSessions() {
         sessions.sort { $0.completedAtEpochMillis > $1.completedAtEpochMillis }
-        if let encoded = try? JSONEncoder().encode(sessions) {
-            defaults.set(encoded, forKey: MorningRitualConstants.sessionsKey)
-        }
+        guard let encoded = try? JSONEncoder().encode(sessions) else { return }
+        sharedDefaults?.set(encoded, forKey: MorningRitualConstants.sessionsKey)
+        standardDefaults.set(encoded, forKey: MorningRitualConstants.sessionsKey)
     }
 
     private func persistSettings() {
-        if let encoded = try? JSONEncoder().encode(settings) {
-            defaults.set(encoded, forKey: MorningRitualConstants.settingsKey)
+        guard let encoded = try? JSONEncoder().encode(settings) else { return }
+        sharedDefaults?.set(encoded, forKey: MorningRitualConstants.settingsKey)
+        standardDefaults.set(encoded, forKey: MorningRitualConstants.settingsKey)
+    }
+
+    private func decodeSessions(from defaults: UserDefaults?) -> [MorningRitualSession] {
+        guard let defaults,
+              let data = defaults.data(forKey: MorningRitualConstants.sessionsKey),
+              let decoded = try? JSONDecoder().decode([MorningRitualSession].self, from: data) else {
+            return []
         }
+        return decoded
+    }
+
+    private func decodeSettings(from defaults: UserDefaults?) -> MorningRitualSettings? {
+        guard let defaults,
+              let data = defaults.data(forKey: MorningRitualConstants.settingsKey),
+              let decoded = try? JSONDecoder().decode(MorningRitualSettings.self, from: data) else {
+            return nil
+        }
+        return decoded
+    }
+
+    private func mergeSessions(_ lhs: [MorningRitualSession], _ rhs: [MorningRitualSession]) -> [MorningRitualSession] {
+        var bestByDay: [Int: MorningRitualSession] = [:]
+
+        for session in lhs + rhs {
+            if let current = bestByDay[session.sessionDateEpochDay] {
+                bestByDay[session.sessionDateEpochDay] =
+                    session.completedAtEpochMillis >= current.completedAtEpochMillis ? session : current
+            } else {
+                bestByDay[session.sessionDateEpochDay] = session
+            }
+        }
+
+        return bestByDay.values.sorted { $0.completedAtEpochMillis > $1.completedAtEpochMillis }
+    }
+
+    private func mirrorSessionsAcrossContainers() {
+        guard let encoded = try? JSONEncoder().encode(sessions) else { return }
+        sharedDefaults?.set(encoded, forKey: MorningRitualConstants.sessionsKey)
+        standardDefaults.set(encoded, forKey: MorningRitualConstants.sessionsKey)
+    }
+
+    private func mirrorSettingsAcrossContainers() {
+        guard let encoded = try? JSONEncoder().encode(settings) else { return }
+        sharedDefaults?.set(encoded, forKey: MorningRitualConstants.settingsKey)
+        standardDefaults.set(encoded, forKey: MorningRitualConstants.settingsKey)
     }
 
     private func epochDay(for date: Date) -> Int {
@@ -239,6 +291,7 @@ private actor MorningRitualNotificationManager {
 }
 
 struct MorningRitualMainView: View {
+    @Environment(\.scenePhase) private var scenePhase
     @StateObject private var store = MorningRitualStore()
     @State private var route: MorningRitualRoute?
 
@@ -316,6 +369,14 @@ struct MorningRitualMainView: View {
             .onTapGesture {
                 dismissKeyboard()
             }
+            .onAppear {
+                store.reload()
+            }
+            .onChange(of: scenePhase) { _, newPhase in
+                if newPhase == .active {
+                    store.reload()
+                }
+            }
             .sheet(item: $route) { selected in
                 switch selected {
                 case .flow:
@@ -371,6 +432,25 @@ private enum MorningRitualRoute: String, Identifiable {
     case stats
 
     var id: String { rawValue }
+}
+
+private extension View {
+    func morningRitualTextFieldStyle() -> some View {
+        self
+            .font(.system(size: 22))
+            .padding(10)
+            .foregroundStyle(.white)
+            .tint(.white)
+#if os(macOS)
+            .textFieldStyle(.plain)
+#endif
+            .background(Color.black.opacity(0.92))
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+            .overlay(
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(Color.white.opacity(0.28), lineWidth: 1)
+            )
+    }
 }
 
 private struct MorningRitualFlowView: View {
@@ -433,13 +513,25 @@ private struct MorningRitualFlowView: View {
                     }
 
                     HStack(spacing: 12) {
+#if os(macOS)
+                        Button("Cerrar") {
+                            dismiss()
+                        }
+                        .buttonStyle(.bordered)
+                        .foregroundStyle(.white)
+                        .tint(.black)
+                        
+                        Spacer()
+                        
+#endif
+
                         Button("Atrás") {
                             state.validationMessage = nil
                             state.step = max(1, state.step - 1)
                         }
                         .buttonStyle(.bordered)
                         .foregroundStyle(.white)
-                        .tint(.gray)
+                        .tint(.black)
                         .disabled(state.step == 1)
 
                         Button(state.step < 6 ? "Continuar" : "Guardar Ritual") {
@@ -455,7 +547,8 @@ private struct MorningRitualFlowView: View {
                         .foregroundStyle(.white)
                         .tint(.black)
                     }
-                    .padding(.bottom, 6)
+                    .padding([.top, .bottom], 6)
+                    .padding(.horizontal, 12)
 
                     if state.isCompleted {
                         Button("Volver al inicio") { dismiss() }
@@ -544,14 +637,7 @@ private struct MorningRitualFlowView: View {
                                     get: { state.goals[index] },
                                     set: { state.goals[index] = $0 }
                                 ))
-                                .padding(10)
-                                .foregroundStyle(.black)
-                                .background(Color.black.opacity(0.2))
-                                .cornerRadius(8)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 8)
-                                        .stroke(Color.gray.opacity(0.5), lineWidth: 1)
-                                )
+                                .morningRitualTextFieldStyle()
                                 .focused($focusedField, equals: .goal(index))
 
                                 if state.goals.count > 1 {
@@ -574,14 +660,7 @@ private struct MorningRitualFlowView: View {
                 }
 
                 TextField("Identidad personalizada", text: $state.customIdentity)
-                    .padding(10)
-                    .foregroundStyle(.black)
-                    .background(Color.black.opacity(0.2))
-                    .cornerRadius(8)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color.gray.opacity(0.5), lineWidth: 1)
-                    )
+                    .morningRitualTextFieldStyle()
             }
         case 4:
             cardBlock(title: "Emoción", body: "¿Qué emoción quieres sostener hoy?") {
@@ -590,14 +669,7 @@ private struct MorningRitualFlowView: View {
                 }
 
                 TextField("Emoción personalizada", text: $state.customEmotion)
-                    .padding(10)
-                    .foregroundStyle(.black)
-                    .background(Color.black.opacity(0.2))
-                    .cornerRadius(8)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color.gray.opacity(0.5), lineWidth: 1)
-                    )
+                    .morningRitualTextFieldStyle()
             }
         case 5:
             cardBlock(title: "Anticipación (Opcional)", body: "¿Qué podría desafiarte hoy y cómo responderás conscientemente?") {
@@ -607,27 +679,13 @@ private struct MorningRitualFlowView: View {
                             get: { state.triggerResponses[index].trigger },
                             set: { state.triggerResponses[index].trigger = $0 }
                         ))
-                        .padding(10)
-                        .foregroundStyle(.black)
-                        .background(Color.black.opacity(0.2))
-                        .cornerRadius(8)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 8)
-                                .stroke(Color.gray.opacity(0.5), lineWidth: 1)
-                        )
+                        .morningRitualTextFieldStyle()
 
                         TextField("Responderé con y...", text: Binding(
                             get: { state.triggerResponses[index].response },
                             set: { state.triggerResponses[index].response = $0 }
                         ))
-                        .padding(10)
-                        .foregroundStyle(.black)
-                        .background(Color.black.opacity(0.2))
-                        .cornerRadius(8)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 8)
-                                .stroke(Color.gray.opacity(0.5), lineWidth: 1)
-                        )
+                        .morningRitualTextFieldStyle()
 
                         if state.triggerResponses.count > 1 {
                             Button("Quitar") {
@@ -1312,6 +1370,7 @@ private struct MorningRitualTrendSection: View {
 
 //Vista del Hostorial
 private struct MorningRitualHistoryView: View {
+    @Environment(\.dismiss) private var dismiss
     @ObservedObject var store: MorningRitualStore
     @State private var selectedForNote: MorningRitualSession?
     @State private var expandedSessionId: UUID?
@@ -1352,10 +1411,7 @@ private struct MorningRitualHistoryView: View {
                         }
 
                         TextField("Buscar en metas, identidad, emoción o anticipación", text: $searchText)
-                            .textFieldStyle(.roundedBorder)
-                            .padding(10)
-                            .background(.white.opacity(0.12))
-                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                            .morningRitualTextFieldStyle()
 
                         if showCalendar {
                             MorningRitualHistoryCalendarView(
@@ -1452,6 +1508,13 @@ private struct MorningRitualHistoryView: View {
                 }
             }
             .navigationTitle("Historial")
+            .toolbar {
+                ToolbarItem {
+                    Button("Cerrar") {
+                        dismiss()
+                    }
+                }
+            }
             .onTapGesture {
                 dismissKeyboard()
             }

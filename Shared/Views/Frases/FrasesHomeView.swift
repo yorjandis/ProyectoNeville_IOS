@@ -55,6 +55,7 @@ struct FrasesHomeView : View{
     //Parámetros para las vistas de autores:
     var authorFilter: String? = nil //Filtro de frases de autores, restringido por acceso premium
     var colorTextAutor : Color? = .white //Color del texto del autor
+    var showAutorLabel : Bool = true //Color del texto del autor
     
     var body: some View{
         
@@ -73,9 +74,13 @@ struct FrasesHomeView : View{
                                     .frame(maxWidth: .infinity, alignment: .center)
 
                                 HStack{
-                                    if self.showHideAutorInFrases {
-                                        Text(frase.autor ?? "").font(.footnote).italic().padding(.horizontal)
+                                    //Opción para vista de autores
+                                    if self.showAutorLabel{
+                                        if self.showHideAutorInFrases {
+                                            Text(frase.autor ?? "").font(.footnote).italic().padding(.horizontal)
+                                        }
                                     }
+                                   
                                     
                                     Spacer()
                                     

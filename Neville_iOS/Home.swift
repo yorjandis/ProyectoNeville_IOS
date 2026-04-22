@@ -11,6 +11,7 @@ import CoreData
 struct Home: View {
 
     @EnvironmentObject private var settingModel : SettingModel
+    @Environment(\.scenePhase) private var scenePhase
     
     @AppStorage("MostrarMetasEnHome") var MostrarMetasEnHome: Bool = false
     
@@ -33,6 +34,49 @@ struct Home: View {
 
     // Fuerza la recreación del gadget de metas cuando Home reaparece.
     @State private var goalsGadgetRefreshID = UUID()
+    @State private var showRitualMatutino: Bool = false
+    @State private var now = Date()
+
+    @AppStorage("Home_RitualMatutino_HiddenDayKey") private var ritualMatutinoHiddenDayKey: String = ""
+
+    private let ritualButtonTimer = Timer.publish(every: 60, on: .main, in: .common).autoconnect()
+
+    private struct RitualSessionVisibilityDTO: Decodable {
+        let sessionDateEpochDay: Int
+        let completed: Bool
+    }
+
+    private var ritualTodayEpochDay: Int {
+        let start = Calendar.current.startOfDay(for: now)
+        return Int(start.timeIntervalSince1970 / 86_400)
+    }
+
+    private var ritualCompletedToday: Bool {
+        let defaults = UserDefaults(suiteName: AppCons.AppGroupName) ?? .standard
+        guard let data = defaults.data(forKey: "morning_ritual_sessions"),
+              let sessions = try? JSONDecoder().decode([RitualSessionVisibilityDTO].self, from: data) else {
+            return false
+        }
+
+        return sessions.contains { $0.completed && $0.sessionDateEpochDay == ritualTodayEpochDay }
+    }
+
+    private var ritualCurrentDayKey: String {
+        let calendar = Calendar.current
+        let adjustedDate = calendar.date(byAdding: .hour, value: -3, to: now) ?? now
+        let components = calendar.dateComponents([.year, .month, .day], from: adjustedDate)
+        let year = components.year ?? 0
+        let month = components.month ?? 0
+        let day = components.day ?? 0
+        return String(format: "%04d-%02d-%02d", year, month, day)
+    }
+
+    private var shouldShowRitualButton: Bool {
+        let hour = Calendar.current.component(.hour, from: now)
+        return hour >= 3
+            && ritualMatutinoHiddenDayKey != ritualCurrentDayKey
+            && !ritualCompletedToday
+    }
 
     var body: some View {
         NavigationStack{
@@ -80,6 +124,29 @@ struct Home: View {
                     //Barra de Recordatorios:
                    ReminderWidgetList_View()
 
+
+                    //Botón de acceso a Ritual matutino
+                    if shouldShowRitualButton {
+                        Button {
+                            showRitualMatutino = true
+                        } label: {
+                            Label("Ritual Matutino", systemImage: "sunrise.fill")
+                                .font(.headline)
+                                .foregroundStyle(.black)
+                                .padding(.horizontal, 14)
+                                .padding(.vertical, 10)
+                                .background(.white.opacity(0.82))
+                                .clipShape(Capsule())
+                        }
+                        .contextMenu {
+                            Button(role: .destructive) {
+                                ritualMatutinoHiddenDayKey = ritualCurrentDayKey
+                            } label: {
+                                Label("Ocultar por hoy", systemImage: "eye.slash")
+                            }
+                        }
+                    }
+
                     TabButtonBar(
                         fontFrasesSize: $fontSize,
                         fontMenuSize: $fontSizeMenu,
@@ -91,6 +158,8 @@ struct Home: View {
    
             }
             .onAppear {
+                now = Date()
+
                 // Refresca el gadget de metas cada vez que Home vuelve a aparecer.
                 goalsGadgetRefreshID = UUID()
 
@@ -143,11 +212,21 @@ struct Home: View {
                 }
                 
             }
-            
+            .onReceive(ritualButtonTimer) { value in
+                now = value
+            }
+            .onChange(of: scenePhase) { _, phase in
+                if phase == .active {
+                    now = Date()
+                }
+            }
             
         }
         .sheet(isPresented: self.$showNovedades) {
             Novedades()
+        }
+        .sheet(isPresented: $showRitualMatutino) {
+            MorningRitualMainView()
         }
         
     }

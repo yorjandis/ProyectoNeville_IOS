@@ -69,6 +69,7 @@ enum ItemNameSidebar: String{
     case recordatorios
     case chatIA
     case lienzo
+    case ritualMatutino
     
     //Ajustes:
     case ajustes
@@ -486,18 +487,46 @@ struct ContentViewMac: View {
                     
                   //Productividad:
                     SidebarCard(iconName: "person.circle", title: "Productividad", isExpandable: true){
+                        /*
+                         ProductividadSidebarButton(title: "Generador de QR") {
+                             self.categoriaSelected = .crearQR
+                         }
+                         ProductividadSidebarButton(title: "Metas") {
+                             self.categoriaSelected = .metas
+                         }
+                         ProductividadSidebarButton(title: "Recordatorios") {
+                             self.categoriaSelected = .recordatorios
+                         }
+                         ProductividadSidebarButton(title: "Lienzo") {
+                             self.categoriaSelected = .lienzo
+                         }
+                         ProductividadSidebarButton(title: "Ritual Matutino") {
+                             self.categoriaSelected = .ritualMatutino
+                         }
+                         */
+                        
                         SidebarCard(iconName: "quote.opening", title: "Generador de QR", onTap: {
                             self.categoriaSelected = .crearQR
                         }){}
+                        
                         SidebarCard(iconName: "quote.opening", title: "Metas", onTap: {
                             self.categoriaSelected = .metas
                         }){}
-                        SidebarCard(iconName: "quote.opening", title: "Recordartorios", onTap: {
+                        
+                        SidebarCard(iconName: "quote.opening", title: "Recordatorios", onTap: {
                             self.categoriaSelected = .recordatorios
                         }){}
+                        
                         SidebarCard(iconName: "quote.opening", title: "Lienzo", onTap: {
                             self.categoriaSelected = .lienzo
                         }){}
+
+                        SidebarCard(iconName: "quote.opening", title: "Ritual Matutino", onTap: {
+                            self.categoriaSelected = .ritualMatutino
+                        }){}
+                        
+                        
+                       
                     }
                     
                     //Ajustes:
@@ -767,6 +796,8 @@ struct NavigationDetailsViewMac: View {
                 ReminderListView()
             case .lienzo:
                 LienzoMain(texto: "", imagenPrimariaACargar: nil)
+            case .ritualMatutino:
+                MorningRitualMainView()
 
                 //Ajustes:
             case .ajustes:
@@ -871,7 +902,32 @@ struct FrasesHomeMac: View{
     }
 }
 
+private struct ProductividadSidebarButton: View {
+    let title: String
+    let action: () -> Void
 
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 8) {
+                Image(systemName: "quote.opening")
+                    .font(.title3)
+                    .foregroundColor(.black)
+
+                Text(title)
+                    .font(.system(size: 16, weight: .bold))
+                    .foregroundColor(.black)
+
+                Spacer()
+            }
+            .padding(.vertical, 5)
+            .padding(.horizontal, 8)
+            .background(Color.white.opacity(0.35))
+            .cornerRadius(10)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+    }
+}
 
 struct SidebarCard<Content: View>: View {
     
@@ -887,65 +943,64 @@ struct SidebarCard<Content: View>: View {
     @State private var isExpanded: Bool = false
     
     var body: some View {
-        
-        Button{
-            if !isExpandable {
-                onTap?()
-            }else{
-                withAnimation{
-                    isExpanded.toggle()
+        VStack(spacing: 0) {
+            Button {
+                if isExpandable {
+                    withAnimation {
+                        isExpanded.toggle()
+                    }
+                } else {
+                    onTap?()
                 }
-                
-            }
-        }label: {
-            VStack(spacing: 0) {
-                
+            } label: {
                 HStack(spacing: 8) {
-                    
                     Image(systemName: iconName)
-                        .font(.title2)
+                        .font(usesCompactSubitemStyle ? .title3 : .title2)
                         .foregroundColor(.black)
-                    
+
                     Text(title)
-                        .font(.system(size: 18, weight: .bold))
+                        .font(.system(size: usesCompactSubitemStyle ? 16 : 18, weight: .bold))
                         .foregroundColor(.black)
-                    
+
                     Spacer()
-                    
+
                     if isExpandable {
                         Image(systemName: isExpanded ? "chevron.down" : "chevron.right")
                             .font(.system(size: 15, weight: .bold))
                             .foregroundColor(.black)
                     }
                 }
-                .padding(6)
-                .background(backgroundGradient)
-                .cornerRadius(12)
-                .shadow(color: .black.opacity(0.2), radius: 6, x: 0, y: 4)
-                .contentShape(Rectangle())
-                
-                // Sub-items
-                if isExpandable && isExpanded {
-                    VStack(alignment: .leading, spacing: 4) {
-                            content()
+                .padding(usesCompactSubitemStyle ? 8 : 6)
+                .background {
+                    if usesCompactSubitemStyle {
+                        Color.white
+                    } else {
+                        backgroundGradient
                     }
-                    .padding(.leading, 20)
-                    .padding(.top, 4)
-                    
                 }
+                .cornerRadius(usesCompactSubitemStyle ? 10 : 12)
+                .shadow(color: usesCompactSubitemStyle ? .clear : .black.opacity(0.2), radius: 6, x: 0, y: 4)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+
+            if isExpandable && isExpanded {
+                VStack(alignment: .leading, spacing: 4) {
+                    content()
+                }
+                .padding(.leading, 20)
+                .padding(.top, 4)
             }
         }
-        .buttonStyle(.plain)
-        
-       
     }
     
+    private var usesCompactSubitemStyle: Bool {
+        !isExpandable && (iconName == "quote.opening" || iconName == "text.book.closed") && title != "Versión Extendida"
+    }
+
     private var backgroundGradient: some View {
         LinearGradient(
-            gradient: Gradient(colors: [
-                Color(red: 0.55, green: 0.75, blue: 0.89),
-                Color(red: 0.40, green: 0.65, blue: 0.87)
-            ]),
+            gradient: Gradient(colors: GradientesPreselect.G_natural_2.getColors),
             startPoint: .topLeading,
             endPoint: .bottomTrailing
         )

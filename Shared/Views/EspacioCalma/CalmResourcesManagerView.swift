@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 import UniformTypeIdentifiers
 import PhotosUI
 @preconcurrency import AVFoundation
@@ -149,26 +150,24 @@ private final class CalmResourceStore: ObservableObject, @unchecked Sendable {
         )
 
         let asset = AVURLAsset(url: sourceURL)
-        guard let exportSession = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetAppleM4A) else {
-            msg("No se pudo crear sesión de exportación para la música seleccionada.")
-            return
-        }
-
-        exportSession.outputURL = destinationURL
-        exportSession.outputFileType = .m4a
-        exportSession.shouldOptimizeForNetworkUse = false
-
-        exportSession.exportAsynchronously { [weak self] in
+        Task { [weak self] in
             guard let self else { return }
-            switch exportSession.status {
-            case .completed:
-                DispatchQueue.main.async {
+            guard let exportSession = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetAppleM4A) else {
+                await MainActor.run {
+                    msg("No se pudo crear sesión de exportación para la música seleccionada.")
+                }
+                return
+            }
+
+            do {
+                try await exportSession.export(to: destinationURL, as: .m4a)
+                await MainActor.run {
                     self.reload()
                 }
-            case .failed, .cancelled:
-                msg("Error exportando música de Biblioteca:", exportSession.error as Any)
-            default:
-                break
+            } catch {
+                await MainActor.run {
+                    msg("Error exportando música de Biblioteca:", error)
+                }
             }
         }
     }
@@ -282,7 +281,9 @@ struct CalmResourcesManagerView: View {
             .padding(.vertical, 14)
         }
         .navigationTitle("Recursos Para Espacio Calma")
+#if !os(macOS)
         .navigationBarTitleDisplayMode(.inline)
+#endif
         .photosPicker(
             isPresented: $showBackgroundPhotosPicker,
             selection: $selectedBackgroundPhotoItem,
@@ -342,9 +343,15 @@ struct CalmResourcesManagerView: View {
         .onDisappear {
             audioPreview.stop()
         }
+#if os(macOS)
+        .sheet(item: $selectedBackgroundPreview) { asset in
+            CalmBackgroundPreviewView(asset: asset)
+        }
+#else
         .fullScreenCover(item: $selectedBackgroundPreview) { asset in
             CalmBackgroundPreviewView(asset: asset)
         }
+#endif
     }
 
     private var backgroundListSection: some View {

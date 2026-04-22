@@ -877,7 +877,9 @@ private extension EspacioCalmaView {
             }
             .background(.ultraThinMaterial)
             .navigationTitle(title)
+#if !os(macOS)
             .navigationBarTitleDisplayMode(.inline)
+#endif
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cerrar") {

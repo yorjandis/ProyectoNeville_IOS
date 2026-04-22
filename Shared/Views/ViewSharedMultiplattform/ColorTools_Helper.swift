@@ -6,6 +6,11 @@
 //
 
 import SwiftUI
+#if canImport(UIKit)
+import UIKit
+#elseif canImport(AppKit)
+import AppKit
+#endif
 
 #if(DEBUG)
 struct ColorTool_Helper : View {
@@ -104,7 +109,12 @@ struct ColorTool_Helper : View {
                         Color(red: \(format(colorC_1)), green: \(format(colorC_2)), blue: \(format(colorC_3)))
                         """
                         
+                        #if canImport(UIKit)
                         UIPasteboard.general.string = text
+                        #elseif canImport(AppKit)
+                        NSPasteboard.general.clearContents()
+                        NSPasteboard.general.setString(text, forType: .string)
+                        #endif
                     }
                     .font(.caption)
                 }
@@ -126,4 +136,3 @@ struct ColorTool_Helper : View {
 
 
 #endif
-

@@ -50,7 +50,9 @@ struct CalmPhraseManagerView: View {
             .listStyle(.plain)
         }
         .navigationTitle("Frases de Espacio Calma")
+#if !os(macOS)
         .navigationBarTitleDisplayMode(.inline)
+#endif
         .onAppear {
             reloadItems()
         }

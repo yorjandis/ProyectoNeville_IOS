@@ -109,6 +109,7 @@ enum GradientesPreselect{
     //Colores Galaxys
     case G_verde_azul_1, G_verde_gris_1, G_natural_1, G_natural_2, G_azul_violeta_1
     case G_violeta_azul_1, G_natural_3, G_natural_4, G_natural_5, G_natural_6, G_natural_7
+    case G_natural_8
     
     
     var getColors : [Color]{
@@ -218,11 +219,11 @@ enum GradientesPreselect{
         case .G_natural_7: [
             Color(red: 0.29, green: 0.44, blue: 0.50),
             Color(red: 0.46, green: 0.51, blue: 0.83)
-            /*
-             Color(red: 0.26, green: 0.51, blue: 0.76),
-             Color(red: 0.46, green: 0.51, blue: 0.83)
-             */
-            
+        ]
+        case .G_natural_8: [
+            Color(red: 0.65, green: 0.76, blue: 0.90),
+            Color(red: 0.41, green: 0.49, blue: 0.90),
+            Color(red: 0.46, green: 0.51, blue: 0.83)
         ]
         }
     }

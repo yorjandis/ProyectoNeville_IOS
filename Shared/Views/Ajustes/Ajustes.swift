@@ -126,6 +126,14 @@ struct Ajustes: View {
     
     //Tonos:
     @State private var selectedSound: NotificationSound = NotificationSound.selected
+
+    private var settingsPrimaryTextColor: Color {
+        #if os(macOS)
+        return .white
+        #else
+        return theme == .dark ? .white : .black
+        #endif
+    }
     
     var body: some View {
         
@@ -202,8 +210,10 @@ struct Ajustes: View {
                             Picker("Elige el Tema:", selection: self.$setting_theme) {
                                 ForEach(Theme.allCases, id:\.self){item in
                                     Text(item.rawValue).tag(item)
+                                        
                                 }
                             }
+                            .foregroundStyle(.orange)
                             .pickerStyle(.segmented)
                         }
                         .padding(.horizontal, 30)
@@ -418,7 +428,7 @@ struct Ajustes: View {
                                             Spacer()
                                             Toggle(isOn: self.$TratamientoDeIA) {
                                                 Text(self.TratamientoDeIA ? "Personal" : "Impersonal")
-                                                    .foregroundStyle(self.TratamientoDeIA ? .green : .primary)
+                                                    .foregroundStyle(self.TratamientoDeIA ? .green : settingsPrimaryTextColor)
                                             }
                                         }
                                         
@@ -752,7 +762,7 @@ struct Ajustes: View {
                                 
                             }label: {
                                 Label("Información", systemImage: "info.circle.fill")
-                                    .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
+                                    .foregroundStyle(settingsPrimaryTextColor)
                             }
                             .buttonStyle(PlainButtonStyle())
                             
@@ -766,7 +776,7 @@ struct Ajustes: View {
                                 )
                             }label:{
                                 Label("Caraterísticas de la App", systemImage: "info.circle.text.page.fill")
-                                    .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
+                                    .foregroundStyle(settingsPrimaryTextColor)
                                     .bold()
                                     .font(.headline)
                             }
@@ -776,7 +786,7 @@ struct Ajustes: View {
                                 showWindow(for: ScrollView{
                                     Text(UtilFuncs.FileRead("privacy"))
                                         .font(.system(size: 22))
-                                        .foregroundStyle(.primary)
+                                        .foregroundStyle(settingsPrimaryTextColor)
                                         .textSelection(.enabled)
                                         .padding(10)
                                 },
@@ -789,7 +799,7 @@ struct Ajustes: View {
                                 
                             }label:{
                                 Label("Política de Privacidad", systemImage: "square.and.pencil.circle")
-                                    .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
+                                    .foregroundStyle(settingsPrimaryTextColor)
                                     .bold()
                                     .font(.headline)
                             }
@@ -803,7 +813,7 @@ struct Ajustes: View {
                                         .frame(width: 24, height: 24) // Ajusta el tamaño según sea necesario
                                     
                                     Text("Compartir la App")
-                                        .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
+                                        .foregroundStyle(settingsPrimaryTextColor)
                                         .bold()
                                         .font(.headline)
                                 }
@@ -832,7 +842,7 @@ struct Ajustes: View {
                             
                             Link(destination: URL(string:  "https://ypgcode.es/la-ley-neville-goddard/")!) {
                                 Label("Abrir página del proyecto", systemImage: "swiftdata")
-                                    .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
+                                    .foregroundStyle(settingsPrimaryTextColor)
                                     .bold()
                                     .font(.headline)
                             }
@@ -840,7 +850,7 @@ struct Ajustes: View {
                             
                             Link(destination: URL(string:  "https://paypal.me/Yorpg?country.x=ES&locale.x=es_ES")!) {
                                 Label("Donar para este proyecto", systemImage: "dollarsign.circle.fill")
-                                    .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
+                                    .foregroundStyle(settingsPrimaryTextColor)
                                     .bold()
                                     .font(.headline)
                             }
@@ -868,6 +878,7 @@ struct Ajustes: View {
                     
                     
                 }
+                .foregroundStyle(settingsPrimaryTextColor)
             }
             .navigationTitle("Ajustes")
             //🔶🔶🔶🔶🔶🔶
@@ -1113,7 +1124,7 @@ struct Ajustes: View {
                                         Text("Papel interpretado por la IA:")
                                     Toggle(isOn: self.$TratamientoDeIA) {
                                         Text(self.TratamientoDeIA ? "Personal" : "Impersonal")
-                                            .foregroundStyle(self.TratamientoDeIA ? .green : .primary)
+                                            .foregroundStyle(self.TratamientoDeIA ? .green : settingsPrimaryTextColor)
                                     }
                                     Text("\(self.TratamientoDeIA ? "La IA representa al Maestro, como si nos hablara en persona." : "La IA se muestra de manera impersonal y despectiva.")")
                                         .font(.footnote)
@@ -1345,14 +1356,14 @@ struct Ajustes: View {
                             .navigationTitle("Información")
                         }label: {
                             Label("Información", systemImage: "info.circle.fill")
-                                .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
+                                .foregroundStyle(settingsPrimaryTextColor)
                         }
                         /*
                          NavigationLink{
                              Novedades()
                          }label:{
                              Label("Novedades en esta versión", systemImage: "info.circle.text.page.fill")
-                                 .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
+                                 .foregroundStyle(settingsPrimaryTextColor)
                                  .bold()
                                  .font(.headline)
                          }
@@ -1362,7 +1373,7 @@ struct Ajustes: View {
                             Features()
                         }label:{
                             Label("Caraterísticas de la App", systemImage: "info.circle.text.page.fill")
-                                .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
+                                .foregroundStyle(settingsPrimaryTextColor)
                                 .bold()
                                 .font(.headline)
                         }
@@ -1377,7 +1388,7 @@ struct Ajustes: View {
                             }
                         }label:{
                             Label("Política de Privacidad", systemImage: "square.and.pencil.circle")
-                                .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
+                                .foregroundStyle(settingsPrimaryTextColor)
                                 .bold()
                                 .font(.headline)
                         }
@@ -1390,7 +1401,7 @@ struct Ajustes: View {
                                     .frame(width: 24, height: 24) // Ajusta el tamaño según sea necesario
                                 
                                 Text("Compartir la App")
-                                    .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
+                                    .foregroundStyle(settingsPrimaryTextColor)
                                     .bold()
                                     .font(.headline)
                             }
@@ -1409,13 +1420,13 @@ struct Ajustes: View {
                         
                         Link(destination: URL(string:  "https://ypgcode.es/la-ley-neville-goddard/")!) {
                             Label("Abrir página del proyecto", systemImage: "swiftdata")
-                                .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
+                                .foregroundStyle(settingsPrimaryTextColor)
                                 .bold()
                                 .font(.headline)
                         }
                         Link(destination: URL(string:  "https://paypal.me/Yorpg?country.x=ES&locale.x=es_ES")!) {
                             Label("Donar para este proyecto", systemImage: "dollarsign.circle.fill")
-                                .foregroundStyle(theme == ColorScheme.dark ? .white : .black)
+                                .foregroundStyle(settingsPrimaryTextColor)
                                 .bold()
                                 .font(.headline)
                         }

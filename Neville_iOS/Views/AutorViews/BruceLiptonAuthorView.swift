@@ -56,7 +56,7 @@ struct BruceLiptonAuthorView: View {
         NavigationStack {
             ZStack {
             LinearGradient(
-                colors: GradientesPreselect.G_natural_7.getColors,
+                colors: GradientesPreselect.G_natural_8.getColors,
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
@@ -106,7 +106,7 @@ struct BruceLiptonAuthorView: View {
                         .foregroundStyle(.black)
                     
                     if (self.purchaseStatus || self.yorjPremium){
-                        FrasesHomeView(authorFilter: "bruceL", colorTextAutor: .black)
+                        FrasesHomeView(authorFilter: "bruceL", colorTextAutor: .black, showAutorLabel: false)
                             .frame(height: 320)
                             .background(LinearGradient(colors: [Color.black.opacity(0.08), Color.black.opacity(0.08)], startPoint: .top, endPoint: .bottom))
                             .clipShape(RoundedRectangle(cornerRadius: 16))
@@ -267,6 +267,49 @@ struct BruceLiptonAuthorView: View {
         }
         .sheet(isPresented: self.$showSheetPremiun) {
             PurchaseView()
+        }
+    }
+
+    @ViewBuilder
+    private func card(
+        title: String,
+        buttonTitle1: String,
+        buttonTitle2: String = "",
+        buttonAction1: @escaping () -> Void,
+        buttonAction2: (() -> Void)? = nil
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(title)
+                .font(.headline)
+                .lineLimit(2)
+                .multilineTextAlignment(.leading)
+                .foregroundStyle(.black)
+
+            HStack(spacing: 10) {
+                Button(buttonTitle1) {
+                    buttonAction1()
+                }
+                .buttonStyle(.bordered)
+                .tint(.black)
+                .foregroundStyle(.white)
+
+                if !buttonTitle2.isEmpty {
+                    Button(buttonTitle2) {
+                        buttonAction2?()
+                    }
+                    .buttonStyle(.bordered)
+                    .tint(.black)
+                    .foregroundStyle(.white)
+                }
+            }
+        }
+        .padding(12)
+        .frame(height: 90, alignment: .topLeading)
+        .background(Color.blue.opacity(0.5))
+        .clipShape(RoundedRectangle(cornerRadius: 14))
+        .overlay {
+            RoundedRectangle(cornerRadius: 14)
+                .stroke(.white.opacity(0.22), lineWidth: 1)
         }
     }
 }
