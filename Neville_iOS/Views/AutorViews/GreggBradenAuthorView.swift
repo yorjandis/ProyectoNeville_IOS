@@ -77,7 +77,7 @@ struct GreggBradenAuthorView: View {
                         .foregroundStyle(.black)
                     
                     if self.purchaseStatus || self.yorjPremium{
-                        FrasesHomeView(authorFilter: "gregg", colorTextAutor: .black, showAutorLabel: false)
+                        FrasesHomeView(authorFilter: "gregg", colorTextAutor: .black, showAutorLabel: false, showFraseFilterControl: true)
                             .frame(height: 320)
                             .background(LinearGradient(colors: [Color.black.opacity(0.1), Color.black.opacity(0.2)], startPoint: .top, endPoint: .bottom))
                             .clipShape(RoundedRectangle(cornerRadius: 16))

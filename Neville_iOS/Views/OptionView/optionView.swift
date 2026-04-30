@@ -26,6 +26,7 @@ fileprivate enum TipeViewOptionTab: String, Identifiable {
     case espacioCalma
     case ritualMatutino
     case lectorEtiquetas
+    case cardioCoherencia
 
     case autorNeville
     case autorJoeDispenza
@@ -42,6 +43,7 @@ struct optionView: View {
 
     @State private var showView: TipeViewOptionTab? = nil
     @State private var showEspacioCalmaFullScreen: Bool = false
+    @State private var showCardioCoherenciaFullScreen: Bool = false
 
     @AppStorage("purchaseStatus") var purchaseStatus: Bool = false
     @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) var yorjPremium: Bool = false
@@ -109,6 +111,13 @@ struct optionView: View {
                         Button("Ritual Matutino") {
                             if self.purchaseStatus || self.yorjPremium {
                                 self.showView = .ritualMatutino
+                            } else {
+                                self.showView = .premium
+                            }
+                        }
+                        Button("Coherencia Cardio-Cerebral") {
+                            if self.purchaseStatus || self.yorjPremium {
+                                self.showCardioCoherenciaFullScreen = true
                             } else {
                                 self.showView = .premium
                             }
@@ -187,6 +196,10 @@ struct optionView: View {
             EspacioCalmaView()
                 .ignoresSafeArea()
         }
+        .fullScreenCover(isPresented: self.$showCardioCoherenciaFullScreen) {
+            CardioCoherenceMainView()
+                .ignoresSafeArea()
+        }
         .sheet(item: self.$showView) { item in
             VStack {
                 switch item {
@@ -231,6 +244,8 @@ struct optionView: View {
                     MorningRitualMainView()
                 case .lectorEtiquetas:
                     LectorEtiquetasView()
+                case .cardioCoherencia:
+                    CardioCoherenceMainView()
                 case .evidenciaCientifica:
                     EvidenciaCientificaView()
                 case .frases:

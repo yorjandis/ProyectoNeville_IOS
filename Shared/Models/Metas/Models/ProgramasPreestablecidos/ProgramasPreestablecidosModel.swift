@@ -5,18 +5,22 @@
 //  Created by Yorjandis PG on 18/2/26.
 //
 
-
+/*
+ Para Agregar un nuevo programa preestablecido solo debemos crear el json del programa y luego
+ colocar su case en el enum ProgramaArchivo
+ */
 
 import SwiftUI
 
 
 
 
-//Archivos json de programas Preestablecidos
+//Archivos json de programas Preestablecidos:
 enum ProgramaArchivo: String, CaseIterable {
     case prog_dieta_semanal_1
     case prog_dieta_semanal_2
     case prog_dieta_semanal_3
+    case prog_dieta_semanal_4
     case prog_dejar_fumar_1
     case prog_dejar_fumar_2
     case prog_dejar_alcohol_1

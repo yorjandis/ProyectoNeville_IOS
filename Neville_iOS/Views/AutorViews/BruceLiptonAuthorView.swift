@@ -106,7 +106,7 @@ struct BruceLiptonAuthorView: View {
                         .foregroundStyle(.black)
                     
                     if (self.purchaseStatus || self.yorjPremium){
-                        FrasesHomeView(authorFilter: "bruceL", colorTextAutor: .black, showAutorLabel: false)
+                        FrasesHomeView(authorFilter: "bruceL", colorTextAutor: .black, showAutorLabel: false, showFraseFilterControl: true)
                             .frame(height: 320)
                             .background(LinearGradient(colors: [Color.black.opacity(0.08), Color.black.opacity(0.08)], startPoint: .top, endPoint: .bottom))
                             .clipShape(RoundedRectangle(cornerRadius: 16))

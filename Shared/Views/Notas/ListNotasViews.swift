@@ -651,12 +651,9 @@ struct cardNotas: View{
                             .padding(.horizontal, 5)
                             .background{
                                 LinearGradient(
-                                    gradient: Gradient(colors: [
-                                        Color(red: 0.55, green: 0.75, blue: 0.89), // azul claro
-                                        Color(red: 0.55, green: 0.75, blue: 0.89)  // azul un poco más oscuro
-                                    ]),
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
+                                    gradient: Gradient(colors: GradientesPreselect.G_natural_5.getColors),
+                                    startPoint: .top,
+                                    endPoint: .bottom
                                 )
                             }
                         

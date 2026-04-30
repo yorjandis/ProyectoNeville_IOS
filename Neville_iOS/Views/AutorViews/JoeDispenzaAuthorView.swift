@@ -108,7 +108,7 @@ struct JoeDispenzaAuthorView: View {
                         .foregroundStyle(.black)
                     
                     if purchaseStatus || self.yorjPremium{
-                        FrasesHomeView(authorFilter: "jd", colorTextAutor: .black, showAutorLabel: false)
+                        FrasesHomeView(authorFilter: "jd", colorTextAutor: .black, showAutorLabel: false, showFraseFilterControl: true)
                             .frame(height: 270)
                             .background(LinearGradient(colors: [Color.black.opacity(0.1), Color.black.opacity(0.2)], startPoint: .top, endPoint: .bottom))
                             .clipShape(RoundedRectangle(cornerRadius: 16))

@@ -101,4 +101,17 @@
         <attribute name="unitType" optional="YES" attributeType="String"/>
         <relationship name="goal" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="GoalEntity" inverseName="units" inverseEntity="GoalEntity"/>
     </entity>
+    <entity name="coherencia" representedClassName="coherencia" syncable="YES" codeGenerationType="class">
+        <attribute name="afterScore" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="beforeScore" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="closingWord" optional="YES" attributeType="String"/>
+        <attribute name="dateEpochMillis" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="durationMinutes" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="heartConnectionScore" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="initialState" optional="YES" attributeType="String"/>
+        <attribute name="intention" optional="YES" attributeType="String"/>
+        <attribute name="mentalClarityScore" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="predominantEmotion" optional="YES" attributeType="String"/>
+    </entity>
 </model>

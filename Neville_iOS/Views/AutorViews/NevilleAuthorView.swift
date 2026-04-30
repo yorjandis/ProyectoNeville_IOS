@@ -67,7 +67,7 @@ struct NevilleAuthorView: View {
                         .font(.title3)
                         .fontWeight(.semibold)
                         .foregroundStyle(.black)
-                    FrasesHomeView(authorFilter: "nev", colorTextAutor: .black, showAutorLabel: false)
+                    FrasesHomeView(authorFilter: "nev", colorTextAutor: .black, showAutorLabel: false, showFraseFilterControl: true)
                         .frame(height: 270)
                         .background(LinearGradient(colors: [Color.black.opacity(0.1), Color.black.opacity(0.2)], startPoint: .top, endPoint: .bottom))
                         .clipShape(RoundedRectangle(cornerRadius: 16))

@@ -15,6 +15,11 @@ import SwiftUI
 
 
 struct FrasesHomeView : View{
+    private enum FraseFiltro: Hashable {
+        case favoritos
+        case conNotas
+    }
+
     @EnvironmentObject private var frasesModel : FrasesModel
     @EnvironmentObject private var settingModel : SettingModel
     
@@ -56,6 +61,9 @@ struct FrasesHomeView : View{
     var authorFilter: String? = nil //Filtro de frases de autores, restringido por acceso premium
     var colorTextAutor : Color? = .white //Color del texto del autor
     var showAutorLabel : Bool = true //Color del texto del autor
+    var showFraseFilterControl: Bool = false //Control de filtros en la esquina superior derecha
+
+    @State private var filtrosActivos: Set<FraseFiltro> = []
     
     var body: some View{
         
@@ -149,6 +157,13 @@ struct FrasesHomeView : View{
                             }
                             .frame(maxWidth: .infinity)
                             .frame(minHeight: geometry.size.height)
+                        }
+                        .overlay(alignment: .topTrailing) {
+                            if self.showFraseFilterControl {
+                                self.filterButton
+                                    .padding(.top, 10)
+                                    .padding(.trailing, 10)
+                            }
                         }
                         .onTapGesture {
                             //Obtiene una nueva frase
@@ -416,7 +431,31 @@ struct FrasesHomeView : View{
                     }
 
                 }else{
-                    EmptyView()
+                    GeometryReader { geometry in
+                        ScrollView(.vertical, showsIndicators: false) {
+                            VStack {
+                                Spacer(minLength: 0)
+                                Text("No hay frases para los filtros seleccionados")
+                                    .font(.headline)
+                                    .foregroundStyle(.secondary)
+                                    .multilineTextAlignment(.center)
+                                    .padding(.horizontal, 14)
+                                Spacer(minLength: 0)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .frame(minHeight: geometry.size.height)
+                        }
+                        .overlay(alignment: .topTrailing) {
+                            if self.showFraseFilterControl {
+                                self.filterButton
+                                    .padding(.top, 10)
+                                    .padding(.trailing, 10)
+                            }
+                        }
+                        .onTapGesture {
+                            self.recargarFrasePorFiltros()
+                        }
+                    }
                 }
                 
                 
@@ -429,6 +468,9 @@ struct FrasesHomeView : View{
                 if !isPopulating {
                     self.cargarFraseInicialSiEsNecesario()
                 }
+            }
+            .onChange(of: self.filtrosActivos) { _, _ in
+                self.recargarFrasePorFiltros()
             }
             
             .sheet(isPresented: $showAddNoteView){ //permite modificar la nota de una frase
@@ -470,15 +512,83 @@ struct FrasesHomeView : View{
     }
 
     private func getRandomFraseByScope() -> Frases? {
+        let frasesFiltradas = self.getFrasesByScope().filter(self.cumpleFiltros)
+        guard !frasesFiltradas.isEmpty else { return nil }
+
+        return frasesFiltradas.randomElement()
+    }
+
+    private func getFrasesByScope() -> [Frases] {
         // Sin Premium, solo se permiten frases de Neville.
         guard (self.purchaseStatus || self.yorjPremium) else {
-            return self.frasesModel.getListFrasesByAutor(autor: "nev").randomElement()
+            return self.frasesModel.getListFrasesByAutor(autor: "nev")
         }
 
         if let authorFilter, !authorFilter.isEmpty {
-            return self.frasesModel.getListFrasesByAutor(autor: authorFilter).randomElement()
+            return self.frasesModel.getListFrasesByAutor(autor: authorFilter)
         }
-        return self.frasesModel.getRandomFrase()
+        return self.frasesModel.getAllFrasesGet()
+    }
+
+    private func cumpleFiltros(_ frase: Frases) -> Bool {
+        if self.filtrosActivos.contains(.favoritos), !frase.isfav {
+            return false
+        }
+
+        if self.filtrosActivos.contains(.conNotas),
+           (frase.nota ?? "").trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            return false
+        }
+
+        return true
+    }
+
+    private func toggleFiltro(_ filtro: FraseFiltro) {
+        if self.filtrosActivos.contains(filtro) {
+            self.filtrosActivos.remove(filtro)
+        } else {
+            self.filtrosActivos.insert(filtro)
+        }
+    }
+
+    private func limpiarFiltros() {
+        self.filtrosActivos.removeAll()
+    }
+
+    private func recargarFrasePorFiltros() {
+        self.frase = self.getRandomFraseByScope()
+        self.isFav = self.frase?.isfav ?? false
+        self.frasesModel.fraseActual = self.frase
+    }
+
+    private var filterButton: some View {
+        Menu {
+            Text("Filtrar por:")
+            Button {
+                self.limpiarFiltros()
+            } label: {
+                Label("Todos", systemImage: self.filtrosActivos.isEmpty ? "checkmark" : "play")
+            }
+
+            Button {
+                self.toggleFiltro(.favoritos)
+            } label: {
+                Label("Favoritos", systemImage: self.filtrosActivos.contains(.favoritos) ? "checkmark" : "play")
+            }
+
+            Button {
+                self.toggleFiltro(.conNotas)
+            } label: {
+                Label("Con Notas", systemImage: self.filtrosActivos.contains(.conNotas) ? "checkmark" : "play")
+            }
+        } label: {
+            Circle()
+                .fill(Color.black.opacity(0.05))
+                .frame(width: 30, height: 30)
+                .padding(3)
+        }
+        .buttonStyle(.plain)
+        //.offset(y: -17)
     }
 
 }
