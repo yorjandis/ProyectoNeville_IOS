@@ -2,6 +2,7 @@ import SwiftUI
 import Combine
 import CoreData
 import UIKit
+import AVFoundation
 
 private enum CardioCoherenceStage {
     case setup
@@ -481,21 +482,139 @@ private final class BreathingHapticEngine: ObservableObject {
     }
 }
 
+@MainActor
+final class CardioCoherenceMusicPlayer: ObservableObject {
+    private var player: AVAudioPlayer?
+    private var loopTask: Task<Void, Never>?
+    private var loadedTrackURL: URL?
+
+    func playIfEnabled(
+        _ enabled: Bool,
+        startAt: TimeInterval = 0,
+        loopFrom: TimeInterval? = nil,
+        customTrackURL: URL? = nil
+    ) {
+        guard enabled else {
+            stop()
+            return
+        }
+
+        let targetURL = customTrackURL ?? resolveTrackURL()
+        guard let targetURL else { return }
+
+        if player == nil || loadedTrackURL != targetURL {
+            preparePlayer(trackURL: targetURL)
+        }
+        guard let player else { return }
+
+        configure(player: player, startAt: startAt, loopFrom: loopFrom)
+        if !player.isPlaying {
+            player.play()
+        }
+    }
+
+    func fadeOutAndStop(duration: TimeInterval) {
+        guard let player else { return }
+        loopTask?.cancel()
+        player.setVolume(0.0, fadeDuration: duration)
+        Task { [weak self] in
+            try? await Task.sleep(nanoseconds: UInt64(max(0, duration) * 1_000_000_000))
+            await MainActor.run {
+                self?.stop()
+            }
+        }
+    }
+
+    func stop() {
+        loopTask?.cancel()
+        loopTask = nil
+        player?.stop()
+        player = nil
+        loadedTrackURL = nil
+    }
+
+    private func preparePlayer(trackURL: URL) {
+        do {
+            let audioPlayer = try AVAudioPlayer(contentsOf: trackURL)
+            audioPlayer.prepareToPlay()
+            player = audioPlayer
+            loadedTrackURL = trackURL
+        } catch {
+            player = nil
+            loadedTrackURL = nil
+        }
+    }
+
+    private func configure(player: AVAudioPlayer, startAt: TimeInterval, loopFrom: TimeInterval?) {
+        loopTask?.cancel()
+        loopTask = nil
+
+        player.volume = CardioCoherenceConstants.Audio.backgroundMusicVolume
+        let safeStart = max(0, min(startAt, max(0, player.duration - 0.05)))
+        if !player.isPlaying {
+            player.currentTime = safeStart
+        }
+
+        guard let loopFrom else {
+            player.numberOfLoops = -1
+            return
+        }
+
+        let safeLoopFrom = max(0, min(loopFrom, max(0, player.duration - 0.05)))
+        player.numberOfLoops = 0
+
+        loopTask = Task { [weak player] in
+            while !Task.isCancelled {
+                try? await Task.sleep(nanoseconds: 50_000_000)
+                guard let player else { return }
+                if !player.isPlaying { continue }
+                if player.currentTime >= max(0, player.duration - 0.04) {
+                    player.currentTime = safeLoopFrom
+                    player.play()
+                }
+            }
+        }
+    }
+
+    private func resolveTrackURL() -> URL? {
+        let bundle = Bundle.main
+        if let url = bundle.url(
+            forResource: CardioCoherenceConstants.Audio.backgroundTrackName,
+            withExtension: CardioCoherenceConstants.Audio.backgroundTrackExtension,
+            subdirectory: CardioCoherenceConstants.Audio.backgroundTrackSubdirectory
+        ) {
+            return url
+        }
+        return bundle.url(
+            forResource: CardioCoherenceConstants.Audio.backgroundTrackName,
+            withExtension: CardioCoherenceConstants.Audio.backgroundTrackExtension
+        )
+    }
+}
+
 struct CardioCoherenceMainView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var store = CardioCoherenceStore()
     @StateObject private var hapticEngine = BreathingHapticEngine()
+    @StateObject private var musicPlayer = CardioCoherenceMusicPlayer()
     @State private var showStats = false
     @State private var breathingAnchor = Date()
     @State private var backgroundAssets: [URL] = []
     @State private var selectedBackgroundAsset: URL?
     @State private var seenBackgroundAssets: Set<String> = []
+    @State private var isBackgroundMusicEnabled = true
+    @State private var useCustomMusicInSession = false
+    @State private var showEvaluationContent = false
 
     init() {
         let initial = CardioCoherenceBackgroundResolver.bootstrapBackgroundSelection()
         _backgroundAssets = State(initialValue: initial.assets)
         _selectedBackgroundAsset = State(initialValue: initial.selected)
         _seenBackgroundAssets = State(initialValue: initial.seen)
+        let persistedMusic = UserDefaults.standard.object(forKey: CardioCoherenceConstants.Audio.backgroundMusicEnabledKey) as? Bool
+        _isBackgroundMusicEnabled = State(initialValue: persistedMusic ?? true)
+        let persistedCustomMusic = UserDefaults.standard.bool(forKey: CardioCoherenceConstants.Audio.useCustomMusicInSessionKey)
+        _useCustomMusicInSession = State(initialValue: persistedCustomMusic)
     }
 
     var body: some View {
@@ -531,6 +650,9 @@ struct CardioCoherenceMainView: View {
                             sessionSection
                         case .evaluation:
                             evaluationSection
+                                .opacity(showEvaluationContent ? 1 : 0)
+                                .offset(y: showEvaluationContent ? 0 : 20)
+                                .animation(.easeOut(duration: 0.45), value: showEvaluationContent)
                         case .summary:
                             summarySection
                         }
@@ -571,9 +693,32 @@ struct CardioCoherenceMainView: View {
                     }
                     .foregroundStyle(.white)
                 }
-                ToolbarItem(placement: .primaryAction) {
+                ToolbarItemGroup(placement: .primaryAction) {
+                    Button {
+                        isBackgroundMusicEnabled.toggle()
+                    } label: {
+                        Image(systemName: isBackgroundMusicEnabled ? "speaker.wave.2.fill" : "speaker.slash.fill")
+                            .font(.subheadline)
+                    }
+                    .foregroundStyle(.white.opacity(0.92))
+
                     Button("Stats") { showStats = true }
                         .foregroundStyle(.white)
+
+                    if store.state.stage == .session {
+                        Menu {
+                            Button(store.state.isPaused ? "Reanudar" : "Pausar") {
+                                store.state.isPaused ? store.resume() : store.pause()
+                            }
+                            Button("Finalizar", role: .destructive) {
+                                store.finishSession()
+                            }
+                        } label: {
+                            Image(systemName: "ellipsis.circle")
+                                .font(.subheadline)
+                        }
+                        .foregroundStyle(.white)
+                    }
                 }
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
@@ -591,8 +736,18 @@ struct CardioCoherenceMainView: View {
                     if !store.state.isPaused, !store.state.isPreparing {
                         hapticEngine.start(rhythm: store.state.breathingRhythm, anchor: breathingAnchor)
                     }
+                    playSessionMusicIfNeeded()
                 } else {
                     hapticEngine.stop()
+                }
+
+                if newStage == .evaluation {
+                    showEvaluationContent = false
+                    withAnimation(.easeOut(duration: 0.45)) {
+                        showEvaluationContent = true
+                    }
+                } else {
+                    showEvaluationContent = false
                 }
             }
             .onChange(of: store.state.isPaused) { _, isPaused in
@@ -618,8 +773,20 @@ struct CardioCoherenceMainView: View {
                 } else {
                     persistBackgroundSelection()
                 }
+                playSessionMusicIfNeeded()
             }
-            .onDisappear { hapticEngine.stop() }
+            .onChange(of: isBackgroundMusicEnabled) { _, enabled in
+                UserDefaults.standard.set(enabled, forKey: CardioCoherenceConstants.Audio.backgroundMusicEnabledKey)
+                playSessionMusicIfNeeded()
+            }
+            .onChange(of: useCustomMusicInSession) { _, enabled in
+                UserDefaults.standard.set(enabled, forKey: CardioCoherenceConstants.Audio.useCustomMusicInSessionKey)
+                playSessionMusicIfNeeded()
+            }
+            .onDisappear {
+                hapticEngine.stop()
+                musicPlayer.stop()
+            }
         }
     }
 
@@ -681,6 +848,8 @@ struct CardioCoherenceMainView: View {
                         }
                     }
                     .pickerStyle(.menu)
+                    
+                    Spacer()
 
                     Picker("Tiempo", selection: Binding(get: { store.state.durationOption }, set: { value in
                         store.selectDuration(value)
@@ -713,9 +882,12 @@ struct CardioCoherenceMainView: View {
                 TextField("Opcional", text: Binding(get: { store.state.intention }, set: { value in
                     store.updateIntention(value)
                 }), axis: .vertical)
-                    .textFieldStyle(.roundedBorder)
                     .lineLimit(4...8)
+                    .padding(10)
                     .frame(maxWidth: .infinity, minHeight: 110, alignment: .topLeading)
+                    .background(.white.opacity(0.92))
+                    .foregroundStyle(.black)
+                    .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
             }
             .padding()
             .background(.white.opacity(0.16))
@@ -729,68 +901,56 @@ struct CardioCoherenceMainView: View {
         let phaseDuration = max(1, store.state.currentPhase?.durationSeconds ?? 1)
         let phaseProgress = Double(store.state.currentPhaseElapsedSeconds) / Double(phaseDuration)
         return VStack(spacing: 14) {
-            HStack(spacing: 10) {
-                TimerPill(symbol: "timer", text: formatSeconds(store.state.remainingSeconds))
-                ProgressView(value: max(0, min(1, totalProgress)))
-                    .progressViewStyle(.linear)
-                    .tint(Color(red: 0.36, green: 0.39, blue: 0.84))
-                TimerPill(symbol: "heart.fill", text: formatSeconds(store.state.currentPhaseRemainingSeconds))
-            }
-            .padding(.horizontal, 4)
+                HStack(spacing: 10) {
+                    TimerPill(symbol: "timer", text: formatSeconds(store.state.remainingSeconds))
+                    ProgressView(value: max(0, min(1, totalProgress)))
+                        .progressViewStyle(.linear)
+                        .tint(Color(red: 0.36, green: 0.39, blue: 0.84))
+                    TimerPill(symbol: "heart.fill", text: formatSeconds(store.state.currentPhaseRemainingSeconds))
+                }
+                .padding(.horizontal, 4)
 
-            if let phase = store.state.currentPhase {
-                BreathingOrbView(
-                    rhythm: store.state.breathingRhythm,
-                    preparing: store.state.isPreparing,
-                    paused: store.state.isPaused,
-                    anchor: breathingAnchor
-                )
-                .frame(width: 250, height: 250)
+                if let phase = store.state.currentPhase {
+                    BreathingOrbView(
+                        rhythm: store.state.breathingRhythm,
+                        preparing: store.state.isPreparing,
+                        paused: store.state.isPaused,
+                        anchor: breathingAnchor
+                    )
+                    .frame(width: 250, height: 250)
 
-                BreathingCueView(
-                    rhythm: store.state.breathingRhythm,
-                    preparing: store.state.isPreparing,
-                    paused: store.state.isPaused,
-                    preparationRemainingSeconds: store.state.preparationRemainingSeconds,
-                    anchor: breathingAnchor
-                )
-
-                SessionInfoPanel {
-                    let guidanceDisplay = SessionGuidanceDisplay(
-                        title: phase.title,
-                        guidance: phase.currentGuidanceText(phaseProgress: phaseProgress),
-                        emotionPrompt: phase.emotionPrompt
+                    BreathingCueView(
+                        rhythm: store.state.breathingRhythm,
+                        preparing: store.state.isPreparing,
+                        paused: store.state.isPaused,
+                        preparationRemainingSeconds: store.state.preparationRemainingSeconds,
+                        anchor: breathingAnchor
                     )
 
-                    VStack(spacing: 8) {
-                        ZStack {
-                            ForEach([guidanceDisplay], id: \.id) { item in
-                                SessionGuidanceContent(display: item)
-                                    .id(item.id)
-                                    .transition(.opacity)
-                            }
-                        }
-                        .animation(.easeInOut(duration: 0.45), value: guidanceDisplay.id)
+                    SessionInfoPanel {
+                        let guidanceDisplay = SessionGuidanceDisplay(
+                            title: phase.title,
+                            guidance: phase.currentGuidanceText(phaseProgress: phaseProgress),
+                            emotionPrompt: phase.emotionPrompt
+                        )
 
-                        ProgressView(value: max(0, min(1, phaseProgress)))
-                            .progressViewStyle(.linear)
-                            .tint(Color(red: 0.55, green: 0.39, blue: 0.78))
-                            .padding(.top, 6)
+                        VStack(spacing: 8) {
+                            ZStack {
+                                ForEach([guidanceDisplay], id: \.id) { item in
+                                    SessionGuidanceContent(display: item)
+                                        .id(item.id)
+                                        .transition(.opacity)
+                                }
+                            }
+                            .animation(.easeInOut(duration: 0.45), value: guidanceDisplay.id)
+
+                            ProgressView(value: max(0, min(1, phaseProgress)))
+                                .progressViewStyle(.linear)
+                                .tint(Color(red: 0.55, green: 0.39, blue: 0.78))
+                                .padding(.top, 6)
+                        }
                     }
                 }
-            }
-
-            HStack(spacing: 12) {
-                Button(store.state.isPaused ? "Reanudar" : "Pausar") {
-                    store.state.isPaused ? store.resume() : store.pause()
-                }
-                .buttonStyle(.bordered)
-                .tint(.white)
-
-                Button("Finalizar") { store.finishSession() }
-                    .buttonStyle(.borderedProminent)
-                    .tint(.orange)
-            }
         }
     }
 
@@ -886,6 +1046,28 @@ struct CardioCoherenceMainView: View {
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 
+    private func playSessionMusicIfNeeded() {
+        let customMusicURL = CardioCoherenceCustomMusicStore.currentCustomMusicURL()
+        let shouldUseCustomMusic = useCustomMusicInSession && customMusicURL != nil
+
+        if shouldUseCustomMusic {
+            musicPlayer.playIfEnabled(
+                isBackgroundMusicEnabled,
+                startAt: 0,
+                loopFrom: nil,
+                customTrackURL: customMusicURL
+            )
+            return
+        }
+
+        musicPlayer.playIfEnabled(
+            isBackgroundMusicEnabled,
+            startAt: CardioCoherenceConstants.Audio.sessionLoopStartSeconds,
+            loopFrom: CardioCoherenceConstants.Audio.sessionLoopStartSeconds,
+            customTrackURL: nil
+        )
+    }
+
     private func formatSeconds(_ seconds: Int) -> String {
         let m = seconds / 60
         let s = seconds % 60
@@ -896,7 +1078,7 @@ struct CardioCoherenceMainView: View {
 
 }
 
-private enum CardioCoherenceBackgroundResolver {
+enum CardioCoherenceBackgroundResolver {
     static let bundleSubdirectory = "CoherenciaCCImagenes"
     static let defaultAssetName = "cc_5.JPG"
     static let lastAssetKey = "cardio_coherence_last_background_path"
@@ -965,15 +1147,17 @@ private enum CardioCoherenceBackgroundResolver {
     }
 }
 
-private struct CardioCoherenceBackgroundView: View {
+struct CardioCoherenceBackgroundView: View {
     let assetURL: URL?
 
     var body: some View {
         ZStack {
             if let image = loadImage() {
+                Color.black
                 Image(uiImage: image)
                     .resizable()
-                    .scaledToFill()
+                    .scaledToFit()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 LinearGradient(
                     colors: [
@@ -1482,12 +1666,24 @@ private struct BreathingOrbView: View {
     let paused: Bool
     let anchor: Date
     @State private var cycleProgress: CGFloat = 0.0
+    @State private var cycleState: BreathingCycleState = .idle
+    @State private var cyclePhaseProgress: CGFloat = 0.0
+    @State private var displayedRingScale: CGFloat = CardioCoherenceConstants.Orb.minScale
+    @State private var previousCycleState: BreathingCycleState = .idle
+    @State private var inhaleEntryRingScale: CGFloat?
+    @State private var ringVisibility: CGFloat = 0
+    @State private var hasScheduledInitialRingReveal: Bool = false
+    @State private var ringRevealTask: Task<Void, Never>?
 
     var body: some View {
         Canvas { context, size in
             let center = CGPoint(x: size.width / 2, y: size.height / 2)
             let baseRadius = min(size.width, size.height) * CardioCoherenceConstants.Orb.baseRadiusFactor
-            let radius = baseRadius * (CardioCoherenceConstants.Orb.minScale + (CardioCoherenceConstants.Orb.scaleRange * cycleProgress))
+            let orbScale = CardioCoherenceConstants.Orb.minScale + (CardioCoherenceConstants.Orb.scaleRange * cycleProgress)
+            let radius = baseRadius * orbScale
+
+            let ringScale = max(0.01, displayedRingScale)
+            let ringRadius = baseRadius * ringScale
 
             let orbRect = CGRect(
                 x: center.x - radius,
@@ -1512,13 +1708,50 @@ private struct BreathingOrbView: View {
 
             drawRosette(in: &context, center: center, radius: radius * CardioCoherenceConstants.Orb.rosetteRadiusFactor, cycleProgress: cycleProgress)
 
+            let ringRect = CGRect(
+                x: center.x - ringRadius,
+                y: center.y - ringRadius,
+                width: ringRadius * 2,
+                height: ringRadius * 2
+            ).insetBy(
+                dx: -ringRadius * CardioCoherenceConstants.Orb.ringInsetFactor,
+                dy: -ringRadius * CardioCoherenceConstants.Orb.ringInsetFactor
+            )
+
             context.stroke(
-                Path(ellipseIn: orbRect.insetBy(dx: -radius * CardioCoherenceConstants.Orb.ringInsetFactor, dy: -radius * CardioCoherenceConstants.Orb.ringInsetFactor)),
-                with: .color(CardioCoherenceConstants.Orb.ringColor),
+                Path(ellipseIn: ringRect),
+                with: .color(CardioCoherenceConstants.Orb.ringColor.opacity(ringVisibility)),
                 lineWidth: CardioCoherenceConstants.Orb.ringLineWidth
             )
         }
         .task(id: "\(rhythm.rawValue)-\(preparing)-\(paused)-\(anchor.timeIntervalSinceReferenceDate)") {
+            if preparing {
+                ringRevealTask?.cancel()
+                ringRevealTask = nil
+                ringVisibility = 0
+                hasScheduledInitialRingReveal = false
+            }
+
+            let initialSnapshot = breathingCycleSnapshot(
+                now: Date(),
+                anchor: anchor,
+                rhythm: rhythm,
+                preparing: preparing,
+                paused: paused
+            )
+            cycleProgress = initialSnapshot.progress
+            cycleState = initialSnapshot.state
+            previousCycleState = initialSnapshot.state
+            cyclePhaseProgress = initialSnapshot.phaseProgress
+
+            let initialOrbScale = CardioCoherenceConstants.Orb.minScale + (CardioCoherenceConstants.Orb.scaleRange * initialSnapshot.progress)
+            let initialExhalePauseTail = exhalePauseTailScaleOffset(
+                phaseProgress: initialSnapshot.phaseProgress,
+                state: initialSnapshot.state,
+                previousState: initialSnapshot.state
+            )
+            displayedRingScale = max(0.01, initialOrbScale + initialExhalePauseTail)
+
             while !Task.isCancelled {
                 let snapshot = breathingCycleSnapshot(
                     now: Date(),
@@ -1527,7 +1760,67 @@ private struct BreathingOrbView: View {
                     preparing: preparing,
                     paused: paused
                 )
+                let oldState = cycleState
                 cycleProgress = snapshot.progress
+                cycleState = snapshot.state
+                previousCycleState = oldState
+                cyclePhaseProgress = snapshot.phaseProgress
+
+                let orbScale = CardioCoherenceConstants.Orb.minScale + (CardioCoherenceConstants.Orb.scaleRange * snapshot.progress)
+                let exhalePauseTail = exhalePauseTailScaleOffset(
+                    phaseProgress: snapshot.phaseProgress,
+                    state: snapshot.state,
+                    previousState: oldState
+                )
+                let rawTargetRingScale = max(0.01, orbScale + exhalePauseTail)
+
+                if snapshot.state == .inhale, oldState != .inhale {
+                    inhaleEntryRingScale = displayedRingScale
+                }
+                if snapshot.state != .inhale {
+                    inhaleEntryRingScale = nil
+                }
+
+                if !hasScheduledInitialRingReveal,
+                   snapshot.state == .inhale,
+                   snapshot.phaseProgress > 0 {
+                    hasScheduledInitialRingReveal = true
+                    ringRevealTask?.cancel()
+                    ringRevealTask = Task { @MainActor in
+                        try? await Task.sleep(nanoseconds: 1_000_000_000)
+                        guard !Task.isCancelled else { return }
+
+                        let duration = max(0.1, CardioCoherenceConstants.Orb.initialRingRevealDurationSeconds)
+                        let frameNanos = max(1, CardioCoherenceConstants.BreathingPattern.frameRefreshNanos)
+                        let steps = max(1, Int((duration * 1_000_000_000) / Double(frameNanos)))
+
+                        for step in 0...steps {
+                            guard !Task.isCancelled else { return }
+                            let t = CGFloat(step) / CGFloat(steps)
+                            let eased = t * t * (3 - (2 * t))
+                            ringVisibility = eased
+                            try? await Task.sleep(nanoseconds: frameNanos)
+                        }
+
+                        ringVisibility = 1
+                    }
+                }
+
+                let targetRingScale: CGFloat
+                if snapshot.state == .inhale, let entryScale = inhaleEntryRingScale {
+                    let releaseT = min(max(snapshot.phaseProgress / CardioCoherenceConstants.Orb.inhaleReleaseWindow, 0), 1)
+                    let eased = releaseT * releaseT * (3 - (2 * releaseT))
+                    targetRingScale = entryScale + ((rawTargetRingScale - entryScale) * eased)
+                } else {
+                    targetRingScale = rawTargetRingScale
+                }
+
+                let smoothedScale = displayedRingScale + ((targetRingScale - displayedRingScale) * CardioCoherenceConstants.Orb.ringSpringSmoothing)
+                let delta = smoothedScale - displayedRingScale
+                let maxStep = CardioCoherenceConstants.Orb.maxRingScaleStepPerFrame
+                let clampedDelta = min(max(delta, -maxStep), maxStep)
+                displayedRingScale += clampedDelta
+
                 try? await Task.sleep(nanoseconds: CardioCoherenceConstants.BreathingPattern.frameRefreshNanos)
             }
         }
@@ -1572,11 +1865,69 @@ private struct BreathingOrbView: View {
             context.fill(petal, with: .color(CardioCoherenceConstants.Rosette.petalFillColor))
             context.stroke(petal, with: .color(CardioCoherenceConstants.Rosette.petalStrokeColor), lineWidth: CardioCoherenceConstants.Rosette.petalStrokeWidth)
         }
+
+        // Solape interno con pétalos pequeños para cubrir el centro sin crear un círculo concéntrico visible.
+        let innerCount = max(6, outerCount / 2)
+        let innerOrbit = rosetteRadius * 0.08
+        let innerLength = rosetteRadius * 0.28
+        let innerWidth = rosetteRadius * 0.18
+
+        for index in 0..<innerCount {
+            let innerAngle = -rotation + ((2 * .pi * CGFloat(index)) / CGFloat(innerCount))
+            let innerCenter = CGPoint(
+                x: center.x + (cos(innerAngle) * innerOrbit),
+                y: center.y + (sin(innerAngle) * innerOrbit)
+            )
+
+            var innerPetal = Path(
+                ellipseIn: CGRect(
+                    x: innerCenter.x - innerLength,
+                    y: innerCenter.y - innerWidth,
+                    width: innerLength * 2,
+                    height: innerWidth * 2
+                )
+            )
+            let innerTransform = CGAffineTransform(translationX: innerCenter.x, y: innerCenter.y)
+                .rotated(by: innerAngle)
+                .translatedBy(x: -innerCenter.x, y: -innerCenter.y)
+            innerPetal = innerPetal.applying(innerTransform)
+
+            context.fill(innerPetal, with: .color(CardioCoherenceConstants.Rosette.petalFillColor.opacity(0.88)))
+        }
     }
 
     private func smoothBreath(_ value: CGFloat) -> CGFloat {
         let clamped = min(max(0, value), 1)
         return clamped * clamped * (3 - (2 * clamped))
+    }
+
+    private func exhalePauseTailScaleOffset(
+        phaseProgress: CGFloat,
+        state: BreathingCycleState,
+        previousState: BreathingCycleState
+    ) -> CGFloat {
+        let t = min(max(phaseProgress, 0), 1)
+        let shrink = CardioCoherenceConstants.Orb.exhalePauseTailShrink
+
+        switch state {
+        case .exhalePause:
+            // Durante la pausa inferior, el anillo sigue cerrando suavemente.
+            let eased = t * t * (3 - (2 * t))
+            return -shrink * eased
+
+        case .inhale:
+            // Esta compensación solo aplica cuando la inhalación viene de una exhalación previa.
+            // Si el ciclo arranca desde idle/preparación no se contrae extra para evitar salto inicial.
+            guard previousState == .exhalePause || previousState == .inhale else {
+                return 0
+            }
+            let releaseT = min(max(t / CardioCoherenceConstants.Orb.inhaleReleaseWindow, 0), 1)
+            let easedRelease = releaseT * releaseT * (3 - (2 * releaseT))
+            return -shrink * (1 - easedRelease)
+
+        default:
+            return 0
+        }
     }
 }
 
@@ -1587,16 +1938,46 @@ private struct BreathingCueView: View {
     let preparationRemainingSeconds: Int
     let anchor: Date
     @State private var label: String = "Prepárate"
+    @State private var currentPhaseProgress: CGFloat = 0
+    @State private var isRhythmTextVisible: Bool = false
+
+    private var secondaryCueText: String {
+        if preparing {
+            return "La respiración empieza en \(preparationRemainingSeconds)"
+        }
+
+        return rhythm.displayLabel
+    }
 
     var body: some View {
         VStack(spacing: 4) {
-            Text(label)
-                .font(preparing ? .title2 : .largeTitle)
-                .fontWeight(.medium)
-                .foregroundStyle(.white.opacity(preparing ? 0.72 : 0.38))
-            Text(preparing ? "La respiración empieza en \(preparationRemainingSeconds)" : rhythm.displayLabel)
-                .font(.footnote)
-                .foregroundStyle(.white.opacity(0.42))
+            ZStack {
+                Text(label)
+                    .id(label)
+                    .font(.largeTitle)
+                    .fontWeight(.medium)
+                    .foregroundStyle(.white.opacity(0.48))
+                    .transition(.opacity)
+            }
+            .frame(height: 44)
+
+            ZStack {
+                if isRhythmTextVisible {
+                    Text(secondaryCueText)
+                        .font(.footnote)
+                        .foregroundStyle(.white.opacity(0.42))
+                        .transition(.opacity)
+                }
+            }
+            .frame(height: 18)
+        }
+        .animation(.easeInOut(duration: CardioCoherenceConstants.Orb.breathingCueTransitionDurationSeconds), value: label)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            guard label == "Inhala" || label == "Exhala" else { return }
+            withAnimation(.easeInOut(duration: 0.30)) {
+                isRhythmTextVisible.toggle()
+            }
         }
         .task(id: "\(rhythm.rawValue)-\(preparing)-\(paused)-\(anchor.timeIntervalSinceReferenceDate)") {
             while !Task.isCancelled {
@@ -1608,6 +1989,7 @@ private struct BreathingCueView: View {
                     paused: paused
                 )
                 label = snapshot.label
+                currentPhaseProgress = snapshot.phaseProgress
                 try? await Task.sleep(nanoseconds: CardioCoherenceConstants.BreathingPattern.frameRefreshNanos)
             }
         }
@@ -1618,6 +2000,7 @@ private struct BreathingCycleSnapshot {
     let progress: CGFloat
     let label: String
     let state: BreathingCycleState
+    let phaseProgress: CGFloat
 }
 
 private enum BreathingCycleState {
@@ -1636,7 +2019,7 @@ private func breathingCycleSnapshot(
     paused: Bool
 ) -> BreathingCycleSnapshot {
     if preparing || paused {
-        return BreathingCycleSnapshot(progress: 0.0, label: "Prepárate", state: .idle)
+        return BreathingCycleSnapshot(progress: 0.0, label: "Prepárate", state: .idle, phaseProgress: 0.0)
     }
 
     let inhaleSeconds = Double(rhythm.inhaleMillis) / 1000.0
@@ -1644,19 +2027,55 @@ private func breathingCycleSnapshot(
     let topPauseSeconds = Double(CardioCoherenceConstants.BreathingPattern.topPauseMillis) / 1000.0
     let cycleSeconds = max(0.001, inhaleSeconds + topPauseSeconds + exhaleSeconds + topPauseSeconds)
     let elapsed = max(0, now.timeIntervalSince(anchor))
-    let t = elapsed.truncatingRemainder(dividingBy: cycleSeconds)
+
+    let preparatoryExhaleSeconds = max(0, CardioCoherenceConstants.BreathingPattern.initialPreparatoryExhaleSeconds)
+    if elapsed < preparatoryExhaleSeconds {
+        let prepProgress = CGFloat(elapsed / max(preparatoryExhaleSeconds, 0.001))
+        let remaining = max(1, Int(ceil(preparatoryExhaleSeconds - elapsed)))
+        return BreathingCycleSnapshot(
+            progress: 0.0,
+            label: "Vacía tus pulmones (\(remaining))",
+            state: .idle,
+            phaseProgress: prepProgress
+        )
+    }
+
+    let activeElapsed = elapsed - preparatoryExhaleSeconds
+    let t = activeElapsed.truncatingRemainder(dividingBy: cycleSeconds)
 
     if t < inhaleSeconds {
-        return BreathingCycleSnapshot(progress: CGFloat(t / inhaleSeconds), label: "Inhala", state: .inhale)
+        return BreathingCycleSnapshot(
+            progress: CGFloat(t / inhaleSeconds),
+            label: "Inhala",
+            state: .inhale,
+            phaseProgress: CGFloat(t / inhaleSeconds)
+        )
     }
     if t < inhaleSeconds + topPauseSeconds {
-        return BreathingCycleSnapshot(progress: 1.0, label: "Inhala", state: .inhalePause)
+        let local = t - inhaleSeconds
+        return BreathingCycleSnapshot(
+            progress: 1.0,
+            label: "Inhala",
+            state: .inhalePause,
+            phaseProgress: CGFloat(local / max(topPauseSeconds, 0.001))
+        )
     }
     if t < inhaleSeconds + topPauseSeconds + exhaleSeconds {
         let local = t - inhaleSeconds - topPauseSeconds
-        return BreathingCycleSnapshot(progress: CGFloat(1.0 - (local / exhaleSeconds)), label: "Exhala", state: .exhale)
+        return BreathingCycleSnapshot(
+            progress: CGFloat(1.0 - (local / exhaleSeconds)),
+            label: "Exhala",
+            state: .exhale,
+            phaseProgress: CGFloat(local / exhaleSeconds)
+        )
     }
-    return BreathingCycleSnapshot(progress: 0.0, label: "Exhala", state: .exhalePause)
+    let local = t - inhaleSeconds - topPauseSeconds - exhaleSeconds
+    return BreathingCycleSnapshot(
+        progress: 0.0,
+        label: "Exhala",
+        state: .exhalePause,
+        phaseProgress: CGFloat(local / max(topPauseSeconds, 0.001))
+    )
 }
 
 private struct SessionGuidanceDisplay: Identifiable, Equatable {

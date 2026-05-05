@@ -96,6 +96,13 @@ struct optionView: View {
                     Spacer()
 
                     Menu {
+                        Button("Coherencia Cardio-Cerebral") {
+                            if self.purchaseStatus || self.yorjPremium {
+                                self.showCardioCoherenciaFullScreen = true
+                            } else {
+                                self.showView = .premium
+                            }
+                        }
                         Button("Lienzo") { self.showView = .lienzo }
                         Button("Recordatorios") { self.showView = .reminder }
                         Button("Metas") { self.showView = .metas }
@@ -115,13 +122,7 @@ struct optionView: View {
                                 self.showView = .premium
                             }
                         }
-                        Button("Coherencia Cardio-Cerebral") {
-                            if self.purchaseStatus || self.yorjPremium {
-                                self.showCardioCoherenciaFullScreen = true
-                            } else {
-                                self.showView = .premium
-                            }
-                        }
+                        
                         Button("Lector QR") { self.showView = .codeScanner }
                         Button("Generador QR") { self.showView = .codeGenerate }
                     } label: {
@@ -197,7 +198,7 @@ struct optionView: View {
                 .ignoresSafeArea()
         }
         .fullScreenCover(isPresented: self.$showCardioCoherenciaFullScreen) {
-            CardioCoherenceMainView()
+            CardioCoherenceWelcomeFlowView()
                 .ignoresSafeArea()
         }
         .sheet(item: self.$showView) { item in
@@ -245,7 +246,7 @@ struct optionView: View {
                 case .lectorEtiquetas:
                     LectorEtiquetasView()
                 case .cardioCoherencia:
-                    CardioCoherenceMainView()
+                    CardioCoherenceWelcomeFlowView()
                 case .evidenciaCientifica:
                     EvidenciaCientificaView()
                 case .frases:

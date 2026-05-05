@@ -8,6 +8,7 @@
 //Frases View. Cuadro de frase en la pantalla inicial
 
 import SwiftUI
+import CoreData
 
 
 
@@ -255,6 +256,12 @@ struct FrasesHomeView : View{
                                 _ = NotasModel().addNote(nota: self.frase?.frase ?? "", title: "\(String(self.frase?.frase ?? "").prefix((self.frase?.frase ?? "").count / 3 )))...")
                             }label: {
                                 Label("Almacenar en Notas", systemImage: "list.bullet.clipboard")
+                            }
+
+                            Button {
+                                self.addCurrentPhraseToCalmList()
+                            } label: {
+                                Label("Añadir a Espacio Calma", systemImage: "leaf")
                             }
                             
                     
@@ -589,6 +596,34 @@ struct FrasesHomeView : View{
         }
         .buttonStyle(.plain)
         //.offset(y: -17)
+    }
+
+    private func addCurrentPhraseToCalmList() {
+        guard let text = self.frase?.frase?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !text.isEmpty else { return }
+
+        let context = CoreDataController.shared.context
+        guard let model = context.persistentStoreCoordinator?.managedObjectModel,
+              model.entitiesByName["CalmUserPhrase"] != nil,
+              let entity = NSEntityDescription.entity(forEntityName: "CalmUserPhrase", in: context) else {
+            self.alertMessage = "No se encontró la entidad de frases de Espacio Calma."
+            self.showAlert = true
+            return
+        }
+
+        let object = NSManagedObject(entity: entity, insertInto: context)
+        object.setValue(UUID(), forKey: "id")
+        object.setValue(text, forKey: "phrase")
+        object.setValue(Date(), forKey: "createdAt")
+
+        do {
+            try context.save()
+            self.alertMessage = "Frase agregada a Espacio Calma."
+        } catch {
+            context.rollback()
+            self.alertMessage = "No se pudo guardar la frase en Espacio Calma."
+        }
+        self.showAlert = true
     }
 
 }

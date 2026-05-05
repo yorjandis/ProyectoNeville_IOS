@@ -8,6 +8,7 @@
 import SwiftUI
 import LocalAuthentication
 import CoreData
+import UniformTypeIdentifiers
 
 struct Ajustes: View {
     
@@ -27,6 +28,8 @@ struct Ajustes: View {
     @AppStorage("MostrarMetasEnHome") var MostrarMetasEnHome: Bool = false
 
     @State private var showSheetPremiumView: Bool = false
+    @State private var showCardioMusicImporter: Bool = false
+    @State private var cardioMusicImportErrorMessage: String?
     
     private let context2 = CoreDataController.shared.context
     
@@ -78,6 +81,7 @@ struct Ajustes: View {
     
     //Opciones de Frases
     @AppStorage(AppCons.UD_setting_showHide_autor_in_frases) var showHideAutorInFrases : Bool = true // Muestra / oculta el aurtor en las frases del Home
+    @AppStorage(CardioCoherenceConstants.Audio.useCustomMusicInSessionKey) private var useCustomCoherenceMusicInSession: Bool = false
     
     
     //Autenti
@@ -1252,6 +1256,35 @@ struct Ajustes: View {
                             }
                         }
                     }
+
+                    Section("Coherencia Cardio-Cerebral") {
+                        Button {
+                            showCardioMusicImporter = true
+                        } label: {
+                            Label("Seleccionar música personal", systemImage: "music.note")
+                        }
+
+                        if let selectedURL = CardioCoherenceCustomMusicStore.currentCustomMusicURL() {
+                            HStack {
+                                Label(selectedURL.lastPathComponent, systemImage: "checkmark.circle.fill")
+                                    .foregroundStyle(.green)
+                                Spacer()
+                                Button(role: .destructive) {
+                                    CardioCoherenceCustomMusicStore.clearMusic()
+                                    useCustomCoherenceMusicInSession = false
+                                } label: {
+                                    Image(systemName: "trash")
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        } else {
+                            Label("No has seleccionado música personal", systemImage: "exclamationmark.circle")
+                                .foregroundStyle(.secondary)
+                        }
+
+                        Toggle("Usar música personal en sesión", isOn: $useCustomCoherenceMusicInSession)
+                            .disabled(CardioCoherenceCustomMusicStore.currentCustomMusicURL() == nil)
+                    }
                     
                     //Metas
                     Section("Metas"){
@@ -1505,6 +1538,36 @@ struct Ajustes: View {
                     
             }
             .presentationDetents([.medium])
+        }
+        .fileImporter(
+            isPresented: $showCardioMusicImporter,
+            allowedContentTypes: [.audio],
+            allowsMultipleSelection: false
+        ) { result in
+            switch result {
+            case .success(let urls):
+                guard let sourceURL = urls.first else { return }
+                do {
+                    try CardioCoherenceCustomMusicStore.replaceMusic(with: sourceURL)
+                    useCustomCoherenceMusicInSession = true
+                } catch {
+                    cardioMusicImportErrorMessage = "No se pudo importar el archivo de música."
+                }
+            case .failure:
+                cardioMusicImportErrorMessage = "No se pudo abrir el selector de archivos."
+            }
+        }
+        .alert("Coherencia Cardio-Cerebral", isPresented: Binding(
+            get: { cardioMusicImportErrorMessage != nil },
+            set: { value in
+                if !value { cardioMusicImportErrorMessage = nil }
+            }
+        )) {
+            Button("Aceptar", role: .cancel) {
+                cardioMusicImportErrorMessage = nil
+            }
+        } message: {
+            Text(cardioMusicImportErrorMessage ?? "")
         }
     }
     
