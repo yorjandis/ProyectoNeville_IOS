@@ -57,6 +57,17 @@ private struct TriggerResponseInput: Equatable {
     var response: String = ""
 }
 
+private struct MorningRitualDraft: Equatable {
+    let goals: [String]
+    let identityValues: [String]
+    let emotionValues: [String]
+    let triggers: [String]
+    let responses: [String]
+    let noteText: String
+    let dayRemindersEnabled: Bool
+    let dayReminderTimes: [Int]
+}
+
 private struct MorningRitualFlowState {
     var step: Int = 1
     var goals: [String] = [""]
@@ -465,6 +476,7 @@ private struct MorningRitualFlowView: View {
     @State private var showingTimePicker = false
     @State private var showingNoteEditor = false
     @State private var reminderPickerValue = Date()
+    @State private var lastSavedDraft: MorningRitualDraft?
     @FocusState private var focusedField: FocusedField?
 
     private let identitySuggestions = [
@@ -534,18 +546,23 @@ private struct MorningRitualFlowView: View {
                         .tint(.black)
                         .disabled(state.step == 1)
 
-                        Button(state.step < 6 ? "Continuar" : "Guardar Ritual") {
-                            if state.step < 6 {
+                        if state.step < 6 {
+                            Button("Continuar") {
                                 guard validateCurrentStep() == nil else { return }
                                 state.step += 1
                                 state.validationMessage = nil
-                            } else {
+                            }
+                            .buttonStyle(.bordered)
+                            .foregroundStyle(.white)
+                            .tint(.black)
+                        } else if hasPendingChanges {
+                            Button("Guardar Ritual") {
                                 completeRitual()
                             }
+                            .buttonStyle(.bordered)
+                            .foregroundStyle(.white)
+                            .tint(.black)
                         }
-                        .buttonStyle(.bordered)
-                        .foregroundStyle(.white)
-                        .tint(.black)
                     }
                     .padding([.top, .bottom], 6)
                     .padding(.horizontal, 12)
@@ -848,8 +865,34 @@ private struct MorningRitualFlowView: View {
         let nowMillis = Int64(Date().timeIntervalSince1970 * 1_000)
         let todayEpoch = epochDay(for: Date())
 
-        let validGoals = state.goals.map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+        let session = MorningRitualSession(
+            sessionDateEpochDay: todayEpoch,
+            completedAtEpochMillis: nowMillis,
+            goals: currentDraft.goals,
+            identity: currentDraft.identityValues.joined(separator: ", "),
+            emotions: currentDraft.emotionValues,
+            anticipatedSituations: currentDraft.triggers,
+            consciousResponses: currentDraft.responses,
+            noteText: currentDraft.noteText
+        )
+
+        store.saveSession(session)
+        store.scheduleDayReminders(minutesOfDay: state.dayReminderTimes, enabled: state.dayRemindersEnabled)
+        lastSavedDraft = currentDraft
+        state.isCompleted = true
+        state.validationMessage = nil
+        state.step = 6
+    }
+
+    private var hasPendingChanges: Bool {
+        lastSavedDraft != currentDraft
+    }
+
+    private var currentDraft: MorningRitualDraft {
+        let validGoals = state.goals
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
             .filter { !$0.isEmpty }
+
         let customIdentity = state.customIdentity.trimmingCharacters(in: .whitespacesAndNewlines)
         let identityValues = Array(Set(state.identities + (customIdentity.isEmpty ? [] : [customIdentity]))).sorted()
 
@@ -865,22 +908,16 @@ private struct MorningRitualFlowView: View {
             }
             .filter { !$0.trigger.isEmpty && !$0.response.isEmpty }
 
-        let session = MorningRitualSession(
-            sessionDateEpochDay: todayEpoch,
-            completedAtEpochMillis: nowMillis,
+        return MorningRitualDraft(
             goals: validGoals,
-            identity: identityValues.joined(separator: ", "),
-            emotions: emotionValues,
-            anticipatedSituations: validPairs.map(\ .trigger),
-            consciousResponses: validPairs.map(\ .response),
-            noteText: state.ritualNote.trimmingCharacters(in: .whitespacesAndNewlines)
+            identityValues: identityValues,
+            emotionValues: emotionValues,
+            triggers: validPairs.map(\.trigger),
+            responses: validPairs.map(\.response),
+            noteText: state.ritualNote.trimmingCharacters(in: .whitespacesAndNewlines),
+            dayRemindersEnabled: state.dayRemindersEnabled,
+            dayReminderTimes: Array(Set(state.dayReminderTimes)).sorted()
         )
-
-        store.saveSession(session)
-        store.scheduleDayReminders(minutesOfDay: state.dayReminderTimes, enabled: state.dayRemindersEnabled)
-        state.isCompleted = true
-        state.validationMessage = nil
-        state.step = 6
     }
 
     private func timeString(from minuteOfDay: Int) -> String {

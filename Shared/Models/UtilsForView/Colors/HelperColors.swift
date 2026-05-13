@@ -102,7 +102,7 @@ struct mof_ColorGradient : ViewModifier {
 //Conjuntos de Colores Preestablecidos
 enum GradientesPreselect{
     
-    case Amanecer, Oceano, Bosque, AtardecerVioleta, Primavera, Fuego, AzulTecnologico
+        case Amanecer, Oceano, Bosque, AtardecerVioleta, Primavera, Fuego, AzulTecnologico
     case GrisMetalizado, JadeProfundo, NegroMate, BarroNatural
     case FondoListado, AmanecerFondo, OceanoFondo
     

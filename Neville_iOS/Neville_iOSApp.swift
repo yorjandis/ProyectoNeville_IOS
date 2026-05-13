@@ -7,6 +7,7 @@
 
 import SwiftUI
 import AppIntents
+import CoreData
 
 
 
@@ -57,6 +58,7 @@ struct Neville_iOSApp: App {
     //Claves de los ficheros
     let keyNotaShareText    = "notaShareText"
     let keyFraseShareText   = "fraseShareText"
+    let keyCalmaShareText   = "calmaShareText"
     
 
     var body: some Scene {
@@ -198,6 +200,29 @@ struct Neville_iOSApp: App {
 
                 // Limpiar el valor para la próxima vez
                 defaults.removeObject(forKey: self.keyFraseShareText)
+            }
+
+            //Copiando el texto en Frase Personal de Espacio Calma
+            if let texto = defaults.string(forKey: self.keyCalmaShareText){
+                let text = texto.trimmingCharacters(in: .whitespacesAndNewlines)
+                if !text.isEmpty {
+                    let context = CoreDataController.shared.context
+                    if let model = context.persistentStoreCoordinator?.managedObjectModel,
+                       model.entitiesByName["CalmUserPhrase"] != nil,
+                       let entity = NSEntityDescription.entity(forEntityName: "CalmUserPhrase", in: context) {
+                        let object = NSManagedObject(entity: entity, insertInto: context)
+                        object.setValue(UUID(), forKey: "id")
+                        object.setValue(text, forKey: "phrase")
+                        object.setValue(Date(), forKey: "createdAt")
+                        do {
+                            try context.save()
+                        } catch {
+                            context.rollback()
+                            msg("❌ No se pudo guardar la frase personal de Espacio Calma: \(error.localizedDescription)")
+                        }
+                    }
+                }
+                defaults.removeObject(forKey: self.keyCalmaShareText)
             }
     }
 

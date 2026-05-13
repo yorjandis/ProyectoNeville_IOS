@@ -14,9 +14,12 @@ struct ShareExtensionView: View {
     
     let keyNotaShareText    = "notaShareText"
     let keyFraseShareText   = "fraseShareText"
+    let keyCalmaShareText   = "calmaShareText"
     
     
     @State private var hasPremium : Bool = false
+    @State private var actionMessage: String = ""
+    @State private var showActionMessage: Bool = false
     
     @AppStorage("yorjPremium",store: UserDefaults(suiteName: "group.com.ypg.nev.group"))var yorjPremium: Bool = false
     
@@ -118,27 +121,31 @@ struct ShareExtensionView: View {
                                         .buttonStyle(.bordered)
                                         
                                         Button("Guardar Texto en Notas") {
-                                            
-                                            // 2. Guardar el QR en UserDefaults del App Group
-                                            guard let defaults = UserDefaults(suiteName: "group.com.ypg.nev.group") else {
-                                                print("❌ No se pudo acceder al App Group")
-                                                return
-                                            }
-                                                defaults.set(textoQR, forKey: self.keyNotaShareText)
+                                            saveToAppGroup(
+                                                key: self.keyNotaShareText,
+                                                value: textoQR,
+                                                successMessage: "Texto guardado en Notas."
+                                            )
                                         }
                                         .foregroundStyle(.black)
                                         .buttonStyle(.bordered)
                                         
                                         Button("Guardar Texto en Frases") {
-                                            
-                                            // 2. Guardar el QR en UserDefaults del App Group
-                                            guard let defaults = UserDefaults(suiteName: "group.com.ypg.nev.group") else {
-                                                print("❌ No se pudo acceder al App Group")
-                                                return
-                                            }
-                                                defaults.set(textoQR, forKey: self.keyFraseShareText)
-                                            
-                                            
+                                            saveToAppGroup(
+                                                key: self.keyFraseShareText,
+                                                value: textoQR,
+                                                successMessage: "Texto guardado en Frases."
+                                            )
+                                        }
+                                        .foregroundStyle(.black)
+                                        .buttonStyle(.bordered)
+
+                                        Button("Guardar como Frase Personal Calma") {
+                                            saveToAppGroup(
+                                                key: self.keyCalmaShareText,
+                                                value: textoQR,
+                                                successMessage: "Texto guardado como Frase Personal de Calma."
+                                            )
                                         }
                                         .foregroundStyle(.black)
                                         .buttonStyle(.bordered)
@@ -203,27 +210,31 @@ struct ShareExtensionView: View {
                                     //Si se devuelve texto se muestran los botones:
                                     if !self.textqr.isEmpty {
                                         Button("Guardar Texto en Notas") {
-                                            
-                                            // 2. Guardar el QR en UserDefaults del App Group
-                                            guard let defaults = UserDefaults(suiteName: "group.com.ypg.nev.group") else {
-                                                print("❌ No se pudo acceder al App Group")
-                                                return
-                                            }
-                                                defaults.set(textqr, forKey: self.keyNotaShareText)
+                                            saveToAppGroup(
+                                                key: self.keyNotaShareText,
+                                                value: textqr,
+                                                successMessage: "Texto guardado en Notas."
+                                            )
                                         }
                                         .foregroundStyle(.black)
                                         .buttonStyle(.bordered)
                                         
                                         Button("Guardar Texto en Frases") {
-                                            
-                                            // 2. Guardar el QR en UserDefaults del App Group
-                                            guard let defaults = UserDefaults(suiteName: "group.com.ypg.nev.group") else {
-                                                print("❌ No se pudo acceder al App Group")
-                                                return
-                                            }
-                                                defaults.set(textqr, forKey: self.keyFraseShareText)
-                                            
-                                            
+                                            saveToAppGroup(
+                                                key: self.keyFraseShareText,
+                                                value: textqr,
+                                                successMessage: "Texto guardado en Frases."
+                                            )
+                                        }
+                                        .foregroundStyle(.black)
+                                        .buttonStyle(.bordered)
+
+                                        Button("Guardar como Frase Personal Calma") {
+                                            saveToAppGroup(
+                                                key: self.keyCalmaShareText,
+                                                value: textqr,
+                                                successMessage: "Texto guardado como Frase Personal de Calma."
+                                            )
                                         }
                                         .foregroundStyle(.black)
                                         .buttonStyle(.bordered)
@@ -289,29 +300,31 @@ struct ShareExtensionView: View {
                                 
                                 VStack(spacing: 20){
                                     Button("Guardar Texto en Notas") {
-                                        
-                                        // 2. Guardar el QR en UserDefaults del App Group
-                                        guard let defaults = UserDefaults(suiteName: "group.com.ypg.nev.group") else {
-                                            print("❌ No se pudo acceder al App Group")
-                                            return
-                                        }
-                                            defaults.set(texto, forKey: self.keyNotaShareText)
-                                        
-                                        
+                                        saveToAppGroup(
+                                            key: self.keyNotaShareText,
+                                            value: texto,
+                                            successMessage: "Texto guardado en Notas."
+                                        )
                                     }
                                     .foregroundStyle(.black)
                                     .buttonStyle(.bordered)
                                     
                                     Button("Guardar Texto en Frases") {
-                                        
-                                        // 2. Guardar el QR en UserDefaults del App Group
-                                        guard let defaults = UserDefaults(suiteName: "group.com.ypg.nev.group") else {
-                                            print("❌ No se pudo acceder al App Group")
-                                            return
-                                        }
-                                            defaults.set(texto, forKey: self.keyFraseShareText)
-                                        
-                                        
+                                        saveToAppGroup(
+                                            key: self.keyFraseShareText,
+                                            value: texto,
+                                            successMessage: "Texto guardado en Frases."
+                                        )
+                                    }
+                                    .foregroundStyle(.black)
+                                    .buttonStyle(.bordered)
+
+                                    Button("Guardar como Frase Personal Calma") {
+                                        saveToAppGroup(
+                                            key: self.keyCalmaShareText,
+                                            value: texto,
+                                            successMessage: "Texto guardado como Frase Personal de Calma."
+                                        )
                                     }
                                     .foregroundStyle(.black)
                                     .buttonStyle(.bordered)
@@ -344,6 +357,17 @@ struct ShareExtensionView: View {
                         }
                         .frame(maxWidth: .infinity)
                         
+                        if showActionMessage {
+                            Text(actionMessage)
+                                .font(.footnote)
+                                .foregroundStyle(.black)
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 8)
+                                .background(.white.opacity(0.55))
+                                .clipShape(RoundedRectangle(cornerRadius: 10))
+                                .transition(.opacity)
+                        }
+                        
                         
                     }
                     .padding()
@@ -363,6 +387,30 @@ struct ShareExtensionView: View {
     
     func close() {
         NotificationCenter.default.post(name: NSNotification.Name("close"), object: nil)
+    }
+
+    private func saveToAppGroup(key: String, value: String, successMessage: String) {
+        guard let defaults = UserDefaults(suiteName: "group.com.ypg.nev.group") else {
+            showTemporaryMessage("No se pudo acceder al App Group.")
+            return
+        }
+        defaults.set(value, forKey: key)
+        showTemporaryMessage(successMessage)
+    }
+
+    private func showTemporaryMessage(_ message: String) {
+        withAnimation {
+            self.actionMessage = message
+            self.showActionMessage = true
+        }
+        Task {
+            try? await Task.sleep(nanoseconds: 1_600_000_000)
+            await MainActor.run {
+                withAnimation {
+                    self.showActionMessage = false
+                }
+            }
+        }
     }
     
     
@@ -421,5 +469,3 @@ struct ShareExtensionView: View {
     
     
 }
-
-

@@ -181,6 +181,7 @@ private enum CalmPrefsKeys {
     static let fixedBackgroundName = "calm_fixed_background_name"
     static let useFixedMusic = "calm_use_fixed_music"
     static let fixedMusicName = "calm_fixed_music_name"
+    static let lastBackgroundName = "calm_last_background_name"
     static let nominalBubbleSpeed = "calm_nominal_bubble_speed"
     static let burstSoundEnabled = "calm_burst_sound_enabled"
     static let keepMusicWithScreenLocked = "calm_keep_music_locked_screen"
@@ -511,6 +512,7 @@ struct EspacioCalmaView: View {
                 refreshMusicSelection(forceRandomWhenNotFixed: true)
             }
             .onChange(of: selectedBackground?.id) {
+                UserDefaults.standard.set(selectedBackground?.name, forKey: CalmPrefsKeys.lastBackgroundName)
                 updateBackgroundImage()
             }
             .onChange(of: selectedMusic?.id) {
@@ -525,6 +527,7 @@ struct EspacioCalmaView: View {
                 ) { asset in
                     fixedBackgroundName = asset.name
                     UserDefaults.standard.set(asset.name, forKey: CalmPrefsKeys.fixedBackgroundName)
+                    UserDefaults.standard.set(asset.name, forKey: CalmPrefsKeys.lastBackgroundName)
                     useFixedBackground = true
                     selectedBackground = asset
                 }
@@ -774,6 +777,7 @@ private extension EspacioCalmaView {
                         guard let picked = backgroundAssets.randomElement() else { return }
                         fixedBackgroundName = picked.name
                         UserDefaults.standard.set(picked.name, forKey: CalmPrefsKeys.fixedBackgroundName)
+                        UserDefaults.standard.set(picked.name, forKey: CalmPrefsKeys.lastBackgroundName)
                         useFixedBackground = true
                         selectedBackground = picked
                     }
@@ -1012,6 +1016,7 @@ private extension EspacioCalmaView {
 
         useFixedBackground = defaults.object(forKey: CalmPrefsKeys.useFixedBackground) as? Bool ?? false
         fixedBackgroundName = defaults.string(forKey: CalmPrefsKeys.fixedBackgroundName)
+        let lastBackgroundName = defaults.string(forKey: CalmPrefsKeys.lastBackgroundName)
         useFixedMusic = defaults.object(forKey: CalmPrefsKeys.useFixedMusic) as? Bool ?? true
         fixedMusicName = defaults.string(forKey: CalmPrefsKeys.fixedMusicName) ?? "calma_musica_3.mp3"
         if let storedMode = defaults.string(forKey: CalmPrefsKeys.particleMode),
@@ -1033,10 +1038,11 @@ private extension EspacioCalmaView {
         reloadUserPhrases()
         phraseShuffleQueue.removeAll()
 
-        selectedBackground = resolveAsset(
+        selectedBackground = resolveBackgroundAsset(
             allAssets: backgroundAssets,
             useFixed: useFixedBackground,
-            fixedName: fixedBackgroundName
+            fixedName: fixedBackgroundName,
+            lastName: lastBackgroundName
         )
         selectedMusic = resolveAsset(
             allAssets: musicAssets,
@@ -1089,6 +1095,11 @@ private extension EspacioCalmaView {
         backgroundShuffleQueue.removeFirst()
 
         guard let nextBackground = backgroundAssets.first(where: { $0.name == nextName }) else { return }
+        UserDefaults.standard.set(nextBackground.name, forKey: CalmPrefsKeys.lastBackgroundName)
+        if useFixedBackground {
+            fixedBackgroundName = nextBackground.name
+            UserDefaults.standard.set(nextBackground.name, forKey: CalmPrefsKeys.fixedBackgroundName)
+        }
         selectedBackground = nextBackground
     }
 
@@ -2340,6 +2351,28 @@ private extension EspacioCalmaView {
             return fixedAsset
         }
         return allAssets.randomElement()
+    }
+
+    func resolveBackgroundAsset(
+        allAssets: [CalmAsset],
+        useFixed: Bool,
+        fixedName: String?,
+        lastName: String?
+    ) -> CalmAsset? {
+        guard !allAssets.isEmpty else { return nil }
+
+        if useFixed,
+           let fixedName,
+           let fixedAsset = allAssets.first(where: { $0.name == fixedName }) {
+            return fixedAsset
+        }
+
+        if let lastName,
+           let lastAsset = allAssets.first(where: { $0.name == lastName }) {
+            return lastAsset
+        }
+
+        return allAssets.first
     }
 
     func nextPhraseForBubble() -> String {

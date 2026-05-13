@@ -49,6 +49,17 @@ struct Shortcuts: AppShortcutsProvider {
             shortTitle: "Crear Frases",
             systemImageName: "doc.plaintext.fill"
         )
+
+        //Atajo para crear una frase y guardarla en Espacio Calma:
+        AppShortcut(
+            intent: CrearFraseCalmaIntent(),
+            phrases: [
+                "en \(.applicationName) crea una frase para calma",
+                "en \(.applicationName) crea una frase personal para calma"
+            ],
+            shortTitle: "Frase para Calma",
+            systemImageName: "leaf.fill"
+        )
         
         //Atajo para crear una entrada del Diario:
         AppShortcut(

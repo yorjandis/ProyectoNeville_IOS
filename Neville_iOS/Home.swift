@@ -35,9 +35,14 @@ struct Home: View {
     // Fuerza la recreación del gadget de metas cuando Home reaparece.
     @State private var goalsGadgetRefreshID = UUID()
     @State private var showRitualMatutino: Bool = false
+    @State private var showAgenda: Bool = false
+    @State private var showPremium: Bool = false
     @State private var now = Date()
 
     @AppStorage("Home_RitualMatutino_HiddenDayKey") private var ritualMatutinoHiddenDayKey: String = ""
+    @AppStorage("Home_ShowAgendaButton") private var showAgendaButtonInHome: Bool = true
+    @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
+    @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) private var yorjPremium: Bool = false
 
     private let ritualButtonTimer = Timer.publish(every: 60, on: .main, in: .common).autoconnect()
 
@@ -78,6 +83,11 @@ struct Home: View {
             && !ritualCompletedToday
     }
 
+    private var shouldShowAgendaButton: Bool {
+        let hour = Calendar.current.component(.hour, from: now)
+        return hour >= 3 && showAgendaButtonInHome
+    }
+
     var body: some View {
         NavigationStack{
             
@@ -95,7 +105,7 @@ struct Home: View {
                     MostrarCumpleaños()
                     
                     //Muestra si estamos en modo debug. Solo aparecerá en la fase de desarrollo
-                   MostrarModoDebug()
+                   //MostrarModoDebug()
 
                     //Muestra el texto para indicar nueva actualización
                     ViewIfNewUpdateAvailable()
@@ -107,11 +117,14 @@ struct Home: View {
 
                     Spacer()
 
-                    #if DEBUG
-                    NavigationLink("Color_Tools"){
-                        ColorTool_Helper()
-                    }
-                    #endif
+                    /*
+                     #if DEBUG
+                     NavigationLink("Color_Tools"){
+                         ColorTool_Helper()
+                     }
+                     #endif
+                     */
+                    
                     
                     
                     //Barra de gadgets de Metas:
@@ -125,24 +138,53 @@ struct Home: View {
                    ReminderWidgetList_View()
 
 
-                    //Botón de acceso a Ritual matutino
-                    if shouldShowRitualButton {
-                        Button {
-                            showRitualMatutino = true
-                        } label: {
-                            Label("Ritual Matutino", systemImage: "sunrise.fill")
-                                .font(.headline)
-                                .foregroundStyle(.black)
-                                .padding(.horizontal, 14)
-                                .padding(.vertical, 10)
-                                .background(.white.opacity(0.82))
-                                .clipShape(Capsule())
-                        }
-                        .contextMenu {
-                            Button(role: .destructive) {
-                                ritualMatutinoHiddenDayKey = ritualCurrentDayKey
-                            } label: {
-                                Label("Ocultar por hoy", systemImage: "eye.slash")
+                    //Botones de acceso rápido: Ritual Matutino / Agenda
+                    if shouldShowRitualButton || shouldShowAgendaButton {
+                        HStack(spacing: 10) {
+                            if shouldShowRitualButton {
+                                Button {
+                                    showRitualMatutino = true
+                                } label: {
+                                    Label("Ritual Matutino", systemImage: "sunrise.fill")
+                                        .font(.headline)
+                                        .foregroundStyle(.black)
+                                        .padding(.horizontal, 14)
+                                        .padding(.vertical, 10)
+                                        .background(.white.opacity(0.82))
+                                        .clipShape(Capsule())
+                                }
+                                .contextMenu {
+                                    Button(role: .destructive) {
+                                        ritualMatutinoHiddenDayKey = ritualCurrentDayKey
+                                    } label: {
+                                        Label("Ocultar por hoy", systemImage: "eye.slash")
+                                    }
+                                }
+                            }
+
+                            if shouldShowAgendaButton {
+                                Button {
+                                    if purchaseStatus || yorjPremium {
+                                        showAgenda = true
+                                    } else {
+                                        showPremium = true
+                                    }
+                                } label: {
+                                    Label("Agenda", systemImage: "calendar")
+                                        .font(.headline)
+                                        .foregroundStyle(.black)
+                                        .padding(.horizontal, 14)
+                                        .padding(.vertical, 10)
+                                        .background(.white.opacity(0.82))
+                                        .clipShape(Capsule())
+                                }
+                                .contextMenu {
+                                    Button(role: .destructive) {
+                                        showAgendaButtonInHome = false
+                                    } label: {
+                                        Label("Ocultar", systemImage: "eye.slash")
+                                    }
+                                }
                             }
                         }
                     }
@@ -227,6 +269,12 @@ struct Home: View {
         }
         .sheet(isPresented: $showRitualMatutino) {
             MorningRitualMainView()
+        }
+        .sheet(isPresented: $showAgenda) {
+            AgendaMainView()
+        }
+        .sheet(isPresented: $showPremium) {
+            PurchaseView()
         }
         
     }
@@ -449,4 +497,3 @@ struct AddNotasViewInbuilt: View {
 #Preview {
     ContentView()
 }
-

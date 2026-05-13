@@ -26,6 +26,7 @@ struct Ajustes: View {
     
     //Permite mostrar/Ocultar Metas en Home
     @AppStorage("MostrarMetasEnHome") var MostrarMetasEnHome: Bool = false
+    @AppStorage("Home_ShowAgendaButton") var showAgendaButtonInHome: Bool = true
 
     @State private var showSheetPremiumView: Bool = false
     @State private var showCardioMusicImporter: Bool = false
@@ -597,6 +598,13 @@ struct Ajustes: View {
                         }
                         .padding(.horizontal, 30)
                         .padding(.bottom, 20)
+
+                        VStack(alignment: .leading){
+                            Text("Agenda").font(.system(size: 22)).foregroundStyle(.orange)
+                            Toggle("Mostrar botón Agenda en Home", isOn: self.$showAgendaButtonInHome)
+                        }
+                        .padding(.horizontal, 30)
+                        .padding(.bottom, 20)
                         
                         //Habilita una sección para recuperar la contraseña. Esta sección solo esta disponible en dispositivos con biometria y si ya previamente han almacenado una contraseña
                         if BiometryCheckerSupport.checkBiometricSupport() == .available {
@@ -888,10 +896,6 @@ struct Ajustes: View {
             //🔶🔶🔶🔶🔶🔶
             #else //iOS,ipadOS.... NO macOS
                 Form{
-                    
-                    Section{
-                        Text("\(String(describing: self.yorjPremium))")
-                    }
                     
                     Section("Tamaño de letra"){
                         HStack{
@@ -1284,6 +1288,10 @@ struct Ajustes: View {
 
                         Toggle("Usar música personal en sesión", isOn: $useCustomCoherenceMusicInSession)
                             .disabled(CardioCoherenceCustomMusicStore.currentCustomMusicURL() == nil)
+                    }
+
+                    Section("Agenda") {
+                        Toggle("Mostrar botón Agenda en Home", isOn: self.$showAgendaButtonInHome)
                     }
                     
                     //Metas

@@ -54,10 +54,13 @@ final class NotasModel : ObservableObject  {
     /// - Returns : devuelve  true si éxito, false si error
     func addNote(nota : String, title : String = "", isFav : Bool = false)->Bool {
         let entity = Notas(context: self.context)
+        let now = Date()
         entity.id = UUID().uuidString
         entity.title = title
         entity.nota = nota
         entity.isfav = isFav
+        entity.setValue(now, forKey: "fechaCreacion")
+        entity.setValue(now, forKey: "fechaModificacion")
    
         if self.context.hasChanges {
             do {
@@ -90,9 +93,13 @@ final class NotasModel : ObservableObject  {
     ///  - Returns : true si éxito, false otherwise
     func updateNota(NotaID : String, newTitle : String, newNota : String, isfav : Bool = false)->Bool{
         let row = getEntityRow(value: NotaID)
+        if row.value(forKey: "fechaCreacion") as? Date == nil {
+            row.setValue(Date(), forKey: "fechaCreacion")
+        }
         row.title = newTitle
         row.nota = newNota
         row.isfav = isfav
+        row.setValue(Date(), forKey: "fechaModificacion")
         do {
             try  self.context.save()
             return true

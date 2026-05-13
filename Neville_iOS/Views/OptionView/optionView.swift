@@ -27,6 +27,7 @@ fileprivate enum TipeViewOptionTab: String, Identifiable {
     case ritualMatutino
     case lectorEtiquetas
     case cardioCoherencia
+    case agenda
 
     case autorNeville
     case autorJoeDispenza
@@ -106,6 +107,13 @@ struct optionView: View {
                         Button("Lienzo") { self.showView = .lienzo }
                         Button("Recordatorios") { self.showView = .reminder }
                         Button("Metas") { self.showView = .metas }
+                        Button("Agenda") {
+                            if self.purchaseStatus || self.yorjPremium {
+                                self.showView = .agenda
+                            } else {
+                                self.showView = .premium
+                            }
+                        }
                         Button("Lector de Etiquetas") { self.showView = .lectorEtiquetas }
                         Button("Notas") { self.showView = .notas }
                         Button("Espacio de calma") {
@@ -237,6 +245,8 @@ struct optionView: View {
                     ReminderListView()
                 case .metas:
                     GoalsListView()
+                case .agenda:
+                    AgendaMainView()
                 case .enciclopedia:
                     EnciclopediaListView()
                 case .espacioCalma:
@@ -259,7 +269,7 @@ struct optionView: View {
                     GamePLay()
                 case .videosTutoriales:
                     VStack {
-                        Text("Lista de Videos Tutoriales de la las funciones extendidas")
+                        Text("Lista de Videos Tutoriales de las funciones extendidas")
                     }
                 }
             }

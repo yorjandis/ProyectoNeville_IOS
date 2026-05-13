@@ -71,10 +71,13 @@ struct CrearNotaIntent : AppIntent, ProvidesDialog{
         do {
 
             let entity = Notas(context: context)
+            let now = Date()
             entity.id = UUID().uuidString
             entity.title = titulo
             entity.nota = nota
             entity.isfav = false
+            entity.setValue(now, forKey: "fechaCreacion")
+            entity.setValue(now, forKey: "fechaModificacion")
 
             try context.save()
             
@@ -97,6 +100,4 @@ struct CrearNotaIntent : AppIntent, ProvidesDialog{
     
     
 }
-
-
 

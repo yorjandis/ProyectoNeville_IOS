@@ -213,6 +213,9 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				ModelData.xcdatamodeld,
+				Models/Agenda/AgendaModels.swift,
+				Models/Agenda/AgendaRepository.swift,
+				Models/Agenda/AgendaViewModel.swift,
 				Models/AjustesModel/settingModel.swift,
 				Models/AppCons/AppCons.swift,
 				Models/BiometricSupport/BiometrySupport.swift,
@@ -1170,6 +1173,8 @@
 				Views/AdminPassword/ChangePasswordView.swift,
 				Views/AdminPassword/CreatePasswordView.swift,
 				Views/AdminPassword/LogginView.swift,
+				Views/Agenda/AgendaEditorView.swift,
+				Views/Agenda/AgendaMainView.swift,
 				Views/Ajustes/Ajustes.swift,
 				Views/CaracteristicasApp/Features.swift,
 				Views/Coherencia/CardioCoherenceConstants.swift,
@@ -1282,6 +1287,7 @@
 				Intens/AbrirDiarioIntent.swift,
 				Intens/AbrirNotasItent.swift,
 				Intens/CrearEntradaDiarioIntent.swift,
+				Intens/CrearFraseCalmaIntent.swift,
 				Intens/CrearFraseIntent.swift,
 				Intens/CrearNotaIntent.swift,
 				Intens/GetRandomConfIntent.swift,

@@ -66,6 +66,8 @@
         <relationship name="units" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="UnitEntity" inverseName="goal" inverseEntity="UnitEntity"/>
     </entity>
     <entity name="Notas" representedClassName="Notas" syncable="YES" codeGenerationType="class">
+        <attribute name="fechaCreacion" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="fechaModificacion" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" attributeType="String" defaultValueString=""/>
         <attribute name="isfav" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="nota" attributeType="String" defaultValueString=""/>
@@ -113,5 +115,21 @@
         <attribute name="intention" optional="YES" attributeType="String"/>
         <attribute name="mentalClarityScore" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="predominantEmotion" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="AgendaItemEntity" representedClassName="AgendaItemEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="titulo" optional="YES" attributeType="String"/>
+        <attribute name="fechaCreacion" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="fechaModificacion" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="nota" optional="YES" attributeType="String"/>
+        <attribute name="fechaActividad" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="hora" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="lugar" optional="YES" attributeType="String"/>
+        <attribute name="contenido" optional="YES" attributeType="String"/>
+        <attribute name="prioridad" optional="YES" attributeType="String"/>
+        <attribute name="colorHex" optional="YES" attributeType="String"/>
+        <attribute name="completada" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="recordatorioActivo" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="reminderID" optional="YES" attributeType="String"/>
     </entity>
 </model>

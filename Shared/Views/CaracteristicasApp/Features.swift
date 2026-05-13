@@ -46,11 +46,22 @@ struct Features: View {
                             Text("☘️ Diario Personal para registrar nuestras experiencias y hechos de cada día. Muy útil para llevar un registro de nuestras asunciones, deseos y experiencias con estas enseñanzas y nuestra vida.")
                             
                             //Metas:
-                            Text("☘️ Metas permite crear objetivos y seguir su progreso. Cada objetivo es creado con la información necesaria para que pueda lograrse de manera óptima. Puedes ajustar parámetros como los días y la frecuencia que tomará lograr el objetivo. También se puede elegir entre un amplio catálogo de hábitos saludables y programas de empoderamiento y convertirlos en objetivos a alcanzar.")
+                            Text("☘️ Metas permite crear objetivos y seguir su progreso. Cada objetivo es creado con la información necesaria para que pueda lograrse de manera óptima.")
                             
                             //Recordatorios:
-                            Text("☘️ Los recordatorios son una forma de programar avisos para no olvidarse de nada. Además resultan útiles para sesiones de meditación, entrenamiento, etc")
+                            Text("☘️ Recordatorios: Los recordatorios son una forma de programar avisos para no olvidarse de nada. Además resultan útiles para sesiones de meditación, entrenamiento, etc")
                             
+                            //Ritual Matutino:
+                            Text("☘️ Ritual matutino: Una forma de organizar intencionalmente tu día y mentaner el foco en el presente.")
+                            
+                            //Espacio Calma:
+                            Text("☘️ Espacio Calma: Una experiencia inmersiva para relajarte y desconectarte. Ayuda a disminuir el estress y la ansiedad.")
+                            
+                            //Lector de Etiquetas:
+                            Text("☘️ Lector de Etiquetas: Ofrece información sobre alimentos y concejos de uso, leyendo su código de barras.")
+                            
+                            //Coherencia Cardio cerebral:
+                            Text("☘️ Coherencia Cardio-Cerebral: Asistente de guía para entrar en estado de coherencia entre corazón y cerebro.")
                             
                             //Evaluación:
                             Text("☘️ Evaluación: Un juego de elegir la respuesta correcta/incorrecta. Nos ayuda a consolidar y repasar lo aprendido en estas enseñansas. Las preguntas pueden tener doble sentido y ser sutiles para hacer más desafiente su interpretación.")
@@ -146,7 +157,7 @@ struct Features: View {
             #endif
         }
         .background{
-            LinearGradient(colors: [ .gray.opacity(0.4),.blue.opacity(0.2) ], startPoint: .topLeading, endPoint: .bottomTrailing)
+            LinearGradient.FondoOscuro()
         }
            
       

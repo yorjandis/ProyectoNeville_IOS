@@ -885,8 +885,9 @@ struct CardioCoherenceMainView: View {
                     .lineLimit(4...8)
                     .padding(10)
                     .frame(maxWidth: .infinity, minHeight: 110, alignment: .topLeading)
-                    .background(.white.opacity(0.92))
-                    .foregroundStyle(.black)
+                    .background(Color.black.opacity(0.85))
+                    .foregroundStyle(.orange)
+                    .tint(.yellow)
                     .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
             }
             .padding()
@@ -1846,8 +1847,12 @@ private struct BreathingOrbView: View {
             )
             let widthScale = CardioCoherenceConstants.Rosette.widthScaleMin + ((CardioCoherenceConstants.Rosette.widthScaleMax - CardioCoherenceConstants.Rosette.widthScaleMin) * breath)
             let lengthScale = CardioCoherenceConstants.Rosette.lengthScaleMin + ((CardioCoherenceConstants.Rosette.lengthScaleMax - CardioCoherenceConstants.Rosette.lengthScaleMin) * breath)
+            let rotationNormalized = (rotation / (2 * .pi))
+            let petalPhase = (CGFloat(petal) / CGFloat(max(1, outerCount))) + rotationNormalized + breath
+            let widthWave = sin(petalPhase * 2 * .pi)
+            let widthVariation = 1 + (widthWave * CardioCoherenceConstants.Rosette.petalWidthVariationIntensity * breath)
             let lengthRadius = rosetteRadius * CardioCoherenceConstants.Rosette.petalLengthBaseFactor * lengthScale
-            let widthRadius = rosetteRadius * CardioCoherenceConstants.Rosette.petalWidthBaseFactor * widthScale
+            let widthRadius = rosetteRadius * CardioCoherenceConstants.Rosette.petalWidthBaseFactor * widthScale * max(0.25, widthVariation)
 
             var petal = Path(
                 ellipseIn: CGRect(

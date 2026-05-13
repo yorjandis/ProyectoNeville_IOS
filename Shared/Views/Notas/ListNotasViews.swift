@@ -30,12 +30,26 @@ struct ListNotasViews: View {
     @State var canOpenNotas = false
     @State var showAlert = false
     @State var alertMessage = ""
+    @State private var selectionMode = false
+    @State private var selectedNotaIDs: Set<String> = []
+    @State private var showConfirmBulkDelete = false
     
     
     
     private var filtered : [Notas] {
         if self.textFieldTitle.isEmpty {return self.modelNotas.notas}
         return self.modelNotas.notas.filter{$0.title?.localizedCaseInsensitiveContains(self.textFieldTitle) ?? false}
+    }
+
+    private var selectedNotas: [Notas] {
+        self.modelNotas.notas.filter { nota in
+            guard let id = nota.id else { return false }
+            return selectedNotaIDs.contains(id)
+        }
+    }
+
+    private var canAccessNotasContent: Bool {
+        canOpenNotas == true || UserDefaults.standard.bool(forKey: AppCons.UD_setting_NotasFaceID) == false
     }
  
     var body: some View {
@@ -53,7 +67,12 @@ struct ListNotasViews: View {
                         ScrollView(.vertical){
                             
                             ForEach (self.filtered.reversed()){ nota in
-                                cardNotas(nota: nota)
+                                cardNotas(
+                                    nota: nota,
+                                    selectionMode: self.selectionMode,
+                                    isSelected: self.selectedNotaIDs.contains(nota.id ?? ""),
+                                    onSelectionToggle: { toggleSelection(for: nota) }
+                                )
                                     .environmentObject(self.modelNotas)
                             }
                             #if os(macOS)
@@ -74,6 +93,9 @@ struct ListNotasViews: View {
                         
 
                             Spacer()
+                            if selectionMode && canAccessNotasContent {
+                                bulkActionsBar()
+                            }
                            
                             Divider()
                             HStack(spacing: 30){
@@ -138,21 +160,31 @@ struct ListNotasViews: View {
                         
                         ToolbarItem {
                             Button{
+                                guard !selectionMode else { return }
                                 #if os(macOS)
-                                
                                 showWindow(for: AddNotasView(),
                                            environmentObjects: [self.modelNotas],
                                            title: "Crear Nota",
                                            size: AppCons.windows_size_content,
                                            isModal: false
                                 )
-                                
                                 #else
                                 showAddNoteView = true
                                 #endif
                                 
                             }label: {
                                 Image(systemName: "plus")
+                            }
+                        }
+
+                        ToolbarItem {
+                            Button(selectionMode ? "Cancelar" : "Seleccionar") {
+                                withAnimation {
+                                    selectionMode.toggle()
+                                    if !selectionMode {
+                                        selectedNotaIDs.removeAll()
+                                    }
+                                }
                             }
                         }
                         
@@ -191,6 +223,7 @@ struct ListNotasViews: View {
                             
                             ToolbarItem {
                                 Button{
+                                    guard !selectionMode else { return }
                                     #if os(macOS)
                                     
                                     showWindow(for: AddNotasView(),
@@ -205,6 +238,17 @@ struct ListNotasViews: View {
                                     #endif
                                 }label: {
                                     Image(systemName: "plus")
+                                }
+                            }
+
+                            ToolbarItem {
+                                Button(selectionMode ? "Cancelar" : "Seleccionar") {
+                                    withAnimation {
+                                        selectionMode.toggle()
+                                        if !selectionMode {
+                                            selectedNotaIDs.removeAll()
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -242,6 +286,14 @@ struct ListNotasViews: View {
                 .alert(isPresented: $showAlert){
                     Alert(title: Text("Notas"), message: Text(alertMessage))
                 }
+                .confirmationDialog("¿Eliminar notas seleccionadas?", isPresented: $showConfirmBulkDelete) {
+                    Button("Eliminar \(selectedNotaIDs.count) nota(s)", role: .destructive) {
+                        applyDeleteToSelected()
+                    }
+                    Button("Cancelar", role: .cancel) {}
+                } message: {
+                    Text("Esta acción no se puede deshacer.")
+                }
                 
             
         }
@@ -258,6 +310,132 @@ struct ListNotasViews: View {
         }
         
         
+    }
+
+    @ViewBuilder
+    func bulkActionsBar() -> some View {
+        VStack(spacing: 10) {
+            HStack {
+                Text("Seleccionadas: \(selectedNotaIDs.count)")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                Spacer()
+                Button(selectedNotaIDs.count == filtered.count && !filtered.isEmpty ? "Deseleccionar Todas" : "Seleccionar Todas") {
+                    withAnimation {
+                        toggleSelectAllFiltered()
+                    }
+                }
+                .foregroundStyle(.black).bold()
+                .tint(.gray)
+                .buttonStyle(.bordered)
+            }
+
+            HStack(spacing: 8) {
+                Button("Eliminar") {
+                    showConfirmBulkDelete = true
+                }
+                .foregroundStyle(.black).bold()
+                .buttonStyle(.bordered)
+                .tint(.red)
+                .disabled(selectedNotaIDs.isEmpty)
+
+                Button("A Frases") {
+                    applyPassToFrases()
+                }
+                .foregroundStyle(.black).bold()
+                .buttonStyle(.bordered)
+                .tint(.green)
+                .disabled(selectedNotaIDs.isEmpty)
+
+                Button("A Espacio Calma") {
+                    applyPassToCalm()
+                }
+                .foregroundStyle(.black).bold()
+                .buttonStyle(.bordered)
+                .tint(.green)
+                .disabled(selectedNotaIDs.isEmpty)
+            }
+        }
+        .padding(.horizontal, 10)
+        .padding(.top, 8)
+    }
+
+    private func toggleSelection(for nota: Notas) {
+        guard selectionMode, let id = nota.id else { return }
+        if selectedNotaIDs.contains(id) {
+            selectedNotaIDs.remove(id)
+        } else {
+            selectedNotaIDs.insert(id)
+        }
+    }
+
+    private func toggleSelectAllFiltered() {
+        let allFilteredIDs = Set(filtered.compactMap { $0.id })
+        if !allFilteredIDs.isEmpty && selectedNotaIDs.isSuperset(of: allFilteredIDs) {
+            selectedNotaIDs.subtract(allFilteredIDs)
+        } else {
+            selectedNotaIDs.formUnion(allFilteredIDs)
+        }
+    }
+
+    private func applyDeleteToSelected() {
+        let toDelete = selectedNotas
+        for nota in toDelete {
+            modelNotas.deleteNota(nota: nota)
+        }
+        selectedNotaIDs.removeAll()
+        selectionMode = false
+        modelNotas.getAllNotasToModel()
+        alertMessage = "\(toDelete.count) nota(s) eliminada(s)."
+        showAlert = true
+    }
+
+    private func applyPassToFrases() {
+        var inserted = 0
+        for nota in selectedNotas {
+            let text = (nota.nota ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !text.isEmpty else { continue }
+            if FrasesModel.shared.AddFrase(frase: text, autor: "personal") {
+                inserted += 1
+            }
+        }
+        selectedNotaIDs.removeAll()
+        selectionMode = false
+        alertMessage = "\(inserted) nota(s) pasada(s) a Frases personales."
+        showAlert = true
+    }
+
+    private func applyPassToCalm() {
+        let context = CoreDataController.shared.context
+        guard let model = context.persistentStoreCoordinator?.managedObjectModel,
+              model.entitiesByName["CalmUserPhrase"] != nil,
+              let entity = NSEntityDescription.entity(forEntityName: "CalmUserPhrase", in: context) else {
+            alertMessage = "No se encontró la entidad de frases de Espacio Calma."
+            showAlert = true
+            return
+        }
+
+        var inserted = 0
+        for nota in selectedNotas {
+            let text = (nota.nota ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !text.isEmpty else { continue }
+            let object = NSManagedObject(entity: entity, insertInto: context)
+            object.setValue(UUID(), forKey: "id")
+            object.setValue(text, forKey: "phrase")
+            object.setValue(Date(), forKey: "createdAt")
+            inserted += 1
+        }
+
+        do {
+            try context.save()
+            selectedNotaIDs.removeAll()
+            selectionMode = false
+            alertMessage = "\(inserted) nota(s) pasada(s) a Espacio Calma."
+        } catch {
+            context.rollback()
+            alertMessage = "No se pudo guardar en Espacio Calma."
+        }
+        showAlert = true
     }
     
 
@@ -341,6 +519,9 @@ struct ListNotasViews: View {
 //Card notas:
 struct cardNotas: View{
     let nota : Notas?
+    let selectionMode: Bool
+    let isSelected: Bool
+    let onSelectionToggle: () -> Void
     @EnvironmentObject var modelNotas : NotasModel
     @State private var expandText = false
     @State private var isfav = false
@@ -349,13 +530,49 @@ struct cardNotas: View{
     //Opciones:
     @State private var showConfirmDialogDeleteNota = false
     @State private var showUpdateNoteView = false
+    @State private var showCalmAlert = false
+    @State private var calmAlertMessage = ""
     
     @AppStorage(AppCons.UD_setting_fontListaSize)  var fontSizeLista : Int = 20
+
+    private static let metadataDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        formatter.timeStyle = .short
+        return formatter
+    }()
+
+    private func formattedMetadata(for nota: Notas?) -> String {
+        guard let nota else { return "" }
+        let createdRaw = nota.value(forKey: "fechaCreacion") as? Date
+        let modifiedRaw = nota.value(forKey: "fechaModificacion") as? Date
+        let created = createdRaw ?? modifiedRaw
+        let modified = modifiedRaw ?? createdRaw
+
+        if created == nil, modified == nil {
+            return ""
+        }
+
+        var parts: [String] = []
+        if let created {
+            parts.append("Creada: \(Self.metadataDateFormatter.string(from: created))")
+        }
+        if let modified {
+            parts.append("Modificada: \(Self.metadataDateFormatter.string(from: modified))")
+        }
+        return parts.joined(separator: " · ")
+    }
 
     
     var body: some View{
         VStack(){
             HStack{
+                if selectionMode {
+                    Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                        .foregroundStyle(isSelected ? .green : .secondary)
+                        .font(.title3)
+                        .padding(.leading, 4)
+                }
 
                 Text(nota?.title ?? "")
                     .bold()
@@ -370,12 +587,17 @@ struct cardNotas: View{
                     .bold()
                     .padding(8)
                     .onTapGesture(count: 2) {
+                        guard !selectionMode else { return }
                         withAnimation {
                             showUpdateNoteView = true
                         }
                         
                     }
                     .onTapGesture {
+                        guard !selectionMode else {
+                            onSelectionToggle()
+                            return
+                        }
                         withAnimation {
                             expandNota.toggle()
                         }
@@ -394,6 +616,7 @@ struct cardNotas: View{
                         }
                 }
 
+                if !selectionMode {
                 Menu{
                         Text("< \(nota?.title ?? "") >")
                     #if os(macOS)
@@ -440,7 +663,7 @@ struct cardNotas: View{
                         
                         }label:{
                             Label(nota!.isfav ? "Quitar Favorito" : "Hacer Favorito", systemImage: nota!.isfav ? "heart.slash" : "heart")
-                        }
+                    }
                     NavigationLink{
                         let isfav = nota!.isfav
                         let texto = "\(AppCons.zspNota)\(nota!.title ?? "")::\(nota!.nota ?? "")::\(isfav == true  ? "si" : "no")"
@@ -448,6 +671,13 @@ struct cardNotas: View{
                     }label:{
                         Label("Generar QR...", systemImage: "qrcode")
                     }
+
+                    Button {
+                        self.addCurrentNoteToCalmList()
+                    } label: {
+                        Label("Añadir a Espacio Calma", systemImage: "leaf")
+                    }
+                    .buttonStyle(.bordered)
                     
                     #if os(macOS)
                     Button{
@@ -612,32 +842,18 @@ struct cardNotas: View{
                         .tint(.primary)
                         .padding(15)
                 }
-                
-            }
-            .contentShape(Rectangle())
-            .onTapGesture {
-                withAnimation {
-                    expandNota.toggle()
                 }
-                
-            }
-            .onAppear{
-                isfav = nota!.isfav
-            }
-            //Dialogo de confirmación para elimnar una nota
-            .confirmationDialog("Esta seguro?", isPresented: $showConfirmDialogDeleteNota){
-                Button("Eliminar Nota", role: .destructive){
-                    
-                    withAnimation {
-                        modelNotas.deleteNota(nota: nota!)
-                        self.modelNotas.getAllNotasToModel()
-                    }
 
+            }
+            if !formattedMetadata(for: nota).isEmpty {
+                HStack {
+                    Text(formattedMetadata(for: nota))
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                        .padding(.horizontal, 8)
+                    Spacer()
                 }
-            } message: {
-                Text("La nota será removida!!!")
             }
-
             if expandNota {
                     //Divider()
                     HStack{
@@ -656,9 +872,41 @@ struct cardNotas: View{
                                     endPoint: .bottom
                                 )
                             }
-                        
+                
                 }
             }
+        }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            guard !selectionMode else {
+                onSelectionToggle()
+                return
+            }
+            withAnimation {
+                expandNota.toggle()
+            }
+            
+        }
+        .onAppear{
+            isfav = nota!.isfav
+        }
+        //Dialogo de confirmación para elimnar una nota
+        .confirmationDialog("Esta seguro?", isPresented: $showConfirmDialogDeleteNota){
+            Button("Eliminar Nota", role: .destructive){
+                
+                withAnimation {
+                    modelNotas.deleteNota(nota: nota!)
+                    self.modelNotas.getAllNotasToModel()
+                }
+
+            }
+        } message: {
+            Text("La nota será removida!!!")
+        }
+        .alert("Espacio Calma", isPresented: $showCalmAlert) {
+            Button("Aceptar", role: .cancel) {}
+        } message: {
+            Text(calmAlertMessage)
         }
         .frame(maxWidth: .infinity)
         .background(.ultraThinMaterial)
@@ -666,11 +914,36 @@ struct cardNotas: View{
         .padding(.horizontal, 10)
         .padding(.vertical, 8)
     }
+
+    private func addCurrentNoteToCalmList() {
+        guard let text = nota?.nota?.trimmingCharacters(in: .whitespacesAndNewlines), !text.isEmpty else {
+            self.calmAlertMessage = "La nota está vacía."
+            self.showCalmAlert = true
+            return
+        }
+
+        let context = CoreDataController.shared.context
+        guard let model = context.persistentStoreCoordinator?.managedObjectModel,
+              model.entitiesByName["CalmUserPhrase"] != nil,
+              let entity = NSEntityDescription.entity(forEntityName: "CalmUserPhrase", in: context) else {
+            self.calmAlertMessage = "No se encontró la entidad de frases de Espacio Calma."
+            self.showCalmAlert = true
+            return
+        }
+
+        let object = NSManagedObject(entity: entity, insertInto: context)
+        object.setValue(UUID(), forKey: "id")
+        object.setValue(text, forKey: "phrase")
+        object.setValue(Date(), forKey: "createdAt")
+
+        do {
+            try context.save()
+            self.calmAlertMessage = "Frase agregada a Espacio Calma."
+        } catch {
+            context.rollback()
+            self.calmAlertMessage = "No se pudo guardar la frase en Espacio Calma."
+        }
+
+        self.showCalmAlert = true
+    }
 }
-
-
-
-
-
-
-

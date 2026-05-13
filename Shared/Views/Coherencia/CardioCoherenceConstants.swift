@@ -184,7 +184,7 @@ enum CardioCoherenceConstants {
         /// Radio minimo de la roseta cuando esta cerrada.
         static let minRadiusFactor: CGFloat = 0.08
         /// Radio maximo de la roseta cuando esta abierta.
-        static let maxRadiusFactor: CGFloat = 1.6
+        static let maxRadiusFactor: CGFloat = 1.55
         /// Grados totales de rotacion dinamica de la roseta.
         static let rotationDegrees: CGFloat = 90.0
         /// Numero de petalos.
@@ -203,6 +203,9 @@ enum CardioCoherenceConstants {
         static let petalLengthBaseFactor: CGFloat = 0.33
         /// Factor base del radio ancho del petalo.
         static let petalWidthBaseFactor: CGFloat = 0.33
+        /// Intensidad de variación dinámica del ancho de pétalo durante rotación/desenrollado.
+        /// Ajuste fino: 0.0 desactiva la variación; valores ~0.12...0.30 generan efecto orgánico.
+        static let petalWidthVariationIntensity: CGFloat = 0.22
         /// Color de relleno del petalo.
         static let petalFillColor = Color(red: 0.29, green: 0.78, blue: 0.66, opacity: 0.66)
         /// Color de trazo del petalo.

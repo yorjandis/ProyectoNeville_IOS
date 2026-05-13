@@ -59,10 +59,13 @@ struct AddNota : View {
                             }else{
                                 //Crear una entidad Nota
                                 let newNota = Notas(context: self.context)
+                                let now = Date()
                                 newNota.id = UUID().uuidString
                                 newNota.title = title
                                 newNota.nota = texto
                                 newNota.isfav = isfav
+                                newNota.setValue(now, forKey: "fechaCreacion")
+                                newNota.setValue(now, forKey: "fechaModificacion")
                                 
                                 do {
                                     try self.context.save()
