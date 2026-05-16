@@ -56,9 +56,9 @@ struct ListNotasViews: View {
         NavigationStack {
             ZStack{
                 
-                LinearGradient.JadeProfundo()
                 
-                LinearGradient(colors: GradientesPreselect.G_natural_1.getColors,
+                
+                LinearGradient(colors: GradientesPreselect.G_natural_3.getColors,
                                startPoint: .top, endPoint: .bottom)
                     .ignoresSafeArea()
                 
@@ -839,7 +839,7 @@ struct cardNotas: View{
    
                 }label: {
                     Image(systemName: "ellipsis")
-                        .tint(.primary)
+                        .tint(.black)
                         .padding(15)
                 }
                 }
@@ -866,11 +866,7 @@ struct cardNotas: View{
                             .padding(.vertical, 4)
                             .padding(.horizontal, 5)
                             .background{
-                                LinearGradient(
-                                    gradient: Gradient(colors: GradientesPreselect.G_natural_5.getColors),
-                                    startPoint: .top,
-                                    endPoint: .bottom
-                                )
+                                LinearGradient(colors: [.white.opacity(0.8), .white.opacity(0.7)], startPoint: .top, endPoint: .bottom)
                             }
                 
                 }
@@ -909,7 +905,8 @@ struct cardNotas: View{
             Text(calmAlertMessage)
         }
         .frame(maxWidth: .infinity)
-        .background(.ultraThinMaterial)
+        //.background(.ultraThinMaterial)
+        .background(LinearGradient(colors: [.white.opacity(0.8), .white.opacity(0.7)], startPoint: .top, endPoint: .bottom))
         .clipShape(RoundedRectangle(cornerRadius: 10))
         .padding(.horizontal, 10)
         .padding(.vertical, 8)

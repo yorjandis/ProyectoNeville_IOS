@@ -80,6 +80,17 @@ struct Shortcuts: AppShortcutsProvider {
             shortTitle: "Abrir Conferencia",
             systemImageName: "doc.plaintext.fill"
         )
+
+        //Atajo para crear una entrada en Agenda:
+        AppShortcut(
+            intent: CrearEntradaAgendaIntent(),
+            phrases: [
+                "en \(.applicationName) crea una actividad en agenda",
+                "en \(.applicationName) crea entrada en agenda"
+            ],
+            shortTitle: "Crear Entrada Agenda",
+            systemImageName: "calendar.badge.plus"
+        )
     }
 }
 

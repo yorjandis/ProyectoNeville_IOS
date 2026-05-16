@@ -128,8 +128,15 @@ struct La_LeyApp: App {
                     }
             }
             .task {
+                if CoreDataController.shared.persistentContainer.persistentStoreCoordinator.persistentStores.isEmpty {
+                    do {
+                        try await persistentStore.cargarStores()
+                    } catch {
+                        msg("❌ Error al cargar Core Data en macOS: \(error.localizedDescription)")
+                    }
+                }
 
-                    self.frasesModel.getAllFrases() //Carga las frases
+                self.frasesModel.getAllFrases() //Carga las frases
                 
                 
                 self.securityModel.canOpenDiario = false //Al iniciar la ventana se reinicia la variabe que da acceso al diario.

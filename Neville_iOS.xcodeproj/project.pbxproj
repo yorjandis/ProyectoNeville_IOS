@@ -1173,6 +1173,7 @@
 				Views/AdminPassword/ChangePasswordView.swift,
 				Views/AdminPassword/CreatePasswordView.swift,
 				Views/AdminPassword/LogginView.swift,
+				Views/Agenda/AgendaCalendarBackgroundPreview.swift,
 				Views/Agenda/AgendaEditorView.swift,
 				Views/Agenda/AgendaMainView.swift,
 				Views/Ajustes/Ajustes.swift,
@@ -1286,6 +1287,7 @@
 			membershipExceptions = (
 				Intens/AbrirDiarioIntent.swift,
 				Intens/AbrirNotasItent.swift,
+				Intens/CrearEntradaAgendaIntent.swift,
 				Intens/CrearEntradaDiarioIntent.swift,
 				Intens/CrearFraseCalmaIntent.swift,
 				Intens/CrearFraseIntent.swift,

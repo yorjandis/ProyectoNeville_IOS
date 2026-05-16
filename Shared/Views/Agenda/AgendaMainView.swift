@@ -1,9 +1,17 @@
+#if os(iOS) || os(macOS)
 import SwiftUI
+import Combine
 
 enum AgendaUIConstants {
     static let calendarBackgroundOpacity: Double = 0.5
     static let activityCardBackgroundOpacity: Double = 0.5
     static let priorityBackgroundOpacity: Double = 0.7
+
+#if os(macOS)
+    static let activityCardCornerRadius: CGFloat = 10
+#else
+    static let activityCardCornerRadius: CGFloat = 10
+#endif
 }
 
 struct AgendaMainView: View {
@@ -21,9 +29,81 @@ struct AgendaMainView: View {
     @State private var bulkDeleteItems: [AgendaItemData] = []
     @State private var multiSelectionMode = false
     @State private var selectedItemsIDs: Set<UUID> = []
+    @Environment(\.scenePhase) private var scenePhase
 
     @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
     @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) private var yorjPremium: Bool = false
+
+    private var menuGestion: some View {
+        let monthItems = itemsInDisplayedMonth()
+        let weekItems = itemsInActiveWeek()
+        let listedItems = currentListedItems()
+        let hasDeleteActions = !monthItems.isEmpty || !weekItems.isEmpty
+        let hasSelectionActions = !listedItems.isEmpty
+
+        return Menu {
+            Button("Recordatorios") {
+                showReminderManager = true
+            }
+
+            if !monthItems.isEmpty {
+                Button("Eliminar mes actual", role: .destructive) {
+                    bulkDeleteItems = monthItems
+                    showBulkDeleteConfirmation = true
+                }
+            }
+            if !weekItems.isEmpty {
+                Button("Eliminar semana actual", role: .destructive) {
+                    bulkDeleteItems = weekItems
+                    showBulkDeleteConfirmation = true
+                }
+            }
+
+            if hasDeleteActions && hasSelectionActions {
+                Divider()
+            }
+
+            if hasSelectionActions {
+                Button(multiSelectionMode ? "Salir selección múltiple" : "Selección múltiple") {
+                    multiSelectionMode.toggle()
+                    if !multiSelectionMode { selectedItemsIDs.removeAll() }
+                }
+
+                if multiSelectionMode {
+                    Button("Eliminar seleccionadas", role: .destructive) {
+                        bulkDeleteItems = selectedListedItems()
+                        showBulkDeleteConfirmation = !bulkDeleteItems.isEmpty
+                    }
+                    Button("Marcar seleccionadas completadas") {
+                        markSelectedAsCompleted()
+                    }
+                    Button("Quitar modo check seleccionadas") {
+                        clearCheckModeForSelected()
+                    }
+                    Button("Activar recordatorios seleccionadas") {
+                        activateReminderForSelected()
+                    }
+                    Button("Desactivar recordatorios seleccionadas") {
+                        deactivateReminderForSelected()
+                    }
+                }
+            }
+
+            if !hasDeleteActions && !hasSelectionActions {
+                Text("Sin acciones disponibles")
+            }
+        } label: {
+            Image(systemName: "ellipsis.circle")
+        }
+    }
+
+    private var addButton: some View {
+        Button {
+            editorItem = viewModel.create(selectedDate: viewModel.selectedDate)
+        } label: {
+            Image(systemName: "plus")
+        }
+    }
 
     var body: some View {
         NavigationStack {
@@ -62,24 +142,54 @@ struct AgendaMainView: View {
                             .padding(.horizontal, 4)
                         }
 
-                        Picker("Filtro", selection: $viewModel.quickFilter) {
-                            ForEach(AgendaViewModel.QuickFilter.allCases) { filter in
-                                Text(filter.rawValue).tag(filter)
-                            }
-                        }
-                        .pickerStyle(.segmented)
-                        .tint(Color(red: 0.95, green: 0.67, blue: 0.37))
-                        .colorScheme(.light)
-                        .foregroundStyle(.black)
-                        .padding(.top, 4)
-
                         HStack(spacing: 10) {
+                            
                             Spacer()
                             
+                            Menu {
+                                ForEach(AgendaViewModel.QuickFilter.allCases) { filter in
+                                    Button {
+                                        viewModel.quickFilter = filter
+                                    } label: {
+                                        if viewModel.quickFilter == filter {
+                                            Label(filter.rawValue, systemImage: "checkmark")
+                                        } else {
+                                            Text(filter.rawValue)
+                                        }
+                                    }
+                                }
+                            } label: {
+                                HStack(spacing: 6) {
+                                    Text("Filtro")
+                                    Text(viewModel.quickFilter.rawValue)
+                                        .fontWeight(.semibold)
+                                }
+                                .font(.subheadline)
+                                .foregroundStyle(.black)
+            #if os(iOS)
+                    .padding(.horizontal, 0)
+#else
+                    .padding(.horizontal, 10)
+#endif
+                                .padding(.vertical, 8)
+                                .background(.white.opacity(0.55), in: RoundedRectangle(cornerRadius: 10))
+                            }
+                            .buttonStyle(.plain)
+
+                            
+
                             Text("Calendario")
                                 .font(.subheadline)
                                 .foregroundStyle(.black.opacity(0.75))
-                            
+                                .onTapGesture{
+                                    withAnimation(.easeInOut(duration: 0.2)) {
+                                        if isCalendarExpanded {
+                                            viewModel.quickFilter = .todos
+                                        }
+                                        isCalendarExpanded.toggle()
+                                    }
+                                }
+
                             Button {
                                 withAnimation(.easeInOut(duration: 0.2)) {
                                     if isCalendarExpanded {
@@ -96,6 +206,7 @@ struct AgendaMainView: View {
                             .accessibilityLabel(isCalendarExpanded ? "Ocultar calendario" : "Mostrar calendario")
                         }
                         .padding(.horizontal, 4)
+                        .padding(.top, 4)
 
                         if isCalendarExpanded {
                             customCalendarView
@@ -122,13 +233,16 @@ struct AgendaMainView: View {
                                 }
                             }
                         }
+                        .listStyle(.plain)
                         .scrollContentBackground(.hidden)
                     }
                     .padding(.horizontal, 10)
                 }
                 .navigationTitle("Agenda")
+#if os(iOS)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbarColorScheme(.light, for: .navigationBar)
+#endif
                 .tint(.black)
                 .toolbar {
                     ToolbarItem(placement: .principal) {
@@ -136,55 +250,24 @@ struct AgendaMainView: View {
                             .foregroundStyle(.black)
                             .font(.headline)
                     }
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        Button("Recordatorios") {
-                            showReminderManager = true
-                        }
-                    }
+#if os(iOS)
                     ToolbarItem(placement: .navigationBarTrailing) {
-                        Menu {
-                            Button("Eliminar mes actual", role: .destructive) {
-                                bulkDeleteItems = itemsInCurrentMonth()
-                                showBulkDeleteConfirmation = !bulkDeleteItems.isEmpty
-                            }
-                            Button("Eliminar semana actual", role: .destructive) {
-                                bulkDeleteItems = itemsInCurrentWeek()
-                                showBulkDeleteConfirmation = !bulkDeleteItems.isEmpty
-                            }
-                            Divider()
-                            Button(multiSelectionMode ? "Salir selección múltiple" : "Selección múltiple") {
-                                multiSelectionMode.toggle()
-                                if !multiSelectionMode { selectedItemsIDs.removeAll() }
-                            }
-                            if multiSelectionMode {
-                                Button("Eliminar seleccionadas", role: .destructive) {
-                                    bulkDeleteItems = selectedListedItems()
-                                    showBulkDeleteConfirmation = !bulkDeleteItems.isEmpty
-                                }
-                                Button("Marcar seleccionadas completadas") {
-                                    markSelectedAsCompleted()
-                                }
-                                Button("Quitar modo check seleccionadas") {
-                                    clearCheckModeForSelected()
-                                }
-                                Button("Activar recordatorios seleccionadas") {
-                                    activateReminderForSelected()
-                                }
-                                Button("Desactivar recordatorios seleccionadas") {
-                                    deactivateReminderForSelected()
-                                }
-                            }
-                        } label: {
-                            Image(systemName: "ellipsis.circle")
-                        }
+                        menuGestion
                     }
+#else
+                    ToolbarItem {
+                        menuGestion
+                    }
+#endif
+#if os(iOS)
                     ToolbarItem(placement: .navigationBarTrailing) {
-                        Button {
-                            editorItem = viewModel.create(selectedDate: viewModel.selectedDate)
-                        } label: {
-                            Image(systemName: "plus")
-                        }
+                        addButton
                     }
+#else
+                    ToolbarItem {
+                        addButton
+                    }
+#endif
                 }
                 .sheet(item: $editorItem) { item in
                     AgendaEditorView(baseItem: item) { updated in
@@ -198,6 +281,14 @@ struct AgendaMainView: View {
                 .onAppear {
                     viewModel.load()
                     displayedMonth = monthStart(of: viewModel.selectedDate)
+                }
+                .onReceive(Timer.publish(every: 6, on: .main, in: .common).autoconnect()) { _ in
+                    viewModel.load()
+                }
+                .onChange(of: scenePhase) { _, phase in
+                    if phase == .active {
+                        viewModel.load()
+                    }
                 }
                 .alert("Recordatorio", isPresented: $showReminderValidationAlert) {
                     Button("Aceptar", role: .cancel) {}
@@ -288,36 +379,123 @@ struct AgendaMainView: View {
                 Spacer()
                 Text(item.hora.formatted(date: .omitted, time: .shortened))
                     .foregroundStyle(.black.opacity(0.7))
+                Menu {
+                    Button("Editar") {
+                        editorItem = item
+                    }
+
+                    Menu("Prioridad") {
+                        ForEach(AgendaPriority.allCases) { priority in
+                            Button {
+                                var updated = item
+                                updated.prioridad = priority
+                                updated.fechaModificacion = Date()
+                                viewModel.save(updated)
+                            } label: {
+                                if item.prioridad == priority {
+                                    Label(priority.title, systemImage: "checkmark")
+                                } else {
+                                    Text(priority.title)
+                                }
+                            }
+                        }
+                    }
+
+                    Menu("Check") {
+                        Button {
+                            var updated = item
+                            updated.completada = true
+                            updated.fechaModificacion = Date()
+                            viewModel.save(updated)
+                        } label: {
+                            if item.completada == true {
+                                Label("Checkeado", systemImage: "checkmark")
+                            } else {
+                                Text("Checkeado")
+                            }
+                        }
+
+                        Button {
+                            var updated = item
+                            updated.completada = false
+                            updated.fechaModificacion = Date()
+                            viewModel.save(updated)
+                        } label: {
+                            if item.completada == false {
+                                Label("Activo", systemImage: "checkmark")
+                            } else {
+                                Text("Activo")
+                            }
+                        }
+
+                        Button {
+                            var updated = item
+                            updated.completada = nil
+                            updated.fechaModificacion = Date()
+                            viewModel.save(updated)
+                        } label: {
+                            if item.completada == nil {
+                                Label("Off", systemImage: "checkmark")
+                            } else {
+                                Text("Off")
+                            }
+                        }
+                    }
+
+                    Button(item.recordatorioActivo ? "Quitar recordatorio" : "Recordatorio") {
+                        let shouldEnable = !item.recordatorioActivo
+                        if shouldEnable, !viewModel.reminderCanBeEnabled(for: item) {
+                            reminderValidationMessage = "La hora seleccionada ya pasó. Ajusta la fecha u hora del recordatorio a un momento futuro para poder activarlo."
+                            showReminderValidationAlert = true
+                        } else {
+                            viewModel.updateReminder(for: item, enabled: shouldEnable)
+                        }
+                    }
+
+                    Button("Eliminar", role: .destructive) {
+                        itemPendingDelete = item
+                        showDeleteConfirmation = true
+                    }
+                } label: {
+                    Image(systemName: "ellipsis.circle")
+                        .foregroundStyle(.black.opacity(0.75))
+                }
+                .menuStyle(.borderlessButton)
             }
             if let completada = item.completada {
                 Text(completada ? "Completada" : "Activa")
                     .font(.body)
-                    .foregroundStyle(completada ? .green.opacity(0.85) : .black.opacity(0.65))
+                    .foregroundStyle(.black)
             }
             if !item.lugar.isEmpty {
                 Text("Lugar: \(item.lugar)")
                     .foregroundStyle(.black.opacity(0.85))
             }
-            if !item.contenido.isEmpty || !item.nota.isEmpty {
-                Text(cardDetailText(for: item))
-                    .font(.body)
-                    .foregroundStyle(.black.opacity(0.82))
-                    .lineLimit(expandedContentIDs.contains(item.id) ? nil : 1)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .transition(.opacity.combined(with: .move(edge: .top)))
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                        withAnimation(.spring(response: 0.32, dampingFraction: 0.86)) {
-                            if expandedContentIDs.contains(item.id) {
-                                expandedContentIDs.remove(item.id)
-                            } else {
-                                expandedContentIDs.insert(item.id)
-                            }
+            Text(cardDetailText(for: item).isEmpty ? " " : cardDetailText(for: item))
+                .font(.body)
+                .foregroundStyle(.black.opacity(0.82))
+                .lineLimit(expandedContentIDs.contains(item.id) ? nil : 1)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .transition(.opacity.combined(with: .move(edge: .top)))
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    guard !cardDetailText(for: item).isEmpty else { return }
+                    withAnimation(.spring(response: 0.32, dampingFraction: 0.86)) {
+                        if expandedContentIDs.contains(item.id) {
+                            expandedContentIDs.remove(item.id)
+                        } else {
+                            expandedContentIDs.insert(item.id)
                         }
                     }
-            }
+                }
         }
+#if os(iOS)
+        .frame(minHeight: fixedHeight ? 122 : 80, alignment: .top)
+#else
         .frame(minHeight: fixedHeight ? 122 : 0, alignment: .top)
+#endif
+        .padding(.horizontal, 10)
+        .padding(.vertical, 8)
         .animation(.spring(response: 0.32, dampingFraction: 0.86), value: expandedContentIDs.contains(item.id))
         .contentShape(Rectangle())
         .onTapGesture {
@@ -328,41 +506,23 @@ struct AgendaMainView: View {
                 selectedItemsIDs.insert(item.id)
             }
         }
-        .swipeActions(allowsFullSwipe: false) {
-            Button("Eliminar", role: .destructive) {
-                itemPendingDelete = item
-                showDeleteConfirmation = true
-            }
-            Button("Editar") {
-                editorItem = item
-            }
-            .tint(.indigo)
-            Button(checkActionTitle(for: item)) {
-                var updated = item
-                switch updated.completada {
-                case nil:
-                    updated.completada = true
-                case .some(true):
-                    updated.completada = false
-                case .some(false):
-                    updated.completada = nil
-                }
-                updated.fechaModificacion = Date()
-                viewModel.save(updated)
-            }
-            .tint(checkActionTint(for: item))
-            Button(item.recordatorioActivo ? "Quitar recordatorio" : "Recordatorio") {
-                let shouldEnable = !item.recordatorioActivo
-                if shouldEnable, !viewModel.reminderCanBeEnabled(for: item) {
-                    reminderValidationMessage = "La hora seleccionada ya pasó. Ajusta la fecha u hora del recordatorio a un momento futuro para poder activarlo."
-                    showReminderValidationAlert = true
-                } else {
-                    viewModel.updateReminder(for: item, enabled: shouldEnable)
-                }
-            }
-            .tint(.green)
-        }
-        .listRowBackground(backgroundColor(for: item.prioridad))
+#if os(iOS)
+        .padding(.vertical, 2)
+        .padding(.horizontal, 1)
+#else
+        .padding(.vertical, 3)
+        .padding(.horizontal, 4)
+#endif
+        .background(
+            RoundedRectangle(cornerRadius: AgendaUIConstants.activityCardCornerRadius, style: .continuous)
+                .fill(backgroundColor(for: item.prioridad))
+        )
+        .clipShape(RoundedRectangle(cornerRadius: AgendaUIConstants.activityCardCornerRadius, style: .continuous))
+#if os(iOS)
+        .listRowInsets(EdgeInsets(top: 2, leading: 0, bottom: 2, trailing: 0))
+#endif
+        .listRowSeparator(.hidden)
+        .listRowBackground(Color.clear)
     }
 
     private func currentListedItems() -> [AgendaItemData] {
@@ -377,20 +537,28 @@ struct AgendaMainView: View {
         return currentListedItems().filter { ids.contains($0.id) }
     }
 
-    private func itemsInCurrentMonth() -> [AgendaItemData] {
+    private func itemsInDisplayedMonth() -> [AgendaItemData] {
         let calendar = Calendar.current
-        let now = Date()
-        let start = calendar.date(from: calendar.dateComponents([.year, .month], from: now)) ?? now
-        let end = calendar.date(byAdding: .month, value: 1, to: start) ?? now
+        let anchor = displayedMonth
+        let start = calendar.date(from: calendar.dateComponents([.year, .month], from: anchor)) ?? anchor
+        let end = calendar.date(byAdding: .month, value: 1, to: start) ?? anchor
         return viewModel.items.filter { $0.fechaActividad >= start && $0.fechaActividad < end }
     }
 
-    private func itemsInCurrentWeek() -> [AgendaItemData] {
+    private func itemsInActiveWeek() -> [AgendaItemData] {
         let calendar = Calendar.current
-        let now = Date()
-        let weekInterval = calendar.dateInterval(of: .weekOfYear, for: now)
-        guard let interval = weekInterval else { return [] }
-        return viewModel.items.filter { $0.fechaActividad >= interval.start && $0.fechaActividad < interval.end }
+        let anchor = viewModel.selectedDate
+        let startOfDay = calendar.startOfDay(for: anchor)
+
+        // Semana activa fija de lunes a domingo.
+        let weekday = calendar.component(.weekday, from: startOfDay)
+        let offsetToMonday = (weekday + 5) % 7
+        guard let start = calendar.date(byAdding: .day, value: -offsetToMonday, to: startOfDay),
+              let end = calendar.date(byAdding: .day, value: 7, to: start) else {
+            return []
+        }
+
+        return viewModel.items.filter { $0.fechaActividad >= start && $0.fechaActividad < end }
     }
 
     private func activateReminderForSelected() {
@@ -613,8 +781,10 @@ struct AgendaReminderManagementView: View {
                 .ignoresSafeArea()
             )
             .navigationTitle("Recordatorios Agenda")
+#if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
             .toolbarColorScheme(.light, for: .navigationBar)
+#endif
             .tint(.black)
             .toolbar {
                 ToolbarItem(placement: .principal) {
@@ -626,3 +796,4 @@ struct AgendaReminderManagementView: View {
         }
     }
 }
+#endif

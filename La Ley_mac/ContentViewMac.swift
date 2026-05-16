@@ -70,6 +70,7 @@ enum ItemNameSidebar: String{
     case chatIA
     case lienzo
     case ritualMatutino
+    case agenda
     
     //Ajustes:
     case ajustes
@@ -524,9 +525,10 @@ struct ContentViewMac: View {
                         SidebarCard(iconName: "quote.opening", title: "Ritual Matutino", onTap: {
                             self.categoriaSelected = .ritualMatutino
                         }){}
-                        
-                        
-                       
+
+                        SidebarCard(iconName: "quote.opening", title: "Agenda", onTap: {
+                            self.categoriaSelected = .agenda
+                        }){}
                     }
                     
                     //Ajustes:
@@ -798,6 +800,8 @@ struct NavigationDetailsViewMac: View {
                 LienzoMain(texto: "", imagenPrimariaACargar: nil)
             case .ritualMatutino:
                 MorningRitualMainView()
+            case .agenda:
+                AgendaMainView()
 
                 //Ajustes:
             case .ajustes:

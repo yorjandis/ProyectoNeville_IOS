@@ -63,6 +63,9 @@ struct Features: View {
                             //Coherencia Cardio cerebral:
                             Text("☘️ Coherencia Cardio-Cerebral: Asistente de guía para entrar en estado de coherencia entre corazón y cerebro.")
                             
+                            //Agenda:
+                            Text("☘️ Agenda: Organiza tus tareas, eventos y compromisos en el tiempo para que liberes tu memoria, priorices lo importante y uses tu tiempo de manera más óptima e intencional.")
+                            
                             //Evaluación:
                             Text("☘️ Evaluación: Un juego de elegir la respuesta correcta/incorrecta. Nos ayuda a consolidar y repasar lo aprendido en estas enseñansas. Las preguntas pueden tener doble sentido y ser sutiles para hacer más desafiente su interpretación.")
                             
@@ -83,44 +86,67 @@ struct Features: View {
                             Text("☘️ Atajos & Comandos de Siri <Versión Extendida>: Se han creado varios Atajos, visible en la App Atajos, para realizar las siguientes acciones:")
                             VStack(alignment: .leading, spacing: 5){
                                 Text("🔸Abrir el Diario:").foregroundStyle(.orange)
-                                Text("Abre directamente la ventana del Diario. \nComando de Siri:")
-                                            (
-                                                Text("<Oye Siri> en la ley abre mi diario")
-                                                    .foregroundColor(.purple)
-                                                    .italic()
-                                            )
+                                Text("Abre directamente la ventana del Diario. \nComandos de Siri:")
+                                (
+                                    Text("<Oye Siri> en la ley abre diario\n<Oye Siri> en la ley abre mi diario")
+                                        .foregroundColor(.indigo)
+                                        .italic()
+                                )
+                                
                                 Text("\n🔸Crear entrada del Diario:").foregroundStyle(.orange)
                                 Text("Crea una entrada de diario sin abrir la aplicación, de manera silenciosa. \nComando de Siri:")
                                 (
                                     Text("<Oye Siri> en la la ley crea una entrada")
-                                        .foregroundColor(.purple)
+                                        .foregroundColor(.indigo)
                                         .italic()
                                     +
                                     Text("\nSiri te pedirá la contraseña, un título y un contenidp para crear la entrada del Diario. Si la contraseña es confusa, conviene deletrearla de manera clara y pausada")
-                            )
+                                )
+                                
+                                Text("\n🔸Crear frase para Espacio Calma:").foregroundStyle(.orange)
+                                Text("Crea una frase personal para Espacio Calma. \nComandos de Siri:")
+                                (
+                                    Text("<Oye Siri> en la la ley crea una frase para calma \n<Oye Siri> en la Ley crea una frase personal para calma")
+                                        .foregroundColor(.indigo)
+                                        .italic()
+                                    +
+                                    Text("\nSiri pedirá que le dicte el texto de la Frase")
+                                )
+                                
+                                Text("\n🔸Crear una actividad en la Agenda:").foregroundStyle(.orange)
+                                Text("Crea una actividad en la Agenda. \nComandos de Siri:")
+                                (
+                                    Text("<Oye Siri> en la la ley crea una actividad en agenda \n<Oye Siri> en la Ley crea entrada en agenda")
+                                        .foregroundColor(.indigo)
+                                        .italic()
+                                    +
+                                    Text("\nSiri pedirá que le dicte un título, una fecha y un contenido")
+                                )
+                                
                                 Text("\n🔸Abrir las notas:").foregroundStyle(.orange)
                                 Text("Abre la ventana de la lista de Notas en la Aplicación. \nComando de Siri:")
                                 (
                                     Text("<Oye Siri> en la ley abre mis notas")
-                                        .foregroundColor(.purple)
+                                        .foregroundColor(.indigo)
                                         .italic()
                                     
                                 )
-
+                                
                                 Text("\n🔸Crear una nota").foregroundStyle(.orange)
                                 Text("Crea una nota de manera silenciosa, sin abrir la aplicación. \nComando de Siri:")
-                                    (
-                                        Text("<Oye Siri> en la ley crea una nota")
-                                            .foregroundColor(.purple)
-                                            .italic()
-                                        +
-                                        Text("\nSiri le pedirá que dicte un título y la nota")
-                                    )
+                                (
+                                    Text("<Oye Siri> en la ley crea una nota")
+                                        .foregroundColor(.indigo)
+                                        .italic()
+                                    +
+                                    Text("\nSiri le pedirá que dicte un título y la nota")
+                                )
+                                
                                 Text("\n🔸Crear una frase").foregroundStyle(.orange)
                                 Text("Crea una frase personal de manera silenciosa, sin abrir la aplicación. \nComando de Siri:")
                                 (
                                     Text("<Oye Siri> en la ley crea una frase")
-                                        .foregroundColor(.purple)
+                                        .foregroundColor(.indigo)
                                         .italic()
                                     +
                                     Text("\nSiri pedirá que dicte la nueva frase")
@@ -129,7 +155,7 @@ struct Features: View {
                                 Text("Abre la aplicación y muestra una conferencia al azar")
                                 (
                                     Text("<Oye Siri> en la ley abre conferencia")
-                                        .foregroundColor(.purple)
+                                        .foregroundColor(.indigo)
                                         .italic()
                                 )
                                 
@@ -157,7 +183,7 @@ struct Features: View {
             #endif
         }
         .background{
-            LinearGradient.FondoOscuro()
+            LinearGradient.AzulTecnologico()
         }
            
       

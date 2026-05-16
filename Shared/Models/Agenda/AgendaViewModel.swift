@@ -1,4 +1,6 @@
 import Foundation
+import Combine
+import CoreData
 
 @MainActor
 final class AgendaViewModel: ObservableObject {
@@ -16,6 +18,7 @@ final class AgendaViewModel: ObservableObject {
     @Published var quickFilter: QuickFilter = .hoy
 
     private let repository = AgendaRepository()
+    private var cancellables = Set<AnyCancellable>()
 
     var itemsForSelectedDay: [AgendaItemData] {
         filteredItems(for: quickFilter)
@@ -73,6 +76,11 @@ final class AgendaViewModel: ObservableObject {
     var reminderItems: [AgendaItemData] {
         items.filter { $0.recordatorioActivo }
             .sorted { $0.fechaActividad < $1.fechaActividad }
+    }
+
+    init() {
+        load()
+        observeStoreChanges()
     }
 
     var collapsedSectionsCurrentMonth: [(date: Date, items: [AgendaItemData])] {
@@ -170,6 +178,41 @@ final class AgendaViewModel: ObservableObject {
 
     func reminderCanBeEnabled(for item: AgendaItemData) -> Bool {
         mergedDate(item.fechaActividad, item.hora) > Date()
+    }
+
+    private func observeStoreChanges() {
+        let center = NotificationCenter.default
+
+        center.publisher(for: .coreDataStoresDidLoad)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                self?.load()
+            }
+            .store(in: &cancellables)
+
+        center.publisher(for: .NSPersistentStoreRemoteChange)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                self?.load()
+            }
+            .store(in: &cancellables)
+
+        center.publisher(
+            for: NSPersistentCloudKitContainer.eventChangedNotification,
+            object: CoreDataController.shared.persistentContainer
+        )
+        .receive(on: RunLoop.main)
+        .sink { [weak self] _ in
+            self?.load()
+        }
+        .store(in: &cancellables)
+
+        center.publisher(for: .NSManagedObjectContextObjectsDidChange, object: CoreDataController.shared.context)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                self?.load()
+            }
+            .store(in: &cancellables)
     }
 
     private func mergedDate(_ date: Date, _ time: Date) -> Date {

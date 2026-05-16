@@ -36,20 +36,18 @@ struct AddNotasView: View {
                     TextEditor(text: $nota)
                         .font(.system(size: 22))
                         .multilineTextAlignment(.leading)
-                        .padding(12) // padding interno que mueve el cursor
+                        .scrollContentBackground(.hidden)
+                        .padding(12)
                         .background(
                             RoundedRectangle(cornerRadius: 12, style: .continuous)
-                             .fill(Color.black.opacity(0.05))
+                                .fill(Color.black.opacity(0.05))
                         )
                         .overlay(
                             RoundedRectangle(cornerRadius: 12, style: .continuous)
-                             .stroke(Color.gray.opacity(0.4), lineWidth: 0.5)
+                                .stroke(Color.gray.opacity(0.4), lineWidth: 0.5)
                         )
                         .frame(height: 250)
-                        .padding(6)
                 }
-                
-                Spacer()
             }
             #if os(macOS)
             .frame(width: 600, height: 400)

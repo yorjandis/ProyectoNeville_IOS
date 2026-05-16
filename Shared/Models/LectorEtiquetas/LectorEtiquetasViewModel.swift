@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 #if os(iOS)
 @MainActor

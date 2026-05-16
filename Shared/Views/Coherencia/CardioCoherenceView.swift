@@ -1,3 +1,4 @@
+#if os(iOS)
 import SwiftUI
 import Combine
 import CoreData
@@ -408,15 +409,15 @@ private final class CardioCoherenceStore: ObservableObject {
 @MainActor
 private final class BreathingHapticEngine: ObservableObject {
     private var task: Task<Void, Never>?
+#if canImport(UIKit)
     private let generator = UIImpactFeedbackGenerator(style: .rigid)
+#endif
 
     func start(rhythm: BreathingRhythmOption, anchor: Date) {
         stop()
         task = Task { [weak self] in
             guard let self else { return }
-            await MainActor.run {
-                generator.prepare()
-            }
+            await prepareHaptics()
             var nextPulseAt = Date.distantPast
             var lastState: BreathingCycleState = .idle
             while !Task.isCancelled {
@@ -439,9 +440,7 @@ private final class BreathingHapticEngine: ObservableObject {
                 case .inhale, .exhale:
                     if now >= nextPulseAt {
                         let intensity = CardioCoherenceConstants.Haptics.pulseIntensity
-                        await MainActor.run {
-                            generator.impactOccurred(intensity: intensity)
-                        }
+                        await emitHaptic(intensity: intensity)
                         let interval = intervalForCurrentPulse(state: snapshot.state, progress: snapshot.progress)
                         nextPulseAt = now.addingTimeInterval(interval)
                     }
@@ -457,6 +456,24 @@ private final class BreathingHapticEngine: ObservableObject {
     func stop() {
         task?.cancel()
         task = nil
+    }
+
+    private func prepareHaptics() async {
+#if canImport(UIKit)
+        await MainActor.run {
+            generator.prepare()
+        }
+#endif
+    }
+
+    private func emitHaptic(intensity: CGFloat) async {
+#if canImport(UIKit)
+        await MainActor.run {
+            generator.impactOccurred(intensity: intensity)
+        }
+#else
+        _ = intensity
+#endif
     }
 
     private func intervalForCurrentPulse(state: BreathingCycleState, progress: CGFloat) -> TimeInterval {
@@ -2123,3 +2140,26 @@ private struct SessionGuidanceContent: View {
 #Preview {
     CardioCoherenceMainView()
 }
+#else
+import SwiftUI
+import Combine
+
+struct CardioCoherenceMainView: View {
+    var body: some View {
+        EmptyView()
+    }
+}
+
+@MainActor
+final class CardioCoherenceMusicPlayer: ObservableObject {
+    func playIfEnabled(
+        _ enabled: Bool,
+        startAt: TimeInterval = 0,
+        loopFrom: TimeInterval? = nil,
+        customTrackURL: URL? = nil
+    ) {}
+
+    func fadeOutAndStop(duration: TimeInterval) {}
+    func stop() {}
+}
+#endif
