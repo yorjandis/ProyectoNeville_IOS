@@ -179,6 +179,7 @@ enum CardioCoherenceConstants {
             
     }
 
+        
     //Control de roseta
     enum Rosette {
         /// Radio minimo de la roseta cuando esta cerrada.

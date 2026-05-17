@@ -37,14 +37,47 @@ struct AgendaEditorView: View {
             Form {
                 Section("Actividad") {
                     TextField("Título", text: $titulo)
+                        .font(.system(size: 22))
                     DatePicker("Fecha", selection: $fechaActividad, displayedComponents: .date)
                     DatePicker("Hora", selection: $hora, displayedComponents: .hourAndMinute)
                     TextField("Lugar", text: $lugar)
+                        .frame(width: 350)
                 }
 
                 Section("Detalles") {
+#if os(macOS)
+                    
+
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Contenido")
+                            .font(.body)
+                            .foregroundStyle(.white)
+                        TextEditor(text: $contenido)
+                            .font(.system(size: 22))
+                            .frame(minHeight: 50)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 6)
+                            .scrollContentBackground(.hidden)
+                            .background(Color.black.opacity(0.05), in: RoundedRectangle(cornerRadius: 6))
+                    }
+                    
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Nota")
+                            .font(.body)
+                            .foregroundStyle(.white)
+                        TextEditor(text: $nota)
+                            .font(.system(size: 22))
+                            .frame(minHeight: 50)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 6)
+                            .scrollContentBackground(.hidden)
+                            .background(Color.black.opacity(0.05), in: RoundedRectangle(cornerRadius: 6))
+                    }
+                    
+#else
                     TextField("Nota", text: $nota, axis: .vertical)
                     TextField("Contenido", text: $contenido, axis: .vertical)
+#endif
                 }
 
                 Section("Estilo") {
@@ -61,6 +94,9 @@ struct AgendaEditorView: View {
                     Toggle("Activar recordatorio", isOn: $recordatorioActivo)
                 }
             }
+#if os(macOS)
+            .padding(14)
+#endif
             .navigationTitle(baseItem.titulo.isEmpty ? "Nueva actividad" : "Editar actividad")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {

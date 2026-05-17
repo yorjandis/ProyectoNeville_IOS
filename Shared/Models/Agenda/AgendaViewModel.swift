@@ -19,6 +19,7 @@ final class AgendaViewModel: ObservableObject {
 
     private let repository = AgendaRepository()
     private var cancellables = Set<AnyCancellable>()
+    private var reloadWorkItem: DispatchWorkItem?
 
     var itemsForSelectedDay: [AgendaItemData] {
         filteredItems(for: quickFilter)
@@ -119,7 +120,22 @@ final class AgendaViewModel: ObservableObject {
     }
 
     func load() {
-        items = repository.fetchAll()
+        scheduleLoad(delay: 0)
+    }
+
+    private func scheduleLoad(delay: TimeInterval) {
+        reloadWorkItem?.cancel()
+
+        let work = DispatchWorkItem { [weak self] in
+            guard let self else { return }
+            let fetched = repository.fetchAll()
+            if fetched != self.items {
+                self.items = fetched
+            }
+        }
+
+        reloadWorkItem = work
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: work)
     }
 
     func create(selectedDate: Date? = nil) -> AgendaItemData {
@@ -183,36 +199,19 @@ final class AgendaViewModel: ObservableObject {
     private func observeStoreChanges() {
         let center = NotificationCenter.default
 
-        center.publisher(for: .coreDataStoresDidLoad)
-            .receive(on: RunLoop.main)
-            .sink { [weak self] _ in
-                self?.load()
-            }
-            .store(in: &cancellables)
-
-        center.publisher(for: .NSPersistentStoreRemoteChange)
-            .receive(on: RunLoop.main)
-            .sink { [weak self] _ in
-                self?.load()
-            }
-            .store(in: &cancellables)
-
-        center.publisher(
-            for: NSPersistentCloudKitContainer.eventChangedNotification,
-            object: CoreDataController.shared.persistentContainer
+        Publishers.Merge3(
+            center.publisher(for: .coreDataStoresDidLoad),
+            center.publisher(for: .NSPersistentStoreRemoteChange),
+            center.publisher(
+                for: NSPersistentCloudKitContainer.eventChangedNotification,
+                object: CoreDataController.shared.persistentContainer
+            )
         )
         .receive(on: RunLoop.main)
         .sink { [weak self] _ in
-            self?.load()
+            self?.scheduleLoad(delay: 0.2)
         }
         .store(in: &cancellables)
-
-        center.publisher(for: .NSManagedObjectContextObjectsDidChange, object: CoreDataController.shared.context)
-            .receive(on: RunLoop.main)
-            .sink { [weak self] _ in
-                self?.load()
-            }
-            .store(in: &cancellables)
     }
 
     private func mergedDate(_ date: Date, _ time: Date) -> Date {

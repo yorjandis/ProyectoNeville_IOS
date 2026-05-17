@@ -116,6 +116,57 @@ struct AgendaMainView: View {
         }
     }
 
+    private var quickFilterMenuLabel: some View {
+        HStack(spacing: 6) {
+            Text("Filtro")
+            Text(viewModel.quickFilter.rawValue)
+                .fontWeight(.semibold)
+        }
+        .font(.subheadline)
+        .foregroundStyle(.black)
+#if os(iOS)
+        .padding(.horizontal, 0)
+#else
+        .padding(.horizontal, 10)
+#endif
+        .padding(.vertical, 8)
+        .background(.white.opacity(0.55), in: RoundedRectangle(cornerRadius: 10))
+    }
+
+    private var searchBarView: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "magnifyingglass")
+                .foregroundStyle(.black.opacity(0.6))
+            TextField(
+                "",
+                text: $searchText,
+                prompt: Text("Buscar en título, nota,contenido,prioridad, estado check")
+                    .foregroundStyle(.black.opacity(0.75))
+            )
+            .foregroundStyle(.black)
+#if os(iOS)
+            .textInputAutocapitalization(.never)
+            .autocorrectionDisabled(true)
+#else
+            .textFieldStyle(.plain)
+#endif
+            if !searchText.isEmpty {
+                Button {
+                    searchText = ""
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundStyle(.black.opacity(0.6))
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 8)
+        .background(.white, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+        .padding(.horizontal, 4)
+        .transition(.move(edge: .top).combined(with: .opacity))
+    }
+
     var body: some View {
         NavigationStack {
             if purchaseStatus || yorjPremium {
@@ -170,20 +221,7 @@ struct AgendaMainView: View {
                                     }
                                 }
                             } label: {
-                                HStack(spacing: 6) {
-                                    Text("Filtro")
-                                    Text(viewModel.quickFilter.rawValue)
-                                        .fontWeight(.semibold)
-                                }
-                                .font(.subheadline)
-                                .foregroundStyle(.black)
-            #if os(iOS)
-                    .padding(.horizontal, 0)
-#else
-                    .padding(.horizontal, 10)
-#endif
-                                .padding(.vertical, 8)
-                                .background(.white.opacity(0.55), in: RoundedRectangle(cornerRadius: 10))
+                                quickFilterMenuLabel
                             }
                             .buttonStyle(.plain)
 
@@ -208,6 +246,7 @@ struct AgendaMainView: View {
                                     }
                                     isCalendarExpanded.toggle()
                                 }
+                                
                             } label: {
                                 Image(systemName: isCalendarExpanded ? "chevron.up.circle" : "chevron.down.circle")
                                     .font(.title3)
@@ -220,35 +259,7 @@ struct AgendaMainView: View {
                         .padding(.top, 4)
 
                         if showSearchBar {
-                            HStack(spacing: 8) {
-                                Image(systemName: "magnifyingglass")
-                                    .foregroundStyle(.black.opacity(0.6))
-                                TextField(
-                                    "",
-                                    text: $searchText,
-                                    prompt: Text("Buscar en título, nota,contenido,prioridad, estado check")
-                                        .foregroundStyle(.black.opacity(0.75))
-                                )
-                                    .foregroundStyle(.black)
-                                    .textInputAutocapitalization(.never)
-#if os(iOS)
-                                    .autocorrectionDisabled(true)
-#endif
-                                if !searchText.isEmpty {
-                                    Button {
-                                        searchText = ""
-                                    } label: {
-                                        Image(systemName: "xmark.circle.fill")
-                                            .foregroundStyle(.black.opacity(0.6))
-                                    }
-                                    .buttonStyle(.plain)
-                                }
-                            }
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 8)
-                            .background(.white.opacity(0.6), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
-                            .padding(.horizontal, 4)
-                            .transition(.move(edge: .top).combined(with: .opacity))
+                            searchBarView
                         }
 
                         if isCalendarExpanded {
@@ -371,12 +382,29 @@ struct AgendaMainView: View {
                     }
 #endif
                 }
+#if os(iOS)
                 .sheet(item: $editorItem) { item in
                     AgendaEditorView(baseItem: item) { updated in
                         viewModel.save(updated)
                         viewModel.updateReminder(for: updated, enabled: updated.recordatorioActivo)
                     }
                 }
+#else
+                .onChange(of: editorItem) { _, item in
+                    guard let item else { return }
+                    showWindow(
+                        for: AgendaEditorView(baseItem: item) { updated in
+                            viewModel.save(updated)
+                            viewModel.updateReminder(for: updated, enabled: updated.recordatorioActivo)
+                        },
+                        environmentObjects: [],
+                        title: item.titulo.isEmpty ? "Nueva actividad" : "Editar actividad",
+                        size: .percentage(width: 0.38, height: 0.52),
+                        isModal: false
+                    )
+                    editorItem = nil
+                }
+#endif
                 .sheet(isPresented: $showReminderManager) {
                     AgendaReminderManagementView(viewModel: viewModel)
                 }
@@ -411,18 +439,14 @@ struct AgendaMainView: View {
                     Text("Esta acción no se puede deshacer.")
                 }
                 .confirmationDialog("¿Eliminar actividades?", isPresented: $showBulkDeleteConfirmation, titleVisibility: .visible) {
-                    Button("Eliminar \(bulkDeleteItems.count) actividad(es)", role: .destructive) {
-                        for item in bulkDeleteItems {
-                            viewModel.delete(item)
-                        }
-                        selectedItemsIDs.subtract(bulkDeleteItems.map(\.id))
-                        bulkDeleteItems.removeAll()
+                    Button(bulkDeleteConfirmationTitle, role: .destructive) {
+                        deleteBulkSelectedItems()
                     }
                     Button("Cancelar", role: .cancel) {
-                        bulkDeleteItems.removeAll()
+                        clearBulkDeleteSelection()
                     }
                 } message: {
-                    Text("También se eliminarán sus recordatorios. Esta acción no se puede deshacer.")
+                    Text(bulkDeleteConfirmationMessage)
                 }
                 .onChange(of: viewModel.quickFilter) { _, newValue in
                     if newValue == .hoy {
@@ -627,8 +651,29 @@ struct AgendaMainView: View {
         .listRowBackground(Color.clear)
     }
 
+    private var bulkDeleteConfirmationTitle: String {
+        "Eliminar \(bulkDeleteItems.count) actividad(es)"
+    }
+
+    private var bulkDeleteConfirmationMessage: String {
+        "También se eliminarán sus recordatorios. Esta acción no se puede deshacer."
+    }
+
     private var isSearchActive: Bool {
         !searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
+    private func deleteBulkSelectedItems() {
+        let idsToRemove = bulkDeleteItems.map(\.id)
+        for item in bulkDeleteItems {
+            viewModel.delete(item)
+        }
+        selectedItemsIDs.subtract(idsToRemove)
+        bulkDeleteItems.removeAll()
+    }
+
+    private func clearBulkDeleteSelection() {
+        bulkDeleteItems.removeAll()
     }
 
     private func matchesSearch(_ item: AgendaItemData) -> Bool {
@@ -832,7 +877,11 @@ struct AgendaMainView: View {
                 .buttonStyle(.plain)
             }
 
-            let symbols = Calendar.current.shortWeekdaySymbols
+            let calendar = Calendar.current
+            let baseSymbols = calendar.shortWeekdaySymbols
+            let firstWeekdayIndex = max(0, min(baseSymbols.count - 1, calendar.firstWeekday - 1))
+            let symbols = Array(baseSymbols[firstWeekdayIndex...]) + Array(baseSymbols[..<firstWeekdayIndex])
+
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 6), count: 7), spacing: 8) {
                 ForEach(symbols.indices, id: \.self) { idx in
                     Text(symbols[idx])
@@ -841,8 +890,9 @@ struct AgendaMainView: View {
                         .frame(maxWidth: .infinity)
                 }
 
-                ForEach(daysForDisplayedMonth(), id: \.self) { date in
-                    if let date {
+                let monthDays = daysForDisplayedMonth()
+                ForEach(monthDays.indices, id: \.self) { index in
+                    if let date = monthDays[index] {
                         dayCell(for: date)
                     } else {
                         Color.clear
@@ -856,6 +906,7 @@ struct AgendaMainView: View {
     private func dayCell(for date: Date) -> some View {
         let hasActivity = hasActivities(on: date)
         let isSelected = Calendar.current.isDate(date, inSameDayAs: viewModel.selectedDate)
+        let isToday = Calendar.current.isDateInToday(date)
 
         return Button {
             viewModel.selectedDate = date
@@ -869,8 +920,22 @@ struct AgendaMainView: View {
                     Circle()
                         .fill(isSelected ? Color(red: 0.95, green: 0.67, blue: 0.37) : .clear)
                 )
+                .overlay(
+                    Circle()
+                        .stroke(
+                            isToday ? Color.black.opacity(0.7) : .clear,
+                            style: StrokeStyle(lineWidth: 1.2, dash: [3, 2])
+                        )
+                )
         }
         .buttonStyle(.plain)
+        .simultaneousGesture(
+            TapGesture(count: 2).onEnded {
+                viewModel.selectedDate = date
+                viewModel.quickFilter = .todos
+                editorItem = viewModel.create(selectedDate: date)
+            }
+        )
     }
 
     private func daysForDisplayedMonth() -> [Date?] {
@@ -910,6 +975,7 @@ struct AgendaMainView: View {
 
 struct AgendaReminderManagementView: View {
     @ObservedObject var viewModel: AgendaViewModel
+    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         NavigationStack {
@@ -956,6 +1022,13 @@ struct AgendaReminderManagementView: View {
                         .foregroundStyle(.black)
                         .font(.headline)
                 }
+#if os(macOS)
+                ToolbarItem {
+                    Button("Cerrar") {
+                        dismiss()
+                    }
+                }
+#endif
             }
         }
     }
