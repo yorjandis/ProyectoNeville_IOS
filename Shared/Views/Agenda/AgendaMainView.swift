@@ -29,6 +29,9 @@ struct AgendaMainView: View {
     @State private var bulkDeleteItems: [AgendaItemData] = []
     @State private var multiSelectionMode = false
     @State private var selectedItemsIDs: Set<UUID> = []
+    @State private var showPastActivities: Bool = false
+    @State private var showSearchBar: Bool = false
+    @State private var searchText: String = ""
     @Environment(\.scenePhase) private var scenePhase
 
     @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
@@ -44,6 +47,14 @@ struct AgendaMainView: View {
         return Menu {
             Button("Recordatorios") {
                 showReminderManager = true
+            }
+            Button(showSearchBar ? "Ocultar búsqueda" : "Mostrar búsqueda") {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    showSearchBar.toggle()
+                    if !showSearchBar {
+                        searchText = ""
+                    }
+                }
             }
 
             if !monthItems.isEmpty {
@@ -208,6 +219,38 @@ struct AgendaMainView: View {
                         .padding(.horizontal, 4)
                         .padding(.top, 4)
 
+                        if showSearchBar {
+                            HStack(spacing: 8) {
+                                Image(systemName: "magnifyingglass")
+                                    .foregroundStyle(.black.opacity(0.6))
+                                TextField(
+                                    "",
+                                    text: $searchText,
+                                    prompt: Text("Buscar en título, nota,contenido,prioridad, estado check")
+                                        .foregroundStyle(.black.opacity(0.75))
+                                )
+                                    .foregroundStyle(.black)
+                                    .textInputAutocapitalization(.never)
+#if os(iOS)
+                                    .autocorrectionDisabled(true)
+#endif
+                                if !searchText.isEmpty {
+                                    Button {
+                                        searchText = ""
+                                    } label: {
+                                        Image(systemName: "xmark.circle.fill")
+                                            .foregroundStyle(.black.opacity(0.6))
+                                    }
+                                    .buttonStyle(.plain)
+                                }
+                            }
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 8)
+                            .background(.white.opacity(0.6), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                            .padding(.horizontal, 4)
+                            .transition(.move(edge: .top).combined(with: .opacity))
+                        }
+
                         if isCalendarExpanded {
                             customCalendarView
                                 .padding(10)
@@ -217,11 +260,70 @@ struct AgendaMainView: View {
 
                         List {
                             if isCalendarExpanded {
-                                ForEach(viewModel.itemsForSelectedDay) { item in
+                                let filteredDayItems = filteredItems(viewModel.itemsForSelectedDay)
+                                ForEach(filteredDayItems) { item in
                                     agendaCard(item, fixedHeight: true)
                                 }
                             } else {
-                                ForEach(viewModel.collapsedSectionsForActiveFilter, id: \.date) { section in
+                                let splitSections = splitCollapsedSectionsByTime()
+                                let filteredPastSections = filteredSections(splitSections.past)
+                                let filteredUpcomingSections = filteredSections(splitSections.todayAndFuture)
+                                let shouldShowPastContent = showPastActivities || isSearchActive
+
+                                if !filteredPastSections.isEmpty {
+                                    Section {
+                                        VStack(alignment: .leading, spacing: 10) {
+                                            Button {
+                                                withAnimation(.easeInOut(duration: 0.2)) {
+                                                    showPastActivities.toggle()
+                                                }
+                                            } label: {
+                                                HStack {
+                                                    Text("Actividades pasadas")
+                                                        .font(.subheadline.weight(.semibold))
+                                                        .foregroundStyle(.black)
+                                                    Spacer()
+                                                    Image(systemName: showPastActivities ? "chevron.up.circle.fill" : "chevron.down.circle.fill")
+                                                        .foregroundStyle(.black.opacity(0.65))
+                                                }
+                                            }
+                                            .buttonStyle(.plain)
+
+                                            if shouldShowPastContent {
+                                                ScrollView {
+                                                    VStack(spacing: 0) {
+                                                        ForEach(filteredPastSections, id: \.date) { section in
+                                                            VStack(alignment: .leading, spacing: 6) {
+                                                                Text(daySectionTitle(section.date))
+                                                                    .font(.caption.weight(.semibold))
+                                                                    .foregroundStyle(.black.opacity(0.7))
+                                                                    .padding(.horizontal, 6)
+                                                                ForEach(section.items) { item in
+                                                                    agendaCard(item, fixedHeight: false)
+                                                                }
+                                                            }
+                                                            .padding(.bottom, 6)
+                                                        }
+                                                    }
+                                                }
+                                                .frame(height: 350)
+                                                .transition(.move(edge: .top).combined(with: .opacity))
+                                            }
+                                        }
+                                        .padding(10)
+                                        .background(
+                                            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                                                .fill(.white.opacity(0.4))
+                                        )
+                                        .clipped()
+                                        .animation(.easeInOut(duration: 0.28), value: showPastActivities)
+                                    }
+                                    .listRowSeparator(.hidden)
+                                    .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 8, trailing: 0))
+                                    .listRowBackground(Color.clear)
+                                }
+
+                                ForEach(filteredUpcomingSections, id: \.date) { section in
                                     Section {
                                         ForEach(section.items) { item in
                                             agendaCard(item, fixedHeight: false)
@@ -525,11 +627,73 @@ struct AgendaMainView: View {
         .listRowBackground(Color.clear)
     }
 
+    private var isSearchActive: Bool {
+        !searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
+    private func matchesSearch(_ item: AgendaItemData) -> Bool {
+        let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        guard !query.isEmpty else { return true }
+
+        let checkStateText: String
+        switch item.completada {
+        case .some(true):
+            checkStateText = "checkeado"
+        case .some(false):
+            checkStateText = "activo"
+        case .none:
+            checkStateText = "off"
+        }
+
+        let searchable = [
+            item.titulo,
+            item.nota,
+            item.contenido,
+            item.prioridad.title,
+            item.prioridad.rawValue,
+            checkStateText
+        ]
+            .joined(separator: " ")
+            .lowercased()
+
+        return searchable.contains(query)
+    }
+
+    private func filteredItems(_ items: [AgendaItemData]) -> [AgendaItemData] {
+        items.filter(matchesSearch)
+    }
+
+    private func filteredSections(_ sections: [(date: Date, items: [AgendaItemData])]) -> [(date: Date, items: [AgendaItemData])] {
+        sections.compactMap { section in
+            let filtered = filteredItems(section.items)
+            guard !filtered.isEmpty else { return nil }
+            return (date: section.date, items: filtered)
+        }
+    }
+
+    private func splitCollapsedSectionsByTime() -> (past: [(date: Date, items: [AgendaItemData])], todayAndFuture: [(date: Date, items: [AgendaItemData])]) {
+        let calendar = Calendar.current
+        let startOfToday = calendar.startOfDay(for: Date())
+        let sections = viewModel.collapsedSectionsForActiveFilter
+
+        let past = sections.filter { calendar.startOfDay(for: $0.date) < startOfToday }
+        let todayAndFuture = sections.filter { calendar.startOfDay(for: $0.date) >= startOfToday }
+        return (past: past, todayAndFuture: todayAndFuture)
+    }
+
     private func currentListedItems() -> [AgendaItemData] {
         if isCalendarExpanded {
-            return viewModel.itemsForSelectedDay
+            return filteredItems(viewModel.itemsForSelectedDay)
         }
-        return viewModel.collapsedSectionsForActiveFilter.flatMap(\.items)
+
+        let splitSections = splitCollapsedSectionsByTime()
+        let filteredPast = filteredSections(splitSections.past)
+        let filteredUpcoming = filteredSections(splitSections.todayAndFuture)
+        let includePast = showPastActivities || isSearchActive
+
+        let pastItems = includePast ? filteredPast.flatMap(\.items) : []
+        let todayAndFutureItems = filteredUpcoming.flatMap(\.items)
+        return pastItems + todayAndFutureItems
     }
 
     private func selectedListedItems() -> [AgendaItemData] {
