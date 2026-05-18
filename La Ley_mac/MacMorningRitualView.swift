@@ -118,7 +118,7 @@ struct MacMorningRitualView: View {
                     Button("Guardar ritual") {
                         store.completeToday(goal: goal, identity: identity, emotion: emotion, note: note)
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.bordered)
 
                     Button("Actualizar") {
                         store.reload()

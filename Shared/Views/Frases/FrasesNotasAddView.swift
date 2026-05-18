@@ -42,7 +42,7 @@ struct FrasesNotasAddView: View {
                         dismiss()
                     }
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.bordered)
                 .tint(.blue.opacity(0.4))
                 
                 
@@ -57,7 +57,7 @@ struct FrasesNotasAddView: View {
                     }
                     
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.bordered)
                 .tint(.red.opacity(0.4))
             }.padding()
 #endif

@@ -168,7 +168,7 @@ struct Features: View {
                             }
                             .frame(maxWidth: .infinity, alignment: .center)
                             .foregroundStyle(.black)
-                            .buttonStyle(.borderedProminent)
+                            .buttonStyle(.bordered)
                         }
                         .padding(.vertical, 10)
                     }

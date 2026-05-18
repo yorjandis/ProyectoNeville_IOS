@@ -199,7 +199,7 @@ struct GenerateQRView : View {
       
                                 }
                                 .tint(.blue)
-                                .buttonStyle(.borderedProminent)
+                                .buttonStyle(.bordered)
                                 
                                 Image(systemName: "info.circle")
                                     .onTapGesture {
@@ -232,7 +232,7 @@ struct GenerateQRView : View {
                                     
                                 }
                                 .tint(.blue)
-                                .buttonStyle(.borderedProminent)
+                                .buttonStyle(.bordered)
                                 
                                 Image(systemName: "info.circle")
                                     .onTapGesture {
@@ -370,7 +370,7 @@ struct GenerateQRView : View {
                         }
                         .tint(.blue)
                         .controlSize(.large)
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(.bordered)
                     }
                     #endif
 

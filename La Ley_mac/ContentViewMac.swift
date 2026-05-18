@@ -849,8 +849,8 @@ struct NavigationDetailsViewMac: View {
                     #if os(macOS)
                     Button("Acceder a la Versión Extendida"){
                         showWindow(for: PurchaseView(),
-                        environmentObjects: [],
-                        title: "Versión Extendida",
+                                   environmentObjects: [],
+                                   title: "Versión Extendida",
                                    size: WindowSize.percentage(width: 0.4, height: 0.8),
                                    isModal: false
                         )

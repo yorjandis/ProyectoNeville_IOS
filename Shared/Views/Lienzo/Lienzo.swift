@@ -280,7 +280,7 @@ struct LienzoMain: View {
                             Text("Exportar")
                                 .foregroundStyle(.black)
                         }
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(.bordered)
                         .tint(.blue)
                         
                         Spacer()
@@ -881,7 +881,7 @@ struct LienzoMain: View {
                 ShareLink(item: fileURL, preview: SharePreview("Mi Imagen", image: Image(nsImage: image))) {
                     Label("Compartir", systemImage: "square.and.arrow.up")
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.bordered)
             }
             
             #else
@@ -909,7 +909,7 @@ struct LienzoMain: View {
                     Label("Compartir", systemImage: "square.and.arrow.up")
                         .foregroundStyle(.black)
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.bordered)
             }
             
             #endif

@@ -85,7 +85,7 @@ struct ProgramaDetailView: View {
                             closeWindow(windows)
                         }
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.bordered)
                 }
             #endif
             }

@@ -1003,7 +1003,7 @@ struct CardioCoherenceMainView: View {
             .clipShape(RoundedRectangle(cornerRadius: 12))
 
             Button("Guardar evaluación") { store.saveEvaluation() }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.bordered)
                 .tint(.green)
         }
     }
@@ -1021,7 +1021,7 @@ struct CardioCoherenceMainView: View {
                 .foregroundStyle(.white.opacity(0.9))
 
             Button("Nueva sesión") { store.resetFlow() }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.bordered)
                 .tint(.teal)
         }
         .padding()

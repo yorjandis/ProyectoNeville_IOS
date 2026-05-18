@@ -70,7 +70,7 @@ struct FraseAddView: View {
                         
                     }
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.bordered)
                 .tint(.blue.opacity(0.4))
                 .disabled(self.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || self.autor.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 
@@ -83,7 +83,7 @@ struct FraseAddView: View {
                         dismiss()
                     }
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.bordered)
                 .tint(.red.opacity(0.4))
             }.padding()
 #endif
@@ -222,7 +222,7 @@ struct FraseAddView: View {
                             
                         }
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.bordered)
                     .tint(.blue)
                     .disabled(self.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || self.autor.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
@@ -232,7 +232,7 @@ struct FraseAddView: View {
                     Button("Cancelar"){
                         self.dismiss()
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.bordered)
                     .tint(.red)
                 }
                 

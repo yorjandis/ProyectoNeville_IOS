@@ -377,7 +377,7 @@ struct ChatView: View {
                     }
                     .tint(.orange)
                     .foregroundStyle(.black)
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.bordered)
                     .disabled(model.inputText.trimmingCharacters(in: .whitespaces).isEmpty || model.isResponding)
                 }
                 

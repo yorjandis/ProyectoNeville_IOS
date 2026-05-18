@@ -132,7 +132,7 @@ struct PurchaseView: View {
                                     .font(.title2)
                                     .bold()
                             }
-                            .buttonStyle(.borderedProminent)
+                            .buttonStyle(.bordered)
                             .tint(.blue.opacity(0.6))
                         }
                     }else{
@@ -155,7 +155,7 @@ struct PurchaseView: View {
                                 .bold()
                                 .foregroundStyle(.white)
                         }
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(.bordered)
                         .tint(.black.opacity(0.5))
                         
                     }
@@ -176,7 +176,7 @@ struct PurchaseView: View {
                                     closeWindowPropia(windows)
                                 }
                             }
-                            .buttonStyle(.borderedProminent)
+                            .buttonStyle(.bordered)
                         }
                     }
                     #endif

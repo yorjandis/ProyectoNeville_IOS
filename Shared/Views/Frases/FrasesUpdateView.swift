@@ -93,7 +93,7 @@ struct FrasesUpdateView: View {
                             }
                         }
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.bordered)
                     .tint(Color(.blue))
                 }
                

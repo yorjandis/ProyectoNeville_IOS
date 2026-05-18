@@ -75,8 +75,10 @@ struct AgendaEditorView: View {
                     }
                     
 #else
-                    TextField("Nota", text: $nota, axis: .vertical)
                     TextField("Contenido", text: $contenido, axis: .vertical)
+                        .frame(height: 50)
+                    TextField("Nota", text: $nota, axis: .vertical)
+                    
 #endif
                 }
 

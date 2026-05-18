@@ -153,14 +153,14 @@ struct ReminderEditorView: View {
                                 dismiss()
                             }
                             .tint(.red)
-                            .buttonStyle(.borderedProminent)
+                            .buttonStyle(.bordered)
                             #endif
                             Spacer()
                             Button(mode == .date ? "Programar" : "Guardar") {
                                 save()
                             }
                             .tint(.orange)
-                            .buttonStyle(.borderedProminent)
+                            .buttonStyle(.bordered)
                         }
                     }
                     //.foregroundStyle(.black)
@@ -251,7 +251,7 @@ struct ReminderEditorView: View {
                                 save()
                             }
                             .tint(.orange)
-                            .buttonStyle(.borderedProminent)
+                            .buttonStyle(.bordered)
                         }
                     }
                     #endif

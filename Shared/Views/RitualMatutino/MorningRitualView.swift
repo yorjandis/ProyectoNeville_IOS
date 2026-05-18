@@ -333,7 +333,7 @@ struct MorningRitualMainView: View {
                                     Button(store.todayCompleted ? "Repetir diálogo" : "Iniciar diálogo") {
                                         route = .flow
                                     }
-                                    .buttonStyle(.borderedProminent)
+                                    .buttonStyle(.bordered)
                                     .tint(.teal)
                                 }
                                 
@@ -363,7 +363,7 @@ struct MorningRitualMainView: View {
                                         Text("Resumen")
                                             .foregroundStyle(.black)
                                     }
-                                    .buttonStyle(.borderedProminent)
+                                    .buttonStyle(.bordered)
                                     .tint(.black.opacity(0.25))
                                     .frame(width: 100)
                                     
@@ -598,7 +598,7 @@ private struct MorningRitualFlowView: View {
                             }
                             showingTimePicker = false
                         }
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(.bordered)
                     }
                     .padding()
                 }
@@ -1864,7 +1864,7 @@ private struct MorningRitualSettingsView: View {
                         store.applySettings(enabled: enabled, hour: hour, minute: minute)
                         dismiss()
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.bordered)
                     .tint(.teal)
 
                     Spacer()
