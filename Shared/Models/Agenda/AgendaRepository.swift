@@ -44,6 +44,7 @@ final class AgendaRepository {
         object.setValue(item.completada, forKey: "completada")
         object.setValue(item.recordatorioActivo, forKey: "recordatorioActivo")
         object.setValue(item.reminderID, forKey: "reminderID")
+        object.setValue(item.seriesID, forKey: "seriesID")
 
         do {
             try context.save()
@@ -62,6 +63,21 @@ final class AgendaRepository {
             context.delete(object)
             try? context.save()
         }
+    }
+
+    func delete(seriesID: UUID) {
+        let request = NSFetchRequest<NSManagedObject>(entityName: "AgendaItemEntity")
+        request.predicate = NSPredicate(format: "seriesID == %@", seriesID as CVarArg)
+
+        guard let objects = try? context.fetch(request), !objects.isEmpty else {
+            return
+        }
+
+        for object in objects {
+            context.delete(object)
+        }
+
+        try? context.save()
     }
 
     private func mapEntity(_ object: NSManagedObject) -> AgendaItemData? {
@@ -85,7 +101,8 @@ final class AgendaRepository {
             colorHex: (object.value(forKey: "colorHex") as? String) ?? "#A9D7A4",
             completada: object.value(forKey: "completada") as? Bool,
             recordatorioActivo: (object.value(forKey: "recordatorioActivo") as? Bool) ?? false,
-            reminderID: object.value(forKey: "reminderID") as? String
+            reminderID: object.value(forKey: "reminderID") as? String,
+            seriesID: object.value(forKey: "seriesID") as? UUID
         )
     }
 }

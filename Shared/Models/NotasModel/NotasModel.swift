@@ -52,13 +52,14 @@ final class NotasModel : ObservableObject  {
     /// - Parameter title : Título  de la nota , por defecto es " "
     /// - Parameter isfav : Campo favorito <true|false>, por defecto `false`
     /// - Returns : devuelve  true si éxito, false si error
-    func addNote(nota : String, title : String = "", isFav : Bool = false)->Bool {
+    func addNote(nota : String, title : String = "", isFav : Bool = false, direccionMapa: String = "" )->Bool {
         let entity = Notas(context: self.context)
         let now = Date()
         entity.id = UUID().uuidString
         entity.title = title
         entity.nota = nota
         entity.isfav = isFav
+        entity.setValue(direccionMapa, forKey: "direccionMapa")
         entity.setValue(now, forKey: "fechaCreacion")
         entity.setValue(now, forKey: "fechaModificacion")
    
@@ -91,7 +92,7 @@ final class NotasModel : ObservableObject  {
     ///  - Parameter newNota : Nuevo texto de la nota
     ///  - Parameter isfav : Estado del campo favorito, por defecto false
     ///  - Returns : true si éxito, false otherwise
-    func updateNota(NotaID : String, newTitle : String, newNota : String, isfav : Bool = false)->Bool{
+    func updateNota(NotaID : String, newTitle : String, newNota : String, isfav : Bool = false, direccionMapa: String = "" )->Bool{
         let row = getEntityRow(value: NotaID)
         if row.value(forKey: "fechaCreacion") as? Date == nil {
             row.setValue(Date(), forKey: "fechaCreacion")
@@ -99,6 +100,7 @@ final class NotasModel : ObservableObject  {
         row.title = newTitle
         row.nota = newNota
         row.isfav = isfav
+        row.setValue(direccionMapa, forKey: "direccionMapa")
         row.setValue(Date(), forKey: "fechaModificacion")
         do {
             try  self.context.save()

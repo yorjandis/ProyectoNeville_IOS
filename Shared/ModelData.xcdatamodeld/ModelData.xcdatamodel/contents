@@ -34,6 +34,7 @@
     </entity>
     <entity name="Diario" representedClassName="Diario" syncable="YES" codeGenerationType="class">
         <attribute name="content" optional="YES" attributeType="String"/>
+        <attribute name="direccionMapa" optional="YES" attributeType="String"/>
         <attribute name="emotion" optional="YES" attributeType="String"/>
         <attribute name="fecha" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="fechaM" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
@@ -66,6 +67,7 @@
         <relationship name="units" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="UnitEntity" inverseName="goal" inverseEntity="UnitEntity"/>
     </entity>
     <entity name="Notas" representedClassName="Notas" syncable="YES" codeGenerationType="class">
+        <attribute name="direccionMapa" optional="YES" attributeType="String"/>
         <attribute name="fechaCreacion" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="fechaModificacion" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" attributeType="String" defaultValueString=""/>
@@ -131,5 +133,6 @@
         <attribute name="completada" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="recordatorioActivo" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="reminderID" optional="YES" attributeType="String"/>
+        <attribute name="seriesID" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
     </entity>
 </model>

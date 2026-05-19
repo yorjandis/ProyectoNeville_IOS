@@ -333,6 +333,34 @@ final class watchModel: ObservableObject {
                 return false
             }
     }
+
+    //Crear una nueva nota usando dirección de mapa
+    func addNota(title: String, direccionMapa: String) -> Bool {
+        let trimmedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedAddress = direccionMapa.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        guard !trimmedTitle.isEmpty else { return false }
+
+        let newNota = Notas(context: self.context)
+        let now = Date()
+        newNota.id = UUID().uuidString
+        newNota.title = trimmedTitle
+        newNota.nota = trimmedAddress.isEmpty ? "Nota creada desde watchOS" : trimmedAddress
+        newNota.isfav = false
+        newNota.setValue(trimmedAddress, forKey: "direccionMapa")
+        newNota.setValue(now, forKey: "fechaCreacion")
+        newNota.setValue(now, forKey: "fechaModificacion")
+
+        do {
+            try self.context.save()
+            self.getNotas()
+            return true
+        } catch {
+            self.context.rollback()
+            msg("Error al guardar nota desde watchOS: \(error.localizedDescription)")
+            return false
+        }
+    }
     
     //Buscar en los textos de los títulos de las notas
     func searchTextInNotas(text: String, donde buscar: TipoBusqueda)->[Notas]{

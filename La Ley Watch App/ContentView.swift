@@ -38,6 +38,12 @@ struct ContentView: View {
               }
               
           }.tag(3)
+
+          NavigationStack {
+              QuickNoteLauncherView()
+                  .ignoresSafeArea()
+          }
+          .tag(4)
              
       }
       
@@ -307,6 +313,27 @@ struct ContentView: View {
         }
         
         
+    }
+
+    struct QuickNoteLauncherView: View {
+        var body: some View {
+            ZStack {
+                LinearGradient(colors: [.red, .orange], startPoint: .bottom, endPoint: .top)
+                    .ignoresSafeArea()
+
+                NavigationLink {
+                    QuickAddNotaByLocationView()
+                } label: {
+                    Image(systemName: "plus")
+                        .font(.system(size: 24, weight: .bold))
+                        .foregroundStyle(.black)
+                        .frame(width: 82, height: 82)
+                        .background(.white.opacity(0.75))
+                        .clipShape(Circle())
+                }
+                .buttonStyle(.plain)
+            }
+        }
     }
     
 }

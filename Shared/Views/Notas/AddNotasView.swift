@@ -16,6 +16,9 @@ struct AddNotasView: View {
     
     @State      var title : String = ""
     @State      var nota : String = ""
+    @State      var direccionMapa: String = ""
+    @StateObject private var locationCapture = AgendaLocationCapture()
+    @State private var isCapturingLocation = false
 
     
     //Mostrar la ventana de FeedBackReview
@@ -48,6 +51,35 @@ struct AddNotasView: View {
                         )
                         .frame(height: 250)
                 }
+                Section("Dirección (Mapas)") {
+                    HStack(spacing: 8) {
+                        if isCapturingLocation {
+                            ProgressView()
+                                .progressViewStyle(.circular)
+                                .frame(maxWidth: .infinity, alignment: .center)
+                        } else {
+                            TextField("Ej: Gran Vía 1, Madrid", text: $direccionMapa, axis: .vertical)
+                                .textFieldStyle(.roundedBorder)
+                        }
+                        Button {
+                            isCapturingLocation = true
+                            locationCapture.captureCurrentAddress { result in
+                                isCapturingLocation = false
+                                switch result {
+                                case .success(let address):
+                                    direccionMapa = address
+                                case .failure(let error):
+                                    alertMessage = error.localizedDescription
+                                    showAlert = true
+                                }
+                            }
+                        } label: {
+                            Label("Ubicación actual", systemImage: "location.fill")
+                        }
+                        .buttonStyle(.bordered)
+                        .disabled(isCapturingLocation)
+                    }
+                }
             }
             #if os(macOS)
             .frame(width: 600, height: 400)
@@ -60,7 +92,7 @@ struct AddNotasView: View {
                 #if os(macOS)
                 ToolbarItem(placement: .principal) {
                     Button("Guardar"){
-                        if NotasModel().addNote(nota: nota, title: title, isFav: false) {
+                        if NotasModel().addNote(nota: nota, title: title, isFav: false, direccionMapa: direccionMapa) {
                             
                             self.modelNotas.getAllNotasToModel() //Actualizando el listado
                             
@@ -103,7 +135,7 @@ struct AddNotasView: View {
                 #if os(iOS)
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Guardar"){
-                        if NotasModel().addNote(nota: nota, title: title, isFav: false) {
+                        if NotasModel().addNote(nota: nota, title: title, isFav: false, direccionMapa: direccionMapa) {
                             
                             self.modelNotas.getAllNotasToModel()
                             
@@ -140,4 +172,3 @@ struct AddNotasView: View {
     }
     
 }
-

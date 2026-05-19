@@ -154,12 +154,21 @@ final class AgendaViewModel: ObservableObject {
             colorHex: "#A9D7A4",
             completada: nil,
             recordatorioActivo: false,
-            reminderID: nil
+            reminderID: nil,
+            seriesID: nil
         )
     }
 
     func save(_ item: AgendaItemData) {
         _ = repository.save(item: item)
+        load()
+    }
+
+    func saveBatch(_ items: [AgendaItemData]) {
+        guard !items.isEmpty else { return }
+        for item in items {
+            _ = repository.save(item: item)
+        }
         load()
     }
 
@@ -169,6 +178,26 @@ final class AgendaViewModel: ObservableObject {
         }
         repository.delete(itemID: item.id)
         load()
+    }
+
+    func delete(_ item: AgendaItemData, scope: AgendaDeleteScope) {
+        switch scope {
+        case .onlyThis:
+            delete(item)
+        case .wholeSeries:
+            guard let seriesID = item.seriesID else {
+                delete(item)
+                return
+            }
+            let seriesItems = items.filter { $0.seriesID == seriesID }
+            for seriesItem in seriesItems {
+                if let reminderID = seriesItem.reminderID {
+                    ReminderNotificationManager.shared.cancel(id: reminderID)
+                }
+            }
+            repository.delete(seriesID: seriesID)
+            load()
+        }
     }
 
     func updateReminder(for item: AgendaItemData, enabled: Bool) {

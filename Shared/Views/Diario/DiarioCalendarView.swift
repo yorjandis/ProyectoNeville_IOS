@@ -34,6 +34,7 @@ struct DiarioCalendarView: View {
     
     var refreshTrigger: Int
     var onMonthEntriesLoaded: (Date) -> Void = { _ in }
+    var onRequestCreateEntry: (Date) -> Void = { _ in }
     // Closure que se ejecutará cuando se seleccione una fecha
     var onDateSelected: (Date) -> Void
     
@@ -88,6 +89,7 @@ struct DiarioCalendarView: View {
                     fechasResaltadas: $fechasDeEntradas,
                     entryCountsByDay: $conteoEntradasPorDia,
                     selectedDay: $selectedDay,
+                    onRequestCreateEntry: onRequestCreateEntry,
                     onDateSelected: onDateSelected
                 )
                 .onAppear{
@@ -162,9 +164,9 @@ struct CalendarGrid: View {
     @Binding var fechasResaltadas: Set<Date>
     @Binding var entryCountsByDay: [Date: Int]
     @Binding var selectedDay: Date?
+    var onRequestCreateEntry: (Date) -> Void
     var onDateSelected: (Date) -> Void
 
-    @StateObject private var modelDiario = DiarioModel.shared
     @State private var showFutureDateAlert: Bool = false
 
     private let columns = Array(repeating: GridItem(.flexible()), count: 7)
@@ -227,17 +229,8 @@ struct CalendarGrid: View {
                                 return
                             }
 
-                            if modelDiario.addItem(
-                                title: "Título",
-                                emocion: .neutral,
-                                content: "Nuevo Contenido!",
-                                fechaCreacion: normalizedSelectedDay
-                            ) {
-                                selectedDay = normalizedSelectedDay
-                                entryCountsByDay[normalizedSelectedDay, default: 0] += 1
-                                fechasResaltadas.insert(normalizedSelectedDay)
-                                onDateSelected(normalizedSelectedDay)
-                            }
+                            selectedDay = normalizedSelectedDay
+                            onRequestCreateEntry(normalizedSelectedDay)
                         }
                         .onTapGesture {
                             let normalizedSelectedDay = Calendar.current.startOfDay(for: date)

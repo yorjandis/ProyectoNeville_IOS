@@ -1,6 +1,8 @@
 #if os(iOS) || os(macOS)
 import SwiftUI
 import Combine
+import UniformTypeIdentifiers
+import MapKit
 
 enum AgendaUIConstants {
     static let calendarBackgroundOpacity: Double = 0.5
@@ -27,11 +29,19 @@ struct AgendaMainView: View {
     @State private var itemPendingDelete: AgendaItemData?
     @State private var showBulkDeleteConfirmation = false
     @State private var bulkDeleteItems: [AgendaItemData] = []
+    @State private var showInterchangeAlert = false
+    @State private var interchangeAlertMessage = ""
+    @State private var showMapsAlert = false
+    @State private var mapsAlertMessage = ""
+    @State private var showPDFExporter = false
+    @State private var exportedPDFDocument: ExportedPDFDocument?
+    @State private var exportedPDFFileName: String = "Agenda.pdf"
     @State private var multiSelectionMode = false
     @State private var selectedItemsIDs: Set<UUID> = []
     @State private var showPastActivities: Bool = false
     @State private var showSearchBar: Bool = false
     @State private var searchText: String = ""
+    @State private var revealLocationIDs: Set<UUID> = []
     @Environment(\.scenePhase) private var scenePhase
 
     @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
@@ -55,6 +65,13 @@ struct AgendaMainView: View {
                         searchText = ""
                     }
                 }
+            }
+            Divider()
+            Button("Exportar semana a PDF") {
+                exportCurrentWeekToPDF()
+            }
+            Button("Exportar mes a PDF") {
+                exportCurrentMonthToPDF()
             }
 
             if !monthItems.isEmpty {
@@ -167,6 +184,154 @@ struct AgendaMainView: View {
         .transition(.move(edge: .top).combined(with: .opacity))
     }
 
+    private var mainContent: some View {
+        VStack(spacing: 12) {
+            if multiSelectionMode {
+                selectionHeader
+            }
+            topControls
+            if showSearchBar {
+                searchBarView
+            }
+            if isCalendarExpanded {
+                customCalendarView
+                    .padding(10)
+                    .background(.white.opacity(AgendaUIConstants.calendarBackgroundOpacity), in: RoundedRectangle(cornerRadius: 12))
+                    .transition(.move(edge: .top).combined(with: .opacity))
+            }
+            activitiesList
+        }
+        .padding(.horizontal, 10)
+    }
+
+    private var selectionHeader: some View {
+        HStack {
+            Text("Seleccionadas: \(selectedItemsIDs.count)")
+                .foregroundStyle(.black.opacity(0.75))
+                .font(.footnote)
+            Spacer()
+            Button("Cancelar") {
+                multiSelectionMode = false
+                selectedItemsIDs.removeAll()
+            }
+            .foregroundStyle(.black)
+        }
+        .padding(.horizontal, 4)
+    }
+
+    private var topControls: some View {
+        HStack(spacing: 10) {
+            Spacer()
+            filterMenu
+            Text("Calendario")
+                .font(.subheadline)
+                .foregroundStyle(.black.opacity(0.75))
+                .onTapGesture {
+                    toggleCalendarExpanded()
+                }
+            Button {
+                toggleCalendarExpanded()
+            } label: {
+                Image(systemName: isCalendarExpanded ? "chevron.up.circle" : "chevron.down.circle")
+                    .font(.title3)
+                    .foregroundStyle(.black.opacity(0.65))
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(isCalendarExpanded ? "Ocultar calendario" : "Mostrar calendario")
+        }
+        .padding(.horizontal, 4)
+        .padding(.top, 4)
+    }
+
+    private var filterMenu: some View {
+        Menu {
+            ForEach(AgendaViewModel.QuickFilter.allCases) { filter in
+                Button {
+                    viewModel.quickFilter = filter
+                } label: {
+                    Text(viewModel.quickFilter == filter ? "\(filter.rawValue) ✓" : filter.rawValue)
+                }
+            }
+        } label: {
+            quickFilterMenuLabel
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var activitiesList: some View {
+        List {
+            if isCalendarExpanded {
+                expandedCalendarList
+            } else {
+                collapsedAgendaList
+            }
+        }
+        .listStyle(.plain)
+        .scrollContentBackground(.hidden)
+    }
+
+    private var expandedCalendarList: some View {
+        ForEach(filteredItems(viewModel.itemsForSelectedDay)) { item in
+            agendaCard(item, fixedHeight: true)
+        }
+    }
+
+    private var collapsedAgendaList: some View {
+        let splitSections = splitCollapsedSectionsByTime()
+        let filteredPastSections = filteredSections(splitSections.past)
+        let filteredUpcomingSections = filteredSections(splitSections.todayAndFuture)
+        let shouldShowPastContent = showPastActivities || isSearchActive
+
+        return Group {
+            if !filteredPastSections.isEmpty {
+                Section {
+                    VStack(alignment: .leading, spacing: 10) {
+                        Button {
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                showPastActivities.toggle()
+                            }
+                        } label: {
+                            HStack {
+                                Text("Actividades pasadas")
+                                    .font(.subheadline.weight(.semibold))
+                                    .foregroundStyle(.black)
+                                Spacer()
+                                Image(systemName: pastActivitiesChevronName)
+                                    .foregroundStyle(.black.opacity(0.65))
+                            }
+                        }
+                        .buttonStyle(.plain)
+
+                        if shouldShowPastContent {
+                            pastActivitiesList(filteredPastSections)
+                                .transition(.move(edge: .top).combined(with: .opacity))
+                        }
+                    }
+                    .padding(10)
+                    .background(
+                        RoundedRectangle(cornerRadius: 14, style: .continuous)
+                            .fill(.white.opacity(0.4))
+                    )
+                    .clipped()
+                    .animation(.easeInOut(duration: 0.28), value: showPastActivities)
+                }
+                .listRowSeparator(.hidden)
+                .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 8, trailing: 0))
+                .listRowBackground(Color.clear)
+            }
+            ForEach(filteredUpcomingSections, id: \.date) { section in
+                Section {
+                    ForEach(section.items) { item in
+                        agendaCard(item, fixedHeight: false)
+                    }
+                } header: {
+                    Text(daySectionTitle(section.date))
+                        .foregroundStyle(.black)
+                }
+            }
+        }
+    }
+
     var body: some View {
         NavigationStack {
             if purchaseStatus || yorjPremium {
@@ -188,168 +353,7 @@ struct AgendaMainView: View {
                     )
                     .ignoresSafeArea()
 
-                    VStack(spacing: 12) {
-                        if multiSelectionMode {
-                            HStack {
-                                Text("Seleccionadas: \(selectedItemsIDs.count)")
-                                    .foregroundStyle(.black.opacity(0.75))
-                                    .font(.footnote)
-                                Spacer()
-                                Button("Cancelar") {
-                                    multiSelectionMode = false
-                                    selectedItemsIDs.removeAll()
-                                }
-                                .foregroundStyle(.black)
-                            }
-                            .padding(.horizontal, 4)
-                        }
-
-                        HStack(spacing: 10) {
-                            
-                            Spacer()
-                            
-                            Menu {
-                                ForEach(AgendaViewModel.QuickFilter.allCases) { filter in
-                                    Button {
-                                        viewModel.quickFilter = filter
-                                    } label: {
-                                        if viewModel.quickFilter == filter {
-                                            Label(filter.rawValue, systemImage: "checkmark")
-                                        } else {
-                                            Text(filter.rawValue)
-                                        }
-                                    }
-                                }
-                            } label: {
-                                quickFilterMenuLabel
-                            }
-                            .buttonStyle(.plain)
-
-                            
-
-                            Text("Calendario")
-                                .font(.subheadline)
-                                .foregroundStyle(.black.opacity(0.75))
-                                .onTapGesture{
-                                    withAnimation(.easeInOut(duration: 0.2)) {
-                                        if isCalendarExpanded {
-                                            viewModel.quickFilter = .todos
-                                        }
-                                        isCalendarExpanded.toggle()
-                                    }
-                                }
-
-                            Button {
-                                withAnimation(.easeInOut(duration: 0.2)) {
-                                    if isCalendarExpanded {
-                                        viewModel.quickFilter = .todos
-                                    }
-                                    isCalendarExpanded.toggle()
-                                }
-                                
-                            } label: {
-                                Image(systemName: isCalendarExpanded ? "chevron.up.circle" : "chevron.down.circle")
-                                    .font(.title3)
-                                    .foregroundStyle(.black.opacity(0.65))
-                            }
-                            .buttonStyle(.plain)
-                            .accessibilityLabel(isCalendarExpanded ? "Ocultar calendario" : "Mostrar calendario")
-                        }
-                        .padding(.horizontal, 4)
-                        .padding(.top, 4)
-
-                        if showSearchBar {
-                            searchBarView
-                        }
-
-                        if isCalendarExpanded {
-                            customCalendarView
-                                .padding(10)
-                                .background(.white.opacity(AgendaUIConstants.calendarBackgroundOpacity), in: RoundedRectangle(cornerRadius: 12))
-                                .transition(.move(edge: .top).combined(with: .opacity))
-                        }
-
-                        List {
-                            if isCalendarExpanded {
-                                let filteredDayItems = filteredItems(viewModel.itemsForSelectedDay)
-                                ForEach(filteredDayItems) { item in
-                                    agendaCard(item, fixedHeight: true)
-                                }
-                            } else {
-                                let splitSections = splitCollapsedSectionsByTime()
-                                let filteredPastSections = filteredSections(splitSections.past)
-                                let filteredUpcomingSections = filteredSections(splitSections.todayAndFuture)
-                                let shouldShowPastContent = showPastActivities || isSearchActive
-
-                                if !filteredPastSections.isEmpty {
-                                    Section {
-                                        VStack(alignment: .leading, spacing: 10) {
-                                            Button {
-                                                withAnimation(.easeInOut(duration: 0.2)) {
-                                                    showPastActivities.toggle()
-                                                }
-                                            } label: {
-                                                HStack {
-                                                    Text("Actividades pasadas")
-                                                        .font(.subheadline.weight(.semibold))
-                                                        .foregroundStyle(.black)
-                                                    Spacer()
-                                                    Image(systemName: showPastActivities ? "chevron.up.circle.fill" : "chevron.down.circle.fill")
-                                                        .foregroundStyle(.black.opacity(0.65))
-                                                }
-                                            }
-                                            .buttonStyle(.plain)
-
-                                            if shouldShowPastContent {
-                                                ScrollView {
-                                                    VStack(spacing: 0) {
-                                                        ForEach(filteredPastSections, id: \.date) { section in
-                                                            VStack(alignment: .leading, spacing: 6) {
-                                                                Text(daySectionTitle(section.date))
-                                                                    .font(.caption.weight(.semibold))
-                                                                    .foregroundStyle(.black.opacity(0.7))
-                                                                    .padding(.horizontal, 6)
-                                                                ForEach(section.items) { item in
-                                                                    agendaCard(item, fixedHeight: false)
-                                                                }
-                                                            }
-                                                            .padding(.bottom, 6)
-                                                        }
-                                                    }
-                                                }
-                                                .frame(height: 350)
-                                                .transition(.move(edge: .top).combined(with: .opacity))
-                                            }
-                                        }
-                                        .padding(10)
-                                        .background(
-                                            RoundedRectangle(cornerRadius: 14, style: .continuous)
-                                                .fill(.white.opacity(0.4))
-                                        )
-                                        .clipped()
-                                        .animation(.easeInOut(duration: 0.28), value: showPastActivities)
-                                    }
-                                    .listRowSeparator(.hidden)
-                                    .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 8, trailing: 0))
-                                    .listRowBackground(Color.clear)
-                                }
-
-                                ForEach(filteredUpcomingSections, id: \.date) { section in
-                                    Section {
-                                        ForEach(section.items) { item in
-                                            agendaCard(item, fixedHeight: false)
-                                        }
-                                    } header: {
-                                        Text(daySectionTitle(section.date))
-                                            .foregroundStyle(.black)
-                                    }
-                                }
-                            }
-                        }
-                        .listStyle(.plain)
-                        .scrollContentBackground(.hidden)
-                    }
-                    .padding(.horizontal, 10)
+                    mainContent
                 }
                 .navigationTitle("Agenda")
 #if os(iOS)
@@ -384,18 +388,22 @@ struct AgendaMainView: View {
                 }
 #if os(iOS)
                 .sheet(item: $editorItem) { item in
-                    AgendaEditorView(baseItem: item) { updated in
-                        viewModel.save(updated)
-                        viewModel.updateReminder(for: updated, enabled: updated.recordatorioActivo)
+                    AgendaEditorView(baseItem: item) { updatedItems in
+                        viewModel.saveBatch(updatedItems)
+                        for updated in updatedItems where updated.recordatorioActivo {
+                            viewModel.updateReminder(for: updated, enabled: true)
+                        }
                     }
                 }
 #else
                 .onChange(of: editorItem) { _, item in
                     guard let item else { return }
                     showWindow(
-                        for: AgendaEditorView(baseItem: item) { updated in
-                            viewModel.save(updated)
-                            viewModel.updateReminder(for: updated, enabled: updated.recordatorioActivo)
+                        for: AgendaEditorView(baseItem: item) { updatedItems in
+                            viewModel.saveBatch(updatedItems)
+                            for updated in updatedItems where updated.recordatorioActivo {
+                                viewModel.updateReminder(for: updated, enabled: true)
+                            }
                         },
                         environmentObjects: [],
                         title: item.titulo.isEmpty ? "Nueva actividad" : "Editar actividad",
@@ -425,12 +433,34 @@ struct AgendaMainView: View {
                 } message: {
                     Text(reminderValidationMessage)
                 }
+                .alert("Agenda", isPresented: $showInterchangeAlert) {
+                    Button("Aceptar", role: .cancel) {}
+                } message: {
+                    Text(interchangeAlertMessage)
+                }
+                .alert("Mapas", isPresented: $showMapsAlert) {
+                    Button("Aceptar", role: .cancel) {}
+                } message: {
+                    Text(mapsAlertMessage)
+                }
                 .confirmationDialog("¿Eliminar actividad?", isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
-                    Button("Eliminar", role: .destructive) {
+                    Button("Solo esta actividad", role: .destructive) {
                         if let itemPendingDelete {
-                            viewModel.delete(itemPendingDelete)
+                            withAnimation(.easeInOut(duration: 0.24)) {
+                                viewModel.delete(itemPendingDelete, scope: .onlyThis)
+                            }
                         }
                         itemPendingDelete = nil
+                    }
+                    if itemPendingDelete?.seriesID != nil {
+                        Button("Toda la serie", role: .destructive) {
+                            if let itemPendingDelete {
+                                withAnimation(.easeInOut(duration: 0.24)) {
+                                    viewModel.delete(itemPendingDelete, scope: .wholeSeries)
+                                }
+                            }
+                            itemPendingDelete = nil
+                        }
                     }
                     Button("Cancelar", role: .cancel) {
                         itemPendingDelete = nil
@@ -455,6 +485,12 @@ struct AgendaMainView: View {
                         displayedMonth = monthStart(of: now)
                     }
                 }
+                .fileExporter(
+                    isPresented: $showPDFExporter,
+                    document: exportedPDFDocument,
+                    contentType: .pdf,
+                    defaultFilename: exportedPDFFileName
+                ) { _ in }
             } else {
                 PurchaseView()
             }
@@ -470,6 +506,30 @@ struct AgendaMainView: View {
         case .some(false):
             return "Quitar check"
         }
+    }
+
+    private var pastActivitiesChevronName: String {
+        showPastActivities ? "chevron.up.circle.fill" : "chevron.down.circle.fill"
+    }
+
+    private func pastActivitiesList(_ sections: [(date: Date, items: [AgendaItemData])]) -> some View {
+        ScrollView {
+            VStack(spacing: 0) {
+                ForEach(sections, id: \.date) { section in
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text(daySectionTitle(section.date))
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.black.opacity(0.7))
+                            .padding(.horizontal, 6)
+                        ForEach(section.items) { item in
+                            agendaCard(item, fixedHeight: false)
+                        }
+                    }
+                    .padding(.bottom, 6)
+                }
+            }
+        }
+        .frame(height: 350)
     }
 
     private func checkActionTint(for item: AgendaItemData) -> Color {
@@ -578,6 +638,24 @@ struct AgendaMainView: View {
                         }
                     }
 
+                    Button("Exportar a Notas") {
+                        let ok = AgendaInterchangeService.exportAgendaToNotas(item)
+                        interchangeAlertMessage = ok ? "Actividad exportada a Notas." : "No se pudo exportar la actividad a Notas."
+                        showInterchangeAlert = true
+                    }
+
+                    Button("Exportar a Diario") {
+                        let ok = AgendaInterchangeService.exportAgendaToDiario(item)
+                        interchangeAlertMessage = ok ? "Actividad exportada a Diario." : "No se pudo exportar la actividad a Diario."
+                        showInterchangeAlert = true
+                    }
+
+                    if !item.lugar.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                        Button("Abrir en Mapas") {
+                            openInMaps(address: item.lugar)
+                        }
+                    }
+
                     Button("Eliminar", role: .destructive) {
                         itemPendingDelete = item
                         showDeleteConfirmation = true
@@ -594,8 +672,7 @@ struct AgendaMainView: View {
                     .foregroundStyle(.black)
             }
             if !item.lugar.isEmpty {
-                Text("Lugar: \(item.lugar)")
-                    .foregroundStyle(.black.opacity(0.85))
+                locationRow(for: item)
             }
             Text(cardDetailText(for: item).isEmpty ? " " : cardDetailText(for: item))
                 .font(.body)
@@ -665,15 +742,116 @@ struct AgendaMainView: View {
 
     private func deleteBulkSelectedItems() {
         let idsToRemove = bulkDeleteItems.map(\.id)
-        for item in bulkDeleteItems {
-            viewModel.delete(item)
+        withAnimation(.easeInOut(duration: 0.24)) {
+            for item in bulkDeleteItems {
+                viewModel.delete(item, scope: .onlyThis)
+            }
+            selectedItemsIDs.subtract(idsToRemove)
+            bulkDeleteItems.removeAll()
         }
-        selectedItemsIDs.subtract(idsToRemove)
-        bulkDeleteItems.removeAll()
     }
 
     private func clearBulkDeleteSelection() {
         bulkDeleteItems.removeAll()
+    }
+
+    private func toggleCalendarExpanded() {
+        withAnimation(.easeInOut(duration: 0.2)) {
+            if isCalendarExpanded {
+                viewModel.quickFilter = .todos
+            }
+            isCalendarExpanded.toggle()
+        }
+    }
+
+    private func openInMaps(address: String) {
+        let cleaned = address.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !cleaned.isEmpty else {
+            mapsAlertMessage = "La dirección está vacía."
+            showMapsAlert = true
+            return
+        }
+
+        Task { @MainActor in
+            let request = MKLocalSearch.Request()
+            request.naturalLanguageQuery = cleaned
+
+            do {
+                let response = try await MKLocalSearch(request: request).start()
+                guard let destination = response.mapItems.first else {
+                    mapsAlertMessage = "La dirección no es válida o no se pudo encontrar."
+                    showMapsAlert = true
+                    return
+                }
+
+                destination.name = cleaned
+                destination.openInMaps(launchOptions: [
+                    MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving
+                ])
+            } catch {
+                mapsAlertMessage = "No se pudo abrir Mapas para esta dirección."
+                showMapsAlert = true
+            }
+        }
+    }
+
+    private func exportCurrentMonthToPDF() {
+        let monthItems = itemsInDisplayedMonth()
+        exportItemsToPDF(monthItems, scopeName: "Mes")
+    }
+
+    private func exportCurrentWeekToPDF() {
+        let weekItems = itemsInActiveWeek()
+        exportItemsToPDF(weekItems, scopeName: "Semana")
+    }
+
+    private func exportItemsToPDF(_ items: [AgendaItemData], scopeName: String) {
+        guard !items.isEmpty else {
+            interchangeAlertMessage = "No hay actividades para exportar en \(scopeName.lowercased())."
+            showInterchangeAlert = true
+            return
+        }
+
+        let calendar = Calendar.current
+        let grouped = Dictionary(grouping: items.sorted { $0.fechaActividad < $1.fechaActividad }) {
+            calendar.startOfDay(for: $0.fechaActividad)
+        }
+
+        let sections: [PDFExportSection] = grouped.keys.sorted().map { day in
+            let dayItems = (grouped[day] ?? []).sorted { $0.hora < $1.hora }
+            let lines = dayItems.map { item in
+                let details = [
+                    "Hora: \(item.hora.formatted(date: .omitted, time: .shortened))",
+                    item.lugar.isEmpty ? nil : "Lugar: \(item.lugar)",
+                    item.contenido.isEmpty ? nil : item.contenido,
+                    item.nota.isEmpty ? nil : "Nota: \(item.nota)"
+                ]
+                    .compactMap { $0 }
+                    .joined(separator: "\n")
+                return PDFExportLine(title: item.titulo, detail: details)
+            }
+            return PDFExportSection(
+                title: day.formatted(date: .complete, time: .omitted),
+                lines: lines
+            )
+        }
+
+        let descriptor = PDFExportDocumentDescriptor(
+            title: "Agenda - \(scopeName) actual",
+            subtitle: "Generado el \(Date().formatted(date: .abbreviated, time: .shortened))",
+            sections: sections
+        )
+
+        do {
+            let data = try PDFExportModule.render(descriptor)
+            exportedPDFDocument = ExportedPDFDocument(data: data)
+            let dateLabel = Date().formatted(date: .numeric, time: .omitted).replacingOccurrences(of: "/", with: "-")
+            exportedPDFFileName = "Agenda-\(scopeName)-\(dateLabel)"
+            showPDFExporter = true
+        } catch {
+            interchangeAlertMessage = "No se pudo generar el PDF."
+            showInterchangeAlert = true
+        }
     }
 
     private func matchesSearch(_ item: AgendaItemData) -> Bool {
@@ -847,6 +1025,44 @@ struct AgendaMainView: View {
             return "\(content) · \(note)"
         }
         return !content.isEmpty ? content : note
+    }
+
+    @ViewBuilder
+    private func locationRow(for item: AgendaItemData) -> some View {
+        let showingAddress = revealLocationIDs.contains(item.id)
+        HStack(spacing: 8) {
+            Text("Lugar")
+                .foregroundStyle(.black.opacity(0.85))
+                .underline()
+                .onTapGesture {
+                    toggleLocationVisibility(for: item.id)
+                }
+
+            if showingAddress {
+                Text(": \(item.lugar)")
+                    .foregroundStyle(.black.opacity(0.85))
+                    .lineLimit(1)
+                    .truncationMode(.tail)
+            } else {
+                Button {
+                    openInMaps(address: item.lugar)
+                } label: {
+                    Image(systemName: "map")
+                        .font(.caption)
+                        .foregroundStyle(.black.opacity(0.75))
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Abrir ubicación en Mapas")
+            }
+        }
+    }
+
+    private func toggleLocationVisibility(for id: UUID) {
+        if revealLocationIDs.contains(id) {
+            revealLocationIDs.remove(id)
+        } else {
+            revealLocationIDs.insert(id)
+        }
     }
 
     private var customCalendarView: some View {

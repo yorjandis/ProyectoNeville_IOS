@@ -1,10 +1,13 @@
 import SwiftUI
+import CoreLocation
 
 struct AgendaEditorView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.colorScheme) private var colorScheme
 
     let baseItem: AgendaItemData
-    let onSave: (AgendaItemData) -> Void
+    let onSave: ([AgendaItemData]) -> Void
+    private let forceDarkTheme: Bool
 
     @State private var titulo: String
     @State private var fechaActividad: Date
@@ -17,8 +20,20 @@ struct AgendaEditorView: View {
     @State private var completada: Bool?
     @State private var recordatorioActivo: Bool
 
-    init(baseItem: AgendaItemData, onSave: @escaping (AgendaItemData) -> Void) {
+    @State private var recurrenceMode: AgendaRecurrenceMode = .none
+    @State private var recurrenceFrequency: AgendaRecurrenceFrequency = .weekly
+    @State private var recurrenceEndDate: Date
+    @State private var selectedWeekdays: Set<Int> = []
+    @State private var specificDateDraft: Date
+    @State private var specificDates: [Date] = []
+    @StateObject private var locationCapture = AgendaLocationCapture()
+    @State private var showLocationAlert = false
+    @State private var locationAlertMessage = ""
+    @State private var isCapturingLocation = false
+
+    init(baseItem: AgendaItemData, forceDarkTheme: Bool = false, onSave: @escaping ([AgendaItemData]) -> Void) {
         self.baseItem = baseItem
+        self.forceDarkTheme = forceDarkTheme
         self.onSave = onSave
         _titulo = State(initialValue: baseItem.titulo)
         _fechaActividad = State(initialValue: baseItem.fechaActividad)
@@ -30,6 +45,11 @@ struct AgendaEditorView: View {
         _colorHex = State(initialValue: baseItem.colorHex)
         _completada = State(initialValue: baseItem.completada)
         _recordatorioActivo = State(initialValue: baseItem.recordatorioActivo)
+
+        let today = baseItem.fechaActividad
+        let endDate = Calendar.current.date(byAdding: .year, value: 1, to: today) ?? today
+        _recurrenceEndDate = State(initialValue: endDate)
+        _specificDateDraft = State(initialValue: today)
     }
 
     var body: some View {
@@ -38,47 +58,62 @@ struct AgendaEditorView: View {
                 Section("Actividad") {
                     TextField("Título", text: $titulo)
                         .font(.system(size: 22))
+                        .foregroundStyle(editorTextColor)
                     DatePicker("Fecha", selection: $fechaActividad, displayedComponents: .date)
                     DatePicker("Hora", selection: $hora, displayedComponents: .hourAndMinute)
-                    TextField("Lugar", text: $lugar)
-                        .frame(width: 350)
+                    HStack {
+                        if isCapturingLocation {
+                            ProgressView()
+                                .progressViewStyle(.circular)
+                                .frame(maxWidth: .infinity, alignment: .center)
+                        } else {
+                            TextField("Lugar", text: $lugar, axis: .vertical)
+                                .foregroundStyle(editorTextColor)
+                        }
+                        Button("Ubicación actual") {
+                            captureCurrentAddress()
+                        }
+                        .buttonStyle(.bordered)
+                        .disabled(isCapturingLocation)
+                    }
+                    .frame(width: 350)
                 }
 
                 Section("Detalles") {
 #if os(macOS)
-                    
-
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Contenido")
                             .font(.body)
                             .foregroundStyle(.white)
                         TextEditor(text: $contenido)
                             .font(.system(size: 22))
+                            .foregroundStyle(editorTextColor)
                             .frame(minHeight: 50)
                             .padding(.horizontal, 8)
                             .padding(.vertical, 6)
                             .scrollContentBackground(.hidden)
                             .background(Color.black.opacity(0.05), in: RoundedRectangle(cornerRadius: 6))
                     }
-                    
+
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Nota")
                             .font(.body)
                             .foregroundStyle(.white)
                         TextEditor(text: $nota)
                             .font(.system(size: 22))
+                            .foregroundStyle(editorTextColor)
                             .frame(minHeight: 50)
                             .padding(.horizontal, 8)
                             .padding(.vertical, 6)
                             .scrollContentBackground(.hidden)
                             .background(Color.black.opacity(0.05), in: RoundedRectangle(cornerRadius: 6))
                     }
-                    
 #else
                     TextField("Contenido", text: $contenido, axis: .vertical)
+                        .foregroundStyle(editorTextColor)
                         .frame(height: 50)
                     TextField("Nota", text: $nota, axis: .vertical)
-                    
+                        .foregroundStyle(editorTextColor)
 #endif
                 }
 
@@ -95,7 +130,11 @@ struct AgendaEditorView: View {
                     }
                     Toggle("Activar recordatorio", isOn: $recordatorioActivo)
                 }
+
+                recurrenceSection
             }
+            .foregroundStyle(forceDarkTheme ? Color.white : Color.primary)
+            .tint(forceDarkTheme ? .white : .accentColor)
 #if os(macOS)
             .padding(14)
 #endif
@@ -103,34 +142,425 @@ struct AgendaEditorView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancelar") { dismiss() }
+                        .foregroundStyle(forceDarkTheme ? .white : .primary)
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Guardar") { save() }
-                        .disabled(titulo.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                        .foregroundStyle(forceDarkTheme ? .white : .primary)
+                        .disabled(!canSave)
+                }
+            }
+        }
+        .preferredColorScheme(forceDarkTheme ? .dark : nil)
+        .background(forceDarkTheme ? Color.black : Color.clear)
+        .alert("Ubicación", isPresented: $showLocationAlert) {
+            Button("Aceptar", role: .cancel) {}
+        } message: {
+            Text(locationAlertMessage)
+        }
+    }
+
+    private var editorTextColor: Color {
+        (forceDarkTheme || colorScheme == .dark) ? .white : .black
+    }
+
+    private func captureCurrentAddress() {
+        isCapturingLocation = true
+        locationCapture.captureCurrentAddress { result in
+            isCapturingLocation = false
+            switch result {
+            case .success(let address):
+                lugar = address
+            case .failure(let error):
+                locationAlertMessage = error.localizedDescription
+                showLocationAlert = true
+            }
+        }
+    }
+
+    private var recurrenceSection: some View {
+        Section("Repetición") {
+            Text("Configura si esta actividad se repite por días de la semana, por fechas concretas (máximo 50) o por frecuencia semanal, mensual o anual.")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+
+            Picker("Modo", selection: $recurrenceMode) {
+                ForEach(AgendaRecurrenceMode.allCases) { mode in
+                    Text(mode.title).tag(mode)
+                }
+            }
+
+            switch recurrenceMode {
+            case .none:
+                EmptyView()
+
+            case .weekdays:
+                weekdaySelector
+                DatePicker("Repetir hasta", selection: $recurrenceEndDate, in: fechaActividad..., displayedComponents: .date)
+
+            case .specificDates:
+                DatePicker("Fecha", selection: $specificDateDraft, displayedComponents: .date)
+                Button("Añadir fecha") {
+                    addSpecificDate(specificDateDraft)
+                }
+                .disabled(specificDates.count >= 50)
+
+                if !specificDates.isEmpty {
+                    ForEach(specificDates, id: \.self) { date in
+                        HStack {
+                            Text(date.formatted(date: .abbreviated, time: .omitted))
+                            Spacer()
+                            Button(role: .destructive) {
+                                removeSpecificDate(date)
+                            } label: {
+                                Image(systemName: "trash")
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                }
+
+                Text("\(specificDates.count)/50 fechas")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+
+            case .frequency:
+                Picker("Frecuencia", selection: $recurrenceFrequency) {
+                    ForEach(AgendaRecurrenceFrequency.allCases) { frequency in
+                        Text(frequency.title).tag(frequency)
+                    }
+                }
+                DatePicker("Repetir hasta", selection: $recurrenceEndDate, in: fechaActividad..., displayedComponents: .date)
+            }
+        }
+    }
+
+    private var weekdaySelector: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Días")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+
+            let symbols = weekdaySymbolsOrderedByCalendar
+            let orderedWeekdays = orderedWeekdayNumbers
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 6), count: 4), spacing: 8) {
+                ForEach(Array(orderedWeekdays.enumerated()), id: \.element) { index, weekday in
+                    Button {
+                        toggleWeekday(weekday)
+                    } label: {
+                        Text(symbols[index])
+                            .font(.caption)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 6)
+                            .background(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .fill(selectedWeekdays.contains(weekday) ? Color.blue.opacity(0.2) : Color.gray.opacity(0.15))
+                            )
+                    }
+                    .buttonStyle(.plain)
                 }
             }
         }
     }
 
+    private var canSave: Bool {
+        let hasTitle = !titulo.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        guard hasTitle else { return false }
+
+        switch recurrenceMode {
+        case .none:
+            return true
+        case .weekdays:
+            return !selectedWeekdays.isEmpty
+        case .specificDates:
+            return !specificDates.isEmpty && specificDates.count <= 50
+        case .frequency:
+            return recurrenceEndDate >= fechaActividad
+        }
+    }
+
+    private var orderedWeekdayNumbers: [Int] {
+        let calendar = Calendar.current
+        let all = [1, 2, 3, 4, 5, 6, 7]
+        let first = calendar.firstWeekday
+        let pivot = max(0, min(all.count - 1, first - 1))
+        return Array(all[pivot...]) + Array(all[..<pivot])
+    }
+
+    private var weekdaySymbolsOrderedByCalendar: [String] {
+        let calendar = Calendar.current
+        let base = calendar.shortWeekdaySymbols
+        let first = max(0, min(base.count - 1, calendar.firstWeekday - 1))
+        return Array(base[first...]) + Array(base[..<first])
+    }
+
+    private func toggleWeekday(_ weekday: Int) {
+        if selectedWeekdays.contains(weekday) {
+            selectedWeekdays.remove(weekday)
+        } else {
+            selectedWeekdays.insert(weekday)
+        }
+    }
+
+    private func addSpecificDate(_ date: Date) {
+        guard specificDates.count < 50 else { return }
+        let normalized = Calendar.current.startOfDay(for: date)
+        if !specificDates.contains(normalized) {
+            specificDates.append(normalized)
+            specificDates.sort()
+        }
+    }
+
+    private func removeSpecificDate(_ date: Date) {
+        specificDates.removeAll { Calendar.current.isDate($0, inSameDayAs: date) }
+    }
+
+    private func mergedDate(_ day: Date, _ time: Date) -> Date {
+        let calendar = Calendar.current
+        let dayComponents = calendar.dateComponents([.year, .month, .day], from: day)
+        let timeComponents = calendar.dateComponents([.hour, .minute], from: time)
+
+        var components = DateComponents()
+        components.year = dayComponents.year
+        components.month = dayComponents.month
+        components.day = dayComponents.day
+        components.hour = timeComponents.hour
+        components.minute = timeComponents.minute
+
+        return calendar.date(from: components) ?? day
+    }
+
+    private func buildItemsToSave(now: Date) -> [AgendaItemData] {
+        let seriesID: UUID? = recurrenceMode == .none ? baseItem.seriesID : (baseItem.seriesID ?? UUID())
+        let dates = generatedActivityDates()
+        let calendar = Calendar.current
+
+        return dates.map { activityDate in
+            let reuseBaseID = recurrenceMode == .none || calendar.isDate(activityDate, inSameDayAs: baseItem.fechaActividad)
+            return AgendaItemData(
+                id: reuseBaseID ? baseItem.id : UUID(),
+                titulo: titulo.trimmingCharacters(in: .whitespacesAndNewlines),
+                fechaCreacion: reuseBaseID ? baseItem.fechaCreacion : now,
+                fechaModificacion: now,
+                nota: nota,
+                fechaActividad: activityDate,
+                hora: hora,
+                lugar: lugar,
+                contenido: contenido,
+                prioridad: prioridad,
+                colorHex: colorHex,
+                completada: completada,
+                recordatorioActivo: recordatorioActivo,
+                reminderID: reuseBaseID ? baseItem.reminderID : nil,
+                seriesID: seriesID
+            )
+        }
+    }
+
+    private func generatedActivityDates() -> [Date] {
+        let calendar = Calendar.current
+        let startDay = calendar.startOfDay(for: fechaActividad)
+        let endDay = calendar.startOfDay(for: recurrenceEndDate)
+
+        switch recurrenceMode {
+        case .none:
+            return [startDay]
+
+        case .specificDates:
+            let filtered = specificDates
+                .filter { $0 >= startDay }
+                .sorted()
+            return Array(filtered.prefix(50))
+
+        case .weekdays:
+            guard !selectedWeekdays.isEmpty else {
+                return [startDay]
+            }
+            var dates: [Date] = []
+            var cursor = startDay
+            while cursor <= endDay {
+                let weekday = calendar.component(.weekday, from: cursor)
+                if selectedWeekdays.contains(weekday) {
+                    dates.append(cursor)
+                }
+                guard let next = calendar.date(byAdding: .day, value: 1, to: cursor) else {
+                    break
+                }
+                cursor = next
+            }
+            return dates.isEmpty ? [startDay] : dates
+
+        case .frequency:
+            return frequencyDates(startDay: startDay, endDay: endDay)
+        }
+    }
+
+    private func frequencyDates(startDay: Date, endDay: Date) -> [Date] {
+        let calendar = Calendar.current
+        var result: [Date] = []
+
+        let anchorDay = calendar.component(.day, from: startDay)
+        let anchorMonth = calendar.component(.month, from: startDay)
+
+        var offset = 0
+        while true {
+            let candidate: Date?
+            switch recurrenceFrequency {
+            case .weekly:
+                candidate = calendar.date(byAdding: .weekOfYear, value: offset, to: startDay)
+
+            case .monthly:
+                guard let monthBase = calendar.date(byAdding: .month, value: offset, to: startDay) else {
+                    return result
+                }
+                let monthYear = calendar.dateComponents([.year, .month], from: monthBase)
+                var components = DateComponents()
+                components.year = monthYear.year
+                components.month = monthYear.month
+                components.day = anchorDay
+                candidate = calendar.date(from: components)
+
+            case .yearly:
+                guard let yearBase = calendar.date(byAdding: .year, value: offset, to: startDay) else {
+                    return result
+                }
+                let year = calendar.component(.year, from: yearBase)
+                var components = DateComponents()
+                components.year = year
+                components.month = anchorMonth
+                components.day = anchorDay
+                candidate = calendar.date(from: components)
+            }
+
+            if let candidate {
+                if candidate > endDay {
+                    break
+                }
+                if candidate >= startDay {
+                    result.append(candidate)
+                }
+            }
+
+            offset += 1
+            if offset > 5000 { break }
+        }
+
+        return result.isEmpty ? [startDay] : result
+    }
+
     private func save() {
         let now = Date()
-        let item = AgendaItemData(
-            id: baseItem.id,
-            titulo: titulo,
-            fechaCreacion: baseItem.fechaCreacion,
-            fechaModificacion: now,
-            nota: nota,
-            fechaActividad: fechaActividad,
-            hora: hora,
-            lugar: lugar,
-            contenido: contenido,
-            prioridad: prioridad,
-            colorHex: colorHex,
-            completada: completada,
-            recordatorioActivo: recordatorioActivo,
-            reminderID: baseItem.reminderID
-        )
-        onSave(item)
+        var items = buildItemsToSave(now: now)
+        var seenDays = Set<Date>()
+        items = items
+            .sorted { $0.fechaActividad < $1.fechaActividad }
+            .filter { item in
+                let day = Calendar.current.startOfDay(for: item.fechaActividad)
+                if seenDays.contains(day) {
+                    return false
+                }
+                seenDays.insert(day)
+                return true
+            }
+
+        if items.isEmpty {
+            return
+        }
+
+        onSave(items)
         dismiss()
+    }
+}
+
+@MainActor
+final class AgendaLocationCapture: NSObject, ObservableObject, CLLocationManagerDelegate {
+    private let manager = CLLocationManager()
+    private var completion: ((Result<String, Error>) -> Void)?
+
+    override init() {
+        super.init()
+        manager.delegate = self
+        manager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+    }
+
+    func captureCurrentAddress(completion: @escaping (Result<String, Error>) -> Void) {
+        self.completion = completion
+        switch manager.authorizationStatus {
+        case .authorizedWhenInUse, .authorizedAlways:
+            manager.requestLocation()
+        case .notDetermined:
+            manager.requestWhenInUseAuthorization()
+        case .denied, .restricted:
+            finish(.failure(NSError(domain: "AgendaLocationCapture", code: 1, userInfo: [NSLocalizedDescriptionKey: "No hay permisos de ubicación. Actívalos en Ajustes."])))
+        @unknown default:
+            finish(.failure(NSError(domain: "AgendaLocationCapture", code: 2, userInfo: [NSLocalizedDescriptionKey: "Estado de ubicación no soportado."])))
+        }
+    }
+
+    nonisolated func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        let status = manager.authorizationStatus
+        Task { @MainActor in
+            self.handleAuthorizationChange(status)
+        }
+    }
+
+    private func handleAuthorizationChange(_ status: CLAuthorizationStatus) {
+        if status == .authorizedWhenInUse || status == .authorizedAlways {
+            manager.requestLocation()
+        } else if status == .denied || status == .restricted {
+            finish(.failure(NSError(domain: "AgendaLocationCapture", code: 3, userInfo: [NSLocalizedDescriptionKey: "Permiso de ubicación denegado."])))
+        }
+    }
+
+    nonisolated func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        Task { @MainActor in
+            self.handleLocationUpdate(locations)
+        }
+    }
+
+    private func handleLocationUpdate(_ locations: [CLLocation]) {
+        guard let location = locations.first else {
+            finish(.failure(NSError(domain: "AgendaLocationCapture", code: 4, userInfo: [NSLocalizedDescriptionKey: "No se pudo obtener la ubicación actual."])))
+            return
+        }
+
+        CLGeocoder().reverseGeocodeLocation(location) { [weak self] placemarks, error in
+            Task { @MainActor in
+                guard let self else { return }
+                if let error {
+                    self.finish(.failure(error))
+                    return
+                }
+                guard let place = placemarks?.first else {
+                    self.finish(.failure(NSError(domain: "AgendaLocationCapture", code: 5, userInfo: [NSLocalizedDescriptionKey: "No se encontró una dirección para esta ubicación."])))
+                    return
+                }
+
+                let parts = [
+                    place.name,
+                    place.locality,
+                    place.administrativeArea,
+                    place.country
+                ].compactMap { $0 }.filter { !$0.isEmpty }
+                let address = parts.joined(separator: ", ")
+
+                if address.isEmpty {
+                    self.finish(.failure(NSError(domain: "AgendaLocationCapture", code: 6, userInfo: [NSLocalizedDescriptionKey: "La dirección obtenida está vacía."])))
+                } else {
+                    self.finish(.success(address))
+                }
+            }
+        }
+    }
+
+    nonisolated func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        Task { @MainActor in
+            self.finish(.failure(error))
+        }
+    }
+
+    private func finish(_ result: Result<String, Error>) {
+        completion?(result)
+        completion = nil
     }
 }

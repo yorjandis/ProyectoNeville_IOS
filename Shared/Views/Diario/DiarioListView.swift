@@ -65,6 +65,11 @@ struct DiarioListView: View {
     @State private var showDiarioStats: Bool = false
     @State private var selectedCalendarDate: Date? = nil
     @State private var calendarRefreshTrigger: Int = 0
+    @State private var showNewEntryEditor: Bool = false
+    @State private var newEntryTitle: String = ""
+    @State private var newEntryContent: String = ""
+    @State private var newEntryEmotion: Emociones = .neutral
+    @State private var newEntryDate: Date = Date.now
     
     
     //Ordenar las entradas del Diario por fechaCreación/fechaModificación
@@ -97,6 +102,14 @@ struct DiarioListView: View {
                                         refreshTrigger: calendarRefreshTrigger,
                                         onMonthEntriesLoaded: { _ in
                                             selectedCalendarDate = nil
+                                        },
+                                        onRequestCreateEntry: { date in
+                                            openNewEntryEditor(
+                                                title: "",
+                                                content: "",
+                                                emocion: .neutral,
+                                                date: date
+                                            )
                                         }
                                     ) { date in
                                         withAnimation {
@@ -492,42 +505,26 @@ struct DiarioListView: View {
                     
                     ToolbarItem{
                             Menu{
-                                Button{
-                                    if  modelDiario.addItem(title: "Título", emocion: .neutral, content: "Nuevo Contenido!") {
-                                        withAnimation {
-                                            modelDiario.getAllItem()
-                                        }
-                                        if FeedBackModel.checkReviewRequest() {
-                                            self.sheetShowFeedBackReview = true
-                                        }
-                                    }
-                                }label:{
+                                Button {
+                                    openNewEntryEditor(
+                                        title: "",
+                                        content: "",
+                                        emocion: .neutral,
+                                        date: Date.now
+                                    )
+                                } label: {
                                     Label("Nueva Entrada", systemImage: "square.and.pencil")
                                 }
                                 
                                 Menu{
                                     ForEach(0..<titlesExamples.count, id: \.self){ value in
-                                        Button(titlesExamples[value].0){
-                                            if  modelDiario.addItem(title: titlesExamples[value].0, emocion: modelDiario.getEmocionesFromStr(value: titlesExamples[value].1) , content: "Nuevo contenido!"){
-                                                
-                                                withAnimation {
-                                                    modelDiario.getAllItem()
-                                                }
-                                                if FeedBackModel.checkReviewRequest() {
-                                                    #if os(macOS)
-                                                    showWindow(for: FeedbackView(showTextBotton: false),
-                                                               environmentObjects: [],
-                                                               title: "Enviar una Reseña a la App Store",
-                                                               size: AppCons.windows_size_content_small,
-                                                               isModal: true
-                                                    )
-                                                    #else
-                                                    self.sheetShowFeedBackReview = true
-                                                    #endif
-                                                    
-                                                }
-                                            }
-                                            
+                                        Button(titlesExamples[value].0) {
+                                            openNewEntryEditor(
+                                                title: titlesExamples[value].0,
+                                                content: "",
+                                                emocion: modelDiario.getEmocionesFromStr(value: titlesExamples[value].1),
+                                                date: Date.now
+                                            )
                                         }
                                     }
                                 }label: {
@@ -627,6 +624,16 @@ struct DiarioListView: View {
                 .ignoresSafeArea()
                 
             }
+            .sheet(isPresented: $showNewEntryEditor) {
+                NewDiarioEntryView(
+                    title: newEntryTitle,
+                    content: newEntryContent,
+                    emocion: newEntryEmotion,
+                    fechaCreacion: newEntryDate
+                ) { savedDate in
+                    refreshAfterEntryCreation(savedDate)
+                }
+            }
             .sheet(isPresented: self.$sheetShowFeedBackReview, content: {
                 FeedbackView(showTextBotton: true)
             })
@@ -640,6 +647,52 @@ struct DiarioListView: View {
             }
   
          }
+    }
+
+    private func openNewEntryEditor(title: String, content: String, emocion: Emociones, date: Date) {
+        newEntryTitle = title
+        newEntryContent = content
+        newEntryEmotion = emocion
+        newEntryDate = Calendar.current.startOfDay(for: date)
+
+#if os(macOS)
+        showWindow(
+            for: NewDiarioEntryView(
+                title: newEntryTitle,
+                content: newEntryContent,
+                emocion: newEntryEmotion,
+                fechaCreacion: newEntryDate
+            ) { savedDate in
+                refreshAfterEntryCreation(savedDate)
+            },
+            environmentObjects: [self.modelDiario],
+            title: "Nueva Entrada",
+            size: AppCons.windows_size_content,
+            isModal: true
+        )
+#else
+        showNewEntryEditor = true
+#endif
+    }
+
+    private func refreshAfterEntryCreation(_ savedDate: Date) {
+        calendarRefreshTrigger += 1
+        selectedCalendarDate = Calendar.current.startOfDay(for: savedDate)
+        modelDiario.list = modelDiario.searchPorFecha(for: savedDate)
+
+        if FeedBackModel.checkReviewRequest() {
+            #if os(macOS)
+            showWindow(
+                for: FeedbackView(showTextBotton: false),
+                environmentObjects: [],
+                title: "Enviar una Reseña a la App Store",
+                size: AppCons.windows_size_content_small,
+                isModal: true
+            )
+            #else
+            sheetShowFeedBackReview = true
+            #endif
+        }
     }
 
     private func refreshAfterEntryDeletion(_ : Date?) {

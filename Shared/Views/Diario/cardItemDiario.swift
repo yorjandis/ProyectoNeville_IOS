@@ -8,6 +8,7 @@
 
 import SwiftUI
 import CoreData
+import MapKit
 
 struct cardItemDiario: View{
     @Environment(\.colorScheme) var theme
@@ -26,6 +27,11 @@ struct cardItemDiario: View{
     @State private var title = ""
     //Alert Eliminar Entrada
     @State private var showAlertDeleteEntry = false
+    @State private var showInterchangeAlert = false
+    @State private var interchangeAlertMessage = ""
+    @State private var showMapsAlert = false
+    @State private var mapsAlertMessage = ""
+    @State private var agendaDraftToExport: AgendaItemData?
     //Edit Content
     @State private var showSheet = false
     //favorito
@@ -116,7 +122,7 @@ struct cardItemDiario: View{
                     .onTapGesture(count: 2) {
                         
                         #if os(macOS)
-                        showWindow(for: editContent(diario: $diario, textTitle:diario.title ?? "", textContent: diario.content ?? "", emoticono: diarioModel.getEmocionesFromStr(value: diario.emotion ?? "neutral"), onEntryUpdated: onEntryUpdated),
+                        showWindow(for: editContent(diario: $diario, textTitle:diario.title ?? "", textContent: diario.content ?? "", direccionMapa: diario.value(forKey: "direccionMapa") as? String ?? "", emoticono: diarioModel.getEmocionesFromStr(value: diario.emotion ?? "neutral"), onEntryUpdated: onEntryUpdated),
                                    environmentObjects: [self.diarioModel],
                                    title: "Editar entrada Diario",
                                    size: AppCons.windows_size_content,
@@ -184,7 +190,7 @@ struct cardItemDiario: View{
                     Menu{
                         Button{
                             #if os(macOS)
-                            showWindow(for: editContent(diario: $diario, textTitle:diario.title ?? "", textContent: diario.content ?? "", emoticono: diarioModel.getEmocionesFromStr(value: diario.emotion ?? "neutral"), onEntryUpdated: onEntryUpdated),
+                            showWindow(for: editContent(diario: $diario, textTitle:diario.title ?? "", textContent: diario.content ?? "", direccionMapa: diario.value(forKey: "direccionMapa") as? String ?? "", emoticono: diarioModel.getEmocionesFromStr(value: diario.emotion ?? "neutral"), onEntryUpdated: onEntryUpdated),
                                        environmentObjects: [self.diarioModel],
                                        title: "Editar entrada Diario",
                                        size: AppCons.windows_size_content,
@@ -203,6 +209,43 @@ struct cardItemDiario: View{
                             showAlertDeleteEntry = true
                         }label: {
                             Label("Eliminar", systemImage: "trash")
+                        }
+
+                        if let direccion = diario.value(forKey: "direccionMapa") as? String,
+                           !direccion.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                            Button {
+                                openInMaps(address: direccion)
+                            } label: {
+                                Label("Abrir en Mapas", systemImage: "map")
+                            }
+                        }
+
+                        Button {
+                            let draft = AgendaInterchangeService.makeAgendaDraft(
+                                title: diario.title ?? "Entrada Diario",
+                                content: diario.content ?? "",
+                                activityDate: diario.fecha ?? Date()
+                            )
+#if os(macOS)
+                            showWindow(
+                                for:
+                                    AgendaEditorView(baseItem: draft, forceDarkTheme: true) { items in
+                                        AgendaInterchangeService.saveAgendaItems(items)
+                                    }
+                                    .preferredColorScheme(.dark)
+                                    .tint(.white)
+                                    .background(Color.black)
+                                ,
+                                environmentObjects: [],
+                                title: "Exportar a Agenda",
+                                size: .percentage(width: 0.38, height: 0.52),
+                                isModal: false
+                            )
+#else
+                            agendaDraftToExport = draft
+#endif
+                        } label: {
+                            Label("Exportar a Agenda", systemImage: "calendar.badge.plus")
                         }
                         
                     }label: {
@@ -239,9 +282,60 @@ struct cardItemDiario: View{
                 }
             }
         })
-        .sheet(isPresented: $showSheet){
-            editContent(diario: $diario, textTitle:diario.title ?? "", textContent: diario.content ?? "", emoticono: diarioModel.getEmocionesFromStr(value: diario.emotion ?? "neutral"), onEntryUpdated: onEntryUpdated)
+        .alert("Diario", isPresented: $showInterchangeAlert) {
+            Button("Aceptar", role: .cancel) {}
+        } message: {
+            Text(interchangeAlertMessage)
         }
+        .alert("Mapas", isPresented: $showMapsAlert) {
+            Button("Aceptar", role: .cancel) {}
+        } message: {
+            Text(mapsAlertMessage)
+        }
+        .sheet(isPresented: $showSheet){
+            editContent(diario: $diario, textTitle:diario.title ?? "", textContent: diario.content ?? "", direccionMapa: diario.value(forKey: "direccionMapa") as? String ?? "", emoticono: diarioModel.getEmocionesFromStr(value: diario.emotion ?? "neutral"), onEntryUpdated: onEntryUpdated)
+        }
+#if os(iOS)
+        .sheet(item: $agendaDraftToExport) { draft in
+            AgendaEditorView(baseItem: draft, forceDarkTheme: true) { items in
+                AgendaInterchangeService.saveAgendaItems(items)
+            }
+            .preferredColorScheme(.dark)
+            .tint(.white)
+            .background(Color.black)
+        }
+#endif
         
+    }
+
+    private func openInMaps(address: String) {
+        let cleaned = address.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !cleaned.isEmpty else {
+            mapsAlertMessage = "La dirección está vacía."
+            showMapsAlert = true
+            return
+        }
+
+        Task { @MainActor in
+            let request = MKLocalSearch.Request()
+            request.naturalLanguageQuery = cleaned
+
+            do {
+                let response = try await MKLocalSearch(request: request).start()
+                guard let destination = response.mapItems.first else {
+                    mapsAlertMessage = "La dirección no es válida o no se pudo encontrar."
+                    showMapsAlert = true
+                    return
+                }
+
+                destination.name = cleaned
+                destination.openInMaps(launchOptions: [
+                    MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving
+                ])
+            } catch {
+                mapsAlertMessage = "No se pudo abrir Mapas para esta dirección."
+                showMapsAlert = true
+            }
+        }
     }
 }

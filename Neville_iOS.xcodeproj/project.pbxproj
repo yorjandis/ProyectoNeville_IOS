@@ -41,6 +41,7 @@
 		915017432EF078A2007B741A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 915017422EF078A2007B741A /* StoreKit.framework */; };
 		915017452EF078B2007B741A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 915017442EF078B2007B741A /* StoreKit.framework */; };
 		918C4B0B2EF4094D00974B54 /* La Ley.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 918C4AFF2EF4094D00974B54 /* La Ley.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		919816C42FBC1E1600B24155 /* QuickAddNotaByLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 919816C32FBC1E1600B24155 /* QuickAddNotaByLocationView.swift */; };
 		919F40A52F66C559009FF35B /* LaLeyBackgroundDownloadExtension.appex in Embed ExtensionKit Extensions */ = {isa = PBXBuildFile; fileRef = 919F409D2F66C559009FF35B /* LaLeyBackgroundDownloadExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		91E107712EEA01AD00F4DB1D /* sharedios.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 91E107672EEA01AD00F4DB1D /* sharedios.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		91E2A7A42F7C5E37007A162A /* cardTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91E2A7A22F7C5E2C007A162A /* cardTemplate.swift */; };
@@ -192,6 +193,7 @@
 		9173AB7D2F72097F0015A9FD /* Version.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Version.xcconfig; sourceTree = "<group>"; };
 		917C301F2EBCD1E5006BB36E /* La Ley_mac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "La Ley_mac.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		918C4AFF2EF4094D00974B54 /* La Ley.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "La Ley.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		919816C32FBC1E1600B24155 /* QuickAddNotaByLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddNotaByLocationView.swift; sourceTree = "<group>"; };
 		919F34D72F66BCD1009FF35B /* BackgroundDownloadHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundDownloadHandler.swift; sourceTree = "<group>"; };
 		919F34D82F66BCD1009FF35B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		919F34D92F66BCD1009FF35B /* BackgroundDownloadExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BackgroundDownloadExtension.entitlements; sourceTree = "<group>"; };
@@ -223,6 +225,7 @@
 				Models/DiarioModel/DiarioModel.swift,
 				Models/EnciclopediaModel/EnciclopediaModel.swift,
 				Models/EvidenciaCientificaModel/EvidenciaCientificaModel.swift,
+				Models/Export/PDFExportModule.swift,
 				Models/FeedBackModel/FeedBackModel.swift,
 				Models/FrasesModel/ContextoFrases/ContextoModel.swift,
 				Models/FrasesModel/ContextoFrases/ContextosFrasesModel.swift,
@@ -243,6 +246,7 @@
 				Models/IAModel/ChatModel/PromptModel.swift,
 				Models/IAModel/IAModelAppleIntelligence.swift,
 				Models/IAModel/InstructionIA.swift,
+				Models/Interchange/AgendaInterchangeService.swift,
 				Models/KeyChainModel/KeyChainModel.swift,
 				Models/LectorEtiquetas/additives.json,
 				Models/LectorEtiquetas/LectorEtiquetasErrors.swift,
@@ -1187,6 +1191,7 @@
 				Views/Diario/DiarioListView.swift,
 				Views/Diario/DiarioStatsView.swift,
 				Views/Diario/editContent.swift,
+				Views/Diario/NewDiarioEntryView.swift,
 				Views/EnciclopediaView/EnciclopediaListView.swift,
 				Views/EspacioCalma/CalmPhraseManagerView.swift,
 				Views/EspacioCalma/CalmResourcesManagerView.swift,
@@ -1450,6 +1455,7 @@
 				19520A4E2B75C34F000B11CC /* AddDiario.swift */,
 				19520A502B765E30000B11CC /* FilterByNotaView.swift */,
 				19520A522B76778B000B11CC /* FilterByDiarioView.swift */,
+				919816C32FBC1E1600B24155 /* QuickAddNotaByLocationView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1929,6 +1935,7 @@
 				19520A532B76778B000B11CC /* FilterByDiarioView.swift in Sources */,
 				19520A4F2B75C34F000B11CC /* AddDiario.swift in Sources */,
 				19F8041E2B69CB9D00A323A0 /* ContentView.swift in Sources */,
+				919816C42FBC1E1600B24155 /* QuickAddNotaByLocationView.swift in Sources */,
 				19D04F1C2B7455B8007B66F2 /* AddNota.swift in Sources */,
 				91F0DD552D605B5800307453 /* watchModel.swift in Sources */,
 				19F8041C2B69CB9D00A323A0 /* La_LeyApp.swift in Sources */,

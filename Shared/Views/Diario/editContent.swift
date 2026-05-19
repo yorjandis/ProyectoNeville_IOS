@@ -21,7 +21,12 @@ struct editContent : View {
     
     @State  var textTitle : String
     @State  var textContent : String
+    @State  var direccionMapa : String
     @State  var emoticono : Emociones
+    @StateObject private var locationCapture = AgendaLocationCapture()
+    @State private var isCapturingLocation = false
+    @State private var showAlert = false
+    @State private var alertMessage = ""
     var onEntryUpdated: (Date?) -> Void = { _ in }
     
     enum Focustext{
@@ -69,6 +74,36 @@ struct editContent : View {
                             .multilineTextAlignment(.leading)
                             .textFieldStyle(.roundedBorder)
                             .focused(self.$focus, equals: .content)
+                }
+
+                Section("Dirección (Mapas)") {
+                    HStack(spacing: 8) {
+                        if isCapturingLocation {
+                            ProgressView()
+                                .progressViewStyle(.circular)
+                                .frame(maxWidth: .infinity, alignment: .center)
+                        } else {
+                            TextField("Ej: Gran Vía 1, Madrid", text: $direccionMapa, axis: .vertical)
+                                .textFieldStyle(.roundedBorder)
+                        }
+                        Button {
+                            isCapturingLocation = true
+                            locationCapture.captureCurrentAddress { result in
+                                isCapturingLocation = false
+                                switch result {
+                                case .success(let address):
+                                    direccionMapa = address
+                                case .failure(let error):
+                                    alertMessage = error.localizedDescription
+                                    showAlert = true
+                                }
+                            }
+                        } label: {
+                            Label("Ubicación actual", systemImage: "location.fill")
+                        }
+                        .buttonStyle(.bordered)
+                        .disabled(isCapturingLocation)
+                    }
                 }
                 
                 
@@ -119,7 +154,7 @@ struct editContent : View {
                 
                 ToolbarItem {
                     Button(action: {
-                        diarioModel.UpdateItem(diario: diario, title: textTitle, content: textContent, emoticono: emoticono)
+                        diarioModel.UpdateItem(diario: diario, title: textTitle, content: textContent, emoticono: emoticono, direccionMapa: direccionMapa)
                         onEntryUpdated(diario.fecha)
                         dimiss()
                     }) {
@@ -140,6 +175,11 @@ struct editContent : View {
                 }
                 
                 
+            }
+            .alert("Ubicación", isPresented: $showAlert) {
+                Button("Aceptar", role: .cancel) {}
+            } message: {
+                Text(alertMessage)
             }
         }
     }

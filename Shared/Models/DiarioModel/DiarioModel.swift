@@ -178,18 +178,19 @@ final class DiarioModel : ObservableObject{
         }
     
     ///Adiciona un item a la tabla Diario
-    func addItem(title : String, emocion : Emociones, content : String, isFav : Bool = false )->Bool{
-        return addItem(title: title, emocion: emocion, content: content, fechaCreacion: Date.now, isFav: isFav)
+    func addItem(title : String, emocion : Emociones, content : String, isFav : Bool = false, direccionMapa: String = "" )->Bool{
+        return addItem(title: title, emocion: emocion, content: content, fechaCreacion: Date.now, isFav: isFav, direccionMapa: direccionMapa)
     }
 
     ///Adiciona un item a la tabla Diario con fecha de creación personalizada.
-    func addItem(title : String, emocion : Emociones, content : String, fechaCreacion: Date, isFav : Bool = false )->Bool{
+    func addItem(title : String, emocion : Emociones, content : String, fechaCreacion: Date, isFav : Bool = false, direccionMapa: String = "" )->Bool{
         let diario : Diario = Diario(context: context)
         diario.id = UUID()
         diario.title = title
         diario.emotion = emocion.rawValue
         diario.isFav = isFav
         diario.content = content
+        diario.setValue(direccionMapa, forKey: "direccionMapa")
         diario.fecha = Calendar.current.startOfDay(for: fechaCreacion)
         diario.fechaM = Date.now
 
@@ -201,11 +202,12 @@ final class DiarioModel : ObservableObject{
     }
     
     //Actualiza una entrada: La fecha se actualiza automáticamente.
-    func UpdateItem(diario : Diario, title : String,  content : String, emoticono : Emociones, isFav : Bool = false ){
+    func UpdateItem(diario : Diario, title : String,  content : String, emoticono : Emociones, isFav : Bool = false, direccionMapa: String = "" ){
         diario.title = title
         diario.emotion = emoticono.rawValue
         diario.isFav = isFav
         diario.content = content
+        diario.setValue(direccionMapa, forKey: "direccionMapa")
         diario.fechaM = Date.now
         if context.hasChanges {
             try? context.save()

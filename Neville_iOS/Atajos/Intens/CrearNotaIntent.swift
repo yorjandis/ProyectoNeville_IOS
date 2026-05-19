@@ -97,7 +97,5 @@ struct CrearNotaIntent : AppIntent, ProvidesDialog{
         
         
     }
-    
-    
-}
 
+}

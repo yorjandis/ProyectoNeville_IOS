@@ -42,4 +42,44 @@ struct AgendaItemData: Identifiable, Hashable {
     var completada: Bool?
     var recordatorioActivo: Bool
     var reminderID: String?
+    var seriesID: UUID?
+}
+
+enum AgendaRecurrenceMode: String, CaseIterable, Identifiable {
+    case none
+    case weekdays
+    case specificDates
+    case frequency
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .none: return "Sin repetir"
+        case .weekdays: return "Días de la semana"
+        case .specificDates: return "Fechas concretas"
+        case .frequency: return "Frecuencia"
+        }
+    }
+}
+
+enum AgendaRecurrenceFrequency: String, CaseIterable, Identifiable {
+    case weekly
+    case monthly
+    case yearly
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .weekly: return "Semanal"
+        case .monthly: return "Mensual"
+        case .yearly: return "Anual"
+        }
+    }
+}
+
+enum AgendaDeleteScope {
+    case onlyThis
+    case wholeSeries
 }

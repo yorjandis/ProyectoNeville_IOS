@@ -10,6 +10,7 @@
 import SwiftUI
 import CoreData
 import LocalAuthentication
+import MapKit
 
 
 struct ListNotasViews: View {
@@ -532,6 +533,8 @@ struct cardNotas: View{
     @State private var showUpdateNoteView = false
     @State private var showCalmAlert = false
     @State private var calmAlertMessage = ""
+    @State private var showMapsAlert = false
+    @State private var mapsAlertMessage = ""
     
     @AppStorage(AppCons.UD_setting_fontListaSize)  var fontSizeLista : Int = 20
 
@@ -622,7 +625,12 @@ struct cardNotas: View{
                     #if os(macOS)
                     Button{
                         if self.nota?.id != nil {
-                            showWindow(for: UpdateNotasView(NotaId: nota!.id!, title: nota!.title!, nota: nota!.nota!),
+                            showWindow(for: UpdateNotasView(
+                                NotaId: nota!.id!,
+                                title: nota!.title!,
+                                nota: nota!.nota!,
+                                direccionMapa: nota?.value(forKey: "direccionMapa") as? String ?? ""
+                            ),
                                        environmentObjects: [self.modelNotas],
                                        title: "Editar Nota",
                                        size: AppCons.windows_size_content_small,
@@ -637,7 +645,12 @@ struct cardNotas: View{
                     
                     NavigationLink{
                         if self.nota?.id != nil {
-                            UpdateNotasView(NotaId: nota!.id!, title: nota!.title!, nota: nota!.nota!)
+                            UpdateNotasView(
+                                NotaId: nota!.id!,
+                                title: nota!.title!,
+                                nota: nota!.nota!,
+                                direccionMapa: nota?.value(forKey: "direccionMapa") as? String ?? ""
+                            )
                                 .environmentObject(self.modelNotas)
                         }
                           
@@ -678,6 +691,47 @@ struct cardNotas: View{
                         Label("Añadir a Espacio Calma", systemImage: "leaf")
                     }
                     .buttonStyle(.bordered)
+
+                    if let direccion = nota?.value(forKey: "direccionMapa") as? String,
+                       !direccion.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                        Button {
+                            openInMaps(address: direccion)
+                        } label: {
+                            Label("Abrir en Mapas", systemImage: "map")
+                        }
+                    }
+
+                    #if os(macOS)
+                    Button {
+                        let draft = AgendaInterchangeService.makeAgendaDraft(
+                            title: nota?.title ?? "",
+                            content: nota?.nota ?? ""
+                        )
+                        showWindow(
+                            for: AgendaEditorView(baseItem: draft) { items in
+                                AgendaInterchangeService.saveAgendaItems(items)
+                            },
+                            environmentObjects: [],
+                            title: "Exportar a Agenda",
+                            size: .percentage(width: 0.38, height: 0.52),
+                            isModal: false
+                        )
+                    } label: {
+                        Label("Exportar a Agenda", systemImage: "calendar.badge.plus")
+                    }
+                    #else
+                    NavigationLink {
+                        let draft = AgendaInterchangeService.makeAgendaDraft(
+                            title: nota?.title ?? "",
+                            content: nota?.nota ?? ""
+                        )
+                        AgendaEditorView(baseItem: draft) { items in
+                            AgendaInterchangeService.saveAgendaItems(items)
+                        }
+                    } label: {
+                        Label("Exportar a Agenda", systemImage: "calendar.badge.plus")
+                    }
+                    #endif
                     
                     #if os(macOS)
                     Button{
@@ -904,6 +958,11 @@ struct cardNotas: View{
         } message: {
             Text(calmAlertMessage)
         }
+        .alert("Mapas", isPresented: $showMapsAlert) {
+            Button("Aceptar", role: .cancel) {}
+        } message: {
+            Text(mapsAlertMessage)
+        }
         .frame(maxWidth: .infinity)
         //.background(.ultraThinMaterial)
         .background(LinearGradient(colors: [.white.opacity(0.8), .white.opacity(0.7)], startPoint: .top, endPoint: .bottom))
@@ -942,5 +1001,36 @@ struct cardNotas: View{
         }
 
         self.showCalmAlert = true
+    }
+
+    private func openInMaps(address: String) {
+        let cleaned = address.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !cleaned.isEmpty else {
+            mapsAlertMessage = "La dirección está vacía."
+            showMapsAlert = true
+            return
+        }
+
+        Task { @MainActor in
+            let request = MKLocalSearch.Request()
+            request.naturalLanguageQuery = cleaned
+
+            do {
+                let response = try await MKLocalSearch(request: request).start()
+                guard let destination = response.mapItems.first else {
+                    mapsAlertMessage = "La dirección no es válida o no se pudo encontrar."
+                    showMapsAlert = true
+                    return
+                }
+
+                destination.name = cleaned
+                destination.openInMaps(launchOptions: [
+                    MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving
+                ])
+            } catch {
+                mapsAlertMessage = "No se pudo abrir Mapas para esta dirección."
+                showMapsAlert = true
+            }
+        }
     }
 }
