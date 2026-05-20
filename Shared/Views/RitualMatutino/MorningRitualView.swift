@@ -334,7 +334,7 @@ struct MorningRitualMainView: View {
                                         route = .flow
                                     }
                                     .buttonStyle(.bordered)
-                                    .tint(.teal)
+                                    .tint(.black)
                                 }
                                 
                             }

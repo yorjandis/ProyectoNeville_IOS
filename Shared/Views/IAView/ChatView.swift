@@ -7,6 +7,7 @@
 //Ventana de chat de IA, recibir concejos y sugerencias relacionadas con las enseñanzas de neville 
 
 import SwiftUI
+import UniformTypeIdentifiers
 
 
 
@@ -44,6 +45,9 @@ struct ChatView: View {
     
     @State private var showAlert : Bool = false
     @State private var alertMessage : String = ""
+    @State private var showPDFExporter = false
+    @State private var exportedPDFDocument: ExportedPDFDocument?
+    @State private var exportedPDFFileName: String = "ChatIA.pdf"
     
     //Colores de IA chat:
     @State var ColorChatIAPrimario         : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_colorIA_main_a) ?? .orange.opacity(0.7)
@@ -131,7 +135,7 @@ struct ChatView: View {
                                                             .background(Color.black.opacity(0.5))
                                                             .cornerRadius(12)
                                                         
-                                                        MenuOpcionesRespuesta(texto: msg.text)
+                                                        MenuOpcionesRespuesta(message: msg)
                                                             .padding(.vertical, 0)
                                                             .id(msg.id) //Para porpósitos de scrooll
                                                     }
@@ -321,6 +325,12 @@ struct ChatView: View {
         .alert(isPresented: self.$showAlert){
             Alert(title: Text("Chat IA"), message: Text(self.alertMessage))
         }
+        .fileExporter(
+            isPresented: $showPDFExporter,
+            document: exportedPDFDocument,
+            contentType: .pdf,
+            defaultFilename: exportedPDFFileName
+        ) { _ in }
     }
     
     
@@ -401,14 +411,14 @@ struct ChatView: View {
 
     //Construye el menú de opciones de cada chat
     @ViewBuilder
-    private func MenuOpcionesRespuesta(texto: String) -> some View {
+    private func MenuOpcionesRespuesta(message: ChatMessage) -> some View {
         HStack(spacing: 20){
-            ShareLink("", item: texto)
+            ShareLink("", item: message.text)
             .padding(.leading, 10)
             .id(lastID)
             //Pasar a notas:
             Button{
-                if self.notasModel.addNote(nota: texto, title: "Nota del Chat"){
+                if self.notasModel.addNote(nota: message.text, title: "Nota del Chat"){
                     self.alertMessage = "Se ha guardado la respuesta en Notas"
                     self.showAlert = true
                 }else{
@@ -418,12 +428,75 @@ struct ChatView: View {
             }label:{
                 Image(systemName: "text.page")
             }
+            Button {
+                exportChatResponseToPDF(message)
+            } label: {
+                Image(systemName: "doc.richtext")
+            }
             Spacer()
         }
         
         .font(.system(size: 14)).bold()
         
         
+    }
+
+    private func exportChatResponseToPDF(_ responseMessage: ChatMessage) {
+        guard purchaseStatus || yorjPremium else {
+            alertMessage = "La exportación a PDF está disponible en la Versión Extendida."
+            showAlert = true
+            return
+        }
+        guard let responseIndex = model.messages.firstIndex(where: { $0.id == responseMessage.id }) else {
+            alertMessage = "No se pudo identificar la respuesta para exportar."
+            showAlert = true
+            return
+        }
+
+        var promptText = "No disponible"
+        if responseIndex > 0 {
+            for idx in stride(from: responseIndex - 1, through: 0, by: -1) {
+                let previous = model.messages[idx]
+                if previous.isUser {
+                    promptText = previous.text.trimmingCharacters(in: .whitespacesAndNewlines)
+                    break
+                }
+            }
+        }
+
+        let responseText = responseMessage.text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !responseText.isEmpty else {
+            alertMessage = "La respuesta está vacía."
+            showAlert = true
+            return
+        }
+
+        let sections = [
+            PDFExportSection(
+                title: "Conversación",
+                lines: [
+                    PDFExportLine(title: "Prompt", detail: promptText),
+                    PDFExportLine(title: "Respuesta", detail: responseText)
+                ]
+            )
+        ]
+
+        let descriptor = PDFExportDocumentDescriptor(
+            title: "Chat IA - Exportación de Respuesta",
+            subtitle: "Generado el \(Date().formatted(date: .abbreviated, time: .shortened))",
+            sections: sections
+        )
+
+        do {
+            let data = try PDFExportModule.render(descriptor)
+            exportedPDFDocument = ExportedPDFDocument(data: data)
+            let dateLabel = Date().formatted(date: .numeric, time: .omitted).replacingOccurrences(of: "/", with: "-")
+            exportedPDFFileName = "ChatIA-\(dateLabel)"
+            showPDFExporter = true
+        } catch {
+            alertMessage = "No se pudo generar el PDF."
+            showAlert = true
+        }
     }
     
     
@@ -670,4 +743,3 @@ struct ChatView: View {
         ChatView(textoACargar: nil)
     }
 }
-

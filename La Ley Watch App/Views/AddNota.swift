@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import CoreData
+import CoreLocation
 
 
 struct AddNota : View {
@@ -20,7 +21,9 @@ struct AddNota : View {
     @State private var showAlert = false
     @State private var alertMesage = ""
     @State private var isWorking = false
-    
+    @StateObject private var locationCapture = WatchLocationCapture()
+    @State private var direccionMapa: String = ""
+    @State private var isResolvingLocation = false
     
     var body: some View {
         ZStack {
@@ -51,6 +54,30 @@ struct AddNota : View {
                         Text("Favorito")
                     })
                     .padding(.horizontal, 10)
+
+                    Button {
+                        attachCurrentLocation()
+                    } label: {
+                        if isResolvingLocation {
+                            ProgressView()
+                                .frame(maxWidth: .infinity)
+                        } else {
+                            Label("Añadir ubicación", systemImage: "location")
+                                .foregroundStyle(.black)
+                                .frame(maxWidth: .infinity)
+                        }
+                    }
+                    .padding(.horizontal, 10)
+                    .disabled(isResolvingLocation)
+                    .buttonStyle(.bordered)
+
+                    if !direccionMapa.isEmpty {
+                        Text(direccionMapa)
+                            .font(.system(size: 11))
+                            .lineLimit(2)
+                            .foregroundStyle(.black)
+                            .padding(.horizontal, 10)
+                    }
                     
                     Button{
                         Task{
@@ -64,6 +91,7 @@ struct AddNota : View {
                                 newNota.title = title
                                 newNota.nota = texto
                                 newNota.isfav = isfav
+                                newNota.setValue(direccionMapa.trimmingCharacters(in: .whitespacesAndNewlines), forKey: "direccionMapa")
                                 newNota.setValue(now, forKey: "fechaCreacion")
                                 newNota.setValue(now, forKey: "fechaModificacion")
                                 
@@ -110,8 +138,24 @@ struct AddNota : View {
         })
         
     }
-}
 
+    private func attachCurrentLocation() {
+        isResolvingLocation = true
+        locationCapture.captureCurrentAddress { result in
+            isResolvingLocation = false
+            switch result {
+            case .success(let address):
+                direccionMapa = address
+                if texto.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    texto = address
+                }
+            case .failure(let error):
+                alertMesage = error.localizedDescription
+                showAlert = true
+            }
+        }
+    }
+}
 
 #Preview {
     AddNota()

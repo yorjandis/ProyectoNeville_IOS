@@ -7,6 +7,7 @@
 
 import SwiftUI
 import CoreData
+import UniformTypeIdentifiers
 
 struct ReflexListView: View {
     
@@ -22,12 +23,21 @@ struct ReflexListView: View {
     @State var textFielTitleForSearch = ""
     @State var showSheetAddReflex = false
     @State var showalertDeleteItem = false
+    @State private var showPDFExporter = false
+    @State private var exportedPDFDocument: ExportedPDFDocument?
+    @State private var exportedPDFFileName: String = "Reflexion.pdf"
     
     @State private var entityForDelete : RefType? //Almacena la entidad que será eliminada
 
     @AppStorage(AppCons.UD_setting_fontListaSize)  var fontSizeLista : Int = 20
+    @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
+    @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) private var yorjPremium: Bool = false
     
    @AppStorage("isUnicaVezReflex") var isUnicaVezReflex: Bool = true
+
+    private var hasPremiumPDFAccess: Bool {
+        purchaseStatus || yorjPremium
+    }
     
     //Obtiene el estado de favorito de la reflexión
     private func getFavState(title : String)->Bool{
@@ -119,6 +129,12 @@ struct ReflexListView: View {
                         }
                         .listRowBackground(Color.clear)
                         .swipeActions(edge: .leading) {
+                            Button {
+                                exportReflexToPDF(item)
+                            } label: {
+                                Image(systemName: "doc.richtext")
+                            }
+
                                 Button{
                                     var favState = self.getFavState(title: item.title)
                                     favState.toggle()
@@ -251,6 +267,12 @@ struct ReflexListView: View {
             .sheet(isPresented: $showSheetAddReflex, content: {
                 AddReflexView(reflexionAActualizar: nil)
             })
+            .fileExporter(
+                isPresented: $showPDFExporter,
+                document: exportedPDFDocument,
+                contentType: .pdf,
+                defaultFilename: exportedPDFFileName
+            ) { _ in }
             .alert(isPresented: $showalertDeleteItem){
                     Alert(title: Text("La Ley"),
                       message: Text("Desea eliminar la reflexión?"),
@@ -270,6 +292,37 @@ struct ReflexListView: View {
                     )
             }
             
+        }
+    }
+
+    private func exportReflexToPDF(_ reflex: RefType) {
+        guard hasPremiumPDFAccess else {
+            msg("La exportación a PDF está disponible en la Versión Extendida.")
+            return
+        }
+        let detail = reflex.content.trimmingCharacters(in: .whitespacesAndNewlines)
+        let line = PDFExportLine(
+            title: reflex.title,
+            detail: detail.isEmpty ? "Sin contenido." : detail
+        )
+        let section = PDFExportSection(
+            title: "Autor: \(reflex.autor)",
+            lines: [line]
+        )
+        let descriptor = PDFExportDocumentDescriptor(
+            title: "Reflexión",
+            subtitle: "Generado el \(Date().formatted(date: .abbreviated, time: .shortened))",
+            sections: [section]
+        )
+
+        do {
+            let data = try PDFExportModule.render(descriptor)
+            exportedPDFDocument = ExportedPDFDocument(data: data)
+            let safeTitle = reflex.title.replacingOccurrences(of: "/", with: "-")
+            exportedPDFFileName = "Reflexion-\(safeTitle)"
+            showPDFExporter = true
+        } catch {
+            msg("No se pudo generar el PDF de la reflexión.")
         }
     }
     

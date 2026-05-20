@@ -268,9 +268,7 @@ struct optionView: View {
                 case .game:
                     GamePLay()
                 case .videosTutoriales:
-                    VStack {
-                        Text("Lista de Videos Tutoriales de las funciones extendidas")
-                    }
+                    TutorialVideosListView()
                 }
             }
             .presentationDetents([.large])
@@ -278,3 +276,4 @@ struct optionView: View {
         }
     }
 }
+

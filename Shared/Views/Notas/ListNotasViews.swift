@@ -11,6 +11,7 @@ import SwiftUI
 import CoreData
 import LocalAuthentication
 import MapKit
+import UniformTypeIdentifiers
 
 
 struct ListNotasViews: View {
@@ -34,6 +35,14 @@ struct ListNotasViews: View {
     @State private var selectionMode = false
     @State private var selectedNotaIDs: Set<String> = []
     @State private var showConfirmBulkDelete = false
+    @State private var showPDFExporter = false
+    @State private var exportedPDFDocument: ExportedPDFDocument?
+    @State private var exportedPDFFileName = "Notas.pdf"
+    @State private var showExportRangeSheet = false
+    @State private var exportFromDate = Date.now
+    @State private var exportToDate = Date.now
+    @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
+    @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) private var yorjPremium: Bool = false
     
     
     
@@ -51,6 +60,10 @@ struct ListNotasViews: View {
 
     private var canAccessNotasContent: Bool {
         canOpenNotas == true || UserDefaults.standard.bool(forKey: AppCons.UD_setting_NotasFaceID) == false
+    }
+
+    private var hasPremiumPDFAccess: Bool {
+        purchaseStatus || yorjPremium
     }
  
     var body: some View {
@@ -149,6 +162,8 @@ struct ListNotasViews: View {
                                 }label:{
                                     Label("Buscar en Notas", systemImage: "text.magnifyingglass.rtl")
                                 }
+
+                                exportNotasPDFMenu()
                                 
                             }label: {
                                 Image(systemName: "line.3.horizontal.decrease")
@@ -212,6 +227,7 @@ struct ListNotasViews: View {
                                     Button("Buscar en Notas"){
                                         showAlertSearch = true
                                     }
+                                    exportNotasPDFMenu()
                                     
                                 }label: {
                                     Image(systemName: "line.3.horizontal.decrease")
@@ -286,6 +302,24 @@ struct ListNotasViews: View {
                 }
                 .alert(isPresented: $showAlert){
                     Alert(title: Text("Notas"), message: Text(alertMessage))
+                }
+                .fileExporter(
+                    isPresented: $showPDFExporter,
+                    document: exportedPDFDocument,
+                    contentType: .pdf,
+                    defaultFilename: exportedPDFFileName
+                ) { _ in }
+                .sheet(isPresented: $showExportRangeSheet) {
+                    VStack(spacing: 16) {
+                        DatePicker("Desde", selection: $exportFromDate, displayedComponents: [.date])
+                        DatePicker("Hasta", selection: $exportToDate, displayedComponents: [.date])
+                        Button("Exportar PDF") {
+                            exportNotasRangeToPDF(from: exportFromDate, to: exportToDate)
+                            showExportRangeSheet = false
+                        }
+                        .buttonStyle(.bordered)
+                    }
+                    .padding()
                 }
                 .confirmationDialog("¿Eliminar notas seleccionadas?", isPresented: $showConfirmBulkDelete) {
                     Button("Eliminar \(selectedNotaIDs.count) nota(s)", role: .destructive) {
@@ -438,6 +472,141 @@ struct ListNotasViews: View {
         }
         showAlert = true
     }
+
+    @ViewBuilder
+    private func exportNotasPDFMenu() -> some View {
+        Menu {
+            Button("Manual (seleccionadas)") {
+                guard hasPremiumPDFAccess else {
+                    alertMessage = "La exportación a PDF está disponible en la Versión Extendida."
+                    showAlert = true
+                    return
+                }
+                if !selectionMode {
+                    withAnimation {
+                        selectionMode = true
+                    }
+                    alertMessage = "Selecciona las notas y vuelve a pulsar 'Manual (seleccionadas)' para exportar."
+                    showAlert = true
+                    return
+                }
+                exportNotasToPDF(selectedNotas, scopeName: "Manual")
+            }
+            Button("Semana actual") {
+                guard hasPremiumPDFAccess else {
+                    alertMessage = "La exportación a PDF está disponible en la Versión Extendida."
+                    showAlert = true
+                    return
+                }
+                exportNotasToPDF(notasCurrentWeek(), scopeName: "Semana")
+            }
+            Button("Mes actual") {
+                guard hasPremiumPDFAccess else {
+                    alertMessage = "La exportación a PDF está disponible en la Versión Extendida."
+                    showAlert = true
+                    return
+                }
+                exportNotasToPDF(notasCurrentMonth(), scopeName: "Mes")
+            }
+            Button("Rango de fechas") {
+                guard hasPremiumPDFAccess else {
+                    alertMessage = "La exportación a PDF está disponible en la Versión Extendida."
+                    showAlert = true
+                    return
+                }
+                showExportRangeSheet = true
+            }
+        } label: {
+            Label("Exportar PDF", systemImage: "doc.richtext")
+        }
+    }
+
+    private func notasCurrentWeek() -> [Notas] {
+        let calendar = Calendar.current
+        let now = Date()
+        guard let start = calendar.dateInterval(of: .weekOfYear, for: now)?.start,
+              let end = calendar.date(byAdding: .day, value: 7, to: start) else {
+            return []
+        }
+        return notasInRange(from: start, to: end)
+    }
+
+    private func notasCurrentMonth() -> [Notas] {
+        let calendar = Calendar.current
+        let now = Date()
+        guard let start = calendar.dateInterval(of: .month, for: now)?.start,
+              let end = calendar.date(byAdding: .month, value: 1, to: start) else {
+            return []
+        }
+        return notasInRange(from: start, to: end)
+    }
+
+    private func notasInRange(from start: Date, to end: Date) -> [Notas] {
+        let calendar = Calendar.current
+        let startDay = calendar.startOfDay(for: start)
+        let endDayExclusive = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: end)) ?? end
+        return modelNotas.notas.filter { nota in
+            guard let date = notasReferenceDate(nota) else { return false }
+            return date >= startDay && date < endDayExclusive
+        }
+    }
+
+    private func exportNotasRangeToPDF(from start: Date, to end: Date) {
+        let items = notasInRange(from: start, to: end)
+        exportNotasToPDF(items, scopeName: "Rango")
+    }
+
+    private func notasReferenceDate(_ nota: Notas) -> Date? {
+        (nota.value(forKey: "fechaCreacion") as? Date) ?? (nota.value(forKey: "fechaModificacion") as? Date)
+    }
+
+    private func exportNotasToPDF(_ notas: [Notas], scopeName: String) {
+        guard hasPremiumPDFAccess else {
+            alertMessage = "La exportación a PDF está disponible en la Versión Extendida."
+            showAlert = true
+            return
+        }
+        guard !notas.isEmpty else {
+            alertMessage = "No hay notas para exportar en \(scopeName.lowercased())."
+            showAlert = true
+            return
+        }
+
+        let calendar = Calendar.current
+        let grouped = Dictionary(grouping: notas) { nota in
+            let day = notasReferenceDate(nota) ?? Date.distantPast
+            return calendar.startOfDay(for: day)
+        }
+
+        let sections: [PDFExportSection] = grouped.keys.sorted().map { day in
+            let dayNotas = (grouped[day] ?? []).sorted {
+                (notasReferenceDate($0) ?? .distantPast) < (notasReferenceDate($1) ?? .distantPast)
+            }
+            let lines: [PDFExportLine] = dayNotas.map { nota in
+                let title = (nota.title ?? "").isEmpty ? "Sin título" : (nota.title ?? "Sin título")
+                let detail = (nota.nota ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+                return PDFExportLine(title: title, detail: detail.isEmpty ? nil : detail)
+            }
+            return PDFExportSection(title: day.formatted(date: .complete, time: .omitted), lines: lines)
+        }
+
+        let descriptor = PDFExportDocumentDescriptor(
+            title: "Notas - \(scopeName)",
+            subtitle: "Generado el \(Date().formatted(date: .abbreviated, time: .shortened))",
+            sections: sections
+        )
+
+        do {
+            let data = try PDFExportModule.render(descriptor)
+            exportedPDFDocument = ExportedPDFDocument(data: data)
+            let dateLabel = Date().formatted(date: .numeric, time: .omitted).replacingOccurrences(of: "/", with: "-")
+            exportedPDFFileName = "Notas-\(scopeName)-\(dateLabel)"
+            showPDFExporter = true
+        } catch {
+            alertMessage = "No se pudo generar el PDF."
+            showAlert = true
+        }
+    }
     
 
     
@@ -572,7 +741,7 @@ struct cardNotas: View{
             HStack{
                 if selectionMode {
                     Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                        .foregroundStyle(isSelected ? .green : .secondary)
+                        .foregroundStyle(.black)
                         .font(.title3)
                         .padding(.leading, 4)
                 }
@@ -581,11 +750,7 @@ struct cardNotas: View{
                     .bold()
                     .fontDesign(.serif)
                     .font(.system(size: CGFloat(self.fontSizeLista)))
-                #if os(macOS)
-                    .foregroundStyle(Color.primary)
-                #else
                     .foregroundStyle(.black)
-                #endif
                     
                     .bold()
                     .padding(8)
@@ -903,27 +1068,45 @@ struct cardNotas: View{
                 HStack {
                     Text(formattedMetadata(for: nota))
                         .font(.caption2)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.black.opacity(0.75))
                         .padding(.horizontal, 8)
                     Spacer()
                 }
             }
             if expandNota {
-                    //Divider()
-                    HStack{
-                        SelectableText(text: nota!.nota ?? "")
-                       // Text(nota!.nota ?? "")
-                            .font(.system(size: 20))
-                            .fontDesign(.serif)
-                            .foregroundStyle(.black)
-                            .contentShape(RoundedRectangle(cornerRadius: 20))
-                            .padding(.vertical, 4)
-                            .padding(.horizontal, 5)
-                            .background{
-                                LinearGradient(colors: [.white.opacity(0.8), .white.opacity(0.7)], startPoint: .top, endPoint: .bottom)
-                            }
-                
+                VStack(alignment: .leading, spacing: 0) {
+                    #if os(macOS)
+                    Text(nota!.nota ?? "")
+                        .font(.system(size: 20))
+                        .fontDesign(.serif)
+                        .foregroundStyle(.black)
+                        .multilineTextAlignment(.leading)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .textSelection(.enabled)
+                        .contentShape(RoundedRectangle(cornerRadius: 20))
+                        .padding(.vertical, 4)
+                        .padding(.horizontal, 5)
+                        .background {
+                            LinearGradient(colors: [.white.opacity(0.8), .white.opacity(0.7)], startPoint: .top, endPoint: .bottom)
+                        }
+                    #else
+                    SelectableText(text: nota!.nota ?? "")
+                        .font(.system(size: 20))
+                        .fontDesign(.serif)
+                        .foregroundStyle(.black)
+                        .multilineTextAlignment(.leading)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .contentShape(RoundedRectangle(cornerRadius: 20))
+                        .padding(.vertical, 4)
+                        .padding(.horizontal, 5)
+                        .background {
+                            LinearGradient(colors: [.white.opacity(0.8), .white.opacity(0.7)], startPoint: .top, endPoint: .bottom)
+                        }
+                    #endif
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
         .contentShape(Rectangle())
@@ -1024,7 +1207,7 @@ struct cardNotas: View{
                 }
 
                 destination.name = cleaned
-                destination.openInMaps(launchOptions: [
+                _ = await destination.openInMaps(launchOptions: [
                     MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving
                 ])
             } catch {

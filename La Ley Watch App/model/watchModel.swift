@@ -7,6 +7,7 @@
 
 import SwiftUI
 import CoreData
+import Combine
 
 @MainActor
 final class watchModel: ObservableObject {
@@ -21,13 +22,46 @@ final class watchModel: ObservableObject {
     @Published var listNotas : [Notas] = []
     
     @Published var listDiario : [Diario] = []
+    private var observers = Set<AnyCancellable>()
 
     private var homeFrasesCache: [Frases] = []
     private var homeFrasesCacheKey: String = ""
 
     private init() {
+        setupObservers()
         self.getNotas()
         self.getDiarioEntradas()
+    }
+
+    private func setupObservers() {
+        let center = NotificationCenter.default
+
+        center.publisher(for: .coreDataStoresDidLoad)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                self?.getNotas()
+                self?.getDiarioEntradas()
+            }
+            .store(in: &observers)
+
+        center.publisher(for: .NSPersistentStoreRemoteChange,
+                         object: CoreDataController.shared.persistentContainer.persistentStoreCoordinator)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                self?.context.refreshAllObjects()
+                self?.getNotas()
+                self?.getDiarioEntradas()
+            }
+            .store(in: &observers)
+
+        center.publisher(for: .NSManagedObjectContextDidSave,
+                         object: context)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                self?.getNotas()
+                self?.getDiarioEntradas()
+            }
+            .store(in: &observers)
     }
 
     //------FRASES-----
@@ -286,6 +320,13 @@ final class watchModel: ObservableObject {
     //Obtiene todas las notas de la BD
     func getNotas(){
         let fetchRequest: NSFetchRequest<Notas> = Notas.fetchRequest()
+        fetchRequest.sortDescriptors = [
+            NSSortDescriptor(key: "fechaModificacion", ascending: false),
+            NSSortDescriptor(key: "fechaCreacion", ascending: false)
+        ]
+        fetchRequest.fetchBatchSize = 25
+        fetchRequest.returnsObjectsAsFaults = false
+
         do {
             self.listNotas = try context.fetch(fetchRequest)
 

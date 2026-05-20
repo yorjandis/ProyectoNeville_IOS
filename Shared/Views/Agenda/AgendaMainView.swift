@@ -42,6 +42,7 @@ struct AgendaMainView: View {
     @State private var showSearchBar: Bool = false
     @State private var searchText: String = ""
     @State private var revealLocationIDs: Set<UUID> = []
+    @State private var hasEvaluatedInitialTodayAvailability = false
     @Environment(\.scenePhase) private var scenePhase
 
     @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
@@ -419,6 +420,9 @@ struct AgendaMainView: View {
                 .onAppear {
                     viewModel.load()
                     displayedMonth = monthStart(of: viewModel.selectedDate)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+                        evaluateInitialTodayAvailability()
+                    }
                 }
                 .onReceive(Timer.publish(every: 6, on: .main, in: .common).autoconnect()) { _ in
                     viewModel.load()
@@ -494,6 +498,19 @@ struct AgendaMainView: View {
             } else {
                 PurchaseView()
             }
+        }
+    }
+
+    private func evaluateInitialTodayAvailability() {
+        guard !hasEvaluatedInitialTodayAvailability else { return }
+        guard viewModel.quickFilter == .hoy else {
+            hasEvaluatedInitialTodayAvailability = true
+            return
+        }
+
+        hasEvaluatedInitialTodayAvailability = true
+        if viewModel.itemsForSelectedDay.isEmpty {
+            isCalendarExpanded = true
         }
     }
 
@@ -785,7 +802,7 @@ struct AgendaMainView: View {
                 }
 
                 destination.name = cleaned
-                destination.openInMaps(launchOptions: [
+                _ = await destination.openInMaps(launchOptions: [
                     MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving
                 ])
             } catch {
@@ -843,7 +860,7 @@ struct AgendaMainView: View {
         )
 
         do {
-            let data = try PDFExportModule.render(descriptor)
+            let data = try PDFExportModule.render(descriptor, useBlueSectionBullets: true)
             exportedPDFDocument = ExportedPDFDocument(data: data)
             let dateLabel = Date().formatted(date: .numeric, time: .omitted).replacingOccurrences(of: "/", with: "-")
             exportedPDFFileName = "Agenda-\(scopeName)-\(dateLabel)"

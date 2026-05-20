@@ -1419,6 +1419,16 @@ struct Ajustes: View {
                                 .font(.headline)
                         }
                         .tint(.green)
+
+                        NavigationLink {
+                            TutorialVideosListView()
+                        } label: {
+                            Label("Videos de demostración", systemImage: "play.rectangle.fill")
+                                .foregroundStyle(settingsPrimaryTextColor)
+                                .bold()
+                                .font(.headline)
+                        }
+                        .tint(.red)
                         
                         NavigationLink{
                             NavigationStack{

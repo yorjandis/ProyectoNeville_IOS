@@ -1,8 +1,12 @@
 import Foundation
 import SwiftUI
-import CoreGraphics
-import CoreText
 import UniformTypeIdentifiers
+#if canImport(UIKit)
+import UIKit
+#elseif canImport(AppKit)
+import AppKit
+#endif
+import TPPDF
 
 struct PDFExportLine: Hashable {
     let title: String
@@ -25,109 +29,244 @@ enum PDFExportModuleError: Error {
 }
 
 enum PDFExportModule {
-    static func render(_ descriptor: PDFExportDocumentDescriptor, pageSize: CGSize = CGSize(width: 595, height: 842)) throws -> Data {
-        let data = NSMutableData()
-        guard let consumer = CGDataConsumer(data: data as CFMutableData),
-              let context = CGContext(consumer: consumer, mediaBox: nil, nil) else {
-            throw PDFExportModuleError.unableToCreateContext
+    static func render(
+        _ descriptor: PDFExportDocumentDescriptor,
+        pageSize: CGSize = CGSize(width: 595, height: 842),
+        useBlueSectionBullets: Bool = false
+    ) throws -> Data {
+        try render(title: descriptor.title, subtitle: descriptor.subtitle, pageSize: pageSize) { document in
+            addAgendaLikeBody(descriptor.sections, to: document, useBlueSectionBullets: useBlueSectionBullets)
         }
+    }
 
-        let margin: CGFloat = 36
-        let contentWidth = pageSize.width - (margin * 2)
+    static func render(
+        title: String,
+        subtitle: String,
+        pageSize: CGSize = CGSize(width: 595, height: 842),
+        contentBuilder: (PDFDocument) -> Void
+    ) throws -> Data {
+        _ = pageSize
+        let document = PDFDocument(format: .a4)
+        document.info.title = title
+        document.info.author = "La Ley"
+        document.info.subject = subtitle
+        document.layout.margin = EdgeInsets(top: 36, left: 36, bottom: 44, right: 36)
+        document.layout.space.footer = 8
 
-        var cursorY: CGFloat = margin
+        addHeader(to: document)
+        addGlobalFooter(to: document)
+        addDefaultDocumentHeading(title: title, subtitle: subtitle, to: document)
+        contentBuilder(document)
 
-        func startPage() {
-            context.beginPDFPage([kCGPDFContextMediaBox as String: CGRect(origin: .zero, size: pageSize)] as CFDictionary)
-            cursorY = margin
+        let generator = PDFGenerator(document: document)
+        let outputURL = try generator.generateURL(filename: "Agenda-La-Ley.pdf")
+        return try Data(contentsOf: outputURL)
+    }
+
+    private static func addHeader(to document: PDFDocument) {
+        if let logoEntry = makeRoundedLogoImage(size: CGSize(width: 84, height: 84), cornerRadius: 42) {
+            document.add(.contentCenter, image: logoEntry)
         }
+        document.add(.contentCenter, space: 10)
+        document.set(.contentCenter, font: headerFont())
+        document.add(.contentCenter, text: "La Ley", lineSpacing: 2)
+        document.add(.contentCenter, space: 20)
+    }
 
-        func endPage() {
-            context.endPDFPage()
+    private static func addGlobalFooter(to document: PDFDocument) {
+        if let brand = footerBrandAttributedText() {
+            document.add(.footerLeft, attributedText: brand)
+        } else {
+            document.set(.footerLeft, font: footerFont())
+            document.add(.footerLeft, text: "La Ley", lineSpacing: 1)
         }
+        document.add(.footerLeft, space: 4)
+        let footerSeparatorStyle = PDFLineStyle(type: .full, color: footerSeparatorColor(), width: 0.6)
+        document.addLineSeparator(.footerCenter, style: footerSeparatorStyle)
+    }
 
-        startPage()
+    private static func addDefaultDocumentHeading(title: String, subtitle: String, to document: PDFDocument) {
+        document.set(.contentLeft, font: titleFont())
+        document.add(.contentLeft, text: title, lineSpacing: 3)
+        document.add(.contentLeft, space: 8)
 
-        cursorY += drawText(descriptor.title, fontSize: 20, weight: .bold, at: CGPoint(x: margin, y: cursorY), width: contentWidth, context: context)
-        cursorY += 6
-        cursorY += drawText(descriptor.subtitle, fontSize: 12, weight: .regular, at: CGPoint(x: margin, y: cursorY), width: contentWidth, context: context)
-        cursorY += 12
+        document.set(.contentLeft, font: subtitleFont())
+        document.add(.contentLeft, text: subtitle, lineSpacing: 2)
+        document.add(.contentLeft, space: 16)
+    }
 
-        for section in descriptor.sections {
-            if cursorY > pageSize.height - 120 {
-                endPage()
-                startPage()
-            }
-
-            cursorY += drawText(section.title, fontSize: 14, weight: .semibold, at: CGPoint(x: margin, y: cursorY), width: contentWidth, context: context)
-            cursorY += 6
+    private static func addAgendaLikeBody(
+        _ sections: [PDFExportSection],
+        to document: PDFDocument,
+        useBlueSectionBullets: Bool
+    ) {
+        for section in sections {
+            document.set(.contentLeft, font: sectionFont())
+            let sectionPrefix = useBlueSectionBullets ? "🔵 " : ""
+            document.add(.contentLeft, text: "\(sectionPrefix)\(section.title)", lineSpacing: 2)
+            document.add(.contentLeft, space: 8)
 
             for line in section.lines {
-                if cursorY > pageSize.height - 80 {
-                    endPage()
-                    startPage()
-                }
+                document.set(.contentLeft, font: lineTitleFont())
+                document.add(.contentLeft, text: "• \(line.title)", lineSpacing: 2)
 
-                cursorY += drawText("• \(line.title)", fontSize: 11, weight: .medium, at: CGPoint(x: margin, y: cursorY), width: contentWidth, context: context)
-                if let detail = line.detail, !detail.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                    cursorY += drawText(detail, fontSize: 10, weight: .regular, at: CGPoint(x: margin + 12, y: cursorY), width: contentWidth - 12, context: context)
+                if let detail = line.detail?.trimmingCharacters(in: .whitespacesAndNewlines), !detail.isEmpty {
+                    document.set(.contentLeft, indent: 12, left: true)
+                    document.set(.contentLeft, font: lineDetailFont())
+                    document.add(.contentLeft, text: detail, lineSpacing: 2)
+                    document.set(.contentLeft, indent: 0, left: true)
                 }
-                cursorY += 4
+                document.add(.contentLeft, space: 8)
             }
 
-            cursorY += 8
-        }
-
-        endPage()
-        context.closePDF()
-        return data as Data
-    }
-
-    private enum FontWeight {
-        case regular
-        case medium
-        case semibold
-        case bold
-
-        var postScriptName: String {
-            switch self {
-            case .regular: return "Helvetica"
-            case .medium: return "Helvetica"
-            case .semibold: return "Helvetica-Bold"
-            case .bold: return "Helvetica-Bold"
-            }
+            document.add(.contentLeft, space: 10)
         }
     }
 
-    @discardableResult
-    private static func drawText(_ text: String, fontSize: CGFloat, weight: FontWeight, at origin: CGPoint, width: CGFloat, context: CGContext) -> CGFloat {
-        let font = CTFontCreateWithName(weight.postScriptName as CFString, fontSize, nil)
+#if canImport(UIKit)
+    private static func headerFont() -> UIFont {
+        UIFont.boldSystemFont(ofSize: 20)
+    }
+#elseif canImport(AppKit)
+    private static func headerFont() -> NSFont {
+        NSFont.boldSystemFont(ofSize: 20)
+    }
+#endif
+
+#if canImport(UIKit)
+    private static func titleFont() -> UIFont {
+        UIFont.boldSystemFont(ofSize: 20)
+    }
+#elseif canImport(AppKit)
+    private static func titleFont() -> NSFont {
+        NSFont.boldSystemFont(ofSize: 20)
+    }
+#endif
+
+#if canImport(UIKit)
+    private static func subtitleFont() -> UIFont {
+        UIFont.systemFont(ofSize: 12)
+    }
+#elseif canImport(AppKit)
+    private static func subtitleFont() -> NSFont {
+        NSFont.systemFont(ofSize: 12)
+    }
+#endif
+
+#if canImport(UIKit)
+    private static func sectionFont() -> UIFont {
+        UIFont.boldSystemFont(ofSize: 14)
+    }
+#elseif canImport(AppKit)
+    private static func sectionFont() -> NSFont {
+        NSFont.boldSystemFont(ofSize: 14)
+    }
+#endif
+
+#if canImport(UIKit)
+    private static func lineTitleFont() -> UIFont {
+        UIFont.systemFont(ofSize: 11, weight: .medium)
+    }
+#elseif canImport(AppKit)
+    private static func lineTitleFont() -> NSFont {
+        NSFont.systemFont(ofSize: 11, weight: .medium)
+    }
+#endif
+
+#if canImport(UIKit)
+    private static func lineDetailFont() -> UIFont {
+        UIFont.systemFont(ofSize: 10)
+    }
+#elseif canImport(AppKit)
+    private static func lineDetailFont() -> NSFont {
+        NSFont.systemFont(ofSize: 10)
+    }
+#endif
+
+    #if canImport(UIKit)
+    private static func footerFont() -> UIFont {
+        UIFont.systemFont(ofSize: 9, weight: .semibold)
+    }
+
+    private static func footerSeparatorColor() -> UIColor {
+        UIColor(white: 0.75, alpha: 1)
+    }
+    #elseif canImport(AppKit)
+    private static func footerFont() -> NSFont {
+        NSFont.systemFont(ofSize: 9, weight: .semibold)
+    }
+
+    private static func footerSeparatorColor() -> NSColor {
+        NSColor(white: 0.75, alpha: 1)
+    }
+    #endif
+
+#if canImport(UIKit)
+    private static func loadLogoImage() -> UIImage? {
+        if let image = UIImage(named: "Logo") {
+            return image
+        }
+        if let image = UIImage(named: "logo") {
+            return image
+        }
+        return nil
+    }
+#elseif canImport(AppKit)
+    private static func loadLogoImage() -> NSImage? {
+        if let image = NSImage(named: "Logo") {
+            return image
+        }
+        if let image = NSImage(named: "logo") {
+            return image
+        }
+        return nil
+    }
+#endif
+
+    private static func makeRoundedLogoImage(size: CGSize, cornerRadius: CGFloat) -> PDFImage? {
+        guard let logo = loadLogoImage() else {
+            return nil
+        }
+        return PDFImage(
+            image: logo,
+            size: size,
+            options: [.resize, .compress, .rounded],
+            cornerRadius: cornerRadius
+        )
+    }
+
+    private static func footerBrandAttributedText() -> NSAttributedString? {
+        let attributed = NSMutableAttributedString()
+
+        #if canImport(UIKit)
+        if let logo = loadLogoImage() {
+            let attachment = NSTextAttachment()
+            attachment.image = logo
+            attachment.bounds = CGRect(x: 0, y: -2, width: 10, height: 10)
+            attributed.append(NSAttributedString(attachment: attachment))
+            attributed.append(NSAttributedString(string: " "))
+        }
         let attrs: [NSAttributedString.Key: Any] = [
-            .font: font,
-            .foregroundColor: CGColor(gray: 0.08, alpha: 1)
+            .font: footerFont(),
+            .foregroundColor: UIColor(white: 0.15, alpha: 1)
         ]
+        attributed.append(NSAttributedString(string: "La Ley", attributes: attrs))
+        #elseif canImport(AppKit)
+        if let logo = loadLogoImage() {
+            let attachment = NSTextAttachment()
+            let imageCell = NSTextAttachmentCell(imageCell: logo)
+            attachment.attachmentCell = imageCell
+            attributed.append(NSAttributedString(attachment: attachment))
+            attributed.append(NSAttributedString(string: " "))
+        }
+        let attrs: [NSAttributedString.Key: Any] = [
+            .font: footerFont(),
+            .foregroundColor: NSColor(white: 0.15, alpha: 1)
+        ]
+        attributed.append(NSAttributedString(string: "La Ley", attributes: attrs))
+        #endif
 
-        let attrString = NSAttributedString(string: text, attributes: attrs)
-        let framesetter = CTFramesetterCreateWithAttributedString(attrString as CFAttributedString)
-        let constraintSize = CGSize(width: width, height: .greatestFiniteMagnitude)
-        let suggested = CTFramesetterSuggestFrameSizeWithConstraints(framesetter, CFRangeMake(0, attrString.length), nil, constraintSize, nil)
-
-        let textHeight = ceil(suggested.height)
-        let drawRect = CGRect(x: origin.x, y: origin.y, width: width, height: max(textHeight, fontSize + 2))
-
-        context.saveGState()
-        context.textMatrix = .identity
-        context.translateBy(x: 0, y: drawRect.maxY * 2)
-        context.scaleBy(x: 1, y: -1)
-
-        let pathRect = CGRect(x: drawRect.minX, y: drawRect.minY, width: drawRect.width, height: drawRect.height)
-        let path = CGPath(rect: pathRect, transform: nil)
-        let frame = CTFramesetterCreateFrame(framesetter, CFRangeMake(0, attrString.length), path, nil)
-        CTFrameDraw(frame, context)
-
-        context.restoreGState()
-
-        return drawRect.height
+        return attributed.length > 0 ? attributed : nil
     }
 }
 

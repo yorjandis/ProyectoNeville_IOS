@@ -1,5 +1,6 @@
 import SwiftUI
 import CoreLocation
+import Combine
 
 struct AgendaEditorView: View {
     @Environment(\.dismiss) private var dismiss
@@ -505,11 +506,19 @@ final class AgendaLocationCapture: NSObject, ObservableObject, CLLocationManager
     }
 
     private func handleAuthorizationChange(_ status: CLAuthorizationStatus) {
-        if status == .authorizedWhenInUse || status == .authorizedAlways {
+        if isAuthorized(status) {
             manager.requestLocation()
         } else if status == .denied || status == .restricted {
             finish(.failure(NSError(domain: "AgendaLocationCapture", code: 3, userInfo: [NSLocalizedDescriptionKey: "Permiso de ubicación denegado."])))
         }
+    }
+
+    private func isAuthorized(_ status: CLAuthorizationStatus) -> Bool {
+        #if os(macOS)
+        return status == .authorizedAlways
+        #else
+        return status == .authorizedWhenInUse || status == .authorizedAlways
+        #endif
     }
 
     nonisolated func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {

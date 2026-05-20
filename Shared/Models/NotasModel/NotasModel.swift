@@ -14,10 +14,12 @@ import Combine
 final class NotasModel : ObservableObject  {
     
     @Published var notas : [Notas] = [] //Listado de Notas
+    private var observers = Set<AnyCancellable>()
     
     
     
     init(){
+        setupObservers()
         getAllNotasToModel()
     }
     
@@ -27,6 +29,34 @@ final class NotasModel : ObservableObject  {
     }
     
     private var context = CoreDataController.shared.context
+
+    private func setupObservers() {
+        let center = NotificationCenter.default
+
+        center.publisher(for: .coreDataStoresDidLoad)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                self?.getAllNotasToModel()
+            }
+            .store(in: &observers)
+
+        center.publisher(for: .NSPersistentStoreRemoteChange,
+                         object: CoreDataController.shared.persistentContainer.persistentStoreCoordinator)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                self?.context.refreshAllObjects()
+                self?.getAllNotasToModel()
+            }
+            .store(in: &observers)
+
+        center.publisher(for: .NSManagedObjectContextDidSave,
+                         object: context)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                self?.getAllNotasToModel()
+            }
+            .store(in: &observers)
+    }
     
     
     ///Obtener la lista de notas

@@ -8,6 +8,7 @@
 
 import SwiftUI
 import CoreData
+import UniformTypeIdentifiers
 
 
 
@@ -55,6 +56,11 @@ struct FrasesListView: View {
     //Alert
     @State private var showAlert: Bool = false
     @State private var alertMessage: String = ""
+    @State private var selectionMode = false
+    @State private var selectedFraseIDs: Set<String> = []
+    @State private var showPDFExporter = false
+    @State private var exportedPDFDocument: ExportedPDFDocument?
+    @State private var exportedPDFFileName: String = "Frases.pdf"
     
     //Mostrar la vista de frases relacionadas
     @State private var showTabViewFrasesRelac: Bool = false
@@ -136,9 +142,21 @@ struct FrasesListView: View {
                             
                             //Listado de Frases:
                             List(frasesModel.listfrases, id: \.id){ frase in
-                                FraseRowView(frase: frase, showTabViewFrasesRelac : self.$showTabViewFrasesRelac, fraseRelacionadaMain: self.$fraseRelacionadaMain )
-                                    .foregroundStyle(.black).bold()
-                                    .listRowBackground(Color.clear)
+                                HStack(alignment: .top, spacing: 8) {
+                                    if selectionMode {
+                                        Image(systemName: selectedFraseIDs.contains(frase.id ?? "") ? "checkmark.circle.fill" : "circle")
+                                            .foregroundStyle(.black)
+                                            .padding(.top, 6)
+                                    }
+                                    FraseRowView(frase: frase, showTabViewFrasesRelac : self.$showTabViewFrasesRelac, fraseRelacionadaMain: self.$fraseRelacionadaMain )
+                                        .foregroundStyle(.black).bold()
+                                }
+                                .contentShape(Rectangle())
+                                .onTapGesture {
+                                    guard selectionMode else { return }
+                                    toggleFraseSelection(frase)
+                                }
+                                .listRowBackground(Color.clear)
                             }
                             .scrollContentBackground(.hidden)
                             .background(Color.clear)
@@ -226,6 +244,10 @@ struct FrasesListView: View {
                                              subtitle = "Búsqueda en nota de Frase"
                                              showAlertSearchInNotaFrase = true
                                          }
+
+                                         CreateMenuItemButton(text: "Exportar PDF (manual)", sysImageStr: "doc.richtext") {
+                                             exportSelectedFrasesToPDFOrEnableSelection()
+                                         }
                                          
                                          //Crea un Menú para filtrar por todos los Autores Disponibles
                                          Menu{
@@ -280,6 +302,17 @@ struct FrasesListView: View {
                                  if #available(iOS 26.0, macOS 26.0,  *) {
                                      ToolbarSpacer(.fixed)
                                  }
+                                 ToolbarItem{
+                                     Button(selectionMode ? "Cancelar" : "Seleccionar") {
+                                         withAnimation {
+                                             selectionMode.toggle()
+                                             if !selectionMode {
+                                                 selectedFraseIDs.removeAll()
+                                             }
+                                         }
+                                     }
+                                 }
+
                                  ToolbarItem{
                                      //Boton Adicionar una frase
                                      Button{
@@ -341,6 +374,12 @@ struct FrasesListView: View {
              .alert(isPresented: self.$showAlert){
                  Alert(title: Text("La Ley"), message: Text(self.alertMessage))
              }
+             .fileExporter(
+                isPresented: $showPDFExporter,
+                document: exportedPDFDocument,
+                contentType: .pdf,
+                defaultFilename: exportedPDFFileName
+             ) { _ in }
              .task {
                  //Carga todas las Frases al inicio:
                  if self.mostrarFrasesDe != nil{
@@ -361,12 +400,71 @@ struct FrasesListView: View {
             
         }
     }
+
+    private func toggleFraseSelection(_ frase: Frases) {
+        guard let id = frase.id else { return }
+        if selectedFraseIDs.contains(id) {
+            selectedFraseIDs.remove(id)
+        } else {
+            selectedFraseIDs.insert(id)
+        }
+    }
+
+    private func exportSelectedFrasesToPDFOrEnableSelection() {
+        guard purchaseStatus || yorjPremium else {
+            alertMessage = "La exportación a PDF está disponible en la Versión Extendida."
+            showAlert = true
+            return
+        }
+        if !selectionMode {
+            withAnimation {
+                selectionMode = true
+            }
+            alertMessage = "Selecciona las frases y vuelve a pulsar 'Exportar PDF (manual)'."
+            showAlert = true
+            return
+        }
+
+        let selected = frasesModel.listfrases.filter { frase in
+            guard let id = frase.id else { return false }
+            return selectedFraseIDs.contains(id)
+        }
+
+        guard !selected.isEmpty else {
+            alertMessage = "No hay frases seleccionadas para exportar."
+            showAlert = true
+            return
+        }
+
+        let lines: [PDFExportLine] = selected.map { frase in
+            let content = (frase.frase ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+            let author = (frase.autor ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+            return PDFExportLine(
+                title: content.isEmpty ? "Sin contenido" : content,
+                detail: author.isEmpty ? "Autor desconocido" : author
+            )
+        }
+        let section = PDFExportSection(title: "Frases seleccionadas", lines: lines)
+        let descriptor = PDFExportDocumentDescriptor(
+            title: "Frases - Exportación Manual",
+            subtitle: "Generado el \(Date().formatted(date: .abbreviated, time: .shortened))",
+            sections: [section]
+        )
+
+        do {
+            let data = try PDFExportModule.render(descriptor)
+            exportedPDFDocument = ExportedPDFDocument(data: data)
+            let dateLabel = Date().formatted(date: .numeric, time: .omitted).replacingOccurrences(of: "/", with: "-")
+            exportedPDFFileName = "Frases-Manual-\(dateLabel)"
+            showPDFExporter = true
+        } catch {
+            alertMessage = "No se pudo generar el PDF."
+            showAlert = true
+        }
+    }
     
     
 }
-
-
-
 
 
 

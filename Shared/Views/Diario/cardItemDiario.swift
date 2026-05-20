@@ -329,7 +329,7 @@ struct cardItemDiario: View{
                 }
 
                 destination.name = cleaned
-                destination.openInMaps(launchOptions: [
+                _ = await destination.openInMaps(launchOptions: [
                     MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving
                 ])
             } catch {

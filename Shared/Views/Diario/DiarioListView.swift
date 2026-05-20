@@ -7,6 +7,7 @@
 
 import SwiftUI
 import CoreData
+import UniformTypeIdentifiers
 
 struct DiarioListView: View {
 
@@ -70,6 +71,16 @@ struct DiarioListView: View {
     @State private var newEntryContent: String = ""
     @State private var newEntryEmotion: Emociones = .neutral
     @State private var newEntryDate: Date = Date.now
+    @State private var showPDFExporter = false
+    @State private var exportedPDFDocument: ExportedPDFDocument?
+    @State private var exportedPDFFileName: String = "Diario.pdf"
+    @State private var showExportRangeSheet = false
+    @State private var showManualExportSheet = false
+    @State private var exportFromDate = Date.now
+    @State private var exportToDate = Date.now
+    @State private var manuallySelectedDiarioIDs: Set<UUID> = []
+    @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
+    @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) private var yorjPremium: Bool = false
     
     
     //Ordenar las entradas del Diario por fechaCreación/fechaModificación
@@ -78,6 +89,10 @@ struct DiarioListView: View {
  
     //Almacena la contraeña de acceso en el Llavero, si existe:
     @State private var hasPassword = false
+
+    private var hasPremiumPDFAccess: Bool {
+        purchaseStatus || yorjPremium
+    }
 
     var body: some View {
         NavigationStack {
@@ -490,6 +505,8 @@ struct DiarioListView: View {
                             }label:{
                                 Label("Fecha de Modificación", systemImage: "text.magnifyingglass")
                             }
+
+                            exportDiarioPDFMenu()
                         }label: {
                             Image(systemName: "line.3.horizontal.decrease")
                                 .tint(.black)
@@ -640,6 +657,59 @@ struct DiarioListView: View {
             .sheet(isPresented: $showDiarioStats) {
                 DiarioStatsView()
             }
+            .sheet(isPresented: $showExportRangeSheet) {
+                VStack(spacing: 16) {
+                    DatePicker("Desde", selection: $exportFromDate, displayedComponents: [.date])
+                    DatePicker("Hasta", selection: $exportToDate, displayedComponents: [.date])
+                    Button("Exportar PDF") {
+                        exportDiarioRangeToPDF(from: exportFromDate, to: exportToDate)
+                        showExportRangeSheet = false
+                    }
+                    .buttonStyle(.bordered)
+                }
+                .padding()
+            }
+            .sheet(isPresented: $showManualExportSheet) {
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("Selecciona entradas para exportar")
+                        .font(.headline)
+                    List {
+                        ForEach(modelDiario.list) { item in
+                            Button {
+                                toggleManualDiarioSelection(item)
+                            } label: {
+                                HStack {
+                                    Image(systemName: manuallySelectedDiarioIDs.contains(item.id ?? UUID()) ? "checkmark.circle.fill" : "circle")
+                                    Text(item.title ?? "Sin título")
+                                    Spacer()
+                                    if let date = item.fecha {
+                                        Text(date.formatted(date: .abbreviated, time: .omitted))
+                                            .font(.footnote)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                }
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                    Button("Exportar PDF") {
+                        let selected = modelDiario.list.filter { item in
+                            guard let id = item.id else { return false }
+                            return manuallySelectedDiarioIDs.contains(id)
+                        }
+                        exportDiarioToPDF(selected, scopeName: "Manual")
+                        showManualExportSheet = false
+                    }
+                    .buttonStyle(.bordered)
+                }
+                .padding()
+            }
+            .fileExporter(
+                isPresented: $showPDFExporter,
+                document: exportedPDFDocument,
+                contentType: .pdf,
+                defaultFilename: exportedPDFFileName
+            ) { _ in }
             .alert("Diario", isPresented: $showAlert) {
                 
             } message: {
@@ -715,10 +785,130 @@ struct DiarioListView: View {
         modelDiario.getAllItem()
     }
 
+    @ViewBuilder
+    private func exportDiarioPDFMenu() -> some View {
+        Menu {
+            Button("Manual") {
+                guard hasPremiumPDFAccess else {
+                    alertMessage = "La exportación a PDF está disponible en la Versión Extendida."
+                    showAlert = true
+                    return
+                }
+                manuallySelectedDiarioIDs.removeAll()
+                showManualExportSheet = true
+            }
+            Button("Semana actual") {
+                guard hasPremiumPDFAccess else {
+                    alertMessage = "La exportación a PDF está disponible en la Versión Extendida."
+                    showAlert = true
+                    return
+                }
+                exportDiarioToPDF(diarioCurrentWeek(), scopeName: "Semana")
+            }
+            Button("Mes actual") {
+                guard hasPremiumPDFAccess else {
+                    alertMessage = "La exportación a PDF está disponible en la Versión Extendida."
+                    showAlert = true
+                    return
+                }
+                exportDiarioToPDF(diarioCurrentMonth(), scopeName: "Mes")
+            }
+            Button("Rango de fechas") {
+                guard hasPremiumPDFAccess else {
+                    alertMessage = "La exportación a PDF está disponible en la Versión Extendida."
+                    showAlert = true
+                    return
+                }
+                showExportRangeSheet = true
+            }
+        } label: {
+            Label("Exportar PDF", systemImage: "doc.richtext")
+        }
+    }
+
+    private func toggleManualDiarioSelection(_ item: Diario) {
+        guard let id = item.id else { return }
+        if manuallySelectedDiarioIDs.contains(id) {
+            manuallySelectedDiarioIDs.remove(id)
+        } else {
+            manuallySelectedDiarioIDs.insert(id)
+        }
+    }
+
+    private func diarioCurrentWeek() -> [Diario] {
+        let calendar = Calendar.current
+        let now = Date()
+        guard let interval = calendar.dateInterval(of: .weekOfYear, for: now) else { return [] }
+        return diarioInRange(from: interval.start, to: interval.end)
+    }
+
+    private func diarioCurrentMonth() -> [Diario] {
+        let calendar = Calendar.current
+        let now = Date()
+        guard let interval = calendar.dateInterval(of: .month, for: now) else { return [] }
+        return diarioInRange(from: interval.start, to: interval.end)
+    }
+
+    private func diarioInRange(from start: Date, to end: Date) -> [Diario] {
+        modelDiario.list.filter { item in
+            guard let date = item.fecha else { return false }
+            return date >= start && date < end
+        }
+    }
+
+    private func exportDiarioRangeToPDF(from start: Date, to end: Date) {
+        let items = modelDiario.searchPorRangoFecha(from: start, to: end, typeFecha: .FechaCreacion)
+        exportDiarioToPDF(items, scopeName: "Rango")
+    }
+
+    private func exportDiarioToPDF(_ entries: [Diario], scopeName: String) {
+        guard hasPremiumPDFAccess else {
+            alertMessage = "La exportación a PDF está disponible en la Versión Extendida."
+            showAlert = true
+            return
+        }
+        guard !entries.isEmpty else {
+            alertMessage = "No hay entradas para exportar en \(scopeName.lowercased())."
+            showAlert = true
+            return
+        }
+
+        let calendar = Calendar.current
+        let grouped = Dictionary(grouping: entries) { entry in
+            calendar.startOfDay(for: entry.fecha ?? Date.distantPast)
+        }
+
+        let sections: [PDFExportSection] = grouped.keys.sorted().map { day in
+            let dayEntries = (grouped[day] ?? []).sorted { ($0.fecha ?? .distantPast) < ($1.fecha ?? .distantPast) }
+            let lines: [PDFExportLine] = dayEntries.map { item in
+                let title = (item.title ?? "").isEmpty ? "Sin título" : (item.title ?? "Sin título")
+                let emotion = Emociones.emoji(from: item.emotion)
+                let content = (item.content ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+                let detail = content.isEmpty ? "Estado: \(emotion)" : "Estado: \(emotion)\n\(content)"
+                return PDFExportLine(title: title, detail: detail)
+            }
+            return PDFExportSection(title: day.formatted(date: .complete, time: .omitted), lines: lines)
+        }
+
+        let descriptor = PDFExportDocumentDescriptor(
+            title: "Diario - \(scopeName)",
+            subtitle: "Generado el \(Date().formatted(date: .abbreviated, time: .shortened))",
+            sections: sections
+        )
+
+        do {
+            let data = try PDFExportModule.render(descriptor)
+            exportedPDFDocument = ExportedPDFDocument(data: data)
+            let dateLabel = Date().formatted(date: .numeric, time: .omitted).replacingOccurrences(of: "/", with: "-")
+            exportedPDFFileName = "Diario-\(scopeName)-\(dateLabel)"
+            showPDFExporter = true
+        } catch {
+            alertMessage = "No se pudo generar el PDF."
+            showAlert = true
+        }
+    }
+
 }
-
-
-
 
 
 

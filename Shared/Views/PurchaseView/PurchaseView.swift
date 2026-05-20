@@ -86,9 +86,21 @@ struct PurchaseView: View {
                             
                             Text("🔵 Lienzo creativo: Diseña imágenes impactantes con tus frases favoritas para compartir en redes o usar como tarjetas personales de enfoque y motivación.").bold()
                             
+                            Text("🔵 Ritual Matutino: Diseña cada día con intención y conciencia. Lanza recordatorios para mantenerte presente y en control.").bold()
+                            
+                            Text("🔵 Agenda: Organiza tus actividades y tareas en el tiempo, liberando recursos y memoria. Añade recordatorios para no olvidar lo importante.").bold()
+                            
+                            Text("🔵 Coherencia cardio - Cerebral: Entra en estado de coherencia con la ayuda de este asistente personal. El estado de coherencia es creativo por naturaleza.").bold()
+                            
+                            Text("🔵 Exportación PDF: Ya sea para sacar apuntes o compartir información, puedes exportar Notas, Frases, Actividades de la Agenda, Reflexiones y respuestas de Chat IA a formato portable PDF estándar.").bold()
+                            
+                            Text("🔵 Espacio Calma: experiencia inmersiva para relajarte y aprender mientras activas tu sistema parasimpático").bold()
+                            
                             Text("🔵 Recordatorios inteligentes: Programa avisos para tus prácticas esenciales como meditar, agradecer, visualizar o revisar tus metas.").bold()
                             
                             Text("🔵 Enciclopedia: Amplio catálogo de contenido educativo y práctico sobre diferentes temas. Basado en las últimas investigaciones de la neurociencia y la meditación. Aprende cómo funcionan los hábitos, la mente, la epigenética, las hormonas del estrés, los ritmos circadianos y muchos otros.").bold()
+                            
+                            Text("🔵 Lector de Etiquetas: Poderosa herramienta que analiza cualquier alimento y nos da información nutricional detallada. Lee la etiqueta de un alimento y descubre si es sano su consumo, su impacto en el metabolismo y sus posibles efectos negativos en salud.").bold()
                             
                             Text("🔵 Evidencia científica: Resumen de investigaciones que respaldan estas enseñanzas, debidamente acotados para su fácil consulta").bold()
                             
