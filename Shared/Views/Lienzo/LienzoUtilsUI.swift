@@ -42,42 +42,48 @@ func renderViewAsImage<V: View>(_ view: V) -> UIImage? {
 import AppKit
 import UniformTypeIdentifiers
 
-//Guarda una imagen en la carpeta de Descargas en el Finder:
-func guardarImagenEnDescargasConTimestamp(_ imagen: NSImage) {
-    // Generar timestamp
+// Guarda una imagen en la ubicación elegida por el usuario con NSSavePanel.
+func guardarImagenConDialogo(_ imagen: NSImage) {
     let formatter = DateFormatter()
-    formatter.dateFormat = "yyyyMMdd_HHmmss" // Ej: 20251121_143955
+    formatter.dateFormat = "yyyyMMdd_HHmmss"
     let timestamp = formatter.string(from: Date())
 
-    let nombre = "imagen_\(timestamp).png"
-    
-    // Obtener carpeta Downloads
-    guard let downloadsURL = FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first else {
-        msg("❌ No se pudo obtener la carpeta Descargas.")
-        return
-    }
-
-    let fileURL = downloadsURL.appendingPathComponent(nombre)
-
-    
-    // Convertir NSImage → PNG
     guard let tiffData = imagen.tiffRepresentation,
           let bitmap = NSBitmapImageRep(data: tiffData),
           let pngData = bitmap.representation(using: .png, properties: [:]) else {
         msg("❌ No se pudo convertir la imagen.")
         return
     }
-     
-    
-        do {
-            try pngData.write(to: fileURL)
-            msg("✔ Imagen guardada en: \(fileURL.path)")
-        } catch {
-            msg("❌ Error al guardar la imagen: \(error)")
-        }
-    
 
-    
+    let panel = NSSavePanel()
+    panel.title = "Guardar imagen"
+    panel.nameFieldStringValue = "imagen_\(timestamp).png"
+    panel.canCreateDirectories = true
+
+    if #available(macOS 12.0, *) {
+        panel.allowedContentTypes = [.png]
+    } else {
+        panel.allowedFileTypes = ["png"]
+    }
+
+    guard panel.runModal() == .OK, let selectedURL = panel.url else {
+        msg("Guardado cancelado por el usuario.")
+        return
+    }
+
+    let outputURL: URL
+    if selectedURL.pathExtension.isEmpty {
+        outputURL = selectedURL.appendingPathExtension("png")
+    } else {
+        outputURL = selectedURL
+    }
+
+    do {
+        try pngData.write(to: outputURL)
+        msg("✔ Imagen guardada en: \(outputURL.path)")
+    } catch {
+        msg("❌ Error al guardar la imagen: \(error)")
+    }
 }
 
 //Abre un cuadro de diálogo para seleccionar una imagen. Solo MacOS:

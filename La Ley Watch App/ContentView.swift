@@ -11,6 +11,7 @@ import CoreData
 struct ContentView: View {
     @State private var selectedTab: String = WatchScreen.frases.rawValue
     @State private var screenOrder: [WatchScreen] = ScreenOrderStore.load()
+    @State private var didSetInitialTab = false
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -31,7 +32,10 @@ struct ContentView: View {
         .tabViewStyle(.page)
         .onAppear {
             screenOrder = ScreenOrderStore.normalize(screenOrder)
-            if selectedTab == WatchScreen.ajustes.rawValue || !screenOrder.map(\.rawValue).contains(selectedTab) {
+            if !didSetInitialTab {
+                selectedTab = screenOrder.first?.rawValue ?? WatchScreen.frases.rawValue
+                didSetInitialTab = true
+            } else if selectedTab == WatchScreen.ajustes.rawValue || !screenOrder.map(\.rawValue).contains(selectedTab) {
                 selectedTab = screenOrder.first?.rawValue ?? WatchScreen.frases.rawValue
             }
         }

@@ -866,11 +866,11 @@ struct LienzoMain: View {
     func PanelOpcionesExportacion()-> some View{
         VStack(spacing: 20){
             #if os(macOS)
-            //Botón para guadar la imagen en la carpeta descargas
-            Button("Guardar Imagen en Descargas..."){
+            // Botón para guardar la imagen en la ubicación elegida por el usuario
+            Button("Guardar imagen..."){
                 if self.imagenAExportar != nil {
-                    guardarImagenEnDescargasConTimestamp(self.imagenAExportar!)
-                    self.alertMessage = "La imagen se ha guardado en Descargas"
+                    guardarImagenConDialogo(self.imagenAExportar!)
+                    self.alertMessage = "Se abrió el diálogo para guardar la imagen"
                     self.showAlert = true
                 }
             }

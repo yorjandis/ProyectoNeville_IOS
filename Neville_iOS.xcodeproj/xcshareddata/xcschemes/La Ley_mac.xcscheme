@@ -16,7 +16,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "917C301E2EBCD1E5006BB36E"
-               BuildableName = "La Ley_mac.app"
+               BuildableName = "La Ley.app"
                BlueprintName = "La Ley_mac"
                ReferencedContainer = "container:Neville_iOS.xcodeproj">
             </BuildableReference>
@@ -45,7 +45,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "917C301E2EBCD1E5006BB36E"
-            BuildableName = "La Ley_mac.app"
+            BuildableName = "La Ley.app"
             BlueprintName = "La Ley_mac"
             ReferencedContainer = "container:Neville_iOS.xcodeproj">
          </BuildableReference>
@@ -65,7 +65,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "917C301E2EBCD1E5006BB36E"
-            BuildableName = "La Ley_mac.app"
+            BuildableName = "La Ley.app"
             BlueprintName = "La Ley_mac"
             ReferencedContainer = "container:Neville_iOS.xcodeproj">
          </BuildableReference>

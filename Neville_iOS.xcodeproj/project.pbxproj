@@ -40,7 +40,7 @@
 		911F24312F7B7D31009A77BE /* BruceLiptonAuthorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 911F242F2F7B7D31009A77BE /* BruceLiptonAuthorView.swift */; };
 		915017432EF078A2007B741A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 915017422EF078A2007B741A /* StoreKit.framework */; };
 		915017452EF078B2007B741A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 915017442EF078B2007B741A /* StoreKit.framework */; };
-		918C4B0B2EF4094D00974B54 /* La Ley.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 918C4AFF2EF4094D00974B54 /* La Ley.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		918C4B0B2EF4094D00974B54 /* sharedmac.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 918C4AFF2EF4094D00974B54 /* sharedmac.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		919816C42FBC1E1600B24155 /* QuickAddNotaByLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 919816C32FBC1E1600B24155 /* QuickAddNotaByLocationView.swift */; };
 		919831092FBC525C00B24155 /* TPPDF in Frameworks */ = {isa = PBXBuildFile; productRef = 919831082FBC525C00B24155 /* TPPDF */; };
 		9198310B2FBC526B00B24155 /* TPPDF in Frameworks */ = {isa = PBXBuildFile; productRef = 9198310A2FBC526B00B24155 /* TPPDF */; };
@@ -139,7 +139,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				918C4B0B2EF4094D00974B54 /* La Ley.appex in Embed Foundation Extensions */,
+				918C4B0B2EF4094D00974B54 /* sharedmac.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -193,8 +193,8 @@
 		915017422EF078A2007B741A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		915017442EF078B2007B741A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/System/Library/Frameworks/StoreKit.framework; sourceTree = DEVELOPER_DIR; };
 		9173AB7D2F72097F0015A9FD /* Version.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Version.xcconfig; sourceTree = "<group>"; };
-		917C301F2EBCD1E5006BB36E /* La Ley_mac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "La Ley_mac.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		918C4AFF2EF4094D00974B54 /* La Ley.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "La Ley.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		917C301F2EBCD1E5006BB36E /* La Ley.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "La Ley.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		918C4AFF2EF4094D00974B54 /* sharedmac.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = sharedmac.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		919816C32FBC1E1600B24155 /* QuickAddNotaByLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddNotaByLocationView.swift; sourceTree = "<group>"; };
 		919F34D72F66BCD1009FF35B /* BackgroundDownloadHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundDownloadHandler.swift; sourceTree = "<group>"; };
 		919F34D82F66BCD1009FF35B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -1583,9 +1583,9 @@
 				19E0BE142B0C661A00E149A5 /* FrasesWiggetExtension.appex */,
 				19F804192B69CB9D00A323A0 /* La Ley Watch App.app */,
 				19EDBBC32B7DD66000432CDE /* WatchComplicationLaLeyExtension.appex */,
-				917C301F2EBCD1E5006BB36E /* La Ley_mac.app */,
+				917C301F2EBCD1E5006BB36E /* La Ley.app */,
 				91E107672EEA01AD00F4DB1D /* sharedios.appex */,
-				918C4AFF2EF4094D00974B54 /* La Ley.appex */,
+				918C4AFF2EF4094D00974B54 /* sharedmac.appex */,
 				919F409D2F66C559009FF35B /* LaLeyBackgroundDownloadExtension.appex */,
 			);
 			name = Products;
@@ -1689,7 +1689,7 @@
 				9198310A2FBC526B00B24155 /* TPPDF */,
 			);
 			productName = "La Ley";
-			productReference = 917C301F2EBCD1E5006BB36E /* La Ley_mac.app */;
+			productReference = 917C301F2EBCD1E5006BB36E /* La Ley.app */;
 			productType = "com.apple.product-type.application";
 		};
 		918C4AFE2EF4094D00974B54 /* sharedmac */ = {
@@ -1711,7 +1711,7 @@
 			packageProductDependencies = (
 			);
 			productName = sharedmac;
-			productReference = 918C4AFF2EF4094D00974B54 /* La Ley.appex */;
+			productReference = 918C4AFF2EF4094D00974B54 /* sharedmac.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 		919F409C2F66C559009FF35B /* LaLeyBackgroundDownloadExtension */ = {
@@ -2239,9 +2239,8 @@
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				ENABLE_APP_SANDBOX = YES;
-				ENABLE_FILE_ACCESS_DOWNLOADS_FOLDER = readwrite;
 				ENABLE_HARDENED_RUNTIME = YES;
-				ENABLE_INCOMING_NETWORK_CONNECTIONS = YES;
+				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
 				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
@@ -2253,7 +2252,7 @@
 				ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = NO;
 				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
 				ENABLE_RESOURCE_ACCESS_USB = NO;
-				ENABLE_USER_SELECTED_FILES = readonly;
+				ENABLE_USER_SELECTED_FILES = readwrite;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "La-Ley-mac-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "La Ley";
@@ -2265,9 +2264,10 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.6;
-				MARKETING_VERSION = "$(inherited)";
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_MODULE_NAME = La_Ley_App;
+				PRODUCT_NAME = "La Ley";
 				REGISTER_APP_GROUPS = YES;
 				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
 				RUNTIME_EXCEPTION_ALLOW_JIT = NO;
@@ -2299,9 +2299,8 @@
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				ENABLE_APP_SANDBOX = YES;
-				ENABLE_FILE_ACCESS_DOWNLOADS_FOLDER = readwrite;
 				ENABLE_HARDENED_RUNTIME = YES;
-				ENABLE_INCOMING_NETWORK_CONNECTIONS = YES;
+				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
 				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
@@ -2313,7 +2312,7 @@
 				ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = NO;
 				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
 				ENABLE_RESOURCE_ACCESS_USB = NO;
-				ENABLE_USER_SELECTED_FILES = readonly;
+				ENABLE_USER_SELECTED_FILES = readwrite;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "La-Ley-mac-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "La Ley";
@@ -2325,9 +2324,10 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.6;
-				MARKETING_VERSION = "$(inherited)";
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_MODULE_NAME = La_Ley_App;
+				PRODUCT_NAME = "La Ley";
 				REGISTER_APP_GROUPS = YES;
 				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
 				RUNTIME_EXCEPTION_ALLOW_JIT = NO;
@@ -2368,9 +2368,10 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 26.2;
-				MARKETING_VERSION = "$(inherited)";
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.dev.sharedmac;
-				PRODUCT_NAME = "La Ley";
+				PRODUCT_MODULE_NAME = sharedmac;
+				PRODUCT_NAME = sharedmac;
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
@@ -2405,9 +2406,10 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 26.2;
-				MARKETING_VERSION = "$(inherited)";
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.sharedmac;
-				PRODUCT_NAME = "La Ley";
+				PRODUCT_MODULE_NAME = sharedmac;
+				PRODUCT_NAME = sharedmac;
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;

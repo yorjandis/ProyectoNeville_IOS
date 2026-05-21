@@ -799,7 +799,11 @@ struct NavigationDetailsViewMac: View {
             case .lienzo:
                 LienzoMain(texto: "", imagenPrimariaACargar: nil)
             case .ritualMatutino:
-                MorningRitualMainView()
+                if purchaseStatus || yorjPremium {
+                    MorningRitualMainView()
+                } else {
+                    PurchaseView()
+                }
             case .agenda:
                 AgendaMainView()
 

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import StoreKit
 
 
 struct PurchaseView: View {
@@ -15,6 +16,9 @@ struct PurchaseView: View {
     var mostrarLogo : Bool = true
     
     var mostrarBotonCerrarMacOS : Bool = false
+
+    private let termsOfUseURL = URL(string: "https://ypgcode.es/neville-ios-terms-of-use/")
+    private let privacyPolicyURL = URL(string: "https://ypgcode.es/neville-ios-privacy-policy/")
     
     var body: some View {
         VStack{
@@ -127,25 +131,64 @@ struct PurchaseView: View {
                    Spacer()
                     
                     if !self.purchaseModel.isPremium {
-                        VStack(alignment: .center){
-                            Text("!Suscripción anual, muy asequible!")
+                        VStack(alignment: .center, spacing: 10){
+                            Text("Suscripción anual")
                                 .bold()
                                 .font(.system(size: 20))
                                 .foregroundColor(.black)
-                                .padding()
+                                .padding(.top, 6)
+
                             Button{
                                 Task{
                                     await self.purchaseModel.purchasePremium()
                                 }
                                 
                             }label: {
-                                Text("Acceder a la Versión Extendida")
-                                    .foregroundStyle(.black)
-                                    .font(.title2)
-                                    .bold()
+                                VStack(spacing: 4) {
+                                    if let premiumProduct = self.purchaseModel.products.first {
+                                        Text("\(premiumProduct.displayPrice)/año")
+                                            .foregroundStyle(.black)
+                                            .font(.headline)
+                                            .bold()
+                                    } else {
+                                        Text("Cargando precio…")
+                                            .foregroundStyle(.black.opacity(0.8))
+                                            .font(.headline)
+                                            .bold()
+                                    }
+
+                                    Text("Acceder a la Versión Extendida")
+                                        .foregroundStyle(.black)
+                                        .font(.title2)
+                                        .bold()
+                                }
                             }
                             .buttonStyle(.bordered)
                             .tint(.blue.opacity(0.6))
+
+                            Text("La suscripción se renueva automáticamente cada año hasta que se cancele.")
+                                .font(.footnote)
+                                .multilineTextAlignment(.center)
+                                .foregroundStyle(.black)
+
+                            Text("Puedes gestionar o cancelar la suscripción en Ajustes de tu Apple ID tras la compra.")
+                                .font(.footnote)
+                                .multilineTextAlignment(.center)
+                                .foregroundStyle(.black)
+
+                            VStack(spacing: 6) {
+                                if let termsOfUseURL {
+                                    Link("Términos de Uso", destination: termsOfUseURL)
+                                        .font(.footnote)
+                                        .bold()
+                                }
+                                if let privacyPolicyURL {
+                                    Link("Política de Privacidad", destination: privacyPolicyURL)
+                                        .font(.footnote)
+                                        .bold()
+                                }
+                            }
+                            .foregroundStyle(.black)
                         }
                     }else{
                         Text("Versión Extendida Habilitada! 🎉")
@@ -197,10 +240,8 @@ struct PurchaseView: View {
                 .padding()
             }
         }
-        
     }
-    
-    
+
 }
 
 #if os(macOS)
