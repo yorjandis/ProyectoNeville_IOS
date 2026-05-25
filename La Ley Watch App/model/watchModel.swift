@@ -54,6 +54,18 @@ final class watchModel: ObservableObject {
             }
             .store(in: &observers)
 
+        center.publisher(
+            for: NSPersistentCloudKitContainer.eventChangedNotification,
+            object: CoreDataController.shared.persistentContainer
+        )
+        .receive(on: RunLoop.main)
+        .sink { [weak self] _ in
+            self?.context.refreshAllObjects()
+            self?.getNotas()
+            self?.getDiarioEntradas()
+        }
+        .store(in: &observers)
+
         center.publisher(for: .NSManagedObjectContextDidSave,
                          object: context)
             .receive(on: RunLoop.main)
@@ -376,25 +388,84 @@ final class watchModel: ObservableObject {
     }
 
     //Crear una nueva nota usando dirección de mapa
-    func addNota(title: String, direccionMapa: String) -> Bool {
+    func addNota(title: String, nota: String = "", direccionMapa: String) -> Bool {
         let trimmedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedNota = nota.trimmingCharacters(in: .whitespacesAndNewlines)
         let trimmedAddress = direccionMapa.trimmingCharacters(in: .whitespacesAndNewlines)
-
         guard !trimmedTitle.isEmpty else { return false }
 
         let newNota = Notas(context: self.context)
         let now = Date()
-        newNota.id = UUID().uuidString
+        let noteID = UUID().uuidString
+        newNota.id = noteID
         newNota.title = trimmedTitle
-        newNota.nota = trimmedAddress.isEmpty ? "Nota creada desde watchOS" : trimmedAddress
+        newNota.nota = resolvedNoteText(nota: trimmedNota, direccionMapa: trimmedAddress)
         newNota.isfav = false
         newNota.setValue(trimmedAddress, forKey: "direccionMapa")
         newNota.setValue(now, forKey: "fechaCreacion")
         newNota.setValue(now, forKey: "fechaModificacion")
 
+        return persistAndSyncNota(newNota, fallbackCreationDate: now)
+    }
+
+    func updateNota(noteID: String, title: String, nota: String) -> Bool {
+        let trimmedID = noteID.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedNota = nota.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedID.isEmpty, !trimmedTitle.isEmpty else { return false }
+
+        let fetchRequest: NSFetchRequest<Notas> = Notas.fetchRequest()
+        fetchRequest.fetchLimit = 1
+        fetchRequest.predicate = NSPredicate(format: "id == %@", trimmedID)
+
+        guard let existing = try? context.fetch(fetchRequest).first else { return false }
+
+        let direccionMapa = (existing.value(forKey: "direccionMapa") as? String ?? "")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        existing.title = trimmedTitle
+        existing.nota = resolvedNoteText(nota: trimmedNota, direccionMapa: direccionMapa)
+
+        return persistAndSyncNota(existing)
+    }
+
+    private func resolvedNoteText(nota: String, direccionMapa: String) -> String {
+        if !nota.isEmpty { return nota }
+        if !direccionMapa.isEmpty { return direccionMapa }
+        return "Nota creada desde watchOS"
+    }
+
+    private func persistAndSyncNota(_ note: Notas, fallbackCreationDate: Date = Date()) -> Bool {
+        let now = Date()
+        let noteID = note.id ?? UUID().uuidString
+        note.id = noteID
+
+        let title = (note.title ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+        let direccionMapa = (note.value(forKey: "direccionMapa") as? String ?? "")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        let noteText = resolvedNoteText(
+            nota: (note.nota ?? "").trimmingCharacters(in: .whitespacesAndNewlines),
+            direccionMapa: direccionMapa
+        )
+        note.nota = noteText
+
+        let creationDate = (note.value(forKey: "fechaCreacion") as? Date) ?? fallbackCreationDate
+        note.setValue(creationDate, forKey: "fechaCreacion")
+        note.setValue(now, forKey: "fechaModificacion")
+
         do {
             try self.context.save()
             self.getNotas()
+            WatchNotesTransferSender.shared.sendCreatedNote(
+                WatchNoteTransferPayload(
+                    id: noteID,
+                    title: title,
+                    nota: noteText,
+                    direccionMapa: direccionMapa,
+                    isfav: note.isfav,
+                    fechaCreacion: creationDate,
+                    fechaModificacion: now
+                )
+            )
             return true
         } catch {
             self.context.rollback()
@@ -441,6 +512,50 @@ final class watchModel: ObservableObject {
             self.listDiario = try context.fetch(fetchRequest)
         } catch {
             msg("Failed to fetch notes: \(error)")
+        }
+    }
+
+    func addDiarioEntry(title: String, content: String, emotion: String, isFav: Bool = false, direccionMapa: String = "") -> Bool {
+        let trimmedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedContent = content.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedEmotion = emotion.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedAddress = direccionMapa.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        guard !trimmedTitle.isEmpty, !trimmedContent.isEmpty else { return false }
+
+        let diario = Diario(context: context)
+        let now = Date.now
+        let dayStart = Calendar.current.startOfDay(for: now)
+        let uuid = UUID()
+        diario.id = uuid
+        diario.title = trimmedTitle
+        diario.content = trimmedContent
+        diario.emotion = trimmedEmotion.isEmpty ? Emoticono2.neutral.txt : trimmedEmotion
+        diario.isFav = isFav
+        diario.setValue(trimmedAddress, forKey: "direccionMapa")
+        diario.fecha = dayStart
+        diario.fechaM = now
+
+        do {
+            try context.save()
+            self.getDiarioEntradas()
+            WatchDiarioTransferSender.shared.sendCreatedDiario(
+                WatchDiarioTransferPayload(
+                    id: uuid.uuidString,
+                    title: trimmedTitle,
+                    content: trimmedContent,
+                    emotion: diario.emotion ?? Emoticono2.neutral.txt,
+                    isFav: isFav,
+                    direccionMapa: trimmedAddress,
+                    fecha: dayStart,
+                    fechaM: now
+                )
+            )
+            return true
+        } catch {
+            context.rollback()
+            msg("Error al guardar diario desde watchOS: \(error.localizedDescription)")
+            return false
         }
     }
     

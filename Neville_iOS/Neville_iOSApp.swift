@@ -52,6 +52,8 @@ struct Neville_iOSApp: App {
          ReminderNotificationManager.shared.configureCategories()
         
          UNUserNotificationCenter.current().delegate = AppNotificationDelegate.shared //Para mostrar los recordatorios cuando la app esta en primer plano
+         _ = WatchNotesReceiver.shared
+         _ = WatchDiarioReceiver.shared
      }
      
    

@@ -38,6 +38,11 @@
 		911F242E2F7B7D31009A77BE /* GreggBradenAuthorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 911F242C2F7B7D31009A77BE /* GreggBradenAuthorView.swift */; };
 		911F24302F7B7D31009A77BE /* BruceLiptonAuthorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 911F242F2F7B7D31009A77BE /* BruceLiptonAuthorView.swift */; };
 		911F24312F7B7D31009A77BE /* BruceLiptonAuthorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 911F242F2F7B7D31009A77BE /* BruceLiptonAuthorView.swift */; };
+		914D7B492FC0A0FB00CDDB93 /* WatchNotesTransfer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914D7B482FC0A0FB00CDDB93 /* WatchNotesTransfer.swift */; };
+		914D7B4B2FC0A0FB00CDDB93 /* WatchNotesReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914D7B4A2FC0A0FB00CDDB93 /* WatchNotesReceiver.swift */; };
+		914D88772FC1AEDB00CDDB93 /* WatchDiarioTransfer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914D88762FC1AEDB00CDDB93 /* WatchDiarioTransfer.swift */; };
+		914D88792FC1AEF100CDDB93 /* WatchDiarioReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914D88782FC1AEF100CDDB93 /* WatchDiarioReceiver.swift */; };
+		914D887B2FC1AF1800CDDB93 /* WatchDiarioReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914D887A2FC1AF1800CDDB93 /* WatchDiarioReceiver.swift */; };
 		915017432EF078A2007B741A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 915017422EF078A2007B741A /* StoreKit.framework */; };
 		915017452EF078B2007B741A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 915017442EF078B2007B741A /* StoreKit.framework */; };
 		918C4B0B2EF4094D00974B54 /* sharedmac.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 918C4AFF2EF4094D00974B54 /* sharedmac.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -190,6 +195,11 @@
 		911F242C2F7B7D31009A77BE /* GreggBradenAuthorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GreggBradenAuthorView.swift; sourceTree = "<group>"; };
 		911F242F2F7B7D31009A77BE /* BruceLiptonAuthorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BruceLiptonAuthorView.swift; sourceTree = "<group>"; };
 		9122752B2D5A925200DE3AC6 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		914D7B482FC0A0FB00CDDB93 /* WatchNotesTransfer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchNotesTransfer.swift; sourceTree = "<group>"; };
+		914D7B4A2FC0A0FB00CDDB93 /* WatchNotesReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchNotesReceiver.swift; sourceTree = "<group>"; };
+		914D88762FC1AEDB00CDDB93 /* WatchDiarioTransfer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchDiarioTransfer.swift; sourceTree = "<group>"; };
+		914D88782FC1AEF100CDDB93 /* WatchDiarioReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchDiarioReceiver.swift; sourceTree = "<group>"; };
+		914D887A2FC1AF1800CDDB93 /* WatchDiarioReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchDiarioReceiver.swift; sourceTree = "<group>"; };
 		915017422EF078A2007B741A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		915017442EF078B2007B741A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/System/Library/Frameworks/StoreKit.framework; sourceTree = DEVELOPER_DIR; };
 		9173AB7D2F72097F0015A9FD /* Version.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Version.xcconfig; sourceTree = "<group>"; };
@@ -1163,7 +1173,6 @@
 				Staff/Metas/ProgramasPreestablecidos/prog_visualizacion_creativa_neville_1.json,
 				Staff/Metas/ProgramasPreestablecidos/prog_visualizacion_creativa_neville_2.json,
 				Staff/Metas/ProgramasPreestablecidos/prog_visualizacion_creativa_neville_3.json,
-				Staff/privacy.txt,
 				Staff/Reflexiones/reflex_conciencia_y_realidad.txt,
 				Staff/Reflexiones/reflex_conocimiento.txt,
 				Staff/Reflexiones/reflex_deseo_tener_certeza.txt,
@@ -1449,6 +1458,8 @@
 			isa = PBXGroup;
 			children = (
 				91F0DD542D605B4B00307453 /* watchModel.swift */,
+				914D7B482FC0A0FB00CDDB93 /* WatchNotesTransfer.swift */,
+				914D88762FC1AEDB00CDDB93 /* WatchDiarioTransfer.swift */,
 			);
 			path = model;
 			sourceTree = "<group>";
@@ -1573,6 +1584,7 @@
 				19E0BDEB2B0B412D00E149A5 /* Frameworks */,
 				E95B93542AAFBB2600B5E2B5 /* Products */,
 				919F34C82F66BC6B009FF35B /* BackgroundDownloadExtension */,
+				914D88782FC1AEF100CDDB93 /* WatchDiarioReceiver.swift */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1604,6 +1616,8 @@
 				E92F644E2AB6EF5A007BB4BA /* Views */,
 				911FF1FA2ECB4064009F83BE /* Preview Content */,
 				914415A92EDC377200FFC61D /* Atajos */,
+				914D7B4A2FC0A0FB00CDDB93 /* WatchNotesReceiver.swift */,
+				914D887A2FC1AF1800CDDB93 /* WatchDiarioReceiver.swift */,
 			);
 			path = Neville_iOS;
 			sourceTree = "<group>";
@@ -1945,8 +1959,10 @@
 				19F8041E2B69CB9D00A323A0 /* ContentView.swift in Sources */,
 				919816C42FBC1E1600B24155 /* QuickAddNotaByLocationView.swift in Sources */,
 				19D04F1C2B7455B8007B66F2 /* AddNota.swift in Sources */,
+				914D88772FC1AEDB00CDDB93 /* WatchDiarioTransfer.swift in Sources */,
 				91F0DD552D605B5800307453 /* watchModel.swift in Sources */,
 				19F8041C2B69CB9D00A323A0 /* La_LeyApp.swift in Sources */,
+				914D7B492FC0A0FB00CDDB93 /* WatchNotesTransfer.swift in Sources */,
 				19520A512B765E31000B11CC /* FilterByNotaView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1959,6 +1975,7 @@
 				911F24312F7B7D31009A77BE /* BruceLiptonAuthorView.swift in Sources */,
 				911F242A2F7B7D31009A77BE /* JoeDispenzaAuthorView.swift in Sources */,
 				911F24282F7B7D31009A77BE /* NevilleAuthorView.swift in Sources */,
+				914D88792FC1AEF100CDDB93 /* WatchDiarioReceiver.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1991,9 +2008,11 @@
 				911F242B2F7B7D31009A77BE /* JoeDispenzaAuthorView.swift in Sources */,
 				91E2A7A42F7C5E37007A162A /* cardTemplate.swift in Sources */,
 				911F24272F7B7D31009A77BE /* NevilleAuthorView.swift in Sources */,
+				914D7B4B2FC0A0FB00CDDB93 /* WatchNotesReceiver.swift in Sources */,
 				911F24302F7B7D31009A77BE /* BruceLiptonAuthorView.swift in Sources */,
 				911F242D2F7B7D31009A77BE /* GreggBradenAuthorView.swift in Sources */,
 				1954CDAA2B1152BC0093DDF0 /* AppIntentWidget.swift in Sources */,
+				914D887B2FC1AF1800CDDB93 /* WatchDiarioReceiver.swift in Sources */,
 				E95B93592AAFBB2600B5E2B5 /* ContentView.swift in Sources */,
 				E95B93572AAFBB2600B5E2B5 /* Neville_iOSApp.swift in Sources */,
 			);

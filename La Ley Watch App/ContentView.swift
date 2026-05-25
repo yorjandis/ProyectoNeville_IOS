@@ -35,7 +35,7 @@ struct ContentView: View {
             if !didSetInitialTab {
                 selectedTab = screenOrder.first?.rawValue ?? WatchScreen.frases.rawValue
                 didSetInitialTab = true
-            } else if selectedTab == WatchScreen.ajustes.rawValue || !screenOrder.map(\.rawValue).contains(selectedTab) {
+            } else if !screenOrder.map(\.rawValue).contains(selectedTab) && selectedTab != WatchScreen.ajustes.rawValue {
                 selectedTab = screenOrder.first?.rawValue ?? WatchScreen.frases.rawValue
             }
         }
@@ -46,7 +46,7 @@ struct ContentView: View {
                 return
             }
             ScreenOrderStore.save(normalized)
-            if selectedTab == WatchScreen.ajustes.rawValue || !normalized.map(\.rawValue).contains(selectedTab) {
+            if !normalized.map(\.rawValue).contains(selectedTab) && selectedTab != WatchScreen.ajustes.rawValue {
                 selectedTab = normalized.first?.rawValue ?? WatchScreen.frases.rawValue
             }
         }
@@ -62,7 +62,7 @@ struct ContentView: View {
         case .notas:
             NotasView()
         case .quickNote:
-            QuickNoteLauncherView()
+            QuickAddNotaByLocationView()
         case .ajustes:
             EmptyView()
         }
@@ -235,6 +235,14 @@ struct ContentView: View {
         @State var asyncIsWorking = false //Indica que hay una tarea async ejecutandose
         @State private var showAlert = false
         @State private var alertMessage = ""
+        @State private var showActionsDialog = false
+        @State private var notePendingActions: Notas?
+        @State private var showDeleteConfirmation = false
+        @State private var notePendingDelete: Notas?
+        @State private var showEditSheet = false
+        @State private var notePendingEditID = ""
+        @State private var editTitle = ""
+        @State private var editNota = ""
         
         var body: some View {
             
@@ -286,30 +294,29 @@ struct ContentView: View {
                     
                     
                     List(modelWatch.listNotas, id: \.id){ nota in
-                        NavigationLink{
-                            ScrollView {
-                                Text(nota.nota ?? "")
-                            }
-                        }label: {
-                            Text(nota.title ?? "").fontDesign(.serif).foregroundStyle(.black)
-                                .frame(height: 10)
-                        }
-                        .swipeActions(edge: .trailing){
-                            Button{
-                                if modelWatch.deleteNota(nota: nota) {
-                                    self.alertMessage = "Nota Eliminada"
-                                    modelWatch.getNotas() //Actualiza los listados
-                                }else{
-                                    self.alertMessage = "Error al Eliminar Nota"
+                        ZStack(alignment: .trailing) {
+                            NavigationLink{
+                                ScrollView {
+                                    Text(nota.nota ?? "")
                                 }
-                                
-                                self.showAlert = true
                             }label: {
-                                Image(systemName: "trash")
-                                    .tint(.red)
+                                Text(nota.title ?? "").fontDesign(.serif).foregroundStyle(.black)
+                                    .frame(height: 10)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .padding(.trailing, 28)
                             }
+
+                            Button {
+                                notePendingActions = nota
+                                showActionsDialog = true
+                            } label: {
+                                Image(systemName: "ellipsis.circle.fill")
+                                    .foregroundStyle(.black)
+                                    .font(.system(size: 14))
+                            }
+                            .buttonStyle(.plain)
+                            .padding(.trailing, 2)
                         }
-                        
                     }
                     .overlay(content: { //Muestra una barra de progreso si hay una tarea async ejecutándose...
                         if self.asyncIsWorking {
@@ -326,29 +333,113 @@ struct ContentView: View {
             .alert(isPresented: self.$showAlert) {
                 Alert(title: Text("La Ley"), message: Text(self.alertMessage))
             }
+            .confirmationDialog("Opciones de nota", isPresented: $showActionsDialog, titleVisibility: .visible) {
+                Button("Editar") {
+                    guard let nota = notePendingActions else { return }
+                    notePendingEditID = nota.id ?? ""
+                    editTitle = nota.title ?? ""
+                    editNota = nota.nota ?? ""
+                    showEditSheet = true
+                    notePendingActions = nil
+                }
+                Button("Borrar", role: .destructive) {
+                    notePendingDelete = notePendingActions
+                    notePendingActions = nil
+                    showDeleteConfirmation = true
+                }
+                Button("Cancelar", role: .cancel) {
+                    notePendingActions = nil
+                }
+            }
+            .alert("Eliminar nota", isPresented: $showDeleteConfirmation) {
+                Button("Cancelar", role: .cancel) {
+                    notePendingDelete = nil
+                }
+                Button("Borrar", role: .destructive) {
+                    guard let nota = notePendingDelete else { return }
+                    if modelWatch.deleteNota(nota: nota) {
+                        self.alertMessage = "Nota Eliminada"
+                        modelWatch.getNotas()
+                    } else {
+                        self.alertMessage = "Error al Eliminar Nota"
+                    }
+                    notePendingDelete = nil
+                    self.showAlert = true
+                }
+            } message: {
+                Text("¿Seguro que deseas borrar esta nota?")
+            }
+            .sheet(isPresented: $showEditSheet) {
+                EditNotaSheetView(
+                    title: $editTitle,
+                    nota: $editNota,
+                    onCancel: {
+                        showEditSheet = false
+                    },
+                    onSave: {
+                        let updated = modelWatch.updateNota(
+                            noteID: notePendingEditID,
+                            title: editTitle,
+                            nota: editNota
+                        )
+
+                        if updated {
+                            alertMessage = "Nota actualizada"
+                            showEditSheet = false
+                        } else {
+                            alertMessage = "Error al actualizar nota"
+                        }
+                        showAlert = true
+                    }
+                )
+            }
             .task {
                 modelWatch.getNotas()
             }
         }
     }
 
-    struct QuickNoteLauncherView: View {
+    struct EditNotaSheetView: View {
+        @Binding var title: String
+        @Binding var nota: String
+        let onCancel: () -> Void
+        let onSave: () -> Void
+
         var body: some View {
             ZStack {
                 LinearGradient(colors: [.red, .orange], startPoint: .bottom, endPoint: .top)
                     .ignoresSafeArea()
 
-                NavigationLink {
-                    QuickAddNotaByLocationView()
-                } label: {
-                    Image(systemName: "plus")
-                        .font(.system(size: 24, weight: .bold))
+                VStack(spacing: 10) {
+                    Text("Editar Nota")
+                        .fontDesign(.serif)
                         .foregroundStyle(.black)
-                        .frame(width: 82, height: 82)
-                        .background(.white.opacity(0.75))
-                        .clipShape(Circle())
+                        .bold()
+
+                    TextFieldLink("Título: \(title)", prompt: Text("Título")) { value in
+                        title = value
+                    }
+                    .frame(height: 38)
+
+                    TextFieldLink("Nota: \(nota)", prompt: Text("Contenido de la nota")) { value in
+                        nota = value
+                    }
+                    .frame(height: 38)
+
+                    HStack(spacing: 8) {
+                        Button("Cancelar") {
+                            onCancel()
+                        }
+                        .buttonStyle(.bordered)
+
+                        Button("Guardar") {
+                            onSave()
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .tint(.orange)
+                    }
                 }
-                .buttonStyle(.plain)
+                .padding(.horizontal, 10)
             }
         }
     }

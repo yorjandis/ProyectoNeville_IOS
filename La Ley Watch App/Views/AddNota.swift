@@ -87,16 +87,31 @@ struct AddNota : View {
                                 //Crear una entidad Nota
                                 let newNota = Notas(context: self.context)
                                 let now = Date()
-                                newNota.id = UUID().uuidString
-                                newNota.title = title
-                                newNota.nota = texto
+                                let noteID = UUID().uuidString
+                                let trimmedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
+                                let trimmedText = texto.trimmingCharacters(in: .whitespacesAndNewlines)
+                                let trimmedAddress = direccionMapa.trimmingCharacters(in: .whitespacesAndNewlines)
+                                newNota.id = noteID
+                                newNota.title = trimmedTitle
+                                newNota.nota = trimmedText
                                 newNota.isfav = isfav
-                                newNota.setValue(direccionMapa.trimmingCharacters(in: .whitespacesAndNewlines), forKey: "direccionMapa")
+                                newNota.setValue(trimmedAddress, forKey: "direccionMapa")
                                 newNota.setValue(now, forKey: "fechaCreacion")
                                 newNota.setValue(now, forKey: "fechaModificacion")
                                 
                                 do {
                                     try self.context.save()
+                                    WatchNotesTransferSender.shared.sendCreatedNote(
+                                        WatchNoteTransferPayload(
+                                            id: noteID,
+                                            title: trimmedTitle,
+                                            nota: trimmedText,
+                                            direccionMapa: trimmedAddress,
+                                            isfav: isfav,
+                                            fechaCreacion: now,
+                                            fechaModificacion: now
+                                        )
+                                    )
                                     self.alertMesage = "Nota Creada"
                                     self.showAlert = true
                                     

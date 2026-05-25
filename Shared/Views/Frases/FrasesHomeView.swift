@@ -60,7 +60,7 @@ struct FrasesHomeView : View{
 
     //Parámetros para las vistas de autores:
     var authorFilter: String? = nil //Filtro de frases de autores, restringido por acceso premium
-    var colorTextAutor : Color? = .white //Color del texto del autor
+    var colorTextAutor : Color? = nil //Color del texto del autor
     var showAutorLabel : Bool = true //Color del texto del autor
     var showFraseFilterControl: Bool = false //Control de filtros en la esquina superior derecha
 

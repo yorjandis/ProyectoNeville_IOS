@@ -49,6 +49,17 @@ final class NotasModel : ObservableObject  {
             }
             .store(in: &observers)
 
+        center.publisher(
+            for: NSPersistentCloudKitContainer.eventChangedNotification,
+            object: CoreDataController.shared.persistentContainer
+        )
+        .receive(on: RunLoop.main)
+        .sink { [weak self] _ in
+            self?.context.refreshAllObjects()
+            self?.getAllNotasToModel()
+        }
+        .store(in: &observers)
+
         center.publisher(for: .NSManagedObjectContextDidSave,
                          object: context)
             .receive(on: RunLoop.main)

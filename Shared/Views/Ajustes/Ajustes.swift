@@ -796,7 +796,7 @@ struct Ajustes: View {
                             
                             Button{
                                 showWindow(for: ScrollView{
-                                    Text(UtilFuncs.FileRead("privacy"))
+                                    Text(UtilFuncs.FileRead("neville-ios-privacy-policy"))
                                         .font(.system(size: 22))
                                         .foregroundStyle(settingsPrimaryTextColor)
                                         .textSelection(.enabled)
@@ -811,6 +811,29 @@ struct Ajustes: View {
                                 
                             }label:{
                                 Label("Política de Privacidad", systemImage: "square.and.pencil.circle")
+                                    .foregroundStyle(settingsPrimaryTextColor)
+                                    .bold()
+                                    .font(.headline)
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                            
+                            Button{
+                                showWindow(for: ScrollView{
+                                    Text(UtilFuncs.FileRead("neville-ios-terms-of-use"))
+                                        .font(.system(size: 22))
+                                        .foregroundStyle(settingsPrimaryTextColor)
+                                        .textSelection(.enabled)
+                                        .padding(10)
+                                },
+                                           environmentObjects: [],
+                                           title: "Política de Privacidad",
+                                           size: AppCons.windows_size_content,
+                                           isModal: false
+                                )
+                                
+                                
+                            }label:{
+                                Label("Términos de uso", systemImage: "square.and.pencil.circle")
                                     .foregroundStyle(settingsPrimaryTextColor)
                                     .bold()
                                     .font(.headline)
@@ -858,15 +881,7 @@ struct Ajustes: View {
                                     .bold()
                                     .font(.headline)
                             }
-                            
-                            
-                            Link(destination: URL(string:  "https://paypal.me/Yorpg?country.x=ES&locale.x=es_ES")!) {
-                                Label("Donar para este proyecto", systemImage: "dollarsign.circle.fill")
-                                    .foregroundStyle(settingsPrimaryTextColor)
-                                    .bold()
-                                    .font(.headline)
-                            }
-                            
+                       
                             if !self.purchaseStatus{
                                 NavigationLink{
                                     PurchaseView()
@@ -1433,12 +1448,26 @@ struct Ajustes: View {
                         NavigationLink{
                             NavigationStack{
                                 ScrollView{
-                                    SelectableText(text : UtilFuncs.FileRead("privacy"),fontSize: 22, fonColor: UIColor(Color.primary))
+                                    SelectableText(text : UtilFuncs.FileRead("neville-ios-privacy-policy"),fontSize: 22, fonColor: UIColor(Color.primary))
                                         .padding()
                                 }.navigationTitle("Ajustes - Privacy")
                             }
                         }label:{
                             Label("Política de Privacidad", systemImage: "square.and.pencil.circle")
+                                .foregroundStyle(settingsPrimaryTextColor)
+                                .bold()
+                                .font(.headline)
+                        }
+                        
+                        NavigationLink{
+                            NavigationStack{
+                                ScrollView{
+                                    SelectableText(text : UtilFuncs.FileRead("neville-ios-terms-of-use"),fontSize: 22, fonColor: UIColor(Color.primary))
+                                        .padding()
+                                }.navigationTitle("Ajustes - Privacy")
+                            }
+                        }label:{
+                            Label("Términos de uso", systemImage: "square.and.pencil.circle")
                                 .foregroundStyle(settingsPrimaryTextColor)
                                 .bold()
                                 .font(.headline)
@@ -1475,13 +1504,7 @@ struct Ajustes: View {
                                 .bold()
                                 .font(.headline)
                         }
-                        Link(destination: URL(string:  "https://paypal.me/Yorpg?country.x=ES&locale.x=es_ES")!) {
-                            Label("Donar para este proyecto", systemImage: "dollarsign.circle.fill")
-                                .foregroundStyle(settingsPrimaryTextColor)
-                                .bold()
-                                .font(.headline)
-                        }
-                        
+
                         if !self.purchaseStatus {
                             NavigationLink{
                                 PurchaseView()

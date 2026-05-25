@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct AddDiario: View {
-    private let context  = CoreDataController.shared.context
     @StateObject private var modelWatch = watchModel.shared
     @Environment(\.dismiss) private var dismiss
     
@@ -68,24 +67,19 @@ struct AddDiario: View {
                                     self.alertMessage = "Debe colocar un título y un texto para la entrada"
                                     showAlert = true
                                 }else{
-                                    //Crear una entrada de Diario y guardarla
-                                    let newDiario = Diario(context: self.context)
-                                    newDiario.id = UUID()
-                                    newDiario.title = self.title
-                                    newDiario.content = self.content
-                                    newDiario.isFav = self.isfav
-                                    newDiario.emotion = self.selection.rawValue
-                                    newDiario.fecha = Date.now
-                                    newDiario.fechaM = Date.now
-                                    
-                                    do{
-                                        try context.save()
-                                    }catch{
-                                        context.rollback()
+                                    let didSave = modelWatch.addDiarioEntry(
+                                        title: self.title,
+                                        content: self.content,
+                                        emotion: self.selection.txt,
+                                        isFav: self.isfav
+                                    )
+
+                                    if didSave {
+                                        dismiss()
+                                    } else {
+                                        self.alertMessage = "Error al crear entrada"
+                                        self.showAlert = true
                                     }
-                                    //Actualizar el listado
-                                    modelWatch.getDiarioEntradas()
-                                    dismiss()
                                 }
                             }
                             

@@ -12,26 +12,34 @@ struct La_Ley_Watch_AppApp: App {
     
     //@StateObject private var WatchConectivityMV = WatchConectivityModel.shared
     private let persistentStore: CoreDataController = CoreDataController.shared
+    @State private var isStoreReady = false
     
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .environment(\.managedObjectContext, persistentStore.context)
-                .task {
-                    do {
-                        if persistentStore.persistentContainer.persistentStoreCoordinator.persistentStores.isEmpty {
-                            try await persistentStore.cargarStores()
-                        }
-                        
-                        await MainActor.run {
-                            watchModel.shared.getNotas()
-                            watchModel.shared.getDiarioEntradas()
-                        }
-                    } catch {
-                        msg("❌ Error al cargar Core Data en watchOS: \(error.localizedDescription)")
-                    }
+            Group {
+                if isStoreReady {
+                    ContentView()
+                } else {
+                    ProgressView("Cargando datos...")
                 }
-                //.environmentObject(WatchConectivityMV)
+            }
+            .environment(\.managedObjectContext, persistentStore.context)
+            .task {
+                do {
+                    if persistentStore.persistentContainer.persistentStoreCoordinator.persistentStores.isEmpty {
+                        try await persistentStore.cargarStores()
+                    }
+                    
+                    await MainActor.run {
+                        watchModel.shared.getNotas()
+                        watchModel.shared.getDiarioEntradas()
+                        isStoreReady = true
+                    }
+                } catch {
+                    msg("❌ Error al cargar Core Data en watchOS: \(error.localizedDescription)")
+                }
+            }
+            //.environmentObject(WatchConectivityMV)
         }
     }
 }

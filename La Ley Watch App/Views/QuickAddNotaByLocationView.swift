@@ -2,11 +2,11 @@ import SwiftUI
 import CoreLocation
 
 struct QuickAddNotaByLocationView: View {
-    @Environment(\.dismiss) private var dismiss
     @StateObject private var modelWatch = watchModel.shared
     @StateObject private var locationCapture = WatchLocationCapture()
 
     @State private var title: String = ""
+    @State private var nota: String = ""
     @State private var isResolvingLocation = false
     @State private var showAlert = false
     @State private var alertMessage = ""
@@ -24,6 +24,11 @@ struct QuickAddNotaByLocationView: View {
 
                 TextFieldLink("Título: \(title)", prompt: Text("Título")) { value in
                     title = value
+                }
+                .frame(height: 38)
+
+                TextFieldLink("Nota: \(nota)", prompt: Text("Contenido de la nota")) { value in
+                    nota = value
                 }
                 .frame(height: 38)
 
@@ -70,9 +75,12 @@ struct QuickAddNotaByLocationView: View {
             isResolvingLocation = false
             switch result {
             case .success(let address):
-                let didSave = modelWatch.addNota(title: trimmedTitle, direccionMapa: address)
+                let didSave = modelWatch.addNota(title: trimmedTitle, nota: nota, direccionMapa: address)
                 if didSave {
-                    dismiss()
+                    title = ""
+                    nota = ""
+                    alertMessage = "Nota guardada correctamente."
+                    showAlert = true
                 } else {
                     alertMessage = "No se pudo guardar la nota."
                     showAlert = true
