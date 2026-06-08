@@ -9,6 +9,24 @@ import SwiftUI
 import CoreData
 import Combine
 
+struct WatchAgendaItem: Identifiable {
+    let id: UUID
+    let titulo: String
+    let fechaCreacion: Date
+    let fechaModificacion: Date
+    let nota: String
+    let fechaActividad: Date
+    let hora: Date
+    let lugar: String
+    let contenido: String
+    let prioridad: String
+    let colorHex: String
+    let completada: Bool?
+    let recordatorioActivo: Bool
+    let reminderID: String?
+    let seriesID: UUID?
+}
+
 @MainActor
 final class watchModel: ObservableObject {
     
@@ -22,6 +40,9 @@ final class watchModel: ObservableObject {
     @Published var listNotas : [Notas] = []
     
     @Published var listDiario : [Diario] = []
+    @Published var listAgenda: [WatchAgendaItem] = []
+    @Published var hasAgendaPremiumAccessValue: Bool = false
+    @Published var yorjPremiumAccessValue: Bool = false
     private var observers = Set<AnyCancellable>()
 
     private var homeFrasesCache: [Frases] = []
@@ -29,8 +50,10 @@ final class watchModel: ObservableObject {
 
     private init() {
         setupObservers()
+        refreshPremiumAccessState()
         self.getNotas()
         self.getDiarioEntradas()
+        self.getAgendaEntradas()
     }
 
     private func setupObservers() {
@@ -41,6 +64,7 @@ final class watchModel: ObservableObject {
             .sink { [weak self] _ in
                 self?.getNotas()
                 self?.getDiarioEntradas()
+                self?.getAgendaEntradas()
             }
             .store(in: &observers)
 
@@ -51,6 +75,7 @@ final class watchModel: ObservableObject {
                 self?.context.refreshAllObjects()
                 self?.getNotas()
                 self?.getDiarioEntradas()
+                self?.getAgendaEntradas()
             }
             .store(in: &observers)
 
@@ -63,6 +88,7 @@ final class watchModel: ObservableObject {
             self?.context.refreshAllObjects()
             self?.getNotas()
             self?.getDiarioEntradas()
+            self?.getAgendaEntradas()
         }
         .store(in: &observers)
 
@@ -72,6 +98,14 @@ final class watchModel: ObservableObject {
             .sink { [weak self] _ in
                 self?.getNotas()
                 self?.getDiarioEntradas()
+                self?.getAgendaEntradas()
+            }
+            .store(in: &observers)
+
+        center.publisher(for: NSUbiquitousKeyValueStore.didChangeExternallyNotification)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                self?.refreshPremiumAccessState()
             }
             .store(in: &observers)
     }
@@ -149,12 +183,18 @@ final class watchModel: ObservableObject {
         return yorjPremiumStandard || yorjPremiumShared || yorjPremiumCloud
     }
 
-    var yorjPremiumAccessValue: Bool {
-        hasYorjPremiumAccess
+    var hasAgendaPremiumAccess: Bool {
+        hasAgendaPremiumAccessValue
+    }
+
+    func refreshPremiumAccessState() {
+        let yorj = hasYorjPremiumAccess
+        yorjPremiumAccessValue = yorj
+        hasAgendaPremiumAccessValue = hasPremiumAccess || yorj
     }
 
     private var canUseExtendedHomeFilters: Bool {
-        hasPremiumAccess || hasYorjPremiumAccess
+        hasAgendaPremiumAccess
     }
 
     private let supportedHomeFilterValues: Set<String> = [
@@ -500,6 +540,131 @@ final class watchModel: ObservableObject {
     
     
     
+    //------AGENDA-----
+    enum AgendaFiltroTemporal {
+        case hoy
+        case semanaActual
+        case mesActual
+    }
+
+    func getAgendaEntradas(filtro: AgendaFiltroTemporal = .hoy) {
+        let request = NSFetchRequest<NSManagedObject>(entityName: "AgendaItemEntity")
+        request.sortDescriptors = [
+            NSSortDescriptor(key: "fechaActividad", ascending: true),
+            NSSortDescriptor(key: "hora", ascending: true)
+        ]
+
+        let calendar = Calendar.current
+        let now = Date()
+        let startOfToday = calendar.startOfDay(for: now)
+
+        switch filtro {
+        case .hoy:
+            guard let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfToday) else { break }
+            request.predicate = NSPredicate(format: "fechaActividad >= %@ AND fechaActividad < %@", startOfToday as NSDate, endOfDay as NSDate)
+        case .semanaActual:
+            guard
+                let weekInterval = calendar.dateInterval(of: .weekOfYear, for: now)
+            else { break }
+            request.predicate = NSPredicate(format: "fechaActividad >= %@ AND fechaActividad < %@", weekInterval.start as NSDate, weekInterval.end as NSDate)
+        case .mesActual:
+            guard
+                let monthInterval = calendar.dateInterval(of: .month, for: now)
+            else { break }
+            request.predicate = NSPredicate(format: "fechaActividad >= %@ AND fechaActividad < %@", monthInterval.start as NSDate, monthInterval.end as NSDate)
+        }
+
+        do {
+            let rows = try context.fetch(request)
+            self.listAgenda = rows.compactMap(mapAgendaEntity)
+        } catch {
+            self.listAgenda = []
+            msg("Failed to fetch agenda: \(error)")
+        }
+    }
+
+    func addAgendaEntry(title: String, contenido: String = "", lugar: String = "", fechaActividad: Date = .now, hora: Date = .now) -> Bool {
+        let trimmedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedTitle.isEmpty else { return false }
+
+        guard let entity = NSEntityDescription.entity(forEntityName: "AgendaItemEntity", in: context) else { return false }
+
+        let now = Date()
+        let uuid = UUID()
+        let row = NSManagedObject(entity: entity, insertInto: context)
+        row.setValue(uuid, forKey: "id")
+        row.setValue(trimmedTitle, forKey: "titulo")
+        row.setValue(now, forKey: "fechaCreacion")
+        row.setValue(now, forKey: "fechaModificacion")
+        row.setValue("", forKey: "nota")
+        row.setValue(Calendar.current.startOfDay(for: fechaActividad), forKey: "fechaActividad")
+        row.setValue(hora, forKey: "hora")
+        row.setValue(lugar.trimmingCharacters(in: .whitespacesAndNewlines), forKey: "lugar")
+        row.setValue(contenido.trimmingCharacters(in: .whitespacesAndNewlines), forKey: "contenido")
+        row.setValue("neutral", forKey: "prioridad")
+        row.setValue("#A9D7A4", forKey: "colorHex")
+        row.setValue(nil, forKey: "completada")
+        row.setValue(false, forKey: "recordatorioActivo")
+        row.setValue(nil, forKey: "reminderID")
+        row.setValue(nil, forKey: "seriesID")
+
+        do {
+            try context.save()
+            getAgendaEntradas()
+
+            WatchAgendaTransferSender.shared.sendCreatedAgenda(
+                WatchAgendaTransferPayload(
+                    id: uuid.uuidString,
+                    titulo: trimmedTitle,
+                    fechaCreacion: now,
+                    fechaModificacion: now,
+                    nota: "",
+                    fechaActividad: Calendar.current.startOfDay(for: fechaActividad),
+                    hora: hora,
+                    lugar: lugar.trimmingCharacters(in: .whitespacesAndNewlines),
+                    contenido: contenido.trimmingCharacters(in: .whitespacesAndNewlines),
+                    prioridad: "neutral",
+                    colorHex: "#A9D7A4",
+                    completada: nil,
+                    recordatorioActivo: false,
+                    reminderID: nil,
+                    seriesID: nil
+                )
+            )
+            return true
+        } catch {
+            context.rollback()
+            msg("Error al guardar agenda desde watchOS: \(error.localizedDescription)")
+            return false
+        }
+    }
+
+    private func mapAgendaEntity(_ object: NSManagedObject) -> WatchAgendaItem? {
+        guard let id = object.value(forKey: "id") as? UUID else { return nil }
+
+        let fechaCreacion = object.value(forKey: "fechaCreacion") as? Date ?? Date()
+        let fechaModificacion = object.value(forKey: "fechaModificacion") as? Date ?? fechaCreacion
+        let prioridadRaw = (object.value(forKey: "prioridad") as? String) ?? "neutral"
+
+        return WatchAgendaItem(
+            id: id,
+            titulo: (object.value(forKey: "titulo") as? String) ?? "",
+            fechaCreacion: fechaCreacion,
+            fechaModificacion: fechaModificacion,
+            nota: (object.value(forKey: "nota") as? String) ?? "",
+            fechaActividad: (object.value(forKey: "fechaActividad") as? Date) ?? Date(),
+            hora: (object.value(forKey: "hora") as? Date) ?? Date(),
+            lugar: (object.value(forKey: "lugar") as? String) ?? "",
+            contenido: (object.value(forKey: "contenido") as? String) ?? "",
+            prioridad: prioridadRaw,
+            colorHex: (object.value(forKey: "colorHex") as? String) ?? "#A9D7A4",
+            completada: object.value(forKey: "completada") as? Bool,
+            recordatorioActivo: (object.value(forKey: "recordatorioActivo") as? Bool) ?? false,
+            reminderID: object.value(forKey: "reminderID") as? String,
+            seriesID: object.value(forKey: "seriesID") as? UUID
+        )
+    }
+
     //------DIARIO-----
     //Obtiene las entradas del Diario
     func getDiarioEntradas() {

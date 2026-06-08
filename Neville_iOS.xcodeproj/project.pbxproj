@@ -30,6 +30,10 @@
 		19F804202B69CBA000A323A0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 19F8041F2B69CBA000A323A0 /* Assets.xcassets */; };
 		19F804232B69CBA000A323A0 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 19F804222B69CBA000A323A0 /* Preview Assets.xcassets */; };
 		19F804262B69CBA000A323A0 /* La Ley Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 19F804192B69CB9D00A323A0 /* La Ley Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		910765492FCC0055001CA6D2 /* WatchDataSyncToWatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 910765482FCC0055001CA6D2 /* WatchDataSyncToWatch.swift */; };
+		9107654B2FCC006D001CA6D2 /* WatchIncomingDataReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9107654A2FCC006D001CA6D2 /* WatchIncomingDataReceiver.swift */; };
+		9107654D2FCC0812001CA6D2 /* WatchAgendaTransfer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9107654C2FCC0812001CA6D2 /* WatchAgendaTransfer.swift */; };
+		9107654F2FCC08FC001CA6D2 /* AgendaWatchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9107654E2FCC08FC001CA6D2 /* AgendaWatchView.swift */; };
 		911F24272F7B7D31009A77BE /* NevilleAuthorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 911F24262F7B7D31009A77BE /* NevilleAuthorView.swift */; };
 		911F24282F7B7D31009A77BE /* NevilleAuthorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 911F24262F7B7D31009A77BE /* NevilleAuthorView.swift */; };
 		911F242A2F7B7D31009A77BE /* JoeDispenzaAuthorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 911F24292F7B7D31009A77BE /* JoeDispenzaAuthorView.swift */; };
@@ -43,6 +47,7 @@
 		914D88772FC1AEDB00CDDB93 /* WatchDiarioTransfer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914D88762FC1AEDB00CDDB93 /* WatchDiarioTransfer.swift */; };
 		914D88792FC1AEF100CDDB93 /* WatchDiarioReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914D88782FC1AEF100CDDB93 /* WatchDiarioReceiver.swift */; };
 		914D887B2FC1AF1800CDDB93 /* WatchDiarioReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914D887A2FC1AF1800CDDB93 /* WatchDiarioReceiver.swift */; };
+		914D887D2FC1AF1800CDDB93 /* WatchPremiumService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914D887C2FC1AF1800CDDB93 /* WatchPremiumService.swift */; };
 		915017432EF078A2007B741A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 915017422EF078A2007B741A /* StoreKit.framework */; };
 		915017452EF078B2007B741A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 915017442EF078B2007B741A /* StoreKit.framework */; };
 		918C4B0B2EF4094D00974B54 /* sharedmac.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 918C4AFF2EF4094D00974B54 /* sharedmac.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -190,6 +195,10 @@
 		19F8041D2B69CB9D00A323A0 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		19F8041F2B69CBA000A323A0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		19F804222B69CBA000A323A0 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		910765482FCC0055001CA6D2 /* WatchDataSyncToWatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchDataSyncToWatch.swift; sourceTree = "<group>"; };
+		9107654A2FCC006D001CA6D2 /* WatchIncomingDataReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchIncomingDataReceiver.swift; sourceTree = "<group>"; };
+		9107654C2FCC0812001CA6D2 /* WatchAgendaTransfer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAgendaTransfer.swift; sourceTree = "<group>"; };
+		9107654E2FCC08FC001CA6D2 /* AgendaWatchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgendaWatchView.swift; sourceTree = "<group>"; };
 		911F24262F7B7D31009A77BE /* NevilleAuthorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NevilleAuthorView.swift; sourceTree = "<group>"; };
 		911F24292F7B7D31009A77BE /* JoeDispenzaAuthorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoeDispenzaAuthorView.swift; sourceTree = "<group>"; };
 		911F242C2F7B7D31009A77BE /* GreggBradenAuthorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GreggBradenAuthorView.swift; sourceTree = "<group>"; };
@@ -200,6 +209,7 @@
 		914D88762FC1AEDB00CDDB93 /* WatchDiarioTransfer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchDiarioTransfer.swift; sourceTree = "<group>"; };
 		914D88782FC1AEF100CDDB93 /* WatchDiarioReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchDiarioReceiver.swift; sourceTree = "<group>"; };
 		914D887A2FC1AF1800CDDB93 /* WatchDiarioReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchDiarioReceiver.swift; sourceTree = "<group>"; };
+		914D887C2FC1AF1800CDDB93 /* WatchPremiumService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchPremiumService.swift; sourceTree = "<group>"; };
 		915017422EF078A2007B741A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		915017442EF078B2007B741A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/System/Library/Frameworks/StoreKit.framework; sourceTree = DEVELOPER_DIR; };
 		9173AB7D2F72097F0015A9FD /* Version.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Version.xcconfig; sourceTree = "<group>"; };
@@ -1155,6 +1165,12 @@
 				Staff/Frases/listfrases_otros.txt,
 				Staff/Frases/listfrases_salud.txt,
 				Staff/Frases/listfrases.txt,
+				"Staff/Images-Tutoriales/tuto_ciclismo.png",
+				"Staff/Images-Tutoriales/tuto_crear_entrada.png",
+				"Staff/Images-Tutoriales/tuto_crearAgenda.png",
+				"Staff/Images-Tutoriales/tuto_crearFrase.png",
+				"Staff/Images-Tutoriales/tuto_crearFraseEspacioCalma.png",
+				"Staff/Images-Tutoriales/tuto_running.png",
 				Staff/Metas/ProgramasPreestablecidos/prog_anti_ansiedad_2.json,
 				Staff/Metas/ProgramasPreestablecidos/prog_anti_ansiedad.json,
 				Staff/Metas/ProgramasPreestablecidos/prog_dejar_alcohol_1.json,
@@ -1315,6 +1331,22 @@
 			);
 			target = E95B93522AAFBB2600B5E2B5 /* Neville_iOS */;
 		};
+		914415B22EDC39E300FFC61D /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Intens/AbrirDiarioIntent.swift,
+				Intens/AbrirNotasItent.swift,
+				Intens/CrearEntradaAgendaIntent.swift,
+				Intens/CrearEntradaDiarioIntent.swift,
+				Intens/CrearFraseCalmaIntent.swift,
+				Intens/CrearFraseIntent.swift,
+				Intens/CrearNotaIntent.swift,
+				Intens/GetRandomConfIntent.swift,
+				Services/LocalAutenticationForIntent.swift,
+				Shortcuts/Shortcuts.swift,
+			);
+			target = 19F804182B69CB9D00A323A0 /* La Ley Watch App */;
+		};
 		91495BF52F30BCE800AC2CB8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -1379,7 +1411,7 @@
 		911FE4452ECB2A7F009F83BE /* Shared */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (911FE4562ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 911FE4572ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 911FE4582ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 91495BF52F30BCE800AC2CB8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 918C4AF72EF3593F00974B54 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 918C4B242EF40F2400974B54 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (Models/LectorEtiquetas/ManagedAssets/AssetPackRelease, ); path = Shared; sourceTree = "<group>"; };
 		911FE4D42ECB2E8D009F83BE /* OptionView */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (91C3A3D22F24CB6600A07607 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = OptionView; sourceTree = "<group>"; };
 		911FF1FA2ECB4064009F83BE /* Preview Content */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (911FF1FC2ECB4064009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 911FF1FD2ECB4064009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = "Preview Content"; sourceTree = "<group>"; };
-		914415A92EDC377200FFC61D /* Atajos */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (914415B12EDC39E300FFC61D /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Atajos; sourceTree = "<group>"; };
+		914415A92EDC377200FFC61D /* Atajos */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (914415B12EDC39E300FFC61D /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 914415B22EDC39E300FFC61D /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Atajos; sourceTree = "<group>"; };
 		917C30202EBCD1E5006BB36E /* La Ley_mac */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "La Ley_mac"; sourceTree = "<group>"; };
 		918C4B002EF4094D00974B54 /* sharedmac */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (918C4B0F2EF4094D00974B54 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = sharedmac; sourceTree = "<group>"; };
 		919F409E2F66C559009FF35B /* LaLeyBackgroundDownloadExtension */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (919F40A92F66C559009FF35B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = LaLeyBackgroundDownloadExtension; sourceTree = "<group>"; };
@@ -1460,6 +1492,9 @@
 				91F0DD542D605B4B00307453 /* watchModel.swift */,
 				914D7B482FC0A0FB00CDDB93 /* WatchNotesTransfer.swift */,
 				914D88762FC1AEDB00CDDB93 /* WatchDiarioTransfer.swift */,
+				9107654A2FCC006D001CA6D2 /* WatchIncomingDataReceiver.swift */,
+				9107654C2FCC0812001CA6D2 /* WatchAgendaTransfer.swift */,
+				914D887C2FC1AF1800CDDB93 /* WatchPremiumService.swift */,
 			);
 			path = model;
 			sourceTree = "<group>";
@@ -1472,6 +1507,7 @@
 				19520A502B765E30000B11CC /* FilterByNotaView.swift */,
 				19520A522B76778B000B11CC /* FilterByDiarioView.swift */,
 				919816C32FBC1E1600B24155 /* QuickAddNotaByLocationView.swift */,
+				9107654E2FCC08FC001CA6D2 /* AgendaWatchView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1618,6 +1654,7 @@
 				914415A92EDC377200FFC61D /* Atajos */,
 				914D7B4A2FC0A0FB00CDDB93 /* WatchNotesReceiver.swift */,
 				914D887A2FC1AF1800CDDB93 /* WatchDiarioReceiver.swift */,
+				910765482FCC0055001CA6D2 /* WatchDataSyncToWatch.swift */,
 			);
 			path = Neville_iOS;
 			sourceTree = "<group>";
@@ -1954,15 +1991,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9107654F2FCC08FC001CA6D2 /* AgendaWatchView.swift in Sources */,
 				19520A532B76778B000B11CC /* FilterByDiarioView.swift in Sources */,
 				19520A4F2B75C34F000B11CC /* AddDiario.swift in Sources */,
 				19F8041E2B69CB9D00A323A0 /* ContentView.swift in Sources */,
 				919816C42FBC1E1600B24155 /* QuickAddNotaByLocationView.swift in Sources */,
+				9107654B2FCC006D001CA6D2 /* WatchIncomingDataReceiver.swift in Sources */,
 				19D04F1C2B7455B8007B66F2 /* AddNota.swift in Sources */,
 				914D88772FC1AEDB00CDDB93 /* WatchDiarioTransfer.swift in Sources */,
 				91F0DD552D605B5800307453 /* watchModel.swift in Sources */,
+				9107654D2FCC0812001CA6D2 /* WatchAgendaTransfer.swift in Sources */,
 				19F8041C2B69CB9D00A323A0 /* La_LeyApp.swift in Sources */,
 				914D7B492FC0A0FB00CDDB93 /* WatchNotesTransfer.swift in Sources */,
+				914D887D2FC1AF1800CDDB93 /* WatchPremiumService.swift in Sources */,
 				19520A512B765E31000B11CC /* FilterByNotaView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2008,6 +2049,7 @@
 				911F242B2F7B7D31009A77BE /* JoeDispenzaAuthorView.swift in Sources */,
 				91E2A7A42F7C5E37007A162A /* cardTemplate.swift in Sources */,
 				911F24272F7B7D31009A77BE /* NevilleAuthorView.swift in Sources */,
+				910765492FCC0055001CA6D2 /* WatchDataSyncToWatch.swift in Sources */,
 				914D7B4B2FC0A0FB00CDDB93 /* WatchNotesReceiver.swift in Sources */,
 				911F24302F7B7D31009A77BE /* BruceLiptonAuthorView.swift in Sources */,
 				911F242D2F7B7D31009A77BE /* GreggBradenAuthorView.swift in Sources */,
@@ -2283,7 +2325,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.6;
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev;
 				PRODUCT_MODULE_NAME = La_Ley_App;
 				PRODUCT_NAME = "La Ley";
@@ -2343,7 +2385,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.6;
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev;
 				PRODUCT_MODULE_NAME = La_Ley_App;
 				PRODUCT_NAME = "La Ley";
@@ -2387,7 +2429,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 26.2;
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.dev.sharedmac;
 				PRODUCT_MODULE_NAME = sharedmac;
 				PRODUCT_NAME = sharedmac;
@@ -2425,7 +2467,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 26.2;
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.sharedmac;
 				PRODUCT_MODULE_NAME = sharedmac;
 				PRODUCT_NAME = sharedmac;

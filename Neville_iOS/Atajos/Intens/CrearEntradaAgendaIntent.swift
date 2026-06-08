@@ -58,9 +58,14 @@ struct CrearEntradaAgendaIntent: AppIntent, ProvidesDialog {
         let context = await CoreDataController.shared.persistentContainer.newBackgroundContext()
         let now = Date()
 
+        #if os(watchOS)
+        let shouldEnableReminder = false
+        #else
         let shouldEnableReminder = activarRecordatorio && fecha > now
+        #endif
         var reminderID: String?
 
+        #if !os(watchOS)
         if shouldEnableReminder {
             reminderID = await MainActor.run {
                 let reminder = ReminderNotificationManager.shared.scheduleAndStore(
@@ -71,6 +76,7 @@ struct CrearEntradaAgendaIntent: AppIntent, ProvidesDialog {
                 return reminder.id
             }
         }
+        #endif
 
         guard let entity = NSEntityDescription.entity(forEntityName: "AgendaItemEntity", in: context) else {
             return .result(dialog: IntentDialog("No se pudo crear la actividad en Agenda."))
@@ -86,7 +92,7 @@ struct CrearEntradaAgendaIntent: AppIntent, ProvidesDialog {
         item.setValue(fecha, forKey: "hora")
         item.setValue("", forKey: "lugar")
         item.setValue(contenido, forKey: "contenido")
-        item.setValue(AgendaPriority.neutral.rawValue, forKey: "prioridad")
+        item.setValue("neutral", forKey: "prioridad")
         item.setValue("#A9D7A4", forKey: "colorHex")
         item.setValue(nil, forKey: "completada")
         item.setValue(shouldEnableReminder, forKey: "recordatorioActivo")
@@ -96,11 +102,13 @@ struct CrearEntradaAgendaIntent: AppIntent, ProvidesDialog {
             try context.save()
             return .result(dialog: IntentDialog("La actividad «\(titulo)» ha sido creada en Agenda."))
         } catch {
+            #if !os(watchOS)
             if let reminderID {
                 await MainActor.run {
                     ReminderNotificationManager.shared.cancel(id: reminderID)
                 }
             }
+            #endif
             return .result(dialog: IntentDialog("No se pudo guardar la actividad en Agenda."))
         }
     }

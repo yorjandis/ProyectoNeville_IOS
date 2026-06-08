@@ -50,14 +50,13 @@ struct WatchNoteTransferPayload {
 }
 
 @MainActor
-final class WatchNotesTransferSender: NSObject, WCSessionDelegate {
+final class WatchNotesTransferSender: NSObject {
     static let shared = WatchNotesTransferSender()
 
     private let session: WCSession? = WCSession.isSupported() ? WCSession.default : nil
 
     private override init() {
         super.init()
-        session?.delegate = self
         session?.activate()
     }
 
@@ -75,5 +74,4 @@ final class WatchNotesTransferSender: NSObject, WCSessionDelegate {
         }
     }
 
-    nonisolated func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {}
 }

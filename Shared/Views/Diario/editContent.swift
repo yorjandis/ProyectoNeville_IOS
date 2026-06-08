@@ -34,6 +34,16 @@ struct editContent : View {
         case content
     }
     @FocusState private var focus: Focustext?
+
+    private func closeEditorView() {
+#if os(macOS)
+        if let window = NSApp.keyWindow {
+            closeWindow(window)
+            return
+        }
+#endif
+        dimiss()
+    }
     
     var body: some View {
         NavigationStack {
@@ -55,6 +65,8 @@ struct editContent : View {
                             Text(emoticono.emoji)
                                 .font(.system(size: 40))
                         }
+                        .menuStyle(.borderlessButton)
+                        .buttonStyle(.plain)
                         
                         
                         TextField("", text: $textTitle, axis: .vertical)
@@ -68,12 +80,21 @@ struct editContent : View {
                 }
                 
                 Section("Contenido"){
-                    
-                        TextField("", text: $textContent, axis: .vertical)
-                            .font(.title2)
-                            .multilineTextAlignment(.leading)
-                            .textFieldStyle(.roundedBorder)
-                            .focused(self.$focus, equals: .content)
+                    TextEditor(text: $textContent)
+                        .font(.title2)
+                        .multilineTextAlignment(.leading)
+                        .scrollContentBackground(.hidden)
+                        .padding(12)
+                        .background(
+                            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                .fill(Color.black.opacity(0.05))
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                .stroke(Color.gray.opacity(0.4), lineWidth: 0.5)
+                        )
+                        .frame(minHeight: 220)
+                        .focused(self.$focus, equals: .content)
                 }
 
                 Section("Dirección (Mapas)") {
@@ -132,20 +153,29 @@ struct editContent : View {
             .navigationBarTitleDisplayMode(.inline)
             #endif
             .toolbar{
-                
+                ToolbarItem(placement: .cancellationAction) {
+                    Button{
+                        closeEditorView()
+                    }label:{
+                        Text("Cancelar")
+                            .fontWeight(.semibold)
+                            .frame(width: 80)
+                            .foregroundStyle(.white)
+                    }
+                    .buttonStyle(.bordered)
+                    .tint(.orange)
+                    
+                }
+
                 #if os(macOS)
                 if ventanaActualEsModal(){
                     ToolbarItem(placement: .navigation) {
-                        Button{
-                            if let windows = NSApp.keyWindow{
-                                    closeWindow(windows)
-                            }
-                            
-                        }label: {
+                        Button {
+                            closeEditorView()
+                        } label: {
                             Image(systemName: "xmark.circle.fill")
                                 .foregroundStyle(.red)
                         }
-                        
                     }
                 }
                 
@@ -156,12 +186,12 @@ struct editContent : View {
                     Button(action: {
                         diarioModel.UpdateItem(diario: diario, title: textTitle, content: textContent, emoticono: emoticono, direccionMapa: direccionMapa)
                         onEntryUpdated(diario.fecha)
-                        dimiss()
+                        closeEditorView()
                     }) {
                         Text("Guardar")
                             .fontWeight(.semibold)
                             .foregroundStyle(.black)
-                            .padding(.horizontal, 16)
+                            .padding(.horizontal, 8)
                             .padding(.vertical, 8)
                             .background(
                                 Color.blue

@@ -165,6 +165,7 @@ struct PurchaseView: View {
                             }
                             .buttonStyle(.bordered)
                             .tint(.blue.opacity(0.6))
+                            .disabled(self.purchaseModel.products.isEmpty)
 
                             Text("La suscripción se renueva automáticamente cada año hasta que se cancele.")
                                 .font(.footnote)
@@ -213,14 +214,19 @@ struct PurchaseView: View {
                         .buttonStyle(.bordered)
                         .tint(.black.opacity(0.5))
                         
+                        
                     }
                     
                     Spacer()
                     
                     VStack(alignment: .center){
-                        Text("💕 Las enseñanzas de neville seguirán disponibles. Nada cambiará eso 💕")
-                            .bold()
-                            .foregroundStyle(.black)
+                        Text("")
+                        /*
+                         Text("💕 Las enseñanzas de neville seguirán disponibles. Nada cambiará eso 💕")
+                             .bold()
+                             .foregroundStyle(.black)
+                         */
+                        
                     }
                     
                     #if os(macOS)
@@ -239,6 +245,12 @@ struct PurchaseView: View {
                 }
                 .padding()
             }
+        }
+        .task {
+            self.purchaseModel.startProductLoadingRetriesWhileVisible()
+        }
+        .onDisappear {
+            self.purchaseModel.stopProductLoadingRetries()
         }
     }
 

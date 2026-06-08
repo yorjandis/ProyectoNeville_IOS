@@ -16,6 +16,13 @@ enum AgendaUIConstants {
 #endif
 }
 
+enum CheckFilter: String, CaseIterable, Identifiable {
+    case todas = "Todas"
+    case activas = "Activas"
+    case completadas = "Completadas"
+    var id: String { rawValue }
+}
+
 struct AgendaMainView: View {
     @StateObject private var viewModel = AgendaViewModel()
     @State private var editorItem: AgendaItemData?
@@ -43,6 +50,7 @@ struct AgendaMainView: View {
     @State private var searchText: String = ""
     @State private var revealLocationIDs: Set<UUID> = []
     @State private var hasEvaluatedInitialTodayAvailability = false
+    @State private var checkFilter: CheckFilter = .todas
     @Environment(\.scenePhase) private var scenePhase
 
     @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
@@ -224,6 +232,7 @@ struct AgendaMainView: View {
         HStack(spacing: 10) {
             Spacer()
             filterMenu
+            checkFilterMenu
             Text("Calendario")
                 .font(.subheadline)
                 .foregroundStyle(.black.opacity(0.75))
@@ -255,6 +264,30 @@ struct AgendaMainView: View {
             }
         } label: {
             quickFilterMenuLabel
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var checkFilterMenu: some View {
+        Menu {
+            ForEach(CheckFilter.allCases) { filter in
+                Button {
+                    checkFilter = filter
+                } label: {
+                    Text(checkFilter == filter ? "\(filter.rawValue) ✓" : filter.rawValue)
+                }
+            }
+        } label: {
+            HStack(spacing: 6) {
+                Text("Check")
+                Text(checkFilter.rawValue)
+                    .fontWeight(.semibold)
+            }
+            .font(.subheadline)
+            .foregroundStyle(.black)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 8)
+            .background(.white.opacity(0.55), in: RoundedRectangle(cornerRadius: 10))
         }
         .buttonStyle(.plain)
     }
@@ -899,8 +932,19 @@ struct AgendaMainView: View {
         return searchable.contains(query)
     }
 
+    private func filteredByCheck(_ items: [AgendaItemData]) -> [AgendaItemData] {
+        switch checkFilter {
+        case .todas:
+            return items
+        case .activas:
+            return items.filter { $0.completada == false }
+        case .completadas:
+            return items.filter { $0.completada == true }
+        }
+    }
+
     private func filteredItems(_ items: [AgendaItemData]) -> [AgendaItemData] {
-        items.filter(matchesSearch)
+        return filteredByCheck(items.filter(matchesSearch))
     }
 
     private func filteredSections(_ sections: [(date: Date, items: [AgendaItemData])]) -> [(date: Date, items: [AgendaItemData])] {
@@ -1267,3 +1311,4 @@ struct AgendaReminderManagementView: View {
     }
 }
 #endif
+

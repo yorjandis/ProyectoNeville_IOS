@@ -9,13 +9,15 @@ import SwiftUI
 import CoreData
 
 struct ContentView: View {
+    @StateObject private var modelWatch = watchModel.shared
+    @AppStorage("AtajosiOS") private var atajoWatch: String = ""
     @State private var selectedTab: String = WatchScreen.frases.rawValue
     @State private var screenOrder: [WatchScreen] = ScreenOrderStore.load()
     @State private var didSetInitialTab = false
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            ForEach(screenOrder) { screen in
+            ForEach(availableScreenOrder) { screen in
                 NavigationStack {
                     screenView(for: screen)
                         .ignoresSafeArea()
@@ -31,13 +33,15 @@ struct ContentView: View {
         }
         .tabViewStyle(.page)
         .onAppear {
+            modelWatch.refreshPremiumAccessState()
             screenOrder = ScreenOrderStore.normalize(screenOrder)
             if !didSetInitialTab {
-                selectedTab = screenOrder.first?.rawValue ?? WatchScreen.frases.rawValue
+                selectedTab = availableScreenOrder.first?.rawValue ?? WatchScreen.frases.rawValue
                 didSetInitialTab = true
-            } else if !screenOrder.map(\.rawValue).contains(selectedTab) && selectedTab != WatchScreen.ajustes.rawValue {
-                selectedTab = screenOrder.first?.rawValue ?? WatchScreen.frases.rawValue
+            } else if !availableScreenOrder.map(\.rawValue).contains(selectedTab) && selectedTab != WatchScreen.ajustes.rawValue {
+                selectedTab = availableScreenOrder.first?.rawValue ?? WatchScreen.frases.rawValue
             }
+            handleShortcutNavigation(atajoWatch)
         }
         .onChange(of: screenOrder) { _, newValue in
             let normalized = ScreenOrderStore.normalize(newValue)
@@ -46,10 +50,32 @@ struct ContentView: View {
                 return
             }
             ScreenOrderStore.save(normalized)
-            if !normalized.map(\.rawValue).contains(selectedTab) && selectedTab != WatchScreen.ajustes.rawValue {
-                selectedTab = normalized.first?.rawValue ?? WatchScreen.frases.rawValue
+            if !availableScreenOrder.map(\.rawValue).contains(selectedTab) && selectedTab != WatchScreen.ajustes.rawValue {
+                selectedTab = availableScreenOrder.first?.rawValue ?? WatchScreen.frases.rawValue
             }
         }
+        .onChange(of: atajoWatch) { _, newValue in
+            handleShortcutNavigation(newValue)
+        }
+    }
+
+    private var availableScreenOrder: [WatchScreen] {
+        screenOrder
+    }
+
+    private func handleShortcutNavigation(_ shortcut: String) {
+        switch shortcut {
+        case "abrirDiario":
+            selectedTab = WatchScreen.diario.rawValue
+        case "abrirNotas":
+            selectedTab = WatchScreen.notas.rawValue
+        case "abrirRamdonConf":
+            selectedTab = WatchScreen.frases.rawValue
+        default:
+            return  
+        }
+
+        atajoWatch = ""
     }
 
     @ViewBuilder
@@ -61,6 +87,12 @@ struct ContentView: View {
             DiarioView()
         case .notas:
             NotasView()
+        case .agenda:
+            if modelWatch.hasAgendaPremiumAccess {
+                AgendaWatchView()
+            } else {
+                PremiumAgendaLockedView()
+            }
         case .quickNote:
             QuickAddNotaByLocationView()
         case .ajustes:
@@ -444,6 +476,25 @@ struct ContentView: View {
         }
     }
 
+    struct PremiumAgendaLockedView: View {
+        var body: some View {
+            ZStack {
+                LinearGradient(colors: [.red, .orange], startPoint: .bottom, endPoint: .top)
+                VStack(spacing: 8) {
+                    Text("Agenda")
+                        .fontDesign(.serif)
+                        .foregroundStyle(.black)
+                        .bold()
+                    Image(systemName: "lock.fill")
+                        .foregroundStyle(.black)
+                    Text("Requiere Premium")
+                        .font(.footnote)
+                        .foregroundStyle(.black)
+                }
+            }
+        }
+    }
+
     struct SettingsView: View {
         @Binding var screenOrder: [WatchScreen]
 
@@ -481,6 +532,7 @@ enum WatchScreen: String, CaseIterable, Identifiable {
     case frases
     case diario
     case notas
+    case agenda
     case quickNote
     case ajustes
 
@@ -491,13 +543,14 @@ enum WatchScreen: String, CaseIterable, Identifiable {
         case .frases: return "Frases"
         case .diario: return "Diario"
         case .notas: return "Notas"
+        case .agenda: return "Agenda(Versión Extendida)"
         case .quickNote: return "Acceso rápido"
         case .ajustes: return "Ajustes"
         }
     }
 
     static var reorderableCases: [WatchScreen] {
-        [.frases, .diario, .notas, .quickNote]
+        [.frases, .diario, .notas, .agenda, .quickNote]
     }
 }
 

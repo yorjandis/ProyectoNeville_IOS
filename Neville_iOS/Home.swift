@@ -143,7 +143,12 @@ struct Home: View {
                         HStack(spacing: 10) {
                             if shouldShowRitualButton {
                                 Button {
+                                    if purchaseStatus || yorjPremium {
                                     showRitualMatutino = true
+                                    } else {
+                                        showPremium = true
+                                    }
+                                        
                                 } label: {
                                     Label("Ritual Matutino", systemImage: "sunrise.fill")
                                         .font(.headline)
@@ -204,8 +209,9 @@ struct Home: View {
 
                 // Refresca el gadget de metas cada vez que Home vuelve a aparecer.
                 goalsGadgetRefreshID = UUID()
-
-                //Ejecutar Lógica la primera vez que se instala o se actualiza la función 
+                
+                
+                //Ejecutar Lógica la primera vez que se instala o se actualiza la función
                 switch RunFirstTimeModel.CheckStatusAppRun(){
                 case .firstLaunchApp:
                     msg("Primera vez que se instala la App")

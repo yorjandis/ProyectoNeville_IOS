@@ -10,6 +10,10 @@ import SwiftUI
 struct NewDiarioEntryView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var diarioModel = DiarioModel.shared
+    @StateObject private var locationCapture = AgendaLocationCapture()
+    @State private var isCapturingLocation = false
+    @State private var showAlert = false
+    @State private var alertMessage = ""
 
     @State private var title: String
     @State private var content: String
@@ -35,6 +39,16 @@ struct NewDiarioEntryView: View {
         self.onSave = onSave
     }
 
+    private func closeEditorView() {
+#if os(macOS)
+        if let window = NSApp.keyWindow {
+            closeWindow(window)
+            return
+        }
+#endif
+        dismiss()
+    }
+
     var body: some View {
         NavigationStack {
             List {
@@ -55,6 +69,8 @@ struct NewDiarioEntryView: View {
                             Text(emocion.emoji)
                                 .font(.system(size: 36))
                         }
+                        .menuStyle(.borderlessButton)
+                        .buttonStyle(.plain)
 
                         TextField("Escribe un título", text: $title, axis: .vertical)
                             .textFieldStyle(.roundedBorder)
@@ -62,8 +78,20 @@ struct NewDiarioEntryView: View {
                 }
 
                 Section("Contenido") {
-                    TextField("Escribe tu entrada", text: $content, axis: .vertical)
-                        .textFieldStyle(.roundedBorder)
+                    TextEditor(text: $content)
+                        .font(.title3)
+                        .multilineTextAlignment(.leading)
+                        .scrollContentBackground(.hidden)
+                        .padding(12)
+                        .background(
+                            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                .fill(Color.black.opacity(0.05))
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                .stroke(Color.gray.opacity(0.4), lineWidth: 0.5)
+                        )
+                        .frame(minHeight: 220)
                 }
 
                 Section("Fecha") {
@@ -71,8 +99,33 @@ struct NewDiarioEntryView: View {
                 }
 
                 Section("Dirección (Mapas)") {
-                    TextField("Ej: Gran Vía 1, Madrid", text: $direccionMapa, axis: .vertical)
-                        .textFieldStyle(.roundedBorder)
+                    HStack(spacing: 8) {
+                        if isCapturingLocation {
+                            ProgressView()
+                                .progressViewStyle(.circular)
+                                .frame(maxWidth: .infinity, alignment: .center)
+                        } else {
+                            TextField("Ej: Gran Vía 1, Madrid", text: $direccionMapa, axis: .vertical)
+                                .textFieldStyle(.roundedBorder)
+                        }
+                        Button {
+                            isCapturingLocation = true
+                            locationCapture.captureCurrentAddress { result in
+                                isCapturingLocation = false
+                                switch result {
+                                case .success(let address):
+                                    direccionMapa = address
+                                case .failure(let error):
+                                    alertMessage = error.localizedDescription
+                                    showAlert = true
+                                }
+                            }
+                        } label: {
+                            Label("Ubicación actual", systemImage: "location.fill")
+                        }
+                        .buttonStyle(.bordered)
+                        .disabled(isCapturingLocation)
+                    }
                 }
             }
             .navigationTitle("Nueva Entrada")
@@ -82,7 +135,7 @@ struct NewDiarioEntryView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancelar") {
-                        dismiss()
+                        closeEditorView()
                     }
                 }
 
@@ -103,10 +156,15 @@ struct NewDiarioEntryView: View {
 
                         if didSave {
                             onSave(normalizedDate)
-                            dismiss()
+                            closeEditorView()
                         }
                     }
                 }
+            }
+            .alert("Ubicación", isPresented: $showAlert) {
+                Button("Aceptar", role: .cancel) {}
+            } message: {
+                Text(alertMessage)
             }
         }
     }

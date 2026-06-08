@@ -9,6 +9,9 @@ import SwiftUI
 import LocalAuthentication
 import CoreData
 import UniformTypeIdentifiers
+#if os(iOS)
+import CoreLocation
+#endif
 
 struct Ajustes: View {
     
@@ -31,6 +34,9 @@ struct Ajustes: View {
     @State private var showSheetPremiumView: Bool = false
     @State private var showCardioMusicImporter: Bool = false
     @State private var cardioMusicImportErrorMessage: String?
+#if os(iOS)
+    @StateObject private var notesLocationPermission = NotesLocationPermissionManager()
+#endif
     
     private let context2 = CoreDataController.shared.context
     
@@ -447,10 +453,10 @@ struct Ajustes: View {
                         }
                         
                         
-                        //Protección de Notas
+                        //Notas
                         VStack(alignment: .leading){
                             
-                            Text("Protección de Notas").font(.system(size: 22)).foregroundStyle(.orange)
+                            Text("Notas").font(.system(size: 22)).foregroundStyle(.orange)
                             
                             if self.securityModel.canOpenNotas {
                                 if (self.purchaseStatus || self.yorjPremium){
@@ -1016,6 +1022,7 @@ struct Ajustes: View {
                                 print(self.ColorPrimario)
                                 print(self.ColorSecundario)
                             }
+                            
                         }
                     }
                     
@@ -1157,8 +1164,8 @@ struct Ajustes: View {
                     }
                     
                     
-                    //Proteger acceso a las Notas (Premium)
-                    Section("Proteger Acceso a Notas"){
+                    //Notas
+                    Section("Notas"){
                         if self.securityModel.canOpenNotas {
                             if (self.purchaseStatus || self.yorjPremium) {
                                 Toggle("Proteger las Notas con FaceID", isOn: $setting_NotasFaceID)
@@ -1192,6 +1199,19 @@ struct Ajustes: View {
                                     }
                                 }
                             }
+                        }
+
+                        VStack(alignment: .leading, spacing: 8) {
+                            Button {
+                                notesLocationPermission.requestWhenInUsePermission()
+                            } label: {
+                                Label(notesLocationPermission.buttonTitle, systemImage: "location.fill")
+                            }
+                            .disabled(!notesLocationPermission.canRequestPermission)
+
+                            Text(notesLocationPermission.statusDescription)
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
                         }
                         
                     }
@@ -1536,6 +1556,11 @@ struct Ajustes: View {
         .onChange(of: yorjPremium) { _, _ in
             PurchaseManager.shared.syncPremiumFlags()
         }
+#if os(iOS)
+        .onAppear {
+            notesLocationPermission.refreshStatus()
+        }
+#endif
         .alert(isPresented: $showAlert) {
             Alert(title: Text("Configuración"), message: Text(alertMessage))
         }
@@ -1653,3 +1678,74 @@ struct Ajustes: View {
 extension Int: @retroactive Identifiable {
     public var id: Int { return self }
 }
+
+#if os(iOS)
+@MainActor
+final class NotesLocationPermissionManager: NSObject, ObservableObject, CLLocationManagerDelegate {
+    @Published private(set) var authorizationStatus: CLAuthorizationStatus = .notDetermined
+
+    private let manager = CLLocationManager()
+
+    override init() {
+        super.init()
+        manager.delegate = self
+        refreshStatus()
+    }
+
+    var canRequestPermission: Bool {
+        authorizationStatus == .notDetermined
+    }
+
+    var buttonTitle: String {
+        switch authorizationStatus {
+        case .notDetermined:
+            return "Solicitar permiso de ubicación"
+        case .authorizedWhenInUse, .authorizedAlways:
+            return "Permiso de ubicación concedido"
+        case .denied, .restricted:
+            return "Permiso de ubicación no disponible"
+        @unknown default:
+            return "Estado de ubicación no reconocido"
+        }
+    }
+
+    var statusDescription: String {
+        switch authorizationStatus {
+        case .notDetermined:
+            return "Permite guardar la dirección actual al crear o editar una nota."
+        case .authorizedWhenInUse, .authorizedAlways:
+            return "Las notas pueden guardar la ubicación actual cuando uses esta opción."
+        case .denied:
+            return "El permiso fue denegado. Puedes activarlo desde Ajustes del sistema."
+        case .restricted:
+            return "El acceso a la ubicación está restringido en este dispositivo."
+        @unknown default:
+            return "No se pudo determinar el estado del permiso de ubicación."
+        }
+    }
+
+    func refreshStatus() {
+        authorizationStatus = manager.authorizationStatus
+    }
+
+    func requestWhenInUsePermission() {
+        refreshStatus()
+
+        guard CLLocationManager.locationServicesEnabled() else {
+            authorizationStatus = .restricted
+            return
+        }
+
+        if authorizationStatus == .notDetermined {
+            manager.requestWhenInUseAuthorization()
+        }
+    }
+
+    nonisolated func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        let status = manager.authorizationStatus
+        Task { @MainActor in
+            self.authorizationStatus = status
+        }
+    }
+}
+#endif

@@ -10,14 +10,20 @@ import LocalAuthentication
 func autenticarBiometricamente() async -> Bool {
     let context = LAContext()
     var error: NSError?
+
+    #if os(watchOS)
+    let policy: LAPolicy = .deviceOwnerAuthentication
+    #else
+    let policy: LAPolicy = .deviceOwnerAuthenticationWithBiometrics
+    #endif
     
-    guard context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) else {
+    guard context.canEvaluatePolicy(policy, error: &error) else {
         return false
     }
 
     do {
         return try await context.evaluatePolicy(
-            .deviceOwnerAuthenticationWithBiometrics,
+            policy,
             localizedReason: "Acceder al diario"
         )
     } catch {

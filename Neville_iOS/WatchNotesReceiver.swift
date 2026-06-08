@@ -43,6 +43,7 @@ final class WatchNotesReceiver: NSObject, WCSessionDelegate {
     static let shared = WatchNotesReceiver()
 
     private let session: WCSession? = WCSession.isSupported() ? WCSession.default : nil
+    private var importingNoteIDs = Set<String>()
 
     private override init() {
         super.init()
@@ -75,8 +76,17 @@ final class WatchNotesReceiver: NSObject, WCSessionDelegate {
         }
 
         Task { @MainActor in
-            await self.upsert(payload: notePayload)
+            await self.upsertIfNeeded(payload: notePayload)
         }
+    }
+
+    private func upsertIfNeeded(payload: WatchNoteTransferPayload) async {
+        let noteID = payload.id.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !noteID.isEmpty else { return }
+        guard importingNoteIDs.insert(noteID).inserted else { return }
+
+        defer { importingNoteIDs.remove(noteID) }
+        await upsert(payload: payload)
     }
 
     private func upsert(payload: WatchNoteTransferPayload) async {
@@ -96,12 +106,13 @@ final class WatchNotesReceiver: NSObject, WCSessionDelegate {
 
         await context.perform {
             let request: NSFetchRequest<Notas> = Notas.fetchRequest()
-            request.fetchLimit = 1
             request.predicate = NSPredicate(format: "id == %@", payload.id)
 
             let note: Notas
-            if let existing = try? context.fetch(request).first {
+            let matches = (try? context.fetch(request)) ?? []
+            if let existing = matches.first {
                 note = existing
+                matches.dropFirst().forEach(context.delete)
             } else {
                 note = Notas(context: context)
                 note.id = payload.id

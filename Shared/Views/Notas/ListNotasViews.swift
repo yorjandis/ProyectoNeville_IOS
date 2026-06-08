@@ -15,6 +15,11 @@ import UniformTypeIdentifiers
 
 
 struct ListNotasViews: View {
+    private enum NotesSortOption {
+        case creationDate
+        case modificationDate
+    }
+
     @Environment(\.dismiss) var dimiss
     
     @StateObject private var modelNotas = NotasModel()
@@ -41,6 +46,7 @@ struct ListNotasViews: View {
     @State private var showExportRangeSheet = false
     @State private var exportFromDate = Date.now
     @State private var exportToDate = Date.now
+    @State private var selectedSortOption: NotesSortOption = .creationDate
     @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
     @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) private var yorjPremium: Bool = false
     
@@ -49,6 +55,17 @@ struct ListNotasViews: View {
     private var filtered : [Notas] {
         if self.textFieldTitle.isEmpty {return self.modelNotas.notas}
         return self.modelNotas.notas.filter{$0.title?.localizedCaseInsensitiveContains(self.textFieldTitle) ?? false}
+    }
+
+    private var orderedFiltered: [Notas] {
+        filtered.sorted { left, right in
+            switch selectedSortOption {
+            case .creationDate:
+                return creationDate(for: left) > creationDate(for: right)
+            case .modificationDate:
+                return modificationDate(for: left) > modificationDate(for: right)
+            }
+        }
     }
 
     private var selectedNotas: [Notas] {
@@ -80,7 +97,7 @@ struct ListNotasViews: View {
                     if ( canOpenNotas == true  ||   UserDefaults.standard.bool(forKey: AppCons.UD_setting_NotasFaceID) == false) {
                         ScrollView(.vertical){
                             
-                            ForEach (self.filtered.reversed()){ nota in
+                            ForEach (self.orderedFiltered){ nota in
                                 cardNotas(
                                     nota: nota,
                                     selectionMode: self.selectionMode,
@@ -156,6 +173,28 @@ struct ListNotasViews: View {
                                 }label:{
                                     Label("Notas Favoritas", systemImage: "text.magnifyingglass.rtl")
                                 }
+
+                                Button {
+                                    withAnimation {
+                                        selectedSortOption = .creationDate
+                                    }
+                                } label: {
+                                    Label(
+                                        "Por fecha de Creación",
+                                        systemImage: selectedSortOption == .creationDate ? "checkmark.circle.fill" : "calendar.badge.clock"
+                                    )
+                                }
+
+                                Button {
+                                    withAnimation {
+                                        selectedSortOption = .modificationDate
+                                    }
+                                } label: {
+                                    Label(
+                                        "Por fecha de modificación",
+                                        systemImage: selectedSortOption == .modificationDate ? "checkmark.circle.fill" : "calendar"
+                                    )
+                                }
                                 
                                 Button{
                                     showAlertSearch = true
@@ -163,11 +202,17 @@ struct ListNotasViews: View {
                                     Label("Buscar en Notas", systemImage: "text.magnifyingglass.rtl")
                                 }
 
-                                exportNotasPDFMenu()
-                                
                             }label: {
                                 Image(systemName: "line.3.horizontal.decrease")
                             }
+                        }
+                        
+                        if #available(iOS 26.0, macOS 26.0, *) {
+                            ToolbarSpacer(.fixed)
+                        }
+                        
+                        ToolbarItem {
+                            exportNotasPDFToolbarMenu()
                         }
                         
                         if #available(iOS 26.0, macOS 26.0, *) {
@@ -193,15 +238,26 @@ struct ListNotasViews: View {
                             }
                         }
 
+                        if #available(iOS 26.0, macOS 26.0, *) {
+                            ToolbarSpacer(.fixed)
+                        }
+                        
                         ToolbarItem {
-                            Button(selectionMode ? "Cancelar" : "Seleccionar") {
-                                withAnimation {
-                                    selectionMode.toggle()
-                                    if !selectionMode {
-                                        selectedNotaIDs.removeAll()
+                            
+                            Menu{
+                                Button(selectionMode ? "Cancelar" : "Seleccionar") {
+                                    withAnimation {
+                                        selectionMode.toggle()
+                                        if !selectionMode {
+                                            selectedNotaIDs.removeAll()
+                                        }
                                     }
                                 }
+                            }label: {
+                                Image(systemName: "list.dash")
                             }
+                            
+                            
                         }
                         
                         
@@ -224,10 +280,29 @@ struct ListNotasViews: View {
                                         }
                                         
                                     }
+                                    Button {
+                                        withAnimation {
+                                            selectedSortOption = .creationDate
+                                        }
+                                    } label: {
+                                        Label(
+                                            "Por fecha de Creación",
+                                            systemImage: selectedSortOption == .creationDate ? "checkmark.circle.fill" : "calendar.badge.clock"
+                                        )
+                                    }
+                                    Button {
+                                        withAnimation {
+                                            selectedSortOption = .modificationDate
+                                        }
+                                    } label: {
+                                        Label(
+                                            "Por fecha de modificación",
+                                            systemImage: selectedSortOption == .modificationDate ? "checkmark.circle.fill" : "calendar"
+                                        )
+                                    }
                                     Button("Buscar en Notas"){
                                         showAlertSearch = true
                                     }
-                                    exportNotasPDFMenu()
                                     
                                 }label: {
                                     Image(systemName: "line.3.horizontal.decrease")
@@ -238,6 +313,10 @@ struct ListNotasViews: View {
                                 ToolbarSpacer(.fixed)
                             }
                             
+                            ToolbarItem {
+                                exportNotasPDFToolbarMenu()
+                            }
+
                             ToolbarItem {
                                 Button{
                                     guard !selectionMode else { return }
@@ -476,6 +555,8 @@ struct ListNotasViews: View {
     @ViewBuilder
     private func exportNotasPDFMenu() -> some View {
         Menu {
+            Text("Exportar a PDF")
+                .font(.caption)
             Button("Manual (seleccionadas)") {
                 guard hasPremiumPDFAccess else {
                     alertMessage = "La exportación a PDF está disponible en la Versión Extendida."
@@ -521,6 +602,12 @@ struct ListNotasViews: View {
         }
     }
 
+    @ViewBuilder
+    private func exportNotasPDFToolbarMenu() -> some View {
+        exportNotasPDFMenu()
+            .labelStyle(.iconOnly)
+    }
+
     private func notasCurrentWeek() -> [Notas] {
         let calendar = Calendar.current
         let now = Date()
@@ -558,6 +645,18 @@ struct ListNotasViews: View {
 
     private func notasReferenceDate(_ nota: Notas) -> Date? {
         (nota.value(forKey: "fechaCreacion") as? Date) ?? (nota.value(forKey: "fechaModificacion") as? Date)
+    }
+
+    private func creationDate(for nota: Notas) -> Date {
+        (nota.value(forKey: "fechaCreacion") as? Date)
+        ?? (nota.value(forKey: "fechaModificacion") as? Date)
+        ?? .distantPast
+    }
+
+    private func modificationDate(for nota: Notas) -> Date {
+        (nota.value(forKey: "fechaModificacion") as? Date)
+        ?? (nota.value(forKey: "fechaCreacion") as? Date)
+        ?? .distantPast
     }
 
     private func exportNotasToPDF(_ notas: [Notas], scopeName: String) {

@@ -62,6 +62,7 @@ struct AgendaEditorView: View {
                         .foregroundStyle(editorTextColor)
                     DatePicker("Fecha", selection: $fechaActividad, displayedComponents: .date)
                     DatePicker("Hora", selection: $hora, displayedComponents: .hourAndMinute)
+                    Toggle("Activar recordatorio", isOn: $recordatorioActivo)
                     HStack {
                         if isCapturingLocation {
                             ProgressView()
@@ -129,7 +130,7 @@ struct AgendaEditorView: View {
                         Text("Activa").tag(Optional(false))
                         Text("Completada").tag(Optional(true))
                     }
-                    Toggle("Activar recordatorio", isOn: $recordatorioActivo)
+                    
                 }
 
                 recurrenceSection
@@ -486,6 +487,26 @@ final class AgendaLocationCapture: NSObject, ObservableObject, CLLocationManager
 
     func captureCurrentAddress(completion: @escaping (Result<String, Error>) -> Void) {
         self.completion = completion
+        guard CLLocationManager.locationServicesEnabled() else {
+            finish(.failure(NSError(
+                domain: "AgendaLocationCapture",
+                code: 0,
+                userInfo: [NSLocalizedDescriptionKey: "Los servicios de ubicación están desactivados en el sistema."]
+            )))
+            return
+        }
+#if os(macOS)
+        switch manager.authorizationStatus {
+        case .authorizedAlways:
+            manager.requestLocation()
+        case .notDetermined:
+            manager.requestAlwaysAuthorization()
+        case .denied, .restricted:
+            finish(.failure(NSError(domain: "AgendaLocationCapture", code: 1, userInfo: [NSLocalizedDescriptionKey: "No hay permisos de ubicación. Actívalos en Ajustes."])))
+        @unknown default:
+            finish(.failure(NSError(domain: "AgendaLocationCapture", code: 2, userInfo: [NSLocalizedDescriptionKey: "Estado de ubicación no soportado."])))
+        }
+#else
         switch manager.authorizationStatus {
         case .authorizedWhenInUse, .authorizedAlways:
             manager.requestLocation()
@@ -496,6 +517,7 @@ final class AgendaLocationCapture: NSObject, ObservableObject, CLLocationManager
         @unknown default:
             finish(.failure(NSError(domain: "AgendaLocationCapture", code: 2, userInfo: [NSLocalizedDescriptionKey: "Estado de ubicación no soportado."])))
         }
+#endif
     }
 
     nonisolated func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
@@ -514,11 +536,11 @@ final class AgendaLocationCapture: NSObject, ObservableObject, CLLocationManager
     }
 
     private func isAuthorized(_ status: CLAuthorizationStatus) -> Bool {
-        #if os(macOS)
+#if os(macOS)
         return status == .authorizedAlways
-        #else
+#else
         return status == .authorizedWhenInUse || status == .authorizedAlways
-        #endif
+#endif
     }
 
     nonisolated func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {

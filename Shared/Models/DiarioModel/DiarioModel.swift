@@ -67,6 +67,9 @@ final class DiarioModel : ObservableObject{
     
     //Obtiene el valor de una variable de UserDefault
     private var getUserDefaultOrdenarEntradasDiario : Bool {
+        if UserDefaults.standard.object(forKey: AppCons.UD_setting_OrdenarEntradaDiario) == nil {
+            return true
+        }
         return UserDefaults.standard.bool(forKey: AppCons.UD_setting_OrdenarEntradaDiario)
     }
     

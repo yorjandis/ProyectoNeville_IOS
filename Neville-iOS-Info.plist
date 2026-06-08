@@ -22,7 +22,7 @@
 	<key>NSAppleMusicUsageDescription</key>
 	<string>Neville necesita acceso a tu biblioteca musical para que puedas seleccionar música personalizada en Espacio Calma.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Neville usa tu ubicación para capturar una dirección actual y guardarla en el campo Lugar de una actividad de Agenda.</string>
+	<string>Neville usa tu ubicación para capturar una dirección actual y guardarla en actividades de Agenda o en Notas cuando lo solicites.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>

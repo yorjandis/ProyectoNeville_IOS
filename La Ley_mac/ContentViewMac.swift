@@ -538,7 +538,14 @@ struct ContentViewMac: View {
                     
                     //Premium:
                     SidebarCard(iconName: "quote.opening", title: "Versión Extendida", onTap: {
-                        self.categoriaSelected = .premium
+                        
+                        showWindow(for: PurchaseView(),
+                        environmentObjects: [],
+                        title: "Versión extendida",
+                                   size: .percentage(width: 0.50, height: 0.80),
+                        isModal: false)
+                        
+                       // self.categoriaSelected = .premium
                     }){}
                     
                 }

@@ -16,6 +16,7 @@ final class PurchaseManager: ObservableObject {
     @Published var products: [Product] = []
 
     private let premiumProductID = "com.ypg.nev.premium.anual"
+    private var productLoadingTask: Task<Void, Never>?
     
     static let shared = PurchaseManager() //Singleton Para tener acceso global
     
@@ -32,11 +33,48 @@ final class PurchaseManager: ObservableObject {
     }
 
     // Cargar productos desde App Store
-    func loadProducts() async {
+    @discardableResult
+    func loadProducts() async -> Bool {
         do {
             products = try await Product.products(for: [premiumProductID])
+            return !products.isEmpty
         } catch {
             print("Error cargando productos:", error.localizedDescription)
+            return false
+        }
+    }
+
+    func startProductLoadingRetriesWhileVisible() {
+        productLoadingTask?.cancel()
+        productLoadingTask = Task { [weak self] in
+            guard let self else { return }
+            await self.retryLoadProducts()
+        }
+    }
+
+    func stopProductLoadingRetries() {
+        productLoadingTask?.cancel()
+        productLoadingTask = nil
+    }
+
+    private func retryLoadProducts(maxAttempts: Int = 6) async {
+        let retryDelaysInSeconds: [Double] = [1, 2, 4, 8, 12]
+        var attempt = 0
+
+        while !Task.isCancelled && attempt < maxAttempts {
+            let didLoadProducts = await loadProducts()
+            if didLoadProducts {
+                return
+            }
+
+            let delay = retryDelaysInSeconds[min(attempt, retryDelaysInSeconds.count - 1)]
+            attempt += 1
+
+            do {
+                try await Task.sleep(for: .seconds(delay))
+            } catch {
+                return
+            }
         }
     }
 }

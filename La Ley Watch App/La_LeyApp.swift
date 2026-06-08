@@ -14,6 +14,10 @@ struct La_Ley_Watch_AppApp: App {
     private let persistentStore: CoreDataController = CoreDataController.shared
     @State private var isStoreReady = false
     
+    init() {
+        _ = WatchIncomingDataReceiver.shared
+    }
+
     var body: some Scene {
         WindowGroup {
             Group {
