@@ -39,14 +39,14 @@ struct UpdateNotasView: View {
                             .background(.black.opacity(0.02))
                             .cornerRadius(8)
                 }
-                Section("Dirección (Mapas)") {
+                Section("Coordenadas (Mapas)") {
                     HStack(spacing: 8) {
                         if isCapturingLocation {
                             ProgressView()
                                 .progressViewStyle(.circular)
                                 .frame(maxWidth: .infinity, alignment: .center)
                         } else {
-                            TextField("Ej: Gran Vía 1, Madrid", text: $direccionMapa, axis: .vertical)
+                            TextField("Ej: 40.416775,-3.703790", text: $direccionMapa, axis: .vertical)
                                 .textFieldStyle(.roundedBorder)
                         }
                         Button {
@@ -54,15 +54,15 @@ struct UpdateNotasView: View {
                             locationCapture.captureCurrentAddress { result in
                                 isCapturingLocation = false
                                 switch result {
-                                case .success(let address):
-                                    direccionMapa = address
+                                case .success(let coordinates):
+                                    direccionMapa = coordinates
                                 case .failure(let error):
                                     alertMessage = error.localizedDescription
                                     showAlert = true
                                 }
                             }
                         } label: {
-                            Label("Ubicación actual", systemImage: "location.fill")
+                            Label("Coordenadas actuales", systemImage: "location.fill")
                         }
                         .buttonStyle(.bordered)
                         .disabled(isCapturingLocation)

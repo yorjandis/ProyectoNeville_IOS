@@ -1288,29 +1288,15 @@ struct cardNotas: View{
     private func openInMaps(address: String) {
         let cleaned = address.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !cleaned.isEmpty else {
-            mapsAlertMessage = "La dirección está vacía."
+            mapsAlertMessage = "La ubicación está vacía."
             showMapsAlert = true
             return
         }
 
         Task { @MainActor in
-            let request = MKLocalSearch.Request()
-            request.naturalLanguageQuery = cleaned
-
-            do {
-                let response = try await MKLocalSearch(request: request).start()
-                guard let destination = response.mapItems.first else {
-                    mapsAlertMessage = "La dirección no es válida o no se pudo encontrar."
-                    showMapsAlert = true
-                    return
-                }
-
-                destination.name = cleaned
-                _ = await destination.openInMaps(launchOptions: [
-                    MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving
-                ])
-            } catch {
-                mapsAlertMessage = "No se pudo abrir Mapas para esta dirección."
+            let didOpen = await LocationMapOpener.open(cleaned)
+            if !didOpen {
+                mapsAlertMessage = "No se pudo abrir Mapas para esta ubicación."
                 showMapsAlert = true
             }
         }

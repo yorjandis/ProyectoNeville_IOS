@@ -62,7 +62,7 @@ struct AddNota : View {
                             ProgressView()
                                 .frame(maxWidth: .infinity)
                         } else {
-                            Label("Añadir ubicación", systemImage: "location")
+                            Label("Añadir coordenadas", systemImage: "location")
                                 .foregroundStyle(.black)
                                 .frame(maxWidth: .infinity)
                         }
@@ -159,10 +159,10 @@ struct AddNota : View {
         locationCapture.captureCurrentAddress { result in
             isResolvingLocation = false
             switch result {
-            case .success(let address):
-                direccionMapa = address
+            case .success(let coordinates):
+                direccionMapa = coordinates
                 if texto.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                    texto = address
+                    texto = coordinates
                 }
             case .failure(let error):
                 alertMesage = error.localizedDescription

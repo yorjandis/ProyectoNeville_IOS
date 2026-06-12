@@ -53,6 +53,7 @@ struct Ajustes: View {
     //Acceso a la opción de en Ajustes
     @AppStorage(AppCons.UD_setting_DiarioAccesoAjustes) var setting_DiarioAccesoAjustes  : Bool = false
     @AppStorage(AppCons.UD_setting_DiarioSiempreOpenFaceID) var setting_DiarioSiempreOpenFaceID  : Bool = false
+    @AppStorage(AppCons.UD_setting_preferredMapApp) var preferredMapApp: String = LocationMapApp.appleMaps.rawValue
     
     
     @AppStorage(AppCons.UD_setting_theme) var setting_theme  : Theme = .auto 
@@ -1294,6 +1295,15 @@ struct Ajustes: View {
                                     .foregroundStyle(.orange)
                             }
                         }
+                    }
+
+                    Section("Abrir Ubicación en Mapas") {
+                        Picker("Aplicación", selection: $preferredMapApp) {
+                            ForEach(LocationMapApp.allCases) { option in
+                                Text(option.title).tag(option.rawValue)
+                            }
+                        }
+                        .pickerStyle(.segmented)
                     }
 
                     Section("Coherencia Cardio-Cerebral") {

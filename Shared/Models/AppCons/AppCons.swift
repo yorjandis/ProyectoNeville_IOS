@@ -139,6 +139,7 @@ struct AppCons{
     static let UD_setting_NotasFaceID               = "setting_NotasFaceID" //Proteger las notas de FaceID
     static let UD_setting_DiarioSiempreOpenFaceID   = "setting_DiarioSiempreOpenFaceID" //Permitir que la ventana del Diario permanezca desbloqueada
     static let UD_setting_DiarioAccesoAjustes       = "setting_DiarioAccesoAjustes" //Bloquea/desbloquea la opción en Ajustes para lógica de loguin del Diario
+    static let UD_setting_preferredMapApp           = "setting_preferredMapApp" //App preferida para abrir coordenadas
   
    //Theme
     static let UD_setting_theme                     = "setting_theme"    //Theme light/dark
@@ -209,5 +210,4 @@ struct AppCons{
     
     
 }
-
 

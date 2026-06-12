@@ -32,26 +32,15 @@ struct QuickAddNotaByLocationView: View {
                         title = value
                     }
                     .frame(height: 38)
+                    .padding(5)
 
                     TextFieldLink("Nota: \(nota)", prompt: Text("Contenido de la nota")) { value in
                         nota = value
                     }
                     .frame(height: 38)
 
-                    HStack(spacing: 8) {
-                        Button {
-                            saveNote()
-                        } label: {
-                            Label("Guardar", systemImage: "tray.and.arrow.down.fill")
-                                .foregroundStyle(.black)
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 8)
-                        }
-                        .background(.white.opacity(0.65))
-                        .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .buttonStyle(.plain)
-                        .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-
+                    VStack(spacing: 8) {
+                        
                         Button {
                             requestCurrentLocation()
                         } label: {
@@ -65,7 +54,7 @@ struct QuickAddNotaByLocationView: View {
                                         .foregroundStyle(.black)
                                 }
 
-                                Text("Ubicación")
+                                Text("Coordenadas")
                                     .foregroundStyle(.black)
 
                                 if hasResolvedLocation {
@@ -80,9 +69,24 @@ struct QuickAddNotaByLocationView: View {
                         .clipShape(RoundedRectangle(cornerRadius: 16))
                         .buttonStyle(.plain)
                         .disabled(isResolvingLocation)
+                        
+                        Button {
+                            saveNote()
+                        } label: {
+                            Label("Guardar", systemImage: "tray.and.arrow.down.fill")
+                                .foregroundStyle(.black)
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 8)
+                        }
+                        .background(.white.opacity(0.65))
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                        .buttonStyle(.plain)
+                        .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+
+                       
                     }
 
-                    Text("Debe aceptar primero los permisos de ubicación en iPhone")
+                    Text("Debe aceptar primero, en Ajustes, los permisos de ubicación en iPhone.")
                         .font(.caption)
                 }
                 .padding(.top, 40)
@@ -150,18 +154,25 @@ struct QuickAddNotaByLocationView: View {
 final class WatchLocationCapture: NSObject, ObservableObject, CLLocationManagerDelegate {
     private let manager = CLLocationManager()
     private var completion: ((Result<String, Error>) -> Void)?
+    private var bestLocation: CLLocation?
+    private var timeoutTask: Task<Void, Never>?
+    private let targetHorizontalAccuracy: CLLocationAccuracy = 25
+    private let maximumCaptureSeconds: UInt64 = 6
 
     override init() {
         super.init()
         manager.delegate = self
-        manager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+        manager.desiredAccuracy = kCLLocationAccuracyBest
+        manager.distanceFilter = kCLDistanceFilterNone
     }
 
     func captureCurrentAddress(completion: @escaping (Result<String, Error>) -> Void) {
+        cancelCapture()
+        bestLocation = nil
         self.completion = completion
         switch manager.authorizationStatus {
         case .authorizedWhenInUse, .authorizedAlways:
-            manager.requestLocation()
+            startPrecisionCapture()
         case .notDetermined:
             manager.requestWhenInUseAuthorization()
         case .denied, .restricted:
@@ -175,7 +186,7 @@ final class WatchLocationCapture: NSObject, ObservableObject, CLLocationManagerD
         let status = manager.authorizationStatus
         Task { @MainActor in
             if status == .authorizedAlways || status == .authorizedWhenInUse {
-                self.manager.requestLocation()
+                self.startPrecisionCapture()
             } else if status == .denied || status == .restricted {
                 self.finish(.failure(NSError(domain: "WatchLocationCapture", code: 3, userInfo: [NSLocalizedDescriptionKey: "Permiso de ubicación denegado."])))
             }
@@ -184,38 +195,20 @@ final class WatchLocationCapture: NSObject, ObservableObject, CLLocationManagerD
 
     nonisolated func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         Task { @MainActor in
-            guard let location = locations.first else {
-                self.finish(.failure(NSError(domain: "WatchLocationCapture", code: 4, userInfo: [NSLocalizedDescriptionKey: "No se pudo obtener la ubicación actual."])))
+            let freshLocations = locations.filter { location in
+                location.horizontalAccuracy >= 0 && abs(location.timestamp.timeIntervalSinceNow) <= 15
+            }
+
+            guard let location = freshLocations.min(by: { $0.horizontalAccuracy < $1.horizontalAccuracy }) else {
                 return
             }
 
-            CLGeocoder().reverseGeocodeLocation(location) { [weak self] placemarks, error in
-                Task { @MainActor in
-                    guard let self else { return }
-                    if let error {
-                        self.finish(.failure(error))
-                        return
-                    }
+            if self.bestLocation == nil || location.horizontalAccuracy < (self.bestLocation?.horizontalAccuracy ?? .greatestFiniteMagnitude) {
+                self.bestLocation = location
+            }
 
-                    guard let place = placemarks?.first else {
-                        self.finish(.failure(NSError(domain: "WatchLocationCapture", code: 5, userInfo: [NSLocalizedDescriptionKey: "No se encontró una dirección para esta ubicación."])))
-                        return
-                    }
-
-                    let parts = [
-                        place.name,
-                        place.locality,
-                        place.administrativeArea,
-                        place.country
-                    ].compactMap { $0 }.filter { !$0.isEmpty }
-
-                    let address = parts.joined(separator: ", ")
-                    if address.isEmpty {
-                        self.finish(.failure(NSError(domain: "WatchLocationCapture", code: 6, userInfo: [NSLocalizedDescriptionKey: "La dirección obtenida está vacía."])))
-                    } else {
-                        self.finish(.success(address))
-                    }
-                }
+            if location.horizontalAccuracy <= self.targetHorizontalAccuracy {
+                self.finish(.success(Self.coordinateString(from: location.coordinate)))
             }
         }
     }
@@ -227,13 +220,42 @@ final class WatchLocationCapture: NSObject, ObservableObject, CLLocationManagerD
     }
 
     func cancelCapture() {
+        timeoutTask?.cancel()
+        timeoutTask = nil
         completion = nil
         manager.stopUpdatingLocation()
     }
 
     private func finish(_ result: Result<String, Error>) {
+        timeoutTask?.cancel()
+        timeoutTask = nil
+        manager.stopUpdatingLocation()
         completion?(result)
         completion = nil
+    }
+
+    private func startPrecisionCapture() {
+        manager.startUpdatingLocation()
+        timeoutTask = Task { [weak self] in
+            try? await Task.sleep(nanoseconds: (self?.maximumCaptureSeconds ?? 6) * 1_000_000_000)
+            await MainActor.run {
+                guard let self, self.completion != nil else { return }
+                if let bestLocation = self.bestLocation {
+                    self.finish(.success(Self.coordinateString(from: bestLocation.coordinate)))
+                } else {
+                    self.finish(.failure(NSError(domain: "WatchLocationCapture", code: 4, userInfo: [NSLocalizedDescriptionKey: "No se pudo obtener la ubicación actual."])))
+                }
+            }
+        }
+    }
+
+    private static func coordinateString(from coordinate: CLLocationCoordinate2D) -> String {
+        String(
+            format: "%.6f,%.6f",
+            locale: Locale(identifier: "en_US_POSIX"),
+            coordinate.latitude,
+            coordinate.longitude
+        )
     }
 }
 

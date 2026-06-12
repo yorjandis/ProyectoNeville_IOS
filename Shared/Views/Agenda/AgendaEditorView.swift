@@ -1,6 +1,12 @@
 import SwiftUI
 import CoreLocation
 import Combine
+import MapKit
+#if os(iOS)
+import UIKit
+#elseif os(macOS)
+import AppKit
+#endif
 
 struct AgendaEditorView: View {
     @Environment(\.dismiss) private var dismiss
@@ -69,10 +75,10 @@ struct AgendaEditorView: View {
                                 .progressViewStyle(.circular)
                                 .frame(maxWidth: .infinity, alignment: .center)
                         } else {
-                            TextField("Lugar", text: $lugar, axis: .vertical)
+                            TextField("Coordenadas", text: $lugar, axis: .vertical)
                                 .foregroundStyle(editorTextColor)
                         }
-                        Button("Ubicación actual") {
+                        Button("Coordenadas actuales") {
                             captureCurrentAddress()
                         }
                         .buttonStyle(.bordered)
@@ -171,8 +177,8 @@ struct AgendaEditorView: View {
         locationCapture.captureCurrentAddress { result in
             isCapturingLocation = false
             switch result {
-            case .success(let address):
-                lugar = address
+            case .success(let coordinates):
+                lugar = coordinates
             case .failure(let error):
                 locationAlertMessage = error.localizedDescription
                 showLocationAlert = true
@@ -478,14 +484,21 @@ struct AgendaEditorView: View {
 final class AgendaLocationCapture: NSObject, ObservableObject, CLLocationManagerDelegate {
     private let manager = CLLocationManager()
     private var completion: ((Result<String, Error>) -> Void)?
+    private var bestLocation: CLLocation?
+    private var timeoutTask: Task<Void, Never>?
+    private let targetHorizontalAccuracy: CLLocationAccuracy = 25
+    private let maximumCaptureSeconds: UInt64 = 6
 
     override init() {
         super.init()
         manager.delegate = self
-        manager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+        manager.desiredAccuracy = kCLLocationAccuracyBest
+        manager.distanceFilter = kCLDistanceFilterNone
     }
 
     func captureCurrentAddress(completion: @escaping (Result<String, Error>) -> Void) {
+        cancelPendingCapture()
+        bestLocation = nil
         self.completion = completion
         guard CLLocationManager.locationServicesEnabled() else {
             finish(.failure(NSError(
@@ -498,7 +511,7 @@ final class AgendaLocationCapture: NSObject, ObservableObject, CLLocationManager
 #if os(macOS)
         switch manager.authorizationStatus {
         case .authorizedAlways:
-            manager.requestLocation()
+            startPrecisionCapture()
         case .notDetermined:
             manager.requestAlwaysAuthorization()
         case .denied, .restricted:
@@ -509,7 +522,7 @@ final class AgendaLocationCapture: NSObject, ObservableObject, CLLocationManager
 #else
         switch manager.authorizationStatus {
         case .authorizedWhenInUse, .authorizedAlways:
-            manager.requestLocation()
+            startPrecisionCapture()
         case .notDetermined:
             manager.requestWhenInUseAuthorization()
         case .denied, .restricted:
@@ -529,7 +542,7 @@ final class AgendaLocationCapture: NSObject, ObservableObject, CLLocationManager
 
     private func handleAuthorizationChange(_ status: CLAuthorizationStatus) {
         if isAuthorized(status) {
-            manager.requestLocation()
+            startPrecisionCapture()
         } else if status == .denied || status == .restricted {
             finish(.failure(NSError(domain: "AgendaLocationCapture", code: 3, userInfo: [NSLocalizedDescriptionKey: "Permiso de ubicación denegado."])))
         }
@@ -550,37 +563,20 @@ final class AgendaLocationCapture: NSObject, ObservableObject, CLLocationManager
     }
 
     private func handleLocationUpdate(_ locations: [CLLocation]) {
-        guard let location = locations.first else {
-            finish(.failure(NSError(domain: "AgendaLocationCapture", code: 4, userInfo: [NSLocalizedDescriptionKey: "No se pudo obtener la ubicación actual."])))
+        let freshLocations = locations.filter { location in
+            location.horizontalAccuracy >= 0 && abs(location.timestamp.timeIntervalSinceNow) <= 15
+        }
+
+        guard let location = freshLocations.min(by: { $0.horizontalAccuracy < $1.horizontalAccuracy }) else {
             return
         }
 
-        CLGeocoder().reverseGeocodeLocation(location) { [weak self] placemarks, error in
-            Task { @MainActor in
-                guard let self else { return }
-                if let error {
-                    self.finish(.failure(error))
-                    return
-                }
-                guard let place = placemarks?.first else {
-                    self.finish(.failure(NSError(domain: "AgendaLocationCapture", code: 5, userInfo: [NSLocalizedDescriptionKey: "No se encontró una dirección para esta ubicación."])))
-                    return
-                }
+        if bestLocation == nil || location.horizontalAccuracy < (bestLocation?.horizontalAccuracy ?? .greatestFiniteMagnitude) {
+            bestLocation = location
+        }
 
-                let parts = [
-                    place.name,
-                    place.locality,
-                    place.administrativeArea,
-                    place.country
-                ].compactMap { $0 }.filter { !$0.isEmpty }
-                let address = parts.joined(separator: ", ")
-
-                if address.isEmpty {
-                    self.finish(.failure(NSError(domain: "AgendaLocationCapture", code: 6, userInfo: [NSLocalizedDescriptionKey: "La dirección obtenida está vacía."])))
-                } else {
-                    self.finish(.success(address))
-                }
-            }
+        if location.horizontalAccuracy <= targetHorizontalAccuracy {
+            finish(.success(LocationCoordinateFormatter.string(from: location.coordinate)))
         }
     }
 
@@ -591,7 +587,141 @@ final class AgendaLocationCapture: NSObject, ObservableObject, CLLocationManager
     }
 
     private func finish(_ result: Result<String, Error>) {
+        cancelPendingCapture()
         completion?(result)
         completion = nil
+    }
+
+    private func startPrecisionCapture() {
+        manager.startUpdatingLocation()
+        timeoutTask = Task { [weak self] in
+            try? await Task.sleep(nanoseconds: (self?.maximumCaptureSeconds ?? 6) * 1_000_000_000)
+            await MainActor.run {
+                guard let self, self.completion != nil else { return }
+                if let bestLocation = self.bestLocation {
+                    self.finish(.success(LocationCoordinateFormatter.string(from: bestLocation.coordinate)))
+                } else {
+                    self.finish(.failure(NSError(domain: "AgendaLocationCapture", code: 4, userInfo: [NSLocalizedDescriptionKey: "No se pudo obtener la ubicación actual."])))
+                }
+            }
+        }
+    }
+
+    private func cancelPendingCapture() {
+        timeoutTask?.cancel()
+        timeoutTask = nil
+        manager.stopUpdatingLocation()
+    }
+}
+
+enum LocationMapApp: String, CaseIterable, Identifiable {
+    case appleMaps
+    case googleMaps
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .appleMaps:
+            return "Mapas"
+        case .googleMaps:
+            return "Google Maps"
+        }
+    }
+}
+
+enum LocationCoordinateFormatter {
+    static func string(from coordinate: CLLocationCoordinate2D) -> String {
+        String(
+            format: "%.6f,%.6f",
+            locale: Locale(identifier: "en_US_POSIX"),
+            coordinate.latitude,
+            coordinate.longitude
+        )
+    }
+
+    static func coordinate(from value: String) -> CLLocationCoordinate2D? {
+        let parts = value
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .split(separator: ",")
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+
+        guard parts.count == 2,
+              let latitude = Double(parts[0]),
+              let longitude = Double(parts[1]),
+              (-90...90).contains(latitude),
+              (-180...180).contains(longitude) else {
+            return nil
+        }
+
+        return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+    }
+}
+
+@MainActor
+enum LocationMapOpener {
+    static func open(_ storedLocation: String) async -> Bool {
+        let cleaned = storedLocation.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !cleaned.isEmpty else { return false }
+
+        if let coordinate = LocationCoordinateFormatter.coordinate(from: cleaned) {
+            return await open(coordinate: coordinate)
+        }
+
+        return await openAddressFallback(cleaned)
+    }
+
+    private static func open(coordinate: CLLocationCoordinate2D) async -> Bool {
+        let preference = LocationMapApp(rawValue: UserDefaults.standard.string(forKey: AppCons.UD_setting_preferredMapApp) ?? "") ?? .appleMaps
+
+        switch preference {
+        case .appleMaps:
+            let mapItem = MKMapItem(placemark: MKPlacemark(coordinate: coordinate))
+            mapItem.name = "Ubicación"
+#if os(macOS)
+            return await mapItem.openInMaps(launchOptions: [
+                MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving
+            ])
+#else
+            return mapItem.openInMaps(launchOptions: [
+                MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving
+            ])
+#endif
+        case .googleMaps:
+            let coordinateText = LocationCoordinateFormatter.string(from: coordinate)
+            guard let url = URL(string: "https://www.google.com/maps/search/?api=1&query=\(coordinateText)") else {
+                return false
+            }
+#if os(iOS)
+            return await UIApplication.shared.open(url)
+#elseif os(macOS)
+            NSWorkspace.shared.open(url)
+            return true
+#else
+            return false
+#endif
+        }
+    }
+
+    private static func openAddressFallback(_ address: String) async -> Bool {
+        let request = MKLocalSearch.Request()
+        request.naturalLanguageQuery = address
+
+        do {
+            let response = try await MKLocalSearch(request: request).start()
+            guard let destination = response.mapItems.first else { return false }
+            destination.name = address
+#if os(macOS)
+            return await destination.openInMaps(launchOptions: [
+                MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving
+            ])
+#else
+            return destination.openInMaps(launchOptions: [
+                MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving
+            ])
+#endif
+        } catch {
+            return false
+        }
     }
 }
