@@ -79,10 +79,51 @@ final class DiarioModel : ObservableObject{
     
     
     private let context = CoreDataController.shared.context
+    private var observers = Set<AnyCancellable>()
     
     
     private init(){
+        setupObservers()
         getAllItem()
+    }
+
+    private func setupObservers() {
+        let center = NotificationCenter.default
+
+        center.publisher(for: .coreDataStoresDidLoad)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                self?.getAllItem()
+            }
+            .store(in: &observers)
+
+        center.publisher(for: .NSPersistentStoreRemoteChange,
+                         object: CoreDataController.shared.persistentContainer.persistentStoreCoordinator)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                self?.context.refreshAllObjects()
+                self?.getAllItem()
+            }
+            .store(in: &observers)
+
+        center.publisher(
+            for: NSPersistentCloudKitContainer.eventChangedNotification,
+            object: CoreDataController.shared.persistentContainer
+        )
+        .receive(on: RunLoop.main)
+        .sink { [weak self] _ in
+            self?.context.refreshAllObjects()
+            self?.getAllItem()
+        }
+        .store(in: &observers)
+
+        center.publisher(for: .NSManagedObjectContextDidSave,
+                         object: context)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                self?.getAllItem()
+            }
+            .store(in: &observers)
     }
 
     private func defaultSortDescriptors(ascending: Bool = false) -> [NSSortDescriptor] {
@@ -105,10 +146,51 @@ final class DiarioModel : ObservableObject{
         
         
         do{
-            self.list =  try context.fetch(fechtRequest)
+            self.list = deduplicateDiarioByID(try context.fetch(fechtRequest))
         }catch{
             self.list = []
         }
+    }
+
+    private func deduplicateDiarioByID(_ fetched: [Diario]) -> [Diario] {
+        let groupedByID = Dictionary(grouping: fetched) { diario in
+            diario.id?.uuidString ?? ""
+        }
+
+        var idsToDelete = Set<NSManagedObjectID>()
+
+        for (id, diarios) in groupedByID where !id.isEmpty && diarios.count > 1 {
+            let keeper = diarios.max { lhs, rhs in
+                comparableDate(for: lhs) < comparableDate(for: rhs)
+            }
+
+            for diario in diarios where diario.objectID != keeper?.objectID {
+                idsToDelete.insert(diario.objectID)
+                context.delete(diario)
+            }
+        }
+
+        guard !idsToDelete.isEmpty else { return fetched }
+
+        do {
+            try context.save()
+        } catch {
+            context.rollback()
+            msg("❌ Error eliminando entradas duplicadas de Diario: \(error.localizedDescription)")
+            return fetched
+        }
+
+        return fetched.filter { !idsToDelete.contains($0.objectID) }
+    }
+
+    private func comparableDate(for diario: Diario) -> Date {
+        if let modified = diario.fechaM {
+            return modified
+        }
+        if let created = diario.fecha {
+            return created
+        }
+        return .distantPast
     }
     
     ///Obtiene todos los item de la tabla Diario. Devuelve un arreglo
@@ -251,6 +333,7 @@ final class DiarioModel : ObservableObject{
     //Actualizar el título
     func UpdateContent(content : String, diario : Diario){
         diario.content = content
+        diario.fechaM = Date.now
         if context.hasChanges {
             try? context.save()
         }
@@ -259,6 +342,7 @@ final class DiarioModel : ObservableObject{
     //Actualizar el estado de favorito
     func UpdateFav(isFav : Bool, diario : Diario){
         diario.isFav = isFav
+        diario.fechaM = Date.now
         if context.hasChanges {
             try? context.save()
         }

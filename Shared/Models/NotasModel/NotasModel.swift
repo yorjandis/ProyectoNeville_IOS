@@ -78,13 +78,55 @@ final class NotasModel : ObservableObject  {
         let fetcRequest : NSFetchRequest<Notas> = Notas.fetchRequest()
         
         do{
-            self.notas =  try  self.context.fetch(fetcRequest)
+            let fetched = try self.context.fetch(fetcRequest)
+            self.notas = deduplicateNotasByID(fetched)
            
         }
         catch{
             self.notas = []
         }
         
+    }
+
+    private func deduplicateNotasByID(_ fetched: [Notas]) -> [Notas] {
+        let groupedByID = Dictionary(grouping: fetched) { nota in
+            (nota.id ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+
+        var idsToDelete = Set<NSManagedObjectID>()
+
+        for (id, notas) in groupedByID where !id.isEmpty && notas.count > 1 {
+            let keeper = notas.max { lhs, rhs in
+                comparableDate(for: lhs) < comparableDate(for: rhs)
+            }
+
+            for nota in notas where nota.objectID != keeper?.objectID {
+                idsToDelete.insert(nota.objectID)
+                context.delete(nota)
+            }
+        }
+
+        guard !idsToDelete.isEmpty else { return fetched }
+
+        do {
+            try context.save()
+        } catch {
+            context.rollback()
+            msg("❌ Error eliminando notas duplicadas: \(error.localizedDescription)")
+            return fetched
+        }
+
+        return fetched.filter { !idsToDelete.contains($0.objectID) }
+    }
+
+    private func comparableDate(for nota: Notas) -> Date {
+        if let modified = nota.value(forKey: "fechaModificacion") as? Date {
+            return modified
+        }
+        if let created = nota.value(forKey: "fechaCreacion") as? Date {
+            return created
+        }
+        return .distantPast
     }
     
     

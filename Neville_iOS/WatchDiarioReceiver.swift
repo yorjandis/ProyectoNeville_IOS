@@ -184,6 +184,8 @@ final class WatchDiarioReceiver: NSObject, WCSessionDelegate {
             let note: Notas
             let matches = (try? context.fetch(request)) ?? []
             if let existing = matches.first {
+                let currentModified = (existing.value(forKey: "fechaModificacion") as? Date) ?? .distantPast
+                guard payload.fechaModificacion >= currentModified else { return }
                 note = existing
                 matches.dropFirst().forEach(context.delete)
             } else {
@@ -233,6 +235,8 @@ final class WatchDiarioReceiver: NSObject, WCSessionDelegate {
 
             let diario: Diario
             if let existing = try? context.fetch(request).first {
+                let currentModified = existing.fechaM ?? .distantPast
+                guard payload.fechaM >= currentModified else { return }
                 diario = existing
             } else {
                 diario = Diario(context: context)
@@ -285,6 +289,8 @@ final class WatchDiarioReceiver: NSObject, WCSessionDelegate {
 
             let row: NSManagedObject
             if let existing = try? context.fetch(request).first {
+                let currentModified = (existing.value(forKey: "fechaModificacion") as? Date) ?? .distantPast
+                guard payload.fechaModificacion >= currentModified else { return }
                 row = existing
             } else {
                 row = NSManagedObject(entity: entity, insertInto: context)

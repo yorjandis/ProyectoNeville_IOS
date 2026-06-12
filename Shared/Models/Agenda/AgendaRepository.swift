@@ -10,7 +10,7 @@ final class AgendaRepository {
         request.sortDescriptors = [NSSortDescriptor(key: "fechaActividad", ascending: true), NSSortDescriptor(key: "hora", ascending: true)]
 
         do {
-            return try context.fetch(request).compactMap(mapEntity)
+            return deduplicateAgendaByID(try context.fetch(request)).compactMap(mapEntity)
         } catch {
             return []
         }
@@ -104,5 +104,45 @@ final class AgendaRepository {
             reminderID: object.value(forKey: "reminderID") as? String,
             seriesID: object.value(forKey: "seriesID") as? UUID
         )
+    }
+
+    private func deduplicateAgendaByID(_ fetched: [NSManagedObject]) -> [NSManagedObject] {
+        let groupedByID = Dictionary(grouping: fetched) { object in
+            (object.value(forKey: "id") as? UUID)?.uuidString ?? ""
+        }
+
+        var idsToDelete = Set<NSManagedObjectID>()
+
+        for (id, items) in groupedByID where !id.isEmpty && items.count > 1 {
+            let keeper = items.max { lhs, rhs in
+                comparableDate(for: lhs) < comparableDate(for: rhs)
+            }
+
+            for item in items where item.objectID != keeper?.objectID {
+                idsToDelete.insert(item.objectID)
+                context.delete(item)
+            }
+        }
+
+        guard !idsToDelete.isEmpty else { return fetched }
+
+        do {
+            try context.save()
+        } catch {
+            context.rollback()
+            return fetched
+        }
+
+        return fetched.filter { !idsToDelete.contains($0.objectID) }
+    }
+
+    private func comparableDate(for object: NSManagedObject) -> Date {
+        if let modified = object.value(forKey: "fechaModificacion") as? Date {
+            return modified
+        }
+        if let created = object.value(forKey: "fechaCreacion") as? Date {
+            return created
+        }
+        return .distantPast
     }
 }

@@ -91,6 +91,8 @@ final class WatchIncomingDataReceiver: NSObject, WCSessionDelegate {
 
             let note: Notas
             if let existing = try? context.fetch(request).first {
+                let currentModified = (existing.value(forKey: "fechaModificacion") as? Date) ?? .distantPast
+                guard payload.fechaModificacion >= currentModified else { return }
                 note = existing
             } else {
                 note = Notas(context: context)
@@ -140,6 +142,8 @@ final class WatchIncomingDataReceiver: NSObject, WCSessionDelegate {
 
             let diario: Diario
             if let existing = try? context.fetch(request).first {
+                let currentModified = existing.fechaM ?? .distantPast
+                guard payload.fechaM >= currentModified else { return }
                 diario = existing
             } else {
                 diario = Diario(context: context)
@@ -192,6 +196,8 @@ final class WatchIncomingDataReceiver: NSObject, WCSessionDelegate {
 
             let row: NSManagedObject
             if let existing = try? context.fetch(request).first {
+                let currentModified = (existing.value(forKey: "fechaModificacion") as? Date) ?? .distantPast
+                guard payload.fechaModificacion >= currentModified else { return }
                 row = existing
             } else {
                 row = NSManagedObject(entity: entity, insertInto: context)

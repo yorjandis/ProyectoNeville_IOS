@@ -99,13 +99,8 @@ final class WatchAgendaTransferSender: NSObject {
     }
 
     func sendCreatedAgenda(_ payload: WatchAgendaTransferPayload) {
-        guard let session else { return }
-
-        let userInfo = [WatchAgendaTransferPayload.userInfoKey: payload.toDictionary()]
-        session.transferUserInfo(userInfo)
-
-        if session.isReachable {
-            session.sendMessage(userInfo, replyHandler: nil, errorHandler: nil)
-        }
+        // Agenda se sincroniza mediante Core Data + CloudKit. WatchConnectivity queda
+        // como compatibilidad de lectura en receptores antiguos, no como fuente de verdad.
+        _ = payload
     }
 }

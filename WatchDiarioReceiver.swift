@@ -109,6 +109,8 @@ final class WatchDiarioReceiver: NSObject, WCSessionDelegate {
 
             let diario: Diario
             if let existing = try? context.fetch(request).first {
+                let currentModified = existing.fechaM ?? .distantPast
+                guard payload.fechaM >= currentModified else { return }
                 diario = existing
             } else {
                 diario = Diario(context: context)

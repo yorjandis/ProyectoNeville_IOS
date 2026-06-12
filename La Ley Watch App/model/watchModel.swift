@@ -576,7 +576,7 @@ final class watchModel: ObservableObject {
 
         do {
             let rows = try context.fetch(request)
-            self.listAgenda = rows.compactMap(mapAgendaEntity)
+            self.listAgenda = deduplicateAgendaRows(rows).compactMap(mapAgendaEntity)
         } catch {
             self.listAgenda = []
             msg("Failed to fetch agenda: \(error)")
@@ -674,7 +674,7 @@ final class watchModel: ObservableObject {
         fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Diario.fechaM, ascending: false)]
         
         do {
-            self.listDiario = try context.fetch(fetchRequest)
+            self.listDiario = deduplicateDiarioRows(try context.fetch(fetchRequest))
         } catch {
             msg("Failed to fetch notes: \(error)")
         }
@@ -899,6 +899,62 @@ final class watchModel: ObservableObject {
     
     enum Antiguedad : String{
         case tresDias, semana, quincena, mes, dosMeses, tresMeses, seisMeses, unAno, dosAnos, tresAnos, cincoAnos, diezAnos
+    }
+
+    private func deduplicateDiarioRows(_ fetched: [Diario]) -> [Diario] {
+        let groupedByID = Dictionary(grouping: fetched) { item in
+            item.id?.uuidString ?? ""
+        }
+
+        var idsToDelete = Set<NSManagedObjectID>()
+
+        for (id, items) in groupedByID where !id.isEmpty && items.count > 1 {
+            let keeper = items.max { lhs, rhs in
+                (lhs.fechaM ?? lhs.fecha ?? .distantPast) < (rhs.fechaM ?? rhs.fecha ?? .distantPast)
+            }
+
+            for item in items where item.objectID != keeper?.objectID {
+                idsToDelete.insert(item.objectID)
+                context.delete(item)
+            }
+        }
+
+        guard !idsToDelete.isEmpty else { return fetched }
+        try? context.save()
+        return fetched.filter { !idsToDelete.contains($0.objectID) }
+    }
+
+    private func deduplicateAgendaRows(_ fetched: [NSManagedObject]) -> [NSManagedObject] {
+        let groupedByID = Dictionary(grouping: fetched) { item in
+            (item.value(forKey: "id") as? UUID)?.uuidString ?? ""
+        }
+
+        var idsToDelete = Set<NSManagedObjectID>()
+
+        for (id, items) in groupedByID where !id.isEmpty && items.count > 1 {
+            let keeper = items.max { lhs, rhs in
+                agendaComparableDate(lhs) < agendaComparableDate(rhs)
+            }
+
+            for item in items where item.objectID != keeper?.objectID {
+                idsToDelete.insert(item.objectID)
+                context.delete(item)
+            }
+        }
+
+        guard !idsToDelete.isEmpty else { return fetched }
+        try? context.save()
+        return fetched.filter { !idsToDelete.contains($0.objectID) }
+    }
+
+    private func agendaComparableDate(_ object: NSManagedObject) -> Date {
+        if let modified = object.value(forKey: "fechaModificacion") as? Date {
+            return modified
+        }
+        if let created = object.value(forKey: "fechaCreacion") as? Date {
+            return created
+        }
+        return .distantPast
     }
 }
 

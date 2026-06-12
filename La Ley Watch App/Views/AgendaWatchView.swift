@@ -111,54 +111,172 @@ private struct AddAgendaEntryWatchView: View {
     @State private var lugar = ""
     @State private var fecha = Date()
     @State private var hora = Date()
+    @StateObject private var locationCapture = WatchLocationCapture()
+    @State private var isResolvingLocation = false
+    @State private var showAlert = false
+    @State private var alertMessage = ""
 
     let onSave: (String, String, String, Date, Date) -> Void
+
+    var body: some View {
+        NavigationStack {
+            ZStack {
+                LinearGradient(colors: [.red, .orange], startPoint: .bottom, endPoint: .top)
+                    .ignoresSafeArea()
+
+                ScrollView {
+                    VStack(spacing: 8) {
+                        Text("Nueva entrada")
+                            .fontDesign(.serif)
+                            .foregroundStyle(.black)
+                            .bold()
+
+                        TextFieldLink("Título: \(title)", prompt: Text("Título")) { value in
+                            title = value
+                        }
+                        .frame(height: 36)
+
+                        TextFieldLink("Detalle: \(contenido)", prompt: Text("Detalle")) { value in
+                            contenido = value
+                        }
+                        .frame(height: 36)
+
+                        locationButton
+
+                        if !lugar.isEmpty {
+                            Text(lugar)
+                                .font(.system(size: 11))
+                                .lineLimit(2)
+                                .foregroundStyle(.black)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(.horizontal, 6)
+                        }
+
+                        NavigationLink {
+                            AgendaDateSelectionWatchView(fecha: $fecha)
+                        } label: {
+                            Label(fecha.formatted(date: .abbreviated, time: .omitted), systemImage: "calendar")
+                                .foregroundStyle(.black)
+                                .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(.bordered)
+
+                        NavigationLink {
+                            AgendaTimeSelectionWatchView(hora: $hora)
+                        } label: {
+                            Label(hora.formatted(date: .omitted, time: .shortened), systemImage: "clock")
+                                .foregroundStyle(.black)
+                                .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(.bordered)
+
+                        Button("Guardar") {
+                            onSave(title, contenido, lugar, fecha, hora)
+                            dismiss()
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .tint(.orange)
+                        .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                    }
+                    .padding(.horizontal, 10)
+                    .padding(.top, 6)
+                }
+            }
+            .alert("Agenda", isPresented: $showAlert) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text(alertMessage)
+            }
+        }
+    }
+
+    private var locationButton: some View {
+        Button {
+            attachCurrentLocation()
+        } label: {
+            HStack(spacing: 6) {
+                if isResolvingLocation {
+                    ProgressView()
+                        .progressViewStyle(.circular)
+                        .tint(.black)
+                } else {
+                    Image(systemName: "location.fill")
+                        .foregroundStyle(.black)
+                }
+
+                Text(lugar.isEmpty ? "Lugar" : "Actualizar lugar")
+                    .foregroundStyle(.black)
+
+                if !lugar.isEmpty {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundStyle(.green)
+                }
+            }
+            .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.bordered)
+        .disabled(isResolvingLocation)
+    }
+
+    private func attachCurrentLocation() {
+        guard !isResolvingLocation else { return }
+
+        isResolvingLocation = true
+        locationCapture.captureCurrentAddress { result in
+            isResolvingLocation = false
+            switch result {
+            case .success(let coordinates):
+                lugar = coordinates
+            case .failure(let error):
+                alertMessage = error.localizedDescription
+                showAlert = true
+            }
+        }
+    }
+}
+
+private struct AgendaDateSelectionWatchView: View {
+    @Binding var fecha: Date
 
     var body: some View {
         ZStack {
             LinearGradient(colors: [.red, .orange], startPoint: .bottom, endPoint: .top)
                 .ignoresSafeArea()
 
-            ScrollView {
-                VStack(spacing: 8) {
-                    Text("Nueva entrada")
-                        .fontDesign(.serif)
-                        .foregroundStyle(.black)
-                        .bold()
+            VStack(spacing: 8) {
+                Text("Fecha")
+                    .fontDesign(.serif)
+                    .foregroundStyle(.black)
+                    .bold()
 
-                    TextFieldLink("Título: \(title)", prompt: Text("Título")) { value in
-                        title = value
-                    }
-                    .frame(height: 36)
-
-                    TextFieldLink("Detalle: \(contenido)", prompt: Text("Detalle")) { value in
-                        contenido = value
-                    }
-                    .frame(height: 36)
-
-                    TextFieldLink("Lugar: \(lugar)", prompt: Text("Lugar")) { value in
-                        lugar = value
-                    }
-                    .frame(height: 36)
-
-                    DatePicker("Fecha", selection: $fecha, displayedComponents: [.date])
-                        .labelsHidden()
-                        .frame(minHeight: 58)
-
-                    DatePicker("Hora", selection: $hora, displayedComponents: [.hourAndMinute])
-                        .labelsHidden()
-
-                    Button("Guardar") {
-                        onSave(title, contenido, lugar, fecha, hora)
-                        dismiss()
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .tint(.orange)
-                    .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-                }
-                .padding(.horizontal, 10)
-                .padding(.top, 6)
+                DatePicker("Fecha", selection: $fecha, displayedComponents: [.date])
+                    .labelsHidden()
+                    .frame(minHeight: 80)
             }
+            .padding(.horizontal, 10)
+        }
+    }
+}
+
+private struct AgendaTimeSelectionWatchView: View {
+    @Binding var hora: Date
+
+    var body: some View {
+        ZStack {
+            LinearGradient(colors: [.red, .orange], startPoint: .bottom, endPoint: .top)
+                .ignoresSafeArea()
+
+            VStack(spacing: 8) {
+                Text("Hora")
+                    .fontDesign(.serif)
+                    .foregroundStyle(.black)
+                    .bold()
+
+                DatePicker("Hora", selection: $hora, displayedComponents: [.hourAndMinute])
+                    .labelsHidden()
+                    .frame(minHeight: 80)
+            }
+            .padding(.horizontal, 10)
         }
     }
 }
