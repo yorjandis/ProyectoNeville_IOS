@@ -62,8 +62,12 @@ struct AddNota : View {
                             ProgressView()
                                 .frame(maxWidth: .infinity)
                         } else {
-                            Label("Añadir coordenadas", systemImage: "location")
-                                .foregroundStyle(.black)
+                            HStack(spacing: 6) {
+                                Image(systemName: direccionMapa.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "location" : "checkmark.circle.fill")
+                                    .foregroundStyle(direccionMapa.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? Color.black : Color.green)
+                                Text("Añadir coordenadas")
+                                    .foregroundStyle(.black)
+                            }
                                 .frame(maxWidth: .infinity)
                         }
                     }

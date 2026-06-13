@@ -78,8 +78,15 @@ struct AgendaEditorView: View {
                             TextField("Coordenadas", text: $lugar, axis: .vertical)
                                 .foregroundStyle(editorTextColor)
                         }
-                        Button("Coordenadas actuales") {
+                        Button {
                             captureCurrentAddress()
+                        } label: {
+                            Label {
+                                Text("Coordenadas actuales")
+                            } icon: {
+                                Image(systemName: lugar.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "location.fill" : "checkmark.circle.fill")
+                                    .foregroundStyle(lugar.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? Color.primary : Color.green)
+                            }
                         }
                         .buttonStyle(.bordered)
                         .disabled(isCapturingLocation)

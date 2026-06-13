@@ -120,7 +120,12 @@ struct editContent : View {
                                 }
                             }
                         } label: {
-                            Label("Coordenadas actuales", systemImage: "location.fill")
+                            Label {
+                                Text("Coordenadas actuales")
+                            } icon: {
+                                Image(systemName: direccionMapa.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "location.fill" : "checkmark.circle.fill")
+                                    .foregroundStyle(direccionMapa.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? Color.primary : Color.green)
+                            }
                         }
                         .buttonStyle(.bordered)
                         .disabled(isCapturingLocation)
