@@ -65,9 +65,14 @@ final class WatchDiarioTransferSender: NSObject {
     }
 
     func sendCreatedDiario(_ payload: WatchDiarioTransferPayload) {
-        // Diario se sincroniza mediante Core Data + CloudKit. WatchConnectivity queda
-        // como compatibilidad de lectura en receptores antiguos, no como fuente de verdad.
-        _ = payload
+        guard let session else { return }
+
+        let userInfo = [WatchDiarioTransferPayload.userInfoKey: payload.toDictionary()]
+        session.transferUserInfo(userInfo)
+
+        if session.isReachable {
+            session.sendMessage(userInfo, replyHandler: nil, errorHandler: nil)
+        }
     }
 
 }

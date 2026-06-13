@@ -35,7 +35,7 @@ struct Ajustes: View {
     @State private var showCardioMusicImporter: Bool = false
     @State private var cardioMusicImportErrorMessage: String?
 #if os(iOS)
-    @StateObject private var notesLocationPermission = NotesLocationPermissionManager()
+    @StateObject private var locationPermission = LocationPermissionManager()
 #endif
     
     private let context2 = CoreDataController.shared.context
@@ -1202,19 +1202,21 @@ struct Ajustes: View {
                             }
                         }
 
+                    }
+
+                    Section("Ubicación") {
                         VStack(alignment: .leading, spacing: 8) {
                             Button {
-                                notesLocationPermission.requestWhenInUsePermission()
+                                locationPermission.requestWhenInUsePermission()
                             } label: {
-                                Label(notesLocationPermission.buttonTitle, systemImage: "location.fill")
+                                Label(locationPermission.buttonTitle, systemImage: "location.fill")
                             }
-                            .disabled(!notesLocationPermission.canRequestPermission)
+                            .disabled(!locationPermission.canRequestPermission)
 
-                            Text(notesLocationPermission.statusDescription)
+                            Text(locationPermission.statusDescription)
                                 .font(.footnote)
                                 .foregroundStyle(.secondary)
                         }
-                        
                     }
                     
                     //Ventana del Diario siempre abierte, después del primer uso:
@@ -1568,7 +1570,7 @@ struct Ajustes: View {
         }
 #if os(iOS)
         .onAppear {
-            notesLocationPermission.refreshStatus()
+            locationPermission.refreshStatus()
         }
 #endif
         .alert(isPresented: $showAlert) {
@@ -1691,7 +1693,7 @@ extension Int: @retroactive Identifiable {
 
 #if os(iOS)
 @MainActor
-final class NotesLocationPermissionManager: NSObject, ObservableObject, CLLocationManagerDelegate {
+final class LocationPermissionManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published private(set) var authorizationStatus: CLAuthorizationStatus = .notDetermined
 
     private let manager = CLLocationManager()
@@ -1722,9 +1724,9 @@ final class NotesLocationPermissionManager: NSObject, ObservableObject, CLLocati
     var statusDescription: String {
         switch authorizationStatus {
         case .notDetermined:
-            return "Permite guardar la dirección actual al crear o editar una nota."
+            return "Permite guardar la dirección actual en Notas, Agenda y Diario cuando uses esta opción."
         case .authorizedWhenInUse, .authorizedAlways:
-            return "Las notas pueden guardar la ubicación actual cuando uses esta opción."
+            return "Notas, Agenda y Diario pueden guardar la ubicación actual cuando uses esta opción."
         case .denied:
             return "El permiso fue denegado. Puedes activarlo desde Ajustes del sistema."
         case .restricted:

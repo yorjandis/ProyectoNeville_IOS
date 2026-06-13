@@ -1,4 +1,5 @@
 import Foundation
+import WatchConnectivity
 
 struct WatchNoteTransferPayload {
     static let userInfoKey = "watch_note_payload_v1"
@@ -49,15 +50,25 @@ struct WatchNoteTransferPayload {
 }
 
 @MainActor
-final class WatchNotesTransferSender {
+final class WatchNotesTransferSender: NSObject {
     static let shared = WatchNotesTransferSender()
 
-    private init() {}
+    private let session: WCSession? = WCSession.isSupported() ? WCSession.default : nil
+
+    private override init() {
+        super.init()
+        session?.activate()
+    }
 
     func sendCreatedNote(_ payload: WatchNoteTransferPayload) {
-        // Las notas del watch se guardan en Core Data con CloudKit activado.
-        // Enviarlas también por WatchConnectivity crea una segunda ruta hacia iOS.
-        _ = payload
+        guard let session else { return }
+
+        let userInfo = [WatchNoteTransferPayload.userInfoKey: payload.toDictionary()]
+        session.transferUserInfo(userInfo)
+
+        if session.isReachable {
+            session.sendMessage(userInfo, replyHandler: nil, errorHandler: nil)
+        }
     }
 
 }

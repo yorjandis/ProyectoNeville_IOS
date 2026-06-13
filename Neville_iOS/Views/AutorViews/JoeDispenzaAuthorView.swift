@@ -161,10 +161,15 @@ struct JoeDispenzaAuthorView: View {
                             .foregroundStyle(.black)
 
                         ScrollView(.horizontal, showsIndicators: false) {
+                            
                             HStack(spacing: 12) {
                                 card(title: "Serie La Fórmula", buttonTitle1: "Capítulos", buttonAction1: { route = .serieLaFormulaMenu })
                             }
                             .padding(.vertical, 2)
+                            
+                           
+                            
+                            
                         }
                     }
                 }
