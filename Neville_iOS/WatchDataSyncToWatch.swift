@@ -9,6 +9,7 @@ final class WatchDataSyncToWatch: NSObject {
 
     private enum Keys {
         static let notesBatch = "ios_notes_batch_v1"
+        static let noteDelete = "ios_note_delete_v1"
         static let diarioBatch = "ios_diario_batch_v1"
         static let agendaBatch = "ios_agenda_batch_v1"
         static let premiumState = "ios_premium_state_v1"
@@ -64,6 +65,14 @@ final class WatchDataSyncToWatch: NSObject {
             .receive(on: RunLoop.main)
             .sink { [weak self] _ in
                 self?.sendPremiumState()
+            }
+            .store(in: &observers)
+
+        center.publisher(for: .noteDeletedForWatchSync)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] notification in
+                guard let noteID = notification.userInfo?["id"] as? String else { return }
+                self?.sendDeletedNote(id: noteID)
             }
             .store(in: &observers)
     }
@@ -135,6 +144,20 @@ final class WatchDataSyncToWatch: NSObject {
 
         try? session.updateApplicationContext(message)
         session.transferUserInfo(message)
+        if session.isReachable {
+            session.sendMessage(message, replyHandler: nil, errorHandler: nil)
+        }
+    }
+
+    private func sendDeletedNote(id: String) {
+        guard let session else { return }
+
+        let trimmedID = id.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedID.isEmpty else { return }
+
+        let message = [Keys.noteDelete: ["id": trimmedID]]
+        session.transferUserInfo(message)
+
         if session.isReachable {
             session.sendMessage(message, replyHandler: nil, errorHandler: nil)
         }

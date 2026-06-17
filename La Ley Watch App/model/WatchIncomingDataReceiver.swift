@@ -8,6 +8,7 @@ final class WatchIncomingDataReceiver: NSObject, WCSessionDelegate {
 
     private enum Keys {
         static let notesBatch = "ios_notes_batch_v1"
+        static let noteDelete = "ios_note_delete_v1"
         static let diarioBatch = "ios_diario_batch_v1"
         static let agendaBatch = "ios_agenda_batch_v1"
         static let premiumState = "ios_premium_state_v1"
@@ -45,6 +46,14 @@ final class WatchIncomingDataReceiver: NSObject, WCSessionDelegate {
             return
         }
 
+        if let rawDeletedNote = payload[Keys.noteDelete] as? [String: Any],
+           let noteID = rawDeletedNote["id"] as? String {
+            Task { @MainActor in
+                await self.deleteNote(id: noteID)
+            }
+            return
+        }
+
         if let rawNote = payload[Keys.notesBatch] as? [String: Any],
            let notePayload = WatchNoteTransferPayload.fromDictionary(rawNote) {
             Task { @MainActor in
@@ -65,6 +74,45 @@ final class WatchIncomingDataReceiver: NSObject, WCSessionDelegate {
            let agendaPayload = WatchAgendaTransferPayload.fromDictionary(rawAgenda) {
             Task { @MainActor in
                 await self.upsertAgenda(payload: agendaPayload)
+            }
+        }
+    }
+
+    private func deleteNote(id: String) async {
+        let noteID = id.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !noteID.isEmpty else { return }
+
+        let store = CoreDataController.shared
+
+        do {
+            if store.persistentContainer.persistentStoreCoordinator.persistentStores.isEmpty {
+                try await store.cargarStores()
+            }
+        } catch {
+            msg("❌ No se pudo cargar Core Data para eliminar nota en watchOS: \(error.localizedDescription)")
+            return
+        }
+
+        let context = store.persistentContainer.newBackgroundContext()
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+
+        await context.perform {
+            let request: NSFetchRequest<Notas> = Notas.fetchRequest()
+            request.predicate = NSPredicate(format: "id == %@", noteID)
+
+            do {
+                let notes = try context.fetch(request)
+                guard !notes.isEmpty else { return }
+
+                notes.forEach(context.delete)
+                try context.save()
+
+                Task { @MainActor in
+                    watchModel.shared.getNotas()
+                }
+            } catch {
+                context.rollback()
+                msg("❌ No se pudo eliminar nota en watchOS: \(error.localizedDescription)")
             }
         }
     }

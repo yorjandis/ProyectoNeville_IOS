@@ -79,6 +79,9 @@ struct DiarioListView: View {
     @State private var exportFromDate = Date.now
     @State private var exportToDate = Date.now
     @State private var manuallySelectedDiarioIDs: Set<UUID> = []
+    @State private var isBatchSelectionMode = false
+    @State private var batchSelectedDiarioIDs: Set<UUID> = []
+    @State private var showBatchDeleteConfirmation = false
     @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
     @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) private var yorjPremium: Bool = false
     
@@ -135,31 +138,19 @@ struct DiarioListView: View {
                             }
                             .background(Color.black.opacity(0.05))
                         }
+
+                        if isBatchSelectionMode {
+                            batchSelectionToolbar
+                                .padding(.horizontal, 15)
+                                .padding(.vertical, 8)
+                                .transition(.move(edge: .top).combined(with: .opacity))
+                        }
+
                             ScrollView(){
                                 if self.securityModel.canOpenDiario {
                                         LazyVStack{
                                             ForEach(modelDiario.list) { item in
-                                                cardItemDiario(
-                                                    diario: item,
-                                                    onEntryDeleted: { deletedDate in
-                                                        withAnimation {
-                                                            refreshAfterEntryDeletion(deletedDate)
-                                                        }
-                                                    },
-                                                    onEntryUpdated: { updatedDate in
-                                                        withAnimation {
-                                                            refreshAfterEntryUpdate(updatedDate)
-                                                        }
-                                                    }
-                                                )
-                                                    .padding(15)
-                                                    .frame(maxWidth: .infinity)
-                                                    .foregroundStyle(Color.black)
-                                                    .background(.white.opacity(0.7))
-                                                    .clipShape(RoundedRectangle(cornerRadius: 10))
-                                                    .shadow(radius: 5)
-                                                    .padding(.horizontal, 15)
-                                                    .padding(.vertical, 8)
+                                                diarioCard(for: item)
                                             }
                                         }
                                     }
@@ -169,6 +160,10 @@ struct DiarioListView: View {
                     .onAppear{
                         selectedCalendarDate = nil
                         self.modelDiario.getAllItem()
+                    }
+                    .onChange(of: modelDiario.list.map { $0.id }) { _, ids in
+                        let visibleIDs = Set(ids.compactMap { $0 })
+                        batchSelectedDiarioIDs = batchSelectedDiarioIDs.intersection(visibleIDs)
                     }
                     
                 }else{ //Ventana de Autenticación
@@ -312,6 +307,18 @@ struct DiarioListView: View {
                         }
                     }
                     
+                    if #available(iOS 26.0, macOS 26.0, *) {
+                        ToolbarSpacer(.fixed)
+                    }
+
+                    ToolbarItem {
+                        Button {
+                            toggleBatchSelectionMode()
+                        } label: {
+                            Label(isBatchSelectionMode ? "Cancelar selección" : "Seleccionar", systemImage: isBatchSelectionMode ? "xmark.circle" : "checklist")
+                        }
+                    }
+
                     if #available(iOS 26.0, macOS 26.0, *) {
                         ToolbarSpacer(.fixed)
                     }
@@ -715,8 +722,176 @@ struct DiarioListView: View {
             } message: {
                 Text(self.alertMessage)
             }
+            .alert("¿Desea eliminar las entradas seleccionadas?", isPresented: $showBatchDeleteConfirmation) {
+                Button("Cancelar", role: .cancel) {}
+                Button("Eliminar", role: .destructive) {
+                    deleteSelectedEntries()
+                }
+            } message: {
+                Text("Esta acción no puede deshacerse.")
+            }
   
          }
+    }
+
+    private var batchSelectionToolbar: some View {
+        HStack(spacing: 12) {
+            Text("\(batchSelectedDiarioIDs.count) seleccionadas")
+                .font(.subheadline.bold())
+                .foregroundStyle(.black)
+
+            Spacer()
+
+            Button {
+                toggleVisibleEntriesSelection()
+            } label: {
+                Label(areAllVisibleEntriesSelected ? "Ninguna" : "Todas", systemImage: areAllVisibleEntriesSelected ? "minus.circle" : "checkmark.circle")
+                    .labelStyle(.iconOnly)
+            }
+            .buttonStyle(.bordered)
+            .tint(.black)
+            .help(areAllVisibleEntriesSelected ? "Deseleccionar visibles" : "Seleccionar visibles")
+
+            Menu {
+                ForEach(Emociones.allCases, id: \.self) { emocion in
+                    Button {
+                        updateSelectedEntriesEmotion(emocion)
+                    } label: {
+                        HStack {
+                            Text(emocion.rawValue.capitalized)
+                            Text(emocion.emoji)
+                        }
+                    }
+                }
+            } label: {
+                Label("Cambiar emoción", systemImage: "face.smiling")
+                    .labelStyle(.iconOnly)
+            }
+            .buttonStyle(.bordered)
+            .tint(.black)
+            .disabled(batchSelectedDiarioIDs.isEmpty)
+            .help("Cambiar emoción")
+
+            Button(role: .destructive) {
+                showBatchDeleteConfirmation = true
+            } label: {
+                Label("Borrar", systemImage: "trash")
+                    .labelStyle(.iconOnly)
+            }
+            .buttonStyle(.bordered)
+            .tint(.red)
+            .disabled(batchSelectedDiarioIDs.isEmpty)
+            .help("Borrar seleccionadas")
+        }
+        .padding(10)
+        .background(.white.opacity(0.82))
+        .clipShape(RoundedRectangle(cornerRadius: 10))
+        .shadow(radius: 3)
+    }
+
+    @ViewBuilder
+    private func diarioCard(for item: Diario) -> some View {
+        let isSelected = isDiarioSelected(item)
+
+        cardItemDiario(
+            diario: item,
+            onEntryDeleted: { deletedDate in
+                withAnimation {
+                    refreshAfterEntryDeletion(deletedDate)
+                }
+            },
+            onEntryUpdated: { updatedDate in
+                withAnimation {
+                    refreshAfterEntryUpdate(updatedDate)
+                }
+            },
+            isSelectionMode: isBatchSelectionMode,
+            isSelected: isSelected,
+            onSelectionToggle: {
+                toggleBatchSelection(item)
+            }
+        )
+        .padding(15)
+        .frame(maxWidth: .infinity)
+        .foregroundStyle(Color.black)
+        .background(.white.opacity(0.7))
+        .overlay(
+            RoundedRectangle(cornerRadius: 10)
+                .stroke(isSelected ? Color.orange : Color.clear, lineWidth: 2)
+        )
+        .clipShape(RoundedRectangle(cornerRadius: 10))
+        .shadow(radius: 5)
+        .padding(.horizontal, 15)
+        .padding(.vertical, 8)
+    }
+
+    private var visibleDiarioIDs: Set<UUID> {
+        Set(modelDiario.list.compactMap { $0.id })
+    }
+
+    private var areAllVisibleEntriesSelected: Bool {
+        let ids = visibleDiarioIDs
+        return !ids.isEmpty && ids.isSubset(of: batchSelectedDiarioIDs)
+    }
+
+    private func toggleBatchSelectionMode() {
+        withAnimation {
+            isBatchSelectionMode.toggle()
+            if !isBatchSelectionMode {
+                batchSelectedDiarioIDs.removeAll()
+            }
+        }
+    }
+
+    private func isDiarioSelected(_ item: Diario) -> Bool {
+        guard let id = item.id else { return false }
+        return batchSelectedDiarioIDs.contains(id)
+    }
+
+    private func toggleBatchSelection(_ item: Diario) {
+        guard let id = item.id else { return }
+        if batchSelectedDiarioIDs.contains(id) {
+            batchSelectedDiarioIDs.remove(id)
+        } else {
+            batchSelectedDiarioIDs.insert(id)
+        }
+    }
+
+    private func toggleVisibleEntriesSelection() {
+        let ids = visibleDiarioIDs
+        if areAllVisibleEntriesSelected {
+            batchSelectedDiarioIDs.subtract(ids)
+        } else {
+            batchSelectedDiarioIDs.formUnion(ids)
+        }
+    }
+
+    private func deleteSelectedEntries() {
+        let idsToDelete = batchSelectedDiarioIDs
+        guard !idsToDelete.isEmpty else { return }
+
+        withAnimation {
+            modelDiario.DeleteItems(ids: idsToDelete)
+            finishBatchOperation()
+            refreshAfterEntryDeletion(nil)
+        }
+    }
+
+    private func updateSelectedEntriesEmotion(_ emotion: Emociones) {
+        let idsToUpdate = batchSelectedDiarioIDs
+        guard !idsToUpdate.isEmpty else { return }
+
+        withAnimation {
+            modelDiario.UpdateEmoticono(emoticono: emotion, ids: idsToUpdate)
+            finishBatchOperation()
+            refreshAfterEntryUpdate(nil)
+        }
+    }
+
+    private func finishBatchOperation() {
+        batchSelectedDiarioIDs.removeAll()
+        isBatchSelectionMode = false
+        calendarRefreshTrigger += 1
     }
 
     private func openNewEntryEditor(title: String, content: String, emocion: Emociones, date: Date) {
@@ -909,8 +1084,6 @@ struct DiarioListView: View {
     }
 
 }
-
-
 
 
 

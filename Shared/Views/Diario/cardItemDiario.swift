@@ -16,6 +16,9 @@ struct cardItemDiario: View{
     @State var diario : Diario //Entrada a mostrar
     var onEntryDeleted: (Date?) -> Void = { _ in }
     var onEntryUpdated: (Date?) -> Void = { _ in }
+    var isSelectionMode: Bool = false
+    var isSelected: Bool = false
+    var onSelectionToggle: () -> Void = {}
     
     @StateObject private var diarioModel = DiarioModel.shared
     
@@ -44,6 +47,19 @@ struct cardItemDiario: View{
         VStack(spacing: 20){
             //EmotioIcon
             HStack{
+                if isSelectionMode {
+                    Button {
+                        onSelectionToggle()
+                    } label: {
+                        Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                            .font(.system(size: 26))
+                            .foregroundStyle(isSelected ? Color.orange : Color.black.opacity(0.65))
+                            .frame(width: 36, height: 36)
+                    }
+                    .buttonStyle(.plain)
+                    .contentShape(Rectangle())
+                }
+
                 Menu{
                     ForEach(Emociones.allCases, id: \.self) { emocion in
                         Button {
@@ -62,11 +78,13 @@ struct cardItemDiario: View{
                     Text(Emociones.emoji(from: diario.emotion))
                         .font(.system(size: 40))
                 }
+                .disabled(isSelectionMode)
                 
                 //Título
                 Text(diario.title ?? "")
                     .font(.headline).bold()
                     .onTapGesture(count: 2) {
+                        guard !isSelectionMode else { return }
                         self.title = diario.title ?? ""
                         #if os(macOS)
                         showWindow(for: VStack{
@@ -111,6 +129,10 @@ struct cardItemDiario: View{
                     .fontWeight(.heavy)
                     .lineLimit(self.diarioModel.expandirEntrada == self.diario.fecha?.formatted() ? nil :  1) //Aquí es donde se contrae o se expande las lineas
                     .onTapGesture{
+                        guard !isSelectionMode else {
+                            onSelectionToggle()
+                            return
+                        }
                         withAnimation {
                             if self.diarioModel.expandirEntrada == self.diario.fecha?.formatted(){
                                 self.diarioModel.expandirEntrada = ""
@@ -120,6 +142,7 @@ struct cardItemDiario: View{
                         }
                     }
                     .onTapGesture(count: 2) {
+                        guard !isSelectionMode else { return }
                         
                         #if os(macOS)
                         showWindow(for: editContent(diario: $diario, textTitle:diario.title ?? "", textContent: diario.content ?? "", direccionMapa: diario.value(forKey: "direccionMapa") as? String ?? "", emoticono: diarioModel.getEmocionesFromStr(value: diario.emotion ?? "neutral"), onEntryUpdated: onEntryUpdated),
@@ -168,6 +191,7 @@ struct cardItemDiario: View{
                     Spacer()
                     //Favorito
                     Button{
+                        guard !isSelectionMode else { return }
                         isfav.toggle()
                         diarioModel.UpdateFav(isFav: isfav, diario: diario)
                         animValue += 1
@@ -256,8 +280,15 @@ struct cardItemDiario: View{
                     
                 }//menu
                 .buttonStyle(.plain)
+                .disabled(isSelectionMode)
                     
                 }
+            }
+        }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            if isSelectionMode {
+                onSelectionToggle()
             }
         }
 

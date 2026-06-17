@@ -9,6 +9,10 @@ import Foundation
 import CoreData
 import Combine
 
+extension Notification.Name {
+    static let noteDeletedForWatchSync = Notification.Name("noteDeletedForWatchSync")
+}
+
 //Manejo de la tabla Notas
 @MainActor
 final class NotasModel : ObservableObject  {
@@ -165,8 +169,21 @@ final class NotasModel : ObservableObject  {
     ///Elimina una nota
     /// - Parameter nota : El objeto Nota a eliminar
     func deleteNota(nota : Notas){
+        let noteID = (nota.id ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
         context.delete(nota)
-        try? context.save()
+        do {
+            try context.save()
+            if !noteID.isEmpty {
+                NotificationCenter.default.post(
+                    name: .noteDeletedForWatchSync,
+                    object: nil,
+                    userInfo: ["id": noteID]
+                )
+            }
+        } catch {
+            context.rollback()
+            msg(error.localizedDescription)
+        }
     }
     
     ///Modifica una nota

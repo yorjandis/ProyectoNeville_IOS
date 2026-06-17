@@ -311,6 +311,26 @@ final class DiarioModel : ObservableObject{
             }
         }
     }
+
+    ///Elimina varias entradas del diario en una sola operación.
+    func DeleteItems(ids: Set<UUID>) {
+        guard !ids.isEmpty else { return }
+
+        let fetchRequest: NSFetchRequest<Diario> = Diario.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "id IN %@", Array(ids))
+
+        do {
+            let entries = try context.fetch(fetchRequest)
+            entries.forEach { context.delete($0) }
+
+            if context.hasChanges {
+                try context.save()
+            }
+        } catch {
+            context.rollback()
+            msg(error.localizedDescription)
+        }
+    }
     
     //Actualizar el emoticono
     func UpdateEmoticono(emoticono : Emociones, diario : Diario){
@@ -318,6 +338,30 @@ final class DiarioModel : ObservableObject{
         diario.fechaM = Date.now
         if context.hasChanges {
             try? context.save()
+        }
+    }
+
+    ///Actualiza el emoticono de varias entradas del diario en una sola operación.
+    func UpdateEmoticono(emoticono: Emociones, ids: Set<UUID>) {
+        guard !ids.isEmpty else { return }
+
+        let fetchRequest: NSFetchRequest<Diario> = Diario.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "id IN %@", Array(ids))
+
+        do {
+            let entries = try context.fetch(fetchRequest)
+            let now = Date.now
+            entries.forEach { diario in
+                diario.emotion = emoticono.rawValue
+                diario.fechaM = now
+            }
+
+            if context.hasChanges {
+                try context.save()
+            }
+        } catch {
+            context.rollback()
+            msg(error.localizedDescription)
         }
     }
     
