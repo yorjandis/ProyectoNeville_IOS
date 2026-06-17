@@ -20,6 +20,10 @@ import Foundation
 import CoreData
 import Combine
 
+extension Notification.Name {
+    static let diarioDeletedForWatchSync = Notification.Name("diarioDeletedForWatchSync")
+}
+
 enum Emociones : String, CaseIterable{
     case feliz      = "feliz",
          triste     = "triste",
@@ -106,6 +110,7 @@ final class DiarioModel : ObservableObject{
             }
             .store(in: &observers)
 
+        #if !os(watchOS)
         center.publisher(
             for: NSPersistentCloudKitContainer.eventChangedNotification,
             object: CoreDataController.shared.persistentContainer
@@ -116,6 +121,7 @@ final class DiarioModel : ObservableObject{
             self?.getAllItem()
         }
         .store(in: &observers)
+        #endif
 
         center.publisher(for: .NSManagedObjectContextDidSave,
                          object: context)
@@ -302,11 +308,14 @@ final class DiarioModel : ObservableObject{
     
     ///Elimina un item de la tabla diario
     func DeleteItem(diario : Diario){
+         let diarioID = diario.id?.uuidString ?? ""
          context.delete(diario)
         if context.hasChanges {
             do{
                 try context.save()
+                postDeletedDiarioForWatchSync(id: diarioID)
             }catch{
+                context.rollback()
                 msg(error.localizedDescription)
             }
         }
@@ -321,15 +330,28 @@ final class DiarioModel : ObservableObject{
 
         do {
             let entries = try context.fetch(fetchRequest)
+            let deletedIDs = entries.compactMap { $0.id?.uuidString }
             entries.forEach { context.delete($0) }
 
             if context.hasChanges {
                 try context.save()
+                deletedIDs.forEach(postDeletedDiarioForWatchSync)
             }
         } catch {
             context.rollback()
             msg(error.localizedDescription)
         }
+    }
+
+    private func postDeletedDiarioForWatchSync(id: String) {
+        let trimmedID = id.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedID.isEmpty else { return }
+
+        NotificationCenter.default.post(
+            name: .diarioDeletedForWatchSync,
+            object: nil,
+            userInfo: ["id": trimmedID]
+        )
     }
     
     //Actualizar el emoticono

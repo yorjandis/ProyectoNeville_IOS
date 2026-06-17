@@ -43,7 +43,6 @@
 		911F24302F7B7D31009A77BE /* BruceLiptonAuthorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 911F242F2F7B7D31009A77BE /* BruceLiptonAuthorView.swift */; };
 		911F24312F7B7D31009A77BE /* BruceLiptonAuthorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 911F242F2F7B7D31009A77BE /* BruceLiptonAuthorView.swift */; };
 		914D7B492FC0A0FB00CDDB93 /* WatchNotesTransfer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914D7B482FC0A0FB00CDDB93 /* WatchNotesTransfer.swift */; };
-		914D7B4B2FC0A0FB00CDDB93 /* WatchNotesReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914D7B4A2FC0A0FB00CDDB93 /* WatchNotesReceiver.swift */; };
 		914D88772FC1AEDB00CDDB93 /* WatchDiarioTransfer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914D88762FC1AEDB00CDDB93 /* WatchDiarioTransfer.swift */; };
 		914D88792FC1AEF100CDDB93 /* WatchDiarioReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914D88782FC1AEF100CDDB93 /* WatchDiarioReceiver.swift */; };
 		914D887B2FC1AF1800CDDB93 /* WatchDiarioReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914D887A2FC1AF1800CDDB93 /* WatchDiarioReceiver.swift */; };
@@ -205,7 +204,6 @@
 		911F242F2F7B7D31009A77BE /* BruceLiptonAuthorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BruceLiptonAuthorView.swift; sourceTree = "<group>"; };
 		9122752B2D5A925200DE3AC6 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		914D7B482FC0A0FB00CDDB93 /* WatchNotesTransfer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchNotesTransfer.swift; sourceTree = "<group>"; };
-		914D7B4A2FC0A0FB00CDDB93 /* WatchNotesReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchNotesReceiver.swift; sourceTree = "<group>"; };
 		914D88762FC1AEDB00CDDB93 /* WatchDiarioTransfer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchDiarioTransfer.swift; sourceTree = "<group>"; };
 		914D88782FC1AEF100CDDB93 /* WatchDiarioReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchDiarioReceiver.swift; sourceTree = "<group>"; };
 		914D887A2FC1AF1800CDDB93 /* WatchDiarioReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchDiarioReceiver.swift; sourceTree = "<group>"; };
@@ -1652,7 +1650,6 @@
 				E92F644E2AB6EF5A007BB4BA /* Views */,
 				911FF1FA2ECB4064009F83BE /* Preview Content */,
 				914415A92EDC377200FFC61D /* Atajos */,
-				914D7B4A2FC0A0FB00CDDB93 /* WatchNotesReceiver.swift */,
 				914D887A2FC1AF1800CDDB93 /* WatchDiarioReceiver.swift */,
 				910765482FCC0055001CA6D2 /* WatchDataSyncToWatch.swift */,
 			);
@@ -2050,7 +2047,6 @@
 				91E2A7A42F7C5E37007A162A /* cardTemplate.swift in Sources */,
 				911F24272F7B7D31009A77BE /* NevilleAuthorView.swift in Sources */,
 				910765492FCC0055001CA6D2 /* WatchDataSyncToWatch.swift in Sources */,
-				914D7B4B2FC0A0FB00CDDB93 /* WatchNotesReceiver.swift in Sources */,
 				911F24302F7B7D31009A77BE /* BruceLiptonAuthorView.swift in Sources */,
 				911F242D2F7B7D31009A77BE /* GreggBradenAuthorView.swift in Sources */,
 				1954CDAA2B1152BC0093DDF0 /* AppIntentWidget.swift in Sources */,

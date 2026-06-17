@@ -79,19 +79,6 @@ final class watchModel: ObservableObject {
             }
             .store(in: &observers)
 
-        center.publisher(
-            for: NSPersistentCloudKitContainer.eventChangedNotification,
-            object: CoreDataController.shared.persistentContainer
-        )
-        .receive(on: RunLoop.main)
-        .sink { [weak self] _ in
-            self?.context.refreshAllObjects()
-            self?.getNotas()
-            self?.getDiarioEntradas()
-            self?.getAgendaEntradas()
-        }
-        .store(in: &observers)
-
         center.publisher(for: .NSManagedObjectContextDidSave,
                          object: context)
             .receive(on: RunLoop.main)
@@ -417,9 +404,11 @@ final class watchModel: ObservableObject {
     
     //Eliminar una nota
     func deleteNota(nota : NSManagedObject)->Bool{
+            let noteID = ((nota as? Notas)?.id ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
             self.context.delete(nota)
             do{
                 try self.context.save()
+                WatchNotesTransferSender.shared.sendDeletedNote(id: noteID)
                 return true
             }catch{
                 self.context.rollback()
@@ -665,6 +654,26 @@ final class watchModel: ObservableObject {
         )
     }
 
+    func deleteAgendaEntry(id: UUID) -> Bool {
+        let request = NSFetchRequest<NSManagedObject>(entityName: "AgendaItemEntity")
+        request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+
+        do {
+            let rows = try context.fetch(request)
+            guard !rows.isEmpty else { return false }
+
+            rows.forEach(context.delete)
+            try context.save()
+            getAgendaEntradas()
+            WatchAgendaTransferSender.shared.sendDeletedAgenda(id: id.uuidString)
+            return true
+        } catch {
+            context.rollback()
+            msg("Error al eliminar agenda desde watchOS: \(error.localizedDescription)")
+            return false
+        }
+    }
+
     //------DIARIO-----
     //Obtiene las entradas del Diario
     func getDiarioEntradas() {
@@ -720,6 +729,23 @@ final class watchModel: ObservableObject {
         } catch {
             context.rollback()
             msg("Error al guardar diario desde watchOS: \(error.localizedDescription)")
+            return false
+        }
+    }
+
+    func deleteDiarioEntry(_ diario: Diario) -> Bool {
+        guard let id = diario.id else { return false }
+
+        context.delete(diario)
+
+        do {
+            try context.save()
+            getDiarioEntradas()
+            WatchDiarioTransferSender.shared.sendDeletedDiario(id: id.uuidString)
+            return true
+        } catch {
+            context.rollback()
+            msg("Error al eliminar diario desde watchOS: \(error.localizedDescription)")
             return false
         }
     }

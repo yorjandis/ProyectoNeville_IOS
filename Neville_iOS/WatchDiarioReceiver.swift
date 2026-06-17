@@ -3,6 +3,42 @@ import CoreData
 #if canImport(WatchConnectivity)
 import WatchConnectivity
 
+struct WatchNoteTransferPayload {
+    static let userInfoKey = "watch_note_payload_v1"
+
+    let id: String
+    let title: String
+    let nota: String
+    let direccionMapa: String
+    let isfav: Bool
+    let fechaCreacion: Date
+    let fechaModificacion: Date
+
+    static func fromDictionary(_ dictionary: [String: Any]) -> WatchNoteTransferPayload? {
+        guard
+            let id = dictionary["id"] as? String,
+            let title = dictionary["title"] as? String,
+            let nota = dictionary["nota"] as? String,
+            let direccionMapa = dictionary["direccionMapa"] as? String,
+            let isfav = dictionary["isfav"] as? Bool,
+            let fechaCreacionInterval = dictionary["fechaCreacion"] as? TimeInterval,
+            let fechaModificacionInterval = dictionary["fechaModificacion"] as? TimeInterval
+        else {
+            return nil
+        }
+
+        return WatchNoteTransferPayload(
+            id: id,
+            title: title,
+            nota: nota,
+            direccionMapa: direccionMapa,
+            isfav: isfav,
+            fechaCreacion: Date(timeIntervalSince1970: fechaCreacionInterval),
+            fechaModificacion: Date(timeIntervalSince1970: fechaModificacionInterval)
+        )
+    }
+}
+
 struct WatchDiarioTransferPayload {
     static let userInfoKey = "watch_diario_payload_v1"
 
@@ -39,6 +75,17 @@ struct WatchDiarioTransferPayload {
             fecha: Date(timeIntervalSince1970: fechaInterval),
             fechaM: Date(timeIntervalSince1970: fechaMInterval)
         )
+    }
+}
+
+struct WatchDiarioDeleteTransferPayload {
+    static let userInfoKey = "watch_diario_delete_payload_v1"
+
+    let id: String
+
+    static func fromDictionary(_ dictionary: [String: Any]) -> WatchDiarioDeleteTransferPayload? {
+        guard let id = dictionary["id"] as? String else { return nil }
+        return WatchDiarioDeleteTransferPayload(id: id)
     }
 }
 
@@ -99,6 +146,28 @@ struct WatchAgendaTransferPayload {
     }
 }
 
+struct WatchAgendaDeleteTransferPayload {
+    static let userInfoKey = "watch_agenda_delete_payload_v1"
+
+    let id: String
+
+    static func fromDictionary(_ dictionary: [String: Any]) -> WatchAgendaDeleteTransferPayload? {
+        guard let id = dictionary["id"] as? String else { return nil }
+        return WatchAgendaDeleteTransferPayload(id: id)
+    }
+}
+
+struct WatchNoteDeleteTransferPayload {
+    static let userInfoKey = "watch_note_delete_payload_v1"
+
+    let id: String
+
+    static func fromDictionary(_ dictionary: [String: Any]) -> WatchNoteDeleteTransferPayload? {
+        guard let id = dictionary["id"] as? String else { return nil }
+        return WatchNoteDeleteTransferPayload(id: id)
+    }
+}
+
 @MainActor
 final class WatchDiarioReceiver: NSObject, WCSessionDelegate {
     static let shared = WatchDiarioReceiver()
@@ -129,6 +198,14 @@ final class WatchDiarioReceiver: NSObject, WCSessionDelegate {
     }
 
     private nonisolated func handleIncoming(_ payload: [String: Any]) {
+        if let raw = payload[WatchNoteDeleteTransferPayload.userInfoKey] as? [String: Any],
+           let deletePayload = WatchNoteDeleteTransferPayload.fromDictionary(raw) {
+            Task { @MainActor in
+                await self.deleteNote(id: deletePayload.id)
+            }
+            return
+        }
+
         if let raw = payload[WatchNoteTransferPayload.userInfoKey] as? [String: Any],
            let notePayload = WatchNoteTransferPayload.fromDictionary(raw) {
             Task { @MainActor in
@@ -145,10 +222,26 @@ final class WatchDiarioReceiver: NSObject, WCSessionDelegate {
             return
         }
 
+        if let raw = payload[WatchDiarioDeleteTransferPayload.userInfoKey] as? [String: Any],
+           let deletePayload = WatchDiarioDeleteTransferPayload.fromDictionary(raw) {
+            Task { @MainActor in
+                await self.deleteDiario(id: deletePayload.id)
+            }
+            return
+        }
+
         if let raw = payload[WatchAgendaTransferPayload.userInfoKey] as? [String: Any],
            let agendaPayload = WatchAgendaTransferPayload.fromDictionary(raw) {
             Task { @MainActor in
                 await self.upsertAgenda(payload: agendaPayload)
+            }
+            return
+        }
+
+        if let raw = payload[WatchAgendaDeleteTransferPayload.userInfoKey] as? [String: Any],
+           let deletePayload = WatchAgendaDeleteTransferPayload.fromDictionary(raw) {
+            Task { @MainActor in
+                await self.deleteAgenda(id: deletePayload.id)
             }
         }
     }
@@ -160,6 +253,41 @@ final class WatchDiarioReceiver: NSObject, WCSessionDelegate {
 
         defer { importingNoteIDs.remove(noteID) }
         await upsertNote(payload: payload)
+    }
+
+    private func deleteNote(id: String) async {
+        let noteID = id.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !noteID.isEmpty else { return }
+
+        let store = CoreDataController.shared
+
+        do {
+            if store.persistentContainer.persistentStoreCoordinator.persistentStores.isEmpty {
+                try await store.cargarStores()
+            }
+        } catch {
+            msg("❌ No se pudo cargar Core Data antes de eliminar nota de watch: \(error.localizedDescription)")
+            return
+        }
+
+        let context = store.persistentContainer.newBackgroundContext()
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+
+        await context.perform {
+            let request: NSFetchRequest<Notas> = Notas.fetchRequest()
+            request.predicate = NSPredicate(format: "id == %@", noteID)
+
+            do {
+                let notes = try context.fetch(request)
+                guard !notes.isEmpty else { return }
+
+                notes.forEach(context.delete)
+                try context.save()
+            } catch {
+                context.rollback()
+                msg("❌ No se pudo eliminar nota recibida desde watch: \(error.localizedDescription)")
+            }
+        }
     }
 
     private func upsertNote(payload: WatchNoteTransferPayload) async {
@@ -260,6 +388,41 @@ final class WatchDiarioReceiver: NSObject, WCSessionDelegate {
         }
     }
 
+    private func deleteDiario(id: String) async {
+        let diarioID = id.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard let uuid = UUID(uuidString: diarioID) else { return }
+
+        let store = CoreDataController.shared
+
+        do {
+            if store.persistentContainer.persistentStoreCoordinator.persistentStores.isEmpty {
+                try await store.cargarStores()
+            }
+        } catch {
+            msg("❌ No se pudo cargar Core Data antes de eliminar diario de watch: \(error.localizedDescription)")
+            return
+        }
+
+        let context = store.persistentContainer.newBackgroundContext()
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+
+        await context.perform {
+            let request: NSFetchRequest<Diario> = Diario.fetchRequest()
+            request.predicate = NSPredicate(format: "id == %@", uuid as CVarArg)
+
+            do {
+                let entries = try context.fetch(request)
+                guard !entries.isEmpty else { return }
+
+                entries.forEach(context.delete)
+                try context.save()
+            } catch {
+                context.rollback()
+                msg("❌ No se pudo eliminar diario recibido desde watch: \(error.localizedDescription)")
+            }
+        }
+    }
+
     private func upsertAgenda(payload: WatchAgendaTransferPayload) async {
         let store = CoreDataController.shared
 
@@ -317,6 +480,41 @@ final class WatchDiarioReceiver: NSObject, WCSessionDelegate {
             } catch {
                 context.rollback()
                 msg("❌ No se pudo importar agenda recibida desde watch: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    private func deleteAgenda(id: String) async {
+        let agendaID = id.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard let uuid = UUID(uuidString: agendaID) else { return }
+
+        let store = CoreDataController.shared
+
+        do {
+            if store.persistentContainer.persistentStoreCoordinator.persistentStores.isEmpty {
+                try await store.cargarStores()
+            }
+        } catch {
+            msg("❌ No se pudo cargar Core Data antes de eliminar agenda de watch: \(error.localizedDescription)")
+            return
+        }
+
+        let context = store.persistentContainer.newBackgroundContext()
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+
+        await context.perform {
+            let request = NSFetchRequest<NSManagedObject>(entityName: "AgendaItemEntity")
+            request.predicate = NSPredicate(format: "id == %@", uuid as CVarArg)
+
+            do {
+                let rows = try context.fetch(request)
+                guard !rows.isEmpty else { return }
+
+                rows.forEach(context.delete)
+                try context.save()
+            } catch {
+                context.rollback()
+                msg("❌ No se pudo eliminar agenda recibida desde watch: \(error.localizedDescription)")
             }
         }
     }

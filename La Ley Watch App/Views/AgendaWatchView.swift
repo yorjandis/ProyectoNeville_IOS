@@ -5,6 +5,8 @@ struct AgendaWatchView: View {
     @State private var filtro: watchModel.AgendaFiltroTemporal = .hoy
     @State private var showAddSheet = false
     @State private var showFilterDialog = false
+    @State private var showAlert = false
+    @State private var alertMessage = ""
 
     var body: some View {
         ZStack {
@@ -65,8 +67,25 @@ struct AgendaWatchView: View {
                             .font(.system(size: 10, weight: .medium, design: .serif))
                             .foregroundStyle(.black)
                     }
+                    .swipeActions {
+                        Button(role: .destructive) {
+                            if modelWatch.deleteAgendaEntry(id: item.id) {
+                                alertMessage = "Entrada eliminada"
+                            } else {
+                                alertMessage = "Error al eliminar entrada"
+                            }
+                            showAlert = true
+                        } label: {
+                            Label("Borrar", systemImage: "trash")
+                        }
+                    }
                 }
             }
+        }
+        .alert("Agenda", isPresented: $showAlert) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(alertMessage)
         }
         .confirmationDialog("Filtrar Agenda", isPresented: $showFilterDialog, titleVisibility: .visible) {
             Button("Hoy") {

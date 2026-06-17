@@ -53,6 +53,21 @@ struct WatchDiarioTransferPayload {
     }
 }
 
+struct WatchDiarioDeleteTransferPayload {
+    static let userInfoKey = "watch_diario_delete_payload_v1"
+
+    let id: String
+
+    func toDictionary() -> [String: Any] {
+        ["id": id]
+    }
+
+    static func fromDictionary(_ dictionary: [String: Any]) -> WatchDiarioDeleteTransferPayload? {
+        guard let id = dictionary["id"] as? String else { return nil }
+        return WatchDiarioDeleteTransferPayload(id: id)
+    }
+}
+
 @MainActor
 final class WatchDiarioTransferSender: NSObject {
     static let shared = WatchDiarioTransferSender()
@@ -68,6 +83,21 @@ final class WatchDiarioTransferSender: NSObject {
         guard let session else { return }
 
         let userInfo = [WatchDiarioTransferPayload.userInfoKey: payload.toDictionary()]
+        session.transferUserInfo(userInfo)
+
+        if session.isReachable {
+            session.sendMessage(userInfo, replyHandler: nil, errorHandler: nil)
+        }
+    }
+
+    func sendDeletedDiario(id: String) {
+        guard let session else { return }
+
+        let trimmedID = id.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedID.isEmpty else { return }
+
+        let payload = WatchDiarioDeleteTransferPayload(id: trimmedID)
+        let userInfo = [WatchDiarioDeleteTransferPayload.userInfoKey: payload.toDictionary()]
         session.transferUserInfo(userInfo)
 
         if session.isReachable {

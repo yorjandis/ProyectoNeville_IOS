@@ -228,6 +228,17 @@ final class AgendaViewModel: ObservableObject {
     private func observeStoreChanges() {
         let center = NotificationCenter.default
 
+        #if os(watchOS)
+        Publishers.Merge(
+            center.publisher(for: .coreDataStoresDidLoad),
+            center.publisher(for: .NSPersistentStoreRemoteChange)
+        )
+        .receive(on: RunLoop.main)
+        .sink { [weak self] _ in
+            self?.scheduleLoad(delay: 0.2)
+        }
+        .store(in: &cancellables)
+        #else
         Publishers.Merge3(
             center.publisher(for: .coreDataStoresDidLoad),
             center.publisher(for: .NSPersistentStoreRemoteChange),
@@ -241,6 +252,7 @@ final class AgendaViewModel: ObservableObject {
             self?.scheduleLoad(delay: 0.2)
         }
         .store(in: &cancellables)
+        #endif
     }
 
     private func mergedDate(_ date: Date, _ time: Date) -> Date {

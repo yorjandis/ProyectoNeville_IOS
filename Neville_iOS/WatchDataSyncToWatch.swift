@@ -11,7 +11,9 @@ final class WatchDataSyncToWatch: NSObject {
         static let notesBatch = "ios_notes_batch_v1"
         static let noteDelete = "ios_note_delete_v1"
         static let diarioBatch = "ios_diario_batch_v1"
+        static let diarioDelete = "ios_diario_delete_v1"
         static let agendaBatch = "ios_agenda_batch_v1"
+        static let agendaDelete = "ios_agenda_delete_v1"
         static let premiumState = "ios_premium_state_v1"
     }
 
@@ -73,6 +75,22 @@ final class WatchDataSyncToWatch: NSObject {
             .sink { [weak self] notification in
                 guard let noteID = notification.userInfo?["id"] as? String else { return }
                 self?.sendDeletedNote(id: noteID)
+            }
+            .store(in: &observers)
+
+        center.publisher(for: .diarioDeletedForWatchSync)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] notification in
+                guard let diarioID = notification.userInfo?["id"] as? String else { return }
+                self?.sendDeletedDiario(id: diarioID)
+            }
+            .store(in: &observers)
+
+        center.publisher(for: .agendaDeletedForWatchSync)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] notification in
+                guard let agendaID = notification.userInfo?["id"] as? String else { return }
+                self?.sendDeletedAgenda(id: agendaID)
             }
             .store(in: &observers)
     }
@@ -156,6 +174,28 @@ final class WatchDataSyncToWatch: NSObject {
         guard !trimmedID.isEmpty else { return }
 
         let message = [Keys.noteDelete: ["id": trimmedID]]
+        session.transferUserInfo(message)
+
+        if session.isReachable {
+            session.sendMessage(message, replyHandler: nil, errorHandler: nil)
+        }
+    }
+
+    private func sendDeletedDiario(id: String) {
+        sendDeletedEntity(id: id, key: Keys.diarioDelete)
+    }
+
+    private func sendDeletedAgenda(id: String) {
+        sendDeletedEntity(id: id, key: Keys.agendaDelete)
+    }
+
+    private func sendDeletedEntity(id: String, key: String) {
+        guard let session else { return }
+
+        let trimmedID = id.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedID.isEmpty else { return }
+
+        let message = [key: ["id": trimmedID]]
         session.transferUserInfo(message)
 
         if session.isReachable {

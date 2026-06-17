@@ -1,6 +1,10 @@
 import Foundation
 import CoreData
 
+extension Notification.Name {
+    static let agendaDeletedForWatchSync = Notification.Name("agendaDeletedForWatchSync")
+}
+
 @MainActor
 final class AgendaRepository {
     private let context = CoreDataController.shared.context
@@ -61,7 +65,12 @@ final class AgendaRepository {
 
         if let object = try? context.fetch(request).first {
             context.delete(object)
-            try? context.save()
+            do {
+                try context.save()
+                postDeletedAgendaForWatchSync(id: itemID)
+            } catch {
+                context.rollback()
+            }
         }
     }
 
@@ -73,11 +82,26 @@ final class AgendaRepository {
             return
         }
 
+        let deletedIDs = objects.compactMap { $0.value(forKey: "id") as? UUID }
+
         for object in objects {
             context.delete(object)
         }
 
-        try? context.save()
+        do {
+            try context.save()
+            deletedIDs.forEach(postDeletedAgendaForWatchSync)
+        } catch {
+            context.rollback()
+        }
+    }
+
+    private func postDeletedAgendaForWatchSync(id: UUID) {
+        NotificationCenter.default.post(
+            name: .agendaDeletedForWatchSync,
+            object: nil,
+            userInfo: ["id": id.uuidString]
+        )
     }
 
     private func mapEntity(_ object: NSManagedObject) -> AgendaItemData? {

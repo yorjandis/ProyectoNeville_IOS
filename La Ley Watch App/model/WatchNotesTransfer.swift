@@ -49,6 +49,21 @@ struct WatchNoteTransferPayload {
     }
 }
 
+struct WatchNoteDeleteTransferPayload {
+    static let userInfoKey = "watch_note_delete_payload_v1"
+
+    let id: String
+
+    func toDictionary() -> [String: Any] {
+        ["id": id]
+    }
+
+    static func fromDictionary(_ dictionary: [String: Any]) -> WatchNoteDeleteTransferPayload? {
+        guard let id = dictionary["id"] as? String else { return nil }
+        return WatchNoteDeleteTransferPayload(id: id)
+    }
+}
+
 @MainActor
 final class WatchNotesTransferSender: NSObject {
     static let shared = WatchNotesTransferSender()
@@ -64,6 +79,21 @@ final class WatchNotesTransferSender: NSObject {
         guard let session else { return }
 
         let userInfo = [WatchNoteTransferPayload.userInfoKey: payload.toDictionary()]
+        session.transferUserInfo(userInfo)
+
+        if session.isReachable {
+            session.sendMessage(userInfo, replyHandler: nil, errorHandler: nil)
+        }
+    }
+
+    func sendDeletedNote(id: String) {
+        guard let session else { return }
+
+        let trimmedID = id.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedID.isEmpty else { return }
+
+        let payload = WatchNoteDeleteTransferPayload(id: trimmedID)
+        let userInfo = [WatchNoteDeleteTransferPayload.userInfoKey: payload.toDictionary()]
         session.transferUserInfo(userInfo)
 
         if session.isReachable {

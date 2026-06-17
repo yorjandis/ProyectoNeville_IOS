@@ -53,6 +53,7 @@ final class NotasModel : ObservableObject  {
             }
             .store(in: &observers)
 
+        #if !os(watchOS)
         center.publisher(
             for: NSPersistentCloudKitContainer.eventChangedNotification,
             object: CoreDataController.shared.persistentContainer
@@ -63,6 +64,7 @@ final class NotasModel : ObservableObject  {
             self?.getAllNotasToModel()
         }
         .store(in: &observers)
+        #endif
 
         center.publisher(for: .NSManagedObjectContextDidSave,
                          object: context)

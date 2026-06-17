@@ -87,6 +87,21 @@ struct WatchAgendaTransferPayload {
     }
 }
 
+struct WatchAgendaDeleteTransferPayload {
+    static let userInfoKey = "watch_agenda_delete_payload_v1"
+
+    let id: String
+
+    func toDictionary() -> [String: Any] {
+        ["id": id]
+    }
+
+    static func fromDictionary(_ dictionary: [String: Any]) -> WatchAgendaDeleteTransferPayload? {
+        guard let id = dictionary["id"] as? String else { return nil }
+        return WatchAgendaDeleteTransferPayload(id: id)
+    }
+}
+
 @MainActor
 final class WatchAgendaTransferSender: NSObject {
     static let shared = WatchAgendaTransferSender()
@@ -102,6 +117,21 @@ final class WatchAgendaTransferSender: NSObject {
         guard let session else { return }
 
         let userInfo = [WatchAgendaTransferPayload.userInfoKey: payload.toDictionary()]
+        session.transferUserInfo(userInfo)
+
+        if session.isReachable {
+            session.sendMessage(userInfo, replyHandler: nil, errorHandler: nil)
+        }
+    }
+
+    func sendDeletedAgenda(id: String) {
+        guard let session else { return }
+
+        let trimmedID = id.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedID.isEmpty else { return }
+
+        let payload = WatchAgendaDeleteTransferPayload(id: trimmedID)
+        let userInfo = [WatchAgendaDeleteTransferPayload.userInfoKey: payload.toDictionary()]
         session.transferUserInfo(userInfo)
 
         if session.isReachable {

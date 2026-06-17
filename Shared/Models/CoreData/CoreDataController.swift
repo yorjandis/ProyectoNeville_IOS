@@ -42,10 +42,12 @@ final class CoreDataController: Sendable {
         description.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)
         description.setOption(true as NSNumber, forKey: NSPersistentStoreRemoteChangeNotificationPostOptionKey)
 
-        // Configurar CloudKit
+        #if os(iOS) || os(macOS)
+        // iOS/macOS usan CloudKit como fuente de verdad. watchOS sincroniza a través de iOS.
         description.cloudKitContainerOptions = NSPersistentCloudKitContainerOptions(
             containerIdentifier: "iCloud.com.ypg.nev.app.icloud"
         )
+        #endif
 
         persistentContainer.persistentStoreDescriptions = [description]
         

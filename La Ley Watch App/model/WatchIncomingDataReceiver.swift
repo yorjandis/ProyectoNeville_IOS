@@ -10,7 +10,9 @@ final class WatchIncomingDataReceiver: NSObject, WCSessionDelegate {
         static let notesBatch = "ios_notes_batch_v1"
         static let noteDelete = "ios_note_delete_v1"
         static let diarioBatch = "ios_diario_batch_v1"
+        static let diarioDelete = "ios_diario_delete_v1"
         static let agendaBatch = "ios_agenda_batch_v1"
+        static let agendaDelete = "ios_agenda_delete_v1"
         static let premiumState = "ios_premium_state_v1"
     }
 
@@ -70,10 +72,26 @@ final class WatchIncomingDataReceiver: NSObject, WCSessionDelegate {
             return
         }
 
+        if let rawDeletedDiario = payload[Keys.diarioDelete] as? [String: Any],
+           let diarioID = rawDeletedDiario["id"] as? String {
+            Task { @MainActor in
+                await self.deleteDiario(id: diarioID)
+            }
+            return
+        }
+
         if let rawAgenda = payload[Keys.agendaBatch] as? [String: Any],
            let agendaPayload = WatchAgendaTransferPayload.fromDictionary(rawAgenda) {
             Task { @MainActor in
                 await self.upsertAgenda(payload: agendaPayload)
+            }
+            return
+        }
+
+        if let rawDeletedAgenda = payload[Keys.agendaDelete] as? [String: Any],
+           let agendaID = rawDeletedAgenda["id"] as? String {
+            Task { @MainActor in
+                await self.deleteAgenda(id: agendaID)
             }
         }
     }
@@ -215,6 +233,45 @@ final class WatchIncomingDataReceiver: NSObject, WCSessionDelegate {
         }
     }
 
+    private func deleteDiario(id: String) async {
+        let diarioID = id.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard let uuid = UUID(uuidString: diarioID) else { return }
+
+        let store = CoreDataController.shared
+
+        do {
+            if store.persistentContainer.persistentStoreCoordinator.persistentStores.isEmpty {
+                try await store.cargarStores()
+            }
+        } catch {
+            msg("❌ No se pudo cargar Core Data para eliminar diario en watchOS: \(error.localizedDescription)")
+            return
+        }
+
+        let context = store.persistentContainer.newBackgroundContext()
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+
+        await context.perform {
+            let request: NSFetchRequest<Diario> = Diario.fetchRequest()
+            request.predicate = NSPredicate(format: "id == %@", uuid as CVarArg)
+
+            do {
+                let entries = try context.fetch(request)
+                guard !entries.isEmpty else { return }
+
+                entries.forEach(context.delete)
+                try context.save()
+
+                Task { @MainActor in
+                    watchModel.shared.getDiarioEntradas()
+                }
+            } catch {
+                context.rollback()
+                msg("❌ No se pudo eliminar diario en watchOS: \(error.localizedDescription)")
+            }
+        }
+    }
+
     private func upsertAgenda(payload: WatchAgendaTransferPayload) async {
         let store = CoreDataController.shared
 
@@ -272,6 +329,45 @@ final class WatchIncomingDataReceiver: NSObject, WCSessionDelegate {
             } catch {
                 context.rollback()
                 msg("❌ No se pudo aplicar agenda entrante en watchOS: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    private func deleteAgenda(id: String) async {
+        let agendaID = id.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard let uuid = UUID(uuidString: agendaID) else { return }
+
+        let store = CoreDataController.shared
+
+        do {
+            if store.persistentContainer.persistentStoreCoordinator.persistentStores.isEmpty {
+                try await store.cargarStores()
+            }
+        } catch {
+            msg("❌ No se pudo cargar Core Data para eliminar agenda en watchOS: \(error.localizedDescription)")
+            return
+        }
+
+        let context = store.persistentContainer.newBackgroundContext()
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+
+        await context.perform {
+            let request = NSFetchRequest<NSManagedObject>(entityName: "AgendaItemEntity")
+            request.predicate = NSPredicate(format: "id == %@", uuid as CVarArg)
+
+            do {
+                let rows = try context.fetch(request)
+                guard !rows.isEmpty else { return }
+
+                rows.forEach(context.delete)
+                try context.save()
+
+                Task { @MainActor in
+                    watchModel.shared.getAgendaEntradas()
+                }
+            } catch {
+                context.rollback()
+                msg("❌ No se pudo eliminar agenda en watchOS: \(error.localizedDescription)")
             }
         }
     }

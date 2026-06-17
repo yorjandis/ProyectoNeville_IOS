@@ -183,6 +183,18 @@ struct ContentView: View {
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                 } 
                             }
+                            .swipeActions {
+                                Button(role: .destructive) {
+                                    if modelWatch.deleteDiarioEntry(diario) {
+                                        alertMessage = "Entrada eliminada"
+                                    } else {
+                                        alertMessage = "Error al eliminar entrada"
+                                    }
+                                    showAlert = true
+                                } label: {
+                                    Label("Borrar", systemImage: "trash")
+                                }
+                            }
                         }
                     }
                 }
