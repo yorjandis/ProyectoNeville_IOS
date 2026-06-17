@@ -28,6 +28,7 @@ fileprivate enum TipeViewOptionTab: String, Identifiable {
     case lectorEtiquetas
     case cardioCoherencia
     case agenda
+    case presencia
 
     case autorNeville
     case autorJoeDispenza
@@ -110,6 +111,13 @@ struct optionView: View {
                         Button("Agenda") {
                             if self.purchaseStatus || self.yorjPremium {
                                 self.showView = .agenda
+                            } else {
+                                self.showView = .premium
+                            }
+                        }
+                        Button("Presencia") {
+                            if self.purchaseStatus || self.yorjPremium {
+                                self.showView = .presencia
                             } else {
                                 self.showView = .premium
                             }
@@ -247,6 +255,8 @@ struct optionView: View {
                     GoalsListView()
                 case .agenda:
                     AgendaMainView()
+                case .presencia:
+                    PresenciaStatsView()
                 case .enciclopedia:
                     EnciclopediaListView()
                 case .espacioCalma:
@@ -276,4 +286,3 @@ struct optionView: View {
         }
     }
 }
-

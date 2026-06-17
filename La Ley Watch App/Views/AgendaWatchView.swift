@@ -7,6 +7,10 @@ struct AgendaWatchView: View {
     @State private var showFilterDialog = false
     @State private var showAlert = false
     @State private var alertMessage = ""
+    @State private var showActionsDialog = false
+    @State private var itemPendingActions: WatchAgendaItem?
+    @State private var showDeleteConfirmation = false
+    @State private var itemPendingDelete: WatchAgendaItem?
 
     var body: some View {
         ZStack {
@@ -59,25 +63,28 @@ struct AgendaWatchView: View {
                 Divider()
 
                 List(modelWatch.listAgenda, id: \.id) { item in
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(item.titulo)
-                            .fontDesign(.serif)
-                            .foregroundStyle(.black)
-                        Text("\(item.fechaActividad.formatted(date: .abbreviated, time: .omitted)) · \(item.hora.formatted(date: .omitted, time: .shortened))")
-                            .font(.system(size: 10, weight: .medium, design: .serif))
-                            .foregroundStyle(.black)
-                    }
-                    .swipeActions {
-                        Button(role: .destructive) {
-                            if modelWatch.deleteAgendaEntry(id: item.id) {
-                                alertMessage = "Entrada eliminada"
-                            } else {
-                                alertMessage = "Error al eliminar entrada"
-                            }
-                            showAlert = true
-                        } label: {
-                            Label("Borrar", systemImage: "trash")
+                    ZStack(alignment: .trailing) {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(item.titulo)
+                                .fontDesign(.serif)
+                                .foregroundStyle(.black)
+                            Text("\(item.fechaActividad.formatted(date: .abbreviated, time: .omitted)) · \(item.hora.formatted(date: .omitted, time: .shortened))")
+                                .font(.system(size: 10, weight: .medium, design: .serif))
+                                .foregroundStyle(.black)
                         }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.trailing, 28)
+
+                        Button {
+                            itemPendingActions = item
+                            showActionsDialog = true
+                        } label: {
+                            Image(systemName: "ellipsis.circle.fill")
+                                .foregroundStyle(.black)
+                                .font(.system(size: 14))
+                        }
+                        .buttonStyle(.plain)
+                        .padding(.trailing, 2)
                     }
                 }
             }
@@ -86,6 +93,33 @@ struct AgendaWatchView: View {
             Button("OK", role: .cancel) {}
         } message: {
             Text(alertMessage)
+        }
+        .confirmationDialog("Opciones de entrada", isPresented: $showActionsDialog, titleVisibility: .visible) {
+            Button("Borrar", role: .destructive) {
+                itemPendingDelete = itemPendingActions
+                itemPendingActions = nil
+                showDeleteConfirmation = true
+            }
+            Button("Cancelar", role: .cancel) {
+                itemPendingActions = nil
+            }
+        }
+        .alert("Eliminar entrada", isPresented: $showDeleteConfirmation) {
+            Button("Cancelar", role: .cancel) {
+                itemPendingDelete = nil
+            }
+            Button("Borrar", role: .destructive) {
+                guard let item = itemPendingDelete else { return }
+                if modelWatch.deleteAgendaEntry(id: item.id) {
+                    alertMessage = "Entrada eliminada"
+                } else {
+                    alertMessage = "Error al eliminar entrada"
+                }
+                itemPendingDelete = nil
+                showAlert = true
+            }
+        } message: {
+            Text("¿Seguro que deseas borrar esta entrada?")
         }
         .confirmationDialog("Filtrar Agenda", isPresented: $showFilterDialog, titleVisibility: .visible) {
             Button("Hoy") {
@@ -122,6 +156,8 @@ struct AgendaWatchView: View {
     }
 }
 
+
+
 private struct AddAgendaEntryWatchView: View {
     @Environment(\.dismiss) private var dismiss
 
@@ -144,7 +180,7 @@ private struct AddAgendaEntryWatchView: View {
                     .ignoresSafeArea()
 
                 ScrollView {
-                    VStack(spacing: 8) {
+                    VStack(spacing: 10) {
                         Text("Nueva entrada")
                             .fontDesign(.serif)
                             .foregroundStyle(.black)
@@ -153,14 +189,17 @@ private struct AddAgendaEntryWatchView: View {
                         TextFieldLink("Título: \(title)", prompt: Text("Título")) { value in
                             title = value
                         }
-                        .frame(height: 36)
+                        .frame(maxWidth: .infinity, minHeight: 42)
+                        .buttonStyle(.bordered)
 
                         TextFieldLink("Detalle: \(contenido)", prompt: Text("Detalle")) { value in
                             contenido = value
                         }
-                        .frame(height: 36)
+                        .frame(maxWidth: .infinity, minHeight: 42)
+                        .buttonStyle(.bordered)
 
                         locationButton
+                            .frame(maxWidth: .infinity, minHeight: 42)
 
                         if !lugar.isEmpty {
                             Text(lugar)

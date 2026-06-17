@@ -34,6 +34,7 @@
 		9107654B2FCC006D001CA6D2 /* WatchIncomingDataReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9107654A2FCC006D001CA6D2 /* WatchIncomingDataReceiver.swift */; };
 		9107654D2FCC0812001CA6D2 /* WatchAgendaTransfer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9107654C2FCC0812001CA6D2 /* WatchAgendaTransfer.swift */; };
 		9107654F2FCC08FC001CA6D2 /* AgendaWatchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9107654E2FCC08FC001CA6D2 /* AgendaWatchView.swift */; };
+		910765512FCC0B12001CA6D2 /* PresenceWatchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 910765502FCC0B12001CA6D2 /* PresenceWatchView.swift */; };
 		911F24272F7B7D31009A77BE /* NevilleAuthorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 911F24262F7B7D31009A77BE /* NevilleAuthorView.swift */; };
 		911F24282F7B7D31009A77BE /* NevilleAuthorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 911F24262F7B7D31009A77BE /* NevilleAuthorView.swift */; };
 		911F242A2F7B7D31009A77BE /* JoeDispenzaAuthorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 911F24292F7B7D31009A77BE /* JoeDispenzaAuthorView.swift */; };
@@ -47,6 +48,7 @@
 		914D88792FC1AEF100CDDB93 /* WatchDiarioReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914D88782FC1AEF100CDDB93 /* WatchDiarioReceiver.swift */; };
 		914D887B2FC1AF1800CDDB93 /* WatchDiarioReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914D887A2FC1AF1800CDDB93 /* WatchDiarioReceiver.swift */; };
 		914D887D2FC1AF1800CDDB93 /* WatchPremiumService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914D887C2FC1AF1800CDDB93 /* WatchPremiumService.swift */; };
+		914D88822FC1B22000CDDB93 /* Shared/Views/Presencia/PresenciaStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914D88802FC1B22000CDDB93 /* Shared/Views/Presencia/PresenciaStatsView.swift */; };
 		915017432EF078A2007B741A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 915017422EF078A2007B741A /* StoreKit.framework */; };
 		915017452EF078B2007B741A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 915017442EF078B2007B741A /* StoreKit.framework */; };
 		918C4B0B2EF4094D00974B54 /* sharedmac.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 918C4AFF2EF4094D00974B54 /* sharedmac.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -198,6 +200,7 @@
 		9107654A2FCC006D001CA6D2 /* WatchIncomingDataReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchIncomingDataReceiver.swift; sourceTree = "<group>"; };
 		9107654C2FCC0812001CA6D2 /* WatchAgendaTransfer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAgendaTransfer.swift; sourceTree = "<group>"; };
 		9107654E2FCC08FC001CA6D2 /* AgendaWatchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgendaWatchView.swift; sourceTree = "<group>"; };
+		910765502FCC0B12001CA6D2 /* PresenceWatchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresenceWatchView.swift; sourceTree = "<group>"; };
 		911F24262F7B7D31009A77BE /* NevilleAuthorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NevilleAuthorView.swift; sourceTree = "<group>"; };
 		911F24292F7B7D31009A77BE /* JoeDispenzaAuthorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoeDispenzaAuthorView.swift; sourceTree = "<group>"; };
 		911F242C2F7B7D31009A77BE /* GreggBradenAuthorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GreggBradenAuthorView.swift; sourceTree = "<group>"; };
@@ -208,6 +211,8 @@
 		914D88782FC1AEF100CDDB93 /* WatchDiarioReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchDiarioReceiver.swift; sourceTree = "<group>"; };
 		914D887A2FC1AF1800CDDB93 /* WatchDiarioReceiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchDiarioReceiver.swift; sourceTree = "<group>"; };
 		914D887C2FC1AF1800CDDB93 /* WatchPremiumService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchPremiumService.swift; sourceTree = "<group>"; };
+		914D887F2FC1B22000CDDB93 /* Shared/Models/Presencia/PresenciaModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/Models/Presencia/PresenciaModels.swift; sourceTree = SOURCE_ROOT; };
+		914D88802FC1B22000CDDB93 /* Shared/Views/Presencia/PresenciaStatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/Views/Presencia/PresenciaStatsView.swift; sourceTree = SOURCE_ROOT; };
 		915017422EF078A2007B741A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		915017442EF078B2007B741A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/System/Library/Frameworks/StoreKit.framework; sourceTree = DEVELOPER_DIR; };
 		9173AB7D2F72097F0015A9FD /* Version.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Version.xcconfig; sourceTree = "<group>"; };
@@ -315,6 +320,7 @@
 				Models/NetModel/NetModel.swift,
 				Models/NotasModel/NotasModel.swift,
 				Models/PortapaplesModel/PortapapelesModel.swift,
+				Models/Presencia/PresenciaModels.swift,
 				Models/PurchaseModel/PremiunService.swift,
 				Models/PurchaseModel/PurchaseManager.swift,
 				Models/PurchaseModel/StoreKitFile.storekit,
@@ -1506,6 +1512,7 @@
 				19520A522B76778B000B11CC /* FilterByDiarioView.swift */,
 				919816C32FBC1E1600B24155 /* QuickAddNotaByLocationView.swift */,
 				9107654E2FCC08FC001CA6D2 /* AgendaWatchView.swift */,
+				910765502FCC0B12001CA6D2 /* PresenceWatchView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1580,6 +1587,15 @@
 			path = AutorViews;
 			sourceTree = "<group>";
 		};
+		9190270D2FE3583F00F15F12 /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				914D887F2FC1B22000CDDB93 /* Shared/Models/Presencia/PresenciaModels.swift */,
+				914D88802FC1B22000CDDB93 /* Shared/Views/Presencia/PresenciaStatsView.swift */,
+			);
+			name = "Recovered References";
+			sourceTree = "<group>";
+		};
 		919F34C82F66BC6B009FF35B /* BackgroundDownloadExtension */ = {
 			isa = PBXGroup;
 			children = (
@@ -1619,6 +1635,7 @@
 				E95B93542AAFBB2600B5E2B5 /* Products */,
 				919F34C82F66BC6B009FF35B /* BackgroundDownloadExtension */,
 				914D88782FC1AEF100CDDB93 /* WatchDiarioReceiver.swift */,
+				9190270D2FE3583F00F15F12 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1989,6 +2006,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9107654F2FCC08FC001CA6D2 /* AgendaWatchView.swift in Sources */,
+				910765512FCC0B12001CA6D2 /* PresenceWatchView.swift in Sources */,
 				19520A532B76778B000B11CC /* FilterByDiarioView.swift in Sources */,
 				19520A4F2B75C34F000B11CC /* AddDiario.swift in Sources */,
 				19F8041E2B69CB9D00A323A0 /* ContentView.swift in Sources */,
@@ -2051,6 +2069,7 @@
 				911F242D2F7B7D31009A77BE /* GreggBradenAuthorView.swift in Sources */,
 				1954CDAA2B1152BC0093DDF0 /* AppIntentWidget.swift in Sources */,
 				914D887B2FC1AF1800CDDB93 /* WatchDiarioReceiver.swift in Sources */,
+				914D88822FC1B22000CDDB93 /* Shared/Views/Presencia/PresenciaStatsView.swift in Sources */,
 				E95B93592AAFBB2600B5E2B5 /* ContentView.swift in Sources */,
 				E95B93572AAFBB2600B5E2B5 /* Neville_iOSApp.swift in Sources */,
 			);

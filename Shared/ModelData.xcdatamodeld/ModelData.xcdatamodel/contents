@@ -75,6 +75,15 @@
         <attribute name="nota" attributeType="String" defaultValueString=""/>
         <attribute name="title" optional="YES" attributeType="String"/>
     </entity>
+    <entity name="PresenciaEventEntity" representedClassName="PresenciaEventEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="dayStart" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="eventType" optional="YES" attributeType="String"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="mood" optional="YES" attributeType="String"/>
+        <attribute name="note" optional="YES" attributeType="String"/>
+        <attribute name="source" optional="YES" attributeType="String"/>
+    </entity>
     <entity name="Reflex" representedClassName="Reflex" syncable="YES" codeGenerationType="class">
         <attribute name="autor" optional="YES" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="String"/>

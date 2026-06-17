@@ -91,7 +91,13 @@ struct ContentView: View {
             if modelWatch.hasAgendaPremiumAccess {
                 AgendaWatchView()
             } else {
-                PremiumAgendaLockedView()
+                PremiumFeatureLockedView(title: "Agenda")
+            }
+        case .presencia:
+            if modelWatch.hasPresencePremiumAccess {
+                PresenceWatchView()
+            } else {
+                PremiumFeatureLockedView(title: "Presencia")
             }
         case .quickNote:
             QuickAddNotaByLocationView()
@@ -110,6 +116,10 @@ struct ContentView: View {
         @State var asyncIsWorking = false //Indica que hay una tarea async ejecutandose
         @State private var showAlert = false
         @State private var alertMessage = ""
+        @State private var showActionsDialog = false
+        @State private var diarioPendingActions: Diario?
+        @State private var showDeleteConfirmation = false
+        @State private var diarioPendingDelete: Diario?
         
         var body: some View {
             
@@ -165,35 +175,37 @@ struct ContentView: View {
                     
                     List{
                         ForEach(modelWatch.listDiario, id: \.id) {diario in
-                            NavigationLink{
-                                ScrollView {
-                                    Text(diario.content ?? "")
+                            ZStack(alignment: .trailing) {
+                                NavigationLink{
+                                    ScrollView {
+                                        Text(diario.content ?? "")
+                                    }
+                                }label: {
+                                    VStack {
+                                        HStack{
+                                            Text(emotion(diario.emotion ?? ""))
+                                                .font(.system(size: 28))
+                                            Text(diario.title ?? "")
+                                                .foregroundStyle(.black)
+                                            Spacer()
+                                        }
+                                        Text((diario.fecha ?? Date.now).formatted(date: .long, time: .omitted))
+                                            .font(.system(size: 10, weight: .medium, design: .serif)).foregroundStyle(.black)
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                    }
+                                    .padding(.trailing, 28)
                                 }
-                            }label: {
-                                VStack {
-                                    HStack{
-                                        Text(emotion(diario.emotion ?? ""))
-                                            .font(.system(size: 28))
-                                        Text(diario.title ?? "")
-                                            .foregroundStyle(.black)
-                                        Spacer()
-                                    }
-                                    Text((diario.fecha ?? Date.now).formatted(date: .long, time: .omitted))
-                                        .font(.system(size: 10, weight: .medium, design: .serif)).foregroundStyle(.black)
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                } 
-                            }
-                            .swipeActions {
-                                Button(role: .destructive) {
-                                    if modelWatch.deleteDiarioEntry(diario) {
-                                        alertMessage = "Entrada eliminada"
-                                    } else {
-                                        alertMessage = "Error al eliminar entrada"
-                                    }
-                                    showAlert = true
+
+                                Button {
+                                    diarioPendingActions = diario
+                                    showActionsDialog = true
                                 } label: {
-                                    Label("Borrar", systemImage: "trash")
+                                    Image(systemName: "ellipsis.circle.fill")
+                                        .foregroundStyle(.black)
+                                        .font(.system(size: 14))
                                 }
+                                .buttonStyle(.plain)
+                                .padding(.trailing, 2)
                             }
                         }
                     }
@@ -201,6 +213,33 @@ struct ContentView: View {
             }
             .alert(isPresented : $showAlert){
                 Alert(title: Text("Diario"), message: Text(self.alertMessage))
+            }
+            .confirmationDialog("Opciones de entrada", isPresented: $showActionsDialog, titleVisibility: .visible) {
+                Button("Borrar", role: .destructive) {
+                    diarioPendingDelete = diarioPendingActions
+                    diarioPendingActions = nil
+                    showDeleteConfirmation = true
+                }
+                Button("Cancelar", role: .cancel) {
+                    diarioPendingActions = nil
+                }
+            }
+            .alert("Eliminar entrada", isPresented: $showDeleteConfirmation) {
+                Button("Cancelar", role: .cancel) {
+                    diarioPendingDelete = nil
+                }
+                Button("Borrar", role: .destructive) {
+                    guard let diario = diarioPendingDelete else { return }
+                    if modelWatch.deleteDiarioEntry(diario) {
+                        alertMessage = "Entrada eliminada"
+                    } else {
+                        alertMessage = "Error al eliminar entrada"
+                    }
+                    diarioPendingDelete = nil
+                    showAlert = true
+                }
+            } message: {
+                Text("¿Seguro que deseas borrar esta entrada?")
             }
             .sheet(isPresented: $showSheetOptionsFilter) {
                FilterByDiarioView()
@@ -488,12 +527,14 @@ struct ContentView: View {
         }
     }
 
-    struct PremiumAgendaLockedView: View {
+    struct PremiumFeatureLockedView: View {
+        let title: String
+
         var body: some View {
             ZStack {
                 LinearGradient(colors: [.red, .orange], startPoint: .bottom, endPoint: .top)
                 VStack(spacing: 8) {
-                    Text("Agenda")
+                    Text(title)
                         .fontDesign(.serif)
                         .foregroundStyle(.black)
                         .bold()
@@ -545,6 +586,7 @@ enum WatchScreen: String, CaseIterable, Identifiable {
     case diario
     case notas
     case agenda
+    case presencia
     case quickNote
     case ajustes
 
@@ -556,13 +598,14 @@ enum WatchScreen: String, CaseIterable, Identifiable {
         case .diario: return "Diario"
         case .notas: return "Notas"
         case .agenda: return "Agenda(Versión Extendida)"
+        case .presencia: return "Presencia"
         case .quickNote: return "Acceso rápido"
         case .ajustes: return "Ajustes"
         }
     }
 
     static var reorderableCases: [WatchScreen] {
-        [.frases, .diario, .notas, .agenda, .quickNote]
+        [.frases, .diario, .notas, .agenda, .presencia, .quickNote]
     }
 }
 

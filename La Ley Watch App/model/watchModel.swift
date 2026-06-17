@@ -27,6 +27,25 @@ struct WatchAgendaItem: Identifiable {
     let seriesID: UUID?
 }
 
+struct WatchPresenceMood: Identifiable, Hashable {
+    let id: String
+    let title: String
+    let symbolName: String
+    let countsAsInconsciente: Bool
+
+    static let common: [WatchPresenceMood] = [
+        WatchPresenceMood(id: "pilotoAutomatico", title: "Piloto automático", symbolName: "moon.zzz.fill", countsAsInconsciente: true),
+        WatchPresenceMood(id: "distraido", title: "Distraído", symbolName: "sparkle.magnifyingglass", countsAsInconsciente: true),
+        WatchPresenceMood(id: "sereno", title: "Sereno", symbolName: "leaf.fill", countsAsInconsciente: false),
+        WatchPresenceMood(id: "alegre", title: "Alegre", symbolName: "sun.max.fill", countsAsInconsciente: false),
+        WatchPresenceMood(id: "ansioso", title: "Ansioso", symbolName: "waveform.path.ecg", countsAsInconsciente: false),
+        WatchPresenceMood(id: "triste", title: "Triste", symbolName: "cloud.rain.fill", countsAsInconsciente: false),
+        WatchPresenceMood(id: "enfadado", title: "Enfadado", symbolName: "flame.fill", countsAsInconsciente: false),
+        WatchPresenceMood(id: "cansado", title: "Cansado", symbolName: "battery.25percent", countsAsInconsciente: false),
+        WatchPresenceMood(id: "agradecido", title: "Agradecido", symbolName: "heart.fill", countsAsInconsciente: false)
+    ]
+}
+
 @MainActor
 final class watchModel: ObservableObject {
     
@@ -43,6 +62,7 @@ final class watchModel: ObservableObject {
     @Published var listAgenda: [WatchAgendaItem] = []
     @Published var hasAgendaPremiumAccessValue: Bool = false
     @Published var yorjPremiumAccessValue: Bool = false
+    @Published var todayPresenceReturnCount: Int = 0
     private var observers = Set<AnyCancellable>()
 
     private var homeFrasesCache: [Frases] = []
@@ -54,6 +74,7 @@ final class watchModel: ObservableObject {
         self.getNotas()
         self.getDiarioEntradas()
         self.getAgendaEntradas()
+        self.refreshTodayPresenceReturnCount()
     }
 
     private func setupObservers() {
@@ -65,6 +86,7 @@ final class watchModel: ObservableObject {
                 self?.getNotas()
                 self?.getDiarioEntradas()
                 self?.getAgendaEntradas()
+                self?.refreshTodayPresenceReturnCount()
             }
             .store(in: &observers)
 
@@ -76,6 +98,7 @@ final class watchModel: ObservableObject {
                 self?.getNotas()
                 self?.getDiarioEntradas()
                 self?.getAgendaEntradas()
+                self?.refreshTodayPresenceReturnCount()
             }
             .store(in: &observers)
 
@@ -86,6 +109,7 @@ final class watchModel: ObservableObject {
                 self?.getNotas()
                 self?.getDiarioEntradas()
                 self?.getAgendaEntradas()
+                self?.refreshTodayPresenceReturnCount()
             }
             .store(in: &observers)
 
@@ -178,6 +202,73 @@ final class watchModel: ObservableObject {
         let yorj = hasYorjPremiumAccess
         yorjPremiumAccessValue = yorj
         hasAgendaPremiumAccessValue = hasPremiumAccess || yorj
+    }
+
+    var hasPresencePremiumAccess: Bool {
+        hasAgendaPremiumAccess
+    }
+
+    func recordPresenceReturn() -> Bool {
+        let saved = createPresenceEvent(type: "presente", moodID: nil)
+        if saved {
+            refreshTodayPresenceReturnCount()
+        }
+        return saved
+    }
+
+    func recordPresenceMood(_ mood: WatchPresenceMood) -> Bool {
+        let saved = createPresenceEvent(
+            type: mood.countsAsInconsciente ? "inconsciente" : "estadoAnimo",
+            moodID: mood.id
+        )
+        if saved {
+            refreshTodayPresenceReturnCount()
+        }
+        return saved
+    }
+
+    func refreshTodayPresenceReturnCount() {
+        let calendar = Calendar.current
+        let start = calendar.startOfDay(for: Date())
+        guard let end = calendar.date(byAdding: .day, value: 1, to: start) else {
+            todayPresenceReturnCount = 0
+            return
+        }
+
+        let request = NSFetchRequest<NSManagedObject>(entityName: "PresenciaEventEntity")
+        request.predicate = NSPredicate(
+            format: "eventType == %@ AND createdAt >= %@ AND createdAt < %@",
+            "presente",
+            start as NSDate,
+            end as NSDate
+        )
+
+        todayPresenceReturnCount = (try? context.count(for: request)) ?? 0
+    }
+
+    private func createPresenceEvent(type: String, moodID: String?) -> Bool {
+        guard let entity = NSEntityDescription.entity(forEntityName: "PresenciaEventEntity", in: context) else {
+            return false
+        }
+
+        let now = Date()
+        let row = NSManagedObject(entity: entity, insertInto: context)
+        row.setValue(UUID(), forKey: "id")
+        row.setValue(now, forKey: "createdAt")
+        row.setValue(Calendar.current.startOfDay(for: now), forKey: "dayStart")
+        row.setValue(type, forKey: "eventType")
+        row.setValue(moodID, forKey: "mood")
+        row.setValue("", forKey: "note")
+        row.setValue("watchOS", forKey: "source")
+
+        do {
+            try context.save()
+            return true
+        } catch {
+            context.rollback()
+            msg("Error al guardar presencia desde watchOS: \(error.localizedDescription)")
+            return false
+        }
     }
 
     private var canUseExtendedHomeFilters: Bool {
