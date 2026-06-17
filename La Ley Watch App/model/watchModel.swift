@@ -75,6 +75,7 @@ final class watchModel: ObservableObject {
         self.getDiarioEntradas()
         self.getAgendaEntradas()
         self.refreshTodayPresenceReturnCount()
+        self.syncPresenceEventsToPhone()
     }
 
     private func setupObservers() {
@@ -87,6 +88,7 @@ final class watchModel: ObservableObject {
                 self?.getDiarioEntradas()
                 self?.getAgendaEntradas()
                 self?.refreshTodayPresenceReturnCount()
+                self?.syncPresenceEventsToPhone()
             }
             .store(in: &observers)
 
@@ -209,7 +211,11 @@ final class watchModel: ObservableObject {
     }
 
     func recordPresenceReturn() -> Bool {
-        let saved = createPresenceEvent(type: "presente", moodID: nil)
+        recordPresenceReturn(mood: nil)
+    }
+
+    func recordPresenceReturn(mood: WatchPresenceMood?) -> Bool {
+        let saved = createPresenceEvent(type: "presente", moodID: mood?.id)
         if saved {
             refreshTodayPresenceReturnCount()
         }
@@ -246,16 +252,29 @@ final class watchModel: ObservableObject {
         todayPresenceReturnCount = (try? context.count(for: request)) ?? 0
     }
 
+    func syncPresenceEventsToPhone(limit: Int = 200) {
+        let request = NSFetchRequest<NSManagedObject>(entityName: "PresenciaEventEntity")
+        request.fetchLimit = limit
+        request.sortDescriptors = [NSSortDescriptor(key: "createdAt", ascending: false)]
+
+        guard let rows = try? context.fetch(request) else { return }
+
+        rows.compactMap { presencePayload(from: $0) }
+            .forEach { WatchPresenceTransferSender.shared.sendCreatedPresence($0) }
+    }
+
     private func createPresenceEvent(type: String, moodID: String?) -> Bool {
         guard let entity = NSEntityDescription.entity(forEntityName: "PresenciaEventEntity", in: context) else {
             return false
         }
 
         let now = Date()
+        let eventID = UUID()
+        let dayStart = Calendar.current.startOfDay(for: now)
         let row = NSManagedObject(entity: entity, insertInto: context)
-        row.setValue(UUID(), forKey: "id")
+        row.setValue(eventID, forKey: "id")
         row.setValue(now, forKey: "createdAt")
-        row.setValue(Calendar.current.startOfDay(for: now), forKey: "dayStart")
+        row.setValue(dayStart, forKey: "dayStart")
         row.setValue(type, forKey: "eventType")
         row.setValue(moodID, forKey: "mood")
         row.setValue("", forKey: "note")
@@ -263,12 +282,44 @@ final class watchModel: ObservableObject {
 
         do {
             try context.save()
+            WatchPresenceTransferSender.shared.sendCreatedPresence(
+                WatchPresenceTransferPayload(
+                    id: eventID.uuidString,
+                    createdAt: now,
+                    dayStart: dayStart,
+                    eventType: type,
+                    mood: moodID,
+                    note: "",
+                    source: "watchOS"
+                )
+            )
             return true
         } catch {
             context.rollback()
             msg("Error al guardar presencia desde watchOS: \(error.localizedDescription)")
             return false
         }
+    }
+
+    private func presencePayload(from row: NSManagedObject) -> WatchPresenceTransferPayload? {
+        guard
+            let id = row.value(forKey: "id") as? UUID,
+            let createdAt = row.value(forKey: "createdAt") as? Date,
+            let dayStart = row.value(forKey: "dayStart") as? Date,
+            let eventType = row.value(forKey: "eventType") as? String
+        else {
+            return nil
+        }
+
+        return WatchPresenceTransferPayload(
+            id: id.uuidString,
+            createdAt: createdAt,
+            dayStart: dayStart,
+            eventType: eventType,
+            mood: row.value(forKey: "mood") as? String,
+            note: row.value(forKey: "note") as? String ?? "",
+            source: row.value(forKey: "source") as? String ?? "watchOS"
+        )
     }
 
     private var canUseExtendedHomeFilters: Bool {

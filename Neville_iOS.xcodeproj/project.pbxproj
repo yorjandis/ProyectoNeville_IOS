@@ -35,6 +35,7 @@
 		9107654D2FCC0812001CA6D2 /* WatchAgendaTransfer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9107654C2FCC0812001CA6D2 /* WatchAgendaTransfer.swift */; };
 		9107654F2FCC08FC001CA6D2 /* AgendaWatchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9107654E2FCC08FC001CA6D2 /* AgendaWatchView.swift */; };
 		910765512FCC0B12001CA6D2 /* PresenceWatchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 910765502FCC0B12001CA6D2 /* PresenceWatchView.swift */; };
+		910765532FCC2F31001CA6D2 /* WatchPresenceTransfer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 910765522FCC2F31001CA6D2 /* WatchPresenceTransfer.swift */; };
 		911F24272F7B7D31009A77BE /* NevilleAuthorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 911F24262F7B7D31009A77BE /* NevilleAuthorView.swift */; };
 		911F24282F7B7D31009A77BE /* NevilleAuthorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 911F24262F7B7D31009A77BE /* NevilleAuthorView.swift */; };
 		911F242A2F7B7D31009A77BE /* JoeDispenzaAuthorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 911F24292F7B7D31009A77BE /* JoeDispenzaAuthorView.swift */; };
@@ -201,6 +202,7 @@
 		9107654C2FCC0812001CA6D2 /* WatchAgendaTransfer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAgendaTransfer.swift; sourceTree = "<group>"; };
 		9107654E2FCC08FC001CA6D2 /* AgendaWatchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgendaWatchView.swift; sourceTree = "<group>"; };
 		910765502FCC0B12001CA6D2 /* PresenceWatchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresenceWatchView.swift; sourceTree = "<group>"; };
+		910765522FCC2F31001CA6D2 /* WatchPresenceTransfer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchPresenceTransfer.swift; sourceTree = "<group>"; };
 		911F24262F7B7D31009A77BE /* NevilleAuthorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NevilleAuthorView.swift; sourceTree = "<group>"; };
 		911F24292F7B7D31009A77BE /* JoeDispenzaAuthorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoeDispenzaAuthorView.swift; sourceTree = "<group>"; };
 		911F242C2F7B7D31009A77BE /* GreggBradenAuthorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GreggBradenAuthorView.swift; sourceTree = "<group>"; };
@@ -1498,6 +1500,7 @@
 				914D88762FC1AEDB00CDDB93 /* WatchDiarioTransfer.swift */,
 				9107654A2FCC006D001CA6D2 /* WatchIncomingDataReceiver.swift */,
 				9107654C2FCC0812001CA6D2 /* WatchAgendaTransfer.swift */,
+				910765522FCC2F31001CA6D2 /* WatchPresenceTransfer.swift */,
 				914D887C2FC1AF1800CDDB93 /* WatchPremiumService.swift */,
 			);
 			path = model;
@@ -2016,6 +2019,7 @@
 				914D88772FC1AEDB00CDDB93 /* WatchDiarioTransfer.swift in Sources */,
 				91F0DD552D605B5800307453 /* watchModel.swift in Sources */,
 				9107654D2FCC0812001CA6D2 /* WatchAgendaTransfer.swift in Sources */,
+				910765532FCC2F31001CA6D2 /* WatchPresenceTransfer.swift in Sources */,
 				19F8041C2B69CB9D00A323A0 /* La_LeyApp.swift in Sources */,
 				914D7B492FC0A0FB00CDDB93 /* WatchNotesTransfer.swift in Sources */,
 				914D887D2FC1AF1800CDDB93 /* WatchPremiumService.swift in Sources */,

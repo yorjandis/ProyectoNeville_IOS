@@ -2,13 +2,14 @@ import SwiftUI
 
 struct PresenceWatchView: View {
     @StateObject private var modelWatch = watchModel.shared
-    @State private var showMoodList = false
+    @State private var showPresenceDetail = false
     @State private var showSavedFeedback = false
     @State private var feedbackText = ""
 
     var body: some View {
         ZStack {
             LinearGradient(colors: [.indigo, .teal], startPoint: .top, endPoint: .bottom)
+                .ignoresSafeArea()
 
             VStack(spacing: 10) {
                 Text("Presencia")
@@ -20,27 +21,15 @@ struct PresenceWatchView: View {
                 Spacer(minLength: 0)
 
                 Button {
-                    registerPresenceReturn()
+                    showPresenceDetail = true
                 } label: {
                     Label("Vuelvo al Presente", systemImage: "sparkles")
                         .font(.headline)
                         .multilineTextAlignment(.center)
-                        .frame(maxWidth: .infinity, minHeight: 48)
+                        .frame(maxWidth: .infinity, minHeight: 60)
                 }
                 .buttonStyle(.borderedProminent)
                 .tint(.mint)
-                .foregroundStyle(.black)
-
-                Button {
-                    showMoodList = true
-                } label: {
-                    Label("Estado de Ánimo", systemImage: "heart.text.square.fill")
-                        .font(.headline)
-                        .multilineTextAlignment(.center)
-                        .frame(maxWidth: .infinity, minHeight: 48)
-                }
-                .buttonStyle(.borderedProminent)
-                .tint(.white.opacity(0.82))
                 .foregroundStyle(.black)
 
                 Spacer(minLength: 0)
@@ -52,11 +41,17 @@ struct PresenceWatchView: View {
             }
             .padding(.horizontal, 10)
         }
-        .sheet(isPresented: $showMoodList) {
-            PresenceMoodListView { mood in
-                registerMood(mood)
-                showMoodList = false
-            }
+        .sheet(isPresented: $showPresenceDetail) {
+            PresenceMoodSelectionView(
+                onClose: {
+                    registerPresenceReturn()
+                    showPresenceDetail = false
+                },
+                onSelectMood: { mood in
+                    registerPresenceReturn(mood: mood)
+                    showPresenceDetail = false
+                }
+            )
         }
         .alert("Presencia", isPresented: $showSavedFeedback) {
             Button("OK", role: .cancel) {}
@@ -69,17 +64,12 @@ struct PresenceWatchView: View {
     }
 
     private func registerPresenceReturn() {
-        if modelWatch.recordPresenceReturn() {
-            feedbackText = "Registrado"
-        } else {
-            feedbackText = "No se pudo guardar"
-        }
-        showSavedFeedback = true
+        registerPresenceReturn(mood: nil)
     }
 
-    private func registerMood(_ mood: WatchPresenceMood) {
-        if modelWatch.recordPresenceMood(mood) {
-            feedbackText = mood.countsAsInconsciente ? "Observado con amabilidad" : "Estado guardado"
+    private func registerPresenceReturn(mood: WatchPresenceMood?) {
+        if modelWatch.recordPresenceReturn(mood: mood) {
+            feedbackText = mood == nil ? "Registrado" : "Registrado con estado"
         } else {
             feedbackText = "No se pudo guardar"
         }
@@ -87,23 +77,40 @@ struct PresenceWatchView: View {
     }
 }
 
-private struct PresenceMoodListView: View {
-    let onSelect: (WatchPresenceMood) -> Void
+private struct PresenceMoodSelectionView: View {
+    let onClose: () -> Void
+    let onSelectMood: (WatchPresenceMood) -> Void
 
     var body: some View {
         ZStack {
             LinearGradient(colors: [.indigo, .teal], startPoint: .top, endPoint: .bottom)
                 .ignoresSafeArea()
 
-            List(WatchPresenceMood.common) { mood in
+            VStack(spacing: 8) {
                 Button {
-                    onSelect(mood)
+                    onClose()
                 } label: {
-                    Label(mood.title, systemImage: mood.symbolName)
-                        .foregroundStyle(.black)
+                    Label("Cerrar", systemImage: "xmark.circle.fill")
+                        .font(.headline)
+                        .frame(maxWidth: .infinity, minHeight: 34)
                 }
+                .buttonStyle(.borderedProminent)
+                .tint(.white.opacity(0.85))
+                .foregroundStyle(.black)
+                .padding(.horizontal, 8)
+                .padding(.top, 4)
+
+                List(WatchPresenceMood.common) { mood in
+                    Button {
+                        onSelectMood(mood)
+                    } label: {
+                        Label(mood.title, systemImage: mood.symbolName)
+                            .foregroundStyle(.black)
+                    }
+                }
+                .listStyle(.carousel)
             }
-            .navigationTitle("Estado")
         }
     }
 }
+

@@ -157,6 +157,40 @@ struct WatchAgendaDeleteTransferPayload {
     }
 }
 
+struct WatchPresenceTransferPayload {
+    static let userInfoKey = "watch_presence_payload_v1"
+
+    let id: String
+    let createdAt: Date
+    let dayStart: Date
+    let eventType: String
+    let mood: String?
+    let note: String
+    let source: String
+
+    static func fromDictionary(_ dictionary: [String: Any]) -> WatchPresenceTransferPayload? {
+        guard
+            let id = dictionary["id"] as? String,
+            let createdAtInterval = dictionary["createdAt"] as? TimeInterval,
+            let dayStartInterval = dictionary["dayStart"] as? TimeInterval,
+            let eventType = dictionary["eventType"] as? String,
+            let source = dictionary["source"] as? String
+        else {
+            return nil
+        }
+
+        return WatchPresenceTransferPayload(
+            id: id,
+            createdAt: Date(timeIntervalSince1970: createdAtInterval),
+            dayStart: Date(timeIntervalSince1970: dayStartInterval),
+            eventType: eventType,
+            mood: dictionary["mood"] as? String,
+            note: dictionary["note"] as? String ?? "",
+            source: source
+        )
+    }
+}
+
 struct WatchNoteDeleteTransferPayload {
     static let userInfoKey = "watch_note_delete_payload_v1"
 
@@ -242,6 +276,14 @@ final class WatchDiarioReceiver: NSObject, WCSessionDelegate {
            let deletePayload = WatchAgendaDeleteTransferPayload.fromDictionary(raw) {
             Task { @MainActor in
                 await self.deleteAgenda(id: deletePayload.id)
+            }
+            return
+        }
+
+        if let raw = payload[WatchPresenceTransferPayload.userInfoKey] as? [String: Any],
+           let presencePayload = WatchPresenceTransferPayload.fromDictionary(raw) {
+            Task { @MainActor in
+                await self.upsertPresence(payload: presencePayload)
             }
         }
     }
@@ -480,6 +522,57 @@ final class WatchDiarioReceiver: NSObject, WCSessionDelegate {
             } catch {
                 context.rollback()
                 msg("❌ No se pudo importar agenda recibida desde watch: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    private func upsertPresence(payload: WatchPresenceTransferPayload) async {
+        let store = CoreDataController.shared
+
+        do {
+            if store.persistentContainer.persistentStoreCoordinator.persistentStores.isEmpty {
+                try await store.cargarStores()
+            }
+        } catch {
+            msg("❌ No se pudo cargar Core Data antes de importar presencia de watch: \(error.localizedDescription)")
+            return
+        }
+
+        let context = store.persistentContainer.newBackgroundContext()
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+
+        await context.perform {
+            guard
+                let presenceID = UUID(uuidString: payload.id),
+                let entity = NSEntityDescription.entity(forEntityName: "PresenciaEventEntity", in: context)
+            else {
+                return
+            }
+
+            let request = NSFetchRequest<NSManagedObject>(entityName: "PresenciaEventEntity")
+            request.fetchLimit = 1
+            request.predicate = NSPredicate(format: "id == %@", presenceID as CVarArg)
+
+            let row: NSManagedObject
+            if let existing = try? context.fetch(request).first {
+                row = existing
+            } else {
+                row = NSManagedObject(entity: entity, insertInto: context)
+                row.setValue(presenceID, forKey: "id")
+            }
+
+            row.setValue(payload.createdAt, forKey: "createdAt")
+            row.setValue(payload.dayStart, forKey: "dayStart")
+            row.setValue(payload.eventType, forKey: "eventType")
+            row.setValue(payload.mood, forKey: "mood")
+            row.setValue(payload.note, forKey: "note")
+            row.setValue(payload.source, forKey: "source")
+
+            do {
+                try context.save()
+            } catch {
+                context.rollback()
+                msg("❌ No se pudo importar presencia recibida desde watch: \(error.localizedDescription)")
             }
         }
     }
