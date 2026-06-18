@@ -570,6 +570,9 @@ final class WatchDiarioReceiver: NSObject, WCSessionDelegate {
 
             do {
                 try context.save()
+                Task { @MainActor in
+                    NotificationCenter.default.post(name: .presenciaEventsDidChange, object: nil)
+                }
             } catch {
                 context.rollback()
                 msg("❌ No se pudo importar presencia recibida desde watch: \(error.localizedDescription)")

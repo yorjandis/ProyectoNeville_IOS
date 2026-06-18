@@ -13,6 +13,7 @@ final class WatchIncomingDataReceiver: NSObject, WCSessionDelegate {
         static let diarioDelete = "ios_diario_delete_v1"
         static let agendaBatch = "ios_agenda_batch_v1"
         static let agendaDelete = "ios_agenda_delete_v1"
+        static let presenceBatch = "ios_presence_batch_v1"
         static let premiumState = "ios_premium_state_v1"
     }
 
@@ -92,6 +93,14 @@ final class WatchIncomingDataReceiver: NSObject, WCSessionDelegate {
            let agendaID = rawDeletedAgenda["id"] as? String {
             Task { @MainActor in
                 await self.deleteAgenda(id: agendaID)
+            }
+            return
+        }
+
+        if let rawPresence = payload[Keys.presenceBatch] as? [String: Any],
+           let presencePayload = WatchPresenceTransferPayload.fromDictionary(rawPresence) {
+            Task { @MainActor in
+                await self.upsertPresence(payload: presencePayload)
             }
         }
     }
@@ -368,6 +377,60 @@ final class WatchIncomingDataReceiver: NSObject, WCSessionDelegate {
             } catch {
                 context.rollback()
                 msg("❌ No se pudo eliminar agenda en watchOS: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    private func upsertPresence(payload: WatchPresenceTransferPayload) async {
+        let store = CoreDataController.shared
+
+        do {
+            if store.persistentContainer.persistentStoreCoordinator.persistentStores.isEmpty {
+                try await store.cargarStores()
+            }
+        } catch {
+            msg("❌ No se pudo cargar Core Data para sincronizar presencia en watchOS: \(error.localizedDescription)")
+            return
+        }
+
+        let context = store.persistentContainer.newBackgroundContext()
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+
+        await context.perform {
+            guard
+                let presenceID = UUID(uuidString: payload.id),
+                let entity = NSEntityDescription.entity(forEntityName: "PresenciaEventEntity", in: context)
+            else {
+                return
+            }
+
+            let request = NSFetchRequest<NSManagedObject>(entityName: "PresenciaEventEntity")
+            request.fetchLimit = 1
+            request.predicate = NSPredicate(format: "id == %@", presenceID as CVarArg)
+
+            let row: NSManagedObject
+            if let existing = try? context.fetch(request).first {
+                row = existing
+            } else {
+                row = NSManagedObject(entity: entity, insertInto: context)
+                row.setValue(presenceID, forKey: "id")
+            }
+
+            row.setValue(payload.createdAt, forKey: "createdAt")
+            row.setValue(payload.dayStart, forKey: "dayStart")
+            row.setValue(payload.eventType, forKey: "eventType")
+            row.setValue(payload.mood, forKey: "mood")
+            row.setValue(payload.note, forKey: "note")
+            row.setValue(payload.source, forKey: "source")
+
+            do {
+                try context.save()
+                Task { @MainActor in
+                    watchModel.shared.refreshTodayPresenceReturnCount()
+                }
+            } catch {
+                context.rollback()
+                msg("❌ No se pudo aplicar presencia entrante en watchOS: \(error.localizedDescription)")
             }
         }
     }

@@ -1,6 +1,10 @@
 import Foundation
 import CoreData
 
+extension Notification.Name {
+    static let presenciaEventsDidChange = Notification.Name("presenciaEventsDidChange")
+}
+
 enum PresenciaEventType: String {
     case presente
     case inconsciente
@@ -65,6 +69,10 @@ final class PresenciaRepository {
 
     func recordPresent(source: String) -> Bool {
         createEvent(type: .presente, moodID: nil, source: source)
+    }
+
+    func recordPresent(mood: PresenciaMood, source: String) -> Bool {
+        createEvent(type: .presente, moodID: mood.id, source: source)
     }
 
     func recordMood(_ mood: PresenciaMood, source: String) -> Bool {
@@ -152,6 +160,7 @@ final class PresenciaRepository {
 
         do {
             try context.save()
+            NotificationCenter.default.post(name: .presenciaEventsDidChange, object: nil)
             return true
         } catch {
             context.rollback()

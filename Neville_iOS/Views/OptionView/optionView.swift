@@ -256,7 +256,7 @@ struct optionView: View {
                 case .agenda:
                     AgendaMainView()
                 case .presencia:
-                    PresenciaStatsView()
+                    PresenciaView()
                 case .enciclopedia:
                     EnciclopediaListView()
                 case .espacioCalma:

@@ -2,6 +2,7 @@
 import SwiftUI
 
 struct PresenciaStatsView: View {
+    private let embeddedInNavigation: Bool
     @State private var dayStats: [PresenciaDayStats] = []
     @State private var moodStats: [PresenciaMoodStats] = []
     @State private var todayPresentCount = 0
@@ -12,12 +13,28 @@ struct PresenciaStatsView: View {
 
     private let repository = PresenciaRepository()
 
+    init(embeddedInNavigation: Bool = false) {
+        self.embeddedInNavigation = embeddedInNavigation
+    }
+
     private var hasPremiumAccess: Bool {
         purchaseStatus || yorjPremium
     }
 
     var body: some View {
-        NavigationStack {
+        Group {
+            if embeddedInNavigation {
+                content
+            } else {
+                NavigationStack {
+                    content
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var content: some View {
             if hasPremiumAccess {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 18) {
@@ -37,10 +54,12 @@ struct PresenciaStatsView: View {
                 .navigationBarTitleDisplayMode(.inline)
                 .onAppear(perform: reload)
                 .onChange(of: selectedRange) { _, _ in reload() }
+                .onReceive(NotificationCenter.default.publisher(for: .presenciaEventsDidChange)) { _ in
+                    reload()
+                }
             } else {
                 PurchaseView()
             }
-        }
     }
 
     private var header: some View {
@@ -51,7 +70,7 @@ struct PresenciaStatsView: View {
             Text("Hoy has vuelto al presente \(todayPresentCount) veces.")
                 .font(.headline)
                 .foregroundStyle(.white.opacity(0.82))
-            HStack(spacing: 10) {
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 104), spacing: 10)], spacing: 10) {
                 metricCard(title: "Presente", value: "\(dayStats.reduce(0) { $0 + $1.presentes })")
                 metricCard(title: "Piloto auto.", value: "\(dayStats.reduce(0) { $0 + $1.inconscientes })")
                 metricCard(title: "Ratio", value: ratioText)
@@ -140,18 +159,21 @@ private struct PresenciaBarsView: View {
             Text("Eventos diarios")
                 .font(.headline)
                 .foregroundStyle(.white)
-            HStack(alignment: .bottom, spacing: 7) {
-                ForEach(stats) { day in
-                    VStack(spacing: 3) {
-                        Spacer(minLength: 0)
-                        bar(value: day.presentes, color: .mint)
-                        bar(value: day.inconscientes, color: .orange)
-                        Text(day.date, format: .dateTime.day())
-                            .font(.caption2)
-                            .foregroundStyle(.white.opacity(0.72))
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(alignment: .bottom, spacing: 7) {
+                    ForEach(stats) { day in
+                        VStack(spacing: 3) {
+                            Spacer(minLength: 0)
+                            bar(value: day.presentes, color: .mint)
+                            bar(value: day.inconscientes, color: .orange)
+                            Text(day.date, format: .dateTime.day())
+                                .font(.caption2)
+                                .foregroundStyle(.white.opacity(0.72))
+                        }
+                        .frame(width: 16)
                     }
-                    .frame(maxWidth: .infinity)
                 }
+                .frame(minWidth: minChartWidth, minHeight: 180, alignment: .bottomLeading)
             }
             .frame(height: 180)
             legend
@@ -164,7 +186,11 @@ private struct PresenciaBarsView: View {
     private func bar(value: Int, color: Color) -> some View {
         RoundedRectangle(cornerRadius: 3)
             .fill(color.opacity(value == 0 ? 0.2 : 0.9))
-            .frame(height: max(CGFloat(value) / CGFloat(maxValue) * 70, value == 0 ? 3 : 8))
+            .frame(width: 7, height: max(CGFloat(value) / CGFloat(maxValue) * 70, value == 0 ? 3 : 8))
+    }
+
+    private var minChartWidth: CGFloat {
+        max(CGFloat(stats.count) * 23, 320)
     }
 
     private var legend: some View {
@@ -186,20 +212,23 @@ private struct PresenciaRatioDotsView: View {
             Text("Cociente presente/inconsciente")
                 .font(.headline)
                 .foregroundStyle(.white)
-            HStack(alignment: .bottom, spacing: 8) {
-                ForEach(stats) { day in
-                    VStack(spacing: 6) {
-                        Spacer(minLength: 0)
-                        Circle()
-                            .fill(day.total == 0 ? .white.opacity(0.22) : .cyan)
-                            .frame(width: 9, height: 9)
-                            .offset(y: CGFloat(1 - day.ratioPresencia) * 80)
-                        Text(day.date, format: .dateTime.day())
-                            .font(.caption2)
-                            .foregroundStyle(.white.opacity(0.72))
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(alignment: .bottom, spacing: 8) {
+                    ForEach(stats) { day in
+                        VStack(spacing: 6) {
+                            Spacer(minLength: 0)
+                            Circle()
+                                .fill(day.total == 0 ? .white.opacity(0.22) : .cyan)
+                                .frame(width: 9, height: 9)
+                                .offset(y: CGFloat(1 - day.ratioPresencia) * 80)
+                            Text(day.date, format: .dateTime.day())
+                                .font(.caption2)
+                                .foregroundStyle(.white.opacity(0.72))
+                        }
+                        .frame(width: 16)
                     }
-                    .frame(maxWidth: .infinity)
                 }
+                .frame(minWidth: minChartWidth, minHeight: 120, alignment: .bottomLeading)
             }
             .frame(height: 120)
             Text("Más alto significa que, entre los eventos registrados, hubo más retornos conscientes.")
@@ -210,5 +239,14 @@ private struct PresenciaRatioDotsView: View {
         .background(.black.opacity(0.18))
         .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
     }
+
+    private var minChartWidth: CGFloat {
+        max(CGFloat(stats.count) * 24, 320)
+    }
 }
 #endif
+
+
+#Preview{
+    PresenciaStatsView()
+}

@@ -14,6 +14,7 @@ final class WatchDataSyncToWatch: NSObject {
         static let diarioDelete = "ios_diario_delete_v1"
         static let agendaBatch = "ios_agenda_batch_v1"
         static let agendaDelete = "ios_agenda_delete_v1"
+        static let presenceBatch = "ios_presence_batch_v1"
         static let premiumState = "ios_premium_state_v1"
     }
 
@@ -25,6 +26,7 @@ final class WatchDataSyncToWatch: NSObject {
     private let notesCursorKey = "watchSync.notes.lastModified"
     private let diarioCursorKey = "watchSync.diario.lastModified"
     private let agendaCursorKey = "watchSync.agenda.lastModified"
+    private let presenceCursorKey = "watchSync.presence.createdAt"
 
     private override init() {
         super.init()
@@ -115,16 +117,19 @@ final class WatchDataSyncToWatch: NSObject {
         let noteCursor = defaults.object(forKey: notesCursorKey) as? Date
         let diarioCursor = defaults.object(forKey: diarioCursorKey) as? Date
         let agendaCursor = defaults.object(forKey: agendaCursorKey) as? Date
+        let presenceCursor = defaults.object(forKey: presenceCursorKey) as? Date
 
         let shouldSendAllNotes = fullSyncIfNoCursor && noteCursor == nil
         let shouldSendAllDiario = fullSyncIfNoCursor && diarioCursor == nil
         let shouldSendAllAgenda = fullSyncIfNoCursor && agendaCursor == nil
+        let shouldSendAllPresence = fullSyncIfNoCursor && presenceCursor == nil
 
         let notePayloads = await fetchNotes(in: context, modifiedAfter: shouldSendAllNotes ? nil : noteCursor)
         let diarioPayloads = await fetchDiario(in: context, modifiedAfter: shouldSendAllDiario ? nil : diarioCursor)
         let agendaPayloads = await fetchAgenda(in: context, modifiedAfter: shouldSendAllAgenda ? nil : agendaCursor)
+        let presencePayloads = await fetchPresence(in: context, createdAfter: shouldSendAllPresence ? nil : presenceCursor)
 
-        if notePayloads.isEmpty && diarioPayloads.isEmpty && agendaPayloads.isEmpty { return }
+        if notePayloads.isEmpty && diarioPayloads.isEmpty && agendaPayloads.isEmpty && presencePayloads.isEmpty { return }
 
         if !notePayloads.isEmpty {
             for payload in notePayloads {
@@ -145,6 +150,13 @@ final class WatchDataSyncToWatch: NSObject {
                 session.transferUserInfo([Keys.agendaBatch: payload.toDictionary()])
             }
             defaults.set(agendaPayloads.map(\.fechaModificacion).max(), forKey: agendaCursorKey)
+        }
+
+        if !presencePayloads.isEmpty {
+            for payload in presencePayloads {
+                session.transferUserInfo([Keys.presenceBatch: payload.toDictionary()])
+            }
+            defaults.set(presencePayloads.map(\.createdAt).max(), forKey: presenceCursorKey)
         }
     }
 
@@ -332,6 +344,43 @@ final class WatchDataSyncToWatch: NSObject {
         }
     }
 
+    private func fetchPresence(in context: NSManagedObjectContext, createdAfter date: Date?) async -> [WatchPresenceTransferPayload] {
+        await context.perform {
+            let request = NSFetchRequest<NSManagedObject>(entityName: "PresenciaEventEntity")
+            request.sortDescriptors = [NSSortDescriptor(key: "createdAt", ascending: true)]
+
+            if let date {
+                request.predicate = NSPredicate(format: "createdAt > %@", date as NSDate)
+            }
+
+            do {
+                return try context.fetch(request).compactMap { row in
+                    guard
+                        let id = (row.value(forKey: "id") as? UUID)?.uuidString,
+                        let createdAt = row.value(forKey: "createdAt") as? Date,
+                        let dayStart = row.value(forKey: "dayStart") as? Date,
+                        let eventType = row.value(forKey: "eventType") as? String
+                    else {
+                        return nil
+                    }
+
+                    return WatchPresenceTransferPayload(
+                        id: id,
+                        createdAt: createdAt,
+                        dayStart: dayStart,
+                        eventType: eventType,
+                        mood: row.value(forKey: "mood") as? String,
+                        note: row.value(forKey: "note") as? String ?? "",
+                        source: row.value(forKey: "source") as? String ?? "iOS"
+                    )
+                }
+            } catch {
+                msg("❌ Error preparando presencia para watchOS: \(error.localizedDescription)")
+                return []
+            }
+        }
+    }
+
 }
 
 private extension WatchNoteTransferPayload {
@@ -388,6 +437,25 @@ private extension WatchAgendaTransferPayload {
         }
         if let seriesID {
             dictionary["seriesID"] = seriesID
+        }
+
+        return dictionary
+    }
+}
+
+private extension WatchPresenceTransferPayload {
+    func toDictionary() -> [String: Any] {
+        var dictionary: [String: Any] = [
+            "id": id,
+            "createdAt": createdAt.timeIntervalSince1970,
+            "dayStart": dayStart.timeIntervalSince1970,
+            "eventType": eventType,
+            "note": note,
+            "source": source
+        ]
+
+        if let mood {
+            dictionary["mood"] = mood
         }
 
         return dictionary

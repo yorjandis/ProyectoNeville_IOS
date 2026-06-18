@@ -9,4 +9,4 @@
 // https://developer.apple.com/documentation/xcode/adding-a-build-configuration-file-to-your-project
 
 MARKETING_VERSION = 2.0.8
-CURRENT_PROJECT_VERSION = 98
+CURRENT_PROJECT_VERSION = 99
