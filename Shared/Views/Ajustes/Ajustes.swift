@@ -31,6 +31,7 @@ struct Ajustes: View {
     @AppStorage("MostrarMetasEnHome") var MostrarMetasEnHome: Bool = false
     @AppStorage("Home_ShowAgendaButton") var showAgendaButtonInHome: Bool = true
     #if os(iOS)
+    @AppStorage("Home_ShowPresenceButton") private var showPresenceButtonInHome: Bool = true
     @AppStorage(PresenciaSettings.customCelebrationPhraseKey) private var presenciaCelebrationPhrase = PresenciaSettings.defaultCelebrationPhrase
     #endif
 
@@ -1345,6 +1346,8 @@ struct Ajustes: View {
                     }
 
                     Section("Presencia") {
+                        Toggle("Mostrar botón Presencia en Home", isOn: self.$showPresenceButtonInHome)
+
                         TextField("Frase breve", text: $presenciaCelebrationPhrase, axis: .vertical)
                             .lineLimit(2)
                             .onChange(of: presenciaCelebrationPhrase) { _, newValue in

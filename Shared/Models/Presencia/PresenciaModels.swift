@@ -201,6 +201,24 @@ final class PresenciaRepository {
             .sorted { $0.count > $1.count }
     }
 
+    func resetAllEvents() -> Bool {
+        let request = NSFetchRequest<NSManagedObject>(entityName: "PresenciaEventEntity")
+
+        do {
+            let rows = try context.fetch(request)
+            rows.forEach(context.delete)
+            if context.hasChanges {
+                try context.save()
+            }
+            NotificationCenter.default.post(name: .presenciaEventsDidChange, object: nil)
+            return true
+        } catch {
+            context.rollback()
+            msg("Error al resetear estadísticas de presencia: \(error.localizedDescription)")
+            return false
+        }
+    }
+
     private func createEvent(type: PresenciaEventType, moodID: String?, source: String) -> Bool {
         guard let entity = NSEntityDescription.entity(forEntityName: "PresenciaEventEntity", in: context) else {
             return false

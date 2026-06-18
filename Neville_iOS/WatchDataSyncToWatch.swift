@@ -15,6 +15,7 @@ final class WatchDataSyncToWatch: NSObject {
         static let agendaBatch = "ios_agenda_batch_v1"
         static let agendaDelete = "ios_agenda_delete_v1"
         static let presenceBatch = "ios_presence_batch_v1"
+        static let presenceReset = "ios_presence_reset_v1"
         static let premiumState = "ios_premium_state_v1"
     }
 
@@ -199,6 +200,19 @@ final class WatchDataSyncToWatch: NSObject {
 
     private func sendDeletedAgenda(id: String) {
         sendDeletedEntity(id: id, key: Keys.agendaDelete)
+    }
+
+    func sendPresenceReset() {
+        guard let session else { return }
+
+        defaults.removeObject(forKey: presenceCursorKey)
+        let message = [Keys.presenceReset: ["resetAt": Date().timeIntervalSince1970]]
+        try? session.updateApplicationContext(message)
+        session.transferUserInfo(message)
+
+        if session.isReachable {
+            session.sendMessage(message, replyHandler: nil, errorHandler: nil)
+        }
     }
 
     private func sendDeletedEntity(id: String, key: String) {

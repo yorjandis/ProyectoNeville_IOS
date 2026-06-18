@@ -36,14 +36,18 @@ struct Home: View {
     @State private var goalsGadgetRefreshID = UUID()
     @State private var showRitualMatutino: Bool = false
     @State private var showAgenda: Bool = false
+    @State private var showPresence: Bool = false
     @State private var showPremium: Bool = false
     @State private var now = Date()
 
     @AppStorage("Home_RitualMatutino_HiddenDayKey") private var ritualMatutinoHiddenDayKey: String = ""
     @AppStorage("Home_ShowAgendaButton") private var showAgendaButtonInHome: Bool = true
+    @AppStorage("Home_ShowPresenceButton") private var showPresenceButtonInHome: Bool = true
     @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
     @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) private var yorjPremium: Bool = false
 
+    private let quickAccessButtonBackgroundOpacity = 0.30 //Opacidad de los botones de acceso: Ritual, Agenda y Presencia.
+    
     private let ritualButtonTimer = Timer.publish(every: 60, on: .main, in: .common).autoconnect()
 
     private struct RitualSessionVisibilityDTO: Decodable {
@@ -86,6 +90,15 @@ struct Home: View {
     private var shouldShowAgendaButton: Bool {
         let hour = Calendar.current.component(.hour, from: now)
         return hour >= 3 && showAgendaButtonInHome
+    }
+
+    private var shouldShowPresenceButton: Bool {
+        let hour = Calendar.current.component(.hour, from: now)
+        return hour >= 3 && showPresenceButtonInHome
+    }
+
+    private var isRunningForPreviews: Bool {
+        ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
     }
 
     var body: some View {
@@ -138,59 +151,87 @@ struct Home: View {
                    ReminderWidgetList_View()
 
 
-                    //Botones de acceso rápido: Ritual Matutino / Agenda
-                    if shouldShowRitualButton || shouldShowAgendaButton {
-                        HStack(spacing: 10) {
-                            if shouldShowRitualButton {
-                                Button {
-                                    if purchaseStatus || yorjPremium {
-                                    showRitualMatutino = true
-                                    } else {
-                                        showPremium = true
-                                    }
-                                        
-                                } label: {
-                                    Label("Ritual Matutino", systemImage: "sunrise.fill")
-                                        .font(.headline)
-                                        .foregroundStyle(.black)
-                                        .padding(.horizontal, 14)
-                                        .padding(.vertical, 10)
-                                        .background(.white.opacity(0.82))
-                                        .clipShape(Capsule())
-                                }
-                                .contextMenu {
-                                    Button(role: .destructive) {
-                                        ritualMatutinoHiddenDayKey = ritualCurrentDayKey
+                    //Botones de acceso rápido: Ritual Matutino / Agenda / Presencia
+                    if shouldShowRitualButton || shouldShowAgendaButton || shouldShowPresenceButton {
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 10) {
+                                if shouldShowRitualButton {
+                                    Button {
+                                        if purchaseStatus || yorjPremium {
+                                        showRitualMatutino = true
+                                        } else {
+                                            showPremium = true
+                                        }
+                                            
                                     } label: {
-                                        Label("Ocultar por hoy", systemImage: "eye.slash")
+                                        Label("Ritual", systemImage: "sunrise.fill")
+                                            .font(.headline)
+                                            .foregroundStyle(.black)
+                                            .padding(.horizontal, 14)
+                                            .padding(.vertical, 10)
+                                            .background(.white.opacity(quickAccessButtonBackgroundOpacity))
+                                            .clipShape(Capsule())
+                                    }
+                                    .contextMenu {
+                                        Button(role: .destructive) {
+                                            ritualMatutinoHiddenDayKey = ritualCurrentDayKey
+                                        } label: {
+                                            Label("Ocultar por hoy", systemImage: "eye.slash")
+                                        }
                                     }
                                 }
-                            }
 
-                            if shouldShowAgendaButton {
-                                Button {
-                                    if purchaseStatus || yorjPremium {
-                                        showAgenda = true
-                                    } else {
-                                        showPremium = true
-                                    }
-                                } label: {
-                                    Label("Agenda", systemImage: "calendar")
-                                        .font(.headline)
-                                        .foregroundStyle(.black)
-                                        .padding(.horizontal, 14)
-                                        .padding(.vertical, 10)
-                                        .background(.white.opacity(0.82))
-                                        .clipShape(Capsule())
-                                }
-                                .contextMenu {
-                                    Button(role: .destructive) {
-                                        showAgendaButtonInHome = false
+                                if shouldShowAgendaButton {
+                                    Button {
+                                        if purchaseStatus || yorjPremium {
+                                            showAgenda = true
+                                        } else {
+                                            showPremium = true
+                                        }
                                     } label: {
-                                        Label("Ocultar", systemImage: "eye.slash")
+                                        Label("Agenda", systemImage: "calendar")
+                                            .font(.headline)
+                                            .foregroundStyle(.black)
+                                            .padding(.horizontal, 14)
+                                            .padding(.vertical, 10)
+                                            .background(.white.opacity(quickAccessButtonBackgroundOpacity))
+                                            .clipShape(Capsule())
+                                    }
+                                    .contextMenu {
+                                        Button(role: .destructive) {
+                                            showAgendaButtonInHome = false
+                                        } label: {
+                                            Label("Ocultar", systemImage: "eye.slash")
+                                        }
+                                    }
+                                }
+
+                                if shouldShowPresenceButton {
+                                    Button {
+                                        if purchaseStatus || yorjPremium {
+                                            showPresence = true
+                                        } else {
+                                            showPremium = true
+                                        }
+                                    } label: {
+                                        Label("Presencia", systemImage: "sparkles")
+                                            .font(.headline)
+                                            .foregroundStyle(.black)
+                                            .padding(.horizontal, 14)
+                                            .padding(.vertical, 10)
+                                            .background(.white.opacity(quickAccessButtonBackgroundOpacity))
+                                            .clipShape(Capsule())
+                                    }
+                                    .contextMenu {
+                                        Button(role: .destructive) {
+                                            showPresenceButtonInHome = false
+                                        } label: {
+                                            Label("Ocultar", systemImage: "eye.slash")
+                                        }
                                     }
                                 }
                             }
+                            .padding(.horizontal, 16)
                         }
                     }
 
@@ -209,6 +250,8 @@ struct Home: View {
 
                 // Refresca el gadget de metas cada vez que Home vuelve a aparecer.
                 goalsGadgetRefreshID = UUID()
+
+                guard !isRunningForPreviews else { return }
                 
                 
                 //Ejecutar Lógica la primera vez que se instala o se actualiza la función
@@ -279,6 +322,9 @@ struct Home: View {
         .sheet(isPresented: $showAgenda) {
             AgendaMainView()
         }
+        .sheet(isPresented: $showPresence) {
+            PresenciaView()
+        }
         .sheet(isPresented: $showPremium) {
             PurchaseView()
         }
@@ -287,6 +333,7 @@ struct Home: View {
     
 
 }//struct
+
 
 
 
@@ -495,11 +542,38 @@ struct AddNotasViewInbuilt: View {
 
 
 
+#if DEBUG
+private struct HomePreviewHost: View {
+    @StateObject private var settingModel = SettingModel()
+    @StateObject private var modelTxt = TxtContentModel.shared
+    @StateObject private var modelFrases = FrasesModel.shared
+    @StateObject private var securityModel = SecurityModel.shared
+    @StateObject private var clipBoardModel = ClipboardObserver()
 
+    init() {
+        UserDefaults.standard.set(false, forKey: "MostrarMetasEnHome")
+        UserDefaults.standard.set(true, forKey: "Home_ShowAgendaButton")
+        UserDefaults.standard.set(true, forKey: "Home_ShowPresenceButton")
+        UserDefaults.standard.set("", forKey: "Home_RitualMatutino_HiddenDayKey")
+        UserDefaults.standard.set(true, forKey: "purchaseStatus")
+    }
 
-
-
-
-#Preview {
-    ContentView()
+    var body: some View {
+        Home()
+            .environmentObject(settingModel)
+            .environmentObject(modelTxt)
+            .environmentObject(modelFrases)
+            .environmentObject(securityModel)
+            .environmentObject(clipBoardModel)
+            .environment(\.managedObjectContext, CoreDataController.shared.context)
+    }
 }
+
+#Preview("Home") {
+    HomePreviewHost()
+}
+#endif
+
+
+
+

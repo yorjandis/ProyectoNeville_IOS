@@ -14,6 +14,7 @@ final class WatchIncomingDataReceiver: NSObject, WCSessionDelegate {
         static let agendaBatch = "ios_agenda_batch_v1"
         static let agendaDelete = "ios_agenda_delete_v1"
         static let presenceBatch = "ios_presence_batch_v1"
+        static let presenceReset = "ios_presence_reset_v1"
         static let premiumState = "ios_premium_state_v1"
     }
 
@@ -45,6 +46,13 @@ final class WatchIncomingDataReceiver: NSObject, WCSessionDelegate {
             let purchaseStatus = rawPremiumState["purchaseStatus"] as? Bool ?? false
             Task { @MainActor in
                 self.applyPremiumState(yorjPremium: yorjPremium, purchaseStatus: purchaseStatus)
+            }
+            return
+        }
+
+        if payload[Keys.presenceReset] as? [String: Any] != nil {
+            Task { @MainActor in
+                await self.resetPresenceEvents()
             }
             return
         }
@@ -431,6 +439,41 @@ final class WatchIncomingDataReceiver: NSObject, WCSessionDelegate {
             } catch {
                 context.rollback()
                 msg("❌ No se pudo aplicar presencia entrante en watchOS: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    private func resetPresenceEvents() async {
+        let store = CoreDataController.shared
+
+        do {
+            if store.persistentContainer.persistentStoreCoordinator.persistentStores.isEmpty {
+                try await store.cargarStores()
+            }
+        } catch {
+            msg("❌ No se pudo cargar Core Data para resetear presencia en watchOS: \(error.localizedDescription)")
+            return
+        }
+
+        let context = store.persistentContainer.newBackgroundContext()
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+
+        await context.perform {
+            let request = NSFetchRequest<NSManagedObject>(entityName: "PresenciaEventEntity")
+
+            do {
+                let rows = try context.fetch(request)
+                rows.forEach(context.delete)
+                if context.hasChanges {
+                    try context.save()
+                }
+
+                Task { @MainActor in
+                    watchModel.shared.refreshTodayPresenceReturnCount()
+                }
+            } catch {
+                context.rollback()
+                msg("❌ No se pudo resetear presencia en watchOS: \(error.localizedDescription)")
             }
         }
     }
