@@ -34,6 +34,7 @@ struct WatchPresenceMood: Identifiable, Hashable {
     let countsAsInconsciente: Bool
 
     static let common: [WatchPresenceMood] = [
+        WatchPresenceMood(id: "sientoMiFuturoAhora", title: "Siento mi futuro ahora", symbolName: "sparkles", countsAsInconsciente: false),
         WatchPresenceMood(id: "pilotoAutomatico", title: "Piloto automático", symbolName: "moon.zzz.fill", countsAsInconsciente: true),
         WatchPresenceMood(id: "distraido", title: "Distraído", symbolName: "sparkle.magnifyingglass", countsAsInconsciente: true),
         WatchPresenceMood(id: "sereno", title: "Sereno", symbolName: "leaf.fill", countsAsInconsciente: false),

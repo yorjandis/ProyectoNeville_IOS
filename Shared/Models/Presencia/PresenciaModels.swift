@@ -5,6 +5,11 @@ extension Notification.Name {
     static let presenciaEventsDidChange = Notification.Name("presenciaEventsDidChange")
 }
 
+enum PresenciaSettings {
+    static let customCelebrationPhraseKey = "presencia.customCelebrationPhrase"
+    static let defaultCelebrationPhrase = "Siento mi futuro ahora."
+}
+
 enum PresenciaEventType: String {
     case presente
     case inconsciente
@@ -18,6 +23,7 @@ struct PresenciaMood: Identifiable, Hashable {
     let countsAsInconsciente: Bool
 
     static let common: [PresenciaMood] = [
+        PresenciaMood(id: "sientoMiFuturoAhora", title: "Siento mi futuro ahora", symbolName: "sparkles", countsAsInconsciente: false),
         PresenciaMood(id: "pilotoAutomatico", title: "Piloto automático", symbolName: "moon.zzz.fill", countsAsInconsciente: true),
         PresenciaMood(id: "distraido", title: "Distraído", symbolName: "sparkle.magnifyingglass", countsAsInconsciente: true),
         PresenciaMood(id: "sereno", title: "Sereno", symbolName: "leaf.fill", countsAsInconsciente: false),
@@ -40,6 +46,7 @@ struct PresenciaDayStats: Identifiable, Hashable {
     let presentes: Int
     let inconscientes: Int
     let estadosAnimo: Int
+    let futuroAhora: Int
 
     var id: Date { date }
     var total: Int { presentes + inconscientes }
@@ -55,6 +62,14 @@ struct PresenciaMoodStats: Identifiable, Hashable {
 
     var id: String { moodID }
     var title: String { PresenciaMood.title(for: moodID) }
+}
+
+struct PresenciaStreakStats: Hashable {
+    let currentDays: Int
+    let bestDays: Int
+
+    var hasCurrentStreak: Bool { currentDays > 0 }
+    var hasAnyStreak: Bool { bestDays > 0 }
 }
 
 @MainActor
@@ -87,6 +102,36 @@ final class PresenciaRepository {
         countEvents(type: .presente, in: calendar.startOfDay(for: Date()))
     }
 
+    func futureFeelingCount(days: Int = 30) -> Int {
+        moodCount(moodID: "sientoMiFuturoAhora", days: days)
+    }
+
+    func streakStats(days: Int = 90, threshold: Int = 10) -> PresenciaStreakStats {
+        let stats = dayStats(days: days)
+        var best = 0
+        var running = 0
+
+        for day in stats {
+            if day.presentes >= threshold {
+                running += 1
+                best = max(best, running)
+            } else {
+                running = 0
+            }
+        }
+
+        var current = 0
+        for day in stats.reversed() {
+            if day.presentes >= threshold {
+                current += 1
+            } else {
+                break
+            }
+        }
+
+        return PresenciaStreakStats(currentDays: current, bestDays: best)
+    }
+
     func dayStats(days: Int = 14) -> [PresenciaDayStats] {
         let today = calendar.startOfDay(for: Date())
         let start = calendar.date(byAdding: .day, value: -(max(days, 1) - 1), to: today) ?? today
@@ -95,17 +140,18 @@ final class PresenciaRepository {
         request.sortDescriptors = [NSSortDescriptor(key: "dayStart", ascending: true)]
 
         let events = (try? context.fetch(request)) ?? []
-        var buckets: [Date: (presentes: Int, inconscientes: Int, estados: Int)] = [:]
+        var buckets: [Date: (presentes: Int, inconscientes: Int, estados: Int, futuroAhora: Int)] = [:]
 
         for offset in 0..<max(days, 1) {
             guard let day = calendar.date(byAdding: .day, value: offset, to: start) else { continue }
-            buckets[day] = (0, 0, 0)
+            buckets[day] = (0, 0, 0, 0)
         }
 
         for event in events {
             let day = (event.value(forKey: "dayStart") as? Date).map { calendar.startOfDay(for: $0) } ?? today
             let type = event.value(forKey: "eventType") as? String
-            var bucket = buckets[day, default: (0, 0, 0)]
+            let mood = event.value(forKey: "mood") as? String
+            var bucket = buckets[day, default: (0, 0, 0, 0)]
 
             switch type {
             case PresenciaEventType.presente.rawValue:
@@ -118,11 +164,23 @@ final class PresenciaRepository {
                 break
             }
 
+            if mood == "sientoMiFuturoAhora" {
+                bucket.futuroAhora += 1
+            }
+
             buckets[day] = bucket
         }
 
         return buckets
-            .map { PresenciaDayStats(date: $0.key, presentes: $0.value.presentes, inconscientes: $0.value.inconscientes, estadosAnimo: $0.value.estados) }
+            .map {
+                PresenciaDayStats(
+                    date: $0.key,
+                    presentes: $0.value.presentes,
+                    inconscientes: $0.value.inconscientes,
+                    estadosAnimo: $0.value.estados,
+                    futuroAhora: $0.value.futuroAhora
+                )
+            }
             .sorted { $0.date < $1.date }
     }
 
@@ -178,6 +236,15 @@ final class PresenciaRepository {
             day as NSDate,
             end as NSDate
         )
+
+        return (try? context.count(for: request)) ?? 0
+    }
+
+    private func moodCount(moodID: String, days: Int) -> Int {
+        let today = calendar.startOfDay(for: Date())
+        let start = calendar.date(byAdding: .day, value: -(max(days, 1) - 1), to: today) ?? today
+        let request = NSFetchRequest<NSManagedObject>(entityName: "PresenciaEventEntity")
+        request.predicate = NSPredicate(format: "dayStart >= %@ AND mood == %@", start as NSDate, moodID)
 
         return (try? context.count(for: request)) ?? 0
     }

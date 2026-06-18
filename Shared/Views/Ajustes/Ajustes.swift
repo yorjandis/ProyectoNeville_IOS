@@ -30,6 +30,9 @@ struct Ajustes: View {
     //Permite mostrar/Ocultar Metas en Home
     @AppStorage("MostrarMetasEnHome") var MostrarMetasEnHome: Bool = false
     @AppStorage("Home_ShowAgendaButton") var showAgendaButtonInHome: Bool = true
+    #if os(iOS)
+    @AppStorage(PresenciaSettings.customCelebrationPhraseKey) private var presenciaCelebrationPhrase = PresenciaSettings.defaultCelebrationPhrase
+    #endif
 
     @State private var showSheetPremiumView: Bool = false
     @State private var showCardioMusicImporter: Bool = false
@@ -1339,6 +1342,24 @@ struct Ajustes: View {
 
                     Section("Agenda") {
                         Toggle("Mostrar botón Agenda en Home", isOn: self.$showAgendaButtonInHome)
+                    }
+
+                    Section("Presencia") {
+                        TextField("Frase breve", text: $presenciaCelebrationPhrase, axis: .vertical)
+                            .lineLimit(2)
+                            .onChange(of: presenciaCelebrationPhrase) { _, newValue in
+                                if newValue.count > 80 {
+                                    presenciaCelebrationPhrase = String(newValue.prefix(80))
+                                }
+                            }
+
+                        Text("Se mostrará al registrar un evento de Presencia.")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+
+                        Button("Usar frase por defecto") {
+                            presenciaCelebrationPhrase = PresenciaSettings.defaultCelebrationPhrase
+                        }
                     }
                     
                     //Metas

@@ -208,6 +208,7 @@ final class WatchDiarioReceiver: NSObject, WCSessionDelegate {
 
     private let session: WCSession? = WCSession.isSupported() ? WCSession.default : nil
     private var importingNoteIDs = Set<String>()
+    private var importingPresenceIDs = Set<String>()
 
     private override init() {
         super.init()
@@ -283,7 +284,7 @@ final class WatchDiarioReceiver: NSObject, WCSessionDelegate {
         if let raw = payload[WatchPresenceTransferPayload.userInfoKey] as? [String: Any],
            let presencePayload = WatchPresenceTransferPayload.fromDictionary(raw) {
             Task { @MainActor in
-                await self.upsertPresence(payload: presencePayload)
+                await self.upsertPresenceIfNeeded(payload: presencePayload)
             }
         }
     }
@@ -295,6 +296,15 @@ final class WatchDiarioReceiver: NSObject, WCSessionDelegate {
 
         defer { importingNoteIDs.remove(noteID) }
         await upsertNote(payload: payload)
+    }
+
+    private func upsertPresenceIfNeeded(payload: WatchPresenceTransferPayload) async {
+        let presenceID = payload.id.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !presenceID.isEmpty else { return }
+        guard importingPresenceIDs.insert(presenceID).inserted else { return }
+
+        defer { importingPresenceIDs.remove(presenceID) }
+        await upsertPresence(payload: payload)
     }
 
     private func deleteNote(id: String) async {
@@ -550,12 +560,13 @@ final class WatchDiarioReceiver: NSObject, WCSessionDelegate {
             }
 
             let request = NSFetchRequest<NSManagedObject>(entityName: "PresenciaEventEntity")
-            request.fetchLimit = 1
             request.predicate = NSPredicate(format: "id == %@", presenceID as CVarArg)
 
             let row: NSManagedObject
-            if let existing = try? context.fetch(request).first {
+            let matches = (try? context.fetch(request)) ?? []
+            if let existing = matches.first {
                 row = existing
+                matches.dropFirst().forEach(context.delete)
             } else {
                 row = NSManagedObject(entity: entity, insertInto: context)
                 row.setValue(presenceID, forKey: "id")

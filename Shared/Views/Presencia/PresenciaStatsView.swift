@@ -7,6 +7,8 @@ struct PresenciaStatsView: View {
     @State private var moodStats: [PresenciaMoodStats] = []
     @State private var todayPresentCount = 0
     @State private var selectedRange = 14
+    @State private var futureFeelingCount = 0
+    @State private var streakStats = PresenciaStreakStats(currentDays: 0, bestDays: 0)
 
     @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
     @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) private var yorjPremium: Bool = false
@@ -40,6 +42,7 @@ struct PresenciaStatsView: View {
                     VStack(alignment: .leading, spacing: 18) {
                         header
                         rangePicker
+                        streakSection
                         PresenciaBarsView(stats: dayStats)
                         PresenciaRatioDotsView(stats: dayStats)
                         moodSection
@@ -72,6 +75,7 @@ struct PresenciaStatsView: View {
                 .foregroundStyle(.white.opacity(0.82))
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 104), spacing: 10)], spacing: 10) {
                 metricCard(title: "Presente", value: "\(dayStats.reduce(0) { $0 + $1.presentes })")
+                metricCard(title: "Futuro ahora", value: "\(futureFeelingCount)")
                 metricCard(title: "Piloto auto.", value: "\(dayStats.reduce(0) { $0 + $1.inconscientes })")
                 metricCard(title: "Ratio", value: ratioText)
             }
@@ -85,6 +89,33 @@ struct PresenciaStatsView: View {
             Text("90 días").tag(90)
         }
         .pickerStyle(.segmented)
+    }
+
+    private var streakSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 10) {
+                Image(systemName: "flame.fill")
+                    .foregroundStyle(.yellow)
+                Text("Rachas")
+                    .font(.headline)
+                    .foregroundStyle(.white)
+                Spacer()
+            }
+
+            if streakStats.hasAnyStreak {
+                HStack(spacing: 10) {
+                    streakCard(title: "Actual", value: "\(streakStats.currentDays)", caption: "días con 10+ retornos")
+                    streakCard(title: "Mejor", value: "\(streakStats.bestDays)", caption: "días consecutivos")
+                }
+            } else {
+                Text("Las rachas empiezan cuando registras 10 o más retornos al presente en un día.")
+                    .font(.subheadline)
+                    .foregroundStyle(.white.opacity(0.72))
+            }
+        }
+        .padding(14)
+        .background(.black.opacity(0.18))
+        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
     }
 
     private var moodSection: some View {
@@ -140,10 +171,31 @@ struct PresenciaStatsView: View {
         .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
     }
 
+    private func streakCard(title: String, value: String, caption: String) -> some View {
+        VStack(alignment: .leading, spacing: 5) {
+            Text(title)
+                .font(.caption)
+                .foregroundStyle(.white.opacity(0.72))
+            Text(value)
+                .font(.title.bold())
+                .foregroundStyle(.white)
+            Text(caption)
+                .font(.caption2)
+                .foregroundStyle(.white.opacity(0.72))
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(12)
+        .background(.white.opacity(0.14))
+        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+    }
+
     private func reload() {
         dayStats = repository.dayStats(days: selectedRange)
         moodStats = repository.moodStats(days: selectedRange)
         todayPresentCount = repository.todayPresentCount()
+        futureFeelingCount = repository.futureFeelingCount(days: selectedRange)
+        streakStats = repository.streakStats(days: selectedRange)
     }
 }
 
