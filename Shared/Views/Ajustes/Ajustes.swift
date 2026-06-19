@@ -1023,10 +1023,7 @@ struct Ajustes: View {
                                     .background(LinearGradient(colors: [ColorPrimario, ColorSecundario], startPoint: .top, endPoint: .bottom))
                                     .clipShape(RoundedRectangle(cornerRadius: 20))
                             }
-                            Button("Yorj"){
-                                print(self.ColorPrimario)
-                                print(self.ColorSecundario)
-                            }
+                           
                             
                         }
                     }

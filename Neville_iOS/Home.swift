@@ -31,6 +31,7 @@ struct Home: View {
 
     //Recordatorios Witget:
     @StateObject private var modelRecordatorios: SelectedReminderModel = .init() //Inicia el modelo de los recordatorios de Widgets
+    @StateObject private var agendaViewModel = AgendaViewModel()
 
     // Fuerza la recreación del gadget de metas cuando Home reaparece.
     @State private var goalsGadgetRefreshID = UUID()
@@ -46,7 +47,7 @@ struct Home: View {
     @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
     @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) private var yorjPremium: Bool = false
 
-    private let quickAccessButtonBackgroundOpacity = 0.30 //Opacidad de los botones de acceso: Ritual, Agenda y Presencia.
+    private let quickAccessButtonBackgroundOpacity = 0.90 //Opacidad de los botones de acceso: Ritual, Agenda y Presencia.
     
     private let ritualButtonTimer = Timer.publish(every: 60, on: .main, in: .common).autoconnect()
 
@@ -95,6 +96,12 @@ struct Home: View {
     private var shouldShowPresenceButton: Bool {
         let hour = Calendar.current.component(.hour, from: now)
         return hour >= 3 && showPresenceButtonInHome
+    }
+
+    private var todayAgendaActivitiesCount: Int {
+        agendaViewModel.items.filter {
+            Calendar.current.isDate($0.fechaActividad, inSameDayAs: now)
+        }.count
     }
 
     private var isRunningForPreviews: Bool {
@@ -196,6 +203,18 @@ struct Home: View {
                                             .padding(.vertical, 10)
                                             .background(.white.opacity(quickAccessButtonBackgroundOpacity))
                                             .clipShape(Capsule())
+                                            .overlay(alignment: .topTrailing) {
+                                                if todayAgendaActivitiesCount > 0 {
+                                                    Text(todayAgendaActivitiesCount > 99 ? "99+" : "\(todayAgendaActivitiesCount)")
+                                                        .font(.system(size: 10, weight: .bold))
+                                                        .foregroundStyle(.white)
+                                                        .lineLimit(1)
+                                                        .minimumScaleFactor(0.7)
+                                                        .frame(width: 22, height: 22)
+                                                        .background(Circle().fill(.red.opacity(0.88)))
+                                                        .offset(x: 5, y: -1)
+                                                }
+                                            }
                                     }
                                     .contextMenu {
                                         Button(role: .destructive) {
@@ -247,6 +266,7 @@ struct Home: View {
             }
             .onAppear {
                 now = Date()
+                agendaViewModel.load()
 
                 // Refresca el gadget de metas cada vez que Home vuelve a aparecer.
                 goalsGadgetRefreshID = UUID()
@@ -309,6 +329,12 @@ struct Home: View {
             .onChange(of: scenePhase) { _, phase in
                 if phase == .active {
                     now = Date()
+                    agendaViewModel.load()
+                }
+            }
+            .onChange(of: showAgenda) { _, isPresented in
+                if !isPresented {
+                    agendaViewModel.load()
                 }
             }
             
@@ -573,7 +599,6 @@ private struct HomePreviewHost: View {
     HomePreviewHost()
 }
 #endif
-
 
 
 

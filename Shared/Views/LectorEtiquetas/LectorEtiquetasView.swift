@@ -14,6 +14,9 @@ struct LectorEtiquetasView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel = LectorEtiquetasViewModel()
 
+    @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
+    @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) private var yorjPremium: Bool = false
+
     @State private var barcodeInput: String = ""
     @State private var showBarcodeScanner: Bool = false
     @State private var expandedAditivos: Set<String> = []
@@ -30,162 +33,169 @@ struct LectorEtiquetasView: View {
 
     private let proprietaryRiskEngine = DefaultLectorEtiquetasFoodRiskScoringEngine()
 
+    private var hasPremiumAccess: Bool {
+        purchaseStatus || yorjPremium
+    }
+
     var body: some View {
         NavigationStack {
-            ZStack {
-                backgroundGradient
-                    .ignoresSafeArea()
+            if hasPremiumAccess {
+                ZStack {
+                    backgroundGradient
+                        .ignoresSafeArea()
 
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 16) {
-                        HeadSection
-                        barcodeCard
-                        statusSection
-                        resultadoSection
-                        disclaimerSection
-                    }
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 20)
-                }
-            }
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button("Cerrar") { dismiss() }
-                }
-
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        showHealthyEatingGuideSheet = true
-                    } label: {
-                        Image(systemName: "info.circle")
-                    }
-                    .help("Guía para elegir alimentos saludables")
-                    .disabled(viewModel.isAnalizando)
-                }
-                
-                if #available(iOS 26.0, *) {
-                    ToolbarSpacer(.fixed)
-                }
-                
-
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Limpiar") {
-                        barcodeInput = ""
-                        isBarcodeCardExpanded = true
-                        currentProductImageIndex = 0
-                        expandedProductImage = nil
-                        selectedNutrientInfoTarget = nil
-                        selectedPrincipalScoreInfo = nil
-                        expandedAditivos.removeAll()
-                        viewModel.offlineNameMatches = []
-                        viewModel.limpiarResultado()
-                    }
-                    .disabled(viewModel.isAnalizando)
-                }
-
-                if viewModel.selectedSource == .offlineSQLite, viewModel.isOfflineDatabaseReady {
-                    if viewModel.hasPendingOfflineUpdate {
-                        ToolbarItem(placement: .topBarTrailing) {
-                            Button {
-                                Task { await viewModel.prepararBaseOffline(forceRefresh: true) }
-                            } label: {
-                                Image(systemName: "arrow.down.circle.fill")
-                            }
-                            .help("Descargar actualización de la BD offline")
-                            .disabled(viewModel.isAnalizando || viewModel.isPreparingOfflineDatabase)
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 16) {
+                            HeadSection
+                            barcodeCard
+                            statusSection
+                            resultadoSection
+                            disclaimerSection
                         }
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 20)
+                    }
+                }
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button("Cerrar") { dismiss() }
                     }
 
                     ToolbarItem(placement: .topBarTrailing) {
-                        Menu {
-                            Button("Chequear BD offline", systemImage: "shippingbox") {
-                                Task { await viewModel.buscar(query: barcodeInput) }
-                            }
-                            .disabled(barcodeInput.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || viewModel.isAnalizando)
+                        Button {
+                            showHealthyEatingGuideSheet = true
+                        } label: {
+                            Image(systemName: "info.circle")
+                        }
+                        .help("Guía para elegir alimentos saludables")
+                        .disabled(viewModel.isAnalizando)
+                    }
 
-                            Button("Buscar actualización", systemImage: "arrow.clockwise") {
-                                Task {
-                                    let hasUpdate = await viewModel.verificarActualizacionOffline()
-                                    if hasUpdate {
-                                        showOfflineUpdatePrompt = true
-                                    } else {
-                                        viewModel.offlineInfoMessage = "No hay una nueva versión disponible."
+                    if #available(iOS 26.0, *) {
+                        ToolbarSpacer(.fixed)
+                    }
+
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button("Limpiar") {
+                            barcodeInput = ""
+                            isBarcodeCardExpanded = true
+                            currentProductImageIndex = 0
+                            expandedProductImage = nil
+                            selectedNutrientInfoTarget = nil
+                            selectedPrincipalScoreInfo = nil
+                            expandedAditivos.removeAll()
+                            viewModel.offlineNameMatches = []
+                            viewModel.limpiarResultado()
+                        }
+                        .disabled(viewModel.isAnalizando)
+                    }
+
+                    if viewModel.selectedSource == .offlineSQLite, viewModel.isOfflineDatabaseReady {
+                        if viewModel.hasPendingOfflineUpdate {
+                            ToolbarItem(placement: .topBarTrailing) {
+                                Button {
+                                    Task { await viewModel.prepararBaseOffline(forceRefresh: true) }
+                                } label: {
+                                    Image(systemName: "arrow.down.circle.fill")
+                                }
+                                .help("Descargar actualización de la BD offline")
+                                .disabled(viewModel.isAnalizando || viewModel.isPreparingOfflineDatabase)
+                            }
+                        }
+
+                        ToolbarItem(placement: .topBarTrailing) {
+                            Menu {
+                                Button("Chequear BD offline", systemImage: "shippingbox") {
+                                    Task { await viewModel.buscar(query: barcodeInput) }
+                                }
+                                .disabled(barcodeInput.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || viewModel.isAnalizando)
+
+                                Button("Buscar actualización", systemImage: "arrow.clockwise") {
+                                    Task {
+                                        let hasUpdate = await viewModel.verificarActualizacionOffline()
+                                        if hasUpdate {
+                                            showOfflineUpdatePrompt = true
+                                        } else {
+                                            viewModel.offlineInfoMessage = "No hay una nueva versión disponible."
+                                        }
                                     }
                                 }
+                                .disabled(viewModel.isAnalizando || viewModel.isPreparingOfflineDatabase)
+                            } label: {
+                                Image(systemName: "ellipsis.circle")
                             }
-                            .disabled(viewModel.isAnalizando || viewModel.isPreparingOfflineDatabase)
-                        } label: {
-                            Image(systemName: "ellipsis.circle")
                         }
                     }
                 }
-            }
-            .sheet(isPresented: $showBarcodeScanner) {
-                barcodeScannerSheet
-            }
-            .sheet(isPresented: $showNutritionInfoSheet) {
-                NutritionInfoSheetView()
-                    .presentationDetents([.medium])
-            }
-            .sheet(isPresented: $showHealthyEatingGuideSheet) {
-                HealthyEatingGuideSheetView()
-                    .presentationDetents([.medium])
-            }
-            .sheet(isPresented: $showLabelInterpretationSheet) {
-                LabelInterpretationSheetView()
-                    .presentationDetents([.medium, .large])
-            }
-            .sheet(item: $selectedNutrientInfoTarget) { target in
-                NutrientDetailSheetView(target: target)
-                    .presentationDetents([.medium])
-            }
-            .sheet(item: $selectedPrincipalScoreInfo) { info in
-                PrincipalScoreDetailSheetView(info: info)
-                    .presentationDetents([.medium])
-            }
-            .sheet(item: $selectedNutritionConsumptionWarning) { warning in
-                NutritionConsumptionWarningSheetView(warning: warning)
-                    .presentationDetents([.medium])
-            }
-            .sheet(item: $expandedProductImage, onDismiss: {
-                expandedProductImage = nil
-            }) { item in
-                ExpandedProductImageGallerySheetView(
-                    imageURLs: item.imageURLs,
-                    initialIndex: item.initialIndex
-                )
-                .presentationDetents([.medium])
-            }
-            .alert("Nueva versión de BD offline disponible", isPresented: $showOfflineUpdatePrompt) {
-                Button("Luego", role: .cancel) {}
-                Button("Descargar ahora") {
-                    Task { await viewModel.prepararBaseOffline(forceRefresh: true) }
+                .sheet(isPresented: $showBarcodeScanner) {
+                    barcodeScannerSheet
                 }
-            } message: {
-                let versionText = viewModel.pendingOfflineVersion.map(String.init) ?? "más reciente"
-                Text("Se detectó una nueva versión (\(versionText)). ¿Quieres descargarla y verificarla ahora?")
-            }
-            .onChange(of: viewModel.selectedSource) { _, _ in
-                clearSearchStateForModeChange()
-                if viewModel.selectedSource == .offlineSQLite, viewModel.isOfflineDatabaseReady {
-                    Task {
-                        let hasUpdate = await viewModel.verificarActualizacionOffline()
-                        if hasUpdate {
-                            showOfflineUpdatePrompt = true
+                .sheet(isPresented: $showNutritionInfoSheet) {
+                    NutritionInfoSheetView()
+                        .presentationDetents([.medium])
+                }
+                .sheet(isPresented: $showHealthyEatingGuideSheet) {
+                    HealthyEatingGuideSheetView()
+                        .presentationDetents([.medium])
+                }
+                .sheet(isPresented: $showLabelInterpretationSheet) {
+                    LabelInterpretationSheetView()
+                        .presentationDetents([.medium, .large])
+                }
+                .sheet(item: $selectedNutrientInfoTarget) { target in
+                    NutrientDetailSheetView(target: target)
+                        .presentationDetents([.medium])
+                }
+                .sheet(item: $selectedPrincipalScoreInfo) { info in
+                    PrincipalScoreDetailSheetView(info: info)
+                        .presentationDetents([.medium])
+                }
+                .sheet(item: $selectedNutritionConsumptionWarning) { warning in
+                    NutritionConsumptionWarningSheetView(warning: warning)
+                        .presentationDetents([.medium])
+                }
+                .sheet(item: $expandedProductImage, onDismiss: {
+                    expandedProductImage = nil
+                }) { item in
+                    ExpandedProductImageGallerySheetView(
+                        imageURLs: item.imageURLs,
+                        initialIndex: item.initialIndex
+                    )
+                    .presentationDetents([.medium])
+                }
+                .alert("Nueva versión de BD offline disponible", isPresented: $showOfflineUpdatePrompt) {
+                    Button("Luego", role: .cancel) {}
+                    Button("Descargar ahora") {
+                        Task { await viewModel.prepararBaseOffline(forceRefresh: true) }
+                    }
+                } message: {
+                    let versionText = viewModel.pendingOfflineVersion.map(String.init) ?? "más reciente"
+                    Text("Se detectó una nueva versión (\(versionText)). ¿Quieres descargarla y verificarla ahora?")
+                }
+                .onChange(of: viewModel.selectedSource) { _, _ in
+                    clearSearchStateForModeChange()
+                    if viewModel.selectedSource == .offlineSQLite, viewModel.isOfflineDatabaseReady {
+                        Task {
+                            let hasUpdate = await viewModel.verificarActualizacionOffline()
+                            if hasUpdate {
+                                showOfflineUpdatePrompt = true
+                            }
                         }
                     }
                 }
-            }
-            .onChange(of: viewModel.resultado != nil) { _, hasResult in
-                withAnimation(.easeInOut(duration: 0.2)) {
-                    isBarcodeCardExpanded = !hasResult
+                .onChange(of: viewModel.resultado != nil) { _, hasResult in
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        isBarcodeCardExpanded = !hasResult
+                    }
+                    currentProductImageIndex = 0
                 }
-                currentProductImageIndex = 0
-            }
-            .overlay(alignment: .bottomTrailing) {
-                floatingScanButton
-                    .offset(y : -100)
+                .overlay(alignment: .bottomTrailing) {
+                    floatingScanButton
+                        .offset(y : -100)
+                }
+            } else {
+                PurchaseView()
             }
         }
     }

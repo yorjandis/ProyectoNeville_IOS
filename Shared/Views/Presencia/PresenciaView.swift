@@ -14,6 +14,7 @@ struct PresenciaView: View {
     @AppStorage(PresenciaSettings.customCelebrationPhraseKey) private var customCelebrationPhrase = PresenciaSettings.defaultCelebrationPhrase
 
     private let repository = PresenciaRepository()
+    private let celebrationVisibleDuration: TimeInterval = 2.3
 
     private var hasPremiumAccess: Bool {
         purchaseStatus || yorjPremium
@@ -22,15 +23,24 @@ struct PresenciaView: View {
     var body: some View {
         NavigationStack {
             if hasPremiumAccess {
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 18) {
-                        header
-                        mainAction
-                        moodSection
+                ZStack {
+                    mainContent
+                        .scaleEffect(showCelebration ? 0.64 : 1.0)
+                        .opacity(showCelebration ? 0.0 : 1.0)
+                        .blur(radius: showCelebration ? 8 : 0)
+                        .animation(.easeInOut(duration: 0.44), value: showCelebration)
+
+                    if showCelebration {
+                        PresenceCelebrationView(phrase: celebrationPhrase, showsContinueButton: false)
+                            .transition(.asymmetric(
+                                insertion: .opacity,
+                                removal: .opacity
+                            ))
+                            .zIndex(2)
                     }
-                    .padding()
-                    .animation(.easeInOut(duration: 0.24), value: showMoodList)
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .animation(.spring(response: 0.56, dampingFraction: 0.72), value: showCelebration)
                 .background(
                     LinearGradient(colors: [.indigo.opacity(0.95), .teal.opacity(0.55)], startPoint: .top, endPoint: .bottom)
                         .ignoresSafeArea()
@@ -56,11 +66,9 @@ struct PresenciaView: View {
                         .accessibilityLabel("Estadísticas")
                     }
                 }
+                .toolbar(showCelebration ? .hidden : .visible, for: .navigationBar)
                 .sheet(isPresented: $showInfo) {
                     PresenceInfoView()
-                }
-                .fullScreenCover(isPresented: $showCelebration) {
-                    PresenceCelebrationView(phrase: celebrationPhrase)
                 }
                 .onAppear(perform: reload)
                 .onReceive(NotificationCenter.default.publisher(for: .presenciaEventsDidChange)) { _ in
@@ -69,6 +77,18 @@ struct PresenciaView: View {
             } else {
                 PurchaseView()
             }
+        }
+    }
+
+    private var mainContent: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 18) {
+                header
+                mainAction
+                moodSection
+            }
+            .padding()
+            .animation(.easeInOut(duration: 0.24), value: showMoodList)
         }
     }
 
@@ -93,23 +113,27 @@ struct PresenciaView: View {
     private var mainAction: some View {
         VStack(spacing: 10) {
             Button {
+                UIImpactFeedbackGenerator(style: .heavy).impactOccurred(intensity: 0.9)
                 registerPresent(mood: nil)
             } label: {
                 PresenceHaloButtonContent()
             }
             .buttonStyle(.plain)
             .accessibilityLabel("Vuelvo al Presente")
-
-            VStack(spacing: 2) {
-                Image(systemName: "arrow.up")
-                    .font(.headline.weight(.semibold))
-                Text("Volver al presente")
-                    .font(.subheadline.weight(.medium))
-                Text("con un solo toque")
-                    .font(.caption)
-            }
-            .foregroundStyle(.white.opacity(0.88))
-            .multilineTextAlignment(.center)
+            .padding(.top, 60)
+/*
+ VStack(spacing: 2) {
+     Image(systemName: "arrow.up")
+         .font(.headline.weight(.semibold))
+     Text(" Volver al presente")
+         .font(.subheadline.weight(.medium))
+     Text("  con un solo toque")
+         .font(.caption)
+ }
+ .foregroundStyle(.white.opacity(0.88))
+ .multilineTextAlignment(.center)
+ */
+            
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 10)
@@ -192,7 +216,7 @@ struct PresenciaView: View {
         reload()
         guard saved else { return }
         triggerMilestoneMessageIfNeeded()
-        showCelebration = true
+        presentCelebrationAndReturn()
     }
 
     private func reload() {
@@ -211,6 +235,18 @@ struct PresenciaView: View {
         DispatchQueue.main.asyncAfter(deadline: .now() + 3.2) {
             withAnimation(.easeInOut(duration: 0.7)) {
                 showMilestoneMessage = false
+            }
+        }
+    }
+
+    private func presentCelebrationAndReturn() {
+        withAnimation(.spring(response: 0.56, dampingFraction: 0.72)) {
+            showCelebration = true
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + celebrationVisibleDuration) {
+            withAnimation(.easeInOut(duration: 0.36)) {
+                showCelebration = false
             }
         }
     }
@@ -281,7 +317,7 @@ private struct PresenceInfoView: View {
                     Text("La práctica de Presencia une dos gestos: despertar del piloto automático y encarnar el estado deseado ahora.")
                         .font(.title3.bold())
 
-                    Text("Desde Joe Dispenza, el cambio se fortalece cuando el cuerpo empieza a sentir emocionalmente el futuro antes de que ocurra. Desde Neville Goddard, la imaginación crea cuando vivimos internamente desde el estado cumplido. Este registro convierte ese retorno en una acción pequeña, repetible y consciente.")
+                    Text("Desde Joe Dispenza, el cambio se fortalece cuando el cuerpo empieza a sentir emocionalmente el futuro antes de que ocurra.\nDesde Neville Goddard, la imaginación crea cuando vivimos internamente desde el estado cumplido. Este registro convierte ese retorno en una acción pequeña, repetible y consciente.")
                         .font(.body)
                         .foregroundStyle(.secondary)
 
@@ -292,6 +328,7 @@ private struct PresenceInfoView: View {
             }
             .navigationTitle("Presencia")
             .navigationBarTitleDisplayMode(.inline)
+            .preferredColorScheme(.light)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Cerrar") {
@@ -305,31 +342,63 @@ private struct PresenceInfoView: View {
 
 private struct PresenceCelebrationView: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var scale: CGFloat = 0.82
+    @State private var scale: CGFloat = 0.08
+    @State private var auraScale: CGFloat = 0.18
+    @State private var contentOpacity: Double = 0
+    @State private var symbolRotation: Double = -10
     @State private var glow = false
     let phrase: String
+    var showsContinueButton = true
 
     var body: some View {
         ZStack {
             LinearGradient(
-                colors: [.mint.opacity(0.5), .blue, .blue, .mint.opacity(0.5)],
+                colors: [
+                    Color(red: 0.34, green: 0.18, blue: 0.78),
+                    Color(red: 0.08, green: 0.48, blue: 0.86),
+                    Color(red: 0.18, green: 0.92, blue: 0.78)
+                ],
                 startPoint: .top,
                 endPoint: .bottom
             )
             .ignoresSafeArea()
 
+            Circle()
+                .fill(.white.opacity(0.15))
+                .frame(width: 460, height: 460)
+                .scaleEffect(auraScale)
+                .blur(radius: 18)
+                .opacity(glow ? 0.72 : 0.36)
+
+            Circle()
+                .stroke(.white.opacity(0.22), lineWidth: 1.4)
+                .frame(width: 280, height: 280)
+                .scaleEffect(glow ? 1.24 : 0.92)
+                .opacity(glow ? 0.14 : 0.62)
+
+            ForEach(0..<3, id: \.self) { index in
+                Circle()
+                    .stroke(.white.opacity(0.14 - Double(index) * 0.03), lineWidth: 1)
+                    .frame(width: CGFloat(180 + index * 72), height: CGFloat(180 + index * 72))
+                    .scaleEffect(glow ? 1.08 : 0.9)
+                    .opacity(glow ? 0.28 : 0.7)
+            }
+
             VStack(spacing: 24) {
                 Spacer()
                 
-                Text("☘️")
-                    .font(.system(size: 45))
-                /*
-                 Image(systemName: "sparkles")
-                     .font(.system(size: 56, weight: .bold))
-                     .foregroundStyle(.white)
-                     .shadow(color: .yellow.opacity(glow ? 0.95 : 0.35), radius: glow ? 26 : 8)
-                 */
-                
+                ZStack {
+                    Circle()
+                        .fill(.white.opacity(0.14))
+                        .frame(width: 132, height: 132)
+                        .blur(radius: 1)
+
+                    Image(systemName: "camera.macro")
+                        .font(.system(size: 82, weight: .light))
+                        .foregroundStyle(.white)
+                        .rotationEffect(.degrees(symbolRotation))
+                        .shadow(color: .white.opacity(glow ? 0.86 : 0.38), radius: glow ? 24 : 8)
+                }
 
                 Text(phrase)
                     .font(.system(size: 36, weight: .heavy, design: .rounded))
@@ -343,30 +412,47 @@ private struct PresenceCelebrationView: View {
      .font(.headline)
      .foregroundStyle(.white.opacity(0.92))
  */
+                Text("Vivo mi Futuro Ahora")
+                    .font(.headline.weight(.semibold))
+                    .foregroundStyle(.white.opacity(0.88))
+
                 Spacer()
 
-                Button {
-                    dismiss()
-                } label: {
-                    Label("Continuar mi día", systemImage: "")
-                        .font(.headline)
-                        .frame(maxWidth: .infinity, minHeight: 52)
+                if showsContinueButton {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Text("Continuar")
+                            .font(.headline)
+                            .frame(maxWidth: .infinity, minHeight: 52)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(.cyan.opacity(0.6))
+                    .foregroundStyle(.black)
+                    .frame(width: 200)
+                    .padding(.horizontal, 28)
+                    .padding(.bottom, 25)
                 }
-                .buttonStyle(.borderedProminent)
-                .tint(.cyan.opacity(0.6))
-                .foregroundStyle(.black)
-                .padding(.horizontal, 28)
-                .padding(.bottom, 25)
             }
             .scaleEffect(scale)
+            .opacity(contentOpacity)
             .padding(.vertical, 40)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .ignoresSafeArea()
         .onAppear {
             UIImpactFeedbackGenerator(style: .heavy).impactOccurred(intensity: 1.0)
-            withAnimation(.spring(response: 0.55, dampingFraction: 0.62)) {
+            withAnimation(.easeOut(duration: 0.16)) {
+                contentOpacity = 1
+            }
+            withAnimation(.spring(response: 0.58, dampingFraction: 0.58)) {
                 scale = 1.0
             }
-            withAnimation(.easeInOut(duration: 0.9).repeatForever(autoreverses: true)) {
+            withAnimation(.spring(response: 0.72, dampingFraction: 0.68)) {
+                auraScale = 1.0
+                symbolRotation = 0
+            }
+            withAnimation(.easeInOut(duration: 0.72).repeatForever(autoreverses: true)) {
                 glow = true
             }
         }
@@ -376,5 +462,6 @@ private struct PresenceCelebrationView: View {
 
 
 #Preview{
-    PresenceCelebrationView(phrase: "Siento mi futuro Ahora")
+    PresenciaView()
+    //PresenceCelebrationView(phrase: "Siento mi futuro Ahora")
 }

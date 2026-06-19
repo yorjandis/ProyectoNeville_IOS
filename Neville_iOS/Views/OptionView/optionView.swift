@@ -122,7 +122,13 @@ struct optionView: View {
                                 self.showView = .premium
                             }
                         }
-                        Button("Lector de Etiquetas") { self.showView = .lectorEtiquetas }
+                        Button("Lector de Etiquetas") {
+                            if self.purchaseStatus || self.yorjPremium {
+                                self.showView = .lectorEtiquetas
+                            } else {
+                                self.showView = .premium
+                            }
+                        }
                         Button("Notas") { self.showView = .notas }
                         Button("Espacio de calma") {
                             if self.purchaseStatus || self.yorjPremium {
