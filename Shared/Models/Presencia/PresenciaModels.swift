@@ -64,6 +64,22 @@ struct PresenciaMoodStats: Identifiable, Hashable {
     var title: String { PresenciaMood.title(for: moodID) }
 }
 
+struct PresenciaEventPoint: Identifiable, Hashable {
+    let id: UUID
+    let createdAt: Date
+    let dayStart: Date
+    let eventType: PresenciaEventType?
+    let moodID: String?
+
+    var isPresentReturn: Bool {
+        eventType == .presente
+    }
+
+    var isAutomaticPilot: Bool {
+        moodID == "pilotoAutomatico" || moodID == "distraido"
+    }
+}
+
 struct PresenciaStreakStats: Hashable {
     let currentDays: Int
     let bestDays: Int
@@ -199,6 +215,31 @@ final class PresenciaRepository {
             .filter { !$0.key.isEmpty }
             .map { PresenciaMoodStats(moodID: $0.key, count: $0.value.count) }
             .sorted { $0.count > $1.count }
+    }
+
+    func eventPoints(days: Int = 14) -> [PresenciaEventPoint] {
+        let today = calendar.startOfDay(for: Date())
+        let start = calendar.date(byAdding: .day, value: -(max(days, 1) - 1), to: today) ?? today
+        let request = NSFetchRequest<NSManagedObject>(entityName: "PresenciaEventEntity")
+        request.predicate = NSPredicate(format: "dayStart >= %@", start as NSDate)
+        request.sortDescriptors = [NSSortDescriptor(key: "createdAt", ascending: true)]
+
+        let events = (try? context.fetch(request)) ?? []
+
+        return events.compactMap { event in
+            guard let createdAt = event.value(forKey: "createdAt") as? Date else { return nil }
+            let id = event.value(forKey: "id") as? UUID ?? UUID()
+            let dayStart = (event.value(forKey: "dayStart") as? Date).map { calendar.startOfDay(for: $0) }
+                ?? calendar.startOfDay(for: createdAt)
+            let type = (event.value(forKey: "eventType") as? String).flatMap(PresenciaEventType.init(rawValue:))
+            let moodID = event.value(forKey: "mood") as? String
+
+            return PresenciaEventPoint(id: id, createdAt: createdAt, dayStart: dayStart, eventType: type, moodID: moodID)
+        }
+    }
+
+    func todayEventPoints() -> [PresenciaEventPoint] {
+        eventPoints(days: 1)
     }
 
     func resetAllEvents() -> Bool {

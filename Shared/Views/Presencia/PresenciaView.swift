@@ -141,7 +141,9 @@ struct PresenciaView: View {
 
     private var moodToggleButton: some View {
         Button {
-            showMoodList.toggle()
+            withAnimation(.easeInOut(duration: 0.24)) {
+                showMoodList.toggle()
+            }
         } label: {
             HStack(spacing: 10) {
                 Image(systemName: showMoodList ? "chevron.up.circle" : "face.smiling")
@@ -165,7 +167,6 @@ struct PresenciaView: View {
             if showMoodList {
                 moodList
                     .transition(.opacity.combined(with: .scale(scale: 0.98, anchor: .top)))
-                    .zIndex(-1)
             }
         }
         .clipped()

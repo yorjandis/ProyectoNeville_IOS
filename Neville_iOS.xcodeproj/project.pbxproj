@@ -217,6 +217,7 @@
 		914D887E2FC1B22000CDDB93 /* Shared/Views/Presencia/PresenciaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/Views/Presencia/PresenciaView.swift; sourceTree = SOURCE_ROOT; };
 		914D887F2FC1B22000CDDB93 /* Shared/Models/Presencia/PresenciaModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/Models/Presencia/PresenciaModels.swift; sourceTree = SOURCE_ROOT; };
 		914D88802FC1B22000CDDB93 /* Shared/Views/Presencia/PresenciaStatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/Views/Presencia/PresenciaStatsView.swift; sourceTree = SOURCE_ROOT; };
+		914D88832FC1B22400CDDB93 /* Shared/Views/Presencia/PresenciaStatsMockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/Views/Presencia/PresenciaStatsMockView.swift; sourceTree = SOURCE_ROOT; };
 		915017422EF078A2007B741A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		915017442EF078B2007B741A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/System/Library/Frameworks/StoreKit.framework; sourceTree = DEVELOPER_DIR; };
 		9173AB7D2F72097F0015A9FD /* Version.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Version.xcconfig; sourceTree = "<group>"; };
@@ -1253,6 +1254,9 @@
 				Views/Notas/UpdateNotasView.swift,
 				Views/Novedades/Novedades.swift,
 				Views/PlayGame/GamePLay.swift,
+				Views/Presencia/PresenciaStatsMockView.swift,
+				Views/Presencia/PresenciaStatsView.swift,
+				Views/Presencia/PresenciaView.swift,
 				Views/PurchaseView/PurchaseView.swift,
 				Views/QRCode/gnerateQRView.swift,
 				Views/Reflexiones/AddReflexView.swift,
@@ -1598,6 +1602,7 @@
 				914D887F2FC1B22000CDDB93 /* Shared/Models/Presencia/PresenciaModels.swift */,
 				914D887E2FC1B22000CDDB93 /* Shared/Views/Presencia/PresenciaView.swift */,
 				914D88802FC1B22000CDDB93 /* Shared/Views/Presencia/PresenciaStatsView.swift */,
+				914D88832FC1B22400CDDB93 /* Shared/Views/Presencia/PresenciaStatsMockView.swift */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
