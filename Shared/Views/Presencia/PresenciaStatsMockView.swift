@@ -67,7 +67,7 @@ private enum PresenciaMockCard: String, CaseIterable {
         case .dailyEvents: return "Eventos diarios"
         case .dailyTimeline: return "Momentos de hoy"
         case .ratio: return "Cociente"
-        case .moods: return "Estados de animo"
+        case .moods: return "Estados de ánimo"
         }
     }
 }
@@ -345,11 +345,7 @@ private struct PresenciaMockContent: View {
                     .transition(.presenciaMockCardVisibility)
             }
             if isCardVisible(.dailyEvents) {
-                PresenciaMockBarsCard(
-                    days: dailyEventDays,
-                    events: sample.events,
-                    selectedRange: $dailyEventsRange
-                )
+                PresenciaMockBarsCard(days: dailyEventDays, selectedRange: $dailyEventsRange)
                     .transition(.presenciaMockCardVisibility)
             }
             if isCardVisible(.dailyTimeline) {
@@ -428,9 +424,9 @@ private struct PresenciaMockCards: View {
                         title: "Hoy",
                         subtitle: "Retornos",
                         value: "\(sample.todayCount)",
-                        footer: "Sigue asi",
+                        footer: "Sigue así",
                         accent: .purple,
-                        infoMessage: "Cuenta los momentos de presencia consciente registrados desde el inicio del dia actual."
+                        infoMessage: "Cuenta los momentos de presencia consciente registrados desde el inicio del día actual."
                     )
                         .transition(.presenciaMockCardVisibility)
                 }
@@ -440,9 +436,9 @@ private struct PresenciaMockCards: View {
                         title: "Racha",
                         subtitle: "actual",
                         value: "\(sample.streakDays)",
-                        footer: "dias seguidos",
+                        footer: "días seguidos",
                         accent: .orange,
-                        infoMessage: "Cuenta los dias consecutivos en los que alcanzaste el minimo de retornos conscientes definido para sostener la racha."
+                        infoMessage: "Cuenta los días consecutivos en los que alcanzaste el mínimo de retornos conscientes definido para sostener la racha."
                     )
                         .transition(.presenciaMockCardVisibility)
                 }
@@ -464,12 +460,12 @@ private struct PresenciaMockCards: View {
                 if isCardVisible(.dominantMood) {
                     PresenciaMockMetricCard(
                         icon: "heart",
-                        title: "Estado de animo",
+                        title: "Estado de ánimo",
                         subtitle: "predominante",
                         value: dominantMoodSummary?.title ?? sample.dominantMood,
                         footer: "\(dominantMoodSummary?.percentage ?? 0)% de tus registros",
                         accent: .blue,
-                        infoMessage: "Muestra el estado de animo mas frecuente dentro del rango elegido en esta tarjeta y su porcentaje sobre el total de estados registrados.",
+                        infoMessage: "Muestra el estado de ánimo más frecuente dentro del rango elegido en esta tarjeta y su porcentaje sobre el total de estados registrados.",
                         selectedRange: $selectedRange
                     )
                         .transition(.presenciaMockCardVisibility)
@@ -494,9 +490,20 @@ private struct PresenciaMockMetricCard: View {
     let infoMessage: String
     var selectedRange: Binding<Int>? = nil
 
+    private var headerTitle: String {
+        switch (title, subtitle) {
+        case ("Hoy", "Retornos"):
+            return "Hoy: retornos"
+        case ("Esta semana", "Promedio diario"):
+            return "Esta semana: promedio diario"
+        default:
+            return "\(title) \(subtitle)"
+        }
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            PresenciaMockMetricCardHeader(icon: icon, title: "\(title) \(subtitle)", accent: accent) {
+            PresenciaMockMetricCardHeader(icon: icon, title: headerTitle, accent: accent) {
                 PresenciaMockInfoButton(title: title, message: infoMessage)
                 if let selectedRange {
                     PresenciaMockRangeMenu(selectedRange: selectedRange)
@@ -568,7 +575,7 @@ private struct PresenciaMockInfoButton: View {
                 .foregroundStyle(PresenciaMockPalette.secondaryText)
         }
         .buttonStyle(.plain)
-        .accessibilityLabel("Informacion sobre \(title)")
+        .accessibilityLabel("Información sobre \(title)")
         .alert(title, isPresented: $showInfo) {
             Button("Entendido", role: .cancel) {}
         } message: {
@@ -632,17 +639,17 @@ private struct PresenciaMockPracticalInsightsCard: View {
 
     private var mostPresentDayText: String {
         guard let day = days.max(by: { $0.presentes < $1.presentes }), day.presentes > 0 else {
-            return "Aun no hay un dia destacado."
+            return "Aún no hay un día destacado."
         }
 
-        return "Tu dia mas consciente fue el \(weekdayName(for: day))."
+        return "Tu día más consciente fue el \(weekdayName(for: day))."
     }
 
     private var averageText: String {
-        guard !days.isEmpty else { return "0 por dia" }
+        guard !days.isEmpty else { return "0 por día" }
         let total = days.reduce(0) { $0 + $1.presentes }
         let average = Double(total) / Double(days.count)
-        return "\(formatAverage(average)) por dia"
+        return "\(formatAverage(average)) por día"
     }
 
     private var weeklyTrendText: String {
@@ -662,14 +669,14 @@ private struct PresenciaMockPracticalInsightsCard: View {
             return "Igual que la semana pasada."
         }
 
-        let direction = percentage > 0 ? "mas" : "menos"
+        let direction = percentage > 0 ? "más" : "menos"
         return "\(percentage > 0 ? "+" : "")\(percentage)% \(direction) momentos presentes que la semana pasada."
     }
 
     private var criticalWindowText: String {
         let automaticEvents = events.filter { !$0.present }
         guard !automaticEvents.isEmpty else {
-            return "No se detecta una franja critica."
+            return "No se detecta una franja crítica."
         }
 
         let windowCounts = stride(from: 0, through: 21, by: 3).map { startHour in
@@ -681,34 +688,40 @@ private struct PresenciaMockPracticalInsightsCard: View {
         }
 
         guard let busiestWindow = windowCounts.max(by: { $0.count < $1.count }), busiestWindow.count > 0 else {
-            return "No se detecta una franja critica."
+            return "No se detecta una franja crítica."
         }
 
-        return "Entre \(hourText(busiestWindow.startHour)) y \(hourText(busiestWindow.startHour + 3)) se concentra mas piloto automatico."
+        return "Entre \(hourText(busiestWindow.startHour)) y \(hourText(busiestWindow.startHour + 3)) se concentra más piloto automático."
+    }
+
+    private var contextualSuggestionText: String {
+        PresenciaMockDailyEventsSuggestion.message(days: days, events: events)
     }
 
     var body: some View {
-        PresenciaMockSectionCard(title: "Datos practicos", trailingContent: {
-            PresenciaMockInfoButton(title: "Datos practicos", message: infoMessage)
+        PresenciaMockSectionCard(title: "Datos prácticos", trailingContent: {
+            PresenciaMockInfoButton(title: "Datos prácticos", message: infoMessage)
         }) {
-            PresenciaMockRangePicker(title: "Rango de datos practicos", selectedRange: $selectedRange)
+            PresenciaMockRangePicker(title: "Rango de datos prácticos", selectedRange: $selectedRange)
             VStack(spacing: 10) {
-                insightRow(icon: "calendar.badge.clock", title: "Dia con mas presencia", value: mostPresentDayText, accent: .mint)
-                insightRow(icon: "number", title: "Promedio por dia", value: averageText, accent: .cyan)
+                insightRow(icon: "calendar.badge.clock", title: "Día con más presencia", value: mostPresentDayText, accent: .mint)
+                insightRow(icon: "number", title: "Promedio por día", value: averageText, accent: .cyan)
                 insightRow(icon: "chart.line.uptrend.xyaxis", title: "Tendencia semanal", value: weeklyTrendText, accent: .green)
-                insightRow(icon: "exclamationmark.triangle.fill", title: "Franja critica", value: criticalWindowText, accent: .orange)
+                insightRow(icon: "exclamationmark.triangle.fill", title: "Franja crítica", value: criticalWindowText, accent: .orange)
+                PresenciaMockContextualSuggestionRow(message: contextualSuggestionText)
             }
         }
     }
 
     private var infoMessage: String {
         """
-        Se calculan con los ultimos \(selectedRange) dias seleccionados en esta tarjeta.
+        Se calculan con los últimos \(selectedRange) días seleccionados en esta tarjeta.
 
-        Dia con mas presencia: dia con mayor numero de retornos conscientes.
-        Promedio por dia: total de retornos conscientes dividido entre los dias del rango.
-        Tendencia semanal: ultimos 7 dias comparados con los 7 dias anteriores.
-        Franja critica: bloque de 3 horas con mas registros de Piloto automatico o Distraido.
+        Día con más presencia: día con mayor número de retornos conscientes.
+        Promedio por día: total de retornos conscientes dividido entre los días del rango.
+        Tendencia semanal: últimos 7 días comparados con los 7 días anteriores.
+        Franja crítica: bloque de 3 horas con más registros de Piloto automático o Distraído.
+        Sugerencia contextual: recomendación breve derivada de concentración horaria, equilibrio entre presencia/piloto automático y tendencia reciente.
         """
     }
 
@@ -755,22 +768,17 @@ private struct PresenciaMockPracticalInsightsCard: View {
 
 private struct PresenciaMockBarsCard: View {
     let days: [PresenciaMockDay]
-    let events: [PresenciaMockEvent]
     @Binding var selectedRange: Int
 
     private var chartWidth: CGFloat {
         max(CGFloat(days.count) * 23, 320)
     }
 
-    private var suggestion: String {
-        PresenciaMockDailyEventsSuggestion.message(days: days, events: events)
-    }
-
     var body: some View {
         PresenciaMockSectionCard(title: "Eventos diarios", trailingContent: {
             PresenciaMockInfoButton(
                 title: "Eventos diarios",
-                message: "Muestra, para cada dia del rango seleccionado, cuantos registros fueron Presente y cuantos fueron Piloto automatico o Distraido."
+                message: "Muestra, para cada día del rango seleccionado, cuántos registros fueron Presente y cuántos fueron Piloto automático o Distraído."
             )
         }) {
             PresenciaMockRangePicker(title: "Rango de eventos diarios", selectedRange: $selectedRange)
@@ -779,8 +787,7 @@ private struct PresenciaMockBarsCard: View {
                     .frame(width: chartWidth, height: 180)
             }
             .frame(height: 180)
-            PresenciaMockLegend(left: "Presente", leftColor: .mint, right: "Piloto automatico", rightColor: .orange)
-            PresenciaMockContextualSuggestionRow(message: suggestion)
+            PresenciaMockLegend(left: "Presente", leftColor: .mint, right: "Piloto automático", rightColor: .orange)
         }
     }
 }
@@ -819,46 +826,46 @@ private enum PresenciaMockDailyEventsSuggestion {
         let activeDays = days.filter { $0.total > 0 }.count
 
         guard totalCount > 0 else {
-            return "Aun no hay suficientes registros en este rango. Haz uno o dos retornos conscientes hoy para que aparezca un patron util."
+            return "Aún no hay suficientes registros en este rango. Haz uno o dos retornos conscientes hoy para que aparezca un patrón útil."
         }
 
         if activeDays <= max(2, days.count / 6) {
-            return "Hay pocos dias con registros. Prueba una pausa breve a media manana y otra al final de la tarde para empezar a revelar tu patron."
+            return "Hay pocos días con registros. Prueba una pausa breve a media mañana y otra al final de la tarde para empezar a revelar tu patrón."
         }
 
         if presentCount == 0 {
-            return "Por ahora solo aparecen momentos de piloto automatico. Elige una hora facil, como antes de comer, para registrar un retorno consciente deliberado."
+            return "Por ahora solo aparecen momentos de piloto automático. Elige una hora fácil, como antes de comer, para registrar un retorno consciente deliberado."
         }
 
         if automaticCount > presentCount {
             if let window = strongestWindow(events: events.filter { !$0.present }) {
-                return "El piloto automatico se concentra entre \(hourText(window.start)) y \(hourText(window.end)). Prueba una pausa de 30 segundos justo antes de esa franja."
+                return "El piloto automático se concentra entre \(hourText(window.start)) y \(hourText(window.end)). Prueba una pausa de 30 segundos justo antes de esa franja."
             }
-            return "En este rango hay mas piloto automatico que presencia. Elige una transicion diaria, como antes de abrir una app o comenzar una tarea, para volver al cuerpo."
+            return "En este rango hay más piloto automático que presencia. Elige una transición diaria, como antes de abrir una app o comenzar una tarea, para volver al cuerpo."
         }
 
         if let dominantPeriod = dominantPresencePeriod(events: events), dominantPeriod.count >= 2 {
             switch dominantPeriod.period {
             case .morning:
-                return "Tus registros conscientes aparecen mas por la manana. Podrias reforzar ese impulso con una pausa breve antes del mediodia."
+                return "Tus registros conscientes aparecen más por la mañana. Podrías reforzar ese impulso con una pausa breve antes del mediodía."
             case .afternoon:
-                return "Tus registros conscientes se concentran durante la tarde. Prueba un retorno intencional por la manana para equilibrar el dia."
+                return "Tus registros conscientes se concentran durante la tarde. Prueba un retorno intencional por la mañana para equilibrar el día."
             case .evening:
-                return "Tus registros conscientes aparecen mas despues de las 18:00. Podrias hacer una pausa breve antes del mediodia."
+                return "Tus registros conscientes aparecen más después de las 18:00. Podrías hacer una pausa breve antes del mediodía."
             case .night:
-                return "Tus registros conscientes aparecen mas tarde en el dia. Prueba una senal suave al despertar para llevar presencia al inicio de la jornada."
+                return "Tus registros conscientes aparecen más tarde en el día. Prueba una señal suave al despertar para llevar presencia al inicio de la jornada."
             }
         }
 
         if isRecentPresenceImproving(days: days) {
-            return "Tus ultimos dias muestran mas presencia que los anteriores. Manten el gesto que ya funciona y anade una pausa corta en la franja donde sueles olvidarte."
+            return "Tus últimos días muestran más presencia que los anteriores. Mantén el gesto que ya funciona y añade una pausa corta en la franja donde sueles olvidarte."
         }
 
         if automaticCount == 0 {
-            return "Este rango muestra presencia sin piloto automatico registrado. Anade tambien los momentos de distraccion cuando ocurran para obtener sugerencias mas precisas."
+            return "Este rango muestra presencia sin piloto automático registrado. Añade también los momentos de distracción cuando ocurran para obtener sugerencias más precisas."
         }
 
-        return "Tus registros estan bastante equilibrados. Elige una franja concreta del dia y repite ahi una pausa consciente para convertirla en habito."
+        return "Tus registros están bastante equilibrados. Elige una franja concreta del día y repite ahí una pausa consciente para convertirla en hábito."
     }
 
     private enum Period {
@@ -920,9 +927,9 @@ private struct PresenciaMockRangePicker: View {
 
     var body: some View {
         Picker(title, selection: $selectedRange) {
-            Text("14 dias").tag(14)
-            Text("30 dias").tag(30)
-            Text("90 dias").tag(90)
+            Text("14 días").tag(14)
+            Text("30 días").tag(30)
+            Text("90 días").tag(90)
         }
         .pickerStyle(.segmented)
         .controlSize(.small)
@@ -938,7 +945,7 @@ private struct PresenciaMockRangeMenu: View {
                 Button {
                     selectedRange = range
                 } label: {
-                    Label("\(range) dias", systemImage: selectedRange == range ? "checkmark" : "calendar")
+                    Label("\(range) días", systemImage: selectedRange == range ? "checkmark" : "calendar")
                 }
             }
         } label: {
@@ -963,7 +970,7 @@ private struct PresenciaMockTimelineCard: View {
             HStack(spacing: 8) {
                 PresenciaMockInfoButton(
                     title: "Momentos de hoy",
-                    message: "Muestra solo los eventos del dia actual distribuidos por hora. Verde indica Presente; naranja indica Piloto automatico o Distraido."
+                    message: "Muestra solo los eventos del día actual distribuidos por hora. Verde indica Presente; naranja indica Piloto automático o Distraído."
                 )
                 Text("\(events.count)")
                     .font(.caption.weight(.semibold))
@@ -986,7 +993,7 @@ private struct PresenciaMockTimelineCard: View {
                     }
                 }
             }
-            PresenciaMockLegend(left: "Presente", leftColor: .mint, right: "Piloto automatico", rightColor: .orange)
+            PresenciaMockLegend(left: "Presente", leftColor: .mint, right: "Piloto automático", rightColor: .orange)
         }
     }
 }
@@ -1003,7 +1010,7 @@ private struct PresenciaMockRatioCard: View {
         PresenciaMockSectionCard(title: "Cociente presente/inconsciente", trailingContent: {
             PresenciaMockInfoButton(
                 title: "Cociente presente/inconsciente",
-                message: "Cada punto representa el porcentaje de eventos conscientes frente al total de eventos conscientes e inconscientes de ese dia, dentro del rango elegido en esta tarjeta."
+                message: "Cada punto representa el porcentaje de eventos conscientes frente al total de eventos conscientes e inconscientes de ese día, dentro del rango elegido en esta tarjeta."
             )
         }) {
             PresenciaMockRangePicker(title: "Rango del cociente", selectedRange: $selectedRange)
@@ -1012,7 +1019,7 @@ private struct PresenciaMockRatioCard: View {
                     .frame(width: chartWidth, height: 120)
             }
             .frame(height: 120)
-            Text("Mas alto significa que, entre los eventos registrados, hubo mas retornos conscientes.")
+            Text("Más alto significa que, entre los eventos registrados, hubo más retornos conscientes.")
                 .font(.caption)
                 .foregroundStyle(PresenciaMockPalette.secondaryText)
         }
@@ -1024,13 +1031,13 @@ private struct PresenciaMockMoodCard: View {
     @Binding var selectedRange: Int
 
     var body: some View {
-        PresenciaMockSectionCard(title: "Estados de animo", trailingContent: {
+        PresenciaMockSectionCard(title: "Estados de ánimo", trailingContent: {
             PresenciaMockInfoButton(
-                title: "Estados de animo",
-                message: "Muestra los estados de animo mas registrados dentro del rango elegido en esta tarjeta. El numero indica cuantas veces aparece cada estado."
+                title: "Estados de ánimo",
+                message: "Muestra los estados de ánimo más registrados dentro del rango elegido en esta tarjeta. El número indica cuántas veces aparece cada estado."
             )
         }) {
-            PresenciaMockRangePicker(title: "Rango de estados de animo", selectedRange: $selectedRange)
+            PresenciaMockRangePicker(title: "Rango de estados de ánimo", selectedRange: $selectedRange)
             ForEach(moods) { mood in
                 PresenciaMockMoodRow(mood: mood)
             }
@@ -1350,7 +1357,7 @@ private enum PresenciaMockFixtures {
         PresenciaMockMood(id: 1, title: "Sereno", count: 12),
         PresenciaMockMood(id: 2, title: "Agradecido", count: 9),
         PresenciaMockMood(id: 3, title: "Alegre", count: 7),
-        PresenciaMockMood(id: 4, title: "Piloto automatico", count: 5)
+        PresenciaMockMood(id: 4, title: "Piloto automático", count: 5)
     ]
 }
 

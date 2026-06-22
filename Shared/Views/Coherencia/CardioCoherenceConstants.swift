@@ -52,13 +52,13 @@ enum CardioCoherenceConstants {
         /// Grosor del anillo exterior.
         static let ringLineWidth: CGFloat = 2
         /// Cierre adicional del anillo al final de exhalación para continuidad visual del vaciado.
-        static let exhalePauseTailShrink: CGFloat = 0.055
+        static let exhalePauseTailShrink: CGFloat = 0.10
         /// Factor de suavizado tipo resorte para la transición del anillo entre fases.
-        static let ringSpringSmoothing: CGFloat = 0.8
+        static let ringSpringSmoothing: CGFloat = 0.55
         /// Paso máximo de escala del anillo por frame para evitar saltos visuales.
-        static let maxRingScaleStepPerFrame: CGFloat = 0.006
+        static let maxRingScaleStepPerFrame: CGFloat = 0.0018
         /// Fracción inicial de la inhalación en la que se libera el cierre extra del anillo.
-        static let inhaleReleaseWindow: CGFloat = 0.56 //0.28
+        static let inhaleReleaseWindow: CGFloat = 0.68
         /// Duración del fade-in inicial del anillo durante la primera inhalación.
         /// A mayor valor, aparición más sutil.
         static let initialRingRevealDurationSeconds: Double = 2.8

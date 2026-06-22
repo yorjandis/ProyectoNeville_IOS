@@ -179,7 +179,6 @@ struct PresenciaStatsView: View {
     @State private var moodStats: [PresenciaMoodStats] = []
     @State private var dominantMoodStats: [PresenciaMoodStats] = []
     @State private var eventPoints: [PresenciaEventPoint] = []
-    @State private var dailyEventPoints: [PresenciaEventPoint] = []
     @State private var rangeEventPoints: [PresenciaEventPoint] = []
     @State private var practicalStats: [PresenciaDayStats] = []
     @State private var ratioStats: [PresenciaDayStats] = []
@@ -255,11 +254,7 @@ struct PresenciaStatsView: View {
                                 .transition(.presenciaCardVisibility)
                         }
                         if isCardVisible(.dailyEvents) {
-                            PresenciaBarsView(
-                                stats: dayStats,
-                                events: dailyEventPoints,
-                                selectedRange: $dailyEventsRange
-                            )
+                            PresenciaBarsView(stats: dayStats, selectedRange: $dailyEventsRange)
                                 .transition(.presenciaCardVisibility)
                         }
                         if isCardVisible(.dailyTimeline) {
@@ -531,7 +526,6 @@ struct PresenciaStatsView: View {
 
     private func reloadDailyEvents() {
         dayStats = repository.dayStats(days: dailyEventsRange)
-        dailyEventPoints = repository.eventPoints(days: dailyEventsRange)
     }
 
     private func reloadPracticalInsights() {
@@ -670,7 +664,7 @@ private struct TodayReturnsCard: View {
 
     var body: some View {
         PresenceGlassCard(accent: .purple) {
-            PresenceMetricCardHeader(icon: "sun.max", title: "Hoy Retornos", accent: .purple) {
+            PresenceMetricCardHeader(icon: "sun.max", title: "Hoy: retornos", accent: .purple) {
                 PresenciaInfoButton(
                     title: "Hoy",
                     message: "Cuenta los momentos de presencia consciente registrados desde el inicio del día actual."
@@ -744,7 +738,7 @@ private struct WeeklyAverageCard: View {
 
     var body: some View {
         PresenceGlassCard(accent: .green) {
-            PresenceMetricCardHeader(icon: "arrow.up.right", title: "Esta semana Promedio diario", accent: .green) {
+            PresenceMetricCardHeader(icon: "arrow.up.right", title: "Esta semana: promedio diario", accent: .green) {
                 PresenciaInfoButton(
                     title: "Promedio semanal",
                     message: "Promedia los retornos conscientes registrados durante la semana actual, de lunes a domingo."
@@ -893,6 +887,10 @@ private struct PresenciaPracticalInsightsCard: View {
         return "Entre \(hourText(busiestWindow.startHour)) y \(hourText(busiestWindow.startHour + 3)) se concentra más piloto automático."
     }
 
+    private var contextualSuggestionText: String {
+        PresenciaDailyEventsSuggestion.message(stats: stats, events: events)
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             HStack(alignment: .firstTextBaseline) {
@@ -910,6 +908,7 @@ private struct PresenciaPracticalInsightsCard: View {
                 insightRow(icon: "number", title: "Promedio por día", value: averageText, accent: .cyan)
                 insightRow(icon: "chart.line.uptrend.xyaxis", title: "Tendencia semanal", value: weeklyTrendText, accent: .green)
                 insightRow(icon: "exclamationmark.triangle.fill", title: "Franja crítica", value: criticalWindowText, accent: .orange)
+                PresenciaContextualSuggestionRow(message: contextualSuggestionText)
             }
         }
         .padding(14)
@@ -925,6 +924,7 @@ private struct PresenciaPracticalInsightsCard: View {
         Promedio por día: total de retornos conscientes dividido entre los días del rango.
         Tendencia semanal: últimos 7 días comparados con los 7 días anteriores.
         Franja crítica: bloque de 3 horas con más registros de Piloto automático o Distraído.
+        Sugerencia contextual: recomendación breve derivada de concentración horaria, equilibrio entre presencia/piloto automático y tendencia reciente.
         """
     }
 
@@ -973,15 +973,10 @@ private struct PresenciaPracticalInsightsCard: View {
 
 private struct PresenciaBarsView: View {
     let stats: [PresenciaDayStats]
-    let events: [PresenciaEventPoint]
     @Binding var selectedRange: Int
 
     private var maxValue: Int {
         max(stats.map { max($0.presentes, $0.inconscientes) }.max() ?? 1, 1)
-    }
-
-    private var suggestion: String {
-        PresenciaDailyEventsSuggestion.message(stats: stats, events: events)
     }
 
     var body: some View {
@@ -1017,7 +1012,6 @@ private struct PresenciaBarsView: View {
             }
             .frame(height: 180)
             legend
-            PresenciaContextualSuggestionRow(message: suggestion)
         }
         .padding(14)
         .background(PresenciaStatsCardBackground(accent: .mint, cornerRadius: 8))

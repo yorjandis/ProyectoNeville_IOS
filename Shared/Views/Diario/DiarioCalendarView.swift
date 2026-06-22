@@ -181,65 +181,77 @@ struct CalendarGrid: View {
                 let highlightColor = Color(UIColor(white: 0, alpha: 0.6))
                 #endif
         
-        LazyVGrid(columns: columns) {
-            ForEach(days.indices, id: \.self) { index in
-                if let date = days[index] {
-                    let calendar = Calendar.current
-                    let isHighlighted = fechasResaltadas.contains(date)
-                    let entryCount = entryCountsByDay[date] ?? 0
-                    let isSelected = selectedDay.map { calendar.isDate($0, inSameDayAs: date) } ?? false
-                    let today = calendar.startOfDay(for: Date.now)
-                    let isFutureDay = calendar.startOfDay(for: date) > today
+        VStack(spacing: 8) {
+            LazyVGrid(columns: columns) {
+                ForEach(weekdaySymbols, id: \.self) { weekday in
+                    Text(weekday.uppercased())
+                        .font(.caption2)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.secondary)
+                        .frame(width: 45, height: 20)
+                }
+            }
 
-                    Text(date.formatted(.dateTime.day()))
-                        .frame(width: 45, height: 45)
-                        .background(
-                            Circle()
-                                .fill(isHighlighted ? highlightColor : Color.clear)
-                        )
-                        .foregroundColor(isHighlighted ? .white : (isFutureDay ? .secondary : .primary))
-                        .opacity(isFutureDay ? 0.45 : 1)
-                        .overlay {
-                            Circle()
-                                .stroke(
-                                    isSelected ? Color.black : Color.clear,
-                                    style: StrokeStyle(
-                                        lineWidth: 3,
-                                        dash: [2, 4] // patrón de puntos
+            LazyVGrid(columns: columns) {
+                ForEach(days.indices, id: \.self) { index in
+                    if let date = days[index] {
+                        let calendar = Calendar.current
+                        let isHighlighted = fechasResaltadas.contains(date)
+                        let entryCount = entryCountsByDay[date] ?? 0
+                        let isSelected = selectedDay.map { calendar.isDate($0, inSameDayAs: date) } ?? false
+                        let today = calendar.startOfDay(for: Date.now)
+                        let isFutureDay = calendar.startOfDay(for: date) > today
+
+                        Text(date.formatted(.dateTime.day()))
+                            .frame(width: 45, height: 45)
+                            .background(
+                                Circle()
+                                    .fill(isHighlighted ? highlightColor : Color.clear)
+                            )
+                            .foregroundColor(isHighlighted ? .white : (isFutureDay ? .secondary : .primary))
+                            .opacity(isFutureDay ? 0.45 : 1)
+                            .overlay {
+                                Circle()
+                                    .stroke(
+                                        isSelected ? Color.black : Color.clear,
+                                        style: StrokeStyle(
+                                            lineWidth: 3,
+                                            dash: [2, 4] // patrón de puntos
+                                        )
                                     )
-                                )
-                                .frame(width: 50, height: 50)
-                        }
-                        .overlay {
-                            if isHighlighted {
-                                Text("\(entryCount)")
-                                    .font(.footnote)
-                                    .foregroundStyle(Color.orange)
-                                    .bold()
-                                    .offset(y: +15)
+                                    .frame(width: 50, height: 50)
                             }
-                        }
-                        .onTapGesture(count: 2) {
-                            let calendar = Calendar.current
-                            let normalizedSelectedDay = calendar.startOfDay(for: date)
-                            let today = calendar.startOfDay(for: Date.now)
-
-                            guard normalizedSelectedDay <= today else {
-                                showFutureDateAlert = true
-                                return
+                            .overlay {
+                                if isHighlighted {
+                                    Text("\(entryCount)")
+                                        .font(.footnote)
+                                        .foregroundStyle(Color.orange)
+                                        .bold()
+                                        .offset(y: +15)
+                                }
                             }
+                            .onTapGesture(count: 2) {
+                                let calendar = Calendar.current
+                                let normalizedSelectedDay = calendar.startOfDay(for: date)
+                                let today = calendar.startOfDay(for: Date.now)
 
-                            selectedDay = normalizedSelectedDay
-                            onRequestCreateEntry(normalizedSelectedDay)
-                        }
-                        .onTapGesture {
-                            let normalizedSelectedDay = Calendar.current.startOfDay(for: date)
-                            selectedDay = normalizedSelectedDay
-                            onDateSelected(normalizedSelectedDay)
-                        }
-                } else {
-                    Text("")
-                        .frame(width: 40, height: 40)
+                                guard normalizedSelectedDay <= today else {
+                                    showFutureDateAlert = true
+                                    return
+                                }
+
+                                selectedDay = normalizedSelectedDay
+                                onRequestCreateEntry(normalizedSelectedDay)
+                            }
+                            .onTapGesture {
+                                let normalizedSelectedDay = Calendar.current.startOfDay(for: date)
+                                selectedDay = normalizedSelectedDay
+                                onDateSelected(normalizedSelectedDay)
+                            }
+                    } else {
+                        Text("")
+                            .frame(width: 40, height: 40)
+                    }
                 }
             }
         }
@@ -249,6 +261,14 @@ struct CalendarGrid: View {
             Text("No se puede crear una entrada en una fecha futura.")
         }
     }
+
+    private var weekdaySymbols: [String] {
+        let calendar = Calendar.current
+        let symbols = calendar.shortStandaloneWeekdaySymbols
+        let firstWeekdayIndex = calendar.firstWeekday - 1
+
+        return Array(symbols[firstWeekdayIndex...]) + Array(symbols[..<firstWeekdayIndex])
+    }
     
     // Genera los días en un mes, incluyendo los espacios vacíos del primer día
     private func generateDaysInMonth(for date: Date) -> [Date?] {
@@ -256,8 +276,9 @@ struct CalendarGrid: View {
         let firstOfMonth = calendar.date(from: calendar.dateComponents([.year, .month], from: date))!
         let range = calendar.range(of: .day, in: .month, for: firstOfMonth)!
         let firstWeekday = calendar.component(.weekday, from: firstOfMonth)
+        let leadingEmptyDays = (firstWeekday - calendar.firstWeekday + 7) % 7
         
-        var days: [Date?] = Array(repeating: nil, count: firstWeekday - 1) // Espacios vacíos para el inicio del mes
+        var days: [Date?] = Array(repeating: nil, count: leadingEmptyDays) // Espacios vacíos para el inicio del mes
         days += range.map { calendar.date(byAdding: .day, value: $0 - 1, to: firstOfMonth) }
         
         return days
@@ -270,4 +291,8 @@ extension Date {
     func startOfDay() -> Date {
         Calendar.current.startOfDay(for: self)
     }
+}
+
+#Preview("Diario Calendar") {
+    DiarioCalendarView(refreshTrigger: 0) { _ in }
 }

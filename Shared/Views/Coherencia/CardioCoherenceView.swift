@@ -622,6 +622,7 @@ struct CardioCoherenceMainView: View {
     @State private var isBackgroundMusicEnabled = true
     @State private var useCustomMusicInSession = false
     @State private var showEvaluationContent = false
+    @State private var previousIdleTimerDisabled: Bool?
 
     init() {
         let initial = CardioCoherenceBackgroundResolver.bootstrapBackgroundSelection()
@@ -784,6 +785,7 @@ struct CardioCoherenceMainView: View {
                 }
             }
             .onAppear {
+                disableIdleTimerForSessionView()
                 // Seguridad: por si la vista se inicializa sin assets disponibles.
                 if backgroundAssets.isEmpty {
                     loadBackgroundAssets()
@@ -803,8 +805,22 @@ struct CardioCoherenceMainView: View {
             .onDisappear {
                 hapticEngine.stop()
                 musicPlayer.stop()
+                restoreIdleTimer()
             }
         }
+    }
+
+    private func disableIdleTimerForSessionView() {
+        if previousIdleTimerDisabled == nil {
+            previousIdleTimerDisabled = UIApplication.shared.isIdleTimerDisabled
+        }
+        UIApplication.shared.isIdleTimerDisabled = true
+    }
+
+    private func restoreIdleTimer() {
+        guard let previousIdleTimerDisabled else { return }
+        UIApplication.shared.isIdleTimerDisabled = previousIdleTimerDisabled
+        self.previousIdleTimerDisabled = nil
     }
 
     private func loadBackgroundAssets() {
