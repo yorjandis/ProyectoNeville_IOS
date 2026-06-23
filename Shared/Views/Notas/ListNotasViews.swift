@@ -20,6 +20,11 @@ struct ListNotasViews: View {
         case modificationDate
     }
 
+    private enum NotesListMode {
+        case all
+        case groupedByCategory
+    }
+
     @Environment(\.dismiss) var dimiss
     
     @StateObject private var modelNotas = NotasModel()
@@ -47,6 +52,7 @@ struct ListNotasViews: View {
     @State private var exportFromDate = Date.now
     @State private var exportToDate = Date.now
     @State private var selectedSortOption: NotesSortOption = .creationDate
+    @State private var selectedListMode: NotesListMode = .all
     @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
     @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) private var yorjPremium: Bool = false
     
@@ -66,6 +72,20 @@ struct ListNotasViews: View {
                 return modificationDate(for: left) > modificationDate(for: right)
             }
         }
+    }
+
+    private var groupedFiltered: [(category: String, notas: [Notas])] {
+        let grouped = Dictionary(grouping: orderedFiltered) { nota in
+            categoryName(for: nota)
+        }
+
+        return grouped
+            .map { (category: $0.key, notas: $0.value) }
+            .sorted { left, right in
+                if left.category == uncategorizedCategoryTitle { return false }
+                if right.category == uncategorizedCategoryTitle { return true }
+                return left.category.localizedCaseInsensitiveCompare(right.category) == .orderedAscending
+            }
     }
 
     private var selectedNotas: [Notas] {
@@ -97,24 +117,36 @@ struct ListNotasViews: View {
                     if ( canOpenNotas == true  ||   UserDefaults.standard.bool(forKey: AppCons.UD_setting_NotasFaceID) == false) {
                         ScrollView(.vertical){
                             
-                            ForEach (self.orderedFiltered){ nota in
-                                cardNotas(
-                                    nota: nota,
-                                    selectionMode: self.selectionMode,
-                                    isSelected: self.selectedNotaIDs.contains(nota.id ?? ""),
-                                    onSelectionToggle: { toggleSelection(for: nota) }
-                                )
+                            if selectedListMode == .all {
+                                ForEach (self.orderedFiltered){ nota in
+                                    cardNotas(
+                                        nota: nota,
+                                        selectionMode: self.selectionMode,
+                                        isSelected: self.selectedNotaIDs.contains(nota.id ?? ""),
+                                        onSelectionToggle: { toggleSelection(for: nota) }
+                                    )
+                                        .environmentObject(self.modelNotas)
+                                }
+                            } else {
+                                ForEach(groupedFiltered, id: \.category) { section in
+                                    NotesCategorySectionView(
+                                        category: section.category,
+                                        notas: section.notas,
+                                        selectionMode: self.selectionMode,
+                                        selectedNotaIDs: self.selectedNotaIDs,
+                                        onSelectionToggle: { nota in toggleSelection(for: nota) }
+                                    )
                                     .environmentObject(self.modelNotas)
+                                }
                             }
-                            #if os(macOS)
-                            .searchable(text: $textFieldTitle, prompt: "Buscar")
-                            #else
-                            .searchable(text: $textFieldTitle, placement: .navigationBarDrawer(displayMode: .always)  , prompt:"Buscar")
-                            #endif
-                            
-                            .task {
-                                self.modelNotas.getAllNotasToModel()
-                            }
+                        }
+                        #if os(macOS)
+                        .searchable(text: $textFieldTitle, prompt: "Buscar")
+                        #else
+                        .searchable(text: $textFieldTitle, placement: .navigationBarDrawer(displayMode: .always)  , prompt:"Buscar")
+                        #endif
+                        .task {
+                            self.modelNotas.getAllNotasToModel()
                         }
                     }else{
                        
@@ -160,9 +192,21 @@ struct ListNotasViews: View {
                                 Button{
                                     withAnimation {
                                         self.modelNotas.getAllNotasToModel()
+                                        selectedListMode = .all
                                     }
                                 }label:{
                                     Label("Todas las notas", systemImage: "text.magnifyingglass.rtl")
+                                }
+
+                                Button{
+                                    withAnimation {
+                                        selectedListMode = .groupedByCategory
+                                    }
+                                }label:{
+                                    Label(
+                                        "Por categorías",
+                                        systemImage: selectedListMode == .groupedByCategory ? "checkmark.circle.fill" : "folder"
+                                    )
                                 }
                                 
                                 Button{
@@ -271,7 +315,18 @@ struct ListNotasViews: View {
                                     Button("Todas las notas"){
                                         withAnimation {
                                             self.modelNotas.getAllNotasToModel()
+                                            selectedListMode = .all
                                         }
+                                    }
+                                    Button{
+                                        withAnimation {
+                                            selectedListMode = .groupedByCategory
+                                        }
+                                    }label:{
+                                        Label(
+                                            "Por categorías",
+                                            systemImage: selectedListMode == .groupedByCategory ? "checkmark.circle.fill" : "folder"
+                                        )
                                     }
                                     Button("Notas Favoritas"){
                                         withAnimation {
@@ -419,7 +474,12 @@ struct ListNotasViews: View {
     //Actualiza una nota
     func updateYorj(nota : Notas){
         
-        if  self.modelNotas.updateNota(NotaID: nota.id ?? "", newTitle: nota.title ?? "", newNota: nota.nota ?? "") {
+        if  self.modelNotas.updateNota(
+            NotaID: nota.id ?? "",
+            newTitle: nota.title ?? "",
+            newNota: nota.nota ?? "",
+            categoria: categoryValue(for: nota)
+        ) {
             self.modelNotas.getAllNotasToModel()
         }
         
@@ -484,7 +544,7 @@ struct ListNotasViews: View {
     }
 
     private func toggleSelectAllFiltered() {
-        let allFilteredIDs = Set(filtered.compactMap { $0.id })
+        let allFilteredIDs = Set(orderedFiltered.compactMap { $0.id })
         if !allFilteredIDs.isEmpty && selectedNotaIDs.isSuperset(of: allFilteredIDs) {
             selectedNotaIDs.subtract(allFilteredIDs)
         } else {
@@ -659,6 +719,19 @@ struct ListNotasViews: View {
         ?? .distantPast
     }
 
+    private var uncategorizedCategoryTitle: String {
+        "Sin categoría"
+    }
+
+    private func categoryValue(for nota: Notas) -> String {
+        nota.value(forKey: "categoria") as? String ?? ""
+    }
+
+    private func categoryName(for nota: Notas) -> String {
+        let value = categoryValue(for: nota).trimmingCharacters(in: .whitespacesAndNewlines)
+        return value.isEmpty ? uncategorizedCategoryTitle : value
+    }
+
     private func exportNotasToPDF(_ notas: [Notas], scopeName: String) {
         guard hasPremiumPDFAccess else {
             alertMessage = "La exportación a PDF está disponible en la Versión Extendida."
@@ -684,7 +757,12 @@ struct ListNotasViews: View {
             let lines: [PDFExportLine] = dayNotas.map { nota in
                 let title = (nota.title ?? "").isEmpty ? "Sin título" : (nota.title ?? "Sin título")
                 let detail = (nota.nota ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
-                return PDFExportLine(title: title, detail: detail.isEmpty ? nil : detail)
+                let category = categoryValue(for: nota).trimmingCharacters(in: .whitespacesAndNewlines)
+                let detailParts = [
+                    category.isEmpty ? nil : "Categoría: \(category)",
+                    detail.isEmpty ? nil : detail
+                ].compactMap { $0 }
+                return PDFExportLine(title: title, detail: detailParts.isEmpty ? nil : detailParts.joined(separator: "\n\n"))
             }
             return PDFExportSection(title: day.formatted(date: .complete, time: .omitted), lines: lines)
         }
@@ -785,6 +863,42 @@ struct ListNotasViews: View {
 
 }
 
+private struct NotesCategorySectionView: View {
+    let category: String
+    let notas: [Notas]
+    let selectionMode: Bool
+    let selectedNotaIDs: Set<String>
+    let onSelectionToggle: (Notas) -> Void
+
+    @EnvironmentObject private var modelNotas: NotasModel
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            HStack {
+                Text(category)
+                    .font(.headline)
+                    .foregroundStyle(.black)
+                Spacer()
+                Text("\(notas.count)")
+                    .font(.caption)
+                    .foregroundStyle(.black.opacity(0.7))
+            }
+            .padding(.horizontal, 16)
+            .padding(.top, 8)
+
+            ForEach(notas) { nota in
+                cardNotas(
+                    nota: nota,
+                    selectionMode: selectionMode,
+                    isSelected: selectedNotaIDs.contains(nota.id ?? ""),
+                    onSelectionToggle: { onSelectionToggle(nota) }
+                )
+                .environmentObject(modelNotas)
+            }
+        }
+    }
+}
+
 //Card notas:
 struct cardNotas: View{
     let nota : Notas?
@@ -817,14 +931,19 @@ struct cardNotas: View{
         guard let nota else { return "" }
         let createdRaw = nota.value(forKey: "fechaCreacion") as? Date
         let modifiedRaw = nota.value(forKey: "fechaModificacion") as? Date
+        let category = (nota.value(forKey: "categoria") as? String ?? "")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
         let created = createdRaw ?? modifiedRaw
         let modified = modifiedRaw ?? createdRaw
 
-        if created == nil, modified == nil {
+        if created == nil, modified == nil, category.isEmpty {
             return ""
         }
 
         var parts: [String] = []
+        if !category.isEmpty {
+            parts.append("Categoría: \(category)")
+        }
         if let created {
             parts.append("Creada: \(Self.metadataDateFormatter.string(from: created))")
         }
@@ -892,6 +1011,7 @@ struct cardNotas: View{
                             showWindow(for: UpdateNotasView(
                                 NotaId: nota!.id!,
                                 title: nota!.title!,
+                                categoria: nota?.value(forKey: "categoria") as? String ?? "",
                                 nota: nota!.nota!,
                                 direccionMapa: nota?.value(forKey: "direccionMapa") as? String ?? ""
                             ),
@@ -912,6 +1032,7 @@ struct cardNotas: View{
                             UpdateNotasView(
                                 NotaId: nota!.id!,
                                 title: nota!.title!,
+                                categoria: nota?.value(forKey: "categoria") as? String ?? "",
                                 nota: nota!.nota!,
                                 direccionMapa: nota?.value(forKey: "direccionMapa") as? String ?? ""
                             )
@@ -943,7 +1064,8 @@ struct cardNotas: View{
                     }
                     NavigationLink{
                         let isfav = nota!.isfav
-                        let texto = "\(AppCons.zspNota)\(nota!.title ?? "")::\(nota!.nota ?? "")::\(isfav == true  ? "si" : "no")"
+                        let categoria = nota?.value(forKey: "categoria") as? String ?? ""
+                        let texto = "\(AppCons.zspNota)\(nota!.title ?? "")::\(nota!.nota ?? "")::\(isfav == true  ? "si" : "no")::\(categoria)"
                             GenerateQRView(footer: texto, showImage: true)
                     }label:{
                         Label("Generar QR...", systemImage: "qrcode")

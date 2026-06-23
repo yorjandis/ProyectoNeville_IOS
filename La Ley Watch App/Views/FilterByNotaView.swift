@@ -13,6 +13,7 @@ struct FilterByNotaView: View {
     @State private var texto : String   = ""
     @State private var showSheetTitulo  = false     //Abre/Cierra sheet
     @State private var showSheetTexto   = false     //Abre/Cierra sheet
+    @State private var showSheetCategoria = false
     
     var body: some View {
         VStack{
@@ -25,6 +26,10 @@ struct FilterByNotaView: View {
                 
                 Button("Texto"){
                     showSheetTexto = true
+                }
+
+                Button("Categoría"){
+                    showSheetCategoria = true
                 }
                 
                 Button("Favoritos"){
@@ -55,7 +60,16 @@ struct FilterByNotaView: View {
                     }
                 }
         })
+        .sheet(isPresented: $showSheetCategoria, content: {
+                VStack{
+                    TextFieldLink("🔍 Categoría a buscar",prompt: Text("Categoría")) { str in
+                        Task{
+                            modelWatch.listNotas = modelWatch.searchTextInNotas(text:str, donde: .categoria)
+                            dismiss()
+                        }
+                    }
+                }
+        })
     }
 
 }
-

@@ -15,6 +15,7 @@ struct AddNotasView: View {
     @EnvironmentObject private var modelNotas : NotasModel
     
     @State      var title : String = ""
+    @State      var categoria : String = ""
     @State      var nota : String = ""
     @State      var direccionMapa: String = ""
     @StateObject private var locationCapture = AgendaLocationCapture()
@@ -34,6 +35,10 @@ struct AddNotasView: View {
                     TextField("", text: $title, axis: .vertical)
                         .textFieldStyle(.roundedBorder)
                     
+                }
+                Section("Categoría"){
+                    TextField("Sin categoría", text: $categoria, axis: .vertical)
+                        .textFieldStyle(.roundedBorder)
                 }
                 Section("Nota"){
                     TextEditor(text: $nota)
@@ -97,7 +102,7 @@ struct AddNotasView: View {
                 #if os(macOS)
                 ToolbarItem(placement: .principal) {
                     Button("Guardar"){
-                        if NotasModel().addNote(nota: nota, title: title, isFav: false, direccionMapa: direccionMapa) {
+                        if NotasModel().addNote(nota: nota, title: title, isFav: false, direccionMapa: direccionMapa, categoria: categoria) {
                             
                             self.modelNotas.getAllNotasToModel() //Actualizando el listado
                             
@@ -140,7 +145,7 @@ struct AddNotasView: View {
                 #if os(iOS)
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Guardar"){
-                        if NotasModel().addNote(nota: nota, title: title, isFav: false, direccionMapa: direccionMapa) {
+                        if NotasModel().addNote(nota: nota, title: title, isFav: false, direccionMapa: direccionMapa, categoria: categoria) {
                             
                             self.modelNotas.getAllNotasToModel()
                             

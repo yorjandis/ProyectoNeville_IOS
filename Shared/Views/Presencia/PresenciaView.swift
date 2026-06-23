@@ -404,6 +404,7 @@ private struct PresenceCelebrationView: View {
                 Text(phrase)
                     .font(.system(size: 36, weight: .heavy, design: .rounded))
                     .multilineTextAlignment(.center)
+                    .padding(.horizontal, 5)
                     .foregroundStyle(.white)
                     .padding(.horizontal, 24)
                     .minimumScaleFactor(0.72)
@@ -412,10 +413,12 @@ private struct PresenceCelebrationView: View {
  Text("He vuelto. Lo siento ahora.")
      .font(.headline)
      .foregroundStyle(.white.opacity(0.92))
- */
+ 
+ 
                 Text("Vivo mi Futuro Ahora")
                     .font(.headline.weight(.semibold))
                     .foregroundStyle(.white.opacity(0.88))
+ */
 
                 Spacer()
 

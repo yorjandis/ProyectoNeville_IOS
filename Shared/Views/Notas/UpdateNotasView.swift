@@ -14,6 +14,7 @@ struct UpdateNotasView: View {
     
     let NotaId : String //Id de la nota a actualizar
     @State var title : String
+    @State var categoria : String
     @State var nota : String
     @State var direccionMapa : String
     @StateObject private var locationCapture = AgendaLocationCapture()
@@ -30,6 +31,10 @@ struct UpdateNotasView: View {
                     TextField("", text: $title, axis: .vertical)
                         .textFieldStyle(.roundedBorder)
                     
+                }
+                Section("Categoría"){
+                    TextField("Sin categoría", text: $categoria, axis: .vertical)
+                        .textFieldStyle(.roundedBorder)
                 }
                 Section("Nota"){
                     TextEditor(text: $nota)
@@ -83,7 +88,7 @@ struct UpdateNotasView: View {
                 #if os(macOS)
                 ToolbarItem(placement: .principal) {
                     Button("Actualizar"){
-                        if NotasModel().updateNota(NotaID: NotaId, newTitle: title, newNota: nota, direccionMapa: direccionMapa){
+                        if NotasModel().updateNota(NotaID: NotaId, newTitle: title, newNota: nota, direccionMapa: direccionMapa, categoria: categoria){
                             self.modelNotas.getAllNotasToModel()
                             
                             
@@ -123,7 +128,7 @@ struct UpdateNotasView: View {
                 #if os(iOS)
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Actualizar"){
-                        if NotasModel().updateNota(NotaID: NotaId, newTitle: title, newNota: nota, direccionMapa: direccionMapa){
+                        if NotasModel().updateNota(NotaID: NotaId, newTitle: title, newNota: nota, direccionMapa: direccionMapa, categoria: categoria){
                             self.modelNotas.getAllNotasToModel()
                         }else{
                             msg("Error al actualizar la nota")

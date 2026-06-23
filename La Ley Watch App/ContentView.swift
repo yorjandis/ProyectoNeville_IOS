@@ -325,6 +325,7 @@ struct ContentView: View {
         @State private var showEditSheet = false
         @State private var notePendingEditID = ""
         @State private var editTitle = ""
+        @State private var editCategoria = ""
         @State private var editNota = ""
         
         var body: some View {
@@ -421,6 +422,7 @@ struct ContentView: View {
                     guard let nota = notePendingActions else { return }
                     notePendingEditID = nota.id ?? ""
                     editTitle = nota.title ?? ""
+                    editCategoria = nota.value(forKey: "categoria") as? String ?? ""
                     editNota = nota.nota ?? ""
                     showEditSheet = true
                     notePendingActions = nil
@@ -455,6 +457,7 @@ struct ContentView: View {
             .sheet(isPresented: $showEditSheet) {
                 EditNotaSheetView(
                     title: $editTitle,
+                    categoria: $editCategoria,
                     nota: $editNota,
                     onCancel: {
                         showEditSheet = false
@@ -463,7 +466,8 @@ struct ContentView: View {
                         let updated = modelWatch.updateNota(
                             noteID: notePendingEditID,
                             title: editTitle,
-                            nota: editNota
+                            nota: editNota,
+                            categoria: editCategoria
                         )
 
                         if updated {
@@ -484,6 +488,7 @@ struct ContentView: View {
 
     struct EditNotaSheetView: View {
         @Binding var title: String
+        @Binding var categoria: String
         @Binding var nota: String
         let onCancel: () -> Void
         let onSave: () -> Void
@@ -506,6 +511,11 @@ struct ContentView: View {
 
                     TextFieldLink("Nota: \(nota)", prompt: Text("Contenido de la nota")) { value in
                         nota = value
+                    }
+                    .frame(height: 38)
+
+                    TextFieldLink("Categoría: \(categoria)", prompt: Text("Categoría")) { value in
+                        categoria = value
                     }
                     .frame(height: 38)
 

@@ -32,7 +32,7 @@ struct GenerateQRView : View {
     
     //Para manejar el botón y el fomrato de importación de notas
     @State private var showImportButtonNotas    : Bool = false
-    @State private var formatImportNotas        : (String, String, Bool)? = nil
+    @State private var formatImportNotas        : (String, String, Bool, String)? = nil
     
     //Para manejar el botón y el fomrato de importación de frase
     @State private var showImportButtonFrase    : Bool = false
@@ -186,7 +186,7 @@ struct GenerateQRView : View {
                                             self.imagen = getImageQR() //Recrea la imagen QR a partir del texto actual. Esto es para el caso de que se modifique el texto antes de importar.
                                             validarFormatoImportacion()
                                             if let formato = self.formatImportNotas{
-                                                if NotasModel().addNote(nota: formato.1, title: formato.0, isFav: formato.2){
+                                                if NotasModel().addNote(nota: formato.1, title: formato.0, isFav: formato.2, categoria: formato.3){
                                                     self.alertMessage = "Nota importada correctamente"
                                                     self.showAlert = true
                                                 }
@@ -474,7 +474,7 @@ struct GenerateQRView : View {
     func validarFormatoImportacion(){
         
         if let result = QRModel.detectFormatImportNota(text: self.footer){ //Chequeando formato importación de Notas
-            self.formatImportNotas = (result.1.0, result.1.1, result.1.2) //Almacenando en una estructura el título, el contenido de la nota, y su estado de favorito
+            self.formatImportNotas = (result.1.0, result.1.1, result.1.2, result.1.3) //Almacenando título, contenido, favorito y categoría
             self.showImportButtonNotas  = true
             self.formatImportFrase      = nil
             self.showImportButtonFrase  = false
@@ -534,7 +534,6 @@ struct GenerateQRView : View {
     
  
 }
-
 
 
 

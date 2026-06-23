@@ -163,9 +163,9 @@ struct QRModel{
     
     
     //Detectar formato de importación de Notas:
-    //Ejempo de nota (&&& representa caracteres ocultos): &&&título de la nota::contenido de la nota::No/Si
-    //Devuelve una tupla compuesta: la primera parte si es true es que se ha detectado un formato de importación de Notas Válido, la segunda parte es una tupla de tres valores: tituloNota, contenidoNota, isfav
-    @MainActor static func detectFormatImportNota(text: String) -> (Bool, (String, String, Bool))? {
+    //Ejempo de nota (&&& representa caracteres ocultos): &&&título de la nota::contenido de la nota::No/Si::categoría
+    //Devuelve una tupla compuesta: la primera parte si es true es que se ha detectado un formato de importación de Notas Válido, la segunda parte es una tupla de cuatro valores: tituloNota, contenidoNota, isfav, categoria
+    @MainActor static func detectFormatImportNota(text: String) -> (Bool, (String, String, Bool, String))? {
         
         
         // El texto debe comenzar con el prefijo correcto
@@ -174,9 +174,9 @@ struct QRModel{
         }
         
         
-        // Dividir usando "::". Si no hay exactamente 3 partes, el formato falla.
-        let parts = text.split(separator: "::")
-        guard parts.count == 3 else {
+        // Dividir usando "::". Se admite el formato antiguo de 3 partes y el nuevo de 4 partes.
+        let parts = text.split(separator: "::", omittingEmptySubsequences: false)
+        guard parts.count == 3 || parts.count == 4 else {
             return nil
         }
 
@@ -188,7 +188,8 @@ struct QRModel{
         let isFavorite =  flagString == "no" ? false : true
 
         //Antes de retornar elimina los 3 caracteres ocultos del texto:
-        return (true, (String(parts[0].dropFirst(3)), String(parts[1]), isFavorite))
+        let category = parts.count == 4 ? String(parts[3]) : ""
+        return (true, (String(parts[0].dropFirst(3)), String(parts[1]), isFavorite, category))
     }
     
     //Detectar formato de importación de Frases:
@@ -225,7 +226,7 @@ struct QRModel{
             if let _ = QRModel.detectFormatImportNota(text: texto){
                 return texto
             }else{
-                return "\(AppCons.zspNota)TituloNota::\(textoTemp)::no"
+                return "\(AppCons.zspNota)TituloNota::\(textoTemp)::no::"
             }
 
         }else if tipo == .Frases{
@@ -252,6 +253,5 @@ struct QRModel{
     
     
 }
-
 
 

@@ -560,10 +560,11 @@ final class watchModel: ObservableObject {
     }
 
     //Crear una nueva nota usando dirección de mapa
-    func addNota(title: String, nota: String = "", direccionMapa: String) -> Bool {
+    func addNota(title: String, nota: String = "", direccionMapa: String, categoria: String = "") -> Bool {
         let trimmedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
         let trimmedNota = nota.trimmingCharacters(in: .whitespacesAndNewlines)
         let trimmedAddress = direccionMapa.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedCategory = categoria.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedTitle.isEmpty else { return false }
 
         let newNota = Notas(context: self.context)
@@ -573,6 +574,7 @@ final class watchModel: ObservableObject {
         newNota.title = trimmedTitle
         newNota.nota = resolvedNoteText(nota: trimmedNota, direccionMapa: trimmedAddress)
         newNota.isfav = false
+        newNota.setValue(trimmedCategory, forKey: "categoria")
         newNota.setValue(trimmedAddress, forKey: "direccionMapa")
         newNota.setValue(now, forKey: "fechaCreacion")
         newNota.setValue(now, forKey: "fechaModificacion")
@@ -580,10 +582,11 @@ final class watchModel: ObservableObject {
         return persistAndSyncNota(newNota, fallbackCreationDate: now)
     }
 
-    func updateNota(noteID: String, title: String, nota: String) -> Bool {
+    func updateNota(noteID: String, title: String, nota: String, categoria: String = "") -> Bool {
         let trimmedID = noteID.trimmingCharacters(in: .whitespacesAndNewlines)
         let trimmedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
         let trimmedNota = nota.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedCategory = categoria.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedID.isEmpty, !trimmedTitle.isEmpty else { return false }
 
         let fetchRequest: NSFetchRequest<Notas> = Notas.fetchRequest()
@@ -596,6 +599,7 @@ final class watchModel: ObservableObject {
             .trimmingCharacters(in: .whitespacesAndNewlines)
         existing.title = trimmedTitle
         existing.nota = resolvedNoteText(nota: trimmedNota, direccionMapa: direccionMapa)
+        existing.setValue(trimmedCategory, forKey: "categoria")
 
         return persistAndSyncNota(existing)
     }
@@ -613,6 +617,8 @@ final class watchModel: ObservableObject {
 
         let title = (note.title ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
         let direccionMapa = (note.value(forKey: "direccionMapa") as? String ?? "")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        let categoria = (note.value(forKey: "categoria") as? String ?? "")
             .trimmingCharacters(in: .whitespacesAndNewlines)
         let noteText = resolvedNoteText(
             nota: (note.nota ?? "").trimmingCharacters(in: .whitespacesAndNewlines),
@@ -632,6 +638,7 @@ final class watchModel: ObservableObject {
                     id: noteID,
                     title: title,
                     nota: noteText,
+                    categoria: categoria,
                     direccionMapa: direccionMapa,
                     isfav: note.isfav,
                     fechaCreacion: creationDate,
@@ -660,6 +667,8 @@ final class watchModel: ObservableObject {
             fetchRequest.predicate = NSPredicate(format: "nota CONTAINS[cd] %@", trimmedText)
         case .titulo:
             fetchRequest.predicate = NSPredicate(format: "title CONTAINS[cd] %@", trimmedText)
+        case .categoria:
+            fetchRequest.predicate = NSPredicate(format: "categoria CONTAINS[cd] %@", trimmedText)
         }
 
         do {
@@ -950,6 +959,8 @@ final class watchModel: ObservableObject {
             fetchRequest.predicate = NSPredicate(format: "content CONTAINS[cd] %@", trimmedText)
         case .titulo:
             fetchRequest.predicate = NSPredicate(format: "title CONTAINS[cd] %@", trimmedText)
+        case .categoria:
+            return getDiarioEntradasGet()
         }
 
         do {
@@ -1062,6 +1073,7 @@ final class watchModel: ObservableObject {
     enum TipoBusqueda {
         case titulo
         case contenido
+        case categoria
     }
     
 

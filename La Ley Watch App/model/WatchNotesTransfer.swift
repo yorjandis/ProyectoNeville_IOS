@@ -7,6 +7,7 @@ struct WatchNoteTransferPayload {
     let id: String
     let title: String
     let nota: String
+    let categoria: String
     let direccionMapa: String
     let isfav: Bool
     let fechaCreacion: Date
@@ -17,6 +18,7 @@ struct WatchNoteTransferPayload {
             "id": id,
             "title": title,
             "nota": nota,
+            "categoria": categoria,
             "direccionMapa": direccionMapa,
             "isfav": isfav,
             "fechaCreacion": fechaCreacion.timeIntervalSince1970,
@@ -41,6 +43,7 @@ struct WatchNoteTransferPayload {
             id: id,
             title: title,
             nota: nota,
+            categoria: dictionary["categoria"] as? String ?? "",
             direccionMapa: direccionMapa,
             isfav: isfav,
             fechaCreacion: Date(timeIntervalSince1970: fechaCreacionInterval),

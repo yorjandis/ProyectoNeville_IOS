@@ -9,6 +9,7 @@ struct WatchNoteTransferPayload {
     let id: String
     let title: String
     let nota: String
+    let categoria: String
     let direccionMapa: String
     let isfav: Bool
     let fechaCreacion: Date
@@ -31,6 +32,7 @@ struct WatchNoteTransferPayload {
             id: id,
             title: title,
             nota: nota,
+            categoria: dictionary["categoria"] as? String ?? "",
             direccionMapa: direccionMapa,
             isfav: isfav,
             fechaCreacion: Date(timeIntervalSince1970: fechaCreacionInterval),
@@ -376,6 +378,7 @@ final class WatchDiarioReceiver: NSObject, WCSessionDelegate {
             note.title = payload.title
             note.nota = payload.nota
             note.isfav = payload.isfav
+            note.setValue(payload.categoria, forKey: "categoria")
             note.setValue(payload.direccionMapa, forKey: "direccionMapa")
             note.setValue(payload.fechaCreacion, forKey: "fechaCreacion")
             note.setValue(payload.fechaModificacion, forKey: "fechaModificacion")

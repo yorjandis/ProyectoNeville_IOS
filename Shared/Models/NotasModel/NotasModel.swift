@@ -29,7 +29,7 @@ final class NotasModel : ObservableObject  {
     
     /// Establece los campos para búsqueda contenido dentro de las notas
     enum CampoBusqueda{
-        case titulo, nota
+        case titulo, nota, categoria
     }
     
     private var context = CoreDataController.shared.context
@@ -141,13 +141,14 @@ final class NotasModel : ObservableObject  {
     /// - Parameter title : Título  de la nota , por defecto es " "
     /// - Parameter isfav : Campo favorito <true|false>, por defecto `false`
     /// - Returns : devuelve  true si éxito, false si error
-    func addNote(nota : String, title : String = "", isFav : Bool = false, direccionMapa: String = "" )->Bool {
+    func addNote(nota : String, title : String = "", isFav : Bool = false, direccionMapa: String = "", categoria: String = "" )->Bool {
         let entity = Notas(context: self.context)
         let now = Date()
         entity.id = UUID().uuidString
         entity.title = title
         entity.nota = nota
         entity.isfav = isFav
+        entity.setValue(categoria.trimmingCharacters(in: .whitespacesAndNewlines), forKey: "categoria")
         entity.setValue(direccionMapa, forKey: "direccionMapa")
         entity.setValue(now, forKey: "fechaCreacion")
         entity.setValue(now, forKey: "fechaModificacion")
@@ -194,7 +195,7 @@ final class NotasModel : ObservableObject  {
     ///  - Parameter newNota : Nuevo texto de la nota
     ///  - Parameter isfav : Estado del campo favorito, por defecto false
     ///  - Returns : true si éxito, false otherwise
-    func updateNota(NotaID : String, newTitle : String, newNota : String, isfav : Bool = false, direccionMapa: String = "" )->Bool{
+    func updateNota(NotaID : String, newTitle : String, newNota : String, isfav : Bool = false, direccionMapa: String = "", categoria: String = "" )->Bool{
         let row = getEntityRow(value: NotaID)
         if row.value(forKey: "fechaCreacion") as? Date == nil {
             row.setValue(Date(), forKey: "fechaCreacion")
@@ -202,6 +203,7 @@ final class NotasModel : ObservableObject  {
         row.title = newTitle
         row.nota = newNota
         row.isfav = isfav
+        row.setValue(categoria.trimmingCharacters(in: .whitespacesAndNewlines), forKey: "categoria")
         row.setValue(direccionMapa, forKey: "direccionMapa")
         row.setValue(Date(), forKey: "fechaModificacion")
         do {
@@ -232,6 +234,11 @@ final class NotasModel : ObservableObject  {
                 }
             case .titulo:
                 let temp = item.title?.lowercased() ?? ""
+                if temp.contains(text.lowercased()){
+                    result.append(item)
+                }
+            case .categoria:
+                let temp = (item.value(forKey: "categoria") as? String ?? "").lowercased()
                 if temp.contains(text.lowercased()){
                     result.append(item)
                 }

@@ -76,6 +76,7 @@ struct CrearNotaIntent : AppIntent, ProvidesDialog{
             entity.title = titulo
             entity.nota = nota
             entity.isfav = false
+            entity.setValue("", forKey: "categoria")
             entity.setValue(now, forKey: "fechaCreacion")
             entity.setValue(now, forKey: "fechaModificacion")
 

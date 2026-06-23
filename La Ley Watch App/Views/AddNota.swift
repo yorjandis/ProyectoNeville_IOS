@@ -16,6 +16,7 @@ struct AddNota : View {
     private let context : NSManagedObjectContext = CoreDataController.shared.context
     @Environment(\.dismiss) private var dismiss
     @State private var title : String = ""
+    @State private var categoria : String = ""
     @State private var texto : String = ""
     @State private var isfav : Bool = false
     @State private var showAlert = false
@@ -48,6 +49,13 @@ struct AddNota : View {
                     .frame(width: .infinity ,  height: 40)
                         .cornerRadius(20)
                         .padding([.leading, .trailing], 5)
+
+                    TextFieldLink("Categoría: \(categoria)", prompt: Text("Categoría")) { str in
+                        categoria = str
+                    }
+                    .frame(width: .infinity ,  height: 40)
+                    .cornerRadius(20)
+                    .padding([.leading, .trailing], 5)
                     
                     
                     Toggle(isOn: $isfav, label: {
@@ -93,10 +101,12 @@ struct AddNota : View {
                                 let now = Date()
                                 let noteID = UUID().uuidString
                                 let trimmedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
+                                let trimmedCategory = categoria.trimmingCharacters(in: .whitespacesAndNewlines)
                                 let trimmedText = texto.trimmingCharacters(in: .whitespacesAndNewlines)
                                 let trimmedAddress = direccionMapa.trimmingCharacters(in: .whitespacesAndNewlines)
                                 newNota.id = noteID
                                 newNota.title = trimmedTitle
+                                newNota.setValue(trimmedCategory, forKey: "categoria")
                                 newNota.nota = trimmedText
                                 newNota.isfav = isfav
                                 newNota.setValue(trimmedAddress, forKey: "direccionMapa")
@@ -110,6 +120,7 @@ struct AddNota : View {
                                             id: noteID,
                                             title: trimmedTitle,
                                             nota: trimmedText,
+                                            categoria: trimmedCategory,
                                             direccionMapa: trimmedAddress,
                                             isfav: isfav,
                                             fechaCreacion: now,

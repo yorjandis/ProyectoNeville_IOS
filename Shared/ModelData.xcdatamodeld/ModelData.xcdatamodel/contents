@@ -67,6 +67,7 @@
         <relationship name="units" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="UnitEntity" inverseName="goal" inverseEntity="UnitEntity"/>
     </entity>
     <entity name="Notas" representedClassName="Notas" syncable="YES" codeGenerationType="class">
+        <attribute name="categoria" optional="YES" attributeType="String"/>
         <attribute name="direccionMapa" optional="YES" attributeType="String"/>
         <attribute name="fechaCreacion" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="fechaModificacion" optional="YES" attributeType="Date" usesScalarValueType="NO"/>

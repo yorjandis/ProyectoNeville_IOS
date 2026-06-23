@@ -182,7 +182,7 @@ struct Neville_iOSApp: App {
                 //Detectando si tiene el formato de importación de Notas:
                 
                 if let textImportacionNota = QRModel.detectFormatImportNota(text: texto){
-                    _ = NotasModel().addNote(nota: textImportacionNota.1.1, title: textImportacionNota.1.0, isFav: textImportacionNota.1.2)
+                    _ = NotasModel().addNote(nota: textImportacionNota.1.1, title: textImportacionNota.1.0, isFav: textImportacionNota.1.2, categoria: textImportacionNota.1.3)
                 }else{
                     _ = NotasModel().addNote(nota: texto, title: "Nota desde Menú Compartir")
                 }

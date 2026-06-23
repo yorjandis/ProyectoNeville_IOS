@@ -185,6 +185,7 @@ final class WatchIncomingDataReceiver: NSObject, WCSessionDelegate {
             note.title = payload.title
             note.nota = payload.nota
             note.isfav = payload.isfav
+            note.setValue(payload.categoria, forKey: "categoria")
             note.setValue(payload.direccionMapa, forKey: "direccionMapa")
             note.setValue(payload.fechaCreacion, forKey: "fechaCreacion")
             note.setValue(payload.fechaModificacion, forKey: "fechaModificacion")

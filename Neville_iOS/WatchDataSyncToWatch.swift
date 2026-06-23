@@ -245,6 +245,7 @@ final class WatchDataSyncToWatch: NSObject {
 
                     let title = note.title ?? ""
                     let nota = note.nota ?? ""
+                    let categoria = (note.value(forKey: "categoria") as? String) ?? ""
                     let direccionMapa = (note.value(forKey: "direccionMapa") as? String) ?? ""
                     let fechaCreacion = (note.value(forKey: "fechaCreacion") as? Date) ?? Date()
                     let fechaModificacion = (note.value(forKey: "fechaModificacion") as? Date) ?? Date()
@@ -253,6 +254,7 @@ final class WatchDataSyncToWatch: NSObject {
                         id: id,
                         title: title,
                         nota: nota,
+                        categoria: categoria,
                         direccionMapa: direccionMapa,
                         isfav: note.isfav,
                         fechaCreacion: fechaCreacion,
