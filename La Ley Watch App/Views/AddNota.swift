@@ -15,6 +15,7 @@ struct AddNota : View {
     
     private let context : NSManagedObjectContext = CoreDataController.shared.context
     @Environment(\.dismiss) private var dismiss
+    @StateObject private var modelWatch = watchModel.shared
     @State private var title : String = ""
     @State private var categoria : String = ""
     @State private var texto : String = ""
@@ -25,6 +26,7 @@ struct AddNota : View {
     @StateObject private var locationCapture = WatchLocationCapture()
     @State private var direccionMapa: String = ""
     @State private var isResolvingLocation = false
+    @State private var showCategoryOptions = false
     
     var body: some View {
         ZStack {
@@ -56,6 +58,15 @@ struct AddNota : View {
                     .frame(width: .infinity ,  height: 40)
                     .cornerRadius(20)
                     .padding([.leading, .trailing], 5)
+
+                    Button {
+                        showCategoryOptions = true
+                    } label: {
+                        Label("Elegir categoría", systemImage: "folder")
+                            .foregroundStyle(.black)
+                    }
+                    .buttonStyle(.bordered)
+                    .padding(.horizontal, 10)
                     
                     
                     Toggle(isOn: $isfav, label: {
@@ -166,6 +177,17 @@ struct AddNota : View {
         .alert(isPresented: $showAlert, content: {
             Alert(title: Text("Notas"), message: Text(self.alertMesage))
         })
+        .confirmationDialog("Elegir categoría", isPresented: $showCategoryOptions, titleVisibility: .visible) {
+            Button("Sin categoría") {
+                categoria = ""
+            }
+            ForEach(modelWatch.getNotaCategorias(), id: \.self) { category in
+                Button(category) {
+                    categoria = category
+                }
+            }
+            Button("Cancelar", role: .cancel) {}
+        }
         
     }
 

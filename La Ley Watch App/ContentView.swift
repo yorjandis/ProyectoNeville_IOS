@@ -323,6 +323,7 @@ struct ContentView: View {
         @State private var showDeleteConfirmation = false
         @State private var notePendingDelete: Notas?
         @State private var showEditSheet = false
+        @State private var showCategorySheet = false
         @State private var notePendingEditID = ""
         @State private var editTitle = ""
         @State private var editCategoria = ""
@@ -427,6 +428,15 @@ struct ContentView: View {
                     showEditSheet = true
                     notePendingActions = nil
                 }
+                Button("Cambiar categoría") {
+                    guard let nota = notePendingActions else { return }
+                    notePendingEditID = nota.id ?? ""
+                    editTitle = nota.title ?? ""
+                    editCategoria = nota.value(forKey: "categoria") as? String ?? ""
+                    editNota = nota.nota ?? ""
+                    showCategorySheet = true
+                    notePendingActions = nil
+                }
                 Button("Borrar", role: .destructive) {
                     notePendingDelete = notePendingActions
                     notePendingActions = nil
@@ -480,6 +490,26 @@ struct ContentView: View {
                     }
                 )
             }
+            .sheet(isPresented: $showCategorySheet) {
+                EditNotaCategorySheetView(
+                    categoria: $editCategoria,
+                    onCancel: {
+                        showCategorySheet = false
+                    },
+                    onSave: {
+                        let updated = modelWatch.updateNota(
+                            noteID: notePendingEditID,
+                            title: editTitle,
+                            nota: editNota,
+                            categoria: editCategoria
+                        )
+
+                        alertMessage = updated ? "Categoría actualizada" : "Error al actualizar categoría"
+                        showCategorySheet = false
+                        showAlert = true
+                    }
+                )
+            }
             .task {
                 modelWatch.getNotas()
             }
@@ -492,6 +522,8 @@ struct ContentView: View {
         @Binding var nota: String
         let onCancel: () -> Void
         let onSave: () -> Void
+        @StateObject private var modelWatch = watchModel.shared
+        @State private var showCategoryOptions = false
 
         var body: some View {
             ZStack {
@@ -509,15 +541,21 @@ struct ContentView: View {
                     }
                     .frame(height: 38)
 
-                    TextFieldLink("Nota: \(nota)", prompt: Text("Contenido de la nota")) { value in
-                        nota = value
-                    }
+                    TextField("Nota", text: $nota)
+                        .textFieldStyle(.plain)
                     .frame(height: 38)
 
                     TextFieldLink("Categoría: \(categoria)", prompt: Text("Categoría")) { value in
                         categoria = value
                     }
                     .frame(height: 38)
+
+                    Button {
+                        showCategoryOptions = true
+                    } label: {
+                        Label("Elegir categoría", systemImage: "folder")
+                    }
+                    .buttonStyle(.bordered)
 
                     HStack(spacing: 8) {
                         Button("Cancelar") {
@@ -533,6 +571,76 @@ struct ContentView: View {
                     }
                 }
                 .padding(.horizontal, 10)
+            }
+            .confirmationDialog("Elegir categoría", isPresented: $showCategoryOptions, titleVisibility: .visible) {
+                Button("Sin categoría") {
+                    categoria = ""
+                }
+                ForEach(modelWatch.getNotaCategorias(), id: \.self) { category in
+                    Button(category) {
+                        categoria = category
+                    }
+                }
+                Button("Cancelar", role: .cancel) {}
+            }
+        }
+    }
+
+    struct EditNotaCategorySheetView: View {
+        @Binding var categoria: String
+        let onCancel: () -> Void
+        let onSave: () -> Void
+        @StateObject private var modelWatch = watchModel.shared
+        @State private var showCategoryOptions = false
+
+        var body: some View {
+            ZStack {
+                LinearGradient(colors: [.red, .orange], startPoint: .bottom, endPoint: .top)
+                    .ignoresSafeArea()
+
+                VStack(spacing: 10) {
+                    Text("Categoría")
+                        .fontDesign(.serif)
+                        .foregroundStyle(.black)
+                        .bold()
+
+                    TextFieldLink("Categoría: \(categoria)", prompt: Text("Categoría")) { value in
+                        categoria = value
+                    }
+                    .frame(height: 38)
+
+                    Button {
+                        showCategoryOptions = true
+                    } label: {
+                        Label("Elegir categoría", systemImage: "folder")
+                    }
+                    .buttonStyle(.bordered)
+
+                    HStack(spacing: 8) {
+                        Button("Cancelar") {
+                            onCancel()
+                        }
+                        .buttonStyle(.bordered)
+
+                        Button("Guardar") {
+                            onSave()
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .tint(.orange)
+                    }
+                }
+                .padding(.horizontal, 10)
+            }
+            .confirmationDialog("Elegir categoría", isPresented: $showCategoryOptions, titleVisibility: .visible) {
+                Button("Sin categoría") {
+                    categoria = ""
+                }
+                ForEach(modelWatch.getNotaCategorias(), id: \.self) { category in
+                    Button(category) {
+                        categoria = category
+                    }
+                }
+                Button("Cancelar", role: .cancel) {}
             }
         }
     }

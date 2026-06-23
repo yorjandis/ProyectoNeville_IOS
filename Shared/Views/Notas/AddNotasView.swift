@@ -37,8 +37,23 @@ struct AddNotasView: View {
                     
                 }
                 Section("Categoría"){
-                    TextField("Sin categoría", text: $categoria, axis: .vertical)
-                        .textFieldStyle(.roundedBorder)
+                    HStack {
+                        TextField("Sin categoría", text: $categoria, axis: .vertical)
+                            .textFieldStyle(.roundedBorder)
+                        Menu {
+                            Button("Sin categoría") {
+                                categoria = ""
+                            }
+                            ForEach(existingCategories, id: \.self) { category in
+                                Button(category) {
+                                    categoria = category
+                                }
+                            }
+                        } label: {
+                            Image(systemName: "folder")
+                        }
+                        .disabled(existingCategories.isEmpty)
+                    }
                 }
                 Section("Nota"){
                     TextEditor(text: $nota)
@@ -179,6 +194,15 @@ struct AddNotasView: View {
             
         }
         
+    }
+
+    private var existingCategories: [String] {
+        Array(Set(modelNotas.notas.compactMap { nota in
+            let value = (nota.value(forKey: "categoria") as? String ?? "")
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+            return value.isEmpty ? nil : value
+        }))
+        .sorted { $0.localizedCaseInsensitiveCompare($1) == .orderedAscending }
     }
     
 }

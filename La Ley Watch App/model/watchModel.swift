@@ -544,6 +544,24 @@ final class watchModel: ObservableObject {
         
         
     }
+
+    func getNotaCategorias() -> [String] {
+        let fetchRequest: NSFetchRequest<Notas> = Notas.fetchRequest()
+        fetchRequest.propertiesToFetch = ["categoria"]
+
+        do {
+            let notes = try context.fetch(fetchRequest)
+            return Array(Set(notes.compactMap { note in
+                let value = (note.value(forKey: "categoria") as? String ?? "")
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
+                return value.isEmpty ? nil : value
+            }))
+            .sorted { $0.localizedCaseInsensitiveCompare($1) == .orderedAscending }
+        } catch {
+            msg("Failed to fetch note categories: \(error)")
+            return []
+        }
+    }
     
     //Eliminar una nota
     func deleteNota(nota : NSManagedObject)->Bool{

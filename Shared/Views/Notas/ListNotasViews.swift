@@ -53,6 +53,9 @@ struct ListNotasViews: View {
     @State private var exportToDate = Date.now
     @State private var selectedSortOption: NotesSortOption = .creationDate
     @State private var selectedListMode: NotesListMode = .all
+    @State private var collapsedCategoryNames: Set<String> = []
+    @State private var showBulkCategoryAlert = false
+    @State private var bulkCategoryDraft = ""
     @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
     @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) private var yorjPremium: Bool = false
     
@@ -105,309 +108,13 @@ struct ListNotasViews: View {
  
     var body: some View {
         NavigationStack {
-            ZStack{
-                
-                
-                
-                LinearGradient(colors: GradientesPreselect.G_natural_3.getColors,
-                               startPoint: .top, endPoint: .bottom)
-                    .ignoresSafeArea()
-                
-                VStack{
-                    if ( canOpenNotas == true  ||   UserDefaults.standard.bool(forKey: AppCons.UD_setting_NotasFaceID) == false) {
-                        ScrollView(.vertical){
-                            
-                            if selectedListMode == .all {
-                                ForEach (self.orderedFiltered){ nota in
-                                    cardNotas(
-                                        nota: nota,
-                                        selectionMode: self.selectionMode,
-                                        isSelected: self.selectedNotaIDs.contains(nota.id ?? ""),
-                                        onSelectionToggle: { toggleSelection(for: nota) }
-                                    )
-                                        .environmentObject(self.modelNotas)
-                                }
-                            } else {
-                                ForEach(groupedFiltered, id: \.category) { section in
-                                    NotesCategorySectionView(
-                                        category: section.category,
-                                        notas: section.notas,
-                                        selectionMode: self.selectionMode,
-                                        selectedNotaIDs: self.selectedNotaIDs,
-                                        onSelectionToggle: { nota in toggleSelection(for: nota) }
-                                    )
-                                    .environmentObject(self.modelNotas)
-                                }
-                            }
-                        }
-                        #if os(macOS)
-                        .searchable(text: $textFieldTitle, prompt: "Buscar")
-                        #else
-                        .searchable(text: $textFieldTitle, placement: .navigationBarDrawer(displayMode: .always)  , prompt:"Buscar")
-                        #endif
-                        .task {
-                            self.modelNotas.getAllNotasToModel()
-                        }
-                    }else{
-                       
-                            Spacer()
-                                   autenticationView()
-                    }
-                        
-
-                            Spacer()
-                            if selectionMode && canAccessNotasContent {
-                                bulkActionsBar()
-                            }
-                           
-                            Divider()
-                            HStack(spacing: 30){
-                                Spacer()
-                                #if os(iOS)
-                                Button("Volver"){
-                                    dimiss()
-                                }
-                                .foregroundStyle(.black)
-                                .buttonStyle(.bordered)
-                                .padding(.trailing, 20)
-                                #endif
-                            }
-                        
-                            .padding(.bottom, 20)
-                }
-                
-                
-            }
+            rootContent
                 .navigationTitle("Notas")
             #if os(iOS)
                 .navigationBarTitleDisplayMode(.inline)
             #endif
-                .toolbar{
-                    
-                    //Chequea si esta habilitado la protección de las notas
-                    if UserDefaults.standard.bool(forKey: AppCons.UD_setting_NotasFaceID) == false { //No esta habilitada la protección
-                       
-                        ToolbarItem {
-                            Menu{
-                                Button{
-                                    withAnimation {
-                                        self.modelNotas.getAllNotasToModel()
-                                        selectedListMode = .all
-                                    }
-                                }label:{
-                                    Label("Todas las notas", systemImage: "text.magnifyingglass.rtl")
-                                }
-
-                                Button{
-                                    withAnimation {
-                                        selectedListMode = .groupedByCategory
-                                    }
-                                }label:{
-                                    Label(
-                                        "Por categorías",
-                                        systemImage: selectedListMode == .groupedByCategory ? "checkmark.circle.fill" : "folder"
-                                    )
-                                }
-                                
-                                Button{
-                                    withAnimation {
-                                        modelNotas.notas = NotasModel().getFavNotas()
-                                    }
-                                    
-                                }label:{
-                                    Label("Notas Favoritas", systemImage: "text.magnifyingglass.rtl")
-                                }
-
-                                Button {
-                                    withAnimation {
-                                        selectedSortOption = .creationDate
-                                    }
-                                } label: {
-                                    Label(
-                                        "Por fecha de Creación",
-                                        systemImage: selectedSortOption == .creationDate ? "checkmark.circle.fill" : "calendar.badge.clock"
-                                    )
-                                }
-
-                                Button {
-                                    withAnimation {
-                                        selectedSortOption = .modificationDate
-                                    }
-                                } label: {
-                                    Label(
-                                        "Por fecha de modificación",
-                                        systemImage: selectedSortOption == .modificationDate ? "checkmark.circle.fill" : "calendar"
-                                    )
-                                }
-                                
-                                Button{
-                                    showAlertSearch = true
-                                }label:{
-                                    Label("Buscar en Notas", systemImage: "text.magnifyingglass.rtl")
-                                }
-
-                            }label: {
-                                Image(systemName: "line.3.horizontal.decrease")
-                            }
-                        }
-                        
-                        if #available(iOS 26.0, macOS 26.0, *) {
-                            ToolbarSpacer(.fixed)
-                        }
-                        
-                        ToolbarItem {
-                            exportNotasPDFToolbarMenu()
-                        }
-                        
-                        if #available(iOS 26.0, macOS 26.0, *) {
-                            ToolbarSpacer(.fixed)
-                        }
-                        
-                        ToolbarItem {
-                            Button{
-                                guard !selectionMode else { return }
-                                #if os(macOS)
-                                showWindow(for: AddNotasView(),
-                                           environmentObjects: [self.modelNotas],
-                                           title: "Crear Nota",
-                                           size: AppCons.windows_size_content,
-                                           isModal: false
-                                )
-                                #else
-                                showAddNoteView = true
-                                #endif
-                                
-                            }label: {
-                                Image(systemName: "plus")
-                            }
-                        }
-
-                        if #available(iOS 26.0, macOS 26.0, *) {
-                            ToolbarSpacer(.fixed)
-                        }
-                        
-                        ToolbarItem {
-                            
-                            Menu{
-                                Button(selectionMode ? "Cancelar" : "Seleccionar") {
-                                    withAnimation {
-                                        selectionMode.toggle()
-                                        if !selectionMode {
-                                            selectedNotaIDs.removeAll()
-                                        }
-                                    }
-                                }
-                            }label: {
-                                Image(systemName: "list.dash")
-                            }
-                            
-                            
-                        }
-                        
-                        
-                    }else{ //Si esta habilitada la protección de las notas
-                        
-                        //Chequear si se tiene acceso al contenido
-                        if self.canOpenNotas {
-                            
-                            ToolbarItem {
-                                Menu{
-                                    Button("Todas las notas"){
-                                        withAnimation {
-                                            self.modelNotas.getAllNotasToModel()
-                                            selectedListMode = .all
-                                        }
-                                    }
-                                    Button{
-                                        withAnimation {
-                                            selectedListMode = .groupedByCategory
-                                        }
-                                    }label:{
-                                        Label(
-                                            "Por categorías",
-                                            systemImage: selectedListMode == .groupedByCategory ? "checkmark.circle.fill" : "folder"
-                                        )
-                                    }
-                                    Button("Notas Favoritas"){
-                                        withAnimation {
-                                            
-                                            self.modelNotas.notas = self.modelNotas.getFavNotas()
-                                        }
-                                        
-                                    }
-                                    Button {
-                                        withAnimation {
-                                            selectedSortOption = .creationDate
-                                        }
-                                    } label: {
-                                        Label(
-                                            "Por fecha de Creación",
-                                            systemImage: selectedSortOption == .creationDate ? "checkmark.circle.fill" : "calendar.badge.clock"
-                                        )
-                                    }
-                                    Button {
-                                        withAnimation {
-                                            selectedSortOption = .modificationDate
-                                        }
-                                    } label: {
-                                        Label(
-                                            "Por fecha de modificación",
-                                            systemImage: selectedSortOption == .modificationDate ? "checkmark.circle.fill" : "calendar"
-                                        )
-                                    }
-                                    Button("Buscar en Notas"){
-                                        showAlertSearch = true
-                                    }
-                                    
-                                }label: {
-                                    Image(systemName: "line.3.horizontal.decrease")
-                                }
-                            }
-                            
-                            if #available(iOS 26.0, macOS 26.0, *) {
-                                ToolbarSpacer(.fixed)
-                            }
-                            
-                            ToolbarItem {
-                                exportNotasPDFToolbarMenu()
-                            }
-
-                            ToolbarItem {
-                                Button{
-                                    guard !selectionMode else { return }
-                                    #if os(macOS)
-                                    
-                                    showWindow(for: AddNotasView(),
-                                               environmentObjects: [self.modelNotas],
-                                               title: "Crear Nota",
-                                               size: AppCons.windows_size_content_small,
-                                               isModal: false
-                                    )
-                                    
-                                    #else
-                                    showAddNoteView = true
-                                    #endif
-                                }label: {
-                                    Image(systemName: "plus")
-                                }
-                            }
-
-                            ToolbarItem {
-                                Button(selectionMode ? "Cancelar" : "Seleccionar") {
-                                    withAnimation {
-                                        selectionMode.toggle()
-                                        if !selectionMode {
-                                            selectedNotaIDs.removeAll()
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    
-                    
-                    
-                    
+                .toolbar {
+                    notasToolbar
                 }
                 .sheet(isPresented: $showAddNoteView) {
                     AddNotasView()
@@ -463,14 +170,281 @@ struct ListNotasViews: View {
                 } message: {
                     Text("Esta acción no se puede deshacer.")
                 }
-                
-            
+                .alert("Cambiar categoría", isPresented: $showBulkCategoryAlert) {
+                    TextField("Categoría", text: $bulkCategoryDraft, axis: .vertical)
+                    Button("Cancelar", role: .cancel) {}
+                    Button("Actualizar") {
+                        applyCategoryToSelected(bulkCategoryDraft)
+                    }
+                } message: {
+                    Text("Se actualizarán las notas seleccionadas.")
+                }
         }
-        
-
     }
-    
-   
+
+    @ViewBuilder
+    private var rootContent: some View {
+        ZStack {
+            LinearGradient(colors: GradientesPreselect.G_natural_3.getColors,
+                           startPoint: .top, endPoint: .bottom)
+                .ignoresSafeArea()
+
+            VStack {
+                if canAccessNotasContent {
+                    notesScrollView
+                } else {
+                    Spacer()
+                    autenticationView()
+                }
+
+                Spacer()
+                if selectionMode && canAccessNotasContent {
+                    bulkActionsBar()
+                }
+
+                Divider()
+                bottomBar
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var notesScrollView: some View {
+        ScrollView(.vertical) {
+            if selectedListMode == .all {
+                notesFlatList
+            } else {
+                notesGroupedList
+            }
+        }
+        #if os(macOS)
+        .searchable(text: $textFieldTitle, prompt: "Buscar")
+        #else
+        .searchable(text: $textFieldTitle, placement: .navigationBarDrawer(displayMode: .always), prompt:"Buscar")
+        #endif
+        .task {
+            self.modelNotas.getAllNotasToModel()
+        }
+    }
+
+    @ViewBuilder
+    private var notesFlatList: some View {
+        ForEach(self.orderedFiltered) { nota in
+            cardNotas(
+                nota: nota,
+                selectionMode: self.selectionMode,
+                isSelected: self.selectedNotaIDs.contains(nota.id ?? ""),
+                onSelectionToggle: { toggleSelection(for: nota) }
+            )
+            .environmentObject(self.modelNotas)
+        }
+    }
+
+    @ViewBuilder
+    private var notesGroupedList: some View {
+        ForEach(groupedFiltered, id: \.category) { section in
+            NotesCategorySectionView(
+                category: section.category,
+                notas: section.notas,
+                isCollapsed: collapsedCategoryNames.contains(section.category),
+                selectionMode: self.selectionMode,
+                selectedNotaIDs: self.selectedNotaIDs,
+                onCollapseToggle: { toggleCategoryCollapse(section.category) },
+                onRenameCategory: { newCategory in
+                    renameCategory(section.category, to: newCategory)
+                },
+                onDeleteCategory: {
+                    deleteCategory(section.category)
+                },
+                onSelectionToggle: { nota in toggleSelection(for: nota) }
+            )
+            .environmentObject(self.modelNotas)
+        }
+    }
+
+    @ViewBuilder
+    private var bottomBar: some View {
+        HStack(spacing: 30) {
+            Spacer()
+            #if os(iOS)
+            Button("Volver") {
+                dimiss()
+            }
+            .foregroundStyle(.black)
+            .buttonStyle(.bordered)
+            .padding(.trailing, 20)
+            #endif
+        }
+        .padding(.bottom, 20)
+    }
+
+    @ToolbarContentBuilder
+    private var notasToolbar: some ToolbarContent {
+        if UserDefaults.standard.bool(forKey: AppCons.UD_setting_NotasFaceID) == false {
+            unlockedNotasToolbar
+        } else if self.canOpenNotas {
+            protectedNotasToolbar
+        }
+    }
+
+    @ToolbarContentBuilder
+    private var unlockedNotasToolbar: some ToolbarContent {
+        ToolbarItem {
+            filtersMenu
+        }
+
+        if #available(iOS 26.0, macOS 26.0, *) {
+            ToolbarSpacer(.fixed)
+        }
+
+        ToolbarItem {
+            exportNotasPDFToolbarMenu()
+        }
+
+        if #available(iOS 26.0, macOS 26.0, *) {
+            ToolbarSpacer(.fixed)
+        }
+
+        ToolbarItem {
+            addNotaButton
+        }
+
+        if #available(iOS 26.0, macOS 26.0, *) {
+            ToolbarSpacer(.fixed)
+        }
+
+        ToolbarItem {
+            selectionMenu
+        }
+    }
+
+    @ToolbarContentBuilder
+    private var protectedNotasToolbar: some ToolbarContent {
+        ToolbarItem {
+            filtersMenu
+        }
+
+        if #available(iOS 26.0, macOS 26.0, *) {
+            ToolbarSpacer(.fixed)
+        }
+
+        ToolbarItem {
+            exportNotasPDFToolbarMenu()
+        }
+
+        ToolbarItem {
+            addNotaButton
+        }
+
+        ToolbarItem {
+            Button(selectionMode ? "Cancelar" : "Seleccionar") {
+                toggleSelectionMode()
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var filtersMenu: some View {
+        Menu {
+            Button {
+                withAnimation {
+                    self.modelNotas.getAllNotasToModel()
+                    selectedListMode = .all
+                }
+            } label: {
+                Label("Todas las notas", systemImage: "text.magnifyingglass.rtl")
+            }
+
+            Button {
+                withAnimation {
+                    selectedListMode = .groupedByCategory
+                }
+            } label: {
+                Label(
+                    "Por categorías",
+                    systemImage: selectedListMode == .groupedByCategory ? "checkmark.circle.fill" : "folder"
+                )
+            }
+
+            Button {
+                withAnimation {
+                    modelNotas.notas = NotasModel().getFavNotas()
+                }
+            } label: {
+                Label("Notas Favoritas", systemImage: "text.magnifyingglass.rtl")
+            }
+
+            Button {
+                withAnimation {
+                    selectedSortOption = .creationDate
+                }
+            } label: {
+                Label(
+                    "Por fecha de Creación",
+                    systemImage: selectedSortOption == .creationDate ? "checkmark.circle.fill" : "calendar.badge.clock"
+                )
+            }
+
+            Button {
+                withAnimation {
+                    selectedSortOption = .modificationDate
+                }
+            } label: {
+                Label(
+                    "Por fecha de modificación",
+                    systemImage: selectedSortOption == .modificationDate ? "checkmark.circle.fill" : "calendar"
+                )
+            }
+
+            Button {
+                showAlertSearch = true
+            } label: {
+                Label("Buscar en Notas", systemImage: "text.magnifyingglass.rtl")
+            }
+        } label: {
+            Image(systemName: "line.3.horizontal.decrease")
+        }
+    }
+
+    @ViewBuilder
+    private var addNotaButton: some View {
+        Button {
+            guard !selectionMode else { return }
+            #if os(macOS)
+            showWindow(for: AddNotasView(),
+                       environmentObjects: [self.modelNotas],
+                       title: "Crear Nota",
+                       size: AppCons.windows_size_content,
+                       isModal: false
+            )
+            #else
+            showAddNoteView = true
+            #endif
+        } label: {
+            Image(systemName: "plus")
+        }
+    }
+
+    @ViewBuilder
+    private var selectionMenu: some View {
+        Menu {
+            Button(selectionMode ? "Cancelar" : "Seleccionar") {
+                toggleSelectionMode()
+            }
+        } label: {
+            Image(systemName: "list.dash")
+        }
+    }
+
+    private func toggleSelectionMode() {
+        withAnimation {
+            selectionMode.toggle()
+            if !selectionMode {
+                selectedNotaIDs.removeAll()
+            }
+        }
+    }
+
     //Actualiza una nota
     func updateYorj(nota : Notas){
         
@@ -528,6 +502,24 @@ struct ListNotasViews: View {
                 .buttonStyle(.bordered)
                 .tint(.green)
                 .disabled(selectedNotaIDs.isEmpty)
+
+                Menu("Categoría") {
+                    Button("Sin categoría") {
+                        applyCategoryToSelected("")
+                    }
+                    ForEach(existingCategories, id: \.self) { category in
+                        Button(category) {
+                            applyCategoryToSelected(category)
+                        }
+                    }
+                    Button("Otra...") {
+                        bulkCategoryDraft = ""
+                        showBulkCategoryAlert = true
+                    }
+                }
+                .foregroundStyle(.black).bold()
+                .buttonStyle(.bordered)
+                .disabled(selectedNotaIDs.isEmpty)
             }
         }
         .padding(.horizontal, 10)
@@ -541,6 +533,55 @@ struct ListNotasViews: View {
         } else {
             selectedNotaIDs.insert(id)
         }
+    }
+
+    private func toggleCategoryCollapse(_ category: String) {
+        withAnimation {
+            if collapsedCategoryNames.contains(category) {
+                collapsedCategoryNames.remove(category)
+            } else {
+                collapsedCategoryNames.insert(category)
+            }
+        }
+    }
+
+    private func renameCategory(_ oldCategory: String, to newCategory: String) {
+        let trimmedCategory = newCategory.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard oldCategory != (trimmedCategory.isEmpty ? uncategorizedCategoryTitle : trimmedCategory) else { return }
+
+        var updatedCount = 0
+        for nota in modelNotas.notas where categoryName(for: nota) == oldCategory {
+            if modelNotas.updateNota(
+                NotaID: nota.id ?? "",
+                newTitle: nota.title ?? "",
+                newNota: nota.nota ?? "",
+                isfav: nota.isfav,
+                direccionMapa: nota.value(forKey: "direccionMapa") as? String ?? "",
+                categoria: trimmedCategory
+            ) {
+                updatedCount += 1
+            }
+        }
+
+        if collapsedCategoryNames.remove(oldCategory) != nil {
+            collapsedCategoryNames.insert(trimmedCategory.isEmpty ? uncategorizedCategoryTitle : trimmedCategory)
+        }
+
+        modelNotas.getAllNotasToModel()
+        alertMessage = "\(updatedCount) nota(s) actualizada(s)."
+        showAlert = true
+    }
+
+    private func deleteCategory(_ category: String) {
+        let toDelete = modelNotas.notas.filter { categoryName(for: $0) == category }
+        for nota in toDelete {
+            modelNotas.deleteNota(nota: nota)
+        }
+        collapsedCategoryNames.remove(category)
+        selectedNotaIDs.subtract(toDelete.compactMap { $0.id })
+        modelNotas.getAllNotasToModel()
+        alertMessage = "\(toDelete.count) nota(s) eliminada(s)."
+        showAlert = true
     }
 
     private func toggleSelectAllFiltered() {
@@ -610,6 +651,32 @@ struct ListNotasViews: View {
             alertMessage = "No se pudo guardar en Espacio Calma."
         }
         showAlert = true
+    }
+
+    private func applyCategoryToSelected(_ category: String) {
+        let trimmedCategory = category.trimmingCharacters(in: .whitespacesAndNewlines)
+        var updated = 0
+        for nota in selectedNotas {
+            if updateNotaCategory(nota, to: trimmedCategory) {
+                updated += 1
+            }
+        }
+        selectedNotaIDs.removeAll()
+        selectionMode = false
+        modelNotas.getAllNotasToModel()
+        alertMessage = "\(updated) nota(s) actualizada(s)."
+        showAlert = true
+    }
+
+    private func updateNotaCategory(_ nota: Notas, to category: String) -> Bool {
+        modelNotas.updateNota(
+            NotaID: nota.id ?? "",
+            newTitle: nota.title ?? "",
+            newNota: nota.nota ?? "",
+            isfav: nota.isfav,
+            direccionMapa: nota.value(forKey: "direccionMapa") as? String ?? "",
+            categoria: category
+        )
     }
 
     @ViewBuilder
@@ -730,6 +797,14 @@ struct ListNotasViews: View {
     private func categoryName(for nota: Notas) -> String {
         let value = categoryValue(for: nota).trimmingCharacters(in: .whitespacesAndNewlines)
         return value.isEmpty ? uncategorizedCategoryTitle : value
+    }
+
+    private var existingCategories: [String] {
+        Array(Set(modelNotas.notas.compactMap { nota in
+            let value = categoryValue(for: nota).trimmingCharacters(in: .whitespacesAndNewlines)
+            return value.isEmpty ? nil : value
+        }))
+        .sorted { $0.localizedCaseInsensitiveCompare($1) == .orderedAscending }
     }
 
     private func exportNotasToPDF(_ notas: [Notas], scopeName: String) {
@@ -866,18 +941,55 @@ struct ListNotasViews: View {
 private struct NotesCategorySectionView: View {
     let category: String
     let notas: [Notas]
+    let isCollapsed: Bool
     let selectionMode: Bool
     let selectedNotaIDs: Set<String>
+    let onCollapseToggle: () -> Void
+    let onRenameCategory: (String) -> Void
+    let onDeleteCategory: () -> Void
     let onSelectionToggle: (Notas) -> Void
 
     @EnvironmentObject private var modelNotas: NotasModel
+    @State private var showRenameAlert = false
+    @State private var categoryDraft = ""
+    @State private var showDeleteConfirmation = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             HStack {
+                Button {
+                    onCollapseToggle()
+                } label: {
+                    Image(systemName: isCollapsed ? "chevron.right.circle.fill" : "chevron.down.circle.fill")
+                        .font(.headline)
+                        .foregroundStyle(.black.opacity(0.75))
+                }
+                .buttonStyle(.plain)
+
                 Text(category)
                     .font(.headline)
                     .foregroundStyle(.black)
+
+                Menu {
+                    Button {
+                        categoryDraft = category == "Sin categoría" ? "" : category
+                        showRenameAlert = true
+                    } label: {
+                        Label("Cambiar texto", systemImage: "pencil")
+                    }
+                    Button(role: .destructive) {
+                        showDeleteConfirmation = true
+                    } label: {
+                        Label("Eliminar notas", systemImage: "trash")
+                    }
+                } label: {
+                    Image(systemName: "ellipsis.circle")
+                        .font(.subheadline)
+                        .foregroundStyle(.black.opacity(0.7))
+                        .padding(.horizontal, 4)
+                }
+                .buttonStyle(.plain)
+
                 Spacer()
                 Text("\(notas.count)")
                     .font(.caption)
@@ -886,15 +998,34 @@ private struct NotesCategorySectionView: View {
             .padding(.horizontal, 16)
             .padding(.top, 8)
 
-            ForEach(notas) { nota in
-                cardNotas(
-                    nota: nota,
-                    selectionMode: selectionMode,
-                    isSelected: selectedNotaIDs.contains(nota.id ?? ""),
-                    onSelectionToggle: { onSelectionToggle(nota) }
-                )
-                .environmentObject(modelNotas)
+            if !isCollapsed {
+                ForEach(notas) { nota in
+                    cardNotas(
+                        nota: nota,
+                        selectionMode: selectionMode,
+                        isSelected: selectedNotaIDs.contains(nota.id ?? ""),
+                        onSelectionToggle: { onSelectionToggle(nota) }
+                    )
+                    .environmentObject(modelNotas)
+                }
             }
+        }
+        .alert("Renombrar categoría", isPresented: $showRenameAlert) {
+            TextField("Categoría", text: $categoryDraft, axis: .vertical)
+            Button("Cancelar", role: .cancel) {}
+            Button("Actualizar") {
+                onRenameCategory(categoryDraft)
+            }
+        } message: {
+            Text("Se actualizarán las notas de esta categoría.")
+        }
+        .confirmationDialog("¿Eliminar todas las notas de esta categoría?", isPresented: $showDeleteConfirmation) {
+            Button("Eliminar \(notas.count) nota(s)", role: .destructive) {
+                onDeleteCategory()
+            }
+            Button("Cancelar", role: .cancel) {}
+        } message: {
+            Text("Esta acción no se puede deshacer.")
         }
     }
 }
@@ -917,6 +1048,8 @@ struct cardNotas: View{
     @State private var calmAlertMessage = ""
     @State private var showMapsAlert = false
     @State private var mapsAlertMessage = ""
+    @State private var showCategoryAlert = false
+    @State private var categoryDraft = ""
     
     @AppStorage(AppCons.UD_setting_fontListaSize)  var fontSizeLista : Int = 20
 
@@ -951,6 +1084,15 @@ struct cardNotas: View{
             parts.append("Modificada: \(Self.metadataDateFormatter.string(from: modified))")
         }
         return parts.joined(separator: " · ")
+    }
+
+    private var existingCategories: [String] {
+        Array(Set(modelNotas.notas.compactMap { nota in
+            let value = (nota.value(forKey: "categoria") as? String ?? "")
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+            return value.isEmpty ? nil : value
+        }))
+        .sorted { $0.localizedCaseInsensitiveCompare($1) == .orderedAscending }
     }
 
     
@@ -1045,6 +1187,23 @@ struct cardNotas: View{
                     }
                     
                     #endif
+
+                    Menu {
+                        Button("Sin categoría") {
+                            updateCurrentNoteCategory("")
+                        }
+                        ForEach(existingCategories, id: \.self) { category in
+                            Button(category) {
+                                updateCurrentNoteCategory(category)
+                            }
+                        }
+                        Button("Otra...") {
+                            categoryDraft = nota?.value(forKey: "categoria") as? String ?? ""
+                            showCategoryAlert = true
+                        }
+                    } label: {
+                        Label("Cambiar categoría", systemImage: "folder")
+                    }
                     
                     
                     
@@ -1367,12 +1526,39 @@ struct cardNotas: View{
         } message: {
             Text(mapsAlertMessage)
         }
+        .alert("Cambiar categoría", isPresented: $showCategoryAlert) {
+            TextField("Categoría", text: $categoryDraft, axis: .vertical)
+            Button("Cancelar", role: .cancel) {}
+            Button("Actualizar") {
+                updateCurrentNoteCategory(categoryDraft)
+            }
+        } message: {
+            Text("Se actualizará esta nota.")
+        }
         .frame(maxWidth: .infinity)
         //.background(.ultraThinMaterial)
         .background(LinearGradient(colors: [.white.opacity(0.8), .white.opacity(0.7)], startPoint: .top, endPoint: .bottom))
         .clipShape(RoundedRectangle(cornerRadius: 10))
         .padding(.horizontal, 10)
         .padding(.vertical, 8)
+    }
+
+    private func updateCurrentNoteCategory(_ category: String) {
+        guard let nota else { return }
+        let trimmedCategory = category.trimmingCharacters(in: .whitespacesAndNewlines)
+        if modelNotas.updateNota(
+            NotaID: nota.id ?? "",
+            newTitle: nota.title ?? "",
+            newNota: nota.nota ?? "",
+            isfav: nota.isfav,
+            direccionMapa: nota.value(forKey: "direccionMapa") as? String ?? "",
+            categoria: trimmedCategory
+        ) {
+            modelNotas.getAllNotasToModel()
+        } else {
+            mapsAlertMessage = "No se pudo cambiar la categoría."
+            showMapsAlert = true
+        }
     }
 
     private func addCurrentNoteToCalmList() {
@@ -1423,4 +1609,14 @@ struct cardNotas: View{
             }
         }
     }
+}
+
+private struct ListNotasPreviewHost: View {
+    var body: some View {
+        ListNotasViews()
+    }
+}
+
+#Preview("Notas") {
+    ListNotasPreviewHost()
 }
