@@ -11,7 +11,7 @@ import CoreData
 struct ContentView: View {
     @StateObject private var modelWatch = watchModel.shared
     @AppStorage("AtajosiOS") private var atajoWatch: String = ""
-    @State private var selectedTab: String = WatchScreen.frases.rawValue
+    @State private var selectedTab: String = WatchScreen.inicio.rawValue
     @State private var screenOrder: [WatchScreen] = ScreenOrderStore.load()
     @State private var didSetInitialTab = false
 
@@ -36,10 +36,10 @@ struct ContentView: View {
             modelWatch.refreshPremiumAccessState()
             screenOrder = ScreenOrderStore.normalize(screenOrder)
             if !didSetInitialTab {
-                selectedTab = availableScreenOrder.first?.rawValue ?? WatchScreen.frases.rawValue
+                selectedTab = WatchScreen.inicio.rawValue
                 didSetInitialTab = true
             } else if !availableScreenOrder.map(\.rawValue).contains(selectedTab) && selectedTab != WatchScreen.ajustes.rawValue {
-                selectedTab = availableScreenOrder.first?.rawValue ?? WatchScreen.frases.rawValue
+                selectedTab = WatchScreen.inicio.rawValue
             }
             handleShortcutNavigation(atajoWatch)
         }
@@ -51,7 +51,7 @@ struct ContentView: View {
             }
             ScreenOrderStore.save(normalized)
             if !availableScreenOrder.map(\.rawValue).contains(selectedTab) && selectedTab != WatchScreen.ajustes.rawValue {
-                selectedTab = availableScreenOrder.first?.rawValue ?? WatchScreen.frases.rawValue
+                selectedTab = WatchScreen.inicio.rawValue
             }
         }
         .onChange(of: atajoWatch) { _, newValue in
@@ -81,6 +81,11 @@ struct ContentView: View {
     @ViewBuilder
     private func screenView(for screen: WatchScreen) -> some View {
         switch screen {
+        case .inicio:
+            WatchHomeView(
+                screens: availableScreenOrder.filter { $0 != .inicio } + [.ajustes],
+                selectedTab: $selectedTab
+            )
         case .frases:
             Frases()
         case .diario:
@@ -103,6 +108,104 @@ struct ContentView: View {
             QuickAddNotaByLocationView()
         case .ajustes:
             EmptyView()
+        }
+    }
+
+    struct WatchHomeView: View {
+        let screens: [WatchScreen]
+        @Binding var selectedTab: String
+
+        private var orbitScreens: [WatchScreen] {
+            screens.filter { $0 != .ajustes }
+        }
+
+        var body: some View {
+            ZStack {
+                LinearGradient(
+                    colors: [
+                        Color(red: 0.45, green: 0.55, blue: 0.57),
+                        Color(red: 0.34, green: 0.43, blue: 0.48),
+                        Color(red: 0.51, green: 0.46, blue: 0.58)
+                    ],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+                .ignoresSafeArea()
+
+                GeometryReader { proxy in
+                    let size = min(proxy.size.width, proxy.size.height)
+                    let center = CGPoint(x: proxy.size.width / 2, y: proxy.size.height / 2)
+                    let orbitRadius = max(58, size * 0.34)
+                    let itemSize = max(48, min(56, size * 0.28))
+                    let centerSize = max(54, min(64, size * 0.32))
+
+                    ZStack {
+                        ForEach(Array(orbitScreens.enumerated()), id: \.element.id) { index, screen in
+                            let angle = angleForItem(at: index, total: orbitScreens.count)
+                            let position = CGPoint(
+                                x: center.x + cos(angle) * orbitRadius,
+                                y: center.y + sin(angle) * orbitRadius
+                            )
+
+                            WatchHomeIconButton(
+                                screen: screen,
+                                size: itemSize,
+                                selectedTab: $selectedTab
+                            )
+                            .position(position)
+                        }
+
+                        WatchHomeIconButton(
+                            screen: .ajustes,
+                            size: centerSize,
+                            selectedTab: $selectedTab
+                        )
+                        .position(center)
+                    }
+                }
+            }
+        }
+
+        private func angleForItem(at index: Int, total: Int) -> CGFloat {
+            guard total > 0 else { return 0 }
+            return (-CGFloat.pi / 2) + (2 * CGFloat.pi * CGFloat(index) / CGFloat(total))
+        }
+    }
+
+    struct WatchHomeIconButton: View {
+        let screen: WatchScreen
+        let size: CGFloat
+        @Binding var selectedTab: String
+
+        var body: some View {
+            Button {
+                selectedTab = screen.rawValue
+            } label: {
+                ZStack {
+                    Circle()
+                        .fill(.white.opacity(0.46))
+                        .overlay {
+                            Circle()
+                                .fill(screen.softColor)
+                        }
+                        .shadow(color: screen.tintColor.opacity(0.22), radius: 5, y: 2)
+
+                    VStack(spacing: 3) {
+                        Image(systemName: screen.symbolName)
+                            .font(.system(size: size * 0.34, weight: .bold))
+                            .foregroundStyle(screen.tintColor)
+
+                        Text(screen.shortName)
+                            .font(.system(size: size * 0.17, weight: .semibold))
+                            .foregroundStyle(.black.opacity(0.82))
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.62)
+                    }
+                    .padding(.horizontal, 4)
+                }
+                .frame(width: size, height: size)
+            }
+            .buttonStyle(.plain)
         }
     }
     
@@ -300,6 +403,9 @@ struct ContentView: View {
                 if frase.isEmpty {
                     cargarNuevaFrase()
                 }
+            }
+            .onReceive(NotificationCenter.default.publisher(for: watchModel.phraseSourceDidChangeNotification)) { _ in
+                cargarNuevaFrase()
             }
             .alert(isPresented: self.$showAlert){
                 Alert(title: Text("Prueba"), message: Text("\(String(describing: modelWatch.yorjPremiumAccessValue))"))
@@ -668,6 +774,9 @@ struct ContentView: View {
 
     struct SettingsView: View {
         @Binding var screenOrder: [WatchScreen]
+        @StateObject private var modelWatch = watchModel.shared
+        @State private var selectedPhraseSource: WatchPhraseSource = watchModel.shared.selectedPhraseSource()
+        @State private var showPremiumAlert = false
 
         var body: some View {
             ZStack {
@@ -682,6 +791,29 @@ struct ContentView: View {
                         .foregroundStyle(.black)
 
                     List {
+                        Section {
+                            ForEach(WatchPhraseSource.allCases) { source in
+                                Button {
+                                    selectPhraseSource(source)
+                                } label: {
+                                    HStack {
+                                        Image(systemName: selectedPhraseSource == source ? "checkmark.circle.fill" : "circle")
+                                            .foregroundStyle(.black)
+                                        Text(source.displayName)
+                                            .foregroundStyle(.black)
+                                        Spacer()
+                                        if source.requiresPremium {
+                                            Image(systemName: "lock.fill")
+                                                .foregroundStyle(.black.opacity(0.72))
+                                        }
+                                    }
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        } header: {
+                            Text("Frases")
+                        }
+
                         ForEach(screenOrder) { screen in
                             Text(screen.displayName)
                                 .foregroundStyle(.black)
@@ -690,16 +822,35 @@ struct ContentView: View {
                     }
                 }
             }
+            .onAppear {
+                modelWatch.refreshPremiumAccessState()
+                selectedPhraseSource = modelWatch.selectedPhraseSource()
+            }
+            .alert("Requiere Premium", isPresented: $showPremiumAlert) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text("Las frases de otros autores necesitan acceso Premium.")
+            }
         }
 
         private func moveScreens(from source: IndexSet, to destination: Int) {
             screenOrder.move(fromOffsets: source, toOffset: destination)
             screenOrder = ScreenOrderStore.normalize(screenOrder)
         }
+
+        private func selectPhraseSource(_ source: WatchPhraseSource) {
+            if modelWatch.setSelectedPhraseSource(source) {
+                selectedPhraseSource = source
+            } else {
+                selectedPhraseSource = .neville
+                showPremiumAlert = true
+            }
+        }
     }
 }
 
 enum WatchScreen: String, CaseIterable, Identifiable {
+    case inicio
     case frases
     case diario
     case notas
@@ -712,6 +863,7 @@ enum WatchScreen: String, CaseIterable, Identifiable {
 
     var displayName: String {
         switch self {
+        case .inicio: return "Inicio"
         case .frases: return "Frases"
         case .diario: return "Diario"
         case .notas: return "Notas"
@@ -722,8 +874,46 @@ enum WatchScreen: String, CaseIterable, Identifiable {
         }
     }
 
+    var shortName: String {
+        switch self {
+        case .agenda: return "Agenda"
+        case .quickNote: return "Rápida"
+        default: return displayName
+        }
+    }
+
+    var symbolName: String {
+        switch self {
+        case .inicio: return "square.grid.2x2.fill"
+        case .frases: return "quote.bubble.fill"
+        case .diario: return "book.closed.fill"
+        case .notas: return "note.text"
+        case .agenda: return "calendar.badge.clock"
+        case .presencia: return "sparkles"
+        case .quickNote: return "location.fill.viewfinder"
+        case .ajustes: return "gearshape.fill"
+        }
+    }
+
+    var tintColor: Color {
+        switch self {
+        case .inicio: return Color(red: 0.43, green: 0.42, blue: 0.58)
+        case .frases: return Color(red: 0.66, green: 0.45, blue: 0.25)
+        case .diario: return Color(red: 0.59, green: 0.35, blue: 0.43)
+        case .notas: return Color(red: 0.32, green: 0.47, blue: 0.62)
+        case .agenda: return Color(red: 0.50, green: 0.39, blue: 0.59)
+        case .presencia: return Color(red: 0.28, green: 0.55, blue: 0.52)
+        case .quickNote: return Color(red: 0.38, green: 0.55, blue: 0.36)
+        case .ajustes: return Color(red: 0.42, green: 0.45, blue: 0.47)
+        }
+    }
+
+    var softColor: Color {
+        tintColor.opacity(0.18)
+    }
+
     static var reorderableCases: [WatchScreen] {
-        [.frases, .diario, .notas, .agenda, .presencia, .quickNote]
+        [.inicio, .frases, .diario, .notas, .agenda, .presencia, .quickNote]
     }
 }
 
@@ -750,6 +940,10 @@ private enum ScreenOrderStore {
             if !unique.contains(screen) {
                 unique.append(screen)
             }
+        }
+
+        if !unique.contains(.inicio) {
+            unique.insert(.inicio, at: 0)
         }
 
         for screen in WatchScreen.reorderableCases where !unique.contains(screen) {

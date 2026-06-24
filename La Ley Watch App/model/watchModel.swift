@@ -47,6 +47,32 @@ struct WatchPresenceMood: Identifiable, Hashable {
     ]
 }
 
+enum WatchPhraseSource: String, CaseIterable, Identifiable {
+    case neville
+    case jd
+    case bruce
+    case gregg
+    case otrosAutores
+    case frasesSalud
+
+    var id: String { rawValue }
+
+    var displayName: String {
+        switch self {
+        case .neville: return "Neville"
+        case .jd: return "Joe Dispenza"
+        case .bruce: return "Bruce Lipton"
+        case .gregg: return "Gregg Braden"
+        case .otrosAutores: return "Otros Autores"
+        case .frasesSalud: return "Tips de Salud"
+        }
+    }
+
+    var requiresPremium: Bool {
+        self != .neville
+    }
+}
+
 @MainActor
 final class watchModel: ObservableObject {
     
@@ -68,6 +94,7 @@ final class watchModel: ObservableObject {
 
     private var homeFrasesCache: [Frases] = []
     private var homeFrasesCacheKey: String = ""
+    static let phraseSourceDidChangeNotification = Notification.Name("WatchPhraseSourceDidChangeNotification")
 
     private init() {
         setupObservers()
@@ -145,6 +172,44 @@ final class watchModel: ObservableObject {
         }
 
         return ""
+    }
+
+    func selectedPhraseSource() -> WatchPhraseSource {
+        let selected = effectiveHomeFilters()
+            .compactMap { WatchPhraseSource(rawValue: $0) }
+            .first ?? .neville
+
+        if selected.requiresPremium && !hasAgendaPremiumAccess {
+            return .neville
+        }
+
+        return selected
+    }
+
+    func setSelectedPhraseSource(_ source: WatchPhraseSource) -> Bool {
+        refreshPremiumAccessState()
+
+        guard !source.requiresPremium || hasAgendaPremiumAccess else {
+            persistPhraseSource(.neville)
+            return false
+        }
+
+        persistPhraseSource(source)
+        return true
+    }
+
+    private func persistPhraseSource(_ source: WatchPhraseSource) {
+        let values = [source.rawValue]
+        let sharedDefaults = UserDefaults(suiteName: AppCons.AppGroupName)
+
+        UserDefaults.standard.set(values, forKey: AppCons.UD_FiltroFrasesHome)
+        sharedDefaults?.set(values, forKey: AppCons.UD_FiltroFrasesHome)
+        NSUbiquitousKeyValueStore.default.set(values, forKey: AppCons.UD_FiltroFrasesHome)
+        NSUbiquitousKeyValueStore.default.synchronize()
+
+        homeFrasesCache.removeAll()
+        homeFrasesCacheKey = ""
+        NotificationCenter.default.post(name: Self.phraseSourceDidChangeNotification, object: nil)
     }
 
     private func displayNameForAutor(_ code: String?) -> String {

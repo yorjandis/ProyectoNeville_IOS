@@ -623,6 +623,7 @@ struct CardioCoherenceMainView: View {
     @State private var useCustomMusicInSession = false
     @State private var showEvaluationContent = false
     @State private var previousIdleTimerDisabled: Bool?
+    @State private var sessionPhrases: [String]
 
     init() {
         let initial = CardioCoherenceBackgroundResolver.bootstrapBackgroundSelection()
@@ -633,6 +634,7 @@ struct CardioCoherenceMainView: View {
         _isBackgroundMusicEnabled = State(initialValue: persistedMusic ?? true)
         let persistedCustomMusic = UserDefaults.standard.bool(forKey: CardioCoherenceConstants.Audio.useCustomMusicInSessionKey)
         _useCustomMusicInSession = State(initialValue: persistedCustomMusic)
+        _sessionPhrases = State(initialValue: CardioCoherenceConstants.SessionPhrases.load())
     }
 
     var body: some View {
@@ -953,6 +955,15 @@ struct CardioCoherenceMainView: View {
                     )
                     .frame(width: 250, height: 250)
 
+                    SessionBreathingPhraseView(
+                        phraseID: sessionPhraseIndex(for: phase, phaseProgress: phaseProgress),
+                        phrases: sessionPhrases,
+                        rhythm: store.state.breathingRhythm,
+                        preparing: store.state.isPreparing,
+                        paused: store.state.isPaused,
+                        anchor: breathingAnchor
+                    )
+
                     BreathingCueView(
                         rhythm: store.state.breathingRhythm,
                         preparing: store.state.isPreparing,
@@ -1022,6 +1033,22 @@ struct CardioCoherenceMainView: View {
                 .buttonStyle(.bordered)
                 .tint(.green)
         }
+    }
+
+    private func sessionPhraseIndex(
+        for phase: MeditationPhase,
+        phaseProgress: Double
+    ) -> Int {
+        let phaseIndex: Int
+        switch phase.kind {
+        case .regulation: phaseIndex = 0
+        case .heartConnection: phaseIndex = 1
+        case .emotionalActivation: phaseIndex = 2
+        case .integration: phaseIndex = 3
+        }
+
+        let phraseOffset = phaseProgress < 0.5 ? 0 : 1
+        return (phaseIndex * 2) + phraseOffset
     }
 
     private var summarySection: some View {
@@ -1754,7 +1781,14 @@ private struct BreathingOrbView: View {
 
             context.stroke(
                 Path(ellipseIn: ringRect),
-                with: .color(CardioCoherenceConstants.Orb.ringColor.opacity(ringVisibility)),
+                with: .color(
+                    CardioCoherenceConstants.Orb.ringColor.opacity(
+                        ringVisibility * ringBreathingOpacity(
+                            state: cycleState,
+                            phaseProgress: cyclePhaseProgress
+                        )
+                    )
+                ),
                 lineWidth: CardioCoherenceConstants.Orb.ringLineWidth
             )
         }
@@ -1784,7 +1818,14 @@ private struct BreathingOrbView: View {
                 state: initialSnapshot.state,
                 previousState: initialSnapshot.state
             )
-            displayedRingScale = max(0.01, initialOrbScale + initialExhalePauseTail)
+            let initialExhaleContraction = exhaleRingContractionOffset(
+                phaseProgress: initialSnapshot.phaseProgress,
+                state: initialSnapshot.state
+            )
+            displayedRingScale = max(
+                0.01,
+                initialOrbScale + initialExhaleContraction + initialExhalePauseTail
+            )
 
             while !Task.isCancelled {
                 let snapshot = breathingCycleSnapshot(
@@ -1806,7 +1847,14 @@ private struct BreathingOrbView: View {
                     state: snapshot.state,
                     previousState: oldState
                 )
-                let rawTargetRingScale = max(0.01, orbScale + exhalePauseTail)
+                let exhaleContraction = exhaleRingContractionOffset(
+                    phaseProgress: snapshot.phaseProgress,
+                    state: snapshot.state
+                )
+                let rawTargetRingScale = max(
+                    0.01,
+                    orbScale + exhaleContraction + exhalePauseTail
+                )
 
                 if snapshot.state == .inhale, oldState != .inhale {
                     inhaleEntryRingScale = displayedRingScale
@@ -1842,16 +1890,18 @@ private struct BreathingOrbView: View {
 
                 let targetRingScale: CGFloat
                 if snapshot.state == .inhale, let entryScale = inhaleEntryRingScale {
-                    let releaseT = min(max(snapshot.phaseProgress / CardioCoherenceConstants.Orb.inhaleReleaseWindow, 0), 1)
-                    let eased = releaseT * releaseT * (3 - (2 * releaseT))
-                    targetRingScale = entryScale + ((rawTargetRingScale - entryScale) * eased)
+                    let expansionProgress = smoothBreath(snapshot.phaseProgress)
+                    targetRingScale = entryScale
+                        + ((rawTargetRingScale - entryScale) * expansionProgress)
                 } else {
                     targetRingScale = rawTargetRingScale
                 }
 
                 let smoothedScale = displayedRingScale + ((targetRingScale - displayedRingScale) * CardioCoherenceConstants.Orb.ringSpringSmoothing)
                 let delta = smoothedScale - displayedRingScale
-                let maxStep = CardioCoherenceConstants.Orb.maxRingScaleStepPerFrame
+                let maxStep = delta >= 0
+                    ? CardioCoherenceConstants.Orb.maxRingExpansionStepPerFrame
+                    : CardioCoherenceConstants.Orb.maxRingScaleStepPerFrame
                 let clampedDelta = min(max(delta, -maxStep), maxStep)
                 displayedRingScale += clampedDelta
 
@@ -1939,6 +1989,66 @@ private struct BreathingOrbView: View {
         return clamped * clamped * (3 - (2 * clamped))
     }
 
+    private func ringBreathingOpacity(
+        state: BreathingCycleState,
+        phaseProgress: CGFloat
+    ) -> CGFloat {
+        let progress = min(max(phaseProgress, 0), 1)
+        let minimumOpacity = min(
+            max(CardioCoherenceConstants.Orb.ringMinimumTransitionOpacity, 0),
+            1
+        )
+
+        switch state {
+        case .exhale:
+            let fadeStart = min(
+                max(CardioCoherenceConstants.Orb.ringFadeOutStartFraction, 0),
+                0.99
+            )
+            let fadeProgress = min(max((progress - fadeStart) / (1 - fadeStart), 0), 1)
+            let eased = smootherStep(fadeProgress)
+            return 1 - ((1 - minimumOpacity) * eased)
+
+        case .exhalePause:
+            return minimumOpacity
+
+        case .inhale:
+            let fadeEnd = max(CardioCoherenceConstants.Orb.ringFadeInEndFraction, 0.01)
+            let fadeProgress = min(max(progress / fadeEnd, 0), 1)
+            let eased = smootherStep(fadeProgress)
+            return minimumOpacity + ((1 - minimumOpacity) * eased)
+
+        case .inhalePause:
+            return 1
+
+        case .idle:
+            return 1
+        }
+    }
+
+    private func smootherStep(_ value: CGFloat) -> CGFloat {
+        let t = min(max(value, 0), 1)
+        return t * t * t * (t * ((t * 6) - 15) + 10)
+    }
+
+    private func exhaleRingContractionOffset(
+        phaseProgress: CGFloat,
+        state: BreathingCycleState
+    ) -> CGFloat {
+        let contraction = CardioCoherenceConstants.Orb.exhaleRingContraction
+
+        switch state {
+        case .exhale:
+            return -contraction * smoothBreath(phaseProgress)
+
+        case .exhalePause:
+            return -contraction
+
+        default:
+            return 0
+        }
+    }
+
     private func exhalePauseTailScaleOffset(
         phaseProgress: CGFloat,
         state: BreathingCycleState,
@@ -1966,6 +2076,118 @@ private struct BreathingOrbView: View {
         default:
             return 0
         }
+    }
+}
+
+private struct SessionBreathingPhraseView: View {
+    let phraseID: Int
+    let phrases: [String]
+    let rhythm: BreathingRhythmOption
+    let preparing: Bool
+    let paused: Bool
+    let anchor: Date
+
+    @State private var phraseOpacity: CGFloat = 0
+    @State private var activePhrase = ""
+    @State private var activePhraseID: Int?
+    @State private var shownPhraseIDs: Set<Int> = []
+    @State private var previousBreathingState: BreathingCycleState = .idle
+    @State private var trackedAnchor: Date?
+
+    var body: some View {
+        Text(activePhrase)
+            .id(activePhraseID)
+            .font(.title3.weight(.medium))
+            .foregroundStyle(.white.opacity(0.92))
+            .multilineTextAlignment(.center)
+            .lineLimit(2)
+            .padding(.horizontal, 18)
+            .frame(maxWidth: .infinity)
+            .frame(height: 56)
+            .opacity(phraseOpacity)
+            .task(id: "\(phraseID)-\(rhythm.rawValue)-\(preparing)-\(paused)-\(anchor.timeIntervalSinceReferenceDate)") {
+                if trackedAnchor != anchor {
+                    trackedAnchor = anchor
+                    shownPhraseIDs.removeAll()
+                    activePhraseID = nil
+                    activePhrase = ""
+                    phraseOpacity = 0
+                    previousBreathingState = .idle
+                }
+
+                while !Task.isCancelled {
+                    let snapshot = breathingCycleSnapshot(
+                        now: Date(),
+                        anchor: anchor,
+                        rhythm: rhythm,
+                        preparing: preparing,
+                        paused: paused
+                    )
+
+                    if snapshot.state == .inhale,
+                       previousBreathingState != .inhale,
+                       !shownPhraseIDs.contains(phraseID) {
+                        shownPhraseIDs.insert(phraseID)
+                        activePhraseID = phraseID
+                        activePhrase = phraseText(for: phraseID)
+                    }
+
+                    if activePhraseID != nil {
+                        phraseOpacity = opacity(for: snapshot)
+                    } else {
+                        phraseOpacity = 0
+                    }
+
+                    if snapshot.state == .exhalePause,
+                       previousBreathingState == .exhale {
+                        phraseOpacity = 0
+                        activePhraseID = nil
+                        activePhrase = ""
+                    }
+
+                    previousBreathingState = snapshot.state
+                    try? await Task.sleep(
+                        nanoseconds: CardioCoherenceConstants.BreathingPattern.frameRefreshNanos
+                    )
+                }
+            }
+    }
+
+    private func phraseText(for index: Int) -> String {
+        if phrases.indices.contains(index) {
+            return phrases[index]
+        }
+        return CardioCoherenceConstants.SessionPhrases.defaults[index]
+    }
+
+    private func opacity(for snapshot: BreathingCycleSnapshot) -> CGFloat {
+        let fadeInEnd = max(CardioCoherenceConstants.SessionPhrases.fadeInEndFraction, 0.01)
+        let fadeOutStart = min(
+            max(CardioCoherenceConstants.SessionPhrases.fadeOutStartFraction, fadeInEnd),
+            0.99
+        )
+
+        switch snapshot.state {
+        case .inhale:
+            let progress = min(max(snapshot.phaseProgress / fadeInEnd, 0), 1)
+            return smootherStep(progress)
+
+        case .inhalePause:
+            return 1
+
+        case .exhale:
+            let progress = min(max(snapshot.phaseProgress, 0), 1)
+            guard progress > fadeOutStart else { return 1 }
+            return 1 - smootherStep((progress - fadeOutStart) / (1 - fadeOutStart))
+
+        case .exhalePause, .idle:
+            return 0
+        }
+    }
+
+    private func smootherStep(_ value: CGFloat) -> CGFloat {
+        let t = min(max(value, 0), 1)
+        return t * t * t * (t * ((t * 6) - 15) + 10)
     }
 }
 

@@ -51,17 +51,28 @@ enum CardioCoherenceConstants {
         static let ringInsetFactor: CGFloat = 0.12
         /// Grosor del anillo exterior.
         static let ringLineWidth: CGFloat = 2
+        /// Contracción adicional y progresiva del anillo durante la exhalación.
+        /// Acerca su tamaño final al del loto cerrado antes del desvanecimiento.
+        static let exhaleRingContraction: CGFloat = 0.46
         /// Cierre adicional del anillo al final de exhalación para continuidad visual del vaciado.
         static let exhalePauseTailShrink: CGFloat = 0.10
         /// Factor de suavizado tipo resorte para la transición del anillo entre fases.
         static let ringSpringSmoothing: CGFloat = 0.55
         /// Paso máximo de escala del anillo por frame para evitar saltos visuales.
-        static let maxRingScaleStepPerFrame: CGFloat = 0.0018
+        static let maxRingScaleStepPerFrame: CGFloat = 0.0024
+        /// Paso máximo de expansión por frame para acompañar al loto sin quedar rezagado.
+        static let maxRingExpansionStepPerFrame: CGFloat = 0.0032
         /// Fracción inicial de la inhalación en la que se libera el cierre extra del anillo.
         static let inhaleReleaseWindow: CGFloat = 0.68
         /// Duración del fade-in inicial del anillo durante la primera inhalación.
         /// A mayor valor, aparición más sutil.
         static let initialRingRevealDurationSeconds: Double = 2.8
+        /// Punto de la exhalación desde el que el anillo comienza a desvanecerse.
+        static let ringFadeOutStartFraction: CGFloat = 0.84
+        /// Opacidad mínima del anillo en el cambio de exhalación a inhalación.
+        static let ringMinimumTransitionOpacity: CGFloat = 0.06
+        /// Fracción inicial de la inhalación usada para recuperar la opacidad del anillo.
+        static let ringFadeInEndFraction: CGFloat = 0.24
         /// Duración de transición entre textos respiratorios (Prepárate/Inhala/Exhala).
         static let breathingCueTransitionDurationSeconds: Double = 0.80
 
@@ -93,6 +104,50 @@ enum CardioCoherenceConstants {
         static let customMusicFileNameKey = "coherencia_custom_music_file_name"
         /// Clave para activar/desactivar uso de música personalizada en sesión.
         static let useCustomMusicInSessionKey = "coherencia_use_custom_music_in_session"
+    }
+
+    enum SessionPhrases {
+        static let maximumLength = 90
+        static let fadeInEndFraction: CGFloat = 0.22
+        static let fadeOutStartFraction: CGFloat = 0.76
+        static let storageKeys = (0..<8).map { "coherencia_session_phrase_\($0)" }
+        static let phaseTitles = [
+            "Regulación",
+            "Conexión corazón",
+            "Emoción elevada",
+            "Integración"
+        ]
+        static let defaults = [
+            "Suelto el esfuerzo y permito que mi cuerpo se calme.",
+            "Cada respiración me devuelve a un estado de equilibrio.",
+            "Llevo mi atención al espacio sereno de mi corazón.",
+            "Mi corazón y mi mente comienzan a respirar juntos.",
+            "Elijo sentir gratitud, apertura y confianza.",
+            "Dejo que esta emoción elevada impregne todo mi ser.",
+            "Esta coherencia se integra suavemente dentro de mí.",
+            "Permanezco presente y llevo este estado conmigo."
+        ]
+
+        static func load() -> [String] {
+            storageKeys.enumerated().map { index, key in
+                let stored = UserDefaults.standard.string(forKey: key)?
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
+                return stored?.isEmpty == false ? stored! : defaults[index]
+            }
+        }
+
+        static func save(_ phrases: [String]) {
+            for (index, key) in storageKeys.enumerated() {
+                let value = index < phrases.count
+                    ? String(phrases[index].prefix(maximumLength))
+                    : defaults[index]
+                UserDefaults.standard.set(value, forKey: key)
+            }
+        }
+
+        static func reset() {
+            storageKeys.forEach { UserDefaults.standard.removeObject(forKey: $0) }
+        }
     }
 
     enum Welcome {

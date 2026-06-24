@@ -1310,6 +1310,12 @@ struct Ajustes: View {
                     }
 
                     Section("Coherencia Cardio-Cerebral") {
+                        NavigationLink {
+                            CardioCoherencePhraseSettingsView()
+                        } label: {
+                            Label("Frases durante la respiración", systemImage: "quote.bubble")
+                        }
+
                         Button {
                             showCardioMusicImporter = true
                         } label: {
@@ -1706,6 +1712,72 @@ struct Ajustes: View {
         NSUbiquitousKeyValueStore.default.synchronize()
     }
     
+}
+
+private struct CardioCoherencePhraseSettingsView: View {
+    @Environment(\.dismiss) private var dismiss
+    @State private var phrases = CardioCoherenceConstants.SessionPhrases.load()
+    @State private var showResetConfirmation = false
+
+    var body: some View {
+        Form {
+            ForEach(
+                Array(CardioCoherenceConstants.SessionPhrases.phaseTitles.enumerated()),
+                id: \.offset
+            ) { phaseIndex, phaseTitle in
+                Section(phaseTitle) {
+                    phraseField(index: phaseIndex * 2, label: "Frase 1")
+                    phraseField(index: (phaseIndex * 2) + 1, label: "Frase 2")
+                }
+            }
+
+            Section {
+                Button("Restaurar frases predeterminadas", role: .destructive) {
+                    showResetConfirmation = true
+                }
+            }
+        }
+        .navigationTitle("Frases de coherencia")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button("Guardar") {
+                    CardioCoherenceConstants.SessionPhrases.save(phrases)
+                    dismiss()
+                }
+            }
+        }
+        .confirmationDialog(
+            "¿Restaurar las ocho frases predeterminadas?",
+            isPresented: $showResetConfirmation,
+            titleVisibility: .visible
+        ) {
+            Button("Restaurar", role: .destructive) {
+                CardioCoherenceConstants.SessionPhrases.reset()
+                phrases = CardioCoherenceConstants.SessionPhrases.defaults
+            }
+            Button("Cancelar", role: .cancel) {}
+        }
+    }
+
+    private func phraseField(index: Int, label: String) -> some View {
+        TextField(label, text: binding(for: index), axis: .vertical)
+            .lineLimit(2...3)
+    }
+
+    private func binding(for index: Int) -> Binding<String> {
+        Binding(
+            get: {
+                phrases.indices.contains(index) ? phrases[index] : ""
+            },
+            set: { value in
+                guard phrases.indices.contains(index) else { return }
+                phrases[index] = String(
+                    value.prefix(CardioCoherenceConstants.SessionPhrases.maximumLength)
+                )
+            }
+        )
+    }
 }
 
 extension Int: @retroactive Identifiable {
