@@ -129,9 +129,9 @@ struct ContentView: View {
             ZStack {
                 LinearGradient(
                     colors: [
-                        Color(red: 0.45, green: 0.55, blue: 0.57),
-                        Color(red: 0.34, green: 0.43, blue: 0.48),
-                        Color(red: 0.51, green: 0.46, blue: 0.58)
+                        Color(red: 0.08, green: 0.18, blue: 0.28),
+                        Color(red: 0.02, green: 0.25, blue: 0.29),
+                        Color(red: 0.06, green: 0.36, blue: 0.27)
                     ],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
@@ -142,8 +142,8 @@ struct ContentView: View {
                     let size = min(proxy.size.width, proxy.size.height)
                     let center = CGPoint(x: proxy.size.width / 2, y: proxy.size.height / 2)
                     let orbitRadius = max(58, size * 0.34)
-                    let itemSize = max(48, min(56, size * 0.28))
-                    let centerSize = max(54, min(64, size * 0.32))
+                    let itemSize = max(54, min(62, size * 0.31))
+                    let centerSize = max(40, min(46, size * 0.23))
 
                     ZStack {
                         ForEach(Array(orbitScreens.enumerated()), id: \.element.id) { index, screen in
@@ -200,16 +200,21 @@ struct ContentView: View {
                         }
                         .shadow(color: .black.opacity(0.34), radius: 1, y: 0)
 
-                    VStack(spacing: 3) {
+                    VStack(spacing: screen == .ajustes ? 0 : 3) {
                         Image(systemName: screen.symbolName)
-                            .font(.system(size: size * 0.40, weight: .heavy))
+                            .font(.system(
+                                size: size * (screen == .ajustes ? 0.46 : 0.40),
+                                weight: .heavy
+                            ))
                             .foregroundStyle(screen.tintColor)
 
-                        Text(screen.shortName)
-                            .font(.system(size: size * 0.15, weight: .regular))
-                            .foregroundStyle(.black.opacity(0.82))
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.62)
+                        if screen != .ajustes {
+                            Text(screen.shortName)
+                                .font(.system(size: size * 0.15, weight: .regular))
+                                .foregroundStyle(.black.opacity(0.82))
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.62)
+                        }
                     }
                     .padding(.horizontal, 2)
                 }
@@ -930,20 +935,33 @@ enum WatchScreen: String, CaseIterable, Identifiable {
     }
 
     static var reorderableCases: [WatchScreen] {
-        [.inicio, .frases, .diario, .notas, .agenda, .presencia, .quickNote]
+        [.inicio, .frases, .diario, .presencia, .agenda, .notas, .quickNote]
     }
 }
 
 private enum ScreenOrderStore {
     private static let key = "watchScreenOrder"
+    private static let notesPresenceSwapMigrationKey = "watchScreenOrderNotesPresenceSwapV1"
 
     static func load() -> [WatchScreen] {
+        let defaults = UserDefaults.standard
         guard let rawValues = UserDefaults.standard.array(forKey: key) as? [String] else {
+            defaults.set(true, forKey: notesPresenceSwapMigrationKey)
             return WatchScreen.reorderableCases
         }
 
         let mapped = rawValues.compactMap(WatchScreen.init(rawValue:))
-        return normalize(mapped)
+        var normalized = normalize(mapped)
+
+        if !defaults.bool(forKey: notesPresenceSwapMigrationKey),
+           let notesIndex = normalized.firstIndex(of: .notas),
+           let presenceIndex = normalized.firstIndex(of: .presencia) {
+            normalized.swapAt(notesIndex, presenceIndex)
+            defaults.set(normalized.map(\.rawValue), forKey: key)
+            defaults.set(true, forKey: notesPresenceSwapMigrationKey)
+        }
+
+        return normalized
     }
 
     static func save(_ order: [WatchScreen]) {
