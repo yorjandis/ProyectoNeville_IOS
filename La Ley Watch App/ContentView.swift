@@ -9,6 +9,7 @@ import SwiftUI
 import CoreData
 
 struct ContentView: View {
+    @Environment(\.scenePhase) private var scenePhase
     @StateObject private var modelWatch = watchModel.shared
     @AppStorage("AtajosiOS") private var atajoWatch: String = ""
     @State private var selectedTab: String = WatchScreen.inicio.rawValue
@@ -56,6 +57,11 @@ struct ContentView: View {
         }
         .onChange(of: atajoWatch) { _, newValue in
             handleShortcutNavigation(newValue)
+        }
+        .onChange(of: scenePhase) { _, newPhase in
+            guard newPhase == .active else { return }
+            selectedTab = WatchScreen.inicio.rawValue
+            handleShortcutNavigation(atajoWatch)
         }
     }
 
@@ -183,16 +189,20 @@ struct ContentView: View {
             } label: {
                 ZStack {
                     Circle()
-                        .fill(.white.opacity(0.46))
+                        .fill(.white.opacity(0.82))
                         .overlay {
                             Circle()
-                                .fill(screen.softColor)
+                                .fill(screen.tintColor.opacity(0.12))
                         }
-                        .shadow(color: screen.tintColor.opacity(0.22), radius: 5, y: 2)
+                        .overlay {
+                            Circle()
+                                .stroke(.black.opacity(0.72), lineWidth: 1.5)
+                        }
+                        .shadow(color: .black.opacity(0.34), radius: 4, y: 2)
 
                     VStack(spacing: 3) {
                         Image(systemName: screen.symbolName)
-                            .font(.system(size: size * 0.34, weight: .bold))
+                            .font(.system(size: size * 0.36, weight: .heavy))
                             .foregroundStyle(screen.tintColor)
 
                         Text(screen.shortName)
@@ -802,7 +812,7 @@ struct ContentView: View {
                                         Text(source.displayName)
                                             .foregroundStyle(.black)
                                         Spacer()
-                                        if source.requiresPremium {
+                                        if source.requiresPremium && !modelWatch.hasAgendaPremiumAccess {
                                             Image(systemName: "lock.fill")
                                                 .foregroundStyle(.black.opacity(0.72))
                                         }
@@ -815,7 +825,7 @@ struct ContentView: View {
                         }
 
                         ForEach(screenOrder) { screen in
-                            Text(screen.displayName)
+                            Text(settingsDisplayName(for: screen))
                                 .foregroundStyle(.black)
                         }
                         .onMove(perform: moveScreens)
@@ -836,6 +846,13 @@ struct ContentView: View {
         private func moveScreens(from source: IndexSet, to destination: Int) {
             screenOrder.move(fromOffsets: source, toOffset: destination)
             screenOrder = ScreenOrderStore.normalize(screenOrder)
+        }
+
+        private func settingsDisplayName(for screen: WatchScreen) -> String {
+            if screen == .agenda && !modelWatch.hasAgendaPremiumAccess {
+                return "Agenda (Versión extendida)"
+            }
+            return screen.displayName
         }
 
         private func selectPhraseSource(_ source: WatchPhraseSource) {
@@ -867,7 +884,7 @@ enum WatchScreen: String, CaseIterable, Identifiable {
         case .frases: return "Frases"
         case .diario: return "Diario"
         case .notas: return "Notas"
-        case .agenda: return "Agenda(Versión Extendida)"
+        case .agenda: return "Agenda"
         case .presencia: return "Presencia"
         case .quickNote: return "Acceso rápido"
         case .ajustes: return "Ajustes"

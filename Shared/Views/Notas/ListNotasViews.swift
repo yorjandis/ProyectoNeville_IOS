@@ -34,7 +34,7 @@ struct ListNotasViews: View {
     //Buscar en notas
     @State var showAlertSearch = false
     @State var textField = ""
-    //Buscar en titulos de notas
+    //Buscar en títulos y contenido de notas
     @State var showAlertSearchTitle = false
     @State var textFieldTitle = ""
     //Autenticacion FaceID
@@ -63,7 +63,11 @@ struct ListNotasViews: View {
     
     private var filtered : [Notas] {
         if self.textFieldTitle.isEmpty {return self.modelNotas.notas}
-        return self.modelNotas.notas.filter{$0.title?.localizedCaseInsensitiveContains(self.textFieldTitle) ?? false}
+        return self.modelNotas.notas.filter { nota in
+            let titleMatches = nota.title?.localizedCaseInsensitiveContains(self.textFieldTitle) ?? false
+            let contentMatches = nota.nota?.localizedCaseInsensitiveContains(self.textFieldTitle) ?? false
+            return titleMatches || contentMatches
+        }
     }
 
     private var orderedFiltered: [Notas] {
@@ -357,6 +361,7 @@ struct ListNotasViews: View {
 
             Button {
                 withAnimation {
+                    collapsedCategoryNames = Set(groupedFiltered.map(\.category))
                     selectedListMode = .groupedByCategory
                 }
             } label: {
@@ -966,9 +971,14 @@ private struct NotesCategorySectionView: View {
                 }
                 .buttonStyle(.plain)
 
-                Text(category)
-                    .font(.headline)
-                    .foregroundStyle(.black)
+                Button {
+                    onCollapseToggle()
+                } label: {
+                    Text(category)
+                        .font(.headline)
+                        .foregroundStyle(.black)
+                }
+                .buttonStyle(.plain)
 
                 Menu {
                     Button {

@@ -317,7 +317,7 @@ struct PresenciaStatsView: View {
                     }
                     Button("Cancelar", role: .cancel) {}
                 } message: {
-                    Text("Esta acción borrará todo el historial de Presencia en Core Data y CloudKit, actualizará los contadores de iOS y enviará el reset al Apple Watch. No se puede deshacer.")
+                    Text("Esta acción borrará todo el historial de Presencia. No se puede deshacer.")
                 }
                 .onAppear {
                     ensureVisibleCardsStorage()
