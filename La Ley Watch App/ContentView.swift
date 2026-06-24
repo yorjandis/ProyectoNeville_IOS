@@ -192,26 +192,26 @@ struct ContentView: View {
                         .fill(.white.opacity(0.82))
                         .overlay {
                             Circle()
-                                .fill(screen.tintColor.opacity(0.12))
+                                .fill(screen.tintColor.opacity(0.05))
                         }
                         .overlay {
                             Circle()
-                                .stroke(.black.opacity(0.72), lineWidth: 1.5)
+                                .stroke(.black.opacity(0.72), lineWidth: 0.5)
                         }
-                        .shadow(color: .black.opacity(0.34), radius: 4, y: 2)
+                        .shadow(color: .black.opacity(0.34), radius: 1, y: 0)
 
                     VStack(spacing: 3) {
                         Image(systemName: screen.symbolName)
-                            .font(.system(size: size * 0.36, weight: .heavy))
+                            .font(.system(size: size * 0.40, weight: .heavy))
                             .foregroundStyle(screen.tintColor)
 
                         Text(screen.shortName)
-                            .font(.system(size: size * 0.17, weight: .semibold))
+                            .font(.system(size: size * 0.15, weight: .regular))
                             .foregroundStyle(.black.opacity(0.82))
                             .lineLimit(1)
                             .minimumScaleFactor(0.62)
                     }
-                    .padding(.horizontal, 4)
+                    .padding(.horizontal, 2)
                 }
                 .frame(width: size, height: size)
             }

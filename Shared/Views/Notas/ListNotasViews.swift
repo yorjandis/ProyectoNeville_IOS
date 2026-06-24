@@ -981,6 +981,7 @@ private struct NotesCategorySectionView: View {
                 .buttonStyle(.plain)
 
                 Menu {
+                    Text("- Categoría -")
                     Button {
                         categoryDraft = category == "Sin categoría" ? "" : category
                         showRenameAlert = true
