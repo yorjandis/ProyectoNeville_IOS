@@ -41,33 +41,45 @@ struct FilterByNotaView: View {
             }  
         }
         .sheet(isPresented: $showSheetTitulo, content: {
-                VStack{
-                    TextFieldLink("🔍 Título a buscar",prompt: Text("Texto del título")) { str in
-                        Task{
-                            modelWatch.listNotas = modelWatch.searchTextInNotas(text:str, donde: .titulo)
-                            dismiss()
-                        }
+                VStack {
+                    TextField("Texto del título", text: $texto)
+                    Button("Buscar") {
+                        modelWatch.listNotas = modelWatch.searchTextInNotas(text: texto, donde: .titulo)
+                        showSheetTitulo = false
+                        dismiss()
                     }
+                }
+                .padding()
+                .onAppear {
+                    texto = ""
                 }
         })
         .sheet(isPresented: $showSheetTexto, content: {
-                VStack{
-                    TextFieldLink("🔍 Texto a buscar",prompt: Text("Texto de la nota")) { str in
-                        Task{
-                            modelWatch.listNotas = modelWatch.searchTextInNotas(text:str, donde: .contenido)
-                            dismiss()
-                        }
+                VStack {
+                    TextField("Texto de la nota", text: $texto)
+                    Button("Buscar") {
+                        modelWatch.listNotas = modelWatch.searchTextInNotas(text: texto, donde: .contenido)
+                        showSheetTexto = false
+                        dismiss()
                     }
+                }
+                .padding()
+                .onAppear {
+                    texto = ""
                 }
         })
         .sheet(isPresented: $showSheetCategoria, content: {
-                VStack{
-                    TextFieldLink("🔍 Categoría a buscar",prompt: Text("Categoría")) { str in
-                        Task{
-                            modelWatch.listNotas = modelWatch.searchTextInNotas(text:str, donde: .categoria)
-                            dismiss()
-                        }
+                VStack {
+                    TextField("Categoría", text: $texto)
+                    Button("Buscar") {
+                        modelWatch.listNotas = modelWatch.searchTextInNotas(text: texto, donde: .categoria)
+                        showSheetCategoria = false
+                        dismiss()
                     }
+                }
+                .padding()
+                .onAppear {
+                    texto = ""
                 }
         })
     }

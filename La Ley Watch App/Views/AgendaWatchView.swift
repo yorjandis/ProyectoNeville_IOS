@@ -186,15 +186,11 @@ private struct AddAgendaEntryWatchView: View {
                             .foregroundStyle(.black)
                             .bold()
 
-                        TextFieldLink("Título: \(title)", prompt: Text("Título")) { value in
-                            title = value
-                        }
+                        TextField("Título", text: $title)
                         .frame(maxWidth: .infinity, minHeight: 42)
                         .buttonStyle(.bordered)
 
-                        TextFieldLink("Detalle: \(contenido)", prompt: Text("Detalle")) { value in
-                            contenido = value
-                        }
+                        TextField("Detalle", text: $contenido)
                         .frame(maxWidth: .infinity, minHeight: 42)
                         .buttonStyle(.bordered)
 

@@ -657,18 +657,14 @@ struct ContentView: View {
                         .foregroundStyle(.black)
                         .bold()
 
-                    TextFieldLink("Título: \(title)", prompt: Text("Título")) { value in
-                        title = value
-                    }
+                    TextField("Título", text: $title)
                     .frame(height: 38)
 
                     TextField("Nota", text: $nota)
                         .textFieldStyle(.plain)
                     .frame(height: 38)
 
-                    TextFieldLink("Categoría: \(categoria)", prompt: Text("Categoría")) { value in
-                        categoria = value
-                    }
+                    TextField("Categoría", text: $categoria)
                     .frame(height: 38)
 
                     Button {
@@ -725,9 +721,7 @@ struct ContentView: View {
                         .foregroundStyle(.black)
                         .bold()
 
-                    TextFieldLink("Categoría: \(categoria)", prompt: Text("Categoría")) { value in
-                        categoria = value
-                    }
+                    TextField("Categoría", text: $categoria)
                     .frame(height: 38)
 
                     Button {

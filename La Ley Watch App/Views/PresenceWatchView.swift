@@ -108,9 +108,10 @@ private struct PresenceMoodSelectionView: View {
                             .foregroundStyle(.black)
                     }
                 }
+                #if os(watchOS)
                 .listStyle(.carousel)
+                #endif
             }
         }
     }
 }
-

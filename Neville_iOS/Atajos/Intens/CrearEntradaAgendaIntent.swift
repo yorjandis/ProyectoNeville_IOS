@@ -1,6 +1,9 @@
 import SwiftUI
 import AppIntents
 import CoreData
+#if !os(watchOS)
+import UserNotifications
+#endif
 
 struct CrearEntradaAgendaIntent: AppIntent, ProvidesDialog {
     var value: Never?
@@ -68,12 +71,11 @@ struct CrearEntradaAgendaIntent: AppIntent, ProvidesDialog {
         #if !os(watchOS)
         if shouldEnableReminder {
             reminderID = await MainActor.run {
-                let reminder = ReminderNotificationManager.shared.scheduleAndStore(
+                Self.scheduleAgendaReminder(
                     title: titulo,
                     message: contenido,
-                    frequency: .date(fecha)
+                    date: fecha
                 )
-                return reminder.id
             }
         }
         #endif
@@ -105,11 +107,40 @@ struct CrearEntradaAgendaIntent: AppIntent, ProvidesDialog {
             #if !os(watchOS)
             if let reminderID {
                 await MainActor.run {
-                    ReminderNotificationManager.shared.cancel(id: reminderID)
+                    Self.cancelAgendaReminder(id: reminderID)
                 }
             }
             #endif
             return .result(dialog: IntentDialog("No se pudo guardar la actividad en Agenda."))
         }
     }
+
+    #if !os(watchOS)
+    @MainActor
+    private static func scheduleAgendaReminder(title: String, message: String, date: Date) -> String {
+        let identifier = UUID().uuidString
+        let content = UNMutableNotificationContent()
+        content.title = title
+        content.body = message
+        content.sound = .default
+        content.userInfo = [
+            "reminderId": identifier,
+            "message": message
+        ]
+
+        let components = Calendar.current.dateComponents(
+            [.year, .month, .day, .hour, .minute],
+            from: date
+        )
+        let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
+        let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
+        UNUserNotificationCenter.current().add(request)
+        return identifier
+    }
+
+    @MainActor
+    private static func cancelAgendaReminder(id: String) {
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [id])
+    }
+    #endif
 }

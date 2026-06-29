@@ -1,5 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="24512" systemVersion="25D125" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="24901" systemVersion="25F80" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
+    <entity name="AgendaItemEntity" representedClassName="AgendaItemEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="colorHex" optional="YES" attributeType="String"/>
+        <attribute name="completada" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="contenido" optional="YES" attributeType="String"/>
+        <attribute name="fechaActividad" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="fechaCreacion" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="fechaModificacion" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="hora" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="lugar" optional="YES" attributeType="String"/>
+        <attribute name="nota" optional="YES" attributeType="String"/>
+        <attribute name="prioridad" optional="YES" attributeType="String"/>
+        <attribute name="recordatorioActivo" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="reminderID" optional="YES" attributeType="String"/>
+        <attribute name="seriesID" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="titulo" optional="YES" attributeType="String"/>
+    </entity>
     <entity name="ArchivedGoalEntity" representedClassName="ArchivedGoalEntity" syncable="YES" codeGenerationType="class">
         <attribute name="completionDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="descriptionText" optional="YES" attributeType="String"/>
@@ -22,15 +39,28 @@
         <attribute name="status" optional="YES" attributeType="String"/>
         <relationship name="goal" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ArchivedGoalEntity" inverseName="units" inverseEntity="ArchivedGoalEntity"/>
     </entity>
-    <entity name="Contexto" representedClassName="Contexto" syncable="YES" codeGenerationType="class">
-        <attribute name="id" optional="YES" attributeType="String"/>
-        <attribute name="nombre" optional="YES" attributeType="String"/>
-        <relationship name="frases" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Frases" inverseName="contextos" inverseEntity="Frases"/>
-    </entity>
     <entity name="CalmUserPhrase" representedClassName="CalmUserPhrase" syncable="YES" codeGenerationType="class">
         <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="phrase" attributeType="String" defaultValueString=""/>
+    </entity>
+    <entity name="coherencia" representedClassName="coherencia" syncable="YES" codeGenerationType="class">
+        <attribute name="afterScore" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="beforeScore" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="closingWord" optional="YES" attributeType="String"/>
+        <attribute name="dateEpochMillis" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="durationMinutes" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="heartConnectionScore" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="initialState" optional="YES" attributeType="String"/>
+        <attribute name="intention" optional="YES" attributeType="String"/>
+        <attribute name="mentalClarityScore" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="predominantEmotion" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="Contexto" representedClassName="Contexto" syncable="YES" codeGenerationType="class">
+        <attribute name="id" optional="YES" attributeType="String"/>
+        <attribute name="nombre" optional="YES" attributeType="String"/>
+        <relationship name="frases" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Frases" inverseName="contextos" inverseEntity="Frases"/>
     </entity>
     <entity name="Diario" representedClassName="Diario" syncable="YES" codeGenerationType="class">
         <attribute name="content" optional="YES" attributeType="String"/>
@@ -114,35 +144,5 @@
         <attribute name="status" optional="YES" attributeType="String"/>
         <attribute name="unitType" optional="YES" attributeType="String"/>
         <relationship name="goal" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="GoalEntity" inverseName="units" inverseEntity="GoalEntity"/>
-    </entity>
-    <entity name="coherencia" representedClassName="coherencia" syncable="YES" codeGenerationType="class">
-        <attribute name="afterScore" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="beforeScore" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="closingWord" optional="YES" attributeType="String"/>
-        <attribute name="dateEpochMillis" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="durationMinutes" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="heartConnectionScore" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
-        <attribute name="initialState" optional="YES" attributeType="String"/>
-        <attribute name="intention" optional="YES" attributeType="String"/>
-        <attribute name="mentalClarityScore" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="predominantEmotion" optional="YES" attributeType="String"/>
-    </entity>
-    <entity name="AgendaItemEntity" representedClassName="AgendaItemEntity" syncable="YES" codeGenerationType="class">
-        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
-        <attribute name="titulo" optional="YES" attributeType="String"/>
-        <attribute name="fechaCreacion" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="fechaModificacion" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="nota" optional="YES" attributeType="String"/>
-        <attribute name="fechaActividad" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="hora" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="lugar" optional="YES" attributeType="String"/>
-        <attribute name="contenido" optional="YES" attributeType="String"/>
-        <attribute name="prioridad" optional="YES" attributeType="String"/>
-        <attribute name="colorHex" optional="YES" attributeType="String"/>
-        <attribute name="completada" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
-        <attribute name="recordatorioActivo" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
-        <attribute name="reminderID" optional="YES" attributeType="String"/>
-        <attribute name="seriesID" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
     </entity>
 </model>

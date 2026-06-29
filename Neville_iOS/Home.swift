@@ -43,6 +43,7 @@ struct Home: View {
 
     @AppStorage("Home_RitualMatutino_HiddenDayKey") private var ritualMatutinoHiddenDayKey: String = ""
     @AppStorage("Home_ShowAgendaButton") private var showAgendaButtonInHome: Bool = true
+    @AppStorage("Home_AgendaBadge_HiddenDayKey") private var agendaBadgeHiddenDayKey: String = ""
     @AppStorage("Home_ShowPresenceButton") private var showPresenceButtonInHome: Bool = true
     @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
     @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) private var yorjPremium: Bool = false
@@ -81,6 +82,14 @@ struct Home: View {
         return String(format: "%04d-%02d-%02d", year, month, day)
     }
 
+    private var agendaBadgeCurrentDayKey: String {
+        let components = Calendar.current.dateComponents([.year, .month, .day], from: now)
+        let year = components.year ?? 0
+        let month = components.month ?? 0
+        let day = components.day ?? 0
+        return String(format: "%04d-%02d-%02d", year, month, day)
+    }
+
     private var shouldShowRitualButton: Bool {
         let hour = Calendar.current.component(.hour, from: now)
         return hour >= 3
@@ -102,6 +111,10 @@ struct Home: View {
         agendaViewModel.items.filter {
             Calendar.current.isDate($0.fechaActividad, inSameDayAs: now)
         }.count
+    }
+
+    private var shouldShowAgendaBadge: Bool {
+        todayAgendaActivitiesCount > 0 && agendaBadgeHiddenDayKey != agendaBadgeCurrentDayKey
     }
 
     private var isRunningForPreviews: Bool {
@@ -204,7 +217,7 @@ struct Home: View {
                                             .background(.white.opacity(quickAccessButtonBackgroundOpacity))
                                             .clipShape(Capsule())
                                             .overlay(alignment: .topTrailing) {
-                                                if todayAgendaActivitiesCount > 0 {
+                                                if shouldShowAgendaBadge {
                                                     Text(todayAgendaActivitiesCount > 99 ? "99+" : "\(todayAgendaActivitiesCount)")
                                                         .font(.system(size: 10, weight: .bold))
                                                         .foregroundStyle(.white)
@@ -221,6 +234,21 @@ struct Home: View {
                                             showAgendaButtonInHome = false
                                         } label: {
                                             Label("Ocultar", systemImage: "eye.slash")
+                                        }
+
+                                        if todayAgendaActivitiesCount > 0 {
+                                            Button {
+                                                if shouldShowAgendaBadge {
+                                                    agendaBadgeHiddenDayKey = agendaBadgeCurrentDayKey
+                                                } else {
+                                                    agendaBadgeHiddenDayKey = ""
+                                                }
+                                            } label: {
+                                                Label(
+                                                    shouldShowAgendaBadge ? "Ocultar indicador por hoy" : "Mostrar indicador",
+                                                    systemImage: shouldShowAgendaBadge ? "bell.badge.slash" : "bell.badge"
+                                                )
+                                            }
                                         }
                                     }
                                 }
@@ -599,6 +627,4 @@ private struct HomePreviewHost: View {
     HomePreviewHost()
 }
 #endif
-
-
 

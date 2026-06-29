@@ -717,9 +717,7 @@ struct AgendaMainView: View {
                 .menuStyle(.borderlessButton)
             }
             if let completada = item.completada {
-                Text(completada ? "Completada" : "Activa")
-                    .font(.body)
-                    .foregroundStyle(.black)
+                AgendaStatusLabel(completada: completada)
             }
             if !item.lugar.isEmpty {
                 locationRow(for: item)
@@ -1296,4 +1294,39 @@ struct AgendaReminderManagementView: View {
         }
     }
 }
+
+private struct AgendaStatusLabel: View {
+    let completada: Bool
+
+    var body: some View {
+        HStack(spacing: 5) {
+            statusIcon
+            Text(completada ? "Completada" : "Activa")
+                .font(.body)
+                .foregroundStyle(.black)
+        }
+    }
+
+    @ViewBuilder
+    private var statusIcon: some View {
+        if completada {
+            Image(systemName: "checkmark.circle.fill")
+                .symbolRenderingMode(.palette)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.white, Color(red: 0.0, green: 0.48, blue: 0.22))
+                .background(completedIconBackdrop)
+        } else {
+            Image(systemName: "circle.fill")
+                .font(.caption2.weight(.semibold))
+                .foregroundStyle(.brown.opacity(0.75))
+        }
+    }
+
+    private var completedIconBackdrop: some View {
+        Circle()
+            .fill(.white.opacity(0.92))
+            .frame(width: 14, height: 14)
+    }
+}
+
 #endif

@@ -198,13 +198,36 @@ struct ViewIfNewUpdateAvailable : View {
         }
         .task {
             Task{
-                self.existeNuevaVersion = await CheckAppStatus.getAppNewVersion()
+                self.existeNuevaVersion = await Self.getAppNewVersion()
             }
             
             
         }
     }
 
+    private static func getAppNewVersion() async -> Bool {
+        guard let bundleID = Bundle.main.bundleIdentifier,
+              let url = URL(string: "https://itunes.apple.com/lookup?bundleId=\(bundleID)") else {
+            return false
+        }
+
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            guard
+                let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+                let results = json["results"] as? [[String: Any]],
+                let appInfo = results.first,
+                let appStoreVersion = appInfo["version"] as? String,
+                let localVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+            else {
+                return false
+            }
+
+            return appStoreVersion.compare(localVersion, options: .numeric) == .orderedDescending
+        } catch {
+            return false
+        }
+    }
 }
 #endif
 
@@ -286,5 +309,4 @@ func iconoRedimensionado(nombre: String?, tamaño: CGFloat = 24, imagenPorDefect
 }
 
 #endif
-
 

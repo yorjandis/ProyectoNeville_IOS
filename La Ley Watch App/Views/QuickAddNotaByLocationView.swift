@@ -28,15 +28,11 @@ struct QuickAddNotaByLocationView: View {
                         .foregroundStyle(.black)
                         
 
-                    TextFieldLink("Título: \(title)", prompt: Text("Título")) { value in
-                        title = value
-                    }
+                    TextField("Título", text: $title)
                     .frame(height: 38)
                     .padding(5)
 
-                    TextFieldLink("Nota: \(nota)", prompt: Text("Contenido de la nota")) { value in
-                        nota = value
-                    }
+                    TextField("Contenido de la nota", text: $nota)
                     .frame(height: 38)
 
                     VStack(spacing: 8) {

@@ -38,24 +38,18 @@ struct AddNota : View {
                     .padding(.top, 20)
                 ScrollView{
                     
-                    TextFieldLink("título: \(title)", prompt: Text("Título de nota")) { str in
-                        title = str
-                    }
-                    .frame(width: .infinity ,  height: 40)
+                    TextField("Título de nota", text: $title)
+                    .frame(maxWidth: .infinity, minHeight: 40)
                     .cornerRadius(20)
                     .padding([.leading, .trailing], 5)
                     
-                    TextFieldLink("Nota: \(texto)", prompt: Text("Título de nota")) { str in
-                        texto = str
-                    }
-                    .frame(width: .infinity ,  height: 40)
-                        .cornerRadius(20)
-                        .padding([.leading, .trailing], 5)
+                    TextField("Nota", text: $texto)
+                    .frame(maxWidth: .infinity, minHeight: 40)
+                    .cornerRadius(20)
+                    .padding([.leading, .trailing], 5)
 
-                    TextFieldLink("Categoría: \(categoria)", prompt: Text("Categoría")) { str in
-                        categoria = str
-                    }
-                    .frame(width: .infinity ,  height: 40)
+                    TextField("Categoría", text: $categoria)
+                    .frame(maxWidth: .infinity, minHeight: 40)
                     .cornerRadius(20)
                     .padding([.leading, .trailing], 5)
 

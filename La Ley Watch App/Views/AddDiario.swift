@@ -36,10 +36,8 @@ struct AddDiario: View {
                                     self.showSheet = true
                                 }
                             
-                            TextFieldLink("título: \(title)", prompt: Text("Título de la entrada")) { str in
-                                title = str
-                            }
-                            .frame(width: .infinity ,  height: 30)
+                            TextField("Título de la entrada", text: $title)
+                            .frame(maxWidth: .infinity, minHeight: 30)
                             .cornerRadius(20)
                             .padding([.leading, .trailing], 5)
                         }
@@ -48,10 +46,8 @@ struct AddDiario: View {
                             
                         
                         
-                        TextFieldLink("contenido: \(self.content)", prompt: Text("Contenido de la entrada")) { str in
-                            self.content = str
-                        }
-                        .frame(width: .infinity ,  height: 30)
+                        TextField("Contenido de la entrada", text: $content)
+                        .frame(maxWidth: .infinity, minHeight: 30)
                         .cornerRadius(20)
                         .padding([.leading, .trailing], 5)
                                     

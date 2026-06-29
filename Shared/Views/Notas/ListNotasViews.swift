@@ -302,23 +302,7 @@ struct ListNotasViews: View {
         }
 
         ToolbarItem {
-            exportNotasPDFToolbarMenu()
-        }
-
-        if #available(iOS 26.0, macOS 26.0, *) {
-            ToolbarSpacer(.fixed)
-        }
-
-        ToolbarItem {
             addNotaButton
-        }
-
-        if #available(iOS 26.0, macOS 26.0, *) {
-            ToolbarSpacer(.fixed)
-        }
-
-        ToolbarItem {
-            selectionMenu
         }
     }
 
@@ -333,17 +317,7 @@ struct ListNotasViews: View {
         }
 
         ToolbarItem {
-            exportNotasPDFToolbarMenu()
-        }
-
-        ToolbarItem {
             addNotaButton
-        }
-
-        ToolbarItem {
-            Button(selectionMode ? "Cancelar" : "Seleccionar") {
-                toggleSelectionMode()
-            }
         }
     }
 
@@ -406,6 +380,16 @@ struct ListNotasViews: View {
             } label: {
                 Label("Buscar en Notas", systemImage: "text.magnifyingglass.rtl")
             }
+
+            Divider()
+
+            Button {
+                toggleSelectionMode()
+            } label: {
+                Label(selectionMode ? "Cancelar selección" : "Seleccionar", systemImage: "checklist")
+            }
+
+            exportNotasPDFMenu()
         } label: {
             Image(systemName: "line.3.horizontal.decrease")
         }
@@ -427,17 +411,6 @@ struct ListNotasViews: View {
             #endif
         } label: {
             Image(systemName: "plus")
-        }
-    }
-
-    @ViewBuilder
-    private var selectionMenu: some View {
-        Menu {
-            Button(selectionMode ? "Cancelar" : "Seleccionar") {
-                toggleSelectionMode()
-            }
-        } label: {
-            Image(systemName: "list.dash")
         }
     }
 
@@ -732,12 +705,6 @@ struct ListNotasViews: View {
         } label: {
             Label("Exportar PDF", systemImage: "doc.richtext")
         }
-    }
-
-    @ViewBuilder
-    private func exportNotasPDFToolbarMenu() -> some View {
-        exportNotasPDFMenu()
-            .labelStyle(.iconOnly)
     }
 
     private func notasCurrentWeek() -> [Notas] {
@@ -1106,6 +1073,17 @@ struct cardNotas: View{
         .sorted { $0.localizedCaseInsensitiveCompare($1) == .orderedAscending }
     }
 
+    private var currentCategory: String {
+        (nota?.value(forKey: "categoria") as? String ?? "")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private var availableCategoriesForCurrentNote: [String] {
+        existingCategories.filter {
+            $0.localizedCaseInsensitiveCompare(currentCategory) != .orderedSame
+        }
+    }
+
     
     var body: some View{
         VStack(){
@@ -1200,10 +1178,12 @@ struct cardNotas: View{
                     #endif
 
                     Menu {
-                        Button("Sin categoría") {
-                            updateCurrentNoteCategory("")
+                        if !currentCategory.isEmpty {
+                            Button("Sin categoría") {
+                                updateCurrentNoteCategory("")
+                            }
                         }
-                        ForEach(existingCategories, id: \.self) { category in
+                        ForEach(availableCategoriesForCurrentNote, id: \.self) { category in
                             Button(category) {
                                 updateCurrentNoteCategory(category)
                             }

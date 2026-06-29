@@ -21,6 +21,7 @@
  @State private var showSheetAntiguedad  = false
  @State private var fecha1 = Date.now
  @State private var fecha2 = Date.now
+ @State private var searchText = ""
  
  
  var body: some View {
@@ -61,24 +62,32 @@
          
      }
      .sheet(isPresented: $showSheetTitulo){
-         VStack{
-             TextFieldLink("🔍 Título a buscar",prompt: Text("Texto de la entrada")) { str in
-                 Task{
-                     modelWatch.listDiario = modelWatch.searchTextInDiario(text: str, donde: .titulo)
-                     dismiss()
-                 }
+         VStack {
+             TextField("Texto de la entrada", text: $searchText)
+             Button("Buscar") {
+                 modelWatch.listDiario = modelWatch.searchTextInDiario(text: searchText, donde: .titulo)
+                 showSheetTitulo = false
+                 dismiss()
              }
+         }
+         .padding()
+         .onAppear {
+             searchText = ""
          }
          
      }
      .sheet(isPresented: $showSheetTexto){
-         VStack{
-             TextFieldLink("🔍 Contenido a buscar",prompt: Text("Contenido de la entrada")) { str in
-                 Task{
-                     modelWatch.listDiario = modelWatch.searchTextInDiario(text: str, donde: .contenido)
-                     dismiss()
-                 }
+         VStack {
+             TextField("Contenido de la entrada", text: $searchText)
+             Button("Buscar") {
+                 modelWatch.listDiario = modelWatch.searchTextInDiario(text: searchText, donde: .contenido)
+                 showSheetTexto = false
+                 dismiss()
              }
+         }
+         .padding()
+         .onAppear {
+             searchText = ""
          }
          
      }
