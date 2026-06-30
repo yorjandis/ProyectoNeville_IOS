@@ -1242,7 +1242,8 @@
 				Views/Frases/FrasesNotasAddView.swift,
 				Views/Frases/FrasesUpdateView.swift,
 				Views/Frases/RowFraseMenu.swift,
-				Views/HomeAlternativo/HomeAlternativoMockView.swift,
+				Views/HomeAlternativo/HomeAlternativoPhrases.swift,
+				Views/HomeAlternativo/HomeAlternativoView.swift,
 				Views/IAView/ChatView.swift,
 				Views/IAView/DescargoResponsabilidad.swift,
 				Views/IAView/RespondView.swift,
@@ -1366,6 +1367,7 @@
 			membershipExceptions = (
 				Models/LectorEtiquetas/ManagedAssets/AssetPackRelease,
 				Staff/Enciclopedia/PensamientosYSentimientos/enc_sentimiento_como_fuerzacreativa.txt,
+				Views/HomeAlternativo/HomeAlternativoView.swift,
 				Views/LectorEtiquetas/LectorEtiquetasView.swift,
 				Views/LectorEtiquetas/LectorEtiquetasViewHelper.swift,
 			);

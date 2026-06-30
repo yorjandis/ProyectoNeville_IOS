@@ -12,6 +12,7 @@ struct Home: View {
 
     @EnvironmentObject private var settingModel : SettingModel
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.colorScheme) private var colorScheme
     
     @AppStorage("MostrarMetasEnHome") var MostrarMetasEnHome: Bool = false
     
@@ -40,7 +41,9 @@ struct Home: View {
     @State private var showPresence: Bool = false
     @State private var showPremium: Bool = false
     @State private var now = Date()
+    @State private var renderAlternativeHomeDesign: Bool = false
 
+    @AppStorage("Home_ShowAlternativeHomeDesign") private var showAlternativeHomeDesign: Bool = false
     @AppStorage("Home_RitualMatutino_HiddenDayKey") private var ritualMatutinoHiddenDayKey: String = ""
     @AppStorage("Home_ShowAgendaButton") private var showAgendaButtonInHome: Bool = true
     @AppStorage("Home_AgendaBadge_HiddenDayKey") private var agendaBadgeHiddenDayKey: String = ""
@@ -121,6 +124,34 @@ struct Home: View {
         ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
     }
 
+    private var alternativeHomeVariant: HomeAlternativoVariant {
+        colorScheme == .dark ? .oscura : .clara
+    }
+
+    private var homeTransitionAnimation: Animation {
+        .easeInOut(duration: 0.48)
+    }
+
+    private func showAlternativeHome() {
+        renderAlternativeHomeDesign = true
+
+        withAnimation(homeTransitionAnimation) {
+            showAlternativeHomeDesign = true
+        }
+    }
+
+    private func showFrasesHome() {
+        withAnimation(homeTransitionAnimation) {
+            showAlternativeHomeDesign = false
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            if !showAlternativeHomeDesign {
+                renderAlternativeHomeDesign = false
+            }
+        }
+    }
+
     var body: some View {
         NavigationStack{
             
@@ -133,6 +164,25 @@ struct Home: View {
                     
                     //Muestra el logo de la App dentro de un rectángulo áureo
                     GoldenLogoNeville()
+
+                    if !showAlternativeHomeDesign {
+                        HStack {
+                            Spacer()
+
+                            Button {
+                                showAlternativeHome()
+                            } label: {
+                                Image(systemName: "square.grid.3x3.fill")
+                                    .font(.system(size: 15, weight: .medium))
+                                    .foregroundStyle(.black.opacity(0.36))
+                                    .padding(8)
+                                    .background(.white.opacity(0.32))
+                                    .clipShape(Circle())
+                            }
+                            .accessibilityLabel("Mostrar home alternativo")
+                        }
+                        .padding(.horizontal, 18)
+                    }
                     
                     //Muestra un texto para felicitar a neville por su cumpleños(19 Frebrero)
                     MostrarCumpleaños()
@@ -172,7 +222,7 @@ struct Home: View {
 
 
                     //Botones de acceso rápido: Ritual Matutino / Agenda / Presencia
-                    if shouldShowRitualButton || shouldShowAgendaButton || shouldShowPresenceButton {
+                    if !showAlternativeHomeDesign && (shouldShowRitualButton || shouldShowAgendaButton || shouldShowPresenceButton) {
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 10) {
                                 if shouldShowRitualButton {
@@ -290,9 +340,57 @@ struct Home: View {
                         colorFondo_b: Binding(get: { self.settingModel.colorFondo_b }, set: { self.settingModel.colorFondo_b = $0 })
                     )
                 }
+                .opacity(showAlternativeHomeDesign ? 0 : 1)
+                .scaleEffect(showAlternativeHomeDesign ? 0.985 : 1)
+                .animation(homeTransitionAnimation, value: showAlternativeHomeDesign)
+
+                if showAlternativeHomeDesign || renderAlternativeHomeDesign {
+                    Group {
+                        HomeAlternativoView(variant: alternativeHomeVariant)
+                            .ignoresSafeArea()
+
+                        VStack {
+                            HStack {
+                                Spacer()
+
+                                Button {
+                                    showFrasesHome()
+                                } label: {
+                                    Image(systemName: "text.quote")
+                                        .font(.system(size: 15, weight: .medium))
+                                        .foregroundStyle(.black.opacity(0.34))
+                                        .padding(8)
+                                        .background(.white.opacity(0.26))
+                                        .clipShape(Circle())
+                                }
+                                .accessibilityLabel("Mostrar frases")
+                            }
+                            .padding(.horizontal, 18)
+                            .padding(.top, 10)
+                            .opacity(0.72)
+
+                            Spacer()
+
+                            TabButtonBar(
+                                fontFrasesSize: $fontSize,
+                                fontMenuSize: $fontSizeMenu,
+                                colorFrase:  Binding(get:  { self.settingModel.colorfrase }, set: { self.settingModel.colorfrase = $0 }),
+                                colorFondo_a: Binding(get: { self.settingModel.colorFondo_a }, set: { self.settingModel.colorFondo_a = $0 }),
+                                colorFondo_b: Binding(get: { self.settingModel.colorFondo_b }, set: { self.settingModel.colorFondo_b = $0 })
+                            )
+                        }
+                    }
+                    .opacity(showAlternativeHomeDesign ? 1 : 0)
+                    .scaleEffect(showAlternativeHomeDesign ? 1 : 0.985)
+                    .offset(y: showAlternativeHomeDesign ? 0 : 12)
+                    .allowsHitTesting(showAlternativeHomeDesign)
+                    .animation(homeTransitionAnimation, value: showAlternativeHomeDesign)
+                    .zIndex(1)
+                }
    
             }
             .onAppear {
+                renderAlternativeHomeDesign = showAlternativeHomeDesign
                 now = Date()
                 agendaViewModel.load()
 
@@ -449,8 +547,7 @@ struct TabButtonBar : View{
                         Button{
                            showOptionView = true
                         }label: {
-                            makeItemlabel(image: idx)
-                                .font(.system(size: 30))
+                            makeItemlabel(image: idx, isPrimary: true)
                         }
                         
                     case "book":
@@ -466,9 +563,10 @@ struct TabButtonBar : View{
                                     ChatView(textoACargar: nil)
                                 }label: {
                                     Image(systemName: "ellipsis.message")
-                                        .font(.system(size: 22))
-                                        .foregroundStyle(.black.opacity(0.7))
+                                        .font(.system(size: 23, weight: .medium))
+                                        .foregroundStyle(.black.opacity(0.56))
                                         .padding(8)
+                                        .scaleEffect(1.08)
                                 }
                             }else{
                                 Button{ showSetting = true
@@ -519,11 +617,14 @@ struct TabButtonBar : View{
     }
     
     //Create UI for reusability
-    func makeItemlabel(image : String)->some View{
+    func makeItemlabel(image: String, isPrimary: Bool = false) -> some View {
         return Image(systemName: image)
             .renderingMode(.template)
-            .foregroundColor( Color.black.opacity(0.4))
+            .font(.system(size: isPrimary ? 30 : 22, weight: isPrimary ? .semibold : .medium))
+            .foregroundColor(Color.black.opacity(isPrimary ? 0.72 : 0.5))
             .padding(10)
+            .scaleEffect(isPrimary ? 1.16 : 1.08)
+            .shadow(color: Color.black.opacity(isPrimary ? 0.18 : 0.0), radius: 3, y: 1)
         
     }
     
@@ -627,4 +728,3 @@ private struct HomePreviewHost: View {
     HomePreviewHost()
 }
 #endif
-
