@@ -23,7 +23,7 @@ struct HomeAlternativoView: View {
     @AppStorage("HomeAlternativo_AccessIDs") private var storedAccessIDs: String = ""
     @AppStorage("Home_AgendaBadge_HiddenDayKey") private var agendaBadgeHiddenDayKey: String = ""
     @StateObject private var agendaViewModel = AgendaViewModel()
-    @State private var phrase = HomeAlternativoPhrases.random(for: .morning)
+    @State private var phrase = HomeAlternativoPhrases.random(for: HomeAlternativoDayMoment.current())
     @State private var showPremium = false
     @State private var showAccessEditor = false
     @State private var selectedAccessIDs = HomeAlternativoAccess.defaultIDs
@@ -92,16 +92,7 @@ struct HomeAlternativoView: View {
     }
 
     private var dayMoment: HomeAlternativoDayMoment {
-        let hour = Calendar.current.component(.hour, from: Date())
-
-        switch hour {
-        case 5..<12:
-            return .morning
-        case 12..<20:
-            return .afternoon
-        default:
-            return .night
-        }
+        HomeAlternativoDayMoment.current(for: now)
     }
 
     private let columns = [
@@ -123,21 +114,21 @@ struct HomeAlternativoView: View {
                 title: "Presencia",
                 valueText: "\(todayPresentCount) eventos",
                 symbol: "heart.text.square",
-                progress: min(Double(todayPresentCount) / 12.0, 1.0),
+                progress: min(Double(todayPresentCount) / 3.0, 1.0),
                 colors: HomeAlternativoProgressPalette.presence
             ),
             .init(
                 title: "Metas",
                 valueText: "\(activeGoals.count) activas",
                 symbol: "checklist",
-                progress: min(Double(activeGoals.count) / 5.0, 1.0),
+                progress: min(Double(activeGoals.count) / 3.0, 1.0),
                 colors: HomeAlternativoProgressPalette.goals
             ),
             .init(
                 title: "Diario",
                 valueText: "\(todayDiaryEntries.count) hoy",
                 symbol: "book.closed",
-                progress: min(Double(todayDiaryEntries.count) / 3.0, 1.0),
+                progress: min(Double(todayDiaryEntries.count) / 1.0, 1.0),
                 colors: HomeAlternativoProgressPalette.diary
             )
         ]
@@ -201,12 +192,16 @@ struct HomeAlternativoView: View {
                 .foregroundStyle(theme.primaryText)
                 .frame(maxWidth: .infinity, alignment: .center)
 
-            Text("\(greeting), ¿Qué quieres hacer hoy?")
-                .font(.system(size: 20, weight: .regular, design: .rounded))
-                .foregroundStyle(theme.secondaryText)
-                .lineLimit(1)
-                .minimumScaleFactor(0.85)
-                .frame(maxWidth: .infinity, alignment: .leading)
+            Text("")
+            /*
+             Text("\(greeting)")
+                 .font(.system(size: 20, weight: .regular, design: .rounded))
+                 .foregroundStyle(theme.secondaryText)
+                 .lineLimit(1)
+                 .minimumScaleFactor(0.85)
+                 .frame(maxWidth: .infinity, alignment: .leading)
+             */
+            
         }
     }
 
@@ -441,10 +436,10 @@ private enum HomeAlternativoAccess: String, CaseIterable, Identifiable, Codable,
         case .lienzo: return "Lienzo"
         case .recordatorios: return "Recordatorios"
         case .lectorQR: return "Lector QR"
-        case .autorNeville: return "Autor Neville"
-        case .autorJoeDispenza: return "Autor JD"
-        case .autorBruceLipton: return "Autor Bruce"
-        case .autorGreggBraden: return "Autor Gregg"
+        case .autorNeville: return "Neville"
+        case .autorJoeDispenza: return "JD"
+        case .autorBruceLipton: return "Bruce"
+        case .autorGreggBraden: return "Gregg"
         case .frases: return "Frases"
         case .enciclopedia: return "Enciclopedia"
         case .reflexiones: return "Reflexiones"

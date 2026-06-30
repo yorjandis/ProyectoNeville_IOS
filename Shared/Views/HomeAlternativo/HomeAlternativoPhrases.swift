@@ -11,6 +11,19 @@ enum HomeAlternativoDayMoment {
     case morning
     case afternoon
     case night
+
+    static func current(for date: Date = Date(), calendar: Calendar = .current) -> HomeAlternativoDayMoment {
+        let hour = calendar.component(.hour, from: date)
+
+        switch hour {
+        case 5..<12:
+            return .morning
+        case 12..<20:
+            return .afternoon
+        default:
+            return .night
+        }
+    }
 }
 
 enum HomeAlternativoPhrases {
@@ -35,7 +48,8 @@ enum HomeAlternativoPhrases {
         "Tu energía de inicio marca la dirección",
         "Hoy eliges presencia antes que pasado",
         "Declara internamente quién eres ahora",
-        "La mañana es tu primer acto creador"
+        "La mañana es tu primer acto creador",
+        "Empieza desde tu mejor versión"
     ]
 
     static let afternoon: [String] = [

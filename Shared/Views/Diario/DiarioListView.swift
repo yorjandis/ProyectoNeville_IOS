@@ -300,47 +300,35 @@ struct DiarioListView: View {
                 
                 if self.securityModel.canOpenDiario {
                     ToolbarItem {
-                        Button {
-                            self.showDiarioStats = true
-                        } label: {
-                            Label("Estadísticas", systemImage: "chart.xyaxis.line")
-                        }
-                    }
-                    
-                    if #available(iOS 26.0, macOS 26.0, *) {
-                        ToolbarSpacer(.fixed)
-                    }
-
-                    ToolbarItem {
-                        Button {
-                            toggleBatchSelectionMode()
-                        } label: {
-                            Label(isBatchSelectionMode ? "Cancelar selección" : "Seleccionar", systemImage: isBatchSelectionMode ? "xmark.circle" : "checklist")
-                        }
-                    }
-
-                    if #available(iOS 26.0, macOS 26.0, *) {
-                        ToolbarSpacer(.fixed)
-                    }
-                    
-                    ToolbarItem {
-                        Button{
-                            withAnimation {
-                                self.showCalendar.toggle()
-                                //Si oculta el calendario se muestra todos los items
-                                if self.showCalendar == false {
-                                    selectedCalendarDate = nil
-                                    modelDiario.getAllItem()
-                                }
+                        Menu {
+                            Button {
+                                self.showDiarioStats = true
+                            } label: {
+                                Label("Estadísticas", systemImage: "chart.xyaxis.line")
                             }
-                            
-                        }label:{
-                            Label( self.showCalendar ? "Ocultar Calendario" : "Mostrar calendario", systemImage: "calendar")
+
+                            Button {
+                                toggleBatchSelectionMode()
+                            } label: {
+                                Label(isBatchSelectionMode ? "Cancelar selección" : "Seleccionar", systemImage: isBatchSelectionMode ? "xmark.circle" : "checklist")
+                            }
+
+                            Button {
+                                withAnimation {
+                                    self.showCalendar.toggle()
+                                    //Si oculta el calendario se muestra todos los items
+                                    if self.showCalendar == false {
+                                        selectedCalendarDate = nil
+                                        modelDiario.getAllItem()
+                                    }
+                                }
+                            } label: {
+                                Label(self.showCalendar ? "Ocultar Calendario" : "Mostrar calendario", systemImage: "calendar")
+                            }
+                        } label: {
+                            Image(systemName: "ellipsis.circle")
+                                .tint(.black)
                         }
-                    }
-                    
-                    if #available(iOS 26.0, macOS 26.0, *) {
-                        ToolbarSpacer(.fixed)
                     }
                     
                     ToolbarItem{
@@ -1084,6 +1072,5 @@ struct DiarioListView: View {
     }
 
 }
-
 
 

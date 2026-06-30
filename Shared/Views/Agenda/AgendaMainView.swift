@@ -320,21 +320,42 @@ struct AgendaMainView: View {
             if !filteredPastSections.isEmpty {
                 Section {
                     VStack(alignment: .leading, spacing: 10) {
-                        Button {
-                            withAnimation(.easeInOut(duration: 0.2)) {
-                                showPastActivities.toggle()
-                            }
-                        } label: {
-                            HStack {
+                        HStack(spacing: 8) {
+                            Button {
+                                withAnimation(.easeInOut(duration: 0.2)) {
+                                    showPastActivities.toggle()
+                                }
+                            } label: {
                                 Text("Actividades pasadas")
                                     .font(.subheadline.weight(.semibold))
                                     .foregroundStyle(.black)
-                                Spacer()
+                            }
+                            .buttonStyle(.plain)
+
+                            Menu {
+                                Button("Eliminar actividades pasadas", role: .destructive) {
+                                    requestBulkDelete(filteredPastSections.flatMap(\.items))
+                                }
+                            } label: {
+                                Image(systemName: "ellipsis.circle")
+                                    .font(.subheadline)
+                                    .foregroundStyle(.black.opacity(0.65))
+                            }
+                            .buttonStyle(.borderless)
+                            .accessibilityLabel("Opciones de actividades pasadas")
+
+                            Spacer()
+
+                            Button {
+                                withAnimation(.easeInOut(duration: 0.2)) {
+                                    showPastActivities.toggle()
+                                }
+                            } label: {
                                 Image(systemName: pastActivitiesChevronName)
                                     .foregroundStyle(.black.opacity(0.65))
                             }
+                            .buttonStyle(.plain)
                         }
-                        .buttonStyle(.plain)
 
                         if shouldShowPastContent {
                             pastActivitiesList(filteredPastSections)
@@ -601,9 +622,6 @@ struct AgendaMainView: View {
                     Image(systemName: selectedItemsIDs.contains(item.id) ? "checkmark.circle.fill" : "circle")
                         .foregroundStyle(selectedItemsIDs.contains(item.id) ? .blue : .black.opacity(0.55))
                 }
-                Circle()
-                    .fill(item.prioridad.tint)
-                    .frame(width: 10, height: 10)
                 Text(item.titulo)
                     .font(.headline)
                     .foregroundStyle(.black)
@@ -786,6 +804,12 @@ struct AgendaMainView: View {
 
     private var isSearchActive: Bool {
         !searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
+    private func requestBulkDelete(_ items: [AgendaItemData]) {
+        guard !items.isEmpty else { return }
+        bulkDeleteItems = items
+        showBulkDeleteConfirmation = true
     }
 
     private func deleteBulkSelectedItems() {

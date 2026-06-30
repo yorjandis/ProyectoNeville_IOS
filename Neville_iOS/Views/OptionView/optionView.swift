@@ -43,6 +43,9 @@ fileprivate enum TipeViewOptionTab: String, Identifiable {
 struct optionView: View {
     @EnvironmentObject var settingModel: SettingModel
 
+    let isShowingAlternativeHome: Bool
+    let toggleHomeScreen: () -> Void
+
     @State private var showView: TipeViewOptionTab? = nil
     @State private var showEspacioCalmaFullScreen: Bool = false
     @State private var showCardioCoherenciaFullScreen: Bool = false
@@ -207,6 +210,17 @@ struct optionView: View {
                     }
                 }
                 .padding(5)
+            }
+            .overlay(alignment: .center) {
+                Button {
+                    toggleHomeScreen()
+                } label: {
+                    Circle()
+                        .fill(.white.opacity(0.18))
+                        .frame(width: 22, height: 22)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(isShowingAlternativeHome ? "Mostrar frases en home" : "Mostrar home alternativo")
             }
             .padding(10)
             .buttonStyle(.bordered)

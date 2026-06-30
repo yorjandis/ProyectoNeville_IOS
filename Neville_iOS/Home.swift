@@ -165,24 +165,6 @@ struct Home: View {
                     //Muestra el logo de la App dentro de un rectángulo áureo
                     GoldenLogoNeville()
 
-                    if !showAlternativeHomeDesign {
-                        HStack {
-                            Spacer()
-
-                            Button {
-                                showAlternativeHome()
-                            } label: {
-                                Image(systemName: "square.grid.3x3.fill")
-                                    .font(.system(size: 15, weight: .medium))
-                                    .foregroundStyle(.black.opacity(0.36))
-                                    .padding(8)
-                                    .background(.white.opacity(0.32))
-                                    .clipShape(Circle())
-                            }
-                            .accessibilityLabel("Mostrar home alternativo")
-                        }
-                        .padding(.horizontal, 18)
-                    }
                     
                     //Muestra un texto para felicitar a neville por su cumpleños(19 Frebrero)
                     MostrarCumpleaños()
@@ -337,7 +319,15 @@ struct Home: View {
                         fontMenuSize: $fontSizeMenu,
                         colorFrase:  Binding(get:  { self.settingModel.colorfrase }, set: { self.settingModel.colorfrase = $0 }),
                         colorFondo_a: Binding(get: { self.settingModel.colorFondo_a }, set: { self.settingModel.colorFondo_a = $0 }),
-                        colorFondo_b: Binding(get: { self.settingModel.colorFondo_b }, set: { self.settingModel.colorFondo_b = $0 })
+                        colorFondo_b: Binding(get: { self.settingModel.colorFondo_b }, set: { self.settingModel.colorFondo_b = $0 }),
+                        isShowingAlternativeHome: showAlternativeHomeDesign,
+                        toggleHomeScreen: {
+                            if showAlternativeHomeDesign {
+                                showFrasesHome()
+                            } else {
+                                showAlternativeHome()
+                            }
+                        }
                     )
                 }
                 .opacity(showAlternativeHomeDesign ? 0 : 1)
@@ -350,25 +340,6 @@ struct Home: View {
                             .ignoresSafeArea()
 
                         VStack {
-                            HStack {
-                                Spacer()
-
-                                Button {
-                                    showFrasesHome()
-                                } label: {
-                                    Image(systemName: "text.quote")
-                                        .font(.system(size: 15, weight: .medium))
-                                        .foregroundStyle(.black.opacity(0.34))
-                                        .padding(8)
-                                        .background(.white.opacity(0.26))
-                                        .clipShape(Circle())
-                                }
-                                .accessibilityLabel("Mostrar frases")
-                            }
-                            .padding(.horizontal, 18)
-                            .padding(.top, 10)
-                            .opacity(0.72)
-
                             Spacer()
 
                             TabButtonBar(
@@ -376,7 +347,15 @@ struct Home: View {
                                 fontMenuSize: $fontSizeMenu,
                                 colorFrase:  Binding(get:  { self.settingModel.colorfrase }, set: { self.settingModel.colorfrase = $0 }),
                                 colorFondo_a: Binding(get: { self.settingModel.colorFondo_a }, set: { self.settingModel.colorFondo_a = $0 }),
-                                colorFondo_b: Binding(get: { self.settingModel.colorFondo_b }, set: { self.settingModel.colorFondo_b = $0 })
+                                colorFondo_b: Binding(get: { self.settingModel.colorFondo_b }, set: { self.settingModel.colorFondo_b = $0 }),
+                                isShowingAlternativeHome: showAlternativeHomeDesign,
+                                toggleHomeScreen: {
+                                    if showAlternativeHomeDesign {
+                                        showFrasesHome()
+                                    } else {
+                                        showAlternativeHome()
+                                    }
+                                }
                             )
                         }
                     }
@@ -511,6 +490,9 @@ struct TabButtonBar : View{
     
     @Binding    var colorFondo_a : Color
     @Binding    var colorFondo_b : Color
+
+    let isShowingAlternativeHome: Bool
+    let toggleHomeScreen: () -> Void
     
 
     @State private var showSetting = false
@@ -607,7 +589,13 @@ struct TabButtonBar : View{
             .padding(.vertical, 5)
         }
         .sheet(isPresented: $showOptionView) {
-            optionView()
+            optionView(
+                isShowingAlternativeHome: isShowingAlternativeHome,
+                toggleHomeScreen: {
+                    toggleHomeScreen()
+                    showOptionView = false
+                }
+            )
                .presentationDetents([.height(280)])
                .presentationDragIndicator(.hidden)
         }
