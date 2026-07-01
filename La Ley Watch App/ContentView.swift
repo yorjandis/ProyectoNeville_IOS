@@ -127,23 +127,46 @@ struct ContentView: View {
 
         var body: some View {
             ZStack {
-                LinearGradient(
-                    colors: [
-                        Color(red: 0.08, green: 0.18, blue: 0.28),
-                        Color(red: 0.02, green: 0.25, blue: 0.29),
-                        Color(red: 0.06, green: 0.36, blue: 0.27)
-                    ],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
+                ZStack {
+                    LinearGradient(
+                        colors: [
+                            Color(red: 0.55, green: 0.43, blue: 0.82),
+                            Color(red: 0.24, green: 0.65, blue: 0.50),
+                            Color(red: 0.14, green: 0.38, blue: 0.82)
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+
+                    LinearGradient(
+                        colors: [
+                            Color(red: 0.78, green: 0.68, blue: 0.96).opacity(0.34),
+                            Color.clear,
+                            Color(red: 0.10, green: 0.54, blue: 0.88).opacity(0.28)
+                        ],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+
+                    RadialGradient(
+                        colors: [
+                            Color(red: 0.36, green: 0.82, blue: 0.54).opacity(0.34),
+                            Color.clear
+                        ],
+                        center: .center,
+                        startRadius: 12,
+                        endRadius: 128
+                    )
+                }
+                .saturation(0.94)
                 .ignoresSafeArea()
 
                 GeometryReader { proxy in
                     let size = min(proxy.size.width, proxy.size.height)
                     let center = CGPoint(x: proxy.size.width / 2, y: proxy.size.height / 2)
-                    let orbitRadius = max(58, size * 0.34)
-                    let itemSize = max(54, min(62, size * 0.31))
-                    let centerSize = max(40, min(46, size * 0.23))
+                    let orbitRadius = max(62, size * 0.36)
+                    let itemSize = max(58, min(68, size * 0.35))
+                    let centerSize = max(32, min(38, size * 0.18))
 
                     ZStack {
                         ForEach(Array(orbitScreens.enumerated()), id: \.element.id) { index, screen in
@@ -189,16 +212,21 @@ struct ContentView: View {
             } label: {
                 ZStack {
                     Circle()
-                        .fill(.white.opacity(0.82))
+                        .fill(.white.opacity(0.94))
                         .overlay {
                             Circle()
-                                .fill(screen.tintColor.opacity(0.05))
+                                .fill(screen.tintColor.opacity(0.10))
                         }
                         .overlay {
                             Circle()
-                                .stroke(.black.opacity(0.72), lineWidth: 0.5)
+                                .stroke(.white.opacity(0.86), lineWidth: 1.2)
                         }
-                        .shadow(color: .black.opacity(0.34), radius: 1, y: 0)
+                        .overlay {
+                            Circle()
+                                .stroke(.black.opacity(0.30), lineWidth: 0.6)
+                                .padding(1)
+                        }
+                        .shadow(color: .black.opacity(0.42), radius: 3, y: 2)
 
                     VStack(spacing: screen == .ajustes ? 0 : 3) {
                         Image(systemName: screen.symbolName)
