@@ -49,7 +49,22 @@ enum HomeAlternativoPhrases {
         "Hoy eliges presencia antes que pasado",
         "Declara internamente quién eres ahora",
         "La mañana es tu primer acto creador",
-        "Empieza desde tu mejor versión"
+        "Empieza desde tu mejor versión",
+        "Hoy eliges quién ser",
+        "Tu momento es ahora",
+        "Avanza hoy con intención",
+        "Recuerda, todo comienza en ti",
+        "Hoy dirige tu energía sabiamente",
+        "Hoy siembras tu futuro",
+        "Actúa desde tu visión futura",
+        "Comienza este día con propósito",
+        "Hoy eliges tu estado interior",
+        "Hoy construyes desde la calma",
+        "Hoy lideras tu experiencia",
+        "Honra este nuevo comienzo",
+        "Hoy conviertes intención en acción"
+        
+        
     ]
 
     static let afternoon: [String] = [
@@ -72,7 +87,26 @@ enum HomeAlternativoPhrases {
         "Una emoción elevada reorganiza el día",
         "Actúa como quien ya recuerda su poder",
         "La tarde aún tiene espacio para crear",
-        "Tu siguiente elección también cuenta"
+        "Tu siguiente elección también cuenta",
+        "Vuelve al momento presente",
+        "Has una pausa, respira y continúa",
+        "Regresa a tu centro",
+        "Mantén viva tu intención",
+        "Elige calma otra vez",
+        "Este instante también importa",
+        "Observa antes de reaccionar",
+        "Sigue creando conscientemente",
+        "Tu poder sigue aquí, contigo",
+        "Vuelve a lo esencial",
+        "Permanece presente",
+        "Conecta con tu propósito",
+        "Una pausa puede cambiarlo todo",
+        "Recuerda quién estás siendo",
+        "Aún puedes elegir",
+        "Vuelve a sentir plenitud",
+        "Crea desde este instante",
+        "Recupera tu enfoque",
+        "Sigue alineado contigo"
     ]
 
     static let night: [String] = [
@@ -95,7 +129,34 @@ enum HomeAlternativoPhrases {
         "Entrega la duda y conserva la certeza",
         "La noche convierte práctica en integración",
         "Imagina suavemente lo que deseas vivir",
-        "Mañana empieza en el estado que duermes hoy"
+        "Mañana empieza en el estado que duermes hoy",
+        "Agradece lo vivido hoy",
+        "Integra las lecciones del día",
+        "Descansa en confianza",
+        "Honra tu progreso",
+        "Suelta lo que ya pasó",
+        "Conserva lo aprendido",
+        "Termina el día en paz",
+        "Observa con compasión",
+        "Reconoce tu crecimiento",
+        "Deja espacio para la calma",
+        "Agradece y descansa",
+        "Permite que todo se asiente",
+        "Encuentra sentido en la experiencia",
+        "Libera el peso del día",
+        "Abraza lo que descubriste",
+        "Descansa en tu nueva identidad",
+        "Cierra el día conscientemente",
+        "Todo aprendizaje suma",
+        "Mañana continúa la creación",
+        "Duerme en coherencia",
+        "Relájate y disfruta tu descanso",
+        "Cada noche es una oportunidad de crear",
+        "Recupera e integra las experiencias del día",
+        "Bendice este día",
+        "Descansa en la certeza de tu poder creativo",
+        "No dejes psar este día sin bendecirte",
+        "Agradece, todo está en su justo lugar"
     ]
 
     static func random(for moment: HomeAlternativoDayMoment) -> String {
@@ -112,83 +173,11 @@ enum HomeAlternativoPhrases {
 
 //Frases que acompañan cada saludo
 enum HomeAlternativoSaludos {
-    static let morning: [String] = [
-        "haz que este día cuente",
-        "empieza desde tu mejor versión",
-        "hoy eliges quién ser",
-        "crea el día que imaginas",
-        "tu momento es ahora",
-        "avanza con intención",
-        "todo comienza en ti",
-        "dirige tu energía sabiamente",
-        "abre espacio a lo posible",
-        "hoy siembra tu futuro",
-        "actúa desde tu visión",
-        "comienza con propósito",
-        "elige tu estado interior",
-        "construye desde la calma",
-        "lidera tu experiencia",
-        "crea antes de reaccionar",
-        "vive desde la posibilidad",
-        "honra este nuevo comienzo",
-        "da forma a tu día",
-        "convierte intención en acción"
-    ]
+ 
 
-    static let afternoon: [String] = [
-        "vuelve al momento presente",
-        "respira y continúa",
-        "regresa a tu centro",
-        "mantén viva tu intención",
-        "elige calma otra vez",
-        "este instante también importa",
-        "observa antes de reaccionar",
-        "sigue creando conscientemente",
-        "tu poder sigue aquí",
-        "vuelve a lo esencial",
-        "permanece presente",
-        "conecta con tu propósito",
-        "una pausa puede cambiarlo todo",
-        "recuerda quién estás siendo",
-        "la coherencia transforma",
-        "aún puedes elegir",
-        "vuelve a sentir plenitud",
-        "crea desde este instante",
-        "recupera tu enfoque",
-        "sigue alineado contigo"
-    ]
-
+ 
     static let night: [String] = [
-        "agradece lo vivido hoy",
-        "integra las lecciones del día",
-        "descansa en confianza",
-        "honra tu progreso",
-        "suelta lo que ya pasó",
-        "conserva lo aprendido",
-        "termina el día en paz",
-        "observa con compasión",
-        "reconoce tu crecimiento",
-        "deja espacio para la calma",
-        "agradece y descansa",
-        "permite que todo se asiente",
-        "encuentra sentido en la experiencia",
-        "libera el peso del día",
-        "abraza lo que descubriste",
-        "descansa en tu nueva identidad",
-        "cierra el día conscientemente",
-        "todo aprendizaje suma",
-        "mañana continúa la creación",
-        "duerme en coherencia"
+        
     ]
 
-    static func random(for moment: HomeAlternativoDayMoment) -> String {
-        switch moment {
-        case .morning:
-            return morning.randomElement() ?? "haz que este día cuente"
-        case .afternoon:
-            return afternoon.randomElement() ?? "vuelve al momento presente"
-        case .night:
-            return night.randomElement() ?? "agradece lo vivido hoy"
-        }
-    }
 }
