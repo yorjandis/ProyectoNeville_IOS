@@ -72,6 +72,9 @@ final class SettingModel : ObservableObject {
         UserDefaults.standard.setValue(18, forKey: AppCons.UD_setting_fontMenuSize)
         UserDefaults.standard.setValue(18, forKey: AppCons.UD_setting_fontListaSize)
         UserDefaults.standard.setValue(false, forKey: AppCons.UD_setting_NotasFaceID)
+        UserDefaults.standard.setValue(5, forKey: AppCons.UD_setting_HomeProductividadPresenciaTotal)
+        UserDefaults.standard.setValue(1, forKey: AppCons.UD_setting_HomeProductividadMetasTotal)
+        UserDefaults.standard.setValue(1, forKey: AppCons.UD_setting_HomeProductividadDiarioTotal)
         UserDefaults.standard.setValue(0, forKey: AppCons.UD_setting_ReviewCounter) //Lleva un conteo de interacciones con el usuario, si llega a 150 se muestra una ventana de review y se resetea
         UserDefaults.standard.setValue(1, forKey: AppCons.UD_setting_showReview) //Lleva un conteo de interacciones con el usuario, si llega a 150 se muestra una ventana de review y se resetea
         

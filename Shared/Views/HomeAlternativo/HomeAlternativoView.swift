@@ -17,11 +17,15 @@ struct HomeAlternativoView: View {
     @EnvironmentObject private var clipBoardModel: ClipboardObserver
     @EnvironmentObject private var modelTxt: TxtContentModel
     @EnvironmentObject private var reflexModel: ReflexModel
+    @Environment(\.managedObjectContext) private var context
 
     @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
     @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) private var yorjPremium: Bool = false
     @AppStorage("HomeAlternativo_AccessIDs") private var storedAccessIDs: String = ""
     @AppStorage("Home_AgendaBadge_HiddenDayKey") private var agendaBadgeHiddenDayKey: String = ""
+    @AppStorage(AppCons.UD_setting_HomeProductividadPresenciaTotal) private var homeProductividadPresenciaTotal: Int = 5
+    @AppStorage(AppCons.UD_setting_HomeProductividadMetasTotal) private var homeProductividadMetasTotal: Int = 1
+    @AppStorage(AppCons.UD_setting_HomeProductividadDiarioTotal) private var homeProductividadDiarioTotal: Int = 1
     @StateObject private var agendaViewModel = AgendaViewModel()
     @State private var phrase = HomeAlternativoPhrases.random(for: HomeAlternativoDayMoment.current())
     @State private var showPremium = false
@@ -29,15 +33,12 @@ struct HomeAlternativoView: View {
     @State private var selectedAccessIDs = HomeAlternativoAccess.defaultIDs
     @State private var now = Date()
     @State private var todayPresentCount = 0
+    @State private var todayDiaryEntriesCount = 0
     private let presenceRepository = PresenciaRepository()
 
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \GoalEntity.title, ascending: true)]
     ) private var goals: FetchedResults<GoalEntity>
-
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Diario.fecha, ascending: false)]
-    ) private var diaryEntries: FetchedResults<Diario>
 
     private var theme: HomeAlternativoTheme {
         HomeAlternativoTheme(variant: variant)
@@ -102,33 +103,31 @@ struct HomeAlternativoView: View {
     ]
 
     private var progressItems: [HomeAlternativoProgressItem] {
-        let calendar = Calendar.current
         let activeGoals = goals.filter { $0.isStarted && !$0.isCompleted }
-        let todayDiaryEntries = diaryEntries.filter { entry in
-            guard let date = entry.fecha else { return false }
-            return calendar.isDateInToday(date)
-        }
+        let presenceTotal = Double(max(homeProductividadPresenciaTotal, 5))
+        let goalsTotal = Double(max(homeProductividadMetasTotal, 1))
+        let diaryTotal = Double(max(homeProductividadDiarioTotal, 1))
 
         return [
             .init(
                 title: "Presencia",
                 valueText: "\(todayPresentCount) eventos",
                 symbol: "heart.text.square",
-                progress: min(Double(todayPresentCount) / 3.0, 1.0),
+                progress: min(Double(todayPresentCount) / presenceTotal, 1.0),
                 colors: HomeAlternativoProgressPalette.presence
             ),
             .init(
                 title: "Metas",
                 valueText: "\(activeGoals.count) activas",
                 symbol: "checklist",
-                progress: min(Double(activeGoals.count) / 3.0, 1.0),
+                progress: min(Double(activeGoals.count) / goalsTotal, 1.0),
                 colors: HomeAlternativoProgressPalette.goals
             ),
             .init(
                 title: "Diario",
-                valueText: "\(todayDiaryEntries.count) hoy",
+                valueText: "\(todayDiaryEntriesCount) hoy",
                 symbol: "book.closed",
-                progress: min(Double(todayDiaryEntries.count) / 1.0, 1.0),
+                progress: min(Double(todayDiaryEntriesCount) / diaryTotal, 1.0),
                 colors: HomeAlternativoProgressPalette.diary
             )
         ]
@@ -156,6 +155,7 @@ struct HomeAlternativoView: View {
             now = Date()
             agendaViewModel.load()
             reloadPresenceProgress()
+            reloadDiaryProgress()
             phrase = HomeAlternativoPhrases.random(for: dayMoment)
             selectedAccessIDs = HomeAlternativoAccess.normalizedIDs(from: storedAccessIDs)
         }
@@ -172,6 +172,15 @@ struct HomeAlternativoView: View {
         }
         .onReceive(NotificationCenter.default.publisher(for: .presenciaEventsDidChange)) { _ in
             reloadPresenceProgress()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .coreDataStoresDidLoad)) { _ in
+            reloadDiaryProgress()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .NSManagedObjectContextObjectsDidChange, object: context)) { _ in
+            reloadDiaryProgress()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave)) { _ in
+            reloadDiaryProgress()
         }
     }
 
@@ -222,6 +231,7 @@ struct HomeAlternativoView: View {
                                     now = Date()
                                     agendaViewModel.load()
                                     reloadPresenceProgress()
+                                    reloadDiaryProgress()
                                 }
                         } label: {
                             toolCard(for: tool)
@@ -290,7 +300,8 @@ struct HomeAlternativoView: View {
         case .presencia:
             PresenciaView()
         case .metas:
-            GoalsListView()
+            GoalsListView(embeddedInNavigationStack: false)
+                .environment(\.managedObjectContext, context)
         case .diario:
             DiarioListView()
                 .environmentObject(securityModel)
@@ -313,18 +324,26 @@ struct HomeAlternativoView: View {
             NevilleAuthorView()
                 .environmentObject(frasesModel)
                 .environmentObject(settingModel)
+                .environmentObject(modelTxt)
+                .environmentObject(clipBoardModel)
         case .autorJoeDispenza:
             JoeDispenzaAuthorView()
                 .environmentObject(frasesModel)
                 .environmentObject(settingModel)
+                .environmentObject(modelTxt)
+                .environmentObject(clipBoardModel)
         case .autorBruceLipton:
             BruceLiptonAuthorView()
                 .environmentObject(frasesModel)
                 .environmentObject(settingModel)
+                .environmentObject(modelTxt)
+                .environmentObject(clipBoardModel)
         case .autorGreggBraden:
             GreggBradenAuthorView()
                 .environmentObject(frasesModel)
                 .environmentObject(settingModel)
+                .environmentObject(modelTxt)
+                .environmentObject(clipBoardModel)
         case .frases:
             FrasesListView()
                 .environmentObject(settingModel)
@@ -364,6 +383,29 @@ struct HomeAlternativoView: View {
 
     private func reloadPresenceProgress() {
         todayPresentCount = presenceRepository.todayPresentCount()
+    }
+
+    private func reloadDiaryProgress() {
+        let calendar = Calendar.current
+        let startOfDay = calendar.startOfDay(for: Date())
+        guard let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) else {
+            todayDiaryEntriesCount = 0
+            return
+        }
+
+        let request: NSFetchRequest<Diario> = Diario.fetchRequest()
+        request.includesPendingChanges = true
+        request.predicate = NSPredicate(
+            format: "fecha >= %@ AND fecha < %@",
+            startOfDay as NSDate,
+            endOfDay as NSDate
+        )
+
+        do {
+            todayDiaryEntriesCount = try context.fetch(request).count
+        } catch {
+            todayDiaryEntriesCount = 0
+        }
     }
 }
 
@@ -836,7 +878,7 @@ private struct HomeAlternativoToolCard: View {
             RoundedRectangle(cornerRadius: 18, style: .continuous)
                 .stroke(theme.cardStroke, lineWidth: 1.2)
         }
-        .shadow(color: tool.colors.first?.opacity(theme.variant == .oscura ? 0.40 : 0.22) ?? theme.cardShadow, radius: 10, y: 6)
+        .shadow(color: tool.colors.first?.opacity(theme.variant == .oscura ? 0.26 : 0.14) ?? theme.cardShadow, radius: 8, y: 5)
         .shadow(color: theme.cardShadow, radius: 5, y: 3)
     }
 
@@ -879,6 +921,12 @@ private struct HomeAlternativoProgressCard: View {
     let item: HomeAlternativoProgressItem
     let theme: HomeAlternativoTheme
 
+    @State private var completionGlow = false
+
+    private var isCompleted: Bool {
+        item.progress >= 1.0
+    }
+
     var body: some View {
         VStack(spacing: 7) {
             ZStack {
@@ -903,6 +951,30 @@ private struct HomeAlternativoProgressCard: View {
                     )
             }
             .frame(width: 68, height: 68)
+            .overlay {
+                if isCompleted {
+                    ZStack {
+                        Circle()
+                            .stroke(completionGlowColor.opacity(completionGlow ? 0.52 : 0.22), lineWidth: 3.2)
+                            .blur(radius: completionGlow ? 3.8 : 1.8)
+                            .scaleEffect(completionGlow ? 1.075 : 1.02)
+
+                        Circle()
+                            .strokeBorder(completionRingColor.opacity(completionGlow ? 0.84 : 0.42), lineWidth: 2.0)
+                            .scaleEffect(completionGlow ? 1.035 : 1.0)
+                    }
+                    .animation(.easeInOut(duration: 1.15).repeatForever(autoreverses: true), value: completionGlow)
+                }
+            }
+            .onAppear {
+                completionGlow = isCompleted
+            }
+            .onChange(of: item.progress) { _, _ in
+                completionGlow = false
+                if isCompleted {
+                    completionGlow = true
+                }
+            }
 
             Text(item.title)
                 .font(.system(size: 15, weight: .semibold, design: .rounded))
@@ -923,6 +995,14 @@ private struct HomeAlternativoProgressCard: View {
         guard let firstColor = item.colors.first else { return [] }
         let firstOpacity = theme.variant == .clara ? 0.54 : 0.68
         return [firstColor.opacity(firstOpacity)] + item.colors.dropFirst()
+    }
+
+    private var completionGlowColor: Color {
+        item.colors.last ?? .orange
+    }
+
+    private var completionRingColor: Color {
+        item.colors.dropFirst().first ?? completionGlowColor
     }
 }
 

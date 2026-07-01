@@ -129,14 +129,16 @@ struct Home: View {
     }
 
     private var homeTransitionAnimation: Animation {
-        .easeInOut(duration: 0.48)
+        .easeInOut(duration: 0.56)
     }
 
     private func showAlternativeHome() {
         renderAlternativeHomeDesign = true
 
-        withAnimation(homeTransitionAnimation) {
-            showAlternativeHomeDesign = true
+        DispatchQueue.main.async {
+            withAnimation(homeTransitionAnimation) {
+                showAlternativeHomeDesign = true
+            }
         }
     }
 
@@ -145,7 +147,7 @@ struct Home: View {
             showAlternativeHomeDesign = false
         }
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.58) {
             if !showAlternativeHomeDesign {
                 renderAlternativeHomeDesign = false
             }
@@ -332,6 +334,9 @@ struct Home: View {
                 }
                 .opacity(showAlternativeHomeDesign ? 0 : 1)
                 .scaleEffect(showAlternativeHomeDesign ? 0.985 : 1)
+                .offset(y: showAlternativeHomeDesign ? -10 : 0)
+                .blur(radius: showAlternativeHomeDesign ? 1.2 : 0)
+                .allowsHitTesting(!showAlternativeHomeDesign)
                 .animation(homeTransitionAnimation, value: showAlternativeHomeDesign)
 
                 if showAlternativeHomeDesign || renderAlternativeHomeDesign {
@@ -361,7 +366,8 @@ struct Home: View {
                     }
                     .opacity(showAlternativeHomeDesign ? 1 : 0)
                     .scaleEffect(showAlternativeHomeDesign ? 1 : 0.985)
-                    .offset(y: showAlternativeHomeDesign ? 0 : 12)
+                    .offset(y: showAlternativeHomeDesign ? 0 : 10)
+                    .blur(radius: showAlternativeHomeDesign ? 0 : 1.2)
                     .allowsHitTesting(showAlternativeHomeDesign)
                     .animation(homeTransitionAnimation, value: showAlternativeHomeDesign)
                     .zIndex(1)

@@ -220,6 +220,7 @@ struct optionView: View {
                         .frame(width: 22, height: 22)
                 }
                 .buttonStyle(.plain)
+                .offset(y: 6)
                 .accessibilityLabel(isShowingAlternativeHome ? "Mostrar frases en home" : "Mostrar home alternativo")
             }
             .padding(10)

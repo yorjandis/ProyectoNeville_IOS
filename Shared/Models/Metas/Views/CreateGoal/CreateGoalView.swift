@@ -105,12 +105,20 @@ struct CreateGoalView: View {
     private func MetasHome() -> some View {
         ZStack{
             
-            LinearGradient.FondoGrizAzulMate()
-                .ignoresSafeArea()
+            LinearGradient(
+                colors: [
+                    Color(red: 0.82, green: 0.94, blue: 0.78),
+                    Color(red: 0.73, green: 0.90, blue: 0.69),
+                    Color(red: 0.88, green: 0.97, blue: 0.84)
+                ],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea()
             
             VStack{
                 ScrollView {
-                    VStack(alignment: .leading, spacing: 28) {
+                    VStack(alignment: .leading, spacing: 20) {
 
                             Text("Título de la Meta")
                                 .font(.headline)
@@ -138,14 +146,18 @@ struct CreateGoalView: View {
                         
                         //Configuración de la Meta
                         VStack(alignment: .leading, spacing: 5){
-                            Text("Configurar:")
-                                .font(.headline)
-                                .foregroundStyle(.black)
-                                .frame(maxWidth: .infinity, alignment: .leading)
+                            /*
+                             Text("Configurar:")
+                                 .font(.headline)
+                                 .foregroundStyle(.black)
+                                 .frame(maxWidth: .infinity, alignment: .leading)
+                             */
+                           
                                 
                             
                             HStack{
                                 Text("Unidades:")
+                                    .foregroundStyle(.black)
                                 //Cantidad de Unidades
                                 Picker("", selection: $vm.amount) {
                                     ForEach(0...365, id: \.self) { number in
@@ -162,6 +174,7 @@ struct CreateGoalView: View {
                                 .labelsHidden()
                                 
                                 Text("Frecuencia:")
+                                    .foregroundStyle(.black)
                                 Picker("", selection: $vm.frequency) {
                                     ForEach(1...30, id: \.self) {
                                         Text("\($0)")
@@ -179,6 +192,7 @@ struct CreateGoalView: View {
                             
                             HStack{
                                 Text("Tipo de Unidad:")
+                                    .foregroundStyle(.black)
                                 //Tipo: Minuos, horas, dias, meses, años
                                 Picker("", selection: $vm.unit) {
                                     ForEach(TimeUnit.allCases, id: \.self) {
@@ -187,6 +201,8 @@ struct CreateGoalView: View {
                                     }
                                 }
                                 .pickerStyle(.menu)
+                                .foregroundStyle(.black)
+                                .tint(.black)
                                 .labelsHidden()
                             }
 
@@ -340,4 +356,8 @@ struct CreateGoalView: View {
     
 }
 
+#Preview {
+    CreateGoalView()
+        .environment(\.managedObjectContext, CoreDataController.shared.context)
+}
 

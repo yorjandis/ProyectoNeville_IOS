@@ -1173,6 +1173,12 @@ private enum PresenciaDailyEventsSuggestion {
 private struct PresenciaRangePicker: View {
     let title: String
     @Binding var selectedRange: Int
+    @AppStorage(PresenciaStatsAppearanceStorage.key) private var appearanceRawValue = PresenciaStatsAppearanceStorage.defaultValue
+
+    private var pickerColorScheme: ColorScheme {
+        let appearance = PresenciaStatsAppearance(rawValue: appearanceRawValue) ?? .dark
+        return appearance == .light ? .light : .dark
+    }
 
     var body: some View {
         Picker(title, selection: $selectedRange) {
@@ -1182,6 +1188,7 @@ private struct PresenciaRangePicker: View {
         }
         .pickerStyle(.segmented)
         .controlSize(.small)
+        .environment(\.colorScheme, pickerColorScheme)
     }
 }
 

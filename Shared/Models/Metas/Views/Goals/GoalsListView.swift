@@ -12,6 +12,8 @@ import CoreData
 
 struct GoalsListView: View {
 
+    let embeddedInNavigationStack: Bool
+
     @Environment(\.managedObjectContext) private var context
 
     //Funciones premium
@@ -28,8 +30,22 @@ struct GoalsListView: View {
     @State private var showHistorial = false
     @State private var searchText: String = ""
 
+    init(embeddedInNavigationStack: Bool = true) {
+        self.embeddedInNavigationStack = embeddedInNavigationStack
+    }
+
     var body: some View {
-        NavigationStack {
+        if embeddedInNavigationStack {
+            NavigationStack {
+                content
+            }
+        } else {
+            content
+        }
+    }
+
+    @ViewBuilder
+    private var content: some View {
             if purchaseStatus || yorjPremium {
                 ZStack {
                     LinearGradient(colors: [.orange, .blue], startPoint: .top, endPoint: .bottom)
@@ -97,7 +113,6 @@ struct GoalsListView: View {
             } else {
                 PurchaseView()
             }
-        }
     }
 
     private var filteredGoals: [GoalEntity] {
