@@ -110,10 +110,12 @@
     </entity>
     <entity name="Notas" representedClassName="Notas" syncable="YES" codeGenerationType="class">
         <attribute name="categoria" optional="YES" attributeType="String"/>
+        <attribute name="checklistItemsData" optional="YES" attributeType="String"/>
         <attribute name="direccionMapa" optional="YES" attributeType="String"/>
         <attribute name="fechaCreacion" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="fechaModificacion" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" attributeType="String" defaultValueString=""/>
+        <attribute name="isChecklist" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="isfav" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="nota" attributeType="String" defaultValueString=""/>
         <attribute name="title" optional="YES" attributeType="String"/>

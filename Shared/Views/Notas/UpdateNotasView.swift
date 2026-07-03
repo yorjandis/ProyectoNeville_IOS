@@ -17,6 +17,8 @@ struct UpdateNotasView: View {
     @State var categoria : String
     @State var nota : String
     @State var direccionMapa : String
+    @State var isChecklist: Bool = false
+    @State var checklistItems: [NotaChecklistItem] = []
     @StateObject private var locationCapture = AgendaLocationCapture()
     @State private var isCapturingLocation = false
     @State private var showAlert = false
@@ -51,13 +53,29 @@ struct UpdateNotasView: View {
                         .disabled(existingCategories.isEmpty)
                     }
                 }
-                Section("Nota"){
-                    TextEditor(text: $nota)
-                            .font(.system(size: 22))
-                            .frame(minHeight: 150)
-                            .scrollContentBackground(.hidden)
-                            .background(.black.opacity(0.02))
-                            .cornerRadius(8)
+                Section("Tipo"){
+                    Picker("Tipo de nota", selection: $isChecklist) {
+                        Label("Texto", systemImage: "text.alignleft").tag(false)
+                        Label("Checklist", systemImage: "checklist").tag(true)
+                    }
+                    .pickerStyle(.segmented)
+                    .onChange(of: isChecklist) { _, newValue in
+                        if newValue && checklistItems.isEmpty {
+                            checklistItems = NotaChecklistItem.fromText(nota)
+                        }
+                    }
+                }
+                Section(isChecklist ? "Checklist" : "Nota"){
+                    if isChecklist {
+                        NotaChecklistEditor(items: checklistBinding)
+                    } else {
+                        TextEditor(text: $nota)
+                                .font(.system(size: 22))
+                                .frame(minHeight: 150)
+                                .scrollContentBackground(.hidden)
+                                .background(.black.opacity(0.02))
+                                .cornerRadius(8)
+                    }
                 }
                 Section("Coordenadas (Mapas)") {
                     HStack(spacing: 8) {
@@ -103,7 +121,9 @@ struct UpdateNotasView: View {
                 #if os(macOS)
                 ToolbarItem(placement: .principal) {
                     Button("Actualizar"){
-                        if NotasModel().updateNota(NotaID: NotaId, newTitle: title, newNota: nota, direccionMapa: direccionMapa, categoria: categoria){
+                        let items = sanitizedChecklistItems
+                        let noteText = isChecklist ? NotaChecklistItem.renderPlainText(items) : nota
+                        if NotasModel().updateNota(NotaID: NotaId, newTitle: title, newNota: noteText, direccionMapa: direccionMapa, categoria: categoria, isChecklist: isChecklist, checklistItems: items){
                             self.modelNotas.getAllNotasToModel()
                             
                             
@@ -143,7 +163,9 @@ struct UpdateNotasView: View {
                 #if os(iOS)
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Actualizar"){
-                        if NotasModel().updateNota(NotaID: NotaId, newTitle: title, newNota: nota, direccionMapa: direccionMapa, categoria: categoria){
+                        let items = sanitizedChecklistItems
+                        let noteText = isChecklist ? NotaChecklistItem.renderPlainText(items) : nota
+                        if NotasModel().updateNota(NotaID: NotaId, newTitle: title, newNota: noteText, direccionMapa: direccionMapa, categoria: categoria, isChecklist: isChecklist, checklistItems: items){
                             self.modelNotas.getAllNotasToModel()
                         }else{
                             msg("Error al actualizar la nota")
@@ -179,7 +201,25 @@ struct UpdateNotasView: View {
         }))
         .sorted { $0.localizedCaseInsensitiveCompare($1) == .orderedAscending }
     }
-    
-    
-    
+
+    private var checklistBinding: Binding<[NotaChecklistItem]> {
+        Binding {
+            checklistItems.isEmpty ? [NotaChecklistItem(text: "")] : checklistItems
+        } set: { newValue in
+            checklistItems = newValue
+        }
+    }
+
+    private var sanitizedChecklistItems: [NotaChecklistItem] {
+        checklistItems
+            .map {
+                NotaChecklistItem(
+                    id: $0.id,
+                    text: $0.text.trimmingCharacters(in: .whitespacesAndNewlines),
+                    isChecked: $0.isChecked
+                )
+            }
+            .filter { !$0.text.isEmpty }
+    }
+
 }

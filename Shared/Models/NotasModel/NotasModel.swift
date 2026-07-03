@@ -13,6 +13,76 @@ extension Notification.Name {
     static let noteDeletedForWatchSync = Notification.Name("noteDeletedForWatchSync")
 }
 
+struct NotaChecklistItem: Identifiable, Codable, Equatable {
+    var id: String
+    var text: String
+    var isChecked: Bool
+
+    init(id: String = UUID().uuidString, text: String, isChecked: Bool = false) {
+        self.id = id
+        self.text = text
+        self.isChecked = isChecked
+    }
+
+    static func fromText(_ text: String) -> [NotaChecklistItem] {
+        text
+            .split(whereSeparator: \.isNewline)
+            .map { String($0).trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
+            .map { NotaChecklistItem(text: $0, isChecked: false) }
+    }
+
+    static func renderPlainText(_ items: [NotaChecklistItem]) -> String {
+        items.map(\.text).joined(separator: "\n")
+    }
+}
+
+extension Notas {
+    var isChecklistNote: Bool {
+        get {
+            value(forKey: "isChecklist") as? Bool ?? false
+        }
+        set {
+            setValue(newValue, forKey: "isChecklist")
+        }
+    }
+
+    var checklistItems: [NotaChecklistItem] {
+        get {
+            guard let rawValue = value(forKey: "checklistItemsData") as? String,
+                  let data = rawValue.data(using: .utf8),
+                  let decoded = try? JSONDecoder().decode([NotaChecklistItem].self, from: data) else {
+                return []
+            }
+            return decoded
+        }
+        set {
+            guard let data = try? JSONEncoder().encode(newValue),
+                  let encoded = String(data: data, encoding: .utf8) else {
+                setValue("[]", forKey: "checklistItemsData")
+                return
+            }
+            setValue(encoded, forKey: "checklistItemsData")
+        }
+    }
+
+    var noteDisplayText: String {
+        if isChecklistNote {
+            let renderedItems = checklistItems
+                .filter { !$0.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+                .renderedAsChecklistText()
+            return renderedItems.isEmpty ? (nota ?? "") : renderedItems
+        }
+        return nota ?? ""
+    }
+}
+
+private extension Array where Element == NotaChecklistItem {
+    func renderedAsChecklistText() -> String {
+        NotaChecklistItem.renderPlainText(self)
+    }
+}
+
 //Manejo de la tabla Notas
 @MainActor
 final class NotasModel : ObservableObject  {
@@ -141,13 +211,15 @@ final class NotasModel : ObservableObject  {
     /// - Parameter title : Título  de la nota , por defecto es " "
     /// - Parameter isfav : Campo favorito <true|false>, por defecto `false`
     /// - Returns : devuelve  true si éxito, false si error
-    func addNote(nota : String, title : String = "", isFav : Bool = false, direccionMapa: String = "", categoria: String = "" )->Bool {
+    func addNote(nota : String, title : String = "", isFav : Bool = false, direccionMapa: String = "", categoria: String = "", isChecklist: Bool = false, checklistItems: [NotaChecklistItem] = [] )->Bool {
         let entity = Notas(context: self.context)
         let now = Date()
         entity.id = UUID().uuidString
         entity.title = title
         entity.nota = nota
         entity.isfav = isFav
+        entity.isChecklistNote = isChecklist
+        entity.checklistItems = checklistItems
         entity.setValue(categoria.trimmingCharacters(in: .whitespacesAndNewlines), forKey: "categoria")
         entity.setValue(direccionMapa, forKey: "direccionMapa")
         entity.setValue(now, forKey: "fechaCreacion")
@@ -195,14 +267,22 @@ final class NotasModel : ObservableObject  {
     ///  - Parameter newNota : Nuevo texto de la nota
     ///  - Parameter isfav : Estado del campo favorito, por defecto false
     ///  - Returns : true si éxito, false otherwise
-    func updateNota(NotaID : String, newTitle : String, newNota : String, isfav : Bool = false, direccionMapa: String = "", categoria: String = "" )->Bool{
+    func updateNota(NotaID : String, newTitle : String, newNota : String, isfav : Bool? = nil, direccionMapa: String = "", categoria: String = "", isChecklist: Bool? = nil, checklistItems: [NotaChecklistItem]? = nil )->Bool{
         let row = getEntityRow(value: NotaID)
         if row.value(forKey: "fechaCreacion") as? Date == nil {
             row.setValue(Date(), forKey: "fechaCreacion")
         }
         row.title = newTitle
         row.nota = newNota
-        row.isfav = isfav
+        if let isfav {
+            row.isfav = isfav
+        }
+        if let isChecklist {
+            row.isChecklistNote = isChecklist
+        }
+        if let checklistItems {
+            row.checklistItems = checklistItems
+        }
         row.setValue(categoria.trimmingCharacters(in: .whitespacesAndNewlines), forKey: "categoria")
         row.setValue(direccionMapa, forKey: "direccionMapa")
         row.setValue(Date(), forKey: "fechaModificacion")
@@ -228,7 +308,7 @@ final class NotasModel : ObservableObject  {
             
             switch buscar{
             case .nota:
-                let temp = item.nota?.lowercased() ?? ""
+                let temp = item.noteDisplayText.lowercased()
                 if temp.contains(text.lowercased()){
                     result.append(item)
                 }
@@ -264,6 +344,21 @@ final class NotasModel : ObservableObject  {
     
         
         
+    }
+
+    func updateChecklistItems(NotaID: String, checklistItems: [NotaChecklistItem]) -> Bool {
+        let row = getEntityRow(value: NotaID)
+        row.isChecklistNote = true
+        row.checklistItems = checklistItems
+        row.nota = NotaChecklistItem.renderPlainText(checklistItems)
+        row.setValue(Date(), forKey: "fechaModificacion")
+        do {
+            try context.save()
+            return true
+        } catch {
+            context.rollback()
+            return false
+        }
     }
     
     ///Obtener todas las notas favoritas

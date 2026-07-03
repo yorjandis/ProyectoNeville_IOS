@@ -773,9 +773,15 @@ struct DiarioListView: View {
             entries: section.entries,
             isCollapsed: collapsedChapterNames.contains(section.chapter),
             isSelectionMode: isBatchSelectionMode,
+            availableChapters: existingChapters.filter {
+                $0.localizedCaseInsensitiveCompare(section.chapter) != .orderedSame
+            },
             onCollapseToggle: { toggleChapterCollapse(section.chapter) },
             onRenameChapter: { newChapter in
                 renameChapter(section.chapter, to: newChapter)
+            },
+            onMoveChapter: { destinationChapter in
+                moveChapter(section.chapter, to: destinationChapter)
             },
             onDeleteChapter: {
                 deleteChapter(section.chapter)
@@ -1001,6 +1007,27 @@ struct DiarioListView: View {
 
         refreshAfterEntryUpdate(nil)
         alertMessage = "\(idsToUpdate.count) entrada(s) actualizada(s)."
+        showAlert = true
+    }
+
+    private func moveChapter(_ oldChapter: String, to destinationChapter: String) {
+        let trimmedChapter = destinationChapter.trimmingCharacters(in: .whitespacesAndNewlines)
+        let normalizedDestination = trimmedChapter.isEmpty ? unchapteredTitle : trimmedChapter
+        guard oldChapter != normalizedDestination else { return }
+
+        let idsToUpdate = Set(modelDiario.list.compactMap { item -> UUID? in
+            chapterName(for: item) == oldChapter ? item.id : nil
+        })
+        guard !idsToUpdate.isEmpty else { return }
+
+        modelDiario.UpdateCapitulo(capitulo: trimmedChapter, ids: idsToUpdate)
+        collapsedChapterNames.remove(oldChapter)
+        if normalizedDestination != unchapteredTitle {
+            collapsedChapterNames.remove(normalizedDestination)
+        }
+
+        refreshAfterEntryUpdate(nil)
+        alertMessage = "\(idsToUpdate.count) entrada(s) movida(s)."
         showAlert = true
     }
 
@@ -1241,13 +1268,17 @@ private struct DiarioChapterSectionView<RowContent: View>: View {
     let entries: [Diario]
     let isCollapsed: Bool
     let isSelectionMode: Bool
+    let availableChapters: [String]
     let onCollapseToggle: () -> Void
     let onRenameChapter: (String) -> Void
+    let onMoveChapter: (String) -> Void
     let onDeleteChapter: () -> Void
     let rowContent: (Diario) -> RowContent
 
     @State private var showRenameAlert = false
     @State private var chapterDraft = ""
+    @State private var showMoveAlert = false
+    @State private var moveChapterDraft = ""
     @State private var showDeleteConfirmation = false
 
     var body: some View {
@@ -1278,6 +1309,22 @@ private struct DiarioChapterSectionView<RowContent: View>: View {
                         showRenameAlert = true
                     } label: {
                         Label("Editar nombre", systemImage: "pencil")
+                    }
+                    Menu {
+                        Button("Sin capítulo") {
+                            onMoveChapter("")
+                        }
+                        ForEach(availableChapters, id: \.self) { destinationChapter in
+                            Button(destinationChapter) {
+                                onMoveChapter(destinationChapter)
+                            }
+                        }
+                        Button("Nuevo...") {
+                            moveChapterDraft = ""
+                            showMoveAlert = true
+                        }
+                    } label: {
+                        Label("Mover entradas a...", systemImage: "arrowshape.turn.up.right")
                     }
                     Button(role: .destructive) {
                         showDeleteConfirmation = true
@@ -1315,6 +1362,15 @@ private struct DiarioChapterSectionView<RowContent: View>: View {
             }
         } message: {
             Text("Se actualizarán las entradas de este capítulo.")
+        }
+        .alert("Mover entradas", isPresented: $showMoveAlert) {
+            TextField("Capítulo", text: $moveChapterDraft, axis: .vertical)
+            Button("Cancelar", role: .cancel) {}
+            Button("Mover") {
+                onMoveChapter(moveChapterDraft)
+            }
+        } message: {
+            Text("Todas las entradas de este capítulo pasarán al capítulo indicado.")
         }
         .confirmationDialog("¿Eliminar todas las entradas de este capítulo?", isPresented: $showDeleteConfirmation) {
             Button("Eliminar \(entries.count) entrada(s)", role: .destructive) {

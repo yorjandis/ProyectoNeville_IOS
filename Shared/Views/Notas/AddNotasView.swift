@@ -18,6 +18,8 @@ struct AddNotasView: View {
     @State      var categoria : String = ""
     @State      var nota : String = ""
     @State      var direccionMapa: String = ""
+    @State private var isChecklist = false
+    @State private var checklistItems: [NotaChecklistItem] = [NotaChecklistItem(text: "")]
     @StateObject private var locationCapture = AgendaLocationCapture()
     @State private var isCapturingLocation = false
 
@@ -55,21 +57,32 @@ struct AddNotasView: View {
                         .disabled(existingCategories.isEmpty)
                     }
                 }
-                Section("Nota"){
-                    TextEditor(text: $nota)
-                        .font(.system(size: 22))
-                        .multilineTextAlignment(.leading)
-                        .scrollContentBackground(.hidden)
-                        .padding(12)
-                        .background(
-                            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                .fill(Color.black.opacity(0.05))
-                        )
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                .stroke(Color.gray.opacity(0.4), lineWidth: 0.5)
-                        )
-                        .frame(height: 250)
+                Section("Tipo"){
+                    Picker("Tipo de nota", selection: $isChecklist) {
+                        Label("Texto", systemImage: "text.alignleft").tag(false)
+                        Label("Checklist", systemImage: "checklist").tag(true)
+                    }
+                    .pickerStyle(.segmented)
+                }
+                Section(isChecklist ? "Checklist" : "Nota"){
+                    if isChecklist {
+                        NotaChecklistEditor(items: $checklistItems)
+                    } else {
+                        TextEditor(text: $nota)
+                            .font(.system(size: 22))
+                            .multilineTextAlignment(.leading)
+                            .scrollContentBackground(.hidden)
+                            .padding(12)
+                            .background(
+                                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                    .fill(Color.black.opacity(0.05))
+                            )
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                    .stroke(Color.gray.opacity(0.4), lineWidth: 0.5)
+                            )
+                            .frame(height: 250)
+                    }
                 }
                 Section("Coordenadas (Mapas)") {
                     HStack(spacing: 8) {
@@ -117,7 +130,9 @@ struct AddNotasView: View {
                 #if os(macOS)
                 ToolbarItem(placement: .principal) {
                     Button("Guardar"){
-                        if NotasModel().addNote(nota: nota, title: title, isFav: false, direccionMapa: direccionMapa, categoria: categoria) {
+                        let items = sanitizedChecklistItems
+                        let noteText = isChecklist ? NotaChecklistItem.renderPlainText(items) : nota
+                        if NotasModel().addNote(nota: noteText, title: title, isFav: false, direccionMapa: direccionMapa, categoria: categoria, isChecklist: isChecklist, checklistItems: items) {
                             
                             self.modelNotas.getAllNotasToModel() //Actualizando el listado
                             
@@ -160,7 +175,9 @@ struct AddNotasView: View {
                 #if os(iOS)
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Guardar"){
-                        if NotasModel().addNote(nota: nota, title: title, isFav: false, direccionMapa: direccionMapa, categoria: categoria) {
+                        let items = sanitizedChecklistItems
+                        let noteText = isChecklist ? NotaChecklistItem.renderPlainText(items) : nota
+                        if NotasModel().addNote(nota: noteText, title: title, isFav: false, direccionMapa: direccionMapa, categoria: categoria, isChecklist: isChecklist, checklistItems: items) {
                             
                             self.modelNotas.getAllNotasToModel()
                             
@@ -204,5 +221,61 @@ struct AddNotasView: View {
         }))
         .sorted { $0.localizedCaseInsensitiveCompare($1) == .orderedAscending }
     }
-    
+
+    private var sanitizedChecklistItems: [NotaChecklistItem] {
+        checklistItems
+            .map {
+                NotaChecklistItem(
+                    id: $0.id,
+                    text: $0.text.trimmingCharacters(in: .whitespacesAndNewlines),
+                    isChecked: $0.isChecked
+                )
+            }
+            .filter { !$0.text.isEmpty }
+    }
+
+}
+
+struct NotaChecklistEditor: View {
+    @Binding var items: [NotaChecklistItem]
+
+    var body: some View {
+        VStack(spacing: 8) {
+            ForEach($items) { $item in
+                HStack(spacing: 10) {
+                    Button {
+                        item.isChecked.toggle()
+                    } label: {
+                        Image(systemName: item.isChecked ? "checkmark.circle.fill" : "circle")
+                            .font(.title3)
+                    }
+                    .buttonStyle(.plain)
+
+                    TextField("Elemento", text: $item.text, axis: .vertical)
+                        .textFieldStyle(.roundedBorder)
+
+                    Button {
+                        remove(item)
+                    } label: {
+                        Image(systemName: "minus.circle")
+                            .foregroundStyle(.red)
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(items.count == 1)
+                }
+            }
+
+            Button {
+                items.append(NotaChecklistItem(text: ""))
+            } label: {
+                Label("Añadir elemento", systemImage: "plus.circle")
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+
+    private func remove(_ item: NotaChecklistItem) {
+        guard items.count > 1 else { return }
+        items.removeAll { $0.id == item.id }
+    }
 }

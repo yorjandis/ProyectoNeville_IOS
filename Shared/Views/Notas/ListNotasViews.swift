@@ -65,7 +65,7 @@ struct ListNotasViews: View {
         if self.textFieldTitle.isEmpty {return self.modelNotas.notas}
         return self.modelNotas.notas.filter { nota in
             let titleMatches = nota.title?.localizedCaseInsensitiveContains(self.textFieldTitle) ?? false
-            let contentMatches = nota.nota?.localizedCaseInsensitiveContains(self.textFieldTitle) ?? false
+            let contentMatches = nota.noteDisplayText.localizedCaseInsensitiveContains(self.textFieldTitle)
             return titleMatches || contentMatches
         }
     }
@@ -430,6 +430,8 @@ struct ListNotasViews: View {
             NotaID: nota.id ?? "",
             newTitle: nota.title ?? "",
             newNota: nota.nota ?? "",
+            isfav: nota.isfav,
+            direccionMapa: nota.value(forKey: "direccionMapa") as? String ?? "",
             categoria: categoryValue(for: nota)
         ) {
             self.modelNotas.getAllNotasToModel()
@@ -586,7 +588,7 @@ struct ListNotasViews: View {
     private func applyPassToFrases() {
         var inserted = 0
         for nota in selectedNotas {
-            let text = (nota.nota ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+            let text = nota.noteDisplayText.trimmingCharacters(in: .whitespacesAndNewlines)
             guard !text.isEmpty else { continue }
             if FrasesModel.shared.AddFrase(frase: text, autor: "personal") {
                 inserted += 1
@@ -610,7 +612,7 @@ struct ListNotasViews: View {
 
         var inserted = 0
         for nota in selectedNotas {
-            let text = (nota.nota ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+            let text = nota.noteDisplayText.trimmingCharacters(in: .whitespacesAndNewlines)
             guard !text.isEmpty else { continue }
             let object = NSManagedObject(entity: entity, insertInto: context)
             object.setValue(UUID(), forKey: "id")
@@ -803,7 +805,7 @@ struct ListNotasViews: View {
             }
             let lines: [PDFExportLine] = dayNotas.map { nota in
                 let title = (nota.title ?? "").isEmpty ? "Sin título" : (nota.title ?? "Sin título")
-                let detail = (nota.nota ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+                let detail = nota.noteDisplayText.trimmingCharacters(in: .whitespacesAndNewlines)
                 let category = categoryValue(for: nota).trimmingCharacters(in: .whitespacesAndNewlines)
                 let detailParts = [
                     category.isEmpty ? nil : "Categoría: \(category)",
@@ -1078,6 +1080,10 @@ struct cardNotas: View{
             .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
+    private var noteActionText: String {
+        nota?.noteDisplayText ?? ""
+    }
+
     private var availableCategoriesForCurrentNote: [String] {
         existingCategories.filter {
             $0.localizedCaseInsensitiveCompare(currentCategory) != .orderedSame
@@ -1144,7 +1150,9 @@ struct cardNotas: View{
                                 title: nota!.title!,
                                 categoria: nota?.value(forKey: "categoria") as? String ?? "",
                                 nota: nota!.nota!,
-                                direccionMapa: nota?.value(forKey: "direccionMapa") as? String ?? ""
+                                direccionMapa: nota?.value(forKey: "direccionMapa") as? String ?? "",
+                                isChecklist: nota?.isChecklistNote ?? false,
+                                checklistItems: nota?.checklistItems ?? []
                             ),
                                        environmentObjects: [self.modelNotas],
                                        title: "Editar Nota",
@@ -1165,7 +1173,9 @@ struct cardNotas: View{
                                 title: nota!.title!,
                                 categoria: nota?.value(forKey: "categoria") as? String ?? "",
                                 nota: nota!.nota!,
-                                direccionMapa: nota?.value(forKey: "direccionMapa") as? String ?? ""
+                                direccionMapa: nota?.value(forKey: "direccionMapa") as? String ?? "",
+                                isChecklist: nota?.isChecklistNote ?? false,
+                                checklistItems: nota?.checklistItems ?? []
                             )
                                 .environmentObject(self.modelNotas)
                         }
@@ -1195,6 +1205,15 @@ struct cardNotas: View{
                     } label: {
                         Label("Cambiar categoría", systemImage: "folder")
                     }
+
+                    Button {
+                        convertCurrentNoteType()
+                    } label: {
+                        Label(
+                            nota?.isChecklistNote == true ? "Convertir a texto" : "Convertir a checklist",
+                            systemImage: nota?.isChecklistNote == true ? "text.alignleft" : "checklist"
+                        )
+                    }
                     
                     
                     
@@ -1215,7 +1234,7 @@ struct cardNotas: View{
                     NavigationLink{
                         let isfav = nota!.isfav
                         let categoria = nota?.value(forKey: "categoria") as? String ?? ""
-                        let texto = "\(AppCons.zspNota)\(nota!.title ?? "")::\(nota!.nota ?? "")::\(isfav == true  ? "si" : "no")::\(categoria)"
+                        let texto = "\(AppCons.zspNota)\(nota!.title ?? "")::\(noteActionText)::\(isfav == true  ? "si" : "no")::\(categoria)"
                             GenerateQRView(footer: texto, showImage: true)
                     }label:{
                         Label("Generar QR...", systemImage: "qrcode")
@@ -1241,7 +1260,7 @@ struct cardNotas: View{
                     Button {
                         let draft = AgendaInterchangeService.makeAgendaDraft(
                             title: nota?.title ?? "",
-                            content: nota?.nota ?? ""
+                            content: noteActionText
                         )
                         showWindow(
                             for: AgendaEditorView(baseItem: draft) { items in
@@ -1259,7 +1278,7 @@ struct cardNotas: View{
                     NavigationLink {
                         let draft = AgendaInterchangeService.makeAgendaDraft(
                             title: nota?.title ?? "",
-                            content: nota?.nota ?? ""
+                            content: noteActionText
                         )
                         AgendaEditorView(baseItem: draft) { items in
                             AgendaInterchangeService.saveAgendaItems(items)
@@ -1271,7 +1290,7 @@ struct cardNotas: View{
                     
                     #if os(macOS)
                     Button{
-                        showWindow(for: LienzoMain(texto: nota?.nota ?? "", imagenPrimariaACargar: nil),
+                        showWindow(for: LienzoMain(texto: noteActionText, imagenPrimariaACargar: nil),
                                    environmentObjects: [],
                                    title: "Lienzo",
                                    size: .absolute(CGSize(width: 650, height: 750)),
@@ -1284,7 +1303,7 @@ struct cardNotas: View{
                     
                     #else
                     NavigationLink{
-                        LienzoMain(texto: nota?.nota ?? "", imagenPrimariaACargar: nil)
+                        LienzoMain(texto: noteActionText, imagenPrimariaACargar: nil)
                     }label:{
                         Label("Lienzo", systemImage: "heart.text.square")
                     }
@@ -1294,7 +1313,7 @@ struct cardNotas: View{
                     #if os(macOS)
                     
                     Button{
-                        showWindow(for: ReminderEditorView(reminderAEditar: nil, titleAImportar: self.nota?.title, textoAImportar: self.nota?.nota, onSave: {}),
+                        showWindow(for: ReminderEditorView(reminderAEditar: nil, titleAImportar: self.nota?.title, textoAImportar: noteActionText, onSave: {}),
                                    environmentObjects: [],
                                    title: "Lienzo",
                                    size: .absolute(CGSize(width: 650, height: 750)),
@@ -1306,7 +1325,7 @@ struct cardNotas: View{
                     #else
                     
                     NavigationLink{
-                        ReminderEditorView(reminderAEditar: nil, titleAImportar: self.nota?.title, textoAImportar: nota?.nota, onSave: {})
+                        ReminderEditorView(reminderAEditar: nil, titleAImportar: self.nota?.title, textoAImportar: noteActionText, onSave: {})
                     }label:{
                         Label("Recordatorios", systemImage: "heart.text.square")
                     }
@@ -1318,9 +1337,9 @@ struct cardNotas: View{
                     Button{
                         #if os(macOS)
                         NSPasteboard.general.clearContents()
-                        NSPasteboard.general.setString(nota?.nota ?? "", forType: .string)
+                        NSPasteboard.general.setString(noteActionText, forType: .string)
                         #else
-                        UIPasteboard.general.string = nota?.nota ?? ""
+                        UIPasteboard.general.string = noteActionText
                         #endif
                         
                     }label:{
@@ -1328,7 +1347,7 @@ struct cardNotas: View{
                     }
                     
                     
-                    ShareLink(item: "\(nota!.title ?? "")\n \(nota!.nota ?? "")")
+                    ShareLink(item: "\(nota!.title ?? "")\n \(noteActionText)")
                     
                     //Funciones de inteligencia: IA
                     if #available(iOS 26.0, macOS 26.0, *) {
@@ -1336,7 +1355,8 @@ struct cardNotas: View{
                             
                             #if os(macOS)
                             Button{
-                                if let  temp = nota!.nota{
+                                let temp = noteActionText
+                                if !temp.isEmpty {
                                     showWindow(for: RespondView(nameConference: "", texto: temp, tipoSalida: .interpretar, autorRespuesta: "nev" ),
                                     environmentObjects: [],
                                                title: "Interpretar Nota",
@@ -1353,7 +1373,8 @@ struct cardNotas: View{
                             .tint(.purple)
                             
                             Button{
-                                if let  temp = nota!.nota{
+                                let temp = noteActionText
+                                if !temp.isEmpty {
                                     showWindow(for: RespondView(nameConference: "", texto: temp, tipoSalida: .practicaConcreta, autorRespuesta: "nev"),
                                     environmentObjects: [],
                                                title: "Aplicación Práctica - Nota",
@@ -1369,8 +1390,9 @@ struct cardNotas: View{
                             .tint(.purple)
                     
                     Button{
-                        if let  temp = nota!.nota{
-                            showWindow(for:   ChatView(textoACargar: nota!.nota),
+                        let temp = noteActionText
+                        if !temp.isEmpty {
+                            showWindow(for:   ChatView(textoACargar: temp),
                             environmentObjects: [],
                                        title: "Charlar - Notas",
                                        size: AppCons.windows_size_content,
@@ -1385,7 +1407,8 @@ struct cardNotas: View{
                             #else
                             Menu{
                                 NavigationLink{
-                                    if let  temp = nota!.nota{
+                                    let temp = noteActionText
+                                    if !temp.isEmpty {
                                         RespondView(nameConference: "", texto: temp, tipoSalida: .interpretar, autorRespuesta: "nev" )
                                     }
                                     
@@ -1396,7 +1419,8 @@ struct cardNotas: View{
                                 .tint(.purple)
                                 
                                 NavigationLink{
-                                    if let  temp = nota!.nota{
+                                    let temp = noteActionText
+                                    if !temp.isEmpty {
                                         RespondView(nameConference: "", texto: temp, tipoSalida: .practicaConcreta, autorRespuesta: "nev")
                                     }
                                     
@@ -1406,7 +1430,7 @@ struct cardNotas: View{
                                 .tint(.purple)
                                 
                                 NavigationLink{
-                                    ChatView(textoACargar: nota!.nota)
+                                    ChatView(textoACargar: noteActionText)
                                 }label: {
                                     Label("Charlar con IA", systemImage: "sparkles")
                                 }
@@ -1446,36 +1470,40 @@ struct cardNotas: View{
             }
             if expandNota {
                 VStack(alignment: .leading, spacing: 0) {
-                    #if os(macOS)
-                    Text(nota!.nota ?? "")
-                        .font(.system(size: 20))
-                        .fontDesign(.serif)
-                        .foregroundStyle(.black)
-                        .multilineTextAlignment(.leading)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .textSelection(.enabled)
-                        .contentShape(RoundedRectangle(cornerRadius: 20))
-                        .padding(.vertical, 4)
-                        .padding(.horizontal, 5)
-                        .background {
-                            LinearGradient(colors: [.white.opacity(0.8), .white.opacity(0.7)], startPoint: .top, endPoint: .bottom)
-                        }
-                    #else
-                    SelectableText(text: nota!.nota ?? "")
-                        .font(.system(size: 20))
-                        .fontDesign(.serif)
-                        .foregroundStyle(.black)
-                        .multilineTextAlignment(.leading)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .contentShape(RoundedRectangle(cornerRadius: 20))
-                        .padding(.vertical, 4)
-                        .padding(.horizontal, 5)
-                        .background {
-                            LinearGradient(colors: [.white.opacity(0.8), .white.opacity(0.7)], startPoint: .top, endPoint: .bottom)
-                        }
-                    #endif
+                    if nota?.isChecklistNote == true {
+                        checklistPreview
+                    } else {
+                        #if os(macOS)
+                        Text(noteActionText)
+                            .font(.system(size: 20))
+                            .fontDesign(.serif)
+                            .foregroundStyle(.black)
+                            .multilineTextAlignment(.leading)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .textSelection(.enabled)
+                            .contentShape(RoundedRectangle(cornerRadius: 20))
+                            .padding(.vertical, 4)
+                            .padding(.horizontal, 5)
+                            .background {
+                                LinearGradient(colors: [.white.opacity(0.8), .white.opacity(0.7)], startPoint: .top, endPoint: .bottom)
+                            }
+                        #else
+                        SelectableText(text: noteActionText)
+                            .font(.system(size: 20))
+                            .fontDesign(.serif)
+                            .foregroundStyle(.black)
+                            .multilineTextAlignment(.leading)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .contentShape(RoundedRectangle(cornerRadius: 20))
+                            .padding(.vertical, 4)
+                            .padding(.horizontal, 5)
+                            .background {
+                                LinearGradient(colors: [.white.opacity(0.8), .white.opacity(0.7)], startPoint: .top, endPoint: .bottom)
+                            }
+                        #endif
+                    }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
@@ -1534,6 +1562,76 @@ struct cardNotas: View{
         .padding(.vertical, 8)
     }
 
+    private var checklistPreview: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            ForEach(nota?.checklistItems ?? []) { item in
+                Button {
+                    toggleChecklistItem(item)
+                } label: {
+                    HStack(alignment: .top, spacing: 10) {
+                        Image(systemName: item.isChecked ? "checkmark.circle.fill" : "circle")
+                            .font(.title3)
+                            .foregroundStyle(item.isChecked ? .green : .black.opacity(0.7))
+                        Text(item.text)
+                            .font(.system(size: 20))
+                            .fontDesign(.serif)
+                            .foregroundStyle(.black)
+                            .strikethrough(item.isChecked, color: .black.opacity(0.45))
+                            .multilineTextAlignment(.leading)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(.vertical, 8)
+        .padding(.horizontal, 8)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background {
+            LinearGradient(colors: [.white.opacity(0.8), .white.opacity(0.7)], startPoint: .top, endPoint: .bottom)
+        }
+    }
+
+    private func toggleChecklistItem(_ item: NotaChecklistItem) {
+        guard let nota, let id = nota.id else { return }
+        var items = nota.checklistItems
+        guard let index = items.firstIndex(where: { $0.id == item.id }) else { return }
+        items[index].isChecked.toggle()
+        let noteText = NotaChecklistItem.renderPlainText(items)
+        nota.nota = noteText
+        if modelNotas.updateChecklistItems(NotaID: id, checklistItems: items) {
+            modelNotas.getAllNotasToModel()
+        }
+    }
+
+    private func convertCurrentNoteType() {
+        guard let nota, let id = nota.id else { return }
+        let isCurrentlyChecklist = nota.isChecklistNote
+        let items = isCurrentlyChecklist ? [] : NotaChecklistItem.fromText(noteActionText)
+        let convertedText = isCurrentlyChecklist
+            ? noteActionText
+            : NotaChecklistItem.renderPlainText(items)
+
+        if modelNotas.updateNota(
+            NotaID: id,
+            newTitle: nota.title ?? "",
+            newNota: convertedText,
+            isfav: nota.isfav,
+            direccionMapa: nota.value(forKey: "direccionMapa") as? String ?? "",
+            categoria: nota.value(forKey: "categoria") as? String ?? "",
+            isChecklist: !isCurrentlyChecklist,
+            checklistItems: items
+        ) {
+            modelNotas.getAllNotasToModel()
+            withAnimation {
+                expandNota = true
+            }
+        } else {
+            mapsAlertMessage = "No se pudo convertir la nota."
+            showMapsAlert = true
+        }
+    }
+
     private func updateCurrentNoteCategory(_ category: String) {
         guard let nota else { return }
         let trimmedCategory = category.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -1553,7 +1651,8 @@ struct cardNotas: View{
     }
 
     private func addCurrentNoteToCalmList() {
-        guard let text = nota?.nota?.trimmingCharacters(in: .whitespacesAndNewlines), !text.isEmpty else {
+        let text = noteActionText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !text.isEmpty else {
             self.calmAlertMessage = "La nota está vacía."
             self.showCalmAlert = true
             return
