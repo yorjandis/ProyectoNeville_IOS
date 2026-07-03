@@ -10,6 +10,7 @@ struct WatchDiarioTransferPayload {
     let emotion: String
     let isFav: Bool
     let direccionMapa: String
+    let capitulo: String
     let fecha: Date
     let fechaM: Date
 
@@ -21,6 +22,7 @@ struct WatchDiarioTransferPayload {
             "emotion": emotion,
             "isFav": isFav,
             "direccionMapa": direccionMapa,
+            "capitulo": capitulo,
             "fecha": fecha.timeIntervalSince1970,
             "fechaM": fechaM.timeIntervalSince1970
         ]
@@ -47,6 +49,7 @@ struct WatchDiarioTransferPayload {
             emotion: emotion,
             isFav: isFav,
             direccionMapa: direccionMapa,
+            capitulo: dictionary["capitulo"] as? String ?? "",
             fecha: Date(timeIntervalSince1970: fechaInterval),
             fechaM: Date(timeIntervalSince1970: fechaMInterval)
         )

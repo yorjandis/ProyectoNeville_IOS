@@ -169,6 +169,8 @@ struct AppCons{
     static let DeepLink_url_Diario  = "widget:/com.ypg.nev.diario"
     static let DeepLink_url_Notas   = "widget:/com.ypg.nev.notas"
     static let DeepLink_url_Frase   = "widget:/com.ypg.nev.frase"
+    static let DeepLink_url_Metas   = "widget:/com.ypg.nev.metas"
+    static let DeepLink_url_Metas_AppStore = "laley://metas"
     
     //Lleva un registro con las interacciones del usuario para mostrar una ventana de reseña
     static let UD_setting_ReviewCounter     = "UD_setting_ReviewCounter" //Contador de hitos
@@ -213,4 +215,3 @@ struct AppCons{
     
     
 }
-

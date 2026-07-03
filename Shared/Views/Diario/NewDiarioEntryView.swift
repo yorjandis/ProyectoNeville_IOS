@@ -18,6 +18,7 @@ struct NewDiarioEntryView: View {
     @State private var title: String
     @State private var content: String
     @State private var direccionMapa: String
+    @State private var capitulo: String
     @State private var emocion: Emociones
     @State private var fechaCreacion: Date
 
@@ -27,6 +28,7 @@ struct NewDiarioEntryView: View {
         title: String = "",
         content: String = "",
         direccionMapa: String = "",
+        capitulo: String = "",
         emocion: Emociones = .neutral,
         fechaCreacion: Date = Date.now,
         onSave: @escaping (Date) -> Void = { _ in }
@@ -34,6 +36,7 @@ struct NewDiarioEntryView: View {
         _title = State(initialValue: title)
         _content = State(initialValue: content)
         _direccionMapa = State(initialValue: direccionMapa)
+        _capitulo = State(initialValue: capitulo)
         _emocion = State(initialValue: emocion)
         _fechaCreacion = State(initialValue: Calendar.current.startOfDay(for: fechaCreacion))
         self.onSave = onSave
@@ -92,6 +95,26 @@ struct NewDiarioEntryView: View {
                                 .stroke(Color.gray.opacity(0.4), lineWidth: 0.5)
                         )
                         .frame(minHeight: 220)
+                }
+
+                Section("Capítulo") {
+                    HStack {
+                        TextField("Sin capítulo", text: $capitulo, axis: .vertical)
+                            .textFieldStyle(.roundedBorder)
+                        Menu {
+                            Button("Sin capítulo") {
+                                capitulo = ""
+                            }
+                            ForEach(existingChapters, id: \.self) { chapter in
+                                Button(chapter) {
+                                    capitulo = chapter
+                                }
+                            }
+                        } label: {
+                            Image(systemName: "book.closed")
+                        }
+                        .disabled(existingChapters.isEmpty)
+                    }
                 }
 
                 Section("Fecha") {
@@ -156,7 +179,8 @@ struct NewDiarioEntryView: View {
                             emocion: emocion,
                             content: finalContent,
                             fechaCreacion: normalizedDate,
-                            direccionMapa: direccionMapa.trimmingCharacters(in: .whitespacesAndNewlines)
+                            direccionMapa: direccionMapa.trimmingCharacters(in: .whitespacesAndNewlines),
+                            capitulo: capitulo
                         )
 
                         if didSave {
@@ -172,5 +196,14 @@ struct NewDiarioEntryView: View {
                 Text(alertMessage)
             }
         }
+    }
+
+    private var existingChapters: [String] {
+        Array(Set(diarioModel.getAllItemGET().compactMap { diario in
+            let value = (diario.value(forKey: "capitulo") as? String ?? "")
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+            return value.isEmpty ? nil : value
+        }))
+        .sorted { $0.localizedCaseInsensitiveCompare($1) == .orderedAscending }
     }
 }

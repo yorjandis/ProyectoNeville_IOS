@@ -164,7 +164,9 @@ struct PurchaseView: View {
                     .padding(.horizontal)
                     .padding(.top, 10)
                     .padding(.bottom, 14)
-                    .background(.ultraThinMaterial)
+                    .background {
+                        bottomPurchasePanelBackground
+                    }
             }
         }
         .task {
@@ -197,6 +199,21 @@ struct PurchaseView: View {
             endPoint: .bottomTrailing
         )
         .ignoresSafeArea()
+        #endif
+    }
+
+    @ViewBuilder
+    private var bottomPurchasePanelBackground: some View {
+        #if os(macOS)
+        Color.white.opacity(0.9)
+            .overlay(alignment: .top) {
+                Rectangle()
+                    .fill(Color.white.opacity(0.65))
+                    .frame(height: 1)
+            }
+        #else
+        Rectangle()
+            .fill(.ultraThinMaterial)
         #endif
     }
     
@@ -308,25 +325,41 @@ struct PurchaseView: View {
                     VStack(spacing: 4) {
                         if let premiumProduct = self.purchaseModel.products.first {
                             Text("\(premiumProduct.displayPrice)/año")
-                                .foregroundStyle(.black)
+                                .purchasePrimaryButtonTextStyle()
                                 .font(.headline)
                                 .bold()
                         } else {
                             Text("Cargando precio…")
-                                .foregroundStyle(.black.opacity(0.8))
+                                .purchasePrimaryButtonTextStyle()
                                 .font(.headline)
                                 .bold()
                         }
                         
                         Text("Acceder a la Versión Extendida")
-                            .foregroundStyle(.black)
+                            .purchasePrimaryButtonTextStyle()
                             .font(.title2)
                             .bold()
                     }
                     .frame(maxWidth: .infinity)
+                    #if os(macOS)
+                    .padding(.vertical, 12)
+                    .background(
+                        RoundedRectangle(cornerRadius: 8, style: .continuous)
+                            .fill(Color(red: 0.08, green: 0.34, blue: 0.78))
+                    )
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 8, style: .continuous)
+                            .stroke(Color.white.opacity(0.55), lineWidth: 1)
+                    }
+                    .shadow(color: .black.opacity(0.22), radius: 8, y: 3)
+                    #endif
                 }
+                #if os(macOS)
+                .buttonStyle(.plain)
+                #else
                 .buttonStyle(.bordered)
                 .tint(.blue.opacity(0.6))
+                #endif
                 .disabled(self.purchaseModel.products.isEmpty)
                 
                 Text("La suscripción se renueva automáticamente cada año hasta que se cancele.")
@@ -354,10 +387,28 @@ struct PurchaseView: View {
                 Text("Restaurar Compras")
                     .font(.system(size: 15))
                     .bold()
+                    #if os(macOS)
                     .foregroundStyle(.white)
+                    .padding(.horizontal, 18)
+                    .padding(.vertical, 7)
+                    .background(
+                        RoundedRectangle(cornerRadius: 8, style: .continuous)
+                            .fill(Color(red: 0.20, green: 0.20, blue: 0.22))
+                    )
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 8, style: .continuous)
+                            .stroke(Color.white.opacity(0.35), lineWidth: 1)
+                    }
+                    #else
+                    .foregroundStyle(.white)
+                    #endif
             }
+            #if os(macOS)
+            .buttonStyle(.plain)
+            #else
             .buttonStyle(.bordered)
             .tint(.black.opacity(0.5))
+            #endif
             
             legalLinksView
             
@@ -398,6 +449,17 @@ struct PurchaseView: View {
         .foregroundStyle(.black)
     }
 
+}
+
+private extension View {
+    @ViewBuilder
+    func purchasePrimaryButtonTextStyle() -> some View {
+        #if os(macOS)
+        self.foregroundStyle(.white)
+        #else
+        self.foregroundStyle(.black)
+        #endif
+    }
 }
 
 #if os(macOS)

@@ -9,6 +9,7 @@ struct ContentView: View{
     
     @State var showSheetDiario = false
     @State var showSheetNotas = false
+    @State var showSheetMetas = false
     
     
     
@@ -34,6 +35,9 @@ struct ContentView: View{
                 switch url.description{
                     case AppCons.DeepLink_url_Diario : showSheetDiario = true
                     case AppCons.DeepLink_url_Notas :  showSheetNotas = true
+                    case AppCons.DeepLink_url_Metas,
+                         AppCons.DeepLink_url_Metas_AppStore,
+                         "myapp://metas" : showSheetMetas = true
                     default : break
                 }
             })
@@ -42,6 +46,9 @@ struct ContentView: View{
             })
             .sheet(isPresented: $showSheetNotas, content: {
                 ListNotasViews()
+            })
+            .sheet(isPresented: $showSheetMetas, content: {
+                GoalsListView()
             })
         
     }

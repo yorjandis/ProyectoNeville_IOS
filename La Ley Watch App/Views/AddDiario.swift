@@ -13,6 +13,7 @@ struct AddDiario: View {
     
         @State private var title        : String = ""
         @State private var content      : String = ""
+        @State private var capitulo     : String = ""
         @State private var isfav        : Bool = false
         @State private var selection    = Emoticono.neutral
         @State private var showSheet    = false
@@ -50,6 +51,11 @@ struct AddDiario: View {
                         .frame(maxWidth: .infinity, minHeight: 30)
                         .cornerRadius(20)
                         .padding([.leading, .trailing], 5)
+
+                        TextField("Capítulo", text: $capitulo)
+                        .frame(maxWidth: .infinity, minHeight: 30)
+                        .cornerRadius(20)
+                        .padding([.leading, .trailing], 5)
                                     
                         
                         Toggle(isOn: $isfav, label: {
@@ -67,7 +73,8 @@ struct AddDiario: View {
                                         title: self.title,
                                         content: self.content,
                                         emotion: self.selection.txt,
-                                        isFav: self.isfav
+                                        isFav: self.isfav,
+                                        capitulo: self.capitulo
                                     )
 
                                     if didSave {

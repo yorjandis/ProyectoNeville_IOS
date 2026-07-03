@@ -27,9 +27,11 @@ extension UnitEntity {
     func markCompleted(context: NSManagedObjectContext) {
         guard canBeCompleted(now: Date()) else { return }
         
-        self.completedDate = Date.now //Almacena el momento del fichaje
+        let now = Date.now
+        self.completedDate = now //Almacena el momento del fichaje
         
         status = UnitStatus.completed.rawValue
+        goal?.recordStatsEvent(.unitCompleted, unit: self, date: now, context: context)
         try? context.save()
     }
 
@@ -39,6 +41,7 @@ extension UnitEntity {
 
         if unitStatus == .pending && now > endDate ?? Date.now {
             status = UnitStatus.lost.rawValue
+            goal?.recordStatsEvent(.unitLost, unit: self, date: now, context: managedObjectContext)
         }
     }
 }

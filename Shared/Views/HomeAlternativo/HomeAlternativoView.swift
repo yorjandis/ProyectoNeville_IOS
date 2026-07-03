@@ -22,6 +22,7 @@ struct HomeAlternativoView: View {
     @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
     @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) private var yorjPremium: Bool = false
     @AppStorage("HomeAlternativo_AccessIDs") private var storedAccessIDs: String = ""
+    @AppStorage("HomeAlternativo_PaletteIDs") private var storedPaletteIDs: String = ""
     @AppStorage("Home_AgendaBadge_HiddenDayKey") private var agendaBadgeHiddenDayKey: String = ""
     @AppStorage(AppCons.UD_setting_HomeProductividadPresenciaTotal) private var homeProductividadPresenciaTotal: Int = 5
     @AppStorage(AppCons.UD_setting_HomeProductividadMetasTotal) private var homeProductividadMetasTotal: Int = 1
@@ -31,7 +32,10 @@ struct HomeAlternativoView: View {
     @State private var showPremium = false
     @State private var showAccessEditor = false
     @State private var selectedAccessIDs = HomeAlternativoAccess.defaultIDs
+    @State private var selectedPaletteIDs = HomeAlternativoCardPalette.defaultIDs(for: HomeAlternativoAccess.defaultIDs)
     @State private var now = Date()
+    @State private var goalsBadgeVisible = false
+    @State private var nextGoalsBadgeRefreshDate: Date?
     @State private var todayPresentCount = 0
     @State private var todayDiaryEntriesCount = 0
     private let presenceRepository = PresenciaRepository()
@@ -45,8 +49,15 @@ struct HomeAlternativoView: View {
     }
 
     private var tools: [HomeAlternativoTool] {
-        selectedAccessIDs.compactMap { id in
-            HomeAlternativoAccess(rawValue: id).map(HomeAlternativoTool.init(access:))
+        let normalizedPaletteIDs = HomeAlternativoCardPalette.normalizedIDs(
+            from: selectedPaletteIDs,
+            accessIDs: selectedAccessIDs
+        )
+
+        return selectedAccessIDs.enumerated().compactMap { index, id in
+            guard let access = HomeAlternativoAccess(rawValue: id) else { return nil }
+            let palette = HomeAlternativoCardPalette(rawValue: normalizedPaletteIDs[index]) ?? access.defaultPalette
+            return HomeAlternativoTool(access: access, palette: palette)
         }
     }
 
@@ -73,12 +84,7 @@ struct HomeAlternativoView: View {
     }
 
     private var shouldShowGoalsBadge: Bool {
-        goals.contains { goal in
-            goal.isStarted
-                && !goal.isCompleted
-                && goal.timeUntilNextUnit(now: now) == "Listo"
-                && goal.nextPendingUnit != nil
-        }
+        goalsBadgeVisible
     }
 
     private var greeting: String {
@@ -158,15 +164,43 @@ struct HomeAlternativoView: View {
             reloadDiaryProgress()
             phrase = HomeAlternativoPhrases.random(for: dayMoment)
             selectedAccessIDs = HomeAlternativoAccess.normalizedIDs(from: storedAccessIDs)
+            selectedPaletteIDs = HomeAlternativoCardPalette.normalizedIDs(
+                from: storedPaletteIDs,
+                accessIDs: selectedAccessIDs
+            )
+            updateGoalsBadgeState(at: Date())
+        }
+        .task(id: nextGoalsBadgeRefreshDate) {
+            guard let refreshDate = nextGoalsBadgeRefreshDate else { return }
+            let delay = max(refreshDate.timeIntervalSinceNow, 0.2)
+            try? await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
+            guard !Task.isCancelled else { return }
+            await MainActor.run {
+                updateGoalsBadgeState(at: Date())
+            }
         }
         .onChange(of: selectedAccessIDs) { _, newValue in
             storedAccessIDs = HomeAlternativoAccess.encode(newValue)
+            let normalizedPaletteIDs = HomeAlternativoCardPalette.normalizedIDs(
+                from: selectedPaletteIDs,
+                accessIDs: newValue
+            )
+
+            if selectedPaletteIDs != normalizedPaletteIDs {
+                selectedPaletteIDs = normalizedPaletteIDs
+            }
+        }
+        .onChange(of: selectedPaletteIDs) { _, newValue in
+            storedPaletteIDs = HomeAlternativoCardPalette.encode(newValue, accessIDs: selectedAccessIDs)
         }
         .sheet(isPresented: $showPremium) {
             PurchaseView()
         }
         .sheet(isPresented: $showAccessEditor) {
-            HomeAlternativoAccessEditorView(accessIDs: $selectedAccessIDs)
+            HomeAlternativoAccessEditorView(
+                accessIDs: $selectedAccessIDs,
+                paletteIDs: $selectedPaletteIDs
+            )
                 .presentationDetents([.large])
                 .presentationDragIndicator(.visible)
         }
@@ -175,12 +209,15 @@ struct HomeAlternativoView: View {
         }
         .onReceive(NotificationCenter.default.publisher(for: .coreDataStoresDidLoad)) { _ in
             reloadDiaryProgress()
+            updateGoalsBadgeState(at: Date())
         }
         .onReceive(NotificationCenter.default.publisher(for: .NSManagedObjectContextObjectsDidChange, object: context)) { _ in
             reloadDiaryProgress()
+            updateGoalsBadgeState(at: Date())
         }
         .onReceive(NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave)) { _ in
             reloadDiaryProgress()
+            updateGoalsBadgeState(at: Date())
         }
     }
 
@@ -288,6 +325,62 @@ struct HomeAlternativoView: View {
                         .offset(x: 5, y: -5)
                 }
             }
+    }
+
+    private func refreshGoalLostUnitsIfNeeded(at date: Date) {
+        var didChange = false
+
+        for goal in goals where goal.refreshLostUnits(now: date) {
+            didChange = true
+        }
+
+        if didChange && context.hasChanges {
+            try? context.save()
+        }
+    }
+
+    private func updateGoalsBadgeState(at date: Date) {
+        refreshGoalLostUnitsIfNeeded(at: date)
+
+        let hasAvailableUnit = goals.contains { goal in
+            goal.isStarted
+                && !goal.isCompleted
+                && goal.timeUntilNextUnit(now: date) == "Listo"
+                && goal.nextPendingUnit != nil
+        }
+
+        if goalsBadgeVisible != hasAvailableUnit {
+            goalsBadgeVisible = hasAvailableUnit
+        }
+
+        let nextDate = nextGoalsBadgeTransitionDate(after: date)
+        if nextGoalsBadgeRefreshDate != nextDate {
+            nextGoalsBadgeRefreshDate = nextDate
+        }
+    }
+
+    private func nextGoalsBadgeTransitionDate(after date: Date) -> Date? {
+        goals
+            .filter { $0.isStarted && !$0.isCompleted }
+            .flatMap { goal in
+                goal.unitsSet.compactMap { unit -> Date? in
+                    guard unit.unitStatus == .pending else { return nil }
+
+                    let startDate = unit.startDate
+                    let endDate = unit.endDate
+
+                    if let startDate, startDate > date {
+                        return startDate
+                    }
+
+                    if let endDate, endDate > date {
+                        return endDate
+                    }
+
+                    return nil
+                }
+            }
+            .min()
     }
 
     @ViewBuilder
@@ -418,14 +511,116 @@ enum HomeAlternativoVariant: String, CaseIterable, Identifiable {
 
 private struct HomeAlternativoTool: Identifiable {
     let access: HomeAlternativoAccess
+    let palette: HomeAlternativoCardPalette
 
     var id: String { access.id }
     var title: String { access.title }
     var symbol: String { access.symbol }
     var secondarySymbol: String? { access.secondarySymbol }
-    var colors: [Color] { access.colors }
+    var colors: [Color] { palette.colors }
     var requiresPremium: Bool { access.requiresPremium }
     @MainActor var destination: AnyView { access.destination }
+}
+
+private enum HomeAlternativoCardPalette: String, CaseIterable, Identifiable, Codable {
+    case calmaAzul
+    case solDorado
+    case presenciaTurquesa
+    case bosqueVivo
+    case violetaMagenta
+    case coralNaranja
+    case indigoMenta
+    case cieloCian
+    case rosaAurora
+    case verdeLima
+    case nocheElectrica
+    case bronceCalido
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .calmaAzul: return "Calma azul"
+        case .solDorado: return "Sol dorado"
+        case .presenciaTurquesa: return "Turquesa"
+        case .bosqueVivo: return "Bosque"
+        case .violetaMagenta: return "Violeta"
+        case .coralNaranja: return "Coral"
+        case .indigoMenta: return "Indigo"
+        case .cieloCian: return "Cielo"
+        case .rosaAurora: return "Aurora"
+        case .verdeLima: return "Lima"
+        case .nocheElectrica: return "Noche"
+        case .bronceCalido: return "Bronce"
+        }
+    }
+
+    var colors: [Color] {
+        switch self {
+        case .calmaAzul:
+            return [Color(red: 0.34, green: 0.70, blue: 1.00), Color(red: 0.13, green: 0.42, blue: 0.92)]
+        case .solDorado:
+            return [Color(red: 1.00, green: 0.85, blue: 0.23), Color(red: 1.00, green: 0.52, blue: 0.07)]
+        case .presenciaTurquesa:
+            return [Color(red: 0.34, green: 0.93, blue: 0.88), Color(red: 0.04, green: 0.62, blue: 0.69)]
+        case .bosqueVivo:
+            return [Color(red: 0.46, green: 0.91, blue: 0.43), Color(red: 0.12, green: 0.58, blue: 0.30)]
+        case .violetaMagenta:
+            return [Color(red: 0.74, green: 0.45, blue: 0.96), Color(red: 0.79, green: 0.23, blue: 0.70)]
+        case .coralNaranja:
+            return [Color(red: 1.00, green: 0.54, blue: 0.38), Color(red: 0.98, green: 0.34, blue: 0.12)]
+        case .indigoMenta:
+            return [Color(red: 0.46, green: 0.55, blue: 1.00), Color(red: 0.15, green: 0.78, blue: 0.70)]
+        case .cieloCian:
+            return [Color(red: 0.39, green: 0.86, blue: 1.00), Color(red: 0.12, green: 0.54, blue: 0.92)]
+        case .rosaAurora:
+            return [Color(red: 1.00, green: 0.49, blue: 0.76), Color(red: 0.69, green: 0.31, blue: 0.95)]
+        case .verdeLima:
+            return [Color(red: 0.77, green: 0.96, blue: 0.32), Color(red: 0.42, green: 0.75, blue: 0.18)]
+        case .nocheElectrica:
+            return [Color(red: 0.34, green: 0.42, blue: 1.00), Color(red: 0.05, green: 0.83, blue: 0.95)]
+        case .bronceCalido:
+            return [Color(red: 0.89, green: 0.62, blue: 0.32), Color(red: 0.55, green: 0.31, blue: 0.16)]
+        }
+    }
+
+    static func defaultIDs(for accessIDs: [String]) -> [String] {
+        accessIDs.map { accessID in
+            HomeAlternativoAccess(rawValue: accessID)?.defaultPalette.rawValue ?? calmaAzul.rawValue
+        }
+    }
+
+    static func normalizedIDs(from storedValue: String, accessIDs: [String]) -> [String] {
+        let decodedIDs: [String]
+        if let data = storedValue.data(using: .utf8),
+           let decoded = try? JSONDecoder().decode([String].self, from: data) {
+            decodedIDs = decoded
+        } else {
+            decodedIDs = []
+        }
+
+        return normalizedIDs(from: decodedIDs, accessIDs: accessIDs)
+    }
+
+    static func normalizedIDs(from ids: [String], accessIDs: [String]) -> [String] {
+        let normalizedAccessIDs = HomeAlternativoAccess.normalizedIDs(
+            from: HomeAlternativoAccess.encode(accessIDs)
+        )
+
+        return normalizedAccessIDs.enumerated().map { index, accessID in
+            if index < ids.count, Self(rawValue: ids[index]) != nil {
+                return ids[index]
+            }
+
+            return HomeAlternativoAccess(rawValue: accessID)?.defaultPalette.rawValue ?? calmaAzul.rawValue
+        }
+    }
+
+    static func encode(_ ids: [String], accessIDs: [String]) -> String {
+        let normalized = normalizedIDs(from: ids, accessIDs: accessIDs)
+        guard let data = try? JSONEncoder().encode(normalized) else { return "[]" }
+        return String(data: data, encoding: .utf8) ?? "[]"
+    }
 }
 
 private enum HomeAlternativoAccess: String, CaseIterable, Identifiable, Codable, Hashable {
@@ -548,6 +743,31 @@ private enum HomeAlternativoAccess: String, CaseIterable, Identifiable, Codable,
         }
     }
 
+    var defaultPalette: HomeAlternativoCardPalette {
+        switch self {
+        case .calma: return .calmaAzul
+        case .agenda: return .solDorado
+        case .presencia: return .presenciaTurquesa
+        case .metas: return .bosqueVivo
+        case .diario: return .violetaMagenta
+        case .alimentos: return .coralNaranja
+        case .notas: return .cieloCian
+        case .ritual: return .rosaAurora
+        case .coherencia: return .indigoMenta
+        case .lienzo: return .violetaMagenta
+        case .recordatorios: return .coralNaranja
+        case .lectorQR: return .nocheElectrica
+        case .autorNeville: return .bronceCalido
+        case .autorJoeDispenza: return .indigoMenta
+        case .autorBruceLipton: return .verdeLima
+        case .autorGreggBraden: return .nocheElectrica
+        case .frases: return .rosaAurora
+        case .enciclopedia: return .presenciaTurquesa
+        case .reflexiones: return .solDorado
+        case .ayudas: return .calmaAzul
+        }
+    }
+
     var requiresPremium: Bool {
         switch self {
         case .calma, .agenda, .presencia, .alimentos, .ritual, .coherencia:
@@ -635,22 +855,42 @@ private enum HomeAlternativoAccess: String, CaseIterable, Identifiable, Codable,
 private struct HomeAlternativoAccessEditorView: View {
     @Environment(\.dismiss) private var dismiss
     @Binding var accessIDs: [String]
+    @Binding var paletteIDs: [String]
     @State private var editMode: EditMode = .inactive
 
     var body: some View {
         NavigationStack {
             List {
                 ForEach(Array(accessIDs.enumerated()), id: \.offset) { index, accessID in
-                    NavigationLink {
-                        HomeAlternativoAccessSelectionView(selectedID: accessID) { selectedAccess in
-                            setAccess(selectedAccess.rawValue, at: index)
+                    VStack(alignment: .leading, spacing: 10) {
+                        NavigationLink {
+                            HomeAlternativoAccessSelectionView(selectedID: accessID) { selectedAccess in
+                                setAccess(selectedAccess.rawValue, at: index)
+                            }
+                        } label: {
+                            Label(
+                                HomeAlternativoAccess(rawValue: accessID)?.title ?? "Acceso",
+                                systemImage: HomeAlternativoAccess(rawValue: accessID)?.symbol ?? "square.grid.3x3"
+                            )
                         }
-                    } label: {
-                        Label(
-                            HomeAlternativoAccess(rawValue: accessID)?.title ?? "Acceso",
-                            systemImage: HomeAlternativoAccess(rawValue: accessID)?.symbol ?? "square.grid.3x3"
-                        )
+
+                        NavigationLink {
+                            HomeAlternativoPaletteSelectionView(selectedID: paletteID(at: index)) { selectedPalette in
+                                setPalette(selectedPalette.rawValue, at: index)
+                            }
+                        } label: {
+                            HStack(spacing: 10) {
+                                HomeAlternativoPaletteSwatch(colors: palette(at: index).colors)
+
+                                Text(palette(at: index).title)
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
+
+                                Spacer()
+                            }
+                        }
                     }
+                    .padding(.vertical, 4)
                 }
                 .onMove(perform: moveAccess)
             }
@@ -660,6 +900,7 @@ private struct HomeAlternativoAccessEditorView: View {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Restablecer") {
                         accessIDs = HomeAlternativoAccess.defaultIDs
+                        paletteIDs = HomeAlternativoCardPalette.defaultIDs(for: accessIDs)
                     }
                 }
 
@@ -687,11 +928,34 @@ private struct HomeAlternativoAccessEditorView: View {
 
         accessIDs[index] = newValue
         accessIDs = HomeAlternativoAccess.normalizedIDs(from: HomeAlternativoAccess.encode(accessIDs))
+        paletteIDs = HomeAlternativoCardPalette.normalizedIDs(from: paletteIDs, accessIDs: accessIDs)
+    }
+
+    private func paletteID(at index: Int) -> String {
+        let normalizedPaletteIDs = HomeAlternativoCardPalette.normalizedIDs(from: paletteIDs, accessIDs: accessIDs)
+        guard index < normalizedPaletteIDs.count else { return HomeAlternativoCardPalette.calmaAzul.rawValue }
+        return normalizedPaletteIDs[index]
+    }
+
+    private func palette(at index: Int) -> HomeAlternativoCardPalette {
+        HomeAlternativoCardPalette(rawValue: paletteID(at: index)) ?? .calmaAzul
+    }
+
+    private func setPalette(_ newValue: String, at index: Int) {
+        guard index < accessIDs.count else { return }
+        guard HomeAlternativoCardPalette(rawValue: newValue) != nil else { return }
+
+        var normalizedPaletteIDs = HomeAlternativoCardPalette.normalizedIDs(from: paletteIDs, accessIDs: accessIDs)
+        normalizedPaletteIDs[index] = newValue
+        paletteIDs = normalizedPaletteIDs
     }
 
     private func moveAccess(from source: IndexSet, to destination: Int) {
+        var normalizedPaletteIDs = HomeAlternativoCardPalette.normalizedIDs(from: paletteIDs, accessIDs: accessIDs)
         accessIDs.move(fromOffsets: source, toOffset: destination)
+        normalizedPaletteIDs.move(fromOffsets: source, toOffset: destination)
         accessIDs = HomeAlternativoAccess.normalizedIDs(from: HomeAlternativoAccess.encode(accessIDs))
+        paletteIDs = HomeAlternativoCardPalette.normalizedIDs(from: normalizedPaletteIDs, accessIDs: accessIDs)
     }
 }
 
@@ -722,6 +986,59 @@ private struct HomeAlternativoAccessSelectionView: View {
         }
         .navigationTitle("Seleccionar acceso")
         .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+private struct HomeAlternativoPaletteSelectionView: View {
+    @Environment(\.dismiss) private var dismiss
+    let selectedID: String
+    let onSelect: (HomeAlternativoCardPalette) -> Void
+
+    var body: some View {
+        List(HomeAlternativoCardPalette.allCases) { palette in
+            Button {
+                onSelect(palette)
+                dismiss()
+            } label: {
+                HStack(spacing: 12) {
+                    HomeAlternativoPaletteSwatch(colors: palette.colors)
+
+                    Text(palette.title)
+                        .foregroundStyle(.primary)
+
+                    Spacer()
+
+                    if palette.rawValue == selectedID {
+                        Image(systemName: "checkmark")
+                            .font(.system(size: 15, weight: .semibold))
+                            .foregroundStyle(.accent)
+                    }
+                }
+            }
+        }
+        .navigationTitle("Paleta")
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+private struct HomeAlternativoPaletteSwatch: View {
+    let colors: [Color]
+
+    var body: some View {
+        RoundedRectangle(cornerRadius: 8, style: .continuous)
+            .fill(
+                LinearGradient(
+                    colors: colors,
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            )
+            .frame(width: 42, height: 26)
+            .overlay {
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .stroke(.white.opacity(0.75), lineWidth: 1)
+            }
+            .shadow(color: .black.opacity(0.12), radius: 2, y: 1)
     }
 }
 

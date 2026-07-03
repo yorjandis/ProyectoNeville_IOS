@@ -28,6 +28,7 @@ struct GoalsListView: View {
 
     @State private var showCreateGoal = false
     @State private var showHistorial = false
+    @State private var showStats = false
     @State private var searchText: String = ""
 
     init(embeddedInNavigationStack: Bool = true) {
@@ -75,6 +76,28 @@ struct GoalsListView: View {
                         Button {
                             #if os(macOS)
                             showWindow(
+                                for: GoalStatsView().environment(\.managedObjectContext, context),
+                                environmentObjects: [],
+                                title: "Estadísticas de Metas",
+                                size: AppCons.windows_size_content,
+                                isModal: true
+                            )
+                            #else
+                            showStats = true
+                            #endif
+                        } label: {
+                            Image(systemName: "chart.bar.xaxis")
+                        }
+                    }
+
+                    if #available(iOS 26.0, macOS 26.0, *) {
+                        ToolbarSpacer(.fixed)
+                    }
+
+                    ToolbarItem {
+                        Button {
+                            #if os(macOS)
+                            showWindow(
                                 for: ArchivedGoalsListView(context: context),
                                 environmentObjects: [],
                                 title: "Historial de Metas",
@@ -109,6 +132,10 @@ struct GoalsListView: View {
                     #if os(iOS) || os(ipadOS)
                     ArchivedGoalsListView()
                     #endif
+                }
+                .sheet(isPresented: $showStats) {
+                    GoalStatsView()
+                        .environment(\.managedObjectContext, context)
                 }
             } else {
                 PurchaseView()

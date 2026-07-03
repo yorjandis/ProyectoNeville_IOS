@@ -27,6 +27,13 @@
 import CoreData
 import SwiftUI
 
+enum GoalStatsEventType: String {
+    case goalStarted
+    case unitCompleted
+    case unitLost
+    case goalArchived
+}
+
 extension GoalEntity {
 
     var wrappedTitle: String {
@@ -96,7 +103,10 @@ extension GoalEntity {
         if let firstUnit = unitsArray.first {
             firstUnit.status = UnitStatus.completed.rawValue
             firstUnit.completedDate = now
+            recordStatsEvent(.unitCompleted, unit: firstUnit, date: now, context: managedObjectContext)
         }
+
+        recordStatsEvent(.goalStarted, date: now, context: managedObjectContext)
 
         if let context = managedObjectContext, context.hasChanges {
             try? context.save()
@@ -114,6 +124,7 @@ extension GoalEntity {
 
         generateUnits(DetallesUnidades: unitNotes)
         rescheduleUnits(from: now, alignToCalendar: true)
+        recordStatsEvent(.goalStarted, date: now, context: managedObjectContext)
 
         if let context = managedObjectContext, context.hasChanges {
             try? context.save()
@@ -332,6 +343,7 @@ extension GoalEntity {
             guard unit.unitStatus == .pending else { continue }
             if now > (unit.endDate ?? Date.now) {
                 unit.status = UnitStatus.lost.rawValue
+                recordStatsEvent(.unitLost, unit: unit, date: now, context: managedObjectContext)
                 didChange = true
             }
         }
@@ -437,6 +449,7 @@ extension GoalEntity {
             archivedGoal.unitType = self.unitType
             archivedGoal.frequency = self.frequency
             archivedGoal.completionDate = Date()
+            recordStatsEvent(.goalArchived, date: archivedGoal.completionDate, context: context)
             
             // 🟣 3. Copiar unidades
             for unit in unitsArray {
@@ -456,6 +469,46 @@ extension GoalEntity {
             try context.save()
         }
     
+}
+
+extension GoalEntity {
+
+    func recordStatsEvent(
+        _ type: GoalStatsEventType,
+        unit: UnitEntity? = nil,
+        date: Date? = Date(),
+        context explicitContext: NSManagedObjectContext? = nil
+    ) {
+        guard let context = explicitContext ?? managedObjectContext else { return }
+        let eventDate = date ?? Date()
+        let calendar = Calendar.current
+
+        if let unitID = unit?.id, let goalID = id {
+            let request: NSFetchRequest<GoalStatsEventEntity> = GoalStatsEventEntity.fetchRequest()
+            request.predicate = NSPredicate(
+                format: "eventType == %@ AND goalID == %@ AND unitID == %@",
+                type.rawValue,
+                goalID as CVarArg,
+                unitID as CVarArg
+            )
+            request.fetchLimit = 1
+
+            if let existing = try? context.fetch(request), existing.isEmpty == false {
+                return
+            }
+        }
+
+        let event = GoalStatsEventEntity(context: context)
+        event.id = UUID()
+        event.eventType = type.rawValue
+        event.createdAt = eventDate
+        event.dayStart = calendar.startOfDay(for: eventDate)
+        event.goalID = id
+        event.goalTitle = title
+        event.unitID = unit?.id
+        event.unitIndex = unit?.index ?? 0
+        event.unitType = unit?.unitType ?? unitType
+    }
 }
 
 //Actualizar una meta archivada

@@ -63,6 +63,7 @@
         <relationship name="frases" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Frases" inverseName="contextos" inverseEntity="Frases"/>
     </entity>
     <entity name="Diario" representedClassName="Diario" syncable="YES" codeGenerationType="class">
+        <attribute name="capitulo" optional="YES" attributeType="String"/>
         <attribute name="content" optional="YES" attributeType="String"/>
         <attribute name="direccionMapa" optional="YES" attributeType="String"/>
         <attribute name="emotion" optional="YES" attributeType="String"/>
@@ -95,6 +96,17 @@
         <attribute name="totalUnits" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="unitType" optional="YES" attributeType="String"/>
         <relationship name="units" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="UnitEntity" inverseName="goal" inverseEntity="UnitEntity"/>
+    </entity>
+    <entity name="GoalStatsEventEntity" representedClassName="GoalStatsEventEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="dayStart" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="eventType" optional="YES" attributeType="String"/>
+        <attribute name="goalID" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="goalTitle" optional="YES" attributeType="String"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="unitID" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="unitIndex" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="unitType" optional="YES" attributeType="String"/>
     </entity>
     <entity name="Notas" representedClassName="Notas" syncable="YES" codeGenerationType="class">
         <attribute name="categoria" optional="YES" attributeType="String"/>

@@ -22,6 +22,7 @@ struct editContent : View {
     @State  var textTitle : String
     @State  var textContent : String
     @State  var direccionMapa : String
+    @State  var capitulo : String
     @State  var emoticono : Emociones
     @StateObject private var locationCapture = AgendaLocationCapture()
     @State private var isCapturingLocation = false
@@ -95,6 +96,26 @@ struct editContent : View {
                         )
                         .frame(minHeight: 220)
                         .focused(self.$focus, equals: .content)
+                }
+
+                Section("Capítulo") {
+                    HStack {
+                        TextField("Sin capítulo", text: $capitulo, axis: .vertical)
+                            .textFieldStyle(.roundedBorder)
+                        Menu {
+                            Button("Sin capítulo") {
+                                capitulo = ""
+                            }
+                            ForEach(existingChapters, id: \.self) { chapter in
+                                Button(chapter) {
+                                    capitulo = chapter
+                                }
+                            }
+                        } label: {
+                            Image(systemName: "book.closed")
+                        }
+                        .disabled(existingChapters.isEmpty)
+                    }
                 }
 
                 Section("Coordenadas (Mapas)") {
@@ -189,7 +210,7 @@ struct editContent : View {
                 
                 ToolbarItem {
                     Button(action: {
-                        diarioModel.UpdateItem(diario: diario, title: textTitle, content: textContent, emoticono: emoticono, direccionMapa: direccionMapa)
+                        diarioModel.UpdateItem(diario: diario, title: textTitle, content: textContent, emoticono: emoticono, direccionMapa: direccionMapa, capitulo: capitulo)
                         onEntryUpdated(diario.fecha)
                         closeEditorView()
                     }) {
@@ -217,5 +238,14 @@ struct editContent : View {
                 Text(alertMessage)
             }
         }
+    }
+
+    private var existingChapters: [String] {
+        Array(Set(diarioModel.getAllItemGET().compactMap { diario in
+            let value = (diario.value(forKey: "capitulo") as? String ?? "")
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+            return value.isEmpty ? nil : value
+        }))
+        .sorted { $0.localizedCaseInsensitiveCompare($1) == .orderedAscending }
     }
 }

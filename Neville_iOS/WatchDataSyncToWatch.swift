@@ -286,6 +286,7 @@ final class WatchDataSyncToWatch: NSObject {
                     let content = diario.content ?? ""
                     let emotion = diario.emotion ?? "neutral"
                     let direccionMapa = (diario.value(forKey: "direccionMapa") as? String) ?? ""
+                    let capitulo = (diario.value(forKey: "capitulo") as? String) ?? ""
                     let fecha = diario.fecha ?? Date()
                     let fechaM = diario.fechaM ?? Date()
 
@@ -296,6 +297,7 @@ final class WatchDataSyncToWatch: NSObject {
                         emotion: emotion,
                         isFav: diario.isFav,
                         direccionMapa: direccionMapa,
+                        capitulo: capitulo,
                         fecha: fecha,
                         fechaM: fechaM
                     )
@@ -422,6 +424,7 @@ private extension WatchDiarioTransferPayload {
             "emotion": emotion,
             "isFav": isFav,
             "direccionMapa": direccionMapa,
+            "capitulo": capitulo,
             "fecha": fecha.timeIntervalSince1970,
             "fechaM": fechaM.timeIntervalSince1970
         ]

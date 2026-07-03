@@ -1409,9 +1409,7 @@ private struct PresenciaRatioDotsView: View {
         max(CGFloat(stats.count) * 24, 320)
     }
 }
-#endif
-
-
 #Preview{
     PresenciaStatsView()
 }
+#endif

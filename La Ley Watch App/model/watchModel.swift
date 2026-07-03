@@ -924,11 +924,12 @@ final class watchModel: ObservableObject {
         }
     }
 
-    func addDiarioEntry(title: String, content: String, emotion: String, isFav: Bool = false, direccionMapa: String = "") -> Bool {
+    func addDiarioEntry(title: String, content: String, emotion: String, isFav: Bool = false, direccionMapa: String = "", capitulo: String = "") -> Bool {
         let trimmedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
         let trimmedContent = content.trimmingCharacters(in: .whitespacesAndNewlines)
         let trimmedEmotion = emotion.trimmingCharacters(in: .whitespacesAndNewlines)
         let trimmedAddress = direccionMapa.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedChapter = capitulo.trimmingCharacters(in: .whitespacesAndNewlines)
 
         guard !trimmedTitle.isEmpty, !trimmedContent.isEmpty else { return false }
 
@@ -942,6 +943,7 @@ final class watchModel: ObservableObject {
         diario.emotion = trimmedEmotion.isEmpty ? Emoticono2.neutral.txt : trimmedEmotion
         diario.isFav = isFav
         diario.setValue(trimmedAddress, forKey: "direccionMapa")
+        diario.setValue(trimmedChapter, forKey: "capitulo")
         diario.fecha = dayStart
         diario.fechaM = now
 
@@ -956,6 +958,7 @@ final class watchModel: ObservableObject {
                     emotion: diario.emotion ?? Emoticono2.neutral.txt,
                     isFav: isFav,
                     direccionMapa: trimmedAddress,
+                    capitulo: trimmedChapter,
                     fecha: dayStart,
                     fechaM: now
                 )

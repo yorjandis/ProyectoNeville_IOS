@@ -135,8 +135,9 @@ struct LabeledGradientProgressBar: View {
         Text(text)
             .font(.caption)
             .bold()
-            .foregroundColor(active ? .black : .white)
-            .opacity(active ? 1.0 : 0.5)
+            .foregroundColor(active ? .black : Color(red: 0.38, green: 0.38, blue: 0.38))
+            .shadow(color: active ? .clear : .black.opacity(0.18), radius: 1, x: 0, y: 1)
+            .opacity(active ? 1.0 : 0.72)
             .animation(.easeInOut(duration: 0.4), value: active)
     }
 }

@@ -20,6 +20,11 @@ struct DiarioListView: View {
     
     //Para filtros en fechas
     enum TypeOfSearch{case fix, interval}
+
+    private enum DiarioListMode {
+        case all
+        case groupedByChapter
+    }
     
     //Para Buscar en títulos
     @State private var showAlertFilterByTitles = false
@@ -82,6 +87,10 @@ struct DiarioListView: View {
     @State private var isBatchSelectionMode = false
     @State private var batchSelectedDiarioIDs: Set<UUID> = []
     @State private var showBatchDeleteConfirmation = false
+    @State private var selectedListMode: DiarioListMode = .all
+    @State private var collapsedChapterNames: Set<String> = []
+    @State private var showBatchChapterAlert = false
+    @State private var batchChapterDraft = ""
     @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
     @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) private var yorjPremium: Bool = false
     
@@ -95,6 +104,20 @@ struct DiarioListView: View {
 
     private var hasPremiumPDFAccess: Bool {
         purchaseStatus || yorjPremium
+    }
+
+    private var groupedDiarioByChapter: [(chapter: String, entries: [Diario])] {
+        let grouped = Dictionary(grouping: modelDiario.list) { item in
+            chapterName(for: item)
+        }
+
+        return grouped
+            .map { (chapter: $0.key, entries: $0.value) }
+            .sorted { left, right in
+                if left.chapter == unchapteredTitle { return false }
+                if right.chapter == unchapteredTitle { return true }
+                return left.chapter.localizedCaseInsensitiveCompare(right.chapter) == .orderedAscending
+            }
     }
 
     var body: some View {
@@ -146,16 +169,7 @@ struct DiarioListView: View {
                                 .transition(.move(edge: .top).combined(with: .opacity))
                         }
 
-                            ScrollView(){
-                                if self.securityModel.canOpenDiario {
-                                        LazyVStack{
-                                            ForEach(modelDiario.list) { item in
-                                                diarioCard(for: item)
-                                            }
-                                        }
-                                    }
-                                }
-                            .scrollIndicators(.hidden)
+                        diarioEntriesScroll
                     }
                     .onAppear{
                         selectedCalendarDate = nil
@@ -167,109 +181,7 @@ struct DiarioListView: View {
                     }
                     
                 }else{ //Ventana de Autenticación
-                    
-                    VStack{
-                        Text("El Diario le permite llevar un registro de las actividades y hechos del día. Está protegido y solo usted tiene acceso.")
-                            .multilineTextAlignment(.center)
-                            .italic()
-                            .fontWeight(.heavy)
-                            .fontDesign(.serif)
-                            .font(.system(size: 25))
-                            .foregroundStyle(.black)
-                            .padding(15)
-                            
-                        
-                        if BiometryCheckerSupport.checkBiometricSupport() == .available{ //Hay soporte para biometría
-                            Button{
-                                UtilFuncs.autent(HabilitarContenido: self.$securityModel.canOpenDiario)
-                                
-                            }label:{
-                                Image(systemName: "key.viewfinder")
-                                    .font(.system(size: 60))
-                                    .foregroundStyle(Color.black.opacity(0.7))
-                                    .symbolEffect(.pulse, isActive: true)
-                            }
-                            Text("Toque la imagen para acceder.").font(.footnote).padding()
-                            #if os(macOS)
-                            Button("Acceder por contraseña"){
-                                showWindow(for: LogginView(ente: .Diario),
-                                           environmentObjects: [self.securityModel],
-                                           title: "Acceder Por contraseña",
-                                           size: AppCons.windows_size_content_small,
-                                           isModal: true
-                                
-                                )
-                             
-                            }
-                            .buttonStyle(.bordered)
-                            .tint(.black)
-                            .padding(.vertical, 25)
-                            
-                            #else
-                            NavigationLink("Acceder por contraseña"){
-                                    LogginView(ente: .Diario)
-                                        .environmentObject(self.securityModel)
-                            }
-                            .buttonStyle(.bordered)
-                            .tint(.black)
-                            .padding(.vertical, 25)
-                            #endif
-                            
-                            
-                        }else{
-                            //NO hay soporte para Biometria
-                            VStack{
-                                //Chequeamos si hay una clave guardada:
-                                if self.hasPassword{ //Hay una clave
-                                    Text("Parece que su dispositivo no admite biometría. Utilice el botón debajo para entrar por contraseña.")
-                                    
-                                    #if os(macOS)
-                                    Button("Acceder por contraseña"){
-                                        showWindow(for: LogginView(ente: .Diario),
-                                                   environmentObjects: [self.securityModel],
-                                                   title: "Acceder Por contraseña",
-                                                   size: AppCons.windows_size_content_small,
-                                                   isModal: true)
-                                       
-                                    }
-                                    .buttonStyle(.bordered)
-                                    .tint(.black)
-                                    .padding()
-                                    
-                                    #else
-                                    
-                                    NavigationLink("Acceder por contraseña"){
-                                        LogginView(ente: .Diario)
-                                       
-                                    }
-                                    .buttonStyle(.bordered)
-                                    .tint(.black)
-                                    .padding()
-                                    
-                                    #endif
-                                    
-                                    
-                                    
-                                    Text("Si no recuerda la contraseña puede consultarla en Ajustes, en un dispositivo con biometría asociado a la misma cuenta de iCloud")
-                                        .font(.footnote)
-                                    
-                                }else{ //No hay una clave almacenada
-                                    Text("Parece que su dispositivo no admite biometría. Utilice el botón debajo para crear una contraseña para acceder al Diario.")
-                                    //No existe una clave guardada. Permitir crear una la primera vez
-                                    NavigationLink("Crear una Contraseña"){
-                                        CreatePasswordView()
-                                    }
-                                    .buttonStyle(.bordered)
-                                    .tint(.black)
-                                    .padding()
-                                    
-                                    Text("Si no recuerda la contraseña puede consultarla en Ajustes, en un dispositivo con biometría asociado a la misma cuenta de iCloud")
-                                        .font(.footnote)
-                                }
-     
-                            }.padding()
-                        }
-                    }
+                    diarioLockedContent
                 }
             }
             .onDisappear{
@@ -347,6 +259,7 @@ struct DiarioListView: View {
                             //Mostrar todas las entradas
                             Button{
                                 withAnimation {
+                                    selectedListMode = .all
                                     selectedCalendarDate = nil
                                     modelDiario.getAllItem()
                                 }
@@ -354,9 +267,19 @@ struct DiarioListView: View {
                             }label:{
                                 Label("Todas las entradas", systemImage: "text.magnifyingglass")
                             }
+
+                            Button {
+                                withAnimation {
+                                    collapsedChapterNames = Set(groupedDiarioByChapter.map(\.chapter))
+                                    selectedListMode = .groupedByChapter
+                                }
+                            } label: {
+                                Label("Por capítulos", systemImage: selectedListMode == .groupedByChapter ? "checkmark.circle.fill" : "book.closed")
+                            }
                             
                             //Mostrar las favoritas
                             Button{
+                                selectedListMode = .all
                                 modelDiario.list =  modelDiario.filterByFav()
                             } label:{
                                 Label("Mostrar favoritas", systemImage: "text.magnifyingglass")
@@ -368,6 +291,7 @@ struct DiarioListView: View {
                                 ForEach(Emociones.allCases, id: \.self) { emocion in
                                     Button {
                                         withAnimation {
+                                            selectedListMode = .all
                                             modelDiario.list = modelDiario.filterByEmoticono(criterio: emocion.rawValue)
                                         }
                                     } label: {
@@ -718,8 +642,148 @@ struct DiarioListView: View {
             } message: {
                 Text("Esta acción no puede deshacerse.")
             }
+            .alert("Cambiar capítulo", isPresented: $showBatchChapterAlert) {
+                TextField("Capítulo", text: $batchChapterDraft, axis: .vertical)
+                Button("Cancelar", role: .cancel) {}
+                Button("Actualizar") {
+                    updateSelectedEntriesChapter(batchChapterDraft)
+                }
+            } message: {
+                Text("Se actualizarán las entradas seleccionadas.")
+            }
   
          }
+    }
+
+    @ViewBuilder
+    private var diarioLockedContent: some View {
+        VStack {
+            Text("El Diario le permite llevar un registro de las actividades y hechos del día. Está protegido y solo usted tiene acceso.")
+                .multilineTextAlignment(.center)
+                .italic()
+                .fontWeight(.heavy)
+                .fontDesign(.serif)
+                .font(.system(size: 25))
+                .foregroundStyle(.black)
+                .padding(15)
+
+            if BiometryCheckerSupport.checkBiometricSupport() == .available {
+                diarioBiometricAccessContent
+            } else {
+                diarioPasswordFallbackContent
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var diarioBiometricAccessContent: some View {
+        Button {
+            UtilFuncs.autent(HabilitarContenido: self.$securityModel.canOpenDiario)
+        } label: {
+            Image(systemName: "key.viewfinder")
+                .font(.system(size: 60))
+                .foregroundStyle(Color.black.opacity(0.7))
+                .symbolEffect(.pulse, isActive: true)
+        }
+        Text("Toque la imagen para acceder.")
+            .font(.footnote)
+            .padding()
+        diarioPasswordAccessButton
+            .padding(.vertical, 25)
+    }
+
+    @ViewBuilder
+    private var diarioPasswordFallbackContent: some View {
+        VStack {
+            if self.hasPassword {
+                Text("Parece que su dispositivo no admite biometría. Utilice el botón debajo para entrar por contraseña.")
+                diarioPasswordAccessButton
+                    .padding()
+                Text("Si no recuerda la contraseña puede consultarla en Ajustes, en un dispositivo con biometría asociado a la misma cuenta de iCloud")
+                    .font(.footnote)
+            } else {
+                Text("Parece que su dispositivo no admite biometría. Utilice el botón debajo para crear una contraseña para acceder al Diario.")
+                NavigationLink("Crear una Contraseña") {
+                    CreatePasswordView()
+                }
+                .buttonStyle(.bordered)
+                .tint(.black)
+                .padding()
+                Text("Si no recuerda la contraseña puede consultarla en Ajustes, en un dispositivo con biometría asociado a la misma cuenta de iCloud")
+                    .font(.footnote)
+            }
+        }
+        .padding()
+    }
+
+    @ViewBuilder
+    private var diarioPasswordAccessButton: some View {
+#if os(macOS)
+        Button("Acceder por contraseña") {
+            showWindow(for: LogginView(ente: .Diario),
+                       environmentObjects: [self.securityModel],
+                       title: "Acceder Por contraseña",
+                       size: AppCons.windows_size_content_small,
+                       isModal: true)
+        }
+        .buttonStyle(.bordered)
+        .tint(.black)
+#else
+        NavigationLink("Acceder por contraseña") {
+            LogginView(ente: .Diario)
+                .environmentObject(self.securityModel)
+        }
+        .buttonStyle(.bordered)
+        .tint(.black)
+#endif
+    }
+
+    @ViewBuilder
+    private var diarioEntriesScroll: some View {
+        ScrollView {
+            LazyVStack {
+                if selectedListMode == .all {
+                    diarioFlatList
+                } else {
+                    diarioGroupedList
+                }
+            }
+        }
+        .scrollIndicators(.hidden)
+    }
+
+    @ViewBuilder
+    private var diarioFlatList: some View {
+        ForEach(modelDiario.list) { item in
+            diarioCard(for: item)
+        }
+    }
+
+    @ViewBuilder
+    private var diarioGroupedList: some View {
+        ForEach(groupedDiarioByChapter, id: \.chapter) { section in
+            diarioChapterSection(section)
+        }
+    }
+
+    @ViewBuilder
+    private func diarioChapterSection(_ section: (chapter: String, entries: [Diario])) -> some View {
+        DiarioChapterSectionView(
+            chapter: section.chapter,
+            entries: section.entries,
+            isCollapsed: collapsedChapterNames.contains(section.chapter),
+            isSelectionMode: isBatchSelectionMode,
+            onCollapseToggle: { toggleChapterCollapse(section.chapter) },
+            onRenameChapter: { newChapter in
+                renameChapter(section.chapter, to: newChapter)
+            },
+            onDeleteChapter: {
+                deleteChapter(section.chapter)
+            },
+            rowContent: { item in
+                diarioCard(for: item)
+            }
+        )
     }
 
     private var batchSelectionToolbar: some View {
@@ -759,6 +823,28 @@ struct DiarioListView: View {
             .tint(.black)
             .disabled(batchSelectedDiarioIDs.isEmpty)
             .help("Cambiar emoción")
+
+            Menu {
+                Button("Sin capítulo") {
+                    updateSelectedEntriesChapter("")
+                }
+                ForEach(existingChapters, id: \.self) { chapter in
+                    Button(chapter) {
+                        updateSelectedEntriesChapter(chapter)
+                    }
+                }
+                Button("Otro...") {
+                    batchChapterDraft = ""
+                    showBatchChapterAlert = true
+                }
+            } label: {
+                Label("Cambiar capítulo", systemImage: "book.closed")
+                    .labelStyle(.iconOnly)
+            }
+            .buttonStyle(.bordered)
+            .tint(.black)
+            .disabled(batchSelectedDiarioIDs.isEmpty)
+            .help("Cambiar capítulo")
 
             Button(role: .destructive) {
                 showBatchDeleteConfirmation = true
@@ -854,6 +940,16 @@ struct DiarioListView: View {
         }
     }
 
+    private func toggleChapterCollapse(_ chapter: String) {
+        withAnimation {
+            if collapsedChapterNames.contains(chapter) {
+                collapsedChapterNames.remove(chapter)
+            } else {
+                collapsedChapterNames.insert(chapter)
+            }
+        }
+    }
+
     private func deleteSelectedEntries() {
         let idsToDelete = batchSelectedDiarioIDs
         guard !idsToDelete.isEmpty else { return }
@@ -874,6 +970,52 @@ struct DiarioListView: View {
             finishBatchOperation()
             refreshAfterEntryUpdate(nil)
         }
+    }
+
+    private func updateSelectedEntriesChapter(_ chapter: String) {
+        let idsToUpdate = batchSelectedDiarioIDs
+        guard !idsToUpdate.isEmpty else { return }
+
+        withAnimation {
+            modelDiario.UpdateCapitulo(capitulo: chapter, ids: idsToUpdate)
+            finishBatchOperation()
+            refreshAfterEntryUpdate(nil)
+        }
+    }
+
+    private func renameChapter(_ oldChapter: String, to newChapter: String) {
+        let trimmedChapter = newChapter.trimmingCharacters(in: .whitespacesAndNewlines)
+        let normalizedNewChapter = trimmedChapter.isEmpty ? unchapteredTitle : trimmedChapter
+        guard oldChapter != normalizedNewChapter else { return }
+
+        let idsToUpdate = Set(modelDiario.list.compactMap { item -> UUID? in
+            chapterName(for: item) == oldChapter ? item.id : nil
+        })
+        guard !idsToUpdate.isEmpty else { return }
+
+        modelDiario.UpdateCapitulo(capitulo: trimmedChapter, ids: idsToUpdate)
+
+        if collapsedChapterNames.remove(oldChapter) != nil {
+            collapsedChapterNames.insert(normalizedNewChapter)
+        }
+
+        refreshAfterEntryUpdate(nil)
+        alertMessage = "\(idsToUpdate.count) entrada(s) actualizada(s)."
+        showAlert = true
+    }
+
+    private func deleteChapter(_ chapter: String) {
+        let idsToDelete = Set(modelDiario.list.compactMap { item -> UUID? in
+            chapterName(for: item) == chapter ? item.id : nil
+        })
+        guard !idsToDelete.isEmpty else { return }
+
+        modelDiario.DeleteItems(ids: idsToDelete)
+        collapsedChapterNames.remove(chapter)
+        batchSelectedDiarioIDs.subtract(idsToDelete)
+        refreshAfterEntryDeletion(nil)
+        alertMessage = "\(idsToDelete.count) entrada(s) eliminada(s)."
+        showAlert = true
     }
 
     private func finishBatchOperation() {
@@ -1071,6 +1213,116 @@ struct DiarioListView: View {
         }
     }
 
+    private var unchapteredTitle: String {
+        "Sin capítulo"
+    }
+
+    private func chapterValue(for item: Diario) -> String {
+        item.value(forKey: "capitulo") as? String ?? ""
+    }
+
+    private func chapterName(for item: Diario) -> String {
+        let value = chapterValue(for: item).trimmingCharacters(in: .whitespacesAndNewlines)
+        return value.isEmpty ? unchapteredTitle : value
+    }
+
+    private var existingChapters: [String] {
+        Array(Set(modelDiario.getAllItemGET().compactMap { item in
+            let value = chapterValue(for: item).trimmingCharacters(in: .whitespacesAndNewlines)
+            return value.isEmpty ? nil : value
+        }))
+        .sorted { $0.localizedCaseInsensitiveCompare($1) == .orderedAscending }
+    }
+
 }
 
+private struct DiarioChapterSectionView<RowContent: View>: View {
+    let chapter: String
+    let entries: [Diario]
+    let isCollapsed: Bool
+    let isSelectionMode: Bool
+    let onCollapseToggle: () -> Void
+    let onRenameChapter: (String) -> Void
+    let onDeleteChapter: () -> Void
+    let rowContent: (Diario) -> RowContent
 
+    @State private var showRenameAlert = false
+    @State private var chapterDraft = ""
+    @State private var showDeleteConfirmation = false
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            HStack {
+                Button {
+                    onCollapseToggle()
+                } label: {
+                    Image(systemName: isCollapsed ? "chevron.right.circle.fill" : "chevron.down.circle.fill")
+                        .font(.headline)
+                        .foregroundStyle(.black.opacity(0.75))
+                }
+                .buttonStyle(.plain)
+
+                Button {
+                    onCollapseToggle()
+                } label: {
+                    Text(chapter)
+                        .font(.headline)
+                        .foregroundStyle(.black)
+                }
+                .buttonStyle(.plain)
+
+                Menu {
+                    Text("- Capítulo -")
+                    Button {
+                        chapterDraft = chapter == "Sin capítulo" ? "" : chapter
+                        showRenameAlert = true
+                    } label: {
+                        Label("Editar nombre", systemImage: "pencil")
+                    }
+                    Button(role: .destructive) {
+                        showDeleteConfirmation = true
+                    } label: {
+                        Label("Eliminar entradas", systemImage: "trash")
+                    }
+                } label: {
+                    Image(systemName: "ellipsis.circle")
+                        .font(.subheadline)
+                        .foregroundStyle(.black.opacity(0.7))
+                        .padding(.horizontal, 4)
+                }
+                .buttonStyle(.plain)
+                .disabled(isSelectionMode)
+
+                Spacer()
+                Text("\(entries.count)")
+                    .font(.caption)
+                    .foregroundStyle(.black.opacity(0.7))
+            }
+            .padding(.horizontal, 16)
+            .padding(.top, 8)
+
+            if !isCollapsed {
+                ForEach(entries) { entry in
+            rowContent(entry)
+                }
+            }
+        }
+        .alert("Renombrar capítulo", isPresented: $showRenameAlert) {
+            TextField("Capítulo", text: $chapterDraft, axis: .vertical)
+            Button("Cancelar", role: .cancel) {}
+            Button("Actualizar") {
+                onRenameChapter(chapterDraft)
+            }
+        } message: {
+            Text("Se actualizarán las entradas de este capítulo.")
+        }
+        .confirmationDialog("¿Eliminar todas las entradas de este capítulo?", isPresented: $showDeleteConfirmation) {
+            Button("Eliminar \(entries.count) entrada(s)", role: .destructive) {
+                onDeleteChapter()
+            }
+            Button("Cancelar", role: .cancel) {}
+        } message: {
+            Text("Esta acción no se puede deshacer.")
+        }
+    }
+}

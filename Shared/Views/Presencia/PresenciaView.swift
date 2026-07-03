@@ -462,10 +462,8 @@ private struct PresenceCelebrationView: View {
         }
     }
 }
-#endif
-
-
 #Preview{
     PresenciaView()
     //PresenceCelebrationView(phrase: "Siento mi futuro Ahora")
 }
+#endif

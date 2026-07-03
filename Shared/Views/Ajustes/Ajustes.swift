@@ -1751,7 +1751,7 @@ private struct CardioCoherencePhraseSettingsView: View {
             }
         }
         .navigationTitle("Frases de coherencia")
-        .navigationBarTitleDisplayMode(.inline)
+        .settingsInlineNavigationTitleDisplayMode()
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button("Guardar") {
@@ -1867,3 +1867,14 @@ final class LocationPermissionManager: NSObject, ObservableObject, CLLocationMan
     }
 }
 #endif
+
+private extension View {
+    @ViewBuilder
+    func settingsInlineNavigationTitleDisplayMode() -> some View {
+        #if os(iOS)
+        self.navigationBarTitleDisplayMode(.inline)
+        #else
+        self
+        #endif
+    }
+}

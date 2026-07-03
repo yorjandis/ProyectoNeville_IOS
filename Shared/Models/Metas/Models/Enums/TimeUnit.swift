@@ -39,6 +39,16 @@ enum TimeUnit: String, CaseIterable, Codable {
 //Asigna una prioridad a cada unidad de tiempo, para poder organizarlas en la lista de objetivos:
 //comenzando por los objetivos de horas, seguido por dias, meses y años.
 extension TimeUnit {
+    var label: String {
+        switch self {
+        case .minutos: return "Minutos"
+        case .horas: return "Horas"
+        case .dias: return "Días"
+        case .meses: return "Meses"
+        case .años: return "Años"
+        }
+    }
+
     var priority: Int {
         switch self {
         case .minutos: return 0

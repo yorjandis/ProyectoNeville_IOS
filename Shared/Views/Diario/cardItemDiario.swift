@@ -35,6 +35,8 @@ struct cardItemDiario: View{
     @State private var showMapsAlert = false
     @State private var mapsAlertMessage = ""
     @State private var agendaDraftToExport: AgendaItemData?
+    @State private var showChapterAlert = false
+    @State private var chapterDraft = ""
     //Edit Content
     @State private var showSheet = false
     //favorito
@@ -145,7 +147,7 @@ struct cardItemDiario: View{
                         guard !isSelectionMode else { return }
                         
                         #if os(macOS)
-                        showWindow(for: editContent(diario: $diario, textTitle:diario.title ?? "", textContent: diario.content ?? "", direccionMapa: diario.value(forKey: "direccionMapa") as? String ?? "", emoticono: diarioModel.getEmocionesFromStr(value: diario.emotion ?? "neutral"), onEntryUpdated: onEntryUpdated),
+                        showWindow(for: editContent(diario: $diario, textTitle:diario.title ?? "", textContent: diario.content ?? "", direccionMapa: diario.value(forKey: "direccionMapa") as? String ?? "", capitulo: diario.value(forKey: "capitulo") as? String ?? "", emoticono: diarioModel.getEmocionesFromStr(value: diario.emotion ?? "neutral"), onEntryUpdated: onEntryUpdated),
                                    environmentObjects: [self.diarioModel],
                                    title: "Editar entrada Diario",
                                    size: AppCons.windows_size_content,
@@ -170,6 +172,15 @@ struct cardItemDiario: View{
                 Divider()
                 HStack{
                     VStack{
+                        if !chapterName.isEmpty {
+                            HStack{
+                                Text("Capítulo:")
+                                    .font(.system(size: 10))
+                                Text(chapterName)
+                                    .font(.caption2).bold()
+                                    .lineLimit(1)
+                            }
+                        }
                         HStack{
                             Text("Modificado:")
                             .font(.system(size: 10))
@@ -214,7 +225,7 @@ struct cardItemDiario: View{
                     Menu{
                         Button{
                             #if os(macOS)
-                            showWindow(for: editContent(diario: $diario, textTitle:diario.title ?? "", textContent: diario.content ?? "", direccionMapa: diario.value(forKey: "direccionMapa") as? String ?? "", emoticono: diarioModel.getEmocionesFromStr(value: diario.emotion ?? "neutral"), onEntryUpdated: onEntryUpdated),
+                            showWindow(for: editContent(diario: $diario, textTitle:diario.title ?? "", textContent: diario.content ?? "", direccionMapa: diario.value(forKey: "direccionMapa") as? String ?? "", capitulo: diario.value(forKey: "capitulo") as? String ?? "", emoticono: diarioModel.getEmocionesFromStr(value: diario.emotion ?? "neutral"), onEntryUpdated: onEntryUpdated),
                                        environmentObjects: [self.diarioModel],
                                        title: "Editar entrada Diario",
                                        size: AppCons.windows_size_content,
@@ -227,6 +238,23 @@ struct cardItemDiario: View{
                             #endif
                         }label: {
                             Label("Editar", systemImage: "pencil")
+                        }
+
+                        Menu {
+                            Button("Sin capítulo") {
+                                updateChapter("")
+                            }
+                            ForEach(availableChaptersForCurrentEntry, id: \.self) { chapter in
+                                Button(chapter) {
+                                    updateChapter(chapter)
+                                }
+                            }
+                            Button("Nuevo...") {
+                                chapterDraft = ""
+                                showChapterAlert = true
+                            }
+                        } label: {
+                            Label("Capítulo", systemImage: "book.closed")
                         }
                         
                         Button(role: .destructive){
@@ -323,8 +351,17 @@ struct cardItemDiario: View{
         } message: {
             Text(mapsAlertMessage)
         }
+        .alert("Asignar capítulo", isPresented: $showChapterAlert) {
+            TextField("Capítulo", text: $chapterDraft, axis: .vertical)
+            Button("Cancelar", role: .cancel) {}
+            Button("Actualizar") {
+                updateChapter(chapterDraft)
+            }
+        } message: {
+            Text("Se actualizará esta entrada del Diario.")
+        }
         .sheet(isPresented: $showSheet){
-            editContent(diario: $diario, textTitle:diario.title ?? "", textContent: diario.content ?? "", direccionMapa: diario.value(forKey: "direccionMapa") as? String ?? "", emoticono: diarioModel.getEmocionesFromStr(value: diario.emotion ?? "neutral"), onEntryUpdated: onEntryUpdated)
+            editContent(diario: $diario, textTitle:diario.title ?? "", textContent: diario.content ?? "", direccionMapa: diario.value(forKey: "direccionMapa") as? String ?? "", capitulo: diario.value(forKey: "capitulo") as? String ?? "", emoticono: diarioModel.getEmocionesFromStr(value: diario.emotion ?? "neutral"), onEntryUpdated: onEntryUpdated)
         }
 #if os(iOS)
         .sheet(item: $agendaDraftToExport) { draft in
@@ -354,5 +391,32 @@ struct cardItemDiario: View{
                 showMapsAlert = true
             }
         }
+    }
+
+    private var chapterName: String {
+        (diario.value(forKey: "capitulo") as? String ?? "")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private var existingChapters: [String] {
+        Array(Set(diarioModel.getAllItemGET().compactMap { item in
+            let value = (item.value(forKey: "capitulo") as? String ?? "")
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+            return value.isEmpty ? nil : value
+        }))
+        .sorted { $0.localizedCaseInsensitiveCompare($1) == .orderedAscending }
+    }
+
+    private var availableChaptersForCurrentEntry: [String] {
+        existingChapters.filter {
+            $0.localizedCaseInsensitiveCompare(chapterName) != .orderedSame
+        }
+    }
+
+    private func updateChapter(_ chapter: String) {
+        guard let id = diario.id else { return }
+        diarioModel.UpdateCapitulo(capitulo: chapter, ids: [id])
+        diario.setValue(chapter.trimmingCharacters(in: .whitespacesAndNewlines), forKey: "capitulo")
+        onEntryUpdated(diario.fecha)
     }
 }

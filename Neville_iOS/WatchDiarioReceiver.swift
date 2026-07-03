@@ -50,6 +50,7 @@ struct WatchDiarioTransferPayload {
     let emotion: String
     let isFav: Bool
     let direccionMapa: String
+    let capitulo: String
     let fecha: Date
     let fechaM: Date
 
@@ -74,6 +75,7 @@ struct WatchDiarioTransferPayload {
             emotion: emotion,
             isFav: isFav,
             direccionMapa: direccionMapa,
+            capitulo: dictionary["capitulo"] as? String ?? "",
             fecha: Date(timeIntervalSince1970: fechaInterval),
             fechaM: Date(timeIntervalSince1970: fechaMInterval)
         )
@@ -431,6 +433,7 @@ final class WatchDiarioReceiver: NSObject, WCSessionDelegate {
             diario.emotion = payload.emotion
             diario.isFav = payload.isFav
             diario.setValue(payload.direccionMapa, forKey: "direccionMapa")
+            diario.setValue(payload.capitulo.trimmingCharacters(in: .whitespacesAndNewlines), forKey: "capitulo")
             diario.fecha = payload.fecha
             diario.fechaM = payload.fechaM
 

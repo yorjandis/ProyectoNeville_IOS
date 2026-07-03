@@ -269,18 +269,19 @@ final class DiarioModel : ObservableObject{
         }
     
     ///Adiciona un item a la tabla Diario
-    func addItem(title : String, emocion : Emociones, content : String, isFav : Bool = false, direccionMapa: String = "" )->Bool{
-        return addItem(title: title, emocion: emocion, content: content, fechaCreacion: Date.now, isFav: isFav, direccionMapa: direccionMapa)
+    func addItem(title : String, emocion : Emociones, content : String, isFav : Bool = false, direccionMapa: String = "", capitulo: String = "" )->Bool{
+        return addItem(title: title, emocion: emocion, content: content, fechaCreacion: Date.now, isFav: isFav, direccionMapa: direccionMapa, capitulo: capitulo)
     }
 
     ///Adiciona un item a la tabla Diario con fecha de creación personalizada.
-    func addItem(title : String, emocion : Emociones, content : String, fechaCreacion: Date, isFav : Bool = false, direccionMapa: String = "" )->Bool{
+    func addItem(title : String, emocion : Emociones, content : String, fechaCreacion: Date, isFav : Bool = false, direccionMapa: String = "", capitulo: String = "" )->Bool{
         let diario : Diario = Diario(context: context)
         diario.id = UUID()
         diario.title = title
         diario.emotion = emocion.rawValue
         diario.isFav = isFav
         diario.content = content
+        diario.setValue(capitulo.trimmingCharacters(in: .whitespacesAndNewlines), forKey: "capitulo")
         diario.setValue(direccionMapa, forKey: "direccionMapa")
         diario.fecha = Calendar.current.startOfDay(for: fechaCreacion)
         diario.fechaM = Date.now
@@ -293,15 +294,41 @@ final class DiarioModel : ObservableObject{
     }
     
     //Actualiza una entrada: La fecha se actualiza automáticamente.
-    func UpdateItem(diario : Diario, title : String,  content : String, emoticono : Emociones, isFav : Bool = false, direccionMapa: String = "" ){
+    func UpdateItem(diario : Diario, title : String,  content : String, emoticono : Emociones, isFav : Bool = false, direccionMapa: String = "", capitulo: String = "" ){
         diario.title = title
         diario.emotion = emoticono.rawValue
         diario.isFav = isFav
         diario.content = content
+        diario.setValue(capitulo.trimmingCharacters(in: .whitespacesAndNewlines), forKey: "capitulo")
         diario.setValue(direccionMapa, forKey: "direccionMapa")
         diario.fechaM = Date.now
         if context.hasChanges {
             try? context.save()
+        }
+    }
+
+    ///Actualiza el capítulo de varias entradas del diario en una sola operación.
+    func UpdateCapitulo(capitulo: String, ids: Set<UUID>) {
+        guard !ids.isEmpty else { return }
+
+        let fetchRequest: NSFetchRequest<Diario> = Diario.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "id IN %@", Array(ids))
+
+        do {
+            let entries = try context.fetch(fetchRequest)
+            let now = Date.now
+            let trimmedCapitulo = capitulo.trimmingCharacters(in: .whitespacesAndNewlines)
+            entries.forEach { diario in
+                diario.setValue(trimmedCapitulo, forKey: "capitulo")
+                diario.fechaM = now
+            }
+
+            if context.hasChanges {
+                try context.save()
+            }
+        } catch {
+            context.rollback()
+            msg(error.localizedDescription)
         }
     }
     
