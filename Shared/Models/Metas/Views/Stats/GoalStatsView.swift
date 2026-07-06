@@ -27,7 +27,7 @@ struct GoalStatsView: View {
                     ],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
-                )
+                ) 
                 .ignoresSafeArea()
 
                 ScrollView {

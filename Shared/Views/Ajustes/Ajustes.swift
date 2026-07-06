@@ -1303,6 +1303,18 @@ struct Ajustes: View {
                         }
                     }
 
+                    Section("Migración iOS / Android") {
+                        NavigationLink {
+                            MigrationIOSAndroidView()
+                        } label: {
+                            Label("Exportar a Android / Importar desde Android", systemImage: "arrow.left.arrow.right.circle")
+                        }
+
+                        Text("Crea o lee archivos .ypgexp cifrados y compatibles con Android.")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+
                     Section("Abrir Ubicación en Mapas") {
                         Picker("Aplicación", selection: $preferredMapApp) {
                             ForEach(LocationMapApp.allCases) { option in

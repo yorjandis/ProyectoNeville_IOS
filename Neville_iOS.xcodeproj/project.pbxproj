@@ -51,6 +51,12 @@
 		914D887D2FC1AF1800CDDB93 /* WatchPremiumService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914D887C2FC1AF1800CDDB93 /* WatchPremiumService.swift */; };
 		914D88812FC1B22000CDDB93 /* Shared/Views/Presencia/PresenciaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914D887E2FC1B22000CDDB93 /* Shared/Views/Presencia/PresenciaView.swift */; };
 		914D88822FC1B22000CDDB93 /* Shared/Views/Presencia/PresenciaStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914D88802FC1B22000CDDB93 /* Shared/Views/Presencia/PresenciaStatsView.swift */; };
+		914D88902FC6000000CDDB93 /* MigrationFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914D888B2FC6000000CDDB93 /* MigrationFormat.swift */; };
+		914D88912FC6000000CDDB93 /* MigrationCrypto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914D888C2FC6000000CDDB93 /* MigrationCrypto.swift */; };
+		914D88922FC6000000CDDB93 /* CoreDataCanonicalMigrationBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914D888D2FC6000000CDDB93 /* CoreDataCanonicalMigrationBridge.swift */; };
+		914D88932FC6000000CDDB93 /* MyAppMigrationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914D888E2FC6000000CDDB93 /* MyAppMigrationService.swift */; };
+		914D88942FC6000000CDDB93 /* MigrationDataDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914D888F2FC6000000CDDB93 /* MigrationDataDocument.swift */; };
+		914D88962FC6000000CDDB93 /* MigrationIOSAndroidView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914D88952FC6000000CDDB93 /* MigrationIOSAndroidView.swift */; };
 		915017432EF078A2007B741A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 915017422EF078A2007B741A /* StoreKit.framework */; };
 		915017452EF078B2007B741A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 915017442EF078B2007B741A /* StoreKit.framework */; };
 		918C4B0B2EF4094D00974B54 /* sharedmac.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 918C4AFF2EF4094D00974B54 /* sharedmac.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -218,6 +224,12 @@
 		914D887F2FC1B22000CDDB93 /* Shared/Models/Presencia/PresenciaModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/Models/Presencia/PresenciaModels.swift; sourceTree = SOURCE_ROOT; };
 		914D88802FC1B22000CDDB93 /* Shared/Views/Presencia/PresenciaStatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/Views/Presencia/PresenciaStatsView.swift; sourceTree = SOURCE_ROOT; };
 		914D88832FC1B22400CDDB93 /* Shared/Views/Presencia/PresenciaStatsMockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/Views/Presencia/PresenciaStatsMockView.swift; sourceTree = SOURCE_ROOT; };
+		914D888B2FC6000000CDDB93 /* MigrationFormat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/Models/Migration/MigrationFormat.swift; sourceTree = SOURCE_ROOT; };
+		914D888C2FC6000000CDDB93 /* MigrationCrypto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/Models/Migration/MigrationCrypto.swift; sourceTree = SOURCE_ROOT; };
+		914D888D2FC6000000CDDB93 /* CoreDataCanonicalMigrationBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/Models/Migration/CoreDataCanonicalMigrationBridge.swift; sourceTree = SOURCE_ROOT; };
+		914D888E2FC6000000CDDB93 /* MyAppMigrationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/Models/Migration/MyAppMigrationService.swift; sourceTree = SOURCE_ROOT; };
+		914D888F2FC6000000CDDB93 /* MigrationDataDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/Views/Migration/MigrationDataDocument.swift; sourceTree = SOURCE_ROOT; };
+		914D88952FC6000000CDDB93 /* MigrationIOSAndroidView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/Views/Migration/MigrationIOSAndroidView.swift; sourceTree = SOURCE_ROOT; };
 		915017422EF078A2007B741A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		915017442EF078B2007B741A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/System/Library/Frameworks/StoreKit.framework; sourceTree = DEVELOPER_DIR; };
 		9173AB7D2F72097F0015A9FD /* Version.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Version.xcconfig; sourceTree = "<group>"; };
@@ -1608,6 +1620,12 @@
 				914D887E2FC1B22000CDDB93 /* Shared/Views/Presencia/PresenciaView.swift */,
 				914D88802FC1B22000CDDB93 /* Shared/Views/Presencia/PresenciaStatsView.swift */,
 				914D88832FC1B22400CDDB93 /* Shared/Views/Presencia/PresenciaStatsMockView.swift */,
+				914D888B2FC6000000CDDB93 /* MigrationFormat.swift */,
+				914D888C2FC6000000CDDB93 /* MigrationCrypto.swift */,
+				914D888D2FC6000000CDDB93 /* CoreDataCanonicalMigrationBridge.swift */,
+				914D888E2FC6000000CDDB93 /* MyAppMigrationService.swift */,
+				914D888F2FC6000000CDDB93 /* MigrationDataDocument.swift */,
+				914D88952FC6000000CDDB93 /* MigrationIOSAndroidView.swift */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -2085,6 +2103,12 @@
 				911F24302F7B7D31009A77BE /* BruceLiptonAuthorView.swift in Sources */,
 				911F242D2F7B7D31009A77BE /* GreggBradenAuthorView.swift in Sources */,
 				1954CDAA2B1152BC0093DDF0 /* AppIntentWidget.swift in Sources */,
+				914D88902FC6000000CDDB93 /* MigrationFormat.swift in Sources */,
+				914D88912FC6000000CDDB93 /* MigrationCrypto.swift in Sources */,
+				914D88922FC6000000CDDB93 /* CoreDataCanonicalMigrationBridge.swift in Sources */,
+				914D88932FC6000000CDDB93 /* MyAppMigrationService.swift in Sources */,
+				914D88942FC6000000CDDB93 /* MigrationDataDocument.swift in Sources */,
+				914D88962FC6000000CDDB93 /* MigrationIOSAndroidView.swift in Sources */,
 				914D887B2FC1AF1800CDDB93 /* WatchDiarioReceiver.swift in Sources */,
 				914D88812FC1B22000CDDB93 /* Shared/Views/Presencia/PresenciaView.swift in Sources */,
 				914D88822FC1B22000CDDB93 /* Shared/Views/Presencia/PresenciaStatsView.swift in Sources */,
