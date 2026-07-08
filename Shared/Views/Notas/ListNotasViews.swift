@@ -56,6 +56,15 @@ struct ListNotasViews: View {
     @State private var collapsedCategoryNames: Set<String> = []
     @State private var showBulkCategoryAlert = false
     @State private var bulkCategoryDraft = ""
+    @State private var pendingBulkAction: NotesBulkAction?
+    @State private var showBulkActionConfirmation = false
+    @State private var showMigrationPasswordSheet = false
+    @State private var showMigrationExporter = false
+    @State private var migrationPassword = ""
+    @State private var migrationPasswordConfirmation = ""
+    @State private var migrationDocument: MigrationDataDocument?
+    @State private var migrationExportFileName = "neville-notas.ypgexp"
+    @State private var migrationExportCount = 0
     @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
     @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) private var yorjPremium: Bool = false
     
@@ -109,6 +118,56 @@ struct ListNotasViews: View {
     private var hasPremiumPDFAccess: Bool {
         purchaseStatus || yorjPremium
     }
+
+    private enum NotesBulkAction: Identifiable {
+        case passToFrases
+        case passToCalm
+        case setCategory(String)
+        case exportMigration
+
+        var id: String {
+            switch self {
+            case .passToFrases:
+                return "passToFrases"
+            case .passToCalm:
+                return "passToCalm"
+            case .setCategory(let category):
+                return "setCategory-\(category)"
+            case .exportMigration:
+                return "exportMigration"
+            }
+        }
+
+        var confirmTitle: String {
+            switch self {
+            case .passToFrases:
+                return "Pasar a Frases"
+            case .passToCalm:
+                return "Pasar a Calma"
+            case .setCategory:
+                return "Actualizar"
+            case .exportMigration:
+                return "Continuar"
+            }
+        }
+
+        func message(count: Int) -> String {
+            switch self {
+            case .passToFrases:
+                return "Se copiarán \(count) nota(s) seleccionada(s) a Frases personales."
+            case .passToCalm:
+                return "Se copiarán \(count) nota(s) seleccionada(s) a Espacio Calma."
+            case .setCategory(let category):
+                let target = category.trimmingCharacters(in: .whitespacesAndNewlines)
+                if target.isEmpty {
+                    return "Se quitará la categoría de \(count) nota(s) seleccionada(s)."
+                }
+                return "Se asignará la categoría \"\(target)\" a \(count) nota(s) seleccionada(s)."
+            case .exportMigration:
+                return "Se preparará un archivo de migración con \(count) nota(s) seleccionada(s)."
+            }
+        }
+    }
  
     var body: some View {
         NavigationStack {
@@ -154,6 +213,12 @@ struct ListNotasViews: View {
                     contentType: .pdf,
                     defaultFilename: exportedPDFFileName
                 ) { _ in }
+                .fileExporter(
+                    isPresented: $showMigrationExporter,
+                    document: migrationDocument ?? MigrationDataDocument(),
+                    contentType: .ypgExport,
+                    defaultFilename: migrationExportFileName
+                ) { handleNotasMigrationExportResult($0) }
                 .sheet(isPresented: $showExportRangeSheet) {
                     VStack(spacing: 16) {
                         DatePicker("Desde", selection: $exportFromDate, displayedComponents: [.date])
@@ -166,6 +231,13 @@ struct ListNotasViews: View {
                     }
                     .padding()
                 }
+                .sheet(isPresented: $showMigrationPasswordSheet) {
+                    migrationPasswordSheet(
+                        title: "Exportar notas seleccionadas",
+                        countLabel: "\(selectedNotaIDs.count) nota(s)",
+                        exportAction: exportSelectedNotasToMigration
+                    )
+                }
                 .confirmationDialog("¿Eliminar notas seleccionadas?", isPresented: $showConfirmBulkDelete) {
                     Button("Eliminar \(selectedNotaIDs.count) nota(s)", role: .destructive) {
                         applyDeleteToSelected()
@@ -174,11 +246,16 @@ struct ListNotasViews: View {
                 } message: {
                     Text("Esta acción no se puede deshacer.")
                 }
+                .confirmationDialog("Confirmar acción", isPresented: $showBulkActionConfirmation) {
+                    notesBulkConfirmationActions()
+                } message: {
+                    notesBulkConfirmationMessage()
+                }
                 .alert("Cambiar categoría", isPresented: $showBulkCategoryAlert) {
                     TextField("Categoría", text: $bulkCategoryDraft, axis: .vertical)
                     Button("Cancelar", role: .cancel) {}
                     Button("Actualizar") {
-                        applyCategoryToSelected(bulkCategoryDraft)
+                        requestBulkActionConfirmation(.setCategory(bulkCategoryDraft))
                     }
                 } message: {
                     Text("Se actualizarán las notas seleccionadas.")
@@ -340,7 +417,7 @@ struct ListNotasViews: View {
                 }
             } label: {
                 Label(
-                    "Por categorías",
+                    "Por categoría",
                     systemImage: selectedListMode == .groupedByCategory ? "checkmark.circle.fill" : "folder"
                 )
             }
@@ -350,7 +427,7 @@ struct ListNotasViews: View {
                     modelNotas.notas = NotasModel().getFavNotas()
                 }
             } label: {
-                Label("Notas Favoritas", systemImage: "text.magnifyingglass.rtl")
+                Label("Notas favoritas", systemImage: "text.magnifyingglass.rtl")
             }
 
             Button {
@@ -359,7 +436,7 @@ struct ListNotasViews: View {
                 }
             } label: {
                 Label(
-                    "Por fecha de Creación",
+                    "Por fecha de creación",
                     systemImage: selectedSortOption == .creationDate ? "checkmark.circle.fill" : "calendar.badge.clock"
                 )
             }
@@ -378,7 +455,7 @@ struct ListNotasViews: View {
             Button {
                 showAlertSearch = true
             } label: {
-                Label("Buscar en Notas", systemImage: "text.magnifyingglass.rtl")
+                Label("Buscar en notas", systemImage: "text.magnifyingglass.rtl")
             }
 
             Divider()
@@ -448,62 +525,173 @@ struct ListNotasViews: View {
                     .font(.footnote)
                     .foregroundStyle(.secondary)
                 Spacer()
-                Button(selectedNotaIDs.count == filtered.count && !filtered.isEmpty ? "Deseleccionar Todas" : "Seleccionar Todas") {
-                    withAnimation {
-                        toggleSelectAllFiltered()
-                    }
-                }
-                .foregroundStyle(.black).bold()
-                .tint(.gray)
-                .buttonStyle(.bordered)
             }
 
-            HStack(spacing: 8) {
-                Button("Eliminar") {
-                    showConfirmBulkDelete = true
-                }
-                .foregroundStyle(.black).bold()
-                .buttonStyle(.bordered)
-                .tint(.red)
-                .disabled(selectedNotaIDs.isEmpty)
-
-                Button("A Frases") {
-                    applyPassToFrases()
-                }
-                .foregroundStyle(.black).bold()
-                .buttonStyle(.bordered)
-                .tint(.green)
-                .disabled(selectedNotaIDs.isEmpty)
-
-                Button("A Espacio Calma") {
-                    applyPassToCalm()
-                }
-                .foregroundStyle(.black).bold()
-                .buttonStyle(.bordered)
-                .tint(.green)
-                .disabled(selectedNotaIDs.isEmpty)
-
-                Menu("Categoría") {
-                    Button("Sin categoría") {
-                        applyCategoryToSelected("")
-                    }
-                    ForEach(existingCategories, id: \.self) { category in
-                        Button(category) {
-                            applyCategoryToSelected(category)
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    Button(selectedNotaIDs.count == filtered.count && !filtered.isEmpty ? "Quitar sel." : "Sel. todas") {
+                        withAnimation {
+                            toggleSelectAllFiltered()
                         }
                     }
-                    Button("Otra...") {
-                        bulkCategoryDraft = ""
-                        showBulkCategoryAlert = true
+                    .foregroundStyle(.black).bold()
+                    .tint(.gray)
+                    .buttonStyle(.bordered)
+
+                    Button {
+                        showConfirmBulkDelete = true
+                    } label: {
+                        Image(systemName: "trash")
                     }
+                    .accessibilityLabel("Eliminar")
+                    .foregroundStyle(.black).bold()
+                    .buttonStyle(.bordered)
+                    .tint(.red)
+                    .disabled(selectedNotaIDs.isEmpty)
+
+                    Button("Frases") {
+                        requestBulkActionConfirmation(.passToFrases)
+                    }
+                    .foregroundStyle(.black).bold()
+                    .buttonStyle(.bordered)
+                    .tint(.green)
+                    .disabled(selectedNotaIDs.isEmpty)
+
+                    Button("Calma") {
+                        requestBulkActionConfirmation(.passToCalm)
+                    }
+                    .foregroundStyle(.black).bold()
+                    .buttonStyle(.bordered)
+                    .tint(.green)
+                    .disabled(selectedNotaIDs.isEmpty)
+
+                    Menu("Categoría") {
+                        Button("Sin categoría") {
+                            requestBulkActionConfirmation(.setCategory(""))
+                        }
+                        ForEach(existingCategories, id: \.self) { category in
+                            Button(category) {
+                                requestBulkActionConfirmation(.setCategory(category))
+                            }
+                        }
+                        Button("Otra...") {
+                            bulkCategoryDraft = ""
+                            showBulkCategoryAlert = true
+                        }
+                    }
+                    .foregroundStyle(.black).bold()
+                    .buttonStyle(.bordered)
+                    .disabled(selectedNotaIDs.isEmpty)
+
+                    Button("Migrar") {
+                        requestBulkActionConfirmation(.exportMigration)
+                    }
+                    .foregroundStyle(.black).bold()
+                    .buttonStyle(.bordered)
+                    .disabled(selectedNotaIDs.isEmpty)
                 }
-                .foregroundStyle(.black).bold()
-                .buttonStyle(.bordered)
-                .disabled(selectedNotaIDs.isEmpty)
+                .fixedSize()
             }
         }
         .padding(.horizontal, 10)
         .padding(.top, 8)
+    }
+
+    @ViewBuilder
+    private func notesBulkConfirmationActions() -> some View {
+        if let action = pendingBulkAction {
+            Button(action.confirmTitle) {
+                performConfirmedBulkAction(action)
+                pendingBulkAction = nil
+            }
+        }
+        Button("Cancelar", role: .cancel) {
+            pendingBulkAction = nil
+        }
+    }
+
+    private func notesBulkConfirmationMessage() -> Text {
+        Text(pendingBulkAction?.message(count: selectedNotaIDs.count) ?? "")
+    }
+
+    private func requestBulkActionConfirmation(_ action: NotesBulkAction) {
+        guard !selectedNotaIDs.isEmpty else { return }
+        DispatchQueue.main.async {
+            pendingBulkAction = action
+            showBulkActionConfirmation = true
+        }
+    }
+
+    private func performConfirmedBulkAction(_ action: NotesBulkAction) {
+        switch action {
+        case .passToFrases:
+            applyPassToFrases()
+        case .passToCalm:
+            applyPassToCalm()
+        case .setCategory(let category):
+            applyCategoryToSelected(category)
+        case .exportMigration:
+            authenticateBeforeMigrationExport()
+        }
+    }
+
+    private func authenticateBeforeMigrationExport() {
+        UtilFuncs.authenticateDeviceOwner(reason: "Autentícate para exportar las notas seleccionadas.") { success, errorMessage in
+            if success {
+                migrationPassword = ""
+                migrationPasswordConfirmation = ""
+                showMigrationPasswordSheet = true
+            } else {
+                alertMessage = errorMessage ?? "No se pudo autenticar el acceso a la exportación."
+                showAlert = true
+            }
+        }
+    }
+
+    private func handleNotasMigrationExportResult(_ result: Result<URL, Error>) {
+        switch result {
+        case .success:
+            alertMessage = "Archivo de migración exportado correctamente: \(migrationExportCount) nota(s)."
+            selectedNotaIDs.removeAll()
+            selectionMode = false
+        case .failure(let error):
+            alertMessage = "No se pudo guardar el archivo de migración: \(error.localizedDescription)"
+        }
+        migrationPassword = ""
+        migrationPasswordConfirmation = ""
+        migrationDocument = nil
+        showAlert = true
+    }
+
+    private func migrationPasswordSheet(title: String, countLabel: String, exportAction: @escaping () -> Void) -> some View {
+        NavigationStack {
+            Form {
+                Section(title) {
+                    Text("Se creará un archivo seguro con \(countLabel). La contraseña solo se usa para proteger este archivo y no se guarda.")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                    SecureField("Contraseña del archivo", text: $migrationPassword)
+                    SecureField("Repetir contraseña", text: $migrationPasswordConfirmation)
+                }
+            }
+            .navigationTitle("Archivo .ypgexp")
+            #if os(iOS)
+            .navigationBarTitleDisplayMode(.inline)
+            #endif
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancelar") {
+                        showMigrationPasswordSheet = false
+                    }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Exportar") {
+                        exportAction()
+                    }
+                    .disabled(migrationPassword.isEmpty || migrationPassword != migrationPasswordConfirmation)
+                }
+            }
+        }
     }
 
     private func toggleSelection(for nota: Notas) {
@@ -657,6 +845,35 @@ struct ListNotasViews: View {
             direccionMapa: nota.value(forKey: "direccionMapa") as? String ?? "",
             categoria: category
         )
+    }
+
+    private func exportSelectedNotasToMigration() {
+        guard migrationPassword == migrationPasswordConfirmation, !migrationPassword.isEmpty else {
+            alertMessage = "La contraseña de exportación está vacía o no coincide."
+            showAlert = true
+            return
+        }
+
+        let notes = selectedNotas
+        guard !notes.isEmpty else {
+            alertMessage = "Selecciona al menos una nota para exportar."
+            showAlert = true
+            return
+        }
+
+        do {
+            let bridge = CoreDataCanonicalMigrationBridge()
+            let records = try bridge.exportRecords(notes: notes)
+            let result = try MyAppMigrationService().export(records: records, password: migrationPassword)
+            migrationDocument = MigrationDataDocument(data: result.bytes)
+            migrationExportCount = notes.count
+            migrationExportFileName = "neville-notas-\(notes.count).ypgexp"
+            showMigrationPasswordSheet = false
+            showMigrationExporter = true
+        } catch {
+            alertMessage = "No se pudo preparar el archivo de migración: \(error.localizedDescription)"
+            showAlert = true
+        }
     }
 
     @ViewBuilder

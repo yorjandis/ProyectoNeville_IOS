@@ -267,9 +267,7 @@ struct CreateGoalView: View {
             
             VStack(alignment: .leading) {
                 
-                Text("Listado de Hábitos:")
-                    .font(.title2)
-                    .padding(.bottom, 8)
+              
                 
                 ScrollView {
                     LazyVStack(spacing: 16) {   // 👈 separación entre tarjetas

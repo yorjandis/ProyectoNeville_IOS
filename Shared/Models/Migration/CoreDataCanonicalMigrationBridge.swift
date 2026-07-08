@@ -23,6 +23,18 @@ final class CoreDataCanonicalMigrationBridge {
         return records
     }
 
+    func exportRecords(notes: [Notas]) throws -> [CanonicalMigrationRecord] {
+        try notes.map(noteRecord)
+    }
+
+    func exportRecords(diaryEntries: [Diario]) throws -> [CanonicalMigrationRecord] {
+        try diaryEntries.map(diaryRecord)
+    }
+
+    func exportRecords(agendaItems: [AgendaItemData]) throws -> [CanonicalMigrationRecord] {
+        try agendaItems.map(agendaRecord)
+    }
+
     func findConflicts(records: [CanonicalMigrationRecord]) throws -> [ImportConflict] {
         let existing = try exportRecords()
         return records.compactMap { incoming in
@@ -311,6 +323,29 @@ private extension CoreDataCanonicalMigrationBridge {
                 "priority": object.value(forKey: "prioridad") as? String ?? "",
                 "colorHex": object.value(forKey: "colorHex") as? String ?? "",
                 "completed": object.value(forKey: "completada") ?? NSNull(),
+                "reminderActive": false,
+                "reminderId": NSNull()
+            ]
+        )
+    }
+
+    func agendaRecord(_ item: AgendaItemData) throws -> CanonicalMigrationRecord {
+        CanonicalMigrationRecord(
+            type: MigrationRecordType.agenda,
+            id: item.id.uuidString.lowercased(),
+            createdAt: iso(item.fechaCreacion),
+            updatedAt: iso(item.fechaModificacion),
+            schemaVersion: MigrationFormat.schemaVersion,
+            payload: [
+                "title": item.titulo,
+                "note": item.nota,
+                "activityDateMillis": millis(item.fechaActividad),
+                "activityTimeMillis": millis(item.hora),
+                "place": item.lugar,
+                "content": item.contenido,
+                "priority": item.prioridad.rawValue,
+                "colorHex": item.colorHex,
+                "completed": item.completada.map { NSNumber(value: $0) } ?? NSNull(),
                 "reminderActive": false,
                 "reminderId": NSNull()
             ]

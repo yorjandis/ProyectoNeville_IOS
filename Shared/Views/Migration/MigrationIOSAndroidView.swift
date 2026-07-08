@@ -1,5 +1,6 @@
 import SwiftUI
 import UniformTypeIdentifiers
+import LocalAuthentication
 
 @MainActor
 private final class MigrationIOSAndroidViewModel: ObservableObject {
@@ -128,73 +129,82 @@ struct MigrationIOSAndroidView: View {
     @StateObject private var viewModel = MigrationIOSAndroidViewModel()
     @State private var showExporter = false
     @State private var showImporter = false
+    @State private var isMigrationUnlocked = false
+    @State private var authPassword = ""
+    @State private var authMessage: String?
 
     var body: some View {
         Form {
-            Section("Exportar a Android") {
-                SecureField("Contraseña del archivo", text: $viewModel.exportPassword)
-                SecureField("Repetir contraseña", text: $viewModel.exportPasswordConfirmation)
+            exportableContentInfo()
 
-                Button {
-                    viewModel.prepareExport()
-                    showExporter = viewModel.exportDocument != nil
-                } label: {
-                    Label("Crear archivo .ypgexp", systemImage: "square.and.arrow.up")
-                }
-                .disabled(!viewModel.canExport || viewModel.isWorking)
-
-                Text("Se exportan datos normalizados en NDJSON y se cifra el paquete completo con AES-256-GCM. La contraseña no se guarda.")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-
-                if viewModel.hasExportSummary {
-                    exportSummary()
-                }
-            }
-
-            Section("Importar desde Android") {
-                SecureField("Contraseña del archivo", text: $viewModel.importPassword)
-
-                Button {
-                    showImporter = true
-                } label: {
-                    Label("Seleccionar archivo .ypgexp", systemImage: "square.and.arrow.down")
-                }
-                .disabled(!viewModel.canPreviewImport || viewModel.isWorking)
-
-                if let preview = viewModel.preview {
-                    previewSummary(preview)
-
-                    if !preview.errors.isEmpty {
-                        validationList(title: "Errores", items: preview.errors)
-                    }
-
-                    if !preview.conflicts.isEmpty {
-                        conflictList(preview.conflicts)
-                    }
+            if isMigrationUnlocked {
+                Section("Exportar a Android") {
+                    SecureField("Contraseña del archivo", text: $viewModel.exportPassword)
+                    SecureField("Repetir contraseña", text: $viewModel.exportPasswordConfirmation)
 
                     Button {
-                        if viewModel.hasBlockingConflicts {
-                            viewModel.showOverwriteConfirmation = true
-                        } else {
-                            viewModel.importCurrentPreview()
-                        }
+                        viewModel.prepareExport()
+                        showExporter = viewModel.exportDocument != nil
                     } label: {
-                        Label("Importar elementos válidos", systemImage: "checkmark.circle")
+                        Label("Crear archivo .ypgexp", systemImage: "square.and.arrow.up")
                     }
-                    .disabled(viewModel.isWorking || !preview.errors.isEmpty)
-                }
+                    .disabled(!viewModel.canExport || viewModel.isWorking)
 
-                if viewModel.hasImportSummary {
-                    importSummary()
-                }
-            }
-
-            if let message = viewModel.message {
-                Section("Resumen") {
-                    Text(message)
+                    Text("Tus datos se preparan en un archivo seguro y protegido con la contraseña que elijas. La contraseña solo se usa durante este proceso y no se guarda en el dispositivo.")
+                        .font(.footnote)
                         .foregroundStyle(.secondary)
+
+                    if viewModel.hasExportSummary {
+                        exportSummary()
+                    }
                 }
+
+                Section("Importar desde Android") {
+                    SecureField("Contraseña del archivo", text: $viewModel.importPassword)
+
+                    Button {
+                        showImporter = true
+                    } label: {
+                        Label("Seleccionar archivo .ypgexp", systemImage: "square.and.arrow.down")
+                    }
+                    .disabled(!viewModel.canPreviewImport || viewModel.isWorking)
+
+                    if let preview = viewModel.preview {
+                        previewSummary(preview)
+
+                        if !preview.errors.isEmpty {
+                            validationList(title: "Errores", items: preview.errors)
+                        }
+
+                        if !preview.conflicts.isEmpty {
+                            conflictList(preview.conflicts)
+                        }
+
+                        Button {
+                            if viewModel.hasBlockingConflicts {
+                                viewModel.showOverwriteConfirmation = true
+                            } else {
+                                viewModel.importCurrentPreview()
+                            }
+                        } label: {
+                            Label("Importar elementos válidos", systemImage: "checkmark.circle")
+                        }
+                        .disabled(viewModel.isWorking || !preview.errors.isEmpty)
+                    }
+
+                    if viewModel.hasImportSummary {
+                        importSummary()
+                    }
+                }
+
+                if let message = viewModel.message {
+                    Section("Resumen") {
+                        Text(message)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            } else {
+                authenticationSection()
             }
         }
         .navigationTitle("Migración iOS / Android")
@@ -251,6 +261,90 @@ struct MigrationIOSAndroidView: View {
                 viewModel.importCurrentPreview(policy: .overwriteExisting)
             }
             Button("Cancelar", role: .cancel) { }
+        }
+    }
+
+    private func exportableContentInfo() -> some View {
+        Section("Datos que se pueden exportar") {
+            Text("El archivo de migración puede incluir los siguientes elementos personales, siempre protegido con la contraseña que elijas:")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+
+            VStack(alignment: .leading, spacing: 8) {
+                ForEach(exportableContentTypes, id: \.self) { item in
+                    Label(item, systemImage: "checkmark.circle")
+                        .font(.subheadline)
+                }
+            }
+        }
+    }
+
+    private func authenticationSection() -> some View {
+        Section("Acceso protegido") {
+            Text("Por seguridad, desbloquea la migración antes de exportar o importar datos.")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+
+            Button {
+                authenticateWithDeviceOwner()
+            } label: {
+                Label("Desbloquear con biometría o código", systemImage: "key.viewfinder")
+            }
+
+            if KeychainHelper.shared.getPassword() != nil {
+                SecureField("Contraseña de la app", text: $authPassword)
+
+                Button {
+                    authenticateWithStoredPassword()
+                } label: {
+                    Label("Desbloquear con contraseña", systemImage: "lock.open")
+                }
+                .disabled(authPassword.isEmpty)
+            }
+
+            if let authMessage {
+                Text(authMessage)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
+        }
+    }
+
+    private func authenticateWithDeviceOwner() {
+        let context = LAContext()
+        var error: NSError?
+        let reason = "Autentícate para acceder a la exportación e importación de datos."
+
+        guard context.canEvaluatePolicy(.deviceOwnerAuthentication, error: &error) else {
+            authMessage = "No hay biometría/código disponible. Usa la contraseña de la app si existe."
+            return
+        }
+
+        context.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: reason) { success, evalError in
+            DispatchQueue.main.async {
+                if success {
+                    isMigrationUnlocked = true
+                    authPassword = ""
+                    authMessage = nil
+                } else {
+                    authMessage = evalError?.localizedDescription ?? "No se pudo autenticar."
+                }
+            }
+        }
+    }
+
+    private func authenticateWithStoredPassword() {
+        guard let storedPassword = KeychainHelper.shared.getPassword() else {
+            authMessage = "No hay una contraseña de la app configurada."
+            return
+        }
+
+        if authPassword == storedPassword {
+            isMigrationUnlocked = true
+            authPassword = ""
+            authMessage = nil
+        } else {
+            authMessage = "Contraseña incorrecta."
         }
     }
 
@@ -421,8 +515,21 @@ struct MigrationIOSAndroidView: View {
         case MigrationRecordType.personalReflection: return "Reflexiones personales"
         case MigrationRecordType.dayRitualArchive: return "Ritual del día"
         case MigrationRecordType.calmPersonalPhrase: return "Frases de Calma"
-        default: return type
+            default: return type
         }
+    }
+
+    private var exportableContentTypes: [String] {
+        [
+            "Notas",
+            "Entradas de diario",
+            "Entradas de agenda sin recordatorios",
+            "Metas activas, completadas y archivadas",
+            "Frases personales",
+            "Reflexiones personales",
+            "Ritual del día archivado",
+            "Frases personales de Espacio Calma"
+        ]
     }
 }
 

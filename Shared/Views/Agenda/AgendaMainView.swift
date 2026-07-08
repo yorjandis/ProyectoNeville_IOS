@@ -45,6 +45,15 @@ struct AgendaMainView: View {
     @State private var exportedPDFFileName: String = "Agenda.pdf"
     @State private var multiSelectionMode = false
     @State private var selectedItemsIDs: Set<UUID> = []
+    @State private var pendingBulkAction: AgendaBulkAction?
+    @State private var showBulkActionConfirmation = false
+    @State private var showMigrationPasswordSheet = false
+    @State private var showMigrationExporter = false
+    @State private var migrationPassword = ""
+    @State private var migrationPasswordConfirmation = ""
+    @State private var migrationDocument: MigrationDataDocument?
+    @State private var migrationExportFileName = "neville-agenda.ypgexp"
+    @State private var migrationExportCount = 0
     @State private var showPastActivities: Bool = false
     @State private var showSearchBar: Bool = false
     @State private var searchText: String = ""
@@ -55,6 +64,82 @@ struct AgendaMainView: View {
 
     @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
     @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) private var yorjPremium: Bool = false
+
+    private enum AgendaBulkAction: Identifiable {
+        case delete
+        case markCompleted
+        case clearCheck
+        case activateReminders
+        case deactivateReminders
+        case exportPDF
+        case exportMigration
+
+        var id: String {
+            switch self {
+            case .delete:
+                return "delete"
+            case .markCompleted:
+                return "markCompleted"
+            case .clearCheck:
+                return "clearCheck"
+            case .activateReminders:
+                return "activateReminders"
+            case .deactivateReminders:
+                return "deactivateReminders"
+            case .exportPDF:
+                return "exportPDF"
+            case .exportMigration:
+                return "exportMigration"
+            }
+        }
+
+        var confirmTitle: String {
+            switch self {
+            case .delete:
+                return "Eliminar"
+            case .markCompleted:
+                return "Marcar completadas"
+            case .clearCheck:
+                return "Quitar check"
+            case .activateReminders:
+                return "Activar"
+            case .deactivateReminders:
+                return "Desactivar"
+            case .exportPDF:
+                return "Exportar PDF"
+            case .exportMigration:
+                return "Continuar"
+            }
+        }
+
+        var role: ButtonRole? {
+            switch self {
+            case .delete:
+                return .destructive
+            default:
+                return nil
+            }
+        }
+
+        func message(count: Int) -> String {
+            switch self {
+            case .delete:
+                return "Se eliminarán \(count) actividad(es) seleccionada(s), incluidos sus recordatorios."
+            case .markCompleted:
+                return "Se marcarán como completadas \(count) actividad(es) seleccionada(s)."
+            case .clearCheck:
+                return "Se quitará el modo check de \(count) actividad(es) seleccionada(s)."
+            case .activateReminders:
+                return "Se activarán los recordatorios de \(count) actividad(es) seleccionada(s)."
+            case .deactivateReminders:
+                return "Se desactivarán los recordatorios de \(count) actividad(es) seleccionada(s)."
+            case .exportPDF:
+                return "Se preparará un PDF con \(count) actividad(es) seleccionada(s)."
+            case .exportMigration:
+                return "Se preparará un archivo de migración con \(count) actividad(es) seleccionada(s)."
+            }
+        }
+    }
 
     private var menuGestion: some View {
         let monthItems = itemsInDisplayedMonth()
@@ -104,25 +189,6 @@ struct AgendaMainView: View {
                 Button(multiSelectionMode ? "Salir selección múltiple" : "Selección múltiple") {
                     multiSelectionMode.toggle()
                     if !multiSelectionMode { selectedItemsIDs.removeAll() }
-                }
-
-                if multiSelectionMode {
-                    Button("Eliminar seleccionadas", role: .destructive) {
-                        bulkDeleteItems = selectedListedItems()
-                        showBulkDeleteConfirmation = !bulkDeleteItems.isEmpty
-                    }
-                    Button("Marcar seleccionadas completadas") {
-                        markSelectedAsCompleted()
-                    }
-                    Button("Quitar modo check seleccionadas") {
-                        clearCheckModeForSelected()
-                    }
-                    Button("Activar recordatorios seleccionadas") {
-                        activateReminderForSelected()
-                    }
-                    Button("Desactivar recordatorios seleccionadas") {
-                        deactivateReminderForSelected()
-                    }
                 }
             }
 
@@ -209,6 +275,9 @@ struct AgendaMainView: View {
                     .transition(.move(edge: .top).combined(with: .opacity))
             }
             activitiesList
+            if multiSelectionMode {
+                bulkActionsBar()
+            }
         }
         .padding(.horizontal, 10)
     }
@@ -390,76 +459,16 @@ struct AgendaMainView: View {
     var body: some View {
         NavigationStack {
             if purchaseStatus || yorjPremium {
-                ZStack {
-                    LinearGradient(
-                       
-                        colors: [
-                            /*
-                             Color(red: 0.84, green: 0.94, blue: 0.82),
-                             Color(red: 0.73, green: 0.88, blue: 0.74)
-                             */
-                            .blue.opacity(6),
-                            .blue.opacity(2),
-                            
-                             
-                        ],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
-                    .ignoresSafeArea()
-
-                    mainContent
-                }
-                .navigationTitle("Agenda")
-#if os(iOS)
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbarColorScheme(.light, for: .navigationBar)
-#endif
-                .tint(.black)
-                .toolbar {
-                    ToolbarItem(placement: .principal) {
-                        Text("Agenda")
-                            .foregroundStyle(.black)
-                            .font(.headline)
-                    }
-#if os(iOS)
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        menuGestion
-                    }
-#else
-                    ToolbarItem {
-                        menuGestion
-                    }
-#endif
-#if os(iOS)
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        addButton
-                    }
-#else
-                    ToolbarItem {
-                        addButton
-                    }
-#endif
-                }
+                agendaRootView
 #if os(iOS)
                 .sheet(item: $editorItem) { item in
-                    AgendaEditorView(baseItem: item) { updatedItems in
-                        viewModel.saveBatch(updatedItems)
-                        for updated in updatedItems where updated.recordatorioActivo {
-                            viewModel.updateReminder(for: updated, enabled: true)
-                        }
-                    }
+                    agendaEditorView(for: item)
                 }
 #else
                 .onChange(of: editorItem) { _, item in
                     guard let item else { return }
                     showWindow(
-                        for: AgendaEditorView(baseItem: item) { updatedItems in
-                            viewModel.saveBatch(updatedItems)
-                            for updated in updatedItems where updated.recordatorioActivo {
-                                viewModel.updateReminder(for: updated, enabled: true)
-                            }
-                        },
+                        for: agendaEditorView(for: item),
                         environmentObjects: [],
                         title: item.titulo.isEmpty ? "Nueva actividad" : "Editar actividad",
                         size: .percentage(width: 0.38, height: 0.52),
@@ -471,21 +480,9 @@ struct AgendaMainView: View {
                 .sheet(isPresented: $showReminderManager) {
                     AgendaReminderManagementView(viewModel: viewModel)
                 }
-                .onAppear {
-                    viewModel.load()
-                    displayedMonth = monthStart(of: viewModel.selectedDate)
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
-                        evaluateInitialTodayAvailability()
-                    }
-                }
-                .onReceive(Timer.publish(every: 6, on: .main, in: .common).autoconnect()) { _ in
-                    viewModel.load()
-                }
-                .onChange(of: scenePhase) { _, phase in
-                    if phase == .active {
-                        viewModel.load()
-                    }
-                }
+                .onAppear(perform: handleAgendaAppear)
+                .onReceive(Timer.publish(every: 6, on: .main, in: .common).autoconnect(), perform: handleAgendaTimerTick)
+                .onChange(of: scenePhase, handleAgendaScenePhaseChange)
                 .alert("Recordatorio", isPresented: $showReminderValidationAlert) {
                     Button("Aceptar", role: .cancel) {}
                 } message: {
@@ -536,22 +533,121 @@ struct AgendaMainView: View {
                 } message: {
                     Text(bulkDeleteConfirmationMessage)
                 }
-                .onChange(of: viewModel.quickFilter) { _, newValue in
-                    if newValue == .hoy {
-                        let now = Date()
-                        viewModel.selectedDate = now
-                        displayedMonth = monthStart(of: now)
-                    }
-                }
+                .onChange(of: viewModel.quickFilter, handleQuickFilterChange)
                 .fileExporter(
                     isPresented: $showPDFExporter,
                     document: exportedPDFDocument,
                     contentType: .pdf,
                     defaultFilename: exportedPDFFileName
                 ) { _ in }
+                .fileExporter(
+                    isPresented: $showMigrationExporter,
+                    document: migrationDocument ?? MigrationDataDocument(),
+                    contentType: .ypgExport,
+                    defaultFilename: migrationExportFileName
+                ) { handleMigrationExportResult($0) }
+                .sheet(isPresented: $showMigrationPasswordSheet) {
+                    migrationPasswordSheet(
+                        title: "Exportar actividades seleccionadas",
+                        countLabel: "\(selectedListedItems().count) actividad(es)",
+                        exportAction: exportSelectedAgendaToMigration
+                    )
+                }
+                .confirmationDialog("Confirmar acción", isPresented: $showBulkActionConfirmation, titleVisibility: .visible) {
+                    agendaBulkConfirmationActions()
+                } message: {
+                    agendaBulkConfirmationMessage()
+                }
             } else {
                 PurchaseView()
             }
+        }
+    }
+
+    private var agendaRootView: some View {
+        ZStack {
+            LinearGradient(
+                colors: [
+                    .blue.opacity(6),
+                    .blue.opacity(2)
+                ],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea()
+
+            mainContent
+        }
+        .navigationTitle("Agenda")
+#if os(iOS)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbarColorScheme(.light, for: .navigationBar)
+#endif
+        .tint(.black)
+        .toolbar {
+            agendaToolbar
+        }
+    }
+
+    @ToolbarContentBuilder
+    private var agendaToolbar: some ToolbarContent {
+        ToolbarItem(placement: .principal) {
+            Text("Agenda")
+                .foregroundStyle(.black)
+                .font(.headline)
+        }
+#if os(iOS)
+        ToolbarItem(placement: .navigationBarTrailing) {
+            menuGestion
+        }
+#else
+        ToolbarItem {
+            menuGestion
+        }
+#endif
+#if os(iOS)
+        ToolbarItem(placement: .navigationBarTrailing) {
+            addButton
+        }
+#else
+        ToolbarItem {
+            addButton
+        }
+#endif
+    }
+
+    private func agendaEditorView(for item: AgendaItemData) -> some View {
+        AgendaEditorView(baseItem: item) { updatedItems in
+            viewModel.saveBatch(updatedItems)
+            for updated in updatedItems where updated.recordatorioActivo {
+                viewModel.updateReminder(for: updated, enabled: true)
+            }
+        }
+    }
+
+    private func handleAgendaAppear() {
+        viewModel.load()
+        displayedMonth = monthStart(of: viewModel.selectedDate)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+            evaluateInitialTodayAvailability()
+        }
+    }
+
+    private func handleAgendaTimerTick(_: Date) {
+        viewModel.load()
+    }
+
+    private func handleAgendaScenePhaseChange(_: ScenePhase, _ phase: ScenePhase) {
+        if phase == .active {
+            viewModel.load()
+        }
+    }
+
+    private func handleQuickFilterChange(_: AgendaViewModel.QuickFilter, _ newValue: AgendaViewModel.QuickFilter) {
+        if newValue == .hoy {
+            let now = Date()
+            viewModel.selectedDate = now
+            displayedMonth = monthStart(of: now)
         }
     }
 
@@ -794,6 +890,109 @@ struct AgendaMainView: View {
         .listRowBackground(Color.clear)
     }
 
+    @ViewBuilder
+    private func bulkActionsBar() -> some View {
+        VStack(spacing: 10) {
+            HStack {
+                Text("Seleccionadas: \(selectedListedItems().count)")
+                    .font(.footnote)
+                    .foregroundStyle(.black.opacity(0.75))
+                Spacer()
+            }
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    Button(areAllListedItemsSelected ? "Quitar sel." : "Sel. todas") {
+                        withAnimation {
+                            toggleListedItemsSelection()
+                        }
+                    }
+                    .foregroundStyle(.black).bold()
+                    .tint(.gray)
+                    .buttonStyle(.bordered)
+                    .disabled(currentListedItems().isEmpty)
+
+                    Button {
+                        requestBulkActionConfirmation(.delete)
+                    } label: {
+                        Image(systemName: "trash")
+                    }
+                    .accessibilityLabel("Eliminar")
+                    .foregroundStyle(.black).bold()
+                    .buttonStyle(.bordered)
+                    .tint(.red)
+                    .disabled(selectedListedItems().isEmpty)
+
+                    Button("PDF") {
+                        requestBulkActionConfirmation(.exportPDF)
+                    }
+                    .foregroundStyle(.black).bold()
+                    .buttonStyle(.bordered)
+                    .tint(.blue)
+                    .disabled(selectedListedItems().isEmpty)
+
+                    Button("Migrar") {
+                        requestBulkActionConfirmation(.exportMigration)
+                    }
+                    .foregroundStyle(.black).bold()
+                    .buttonStyle(.bordered)
+                    .disabled(selectedListedItems().isEmpty)
+
+                    Button("Completadas") {
+                        requestBulkActionConfirmation(.markCompleted)
+                    }
+                    .foregroundStyle(.black).bold()
+                    .buttonStyle(.bordered)
+                    .tint(.green)
+                    .disabled(selectedListedItems().isEmpty)
+
+                    Button("Quitar check") {
+                        requestBulkActionConfirmation(.clearCheck)
+                    }
+                    .foregroundStyle(.black).bold()
+                    .buttonStyle(.bordered)
+                    .tint(.orange)
+                    .disabled(selectedListedItems().isEmpty)
+
+                    Button("Rec. ON") {
+                        requestBulkActionConfirmation(.activateReminders)
+                    }
+                    .foregroundStyle(.black).bold()
+                    .buttonStyle(.bordered)
+                    .disabled(selectedListedItems().isEmpty)
+
+                    Button("Rec. OFF") {
+                        requestBulkActionConfirmation(.deactivateReminders)
+                    }
+                    .foregroundStyle(.black).bold()
+                    .buttonStyle(.bordered)
+                    .disabled(selectedListedItems().isEmpty)
+                }
+                .fixedSize()
+            }
+        }
+        .padding(.horizontal, 4)
+        .padding(.top, 4)
+        .padding(.bottom, 8)
+    }
+
+    @ViewBuilder
+    private func agendaBulkConfirmationActions() -> some View {
+        if let action = pendingBulkAction {
+            Button(action.confirmTitle, role: action.role) {
+                performConfirmedBulkAction(action)
+                pendingBulkAction = nil
+            }
+        }
+        Button("Cancelar", role: .cancel) {
+            pendingBulkAction = nil
+        }
+    }
+
+    private func agendaBulkConfirmationMessage() -> Text {
+        Text(pendingBulkAction?.message(count: selectedListedItems().count) ?? "")
+    }
+
     private var bulkDeleteConfirmationTitle: String {
         "Eliminar \(bulkDeleteItems.count) actividad(es)"
     }
@@ -820,6 +1019,18 @@ struct AgendaMainView: View {
             }
             selectedItemsIDs.subtract(idsToRemove)
             bulkDeleteItems.removeAll()
+        }
+    }
+
+    private func deleteSelectedAgendaItems() {
+        let selected = selectedListedItems()
+        guard !selected.isEmpty else { return }
+
+        withAnimation(.easeInOut(duration: 0.24)) {
+            for item in selected {
+                viewModel.delete(item, scope: .onlyThis)
+            }
+            finishMultiSelectionOperation()
         }
     }
 
@@ -863,11 +1074,12 @@ struct AgendaMainView: View {
         exportItemsToPDF(weekItems, scopeName: "Semana")
     }
 
-    private func exportItemsToPDF(_ items: [AgendaItemData], scopeName: String) {
+    @discardableResult
+    private func exportItemsToPDF(_ items: [AgendaItemData], scopeName: String) -> Bool {
         guard !items.isEmpty else {
             interchangeAlertMessage = "No hay actividades para exportar en \(scopeName.lowercased())."
             showInterchangeAlert = true
-            return
+            return false
         }
 
         let calendar = Calendar.current
@@ -906,9 +1118,98 @@ struct AgendaMainView: View {
             let dateLabel = Date().formatted(date: .numeric, time: .omitted).replacingOccurrences(of: "/", with: "-")
             exportedPDFFileName = "Agenda-\(scopeName)-\(dateLabel)"
             showPDFExporter = true
+            return true
         } catch {
             interchangeAlertMessage = "No se pudo generar el PDF."
             showInterchangeAlert = true
+            return false
+        }
+    }
+
+    private func authenticateBeforeMigrationExport() {
+        UtilFuncs.authenticateDeviceOwner(reason: "Autentícate para exportar las actividades seleccionadas.") { success, errorMessage in
+            if success {
+                migrationPassword = ""
+                migrationPasswordConfirmation = ""
+                showMigrationPasswordSheet = true
+            } else {
+                interchangeAlertMessage = errorMessage ?? "No se pudo autenticar el acceso a la exportación."
+                showInterchangeAlert = true
+            }
+        }
+    }
+
+    private func exportSelectedAgendaToMigration() {
+        guard migrationPassword == migrationPasswordConfirmation, !migrationPassword.isEmpty else {
+            interchangeAlertMessage = "La contraseña de exportación está vacía o no coincide."
+            showInterchangeAlert = true
+            return
+        }
+
+        let selected = selectedListedItems()
+        guard !selected.isEmpty else {
+            interchangeAlertMessage = "Selecciona al menos una actividad para exportar."
+            showInterchangeAlert = true
+            return
+        }
+
+        do {
+            let bridge = CoreDataCanonicalMigrationBridge()
+            let records = try bridge.exportRecords(agendaItems: selected)
+            let result = try MyAppMigrationService().export(records: records, password: migrationPassword)
+            migrationDocument = MigrationDataDocument(data: result.bytes)
+            migrationExportCount = selected.count
+            migrationExportFileName = "neville-agenda-\(selected.count).ypgexp"
+            showMigrationPasswordSheet = false
+            showMigrationExporter = true
+        } catch {
+            interchangeAlertMessage = "No se pudo preparar el archivo de migración: \(error.localizedDescription)"
+            showInterchangeAlert = true
+        }
+    }
+
+    private func handleMigrationExportResult(_ result: Result<URL, Error>) {
+        switch result {
+        case .success:
+            interchangeAlertMessage = "Archivo de migración exportado correctamente: \(migrationExportCount) actividad(es)."
+            finishMultiSelectionOperation()
+        case .failure(let error):
+            interchangeAlertMessage = "No se pudo guardar el archivo de migración: \(error.localizedDescription)"
+        }
+        migrationPassword = ""
+        migrationPasswordConfirmation = ""
+        migrationDocument = nil
+        showInterchangeAlert = true
+    }
+
+    private func migrationPasswordSheet(title: String, countLabel: String, exportAction: @escaping () -> Void) -> some View {
+        NavigationStack {
+            Form {
+                Section(title) {
+                    Text("Se creará un archivo seguro con \(countLabel). La contraseña solo se usa para proteger este archivo y no se guarda.")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                    SecureField("Contraseña del archivo", text: $migrationPassword)
+                    SecureField("Repetir contraseña", text: $migrationPasswordConfirmation)
+                }
+            }
+            .navigationTitle("Archivo .ypgexp")
+#if os(iOS)
+            .navigationBarTitleDisplayMode(.inline)
+#endif
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancelar") {
+                        showMigrationPasswordSheet = false
+                    }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Exportar") {
+                        exportAction()
+                    }
+                    .disabled(migrationPassword.isEmpty || migrationPassword != migrationPasswordConfirmation)
+                }
+            }
         }
     }
 
@@ -993,6 +1294,54 @@ struct AgendaMainView: View {
         return currentListedItems().filter { ids.contains($0.id) }
     }
 
+    private var areAllListedItemsSelected: Bool {
+        let listedIDs = Set(currentListedItems().map(\.id))
+        return !listedIDs.isEmpty && selectedItemsIDs.isSuperset(of: listedIDs)
+    }
+
+    private func toggleListedItemsSelection() {
+        let listedIDs = Set(currentListedItems().map(\.id))
+        if areAllListedItemsSelected {
+            selectedItemsIDs.subtract(listedIDs)
+        } else {
+            selectedItemsIDs.formUnion(listedIDs)
+        }
+    }
+
+    private func requestBulkActionConfirmation(_ action: AgendaBulkAction) {
+        guard !selectedListedItems().isEmpty else { return }
+        DispatchQueue.main.async {
+            pendingBulkAction = action
+            showBulkActionConfirmation = true
+        }
+    }
+
+    private func performConfirmedBulkAction(_ action: AgendaBulkAction) {
+        switch action {
+        case .delete:
+            deleteSelectedAgendaItems()
+        case .markCompleted:
+            markSelectedAsCompleted()
+        case .clearCheck:
+            clearCheckModeForSelected()
+        case .activateReminders:
+            activateReminderForSelected()
+        case .deactivateReminders:
+            deactivateReminderForSelected()
+        case .exportPDF:
+            if exportItemsToPDF(selectedListedItems(), scopeName: "Seleccionadas") {
+                finishMultiSelectionOperation()
+            }
+        case .exportMigration:
+            authenticateBeforeMigrationExport()
+        }
+    }
+
+    private func finishMultiSelectionOperation() {
+        selectedItemsIDs.removeAll()
+        multiSelectionMode = false
+    }
+
     private func itemsInDisplayedMonth() -> [AgendaItemData] {
         let calendar = Calendar.current
         let anchor = displayedMonth
@@ -1031,6 +1380,7 @@ struct AgendaMainView: View {
                 viewModel.updateReminder(for: item, enabled: true)
             }
         }
+        finishMultiSelectionOperation()
     }
 
     private func deactivateReminderForSelected() {
@@ -1039,6 +1389,7 @@ struct AgendaMainView: View {
         for item in selected where item.recordatorioActivo {
             viewModel.updateReminder(for: item, enabled: false)
         }
+        finishMultiSelectionOperation()
     }
 
     private func markSelectedAsCompleted() {
@@ -1050,6 +1401,7 @@ struct AgendaMainView: View {
             updated.fechaModificacion = Date()
             viewModel.save(updated)
         }
+        finishMultiSelectionOperation()
     }
 
     private func clearCheckModeForSelected() {
@@ -1061,6 +1413,7 @@ struct AgendaMainView: View {
             updated.fechaModificacion = Date()
             viewModel.save(updated)
         }
+        finishMultiSelectionOperation()
     }
 
     private func backgroundColor(for priority: AgendaPriority) -> Color {

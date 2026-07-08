@@ -16,9 +16,9 @@ enum LectorEtiquetasDataSource: String, Codable, CaseIterable, Identifiable {
     var title: String {
         switch self {
         case .openFoodFacts:
-            return "API OpenFoodFacts"
+            return "OpenFoodFacts"
         case .offlineSQLite:
-            return "BD Offline"
+            return "Offline"
         }
     }
 }

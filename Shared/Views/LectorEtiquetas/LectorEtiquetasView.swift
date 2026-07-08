@@ -510,10 +510,6 @@ struct LectorEtiquetasView: View {
                 Text("Esta información es solo orientativa y no definitiva ni concluyente. Puede variar en futuras actualizaciones.")
                     .font(.system(.body, design: .rounded))
                     .foregroundStyle(.secondary)
-                
-                Text("Los valores obtenidos por consulta online de la API y los obtenidos de la BD offline pueden diferir.")
-                    .font(.system(.body, design: .rounded))
-                    .foregroundStyle(.secondary)
 
                 Text("Lee siempre la etiqueta del producto.")
                     .font(.system(.body, design: .rounded, weight: .semibold))
@@ -1248,7 +1244,7 @@ private struct LabelInterpretationSheetView: View {
                     .font(.title2)
                     .foregroundStyle(.secondary)
 
-                Text("Por último, interpreta el conjunto: combinación de nutrientes críticos (azúcar, sodio, grasas saturadas), fibra, proteína y nivel de procesamiento (NOVA), junto con alérgenos si tienes sensibilidad. Usa esta app como orientación inicial y confirma siempre en la etiqueta física del envase antes de decidir su consumo.")
+                Text("Por último, interpreta el conjunto: combinación de nutrientes críticos (azúcar, sodio, grasas saturadas), fibra, proteína y nivel de procesamiento (NOVA), junto con alérgenos si tienes sensibilidad. Utiliza esta herramienta como orientación inicial y confirma siempre en la etiqueta física del envase, antes de decidir su consumo.")
                     .font(.title2)
                     .foregroundStyle(.secondary)
             }

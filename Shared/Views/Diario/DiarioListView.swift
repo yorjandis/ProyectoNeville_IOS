@@ -91,6 +91,15 @@ struct DiarioListView: View {
     @State private var collapsedChapterNames: Set<String> = []
     @State private var showBatchChapterAlert = false
     @State private var batchChapterDraft = ""
+    @State private var pendingBatchAction: DiarioBatchAction?
+    @State private var showBatchActionConfirmation = false
+    @State private var showMigrationPasswordSheet = false
+    @State private var showMigrationExporter = false
+    @State private var migrationPassword = ""
+    @State private var migrationPasswordConfirmation = ""
+    @State private var migrationDocument: MigrationDataDocument?
+    @State private var migrationExportFileName = "neville-diario.ypgexp"
+    @State private var migrationExportCount = 0
     @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
     @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) private var yorjPremium: Bool = false
     
@@ -120,70 +129,52 @@ struct DiarioListView: View {
             }
     }
 
+    private enum DiarioBatchAction: Identifiable {
+        case updateEmotion(Emociones)
+        case updateChapter(String)
+        case exportMigration
+
+        var id: String {
+            switch self {
+            case .updateEmotion(let emotion):
+                return "updateEmotion-\(emotion.rawValue)"
+            case .updateChapter(let chapter):
+                return "updateChapter-\(chapter)"
+            case .exportMigration:
+                return "exportMigration"
+            }
+        }
+
+        var confirmTitle: String {
+            switch self {
+            case .updateEmotion:
+                return "Actualizar emoción"
+            case .updateChapter:
+                return "Actualizar capítulo"
+            case .exportMigration:
+                return "Continuar"
+            }
+        }
+
+        func message(count: Int) -> String {
+            switch self {
+            case .updateEmotion(let emotion):
+                return "Se cambiará la emoción de \(count) entrada(s) seleccionada(s) a \(emotion.rawValue)."
+            case .updateChapter(let chapter):
+                let target = chapter.trimmingCharacters(in: .whitespacesAndNewlines)
+                if target.isEmpty {
+                    return "Se quitará el capítulo de \(count) entrada(s) seleccionada(s)."
+                }
+                return "Se asignará el capítulo \"\(target)\" a \(count) entrada(s) seleccionada(s)."
+            case .exportMigration:
+                return "Se preparará un archivo de migración con \(count) entrada(s) seleccionada(s)."
+            }
+        }
+    }
+
     var body: some View {
         NavigationStack {
-            ZStack{
-                
-                LinearGradient(colors: [Color(red:0.45, green:0.50, blue: 0.50), .orange], startPoint: .top, endPoint: .bottom)
-                    .ignoresSafeArea()
-                    .onAppear{
-                        //Lee la contraseña de acceso del diario
-                        hasPassword = KeychainHelper.shared.getPassword() != nil
-                    }
-                
-                
-                if self.securityModel.canOpenDiario{
-                    VStack{
-                        Text("") //Para que las entradas no sobrepasen el area segura superior
-                        
-                        //Calendario:
-                        if self.showCalendar {
-                            VStack{
-                                    DiarioCalendarView(
-                                        refreshTrigger: calendarRefreshTrigger,
-                                        onMonthEntriesLoaded: { _ in
-                                            selectedCalendarDate = nil
-                                        },
-                                        onRequestCreateEntry: { date in
-                                            openNewEntryEditor(
-                                                title: "",
-                                                content: "",
-                                                emocion: .neutral,
-                                                date: date
-                                            )
-                                        }
-                                    ) { date in
-                                        withAnimation {
-                                            selectedCalendarDate = Calendar.current.startOfDay(for: date)
-                                            modelDiario.list = modelDiario.searchPorFecha(for: date)
-                                        }
-                                    }
-                            }
-                            .background(Color.black.opacity(0.05))
-                        }
-
-                        if isBatchSelectionMode {
-                            batchSelectionToolbar
-                                .padding(.horizontal, 15)
-                                .padding(.vertical, 8)
-                                .transition(.move(edge: .top).combined(with: .opacity))
-                        }
-
-                        diarioEntriesScroll
-                    }
-                    .onAppear{
-                        selectedCalendarDate = nil
-                        self.modelDiario.getAllItem()
-                    }
-                    .onChange(of: modelDiario.list.map { $0.id }) { _, ids in
-                        let visibleIDs = Set(ids.compactMap { $0 })
-                        batchSelectedDiarioIDs = batchSelectedDiarioIDs.intersection(visibleIDs)
-                    }
-                    
-                }else{ //Ventana de Autenticación
-                    diarioLockedContent
-                }
-            }
+            AnyView(diarioContent)
             .onDisappear{
                 //Al cerrar la ventana del Diario se chequea si la opción de mentener la ventana abierta.
                 //De estar activada, se mantiene la variable canOpenDiario activa
@@ -194,287 +185,6 @@ struct DiarioListView: View {
                 }else{
                     self.securityModel.canOpenDiario = false
                 }
-            }
-            .toolbar{
-                
-                //Permite embeber en Details la ventana actualmente activa
-                #if os(macOS)
-                ToolbarItem {
-                    Button{
-                       
-                    }label:{
-                      Image(systemName: "gear")
-                    }
-                }
-                
-                #endif
-                
-                
-                if self.securityModel.canOpenDiario {
-                    ToolbarItem {
-                        Menu {
-                            Button {
-                                self.showDiarioStats = true
-                            } label: {
-                                Label("Estadísticas", systemImage: "chart.xyaxis.line")
-                            }
-
-                            Button {
-                                toggleBatchSelectionMode()
-                            } label: {
-                                Label(isBatchSelectionMode ? "Cancelar selección" : "Seleccionar", systemImage: isBatchSelectionMode ? "xmark.circle" : "checklist")
-                            }
-
-                            Button {
-                                withAnimation {
-                                    self.showCalendar.toggle()
-                                    //Si oculta el calendario se muestra todos los items
-                                    if self.showCalendar == false {
-                                        selectedCalendarDate = nil
-                                        modelDiario.getAllItem()
-                                    }
-                                }
-                            } label: {
-                                Label(self.showCalendar ? "Ocultar Calendario" : "Mostrar calendario", systemImage: "calendar")
-                            }
-                        } label: {
-                            Image(systemName: "ellipsis.circle")
-                                .tint(.black)
-                        }
-                    }
-                    
-                    ToolbarItem{
-                        
-                        Menu{
-                            
-                            //Ordenar por fecha de creación/modificación
-                            Button{
-                                self.ordenarEntradaDiario.toggle()
-                                selectedCalendarDate = nil
-                                modelDiario.getAllItem()
-                            }label:{
-                                Label("Ordenar Por fecha de \(self.ordenarEntradaDiario ? "Modificación" : "Creación")", systemImage: "text.magnifyingglass")
-                            }
-                            
-                            //Mostrar todas las entradas
-                            Button{
-                                withAnimation {
-                                    selectedListMode = .all
-                                    selectedCalendarDate = nil
-                                    modelDiario.getAllItem()
-                                }
-                                
-                            }label:{
-                                Label("Todas las entradas", systemImage: "text.magnifyingglass")
-                            }
-
-                            Button {
-                                withAnimation {
-                                    collapsedChapterNames = Set(groupedDiarioByChapter.map(\.chapter))
-                                    selectedListMode = .groupedByChapter
-                                }
-                            } label: {
-                                Label("Por capítulos", systemImage: selectedListMode == .groupedByChapter ? "checkmark.circle.fill" : "book.closed")
-                            }
-                            
-                            //Mostrar las favoritas
-                            Button{
-                                selectedListMode = .all
-                                modelDiario.list =  modelDiario.filterByFav()
-                            } label:{
-                                Label("Mostrar favoritas", systemImage: "text.magnifyingglass")
-                            }
-                            
-                            
-                            
-                            Menu{
-                                ForEach(Emociones.allCases, id: \.self) { emocion in
-                                    Button {
-                                        withAnimation {
-                                            selectedListMode = .all
-                                            modelDiario.list = modelDiario.filterByEmoticono(criterio: emocion.rawValue)
-                                        }
-                                    } label: {
-                                        HStack {
-                                            Text(emocion.rawValue.capitalized)
-                                            Text(emocion.emoji)
-                                        }
-                                    }
-                                }
-                            }label: {
-                                Label("Por emoción", systemImage: "face.smiling")
-                            }
-                            
-                            //Buscar en los títulos
-                            Button{
-                                showAlertFilterByTitles = true
-                            }label:{
-                                Label("Buscar en Títulos", systemImage: "text.magnifyingglass")
-                            }
-                            
-                            //Buscar en el contenido
-                            Button{
-                                showAlertFilterByContent = true
-                            }label:{
-                                Label("Buscar en el Contenido", systemImage: "text.magnifyingglass")
-                            }
-                            
-                            
-                            //Filtrar por tipos de fechas: Creación y modificación
-                            Menu{
-                                Button("Fecha"){
-                                    self.typeOfFechaSearch = .FechaCreacion
-                                    self.showSheetFecha = true
-                                }
-                                Button("Intervalo"){
-                                    self.typeOfFechaSearch = .FechaCreacion
-                                    self.showSheetRangoFecha = true
-                                }
-                                Menu{
-                                    Button("Tres días"){
-                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .tresDias, typeFecha: .FechaCreacion)
-                                    }
-                                    Button("Semana anterior"){
-                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .semana, typeFecha: .FechaCreacion)
-                                    }
-                                    Button("Quincena anterior"){
-                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .quincena, typeFecha: .FechaCreacion)
-                                    }
-                                    Button("Mes anterior"){
-                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .mes, typeFecha: .FechaCreacion)
-                                    }
-                                    Button("Dos meses"){
-                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .dosMeses, typeFecha: .FechaCreacion)
-                                    }
-                                    Button("Seis meses"){
-                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .seisMeses, typeFecha: .FechaCreacion)
-                                    }
-                                    Button("Un año"){
-                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .unAno, typeFecha: .FechaCreacion)
-                                    }
-                                    Button("Dos año"){
-                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .dosAnos, typeFecha: .FechaCreacion)
-                                    }
-                                    Button("Tres año"){
-                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .tresAnos, typeFecha: .FechaCreacion)
-                                    }
-                                    Button("Cinco año"){
-                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .cincoAnos, typeFecha: .FechaCreacion)
-                                    }
-                                    Button("Diez año"){
-                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .diezAnos, typeFecha: .FechaCreacion)
-                                    }
-                                }label:{
-                                    Text("Sugerencias")
-                                }
-                                
-                                
-                            }label:{
-                                Label("Fecha de Creación", systemImage: "text.magnifyingglass")
-                                
-                            }
-                            Menu{
-                                Button("Fecha"){
-                                    self.typeOfFechaSearch = .FechaModificacion
-                                    self.showSheetFecha = true
-                                }
-                                Button("Intervalo"){
-                                    self.typeOfFechaSearch = .FechaModificacion
-                                    self.showSheetRangoFecha = true
-                                }
-                                Menu{
-                                    Button("Tres días"){
-                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .tresDias, typeFecha: .FechaModificacion)
-                                    }
-                                    Button("Semana anterior"){
-                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .semana, typeFecha: .FechaModificacion)
-                                    }
-                                    Button("Quincena anterior"){
-                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .quincena, typeFecha: .FechaModificacion)
-                                    }
-                                    Button("Mes anterior"){
-                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .mes, typeFecha: .FechaModificacion)
-                                    }
-                                    Button("Dos meses"){
-                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .dosMeses, typeFecha: .FechaModificacion)
-                                    }
-                                    Button("Seis meses"){
-                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .seisMeses, typeFecha: .FechaModificacion)
-                                    }
-                                    Button("Un año"){
-                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .unAno, typeFecha: .FechaModificacion)
-                                    }
-                                    Button("Dos año"){
-                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .dosAnos, typeFecha: .FechaModificacion)
-                                    }
-                                    Button("Tres año"){
-                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .tresAnos, typeFecha: .FechaModificacion)
-                                    }
-                                    Button("Cinco año"){
-                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .cincoAnos, typeFecha: .FechaModificacion)
-                                    }
-                                    Button("Diez año"){
-                                        modelDiario.list = modelDiario.searchPorAntiguedad(for: .diezAnos, typeFecha: .FechaModificacion)
-                                    }
-                                }label:{
-                                    Text("Sugerencias")
-                                }
-                                
-                                
-                            }label:{
-                                Label("Fecha de Modificación", systemImage: "text.magnifyingglass")
-                            }
-
-                            exportDiarioPDFMenu()
-                        }label: {
-                            Image(systemName: "line.3.horizontal.decrease")
-                                .tint(.black)
-                            
-                        }
-                        
-                    }
-                    
-                    //Establecer una separación entre los items de los menus
-                    if #available(iOS 26.0, macOS 26.0, *) {
-                        ToolbarSpacer(.fixed)
-                    }
-                    
-                    ToolbarItem{
-                            Menu{
-                                Button {
-                                    openNewEntryEditor(
-                                        title: "",
-                                        content: "",
-                                        emocion: .neutral,
-                                        date: Date.now
-                                    )
-                                } label: {
-                                    Label("Nueva Entrada", systemImage: "square.and.pencil")
-                                }
-                                
-                                Menu{
-                                    ForEach(0..<titlesExamples.count, id: \.self){ value in
-                                        Button(titlesExamples[value].0) {
-                                            openNewEntryEditor(
-                                                title: titlesExamples[value].0,
-                                                content: "",
-                                                emocion: modelDiario.getEmocionesFromStr(value: titlesExamples[value].1),
-                                                date: Date.now
-                                            )
-                                        }
-                                    }
-                                }label: {
-                                    Label("Sugerencias", systemImage: "wand.and.rays")
-                                }
-                                
-                            }label:{
-                                Image(systemName: "plus")//"wand.and.rays")
-                                    .tint(.black)
-                            }
-                    }
-                }
-                    
-                
             }
             .navigationTitle("Diario")
             #if os(iOS)
@@ -589,39 +299,7 @@ struct DiarioListView: View {
                 .padding()
             }
             .sheet(isPresented: $showManualExportSheet) {
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("Selecciona entradas para exportar")
-                        .font(.headline)
-                    List {
-                        ForEach(modelDiario.list) { item in
-                            Button {
-                                toggleManualDiarioSelection(item)
-                            } label: {
-                                HStack {
-                                    Image(systemName: manuallySelectedDiarioIDs.contains(item.id ?? UUID()) ? "checkmark.circle.fill" : "circle")
-                                    Text(item.title ?? "Sin título")
-                                    Spacer()
-                                    if let date = item.fecha {
-                                        Text(date.formatted(date: .abbreviated, time: .omitted))
-                                            .font(.footnote)
-                                            .foregroundStyle(.secondary)
-                                    }
-                                }
-                            }
-                            .buttonStyle(.plain)
-                        }
-                    }
-                    Button("Exportar PDF") {
-                        let selected = modelDiario.list.filter { item in
-                            guard let id = item.id else { return false }
-                            return manuallySelectedDiarioIDs.contains(id)
-                        }
-                        exportDiarioToPDF(selected, scopeName: "Manual")
-                        showManualExportSheet = false
-                    }
-                    .buttonStyle(.bordered)
-                }
-                .padding()
+                manualDiarioExportSheet
             }
             .fileExporter(
                 isPresented: $showPDFExporter,
@@ -629,6 +307,18 @@ struct DiarioListView: View {
                 contentType: .pdf,
                 defaultFilename: exportedPDFFileName
             ) { _ in }
+            .fileExporter(
+                isPresented: $showMigrationExporter,
+                document: migrationDocument ?? MigrationDataDocument(),
+                contentType: .ypgExport,
+                defaultFilename: migrationExportFileName
+            ) { handleMigrationExportResult($0) }
+            .sheet(isPresented: $showMigrationPasswordSheet) {
+                migrationPasswordSheet(
+                    title: "Exportar entradas seleccionadas",
+                    countLabel: "\(batchSelectedDiarioIDs.count) entrada(s)"
+                )
+            }
             .alert("Diario", isPresented: $showAlert) {
                 
             } message: {
@@ -642,17 +332,268 @@ struct DiarioListView: View {
             } message: {
                 Text("Esta acción no puede deshacerse.")
             }
+            .confirmationDialog("Confirmar acción", isPresented: $showBatchActionConfirmation) {
+                diarioBatchConfirmationActions()
+            } message: {
+                diarioBatchConfirmationMessage()
+            }
             .alert("Cambiar capítulo", isPresented: $showBatchChapterAlert) {
                 TextField("Capítulo", text: $batchChapterDraft, axis: .vertical)
                 Button("Cancelar", role: .cancel) {}
                 Button("Actualizar") {
-                    updateSelectedEntriesChapter(batchChapterDraft)
+                    requestBatchActionConfirmation(.updateChapter(batchChapterDraft))
                 }
             } message: {
                 Text("Se actualizarán las entradas seleccionadas.")
             }
   
          }
+    }
+
+    private var manualDiarioExportSheet: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Selecciona entradas para exportar")
+                .font(.headline)
+            List {
+                ForEach(modelDiario.list) { item in
+                    Button {
+                        toggleManualDiarioSelection(item)
+                    } label: {
+                        manualExportRow(for: item)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            Button("Exportar PDF") {
+                let selected = modelDiario.list.filter { item in
+                    guard let id = item.id else { return false }
+                    return manuallySelectedDiarioIDs.contains(id)
+                }
+                exportDiarioToPDF(selected, scopeName: "Manual")
+                showManualExportSheet = false
+            }
+            .buttonStyle(.bordered)
+        }
+        .padding()
+    }
+
+    private func manualExportRow(for item: Diario) -> some View {
+        HStack {
+            Image(systemName: manuallySelectedDiarioIDs.contains(item.id ?? UUID()) ? "checkmark.circle.fill" : "circle")
+            Text(item.title ?? "Sin título")
+            Spacer()
+            if let date = item.fecha {
+                Text(date.formatted(date: .abbreviated, time: .omitted))
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func diarioBatchConfirmationActions() -> some View {
+        if let action = pendingBatchAction {
+            Button(action.confirmTitle) {
+                performConfirmedBatchAction(action)
+                pendingBatchAction = nil
+            }
+        }
+        Button("Cancelar", role: .cancel) {
+            pendingBatchAction = nil
+        }
+    }
+
+    private func diarioBatchConfirmationMessage() -> Text {
+        Text(pendingBatchAction?.message(count: batchSelectedDiarioIDs.count) ?? "")
+    }
+
+    @ViewBuilder
+    private var diarioContent: some View {
+        ZStack {
+            LinearGradient(colors: [Color(red:0.45, green:0.50, blue: 0.50), .orange], startPoint: .top, endPoint: .bottom)
+                .ignoresSafeArea()
+                .onAppear {
+                    //Lee la contraseña de acceso del diario
+                    hasPassword = KeychainHelper.shared.getPassword() != nil
+                }
+
+            if securityModel.canOpenDiario {
+                diarioUnlockedContent
+            } else {
+                diarioLockedContent
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var diarioUnlockedContent: some View {
+        VStack {
+            Text("") //Para que las entradas no sobrepasen el area segura superior
+
+            diarioTopActions
+                .padding(.horizontal, 15)
+                .padding(.top, 8)
+
+            if showCalendar {
+                diarioCalendarSection
+            }
+
+            if isBatchSelectionMode {
+                batchSelectionToolbar
+                    .padding(.horizontal, 15)
+                    .padding(.vertical, 8)
+                    .transition(.move(edge: .top).combined(with: .opacity))
+            }
+
+            diarioEntriesScroll
+        }
+        .onAppear {
+            selectedCalendarDate = nil
+            modelDiario.getAllItem()
+        }
+        .onChange(of: modelDiario.list.map { $0.id }) { _, ids in
+            let visibleIDs = Set(ids.compactMap { $0 })
+            batchSelectedDiarioIDs = batchSelectedDiarioIDs.intersection(visibleIDs)
+        }
+    }
+
+    private var diarioTopActions: some View {
+        HStack {
+            Spacer()
+
+            Menu {
+                Button {
+                    showDiarioStats = true
+                } label: {
+                    Label("Estadísticas", systemImage: "chart.xyaxis.line")
+                }
+
+                Button {
+                    toggleBatchSelectionMode()
+                } label: {
+                    Label(isBatchSelectionMode ? "Cancelar selección" : "Seleccionar", systemImage: isBatchSelectionMode ? "xmark.circle" : "checklist")
+                }
+
+                Button {
+                    toggleCalendar()
+                } label: {
+                    Label(showCalendar ? "Ocultar calendario" : "Mostrar calendario", systemImage: "calendar")
+                }
+            } label: {
+                Image(systemName: "ellipsis.circle")
+            }
+            .buttonStyle(.bordered)
+            .disabled(!securityModel.canOpenDiario)
+
+            Menu {
+                Button {
+                    showAllEntries()
+                } label: {
+                    Label("Todas las entradas", systemImage: "text.magnifyingglass")
+                }
+
+                Button {
+                    groupEntriesByChapter()
+                } label: {
+                    Label("Por capítulos", systemImage: selectedListMode == .groupedByChapter ? "checkmark.circle.fill" : "book.closed")
+                }
+
+                Button {
+                    showFavoriteEntries()
+                } label: {
+                    Label("Mostrar favoritas", systemImage: "star")
+                }
+
+                Button {
+                    showAlertFilterByTitles = true
+                } label: {
+                    Label("Buscar en títulos", systemImage: "text.magnifyingglass")
+                }
+
+                Button {
+                    showAlertFilterByContent = true
+                } label: {
+                    Label("Buscar en el contenido", systemImage: "text.magnifyingglass")
+                }
+
+                exportDiarioPDFMenu()
+            } label: {
+                Image(systemName: "line.3.horizontal.decrease")
+            }
+            .buttonStyle(.bordered)
+            .disabled(!securityModel.canOpenDiario)
+
+            Button {
+                openBlankEntryEditor()
+            } label: {
+                Image(systemName: "plus")
+            }
+            .buttonStyle(.borderedProminent)
+            .tint(.orange)
+            .disabled(!securityModel.canOpenDiario)
+        }
+    }
+
+    private func toggleCalendar() {
+        withAnimation {
+            showCalendar.toggle()
+            if showCalendar == false {
+                selectedCalendarDate = nil
+                modelDiario.getAllItem()
+            }
+        }
+    }
+
+    private func showAllEntries() {
+        withAnimation {
+            selectedListMode = .all
+            selectedCalendarDate = nil
+            modelDiario.getAllItem()
+        }
+    }
+
+    private func groupEntriesByChapter() {
+        withAnimation {
+            collapsedChapterNames = Set(groupedDiarioByChapter.map(\.chapter))
+            selectedListMode = .groupedByChapter
+        }
+    }
+
+    private func showFavoriteEntries() {
+        selectedListMode = .all
+        modelDiario.list = modelDiario.filterByFav()
+    }
+
+    private func openBlankEntryEditor() {
+        openNewEntryEditor(
+            title: "",
+            content: "",
+            emocion: .neutral,
+            date: Date.now
+        )
+    }
+
+    private var diarioCalendarSection: some View {
+        DiarioCalendarView(
+            refreshTrigger: calendarRefreshTrigger,
+            onMonthEntriesLoaded: { _ in
+                selectedCalendarDate = nil
+            },
+            onRequestCreateEntry: { date in
+                openNewEntryEditor(
+                    title: "",
+                    content: "",
+                    emocion: .neutral,
+                    date: date
+                )
+            }
+        ) { date in
+            withAnimation {
+                selectedCalendarDate = Calendar.current.startOfDay(for: date)
+                modelDiario.list = modelDiario.searchPorFecha(for: date)
+            }
+        }
+        .background(Color.black.opacity(0.05))
     }
 
     @ViewBuilder
@@ -793,80 +734,125 @@ struct DiarioListView: View {
     }
 
     private var batchSelectionToolbar: some View {
-        HStack(spacing: 12) {
-            Text("\(batchSelectedDiarioIDs.count) seleccionadas")
+        VStack(spacing: 10) {
+            HStack(spacing: 12) {
+                Text("\(batchSelectedDiarioIDs.count) seleccionadas")
+                    .font(.subheadline.bold())
+                    .foregroundStyle(.black)
+
+                Spacer()
+
+                Button(areAllVisibleEntriesSelected ? "Deseleccionar todas" : "Seleccionar todas") {
+                    toggleVisibleEntriesSelection()
+                }
                 .font(.subheadline.bold())
-                .foregroundStyle(.black)
-
-            Spacer()
-
-            Button {
-                toggleVisibleEntriesSelection()
-            } label: {
-                Label(areAllVisibleEntriesSelected ? "Ninguna" : "Todas", systemImage: areAllVisibleEntriesSelected ? "minus.circle" : "checkmark.circle")
-                    .labelStyle(.iconOnly)
+                .buttonStyle(.bordered)
+                .tint(.black)
+                .disabled(visibleDiarioIDs.isEmpty)
+                .help(areAllVisibleEntriesSelected ? "Deseleccionar visibles" : "Seleccionar visibles")
             }
-            .buttonStyle(.bordered)
-            .tint(.black)
-            .help(areAllVisibleEntriesSelected ? "Deseleccionar visibles" : "Seleccionar visibles")
 
-            Menu {
-                ForEach(Emociones.allCases, id: \.self) { emocion in
-                    Button {
-                        updateSelectedEntriesEmotion(emocion)
-                    } label: {
-                        HStack {
-                            Text(emocion.rawValue.capitalized)
-                            Text(emocion.emoji)
+            HStack(spacing: 12) {
+                Menu {
+                    ForEach(Emociones.allCases, id: \.self) { emocion in
+                        Button {
+                            requestBatchActionConfirmation(.updateEmotion(emocion))
+                        } label: {
+                            HStack {
+                                Text(emocion.rawValue.capitalized)
+                                Text(emocion.emoji)
+                            }
                         }
                     }
+                } label: {
+                    Label("Cambiar emoción", systemImage: "face.smiling")
+                        .labelStyle(.iconOnly)
                 }
-            } label: {
-                Label("Cambiar emoción", systemImage: "face.smiling")
-                    .labelStyle(.iconOnly)
-            }
-            .buttonStyle(.bordered)
-            .tint(.black)
-            .disabled(batchSelectedDiarioIDs.isEmpty)
-            .help("Cambiar emoción")
+                .buttonStyle(.bordered)
+                .tint(.black)
+                .disabled(batchSelectedDiarioIDs.isEmpty)
+                .help("Cambiar emoción")
 
-            Menu {
-                Button("Sin capítulo") {
-                    updateSelectedEntriesChapter("")
-                }
-                ForEach(existingChapters, id: \.self) { chapter in
-                    Button(chapter) {
-                        updateSelectedEntriesChapter(chapter)
+                Menu {
+                    Button("Sin capítulo") {
+                        requestBatchActionConfirmation(.updateChapter(""))
                     }
+                    ForEach(existingChapters, id: \.self) { chapter in
+                        Button(chapter) {
+                            requestBatchActionConfirmation(.updateChapter(chapter))
+                        }
+                    }
+                    Button("Otro...") {
+                        batchChapterDraft = ""
+                        showBatchChapterAlert = true
+                    }
+                } label: {
+                    Label("Cambiar capítulo", systemImage: "book.closed")
+                        .labelStyle(.iconOnly)
                 }
-                Button("Otro...") {
-                    batchChapterDraft = ""
-                    showBatchChapterAlert = true
-                }
-            } label: {
-                Label("Cambiar capítulo", systemImage: "book.closed")
-                    .labelStyle(.iconOnly)
-            }
-            .buttonStyle(.bordered)
-            .tint(.black)
-            .disabled(batchSelectedDiarioIDs.isEmpty)
-            .help("Cambiar capítulo")
+                .buttonStyle(.bordered)
+                .tint(.black)
+                .disabled(batchSelectedDiarioIDs.isEmpty)
+                .help("Cambiar capítulo")
 
-            Button(role: .destructive) {
-                showBatchDeleteConfirmation = true
-            } label: {
-                Label("Borrar", systemImage: "trash")
-                    .labelStyle(.iconOnly)
+                Button {
+                    requestBatchActionConfirmation(.exportMigration)
+                } label: {
+                    Label("Exportar migración", systemImage: "square.and.arrow.up")
+                        .labelStyle(.iconOnly)
+                }
+                .buttonStyle(.bordered)
+                .tint(.black)
+                .disabled(batchSelectedDiarioIDs.isEmpty)
+                .help("Exportar seleccionadas a archivo de migración")
+
+                Button(role: .destructive) {
+                    showBatchDeleteConfirmation = true
+                } label: {
+                    Label("Borrar", systemImage: "trash")
+                        .labelStyle(.iconOnly)
+                }
+                .buttonStyle(.bordered)
+                .tint(.red)
+                .disabled(batchSelectedDiarioIDs.isEmpty)
+                .help("Borrar seleccionadas")
             }
-            .buttonStyle(.bordered)
-            .tint(.red)
-            .disabled(batchSelectedDiarioIDs.isEmpty)
-            .help("Borrar seleccionadas")
         }
         .padding(10)
         .background(.white.opacity(0.82))
         .clipShape(RoundedRectangle(cornerRadius: 10))
         .shadow(radius: 3)
+    }
+
+    private func migrationPasswordSheet(title: String, countLabel: String) -> some View {
+        NavigationStack {
+            Form {
+                Section(title) {
+                    Text("Se creará un archivo seguro con \(countLabel). La contraseña solo se usa para proteger este archivo y no se guarda.")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                    SecureField("Contraseña del archivo", text: $migrationPassword)
+                    SecureField("Repetir contraseña", text: $migrationPasswordConfirmation)
+                }
+            }
+            .navigationTitle("Archivo .ypgexp")
+            #if os(iOS)
+            .navigationBarTitleDisplayMode(.inline)
+            #endif
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancelar") {
+                        showMigrationPasswordSheet = false
+                    }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Exportar") {
+                        exportSelectedDiarioToMigration()
+                    }
+                    .disabled(migrationPassword.isEmpty || migrationPassword != migrationPasswordConfirmation)
+                }
+            }
+        }
     }
 
     @ViewBuilder
@@ -946,6 +932,13 @@ struct DiarioListView: View {
         }
     }
 
+    private var selectedDiarioEntries: [Diario] {
+        modelDiario.list.filter { item in
+            guard let id = item.id else { return false }
+            return batchSelectedDiarioIDs.contains(id)
+        }
+    }
+
     private func toggleChapterCollapse(_ chapter: String) {
         withAnimation {
             if collapsedChapterNames.contains(chapter) {
@@ -964,6 +957,38 @@ struct DiarioListView: View {
             modelDiario.DeleteItems(ids: idsToDelete)
             finishBatchOperation()
             refreshAfterEntryDeletion(nil)
+        }
+    }
+
+    private func requestBatchActionConfirmation(_ action: DiarioBatchAction) {
+        guard !batchSelectedDiarioIDs.isEmpty else { return }
+        DispatchQueue.main.async {
+            pendingBatchAction = action
+            showBatchActionConfirmation = true
+        }
+    }
+
+    private func performConfirmedBatchAction(_ action: DiarioBatchAction) {
+        switch action {
+        case .updateEmotion(let emotion):
+            updateSelectedEntriesEmotion(emotion)
+        case .updateChapter(let chapter):
+            updateSelectedEntriesChapter(chapter)
+        case .exportMigration:
+            authenticateBeforeMigrationExport()
+        }
+    }
+
+    private func authenticateBeforeMigrationExport() {
+        UtilFuncs.authenticateDeviceOwner(reason: "Autentícate para exportar las entradas seleccionadas.") { success, errorMessage in
+            if success {
+                migrationPassword = ""
+                migrationPasswordConfirmation = ""
+                showMigrationPasswordSheet = true
+            } else {
+                alertMessage = errorMessage ?? "No se pudo autenticar el acceso a la exportación."
+                showAlert = true
+            }
         }
     }
 
@@ -987,6 +1012,49 @@ struct DiarioListView: View {
             finishBatchOperation()
             refreshAfterEntryUpdate(nil)
         }
+    }
+
+    private func exportSelectedDiarioToMigration() {
+        guard migrationPassword == migrationPasswordConfirmation, !migrationPassword.isEmpty else {
+            alertMessage = "La contraseña de exportación está vacía o no coincide."
+            showAlert = true
+            return
+        }
+
+        let entries = selectedDiarioEntries
+        guard !entries.isEmpty else {
+            alertMessage = "Selecciona al menos una entrada de diario para exportar."
+            showAlert = true
+            return
+        }
+
+        do {
+            let bridge = CoreDataCanonicalMigrationBridge()
+            let records = try bridge.exportRecords(diaryEntries: entries)
+            let result = try MyAppMigrationService().export(records: records, password: migrationPassword)
+            migrationDocument = MigrationDataDocument(data: result.bytes)
+            migrationExportCount = entries.count
+            migrationExportFileName = "neville-diario-\(entries.count).ypgexp"
+            showMigrationPasswordSheet = false
+            showMigrationExporter = true
+        } catch {
+            alertMessage = "No se pudo preparar el archivo de migración: \(error.localizedDescription)"
+            showAlert = true
+        }
+    }
+
+    private func handleMigrationExportResult(_ result: Result<URL, Error>) {
+        switch result {
+        case .success:
+            alertMessage = "Archivo de migración exportado correctamente: \(migrationExportCount) entrada(s) de diario."
+            finishBatchOperation()
+        case .failure(let error):
+            alertMessage = "No se pudo guardar el archivo de migración: \(error.localizedDescription)"
+        }
+        migrationPassword = ""
+        migrationPasswordConfirmation = ""
+        migrationDocument = nil
+        showAlert = true
     }
 
     private func renameChapter(_ oldChapter: String, to newChapter: String) {

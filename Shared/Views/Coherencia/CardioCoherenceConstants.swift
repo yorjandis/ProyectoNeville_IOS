@@ -3,7 +3,7 @@ import Foundation
 
 enum CardioCoherenceConstants {
     
-    //Contreol de la pausa en el ciclo
+    //Control de la pausa en el ciclo
     enum BreathingPattern {
         /// Pausa en milisegundos al final de inhalacion y exhalacion.
         static let topPauseMillis: UInt64 = 1100

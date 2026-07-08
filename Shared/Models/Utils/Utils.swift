@@ -62,6 +62,27 @@ struct UtilFuncs{
         }
         return result
     }
+
+    static func authenticateDeviceOwner(
+        reason: String = "Por favor autentícate para tener acceso a su información",
+        completion: @MainActor @escaping @Sendable (Bool, String?) -> Void
+    ) {
+        let context = LAContext()
+        var error: NSError?
+
+        guard context.canEvaluatePolicy(.deviceOwnerAuthentication, error: &error) else {
+            Task { @MainActor in
+                completion(false, error?.localizedDescription ?? "No hay un método de autenticación disponible en este dispositivo.")
+            }
+            return
+        }
+
+        context.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: reason) { success, evalError in
+            Task { @MainActor in
+                completion(success, success ? nil : (evalError?.localizedDescription ?? "No se pudo autenticar."))
+            }
+        }
+    }
     
     #if os(macOS)
     // Ejemplo de contenedor; la función está fuera de cualquier View y es estática.
@@ -155,6 +176,4 @@ extension String {
         return filter("1234567890.".contains)
     }
 }
-
-
 

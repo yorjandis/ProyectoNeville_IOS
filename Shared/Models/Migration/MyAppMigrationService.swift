@@ -15,6 +15,10 @@ final class MyAppMigrationService {
 
     func export(password: String) throws -> ExportResult {
         let records = try bridge.exportRecords()
+        return try export(records: records, password: password)
+    }
+
+    func export(records: [CanonicalMigrationRecord], password: String) throws -> ExportResult {
         let counts = Dictionary(grouping: records, by: \.type).mapValues(\.count)
         let sortedCounts = Dictionary(uniqueKeysWithValues: counts.sorted { $0.key < $1.key })
         let exportId = UUID().uuidString

@@ -107,7 +107,7 @@ struct ProgramasListView: View {
                 
             }
             
-            .navigationTitle("Subprogramas")
+            .navigationTitle("Programas")
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
             #endif
