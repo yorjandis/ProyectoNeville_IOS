@@ -392,7 +392,7 @@ private struct PresenciaMockHeader: View {
             Text("Presencia")
                 .font(.largeTitle.bold())
                 .foregroundStyle(PresenciaMockPalette.primaryText)
-            Text("Hoy has vuelto al presente \(todayCount) veces.")
+            Text("Hoy has vuelto al presente \(todayCount) \(todayCount == 1 ? "vez" : "veces")")
                 .font(.headline)
                 .foregroundStyle(PresenciaMockPalette.secondaryText)
         }

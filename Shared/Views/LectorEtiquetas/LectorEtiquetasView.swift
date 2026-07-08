@@ -1244,7 +1244,7 @@ private struct LabelInterpretationSheetView: View {
                     .font(.title2)
                     .foregroundStyle(.secondary)
 
-                Text("Por último, interpreta el conjunto: combinación de nutrientes críticos (azúcar, sodio, grasas saturadas), fibra, proteína y nivel de procesamiento (NOVA), junto con alérgenos si tienes sensibilidad. Utiliza esta herramienta como orientación inicial y confirma siempre en la etiqueta física del envase, antes de decidir su consumo.")
+                Text("Por último, interpreta el conjunto: combinación de nutrientes críticos (azúcar, sodio, grasas saturadas), fibra, proteína y nivel de procesamiento (NOVA), junto con alérgenos si tienes sensibilidad. \n\nUtiliza esta herramienta como orientación inicial y confirma siempre en la etiqueta física del envase, antes de decidir su consumo.")
                     .font(.title2)
                     .foregroundStyle(.secondary)
             }

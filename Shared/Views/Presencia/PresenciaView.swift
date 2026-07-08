@@ -97,7 +97,7 @@ struct PresenciaView: View {
             Text("Vuelve al Presente")
                 .font(.largeTitle.bold())
                 .foregroundStyle(.white)
-            Text("Hoy has vuelto al presente \(todayPresentCount) veces.")
+            Text("Hoy has vuelto al presente \(todayPresentCount) \(todayPresentCount == 1 ? "vez" : "veces")")
                 .font(.headline)
                 .foregroundStyle(.white.opacity(0.82))
             if showMilestoneMessage {

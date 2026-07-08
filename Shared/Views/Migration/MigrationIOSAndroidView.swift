@@ -138,20 +138,20 @@ struct MigrationIOSAndroidView: View {
             exportableContentInfo()
 
             if isMigrationUnlocked {
-                Section("Exportar a Android") {
+                Section("Preparar archivo de migración") {
                     SecureField("Contraseña del archivo", text: $viewModel.exportPassword)
                     SecureField("Repetir contraseña", text: $viewModel.exportPasswordConfirmation)
 
                     Button {
-                        viewModel.prepareExport()
-                        showExporter = viewModel.exportDocument != nil
+                            viewModel.prepareExport()
+                            showExporter = viewModel.exportDocument != nil
                     } label: {
                         Label("Crear archivo .ypgexp", systemImage: "square.and.arrow.up")
                     }
                     .disabled(!viewModel.canExport || viewModel.isWorking)
 
-                    Text("Tus datos se preparan en un archivo seguro y protegido con la contraseña que elijas. La contraseña solo se usa durante este proceso y no se guarda en el dispositivo.")
-                        .font(.footnote)
+                    Text("Tus datos se preparan en un archivo seguro y protegido. La contraseña no se guarda y se requiere para la importación.")
+                        .font(.body)
                         .foregroundStyle(.secondary)
 
                     if viewModel.hasExportSummary {
@@ -159,7 +159,7 @@ struct MigrationIOSAndroidView: View {
                     }
                 }
 
-                Section("Importar desde Android") {
+                Section("Importar archivo de migración ") {
                     SecureField("Contraseña del archivo", text: $viewModel.importPassword)
 
                     Button {
@@ -257,7 +257,7 @@ struct MigrationIOSAndroidView: View {
             Button("Omitir conflictos e importar lo nuevo") {
                 viewModel.importCurrentPreview(policy: .skipExisting)
             }
-            Button("Sobrescribir registros con el mismo ID", role: .destructive) {
+            Button("Sobrescribir registros", role: .destructive) {
                 viewModel.importCurrentPreview(policy: .overwriteExisting)
             }
             Button("Cancelar", role: .cancel) { }
@@ -266,8 +266,8 @@ struct MigrationIOSAndroidView: View {
 
     private func exportableContentInfo() -> some View {
         Section("Datos que se pueden exportar") {
-            Text("El archivo de migración puede incluir los siguientes elementos personales, siempre protegido con la contraseña que elijas:")
-                .font(.footnote)
+            Text("La migración exporta, de manera segura y cifrada, los siguientes datos:")
+                .font(.body)
                 .foregroundStyle(.secondary)
 
             VStack(alignment: .leading, spacing: 8) {
@@ -281,8 +281,8 @@ struct MigrationIOSAndroidView: View {
 
     private func authenticationSection() -> some View {
         Section("Acceso protegido") {
-            Text("Por seguridad, desbloquea la migración antes de exportar o importar datos.")
-                .font(.footnote)
+            Text("Por seguridad, desbloquea la migración antes de proceder.")
+                .font(.body)
                 .foregroundStyle(.secondary)
 
             Button {

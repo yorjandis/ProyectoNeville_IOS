@@ -349,7 +349,7 @@ struct PresenciaStatsView: View {
             Text("Presencia")
                 .font(.largeTitle.bold())
                 .foregroundStyle(PresenciaStatsPalette.primaryText)
-            Text("Hoy has vuelto al presente \(todayPresentCount) veces.")
+            Text("Hoy has vuelto al presente \(todayPresentCount) \(todayPresentCount == 1 ? "vez" : "veces")")
                 .font(.headline)
                 .foregroundStyle(PresenciaStatsPalette.secondaryText)
         }
