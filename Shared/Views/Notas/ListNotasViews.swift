@@ -154,17 +154,17 @@ struct ListNotasViews: View {
         func message(count: Int) -> String {
             switch self {
             case .passToFrases:
-                return "Se copiarán \(count) nota(s) seleccionada(s) a Frases personales."
+                return "Se copiarán \(count == 1 ? "nota" : "notas") \(count == 1 ? "seleccionada" : "seleccionadas") a Frases personales."
             case .passToCalm:
-                return "Se copiarán \(count) nota(s) seleccionada(s) a Espacio Calma."
+                return "Se copiarán \(count) nota(s) \(count == 1 ? "seleccionada" : "seleccionadas") a Espacio Calma."
             case .setCategory(let category):
                 let target = category.trimmingCharacters(in: .whitespacesAndNewlines)
                 if target.isEmpty {
-                    return "Se quitará la categoría de \(count) nota(s) seleccionada(s)."
+                    return "Se quitará la categoría de \(count) \(count == 1 ? "nota" : "notas") \(count == 1 ? "seleccionada" : "seleccionadas")"
                 }
-                return "Se asignará la categoría \"\(target)\" a \(count) nota(s) seleccionada(s)."
+                return "Se asignará la categoría \"\(target)\" a \(count) \(count == 1 ? "nota" : "notas") \(count == 1 ? "seleccionada" : "seleccionadas")"
             case .exportMigration:
-                return "Se preparará un archivo de migración con \(count) nota(s) seleccionada(s)."
+                return "Se preparará un archivo de migración con \(count) \(count == 1 ? "nota" : "notas") \(count == 1 ? "seleccionada" : "seleccionadas")"
             }
         }
     }
@@ -668,7 +668,7 @@ struct ListNotasViews: View {
             Form {
                 Section(title) {
                     Text("Se creará un archivo seguro con \(countLabel). La contraseña solo se usa para proteger este archivo y no se guarda.")
-                        .font(.footnote)
+                        .font(.body)
                         .foregroundStyle(.secondary)
                     SecureField("Contraseña del archivo", text: $migrationPassword)
                     SecureField("Repetir contraseña", text: $migrationPasswordConfirmation)

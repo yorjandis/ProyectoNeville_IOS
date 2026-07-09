@@ -49,8 +49,6 @@
 		914D88792FC1AEF100CDDB93 /* WatchDiarioReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914D88782FC1AEF100CDDB93 /* WatchDiarioReceiver.swift */; };
 		914D887B2FC1AF1800CDDB93 /* WatchDiarioReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914D887A2FC1AF1800CDDB93 /* WatchDiarioReceiver.swift */; };
 		914D887D2FC1AF1800CDDB93 /* WatchPremiumService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914D887C2FC1AF1800CDDB93 /* WatchPremiumService.swift */; };
-		914D88812FC1B22000CDDB93 /* Shared/Views/Presencia/PresenciaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914D887E2FC1B22000CDDB93 /* Shared/Views/Presencia/PresenciaView.swift */; };
-		914D88822FC1B22000CDDB93 /* Shared/Views/Presencia/PresenciaStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914D88802FC1B22000CDDB93 /* Shared/Views/Presencia/PresenciaStatsView.swift */; };
 		914D88902FC6000000CDDB93 /* MigrationFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914D888B2FC6000000CDDB93 /* MigrationFormat.swift */; };
 		914D88912FC6000000CDDB93 /* MigrationCrypto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914D888C2FC6000000CDDB93 /* MigrationCrypto.swift */; };
 		914D88922FC6000000CDDB93 /* CoreDataCanonicalMigrationBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914D888D2FC6000000CDDB93 /* CoreDataCanonicalMigrationBridge.swift */; };
@@ -2110,8 +2108,6 @@
 				914D88942FC6000000CDDB93 /* MigrationDataDocument.swift in Sources */,
 				914D88962FC6000000CDDB93 /* MigrationIOSAndroidView.swift in Sources */,
 				914D887B2FC1AF1800CDDB93 /* WatchDiarioReceiver.swift in Sources */,
-				914D88812FC1B22000CDDB93 /* Shared/Views/Presencia/PresenciaView.swift in Sources */,
-				914D88822FC1B22000CDDB93 /* Shared/Views/Presencia/PresenciaStatsView.swift in Sources */,
 				E95B93592AAFBB2600B5E2B5 /* ContentView.swift in Sources */,
 				E95B93572AAFBB2600B5E2B5 /* Neville_iOSApp.swift in Sources */,
 			);

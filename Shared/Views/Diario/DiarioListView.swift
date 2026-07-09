@@ -159,15 +159,15 @@ struct DiarioListView: View {
         func message(count: Int) -> String {
             switch self {
             case .updateEmotion(let emotion):
-                return "Se cambiará la emoción de \(count) entrada(s) seleccionada(s) a \(emotion.rawValue)."
+                return "Se cambiará la emoción de \(count) \(count == 1 ? " entrada" : " entradas") a \(emotion.rawValue)."
             case .updateChapter(let chapter):
                 let target = chapter.trimmingCharacters(in: .whitespacesAndNewlines)
                 if target.isEmpty {
-                    return "Se quitará el capítulo de \(count) entrada(s) seleccionada(s)."
+                    return "Se quitará el capítulo de \(count) \(count == 1 ? " entrada" : " entradas") \(count == 1 ? " seleccionada" : " seleccionadas")"
                 }
-                return "Se asignará el capítulo \"\(target)\" a \(count) entrada(s) seleccionada(s)."
+                return "Se asignará el capítulo \"\(target)\" \(count == 1 ? " entrada" : " entradas") \(count == 1 ? " seleccionada" : " seleccionadas")"
             case .exportMigration:
-                return "Se preparará un archivo de migración con \(count) entrada(s) seleccionada(s)."
+                return "Se preparará un archivo de migración con \(count) \(count == 1 ? " entrada" : " entradas") \(count == 1 ? " seleccionada" : " seleccionadas")"
             }
         }
     }
@@ -829,7 +829,7 @@ struct DiarioListView: View {
             Form {
                 Section(title) {
                     Text("Se creará un archivo seguro con \(countLabel). La contraseña solo se usa para proteger este archivo y no se guarda.")
-                        .font(.footnote)
+                        .font(.body)
                         .foregroundStyle(.secondary)
                     SecureField("Contraseña del archivo", text: $migrationPassword)
                     SecureField("Repetir contraseña", text: $migrationPasswordConfirmation)

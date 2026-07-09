@@ -20,6 +20,23 @@
 			</array>
 		</dict>
 	</array>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>Neville Export</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSHandlerRank</key>
+			<string>Owner</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.ypg.neville.ypgexp</string>
+			</array>
+		</dict>
+	</array>
+	<key>LSSupportsOpeningDocumentsInPlace</key>
+	<true/>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>Neville necesita acceso a tu biblioteca musical para que puedas seleccionar música personalizada en Espacio Calma.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
@@ -28,6 +45,26 @@
 	<array>
 		<string>remote-notification</string>
 		<string>audio</string>
+	</array>
+	<key>UTExportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>Neville export file</string>
+			<key>UTTypeIdentifier</key>
+			<string>com.ypg.neville.ypgexp</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>ypgexp</string>
+				</array>
+			</dict>
+		</dict>
 	</array>
 </dict>
 </plist>

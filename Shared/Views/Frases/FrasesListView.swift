@@ -61,6 +61,13 @@ struct FrasesListView: View {
     @State private var showPDFExporter = false
     @State private var exportedPDFDocument: ExportedPDFDocument?
     @State private var exportedPDFFileName: String = "Frases.pdf"
+    @State private var showMigrationPasswordSheet = false
+    @State private var showMigrationExporter = false
+    @State private var migrationPassword = ""
+    @State private var migrationPasswordConfirmation = ""
+    @State private var migrationDocument: MigrationDataDocument?
+    @State private var migrationExportFileName = "neville-frases.ypgexp"
+    @State private var migrationExportCount = 0
     
     //Mostrar la vista de frases relacionadas
     @State private var showTabViewFrasesRelac: Bool = false
@@ -248,6 +255,10 @@ struct FrasesListView: View {
                                          CreateMenuItemButton(text: "Exportar PDF (manual)", sysImageStr: "doc.richtext") {
                                              exportSelectedFrasesToPDFOrEnableSelection()
                                          }
+
+                                         CreateMenuItemButton(text: "Exportar migración (frases personales)", sysImageStr: "square.and.arrow.up") {
+                                             exportSelectedPersonalPhrasesToMigrationOrEnableSelection()
+                                         }
                                          
                                          //Crea un Menú para filtrar por todos los Autores Disponibles
                                          Menu{
@@ -374,13 +385,27 @@ struct FrasesListView: View {
              .alert(isPresented: self.$showAlert){
                  Alert(title: Text("La Ley"), message: Text(self.alertMessage))
              }
-             .fileExporter(
-                isPresented: $showPDFExporter,
-                document: exportedPDFDocument,
-                contentType: .pdf,
-                defaultFilename: exportedPDFFileName
-             ) { _ in }
-             .task {
+	             .fileExporter(
+	                isPresented: $showPDFExporter,
+	                document: exportedPDFDocument,
+	                contentType: .pdf,
+	                defaultFilename: exportedPDFFileName
+	             ) { _ in }
+	             .fileExporter(
+	                isPresented: $showMigrationExporter,
+	                document: migrationDocument ?? MigrationDataDocument(),
+	                contentType: .ypgExport,
+	                defaultFilename: migrationExportFileName
+	             ) { result in
+	                 handleMigrationExportResult(result)
+	             }
+	             .sheet(isPresented: $showMigrationPasswordSheet) {
+	                 migrationPasswordSheet(
+	                     title: "Exportar frases personales",
+	                     countLabel: "\(selectedPersonalPhrases.count) frase(s) personal(es)"
+	                 )
+	             }
+	             .task {
                  //Carga todas las Frases al inicio:
                  if self.mostrarFrasesDe != nil{
                      self.frasesModel.listfrases = self.frasesModel.getListFrasesByAutor(autor: self.mostrarFrasesDe!.rawValue)
@@ -462,10 +487,122 @@ struct FrasesListView: View {
             showAlert = true
         }
     }
-    
-    
-}
 
+    private var selectedFrases: [Frases] {
+        frasesModel.listfrases.filter { frase in
+            guard let id = frase.id else { return false }
+            return selectedFraseIDs.contains(id)
+        }
+    }
+
+    private var selectedPersonalPhrases: [Frases] {
+        selectedFrases.filter(\.isPersonal)
+    }
+
+    private func exportSelectedPersonalPhrasesToMigrationOrEnableSelection() {
+        if !selectionMode {
+            withAnimation {
+                selectionMode = true
+            }
+            alertMessage = "Selecciona frases personales y vuelve a pulsar 'Exportar migración (frases personales)'. Las frases incluidas de serie no se exportarán."
+            showAlert = true
+            return
+        }
+
+        guard !selectedPersonalPhrases.isEmpty else {
+            alertMessage = "Selecciona al menos una frase personal. Las frases incluidas de serie no se exportan."
+            showAlert = true
+            return
+        }
+
+        UtilFuncs.authenticateDeviceOwner(reason: "Autentícate para exportar las frases personales seleccionadas.") { success, errorMessage in
+            if success {
+                migrationPassword = ""
+                migrationPasswordConfirmation = ""
+                showMigrationPasswordSheet = true
+            } else {
+                alertMessage = errorMessage ?? "No se pudo autenticar el acceso a la exportación."
+                showAlert = true
+            }
+        }
+    }
+
+    private func migrationPasswordSheet(title: String, countLabel: String) -> some View {
+        NavigationStack {
+            Form {
+                Section(title) {
+                    Text("Se creará un archivo seguro con \(countLabel). La contraseña solo se usa para proteger este archivo y no se guarda.")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                    SecureField("Contraseña del archivo", text: $migrationPassword)
+                    SecureField("Repetir contraseña", text: $migrationPasswordConfirmation)
+                }
+            }
+            .navigationTitle("Archivo .ypgexp")
+            #if os(iOS)
+            .navigationBarTitleDisplayMode(.inline)
+            #endif
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancelar") {
+                        showMigrationPasswordSheet = false
+                    }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Exportar") {
+                        exportSelectedPersonalPhrasesToMigration()
+                    }
+                    .disabled(migrationPassword.isEmpty || migrationPassword != migrationPasswordConfirmation)
+                }
+            }
+        }
+    }
+
+    private func exportSelectedPersonalPhrasesToMigration() {
+        guard migrationPassword == migrationPasswordConfirmation, !migrationPassword.isEmpty else {
+            alertMessage = "La contraseña de exportación está vacía o no coincide."
+            showAlert = true
+            return
+        }
+
+        let phrases = selectedPersonalPhrases
+        guard !phrases.isEmpty else {
+            alertMessage = "Selecciona al menos una frase personal para exportar."
+            showAlert = true
+            return
+        }
+
+        do {
+            let records = try CoreDataCanonicalMigrationBridge().exportRecords(personalPhrases: phrases)
+            let result = try MyAppMigrationService().export(records: records, password: migrationPassword)
+            migrationDocument = MigrationDataDocument(data: result.bytes)
+            migrationExportCount = records.count
+            migrationExportFileName = "neville-frases-\(records.count).ypgexp"
+            showMigrationPasswordSheet = false
+            showMigrationExporter = true
+        } catch {
+            alertMessage = "No se pudo preparar el archivo de migración: \(error.localizedDescription)"
+            showAlert = true
+        }
+    }
+
+    private func handleMigrationExportResult(_ result: Result<URL, Error>) {
+        switch result {
+        case .success:
+            alertMessage = "Archivo de migración exportado correctamente: \(migrationExportCount) frase(s) personal(es)."
+            selectedFraseIDs.removeAll()
+            selectionMode = false
+        case .failure(let error):
+            alertMessage = "No se pudo guardar el archivo de migración: \(error.localizedDescription)"
+        }
+        migrationPassword = ""
+        migrationPasswordConfirmation = ""
+        migrationDocument = nil
+        showAlert = true
+    }
+	    
+	    
+}
 
 
 

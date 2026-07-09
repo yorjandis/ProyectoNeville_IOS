@@ -124,19 +124,19 @@ struct AgendaMainView: View {
         func message(count: Int) -> String {
             switch self {
             case .delete:
-                return "Se eliminarán \(count) actividad(es) seleccionada(s), incluidos sus recordatorios."
+                return "Se eliminarán \(count) \(count == 1 ? " actividad" : " actividades") \(count == 1 ? " seleccionada" : " seleccionadas"), incluidos sus recordatorios."
             case .markCompleted:
-                return "Se marcarán como completadas \(count) actividad(es) seleccionada(s)."
+                return "Se marcarán como completadas \(count) \(count == 1 ? " actividad" : " actividades") \(count == 1 ? " seleccionada" : " seleccionadas")"
             case .clearCheck:
-                return "Se quitará el modo check de \(count) actividad(es) seleccionada(s)."
+                return "Se quitará el modo check de \(count) \(count == 1 ? " actividad" : " actividades") \(count == 1 ? " seleccionada" : "  seleccionadas")"
             case .activateReminders:
-                return "Se activarán los recordatorios de \(count) actividad(es) seleccionada(s)."
+                return "Se activarán los recordatorios de \(count) \(count == 1 ? " actividad" : " actividades") \(count == 1 ? " seleccionada" : " seleccionadas")"
             case .deactivateReminders:
-                return "Se desactivarán los recordatorios de \(count) actividad(es) seleccionada(s)."
+                return "Se desactivarán los recordatorios de \(count) \(count == 1 ? " actividad" : " actividades") \(count == 1 ? " seleccionada" : "  seleccionadas")"
             case .exportPDF:
-                return "Se preparará un PDF con \(count) actividad(es) seleccionada(s)."
+                return "Se preparará un PDF con \(count) \(count == 1 ? " actividad" : " actividades") \(count == 1 ? " seleccionada" : " seleccionadas")"
             case .exportMigration:
-                return "Se preparará un archivo de migración con \(count) actividad(es) seleccionada(s)."
+                return "Se preparará un archivo de migración con \(count) \(count == 1 ? " actividad" : " actividades") \(count == 1 ? "  seleccionada" : " seleccionadas")"
             }
         }
     }
@@ -1187,7 +1187,7 @@ struct AgendaMainView: View {
             Form {
                 Section(title) {
                     Text("Se creará un archivo seguro con \(countLabel). La contraseña solo se usa para proteger este archivo y no se guarda.")
-                        .font(.footnote)
+                        .font(.body)
                         .foregroundStyle(.secondary)
                     SecureField("Contraseña del archivo", text: $migrationPassword)
                     SecureField("Repetir contraseña", text: $migrationPasswordConfirmation)

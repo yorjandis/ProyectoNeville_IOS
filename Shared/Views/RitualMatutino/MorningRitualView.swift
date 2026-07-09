@@ -1707,7 +1707,7 @@ private struct MorningRitualHistoryCalendarView: View {
                         let hasSession = markedEpochDays.contains(epoch)
 
                         Text("\(calendar.component(.day, from: date))")
-                            .font(.subheadline)
+                            .font(.system(size: 18, weight: hasSession ? .bold : .regular, design: .default))
                             .frame(maxWidth: .infinity, minHeight: 34)
                             .background(hasSession ? Color.white.opacity(0.18) : Color.clear)
                             .overlay(
@@ -1715,7 +1715,7 @@ private struct MorningRitualHistoryCalendarView: View {
                                     .stroke(isSelected ? Color.white : Color.clear, lineWidth: 1.5)
                             )
                             .clipShape(RoundedRectangle(cornerRadius: 8))
-                            .foregroundStyle(.white)
+                            .foregroundStyle(hasSession ? .black : .white)
                             .onTapGesture {
                                 withAnimation(.easeInOut(duration: 0.2)) {
                                     selectedEpochDay = (selectedEpochDay == epoch) ? nil : epoch

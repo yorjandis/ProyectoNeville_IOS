@@ -35,6 +35,10 @@ final class CoreDataCanonicalMigrationBridge {
         try agendaItems.map(agendaRecord)
     }
 
+    func exportRecords(personalPhrases: [Frases]) throws -> [CanonicalMigrationRecord] {
+        try personalPhrases.filter(\.isPersonal).map(personalPhraseRecord)
+    }
+
     func findConflicts(records: [CanonicalMigrationRecord]) throws -> [ImportConflict] {
         let existing = try exportRecords()
         return records.compactMap { incoming in
