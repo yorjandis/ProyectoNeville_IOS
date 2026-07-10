@@ -47,32 +47,6 @@ enum CardioCoherenceConstants {
         static let scaleRange: CGFloat = 0.22
         /// Factor del radio usado para dibujar la roseta dentro del orbe.
         static let rosetteRadiusFactor: CGFloat = 0.98
-        /// Expansion del anillo exterior del orbe.
-        static let ringInsetFactor: CGFloat = 0.12
-        /// Grosor del anillo exterior.
-        static let ringLineWidth: CGFloat = 2
-        /// Contracción adicional y progresiva del anillo durante la exhalación.
-        /// Acerca su tamaño final al del loto cerrado antes del desvanecimiento.
-        static let exhaleRingContraction: CGFloat = 0.46
-        /// Cierre adicional del anillo al final de exhalación para continuidad visual del vaciado.
-        static let exhalePauseTailShrink: CGFloat = 0.10
-        /// Factor de suavizado tipo resorte para la transición del anillo entre fases.
-        static let ringSpringSmoothing: CGFloat = 0.55
-        /// Paso máximo de escala del anillo por frame para evitar saltos visuales.
-        static let maxRingScaleStepPerFrame: CGFloat = 0.0024
-        /// Paso máximo de expansión por frame para acompañar al loto sin quedar rezagado.
-        static let maxRingExpansionStepPerFrame: CGFloat = 0.0032
-        /// Fracción inicial de la inhalación en la que se libera el cierre extra del anillo.
-        static let inhaleReleaseWindow: CGFloat = 0.68
-        /// Duración del fade-in inicial del anillo durante la primera inhalación.
-        /// A mayor valor, aparición más sutil.
-        static let initialRingRevealDurationSeconds: Double = 2.8
-        /// Punto de la exhalación desde el que el anillo comienza a desvanecerse.
-        static let ringFadeOutStartFraction: CGFloat = 0.84
-        /// Opacidad mínima del anillo en el cambio de exhalación a inhalación.
-        static let ringMinimumTransitionOpacity: CGFloat = 0.06
-        /// Fracción inicial de la inhalación usada para recuperar la opacidad del anillo.
-        static let ringFadeInEndFraction: CGFloat = 0.24
         /// Duración de transición entre textos respiratorios (Prepárate/Inhala/Exhala).
         static let breathingCueTransitionDurationSeconds: Double = 0.80
 
@@ -82,8 +56,6 @@ enum CardioCoherenceConstants {
         static let middleColor = Color(red: 0.13, green: 0.12, blue: 0.16, opacity: 0.22)
         /// Color exterior del gradiente radial del orbe.
         static let outerColor = Color(red: 0.07, green: 0.04, blue: 0.20, opacity: 0.10)
-        /// Color del anillo exterior del orbe.
-        static let ringColor = Color(red: 0.36, green: 0.39, blue: 0.84)
     }
 
     //Control de audio de coherencia

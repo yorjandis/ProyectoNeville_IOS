@@ -17,7 +17,8 @@ struct PresenciaView: View {
     private let celebrationVisibleDuration: TimeInterval = 2.3
 
     private var hasPremiumAccess: Bool {
-        purchaseStatus || yorjPremium
+        true
+        //purchaseStatus || yorjPremium
     }
 
     var body: some View {
@@ -42,7 +43,7 @@ struct PresenciaView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .animation(.spring(response: 0.56, dampingFraction: 0.72), value: showCelebration)
                 .background(
-                    LinearGradient(colors: [.indigo.opacity(0.95), .teal.opacity(0.55)], startPoint: .top, endPoint: .bottom)
+                    LinearGradient.AzulTecnologico()
                         .ignoresSafeArea()
                 )
                 .navigationTitle("Presencia")

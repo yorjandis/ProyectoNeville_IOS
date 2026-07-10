@@ -190,7 +190,7 @@ private enum CalmPrefsKeys {
     static let phraseSource = "calm_phrase_source"
 }
 
-private final class CalmAudioController: NSObject, AVAudioPlayerDelegate {
+private final class CalmAudioController: NSObject, ObservableObject, AVAudioPlayerDelegate {
     private var backgroundPlayer: AVAudioPlayer?
     private var effectPlayers: [AVAudioPlayer] = []
     private var keepMusicWithScreenLocked: Bool = false
@@ -402,7 +402,7 @@ struct EspacioCalmaView: View {
 
     @State private var simulationTask: Task<Void, Never>?
 
-    private let audioController = CalmAudioController()
+    @StateObject private var audioController = CalmAudioController()
     private var showsSpheres: Bool { particleMode.includesSpheres }
     private var showsFireflies: Bool { particleMode.includesFireflies }
 

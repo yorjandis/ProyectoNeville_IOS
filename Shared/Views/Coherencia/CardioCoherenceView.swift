@@ -809,6 +809,7 @@ struct CardioCoherenceMainView: View {
                 musicPlayer.stop()
                 restoreIdleTimer()
             }
+            .preferredColorScheme(.dark)
         }
     }
 
@@ -1727,14 +1728,6 @@ private struct BreathingOrbView: View {
     let paused: Bool
     let anchor: Date
     @State private var cycleProgress: CGFloat = 0.0
-    @State private var cycleState: BreathingCycleState = .idle
-    @State private var cyclePhaseProgress: CGFloat = 0.0
-    @State private var displayedRingScale: CGFloat = CardioCoherenceConstants.Orb.minScale
-    @State private var previousCycleState: BreathingCycleState = .idle
-    @State private var inhaleEntryRingScale: CGFloat?
-    @State private var ringVisibility: CGFloat = 0
-    @State private var hasScheduledInitialRingReveal: Bool = false
-    @State private var ringRevealTask: Task<Void, Never>?
 
     var body: some View {
         Canvas { context, size in
@@ -1742,9 +1735,6 @@ private struct BreathingOrbView: View {
             let baseRadius = min(size.width, size.height) * CardioCoherenceConstants.Orb.baseRadiusFactor
             let orbScale = CardioCoherenceConstants.Orb.minScale + (CardioCoherenceConstants.Orb.scaleRange * cycleProgress)
             let radius = baseRadius * orbScale
-
-            let ringScale = max(0.01, displayedRingScale)
-            let ringRadius = baseRadius * ringScale
 
             let orbRect = CGRect(
                 x: center.x - radius,
@@ -1768,38 +1758,8 @@ private struct BreathingOrbView: View {
             )
 
             drawRosette(in: &context, center: center, radius: radius * CardioCoherenceConstants.Orb.rosetteRadiusFactor, cycleProgress: cycleProgress)
-
-            let ringRect = CGRect(
-                x: center.x - ringRadius,
-                y: center.y - ringRadius,
-                width: ringRadius * 2,
-                height: ringRadius * 2
-            ).insetBy(
-                dx: -ringRadius * CardioCoherenceConstants.Orb.ringInsetFactor,
-                dy: -ringRadius * CardioCoherenceConstants.Orb.ringInsetFactor
-            )
-
-            context.stroke(
-                Path(ellipseIn: ringRect),
-                with: .color(
-                    CardioCoherenceConstants.Orb.ringColor.opacity(
-                        ringVisibility * ringBreathingOpacity(
-                            state: cycleState,
-                            phaseProgress: cyclePhaseProgress
-                        )
-                    )
-                ),
-                lineWidth: CardioCoherenceConstants.Orb.ringLineWidth
-            )
         }
         .task(id: "\(rhythm.rawValue)-\(preparing)-\(paused)-\(anchor.timeIntervalSinceReferenceDate)") {
-            if preparing {
-                ringRevealTask?.cancel()
-                ringRevealTask = nil
-                ringVisibility = 0
-                hasScheduledInitialRingReveal = false
-            }
-
             let initialSnapshot = breathingCycleSnapshot(
                 now: Date(),
                 anchor: anchor,
@@ -1808,24 +1768,6 @@ private struct BreathingOrbView: View {
                 paused: paused
             )
             cycleProgress = initialSnapshot.progress
-            cycleState = initialSnapshot.state
-            previousCycleState = initialSnapshot.state
-            cyclePhaseProgress = initialSnapshot.phaseProgress
-
-            let initialOrbScale = CardioCoherenceConstants.Orb.minScale + (CardioCoherenceConstants.Orb.scaleRange * initialSnapshot.progress)
-            let initialExhalePauseTail = exhalePauseTailScaleOffset(
-                phaseProgress: initialSnapshot.phaseProgress,
-                state: initialSnapshot.state,
-                previousState: initialSnapshot.state
-            )
-            let initialExhaleContraction = exhaleRingContractionOffset(
-                phaseProgress: initialSnapshot.phaseProgress,
-                state: initialSnapshot.state
-            )
-            displayedRingScale = max(
-                0.01,
-                initialOrbScale + initialExhaleContraction + initialExhalePauseTail
-            )
 
             while !Task.isCancelled {
                 let snapshot = breathingCycleSnapshot(
@@ -1835,75 +1777,7 @@ private struct BreathingOrbView: View {
                     preparing: preparing,
                     paused: paused
                 )
-                let oldState = cycleState
                 cycleProgress = snapshot.progress
-                cycleState = snapshot.state
-                previousCycleState = oldState
-                cyclePhaseProgress = snapshot.phaseProgress
-
-                let orbScale = CardioCoherenceConstants.Orb.minScale + (CardioCoherenceConstants.Orb.scaleRange * snapshot.progress)
-                let exhalePauseTail = exhalePauseTailScaleOffset(
-                    phaseProgress: snapshot.phaseProgress,
-                    state: snapshot.state,
-                    previousState: oldState
-                )
-                let exhaleContraction = exhaleRingContractionOffset(
-                    phaseProgress: snapshot.phaseProgress,
-                    state: snapshot.state
-                )
-                let rawTargetRingScale = max(
-                    0.01,
-                    orbScale + exhaleContraction + exhalePauseTail
-                )
-
-                if snapshot.state == .inhale, oldState != .inhale {
-                    inhaleEntryRingScale = displayedRingScale
-                }
-                if snapshot.state != .inhale {
-                    inhaleEntryRingScale = nil
-                }
-
-                if !hasScheduledInitialRingReveal,
-                   snapshot.state == .inhale,
-                   snapshot.phaseProgress > 0 {
-                    hasScheduledInitialRingReveal = true
-                    ringRevealTask?.cancel()
-                    ringRevealTask = Task { @MainActor in
-                        try? await Task.sleep(nanoseconds: 1_000_000_000)
-                        guard !Task.isCancelled else { return }
-
-                        let duration = max(0.1, CardioCoherenceConstants.Orb.initialRingRevealDurationSeconds)
-                        let frameNanos = max(1, CardioCoherenceConstants.BreathingPattern.frameRefreshNanos)
-                        let steps = max(1, Int((duration * 1_000_000_000) / Double(frameNanos)))
-
-                        for step in 0...steps {
-                            guard !Task.isCancelled else { return }
-                            let t = CGFloat(step) / CGFloat(steps)
-                            let eased = t * t * (3 - (2 * t))
-                            ringVisibility = eased
-                            try? await Task.sleep(nanoseconds: frameNanos)
-                        }
-
-                        ringVisibility = 1
-                    }
-                }
-
-                let targetRingScale: CGFloat
-                if snapshot.state == .inhale, let entryScale = inhaleEntryRingScale {
-                    let expansionProgress = smoothBreath(snapshot.phaseProgress)
-                    targetRingScale = entryScale
-                        + ((rawTargetRingScale - entryScale) * expansionProgress)
-                } else {
-                    targetRingScale = rawTargetRingScale
-                }
-
-                let smoothedScale = displayedRingScale + ((targetRingScale - displayedRingScale) * CardioCoherenceConstants.Orb.ringSpringSmoothing)
-                let delta = smoothedScale - displayedRingScale
-                let maxStep = delta >= 0
-                    ? CardioCoherenceConstants.Orb.maxRingExpansionStepPerFrame
-                    : CardioCoherenceConstants.Orb.maxRingScaleStepPerFrame
-                let clampedDelta = min(max(delta, -maxStep), maxStep)
-                displayedRingScale += clampedDelta
 
                 try? await Task.sleep(nanoseconds: CardioCoherenceConstants.BreathingPattern.frameRefreshNanos)
             }
@@ -1987,95 +1861,6 @@ private struct BreathingOrbView: View {
     private func smoothBreath(_ value: CGFloat) -> CGFloat {
         let clamped = min(max(0, value), 1)
         return clamped * clamped * (3 - (2 * clamped))
-    }
-
-    private func ringBreathingOpacity(
-        state: BreathingCycleState,
-        phaseProgress: CGFloat
-    ) -> CGFloat {
-        let progress = min(max(phaseProgress, 0), 1)
-        let minimumOpacity = min(
-            max(CardioCoherenceConstants.Orb.ringMinimumTransitionOpacity, 0),
-            1
-        )
-
-        switch state {
-        case .exhale:
-            let fadeStart = min(
-                max(CardioCoherenceConstants.Orb.ringFadeOutStartFraction, 0),
-                0.99
-            )
-            let fadeProgress = min(max((progress - fadeStart) / (1 - fadeStart), 0), 1)
-            let eased = smootherStep(fadeProgress)
-            return 1 - ((1 - minimumOpacity) * eased)
-
-        case .exhalePause:
-            return minimumOpacity
-
-        case .inhale:
-            let fadeEnd = max(CardioCoherenceConstants.Orb.ringFadeInEndFraction, 0.01)
-            let fadeProgress = min(max(progress / fadeEnd, 0), 1)
-            let eased = smootherStep(fadeProgress)
-            return minimumOpacity + ((1 - minimumOpacity) * eased)
-
-        case .inhalePause:
-            return 1
-
-        case .idle:
-            return 1
-        }
-    }
-
-    private func smootherStep(_ value: CGFloat) -> CGFloat {
-        let t = min(max(value, 0), 1)
-        return t * t * t * (t * ((t * 6) - 15) + 10)
-    }
-
-    private func exhaleRingContractionOffset(
-        phaseProgress: CGFloat,
-        state: BreathingCycleState
-    ) -> CGFloat {
-        let contraction = CardioCoherenceConstants.Orb.exhaleRingContraction
-
-        switch state {
-        case .exhale:
-            return -contraction * smoothBreath(phaseProgress)
-
-        case .exhalePause:
-            return -contraction
-
-        default:
-            return 0
-        }
-    }
-
-    private func exhalePauseTailScaleOffset(
-        phaseProgress: CGFloat,
-        state: BreathingCycleState,
-        previousState: BreathingCycleState
-    ) -> CGFloat {
-        let t = min(max(phaseProgress, 0), 1)
-        let shrink = CardioCoherenceConstants.Orb.exhalePauseTailShrink
-
-        switch state {
-        case .exhalePause:
-            // Durante la pausa inferior, el anillo sigue cerrando suavemente.
-            let eased = t * t * (3 - (2 * t))
-            return -shrink * eased
-
-        case .inhale:
-            // Esta compensación solo aplica cuando la inhalación viene de una exhalación previa.
-            // Si el ciclo arranca desde idle/preparación no se contrae extra para evitar salto inicial.
-            guard previousState == .exhalePause || previousState == .inhale else {
-                return 0
-            }
-            let releaseT = min(max(t / CardioCoherenceConstants.Orb.inhaleReleaseWindow, 0), 1)
-            let easedRelease = releaseT * releaseT * (3 - (2 * releaseT))
-            return -shrink * (1 - easedRelease)
-
-        default:
-            return 0
-        }
     }
 }
 
