@@ -116,6 +116,10 @@ struct FrasesListView: View {
                             
                             
                         }else{
+
+                            if selectionMode {
+                                phraseSelectionToolbar()
+                            }
                             
                             //Búsqueda:
                             HStack {
@@ -435,6 +439,63 @@ struct FrasesListView: View {
         }
     }
 
+    @ViewBuilder
+    private func phraseSelectionToolbar() -> some View {
+        HStack(spacing: 18) {
+            Text("Seleccionadas: \(selectedFraseIDs.count)")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+
+            Spacer()
+
+            Button {
+                selectAllVisibleFrases()
+            } label: {
+                Image(systemName: "checkmark.circle.fill")
+            }
+            .accessibilityLabel("Seleccionar todas las frases visibles")
+
+            Button {
+                deselectAllVisibleFrases()
+            } label: {
+                Image(systemName: "circle")
+            }
+            .accessibilityLabel("Deseleccionar todas las frases visibles")
+            .disabled(visibleFraseIDs.isEmpty || selectedFraseIDs.isDisjoint(with: visibleFraseIDs))
+
+            Button {
+                invertVisibleFraseSelection()
+            } label: {
+                Image(systemName: "arrow.triangle.2.circlepath")
+            }
+            .accessibilityLabel("Invertir selección de frases visibles")
+            .disabled(visibleFraseIDs.isEmpty)
+        }
+        .font(.title3)
+        .foregroundStyle(.primary)
+        .padding(.horizontal)
+        .padding(.vertical, 8)
+        .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 12))
+        .padding(.horizontal)
+        .transition(.move(edge: .top).combined(with: .opacity))
+    }
+
+    private var visibleFraseIDs: Set<String> {
+        Set(frasesModel.listfrases.compactMap(\.id))
+    }
+
+    private func selectAllVisibleFrases() {
+        selectedFraseIDs.formUnion(visibleFraseIDs)
+    }
+
+    private func deselectAllVisibleFrases() {
+        selectedFraseIDs.subtract(visibleFraseIDs)
+    }
+
+    private func invertVisibleFraseSelection() {
+        selectedFraseIDs = selectedFraseIDs.symmetricDifference(visibleFraseIDs)
+    }
+
     private func exportSelectedFrasesToPDFOrEnableSelection() {
         guard purchaseStatus || yorjPremium else {
             alertMessage = "La exportación a PDF está disponible en la Versión Extendida."
@@ -603,6 +664,3 @@ struct FrasesListView: View {
 	    
 	    
 }
-
-
-

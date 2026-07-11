@@ -3,7 +3,7 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 extension UTType {
-    static let ypgExport = UTType(exportedAs: "com.ypg.neville.ypgexp")
+    nonisolated static let ypgExport = UTType(exportedAs: "com.ypg.neville.ypgexp")
 }
 
 struct MigrationDataDocument: FileDocument {

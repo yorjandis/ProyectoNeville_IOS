@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 import UniformTypeIdentifiers
 import LocalAuthentication
 
@@ -201,12 +202,16 @@ struct MigrationIOSAndroidView: View {
                     Section("Resumen") {
                         Text(message)
                             .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
                 }
             } else {
                 authenticationSection()
             }
         }
+        #if os(macOS)
+        .padding(20)
+        #endif
         .navigationTitle("Migración iOS / Android")
         #if !os(macOS)
         .navigationBarTitleDisplayMode(.inline)
@@ -300,6 +305,12 @@ struct MigrationIOSAndroidView: View {
                     Label("Desbloquear con contraseña", systemImage: "lock.open")
                 }
                 .disabled(authPassword.isEmpty)
+            } else {
+                Text("Si este dispositivo no admite autenticación biométrica o código compatible, crea una contraseña de la app para proteger el acceso.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+
+                createPasswordAccess
             }
 
             if let authMessage {
@@ -308,6 +319,27 @@ struct MigrationIOSAndroidView: View {
                     .foregroundStyle(.secondary)
             }
         }
+    }
+
+    @ViewBuilder
+    private var createPasswordAccess: some View {
+        #if os(macOS)
+        Button {
+            showWindow(for: CreatePasswordView(),
+                       environmentObjects: [],
+                       title: "Crear contraseña",
+                       size: AppCons.windows_size_content_small,
+                       isModal: true)
+        } label: {
+            Label("Crear contraseña de la app", systemImage: "lock.badge.plus")
+        }
+        #else
+        NavigationLink {
+            CreatePasswordView()
+        } label: {
+            Label("Crear contraseña de la app", systemImage: "lock.badge.plus")
+        }
+        #endif
     }
 
     private func authenticateWithDeviceOwner() {
@@ -354,29 +386,31 @@ struct MigrationIOSAndroidView: View {
                 .font(.headline)
 
             ForEach(viewModel.lastExportCountsByType.keys.sorted(), id: \.self) { key in
-                HStack {
-                    Text(displayName(for: key))
-                    Spacer()
-                    Text("\(viewModel.lastExportCountsByType[key] ?? 0)")
-                        .foregroundStyle(.secondary)
-                }
+                compactSummaryLine(displayName(for: key), value: viewModel.lastExportCountsByType[key] ?? 0)
             }
 
             if viewModel.lastExportBytes > 0 {
-                HStack {
-                    Text("Tamaño")
-                    Spacer()
-                    Text(ByteCountFormatter.string(fromByteCount: Int64(viewModel.lastExportBytes), countStyle: .file))
-                        .foregroundStyle(.secondary)
-                }
+                compactSummaryLine(
+                    "Tamaño",
+                    detail: ByteCountFormatter.string(fromByteCount: Int64(viewModel.lastExportBytes), countStyle: .file)
+                )
             }
 
             if let exportId = viewModel.lastExportId {
-                Text("ID: \(exportId)")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("ID")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    Text(exportId)
+                        .font(.caption.monospaced())
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                        .truncationMode(.middle)
+                        .textSelection(.enabled)
+                }
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private func previewSummary(_ preview: ImportPreview) -> some View {
@@ -384,12 +418,7 @@ struct MigrationIOSAndroidView: View {
             Text("Vista previa")
                 .font(.headline)
             ForEach(preview.countsByType.keys.sorted(), id: \.self) { key in
-                HStack {
-                    Text(displayName(for: key))
-                    Spacer()
-                    Text("\(preview.countsByType[key] ?? 0)")
-                        .foregroundStyle(.secondary)
-                }
+                compactSummaryLine(displayName(for: key), value: preview.countsByType[key] ?? 0)
             }
         }
     }
@@ -400,12 +429,7 @@ struct MigrationIOSAndroidView: View {
                 .font(.headline)
 
             ForEach(viewModel.lastImportCountsByType.keys.sorted(), id: \.self) { key in
-                HStack {
-                    Text(displayName(for: key))
-                    Spacer()
-                    Text("\(viewModel.lastImportCountsByType[key] ?? 0)")
-                        .foregroundStyle(.secondary)
-                }
+                compactSummaryLine(displayName(for: key), value: viewModel.lastImportCountsByType[key] ?? 0)
             }
 
             if let summary = viewModel.lastImportSummary {
@@ -426,12 +450,19 @@ struct MigrationIOSAndroidView: View {
     }
 
     private func summaryRow(_ title: String, value: Int) -> some View {
-        HStack {
-            Text(title)
-            Spacer()
-            Text("\(value)")
-                .foregroundStyle(.secondary)
-        }
+        compactSummaryLine(title, value: value)
+    }
+
+    private func compactSummaryLine(_ title: String, value: Int) -> some View {
+        compactSummaryLine(title, detail: "\(value)")
+    }
+
+    private func compactSummaryLine(_ title: String, detail: String) -> some View {
+        Text("\(title): \(detail)")
+            .foregroundStyle(.secondary)
+            .lineLimit(2)
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private func validationList(title: String, items: [String]) -> some View {

@@ -671,8 +671,34 @@ struct Ajustes: View {
                         .padding(.bottom, 20)
                         #endif
                         
-                        
-                        
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("Migración iOS / Android")
+                                .font(.system(size: 22))
+                                .foregroundStyle(.orange)
+
+                            Button {
+                                showWindow(for: NavigationStack {
+                                    MigrationIOSAndroidView()
+                                },
+                                           environmentObjects: [],
+                                           title: "Migración iOS / Android",
+                                           size: .percentage(width: 0.50, height: 0.70),
+                                           isModal: false)
+                            } label: {
+                                Label("Exportar a Android / Importar desde Android", systemImage: "arrow.left.arrow.right.circle")
+                                    .foregroundStyle(settingsPrimaryTextColor)
+                                    .bold()
+                                    .font(.headline)
+                            }
+                            .buttonStyle(PlainButtonStyle())
+
+                            Text("Crea o lee archivos .ypgexp cifrados y compatibles con Android.")
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(.horizontal, 30)
+                        .padding(.bottom, 20)
+
                         //Contacto e información
                         VStack(alignment: .leading, spacing: 15){
                             
@@ -912,9 +938,7 @@ struct Ajustes: View {
                         }
                         .padding(.horizontal, 30)
                         .padding(.bottom, 20)
-                        
-                        
-                        
+
                     }
                     
                     
@@ -1303,18 +1327,6 @@ struct Ajustes: View {
                         }
                     }
 
-                    Section("Migración iOS / Android") {
-                        NavigationLink {
-                            MigrationIOSAndroidView()
-                        } label: {
-                            Label("Exportar a Android / Importar desde Android", systemImage: "arrow.left.arrow.right.circle")
-                        }
-
-                        Text("Crea o lee archivos .ypgexp cifrados y compatibles con Android.")
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
-                    }
-
                     Section("Abrir Ubicación en Mapas") {
                         Picker("Aplicación", selection: $preferredMapApp) {
                             ForEach(LocationMapApp.allCases) { option in
@@ -1431,10 +1443,18 @@ struct Ajustes: View {
                         }
                     }
                     
-                    
-                    
-                    
-                    
+                    Section("Migración iOS / Android") {
+                        NavigationLink {
+                            MigrationIOSAndroidView()
+                        } label: {
+                            Label("Exportar a Android / Importar desde Android", systemImage: "arrow.left.arrow.right.circle")
+                        }
+
+                        Text("Crea o lee archivos .ypgexp cifrados y compatibles con Android.")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+
                     Section("Contacto & Información"){
                         NavigationLink{
                             Form{

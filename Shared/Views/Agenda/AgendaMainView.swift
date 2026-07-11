@@ -459,7 +459,15 @@ struct AgendaMainView: View {
     var body: some View {
         NavigationStack {
             if purchaseStatus || yorjPremium {
-                agendaRootView
+                agendaAuthenticatedView
+            } else {
+                PurchaseView()
+            }
+        }
+    }
+
+    private var agendaAuthenticatedView: some View {
+        agendaRootView
 #if os(iOS)
                 .sheet(item: $editorItem) { item in
                     agendaEditorView(for: item)
@@ -558,10 +566,6 @@ struct AgendaMainView: View {
                 } message: {
                     agendaBulkConfirmationMessage()
                 }
-            } else {
-                PurchaseView()
-            }
-        }
     }
 
     private var agendaRootView: some View {
