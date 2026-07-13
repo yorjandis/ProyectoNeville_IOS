@@ -66,7 +66,7 @@ struct HealingSituationDetailView: View {
                     .font(.title2.bold())
                     .foregroundStyle(.white)
                 Text(situation.subtitle)
-                    .font(.subheadline)
+                    .font(.body)
                     .foregroundStyle(.white.opacity(0.72))
             }
         }
@@ -83,7 +83,7 @@ struct HealingSituationDetailView: View {
                 .foregroundStyle(.white)
                 .padding(.top, 5)
             Text(situation.reassurance)
-                .font(.subheadline.weight(.medium))
+                .font(.body)
                 .foregroundStyle(.white.opacity(0.76))
                 .padding(.top, 5)
         }
@@ -120,10 +120,10 @@ struct HealingSituationDetailView: View {
 
                 VStack(alignment: .leading, spacing: 3) {
                     Text(healingProtocol.title)
-                        .font(.headline)
+                        .font(.body)
                         .foregroundStyle(.white)
                     Text(healingProtocol.summary)
-                        .font(.caption)
+                        .font(.body)
                         .foregroundStyle(.white.opacity(0.68))
                         .lineLimit(3)
                 }
@@ -153,10 +153,10 @@ struct HealingSituationDetailView: View {
     private var biologicalSection: some View {
         HealingGlassCard {
             Label("Qué puede estar ocurriendo", systemImage: "brain.head.profile")
-                .font(.headline)
+                .font(.body)
                 .foregroundStyle(.mint)
             Text(situation.biologicalExplanation)
-                .font(.subheadline)
+                .font(.body)
                 .foregroundStyle(.white.opacity(0.82))
                 .padding(.top, 6)
                 .fixedSize(horizontal: false, vertical: true)
@@ -166,12 +166,12 @@ struct HealingSituationDetailView: View {
     private var seekHelpSection: some View {
         HealingGlassCard {
             Label("Cuándo pedir ayuda", systemImage: "person.crop.circle.badge.questionmark")
-                .font(.headline)
+                .font(.body)
                 .foregroundStyle(.orange)
 
             ForEach(situation.whenToSeekHelp, id: \.self) { item in
                 Label(item, systemImage: "circle.fill")
-                    .font(.subheadline)
+                    .font(.body)
                     .foregroundStyle(.white.opacity(0.80))
                     .symbolRenderingMode(.hierarchical)
                     .padding(.top, 5)
@@ -209,7 +209,7 @@ struct HealingSituationDetailView: View {
                 .padding(.top, 10)
             } label: {
                 Label("Fuentes y evidencia", systemImage: "books.vertical.fill")
-                    .font(.headline)
+                    .font(.body)
                     .foregroundStyle(.cyan)
             }
             .tint(.cyan)

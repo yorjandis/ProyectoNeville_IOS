@@ -84,7 +84,7 @@ struct HealingSituationCard: View {
                 }
 
                 Text(situation.subtitle)
-                    .font(.caption)
+                    .font(.body)
                     .foregroundStyle(.white.opacity(0.72))
                     .lineLimit(2)
             }

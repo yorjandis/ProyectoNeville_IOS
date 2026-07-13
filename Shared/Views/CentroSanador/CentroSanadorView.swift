@@ -44,6 +44,12 @@ struct CentroSanadorView: View {
                 LazyVStack(alignment: .leading, spacing: 16) {
                     welcomeHeader
                     emergencyAccess
+                    
+                    HealingGlassCard {
+                        Label("- Una guía, no un diagnóstico - \n\n\(catalog.disclaimer)", systemImage: "info.circle.fill")
+                            .font(.headline)
+                            .foregroundStyle(.cyan)
+                    }
 
                     Text(searchText.isEmpty ? "¿Qué está ocurriendo?" : "Resultados")
                         .font(.title2.bold())
@@ -76,15 +82,7 @@ struct CentroSanadorView: View {
                         }
                     }
 
-                    HealingGlassCard {
-                        Label("Una guía, no un diagnóstico", systemImage: "info.circle.fill")
-                            .font(.headline)
-                            .foregroundStyle(.cyan)
-                        Text(catalog.disclaimer)
-                            .font(.footnote)
-                            .foregroundStyle(.white.opacity(0.72))
-                            .padding(.top, 4)
-                    }
+                    
                 }
                 .padding(.horizontal, 18)
                 .padding(.top, 14)
@@ -114,13 +112,13 @@ struct CentroSanadorView: View {
                     Text("Apoyo para este momento")
                         .font(.system(size: 25, weight: .bold, design: .rounded))
                     Text("No necesitas describirlo perfectamente.")
-                        .font(.subheadline)
+                        .font(.body)
                         .foregroundStyle(.white.opacity(0.70))
                 }
             }
 
             Text("Elige la experiencia que más se parece a lo que estás viviendo. Primero comprobaremos la seguridad y después te guiaremos paso a paso.")
-                .font(.subheadline)
+                .font(.body)
                 .foregroundStyle(.white.opacity(0.82))
                 .fixedSize(horizontal: false, vertical: true)
         }
@@ -136,9 +134,9 @@ struct CentroSanadorView: View {
                     .font(.title2)
                 VStack(alignment: .leading, spacing: 2) {
                     Text("¿Podría ser una emergencia?")
-                        .font(.headline)
+                        .font(.title3)
                     Text("Comprueba señales de alarma y recursos de tu país")
-                        .font(.caption)
+                        .font(.body)
                         .opacity(0.82)
                 }
                 Spacer()

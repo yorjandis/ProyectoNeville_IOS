@@ -39,7 +39,7 @@ struct HealingSafetyGateView: View {
                                     .font(.system(size: 6))
                                     .padding(.top, 6)
                                 Text(signal)
-                                    .font(.subheadline)
+                                    .font(.body)
                             }
                             .foregroundStyle(.white.opacity(0.84))
                             .padding(.top, 5)
@@ -58,16 +58,16 @@ struct HealingSafetyGateView: View {
 
                     HealingGlassCard {
                         Label(healingProtocol.title, systemImage: healingProtocol.symbol)
-                            .font(.headline)
+                            .font(.body)
                             .foregroundStyle(.cyan)
                         Text(healingProtocol.summary)
-                            .font(.subheadline)
+                            .font(.body)
                             .foregroundStyle(.white.opacity(0.78))
                             .padding(.top, 4)
 
                         if let caution = healingProtocol.caution {
                             Label(caution, systemImage: "info.circle")
-                                .font(.caption)
+                                .font(.body)
                                 .foregroundStyle(.orange)
                                 .padding(.top, 7)
                         }
@@ -90,6 +90,7 @@ struct HealingSafetyGateView: View {
                     } label: {
                         Label("Comenzar guía", systemImage: "play.fill")
                             .font(.headline)
+                            .foregroundStyle(.black)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 13)
                     }
@@ -99,7 +100,7 @@ struct HealingSafetyGateView: View {
                     .opacity(hasCheckedSignals ? 1 : 0.48)
 
                     Text(HealingSafetyCopy.stopInstruction)
-                        .font(.caption)
+                        .font(.body)
                         .foregroundStyle(.white.opacity(0.60))
                 }
                 .padding(18)
