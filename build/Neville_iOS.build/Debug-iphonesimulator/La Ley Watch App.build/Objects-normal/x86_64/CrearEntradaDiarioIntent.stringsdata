@@ -1,0 +1,96 @@
+{
+  "source": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/CrearEntradaDiarioIntent.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Crear Entrada Diario",
+        "location": {
+          "startingColumn": 49,
+          "startingLine": 15
+        }
+      },
+      {
+        "comment": "",
+        "key": "Crea una nueva entrada en el Diario",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 16
+        }
+      },
+      {
+        "comment": "",
+        "key": "Contraseña",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 21
+        }
+      },
+      {
+        "comment": "",
+        "key": "La palabra clave para el diario",
+        "location": {
+          "startingColumn": 51,
+          "startingLine": 21
+        }
+      },
+      {
+        "comment": "",
+        "key": "Título",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 24
+        }
+      },
+      {
+        "comment": "",
+        "key": "El título de la entrada del Diario",
+        "location": {
+          "startingColumn": 46,
+          "startingLine": 24
+        }
+      },
+      {
+        "comment": "",
+        "key": "Contenido",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 27
+        }
+      },
+      {
+        "comment": "",
+        "key": "El contenido de la entrada del Diario",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 27
+        }
+      },
+      {
+        "comment": "",
+        "key": "Se ha creado la entrada en el diario.",
+        "location": {
+          "startingColumn": 68,
+          "startingLine": 68
+        }
+      },
+      {
+        "comment": "",
+        "key": "La contraseña no es correcta.",
+        "location": {
+          "startingColumn": 68,
+          "startingLine": 71
+        }
+      },
+      {
+        "comment": "",
+        "key": "No se ha podido obtener la contraseña.",
+        "location": {
+          "startingColumn": 64,
+          "startingLine": 74
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -1,0 +1,55 @@
+[
+  {
+    "typeName": "LaLeyBackgroundDownloadExtension.DownloaderExtension",
+    "mangledTypeName": "32LaLeyBackgroundDownloadExtension010DownloaderE0V",
+    "kind": "struct",
+    "file": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/LaLeyBackgroundDownloadExtension/BackgroundDownloadHandler.swift",
+    "line": 13,
+    "conformances": [
+      "StoreKit.StoreDownloaderExtension",
+      "BackgroundAssets.ManagedDownloaderExtension",
+      "BackgroundAssets.BADownloaderExtension",
+      "ExtensionFoundation.AppExtension",
+      "Swift.Sendable",
+      "Swift.BitwiseCopyable"
+    ],
+    "allConformances": [
+      {
+        "protocolName": "StoreKit.StoreDownloaderExtension",
+        "conformanceDefiningModule": "LaLeyBackgroundDownloadExtension"
+      },
+      {
+        "protocolName": "BackgroundAssets.ManagedDownloaderExtension",
+        "conformanceDefiningModule": "LaLeyBackgroundDownloadExtension"
+      },
+      {
+        "protocolName": "BackgroundAssets.BADownloaderExtension",
+        "conformanceDefiningModule": "LaLeyBackgroundDownloadExtension"
+      },
+      {
+        "protocolName": "ExtensionFoundation.AppExtension",
+        "conformanceDefiningModule": "LaLeyBackgroundDownloadExtension"
+      },
+      {
+        "protocolName": "Swift.Sendable",
+        "conformanceDefiningModule": "LaLeyBackgroundDownloadExtension"
+      },
+      {
+        "protocolName": "Swift.BitwiseCopyable",
+        "conformanceDefiningModule": "LaLeyBackgroundDownloadExtension"
+      }
+    ],
+    "associatedTypeAliases": [
+      {
+        "typeAliasName": "Configuration",
+        "substitutedTypeName": "some BackgroundAssets.ManagedDownloaderExtensionConfiguration",
+        "substitutedMangledTypeName": "16BackgroundAssets26ManagedDownloaderExtensionPAAE13configurationQrvpQOy05LaLeya8DownloadE00dE0V_Qo_",
+        "opaqueTypeProtocolRequirements": [
+          "BackgroundAssets.ManagedDownloaderExtensionConfiguration"
+        ],
+        "opaqueTypeSameTypeRequirements": []
+      }
+    ],
+    "properties": []
+  }
+]

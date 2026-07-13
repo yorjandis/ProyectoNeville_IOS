@@ -1,0 +1,69 @@
+{
+  "" : {
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/FrasesWiggetExtension-primary.dia",
+    "emit-module-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/FrasesWiggetExtension-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/FrasesWiggetExtension-primary-emit-module.dia",
+    "pch" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/FrasesWiggetExtension-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/FrasesWiggetExtension-primary.swiftdeps"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/FrasesWigget/AppIntentWidget.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/AppIntentWidget.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/AppIntentWidget.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/AppIntentWidget.dia",
+    "index-unit-output-path" : "/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/AppIntentWidget.o",
+    "llvm-bc" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/AppIntentWidget.bc",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/AppIntentWidget.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/AppIntentWidget.swiftdeps",
+    "swiftmodule" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/AppIntentWidget~partial.swiftmodule"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/FrasesWigget/FrasesWigget.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/FrasesWigget.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/FrasesWigget.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/FrasesWigget.dia",
+    "index-unit-output-path" : "/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/FrasesWigget.o",
+    "llvm-bc" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/FrasesWigget.bc",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/FrasesWigget.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/FrasesWigget.swiftdeps",
+    "swiftmodule" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/FrasesWigget~partial.swiftmodule"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/FrasesWigget/FrasesWiggetBundle.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/FrasesWiggetBundle.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/FrasesWiggetBundle.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/FrasesWiggetBundle.dia",
+    "index-unit-output-path" : "/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/FrasesWiggetBundle.o",
+    "llvm-bc" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/FrasesWiggetBundle.bc",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/FrasesWiggetBundle.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/FrasesWiggetBundle.swiftdeps",
+    "swiftmodule" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/FrasesWiggetBundle~partial.swiftmodule"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Shared/Models/AppCons/AppCons.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/AppCons.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/AppCons.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/AppCons.dia",
+    "index-unit-output-path" : "/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/AppCons.o",
+    "llvm-bc" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/AppCons.bc",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/AppCons.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/AppCons.swiftdeps",
+    "swiftmodule" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/AppCons~partial.swiftmodule"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Shared/Models/Utils/Utils.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/Utils.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/Utils.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/Utils.dia",
+    "index-unit-output-path" : "/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/Utils.o",
+    "llvm-bc" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/Utils.bc",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/Utils.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/Utils.swiftdeps",
+    "swiftmodule" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/Utils~partial.swiftmodule"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/GeneratedAssetSymbols.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/GeneratedAssetSymbols.dia",
+    "index-unit-output-path" : "/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "llvm-bc" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/GeneratedAssetSymbols.bc",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftdeps",
+    "swiftmodule" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/FrasesWiggetExtension.build/Objects-normal/arm64/GeneratedAssetSymbols~partial.swiftmodule"
+  }
+}

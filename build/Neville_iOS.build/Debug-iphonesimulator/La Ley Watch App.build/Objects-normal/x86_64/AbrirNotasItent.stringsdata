@@ -1,0 +1,24 @@
+{
+  "source": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/AbrirNotasItent.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Abrir Notas",
+        "location": {
+          "startingColumn": 49,
+          "startingLine": 12
+        }
+      },
+      {
+        "comment": "",
+        "key": "Abre el listado de las notas",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 13
+        }
+      }
+    ]
+  },
+  "version": 1
+}

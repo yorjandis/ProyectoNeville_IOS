@@ -143,6 +143,12 @@ struct AppCons{
     static let UD_setting_HomeProductividadPresenciaTotal = "setting_HomeProductividadPresenciaTotal"
     static let UD_setting_HomeProductividadMetasTotal     = "setting_HomeProductividadMetasTotal"
     static let UD_setting_HomeProductividadDiarioTotal    = "setting_HomeProductividadDiarioTotal"
+    static let UD_setting_WeeklyReviewWeekday             = "setting_WeeklyReviewWeekday"
+    static let UD_setting_WeeklyReviewCompletedPeriod     = "setting_WeeklyReviewCompletedPeriod"
+    static let UD_setting_WeeklyReviewFocus               = "setting_WeeklyReviewFocus"
+    static let UD_setting_WeeklyReviewCelebration         = "setting_WeeklyReviewCelebration"
+    static let UD_setting_WeeklyReviewNotificationsEnabled = "setting_WeeklyReviewNotificationsEnabled"
+    static let UD_setting_WeeklyReviewRecordsToKeep       = "setting_WeeklyReviewRecordsToKeep"
   
    //Theme
     static let UD_setting_theme                     = "setting_theme"    //Theme light/dark

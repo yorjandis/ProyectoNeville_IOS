@@ -1,0 +1,24 @@
+{
+  "source": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/AbrirDiarioIntent.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Abrir el Diario",
+        "location": {
+          "startingColumn": 49,
+          "startingLine": 13
+        }
+      },
+      {
+        "comment": "",
+        "key": "Abre la vista del Diario",
+        "location": {
+          "startingColumn": 52,
+          "startingLine": 14
+        }
+      }
+    ]
+  },
+  "version": 1
+}

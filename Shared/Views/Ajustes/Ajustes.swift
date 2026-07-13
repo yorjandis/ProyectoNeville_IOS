@@ -61,6 +61,9 @@ struct Ajustes: View {
     @AppStorage(AppCons.UD_setting_DiarioAccesoAjustes) var setting_DiarioAccesoAjustes  : Bool = false
     @AppStorage(AppCons.UD_setting_DiarioSiempreOpenFaceID) var setting_DiarioSiempreOpenFaceID  : Bool = false
     @AppStorage(AppCons.UD_setting_preferredMapApp) var preferredMapApp: String = LocationMapApp.appleMaps.rawValue
+    @AppStorage(AppCons.UD_setting_WeeklyReviewWeekday) private var weeklyReviewWeekday: Int = WeeklyReviewDay.sunday.rawValue
+    @AppStorage(AppCons.UD_setting_WeeklyReviewNotificationsEnabled) private var weeklyReviewNotificationsEnabled = false
+    @AppStorage(AppCons.UD_setting_WeeklyReviewRecordsToKeep) private var weeklyReviewRecordsToKeep = WeeklyReviewRetentionPolicy.defaultRecordsToKeep
     
     
     @AppStorage(AppCons.UD_setting_theme) var setting_theme  : Theme = .auto 
@@ -104,6 +107,7 @@ struct Ajustes: View {
     //@State var canOpenToggleButton = false
     @State var showAlert = false
     @State var alertMessage = ""
+    @State private var showWeeklyReviewRetentionConfirmation = false
     
     
     //Mostrar foto desarrollador:
@@ -619,6 +623,65 @@ struct Ajustes: View {
                         }
                         .padding(.horizontal, 30)
                         .padding(.bottom, 20)
+
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text("Revisión semanal").font(.system(size: 22)).foregroundStyle(.orange)
+                            Picker("Día del resumen", selection: $weeklyReviewWeekday) {
+                                ForEach(WeeklyReviewDay.allCases) { day in
+                                    Text(day.title).tag(day.rawValue)
+                                }
+                            }
+                            .frame(width: 280)
+                            .onChange(of: weeklyReviewWeekday) { _, newValue in
+                                WeeklyReviewNotificationManager.update(
+                                    enabled: weeklyReviewNotificationsEnabled,
+                                    weekday: newValue
+                                )
+                            }
+
+                            Toggle("Recordatorio semanal a las 6:00", isOn: $weeklyReviewNotificationsEnabled)
+                                .onChange(of: weeklyReviewNotificationsEnabled) { _, newValue in
+                                    WeeklyReviewNotificationManager.update(
+                                        enabled: newValue,
+                                        weekday: weeklyReviewWeekday
+                                    )
+                                }
+
+                            Text("Disponible cada \(WeeklyReviewSchedule.selectedDay(from: weeklyReviewWeekday).title.lowercased()) a partir de las 6:00.")
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+
+                            Divider()
+                                .padding(.vertical, 4)
+
+                            Stepper(
+                                "Conservar \(weeklyReviewRecordsToKeep) registros",
+                                value: $weeklyReviewRecordsToKeep,
+                                in: WeeklyReviewRetentionPolicy.minimumRecordsToKeep...WeeklyReviewRetentionPolicy.maximumRecordsToKeep,
+                                step: WeeklyReviewRetentionPolicy.recordStep
+                            )
+                            .onChange(of: weeklyReviewRecordsToKeep) { _, newValue in
+                                weeklyReviewRecordsToKeep = WeeklyReviewRetentionPolicy.normalizedRecordsToKeep(newValue)
+                            }
+
+                            Button(role: .destructive) {
+                                showWeeklyReviewRetentionConfirmation = true
+                            } label: {
+                                Label("Eliminar revisiones antiguas", systemImage: "trash")
+                            }
+
+                            Text("Al limpiar, se conservarán las últimas \(weeklyReviewRecordsToKeep) revisiones semanales y se eliminarán los registros anteriores.")
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(.horizontal, 30)
+                        .padding(.bottom, 20)
+                        .onAppear {
+                            WeeklyReviewNotificationManager.update(
+                                enabled: weeklyReviewNotificationsEnabled,
+                                weekday: weeklyReviewWeekday
+                            )
+                        }
                         
                         //Habilita una sección para recuperar la contraseña. Esta sección solo esta disponible en dispositivos con biometria y si ya previamente han almacenado una contraseña
                         if BiometryCheckerSupport.checkBiometricSupport() == .available {
@@ -1385,6 +1448,56 @@ struct Ajustes: View {
                         Stepper("Diario: \(homeProductividadDiarioTotal)", value: $homeProductividadDiarioTotal, in: 1...100)
                     }
 
+                    Section("Revisión semanal") {
+                        Picker("Día del resumen", selection: $weeklyReviewWeekday) {
+                            ForEach(WeeklyReviewDay.allCases) { day in
+                                Text(day.title).tag(day.rawValue)
+                            }
+                        }
+                        .onChange(of: weeklyReviewWeekday) { _, newValue in
+                            WeeklyReviewNotificationManager.update(
+                                enabled: weeklyReviewNotificationsEnabled,
+                                weekday: newValue
+                            )
+                        }
+
+                        Toggle("Recordatorio semanal a las 6:00", isOn: $weeklyReviewNotificationsEnabled)
+                            .onChange(of: weeklyReviewNotificationsEnabled) { _, newValue in
+                                WeeklyReviewNotificationManager.update(
+                                    enabled: newValue,
+                                    weekday: weeklyReviewWeekday
+                                )
+                            }
+
+                        Text("La revisión estará disponible cada \(WeeklyReviewSchedule.selectedDay(from: weeklyReviewWeekday).title.lowercased()) a partir de las 6:00. Al activar el recordatorio, la app solicitará permiso de notificaciones si hace falta.")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+
+                        Stepper(
+                            "Conservar \(weeklyReviewRecordsToKeep) registros",
+                            value: $weeklyReviewRecordsToKeep,
+                            in: WeeklyReviewRetentionPolicy.minimumRecordsToKeep...WeeklyReviewRetentionPolicy.maximumRecordsToKeep,
+                            step: WeeklyReviewRetentionPolicy.recordStep
+                        )
+                        .onChange(of: weeklyReviewRecordsToKeep) { _, newValue in
+                            weeklyReviewRecordsToKeep = WeeklyReviewRetentionPolicy.normalizedRecordsToKeep(newValue)
+                        }
+
+                        Button("Eliminar revisiones antiguas", role: .destructive) {
+                            showWeeklyReviewRetentionConfirmation = true
+                        }
+
+                        Text("Al limpiar, se conservarán las últimas \(weeklyReviewRecordsToKeep) revisiones semanales y se eliminarán los registros anteriores.")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+                    .onAppear {
+                        WeeklyReviewNotificationManager.update(
+                            enabled: weeklyReviewNotificationsEnabled,
+                            weekday: weeklyReviewWeekday
+                        )
+                    }
+
                     Section("Presencia") {
                         Toggle("Mostrar botón Presencia en Home", isOn: self.$showPresenceButtonInHome)
 
@@ -1719,6 +1832,18 @@ struct Ajustes: View {
         } message: {
             Text(cardioMusicImportErrorMessage ?? "")
         }
+        .confirmationDialog(
+            "¿Eliminar las revisiones semanales antiguas?",
+            isPresented: $showWeeklyReviewRetentionConfirmation,
+            titleVisibility: .visible
+        ) {
+            Button("Eliminar registros antiguos", role: .destructive) {
+                pruneWeeklyReviewRecords()
+            }
+            Button("Cancelar", role: .cancel) {}
+        } message: {
+            Text("Se conservarán las últimas \(weeklyReviewRecordsToKeep) revisiones. Las anteriores se eliminarán también de CloudKit al sincronizar.")
+        }
     }
     
   //Funciones para el filtro de Frases en el Home:
@@ -1755,6 +1880,20 @@ struct Ajustes: View {
         UserDefaults(suiteName: AppCons.AppGroupName)?.set(values, forKey: AppCons.UD_FiltroFrasesHome)
         NSUbiquitousKeyValueStore.default.set(values, forKey: AppCons.UD_FiltroFrasesHome)
         NSUbiquitousKeyValueStore.default.synchronize()
+    }
+
+    private func pruneWeeklyReviewRecords() {
+        do {
+            let recordsToKeep = WeeklyReviewRetentionPolicy.normalizedRecordsToKeep(weeklyReviewRecordsToKeep)
+            weeklyReviewRecordsToKeep = recordsToKeep
+            let deletedCount = try WeeklyReviewRetentionPolicy.deleteOldRecords(context: context, keeping: recordsToKeep)
+            alertMessage = deletedCount == 0
+                ? "No había revisiones antiguas que eliminar. Se conservan las últimas \(recordsToKeep)."
+                : "Se eliminaron \(deletedCount) revisión\(deletedCount == 1 ? "" : "es") semanal\(deletedCount == 1 ? "" : "es") antigua\(deletedCount == 1 ? "" : "s"). Se conservan las últimas \(recordsToKeep)."
+        } catch {
+            alertMessage = error.localizedDescription
+        }
+        showAlert = true
     }
     
 }

@@ -1,0 +1,163 @@
+{
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Views/OptionView/optionView.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/optionView.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/optionView.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/optionView.dia",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/optionView.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/optionView.swiftdeps"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Shared/Views/HomeAlternativo/HomeAlternativoPhrases.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/HomeAlternativoPhrases.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/HomeAlternativoPhrases.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/HomeAlternativoPhrases.dia",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/HomeAlternativoPhrases.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/HomeAlternativoPhrases.swiftdeps"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Shared/Views/HomeAlternativo/HomeAlternativoView.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/HomeAlternativoView.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/HomeAlternativoView.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/HomeAlternativoView.dia",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/HomeAlternativoView.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/HomeAlternativoView.swiftdeps"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Shared/Views/HomeAlternativo/HomeContextualRecommendationCard.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/HomeContextualRecommendationCard.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/HomeContextualRecommendationCard.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/HomeContextualRecommendationCard.dia",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/HomeContextualRecommendationCard.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/HomeContextualRecommendationCard.swiftdeps"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Shared/Views/IAView/ChatView.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/ChatView.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/ChatView.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/ChatView.dia",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/ChatView.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/ChatView.swiftdeps"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Shared/Views/IAView/DescargoResponsabilidad.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/DescargoResponsabilidad.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/DescargoResponsabilidad.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/DescargoResponsabilidad.dia",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/DescargoResponsabilidad.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/DescargoResponsabilidad.swiftdeps"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Shared/Views/IAView/RespondView.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/RespondView.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/RespondView.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/RespondView.dia",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/RespondView.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/RespondView.swiftdeps"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Shared/Views/LectorEtiquetas/LectorEtiquetasView.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/LectorEtiquetasView.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/LectorEtiquetasView.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/LectorEtiquetasView.dia",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/LectorEtiquetasView.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/LectorEtiquetasView.swiftdeps"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Shared/Views/LectorEtiquetas/LectorEtiquetasViewHelper.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/LectorEtiquetasViewHelper.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/LectorEtiquetasViewHelper.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/LectorEtiquetasViewHelper.dia",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/LectorEtiquetasViewHelper.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/LectorEtiquetasViewHelper.swiftdeps"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Shared/Views/Lienzo/Lienzo.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/Lienzo.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/Lienzo.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/Lienzo.dia",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/Lienzo.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/Lienzo.swiftdeps"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Shared/Views/Lienzo/LienzoUtilsUI.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/LienzoUtilsUI.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/LienzoUtilsUI.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/LienzoUtilsUI.dia",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/LienzoUtilsUI.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/LienzoUtilsUI.swiftdeps"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Shared/Views/Lienzo/Lienzo_Fondos.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/Lienzo_Fondos.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/Lienzo_Fondos.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/Lienzo_Fondos.dia",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/Lienzo_Fondos.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/Lienzo_Fondos.swiftdeps"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Shared/Views/Migration/MigrationDataDocument.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/MigrationDataDocument.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/MigrationDataDocument.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/MigrationDataDocument.dia",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/MigrationDataDocument.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/MigrationDataDocument.swiftdeps"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Shared/Views/Migration/MigrationIOSAndroidView.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/MigrationIOSAndroidView.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/MigrationIOSAndroidView.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/MigrationIOSAndroidView.dia",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/MigrationIOSAndroidView.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/MigrationIOSAndroidView.swiftdeps"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Shared/Views/Notas/AddNotasView.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/AddNotasView.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/AddNotasView.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/AddNotasView.dia",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/AddNotasView.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/AddNotasView.swiftdeps"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Shared/Views/Notas/ListNotasViews.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/ListNotasViews.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/ListNotasViews.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/ListNotasViews.dia",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/ListNotasViews.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/ListNotasViews.swiftdeps"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Shared/Views/Notas/UpdateNotasView.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/UpdateNotasView.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/UpdateNotasView.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/UpdateNotasView.dia",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/UpdateNotasView.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/UpdateNotasView.swiftdeps"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Shared/Views/Novedades/Novedades.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/Novedades.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/Novedades.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/Novedades.dia",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/Novedades.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/Novedades.swiftdeps"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Shared/Views/PlayGame/GamePLay.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/GamePLay.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/GamePLay.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/GamePLay.dia",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/GamePLay.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/GamePLay.swiftdeps"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Shared/Views/Presencia/PresenciaStatsMockView.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/PresenciaStatsMockView.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/PresenciaStatsMockView.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/PresenciaStatsMockView.dia",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/PresenciaStatsMockView.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/PresenciaStatsMockView.swiftdeps"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Shared/Views/Presencia/PresenciaStatsView.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/PresenciaStatsView.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/PresenciaStatsView.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/PresenciaStatsView.dia",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/PresenciaStatsView.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/PresenciaStatsView.swiftdeps"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Shared/Views/Presencia/PresenciaView.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/PresenciaView.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/PresenciaView.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/PresenciaView.dia",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/PresenciaView.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/PresenciaView.swiftdeps"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Shared/Views/PurchaseView/PurchaseView.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/PurchaseView.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/PurchaseView.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/PurchaseView.dia",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/PurchaseView.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/Neville_iOS.build/Objects-normal/arm64/PurchaseView.swiftdeps"
+  }
+}

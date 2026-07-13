@@ -49,6 +49,11 @@ struct PurchaseView: View {
             description: "Diseña tu mañana con intención, registra tu presencia, cierra el día con aprendizaje y transforma todo en un Diario útil para mañana. Incluye recordatorios, estadísticas y Mi día."
         ),
         PremiumFeature(
+            iconName: "sparkles.rectangle.stack",
+            title: "Revisión semanal guiada",
+            description: "Cierra la semana con una síntesis de metas, agenda, diario, emociones, presencia, coherencia y logros. Elige el día, recibe un recordatorio opcional y conserva tus revisiones sincronizadas."
+        ),
+        PremiumFeature(
             iconName: "calendar",
             title: "Agenda",
             description: "Organiza tus actividades y tareas en el tiempo, liberando recursos y memoria. Añade recordatorios para no olvidar lo importante."

@@ -1,0 +1,392 @@
+{
+  "source": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/La Ley Watch App/ContentView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Opciones de entrada",
+        "location": {
+          "startingColumn": 33,
+          "startingLine": 363
+        }
+      },
+      {
+        "comment": "",
+        "key": "Eliminar entrada",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 373
+        }
+      },
+      {
+        "comment": "",
+        "key": "Diario",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 276
+        }
+      },
+      {
+        "comment": "",
+        "key": "Diario",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 361
+        }
+      },
+      {
+        "comment": "",
+        "key": "Borrar",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 364
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancelar",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 369
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancelar",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 374
+        }
+      },
+      {
+        "comment": "",
+        "key": "Borrar",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 377
+        }
+      },
+      {
+        "comment": "",
+        "key": "¿Seguro que deseas borrar esta entrada?",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 388
+        }
+      },
+      {
+        "comment": "",
+        "key": "La Ley",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 424
+        }
+      },
+      {
+        "comment": "",
+        "key": "Prueba",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 454
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@",
+        "location": {
+          "startingColumn": 60,
+          "startingLine": 454
+        }
+      },
+      {
+        "comment": "",
+        "key": "Opciones de nota",
+        "location": {
+          "startingColumn": 33,
+          "startingLine": 570
+        }
+      },
+      {
+        "comment": "",
+        "key": "Eliminar nota",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 598
+        }
+      },
+      {
+        "comment": "",
+        "key": "Notas",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 487
+        }
+      },
+      {
+        "comment": "",
+        "key": "La Ley",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 568
+        }
+      },
+      {
+        "comment": "",
+        "key": "Editar",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 571
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cambiar categoría",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 580
+        }
+      },
+      {
+        "comment": "",
+        "key": "Borrar",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 589
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancelar",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 594
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancelar",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 599
+        }
+      },
+      {
+        "comment": "",
+        "key": "Borrar",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 602
+        }
+      },
+      {
+        "comment": "",
+        "key": "¿Seguro que deseas borrar esta nota?",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 614
+        }
+      },
+      {
+        "comment": "",
+        "key": "Elegir categoría",
+        "location": {
+          "startingColumn": 33,
+          "startingLine": 720
+        }
+      },
+      {
+        "comment": "",
+        "key": "Editar Nota",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 683
+        }
+      },
+      {
+        "comment": "",
+        "key": "Título",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 688
+        }
+      },
+      {
+        "comment": "",
+        "key": "Nota",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 691
+        }
+      },
+      {
+        "comment": "",
+        "key": "Categoría",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 695
+        }
+      },
+      {
+        "comment": "",
+        "key": "Elegir categoría",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 701
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancelar",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 706
+        }
+      },
+      {
+        "comment": "",
+        "key": "Guardar",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 711
+        }
+      },
+      {
+        "comment": "",
+        "key": "Sin categoría",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 721
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancelar",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 729
+        }
+      },
+      {
+        "comment": "",
+        "key": "Elegir categoría",
+        "location": {
+          "startingColumn": 33,
+          "startingLine": 777
+        }
+      },
+      {
+        "comment": "",
+        "key": "Categoría",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 747
+        }
+      },
+      {
+        "comment": "",
+        "key": "Categoría",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 752
+        }
+      },
+      {
+        "comment": "",
+        "key": "Elegir categoría",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 758
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancelar",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 763
+        }
+      },
+      {
+        "comment": "",
+        "key": "Guardar",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 768
+        }
+      },
+      {
+        "comment": "",
+        "key": "Sin categoría",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 778
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancelar",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 786
+        }
+      },
+      {
+        "comment": "",
+        "key": "Requiere Premium",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 804
+        }
+      },
+      {
+        "comment": "",
+        "key": "Requiere Premium",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 866
+        }
+      },
+      {
+        "comment": "",
+        "key": "Ajustes",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 822
+        }
+      },
+      {
+        "comment": "",
+        "key": "Orden de pantallas",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 826
+        }
+      },
+      {
+        "comment": "",
+        "key": "Frases",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 851
+        }
+      },
+      {
+        "comment": "",
+        "key": "OK",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 867
+        }
+      },
+      {
+        "comment": "",
+        "key": "Las frases de otros autores necesitan acceso Premium.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 869
+        }
+      }
+    ]
+  },
+  "version": 1
+}

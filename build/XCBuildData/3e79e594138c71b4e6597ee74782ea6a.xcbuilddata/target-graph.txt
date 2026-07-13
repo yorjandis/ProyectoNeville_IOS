@@ -1,0 +1,16 @@
+Target dependency graph (8 targets)
+Target 'Neville_iOS' in project 'Neville_iOS'
+➜ Explicit dependency on target 'FrasesWiggetExtension' in project 'Neville_iOS'
+➜ Explicit dependency on target 'La Ley Watch App' in project 'Neville_iOS'
+➜ Explicit dependency on target 'sharedios' in project 'Neville_iOS'
+➜ Explicit dependency on target 'LaLeyBackgroundDownloadExtension' in project 'Neville_iOS'
+➜ Explicit dependency on target 'TPPDF' in project 'TPPDF'
+Target 'TPPDF' in project 'TPPDF'
+➜ Explicit dependency on target 'TPPDF' in project 'TPPDF'
+Target 'TPPDF' in project 'TPPDF' (no dependencies)
+Target 'LaLeyBackgroundDownloadExtension' in project 'Neville_iOS' (no dependencies)
+Target 'sharedios' in project 'Neville_iOS' (no dependencies)
+Target 'La Ley Watch App' in project 'Neville_iOS'
+➜ Explicit dependency on target 'WatchComplicationLaLeyExtension' in project 'Neville_iOS'
+Target 'WatchComplicationLaLeyExtension' in project 'Neville_iOS' (no dependencies)
+Target 'FrasesWiggetExtension' in project 'Neville_iOS' (no dependencies)

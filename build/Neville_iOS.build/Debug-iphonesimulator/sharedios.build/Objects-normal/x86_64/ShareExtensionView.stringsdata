@@ -1,0 +1,168 @@
+{
+  "source": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/sharedios/ShareExtensionView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "No se ha detectado contenido que pueda ser utilizado",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 338
+        }
+      },
+      {
+        "comment": "",
+        "key": "La Ley",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 47
+        }
+      },
+      {
+        "comment": "",
+        "key": "OCR sobre la Imagen",
+        "location": {
+          "startingColumn": 44,
+          "startingLine": 197
+        }
+      },
+      {
+        "comment": "",
+        "key": "Guardar Texto en Notas",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 212
+        }
+      },
+      {
+        "comment": "",
+        "key": "Guardar Texto en Frases",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 222
+        }
+      },
+      {
+        "comment": "",
+        "key": "Guardar como Frase Personal Calma",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 232
+        }
+      },
+      {
+        "comment": "",
+        "key": "Guardar",
+        "location": {
+          "startingColumn": 68,
+          "startingLine": 71
+        }
+      },
+      {
+        "comment": "",
+        "key": "Editar",
+        "location": {
+          "startingColumn": 68,
+          "startingLine": 94
+        }
+      },
+      {
+        "comment": "",
+        "key": "OCR sobre la Imagen",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 110
+        }
+      },
+      {
+        "comment": "",
+        "key": "Guardar Texto en Notas",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 123
+        }
+      },
+      {
+        "comment": "",
+        "key": "Guardar Texto en Frases",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 133
+        }
+      },
+      {
+        "comment": "",
+        "key": "Guardar como Frase Personal Calma",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 143
+        }
+      },
+      {
+        "comment": "",
+        "key": "Guardar",
+        "location": {
+          "startingColumn": 72,
+          "startingLine": 166
+        }
+      },
+      {
+        "comment": "",
+        "key": "Editar",
+        "location": {
+          "startingColumn": 68,
+          "startingLine": 187
+        }
+      },
+      {
+        "comment": "",
+        "key": "Guardar",
+        "location": {
+          "startingColumn": 68,
+          "startingLine": 263
+        }
+      },
+      {
+        "comment": "",
+        "key": "Editar",
+        "location": {
+          "startingColumn": 64,
+          "startingLine": 284
+        }
+      },
+      {
+        "comment": "",
+        "key": "Guardar Texto en Notas",
+        "location": {
+          "startingColumn": 44,
+          "startingLine": 302
+        }
+      },
+      {
+        "comment": "",
+        "key": "Guardar Texto en Frases",
+        "location": {
+          "startingColumn": 44,
+          "startingLine": 312
+        }
+      },
+      {
+        "comment": "",
+        "key": "Guardar como Frase Personal Calma",
+        "location": {
+          "startingColumn": 44,
+          "startingLine": 322
+        }
+      },
+      {
+        "comment": "",
+        "key": "Salir",
+        "location": {
+          "startingColumn": 37,
+          "startingLine": 351
+        }
+      }
+    ]
+  },
+  "version": 1
+}

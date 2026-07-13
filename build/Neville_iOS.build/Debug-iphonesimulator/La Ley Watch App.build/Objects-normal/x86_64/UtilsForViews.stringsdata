@@ -1,0 +1,48 @@
+{
+  "source": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Shared/Models/UtilsForView/UtilsForViews.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Feliz Cumpleaños Maestro Neville! 💖",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 120
+        }
+      },
+      {
+        "comment": "",
+        "key": "Gracias por tu Amor y Enseñanzas",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 122
+        }
+      },
+      {
+        "comment": "",
+        "key": "Debug Mode",
+        "location": {
+          "startingColumn": 10,
+          "startingLine": 152
+        }
+      },
+      {
+        "comment": "",
+        "key": "Toca aqui para actualizar",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 190
+        }
+      },
+      {
+        "comment": "",
+        "key": "Existe una nueva versión de la App",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 187
+        }
+      }
+    ]
+  },
+  "version": 1
+}

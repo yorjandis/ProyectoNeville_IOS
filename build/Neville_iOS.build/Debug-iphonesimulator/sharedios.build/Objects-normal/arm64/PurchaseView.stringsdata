@@ -1,0 +1,120 @@
+{
+  "source": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Shared/Views/PurchaseView/PurchaseView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "🎉 Versión Extendida ✨",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 231
+        }
+      },
+      {
+        "comment": "",
+        "key": "Accede a todo el contenido",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 248
+        }
+      },
+      {
+        "comment": "",
+        "key": "Primera semana gratis",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 253
+        }
+      },
+      {
+        "comment": "",
+        "key": "7 días gratis, después suscripción anual",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 315
+        }
+      },
+      {
+        "comment": "",
+        "key": "La suscripción se renueva automáticamente cada año hasta que se cancele.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 365
+        }
+      },
+      {
+        "comment": "",
+        "key": "Puedes gestionar o cancelar la suscripción en Ajustes de tu Apple ID tras la compra.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 370
+        }
+      },
+      {
+        "comment": "",
+        "key": "Versión Extendida Habilitada! 🎉",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 375
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cargando precio…",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 332
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@/año",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 327
+        }
+      },
+      {
+        "comment": "",
+        "key": "Acceder a la Versión Extendida",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 338
+        }
+      },
+      {
+        "comment": "",
+        "key": "Restaurar Compras",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 387
+        }
+      },
+      {
+        "comment": "",
+        "key": "·",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 438
+        }
+      },
+      {
+        "comment": "",
+        "key": "Términos de Uso",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 433
+        }
+      },
+      {
+        "comment": "",
+        "key": "Política de Privacidad",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 443
+        }
+      }
+    ]
+  },
+  "version": 1
+}

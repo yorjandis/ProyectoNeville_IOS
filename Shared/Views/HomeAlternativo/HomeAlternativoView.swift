@@ -24,6 +24,8 @@ struct HomeAlternativoView: View {
     @AppStorage("HomeAlternativo_AccessIDs") private var storedAccessIDs: String = ""
     @AppStorage("HomeAlternativo_PaletteIDs") private var storedPaletteIDs: String = ""
     @AppStorage("Home_AgendaBadge_HiddenDayKey") private var agendaBadgeHiddenDayKey: String = ""
+    @AppStorage(AppCons.UD_setting_WeeklyReviewWeekday) private var weeklyReviewWeekday: Int = WeeklyReviewDay.sunday.rawValue
+    @AppStorage(AppCons.UD_setting_WeeklyReviewCompletedPeriod) private var weeklyReviewCompletedPeriod = ""
     @AppStorage(AppCons.UD_setting_HomeProductividadPresenciaTotal) private var homeProductividadPresenciaTotal: Int = 5
     @AppStorage(AppCons.UD_setting_HomeProductividadMetasTotal) private var homeProductividadMetasTotal: Int = 1
     @AppStorage(AppCons.UD_setting_HomeProductividadDiarioTotal) private var homeProductividadDiarioTotal: Int = 1
@@ -49,14 +51,20 @@ struct HomeAlternativoView: View {
     }
 
     private var tools: [HomeAlternativoTool] {
+        let normalizedAccessIDs = HomeAlternativoAccess.normalizedIDs(
+            from: HomeAlternativoAccess.encode(selectedAccessIDs)
+        )
         let normalizedPaletteIDs = HomeAlternativoCardPalette.normalizedIDs(
             from: selectedPaletteIDs,
-            accessIDs: selectedAccessIDs
+            accessIDs: normalizedAccessIDs
         )
 
-        return selectedAccessIDs.enumerated().compactMap { index, id in
+        return normalizedAccessIDs.enumerated().compactMap { index, id in
             guard let access = HomeAlternativoAccess(rawValue: id) else { return nil }
-            let palette = HomeAlternativoCardPalette(rawValue: normalizedPaletteIDs[index]) ?? access.defaultPalette
+            let paletteID = normalizedPaletteIDs.indices.contains(index)
+                ? normalizedPaletteIDs[index]
+                : access.defaultPalette.rawValue
+            let palette = HomeAlternativoCardPalette(rawValue: paletteID) ?? access.defaultPalette
             return HomeAlternativoTool(access: access, palette: palette)
         }
     }
@@ -85,6 +93,12 @@ struct HomeAlternativoView: View {
 
     private var shouldShowGoalsBadge: Bool {
         goalsBadgeVisible
+    }
+
+    private var shouldPromptWeeklyReview: Bool {
+        guard WeeklyReviewSchedule.isAvailable(now: now, weekday: weeklyReviewWeekday) else { return false }
+        let interval = WeeklyReviewSchedule.interval(now: now, weekday: weeklyReviewWeekday)
+        return weeklyReviewCompletedPeriod != WeeklyReviewSchedule.periodKey(for: interval)
     }
 
     private var greeting: String {
@@ -170,11 +184,13 @@ struct HomeAlternativoView: View {
             reloadPresenceProgress()
             reloadDiaryProgress()
             phrase = HomeAlternativoPhrases.random(for: dayMoment)
-            selectedAccessIDs = HomeAlternativoAccess.normalizedIDs(from: storedAccessIDs)
-            selectedPaletteIDs = HomeAlternativoCardPalette.normalizedIDs(
+            let normalizedAccessIDs = HomeAlternativoAccess.normalizedIDs(from: storedAccessIDs)
+            let normalizedPaletteIDs = HomeAlternativoCardPalette.normalizedIDs(
                 from: storedPaletteIDs,
-                accessIDs: selectedAccessIDs
+                accessIDs: normalizedAccessIDs
             )
+            selectedAccessIDs = normalizedAccessIDs
+            selectedPaletteIDs = normalizedPaletteIDs
             updateGoalsBadgeState(at: Date())
         }
         .task(id: nextGoalsBadgeRefreshDate) {
@@ -231,6 +247,9 @@ struct HomeAlternativoView: View {
     private func mainContent(onRecommendationExpanded: @escaping () -> Void) -> some View {
         VStack(alignment: .leading, spacing: 18) {
             header
+            if shouldPromptWeeklyReview {
+                weeklyReviewPrompt
+            }
             toolsGrid
             progressSection
             HomeContextualRecommendationCard(
@@ -260,6 +279,41 @@ struct HomeAlternativoView: View {
              */
             
         }
+    }
+
+    private var weeklyReviewPrompt: some View {
+        NavigationLink {
+            WeeklyReviewView()
+        } label: {
+            HStack(spacing: 13) {
+                Image(systemName: "sparkles.rectangle.stack.fill")
+                    .font(.title2)
+                    .foregroundStyle(.white)
+                    .frame(width: 44, height: 44)
+                    .background(.indigo, in: RoundedRectangle(cornerRadius: 13, style: .continuous))
+
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("Tu revisión semanal está lista")
+                        .font(.subheadline.bold())
+                    Text("5–10 min para ver avances, patrones y elegir tu foco.")
+                        .font(.caption)
+                        .foregroundStyle(theme.secondaryText)
+                        .multilineTextAlignment(.leading)
+                }
+
+                Spacer(minLength: 0)
+                Image(systemName: "chevron.right")
+                    .font(.caption.bold())
+                    .foregroundStyle(theme.secondaryText)
+            }
+            .padding(14)
+            .background(.indigo.opacity(0.13), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    .stroke(.indigo.opacity(0.25), lineWidth: 1)
+            }
+        }
+        .buttonStyle(.plain)
     }
 
     private var toolsGrid: some View {
@@ -418,6 +472,8 @@ struct HomeAlternativoView: View {
             MorningRitualMainView()
         case .coherencia:
             CardioCoherenceWelcomeFlowView()
+        case .revisionSemanal:
+            WeeklyReviewView()
         case .lienzo:
             LienzoMain(texto: "", imagenPrimariaACargar: nil)
         case .recordatorios:
@@ -648,6 +704,7 @@ private enum HomeAlternativoAccess: String, CaseIterable, Identifiable, Codable,
     case notas
     case ritual
     case coherencia
+    case revisionSemanal
     case lienzo
     case recordatorios
     case lectorQR
@@ -661,6 +718,8 @@ private enum HomeAlternativoAccess: String, CaseIterable, Identifiable, Codable,
     case ayudas
 
     var id: String { rawValue }
+
+    static let maximumAccessCount = 9
 
     static let defaultIDs = [
         calma.rawValue,
@@ -685,6 +744,7 @@ private enum HomeAlternativoAccess: String, CaseIterable, Identifiable, Codable,
         case .notas: return "Notas"
         case .ritual: return "Ritual"
         case .coherencia: return "Coherencia"
+        case .revisionSemanal: return "Revisión"
         case .lienzo: return "Lienzo"
         case .recordatorios: return "Recordatorios"
         case .lectorQR: return "Lector QR"
@@ -710,6 +770,7 @@ private enum HomeAlternativoAccess: String, CaseIterable, Identifiable, Codable,
         case .notas: return "note.text"
         case .ritual: return "sunrise"
         case .coherencia: return "waveform.path.ecg"
+        case .revisionSemanal: return "sparkles.rectangle.stack"
         case .lienzo: return "paintbrush.pointed"
         case .recordatorios: return "bell.badge"
         case .lectorQR: return "qrcode"
@@ -744,6 +805,7 @@ private enum HomeAlternativoAccess: String, CaseIterable, Identifiable, Codable,
         case .notas: return [.cyan, .blue]
         case .ritual: return [.pink, .orange]
         case .coherencia: return [.indigo, .teal]
+        case .revisionSemanal: return [.indigo, .purple]
         case .lienzo: return [.indigo, .purple]
         case .recordatorios: return [.red, .orange]
         case .lectorQR: return [.gray, .cyan]
@@ -769,6 +831,7 @@ private enum HomeAlternativoAccess: String, CaseIterable, Identifiable, Codable,
         case .notas: return .cieloCian
         case .ritual: return .rosaAurora
         case .coherencia: return .indigoMenta
+        case .revisionSemanal: return .violetaMagenta
         case .lienzo: return .violetaMagenta
         case .recordatorios: return .coralNaranja
         case .lectorQR: return .nocheElectrica
@@ -785,7 +848,7 @@ private enum HomeAlternativoAccess: String, CaseIterable, Identifiable, Codable,
 
     var requiresPremium: Bool {
         switch self {
-        case .calma, .agenda, .presencia, .alimentos, .ritual, .coherencia:
+        case .calma, .agenda, .presencia, .alimentos, .ritual, .coherencia, .revisionSemanal:
             return true
         default:
             return false
@@ -813,6 +876,8 @@ private enum HomeAlternativoAccess: String, CaseIterable, Identifiable, Codable,
             return AnyView(MorningRitualMainView())
         case .coherencia:
             return AnyView(CardioCoherenceWelcomeFlowView())
+        case .revisionSemanal:
+            return AnyView(WeeklyReviewView())
         case .lienzo:
             return AnyView(LienzoMain(texto: "", imagenPrimariaACargar: nil))
         case .recordatorios:
@@ -853,11 +918,11 @@ private enum HomeAlternativoAccess: String, CaseIterable, Identifiable, Codable,
         }
 
         let fallbackIDs = defaultIDs + Self.allCases.map(\.rawValue)
-        for id in fallbackIDs where result.count < 9 && !result.contains(id) {
+        for id in fallbackIDs where result.count < maximumAccessCount && !result.contains(id) {
             result.append(id)
         }
 
-        return Array(result.prefix(9))
+        return Array(result.prefix(maximumAccessCount))
     }
 
     static func encode(_ ids: [String]) -> String {

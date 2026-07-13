@@ -1,0 +1,72 @@
+{
+  "source": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/CrearFraseIntent.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Crear Frase",
+        "location": {
+          "startingColumn": 49,
+          "startingLine": 14
+        }
+      },
+      {
+        "comment": "",
+        "key": "Crear una nueva frase",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 15
+        }
+      },
+      {
+        "comment": "",
+        "key": "frase",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 19
+        }
+      },
+      {
+        "comment": "",
+        "key": "El contenido de la frase",
+        "location": {
+          "startingColumn": 44,
+          "startingLine": 19
+        }
+      },
+      {
+        "comment": "",
+        "key": "autor",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 22
+        }
+      },
+      {
+        "comment": "",
+        "key": "El autor de la frase",
+        "location": {
+          "startingColumn": 44,
+          "startingLine": 22
+        }
+      },
+      {
+        "comment": "",
+        "key": "La frase ha sido creada correctamente.",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 63
+        }
+      },
+      {
+        "comment": "",
+        "key": "No se pudo guardar la frase, intentelo más tarde.",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 69
+        }
+      }
+    ]
+  },
+  "version": 1
+}

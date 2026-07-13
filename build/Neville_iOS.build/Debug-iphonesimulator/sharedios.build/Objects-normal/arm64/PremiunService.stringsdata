@@ -1,0 +1,16 @@
+{
+  "source": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Shared/Models/PurchaseModel/PremiunService.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Esta función solo esta presente en la versión extendida",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 41
+        }
+      }
+    ]
+  },
+  "version": 1
+}

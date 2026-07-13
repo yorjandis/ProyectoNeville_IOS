@@ -1,0 +1,16 @@
+{
+  "source": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/La Ley Watch App/model/WatchPremiumService.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Esta función solo esta presente en la versión extendida",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 37
+        }
+      }
+    ]
+  },
+  "version": 1
+}

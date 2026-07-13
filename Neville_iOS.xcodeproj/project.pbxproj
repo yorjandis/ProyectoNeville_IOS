@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9A10B0013000000000000001 /* WeeklyReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A10B0023000000000000001 /* WeeklyReviewView.swift */; };
 		19520A4F2B75C34F000B11CC /* AddDiario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19520A4E2B75C34F000B11CC /* AddDiario.swift */; };
 		19520A512B765E31000B11CC /* FilterByNotaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19520A502B765E30000B11CC /* FilterByNotaView.swift */; };
 		19520A532B76778B000B11CC /* FilterByDiarioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19520A522B76778B000B11CC /* FilterByDiarioView.swift */; };
@@ -169,6 +170,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		9A10B0023000000000000001 /* WeeklyReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/Views/RevisionSemanal/WeeklyReviewView.swift; sourceTree = SOURCE_ROOT; };
 		190C39AB2B6B84AA008007C6 /* La Ley Watch App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "La Ley Watch App.entitlements"; sourceTree = "<group>"; };
 		19520A4E2B75C34F000B11CC /* AddDiario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddDiario.swift; sourceTree = "<group>"; };
 		19520A502B765E30000B11CC /* FilterByNotaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterByNotaView.swift; sourceTree = "<group>"; };
@@ -2094,6 +2096,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9A10B0013000000000000001 /* WeeklyReviewView.swift in Sources */,
 				199DA0672B0EAC5800DEED62 /* Home.swift in Sources */,
 				911F242B2F7B7D31009A77BE /* JoeDispenzaAuthorView.swift in Sources */,
 				91E2A7A42F7C5E37007A162A /* cardTemplate.swift in Sources */,

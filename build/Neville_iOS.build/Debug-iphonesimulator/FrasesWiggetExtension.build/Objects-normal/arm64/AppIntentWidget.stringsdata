@@ -1,0 +1,24 @@
+{
+  "source": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/FrasesWigget/AppIntentWidget.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Actualiza frases",
+        "location": {
+          "startingColumn": 49,
+          "startingLine": 14
+        }
+      },
+      {
+        "comment": "",
+        "key": "Actualizar Frases",
+        "location": {
+          "startingColumn": 50,
+          "startingLine": 15
+        }
+      }
+    ]
+  },
+  "version": 1
+}

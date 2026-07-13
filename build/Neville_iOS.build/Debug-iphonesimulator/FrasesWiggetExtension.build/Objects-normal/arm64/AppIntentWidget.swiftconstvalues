@@ -1,0 +1,87 @@
+[
+  {
+    "typeName": "FrasesWiggetExtension.TestAppIntent",
+    "mangledTypeName": "21FrasesWiggetExtension13TestAppIntentV",
+    "kind": "struct",
+    "file": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/FrasesWigget/AppIntentWidget.swift",
+    "line": 12,
+    "conformances": [
+      "AppIntents.AppIntent",
+      "AppIntents.PersistentlyIdentifiable",
+      "AppIntents._SupportsAppDependencies",
+      "Swift.Sendable",
+      "Swift.SendableMetatype",
+      "Swift.BitwiseCopyable"
+    ],
+    "allConformances": [
+      {
+        "protocolName": "AppIntents.AppIntent",
+        "conformanceDefiningModule": "FrasesWiggetExtension"
+      },
+      {
+        "protocolName": "AppIntents.PersistentlyIdentifiable",
+        "conformanceDefiningModule": "FrasesWiggetExtension"
+      },
+      {
+        "protocolName": "AppIntents._SupportsAppDependencies",
+        "conformanceDefiningModule": "FrasesWiggetExtension"
+      },
+      {
+        "protocolName": "Swift.Sendable",
+        "conformanceDefiningModule": "FrasesWiggetExtension"
+      },
+      {
+        "protocolName": "Swift.SendableMetatype",
+        "conformanceDefiningModule": "FrasesWiggetExtension"
+      },
+      {
+        "protocolName": "Swift.BitwiseCopyable",
+        "conformanceDefiningModule": "FrasesWiggetExtension"
+      }
+    ],
+    "associatedTypeAliases": [
+      {
+        "typeAliasName": "PerformResult",
+        "substitutedTypeName": "some AppIntents.IntentResult",
+        "substitutedMangledTypeName": "21FrasesWiggetExtension13TestAppIntentV7performQryYaKFQOy_Qo_",
+        "opaqueTypeProtocolRequirements": [
+          "AppIntents.IntentResult"
+        ],
+        "opaqueTypeSameTypeRequirements": []
+      },
+      {
+        "typeAliasName": "SummaryContent",
+        "substitutedTypeName": "some AppIntents.ParameterSummary",
+        "substitutedMangledTypeName": "10AppIntents0A6IntentPAAE16parameterSummaryQrvpZQOy21FrasesWiggetExtension04TestaC0V_Qo_",
+        "opaqueTypeProtocolRequirements": [
+          "AppIntents.ParameterSummary"
+        ],
+        "opaqueTypeSameTypeRequirements": []
+      }
+    ],
+    "properties": [
+      {
+        "label": "title",
+        "type": "Foundation.LocalizedStringResource",
+        "mangledTypeName": "n/a - deprecated",
+        "isStatic": "true",
+        "isComputed": "false",
+        "file": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/FrasesWigget/AppIntentWidget.swift",
+        "line": 14,
+        "valueKind": "RawLiteral",
+        "value": "Actualiza frases"
+      },
+      {
+        "label": "description",
+        "type": "Swift.Optional<AppIntents.IntentDescription>",
+        "mangledTypeName": "n/a - deprecated",
+        "isStatic": "true",
+        "isComputed": "false",
+        "file": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/FrasesWigget/AppIntentWidget.swift",
+        "line": 15,
+        "valueKind": "RawLiteral",
+        "value": "Actualizar Frases"
+      }
+    ]
+  }
+]

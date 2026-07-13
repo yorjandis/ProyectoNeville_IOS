@@ -1,0 +1,374 @@
+[
+  {
+    "typeName": "La_Ley_Watch_App.CrearFraseCalmaIntent",
+    "mangledTypeName": "16La_Ley_Watch_App21CrearFraseCalmaIntentV",
+    "kind": "struct",
+    "file": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/CrearFraseCalmaIntent.swift",
+    "line": 13,
+    "conformances": [
+      "AppIntents.AppIntent",
+      "AppIntents.ProvidesDialog",
+      "AppIntents.PersistentlyIdentifiable",
+      "AppIntents._SupportsAppDependencies",
+      "Swift.Sendable",
+      "AppIntents.IntentResult",
+      "Swift.SendableMetatype"
+    ],
+    "allConformances": [
+      {
+        "protocolName": "AppIntents.AppIntent",
+        "conformanceDefiningModule": "La_Ley_Watch_App"
+      },
+      {
+        "protocolName": "AppIntents.ProvidesDialog",
+        "conformanceDefiningModule": "La_Ley_Watch_App"
+      },
+      {
+        "protocolName": "AppIntents.PersistentlyIdentifiable",
+        "conformanceDefiningModule": "La_Ley_Watch_App"
+      },
+      {
+        "protocolName": "AppIntents._SupportsAppDependencies",
+        "conformanceDefiningModule": "La_Ley_Watch_App"
+      },
+      {
+        "protocolName": "Swift.Sendable",
+        "conformanceDefiningModule": "La_Ley_Watch_App"
+      },
+      {
+        "protocolName": "AppIntents.IntentResult",
+        "conformanceDefiningModule": "La_Ley_Watch_App"
+      },
+      {
+        "protocolName": "Swift.SendableMetatype",
+        "conformanceDefiningModule": "La_Ley_Watch_App"
+      }
+    ],
+    "associatedTypeAliases": [
+      {
+        "typeAliasName": "PerformResult",
+        "substitutedTypeName": "some AppIntents.ProvidesDialog",
+        "substitutedMangledTypeName": "16La_Ley_Watch_App21CrearFraseCalmaIntentV7performQryYaKFQOy_Qo_",
+        "opaqueTypeProtocolRequirements": [
+          "AppIntents.ProvidesDialog"
+        ],
+        "opaqueTypeSameTypeRequirements": []
+      },
+      {
+        "typeAliasName": "SummaryContent",
+        "substitutedTypeName": "some AppIntents.ParameterSummary",
+        "substitutedMangledTypeName": "10AppIntents0A6IntentPAAE16parameterSummaryQrvpZQOy013La_Ley_Watch_A0015CrearFraseCalmaC0V_Qo_",
+        "opaqueTypeProtocolRequirements": [
+          "AppIntents.ParameterSummary"
+        ],
+        "opaqueTypeSameTypeRequirements": []
+      },
+      {
+        "typeAliasName": "Value",
+        "substitutedTypeName": "Swift.Never",
+        "substitutedMangledTypeName": "s5NeverO"
+      },
+      {
+        "typeAliasName": "Snippet",
+        "substitutedTypeName": "Swift.Never",
+        "substitutedMangledTypeName": "s5NeverO"
+      },
+      {
+        "typeAliasName": "Dialog",
+        "substitutedTypeName": "AppIntents.IntentDialog",
+        "substitutedMangledTypeName": "10AppIntents12IntentDialogV"
+      },
+      {
+        "typeAliasName": "OpensAppIntent",
+        "substitutedTypeName": "Swift.Never",
+        "substitutedMangledTypeName": "s5NeverO"
+      }
+    ],
+    "properties": [
+      {
+        "label": "value",
+        "type": "Swift.Optional<Swift.Never>",
+        "mangledTypeName": "n/a - deprecated",
+        "isStatic": "false",
+        "isComputed": "false",
+        "file": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/CrearFraseCalmaIntent.swift",
+        "line": 14,
+        "valueKind": "NilLiteral"
+      },
+      {
+        "label": "_yorjPremium",
+        "type": "SwiftUI.AppStorage<Swift.Bool>",
+        "mangledTypeName": "n/a - deprecated",
+        "isStatic": "false",
+        "isComputed": "false",
+        "file": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/CrearFraseCalmaIntent.swift",
+        "line": 19,
+        "valueKind": "InitCall",
+        "value": {
+          "type": "SwiftUI.AppStorage<Swift.Bool>",
+          "arguments": [
+            {
+              "label": "wrappedValue",
+              "type": "Swift.Bool",
+              "valueKind": "RawLiteral",
+              "value": "false"
+            },
+            {
+              "label": "",
+              "type": "Swift.String",
+              "valueKind": "RawLiteral",
+              "value": "yorjPremium"
+            },
+            {
+              "label": "store",
+              "type": "Swift.Optional<Foundation.UserDefaults>",
+              "valueKind": "InitCall",
+              "value": {
+                "type": "Swift.Optional<Foundation.UserDefaults>",
+                "arguments": [
+                  {
+                    "label": "suiteName",
+                    "type": "Swift.Optional<Swift.String>",
+                    "valueKind": "RawLiteral",
+                    "value": "group.com.ypg.nev.group"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "label": "_frase",
+        "type": "AppIntents.IntentParameter<Swift.String>",
+        "mangledTypeName": "n/a - deprecated",
+        "isStatic": "false",
+        "isComputed": "false",
+        "file": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/CrearFraseCalmaIntent.swift",
+        "line": 22,
+        "valueKind": "InitCall",
+        "value": {
+          "type": "AppIntents.IntentParameter<Swift.String>",
+          "arguments": [
+            {
+              "label": "title",
+              "type": "Foundation.LocalizedStringResource",
+              "valueKind": "RawLiteral",
+              "value": "Frase"
+            },
+            {
+              "label": "description",
+              "type": "Swift.Optional<Foundation.LocalizedStringResource>",
+              "valueKind": "RawLiteral",
+              "value": "Contenido de la frase para Calma"
+            },
+            {
+              "label": "default",
+              "type": "Swift.Optional<Swift.String>",
+              "valueKind": "NilLiteral"
+            },
+            {
+              "label": "inputOptions",
+              "type": "Swift.Optional<Swift.String.IntentInputOptions>",
+              "valueKind": "NilLiteral"
+            },
+            {
+              "label": "requestValueDialog",
+              "type": "Swift.Optional<AppIntents.IntentDialog>",
+              "valueKind": "NilLiteral"
+            },
+            {
+              "label": "inputConnectionBehavior",
+              "type": "AppIntents.InputConnectionBehavior",
+              "valueKind": "Runtime"
+            }
+          ]
+        }
+      },
+      {
+        "label": "title",
+        "type": "Foundation.LocalizedStringResource",
+        "mangledTypeName": "n/a - deprecated",
+        "isStatic": "true",
+        "isComputed": "false",
+        "file": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/CrearFraseCalmaIntent.swift",
+        "line": 16,
+        "valueKind": "RawLiteral",
+        "value": "Crear Frase para Calma"
+      },
+      {
+        "label": "description",
+        "type": "AppIntents.IntentDescription",
+        "mangledTypeName": "n/a - deprecated",
+        "isStatic": "true",
+        "isComputed": "false",
+        "file": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/CrearFraseCalmaIntent.swift",
+        "line": 17,
+        "valueKind": "RawLiteral",
+        "value": "Crear una frase personal en Espacio Calma"
+      },
+      {
+        "label": "yorjPremium",
+        "type": "Swift.Bool",
+        "mangledTypeName": "n/a - deprecated",
+        "isStatic": "false",
+        "isComputed": "true",
+        "file": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/CrearFraseCalmaIntent.swift",
+        "line": 19,
+        "valueKind": "InitCall",
+        "value": {
+          "type": "SwiftUI.AppStorage<Swift.Bool>",
+          "arguments": [
+            {
+              "label": "wrappedValue",
+              "type": "Swift.Bool",
+              "valueKind": "RawLiteral",
+              "value": "false"
+            },
+            {
+              "label": "",
+              "type": "Swift.String",
+              "valueKind": "RawLiteral",
+              "value": "yorjPremium"
+            },
+            {
+              "label": "store",
+              "type": "Swift.Optional<Foundation.UserDefaults>",
+              "valueKind": "InitCall",
+              "value": {
+                "type": "Swift.Optional<Foundation.UserDefaults>",
+                "arguments": [
+                  {
+                    "label": "suiteName",
+                    "type": "Swift.Optional<Swift.String>",
+                    "valueKind": "RawLiteral",
+                    "value": "group.com.ypg.nev.group"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "propertyWrappers": [
+          {
+            "type": "SwiftUI.AppStorage",
+            "file": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/CrearFraseCalmaIntent.swift",
+            "line": 19,
+            "arguments": [
+              {
+                "label": "",
+                "type": "Swift.String",
+                "valueKind": "RawLiteral",
+                "value": "yorjPremium"
+              },
+              {
+                "label": "store",
+                "type": "Swift.Optional<Foundation.UserDefaults>",
+                "valueKind": "InitCall",
+                "value": {
+                  "type": "Swift.Optional<Foundation.UserDefaults>",
+                  "arguments": [
+                    {
+                      "label": "suiteName",
+                      "type": "Swift.Optional<Swift.String>",
+                      "valueKind": "RawLiteral",
+                      "value": "group.com.ypg.nev.group"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "label": "$yorjPremium",
+        "type": "SwiftUICore.Binding<Swift.Bool>",
+        "mangledTypeName": "n/a - deprecated",
+        "isStatic": "false",
+        "isComputed": "true",
+        "file": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/CrearFraseCalmaIntent.swift",
+        "line": 19,
+        "valueKind": "Runtime"
+      },
+      {
+        "label": "frase",
+        "type": "Swift.String",
+        "mangledTypeName": "n/a - deprecated",
+        "isStatic": "false",
+        "isComputed": "true",
+        "file": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/CrearFraseCalmaIntent.swift",
+        "line": 22,
+        "valueKind": "InitCall",
+        "value": {
+          "type": "AppIntents.IntentParameter<Swift.String>",
+          "arguments": [
+            {
+              "label": "title",
+              "type": "Foundation.LocalizedStringResource",
+              "valueKind": "RawLiteral",
+              "value": "Frase"
+            },
+            {
+              "label": "description",
+              "type": "Swift.Optional<Foundation.LocalizedStringResource>",
+              "valueKind": "RawLiteral",
+              "value": "Contenido de la frase para Calma"
+            },
+            {
+              "label": "default",
+              "type": "Swift.Optional<Swift.String>",
+              "valueKind": "NilLiteral"
+            },
+            {
+              "label": "inputOptions",
+              "type": "Swift.Optional<Swift.String.IntentInputOptions>",
+              "valueKind": "NilLiteral"
+            },
+            {
+              "label": "requestValueDialog",
+              "type": "Swift.Optional<AppIntents.IntentDialog>",
+              "valueKind": "NilLiteral"
+            },
+            {
+              "label": "inputConnectionBehavior",
+              "type": "AppIntents.InputConnectionBehavior",
+              "valueKind": "Runtime"
+            }
+          ]
+        },
+        "propertyWrappers": [
+          {
+            "type": "AppIntents.IntentParameter",
+            "file": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/CrearFraseCalmaIntent.swift",
+            "line": 21,
+            "arguments": [
+              {
+                "label": "title",
+                "type": "Foundation.LocalizedStringResource",
+                "valueKind": "RawLiteral",
+                "value": "Frase"
+              },
+              {
+                "label": "description",
+                "type": "Swift.Optional<Foundation.LocalizedStringResource>",
+                "valueKind": "RawLiteral",
+                "value": "Contenido de la frase para Calma"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "label": "$frase",
+        "type": "AppIntents.IntentParameter<Swift.String>",
+        "mangledTypeName": "n/a - deprecated",
+        "isStatic": "false",
+        "isComputed": "true",
+        "file": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/CrearFraseCalmaIntent.swift",
+        "line": 22,
+        "valueKind": "Runtime"
+      }
+    ]
+  }
+]

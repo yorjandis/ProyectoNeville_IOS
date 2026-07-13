@@ -1,0 +1,29 @@
+{
+  "" : {
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/WatchComplicationLaLeyExtension.build/Objects-normal/x86_64/WatchComplicationLaLeyExtension-primary.dia",
+    "emit-module-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/WatchComplicationLaLeyExtension.build/Objects-normal/x86_64/WatchComplicationLaLeyExtension-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/WatchComplicationLaLeyExtension.build/Objects-normal/x86_64/WatchComplicationLaLeyExtension-primary-emit-module.dia",
+    "pch" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/WatchComplicationLaLeyExtension.build/Objects-normal/x86_64/WatchComplicationLaLeyExtension-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/WatchComplicationLaLeyExtension.build/Objects-normal/x86_64/WatchComplicationLaLeyExtension-primary.swiftdeps"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/WatchComplicationLaLey/WatchComplicationLaLey.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/WatchComplicationLaLeyExtension.build/Objects-normal/x86_64/WatchComplicationLaLey.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/WatchComplicationLaLeyExtension.build/Objects-normal/x86_64/WatchComplicationLaLey.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/WatchComplicationLaLeyExtension.build/Objects-normal/x86_64/WatchComplicationLaLey.dia",
+    "index-unit-output-path" : "/Neville_iOS.build/Debug-iphonesimulator/WatchComplicationLaLeyExtension.build/Objects-normal/x86_64/WatchComplicationLaLey.o",
+    "llvm-bc" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/WatchComplicationLaLeyExtension.build/Objects-normal/x86_64/WatchComplicationLaLey.bc",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/WatchComplicationLaLeyExtension.build/Objects-normal/x86_64/WatchComplicationLaLey.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/WatchComplicationLaLeyExtension.build/Objects-normal/x86_64/WatchComplicationLaLey.swiftdeps",
+    "swiftmodule" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/WatchComplicationLaLeyExtension.build/Objects-normal/x86_64/WatchComplicationLaLey~partial.swiftmodule"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/WatchComplicationLaLeyExtension.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/WatchComplicationLaLeyExtension.build/Objects-normal/x86_64/GeneratedAssetSymbols.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/WatchComplicationLaLeyExtension.build/Objects-normal/x86_64/GeneratedAssetSymbols.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/WatchComplicationLaLeyExtension.build/Objects-normal/x86_64/GeneratedAssetSymbols.dia",
+    "index-unit-output-path" : "/Neville_iOS.build/Debug-iphonesimulator/WatchComplicationLaLeyExtension.build/Objects-normal/x86_64/GeneratedAssetSymbols.o",
+    "llvm-bc" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/WatchComplicationLaLeyExtension.build/Objects-normal/x86_64/GeneratedAssetSymbols.bc",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/WatchComplicationLaLeyExtension.build/Objects-normal/x86_64/GeneratedAssetSymbols.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/WatchComplicationLaLeyExtension.build/Objects-normal/x86_64/GeneratedAssetSymbols.swiftdeps",
+    "swiftmodule" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-iphonesimulator/WatchComplicationLaLeyExtension.build/Objects-normal/x86_64/GeneratedAssetSymbols~partial.swiftmodule"
+  }
+}

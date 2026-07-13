@@ -1,0 +1,144 @@
+{
+  "source": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/CrearEntradaAgendaIntent.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Crear Entrada Agenda",
+        "location": {
+          "startingColumn": 49,
+          "startingLine": 11
+        }
+      },
+      {
+        "comment": "",
+        "key": "Crea una nueva actividad en la Agenda",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 12
+        }
+      },
+      {
+        "comment": "",
+        "key": "Título",
+        "location": {
+          "startingColumn": 16,
+          "startingLine": 20
+        }
+      },
+      {
+        "comment": "",
+        "key": "El título de la actividad",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 21
+        }
+      },
+      {
+        "comment": "",
+        "key": "¿Qué título deseas para la actividad?",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 22
+        }
+      },
+      {
+        "comment": "",
+        "key": "Fecha",
+        "location": {
+          "startingColumn": 16,
+          "startingLine": 27
+        }
+      },
+      {
+        "comment": "",
+        "key": "Fecha y hora de la actividad",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 28
+        }
+      },
+      {
+        "comment": "",
+        "key": "¿Qué fecha y hora deseas para la actividad?",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 29
+        }
+      },
+      {
+        "comment": "",
+        "key": "Contenido",
+        "location": {
+          "startingColumn": 16,
+          "startingLine": 34
+        }
+      },
+      {
+        "comment": "",
+        "key": "El contenido de la actividad",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 35
+        }
+      },
+      {
+        "comment": "",
+        "key": "¿Qué contenido deseas guardar?",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 36
+        }
+      },
+      {
+        "comment": "",
+        "key": "Activar recordatorio",
+        "location": {
+          "startingColumn": 16,
+          "startingLine": 41
+        }
+      },
+      {
+        "comment": "",
+        "key": "Indica si deseas activar un recordatorio",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 42
+        }
+      },
+      {
+        "comment": "",
+        "key": "¿Deseas activar un recordatorio para esta actividad?",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 43
+        }
+      },
+      {
+        "comment": "",
+        "key": "La actividad «%@» ha sido creada en Agenda.",
+        "location": {
+          "startingColumn": 49,
+          "startingLine": 105
+        }
+      },
+      {
+        "comment": "",
+        "key": "No se pudo crear la actividad en Agenda.",
+        "location": {
+          "startingColumn": 49,
+          "startingLine": 84
+        }
+      },
+      {
+        "comment": "",
+        "key": "No se pudo guardar la actividad en Agenda.",
+        "location": {
+          "startingColumn": 49,
+          "startingLine": 114
+        }
+      }
+    ]
+  },
+  "version": 1
+}
