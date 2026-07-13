@@ -7,6 +7,8 @@ struct HealingSituationDetailView: View {
 
     @AppStorage(HealingCenterFavorites.storageKey) private var storedFavorites = "[]"
     @State private var showEmergencyResources = false
+    @State private var isBiologicalSectionExpanded = false
+    @State private var isSeekHelpSectionExpanded = false
 
     private var colors: [Color] {
         HealingCenterVisualStyle.colors(for: situation.palette)
@@ -114,9 +116,20 @@ struct HealingSituationDetailView: View {
             HStack(spacing: 12) {
                 Image(systemName: healingProtocol.symbol)
                     .font(.title3.weight(.semibold))
-                    .foregroundStyle(colors.first ?? .cyan)
+                    .foregroundStyle(.white)
                     .frame(width: 42, height: 42)
-                    .background((colors.first ?? .cyan).opacity(0.14), in: Circle())
+                    .background(
+                        LinearGradient(
+                            colors: [
+                                colors.first?.opacity(0.82) ?? .cyan.opacity(0.82),
+                                colors.last?.opacity(0.62) ?? .blue.opacity(0.62)
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        ),
+                        in: Circle()
+                    )
+                    .shadow(color: colors.first?.opacity(0.24) ?? .cyan.opacity(0.24), radius: 8, y: 4)
 
                 VStack(alignment: .leading, spacing: 3) {
                     Text(healingProtocol.title)
@@ -143,49 +156,100 @@ struct HealingSituationDetailView: View {
             }
         }
         .padding(14)
-        .background(.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 19, style: .continuous))
+        .background(
+            LinearGradient(
+                colors: [
+                    colors.first?.opacity(0.16) ?? .cyan.opacity(0.16),
+                    .white.opacity(0.09),
+                    colors.last?.opacity(0.10) ?? .blue.opacity(0.10)
+                ],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            ),
+            in: RoundedRectangle(cornerRadius: 19, style: .continuous)
+        )
         .overlay {
             RoundedRectangle(cornerRadius: 19, style: .continuous)
-                .stroke((colors.first ?? .cyan).opacity(0.25), lineWidth: 1)
+                .stroke((colors.first ?? .cyan).opacity(0.38), lineWidth: 1)
         }
+        .shadow(color: .black.opacity(0.12), radius: 10, y: 6)
     }
 
     private var biologicalSection: some View {
         HealingGlassCard {
-            Label("Qué puede estar ocurriendo", systemImage: "brain.head.profile")
-                .font(.body)
-                .foregroundStyle(.mint)
-            Text(situation.biologicalExplanation)
-                .font(.body)
-                .foregroundStyle(.white.opacity(0.82))
-                .padding(.top, 6)
-                .fixedSize(horizontal: false, vertical: true)
+            DisclosureGroup(isExpanded: $isBiologicalSectionExpanded) {
+                VStack(alignment: .leading, spacing: 14) {
+                    Text(situation.biologicalExplanation)
+                        .font(.body)
+                        .foregroundStyle(.white.opacity(0.84))
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    Divider()
+                        .overlay(.white.opacity(0.14))
+
+                    VStack(alignment: .leading, spacing: 6) {
+                        Label("Tu organismo también aprende", systemImage: "arrow.triangle.2.circlepath")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(.mint)
+
+                        Text("Mente, cuerpo y entorno se influyen mutuamente. La práctica repetida puede enseñarle a tu sistema nervioso respuestas nuevas mediante el aprendizaje y la neuroplasticidad. Esto no significa que un pensamiento aislado controle tus genes, garantice una curación o te haga responsable de sentirte así.")
+                            .font(.subheadline)
+                            .foregroundStyle(.white.opacity(0.70))
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+                .padding(.top, 12)
+            } label: {
+                VStack(alignment: .leading, spacing: 4) {
+                    Label("Qué puede estar ocurriendo", systemImage: "brain.head.profile")
+                        .font(.body)
+                        .foregroundStyle(.mint)
+
+                    Text(isBiologicalSectionExpanded ? "Ocultar explicación" : "Toca para entender qué sucede en tu cuerpo y tu mente")
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.58))
+                }
+            }
+            .tint(.mint)
+            .accessibilityHint(isBiologicalSectionExpanded ? "Contrae la explicación" : "Despliega una explicación biológica más detallada")
         }
     }
 
     private var seekHelpSection: some View {
         HealingGlassCard {
-            Label("Cuándo pedir ayuda", systemImage: "person.crop.circle.badge.questionmark")
-                .font(.body)
-                .foregroundStyle(.orange)
+            DisclosureGroup(isExpanded: $isSeekHelpSectionExpanded) {
+                VStack(alignment: .leading, spacing: 12) {
+                    ForEach(situation.whenToSeekHelp, id: \.self) { item in
+                        Label(item, systemImage: "circle.fill")
+                            .font(.body)
+                            .foregroundStyle(.white.opacity(0.80))
+                            .symbolRenderingMode(.hierarchical)
+                    }
 
-            ForEach(situation.whenToSeekHelp, id: \.self) { item in
-                Label(item, systemImage: "circle.fill")
-                    .font(.body)
-                    .foregroundStyle(.white.opacity(0.80))
-                    .symbolRenderingMode(.hierarchical)
-                    .padding(.top, 5)
-            }
-
-            Button {
-                showEmergencyResources = true
+                    Button {
+                        showEmergencyResources = true
+                    } label: {
+                        Label("Ver ayuda urgente de mi país", systemImage: "sos.circle.fill")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(.red)
+                    .padding(.top, 2)
+                }
+                .padding(.top, 12)
             } label: {
-                Label("Ver ayuda urgente de mi país", systemImage: "sos.circle.fill")
-                    .frame(maxWidth: .infinity)
+                VStack(alignment: .leading, spacing: 4) {
+                    Label("Cuándo pedir ayuda", systemImage: "person.crop.circle.badge.questionmark")
+                        .font(.body)
+                        .foregroundStyle(.orange)
+
+                    Text(isSeekHelpSectionExpanded ? "Ocultar señales de alerta" : "Toca para ver señales de alerta y recursos urgentes")
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.58))
+                }
             }
-            .buttonStyle(.borderedProminent)
-            .tint(.red)
-            .padding(.top, 8)
+            .tint(.orange)
+            .accessibilityHint(isSeekHelpSectionExpanded ? "Contrae las señales de alerta" : "Despliega señales de alerta y recursos de emergencia")
         }
     }
 
@@ -236,4 +300,3 @@ struct HealingSituationDetailView: View {
         storedFavorites = HealingCenterFavorites.encode(ids)
     }
 }
-

@@ -29,6 +29,7 @@ struct HomeAlternativoView: View {
     @AppStorage(AppCons.UD_setting_HomeProductividadPresenciaTotal) private var homeProductividadPresenciaTotal: Int = 5
     @AppStorage(AppCons.UD_setting_HomeProductividadMetasTotal) private var homeProductividadMetasTotal: Int = 1
     @AppStorage(AppCons.UD_setting_HomeProductividadDiarioTotal) private var homeProductividadDiarioTotal: Int = 1
+    @AppStorage(AppCons.UD_setting_HomeAlternativoShowHealingCenterCard) private var showHealingCenterCard: Bool = true
     @StateObject private var agendaViewModel = AgendaViewModel()
     @State private var phrase = HomeAlternativoPhrases.random(for: HomeAlternativoDayMoment.current())
     @State private var showPremium = false
@@ -250,7 +251,9 @@ struct HomeAlternativoView: View {
             if shouldPromptWeeklyReview {
                 weeklyReviewPrompt
             }
-            healingCenterPrompt
+            if showHealingCenterCard {
+                healingCenterPrompt
+            }
             toolsGrid
             progressSection
             HomeContextualRecommendationCard(
@@ -579,6 +582,8 @@ struct HomeAlternativoView: View {
                 .environmentObject(clipBoardModel)
                 .environmentObject(modelTxt)
                 .environmentObject(settingModel)
+        case .centroSanador:
+            CentroSanadorView()
         }
     }
 
@@ -777,6 +782,7 @@ private enum HomeAlternativoAccess: String, CaseIterable, Identifiable, Codable,
     case enciclopedia
     case reflexiones
     case ayudas
+    case centroSanador
 
     var id: String { rawValue }
 
@@ -817,6 +823,7 @@ private enum HomeAlternativoAccess: String, CaseIterable, Identifiable, Codable,
         case .enciclopedia: return "Enciclopedia"
         case .reflexiones: return "Reflexiones"
         case .ayudas: return "Ayudas"
+        case .centroSanador: return "Sanador"
         }
     }
 
@@ -843,6 +850,7 @@ private enum HomeAlternativoAccess: String, CaseIterable, Identifiable, Codable,
         case .enciclopedia: return "books.vertical"
         case .reflexiones: return "lightbulb"
         case .ayudas: return "questionmark.circle"
+        case .centroSanador: return "cross.case.fill"
         }
     }
 
@@ -878,6 +886,7 @@ private enum HomeAlternativoAccess: String, CaseIterable, Identifiable, Codable,
         case .enciclopedia: return [.cyan, .mint]
         case .reflexiones: return [.yellow, .pink]
         case .ayudas: return [.teal, .blue]
+        case .centroSanador: return [.mint, .cyan]
         }
     }
 
@@ -904,6 +913,7 @@ private enum HomeAlternativoAccess: String, CaseIterable, Identifiable, Codable,
         case .enciclopedia: return .presenciaTurquesa
         case .reflexiones: return .solDorado
         case .ayudas: return .calmaAzul
+        case .centroSanador: return .presenciaTurquesa
         }
     }
 
@@ -961,6 +971,8 @@ private enum HomeAlternativoAccess: String, CaseIterable, Identifiable, Codable,
             return AnyView(ReflexListView())
         case .ayudas:
             return AnyView(TxtListView(typeOfContent: .ayud, title: "Ayudas"))
+        case .centroSanador:
+            return AnyView(CentroSanadorView())
         }
     }
 

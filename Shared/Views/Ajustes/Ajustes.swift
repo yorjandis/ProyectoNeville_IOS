@@ -36,6 +36,7 @@ struct Ajustes: View {
     @AppStorage(AppCons.UD_setting_HomeProductividadPresenciaTotal) private var homeProductividadPresenciaTotal: Int = 5
     @AppStorage(AppCons.UD_setting_HomeProductividadMetasTotal) private var homeProductividadMetasTotal: Int = 1
     @AppStorage(AppCons.UD_setting_HomeProductividadDiarioTotal) private var homeProductividadDiarioTotal: Int = 1
+    @AppStorage(AppCons.UD_setting_HomeAlternativoShowHealingCenterCard) private var showHealingCenterCardInHomeAlternativo: Bool = true
     #endif
 
     @State private var showSheetPremiumView: Bool = false
@@ -1436,6 +1437,14 @@ struct Ajustes: View {
 
                     Section("Agenda") {
                         Toggle("Mostrar botón Agenda en Home", isOn: self.$showAgendaButtonInHome)
+                    }
+
+                    Section("Centro Sanador") {
+                        Toggle("Mostrar tarjeta destacada en Home", isOn: $showHealingCenterCardInHomeAlternativo)
+
+                        Text("Aunque ocultes esta tarjeta, puedes añadir Centro Sanador a la cuadrícula desde «Editar cuadrícula» en Home.")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
                     }
 
                     Section("Vista Home Productividad") {

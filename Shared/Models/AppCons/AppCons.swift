@@ -143,6 +143,7 @@ struct AppCons{
     static let UD_setting_HomeProductividadPresenciaTotal = "setting_HomeProductividadPresenciaTotal"
     static let UD_setting_HomeProductividadMetasTotal     = "setting_HomeProductividadMetasTotal"
     static let UD_setting_HomeProductividadDiarioTotal    = "setting_HomeProductividadDiarioTotal"
+    static let UD_setting_HomeAlternativoShowHealingCenterCard = "setting_HomeAlternativoShowHealingCenterCard"
     static let UD_setting_WeeklyReviewWeekday             = "setting_WeeklyReviewWeekday"
     static let UD_setting_WeeklyReviewCompletedPeriod     = "setting_WeeklyReviewCompletedPeriod"
     static let UD_setting_WeeklyReviewFocus               = "setting_WeeklyReviewFocus"

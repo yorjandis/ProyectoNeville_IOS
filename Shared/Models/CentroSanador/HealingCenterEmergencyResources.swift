@@ -33,7 +33,7 @@ struct HealingEmergencyResources: Identifiable, Hashable {
 }
 
 struct HealingEmergencyResourceProvider {
-    static let internationalDirectoryURL = URL(string: "https://findahelpline.com/countries")!
+    static let internationalDirectoryURL = URL(string: "https://findahelpline.com/")!
 
     private let locale: Locale
 
