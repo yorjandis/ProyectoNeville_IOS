@@ -236,10 +236,23 @@ struct Home: View {
                    ReminderWidgetList_View()
 
 
-                    //Botones de acceso rápido: Ritual Matutino / Agenda / Presencia
-                    if !showAlternativeHomeDesign && (shouldShowRitualButton || shouldShowEveningReviewButton || eveningReviewCompletedToday || shouldShowAgendaButton || shouldShowPresenceButton) {
+                    //Botones de acceso rápido: apoyo inmediato y herramientas contextuales.
+                    if !showAlternativeHomeDesign {
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 10) {
+                                NavigationLink {
+                                    CentroSanadorView()
+                                } label: {
+                                    Label("Apoyo ahora", systemImage: "cross.case.fill")
+                                        .font(.headline)
+                                        .foregroundStyle(.indigo)
+                                        .padding(.horizontal, 14)
+                                        .padding(.vertical, 10)
+                                        .background(.white.opacity(quickAccessButtonBackgroundOpacity))
+                                        .clipShape(Capsule())
+                                        .overlay(Capsule().stroke(.cyan.opacity(0.30), lineWidth: 1))
+                                }
+
                                 if shouldShowRitualButton {
                                     Button {
                                         if purchaseStatus || yorjPremium {

@@ -250,6 +250,7 @@ struct HomeAlternativoView: View {
             if shouldPromptWeeklyReview {
                 weeklyReviewPrompt
             }
+            healingCenterPrompt
             toolsGrid
             progressSection
             HomeContextualRecommendationCard(
@@ -314,6 +315,66 @@ struct HomeAlternativoView: View {
             }
         }
         .buttonStyle(.plain)
+    }
+
+    private var healingCenterPrompt: some View {
+        NavigationLink {
+            CentroSanadorView()
+        } label: {
+            HStack(spacing: 14) {
+                ZStack {
+                    Circle()
+                        .fill(
+                            LinearGradient(
+                                colors: [.mint, .cyan, .indigo],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                    Image(systemName: "cross.case.fill")
+                        .font(.system(size: 23, weight: .semibold))
+                        .foregroundStyle(.white)
+                }
+                .frame(width: 52, height: 52)
+                .shadow(color: .cyan.opacity(0.30), radius: 8, y: 4)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Centro Sanador")
+                        .font(.system(size: 18, weight: .bold, design: .rounded))
+                    Text("Apoyo práctico para un momento difícil")
+                        .font(.caption)
+                        .foregroundStyle(theme.secondaryText)
+                }
+
+                Spacer(minLength: 2)
+
+                VStack(spacing: 3) {
+                    Image(systemName: "bolt.heart.fill")
+                        .foregroundStyle(.pink)
+                    Text("Ahora")
+                        .font(.caption2.bold())
+                        .foregroundStyle(theme.secondaryText)
+                }
+            }
+            .foregroundStyle(theme.primaryText)
+            .padding(15)
+            .background(
+                LinearGradient(
+                    colors: theme.variant == .oscura
+                        ? [.cyan.opacity(0.22), .indigo.opacity(0.16)]
+                        : [.cyan.opacity(0.17), .white.opacity(0.68)],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                ),
+                in: RoundedRectangle(cornerRadius: 21, style: .continuous)
+            )
+            .overlay {
+                RoundedRectangle(cornerRadius: 21, style: .continuous)
+                    .stroke(.cyan.opacity(0.30), lineWidth: 1)
+            }
+        }
+        .buttonStyle(HomeAlternativoPressedButtonStyle())
+        .accessibilityHint("Abre guías inmediatas de regulación y recursos de emergencia")
     }
 
     private var toolsGrid: some View {

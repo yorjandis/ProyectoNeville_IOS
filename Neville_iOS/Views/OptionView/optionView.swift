@@ -29,6 +29,7 @@ fileprivate enum TipeViewOptionTab: String, Identifiable {
     case cardioCoherencia
     case agenda
     case presencia
+    case centroSanador
 
     case autorNeville
     case autorJoeDispenza
@@ -101,6 +102,7 @@ struct optionView: View {
                     Spacer()
 
                     Menu {
+                        Button("Centro Sanador") { self.showView = .centroSanador }
                         Button("Coherencia Cardio-Cerebral") {
                             if self.purchaseStatus || self.yorjPremium {
                                 self.showCardioCoherenciaFullScreen = true
@@ -278,6 +280,8 @@ struct optionView: View {
                     AgendaMainView()
                 case .presencia:
                     PresenciaView()
+                case .centroSanador:
+                    CentroSanadorView(embeddedInNavigationStack: true)
                 case .enciclopedia:
                     EnciclopediaListView()
                 case .espacioCalma:
