@@ -95,6 +95,8 @@ struct DiarioListView: View {
     @State private var showBatchActionConfirmation = false
     @State private var showMigrationPasswordSheet = false
     @State private var showMigrationExporter = false
+    @State private var showRitualReviewUpdate = false
+    @State private var ritualReviewNeedsUpdate = false
     @State private var migrationPassword = ""
     @State private var migrationPasswordConfirmation = ""
     @State private var migrationDocument: MigrationDataDocument?
@@ -102,6 +104,7 @@ struct DiarioListView: View {
     @State private var migrationExportCount = 0
     @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
     @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) private var yorjPremium: Bool = false
+    @AppStorage("ritual_private_reflections_protected") private var privateRitualReflections = false
     
     
     //Ordenar las entradas del Diario por fechaCreación/fechaModificación
@@ -113,6 +116,19 @@ struct DiarioListView: View {
 
     private var hasPremiumPDFAccess: Bool {
         purchaseStatus || yorjPremium
+    }
+
+    private var hasRitualReviewUpdateToday: Bool {
+        let epochDay = Int(Calendar.current.startOfDay(for: Date()).timeIntervalSince1970 / 86_400)
+        let request = NSFetchRequest<NSManagedObject>(entityName: "RitualSessionEntity")
+        request.predicate = NSPredicate(format: "kind == %@ AND sessionDateEpochDay == %lld", "evening", Int64(epochDay))
+        request.fetchLimit = 1
+        guard let review = try? CoreDataController.shared.context.fetch(request).first else { return false }
+        let snapshot = EveningDaySnapshot.load()
+        return Int(review.value(forKey: "agendaCompletedCount") as? Int32 ?? 0) != snapshot.agendaCompleted.count
+            || Int(review.value(forKey: "goalUnitsCompletedCount") as? Int32 ?? 0) != snapshot.completedGoalUnits.count
+            || Int(review.value(forKey: "presenceReturns") as? Int32 ?? 0) != snapshot.presenceReturns
+            || Int(review.value(forKey: "automaticPilotEvents") as? Int32 ?? 0) != snapshot.automaticPilotEvents
     }
 
     private var groupedDiarioByChapter: [(chapter: String, entries: [Diario])] {
@@ -127,6 +143,23 @@ struct DiarioListView: View {
                 if right.chapter == unchapteredTitle { return true }
                 return left.chapter.localizedCaseInsensitiveCompare(right.chapter) == .orderedAscending
             }
+    }
+
+    private var batchMigrationCountLabel: String {
+        "\(batchSelectedDiarioIDs.count) entrada(s)"
+    }
+
+    @ToolbarContentBuilder
+    private var ritualUpdateToolbar: some ToolbarContent {
+        if ritualReviewNeedsUpdate {
+            ToolbarItem(placement: .primaryAction) {
+                Button {
+                    showRitualReviewUpdate = true
+                } label: {
+                    Label("Actualizar cierre", systemImage: "arrow.triangle.2.circlepath")
+                }
+            }
+        }
     }
 
     private enum DiarioBatchAction: Identifiable {
@@ -174,23 +207,38 @@ struct DiarioListView: View {
 
     var body: some View {
         NavigationStack {
-            AnyView(diarioContent)
-            .onDisappear{
+            configuredDiarioContent
+         }
+    }
+
+    private var configuredDiarioContent: AnyView {
+        var content = AnyView(diarioContent)
+
+        content = AnyView(
+            content.onDisappear {
                 //Al cerrar la ventana del Diario se chequea si la opción de mentener la ventana abierta.
                 //De estar activada, se mantiene la variable canOpenDiario activa
                 //De lo contrario, la variable canOpenDiario se pone a false, bloqueando el diario.
-                if (self.setting_DiarioSiempreOpenFaceID == true){
+                if self.setting_DiarioSiempreOpenFaceID == true {
                     self.securityModel.canOpenDiario = true
-                   
-                }else{
+                } else {
                     self.securityModel.canOpenDiario = false
                 }
             }
-            .navigationTitle("Diario")
+        )
+
+        content = AnyView(content.navigationTitle("Diario"))
+
             #if os(iOS)
-            .navigationBarTitleDisplayMode(.inline)
+        content = AnyView(content.navigationBarTitleDisplayMode(.inline))
             #endif
-            .alert("Filtrar por Título", isPresented: $showAlertFilterByTitles) {
+
+        content = AnyView(content.toolbar {
+            ritualUpdateToolbar
+        })
+
+        content = AnyView(
+            content.alert("Filtrar por Título", isPresented: $showAlertFilterByTitles) {
                 TextField("", text: $textfielTitles)
                 Button("Cancelar"){
                     textfielTitles = ""
@@ -204,7 +252,10 @@ struct DiarioListView: View {
                 }
                 
             }
-            .alert("Filtrar por Contenido", isPresented: $showAlertFilterByContent) {
+        )
+
+        content = AnyView(
+            content.alert("Filtrar por Contenido", isPresented: $showAlertFilterByContent) {
                 TextField("", text: $textfielContent)
                 Button("Cancelar"){
                     textfielContent = ""
@@ -218,59 +269,22 @@ struct DiarioListView: View {
                     textfielContent = ""
                 }
             }
-            .sheet(isPresented: $showSheetFecha){
-                VStack{
-                    DatePicker("Fecha de creación", selection: $fecha1, displayedComponents: [.date])
-                        .padding(.top, 50)
-                    Button{
-                        Task{
-                            modelDiario.list = modelDiario.searchPorFecha(for: self.fecha1, typeFecha: self.typeOfFechaSearch)
-                        }
-                    }label: {
-                        Text("Buscar")
-                            .padding(.vertical, 10)
-                            .foregroundColor(.black)
-                            .frame(maxWidth: .infinity, alignment: .center)
-                            .background(.orange)
-                            .clipShape(RoundedRectangle(cornerRadius: 20))
-                    }
-                    .padding([.vertical, .horizontal])
-                    .buttonStyle(PlainButtonStyle())
-                    
-                }
-                
-                .ignoresSafeArea()
-                
+        )
+
+        content = AnyView(
+            content.sheet(isPresented: $showSheetFecha) {
+                singleDateSearchSheet
             }
-            .sheet(isPresented: $showSheetRangoFecha){
-                ScrollView{
-                    DatePicker("Fecha Inicio", selection: $fecha1, displayedComponents: [.date])
-                        .frame(height: 70)
-                        .padding(.top, 30)
-                    
-                    DatePicker("Fecha final", selection: $fecha2, displayedComponents: [.date])
-                        .frame(height: 70)
-                    
-                    Button{
-                        Task{
-                            modelDiario.list = modelDiario.searchPorRangoFecha(from: self.fecha1, to: self.fecha2, typeFecha: self.typeOfFechaSearch)
-                        }
-                    }label: {
-                        Text("Buscar")
-                            .padding(.vertical, 10)
-                            .foregroundColor(.black)
-                            .frame(maxWidth: .infinity, alignment: .center)
-                            .background(.orange)
-                            .clipShape(RoundedRectangle(cornerRadius: 20))
-                    }
-                    .padding([.vertical, .horizontal])
-                    .buttonStyle(PlainButtonStyle())
-                    
-                }
-                .ignoresSafeArea()
-                
+        )
+
+        content = AnyView(
+            content.sheet(isPresented: $showSheetRangoFecha) {
+                dateRangeSearchSheet
             }
-            .sheet(isPresented: $showNewEntryEditor) {
+        )
+
+        content = AnyView(
+            content.sheet(isPresented: $showNewEntryEditor) {
                 NewDiarioEntryView(
                     title: newEntryTitle,
                     content: newEntryContent,
@@ -280,51 +294,84 @@ struct DiarioListView: View {
                     refreshAfterEntryCreation(savedDate)
                 }
             }
-            .sheet(isPresented: self.$sheetShowFeedBackReview, content: {
+        )
+
+        content = AnyView(
+            content.sheet(isPresented: self.$sheetShowFeedBackReview, content: {
                 FeedbackView(showTextBotton: true)
             })
-            .sheet(isPresented: $showDiarioStats) {
+        )
+
+        content = AnyView(
+            content.sheet(isPresented: $showDiarioStats) {
                 DiarioStatsView()
             }
-            .sheet(isPresented: $showExportRangeSheet) {
-                VStack(spacing: 16) {
-                    DatePicker("Desde", selection: $exportFromDate, displayedComponents: [.date])
-                    DatePicker("Hasta", selection: $exportToDate, displayedComponents: [.date])
-                    Button("Exportar PDF") {
-                        exportDiarioRangeToPDF(from: exportFromDate, to: exportToDate)
-                        showExportRangeSheet = false
-                    }
-                    .buttonStyle(.bordered)
-                }
-                .padding()
+        )
+
+        content = AnyView(
+            content.sheet(isPresented: $showRitualReviewUpdate) {
+                RitualEveningReviewEntryView()
             }
-            .sheet(isPresented: $showManualExportSheet) {
+        )
+
+        content = AnyView(
+            content.onAppear {
+                ritualReviewNeedsUpdate = hasRitualReviewUpdateToday
+            }
+        )
+
+        content = AnyView(
+            content.onReceive(NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave, object: CoreDataController.shared.context)) { _ in
+                ritualReviewNeedsUpdate = hasRitualReviewUpdateToday
+            }
+        )
+
+        content = AnyView(
+            content.sheet(isPresented: $showExportRangeSheet) {
+                exportRangeSheet
+            }
+        )
+
+        content = AnyView(
+            content.sheet(isPresented: $showManualExportSheet) {
                 manualDiarioExportSheet
             }
-            .fileExporter(
+        )
+
+        content = AnyView(
+            content.fileExporter(
                 isPresented: $showPDFExporter,
                 document: exportedPDFDocument,
                 contentType: .pdf,
                 defaultFilename: exportedPDFFileName
             ) { _ in }
-            .fileExporter(
+        )
+
+        content = AnyView(
+            content.fileExporter(
                 isPresented: $showMigrationExporter,
                 document: migrationDocument ?? MigrationDataDocument(),
                 contentType: .ypgExport,
                 defaultFilename: migrationExportFileName
             ) { handleMigrationExportResult($0) }
-            .sheet(isPresented: $showMigrationPasswordSheet) {
-                migrationPasswordSheet(
-                    title: "Exportar entradas seleccionadas",
-                    countLabel: "\(batchSelectedDiarioIDs.count) entrada(s)"
-                )
+        )
+
+        content = AnyView(
+            content.sheet(isPresented: $showMigrationPasswordSheet) {
+                selectedEntriesMigrationPasswordSheet
             }
-            .alert("Diario", isPresented: $showAlert) {
+        )
+
+        content = AnyView(
+            content.alert("Diario", isPresented: $showAlert) {
                 
             } message: {
                 Text(self.alertMessage)
             }
-            .alert("¿Desea eliminar las entradas seleccionadas?", isPresented: $showBatchDeleteConfirmation) {
+        )
+
+        content = AnyView(
+            content.alert("¿Desea eliminar las entradas seleccionadas?", isPresented: $showBatchDeleteConfirmation) {
                 Button("Cancelar", role: .cancel) {}
                 Button("Eliminar", role: .destructive) {
                     deleteSelectedEntries()
@@ -332,12 +379,18 @@ struct DiarioListView: View {
             } message: {
                 Text("Esta acción no puede deshacerse.")
             }
-            .confirmationDialog("Confirmar acción", isPresented: $showBatchActionConfirmation) {
+        )
+
+        content = AnyView(
+            content.confirmationDialog("Confirmar acción", isPresented: $showBatchActionConfirmation) {
                 diarioBatchConfirmationActions()
             } message: {
                 diarioBatchConfirmationMessage()
             }
-            .alert("Cambiar capítulo", isPresented: $showBatchChapterAlert) {
+        )
+
+        content = AnyView(
+            content.alert("Cambiar capítulo", isPresented: $showBatchChapterAlert) {
                 TextField("Capítulo", text: $batchChapterDraft, axis: .vertical)
                 Button("Cancelar", role: .cancel) {}
                 Button("Actualizar") {
@@ -346,8 +399,78 @@ struct DiarioListView: View {
             } message: {
                 Text("Se actualizarán las entradas seleccionadas.")
             }
-  
-         }
+        )
+
+        return content
+    }
+
+    private var singleDateSearchSheet: some View {
+        VStack {
+            DatePicker("Fecha de creación", selection: $fecha1, displayedComponents: [.date])
+                .padding(.top, 50)
+            Button {
+                Task {
+                    modelDiario.list = modelDiario.searchPorFecha(for: fecha1, typeFecha: typeOfFechaSearch)
+                }
+            } label: {
+                Text("Buscar")
+                    .padding(.vertical, 10)
+                    .foregroundColor(.black)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .background(.orange)
+                    .clipShape(RoundedRectangle(cornerRadius: 20))
+            }
+            .padding([.vertical, .horizontal])
+            .buttonStyle(PlainButtonStyle())
+        }
+        .ignoresSafeArea()
+    }
+
+    private var dateRangeSearchSheet: some View {
+        ScrollView {
+            DatePicker("Fecha Inicio", selection: $fecha1, displayedComponents: [.date])
+                .frame(height: 70)
+                .padding(.top, 30)
+
+            DatePicker("Fecha final", selection: $fecha2, displayedComponents: [.date])
+                .frame(height: 70)
+
+            Button {
+                Task {
+                    modelDiario.list = modelDiario.searchPorRangoFecha(from: fecha1, to: fecha2, typeFecha: typeOfFechaSearch)
+                }
+            } label: {
+                Text("Buscar")
+                    .padding(.vertical, 10)
+                    .foregroundColor(.black)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .background(.orange)
+                    .clipShape(RoundedRectangle(cornerRadius: 20))
+            }
+            .padding([.vertical, .horizontal])
+            .buttonStyle(PlainButtonStyle())
+        }
+        .ignoresSafeArea()
+    }
+
+    private var exportRangeSheet: some View {
+        VStack(spacing: 16) {
+            DatePicker("Desde", selection: $exportFromDate, displayedComponents: [.date])
+            DatePicker("Hasta", selection: $exportToDate, displayedComponents: [.date])
+            Button("Exportar PDF") {
+                exportDiarioRangeToPDF(from: exportFromDate, to: exportToDate)
+                showExportRangeSheet = false
+            }
+            .buttonStyle(.bordered)
+        }
+        .padding()
+    }
+
+    private var selectedEntriesMigrationPasswordSheet: some View {
+        migrationPasswordSheet(
+            title: "Exportar entradas seleccionadas",
+            countLabel: batchMigrationCountLabel
+        )
     }
 
     private var manualDiarioExportSheet: some View {
@@ -1021,7 +1144,9 @@ struct DiarioListView: View {
             return
         }
 
-        let entries = selectedDiarioEntries
+        let entries = privateRitualReflections
+            ? selectedDiarioEntries.filter { chapterValue(for: $0) != "Cierre consciente" }
+            : selectedDiarioEntries
         guard !entries.isEmpty else {
             alertMessage = "Selecciona al menos una entrada de diario para exportar."
             showAlert = true
@@ -1267,14 +1392,17 @@ struct DiarioListView: View {
             showAlert = true
             return
         }
-        guard !entries.isEmpty else {
+        let exportableEntries = privateRitualReflections
+            ? entries.filter { chapterValue(for: $0) != "Cierre consciente" }
+            : entries
+        guard !exportableEntries.isEmpty else {
             alertMessage = "No hay entradas para exportar en \(scopeName.lowercased())."
             showAlert = true
             return
         }
 
         let calendar = Calendar.current
-        let grouped = Dictionary(grouping: entries) { entry in
+        let grouped = Dictionary(grouping: exportableEntries) { entry in
             calendar.startOfDay(for: entry.fecha ?? Date.distantPast)
         }
 

@@ -33,6 +33,7 @@ struct Home: View {
     //Recordatorios Witget:
     @StateObject private var modelRecordatorios: SelectedReminderModel = .init() //Inicia el modelo de los recordatorios de Widgets
     @StateObject private var agendaViewModel = AgendaViewModel()
+    @StateObject private var ritualNavigation = RitualNavigationCoordinator.shared
 
     // Fuerza la recreación del gadget de metas cuando Home reaparece.
     @State private var goalsGadgetRefreshID = UUID()
@@ -55,24 +56,49 @@ struct Home: View {
     
     private let ritualButtonTimer = Timer.publish(every: 60, on: .main, in: .common).autoconnect()
 
-    private struct RitualSessionVisibilityDTO: Decodable {
-        let sessionDateEpochDay: Int
-        let completed: Bool
-    }
-
     private var ritualTodayEpochDay: Int {
         let start = Calendar.current.startOfDay(for: now)
         return Int(start.timeIntervalSince1970 / 86_400)
     }
 
     private var ritualCompletedToday: Bool {
-        let defaults = UserDefaults(suiteName: AppCons.AppGroupName) ?? .standard
-        guard let data = defaults.data(forKey: "morning_ritual_sessions"),
-              let sessions = try? JSONDecoder().decode([RitualSessionVisibilityDTO].self, from: data) else {
-            return false
-        }
+        hasStoredRitual(kind: "morning", requiresCompletion: true)
+    }
 
-        return sessions.contains { $0.completed && $0.sessionDateEpochDay == ritualTodayEpochDay }
+    private var eveningReviewCompletedToday: Bool {
+        hasStoredRitual(kind: "evening", requiresCompletion: false)
+    }
+
+    private var eveningReviewNeedsUpdateToday: Bool {
+        let request = NSFetchRequest<NSManagedObject>(entityName: "RitualSessionEntity")
+        request.predicate = NSPredicate(
+            format: "kind == %@ AND sessionDateEpochDay == %lld",
+            "evening", Int64(ritualTodayEpochDay)
+        )
+        request.fetchLimit = 1
+        guard let review = try? CoreDataController.shared.context.fetch(request).first else { return false }
+        let snapshot = EveningDaySnapshot.load()
+        return Int(review.value(forKey: "agendaCompletedCount") as? Int32 ?? 0) != snapshot.agendaCompleted.count
+            || Int(review.value(forKey: "agendaTotalCount") as? Int32 ?? 0) != snapshot.agendaTotalCount
+            || Int(review.value(forKey: "goalUnitsCompletedCount") as? Int32 ?? 0) != snapshot.completedGoalUnits.count
+            || Int(review.value(forKey: "presenceReturns") as? Int32 ?? 0) != snapshot.presenceReturns
+            || Int(review.value(forKey: "automaticPilotEvents") as? Int32 ?? 0) != snapshot.automaticPilotEvents
+            || Int(review.value(forKey: "coherenceSessionsCount") as? Int32 ?? 0) != snapshot.coherenceSessionsCount
+    }
+
+    private func hasStoredRitual(kind: String, requiresCompletion: Bool) -> Bool {
+        let context = CoreDataController.shared.context
+        let request = NSFetchRequest<NSManagedObject>(entityName: "RitualSessionEntity")
+        var predicates: [NSPredicate] = [
+            NSPredicate(format: "kind == %@", kind),
+            NSPredicate(format: "sessionDateEpochDay == %lld", Int64(ritualTodayEpochDay))
+        ]
+        if requiresCompletion {
+            predicates.append(NSPredicate(format: "completed == YES"))
+        }
+        request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+        request.fetchLimit = 1
+        return ((try? context.count(for: request)) ?? 0) > 0
     }
 
     private var ritualCurrentDayKey: String {
@@ -98,6 +124,11 @@ struct Home: View {
         return hour >= 3
             && ritualMatutinoHiddenDayKey != ritualCurrentDayKey
             && !ritualCompletedToday
+    }
+
+    private var shouldShowEveningReviewButton: Bool {
+        let hour = Calendar.current.component(.hour, from: now)
+        return hour >= 18 && !eveningReviewCompletedToday
     }
 
     private var shouldShowAgendaButton: Bool {
@@ -206,7 +237,7 @@ struct Home: View {
 
 
                     //Botones de acceso rápido: Ritual Matutino / Agenda / Presencia
-                    if !showAlternativeHomeDesign && (shouldShowRitualButton || shouldShowAgendaButton || shouldShowPresenceButton) {
+                    if !showAlternativeHomeDesign && (shouldShowRitualButton || shouldShowEveningReviewButton || eveningReviewCompletedToday || shouldShowAgendaButton || shouldShowPresenceButton) {
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 10) {
                                 if shouldShowRitualButton {
@@ -233,6 +264,55 @@ struct Home: View {
                                             Label("Ocultar por hoy", systemImage: "eye.slash")
                                         }
                                     }
+                                }
+
+                                if shouldShowEveningReviewButton {
+                                    Button {
+                                        if purchaseStatus || yorjPremium {
+                                            showRitualMatutino = true
+                                        } else {
+                                            showPremium = true
+                                        }
+                                    } label: {
+                                        Label("Cierre", systemImage: "moon.stars.fill")
+                                            .font(.headline)
+                                            .foregroundStyle(.indigo)
+                                            .padding(.horizontal, 14)
+                                            .padding(.vertical, 10)
+                                            .background(.white.opacity(quickAccessButtonBackgroundOpacity))
+                                            .clipShape(Capsule())
+                                            .overlay(Capsule().stroke(.indigo.opacity(0.25), lineWidth: 1))
+                                    }
+                                }
+
+                                if eveningReviewCompletedToday && eveningReviewNeedsUpdateToday {
+                                    Button {
+                                        ritualNavigation.open(.eveningReview)
+                                    } label: {
+                                        Label("Actualizar cierre", systemImage: "arrow.triangle.2.circlepath")
+                                            .font(.headline)
+                                            .foregroundStyle(.orange)
+                                            .padding(.horizontal, 14)
+                                            .padding(.vertical, 10)
+                                            .background(.white.opacity(quickAccessButtonBackgroundOpacity))
+                                            .clipShape(Capsule())
+                                    }
+                                }
+
+                                Button {
+                                    if purchaseStatus || yorjPremium {
+                                        ritualNavigation.open(.wellbeingDashboard)
+                                    } else {
+                                        showPremium = true
+                                    }
+                                } label: {
+                                    Label("Mi día", systemImage: "chart.xyaxis.line")
+                                        .font(.headline)
+                                        .foregroundStyle(.indigo)
+                                        .padding(.horizontal, 14)
+                                        .padding(.vertical, 10)
+                                        .background(.white.opacity(quickAccessButtonBackgroundOpacity))
+                                        .clipShape(Capsule())
                                 }
 
                                 if shouldShowAgendaButton {
@@ -455,6 +535,14 @@ struct Home: View {
         }
         .sheet(isPresented: $showRitualMatutino) {
             MorningRitualMainView()
+        }
+        .sheet(item: $ritualNavigation.destination) { destination in
+            switch destination {
+            case .eveningReview:
+                RitualEveningReviewEntryView()
+            case .wellbeingDashboard:
+                WellbeingDashboardView()
+            }
         }
         .sheet(isPresented: $showAgenda) {
             AgendaMainView()

@@ -45,8 +45,8 @@ struct PurchaseView: View {
         ),
         PremiumFeature(
             iconName: "sun.max",
-            title: "Ritual Matutino",
-            description: "Diseña cada día con intención y conciencia. Lanza recordatorios para mantenerte presente y en control."
+            title: "Ciclo consciente diario",
+            description: "Diseña tu mañana con intención, registra tu presencia, cierra el día con aprendizaje y transforma todo en un Diario útil para mañana. Incluye recordatorios, estadísticas y Mi día."
         ),
         PremiumFeature(
             iconName: "calendar",

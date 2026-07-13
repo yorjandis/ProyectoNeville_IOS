@@ -128,9 +128,12 @@ final class AppNotificationDelegate: NSObject, @MainActor UNUserNotificationCent
             ReminderNotificationManager.shared.stop(id: reminderId)
         }
 
+        if userInfo["ritualDestination"] as? String == "eveningReview" {
+            RitualNavigationCoordinator.shared.open(.eveningReview)
+        }
+
         completionHandler()
     }
     
 }
-
 

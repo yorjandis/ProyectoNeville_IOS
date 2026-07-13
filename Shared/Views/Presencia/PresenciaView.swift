@@ -17,8 +17,7 @@ struct PresenciaView: View {
     private let celebrationVisibleDuration: TimeInterval = 2.3
 
     private var hasPremiumAccess: Bool {
-        true
-        //purchaseStatus || yorjPremium
+        purchaseStatus || yorjPremium
     }
 
     var body: some View {

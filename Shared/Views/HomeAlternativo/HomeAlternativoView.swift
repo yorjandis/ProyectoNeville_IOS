@@ -141,18 +141,25 @@ struct HomeAlternativoView: View {
 
     var body: some View {
         GeometryReader { proxy in
-            ScrollView(showsIndicators: false) {
-                VStack(spacing: 0) {
-                    Spacer(minLength: 18)
+            ScrollViewReader { scrollProxy in
+                ScrollView(showsIndicators: false) {
+                    VStack(spacing: 0) {
+                        Spacer(minLength: 18)
+                            .id(HomeAlternativoScrollTarget.top)
 
-                    mainContent
+                        mainContent {
+                            withAnimation(.easeInOut(duration: 0.32)) {
+                                scrollProxy.scrollTo(HomeAlternativoScrollTarget.top, anchor: .top)
+                            }
+                        }
 
-                    Spacer(minLength: 18)
+                        Spacer(minLength: 18)
+                    }
+                    .frame(minHeight: max(proxy.size.height - 112, 0))
+                    .padding(.horizontal, 20)
+                    .padding(.top, 56)
+                    .padding(.bottom, 112)
                 }
-                .frame(minHeight: max(proxy.size.height - 112, 0))
-                .padding(.horizontal, 20)
-                .padding(.top, 56)
-                .padding(.bottom, 112)
             }
         }
         .background(theme.background.ignoresSafeArea())
@@ -221,11 +228,15 @@ struct HomeAlternativoView: View {
         }
     }
 
-    private var mainContent: some View {
+    private func mainContent(onRecommendationExpanded: @escaping () -> Void) -> some View {
         VStack(alignment: .leading, spacing: 18) {
             header
             toolsGrid
             progressSection
+            HomeContextualRecommendationCard(
+                variant: variant,
+                onExpanded: onRecommendationExpanded
+            )
         }
     }
 
@@ -507,6 +518,10 @@ enum HomeAlternativoVariant: String, CaseIterable, Identifiable {
     case oscura
 
     var id: String { rawValue }
+}
+
+private enum HomeAlternativoScrollTarget {
+    static let top = "homeAlternativoScrollTop"
 }
 
 private struct HomeAlternativoTool: Identifiable {

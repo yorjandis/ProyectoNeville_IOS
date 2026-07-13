@@ -1,10 +1,31 @@
 import SwiftUI
 import Combine
 import UserNotifications
+import CoreData
+
+enum RitualNavigationDestination: String, Identifiable {
+    case eveningReview
+    case wellbeingDashboard
+
+    var id: String { rawValue }
+}
+
+@MainActor
+final class RitualNavigationCoordinator: ObservableObject {
+    static let shared = RitualNavigationCoordinator()
+    @Published var destination: RitualNavigationDestination?
+
+    private init() {}
+
+    func open(_ destination: RitualNavigationDestination) {
+        self.destination = destination
+    }
+}
 
 private enum MorningRitualConstants {
     static let sessionsKey = "morning_ritual_sessions"
     static let settingsKey = "morning_ritual_settings"
+    static let eveningReviewsKey = "evening_ritual_reviews"
     static let maxItems = 3
     static let maxGoals = 12
 }
@@ -50,6 +71,108 @@ private struct MorningRitualSettings: Codable, Equatable {
     var enabled: Bool = false
     var hour: Int = 7
     var minute: Int = 30
+    var eveningReminderEnabled: Bool = false
+    var eveningReminderHour: Int = 21
+    var eveningReminderMinute: Int = 30
+
+    private enum CodingKeys: String, CodingKey {
+        case enabled, hour, minute
+        case eveningReminderEnabled, eveningReminderHour, eveningReminderMinute
+    }
+
+    init() {}
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        enabled = try container.decodeIfPresent(Bool.self, forKey: .enabled) ?? false
+        hour = try container.decodeIfPresent(Int.self, forKey: .hour) ?? 7
+        minute = try container.decodeIfPresent(Int.self, forKey: .minute) ?? 30
+        eveningReminderEnabled = try container.decodeIfPresent(Bool.self, forKey: .eveningReminderEnabled) ?? false
+        eveningReminderHour = try container.decodeIfPresent(Int.self, forKey: .eveningReminderHour) ?? 21
+        eveningReminderMinute = try container.decodeIfPresent(Int.self, forKey: .eveningReminderMinute) ?? 30
+    }
+}
+
+private struct EveningReview: Codable, Identifiable, Equatable {
+    let id: UUID
+    let sessionDateEpochDay: Int
+    let completedAtEpochMillis: Int64
+    let energy: Int
+    let predominantEmotionID: String
+    let whatWentWell: String
+    let learning: String
+    let autopilotMoment: String
+    let gratitude: String
+    let tomorrowPreparation: String
+    let identityAlignment: Int
+    let suggestion: String
+    let agendaCompletedCount: Int
+    let agendaTotalCount: Int
+    let goalUnitsCompletedCount: Int
+    let presenceReturns: Int
+    let automaticPilotEvents: Int
+    let coherenceSessionsCount: Int
+    let journalEntryRequested: Bool?
+    let journalEntryCreated: Bool
+    let journalEntryID: UUID?
+}
+
+@MainActor
+struct EveningDaySnapshot {
+    let agendaCompleted: [AgendaItemData]
+    let agendaTotalCount: Int
+    let completedGoalUnits: [(goalTitle: String, unitName: String)]
+    let presenceReturns: Int
+    let automaticPilotEvents: Int
+    let coherenceSessionsCount: Int
+    let coherenceAverageAfterScore: Int?
+
+    static func load(for date: Date = Date()) -> EveningDaySnapshot {
+        let calendar = Calendar.current
+        let agenda = AgendaRepository().fetchAll().filter {
+            calendar.isDate($0.fechaActividad, inSameDayAs: date)
+        }
+        let agendaCompleted = agenda.filter { $0.completada == true }
+
+        let context = CoreDataController.shared.context
+        let goalRequest: NSFetchRequest<GoalEntity> = GoalEntity.fetchRequest()
+        let goals = (try? context.fetch(goalRequest)) ?? []
+        var completedGoalUnits: [(goalTitle: String, unitName: String)] = []
+        for goal in goals {
+            for unit in goal.unitsArray {
+                guard let completedDate = unit.completedDate,
+                      calendar.isDate(completedDate, inSameDayAs: date) else { continue }
+                completedGoalUnits.append((
+                    goalTitle: goal.wrappedTitle,
+                    unitName: unit.name?.trimmingCharacters(in: .whitespacesAndNewlines) ?? "Unidad completada"
+                ))
+            }
+        }
+
+        let presence = PresenciaRepository().eventPoints(on: date)
+        let coherenceRequest = NSFetchRequest<NSManagedObject>(entityName: "coherencia")
+        let coherenceRows = ((try? context.fetch(coherenceRequest)) ?? []).filter { row in
+            let milliseconds = row.value(forKey: "dateEpochMillis") as? Int64 ?? 0
+            return milliseconds > 0 && calendar.isDate(
+                Date(timeIntervalSince1970: TimeInterval(milliseconds) / 1_000),
+                inSameDayAs: date
+            )
+        }
+        let scores = coherenceRows.compactMap { row -> Int? in
+            let score = Int(row.value(forKey: "afterScore") as? Int16 ?? 0)
+            return score > 0 ? score : nil
+        }
+
+        return EveningDaySnapshot(
+            agendaCompleted: agendaCompleted,
+            agendaTotalCount: agenda.count,
+            completedGoalUnits: completedGoalUnits,
+            presenceReturns: presence.filter(\.isPresentReturn).count,
+            automaticPilotEvents: presence.filter(\.isAutomaticPilot).count,
+            coherenceSessionsCount: coherenceRows.count,
+            coherenceAverageAfterScore: scores.isEmpty ? nil : Int((Double(scores.reduce(0, +)) / Double(scores.count)).rounded())
+        )
+    }
 }
 
 private struct TriggerResponseInput: Equatable {
@@ -87,19 +210,53 @@ private struct MorningRitualFlowState {
 private final class MorningRitualStore: ObservableObject {
     @Published private(set) var sessions: [MorningRitualSession] = []
     @Published private(set) var settings: MorningRitualSettings = .init()
+    @Published private(set) var eveningReviews: [EveningReview] = []
 
     private let sharedDefaults: UserDefaults?
     private let standardDefaults: UserDefaults
+    private let ritualEntityName = "RitualSessionEntity"
+    private let coreDataMigrationKey = "morning_ritual_coredata_migration_v1"
+    private var observers = Set<AnyCancellable>()
 
     init() {
         self.sharedDefaults = UserDefaults(suiteName: AppCons.AppGroupName)
         self.standardDefaults = .standard
+        NotificationCenter.default.publisher(for: .coreDataStoresDidLoad)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in self?.loadAll() }
+            .store(in: &observers)
+        NotificationCenter.default.publisher(
+            for: .NSPersistentStoreRemoteChange,
+            object: CoreDataController.shared.persistentContainer.persistentStoreCoordinator
+        )
+        .receive(on: RunLoop.main)
+        .sink { [weak self] _ in
+            CoreDataController.shared.context.refreshAllObjects()
+            self?.loadAll()
+        }
+        .store(in: &observers)
+        NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave, object: CoreDataController.shared.context)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in self?.loadAll() }
+            .store(in: &observers)
         self.loadAll()
     }
 
     var todayCompleted: Bool {
         let today = epochDay(for: Date())
         return sessions.contains { $0.completed && $0.sessionDateEpochDay == today }
+    }
+
+    var todayReview: EveningReview? {
+        review(for: Date())
+    }
+
+    func review(for date: Date) -> EveningReview? {
+        eveningReviews.first { $0.sessionDateEpochDay == epochDay(for: date) }
+    }
+
+    func session(for date: Date = Date()) -> MorningRitualSession? {
+        sessions.first { $0.sessionDateEpochDay == epochDay(for: date) }
     }
 
     func saveSession(_ session: MorningRitualSession) {
@@ -116,17 +273,34 @@ private final class MorningRitualStore: ObservableObject {
 
     func deleteSession(sessionId: UUID) {
         sessions.removeAll { $0.id == sessionId }
-        persistSessions()
+        deleteStoredSession(id: sessionId)
     }
 
-    func applySettings(enabled: Bool, hour: Int, minute: Int) {
+    func saveEveningReview(_ review: EveningReview) {
+        eveningReviews.removeAll { $0.sessionDateEpochDay == review.sessionDateEpochDay }
+        eveningReviews.insert(review, at: 0)
+        persistEveningReviews()
+    }
+
+    func applySettings(
+        enabled: Bool,
+        hour: Int,
+        minute: Int,
+        eveningReminderEnabled: Bool,
+        eveningReminderHour: Int,
+        eveningReminderMinute: Int
+    ) {
         settings.enabled = enabled
         settings.hour = max(0, min(23, hour))
         settings.minute = max(0, min(59, minute))
+        settings.eveningReminderEnabled = eveningReminderEnabled
+        settings.eveningReminderHour = max(0, min(23, eveningReminderHour))
+        settings.eveningReminderMinute = max(0, min(59, eveningReminderMinute))
         persistSettings()
 
         Task {
             await MorningRitualNotificationManager.shared.scheduleDailyReminder(settings: settings)
+            await MorningRitualNotificationManager.shared.scheduleEveningReminder(settings: settings)
         }
     }
 
@@ -143,29 +317,195 @@ private final class MorningRitualStore: ObservableObject {
     }
 
     private func loadAll() {
-        let sharedSessions = decodeSessions(from: sharedDefaults)
-        let standardSessions = decodeSessions(from: standardDefaults)
-        sessions = mergeSessions(sharedSessions, standardSessions)
+        migrateLegacyRitualDataIfNeeded()
+        sessions = loadMorningSessionsFromCoreData()
+        eveningReviews = loadEveningReviewsFromCoreData()
 
         let sharedSettings = decodeSettings(from: sharedDefaults)
         let standardSettings = decodeSettings(from: standardDefaults)
         settings = sharedSettings ?? standardSettings ?? .init()
 
-        mirrorSessionsAcrossContainers()
         mirrorSettingsAcrossContainers()
     }
 
     private func persistSessions() {
         sessions.sort { $0.completedAtEpochMillis > $1.completedAtEpochMillis }
-        guard let encoded = try? JSONEncoder().encode(sessions) else { return }
-        sharedDefaults?.set(encoded, forKey: MorningRitualConstants.sessionsKey)
-        standardDefaults.set(encoded, forKey: MorningRitualConstants.sessionsKey)
+        sessions.forEach(upsertMorningSession)
+        saveRitualContext()
     }
 
     private func persistSettings() {
         guard let encoded = try? JSONEncoder().encode(settings) else { return }
         sharedDefaults?.set(encoded, forKey: MorningRitualConstants.settingsKey)
         standardDefaults.set(encoded, forKey: MorningRitualConstants.settingsKey)
+    }
+
+    private func persistEveningReviews() {
+        eveningReviews.sort { $0.completedAtEpochMillis > $1.completedAtEpochMillis }
+        eveningReviews.forEach(upsertEveningReview)
+        saveRitualContext()
+    }
+
+    private func migrateLegacyRitualDataIfNeeded() {
+        guard !standardDefaults.bool(forKey: coreDataMigrationKey) else { return }
+        guard !CoreDataController.shared.persistentContainer.persistentStoreCoordinator.persistentStores.isEmpty else { return }
+
+        let legacySessions = mergeSessions(
+            decodeSessions(from: sharedDefaults),
+            decodeSessions(from: standardDefaults)
+        )
+        let legacyReviews = mergeEveningReviews(
+            decodeEveningReviews(from: sharedDefaults),
+            decodeEveningReviews(from: standardDefaults)
+        )
+
+        legacySessions.forEach(upsertMorningSession)
+        legacyReviews.forEach(upsertEveningReview)
+        saveRitualContext()
+        standardDefaults.set(true, forKey: coreDataMigrationKey)
+    }
+
+    private func loadMorningSessionsFromCoreData() -> [MorningRitualSession] {
+        fetchStoredRows(kind: "morning").compactMap { row in
+            guard let id = row.value(forKey: "id") as? UUID else { return nil }
+            return MorningRitualSession(
+                id: id,
+                sessionDateEpochDay: Int(row.value(forKey: "sessionDateEpochDay") as? Int64 ?? 0),
+                completedAtEpochMillis: row.value(forKey: "completedAtEpochMillis") as? Int64 ?? 0,
+                goals: decodeStringArray(row.value(forKey: "goalsJSON") as? String),
+                identity: row.value(forKey: "identity") as? String ?? "",
+                emotions: decodeStringArray(row.value(forKey: "emotionsJSON") as? String),
+                anticipatedSituations: decodeStringArray(row.value(forKey: "anticipatedSituationsJSON") as? String),
+                consciousResponses: decodeStringArray(row.value(forKey: "consciousResponsesJSON") as? String),
+                noteText: row.value(forKey: "noteText") as? String ?? "",
+                completed: row.value(forKey: "completed") as? Bool ?? true
+            )
+        }
+        .sorted { $0.completedAtEpochMillis > $1.completedAtEpochMillis }
+    }
+
+    private func loadEveningReviewsFromCoreData() -> [EveningReview] {
+        fetchStoredRows(kind: "evening").compactMap { row in
+            guard let id = row.value(forKey: "id") as? UUID else { return nil }
+            return EveningReview(
+                id: id,
+                sessionDateEpochDay: Int(row.value(forKey: "sessionDateEpochDay") as? Int64 ?? 0),
+                completedAtEpochMillis: row.value(forKey: "completedAtEpochMillis") as? Int64 ?? 0,
+                energy: Int(row.value(forKey: "energy") as? Int16 ?? 0),
+                predominantEmotionID: row.value(forKey: "predominantEmotionID") as? String ?? "",
+                whatWentWell: row.value(forKey: "whatWentWell") as? String ?? "",
+                learning: row.value(forKey: "learning") as? String ?? "",
+                autopilotMoment: row.value(forKey: "autopilotMoment") as? String ?? "",
+                gratitude: row.value(forKey: "gratitude") as? String ?? "",
+                tomorrowPreparation: row.value(forKey: "tomorrowPreparation") as? String ?? "",
+                identityAlignment: Int(row.value(forKey: "identityAlignment") as? Int16 ?? 0),
+                suggestion: row.value(forKey: "suggestion") as? String ?? "",
+                agendaCompletedCount: Int(row.value(forKey: "agendaCompletedCount") as? Int32 ?? 0),
+                agendaTotalCount: Int(row.value(forKey: "agendaTotalCount") as? Int32 ?? 0),
+                goalUnitsCompletedCount: Int(row.value(forKey: "goalUnitsCompletedCount") as? Int32 ?? 0),
+                presenceReturns: Int(row.value(forKey: "presenceReturns") as? Int32 ?? 0),
+                automaticPilotEvents: Int(row.value(forKey: "automaticPilotEvents") as? Int32 ?? 0),
+                coherenceSessionsCount: Int(row.value(forKey: "coherenceSessionsCount") as? Int32 ?? 0),
+                journalEntryRequested: row.value(forKey: "journalEntryRequested") as? Bool,
+                journalEntryCreated: row.value(forKey: "journalEntryCreated") as? Bool ?? false,
+                journalEntryID: row.value(forKey: "journalEntryID") as? UUID
+            )
+        }
+        .sorted { $0.completedAtEpochMillis > $1.completedAtEpochMillis }
+    }
+
+    private func upsertMorningSession(_ session: MorningRitualSession) {
+        guard let row = upsertRow(kind: "morning", epochDay: session.sessionDateEpochDay, id: session.id) else { return }
+        row.setValue(session.completedAtEpochMillis, forKey: "completedAtEpochMillis")
+        row.setValue(session.completed, forKey: "completed")
+        row.setValue(encodeStringArray(session.goals), forKey: "goalsJSON")
+        row.setValue(session.identity, forKey: "identity")
+        row.setValue(encodeStringArray(session.emotions), forKey: "emotionsJSON")
+        row.setValue(encodeStringArray(session.anticipatedSituations), forKey: "anticipatedSituationsJSON")
+        row.setValue(encodeStringArray(session.consciousResponses), forKey: "consciousResponsesJSON")
+        row.setValue(session.noteText, forKey: "noteText")
+    }
+
+    private func upsertEveningReview(_ review: EveningReview) {
+        guard let row = upsertRow(kind: "evening", epochDay: review.sessionDateEpochDay, id: review.id) else { return }
+        row.setValue(review.completedAtEpochMillis, forKey: "completedAtEpochMillis")
+        row.setValue(Int16(review.energy), forKey: "energy")
+        row.setValue(review.predominantEmotionID, forKey: "predominantEmotionID")
+        row.setValue(review.whatWentWell, forKey: "whatWentWell")
+        row.setValue(review.learning, forKey: "learning")
+        row.setValue(review.autopilotMoment, forKey: "autopilotMoment")
+        row.setValue(review.gratitude, forKey: "gratitude")
+        row.setValue(review.tomorrowPreparation, forKey: "tomorrowPreparation")
+        row.setValue(Int16(review.identityAlignment), forKey: "identityAlignment")
+        row.setValue(review.suggestion, forKey: "suggestion")
+        row.setValue(Int32(review.agendaCompletedCount), forKey: "agendaCompletedCount")
+        row.setValue(Int32(review.agendaTotalCount), forKey: "agendaTotalCount")
+        row.setValue(Int32(review.goalUnitsCompletedCount), forKey: "goalUnitsCompletedCount")
+        row.setValue(Int32(review.presenceReturns), forKey: "presenceReturns")
+        row.setValue(Int32(review.automaticPilotEvents), forKey: "automaticPilotEvents")
+        row.setValue(Int32(review.coherenceSessionsCount), forKey: "coherenceSessionsCount")
+        row.setValue(review.journalEntryRequested, forKey: "journalEntryRequested")
+        row.setValue(review.journalEntryCreated, forKey: "journalEntryCreated")
+        row.setValue(review.journalEntryID, forKey: "journalEntryID")
+    }
+
+    private func upsertRow(kind: String, epochDay: Int, id: UUID) -> NSManagedObject? {
+        let context = CoreDataController.shared.context
+        let request = NSFetchRequest<NSManagedObject>(entityName: ritualEntityName)
+        request.predicate = NSPredicate(format: "kind == %@ AND sessionDateEpochDay == %lld", kind, Int64(epochDay))
+        request.fetchLimit = 1
+
+        let row: NSManagedObject
+        if let existing = try? context.fetch(request).first {
+            row = existing
+        } else if let entity = NSEntityDescription.entity(forEntityName: ritualEntityName, in: context) {
+            row = NSManagedObject(entity: entity, insertInto: context)
+            row.setValue(id, forKey: "id")
+            row.setValue(kind, forKey: "kind")
+            row.setValue(Int64(epochDay), forKey: "sessionDateEpochDay")
+            row.setValue(Date(), forKey: "createdAt")
+        } else {
+            return nil
+        }
+        row.setValue(Date(), forKey: "updatedAt")
+        return row
+    }
+
+    private func fetchStoredRows(kind: String) -> [NSManagedObject] {
+        let request = NSFetchRequest<NSManagedObject>(entityName: ritualEntityName)
+        request.predicate = NSPredicate(format: "kind == %@", kind)
+        request.sortDescriptors = [NSSortDescriptor(key: "completedAtEpochMillis", ascending: false)]
+        return (try? CoreDataController.shared.context.fetch(request)) ?? []
+    }
+
+    private func deleteStoredSession(id: UUID) {
+        let context = CoreDataController.shared.context
+        let request = NSFetchRequest<NSManagedObject>(entityName: ritualEntityName)
+        request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+        (try? context.fetch(request))?.forEach(context.delete)
+        saveRitualContext()
+    }
+
+    private func saveRitualContext() {
+        let context = CoreDataController.shared.context
+        guard context.hasChanges else { return }
+        do {
+            try context.save()
+        } catch {
+            context.rollback()
+            msg("No se pudo guardar el ritual: \(error.localizedDescription)")
+        }
+    }
+
+    private func encodeStringArray(_ values: [String]) -> String {
+        guard let data = try? JSONEncoder().encode(values),
+              let encoded = String(data: data, encoding: .utf8) else { return "[]" }
+        return encoded
+    }
+
+    private func decodeStringArray(_ encoded: String?) -> [String] {
+        guard let encoded, let data = encoded.data(using: .utf8) else { return [] }
+        return (try? JSONDecoder().decode([String].self, from: data)) ?? []
     }
 
     private func decodeSessions(from defaults: UserDefaults?) -> [MorningRitualSession] {
@@ -186,6 +526,15 @@ private final class MorningRitualStore: ObservableObject {
         return decoded
     }
 
+    private func decodeEveningReviews(from defaults: UserDefaults?) -> [EveningReview] {
+        guard let defaults,
+              let data = defaults.data(forKey: MorningRitualConstants.eveningReviewsKey),
+              let decoded = try? JSONDecoder().decode([EveningReview].self, from: data) else {
+            return []
+        }
+        return decoded
+    }
+
     private func mergeSessions(_ lhs: [MorningRitualSession], _ rhs: [MorningRitualSession]) -> [MorningRitualSession] {
         var bestByDay: [Int: MorningRitualSession] = [:]
 
@@ -201,6 +550,19 @@ private final class MorningRitualStore: ObservableObject {
         return bestByDay.values.sorted { $0.completedAtEpochMillis > $1.completedAtEpochMillis }
     }
 
+    private func mergeEveningReviews(_ lhs: [EveningReview], _ rhs: [EveningReview]) -> [EveningReview] {
+        var bestByDay: [Int: EveningReview] = [:]
+        for review in lhs + rhs {
+            if let current = bestByDay[review.sessionDateEpochDay] {
+                bestByDay[review.sessionDateEpochDay] =
+                    review.completedAtEpochMillis >= current.completedAtEpochMillis ? review : current
+            } else {
+                bestByDay[review.sessionDateEpochDay] = review
+            }
+        }
+        return bestByDay.values.sorted { $0.completedAtEpochMillis > $1.completedAtEpochMillis }
+    }
+
     private func mirrorSessionsAcrossContainers() {
         guard let encoded = try? JSONEncoder().encode(sessions) else { return }
         sharedDefaults?.set(encoded, forKey: MorningRitualConstants.sessionsKey)
@@ -211,6 +573,12 @@ private final class MorningRitualStore: ObservableObject {
         guard let encoded = try? JSONEncoder().encode(settings) else { return }
         sharedDefaults?.set(encoded, forKey: MorningRitualConstants.settingsKey)
         standardDefaults.set(encoded, forKey: MorningRitualConstants.settingsKey)
+    }
+
+    private func mirrorEveningReviewsAcrossContainers() {
+        guard let encoded = try? JSONEncoder().encode(eveningReviews) else { return }
+        sharedDefaults?.set(encoded, forKey: MorningRitualConstants.eveningReviewsKey)
+        standardDefaults.set(encoded, forKey: MorningRitualConstants.eveningReviewsKey)
     }
 
     private func epochDay(for date: Date) -> Int {
@@ -246,6 +614,32 @@ private actor MorningRitualNotificationManager {
             identifier: "morning_ritual_daily",
             content: content,
             trigger: trigger
+        )
+        try? await center.add(request)
+    }
+
+    func scheduleEveningReminder(settings: MorningRitualSettings) async {
+        center.removePendingNotificationRequests(withIdentifiers: ["evening_ritual_daily"])
+
+        guard settings.eveningReminderEnabled else { return }
+
+        let granted = await requestAuthorizationIfNeeded()
+        guard granted else { return }
+
+        var date = DateComponents()
+        date.hour = settings.eveningReminderHour
+        date.minute = settings.eveningReminderMinute
+
+        let content = UNMutableNotificationContent()
+        content.title = "Cierre consciente"
+        content.body = "Dedica unos minutos a integrar tu día y preparar mañana."
+        content.sound = .default
+        content.userInfo = ["ritualDestination": "eveningReview"]
+
+        let request = UNNotificationRequest(
+            identifier: "evening_ritual_daily",
+            content: content,
+            trigger: UNCalendarNotificationTrigger(dateMatching: date, repeats: true)
         )
         try? await center.add(request)
     }
@@ -305,6 +699,10 @@ struct MorningRitualMainView: View {
     @Environment(\.scenePhase) private var scenePhase
     @StateObject private var store = MorningRitualStore()
     @State private var route: MorningRitualRoute?
+    @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
+    @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) private var yorjPremium: Bool = false
+
+    private var hasPremiumAccess: Bool { purchaseStatus || yorjPremium }
 
     var body: some View {
         NavigationStack {
@@ -328,53 +726,46 @@ struct MorningRitualMainView: View {
                                 Text(store.todayCompleted ? "Hoy ya completaste tu diálogo." : "Aún no has completado tu diálogo de hoy.")
                                     .font(.body)
                                     .foregroundStyle(.black.opacity(0.85))
-                                HStack{
+                                HStack {
                                     Spacer()
                                     Button(store.todayCompleted ? "Repetir diálogo" : "Iniciar diálogo") {
                                         route = .flow
                                     }
                                     .buttonStyle(.bordered)
                                     .tint(.black)
+                                    .lineLimit(1)
+                                    .minimumScaleFactor(0.82)
                                 }
-                                
+                                .frame(maxWidth: .infinity)
+
+                            }
+
+                            ritualCard(
+                                title: "Cierre consciente",
+                                subtitle: store.todayReview == nil
+                                    ? "Termina el día con claridad, integra lo vivido y deja una única mejora para mañana."
+                                    : "Tu día ya tiene un cierre. Vuelve a él para recordar lo que aprendiste."
+                            ) {
+                                ViewThatFits(in: .horizontal) {
+                                    eveningReviewActionRow(axis: .horizontal)
+                                    eveningReviewActionRow(axis: .vertical)
+                                }
                             }
 
                             ritualCard(title: "Explorar", subtitle: nil) {
-                                HStack{
-                                    Button{ route = .settings } label:{
-                                        Text("Ajustes")
-                                            .foregroundStyle(.black)
-                                    }
-                                    .buttonStyle(.bordered)
-                                    .tint(.gray)
-                                    .frame(width: 100)
-
-                                    Spacer()
-
-                                    Button{ route = .history } label:{
-                                        Text("Ver historial")
-                                            .foregroundStyle(.black)
-                                    }
-                                    .buttonStyle(.bordered)
-                                    .tint(.gray)
-                                    .frame(width: 150)
-                                    
-                                    Button { route = .stats } label: {
-                                        Text("Resumen")
-                                            .foregroundStyle(.black)
-                                    }
-                                    .buttonStyle(.bordered)
-                                    .tint(.black.opacity(0.25))
-                                    .frame(width: 100)
-                                    
+                                LazyVGrid(columns: [GridItem(.adaptive(minimum: 112), spacing: 10)], spacing: 10) {
+                                    ritualExploreButton("Ajustes", systemImage: "gearshape") { route = .settings }
+                                    ritualExploreButton("Historial", systemImage: "clock.arrow.circlepath") { route = .history }
+                                    ritualExploreButton("Resumen", systemImage: "chart.bar") { route = .stats }
+                                    ritualExploreButton("Mi día", systemImage: "chart.xyaxis.line") { route = .wellbeing }
                                 }
                             }
                         }
-                        
+
                     }
                     .padding(16)
                 }
-                
+
             }
             //.navigationTitle("Ritual Matutino")
             .onTapGesture {
@@ -396,13 +787,81 @@ struct MorningRitualMainView: View {
                     MorningRitualHistoryView(store: store)
                 case .settings:
                     MorningRitualSettingsView(store: store)
-                        .presentationDetents([.height(320)])
+                        .presentationDetents([.height(650)])
                         .presentationDragIndicator(.visible)
                 case .stats:
                     MorningRitualStatsView(store: store)
+                case .eveningReview:
+                    RitualEveningReviewEntryView()
+                case .premium:
+                    PurchaseView()
+                case .wellbeing:
+                    WellbeingDashboardView()
                 }
             }
         }
+    }
+
+    @ViewBuilder
+    private func eveningReviewActionRow(axis: Axis) -> some View {
+        if axis == .horizontal {
+            HStack(alignment: .center, spacing: 12) {
+                eveningReviewStatusLabel
+                Spacer(minLength: 8)
+                eveningReviewButton
+            }
+            .frame(maxWidth: .infinity)
+        } else {
+            VStack(alignment: .leading, spacing: 12) {
+                eveningReviewStatusLabel
+                eveningReviewButton
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+
+    private var eveningReviewStatusLabel: some View {
+        HStack(alignment: .center, spacing: 12) {
+            Image(systemName: store.todayReview == nil ? "moon.stars.fill" : "checkmark.seal.fill")
+                .font(.title2)
+                .foregroundStyle(.indigo)
+                .frame(width: 34)
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(store.todayReview == nil ? "Revisión nocturna" : "Cierre completado")
+                    .font(.headline)
+                    .lineLimit(2)
+                    .fixedSize(horizontal: false, vertical: true)
+                Text(hasPremiumAccess ? "Premium" : "Función Premium")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.black.opacity(0.55))
+                    .lineLimit(1)
+            }
+        }
+    }
+
+    private var eveningReviewButton: some View {
+        Button(store.todayReview == nil ? "Cerrar día" : "Ver cierre") {
+            route = hasPremiumAccess ? .eveningReview : .premium
+        }
+        .buttonStyle(.borderedProminent)
+        .tint(.indigo)
+        .lineLimit(1)
+        .minimumScaleFactor(0.82)
+    }
+
+    private func ritualExploreButton(_ title: String, systemImage: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Label(title, systemImage: systemImage)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.black)
+                .lineLimit(1)
+                .minimumScaleFactor(0.82)
+                .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.bordered)
+        .tint(.black.opacity(0.25))
     }
 
     @ViewBuilder
@@ -410,16 +869,19 @@ struct MorningRitualMainView: View {
         VStack(alignment: .leading, spacing: 10) {
             Text(title)
                 .font(.title3.bold())
-                
+                .fixedSize(horizontal: false, vertical: true)
+
             if let subtitle {
                 Text(subtitle)
                     .font(.body)
-                    
+                    .fixedSize(horizontal: false, vertical: true)
+
             }
             content()
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
+        .fixedSize(horizontal: false, vertical: true)
         .foregroundStyle(.black)
         .background(LinearGradient.Amanecer())
         .clipShape(RoundedRectangle(cornerRadius: 16))
@@ -441,6 +903,9 @@ private enum MorningRitualRoute: String, Identifiable {
     case history
     case settings
     case stats
+    case eveningReview
+    case premium
+    case wellbeing
 
     var id: String { rawValue }
 }
@@ -464,9 +929,1132 @@ private extension View {
     }
 }
 
+private struct EveningReviewFlowView: View {
+    @Environment(\.dismiss) private var dismiss
+    @ObservedObject var store: MorningRitualStore
+    @State private var reviewDate: Date
+
+    @State private var step = 0
+    @State private var energy = 3
+    @State private var predominantEmotionID = "sereno"
+    @State private var whatWentWell = ""
+    @State private var learning = ""
+    @State private var autopilotMoment = ""
+    @State private var gratitude = ""
+    @State private var tomorrowPreparation = ""
+    @State private var identityAlignment = 3
+    @State private var shouldCreateJournalEntry = true
+    @State private var snapshot: EveningDaySnapshot?
+    @State private var isEditingExistingReview = false
+
+    private let emotions = ["sereno", "alegre", "ansioso", "triste", "enfadado", "cansado", "agradecido"]
+
+    init(store: MorningRitualStore, reviewDate: Date = Date()) {
+        self.store = store
+        _reviewDate = State(initialValue: Calendar.current.startOfDay(for: reviewDate))
+    }
+
+    private var selectedReview: EveningReview? {
+        store.review(for: reviewDate)
+    }
+
+    private var weeklyClosures: Int {
+        let calendar = Calendar.current
+        let start = calendar.date(byAdding: .day, value: -6, to: calendar.startOfDay(for: reviewDate)) ?? reviewDate
+        return store.eveningReviews.filter {
+            let date = Date(timeIntervalSince1970: TimeInterval($0.sessionDateEpochDay * 86_400))
+            return date >= start && date <= reviewDate
+        }.count
+    }
+
+    var body: some View {
+        NavigationStack {
+            ZStack {
+                LinearGradient(
+                    colors: [Color(red: 0.07, green: 0.10, blue: 0.23), Color(red: 0.22, green: 0.14, blue: 0.39), Color(red: 0.46, green: 0.24, blue: 0.49)],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+                .ignoresSafeArea()
+
+                if let review = selectedReview, !isEditingExistingReview {
+                    EveningReviewCompletedView(
+                        review: review,
+                        morningSession: store.session(for: reviewDate),
+                        currentSnapshot: EveningDaySnapshot.load(for: reviewDate),
+                        weeklyClosures: weeklyClosures,
+                        edit: { beginEditing(review) }
+                    ) {
+                        dismiss()
+                    }
+                } else {
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 20) {
+                            header
+                            if let snapshot {
+                                content(snapshot: snapshot)
+                            } else {
+                                ProgressView("Preparando el cierre de hoy…")
+                                    .tint(.white)
+                                    .frame(maxWidth: .infinity, minHeight: 260)
+                            }
+                        }
+                        .padding(20)
+                    }
+                }
+            }
+            .navigationTitle("Cierre consciente")
+#if os(iOS)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbarColorScheme(.dark, for: .navigationBar)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Cerrar") { dismiss() }
+                        .foregroundStyle(.white)
+                }
+            }
+#else
+            .toolbar {
+                ToolbarItem {
+                    Button("Cerrar") { dismiss() }
+                }
+            }
+#endif
+            .onAppear {
+                snapshot = EveningDaySnapshot.load(for: reviewDate)
+            }
+        }
+    }
+
+    private var header: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Label("El día termina, tu aprendizaje permanece", systemImage: "moon.stars.fill")
+                .font(.headline)
+                .foregroundStyle(.white.opacity(0.86))
+            Text(stepTitle)
+                .font(.system(size: 30, weight: .bold, design: .rounded))
+                .foregroundStyle(.white)
+            Text(stepSubtitle)
+                .font(.subheadline)
+                .foregroundStyle(.white.opacity(0.72))
+
+            DatePicker("Día que revisas", selection: $reviewDate, in: ...Date(), displayedComponents: .date)
+                .datePickerStyle(.compact)
+                .tint(.white)
+                .foregroundStyle(.white)
+                .onChange(of: reviewDate) { _, newDate in
+                    reviewDate = Calendar.current.startOfDay(for: newDate)
+                    snapshot = EveningDaySnapshot.load(for: reviewDate)
+                    isEditingExistingReview = false
+                    step = 0
+                    if selectedReview == nil {
+                        resetDraft()
+                    }
+                }
+
+            HStack(spacing: 7) {
+                ForEach(0..<4, id: \.self) { index in
+                    Capsule()
+                        .fill(index <= step ? Color.white : Color.white.opacity(0.22))
+                        .frame(height: 5)
+                }
+            }
+            .accessibilityLabel("Paso \(step + 1) de 4")
+        }
+    }
+
+    @ViewBuilder
+    private func content(snapshot: EveningDaySnapshot) -> some View {
+        switch step {
+        case 0:
+            energyAndEmotion
+        case 1:
+            reflectionInputs
+        case 2:
+            integrationInputs
+        default:
+            daySnapshot(snapshot)
+        }
+    }
+
+    private var energyAndEmotion: some View {
+        VStack(alignment: .leading, spacing: 18) {
+            eveningCard {
+                Text("¿Cómo estuvo mi energía?")
+                    .font(.headline)
+                HStack(spacing: 8) {
+                    ForEach(1...5, id: \.self) { value in
+                        Button {
+                            energy = value
+                        } label: {
+                            VStack(spacing: 5) {
+                                Image(systemName: energySymbol(for: value))
+                                    .font(.title3)
+                                Text("\(value)")
+                                    .font(.caption.bold())
+                            }
+                            .foregroundStyle(energy == value ? .indigo : .white.opacity(0.88))
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 11)
+                            .background(energy == value ? .white : .white.opacity(0.12))
+                            .clipShape(RoundedRectangle(cornerRadius: 14))
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                Text(energyDescription)
+                    .font(.caption)
+                    .foregroundStyle(.white.opacity(0.66))
+            }
+
+            eveningCard {
+                Text("¿Qué emoción predominó?")
+                    .font(.headline)
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 104), spacing: 9)], spacing: 9) {
+                    ForEach(emotions, id: \.self) { emotionID in
+                        Button {
+                            predominantEmotionID = emotionID
+                        } label: {
+                            HStack(spacing: 6) {
+                                Image(systemName: moodSymbol(for: emotionID))
+                                Text(PresenciaMood.title(for: emotionID))
+                                    .lineLimit(1)
+                            }
+                            .font(.subheadline.weight(.medium))
+                            .foregroundStyle(predominantEmotionID == emotionID ? .indigo : .white)
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 9)
+                            .frame(maxWidth: .infinity)
+                            .background(predominantEmotionID == emotionID ? .white : .white.opacity(0.12))
+                            .clipShape(Capsule())
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+            }
+
+            navigationButton(title: "Continuar", action: { step = 1 })
+        }
+    }
+
+    private var reflectionInputs: some View {
+        VStack(spacing: 14) {
+            answerCard(title: "¿Qué salió bien?", prompt: "Un logro, un gesto o un momento que quieras reconocer.", text: $whatWentWell)
+            answerCard(title: "¿Qué aprendí?", prompt: "Lo que hoy te mostró sobre ti o tu forma de actuar.", text: $learning)
+            answerCard(title: "¿Dónde actué en piloto automático?", prompt: "Sin juicio: observa el momento y nómbralo.", text: $autopilotMoment)
+            navigationButtons(nextTitle: "Integrar el día") { step = 2 }
+        }
+    }
+
+    private var integrationInputs: some View {
+        VStack(spacing: 14) {
+            answerCard(title: "¿Qué agradezco?", prompt: "Una persona, una experiencia o algo pequeño de hoy.", text: $gratitude)
+            answerCard(title: "¿Qué dejo preparado para mañana?", prompt: "Una acción concreta que haga más fácil empezar bien.", text: $tomorrowPreparation)
+
+            eveningCard {
+                if let session = store.session(for: reviewDate) {
+                    Label("Intención matutina", systemImage: "sunrise.fill")
+                        .font(.caption.weight(.bold))
+                        .foregroundStyle(.white.opacity(0.72))
+                    Text(session.identity.isEmpty ? "Identidad no indicada" : session.identity)
+                        .font(.headline)
+                    if !session.goals.isEmpty {
+                        Text("Metas: \(session.goals.joined(separator: " · "))")
+                            .font(.caption)
+                            .foregroundStyle(.white.opacity(0.7))
+                    }
+                } else {
+                    Label("Sin ritual matutino", systemImage: "circle.dashed")
+                        .font(.headline)
+                    Text("Aun así, este cierre convierte la experiencia de hoy en una intención más clara para mañana.")
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.72))
+                }
+
+                Divider().overlay(.white.opacity(0.18))
+                Text("¿Viví de acuerdo con la identidad elegida por la mañana?")
+                    .font(.headline)
+                HStack(spacing: 8) {
+                    ForEach(1...5, id: \.self) { value in
+                        Button {
+                            identityAlignment = value
+                        } label: {
+                            Text(alignmentLabel(for: value))
+                                .font(.caption.bold())
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.72)
+                                .foregroundStyle(identityAlignment == value ? .indigo : .white)
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 10)
+                                .background(identityAlignment == value ? .white : .white.opacity(0.12))
+                                .clipShape(RoundedRectangle(cornerRadius: 11))
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+            }
+            navigationButtons(nextTitle: "Ver síntesis del día") { step = 3 }
+        }
+    }
+
+    private func daySnapshot(_ snapshot: EveningDaySnapshot) -> some View {
+        VStack(spacing: 14) {
+            eveningCard {
+                Label("Tu día, en datos", systemImage: "chart.bar.fill")
+                    .font(.headline)
+                HStack(spacing: 10) {
+                    snapshotMetric(value: "\(snapshot.agendaCompleted.count)/\(snapshot.agendaTotalCount)", label: "Agenda", icon: "checkmark.circle.fill")
+                    snapshotMetric(value: "\(snapshot.completedGoalUnits.count)", label: "Metas", icon: "flag.checkered")
+                    snapshotMetric(value: "\(snapshot.presenceReturns)", label: "Presencia", icon: "sparkles")
+                }
+                if let score = snapshot.coherenceAverageAfterScore {
+                    Label("Coherencia: \(snapshot.coherenceSessionsCount) sesión(es), bienestar final medio \(score)/10", systemImage: "heart.fill")
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.8))
+                } else {
+                    Label("Sin sesión de coherencia registrada hoy", systemImage: "heart")
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.66))
+                }
+                if snapshot.automaticPilotEvents > 0 {
+                    Label("\(snapshot.automaticPilotEvents) registro(s) de piloto automático", systemImage: "moon.zzz.fill")
+                        .font(.caption)
+                        .foregroundStyle(.yellow.opacity(0.9))
+                }
+            }
+
+            completedItemsCard(snapshot)
+
+            eveningCard {
+                Label("Una mejora para mañana", systemImage: "arrow.up.right.circle.fill")
+                    .font(.headline)
+                Text(suggestedImprovement(snapshot: snapshot))
+                    .font(.body)
+                    .foregroundStyle(.white.opacity(0.86))
+            }
+
+            eveningCard {
+                Toggle(isOn: $shouldCreateJournalEntry) {
+                    Label("Guardar resumen en Diario", systemImage: "book.closed.fill")
+                        .font(.headline)
+                }
+                .tint(.yellow)
+                Text("Incluye tus respuestas y un resumen de Agenda, Metas, Presencia y Coherencia. Puedes desactivarlo y conservar solo el cierre del ritual.")
+                    .font(.caption)
+                    .foregroundStyle(.white.opacity(0.72))
+            }
+
+            navigationButtons(nextTitle: isEditingExistingReview ? "Guardar cambios" : (shouldCreateJournalEntry ? "Guardar y crear entrada" : "Guardar cierre")) {
+                saveReview(snapshot: snapshot)
+            }
+        }
+    }
+
+    private func completedItemsCard(_ snapshot: EveningDaySnapshot) -> some View {
+        eveningCard {
+            Label("Completado hoy", systemImage: "checkmark.seal.fill")
+                .font(.headline)
+
+            if snapshot.agendaCompleted.isEmpty && snapshot.completedGoalUnits.isEmpty {
+                Text("Aún no hay actividades ni unidades de metas marcadas como completadas. Tu reflexión sigue siendo valiosa.")
+                    .font(.caption)
+                    .foregroundStyle(.white.opacity(0.7))
+            } else {
+                ForEach(Array(snapshot.agendaCompleted.prefix(3).enumerated()), id: \.element.id) { _, item in
+                    Label(item.titulo.isEmpty ? "Actividad sin título" : item.titulo, systemImage: "calendar.badge.checkmark")
+                        .font(.subheadline)
+                }
+                ForEach(Array(snapshot.completedGoalUnits.prefix(3).enumerated()), id: \.offset) { _, item in
+                    Label("\(item.goalTitle) · \(item.unitName)", systemImage: "flag.checkered")
+                        .font(.subheadline)
+                }
+            }
+        }
+    }
+
+    private func answerCard(title: String, prompt: String, text: Binding<String>) -> some View {
+        eveningCard {
+            Text(title)
+                .font(.headline)
+            TextEditor(text: text)
+                .font(.body)
+                .foregroundStyle(.white)
+                .scrollContentBackground(.hidden)
+                .padding(8)
+                .frame(minHeight: 88)
+                .background(.black.opacity(0.18))
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .overlay(alignment: .topLeading) {
+                    if text.wrappedValue.isEmpty {
+                        Text(prompt)
+                            .font(.subheadline)
+                            .foregroundStyle(.white.opacity(0.42))
+                            .padding(.horizontal, 13)
+                            .padding(.vertical, 17)
+                            .allowsHitTesting(false)
+                    }
+                }
+        }
+    }
+
+    private func snapshotMetric(value: String, label: String, icon: String) -> some View {
+        VStack(spacing: 5) {
+            Image(systemName: icon)
+                .foregroundStyle(.yellow)
+            Text(value)
+                .font(.headline.monospacedDigit())
+            Text(label)
+                .font(.caption2)
+                .foregroundStyle(.white.opacity(0.66))
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 8)
+        .background(.white.opacity(0.09))
+        .clipShape(RoundedRectangle(cornerRadius: 13))
+    }
+
+    private func navigationButtons(nextTitle: String, action: @escaping () -> Void) -> some View {
+        HStack(spacing: 12) {
+            Button("Atrás") { step = max(0, step - 1) }
+                .buttonStyle(.bordered)
+                .tint(.white.opacity(0.8))
+            navigationButton(title: nextTitle, action: action)
+        }
+    }
+
+    private func navigationButton(title: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            HStack {
+                Text(title)
+                Spacer()
+                Image(systemName: "arrow.right")
+            }
+            .font(.headline)
+            .foregroundStyle(.indigo)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 14)
+            .frame(maxWidth: .infinity)
+            .background(.white)
+            .clipShape(RoundedRectangle(cornerRadius: 16))
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func eveningCard(@ViewBuilder content: () -> some View) -> some View {
+        VStack(alignment: .leading, spacing: 12, content: content)
+            .foregroundStyle(.white)
+            .padding(16)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(.white.opacity(0.13))
+            .background(.ultraThinMaterial.opacity(0.28))
+            .clipShape(RoundedRectangle(cornerRadius: 22))
+            .overlay(RoundedRectangle(cornerRadius: 22).stroke(.white.opacity(0.18), lineWidth: 1))
+    }
+
+    private var stepTitle: String {
+        ["Toma el pulso", "Mira con honestidad", "Integra y prepara", "Tu síntesis"] [step]
+    }
+
+    private var stepSubtitle: String {
+        ["Dos preguntas para aterrizar cómo llegas al final del día.", "Observa lo vivido sin corregirte ni juzgarte.", "Cierra el ciclo entre tu intención y tu experiencia.", "Reconoce lo que avanzó y deja espacio para mañana."] [step]
+    }
+
+    private var energyDescription: String {
+        ["Muy baja", "Baja", "Estable", "Buena", "Muy alta"][energy - 1]
+    }
+
+    private func energySymbol(for value: Int) -> String {
+        ["battery.0percent", "battery.25percent", "battery.50percent", "battery.75percent", "battery.100percent"][value - 1]
+    }
+
+    private func moodSymbol(for id: String) -> String {
+        PresenciaMood.common.first { $0.id == id }?.symbolName ?? "face.smiling"
+    }
+
+    private func alignmentLabel(for value: Int) -> String {
+        ["Nada", "Poco", "A medias", "Mucho", "Por completo"][value - 1]
+    }
+
+    private func suggestedImprovement(snapshot: EveningDaySnapshot) -> String {
+        let recentReviews = reviewsInLastSevenDays
+        if recentReviews.count >= 3 {
+            let averageEnergy = Double(recentReviews.reduce(0) { $0 + $1.energy }) / Double(recentReviews.count)
+            if averageEnergy < 3 {
+                return "Tu energía lleva varios días baja: deja preparada una sola prioridad y protege un inicio de mañana más lento y realista."
+            }
+            let averageAutopilot = Double(recentReviews.reduce(0) { $0 + $1.automaticPilotEvents }) / Double(recentReviews.count)
+            if averageAutopilot >= 2 {
+                return "El piloto automático se repite esta semana: elige una señal concreta —una alarma, una respiración o una frase— antes de tu momento más vulnerable."
+            }
+        }
+        if morningClosureRateLastSevenDays < 0.55 {
+            return "Has empezado más días de los que has cerrado: programa un cierre breve de un minuto para convertir intención en aprendizaje constante."
+        }
+        if energy <= 2 {
+            return "Protege tu energía: deja preparada solo la primera acción esencial de mañana y date permiso para empezar despacio."
+        }
+        if !autopilotMoment.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || snapshot.automaticPilotEvents > 0 {
+            return "Antes del primer momento que suele llevarte al piloto automático, haz una pausa de tres respiraciones y recuerda tu identidad elegida."
+        }
+        if identityAlignment <= 2, let identity = store.session(for: reviewDate)?.identity, !identity.isEmpty {
+            return "Mañana lee al despertar: «Hoy actúo como \(identity)», y conviértelo en un gesto visible durante la primera hora."
+        }
+        if snapshot.agendaTotalCount > 0 && snapshot.agendaCompleted.isEmpty {
+            return "Elige una sola actividad de tu agenda y resérvale un bloque breve, concreto y sin interrupciones mañana."
+        }
+        return "Conserva el impulso: repite mañana una de las acciones que hoy sí estuvo alineada con la persona que eliges ser."
+    }
+
+    private var reviewsInLastSevenDays: [EveningReview] {
+        let calendar = Calendar.current
+        let start = calendar.date(byAdding: .day, value: -6, to: calendar.startOfDay(for: reviewDate)) ?? reviewDate
+        return store.eveningReviews.filter {
+            let date = Date(timeIntervalSince1970: TimeInterval($0.sessionDateEpochDay * 86_400))
+            return date >= start && date <= reviewDate
+        }
+    }
+
+    private var morningClosureRateLastSevenDays: Double {
+        let calendar = Calendar.current
+        let start = calendar.date(byAdding: .day, value: -6, to: calendar.startOfDay(for: reviewDate)) ?? reviewDate
+        let morningDays = Set(store.sessions.compactMap { session -> Int? in
+            let date = Date(timeIntervalSince1970: TimeInterval(session.sessionDateEpochDay * 86_400))
+            return date >= start && date <= reviewDate ? session.sessionDateEpochDay : nil
+        })
+        guard !morningDays.isEmpty else { return 1 }
+        let reviewDays = Set(reviewsInLastSevenDays.map(\.sessionDateEpochDay))
+        return Double(morningDays.intersection(reviewDays).count) / Double(morningDays.count)
+    }
+
+    private func saveReview(snapshot: EveningDaySnapshot) {
+        let suggestion = suggestedImprovement(snapshot: snapshot)
+        let existingReview = isEditingExistingReview ? selectedReview : nil
+        let journalResult = shouldCreateJournalEntry
+            ? upsertJournalEntry(suggestion: suggestion, snapshot: snapshot, existingID: existingReview?.journalEntryID)
+            : (created: existingReview?.journalEntryCreated ?? false, id: existingReview?.journalEntryID)
+        let review = EveningReview(
+            id: existingReview?.id ?? UUID(),
+            sessionDateEpochDay: epochDay(for: reviewDate),
+            completedAtEpochMillis: Int64(Date().timeIntervalSince1970 * 1_000),
+            energy: energy,
+            predominantEmotionID: predominantEmotionID,
+            whatWentWell: normalized(whatWentWell),
+            learning: normalized(learning),
+            autopilotMoment: normalized(autopilotMoment),
+            gratitude: normalized(gratitude),
+            tomorrowPreparation: normalized(tomorrowPreparation),
+            identityAlignment: identityAlignment,
+            suggestion: suggestion,
+            agendaCompletedCount: snapshot.agendaCompleted.count,
+            agendaTotalCount: snapshot.agendaTotalCount,
+            goalUnitsCompletedCount: snapshot.completedGoalUnits.count,
+            presenceReturns: snapshot.presenceReturns,
+            automaticPilotEvents: snapshot.automaticPilotEvents,
+            coherenceSessionsCount: snapshot.coherenceSessionsCount,
+            journalEntryRequested: shouldCreateJournalEntry,
+            journalEntryCreated: journalResult.created,
+            journalEntryID: journalResult.id
+        )
+        store.saveEveningReview(review)
+        isEditingExistingReview = false
+    }
+
+    private func upsertJournalEntry(
+        suggestion: String,
+        snapshot: EveningDaySnapshot,
+        existingID: UUID?
+    ) -> (created: Bool, id: UUID?) {
+        let identity = store.session(for: reviewDate)?.identity
+        let content = [
+            "RESUMEN DE CIERRE",
+            "ENERGÍA\n\(energy)/5 — \(energyDescription)",
+            "EMOCIÓN PREDOMINANTE\n\(PresenciaMood.title(for: predominantEmotionID))",
+            "LO QUE SALIÓ BIEN\n\(displayValue(whatWentWell))",
+            "APRENDIZAJE\n\(displayValue(learning))",
+            "PILOTO AUTOMÁTICO\n\(displayValue(autopilotMoment))",
+            "GRATITUD\n\(displayValue(gratitude))",
+            "PREPARADO PARA MAÑANA\n\(displayValue(tomorrowPreparation))",
+            "COHERENCIA CON MI IDENTIDAD\n\(identityAlignment)/5\(identity.map { " — \($0)" } ?? "")",
+            "SÍNTESIS DEL DÍA\n\(integratedDaySummary(snapshot))",
+            "UNA MEJORA PARA MAÑANA\n\(suggestion)"
+        ].joined(separator: "\n\n")
+
+        let context = CoreDataController.shared.context
+        let request: NSFetchRequest<Diario> = Diario.fetchRequest()
+        if let existingID {
+            request.predicate = NSPredicate(format: "id == %@", existingID as CVarArg)
+        } else {
+            let calendar = Calendar.current
+            let start = calendar.startOfDay(for: reviewDate)
+            let end = calendar.date(byAdding: .day, value: 1, to: start) ?? start
+            request.predicate = NSPredicate(
+                format: "capitulo == %@ AND fecha >= %@ AND fecha < %@",
+                "Cierre consciente", start as NSDate, end as NSDate
+            )
+        }
+
+        let entry: Diario
+        if let existing = try? context.fetch(request).first {
+            entry = existing
+        } else {
+            entry = Diario(context: context)
+            entry.id = UUID()
+            entry.fecha = Calendar.current.startOfDay(for: reviewDate)
+            entry.setValue("Cierre consciente", forKey: "capitulo")
+        }
+
+        entry.title = "Cierre consciente · \(reviewDate.formatted(date: .abbreviated, time: .omitted))"
+        entry.emotion = journalEmotion.rawValue
+        entry.content = content
+        entry.fechaM = Date()
+
+        do {
+            try context.save()
+            return (true, entry.id)
+        } catch {
+            context.rollback()
+            return (false, existingID)
+        }
+    }
+
+    private func beginEditing(_ review: EveningReview) {
+        energy = max(1, review.energy)
+        predominantEmotionID = review.predominantEmotionID.isEmpty ? "sereno" : review.predominantEmotionID
+        whatWentWell = review.whatWentWell
+        learning = review.learning
+        autopilotMoment = review.autopilotMoment
+        gratitude = review.gratitude
+        tomorrowPreparation = review.tomorrowPreparation
+        identityAlignment = max(1, review.identityAlignment)
+        shouldCreateJournalEntry = review.journalEntryRequested != false
+        snapshot = EveningDaySnapshot.load(for: reviewDate)
+        step = 0
+        isEditingExistingReview = true
+    }
+
+    private func resetDraft() {
+        energy = 3
+        predominantEmotionID = "sereno"
+        whatWentWell = ""
+        learning = ""
+        autopilotMoment = ""
+        gratitude = ""
+        tomorrowPreparation = ""
+        identityAlignment = 3
+        shouldCreateJournalEntry = true
+    }
+
+    private func integratedDaySummary(_ snapshot: EveningDaySnapshot) -> String {
+        let completedAgenda = snapshot.agendaCompleted
+            .map { $0.titulo.isEmpty ? "Actividad sin título" : $0.titulo }
+        let completedGoals = snapshot.completedGoalUnits
+            .map { "\($0.goalTitle) · \($0.unitName)" }
+        let coherence = snapshot.coherenceAverageAfterScore.map { "\(snapshot.coherenceSessionsCount) sesión(es), bienestar final medio \($0)/10" }
+            ?? "sin sesión registrada"
+
+        return [
+            "Agenda completada (\(snapshot.agendaCompleted.count)/\(snapshot.agendaTotalCount)): \(completedAgenda.isEmpty ? "sin actividades marcadas" : completedAgenda.joined(separator: " · "))",
+            "Metas: \(completedGoals.isEmpty ? "sin unidades completadas" : completedGoals.joined(separator: " · "))",
+            "Presencia: \(snapshot.presenceReturns) regreso(s) al presente y \(snapshot.automaticPilotEvents) registro(s) de piloto automático.",
+            "Coherencia: \(coherence)."
+        ].joined(separator: "\n")
+    }
+
+    private var journalEmotion: Emociones {
+        switch predominantEmotionID {
+        case "alegre", "agradecido": return .feliz
+        case "triste": return .triste
+        case "enfadado": return .enfado
+        case "cansado": return .desanimado
+        case "ansioso": return .distraido
+        default: return .pensativo
+        }
+    }
+
+    private func displayValue(_ value: String) -> String {
+        let cleaned = normalized(value)
+        return cleaned.isEmpty ? "Sin respuesta" : cleaned
+    }
+
+    private func normalized(_ value: String) -> String {
+        value.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private func epochDay(for date: Date) -> Int {
+        Int(Calendar.current.startOfDay(for: date).timeIntervalSince1970 / 86_400)
+    }
+}
+
+private struct EveningReviewCompletedView: View {
+    let review: EveningReview
+    let morningSession: MorningRitualSession?
+    let currentSnapshot: EveningDaySnapshot
+    let weeklyClosures: Int
+    let edit: () -> Void
+    let close: () -> Void
+    @State private var showJournalEntry = false
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
+                Image(systemName: "checkmark.seal.fill")
+                    .font(.system(size: 54))
+                    .foregroundStyle(.yellow)
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, 22)
+                Text("Día cerrado con conciencia")
+                    .font(.system(size: 28, weight: .bold, design: .rounded))
+                    .foregroundStyle(.white)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                Text("Tu reflexión quedó guardada en el Diario y ya forma parte del aprendizaje de mañana.")
+                    .font(.subheadline)
+                    .multilineTextAlignment(.center)
+                    .foregroundStyle(.white.opacity(0.74))
+                Text("Ciclo integrado · \(weeklyClosures)/7 cierres en los últimos siete días")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.yellow.opacity(0.92))
+                    .frame(maxWidth: .infinity, alignment: .center)
+
+                summaryCard(title: "Tu intención y tu experiencia", icon: "arrow.triangle.2.circlepath") {
+                    if let morningSession, !morningSession.identity.isEmpty {
+                        Text("Identidad elegida: \(morningSession.identity)")
+                    } else {
+                        Text("Hoy no registraste una identidad matutina.")
+                    }
+                    Text("Coherencia percibida: \(review.identityAlignment)/5")
+                }
+
+                summaryCard(title: "Una mejora para mañana", icon: "arrow.up.right.circle.fill") {
+                    Text(review.suggestion)
+                        .font(.body)
+                }
+
+                summaryCard(title: "Huella del día", icon: "chart.bar.fill") {
+                    Text("Agenda \(review.agendaCompletedCount)/\(review.agendaTotalCount) · Metas \(review.goalUnitsCompletedCount) · Presencia \(review.presenceReturns)")
+                    Text(journalStatus)
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.7))
+                }
+
+                if review.journalEntryCreated, review.journalEntryID != nil {
+                    Button {
+                        showJournalEntry = true
+                    } label: {
+                        Label("Ver entrada de Diario", systemImage: "book.closed.fill")
+                            .font(.subheadline.bold())
+                            .foregroundStyle(.indigo)
+                            .frame(maxWidth: .infinity)
+                            .padding(12)
+                            .background(.white)
+                            .clipShape(RoundedRectangle(cornerRadius: 14))
+                    }
+                    .buttonStyle(.plain)
+                }
+
+                if hasContextChanges {
+                    Button {
+                        edit()
+                    } label: {
+                        Label("Tu día ha cambiado · actualizar resumen", systemImage: "arrow.triangle.2.circlepath")
+                            .font(.subheadline.bold())
+                            .foregroundStyle(.yellow)
+                            .frame(maxWidth: .infinity)
+                            .padding(12)
+                            .background(.yellow.opacity(0.14))
+                            .clipShape(RoundedRectangle(cornerRadius: 14))
+                    }
+                    .buttonStyle(.plain)
+                }
+
+                HStack(spacing: 12) {
+                    Button("Editar cierre", action: edit)
+                        .font(.headline)
+                        .foregroundStyle(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 14)
+                        .background(.white.opacity(0.15))
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
+
+                    Button("Volver", action: close)
+                        .font(.headline)
+                        .foregroundStyle(.indigo)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 14)
+                        .background(.white)
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                }
+                .padding(.top, 4)
+            }
+            .padding(20)
+        }
+        .sheet(isPresented: $showJournalEntry) {
+            if let journalEntryID = review.journalEntryID {
+                RitualJournalEntryView(entryID: journalEntryID)
+            }
+        }
+    }
+
+    private func summaryCard<Content: View>(title: String, icon: String, @ViewBuilder content: () -> Content) -> some View {
+        VStack(alignment: .leading, spacing: 9) {
+            Label(title, systemImage: icon)
+                .font(.headline)
+            content()
+        }
+        .foregroundStyle(.white)
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.white.opacity(0.13))
+        .clipShape(RoundedRectangle(cornerRadius: 20))
+        .overlay(RoundedRectangle(cornerRadius: 20).stroke(.white.opacity(0.18), lineWidth: 1))
+    }
+
+    private var journalStatus: String {
+        guard review.journalEntryRequested != false || review.journalEntryCreated else {
+            return "Elegiste conservar el cierre sin crear una entrada de Diario."
+        }
+        return review.journalEntryCreated
+            ? "Entrada estructurada creada en tu Diario."
+            : "La entrada de Diario no se pudo crear; puedes guardar esta reflexión manualmente."
+    }
+
+    private var hasContextChanges: Bool {
+        review.agendaCompletedCount != currentSnapshot.agendaCompleted.count
+            || review.agendaTotalCount != currentSnapshot.agendaTotalCount
+            || review.goalUnitsCompletedCount != currentSnapshot.completedGoalUnits.count
+            || review.presenceReturns != currentSnapshot.presenceReturns
+            || review.automaticPilotEvents != currentSnapshot.automaticPilotEvents
+            || review.coherenceSessionsCount != currentSnapshot.coherenceSessionsCount
+    }
+}
+
+private struct RitualJournalEntryView: View {
+    @Environment(\.dismiss) private var dismiss
+    let entryID: UUID
+    @State private var entry: Diario?
+
+    var body: some View {
+        NavigationStack {
+            Group {
+                if let entry {
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 14) {
+                            Text(entry.title ?? "Cierre consciente").font(.title2.bold())
+                            Text(entry.fecha?.formatted(date: .long, time: .omitted) ?? "")
+                                .font(.caption).foregroundStyle(.secondary)
+                            Text(entry.content ?? "").textSelection(.enabled)
+                        }
+                        .padding()
+                    }
+                } else {
+                    ContentUnavailableView("Entrada no disponible", systemImage: "book.closed")
+                }
+            }
+            .navigationTitle("Diario")
+            .toolbar { ToolbarItem { Button("Cerrar") { dismiss() } } }
+            .onAppear {
+                let request: NSFetchRequest<Diario> = Diario.fetchRequest()
+                request.predicate = NSPredicate(format: "id == %@", entryID as CVarArg)
+                entry = try? CoreDataController.shared.context.fetch(request).first
+            }
+        }
+    }
+}
+
+struct RitualEveningReviewEntryView: View {
+    let reviewDate: Date
+    @StateObject private var store = MorningRitualStore()
+    @AppStorage("ritual_private_reflections_protected") private var privacyEnabled = false
+    @State private var unlocked = false
+
+    init(reviewDate: Date = Date()) {
+        self.reviewDate = reviewDate
+    }
+
+    var body: some View {
+        Group {
+            if privacyEnabled && !unlocked {
+                RitualPrivacyUnlockView(unlocked: $unlocked)
+            } else {
+                EveningReviewFlowView(store: store, reviewDate: reviewDate)
+            }
+        }
+    }
+}
+
+private enum WellbeingDashboardRoute: Hashable, Identifiable {
+    case agenda
+    case goals
+    case presence
+    case coherence
+    case morningRitual
+
+    var id: Self { self }
+}
+
+struct WellbeingDashboardView: View {
+    @Environment(\.dismiss) private var dismiss
+    @StateObject private var store = MorningRitualStore()
+    @AppStorage("ritual_private_reflections_protected") private var privacyEnabled = false
+    @State private var unlocked = false
+    @State private var selectedDate = Date()
+    @State private var showReview = false
+    @State private var activeRoute: WellbeingDashboardRoute?
+
+    var body: some View {
+        Group {
+            if privacyEnabled && !unlocked {
+                RitualPrivacyUnlockView(unlocked: $unlocked)
+            } else {
+                dashboard
+            }
+        }
+    }
+
+    private var dashboard: some View {
+        let day = Calendar.current.startOfDay(for: selectedDate)
+        let snapshot = EveningDaySnapshot.load(for: day)
+        let morning = store.session(for: day)
+        let review = store.review(for: day)
+
+        return NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 14) {
+                    Text("Mi día")
+                        .font(.system(size: 32, weight: .bold, design: .rounded))
+                        .foregroundStyle(.white)
+                    Text("Una vista única para observar intención, acciones y aprendizaje.")
+                        .foregroundStyle(.white.opacity(0.76))
+                    DatePicker("Día", selection: $selectedDate, in: ...Date(), displayedComponents: .date)
+                        .datePickerStyle(.compact)
+                        .tint(.white)
+                        .foregroundStyle(.white)
+
+                    dashboardCard(title: "Intención", icon: "sunrise.fill", route: .morningRitual) {
+                        Text(morning?.identity.isEmpty == false ? morning!.identity : "Sin ritual matutino registrado")
+                            .font(.headline)
+                            .fixedSize(horizontal: false, vertical: true)
+
+                        if let goals = morning?.goals, !goals.isEmpty {
+                            Text(goals.joined(separator: " · "))
+                                .font(.caption)
+                                .foregroundStyle(.white.opacity(0.72))
+                                .fixedSize(horizontal: false, vertical: true)
+                        } else {
+                            Text(morning == nil ? "Toca el acceso para registrar tu intención." : "Abre el ritual para revisar o repetir tu diseño del día.")
+                                .font(.caption)
+                                .foregroundStyle(.white.opacity(0.72))
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                    }
+
+                    HStack(spacing: 10) {
+                        dashboardMetric("Agenda", "\(snapshot.agendaCompleted.count)/\(snapshot.agendaTotalCount)", "checkmark.circle.fill", route: .agenda)
+                        dashboardMetric("Metas", "\(snapshot.completedGoalUnits.count)", "flag.checkered", route: .goals)
+                        dashboardMetric("Presencia", "\(snapshot.presenceReturns)", "sparkles", route: .presence)
+                    }
+
+                    dashboardCard(title: "Agenda", icon: "calendar", route: .agenda) {
+                        if snapshot.agendaCompleted.isEmpty {
+                            Text("Sin actividades completadas para este día.")
+                                .font(.body)
+                                .fixedSize(horizontal: false, vertical: true)
+                        } else {
+                            ForEach(snapshot.agendaCompleted.prefix(4)) { item in
+                                dashboardPlainLine(
+                                    title: item.titulo.isEmpty ? "Actividad completada" : item.titulo,
+                                    subtitle: "Actividad completada"
+                                )
+                            }
+                        }
+                    }
+
+                    dashboardCard(title: "Metas", icon: "flag.checkered", route: .goals) {
+                        if snapshot.completedGoalUnits.isEmpty {
+                            Text("Sin unidades de metas completadas para este día.")
+                                .font(.body)
+                                .fixedSize(horizontal: false, vertical: true)
+                        } else {
+                            ForEach(Array(snapshot.completedGoalUnits.prefix(4).enumerated()), id: \.offset) { _, unit in
+                                dashboardPlainLine(title: unit.unitName, subtitle: unit.goalTitle)
+                            }
+                        }
+                    }
+
+                    dashboardCard(title: "Presencia", icon: "sparkles", route: .presence) {
+                        Text("Retornos conscientes: \(snapshot.presenceReturns)")
+                            .font(.body)
+                        Text("Piloto automático: \(snapshot.automaticPilotEvents) registro(s)")
+                            .font(.caption)
+                            .foregroundStyle(.white.opacity(0.72))
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+
+                    dashboardCard(title: "Coherencia", icon: "heart.text.square.fill", route: .coherence) {
+                        Text(snapshot.coherenceAverageAfterScore.map { "Puntuación media: \($0)/10" } ?? "Sin sesión de coherencia registrada")
+                            .font(.body)
+                            .fixedSize(horizontal: false, vertical: true)
+                        Text("\(snapshot.coherenceSessionsCount) sesión(es) en el día")
+                            .font(.caption)
+                            .foregroundStyle(.white.opacity(0.72))
+                    }
+
+                    dashboardCard(title: "Aprendizaje", icon: "moon.stars.fill", action: { showReview = true }) {
+                        if let review {
+                            Text("Energía \(review.energy)/5 · Coherencia con mi identidad \(review.identityAlignment)/5")
+                                .font(.body)
+                                .fixedSize(horizontal: false, vertical: true)
+                            Text(review.suggestion)
+                                .foregroundStyle(.white.opacity(0.82))
+                                .fixedSize(horizontal: false, vertical: true)
+                        } else {
+                            Text("Aún no has cerrado este día.")
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                    }
+                }
+                .padding()
+            }
+            .background(LinearGradient(colors: [Color(red: 0.06, green: 0.13, blue: 0.26), Color(red: 0.38, green: 0.18, blue: 0.42)], startPoint: .topLeading, endPoint: .bottomTrailing).ignoresSafeArea())
+            .toolbar { ToolbarItem { Button("Cerrar") { dismiss() }.foregroundStyle(.white) } }
+            .sheet(item: $activeRoute) { route in
+                dashboardDestination(for: route, selectedDate: day, morning: morning)
+            }
+            .sheet(isPresented: $showReview) { RitualEveningReviewEntryView(reviewDate: day) }
+        }
+    }
+
+    @ViewBuilder
+    private func dashboardDestination(
+        for route: WellbeingDashboardRoute,
+        selectedDate: Date,
+        morning: MorningRitualSession?
+    ) -> some View {
+        switch route {
+        case .agenda:
+            AgendaMainView()
+        case .goals:
+            GoalsListView()
+        case .presence:
+            PresenciaView()
+        case .coherence:
+            CardioCoherenceWelcomeFlowView()
+        case .morningRitual:
+            if morning == nil {
+                MorningRitualFlowView(store: store, ritualDate: selectedDate)
+            } else {
+                MorningRitualMainView()
+            }
+        }
+    }
+
+    private func dashboardCard<Content: View>(
+        title: String,
+        icon: String,
+        route: WellbeingDashboardRoute? = nil,
+        action: (() -> Void)? = nil,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 9) {
+            Label(title, systemImage: icon).font(.headline)
+            content()
+        }
+        .foregroundStyle(.white)
+        .padding(16)
+        .padding(.top, route == nil && action == nil ? 0 : 8)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.white.opacity(0.13))
+        .clipShape(RoundedRectangle(cornerRadius: 18))
+        .overlay(alignment: .topTrailing) {
+            if let route {
+                dashboardAccessButton(size: 22, iconSize: 8, padding: 8) {
+                    activeRoute = route
+                }
+            } else if let action {
+                dashboardAccessButton(size: 22, iconSize: 8, padding: 8, action: action)
+            }
+        }
+    }
+
+    private func dashboardMetric(_ title: String, _ value: String, _ icon: String, route: WellbeingDashboardRoute) -> some View {
+        VStack(spacing: 6) {
+            Image(systemName: icon).foregroundStyle(.yellow)
+            Text(value).font(.headline.monospacedDigit())
+            Text(title).font(.caption2).foregroundStyle(.white.opacity(0.7))
+        }
+        .foregroundStyle(.white)
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 12)
+        .background(.white.opacity(0.13))
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .overlay(alignment: .topTrailing) {
+            dashboardAccessButton(size: 20, iconSize: 7, padding: 7) {
+                activeRoute = route
+            }
+            .offset(x: 3, y: -3)
+        }
+    }
+
+    private func dashboardPlainLine(title: String, subtitle: String) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(title)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.white)
+                .fixedSize(horizontal: false, vertical: true)
+            Text(subtitle)
+                .font(.caption)
+                .foregroundStyle(.white.opacity(0.68))
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(10)
+        .background(.white.opacity(0.10))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+
+    private func dashboardAccessButton(
+        size: CGFloat = 28,
+        iconSize: CGFloat = 10,
+        padding: CGFloat = 10,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            Image(systemName: "arrow.up.right")
+                .font(.system(size: iconSize, weight: .bold))
+                .foregroundStyle(Color(red: 0.12, green: 0.16, blue: 0.28))
+                .frame(width: size, height: size)
+                .background(.white)
+                .clipShape(Circle())
+                .shadow(color: .black.opacity(0.16), radius: 3, y: 1)
+        }
+        .buttonStyle(.plain)
+        .padding(padding)
+        .accessibilityLabel("Abrir herramienta")
+    }
+}
+
+private struct RitualPrivacyUnlockView: View {
+    @Binding var unlocked: Bool
+
+    var body: some View {
+        VStack(spacing: 18) {
+            Image(systemName: "lock.heart.fill").font(.system(size: 46)).foregroundStyle(.indigo)
+            Text("Reflexiones protegidas").font(.title2.bold())
+            Text("Desbloquea tus reflexiones de cierre con biometría o el código de tu dispositivo.")
+                .multilineTextAlignment(.center).foregroundStyle(.secondary)
+            Button("Desbloquear") {
+                UtilFuncs.authenticateDeviceOwner(reason: "Desbloquea tus reflexiones de cierre") { success, _ in
+                    unlocked = success
+                }
+            }
+            .buttonStyle(.borderedProminent)
+        }
+        .padding(28)
+    }
+}
+
 private struct MorningRitualFlowView: View {
     @Environment(\.dismiss) private var dismiss
     @ObservedObject var store: MorningRitualStore
+    let ritualDate: Date
 
     private enum FocusedField: Hashable {
         case goal(Int)
@@ -492,6 +2080,11 @@ private struct MorningRitualFlowView: View {
         "Entusiasmo","Seguridad","Asombro","Satisfacción", "Fluidez", "Conexión", "Fortaleza",
         "Resiliencia"
     ]
+
+    init(store: MorningRitualStore, ritualDate: Date = Date()) {
+        self.store = store
+        self.ritualDate = ritualDate
+    }
 
     var body: some View {
         NavigationStack {
@@ -863,7 +2456,7 @@ private struct MorningRitualFlowView: View {
         guard validateCurrentStep() == nil else { return }
 
         let nowMillis = Int64(Date().timeIntervalSince1970 * 1_000)
-        let todayEpoch = epochDay(for: Date())
+        let todayEpoch = epochDay(for: ritualDate)
 
         let session = MorningRitualSession(
             sessionDateEpochDay: todayEpoch,
@@ -1047,7 +2640,7 @@ private struct MorningRitualStatsView: View {
     @Environment(\.dismiss) private var dismiss
     @ObservedObject var store: MorningRitualStore
 
-    @State private var stats = MorningRitualStatsSnapshot(sessions: [])
+    @State private var stats = MorningRitualStatsSnapshot(sessions: [], reviews: [])
 
     var body: some View {
         NavigationStack {
@@ -1066,6 +2659,7 @@ private struct MorningRitualStatsView: View {
                 ScrollView {
                     VStack(spacing: 14) {
                         MorningRitualHeadlineCards(stats: stats)
+                        MorningRitualClosingInsightsSection(stats: stats)
                         MorningRitualWeeklyBars(stats: stats)
                         MorningRitualTopTagsSection(stats: stats)
                         MorningRitualTrendSection(stats: stats)
@@ -1094,11 +2688,17 @@ private struct MorningRitualStatsView: View {
             .onAppear {
                 reloadStats()
             }
+            .onChange(of: store.sessions) { _, _ in
+                reloadStats()
+            }
+            .onChange(of: store.eveningReviews) { _, _ in
+                reloadStats()
+            }
         }
     }
 
     private func reloadStats() {
-        stats = MorningRitualStatsSnapshot(sessions: store.sessions)
+        stats = MorningRitualStatsSnapshot(sessions: store.sessions, reviews: store.eveningReviews)
     }
 }
 
@@ -1129,12 +2729,18 @@ private struct MorningRitualStatsSnapshot {
     let monthlyAverage: Double
     let avgGoalsPerRitual: Double
     let avgAnticipationsPerRitual: Double
+    let totalEveningReviews: Int
+    let closureRate: Double
+    let avgEnergy: Double
+    let avgIdentityAlignment: Double
+    let avgPresenceReturns: Double
+    let totalGoalUnitsCompleted: Int
     let weekdayCounts: [WeekdayCount]
     let topIdentities: [NamedCount]
     let topEmotions: [NamedCount]
     let dayPoints: [DayPoint]
 
-    init(sessions: [MorningRitualSession]) {
+    init(sessions: [MorningRitualSession], reviews: [EveningReview]) {
         let calendar = Calendar.current
         let days = sessions.map { Date(timeIntervalSince1970: TimeInterval($0.sessionDateEpochDay * 86_400)) }
             .map { calendar.startOfDay(for: $0) }
@@ -1150,6 +2756,15 @@ private struct MorningRitualStatsSnapshot {
             partial + min(session.anticipatedSituations.count, session.consciousResponses.count)
         }
         avgAnticipationsPerRitual = sessions.isEmpty ? 0 : Double(totalAnticipations) / Double(sessions.count)
+
+        totalEveningReviews = reviews.count
+        let morningDays = Set(sessions.map(\.sessionDateEpochDay))
+        let completedCycles = Set(reviews.map(\.sessionDateEpochDay)).intersection(morningDays).count
+        closureRate = morningDays.isEmpty ? 0 : Double(completedCycles) / Double(morningDays.count)
+        avgEnergy = reviews.isEmpty ? 0 : Double(reviews.reduce(0) { $0 + $1.energy }) / Double(reviews.count)
+        avgIdentityAlignment = reviews.isEmpty ? 0 : Double(reviews.reduce(0) { $0 + $1.identityAlignment }) / Double(reviews.count)
+        avgPresenceReturns = reviews.isEmpty ? 0 : Double(reviews.reduce(0) { $0 + $1.presenceReturns }) / Double(reviews.count)
+        totalGoalUnitsCompleted = reviews.reduce(0) { $0 + $1.goalUnitsCompletedCount }
 
         if let firstDate = days.min(), let lastDate = days.max() {
             let dayRange = max((calendar.dateComponents([.day], from: firstDate, to: lastDate).day ?? 0) + 1, 1)
@@ -1252,7 +2867,7 @@ private struct MorningRitualHeadlineCards: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
 
             HStack(spacing: 10) {
-                metricCard(title: "Rituales", value: "\(stats.totalRituals)", subtitle: "Total")
+                metricCard(title: "Mañanas", value: "\(stats.totalRituals)", subtitle: "rituales")
                 metricCard(title: "Días activos", value: "\(stats.daysWithRitual)", subtitle: "Con ritual")
             }
             HStack(spacing: 10) {
@@ -1316,6 +2931,75 @@ private struct MorningRitualWeeklyBars: View {
         .padding(12)
         .background(.white.opacity(0.12))
         .clipShape(RoundedRectangle(cornerRadius: 14))
+    }
+}
+
+private struct MorningRitualClosingInsightsSection: View {
+    let stats: MorningRitualStatsSnapshot
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Ciclo mañana → cierre")
+                .font(.headline)
+                .foregroundStyle(.white)
+
+            HStack(spacing: 10) {
+                metric(title: "Cierres", value: "\(stats.totalEveningReviews)", subtitle: "registrados")
+                metric(title: "Ciclos completos", value: "\(Int((stats.closureRate * 100).rounded()))%", subtitle: "con intención")
+            }
+            HStack(spacing: 10) {
+                metric(title: "Energía media", value: score(stats.avgEnergy), subtitle: "de 5")
+                metric(title: "Coherencia", value: score(stats.avgIdentityAlignment), subtitle: "de 5")
+            }
+            HStack(spacing: 10) {
+                metric(title: "Presencia media", value: String(format: "%.1f", stats.avgPresenceReturns), subtitle: "regresos/día")
+                metric(title: "Metas avanzadas", value: "\(stats.totalGoalUnitsCompleted)", subtitle: "unidades")
+            }
+
+            Text(practicalInsight)
+                .font(.caption)
+                .foregroundStyle(.white.opacity(0.82))
+                .padding(10)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(.black.opacity(0.16))
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+        }
+        .padding(12)
+        .background(.white.opacity(0.12))
+        .clipShape(RoundedRectangle(cornerRadius: 14))
+    }
+
+    private func metric(title: String, value: String, subtitle: String) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(title).font(.caption).foregroundStyle(.white.opacity(0.76))
+            Text(value).font(.title3.bold())
+            Text(subtitle).font(.caption2).foregroundStyle(.white.opacity(0.66))
+        }
+        .foregroundStyle(.white)
+        .padding(10)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.white.opacity(0.10))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+
+    private func score(_ value: Double) -> String {
+        value == 0 ? "—" : String(format: "%.1f", value)
+    }
+
+    private var practicalInsight: String {
+        guard stats.totalEveningReviews > 0 else {
+            return "Completa el cierre nocturno para transformar tu intención de la mañana en aprendizaje práctico."
+        }
+        if stats.closureRate < 0.5 {
+            return "Tu oportunidad más clara: reserva una hora fija para cerrar más días de los que ya comienzas con intención."
+        }
+        if stats.avgIdentityAlignment > 0, stats.avgIdentityAlignment < 3 {
+            return "La intención está presente, pero la coherencia aún es baja: elige un gesto visible que exprese tu identidad durante la primera hora del día."
+        }
+        if stats.avgEnergy > 0, stats.avgEnergy < 3 {
+            return "La energía media es baja: usa la preparación nocturna para reducir fricción y proteger el inicio de mañana."
+        }
+        return "Estás cerrando el ciclo con constancia. Conserva tu preparación de mañana y repite las acciones que sostienen tu coherencia."
     }
 }
 
@@ -1823,6 +3507,10 @@ private struct MorningRitualSettingsView: View {
     @State private var enabled = false
     @State private var hour = 7
     @State private var minute = 30
+    @State private var eveningReminderEnabled = false
+    @State private var eveningReminderHour = 21
+    @State private var eveningReminderMinute = 30
+    @AppStorage("ritual_private_reflections_protected") private var privacyEnabled = false
 
     var body: some View {
         NavigationStack {
@@ -1834,41 +3522,58 @@ private struct MorningRitualSettingsView: View {
                 )
                 .ignoresSafeArea()
 
-                VStack(spacing: 14) {
-                    Toggle("Activar recordatorio diario", isOn: $enabled)
+                ScrollView {
+                    VStack(spacing: 16) {
+                        reminderSection(
+                            title: "Ritual matutino",
+                            subtitle: "Empieza el día con intención.",
+                            icon: "sunrise.fill",
+                            enabled: $enabled,
+                            hour: $hour,
+                            minute: $minute
+                        )
+
+                        Toggle(isOn: $privacyEnabled) {
+                            VStack(alignment: .leading, spacing: 3) {
+                                Label("Proteger reflexiones de cierre", systemImage: "lock.heart.fill")
+                                    .font(.headline)
+                                Text("Pide biometría o código para abrir cierres y el panel Mi día.")
+                                    .font(.caption)
+                                    .foregroundStyle(.white.opacity(0.68))
+                            }
+                        }
                         .tint(.green)
                         .foregroundStyle(.white)
+                        .padding(14)
+                        .background(.white.opacity(0.11))
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
 
-                    HStack {
-                        Picker("Hora", selection: $hour) {
-                            ForEach(0..<24, id: \.self) { value in
-                                Text(String(format: "%02d", value)).tag(value)
-                            }
+                        reminderSection(
+                            title: "Cierre consciente",
+                            subtitle: "Una pausa para integrar el día y preparar mañana.",
+                            icon: "moon.stars.fill",
+                            enabled: $eveningReminderEnabled,
+                            hour: $eveningReminderHour,
+                            minute: $eveningReminderMinute
+                        )
+
+                        Button("Guardar cambios") {
+                            store.applySettings(
+                                enabled: enabled,
+                                hour: hour,
+                                minute: minute,
+                                eveningReminderEnabled: eveningReminderEnabled,
+                                eveningReminderHour: eveningReminderHour,
+                                eveningReminderMinute: eveningReminderMinute
+                            )
+                            dismiss()
                         }
-#if os(iOS)
-                        .pickerStyle(.wheel)
-#endif
-
-                        Picker("Minuto", selection: $minute) {
-                            ForEach(0..<60, id: \.self) { value in
-                                Text(String(format: "%02d", value)).tag(value)
-                            }
-                        }
-#if os(iOS)
-                        .pickerStyle(.wheel)
-#endif
+                        .buttonStyle(.borderedProminent)
+                        .tint(.teal)
                     }
-                    .frame(height: 140)
-
-                    Button("Guardar cambios") {
-                        store.applySettings(enabled: enabled, hour: hour, minute: minute)
-                        dismiss()
-                    }
-                    .buttonStyle(.bordered)
-                    .tint(.teal)
-
-                    Spacer()
+                    .padding(.vertical, 4)
                 }
+
                 .padding(16)
             }
             .onTapGesture {
@@ -1879,8 +3584,62 @@ private struct MorningRitualSettingsView: View {
                 enabled = store.settings.enabled
                 hour = store.settings.hour
                 minute = store.settings.minute
+                eveningReminderEnabled = store.settings.eveningReminderEnabled
+                eveningReminderHour = store.settings.eveningReminderHour
+                eveningReminderMinute = store.settings.eveningReminderMinute
             }
         }
+    }
+
+    private func reminderSection(
+        title: String,
+        subtitle: String,
+        icon: String,
+        enabled: Binding<Bool>,
+        hour: Binding<Int>,
+        minute: Binding<Int>
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .top, spacing: 10) {
+                Image(systemName: icon)
+                    .foregroundStyle(.yellow)
+                    .font(.title3)
+                    .frame(width: 26)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title).font(.headline)
+                    Text(subtitle)
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.68))
+                }
+                Spacer()
+                Toggle("", isOn: enabled)
+                    .labelsHidden()
+                    .tint(.green)
+            }
+
+            HStack(spacing: 12) {
+                Picker("Hora", selection: hour) {
+                    ForEach(0..<24, id: \.self) { value in
+                        Text(String(format: "%02d", value)).tag(value)
+                    }
+                }
+                Picker("Minuto", selection: minute) {
+                    ForEach(0..<60, id: \.self) { value in
+                        Text(String(format: "%02d", value)).tag(value)
+                    }
+                }
+            }
+#if os(iOS)
+            .pickerStyle(.menu)
+#endif
+            .disabled(!enabled.wrappedValue)
+            .opacity(enabled.wrappedValue ? 1 : 0.45)
+        }
+        .foregroundStyle(.white)
+        .padding(14)
+        .background(.white.opacity(0.11))
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .overlay(RoundedRectangle(cornerRadius: 16).stroke(.white.opacity(0.14), lineWidth: 1))
     }
 
     private func dismissKeyboard() {

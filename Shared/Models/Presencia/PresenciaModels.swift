@@ -242,6 +242,25 @@ final class PresenciaRepository {
         eventPoints(days: 1)
     }
 
+    func eventPoints(on date: Date) -> [PresenciaEventPoint] {
+        let day = calendar.startOfDay(for: date)
+        guard let end = calendar.date(byAdding: .day, value: 1, to: day) else { return [] }
+        let request = NSFetchRequest<NSManagedObject>(entityName: "PresenciaEventEntity")
+        request.predicate = NSPredicate(format: "createdAt >= %@ AND createdAt < %@", day as NSDate, end as NSDate)
+        request.sortDescriptors = [NSSortDescriptor(key: "createdAt", ascending: true)]
+
+        return ((try? context.fetch(request)) ?? []).compactMap { event in
+            guard let createdAt = event.value(forKey: "createdAt") as? Date else { return nil }
+            return PresenciaEventPoint(
+                id: event.value(forKey: "id") as? UUID ?? UUID(),
+                createdAt: createdAt,
+                dayStart: day,
+                eventType: (event.value(forKey: "eventType") as? String).flatMap(PresenciaEventType.init(rawValue:)),
+                moodID: event.value(forKey: "mood") as? String
+            )
+        }
+    }
+
     func resetAllEvents() -> Bool {
         let request = NSFetchRequest<NSManagedObject>(entityName: "PresenciaEventEntity")
 

@@ -1252,6 +1252,7 @@
 				Views/Frases/FrasesUpdateView.swift,
 				Views/Frases/RowFraseMenu.swift,
 				Views/HomeAlternativo/HomeAlternativoPhrases.swift,
+				Views/HomeAlternativo/HomeContextualRecommendationCard.swift,
 				Views/HomeAlternativo/HomeAlternativoView.swift,
 				Views/IAView/ChatView.swift,
 				Views/IAView/DescargoResponsabilidad.swift,

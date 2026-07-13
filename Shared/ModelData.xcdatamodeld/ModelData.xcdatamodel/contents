@@ -129,6 +129,39 @@
         <attribute name="note" optional="YES" attributeType="String"/>
         <attribute name="source" optional="YES" attributeType="String"/>
     </entity>
+    <entity name="RitualSessionEntity" representedClassName="RitualSessionEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="anticipatedSituationsJSON" optional="YES" attributeType="String"/>
+        <attribute name="agendaCompletedCount" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="agendaTotalCount" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="automaticPilotEvents" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="coherenceSessionsCount" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="completed" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="completedAtEpochMillis" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="consciousResponsesJSON" optional="YES" attributeType="String"/>
+        <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="energy" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="emotionsJSON" optional="YES" attributeType="String"/>
+        <attribute name="goalUnitsCompletedCount" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="goalsJSON" optional="YES" attributeType="String"/>
+        <attribute name="gratitude" optional="YES" attributeType="String"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="identity" optional="YES" attributeType="String"/>
+        <attribute name="identityAlignment" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="journalEntryCreated" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="journalEntryID" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="journalEntryRequested" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="kind" optional="YES" attributeType="String"/>
+        <attribute name="learning" optional="YES" attributeType="String"/>
+        <attribute name="noteText" optional="YES" attributeType="String"/>
+        <attribute name="predominantEmotionID" optional="YES" attributeType="String"/>
+        <attribute name="presenceReturns" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="sessionDateEpochDay" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="suggestion" optional="YES" attributeType="String"/>
+        <attribute name="tomorrowPreparation" optional="YES" attributeType="String"/>
+        <attribute name="updatedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="whatWentWell" optional="YES" attributeType="String"/>
+        <attribute name="autopilotMoment" optional="YES" attributeType="String"/>
+    </entity>
     <entity name="Reflex" representedClassName="Reflex" syncable="YES" codeGenerationType="class">
         <attribute name="autor" optional="YES" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="String"/>

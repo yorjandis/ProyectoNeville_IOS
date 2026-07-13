@@ -37,6 +37,8 @@ final class CoreDataController: Sendable {
         // Configurar la ubicación de la BD
         let storeURL = NSPersistentContainer.defaultDirectoryURL().appendingPathComponent("ModelData.sqlite")
         let description = NSPersistentStoreDescription(url: storeURL)
+        description.shouldMigrateStoreAutomatically = true
+        description.shouldInferMappingModelAutomatically = true
 
         // Habilitar historial de cambios y notificaciones remotas
         description.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)
