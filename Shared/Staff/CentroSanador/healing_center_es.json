@@ -1,6 +1,6 @@
 {
-  "schemaVersion": 1,
-  "contentVersion": "1.2.0",
+  "schemaVersion": 2,
+  "contentVersion": "1.3.0",
   "reviewedAt": "2026-07-13",
   "disclaimer": "Contenido educativo de bienestar y autorregulación. No diagnostica ni sustituye la atención de profesionales sanitarios.",
   "situations": [
@@ -58,6 +58,58 @@
             {"id":"pas-4","title":"Olor y sabor","instruction":"Identifica dos olores y una sensación de sabor. Si no aparecen, imagina dos olores familiares.","durationSeconds":18,"phase":"observe","accessibilityCue":"Identifica olores y una sensación de sabor."},
             {"id":"pas-5","title":"Frase de orientación","instruction":"Di: estoy aquí, ahora mismo; puedo ocuparme solo del siguiente minuto.","durationSeconds":12,"phase":"finish","accessibilityCue":"Repite la frase de orientación."}
           ]
+        },
+        {
+          "id": "panico-presion-alternada",
+          "title": "Golpeteo bilateral suave",
+          "summary": "Un ritmo táctil alterno para dar a la atención una referencia corporal estable.",
+          "symbol": "hands.and.sparkles.fill",
+          "kind": "grounding",
+          "evidence": "complementary",
+          "caution": "Usa una presión cómoda y omite cualquier zona dolorida o lesionada.",
+          "steps": [
+            {
+              "id": "ppa-1",
+              "title": "Cruza los brazos",
+              "instruction": "Apoya cada mano sobre el brazo contrario, entre el hombro y el codo, sin apretar.",
+              "durationSeconds": 12,
+              "phase": "prepare",
+              "accessibilityCue": "Cruza los brazos de forma cómoda."
+            },
+            {
+              "id": "ppa-2",
+              "title": "Alterna",
+              "instruction": "Da un toque suave con una mano y después con la otra, a un ritmo lento y predecible.",
+              "durationSeconds": 30,
+              "phase": "press",
+              "accessibilityCue": "Alterna toques suaves."
+            },
+            {
+              "id": "ppa-3",
+              "title": "Mira y nombra",
+              "instruction": "Mantén el ritmo mientras nombras tres objetos y el lugar en el que estás.",
+              "durationSeconds": 24,
+              "phase": "orient",
+              "accessibilityCue": "Nombra tres objetos del entorno."
+            }
+          ]
+        }
+      ],
+      "practicalTips": [
+        {
+          "id": "panico-tip-frio",
+          "title": "Toca una superficie fresca",
+          "detail": "Una botella o una pieza de metal fresca, no helada, puede darte una señal sensorial concreta."
+        },
+        {
+          "id": "panico-tip-sabor",
+          "title": "Usa un sabor conocido",
+          "detail": "Un chicle o caramelo de menta puede llevar la atención al presente; evítalo si te cuesta tragar."
+        },
+        {
+          "id": "panico-tip-tarjeta",
+          "title": "Prepara una nota breve",
+          "detail": "Guarda una frase visible: «Compruebo seguridad, reduzco el ritmo y pido ayuda si algo cambia»."
         }
       ],
       "sources": [
@@ -115,6 +167,58 @@
             {"id":"tdm-4","title":"Vista","instruction":"Mira un punto lejano o el extremo más distante de la habitación.","durationSeconds":15,"phase":"orient","accessibilityCue":"Mira un punto lejano."},
             {"id":"tdm-5","title":"Regresa","instruction":"Vuelve a la tarea elegida, manteniendo solo una ventana o documento principal.","durationSeconds":12,"phase":"finish","accessibilityCue":"Regresa a una sola tarea."}
           ]
+        },
+        {
+          "id": "trabajo-reinicio-postural",
+          "title": "Reinicio postural suave",
+          "summary": "Movilidad pequeña para cuello, escápulas y mirada, sin crujidos ni manipulaciones.",
+          "symbol": "figure.stand",
+          "kind": "movement",
+          "evidence": "promising",
+          "caution": "No gires ni fuerces el cuello. Omite el movimiento si tienes lesión, dolor, hormigueo o vértigo.",
+          "steps": [
+            {
+              "id": "trp-1",
+              "title": "Busca apoyo",
+              "instruction": "Apoya ambos pies y deja que el respaldo sostenga parte de tu peso.",
+              "durationSeconds": 12,
+              "phase": "prepare",
+              "accessibilityCue": "Apoya los pies y la espalda."
+            },
+            {
+              "id": "trp-2",
+              "title": "Alarga sin forzar",
+              "instruction": "Imagina que la coronilla sube y lleva la barbilla apenas hacia atrás, sin mirar abajo.",
+              "durationSeconds": 12,
+              "phase": "move",
+              "accessibilityCue": "Alarga suavemente la nuca."
+            },
+            {
+              "id": "trp-3",
+              "title": "Escápulas y mirada",
+              "instruction": "Acerca y suelta los omóplatos; después mira un punto lejano y amplía la visión periférica.",
+              "durationSeconds": 30,
+              "phase": "move",
+              "accessibilityCue": "Mueve los omóplatos y mira lejos."
+            }
+          ]
+        }
+      ],
+      "practicalTips": [
+        {
+          "id": "trabajo-tip-una-ventana",
+          "title": "Deja una sola ventana visible",
+          "detail": "Oculta diez minutos el correo, el chat y las pestañas ajenas a la siguiente acción."
+        },
+        {
+          "id": "trabajo-tip-aparcamiento",
+          "title": "Crea un aparcamiento en papel",
+          "detail": "Escribe cada pendiente intrusivo en una línea para no tener que recordarlo continuamente."
+        },
+        {
+          "id": "trabajo-tip-distancia",
+          "title": "Mira lejos brevemente",
+          "detail": "Cambia la mirada de la pantalla a un punto lejano y parpadea conscientemente varias veces."
         }
       ],
       "sources": [
@@ -173,6 +277,58 @@
             {"id":"ezs-5","title":"Vocaliza","instruction":"Repite el sonido con el tono que resulte más fácil.","durationSeconds":7,"phase":"sound","accessibilityCue":"Exhala con un zumbido suave."},
             {"id":"ezs-6","title":"Silencio","instruction":"Respira con normalidad y observa si ha cambiado alguna sensación.","durationSeconds":15,"phase":"finish","accessibilityCue":"Respira con normalidad y observa."}
           ]
+        },
+        {
+          "id": "emocion-autoabrazo-alterno",
+          "title": "Autoabrazo alterno",
+          "summary": "Contención física opcional con presión cómoda y pequeños toques alternos.",
+          "symbol": "heart.circle.fill",
+          "kind": "grounding",
+          "evidence": "complementary",
+          "caution": "No lo uses si el contacto resulta activador; puedes apoyar las manos sobre una mesa.",
+          "steps": [
+            {
+              "id": "eaa-1",
+              "title": "Elige el contacto",
+              "instruction": "Cruza los brazos sobre el pecho o apoya una mano en cada antebrazo de la manera menos intensa.",
+              "durationSeconds": 12,
+              "phase": "prepare",
+              "accessibilityCue": "Elige un contacto cómodo."
+            },
+            {
+              "id": "eaa-2",
+              "title": "Alterna despacio",
+              "instruction": "Haz dos o tres toques suaves a un lado y después al otro, sin intentar eliminar la emoción.",
+              "durationSeconds": 30,
+              "phase": "press",
+              "accessibilityCue": "Alterna toques lentos."
+            },
+            {
+              "id": "eaa-3",
+              "title": "Pon un nombre",
+              "instruction": "Di: «Ahora hay una emoción intensa y puedo ocuparme del siguiente minuto».",
+              "durationSeconds": 15,
+              "phase": "finish",
+              "accessibilityCue": "Nombra la emoción sin juzgarte."
+            }
+          ]
+        }
+      ],
+      "practicalTips": [
+        {
+          "id": "emocion-tip-menos-palabras",
+          "title": "Usa menos palabras",
+          "detail": "Reduce la explicación a tres datos: emoción, necesidad y siguiente acción segura."
+        },
+        {
+          "id": "emocion-tip-cambio-espacio",
+          "title": "Cambia de espacio",
+          "detail": "Pasar a otra habitación o pasillo puede interrumpir por un momento las asociaciones del lugar."
+        },
+        {
+          "id": "emocion-tip-agua",
+          "title": "Bebe agua lentamente",
+          "detail": "Haz tres sorbos pequeños atendiendo a temperatura, recorrido y pausa."
         }
       ],
       "sources": [
@@ -229,6 +385,58 @@
             {"id":"mas-3","title":"Suelta","instruction":"Retira el dedo despacio y observa la frente, la mandíbula y los hombros.","durationSeconds":15,"phase":"observe","accessibilityCue":"Suelta y observa la cara y los hombros."},
             {"id":"mas-4","title":"Orienta","instruction":"Mira alrededor y decide si necesitas una acción de seguridad real o puedes continuar.","durationSeconds":20,"phase":"finish","accessibilityCue":"Orienta la vista y decide el siguiente paso."}
           ]
+        },
+        {
+          "id": "miedo-empuje-estable",
+          "title": "Empuje contra una pared",
+          "summary": "Descarga parte de la preparación para actuar mediante una presión isométrica controlada.",
+          "symbol": "figure.strengthtraining.traditional",
+          "kind": "muscleRelease",
+          "evidence": "promising",
+          "caution": "No lo hagas en una superficie inestable ni con dolor o lesión en manos, hombros o espalda.",
+          "steps": [
+            {
+              "id": "mee-1",
+              "title": "Comprueba el apoyo",
+              "instruction": "Colócate frente a una pared firme, con los pies separados y sin bloquear las rodillas.",
+              "durationSeconds": 12,
+              "phase": "prepare",
+              "accessibilityCue": "Colócate ante una pared estable."
+            },
+            {
+              "id": "mee-2",
+              "title": "Presiona y suelta",
+              "instruction": "Empuja con intensidad moderada, respira y después reduce la fuerza poco a poco.",
+              "durationSeconds": 24,
+              "phase": "press",
+              "accessibilityCue": "Empuja y suelta gradualmente."
+            },
+            {
+              "id": "mee-3",
+              "title": "Elige seguridad",
+              "instruction": "Mira alrededor y decide una medida proporcionada: alejarte, pedir compañía o continuar.",
+              "durationSeconds": 20,
+              "phase": "finish",
+              "accessibilityCue": "Elige una medida de seguridad."
+            }
+          ]
+        }
+      ],
+      "practicalTips": [
+        {
+          "id": "miedo-tip-espalda",
+          "title": "Busca respaldo físico",
+          "detail": "Apoya la espalda en una pared o respaldo firme para tener una referencia clara de límite."
+        },
+        {
+          "id": "miedo-tip-luz",
+          "title": "Aumenta la luz si puedes",
+          "detail": "En un lugar seguro, iluminar el entorno facilita comprobar detalles ocultos por la incertidumbre."
+        },
+        {
+          "id": "miedo-tip-voz",
+          "title": "Pon una voz conocida",
+          "detail": "Llama a alguien o reproduce un audio familiar mientras realizas el siguiente paso seguro."
         }
       ],
       "sources": [
@@ -285,6 +493,58 @@
             {"id":"rds-3","title":"Opción reversible","instruction":"Si es posible, elige el paso más pequeño que puedas corregir después.","durationSeconds":20,"phase":"reflect","accessibilityCue":"Busca un paso pequeño y reversible."},
             {"id":"rds-4","title":"Punto de revisión","instruction":"Decide cuándo revisarás el resultado. Hasta entonces, no reabras la decisión sin información nueva.","durationSeconds":20,"phase":"finish","accessibilityCue":"Fija un momento para revisar el resultado."}
           ]
+        },
+        {
+          "id": "rumiacion-contenedor-escrito",
+          "title": "Contenedor escrito",
+          "summary": "Saca el bucle de la memoria y asígnale un momento concreto para revisarlo.",
+          "symbol": "note.text",
+          "kind": "reflection",
+          "evidence": "supported",
+          "caution": null,
+          "steps": [
+            {
+              "id": "rce-1",
+              "title": "Escribe el bucle",
+              "instruction": "Resume en una sola frase la pregunta que tu mente repite.",
+              "durationSeconds": 25,
+              "phase": "reflect",
+              "accessibilityCue": "Resume la preocupación en una frase."
+            },
+            {
+              "id": "rce-2",
+              "title": "Separa lo controlable",
+              "instruction": "Anota una acción que dependa de ti o escribe «ahora no hay acción».",
+              "durationSeconds": 25,
+              "phase": "reflect",
+              "accessibilityCue": "Identifica una acción controlable."
+            },
+            {
+              "id": "rce-3",
+              "title": "Pon una cita",
+              "instruction": "Elige una hora breve para revisarlo; hasta entonces, guarda la nota y cambia de tarea.",
+              "durationSeconds": 20,
+              "phase": "finish",
+              "accessibilityCue": "Programa un momento de revisión."
+            }
+          ]
+        }
+      ],
+      "practicalTips": [
+        {
+          "id": "rumiacion-tip-voz",
+          "title": "Cambia la voz del pensamiento",
+          "detail": "Repítelo con voz de narrador o cantado; puede ayudarte a verlo como una frase, no como un hecho."
+        },
+        {
+          "id": "rumiacion-tip-manos",
+          "title": "Ocupa las manos",
+          "detail": "Doblar ropa, dibujar líneas o clasificar objetos ofrece una tarea repetitiva y concreta."
+        },
+        {
+          "id": "rumiacion-tip-pregunta",
+          "title": "Pregunta «¿hay algo que hacer hoy?»",
+          "detail": "Si no, anótalo; si sí, reduce la respuesta a una acción de menos de cinco minutos."
         }
       ],
       "sources": [
@@ -342,6 +602,58 @@
             {"id":"cef-4","title":"Revisa intensidad","instruction":"Valora si puedes hablar sin insultar, amenazar ni elevar el conflicto. Si no, mantén la pausa.","durationSeconds":20,"phase":"reflect","accessibilityCue":"Comprueba si puedes hablar sin elevar el conflicto."},
             {"id":"cef-5","title":"Decide","instruction":"Elige entre retomar con una petición concreta o prolongar la pausa de forma responsable.","durationSeconds":15,"phase":"finish","accessibilityCue":"Elige retomar con control o prolongar la pausa."}
           ]
+        },
+        {
+          "id": "conflicto-torsion-toalla",
+          "title": "Tensión con una toalla",
+          "summary": "Canaliza energía muscular con un objeto blando antes de volver a hablar o escribir.",
+          "symbol": "hands.clap.fill",
+          "kind": "muscleRelease",
+          "evidence": "complementary",
+          "caution": "No uses objetos rígidos ni fuerza máxima. Omítelo si tienes lesión en manos, codos u hombros.",
+          "steps": [
+            {
+              "id": "ctt-1",
+              "title": "Toma una toalla",
+              "instruction": "Enrolla una toalla pequeña y sujétala con ambas manos, lejos de otras personas.",
+              "durationSeconds": 10,
+              "phase": "prepare",
+              "accessibilityCue": "Sujeta una toalla enrollada."
+            },
+            {
+              "id": "ctt-2",
+              "title": "Tensa y suelta",
+              "instruction": "Intenta girarla con fuerza moderada, respirando; después abre las manos y baja los hombros.",
+              "durationSeconds": 24,
+              "phase": "move",
+              "accessibilityCue": "Tensa y suelta la toalla."
+            },
+            {
+              "id": "ctt-3",
+              "title": "Decide el límite",
+              "instruction": "Elige entre pedir una pausa, escribir sin enviar o hablar con una frase breve.",
+              "durationSeconds": 20,
+              "phase": "finish",
+              "accessibilityCue": "Elige una respuesta segura."
+            }
+          ]
+        }
+      ],
+      "practicalTips": [
+        {
+          "id": "conflicto-tip-borrador",
+          "title": "Escribe sin enviar",
+          "detail": "Redacta lo que querrías decir, quita el destinatario y espera antes de convertirlo en mensaje."
+        },
+        {
+          "id": "conflicto-tip-objeto-fresco",
+          "title": "Sostén algo fresco",
+          "detail": "Una botella fresca puede dar a las manos una tarea neutra mientras bajas volumen y velocidad."
+        },
+        {
+          "id": "conflicto-tip-posicion",
+          "title": "Cambia la posición",
+          "detail": "Si es seguro, deja de señalar, abre las manos y siéntate en ángulo en vez de frente a frente."
         }
       ],
       "sources": [
@@ -400,6 +712,58 @@
             {"id":"src-4","title":"Tronco y piernas","instruction":"Lleva la atención al abdomen, la pelvis, las piernas y los pies, zona por zona.","durationSeconds":35,"phase":"observe","accessibilityCue":"Recorre el tronco, las piernas y los pies."},
             {"id":"src-5","title":"Suelta la tarea","instruction":"Deja de recorrer el cuerpo. Permite que la respiración siga sola y vuelve a una postura cómoda.","durationSeconds":20,"phase":"finish","accessibilityCue":"Finaliza el recorrido y deja que la respiración siga sola."}
           ]
+        },
+        {
+          "id": "sueno-barajado-mental",
+          "title": "Barajado mental",
+          "summary": "Genera imágenes neutras y desconectadas para apartarte de una historia que intenta resolverse.",
+          "symbol": "square.stack.3d.up.fill",
+          "kind": "reflection",
+          "evidence": "complementary",
+          "caution": "Si te frustra o activa imágenes desagradables, abandónalo y vuelve al recorrido corporal.",
+          "steps": [
+            {
+              "id": "sbm-1",
+              "title": "Elige una letra",
+              "instruction": "Escoge una letra sencilla, por ejemplo M, sin buscar una elección perfecta.",
+              "durationSeconds": 8,
+              "phase": "prepare",
+              "accessibilityCue": "Elige una letra."
+            },
+            {
+              "id": "sbm-2",
+              "title": "Imagina palabras",
+              "instruction": "Piensa en una palabra neutra con esa letra, imagínala y cambia a otra sin crear una historia.",
+              "durationSeconds": 45,
+              "phase": "reflect",
+              "accessibilityCue": "Imagina palabras neutras sin conectarlas."
+            },
+            {
+              "id": "sbm-3",
+              "title": "Déjalo incompleto",
+              "instruction": "Si pierdes el hilo, no lo recuperes; permite que la atención vague o cambia de letra.",
+              "durationSeconds": 20,
+              "phase": "finish",
+              "accessibilityCue": "Permite que quede incompleto."
+            }
+          ]
+        }
+      ],
+      "practicalTips": [
+        {
+          "id": "sueno-tip-reloj",
+          "title": "Oculta la hora",
+          "detail": "Gira el reloj o el teléfono para no convertir cada despertar en un cálculo."
+        },
+        {
+          "id": "sueno-tip-temperatura",
+          "title": "Prueba un pequeño cambio térmico",
+          "detail": "Saca un pie de la manta, cambia de lado la almohada o ventila brevemente."
+        },
+        {
+          "id": "sueno-tip-audio",
+          "title": "Elige un audio conocido",
+          "detail": "Una voz familiar, con temporizador y volumen bajo, exige menos atención que contenido nuevo."
         }
       ],
       "sources": [
@@ -458,6 +822,58 @@
             {"id":"spm-4","title":"Da solo el primer paso","instruction":"Haz la primera acción del plan sin evaluar todavía cómo irá todo el encuentro.","durationSeconds":30,"phase":"move","accessibilityCue":"Haz únicamente la primera acción."},
             {"id":"spm-5","title":"Reconoce la acción","instruction":"Valora lo que hiciste, no si desaparecieron los nervios. Decide después el siguiente paso.","durationSeconds":20,"phase":"finish","accessibilityCue":"Reconoce la acción que has completado."}
           ]
+        },
+        {
+          "id": "social-vocalizacion-calida",
+          "title": "Calentamiento de voz discreto",
+          "summary": "Afloja mandíbula y voz con un zumbido suave antes de entrar en la conversación.",
+          "symbol": "waveform",
+          "kind": "vocalization",
+          "evidence": "complementary",
+          "caution": "El sonido debe ser cómodo y bajo. Detente si irrita la garganta o produce mareo.",
+          "steps": [
+            {
+              "id": "svc-1",
+              "title": "Afloja la mandíbula",
+              "instruction": "Separa ligeramente los dientes y mueve la lengua con suavidad dentro de la boca.",
+              "durationSeconds": 12,
+              "phase": "prepare",
+              "accessibilityCue": "Afloja la mandíbula."
+            },
+            {
+              "id": "svc-2",
+              "title": "Zumbido corto",
+              "instruction": "Al soltar el aire, haz un «mmm» suave durante el tiempo que resulte natural.",
+              "durationSeconds": 15,
+              "phase": "sound",
+              "accessibilityCue": "Haz un zumbido suave."
+            },
+            {
+              "id": "svc-3",
+              "title": "Di una frase",
+              "instruction": "En voz baja, practica tu saludo o primera pregunta sin intentar que suene perfecto.",
+              "durationSeconds": 20,
+              "phase": "finish",
+              "accessibilityCue": "Practica una frase breve."
+            }
+          ]
+        }
+      ],
+      "practicalTips": [
+        {
+          "id": "social-tip-objeto",
+          "title": "Sostén un objeto cotidiano",
+          "detail": "Un vaso, libreta o bolígrafo puede dar a las manos una posición natural."
+        },
+        {
+          "id": "social-tip-temprano",
+          "title": "Llega un poco antes",
+          "detail": "Entrar cuando el lugar está tranquilo puede facilitar orientarte antes de que aumente el ruido."
+        },
+        {
+          "id": "social-tip-salida",
+          "title": "Prepara una frase de salida",
+          "detail": "Saber que puedes decir «voy a tomar aire y vuelvo» reduce la sensación de estar atrapado."
         }
       ],
       "sources": [
@@ -516,6 +932,58 @@
             {"id":"dcs-4","title":"Elige un recuerdo","instruction":"Si te ayuda, nombra un recuerdo, una cualidad o algo que esa relación dejó en ti.","durationSeconds":30,"phase":"reflect","accessibilityCue":"Elige un recuerdo o cualidad significativa."},
             {"id":"dcs-5","title":"Cierra sin despedirte","instruction":"Guarda el recuerdo de la forma que prefieras y vuelve a la siguiente acción concreta de tu día.","durationSeconds":20,"phase":"finish","accessibilityCue":"Vuelve con calma a una acción concreta del presente."}
           ]
+        },
+        {
+          "id": "duelo-balanceo-suave",
+          "title": "Balanceo con apoyo",
+          "summary": "Un movimiento rítmico pequeño que acompaña la oleada sin exigir que desaparezca.",
+          "symbol": "figure.mind.and.body",
+          "kind": "movement",
+          "evidence": "complementary",
+          "caution": "Hazlo sentado si hay riesgo de caída. Detente ante mareo, dolor o mayor desorientación.",
+          "steps": [
+            {
+              "id": "dbs-1",
+              "title": "Encuentra apoyo",
+              "instruction": "Siéntate con los pies firmes o permanece de pie junto a una superficie estable.",
+              "durationSeconds": 12,
+              "phase": "prepare",
+              "accessibilityCue": "Busca una posición estable."
+            },
+            {
+              "id": "dbs-2",
+              "title": "Balancea",
+              "instruction": "Desplaza el peso muy suavemente de un lado al otro, dentro de un recorrido pequeño.",
+              "durationSeconds": 30,
+              "phase": "move",
+              "accessibilityCue": "Balancéate suavemente."
+            },
+            {
+              "id": "dbs-3",
+              "title": "Conserva un vínculo",
+              "instruction": "Nombra a quién o qué echas de menos y una cosa concreta que necesitas ahora.",
+              "durationSeconds": 20,
+              "phase": "finish",
+              "accessibilityCue": "Nombra el vínculo y una necesidad."
+            }
+          ]
+        }
+      ],
+      "practicalTips": [
+        {
+          "id": "duelo-tip-objeto",
+          "title": "Sostén un objeto con significado",
+          "detail": "Una fotografía u objeto puede dar al recuerdo un lugar concreto durante la oleada."
+        },
+        {
+          "id": "duelo-tip-calor",
+          "title": "Prepara algo tibio",
+          "detail": "Una bebida o manta templada puede acompañar el cuerpo; evita temperaturas que puedan quemar."
+        },
+        {
+          "id": "duelo-tip-permiso",
+          "title": "Reserva un intervalo breve",
+          "detail": "Si el momento lo permite, date diez minutos sin tareas y decide después el siguiente cuidado básico."
         }
       ],
       "sources": [
@@ -574,6 +1042,58 @@
             {"id":"nhs-4","title":"Elige una fuente","instruction":"Decide quién puede confirmar el siguiente dato: profesional, familiar responsable o servicio oficial.","durationSeconds":20,"phase":"reflect","accessibilityCue":"Elige una fuente fiable para confirmar información."},
             {"id":"nhs-5","title":"Da un solo paso","instruction":"Realiza una llamada, toma una nota o pide una cita. Después vuelve a comprobar cómo estás.","durationSeconds":30,"phase":"finish","accessibilityCue":"Realiza únicamente el siguiente paso verificable."}
           ]
+        },
+        {
+          "id": "noticia-estimulacion-alterna",
+          "title": "Contacto alterno y hechos",
+          "summary": "Combina toques suaves con una repetición breve de lo que sabes y lo que aún no sabes.",
+          "symbol": "hand.raised.fingers.spread.fill",
+          "kind": "grounding",
+          "evidence": "complementary",
+          "caution": "Omite el contacto si resulta activador o incómodo; puedes alternar la presión de los pies.",
+          "steps": [
+            {
+              "id": "nea-1",
+              "title": "Apoya o cruza",
+              "instruction": "Pon las manos sobre los muslos o cruza los brazos y apoya cada mano en el lado contrario.",
+              "durationSeconds": 12,
+              "phase": "prepare",
+              "accessibilityCue": "Apoya las manos cómodamente."
+            },
+            {
+              "id": "nea-2",
+              "title": "Alterna",
+              "instruction": "Da toques lentos de izquierda a derecha mientras repites solo el hecho confirmado.",
+              "durationSeconds": 30,
+              "phase": "press",
+              "accessibilityCue": "Alterna toques lentos."
+            },
+            {
+              "id": "nea-3",
+              "title": "Separa la duda",
+              "instruction": "Detén los toques y completa: «Todavía no sé…» y «Mi siguiente paso seguro es…».",
+              "durationSeconds": 24,
+              "phase": "finish",
+              "accessibilityCue": "Distingue la duda y el siguiente paso."
+            }
+          ]
+        }
+      ],
+      "practicalTips": [
+        {
+          "id": "noticia-tip-frase",
+          "title": "Escribe la frase exacta",
+          "detail": "Anota qué te han comunicado sin interpretaciones para poder consultarlo cuando la memoria falle."
+        },
+        {
+          "id": "noticia-tip-bateria",
+          "title": "Carga el teléfono",
+          "detail": "Tener batería, agua y datos de contacto reduce problemas prácticos durante las siguientes horas."
+        },
+        {
+          "id": "noticia-tip-anuncio",
+          "title": "Retrasa anuncios amplios",
+          "detail": "Si puedes, informa primero a una persona de confianza y decide después a quién más contarlo."
         }
       ],
       "sources": [
@@ -632,6 +1152,58 @@
             {"id":"sus-4","title":"Solo apoyo","instruction":"Presiona los pies contra el suelo durante unos segundos y después suelta.","durationSeconds":18,"phase":"move","accessibilityCue":"Presiona suavemente los pies contra el suelo y suelta."},
             {"id":"sus-5","title":"Amplía poco a poco","instruction":"Mira alrededor y decide si puedes incorporar una tarea o si necesitas más tiempo con baja estimulación.","durationSeconds":20,"phase":"finish","accessibilityCue":"Comprueba si puedes ampliar la atención poco a poco."}
           ]
+        },
+        {
+          "id": "sensorial-presion-propioceptiva",
+          "title": "Presión propioceptiva suave",
+          "summary": "Usa presión estable en palmas y pies para priorizar señales corporales simples.",
+          "symbol": "hand.raised.fill",
+          "kind": "grounding",
+          "evidence": "complementary",
+          "caution": "No presiones articulaciones doloridas ni uses fuerza que provoque entumecimiento.",
+          "steps": [
+            {
+              "id": "spp-1",
+              "title": "Reduce lo posible",
+              "instruction": "Baja luz o ruido y busca una postura con apoyo antes de añadir otra señal.",
+              "durationSeconds": 15,
+              "phase": "prepare",
+              "accessibilityCue": "Reduce una entrada del entorno."
+            },
+            {
+              "id": "spp-2",
+              "title": "Palmas y pies",
+              "instruction": "Junta las palmas con presión moderada mientras empujas los pies contra el suelo.",
+              "durationSeconds": 24,
+              "phase": "press",
+              "accessibilityCue": "Presiona palmas y pies."
+            },
+            {
+              "id": "spp-3",
+              "title": "Suelta por partes",
+              "instruction": "Suelta primero las manos y después los pies; conserva solo la entrada sensorial más tolerable.",
+              "durationSeconds": 20,
+              "phase": "finish",
+              "accessibilityCue": "Suelta y conserva una señal tolerable."
+            }
+          ]
+        }
+      ],
+      "practicalTips": [
+        {
+          "id": "sensorial-tip-kit",
+          "title": "Prepara un pequeño kit",
+          "detail": "Tapones, gafas tintadas, gorra o una textura conocida pueden reducir entradas en lugares difíciles."
+        },
+        {
+          "id": "sensorial-tip-olor",
+          "title": "Usa un olor familiar con prudencia",
+          "detail": "Una tela con olor neutro y conocido puede servir de referencia; evítalo ante migraña, asma o sensibilidad."
+        },
+        {
+          "id": "sensorial-tip-mensaje",
+          "title": "Ten una frase preparada",
+          "detail": "«Necesito menos ruido y cinco minutos» permite pedir un ajuste sin tener que explicar demasiado."
         }
       ],
       "sources": [
@@ -690,6 +1262,58 @@
             {"id":"bsv-4","title":"Formula una acción","instruction":"Escribe una instrucción que empiece por un verbo y no contenga luego, todo ni perfecto.","durationSeconds":25,"phase":"reflect","accessibilityCue":"Escribe una acción concreta y limitada."},
             {"id":"bsv-5","title":"Déjala preparada","instruction":"Pon el archivo, objeto o mensaje en la posición exacta desde la que podrás continuar.","durationSeconds":25,"phase":"finish","accessibilityCue":"Deja preparado el punto de inicio."}
           ]
+        },
+        {
+          "id": "bloqueo-marcha-cruzada",
+          "title": "Marcha cruzada lenta",
+          "summary": "Movimiento coordinado para salir de la inmovilidad y enlazar el cuerpo con una primera acción.",
+          "symbol": "figure.walk.motion",
+          "kind": "movement",
+          "evidence": "complementary",
+          "caution": "Hazlo sentado si tu equilibrio es inestable y omítelo si hay dolor o riesgo de caída.",
+          "steps": [
+            {
+              "id": "bmc-1",
+              "title": "Elige postura",
+              "instruction": "De pie con apoyo o sentado, deja delante de ti solo el material de la primera acción.",
+              "durationSeconds": 12,
+              "phase": "prepare",
+              "accessibilityCue": "Busca una postura estable."
+            },
+            {
+              "id": "bmc-2",
+              "title": "Alterna",
+              "instruction": "Eleva una rodilla y toca con la mano contraria; cambia de lado lentamente.",
+              "durationSeconds": 30,
+              "phase": "move",
+              "accessibilityCue": "Alterna mano y rodilla contrarias."
+            },
+            {
+              "id": "bmc-3",
+              "title": "Enlaza",
+              "instruction": "Al terminar, toca el objeto de trabajo y realiza una acción de menos de un minuto.",
+              "durationSeconds": 20,
+              "phase": "finish",
+              "accessibilityCue": "Empieza una acción mínima."
+            }
+          ]
+        }
+      ],
+      "practicalTips": [
+        {
+          "id": "bloqueo-tip-zapatos",
+          "title": "Ponte los zapatos",
+          "detail": "Aunque no vayas a salir, este pequeño cambio puede funcionar como señal de comienzo."
+        },
+        {
+          "id": "bloqueo-tip-cuenta",
+          "title": "Cuenta 5 · 4 · 3 · 2 · 1",
+          "detail": "Al llegar a uno, mueve físicamente una sola pieza necesaria para empezar."
+        },
+        {
+          "id": "bloqueo-tip-feo",
+          "title": "Haz una primera versión deliberadamente imperfecta",
+          "detail": "Un título malo, una línea torpe o un boceto incompleto convierten la tarea en algo editable."
         }
       ],
       "sources": [
@@ -748,6 +1372,58 @@
             {"id":"crs-4","title":"Acepta el límite","instruction":"Recuerda que disculparte no obliga a que te perdonen, respondan o vuelvan a confiar de inmediato.","durationSeconds":20,"phase":"observe","accessibilityCue":"Acepta que no controlas la respuesta de la otra persona."},
             {"id":"crs-5","title":"Cambia una condición","instruction":"Define qué harás diferente para reducir la probabilidad de repetirlo.","durationSeconds":25,"phase":"finish","accessibilityCue":"Decide un cambio concreto para el futuro."}
           ]
+        },
+        {
+          "id": "culpa-gesto-autocompasion",
+          "title": "Gesto de autocompasión",
+          "summary": "Usa contacto y lenguaje cuidadoso para poder mirar el hecho sin convertirlo en condena.",
+          "symbol": "heart.text.clipboard.fill",
+          "kind": "reflection",
+          "evidence": "promising",
+          "caution": "Si el contacto corporal incomoda, apoya las manos en una mesa o sostén un objeto neutro.",
+          "steps": [
+            {
+              "id": "cga-1",
+              "title": "Elige un apoyo",
+              "instruction": "Pon una mano en el pecho, antebrazo o sobre una superficie firme.",
+              "durationSeconds": 12,
+              "phase": "prepare",
+              "accessibilityCue": "Elige un apoyo cómodo."
+            },
+            {
+              "id": "cga-2",
+              "title": "Habla como a otra persona",
+              "instruction": "Di qué ocurrió con palabras concretas y añade lo que dirías a alguien querido que quisiera repararlo.",
+              "durationSeconds": 30,
+              "phase": "reflect",
+              "accessibilityCue": "Usa una voz justa y cuidadosa."
+            },
+            {
+              "id": "cga-3",
+              "title": "Une cuidado y responsabilidad",
+              "instruction": "Completa: «Puedo tratarme con dignidad y mi siguiente reparación posible es…».",
+              "durationSeconds": 20,
+              "phase": "finish",
+              "accessibilityCue": "Elige una reparación posible."
+            }
+          ]
+        }
+      ],
+      "practicalTips": [
+        {
+          "id": "culpa-tip-verbo",
+          "title": "Cambia «soy» por «hice»",
+          "detail": "Describir una conducta mantiene abierta la posibilidad de aprender, corregir o reparar."
+        },
+        {
+          "id": "culpa-tip-ritual",
+          "title": "Haz un pequeño cambio físico",
+          "detail": "Lavarte la cara, ordenar el lugar o cambiarte de ropa puede marcar el paso de castigarte a actuar."
+        },
+        {
+          "id": "culpa-tip-testigo",
+          "title": "Imagina un testigo justo",
+          "detail": "Pregunta qué diría alguien compasivo que también valorara la responsabilidad."
         }
       ],
       "sources": [
@@ -806,6 +1482,58 @@
             {"id":"spc-4","title":"Reconoce humanidad","instruction":"Observa discretamente señales de vida compartida: voces, pasos, rutinas o gestos cotidianos.","durationSeconds":40,"phase":"orient","accessibilityCue":"Observa señales neutrales de actividad humana."},
             {"id":"spc-5","title":"Decide un próximo contacto","instruction":"Antes de irte, elige si volverás, saludarás la próxima vez o buscarás una actividad con continuidad.","durationSeconds":20,"phase":"finish","accessibilityCue":"Elige un próximo paso de conexión."}
           ]
+        },
+        {
+          "id": "soledad-calor-y-voz",
+          "title": "Calor y voz humana",
+          "summary": "Combina una sensación térmica segura con una presencia audible para reducir el vacío inmediato.",
+          "symbol": "mug.fill",
+          "kind": "grounding",
+          "evidence": "complementary",
+          "caution": "Evita objetos muy calientes y no uses audio si aumenta la tristeza o la sobrecarga.",
+          "steps": [
+            {
+              "id": "scv-1",
+              "title": "Busca calor seguro",
+              "instruction": "Sostén una taza templada o envuélvete en una manta, comprobando que la temperatura sea cómoda.",
+              "durationSeconds": 15,
+              "phase": "prepare",
+              "accessibilityCue": "Busca una temperatura cómoda."
+            },
+            {
+              "id": "scv-2",
+              "title": "Añade una voz",
+              "instruction": "Reproduce una voz familiar, radio tranquila o mensaje de alguien seguro a volumen bajo.",
+              "durationSeconds": 30,
+              "phase": "observe",
+              "accessibilityCue": "Escucha una voz tranquila."
+            },
+            {
+              "id": "scv-3",
+              "title": "Haz un puente",
+              "instruction": "Envía un saludo breve o decide un lugar con presencia humana al que puedas acercarte.",
+              "durationSeconds": 20,
+              "phase": "finish",
+              "accessibilityCue": "Crea un puente pequeño hacia otra persona."
+            }
+          ]
+        }
+      ],
+      "practicalTips": [
+        {
+          "id": "soledad-tip-fondo",
+          "title": "Usa compañía de fondo",
+          "detail": "Una radio, pódcast conocido o retransmisión tranquila puede hacer menos abrupto el silencio."
+        },
+        {
+          "id": "soledad-tip-tercer-lugar",
+          "title": "Acércate a un lugar compartido",
+          "detail": "Una biblioteca, cafetería o parque permite estar cerca de personas sin exigir conversación."
+        },
+        {
+          "id": "soledad-tip-minimo",
+          "title": "Envía una señal mínima",
+          "detail": "Un emoji, una foto o «¿tienes cinco minutos esta semana?» reduce la barrera de iniciar contacto."
         }
       ],
       "sources": [
@@ -864,6 +1592,58 @@
             {"id":"ccs-4","title":"Haz una petición","instruction":"Pide una acción observable o una conversación: ¿podemos aclarar…? o ¿acordamos…? ","durationSeconds":25,"phase":"reflect","accessibilityCue":"Formula una petición clara y negociable."},
             {"id":"ccs-5","title":"Deja espacio a respuesta","instruction":"Escucha la respuesta completa y recuerda que una petición puede negociarse o rechazarse.","durationSeconds":25,"phase":"finish","accessibilityCue":"Escucha y deja espacio para una respuesta real."}
           ]
+        },
+        {
+          "id": "celos-masaje-manos",
+          "title": "Automasaje de manos",
+          "summary": "Da a las manos una tarea lenta mientras separas la urgencia de comprobar o acusar.",
+          "symbol": "hand.rays.fill",
+          "kind": "acupressure",
+          "evidence": "complementary",
+          "caution": "La presión debe ser agradable. Evita zonas inflamadas, lesionadas o con pérdida de sensibilidad.",
+          "steps": [
+            {
+              "id": "cmm-1",
+              "title": "Abre las manos",
+              "instruction": "Apoya los antebrazos y observa si estás agarrando el teléfono o tensando los dedos.",
+              "durationSeconds": 12,
+              "phase": "prepare",
+              "accessibilityCue": "Suelta lo que tengas en las manos."
+            },
+            {
+              "id": "cmm-2",
+              "title": "Masajea",
+              "instruction": "Con el pulgar, recorre lentamente la palma contraria y después cambia de mano.",
+              "durationSeconds": 30,
+              "phase": "press",
+              "accessibilityCue": "Masajea las palmas suavemente."
+            },
+            {
+              "id": "cmm-3",
+              "title": "Pospón la comprobación",
+              "instruction": "Deja el teléfono boca abajo y decide cuánto tiempo esperarás antes de preguntar o comprobar.",
+              "durationSeconds": 20,
+              "phase": "finish",
+              "accessibilityCue": "Elige un tiempo de espera."
+            }
+          ]
+        }
+      ],
+      "practicalTips": [
+        {
+          "id": "celos-tip-telefono",
+          "title": "Aleja el teléfono",
+          "detail": "Déjalo fuera del alcance durante unos minutos para no convertir una emoción en vigilancia impulsiva."
+        },
+        {
+          "id": "celos-tip-alternativas",
+          "title": "Escribe tres explicaciones posibles",
+          "detail": "Incluye al menos una interpretación neutra de los mismos datos, aunque todavía no te convenza."
+        },
+        {
+          "id": "celos-tip-recordatorio",
+          "title": "Usa un objeto como recordatorio",
+          "detail": "Una pulsera o moneda puede significar: «primero pregunto; no adivino ni acuso»."
         }
       ],
       "sources": [
@@ -922,6 +1702,58 @@
             {"id":"ioo-4","title":"Observa el cambio","instruction":"Durante un minuto, comprueba si la forma, ubicación o intensidad cambia, incluso un poco.","durationSeconds":60,"phase":"observe","accessibilityCue":"Observa cómo cambia la sensación durante un minuto."},
             {"id":"ioo-5","title":"Elige la acción segura","instruction":"Vuelve a puntuar y realiza una alternativa incompatible con el impulso: alejarte, llamar, caminar acompañado o mantener la barrera.","durationSeconds":30,"phase":"finish","accessibilityCue":"Elige una acción segura incompatible con el impulso."}
           ]
+        },
+        {
+          "id": "impulso-agua-fresca",
+          "title": "Agua fresca en rostro y manos",
+          "summary": "Un cambio sensorial breve para crear distancia antes de actuar, sin usar frío extremo.",
+          "symbol": "drop.fill",
+          "kind": "grounding",
+          "evidence": "promising",
+          "caution": "Usa agua fresca, no helada; no sumerjas la cara ni contengas el aire. Evítalo si el frío empeora una condición médica.",
+          "steps": [
+            {
+              "id": "iaf-1",
+              "title": "Crea distancia",
+              "instruction": "Deja el objeto, la aplicación o el lugar relacionado con el impulso y ve a un lavabo seguro.",
+              "durationSeconds": 12,
+              "phase": "prepare",
+              "accessibilityCue": "Aléjate del medio del impulso."
+            },
+            {
+              "id": "iaf-2",
+              "title": "Usa agua fresca",
+              "instruction": "Deja correr agua fresca sobre las manos y, si es cómodo, salpica suavemente las mejillas.",
+              "durationSeconds": 20,
+              "phase": "observe",
+              "accessibilityCue": "Nota agua fresca en manos y rostro."
+            },
+            {
+              "id": "iaf-3",
+              "title": "Mantén la barrera",
+              "instruction": "Sécate despacio y elige una acción incompatible: llamar, caminar acompañado o bloquear temporalmente el acceso.",
+              "durationSeconds": 25,
+              "phase": "finish",
+              "accessibilityCue": "Elige una acción segura incompatible."
+            }
+          ]
+        }
+      ],
+      "practicalTips": [
+        {
+          "id": "impulso-tip-obstaculo",
+          "title": "Añade un obstáculo real",
+          "detail": "Entrega llaves o tarjetas, cierra la sesión o mueve el objeto a un lugar difícil de alcanzar."
+        },
+        {
+          "id": "impulso-tip-sabor",
+          "title": "Prueba un sabor intenso seguro",
+          "detail": "Menta o un alimento ácido pueden interrumpir el piloto automático; evita alergias y riesgos al tragar."
+        },
+        {
+          "id": "impulso-tip-clave",
+          "title": "Envía una palabra clave",
+          "detail": "Acuerda con alguien una palabra que signifique «necesito compañía sin explicar todo ahora»."
         }
       ],
       "sources": [

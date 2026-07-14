@@ -1,0 +1,66 @@
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/La\ Ley\ Watch\ App/Views/AgendaWatchView.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/La\ Ley\ Watch\ App/Views/PresenceWatchView.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/La\ Ley\ Watch\ App/Views/FilterByDiarioView.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/La\ Ley\ Watch\ App/Views/AddDiario.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/La\ Ley\ Watch\ App/ContentView.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/La\ Ley\ Watch\ App/Views/QuickAddNotaByLocationView.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/La\ Ley\ Watch\ App/model/WatchIncomingDataReceiver.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/AbrirDiarioIntent.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/AbrirNotasItent.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/CrearEntradaAgendaIntent.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/CrearEntradaDiarioIntent.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/CrearFraseCalmaIntent.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/CrearFraseIntent.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/CrearNotaIntent.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/GetRandomConfIntent.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Services/LocalAutenticationForIntent.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Shortcuts/Shortcuts.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/Shared/Models/AppCons/AppCons.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/Shared/Models/CoreData/CoreDataController.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/Shared/Models/Utils/Utils.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/Shared/Models/UtilsForView/UtilsForViews.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/La\ Ley\ Watch\ App/Views/AddNota.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/La\ Ley\ Watch\ App/model/WatchDiarioTransfer.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/La\ Ley\ Watch\ App/model/watchModel.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/La\ Ley\ Watch\ App/model/WatchAgendaTransfer.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/La\ Ley\ Watch\ App/model/WatchPresenceTransfer.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/La\ Ley\ Watch\ App/La_LeyApp.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/La\ Ley\ Watch\ App/model/WatchNotesTransfer.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/La\ Ley\ Watch\ App/model/WatchPremiumService.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/La\ Ley\ Watch\ App/Views/FilterByNotaView.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La\ Ley\ Watch\ App.build/DerivedSources/CoreDataGenerated/ModelData/AgendaItemEntity+CoreDataClass.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La\ Ley\ Watch\ App.build/DerivedSources/CoreDataGenerated/ModelData/AgendaItemEntity+CoreDataProperties.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La\ Ley\ Watch\ App.build/DerivedSources/CoreDataGenerated/ModelData/ArchivedGoalEntity+CoreDataClass.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La\ Ley\ Watch\ App.build/DerivedSources/CoreDataGenerated/ModelData/ArchivedGoalEntity+CoreDataProperties.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La\ Ley\ Watch\ App.build/DerivedSources/CoreDataGenerated/ModelData/ArchivedUnitEntity+CoreDataClass.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La\ Ley\ Watch\ App.build/DerivedSources/CoreDataGenerated/ModelData/ArchivedUnitEntity+CoreDataProperties.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La\ Ley\ Watch\ App.build/DerivedSources/CoreDataGenerated/ModelData/CalmUserPhrase+CoreDataClass.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La\ Ley\ Watch\ App.build/DerivedSources/CoreDataGenerated/ModelData/CalmUserPhrase+CoreDataProperties.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La\ Ley\ Watch\ App.build/DerivedSources/CoreDataGenerated/ModelData/coherencia+CoreDataClass.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La\ Ley\ Watch\ App.build/DerivedSources/CoreDataGenerated/ModelData/coherencia+CoreDataProperties.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La\ Ley\ Watch\ App.build/DerivedSources/CoreDataGenerated/ModelData/Contexto+CoreDataClass.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La\ Ley\ Watch\ App.build/DerivedSources/CoreDataGenerated/ModelData/Contexto+CoreDataProperties.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La\ Ley\ Watch\ App.build/DerivedSources/CoreDataGenerated/ModelData/Diario+CoreDataClass.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La\ Ley\ Watch\ App.build/DerivedSources/CoreDataGenerated/ModelData/Diario+CoreDataProperties.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La\ Ley\ Watch\ App.build/DerivedSources/CoreDataGenerated/ModelData/Frases+CoreDataClass.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La\ Ley\ Watch\ App.build/DerivedSources/CoreDataGenerated/ModelData/Frases+CoreDataProperties.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La\ Ley\ Watch\ App.build/DerivedSources/CoreDataGenerated/ModelData/GoalEntity+CoreDataClass.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La\ Ley\ Watch\ App.build/DerivedSources/CoreDataGenerated/ModelData/GoalEntity+CoreDataProperties.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La\ Ley\ Watch\ App.build/DerivedSources/CoreDataGenerated/ModelData/GoalStatsEventEntity+CoreDataClass.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La\ Ley\ Watch\ App.build/DerivedSources/CoreDataGenerated/ModelData/GoalStatsEventEntity+CoreDataProperties.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La\ Ley\ Watch\ App.build/DerivedSources/CoreDataGenerated/ModelData/WeeklyReviewEntity+CoreDataClass.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La\ Ley\ Watch\ App.build/DerivedSources/CoreDataGenerated/ModelData/WeeklyReviewEntity+CoreDataProperties.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La\ Ley\ Watch\ App.build/DerivedSources/CoreDataGenerated/ModelData/Notas+CoreDataClass.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La\ Ley\ Watch\ App.build/DerivedSources/CoreDataGenerated/ModelData/Notas+CoreDataProperties.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La\ Ley\ Watch\ App.build/DerivedSources/CoreDataGenerated/ModelData/PresenciaEventEntity+CoreDataClass.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La\ Ley\ Watch\ App.build/DerivedSources/CoreDataGenerated/ModelData/PresenciaEventEntity+CoreDataProperties.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La\ Ley\ Watch\ App.build/DerivedSources/CoreDataGenerated/ModelData/RitualSessionEntity+CoreDataClass.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La\ Ley\ Watch\ App.build/DerivedSources/CoreDataGenerated/ModelData/RitualSessionEntity+CoreDataProperties.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La\ Ley\ Watch\ App.build/DerivedSources/CoreDataGenerated/ModelData/Reflex+CoreDataClass.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La\ Ley\ Watch\ App.build/DerivedSources/CoreDataGenerated/ModelData/Reflex+CoreDataProperties.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La\ Ley\ Watch\ App.build/DerivedSources/CoreDataGenerated/ModelData/TxtCont+CoreDataClass.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La\ Ley\ Watch\ App.build/DerivedSources/CoreDataGenerated/ModelData/TxtCont+CoreDataProperties.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La\ Ley\ Watch\ App.build/DerivedSources/CoreDataGenerated/ModelData/UnitEntity+CoreDataClass.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La\ Ley\ Watch\ App.build/DerivedSources/CoreDataGenerated/ModelData/UnitEntity+CoreDataProperties.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La\ Ley\ Watch\ App.build/DerivedSources/CoreDataGenerated/ModelData/ModelData+CoreDataModel.swift
+/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La\ Ley\ Watch\ App.build/DerivedSources/GeneratedAssetSymbols.swift

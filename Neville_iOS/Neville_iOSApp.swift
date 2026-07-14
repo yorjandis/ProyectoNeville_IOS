@@ -55,6 +55,7 @@ struct Neville_iOSApp: App {
          _ = WatchDiarioReceiver.shared
          _ = WatchDataSyncToWatch.shared
          WatchDataSyncToWatch.shared.start()
+         StressMonitor.shared.activateBackgroundObservationIfNeeded()
      }
      
    
@@ -106,6 +107,10 @@ struct Neville_iOSApp: App {
                                 if phase == .active {
                                     messageCenter.loadPendingMessage()
                                     ReminderStore.shared.invalidateExpiredDateReminders()
+                                    ConsciousDashboardSnapshotPublisher.refresh()
+                                    Task {
+                                        await StressMonitor.shared.refresh()
+                                    }
                                 }
                             }
                             .sheet(item: self.$itemAtajo) { item in
@@ -148,6 +153,7 @@ struct Neville_iOSApp: App {
                             try await persistentStore.cargarStores()
                             modelTxt.getAllFileTxtOfType(type: .conf)   // Carga el listado de conferencias
                             modelFrases.getAllFrases() //Carga el Listado de Frases
+                            ConsciousDashboardSnapshotPublisher.refresh()
                             
                             // ✅ Gestiona los duplicados en las frases:
                             await modelFrases.GestionarDuplicados_en_Frases()

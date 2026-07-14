@@ -1,0 +1,24 @@
+{
+  "source": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/GetRandomConfIntent.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Abrir Conferencia Aleatoria",
+        "location": {
+          "startingColumn": 49,
+          "startingLine": 13
+        }
+      },
+      {
+        "comment": "",
+        "key": "Abre la app en una conferencia aleatoria",
+        "location": {
+          "startingColumn": 52,
+          "startingLine": 14
+        }
+      }
+    ]
+  },
+  "version": 1
+}

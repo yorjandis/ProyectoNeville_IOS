@@ -1,0 +1,220 @@
+[
+  {
+    "typeName": "La_Ley_Watch_App.AbrirNotasItent",
+    "mangledTypeName": "16La_Ley_Watch_App15AbrirNotasItentV",
+    "kind": "struct",
+    "file": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/AbrirNotasItent.swift",
+    "line": 11,
+    "conformances": [
+      "AppIntents.AppIntent",
+      "AppIntents.PersistentlyIdentifiable",
+      "AppIntents._SupportsAppDependencies",
+      "Swift.Sendable",
+      "Swift.SendableMetatype"
+    ],
+    "allConformances": [
+      {
+        "protocolName": "AppIntents.AppIntent",
+        "conformanceDefiningModule": "La_Ley_Watch_App"
+      },
+      {
+        "protocolName": "AppIntents.PersistentlyIdentifiable",
+        "conformanceDefiningModule": "La_Ley_Watch_App"
+      },
+      {
+        "protocolName": "AppIntents._SupportsAppDependencies",
+        "conformanceDefiningModule": "La_Ley_Watch_App"
+      },
+      {
+        "protocolName": "Swift.Sendable",
+        "conformanceDefiningModule": "La_Ley_Watch_App"
+      },
+      {
+        "protocolName": "Swift.SendableMetatype",
+        "conformanceDefiningModule": "La_Ley_Watch_App"
+      }
+    ],
+    "associatedTypeAliases": [
+      {
+        "typeAliasName": "PerformResult",
+        "substitutedTypeName": "some AppIntents.IntentResult",
+        "substitutedMangledTypeName": "16La_Ley_Watch_App15AbrirNotasItentV7performQryYaKFQOy_Qo_",
+        "opaqueTypeProtocolRequirements": [
+          "AppIntents.IntentResult"
+        ],
+        "opaqueTypeSameTypeRequirements": []
+      },
+      {
+        "typeAliasName": "SummaryContent",
+        "substitutedTypeName": "some AppIntents.ParameterSummary",
+        "substitutedMangledTypeName": "10AppIntents0A6IntentPAAE16parameterSummaryQrvpZQOy013La_Ley_Watch_A015AbrirNotasItentV_Qo_",
+        "opaqueTypeProtocolRequirements": [
+          "AppIntents.ParameterSummary"
+        ],
+        "opaqueTypeSameTypeRequirements": []
+      }
+    ],
+    "properties": [
+      {
+        "label": "_yorjPremium",
+        "type": "SwiftUI.AppStorage<Swift.Bool>",
+        "mangledTypeName": "n/a - deprecated",
+        "isStatic": "false",
+        "isComputed": "false",
+        "file": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/AbrirNotasItent.swift",
+        "line": 16,
+        "valueKind": "InitCall",
+        "value": {
+          "type": "SwiftUI.AppStorage<Swift.Bool>",
+          "arguments": [
+            {
+              "label": "wrappedValue",
+              "type": "Swift.Bool",
+              "valueKind": "RawLiteral",
+              "value": "false"
+            },
+            {
+              "label": "",
+              "type": "Swift.String",
+              "valueKind": "RawLiteral",
+              "value": "yorjPremium"
+            },
+            {
+              "label": "store",
+              "type": "Swift.Optional<Foundation.UserDefaults>",
+              "valueKind": "InitCall",
+              "value": {
+                "type": "Swift.Optional<Foundation.UserDefaults>",
+                "arguments": [
+                  {
+                    "label": "suiteName",
+                    "type": "Swift.Optional<Swift.String>",
+                    "valueKind": "RawLiteral",
+                    "value": "group.com.ypg.nev.group"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "label": "title",
+        "type": "Foundation.LocalizedStringResource",
+        "mangledTypeName": "n/a - deprecated",
+        "isStatic": "true",
+        "isComputed": "false",
+        "file": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/AbrirNotasItent.swift",
+        "line": 12,
+        "valueKind": "RawLiteral",
+        "value": "Abrir Notas"
+      },
+      {
+        "label": "description",
+        "type": "AppIntents.IntentDescription",
+        "mangledTypeName": "n/a - deprecated",
+        "isStatic": "true",
+        "isComputed": "false",
+        "file": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/AbrirNotasItent.swift",
+        "line": 13,
+        "valueKind": "RawLiteral",
+        "value": "Abre el listado de las notas"
+      },
+      {
+        "label": "openAppWhenRun",
+        "type": "Swift.Bool",
+        "mangledTypeName": "n/a - deprecated",
+        "isStatic": "true",
+        "isComputed": "false",
+        "file": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/AbrirNotasItent.swift",
+        "line": 14,
+        "valueKind": "RawLiteral",
+        "value": "true"
+      },
+      {
+        "label": "yorjPremium",
+        "type": "Swift.Bool",
+        "mangledTypeName": "n/a - deprecated",
+        "isStatic": "false",
+        "isComputed": "true",
+        "file": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/AbrirNotasItent.swift",
+        "line": 16,
+        "valueKind": "InitCall",
+        "value": {
+          "type": "SwiftUI.AppStorage<Swift.Bool>",
+          "arguments": [
+            {
+              "label": "wrappedValue",
+              "type": "Swift.Bool",
+              "valueKind": "RawLiteral",
+              "value": "false"
+            },
+            {
+              "label": "",
+              "type": "Swift.String",
+              "valueKind": "RawLiteral",
+              "value": "yorjPremium"
+            },
+            {
+              "label": "store",
+              "type": "Swift.Optional<Foundation.UserDefaults>",
+              "valueKind": "InitCall",
+              "value": {
+                "type": "Swift.Optional<Foundation.UserDefaults>",
+                "arguments": [
+                  {
+                    "label": "suiteName",
+                    "type": "Swift.Optional<Swift.String>",
+                    "valueKind": "RawLiteral",
+                    "value": "group.com.ypg.nev.group"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "propertyWrappers": [
+          {
+            "type": "SwiftUI.AppStorage",
+            "file": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/AbrirNotasItent.swift",
+            "line": 16,
+            "arguments": [
+              {
+                "label": "",
+                "type": "Swift.String",
+                "valueKind": "RawLiteral",
+                "value": "yorjPremium"
+              },
+              {
+                "label": "store",
+                "type": "Swift.Optional<Foundation.UserDefaults>",
+                "valueKind": "InitCall",
+                "value": {
+                  "type": "Swift.Optional<Foundation.UserDefaults>",
+                  "arguments": [
+                    {
+                      "label": "suiteName",
+                      "type": "Swift.Optional<Swift.String>",
+                      "valueKind": "RawLiteral",
+                      "value": "group.com.ypg.nev.group"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "label": "$yorjPremium",
+        "type": "SwiftUICore.Binding<Swift.Bool>",
+        "mangledTypeName": "n/a - deprecated",
+        "isStatic": "false",
+        "isComputed": "true",
+        "file": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/AbrirNotasItent.swift",
+        "line": 16,
+        "valueKind": "Runtime"
+      }
+    ]
+  }
+]

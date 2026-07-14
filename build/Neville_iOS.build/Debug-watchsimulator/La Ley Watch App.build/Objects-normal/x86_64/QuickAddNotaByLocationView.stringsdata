@@ -1,0 +1,72 @@
+{
+  "source": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/La Ley Watch App/Views/QuickAddNotaByLocationView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Notas",
+        "location": {
+          "startingColumn": 16,
+          "startingLine": 93
+        }
+      },
+      {
+        "comment": "",
+        "key": "Nueva Nota",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 25
+        }
+      },
+      {
+        "comment": "",
+        "key": "Debe aceptar primero, en Ajustes, los permisos de ubicación en iPhone.",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 85
+        }
+      },
+      {
+        "comment": "",
+        "key": "Título",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 31
+        }
+      },
+      {
+        "comment": "",
+        "key": "Contenido de la nota",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 35
+        }
+      },
+      {
+        "comment": "",
+        "key": "Coordenadas",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 53
+        }
+      },
+      {
+        "comment": "",
+        "key": "Guardar",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 72
+        }
+      },
+      {
+        "comment": "",
+        "key": "OK",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 94
+        }
+      }
+    ]
+  },
+  "version": 1
+}

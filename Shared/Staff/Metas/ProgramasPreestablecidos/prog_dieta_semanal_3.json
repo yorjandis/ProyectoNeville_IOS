@@ -3,8 +3,13 @@
   "detalles": "Programa de 7 unidades, cada unidad corresponde a un día de la semana",
   "description": "Programa orientado a maximizar longevidad, mantener masa muscular y minimizar activación crónica de S6K.\n\nEstructura del programa:\n1. Ayuno diario (14–16h) -> activa AMPK -> reduce S6K basal\n2. Entrenamiento en ayunas -> aumenta GLUT4 independiente de insulina\n3. Café post-entreno -> prolonga AMPK -> mejora sensibilidad\n4. Comida única o principal post-entreno -> activación pulsátil de mTOR\n5. Distribución proteica estratégica -> maximiza síntesis muscular sin exceso de S6K\n6. Días de descanso activo -> reducción global de mTOR\n7. Día de reset metabólico -> aumento de autofagia\n\nResultado esperado (8-12 semanas):\n* Mejora sensibilidad a la insulina\n* Reducción de S6K basal\n* Mantenimiento o mejora de masa muscular\n* Mejora flexibilidad metabólica\n* Mayor eficiencia en uso de nutrientes\n* Reducción inflamación sistémica",
   "noUnidades": 7,
-  "tipoUnidad": "dias",
+  "tipoUnidad": "semanas",
   "frecuencia": 1,
+  "scheduleType": "weekly",
+  "weeklyDaysPerWeek": 7,
+  "dayPeriod": "anytime",
+  "customUnitLabel": "días",
+  "specificDates": [],
   "unidadesinfo": [
     {
       "name": "Día 1 - Fuerza + Cardio",

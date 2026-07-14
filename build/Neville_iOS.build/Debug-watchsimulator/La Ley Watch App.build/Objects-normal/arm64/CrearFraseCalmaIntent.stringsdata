@@ -1,0 +1,72 @@
+{
+  "source": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/CrearFraseCalmaIntent.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Crear Frase para Calma",
+        "location": {
+          "startingColumn": 49,
+          "startingLine": 16
+        }
+      },
+      {
+        "comment": "",
+        "key": "Crear una frase personal en Espacio Calma",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 17
+        }
+      },
+      {
+        "comment": "",
+        "key": "Frase",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 21
+        }
+      },
+      {
+        "comment": "",
+        "key": "Contenido de la frase para Calma",
+        "location": {
+          "startingColumn": 45,
+          "startingLine": 21
+        }
+      },
+      {
+        "comment": "",
+        "key": "La frase se creó y se añadió a Espacio Calma.",
+        "location": {
+          "startingColumn": 49,
+          "startingLine": 57
+        }
+      },
+      {
+        "comment": "",
+        "key": "No se encontró la entidad de Espacio Calma.",
+        "location": {
+          "startingColumn": 53,
+          "startingLine": 47
+        }
+      },
+      {
+        "comment": "",
+        "key": "La frase no puede estar vacía.",
+        "location": {
+          "startingColumn": 49,
+          "startingLine": 32
+        }
+      },
+      {
+        "comment": "",
+        "key": "No se pudo crear la frase para Espacio Calma.",
+        "location": {
+          "startingColumn": 49,
+          "startingLine": 60
+        }
+      }
+    ]
+  },
+  "version": 1
+}

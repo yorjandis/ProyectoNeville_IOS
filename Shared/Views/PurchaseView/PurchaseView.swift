@@ -34,6 +34,11 @@ struct PurchaseView: View {
             description: "Accede a las frases y enseñanzas de Joe Dispenza, Bruce Lipton y Gregg Braden."
         ),
         PremiumFeature(
+            iconName: "cross.case.fill",
+            title: "Centro Sanador",
+            description: "Guías rápidas para momentos difíciles: ansiedad, miedo, estrés, bloqueo, conflicto o impulso. Comprende qué ocurre en tu cuerpo y aplica técnicas prácticas paso a paso cuando más lo necesitas."
+        ),
+        PremiumFeature(
             iconName: "target",
             title: "Metas y transformación personal",
             description: "Define objetivos claros, mide tu progreso y adopta hábitos respaldados por la neurociencia. Incluye programas prácticos para reprogramar patrones negativos y empoderarte."

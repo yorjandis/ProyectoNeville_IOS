@@ -374,6 +374,14 @@ private extension CoreDataCanonicalMigrationBridge {
                 "totalUnits": Int(goal.totalUnits),
                 "unitType": goal.unitType ?? "",
                 "frequency": Int(goal.frequency),
+                "scheduleType": goal.scheduleType ?? GoalScheduleType.interval.rawValue,
+                "weeklyDaysPerWeek": Int(goal.weeklyDaysPerWeek),
+                "dayPeriod": goal.dayPeriod ?? GoalDayPeriod.anytime.rawValue,
+                "customUnitLabel": goal.customUnitLabel ?? "",
+                "executionTargetValue": goal.executionTargetValue,
+                "completionBasis": goal.completionBasis ?? GoalCompletionBasis.executions.rawValue,
+                "durationValue": Int(goal.durationValue),
+                "durationUnit": goal.durationUnit ?? TimeUnit.dias.rawValue,
                 "isStarted": goal.isStarted,
                 "startDate": goal.startDate.map(millis) ?? NSNull(),
                 "notifyOnUnitAvailable": false,
@@ -399,6 +407,14 @@ private extension CoreDataCanonicalMigrationBridge {
                 "totalUnits": Int(goal.totalUnits),
                 "unitType": goal.unitType ?? "",
                 "frequency": Int(goal.frequency),
+                "scheduleType": goal.scheduleType ?? GoalScheduleType.interval.rawValue,
+                "weeklyDaysPerWeek": Int(goal.weeklyDaysPerWeek),
+                "dayPeriod": goal.dayPeriod ?? GoalDayPeriod.anytime.rawValue,
+                "customUnitLabel": goal.customUnitLabel ?? "",
+                "executionTargetValue": goal.executionTargetValue,
+                "completionBasis": goal.completionBasis ?? GoalCompletionBasis.executions.rawValue,
+                "durationValue": Int(goal.durationValue),
+                "durationUnit": goal.durationUnit ?? TimeUnit.dias.rawValue,
                 "completionDate": millis(goal.completionDate),
                 "status": "archived",
                 "units": units.map(archivedUnitPayload)
@@ -651,6 +667,14 @@ private extension CoreDataCanonicalMigrationBridge {
         goal.totalUnits = Int32(MigrationJSON.int(record.payload, "totalUnits"))
         goal.unitType = MigrationJSON.string(record.payload, "unitType")
         goal.frequency = Int32(MigrationJSON.int(record.payload, "frequency", default: 1))
+        goal.scheduleType = MigrationJSON.string(record.payload, "scheduleType", default: GoalScheduleType.interval.rawValue)
+        goal.weeklyDaysPerWeek = Int16(MigrationJSON.int(record.payload, "weeklyDaysPerWeek", default: 3))
+        goal.dayPeriod = MigrationJSON.string(record.payload, "dayPeriod", default: GoalDayPeriod.anytime.rawValue)
+        goal.customUnitLabel = MigrationJSON.string(record.payload, "customUnitLabel")
+        goal.executionTargetValue = MigrationJSON.double(record.payload, "executionTargetValue", default: 1)
+        goal.completionBasis = MigrationJSON.string(record.payload, "completionBasis", default: GoalCompletionBasis.executions.rawValue)
+        goal.durationValue = Int32(MigrationJSON.int(record.payload, "durationValue"))
+        goal.durationUnit = MigrationJSON.string(record.payload, "durationUnit", default: TimeUnit.dias.rawValue)
         goal.isStarted = MigrationJSON.bool(record.payload, "isStarted")
         goal.startDate = MigrationJSON.optionalInt64(record.payload, "startDate").map { Date(timeIntervalSince1970: TimeInterval($0) / 1000) }
 
@@ -681,6 +705,14 @@ private extension CoreDataCanonicalMigrationBridge {
         goal.totalUnits = Int32(MigrationJSON.int(record.payload, "totalUnits"))
         goal.unitType = MigrationJSON.string(record.payload, "unitType")
         goal.frequency = Int32(MigrationJSON.int(record.payload, "frequency"))
+        goal.scheduleType = MigrationJSON.string(record.payload, "scheduleType", default: GoalScheduleType.interval.rawValue)
+        goal.weeklyDaysPerWeek = Int16(MigrationJSON.int(record.payload, "weeklyDaysPerWeek", default: 3))
+        goal.dayPeriod = MigrationJSON.string(record.payload, "dayPeriod", default: GoalDayPeriod.anytime.rawValue)
+        goal.customUnitLabel = MigrationJSON.string(record.payload, "customUnitLabel")
+        goal.executionTargetValue = MigrationJSON.double(record.payload, "executionTargetValue", default: 1)
+        goal.completionBasis = MigrationJSON.string(record.payload, "completionBasis", default: GoalCompletionBasis.executions.rawValue)
+        goal.durationValue = Int32(MigrationJSON.int(record.payload, "durationValue"))
+        goal.durationUnit = MigrationJSON.string(record.payload, "durationUnit", default: TimeUnit.dias.rawValue)
         goal.completionDate = Date(timeIntervalSince1970: TimeInterval(MigrationJSON.int64(record.payload, "completionDate", default: try MigrationFormat.milliseconds(fromISO8601: record.updatedAt))) / 1000)
 
         for unit in (goal.units as? Set<ArchivedUnitEntity> ?? []) {

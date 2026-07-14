@@ -21,6 +21,7 @@ struct HealingSituation: Decodable, Identifiable, Hashable {
     let redFlags: [String]
     let whenToSeekHelp: [String]
     let protocols: [HealingProtocol]
+    let practicalTips: [HealingPracticalTip]
     let sources: [HealingEvidenceSource]
 
     func matches(_ query: String) -> Bool {
@@ -35,6 +36,12 @@ struct HealingSituation: Decodable, Identifiable, Hashable {
             .folding(options: [.caseInsensitive, .diacriticInsensitive], locale: .current)
         return searchableText.contains(normalizedQuery)
     }
+}
+
+struct HealingPracticalTip: Decodable, Identifiable, Hashable {
+    let id: String
+    let title: String
+    let detail: String
 }
 
 enum HealingPalette: String, Decodable, Hashable {

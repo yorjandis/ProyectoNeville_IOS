@@ -13,6 +13,28 @@ struct MetaPreestablecida{
     let unidadesInfo: [UnidadesInfo]
     var noUnidades : Int = 21
     var noFrecuencias : Int = 1
+    var tipoUnidad: TimeUnit = .dias
+    var scheduleType: GoalScheduleType = .interval
+    var weeklyDaysPerWeek: Int = 3
+    var dayPeriod: GoalDayPeriod = .anytime
+    var customUnitLabel: String = ""
+    var specificDates: [Date] = []
+
+    var scheduleSummary: String {
+        let label = customUnitLabel.trimmingCharacters(in: .whitespacesAndNewlines)
+        let quantity = label.isEmpty ? "\(noUnidades) unidades" : "\(noUnidades) \(label)"
+        let cadence: String
+        switch scheduleType {
+        case .interval:
+            cadence = "cada \(noFrecuencias) \(tipoUnidad.description(for: noFrecuencias))"
+        case .weekly:
+            cadence = "\(weeklyDaysPerWeek) \(weeklyDaysPerWeek == 1 ? "día" : "días") por semana"
+        case .specificDates:
+            cadence = "en fechas específicas"
+        }
+        let period = dayPeriod == .anytime ? "" : " · \(dayPeriod.label.lowercased())"
+        return "\(quantity) · \(cadence)\(period)"
+    }
 }
 
 enum MetasPreestablecidas: String, CaseIterable, Identifiable {
@@ -140,7 +162,9 @@ enum MetasPreestablecidas: String, CaseIterable, Identifiable {
                 titulo: self.getDescription,
                 description: "Cenar 2–3h antes de dormir. \n Beneficio: mejora glucosa nocturna y sueño profundo",
                 unidadesInfo: [],
-                noUnidades: 30
+                noUnidades: 30,
+                dayPeriod: .afternoon,
+                customUnitLabel: "cenas tempranas"
             )
             
         case .DiaSinUltraprocesados:
@@ -169,7 +193,9 @@ enum MetasPreestablecidas: String, CaseIterable, Identifiable {
             return MetaPreestablecida(
                 titulo: self.getDescription,
                 description: "10–20 min luz solar en primera hora. Sincronización circadiana",
-                unidadesInfo: []
+                unidadesInfo: [],
+                dayPeriod: .morning,
+                customUnitLabel: "sesiones"
             )
             
         case .SilencioConsciente:
@@ -185,7 +211,11 @@ enum MetasPreestablecidas: String, CaseIterable, Identifiable {
                 titulo: self.getDescription,
                 description: "Cardio suave 3–4 veces por semana. Adaptación mitocondrial progresiva",
                 unidadesInfo: [],
-                noUnidades: 60
+                noUnidades: 60,
+                tipoUnidad: .semanas,
+                scheduleType: .weekly,
+                weeklyDaysPerWeek: 3,
+                customUnitLabel: "sesiones"
             )
             
         case .EquilibrioYPropiocepcion:
@@ -208,7 +238,9 @@ enum MetasPreestablecidas: String, CaseIterable, Identifiable {
             return MetaPreestablecida(
                 titulo: self.getDescription,
                 description: "Sin pantallas 90 min antes dormir. Similar a DormirSinPantallas pero más estructurado.",
-                unidadesInfo: []
+                unidadesInfo: [],
+                dayPeriod: .night,
+                customUnitLabel: "noches"
             )    
         case .ConsumoInformativoLimitado:
             return MetaPreestablecida(
@@ -230,7 +262,9 @@ enum MetasPreestablecidas: String, CaseIterable, Identifiable {
             return MetaPreestablecida(
                 titulo: self.getDescription,
                 description: "Orden mínimo antes dormir. Ejemplos: No dejar cosas desordenadas en la cama, no dejar teléfonos o dispositivos electrónicos a la vista. Esto fortalece la conciencia corporal y mental",
-                unidadesInfo: []
+                unidadesInfo: [],
+                dayPeriod: .night,
+                customUnitLabel: "noches"
             )
             
         case .CaminarDescalzoSobreTierra_Hierba:
@@ -247,13 +281,19 @@ enum MetasPreestablecidas: String, CaseIterable, Identifiable {
                 titulo: self.getDescription,
                 description: "Caminar 20-30 minutos por la mañana para activar cuerpo y mente",
                 unidadesInfo: [],
-                noUnidades: 3
+                noUnidades: 21,
+                tipoUnidad: .semanas,
+                scheduleType: .weekly,
+                weeklyDaysPerWeek: 3,
+                dayPeriod: .morning,
+                customUnitLabel: "caminatas"
             )
         case .HidratacionDiaria:
             return MetaPreestablecida(
                 titulo: self.getDescription,
                 description: "Beber al menos 2 litros de agua al día",
-                unidadesInfo: []
+                unidadesInfo: [],
+                customUnitLabel: "días hidratados"
             )
         case .RespiracionProfunda:
             return MetaPreestablecida(
@@ -265,13 +305,17 @@ enum MetasPreestablecidas: String, CaseIterable, Identifiable {
             return MetaPreestablecida(
                 titulo: self.getDescription,
                 description: "Realizar estiramientos al despertar para mejorar movilidad y circulación",
-                unidadesInfo: []
+                unidadesInfo: [],
+                dayPeriod: .morning,
+                customUnitLabel: "sesiones"
             )
         case .Dormir8Horas:
             return MetaPreestablecida(
                 titulo: self.getDescription,
                 description: "Dormir 8 horas cada noche para favorecer la recuperación física y mental",
-                unidadesInfo: []
+                unidadesInfo: [],
+                dayPeriod: .night,
+                customUnitLabel: "noches"
             )
         case .ComerVerdurasDiarias:
             return MetaPreestablecida(
@@ -295,13 +339,15 @@ enum MetasPreestablecidas: String, CaseIterable, Identifiable {
             return MetaPreestablecida(
                 titulo: self.getDescription,
                 description: "Practicar yoga diariamente para flexibilidad y relajación",
-                unidadesInfo: []
+                unidadesInfo: [],
+                customUnitLabel: "sesiones"
             )
         case .MeditacionCorta:
             return MetaPreestablecida(
                 titulo: self.getDescription,
                 description: "Realizar meditaciones cortas de 5-10 minutos diariamente",
-                unidadesInfo: []
+                unidadesInfo: [],
+                customUnitLabel: "sesiones"
             )
             
             // Longevidad
@@ -318,14 +364,22 @@ enum MetasPreestablecidas: String, CaseIterable, Identifiable {
                 description: "Asistir a la sauna al menos una vez por semana para desintoxicación y relajación \n Nota: La evidencia en neurociencia indica que la consolidación sináptica estable, para este hábito, requiere repetición prolongada: 30-60 días",
                 unidadesInfo: [],
                 noUnidades: 60,
-                noFrecuencias: 7
+                noFrecuencias: 1,
+                tipoUnidad: .semanas,
+                scheduleType: .weekly,
+                weeklyDaysPerWeek: 1,
+                customUnitLabel: "sesiones"
             )
         case .EjercicioDeFuerza:
             return MetaPreestablecida(
                 titulo: self.getDescription,
                 description: "Realizar ejercicios de fuerza 2-3 veces por semana \n Nota: La evidencia en neurociencia indica que la consolidación sináptica estable, para este hábito, requiere repetición prolongada: 30-60 días",
                 unidadesInfo: [],
-                noUnidades: 45
+                noUnidades: 45,
+                tipoUnidad: .semanas,
+                scheduleType: .weekly,
+                weeklyDaysPerWeek: 3,
+                customUnitLabel: "entrenamientos"
             )
         case .ExposicionSolSegura:
             return MetaPreestablecida(
@@ -350,7 +404,8 @@ enum MetasPreestablecidas: String, CaseIterable, Identifiable {
             return MetaPreestablecida(
                 titulo: self.getDescription,
                 description: "Leer diariamente para estimular mente y conocimiento",
-                unidadesInfo: []
+                unidadesInfo: [],
+                customUnitLabel: "páginas"
             )
         case .ReduccionEstrés:
             return MetaPreestablecida(
@@ -370,7 +425,9 @@ enum MetasPreestablecidas: String, CaseIterable, Identifiable {
             return MetaPreestablecida(
                 titulo: self.getDescription,
                 description: "Escribir diariamente en un diario de gratitud",
-                unidadesInfo: []
+                unidadesInfo: [],
+                dayPeriod: .night,
+                customUnitLabel: "entradas"
             )
             
             // Neurociencia y mente
@@ -444,7 +501,9 @@ enum MetasPreestablecidas: String, CaseIterable, Identifiable {
                 titulo: self.getDescription,
                 description: "Visualizar deseos cumplidos diariamente",
                 unidadesInfo: [],
-                noUnidades: 60
+                noUnidades: 60,
+                dayPeriod: .night,
+                customUnitLabel: "sesiones"
             )
         case .SentirElDeseoComoRealidad:
             return MetaPreestablecida(
@@ -457,13 +516,17 @@ enum MetasPreestablecidas: String, CaseIterable, Identifiable {
                 titulo: self.getDescription,
                 description: "Reescribir memorias limitantes para transformación personal\n Nota: La evidencia en neurociencia indica que la consolidación sináptica estable, para este hábito, requiere repetición prolongada: 60-90 días",
                 unidadesInfo: [],
-                noUnidades: 60
+                noUnidades: 60,
+                dayPeriod: .night,
+                customUnitLabel: "revisiones"
             )
         case .ImaginacionCreativaDiaria:
             return MetaPreestablecida(
                 titulo: self.getDescription,
                 description: "Ejercitar imaginación creativa diariamente",
-                unidadesInfo: []
+                unidadesInfo: [],
+                dayPeriod: .night,
+                customUnitLabel: "sesiones"
             )
         case .EstadoDeGracias:
             return MetaPreestablecida(
@@ -491,13 +554,17 @@ enum MetasPreestablecidas: String, CaseIterable, Identifiable {
                 titulo: self.getDescription,
                 description: "Meditación enfocada en la imaginación creativa",
                 unidadesInfo: [],
-                noUnidades: 60
+                noUnidades: 60,
+                dayPeriod: .night,
+                customUnitLabel: "sesiones"
             )
         case .RevisarSueños:
             return MetaPreestablecida(
                 titulo: self.getDescription,
                 description: "Revisar y reflexionar sobre sueños cada día",
-                unidadesInfo: []
+                unidadesInfo: [],
+                dayPeriod: .morning,
+                customUnitLabel: "registros"
             )
         case .ConectarConSubconsciente:
             return MetaPreestablecida(
@@ -602,13 +669,19 @@ enum MetasPreestablecidas: String, CaseIterable, Identifiable {
                 description: "Revisar progreso de metas semanalmente",
                 unidadesInfo: [],
                 noUnidades: 60,
-                noFrecuencias: 7
+                noFrecuencias: 1,
+                tipoUnidad: .semanas,
+                scheduleType: .weekly,
+                weeklyDaysPerWeek: 1,
+                customUnitLabel: "revisiones"
             )
         case .DormirSinPantallas:
             return MetaPreestablecida(
                 titulo: self.getDescription,
                 description: "Evitar pantallas antes de dormir para mejorar sueño",
-                unidadesInfo: []
+                unidadesInfo: [],
+                dayPeriod: .night,
+                customUnitLabel: "noches"
             )
         case .ComerFrutasDiarias:
             return MetaPreestablecida(
@@ -638,7 +711,9 @@ enum MetasPreestablecidas: String, CaseIterable, Identifiable {
             return MetaPreestablecida(
                 titulo: self.getDescription,
                 description: "Reflexionar sobre el día antes de dormir",
-                unidadesInfo: []
+                unidadesInfo: [],
+                dayPeriod: .night,
+                customUnitLabel: "reflexiones"
             )
         case .MeditacionCaminando:
             return MetaPreestablecida(
@@ -670,13 +745,17 @@ enum MetasPreestablecidas: String, CaseIterable, Identifiable {
             return MetaPreestablecida(
                 titulo: self.getDescription,
                 description: "Practicar yoga antes de dormir para relajación",
-                unidadesInfo: []
+                unidadesInfo: [],
+                dayPeriod: .night,
+                customUnitLabel: "sesiones"
             )
         case .PlanificacionDiaria:
             return MetaPreestablecida(
                 titulo: self.getDescription,
                 description: "Planificar tareas y objetivos diarios",
-                unidadesInfo: []
+                unidadesInfo: [],
+                dayPeriod: .morning,
+                customUnitLabel: "planificaciones"
             )
         case .EvaluacionEmociones:
             return MetaPreestablecida(
@@ -708,4 +787,3 @@ enum MetasPreestablecidas: String, CaseIterable, Identifiable {
         }
     }
 }
-

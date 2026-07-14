@@ -1,0 +1,104 @@
+{
+  "source": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/La Ley Watch App/Views/AddNota.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Elegir categoría",
+        "location": {
+          "startingColumn": 29,
+          "startingLine": 174
+        }
+      },
+      {
+        "comment": "",
+        "key": "Nueva Nota",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 34
+        }
+      },
+      {
+        "comment": "",
+        "key": "Título de nota",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 41
+        }
+      },
+      {
+        "comment": "",
+        "key": "Nota",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 46
+        }
+      },
+      {
+        "comment": "",
+        "key": "Categoría",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 51
+        }
+      },
+      {
+        "comment": "",
+        "key": "Elegir categoría",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 59
+        }
+      },
+      {
+        "comment": "",
+        "key": "Favorito",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 67
+        }
+      },
+      {
+        "comment": "",
+        "key": "Añadir coordenadas",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 81
+        }
+      },
+      {
+        "comment": "",
+        "key": "Guardar",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 152
+        }
+      },
+      {
+        "comment": "",
+        "key": "Notas",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 172
+        }
+      },
+      {
+        "comment": "",
+        "key": "Sin categoría",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 175
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancelar",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 183
+        }
+      }
+    ]
+  },
+  "version": 1
+}

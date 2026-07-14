@@ -3,8 +3,13 @@
   "detalles": "Programa de 7 unidades, cada unidad corresponde a un día de la semana",
   "description": "Programa orientado a mejorar la sensibilidad a la insulina y optimizar energía con énfasis en producción de butirato.\n\nEstructura del programa:\n1. Ventana de ayuno diaria (12-16h) -> activa AMPK basal\n2. Cardio en ayunas -> aumenta oxidación de grasas -> reduce DAG/PKC\n3. Introducción estratégica de almidón resistente -> aumenta producción de butirato\n4. Mejora de microbiota -> favorece producción de SCFA (butirato)\n5. Omega 3 frecuente -> reduce inflamación (↓ NF-kB, JNK)\n6. Carbohidratos post-entreno -> mejor captación vía GLUT4\n7. Baja carga inflamatoria -> evita fosforilación en serina de IRS-1\n\nResultado esperado (8-12 semanas):\n* Disminución de insulina basal\n* Mejora de señalización IRS-1 (menos fosforilación en serina)\n* Activación eficiente de PI3K-Akt\n* Aumento de producción de butirato\n* Disminución de inflamación sistémica\n* Mayor flexibilidad metabólica\n* Mejora del rendimiento cognitivo y físico",
   "noUnidades": 7,
-  "tipoUnidad": "dias",
+  "tipoUnidad": "semanas",
   "frecuencia": 1,
+  "scheduleType": "weekly",
+  "weeklyDaysPerWeek": 7,
+  "dayPeriod": "anytime",
+  "customUnitLabel": "días",
+  "specificDates": [],
   "unidadesinfo": [
     {
       "name": "Lunes",

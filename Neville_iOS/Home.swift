@@ -49,6 +49,7 @@ struct Home: View {
     @AppStorage("Home_ShowAgendaButton") private var showAgendaButtonInHome: Bool = true
     @AppStorage("Home_AgendaBadge_HiddenDayKey") private var agendaBadgeHiddenDayKey: String = ""
     @AppStorage("Home_ShowPresenceButton") private var showPresenceButtonInHome: Bool = true
+    @AppStorage(AppCons.UD_setting_HomeAlternativoShowHealingCenterCard) private var showHealingCenterCardInHome: Bool = true
     @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
     @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) private var yorjPremium: Bool = false
 
@@ -240,17 +241,26 @@ struct Home: View {
                     if !showAlternativeHomeDesign {
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 10) {
-                                NavigationLink {
-                                    CentroSanadorView()
-                                } label: {
-                                    Label("Apoyo ahora", systemImage: "cross.case.fill")
-                                        .font(.headline)
-                                        .foregroundStyle(.indigo)
-                                        .padding(.horizontal, 14)
-                                        .padding(.vertical, 10)
-                                        .background(.white.opacity(quickAccessButtonBackgroundOpacity))
-                                        .clipShape(Capsule())
-                                        .overlay(Capsule().stroke(.cyan.opacity(0.30), lineWidth: 1))
+                                if showHealingCenterCardInHome {
+                                    NavigationLink {
+                                        CentroSanadorView()
+                                    } label: {
+                                        Label("Apoyo ahora", systemImage: "cross.case.fill")
+                                            .font(.headline)
+                                            .foregroundStyle(.indigo)
+                                            .padding(.horizontal, 14)
+                                            .padding(.vertical, 10)
+                                            .background(.white.opacity(quickAccessButtonBackgroundOpacity))
+                                            .clipShape(Capsule())
+                                            .overlay(Capsule().stroke(.cyan.opacity(0.30), lineWidth: 1))
+                                    }
+                                    .contextMenu {
+                                        Button(role: .destructive) {
+                                            showHealingCenterCardInHome = false
+                                        } label: {
+                                            Label("Ocultar", systemImage: "eye.slash")
+                                        }
+                                    }
                                 }
 
                                 if shouldShowRitualButton {

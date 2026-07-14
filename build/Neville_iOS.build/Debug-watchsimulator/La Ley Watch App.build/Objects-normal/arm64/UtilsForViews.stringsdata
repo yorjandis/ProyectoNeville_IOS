@@ -1,0 +1,32 @@
+{
+  "source": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Shared/Models/UtilsForView/UtilsForViews.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Feliz Cumpleaños Maestro Neville! 💖",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 120
+        }
+      },
+      {
+        "comment": "",
+        "key": "Gracias por tu Amor y Enseñanzas",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 122
+        }
+      },
+      {
+        "comment": "",
+        "key": "Debug Mode",
+        "location": {
+          "startingColumn": 10,
+          "startingLine": 152
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -29,6 +29,7 @@ struct GoalCardView: View {
     @State private var showDeleteConfirmation: Bool = false
     
     @State private var showModifyGoalView = false
+    @State private var showReactivateConfirmation = false
     
     
     @State private var expandirUnidades: Bool = false
@@ -75,6 +76,10 @@ struct GoalCardView: View {
                     .onTapGesture(count: 2) {
                         self.showModifyGoalView = true
                     }
+
+                Label(goal.planSummary, systemImage: "calendar.badge.clock")
+                    .font(.caption)
+                    .foregroundStyle(.white.opacity(0.9))
                 
                 //Mostrar El tiempo que falta para la próxima unidad:
                 HStack{
@@ -139,15 +144,26 @@ struct GoalCardView: View {
             
             //Barra de acciones:
             HStack {
-                Text("Progreso: \(progressText)")
+                Text("Prog: \(progressText)")
                     .font(.footnote)
                     .foregroundStyle(.primary).bold()
+                    .layoutPriority(1)
                 
                 Spacer()
                 
                 //Botón Archivar Meta:
                 //🔥 Mostrar un botón para archivar/Actualizar la unidad
                     if goal.isCompleted && goal.isStarted {
+                        Button {
+                            showReactivateConfirmation = true
+                        } label: {
+                            Image(systemName: "arrow.clockwise.circle")
+                                .foregroundStyle(.black)
+                                .font(.system(size: 28))
+                        }
+                        .padding(.leading, 3)
+                        .help("Recargar como meta activa")
+
                         Button{
                                 do{
                                     try goal.archive(context: self.context)
@@ -324,6 +340,23 @@ struct GoalCardView: View {
             }
         } message: {
             Text("¿Estás seguro de que quieres eliminar este objetivo y su progreso?")
+        }
+        .confirmationDialog(
+            "Reactivar Meta",
+            isPresented: $showReactivateConfirmation,
+            titleVisibility: .visible
+        ) {
+            Button("Reactivar") {
+                do {
+                    try goal.reactivateCompleted(context: context)
+                } catch {
+                    alertMessage = "La Meta no ha podido reactivarse. Inténtelo nuevamente."
+                    showAlert = true
+                }
+            }
+            Button("Cancelar", role: .cancel) { }
+        } message: {
+            Text("La ejecución terminada se conservará en el historial y se creará una nueva Meta activa sin iniciar.")
         }
         
     }

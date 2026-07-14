@@ -39,7 +39,7 @@ struct BundledHealingCatalogRepository: HealingCatalogProviding {
     }
 
     private func validate(_ catalog: HealingCatalog) throws {
-        guard catalog.schemaVersion == 1 else {
+        guard catalog.schemaVersion == 2 else {
             throw HealingCatalogError.invalidSchema("versión de esquema no compatible")
         }
         guard !catalog.situations.isEmpty else {
@@ -52,14 +52,25 @@ struct BundledHealingCatalogRepository: HealingCatalogProviding {
             guard !situation.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
                 throw HealingCatalogError.invalidSchema("hay una situación sin título")
             }
-            guard !situation.protocols.isEmpty else {
-                throw HealingCatalogError.invalidSchema("\(situation.id) no contiene técnicas")
+            guard situation.protocols.count == 3 else {
+                throw HealingCatalogError.invalidSchema("\(situation.id) debe contener exactamente tres técnicas")
+            }
+            guard !situation.practicalTips.isEmpty else {
+                throw HealingCatalogError.invalidSchema("\(situation.id) no contiene consejos prácticos")
             }
             guard !situation.sources.isEmpty else {
                 throw HealingCatalogError.invalidSchema("\(situation.id) no contiene fuentes")
             }
 
             try ensureUnique(situation.protocols.map(\.id), label: "técnicas de \(situation.id)")
+            try ensureUnique(situation.practicalTips.map(\.id), label: "consejos de \(situation.id)")
+
+            for tip in situation.practicalTips {
+                guard !tip.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+                      !tip.detail.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+                    throw HealingCatalogError.invalidSchema("\(situation.id) contiene un consejo incompleto")
+                }
+            }
 
             for healingProtocol in situation.protocols {
                 guard !healingProtocol.steps.isEmpty else {
@@ -82,4 +93,3 @@ struct BundledHealingCatalogRepository: HealingCatalogProviding {
         }
     }
 }
-

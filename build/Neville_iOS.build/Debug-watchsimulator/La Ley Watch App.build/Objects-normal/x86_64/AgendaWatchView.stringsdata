@@ -1,0 +1,232 @@
+{
+  "source": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/La Ley Watch App/Views/AgendaWatchView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Agenda",
+        "location": {
+          "startingColumn": 16,
+          "startingLine": 92
+        }
+      },
+      {
+        "comment": "",
+        "key": "Opciones de entrada",
+        "location": {
+          "startingColumn": 29,
+          "startingLine": 97
+        }
+      },
+      {
+        "comment": "",
+        "key": "Eliminar entrada",
+        "location": {
+          "startingColumn": 16,
+          "startingLine": 107
+        }
+      },
+      {
+        "comment": "",
+        "key": "Filtrar Agenda",
+        "location": {
+          "startingColumn": 29,
+          "startingLine": 124
+        }
+      },
+      {
+        "comment": "",
+        "key": "Agenda",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 20
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@ · %@",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 71
+        }
+      },
+      {
+        "comment": "",
+        "key": "OK",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 93
+        }
+      },
+      {
+        "comment": "",
+        "key": "Borrar",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 98
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancelar",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 103
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancelar",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 108
+        }
+      },
+      {
+        "comment": "",
+        "key": "Borrar",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 111
+        }
+      },
+      {
+        "comment": "",
+        "key": "¿Seguro que deseas borrar esta entrada?",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 122
+        }
+      },
+      {
+        "comment": "",
+        "key": "Hoy",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 125
+        }
+      },
+      {
+        "comment": "",
+        "key": "Semana actual",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 129
+        }
+      },
+      {
+        "comment": "",
+        "key": "Mes actual",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 133
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancelar",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 137
+        }
+      },
+      {
+        "comment": "",
+        "key": "Agenda",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 239
+        }
+      },
+      {
+        "comment": "",
+        "key": "Nueva entrada",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 184
+        }
+      },
+      {
+        "comment": "",
+        "key": "Título",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 189
+        }
+      },
+      {
+        "comment": "",
+        "key": "Detalle",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 193
+        }
+      },
+      {
+        "comment": "",
+        "key": "Guardar",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 227
+        }
+      },
+      {
+        "comment": "",
+        "key": "OK",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 240
+        }
+      },
+      {
+        "comment": "",
+        "key": "Lugar",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 261
+        }
+      },
+      {
+        "comment": "",
+        "key": "Actualizar lugar",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 261
+        }
+      },
+      {
+        "comment": "",
+        "key": "Fecha",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 301
+        }
+      },
+      {
+        "comment": "",
+        "key": "Fecha",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 306
+        }
+      },
+      {
+        "comment": "",
+        "key": "Hora",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 324
+        }
+      },
+      {
+        "comment": "",
+        "key": "Hora",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 329
+        }
+      }
+    ]
+  },
+  "version": 1
+}

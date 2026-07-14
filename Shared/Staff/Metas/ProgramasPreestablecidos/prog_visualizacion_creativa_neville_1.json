@@ -5,6 +5,11 @@
   "noUnidades": 7,
   "tipoUnidad": "dias",
   "frecuencia": 1,
+  "scheduleType": "interval",
+  "weeklyDaysPerWeek": 1,
+  "dayPeriod": "night",
+  "customUnitLabel": "sesiones",
+  "specificDates": [],
   "unidadesinfo": [
     {
       "name": "Día 1 - Claridad del deseo",

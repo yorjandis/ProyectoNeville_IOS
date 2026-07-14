@@ -1,6 +1,363 @@
 import Foundation
 import CoreData
-import WatchConnectivity
+@preconcurrency import WatchConnectivity
+import Combine
+import UserNotifications
+
+enum WatchGoalSyncKeys {
+    static let snapshot = "ios_goal_units_snapshot_v1"
+    static let requestSnapshot = "watch_goal_units_request_v1"
+    static let completeUnit = "watch_goal_unit_complete_v1"
+    static let expireUnit = "watch_goal_unit_expire_v1"
+    static let completionResult = "ios_goal_unit_completion_result_v1"
+}
+
+struct WatchGoalUnit: Identifiable, Codable, Hashable, Sendable {
+    let id: String
+    let goalID: String
+    let goalTitle: String
+    let unitName: String
+    let targetText: String
+    let index: Int
+    let startDate: Date
+    let endDate: Date
+
+    func isAvailable(at date: Date) -> Bool {
+        startDate <= date && date <= endDate
+    }
+
+    static func fromDictionary(_ value: [String: Any]) -> WatchGoalUnit? {
+        guard let id = value["id"] as? String,
+              let goalID = value["goalID"] as? String,
+              let goalTitle = value["goalTitle"] as? String,
+              let unitName = value["unitName"] as? String,
+              let targetText = value["targetText"] as? String,
+              let startInterval = (value["startDate"] as? NSNumber)?.doubleValue,
+              let endInterval = (value["endDate"] as? NSNumber)?.doubleValue else {
+            return nil
+        }
+
+        return WatchGoalUnit(
+            id: id,
+            goalID: goalID,
+            goalTitle: goalTitle,
+            unitName: unitName,
+            targetText: targetText,
+            index: (value["index"] as? NSNumber)?.intValue ?? 0,
+            startDate: Date(timeIntervalSince1970: startInterval),
+            endDate: Date(timeIntervalSince1970: endInterval)
+        )
+    }
+}
+
+struct WatchGoalCardItem: Identifiable {
+    let id: String
+    let title: String
+    let activeUnit: WatchGoalUnit?
+    let nextUnit: WatchGoalUnit?
+
+    var displayedUnit: WatchGoalUnit? { activeUnit ?? nextUnit }
+    var isAvailable: Bool { activeUnit != nil }
+}
+
+@MainActor
+final class WatchGoalUnitsStore: ObservableObject {
+    static let shared = WatchGoalUnitsStore()
+
+    @Published private(set) var units: [WatchGoalUnit] = []
+    @Published private(set) var pendingCompletionIDs: Set<String> = []
+    @Published var lastError: String?
+
+    private let unitsDefaultsKey = "watch.goalUnits.snapshot.v1"
+    private let pendingDefaultsKey = "watch.goalUnits.pending.v1"
+    private let expirationDefaultsKey = "watch.goalUnits.expiring.v1"
+    private var pendingExpirationIDs: Set<String> = []
+    private let session: WCSession? = WCSession.isSupported() ? WCSession.default : nil
+
+    private init() {
+        if let data = UserDefaults.standard.data(forKey: unitsDefaultsKey),
+           let saved = try? JSONDecoder().decode([WatchGoalUnit].self, from: data) {
+            units = saved
+        }
+        pendingCompletionIDs = Set(UserDefaults.standard.stringArray(forKey: pendingDefaultsKey) ?? [])
+        pendingExpirationIDs = Set(UserDefaults.standard.stringArray(forKey: expirationDefaultsKey) ?? [])
+    }
+
+    func applySnapshot(_ snapshotUnits: [WatchGoalUnit]) {
+        let incoming = snapshotUnits.sorted { $0.startDate < $1.startDate }
+        let incomingIDs = Set(incoming.map(\.id))
+
+        units = incoming.filter { !pendingExpirationIDs.contains($0.id) }
+        pendingCompletionIDs.formIntersection(incomingIDs)
+        pendingExpirationIDs.formIntersection(incomingIDs)
+        persist()
+        WatchGoalNotificationScheduler.shared.synchronize(with: incoming)
+    }
+
+    func requestSnapshot() {
+        guard let session else { return }
+        let message: [String: Any] = [
+            WatchGoalSyncKeys.requestSnapshot: ["requestedAt": Date().timeIntervalSince1970]
+        ]
+
+        if session.isReachable {
+            session.sendMessage(message, replyHandler: nil) { [weak self] _ in
+                Task { @MainActor in
+                    if let session = self?.session {
+                        _ = session.transferUserInfo(message)
+                    }
+                }
+            }
+        } else {
+            session.transferUserInfo(message)
+        }
+    }
+
+    func complete(_ unit: WatchGoalUnit, now: Date = Date()) {
+        guard unit.isAvailable(at: now), !pendingCompletionIDs.contains(unit.id), let session else { return }
+
+        pendingCompletionIDs.insert(unit.id)
+        persistPending()
+        let payload: [String: Any] = [
+            "unitID": unit.id,
+            "goalID": unit.goalID,
+            "completedAt": now.timeIntervalSince1970
+        ]
+        let message: [String: Any] = [WatchGoalSyncKeys.completeUnit: payload]
+
+        if session.isReachable {
+            session.sendMessage(message, replyHandler: nil) { [weak self] _ in
+                Task { @MainActor in self?.queueCompletion(message, unitID: unit.id) }
+            }
+        } else {
+            queueCompletion(message, unitID: unit.id)
+        }
+    }
+
+    func availableUnits(at date: Date) -> [WatchGoalUnit] {
+        units.filter { $0.isAvailable(at: date) }
+    }
+
+    func nextUnit(after date: Date) -> WatchGoalUnit? {
+        units.first { $0.startDate > date }
+    }
+
+    func goalCards(at date: Date) -> [WatchGoalCardItem] {
+        Dictionary(grouping: units, by: \.goalID)
+            .compactMap { goalID, goalUnits in
+                let sorted = goalUnits.sorted { $0.startDate < $1.startDate }
+                let active = sorted.first { $0.isAvailable(at: date) }
+                let next = sorted.first { $0.startDate > date }
+                guard active != nil || next != nil else { return nil }
+                return WatchGoalCardItem(
+                    id: goalID,
+                    title: sorted.first?.goalTitle ?? "Meta",
+                    activeUnit: active,
+                    nextUnit: next
+                )
+            }
+            .sorted { lhs, rhs in
+                if lhs.isAvailable != rhs.isAvailable { return lhs.isAvailable }
+                let leftDate = lhs.displayedUnit?.startDate ?? .distantFuture
+                let rightDate = rhs.displayedUnit?.startDate ?? .distantFuture
+                return leftDate < rightDate
+            }
+    }
+
+    func expireUnitsIfNeeded(at date: Date) {
+        let expired = units.filter {
+            $0.endDate < date && !pendingExpirationIDs.contains($0.id)
+        }
+        guard !expired.isEmpty else { return }
+
+        for unit in expired {
+            pendingExpirationIDs.insert(unit.id)
+            sendExpiration(for: unit, at: date)
+        }
+        units.removeAll { pendingExpirationIDs.contains($0.id) }
+        persist()
+        WatchGoalNotificationScheduler.shared.synchronize(with: units)
+    }
+
+    private func queueCompletion(_ message: [String: Any], unitID: String) {
+        session?.transferUserInfo(message)
+        pendingCompletionIDs.insert(unitID)
+        persistPending()
+    }
+
+    private func sendExpiration(for unit: WatchGoalUnit, at date: Date) {
+        guard let session else { return }
+        let message: [String: Any] = [
+            WatchGoalSyncKeys.expireUnit: [
+                "unitID": unit.id,
+                "goalID": unit.goalID,
+                "detectedAt": date.timeIntervalSince1970
+            ]
+        ]
+        if session.isReachable {
+            session.sendMessage(message, replyHandler: nil) { _ in
+                _ = session.transferUserInfo(message)
+            }
+        } else {
+            session.transferUserInfo(message)
+        }
+    }
+
+    func applyCompletionResult(unitID: String, success: Bool, reason: String?) {
+        if success {
+            units.removeAll { $0.id == unitID }
+            pendingCompletionIDs.remove(unitID)
+            persist()
+            WatchGoalNotificationScheduler.shared.remove(unitID: unitID)
+        } else {
+            pendingCompletionIDs.remove(unitID)
+            persistPending()
+            lastError = reason ?? "No se pudo completar la unidad"
+            requestSnapshot()
+        }
+    }
+
+    private func persist() {
+        if let data = try? JSONEncoder().encode(units) {
+            UserDefaults.standard.set(data, forKey: unitsDefaultsKey)
+        }
+        persistPending()
+    }
+
+    private func persistPending() {
+        UserDefaults.standard.set(Array(pendingCompletionIDs), forKey: pendingDefaultsKey)
+        UserDefaults.standard.set(Array(pendingExpirationIDs), forKey: expirationDefaultsKey)
+    }
+}
+
+@MainActor
+final class WatchGoalNotificationScheduler {
+    static let shared = WatchGoalNotificationScheduler()
+
+    static let categoryID = "GOAL_UNIT_AVAILABLE"
+    static let destinationKey = "watchDestination"
+    static let destinationValue = "goals"
+
+    private let center = UNUserNotificationCenter.current()
+    private let registeredDefaultsKey = "watch.goalUnits.notificationIDs.v1"
+    private var registeredIDs: Set<String> {
+        get { Set(UserDefaults.standard.stringArray(forKey: registeredDefaultsKey) ?? []) }
+        set { UserDefaults.standard.set(Array(newValue), forKey: registeredDefaultsKey) }
+    }
+
+    func synchronize(with units: [WatchGoalUnit]) {
+        let validIDs = Set(units.map(\.id))
+        let registered = registeredIDs.intersection(validIDs)
+        let obsolete = registeredIDs.subtracting(validIDs).map(Self.notificationID)
+        if !obsolete.isEmpty {
+            center.removePendingNotificationRequests(withIdentifiers: obsolete)
+            center.removeDeliveredNotifications(withIdentifiers: obsolete)
+        }
+
+        guard !units.isEmpty else {
+            registeredIDs = []
+            return
+        }
+
+        Task { [weak self] in
+            guard let self,
+                  (try? await center.requestAuthorization(options: [.alert, .sound])) == true else {
+                return
+            }
+
+            var updatedRegistered = registered
+            let now = Date()
+            for unit in units.sorted(by: { $0.startDate < $1.startDate }).prefix(60)
+            where !updatedRegistered.contains(unit.id) {
+                let content = UNMutableNotificationContent()
+                content.title = "Meta disponible"
+                content.body = "\(unit.goalTitle): \(unit.targetText)"
+                content.sound = .default
+                content.categoryIdentifier = Self.categoryID
+                content.userInfo = [
+                    Self.destinationKey: Self.destinationValue,
+                    "unitID": unit.id
+                ]
+
+                let delay = max(unit.startDate.timeIntervalSince(now), 1)
+                let trigger = UNTimeIntervalNotificationTrigger(timeInterval: delay, repeats: false)
+                let request = UNNotificationRequest(
+                    identifier: Self.notificationID(unit.id),
+                    content: content,
+                    trigger: trigger
+                )
+
+                do {
+                    try await center.add(request)
+                    updatedRegistered.insert(unit.id)
+                } catch {
+                    continue
+                }
+            }
+            registeredIDs = updatedRegistered
+        }
+    }
+
+    func remove(unitID: String) {
+        let identifier = Self.notificationID(unitID)
+        center.removePendingNotificationRequests(withIdentifiers: [identifier])
+        center.removeDeliveredNotifications(withIdentifiers: [identifier])
+        var registered = registeredIDs
+        registered.remove(unitID)
+        registeredIDs = registered
+    }
+
+    private static func notificationID(_ unitID: String) -> String {
+        "goal-unit-\(unitID)"
+    }
+}
+
+@MainActor
+final class WatchGoalNotificationRouter: NSObject, ObservableObject, @preconcurrency UNUserNotificationCenterDelegate {
+    static let shared = WatchGoalNotificationRouter()
+    @Published var shouldOpenGoals = false
+
+    func configure() {
+        let center = UNUserNotificationCenter.current()
+        center.delegate = self
+        let openAction = UNNotificationAction(
+            identifier: "OPEN_GOAL_UNITS",
+            title: "Ver unidad",
+            options: [.foreground]
+        )
+        center.setNotificationCategories([
+            UNNotificationCategory(
+                identifier: WatchGoalNotificationScheduler.categoryID,
+                actions: [openAction],
+                intentIdentifiers: []
+            )
+        ])
+    }
+
+    func consumeRequest() {
+        shouldOpenGoals = false
+    }
+
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        willPresent notification: UNNotification,
+        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
+    ) {
+        completionHandler([.banner, .sound])
+    }
+
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        didReceive response: UNNotificationResponse,
+        withCompletionHandler completionHandler: @escaping () -> Void
+    ) {
+        if response.notification.request.content.userInfo[WatchGoalNotificationScheduler.destinationKey] as? String
+            == WatchGoalNotificationScheduler.destinationValue {
+            shouldOpenGoals = true
+        }
+        completionHandler()
+    }
+}
 
 @MainActor
 final class WatchIncomingDataReceiver: NSObject, WCSessionDelegate {
@@ -49,6 +406,28 @@ final class WatchIncomingDataReceiver: NSObject, WCSessionDelegate {
     }
 
     private nonisolated func handleIncomingPayload(_ payload: [String: Any]) {
+        if let completionResult = payload[WatchGoalSyncKeys.completionResult] as? [String: Any],
+           let unitID = completionResult["unitID"] as? String,
+           let success = completionResult["success"] as? Bool {
+            let reason = completionResult["reason"] as? String
+            Task { @MainActor in
+                WatchGoalUnitsStore.shared.applyCompletionResult(
+                    unitID: unitID,
+                    success: success,
+                    reason: reason
+                )
+            }
+            return
+        }
+
+        if let goalSnapshot = payload[WatchGoalSyncKeys.snapshot] as? [String: Any] {
+            let rawUnits = goalSnapshot["units"] as? [[String: Any]] ?? []
+            let units = rawUnits.compactMap(WatchGoalUnit.fromDictionary)
+            Task { @MainActor in
+                WatchGoalUnitsStore.shared.applySnapshot(units)
+            }
+        }
+
         if let rawPremiumState = payload[Keys.premiumState] as? [String: Any] {
             let yorjPremium = rawPremiumState["yorjPremium"] as? Bool ?? false
             let purchaseStatus = rawPremiumState["purchaseStatus"] as? Bool ?? false

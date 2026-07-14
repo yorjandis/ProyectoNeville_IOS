@@ -1,0 +1,64 @@
+{
+  "source": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/La Ley Watch App/Views/AddDiario.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Nueva Entrada",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 28
+        }
+      },
+      {
+        "comment": "",
+        "key": "Contenido de la entrada",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 50
+        }
+      },
+      {
+        "comment": "",
+        "key": "Capítulo",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 55
+        }
+      },
+      {
+        "comment": "",
+        "key": "Título de la entrada",
+        "location": {
+          "startingColumn": 39,
+          "startingLine": 40
+        }
+      },
+      {
+        "comment": "",
+        "key": "Favorito",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 62
+        }
+      },
+      {
+        "comment": "",
+        "key": "Guardar",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 90
+        }
+      },
+      {
+        "comment": "",
+        "key": "Diario",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 109
+        }
+      }
+    ]
+  },
+  "version": 1
+}

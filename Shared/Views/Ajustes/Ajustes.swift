@@ -35,7 +35,6 @@ struct Ajustes: View {
     @AppStorage(PresenciaSettings.customCelebrationPhraseKey) private var presenciaCelebrationPhrase = PresenciaSettings.defaultCelebrationPhrase
     @AppStorage(AppCons.UD_setting_HomeProductividadPresenciaTotal) private var homeProductividadPresenciaTotal: Int = 5
     @AppStorage(AppCons.UD_setting_HomeProductividadMetasTotal) private var homeProductividadMetasTotal: Int = 1
-    @AppStorage(AppCons.UD_setting_HomeProductividadDiarioTotal) private var homeProductividadDiarioTotal: Int = 1
     @AppStorage(AppCons.UD_setting_HomeAlternativoShowHealingCenterCard) private var showHealingCenterCardInHomeAlternativo: Bool = true
     #endif
 
@@ -1448,13 +1447,12 @@ struct Ajustes: View {
                     }
 
                     Section("Vista Home Productividad") {
-                        Text("Valores totales usados como referencia para completar los indicadores de progreso de Presencia, Metas y Diario en Home.")
+                        Text("Valores totales usados como referencia para completar los indicadores de progreso de Presencia y Metas en Home. El indicador de estrés se calcula automáticamente con datos de Salud.")
                             .font(.footnote)
                             .foregroundStyle(.secondary)
 
                         Stepper("Presencia: \(homeProductividadPresenciaTotal)", value: $homeProductividadPresenciaTotal, in: 5...100)
                         Stepper("Metas: \(homeProductividadMetasTotal)", value: $homeProductividadMetasTotal, in: 1...100)
-                        Stepper("Diario: \(homeProductividadDiarioTotal)", value: $homeProductividadDiarioTotal, in: 1...100)
                     }
 
                     Section("Revisión semanal") {

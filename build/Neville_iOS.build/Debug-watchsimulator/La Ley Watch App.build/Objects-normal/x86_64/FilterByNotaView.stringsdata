@@ -1,0 +1,96 @@
+{
+  "source": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/La Ley Watch App/Views/FilterByNotaView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Filtrar Notas por...",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 20
+        }
+      },
+      {
+        "comment": "",
+        "key": "Título",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 23
+        }
+      },
+      {
+        "comment": "",
+        "key": "Texto",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 27
+        }
+      },
+      {
+        "comment": "",
+        "key": "Categoría",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 31
+        }
+      },
+      {
+        "comment": "",
+        "key": "Favoritos",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 35
+        }
+      },
+      {
+        "comment": "",
+        "key": "Texto del título",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 45
+        }
+      },
+      {
+        "comment": "",
+        "key": "Buscar",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 46
+        }
+      },
+      {
+        "comment": "",
+        "key": "Texto de la nota",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 59
+        }
+      },
+      {
+        "comment": "",
+        "key": "Buscar",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 60
+        }
+      },
+      {
+        "comment": "",
+        "key": "Categoría",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 73
+        }
+      },
+      {
+        "comment": "",
+        "key": "Buscar",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 74
+        }
+      }
+    ]
+  },
+  "version": 1
+}

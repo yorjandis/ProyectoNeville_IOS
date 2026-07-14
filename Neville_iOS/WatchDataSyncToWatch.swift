@@ -3,6 +3,14 @@ import CoreData
 import WatchConnectivity
 import Combine
 
+enum WatchGoalSyncKeys {
+    static let snapshot = "ios_goal_units_snapshot_v1"
+    static let requestSnapshot = "watch_goal_units_request_v1"
+    static let completeUnit = "watch_goal_unit_complete_v1"
+    static let expireUnit = "watch_goal_unit_expire_v1"
+    static let completionResult = "ios_goal_unit_completion_result_v1"
+}
+
 @MainActor
 final class WatchDataSyncToWatch: NSObject {
     static let shared = WatchDataSyncToWatch()
@@ -36,6 +44,22 @@ final class WatchDataSyncToWatch: NSObject {
 
     func start() {
         scheduleSync(fullSyncIfNoCursor: true)
+    }
+
+    /// Fuerza una instantánea completa. Se usa al abrir Metas en el reloj y tras fichar.
+    func sendGoalUnitsSnapshot() {
+        Task { [weak self] in
+            await self?.sendGoalUnitsSnapshotNow()
+        }
+    }
+
+    func sendGoalUnitCompletionResult(_ result: [String: Any]) {
+        guard let session else { return }
+        let message: [String: Any] = [WatchGoalSyncKeys.completionResult: result]
+        session.transferUserInfo(message)
+        if session.isReachable {
+            session.sendMessage(message, replyHandler: nil, errorHandler: nil)
+        }
     }
 
     private func setupObservers() {
@@ -130,6 +154,8 @@ final class WatchDataSyncToWatch: NSObject {
         let agendaPayloads = await fetchAgenda(in: context, modifiedAfter: shouldSendAllAgenda ? nil : agendaCursor)
         let presencePayloads = await fetchPresence(in: context, createdAfter: shouldSendAllPresence ? nil : presenceCursor)
 
+        await sendGoalUnitsSnapshotNow(using: context)
+
         if notePayloads.isEmpty && diarioPayloads.isEmpty && agendaPayloads.isEmpty && presencePayloads.isEmpty { return }
 
         if !notePayloads.isEmpty {
@@ -173,7 +199,7 @@ final class WatchDataSyncToWatch: NSObject {
         ]
         let message = [Keys.premiumState: payload]
 
-        try? session.updateApplicationContext(message)
+        updateApplicationContext(message, session: session)
         session.transferUserInfo(message)
         if session.isReachable {
             session.sendMessage(message, replyHandler: nil, errorHandler: nil)
@@ -207,7 +233,9 @@ final class WatchDataSyncToWatch: NSObject {
 
         defaults.removeObject(forKey: presenceCursorKey)
         let message = [Keys.presenceReset: ["resetAt": Date().timeIntervalSince1970]]
-        try? session.updateApplicationContext(message)
+        var currentContext = session.applicationContext
+        currentContext.removeValue(forKey: Keys.presenceReset)
+        try? session.updateApplicationContext(currentContext)
         session.transferUserInfo(message)
 
         if session.isReachable {
@@ -226,6 +254,88 @@ final class WatchDataSyncToWatch: NSObject {
 
         if session.isReachable {
             session.sendMessage(message, replyHandler: nil, errorHandler: nil)
+        }
+    }
+
+    private func sendGoalUnitsSnapshotNow(using providedContext: NSManagedObjectContext? = nil) async {
+        guard let session,
+              CoreDataController.shared.persistentContainer.persistentStoreCoordinator.persistentStores.isEmpty == false else {
+            return
+        }
+
+        let context = providedContext ?? CoreDataController.shared.persistentContainer.newBackgroundContext()
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+        let units = await fetchGoalUnits(in: context)
+        let payload: [String: Any] = [
+            "generatedAt": Date().timeIntervalSince1970,
+            "units": units
+        ]
+        let message: [String: Any] = [WatchGoalSyncKeys.snapshot: payload]
+
+        updateApplicationContext(message, session: session)
+        session.transferUserInfo(message)
+        if session.isReachable {
+            session.sendMessage(message, replyHandler: nil, errorHandler: nil)
+        }
+    }
+
+    private func updateApplicationContext(_ values: [String: Any], session: WCSession) {
+        var context = session.applicationContext
+        values.forEach { context[$0.key] = $0.value }
+        try? session.updateApplicationContext(context)
+    }
+
+    private func fetchGoalUnits(in context: NSManagedObjectContext) async -> [[String: Any]] {
+        await context.perform {
+            let request: NSFetchRequest<GoalEntity> = GoalEntity.fetchRequest()
+            request.predicate = NSPredicate(format: "isStarted == YES")
+
+            do {
+                let now = Date()
+                let goals = try context.fetch(request)
+                var snapshot: [[String: Any]] = []
+
+                // Mantener la misma transición pendiente → perdida de la app iOS
+                // cuando el reloj solicita o recibe una nueva instantánea.
+                for goal in goals {
+                    for unit in goal.unitsArray where unit.unitStatus == .pending && (unit.endDate ?? .distantFuture) < now {
+                        unit.updateLostIfNeeded(now: now)
+                    }
+                }
+                if context.hasChanges {
+                    try context.save()
+                }
+
+                for goal in goals where !goal.isCompleted {
+                    for unit in goal.unitsArray where unit.unitStatus == .pending {
+                        guard let unitID = unit.id,
+                              let goalID = goal.id,
+                              let startDate = unit.startDate,
+                              let endDate = unit.endDate,
+                              endDate >= now else {
+                            continue
+                        }
+
+                        snapshot.append([
+                            "id": unitID.uuidString,
+                            "goalID": goalID.uuidString,
+                            "goalTitle": goal.wrappedTitle,
+                            "unitName": unit.name ?? "Unidad \(unit.index)",
+                            "targetText": goal.executionTargetText,
+                            "index": Int(unit.index),
+                            "startDate": startDate.timeIntervalSince1970,
+                            "endDate": endDate.timeIntervalSince1970
+                        ])
+                    }
+                }
+
+                return snapshot.sorted {
+                    ($0["startDate"] as? TimeInterval ?? 0) < ($1["startDate"] as? TimeInterval ?? 0)
+                }
+            } catch {
+                msg("❌ Error preparando unidades de Metas para watchOS: \(error.localizedDescription)")
+                return []
+            }
         }
     }
 

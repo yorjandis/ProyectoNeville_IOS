@@ -1,0 +1,472 @@
+{
+  "source": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/La Ley Watch App/ContentView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Opciones de entrada",
+        "location": {
+          "startingColumn": 33,
+          "startingLine": 383
+        }
+      },
+      {
+        "comment": "",
+        "key": "Eliminar entrada",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 393
+        }
+      },
+      {
+        "comment": "",
+        "key": "Diario",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 296
+        }
+      },
+      {
+        "comment": "",
+        "key": "Diario",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 381
+        }
+      },
+      {
+        "comment": "",
+        "key": "Borrar",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 384
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancelar",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 389
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancelar",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 394
+        }
+      },
+      {
+        "comment": "",
+        "key": "Borrar",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 397
+        }
+      },
+      {
+        "comment": "",
+        "key": "¿Seguro que deseas borrar esta entrada?",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 408
+        }
+      },
+      {
+        "comment": "",
+        "key": "La Ley",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 444
+        }
+      },
+      {
+        "comment": "",
+        "key": "Prueba",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 474
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@",
+        "location": {
+          "startingColumn": 60,
+          "startingLine": 474
+        }
+      },
+      {
+        "comment": "",
+        "key": "Opciones de nota",
+        "location": {
+          "startingColumn": 33,
+          "startingLine": 590
+        }
+      },
+      {
+        "comment": "",
+        "key": "Eliminar nota",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 618
+        }
+      },
+      {
+        "comment": "",
+        "key": "Notas",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 507
+        }
+      },
+      {
+        "comment": "",
+        "key": "La Ley",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 588
+        }
+      },
+      {
+        "comment": "",
+        "key": "Editar",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 591
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cambiar categoría",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 600
+        }
+      },
+      {
+        "comment": "",
+        "key": "Borrar",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 609
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancelar",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 614
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancelar",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 619
+        }
+      },
+      {
+        "comment": "",
+        "key": "Borrar",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 622
+        }
+      },
+      {
+        "comment": "",
+        "key": "¿Seguro que deseas borrar esta nota?",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 634
+        }
+      },
+      {
+        "comment": "",
+        "key": "Elegir categoría",
+        "location": {
+          "startingColumn": 33,
+          "startingLine": 740
+        }
+      },
+      {
+        "comment": "",
+        "key": "Editar Nota",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 703
+        }
+      },
+      {
+        "comment": "",
+        "key": "Título",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 708
+        }
+      },
+      {
+        "comment": "",
+        "key": "Nota",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 711
+        }
+      },
+      {
+        "comment": "",
+        "key": "Categoría",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 715
+        }
+      },
+      {
+        "comment": "",
+        "key": "Elegir categoría",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 721
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancelar",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 726
+        }
+      },
+      {
+        "comment": "",
+        "key": "Guardar",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 731
+        }
+      },
+      {
+        "comment": "",
+        "key": "Sin categoría",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 741
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancelar",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 749
+        }
+      },
+      {
+        "comment": "",
+        "key": "Elegir categoría",
+        "location": {
+          "startingColumn": 33,
+          "startingLine": 797
+        }
+      },
+      {
+        "comment": "",
+        "key": "Categoría",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 767
+        }
+      },
+      {
+        "comment": "",
+        "key": "Categoría",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 772
+        }
+      },
+      {
+        "comment": "",
+        "key": "Elegir categoría",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 778
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancelar",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 783
+        }
+      },
+      {
+        "comment": "",
+        "key": "Guardar",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 788
+        }
+      },
+      {
+        "comment": "",
+        "key": "Sin categoría",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 798
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancelar",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 806
+        }
+      },
+      {
+        "comment": "",
+        "key": "Requiere Premium",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 824
+        }
+      },
+      {
+        "comment": "",
+        "key": "Requiere Premium",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 886
+        }
+      },
+      {
+        "comment": "",
+        "key": "Ajustes",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 842
+        }
+      },
+      {
+        "comment": "",
+        "key": "Orden de pantallas",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 846
+        }
+      },
+      {
+        "comment": "",
+        "key": "Frases",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 871
+        }
+      },
+      {
+        "comment": "",
+        "key": "OK",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 887
+        }
+      },
+      {
+        "comment": "",
+        "key": "Las frases de otros autores necesitan acceso Premium.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 889
+        }
+      },
+      {
+        "comment": "",
+        "key": "No se pudo fichar",
+        "location": {
+          "startingColumn": 13,
+          "startingLine": 973
+        }
+      },
+      {
+        "comment": "",
+        "key": "Metas",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 938
+        }
+      },
+      {
+        "comment": "",
+        "key": "Actualizar Metas",
+        "location": {
+          "startingColumn": 49,
+          "startingLine": 948
+        }
+      },
+      {
+        "comment": "",
+        "key": "Aceptar",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 979
+        }
+      },
+      {
+        "comment": "",
+        "key": "Sin unidades pendientes",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 992
+        }
+      },
+      {
+        "comment": "",
+        "key": "Las Metas activas aparecerán aquí cuando tengan unidades programadas.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 996
+        }
+      },
+      {
+        "comment": "",
+        "key": "Disponible",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 1021
+        }
+      },
+      {
+        "comment": "",
+        "key": "Enviando",
+        "location": {
+          "startingColumn": 57,
+          "startingLine": 1065
+        }
+      },
+      {
+        "comment": "",
+        "key": "Marcar unidad realizada",
+        "location": {
+          "startingColumn": 70,
+          "startingLine": 1065
+        }
+      },
+      {
+        "comment": "",
+        "key": "Vence en",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 1046
+        }
+      }
+    ]
+  },
+  "version": 1
+}

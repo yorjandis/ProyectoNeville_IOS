@@ -3,8 +3,13 @@
   "detalles":"Programa de 7 unidades, cada unidad corresponde a un día de la semana",
   "description": "Programa orientado a mejorar la sensibilidad a la insulina y optimizar energía.\n\nEstructura del programa: \n1. Ventana de ayuno diaria -> aumenta la activación basal de AMPK\n2. Cardio en ayunas -> aumenta la oxidación de grasas -> disminuye el palmitol-CoA\n3. Baja grasa saturada -> disminuye la síntesis de ceramidas C16\n4. Omega 3 frecuente -> disminuye la inflamación\n5. Masa muscular preservada -> mejor participación de nutrientes\n6. Carbohidrato estratégico post-estreno -> mejor sensibilidad a la insulina\n\nResultado esperado (8-12 semanas):\n* Disminución de insulina basal\n* Disminución de triglicéridos\n* Disminución de OMA-IR\n* Aumento de HDL\n* Mejor rendimiento aeróbico en zona 2\n* Mayor flexibilidad metabólica",
   "noUnidades": 7,
-  "tipoUnidad": "dias",
+  "tipoUnidad": "semanas",
   "frecuencia": 1,
+  "scheduleType": "weekly",
+  "weeklyDaysPerWeek": 7,
+  "dayPeriod": "anytime",
+  "customUnitLabel": "días",
+  "specificDates": [],
   "unidadesinfo": [
     {
       "name": "Lunes",

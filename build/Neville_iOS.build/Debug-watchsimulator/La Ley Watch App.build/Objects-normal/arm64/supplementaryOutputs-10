@@ -1,0 +1,51 @@
+{
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/AbrirDiarioIntent.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/AbrirDiarioIntent.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/AbrirDiarioIntent.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/AbrirDiarioIntent.dia",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/AbrirDiarioIntent.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/AbrirDiarioIntent.swiftdeps"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/AbrirNotasItent.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/AbrirNotasItent.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/AbrirNotasItent.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/AbrirNotasItent.dia",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/AbrirNotasItent.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/AbrirNotasItent.swiftdeps"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/CrearEntradaAgendaIntent.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/CrearEntradaAgendaIntent.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/CrearEntradaAgendaIntent.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/CrearEntradaAgendaIntent.dia",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/CrearEntradaAgendaIntent.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/CrearEntradaAgendaIntent.swiftdeps"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/CrearEntradaDiarioIntent.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/CrearEntradaDiarioIntent.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/CrearEntradaDiarioIntent.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/CrearEntradaDiarioIntent.dia",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/CrearEntradaDiarioIntent.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/CrearEntradaDiarioIntent.swiftdeps"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/CrearFraseCalmaIntent.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/CrearFraseCalmaIntent.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/CrearFraseCalmaIntent.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/CrearFraseCalmaIntent.dia",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/CrearFraseCalmaIntent.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/CrearFraseCalmaIntent.swiftdeps"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/CrearFraseIntent.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/CrearFraseIntent.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/CrearFraseIntent.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/CrearFraseIntent.dia",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/CrearFraseIntent.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/CrearFraseIntent.swiftdeps"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/CrearNotaIntent.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/CrearNotaIntent.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/CrearNotaIntent.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/CrearNotaIntent.dia",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/CrearNotaIntent.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/CrearNotaIntent.swiftdeps"
+  }
+}

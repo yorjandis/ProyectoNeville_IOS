@@ -6,6 +6,9 @@ struct CentroSanadorView: View {
 
     @State private var searchText = ""
     @State private var showEmergencyResources = false
+    @State private var showPremium = false
+    @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
+    @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) private var yorjPremium: Bool = false
     @AppStorage(HealingCenterFavorites.storageKey) private var storedFavorites = "[]"
 
     init(
@@ -44,45 +47,47 @@ struct CentroSanadorView: View {
                 LazyVStack(alignment: .leading, spacing: 16) {
                     welcomeHeader
                     emergencyAccess
-                    
-                    HealingGlassCard {
-                        Label("- Una guía, no un diagnóstico - \n\n\(catalog.disclaimer)", systemImage: "info.circle.fill")
-                            .font(.headline)
-                            .foregroundStyle(.cyan)
-                    }
 
-                    Text(searchText.isEmpty ? "¿Qué está ocurriendo?" : "Resultados")
-                        .font(.title2.bold())
-                        .foregroundStyle(.white)
-                        .padding(.top, 4)
-
-                    let situations = filteredSituations(in: catalog)
-                    if situations.isEmpty {
-                        ContentUnavailableView(
-                            "Sin coincidencias",
-                            systemImage: "magnifyingglass",
-                            description: Text("Prueba con palabras como miedo, trabajo, dudas, enfado o ansiedad.")
-                        )
-                        .foregroundStyle(.white)
-                    } else {
-                        ForEach(situations) { situation in
-                            NavigationLink {
-                                HealingSituationDetailView(
-                                    situation: situation,
-                                    catalogVersion: catalog.contentVersion,
-                                    reviewedAt: catalog.reviewedAt
-                                )
-                            } label: {
-                                HealingSituationCard(
-                                    situation: situation,
-                                    isFavorite: favorites.contains(situation.id)
-                                )
-                            }
-                            .buttonStyle(.plain)
+                    if hasPremiumAccess {
+                        HealingGlassCard {
+                            Label("- Una guía, no un diagnóstico - \n\n\(catalog.disclaimer)", systemImage: "info.circle.fill")
+                                .font(.headline)
+                                .foregroundStyle(.cyan)
                         }
-                    }
 
-                    
+                        Text(searchText.isEmpty ? "¿Qué está ocurriendo?" : "Resultados")
+                            .font(.title2.bold())
+                            .foregroundStyle(.white)
+                            .padding(.top, 4)
+
+                        let situations = filteredSituations(in: catalog)
+                        if situations.isEmpty {
+                            ContentUnavailableView(
+                                "Sin coincidencias",
+                                systemImage: "magnifyingglass",
+                                description: Text("Prueba con palabras como miedo, trabajo, dudas, enfado o ansiedad.")
+                            )
+                            .foregroundStyle(.white)
+                        } else {
+                            ForEach(situations) { situation in
+                                NavigationLink {
+                                    HealingSituationDetailView(
+                                        situation: situation,
+                                        catalogVersion: catalog.contentVersion,
+                                        reviewedAt: catalog.reviewedAt
+                                    )
+                                } label: {
+                                    HealingSituationCard(
+                                        situation: situation,
+                                        isFavorite: favorites.contains(situation.id)
+                                    )
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
+                    } else {
+                        premiumLockedContent
+                    }
                 }
                 .padding(.horizontal, 18)
                 .padding(.top, 14)
@@ -96,6 +101,9 @@ struct CentroSanadorView: View {
             NavigationStack {
                 HealingEmergencyResourcesView()
             }
+        }
+        .sheet(isPresented: $showPremium) {
+            PurchaseView()
         }
     }
 
@@ -155,6 +163,43 @@ struct CentroSanadorView: View {
         .accessibilityHint("Abre los números de emergencia y apoyo emocional según la región seleccionada")
     }
 
+    private var premiumLockedContent: some View {
+        HealingGlassCard {
+            VStack(alignment: .leading, spacing: 14) {
+                HStack(alignment: .top, spacing: 12) {
+                    Image(systemName: "lock.fill")
+                        .font(.title2)
+                        .foregroundStyle(.yellow)
+                        .frame(width: 42, height: 42)
+                        .background(.yellow.opacity(0.16), in: Circle())
+
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Guías prácticas premium")
+                            .font(.title3.bold())
+                            .foregroundStyle(.white)
+                        Text("La ayuda de emergencia queda siempre abierta. Las situaciones guiadas, técnicas y explicaciones del Centro Sanador forman parte del contenido premium.")
+                            .font(.body)
+                            .foregroundStyle(.white.opacity(0.78))
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+
+                Button {
+                    showPremium = true
+                } label: {
+                    Label("Desbloquear Centro Sanador", systemImage: "sparkles")
+                        .font(.headline)
+                        .foregroundStyle(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 12)
+                        .background(.indigo, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .accessibilityElement(children: .contain)
+    }
+
     private func filteredSituations(in catalog: HealingCatalog) -> [HealingSituation] {
         let filtered = catalog.situations.filter { $0.matches(searchText) }
         return filtered.sorted { lhs, rhs in
@@ -168,6 +213,10 @@ struct CentroSanadorView: View {
 
     private var favorites: Set<String> {
         HealingCenterFavorites.decode(storedFavorites)
+    }
+
+    private var hasPremiumAccess: Bool {
+        purchaseStatus || yorjPremium
     }
 
     private func loadError(_ error: Error) -> some View {

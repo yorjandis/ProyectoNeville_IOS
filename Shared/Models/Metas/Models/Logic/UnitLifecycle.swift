@@ -18,9 +18,10 @@ extension UnitEntity {
 
     //Determina si una unidad esta disponible para ser fichada
     func canBeCompleted(now: Date) -> Bool {
-        unitStatus == .pending &&
-        now >= startDate ?? Date.now &&
-        now <= endDate ?? Date.now
+        guard goal?.isStarted == true,
+              let startDate,
+              let endDate else { return false }
+        return unitStatus == .pending && now >= startDate && now <= endDate
     }
 
     //Marca una Unidad como fichada
@@ -39,7 +40,7 @@ extension UnitEntity {
     func updateLostIfNeeded(now: Date) {
         guard goal?.isStarted == true else { return }
 
-        if unitStatus == .pending && now > endDate ?? Date.now {
+        if unitStatus == .pending, let endDate, now > endDate {
             status = UnitStatus.lost.rawValue
             goal?.recordStatsEvent(.unitLost, unit: self, date: now, context: managedObjectContext)
         }

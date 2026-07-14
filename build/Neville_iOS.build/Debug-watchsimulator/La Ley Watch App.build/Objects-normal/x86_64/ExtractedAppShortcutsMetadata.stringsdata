@@ -1,0 +1,200 @@
+{
+  "version" : 2,
+  "tables" : {
+    "Localizable" : [
+      {
+        "key" : "Crear actividad ${titulo}, fecha ${fecha}, contenido ${contenido}, recordatorio ${activarRecordatorio}"
+      }
+    ],
+    "AppShortcuts" : [
+      {
+        "appShortcutMetadata" : [
+          {
+            "parameterTypes" : {
+
+            },
+            "index" : 0,
+            "title" : "Abrir el Diario",
+            "actionIdentifier" : "AbrirDiarioIntent",
+            "parameterDisplayRepresentations" : {
+
+            }
+          }
+        ],
+        "key" : "en ${applicationName} abre diario",
+        "location" : {
+          "startingLine" : 11,
+          "startingColumn" : 0
+        },
+        "values" : [
+          "en ${applicationName} abre diario",
+          "en ${applicationName} abre mi diario"
+        ]
+      },
+      {
+        "appShortcutMetadata" : [
+          {
+            "parameterTypes" : {
+
+            },
+            "index" : 1,
+            "title" : "Abrir Notas",
+            "actionIdentifier" : "AbrirNotasItent",
+            "parameterDisplayRepresentations" : {
+
+            }
+          }
+        ],
+        "key" : "en ${applicationName} abre mis notas",
+        "location" : {
+          "startingLine" : 11,
+          "startingColumn" : 0
+        },
+        "values" : [
+          "en ${applicationName} abre mis notas"
+        ]
+      },
+      {
+        "appShortcutMetadata" : [
+          {
+            "parameterTypes" : {
+
+            },
+            "index" : 2,
+            "title" : "Crear Nota",
+            "actionIdentifier" : "CrearNotaIntent",
+            "parameterDisplayRepresentations" : {
+
+            }
+          }
+        ],
+        "key" : "en ${applicationName} crea una nota",
+        "location" : {
+          "startingLine" : 11,
+          "startingColumn" : 0
+        },
+        "values" : [
+          "en ${applicationName} crea una nota"
+        ]
+      },
+      {
+        "appShortcutMetadata" : [
+          {
+            "parameterTypes" : {
+
+            },
+            "index" : 3,
+            "title" : "Crear Frase",
+            "actionIdentifier" : "CrearFraseIntent",
+            "parameterDisplayRepresentations" : {
+
+            }
+          }
+        ],
+        "key" : "en ${applicationName} crea una frase",
+        "location" : {
+          "startingLine" : 11,
+          "startingColumn" : 0
+        },
+        "values" : [
+          "en ${applicationName} crea una frase"
+        ]
+      },
+      {
+        "appShortcutMetadata" : [
+          {
+            "parameterTypes" : {
+
+            },
+            "index" : 4,
+            "title" : "Crear Frase para Calma",
+            "actionIdentifier" : "CrearFraseCalmaIntent",
+            "parameterDisplayRepresentations" : {
+
+            }
+          }
+        ],
+        "key" : "en ${applicationName} crea una frase para calma",
+        "location" : {
+          "startingLine" : 11,
+          "startingColumn" : 0
+        },
+        "values" : [
+          "en ${applicationName} crea una frase para calma",
+          "en ${applicationName} crea una frase personal para calma"
+        ]
+      },
+      {
+        "appShortcutMetadata" : [
+          {
+            "parameterTypes" : {
+
+            },
+            "index" : 5,
+            "title" : "Crear Entrada Diario",
+            "actionIdentifier" : "CrearEntradaDiarioIntent",
+            "parameterDisplayRepresentations" : {
+
+            }
+          }
+        ],
+        "key" : "en ${applicationName} crea una entrada",
+        "location" : {
+          "startingLine" : 11,
+          "startingColumn" : 0
+        },
+        "values" : [
+          "en ${applicationName} crea una entrada"
+        ]
+      },
+      {
+        "appShortcutMetadata" : [
+          {
+            "parameterTypes" : {
+
+            },
+            "index" : 6,
+            "title" : "Abrir Conferencia Aleatoria",
+            "actionIdentifier" : "GetRandomConfIntent",
+            "parameterDisplayRepresentations" : {
+
+            }
+          }
+        ],
+        "key" : "en ${applicationName} abre conferencia",
+        "location" : {
+          "startingLine" : 11,
+          "startingColumn" : 0
+        },
+        "values" : [
+          "en ${applicationName} abre conferencia"
+        ]
+      },
+      {
+        "appShortcutMetadata" : [
+          {
+            "parameterTypes" : {
+
+            },
+            "index" : 7,
+            "title" : "Crear Entrada Agenda",
+            "actionIdentifier" : "CrearEntradaAgendaIntent",
+            "parameterDisplayRepresentations" : {
+
+            }
+          }
+        ],
+        "key" : "en ${applicationName} crea una actividad en agenda",
+        "location" : {
+          "startingLine" : 11,
+          "startingColumn" : 0
+        },
+        "values" : [
+          "en ${applicationName} crea una actividad en agenda",
+          "en ${applicationName} crea entrada en agenda"
+        ]
+      }
+    ]
+  },
+  "source" : "\/Users\/yorjandis\/Desktop\/ProyectoNeville_IOS\/Neville_iOS\/Atajos\/Shortcuts\/Shortcuts.swift"
+}

@@ -8,6 +8,7 @@ struct HealingSituationDetailView: View {
     @AppStorage(HealingCenterFavorites.storageKey) private var storedFavorites = "[]"
     @State private var showEmergencyResources = false
     @State private var isBiologicalSectionExpanded = false
+    @State private var isPracticalTipsSectionExpanded = false
     @State private var isSeekHelpSectionExpanded = false
 
     private var colors: [Color] {
@@ -27,6 +28,7 @@ struct HealingSituationDetailView: View {
                     titleCard
                     immediateExplanation
                     protocolSection
+                    practicalTipsSection
                     biologicalSection
                     seekHelpSection
                     sourcesSection
@@ -173,6 +175,56 @@ struct HealingSituationDetailView: View {
                 .stroke((colors.first ?? .cyan).opacity(0.38), lineWidth: 1)
         }
         .shadow(color: .black.opacity(0.12), radius: 10, y: 6)
+    }
+
+    private var practicalTipsSection: some View {
+        HealingGlassCard {
+            DisclosureGroup(isExpanded: $isPracticalTipsSectionExpanded) {
+                VStack(alignment: .leading, spacing: 14) {
+                    Text("Son recursos complementarios y de bajo riesgo que algunas personas encuentran útiles. Su efecto es personal y algunos tienen evidencia limitada: conserva solo los que te resulten útiles y no aumenten el malestar.")
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.64))
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    ForEach(situation.practicalTips) { tip in
+                        HStack(alignment: .top, spacing: 11) {
+                            Image(systemName: "sparkle")
+                                .font(.caption.weight(.bold))
+                                .foregroundStyle(.yellow)
+                                .padding(.top, 4)
+
+                            VStack(alignment: .leading, spacing: 3) {
+                                Text(tip.title)
+                                    .font(.subheadline.weight(.semibold))
+                                    .foregroundStyle(.white)
+                                Text(tip.detail)
+                                    .font(.subheadline)
+                                    .foregroundStyle(.white.opacity(0.72))
+                                    .fixedSize(horizontal: false, vertical: true)
+                            }
+                        }
+                    }
+
+                    Text("No pruebes nada que cause dolor, mareo, adormecimiento o mayor malestar. No realices ajustes ni giros bruscos del cuello o la columna.")
+                        .font(.caption)
+                        .foregroundStyle(.orange.opacity(0.88))
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .padding(.top, 12)
+            } label: {
+                VStack(alignment: .leading, spacing: 4) {
+                    Label("Pequeños recursos que puedes probar", systemImage: "lightbulb.max.fill")
+                        .font(.body)
+                        .foregroundStyle(.yellow)
+
+                    Text(isPracticalTipsSectionExpanded ? "Ocultar consejos" : "Toca para ver ideas sencillas y complementarias")
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.58))
+                }
+            }
+            .tint(.yellow)
+            .accessibilityHint(isPracticalTipsSectionExpanded ? "Contrae los consejos prácticos" : "Despliega los consejos prácticos")
+        }
     }
 
     private var biologicalSection: some View {

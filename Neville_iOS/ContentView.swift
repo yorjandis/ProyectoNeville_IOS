@@ -10,6 +10,10 @@ struct ContentView: View{
     @State var showSheetDiario = false
     @State var showSheetNotas = false
     @State var showSheetMetas = false
+    @State private var dashboardDestination: DashboardDestination?
+
+    @AppStorage("purchaseStatus") private var purchaseStatus = false
+    @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) private var yorjPremium = false
     
     
     
@@ -32,6 +36,11 @@ struct ContentView: View{
         
         Home()
             .onOpenURL(perform: { url in
+                if let destination = DashboardDestination(url: url) {
+                    dashboardDestination = destination
+                    return
+                }
+
                 switch url.description{
                     case AppCons.DeepLink_url_Diario : showSheetDiario = true
                     case AppCons.DeepLink_url_Notas :  showSheetNotas = true
@@ -50,12 +59,81 @@ struct ContentView: View{
             .sheet(isPresented: $showSheetMetas, content: {
                 GoalsListView()
             })
+            .sheet(item: $dashboardDestination) { destination in
+                dashboardView(for: destination)
+            }
+            .onReceive(NotificationCenter.default.publisher(for: .coreDataStoresDidLoad)) { _ in
+                ConsciousDashboardSnapshotPublisher.refresh()
+            }
+            .onReceive(NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave)) { _ in
+                ConsciousDashboardSnapshotPublisher.refresh()
+            }
+            .onReceive(NotificationCenter.default.publisher(for: .NSPersistentStoreRemoteChange)) { _ in
+                ConsciousDashboardSnapshotPublisher.refresh()
+            }
+            .onChange(of: purchaseStatus) { _, _ in
+                ConsciousDashboardSnapshotPublisher.refresh()
+            }
+            .onChange(of: yorjPremium) { _, _ in
+                ConsciousDashboardSnapshotPublisher.refresh()
+            }
         
+    }
+
+    @ViewBuilder
+    private func dashboardView(for destination: DashboardDestination) -> some View {
+        if destination.requiresPremium && !(purchaseStatus || yorjPremium) {
+            PurchaseView()
+        } else {
+            switch destination {
+            case .metas:
+                GoalsListView()
+            case .presencia:
+                PresenciaView()
+            case .agenda:
+                AgendaMainView()
+            case .diario:
+                DiarioListView()
+            case .ritualMatutino:
+                MorningRitualMainView()
+            case .cierre:
+                RitualEveningReviewEntryView()
+            case .coherencia:
+                CardioCoherenceWelcomeFlowView()
+            }
+        }
     }
     
 
 
 }//struct
+
+private enum DashboardDestination: String, Identifiable {
+    case metas
+    case presencia
+    case agenda
+    case diario
+    case ritualMatutino = "ritual-matutino"
+    case cierre
+    case coherencia
+
+    var id: String { rawValue }
+
+    var requiresPremium: Bool {
+        switch self {
+        case .diario:
+            return false
+        case .metas, .presencia, .agenda, .ritualMatutino, .cierre, .coherencia:
+            return true
+        }
+    }
+
+    init?(url: URL) {
+        guard url.scheme == "laley", url.host == "dashboard" else { return nil }
+        guard let tool = url.pathComponents.dropFirst().first else { return nil }
+        self.init(rawValue: tool)
+    }
+}
 
 
 

@@ -1,0 +1,16 @@
+{
+  "source": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/La Ley Watch App/La_LeyApp.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Cargando datos...",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 29
+        }
+      }
+    ]
+  },
+  "version": 1
+}

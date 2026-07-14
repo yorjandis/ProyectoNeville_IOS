@@ -19,7 +19,6 @@ enum HealingSafetyPolicy {
 }
 
 enum HealingSafetyCopy {
-    static let informationalDisclaimer = "Esta guía ofrece apoyo educativo y de bienestar. No diagnostica, no sustituye la atención sanitaria y no garantiza que una técnica funcione en todos los casos."
+    static let informationalDisclaimer = "Esta guía ofrece apoyo educativo y de bienestar. Las técnicas y consejos pueden tener niveles de evidencia distintos. No diagnostica, no sustituye la atención sanitaria y no garantiza que una propuesta funcione en todos los casos."
     static let stopInstruction = "Detén cualquier ejercicio si aumenta el malestar, aparece dolor, mareo intenso o dificultad para respirar. Respira con normalidad y busca ayuda si lo necesitas."
 }
-

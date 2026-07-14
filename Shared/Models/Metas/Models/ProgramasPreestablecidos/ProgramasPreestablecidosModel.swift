@@ -104,6 +104,13 @@ struct ProgramasPreestablecido: Codable, Identifiable {
     let noUnidades: Int
     let tipoUnidad : TimeUnit
     let frecuencia : Int
+    let scheduleType: GoalScheduleType
+    let weeklyDaysPerWeek: Int
+    let dayPeriod: GoalDayPeriod
+    let customUnitLabel: String
+    /// Fechas ISO `yyyy-MM-dd`. Se mantienen como texto en el JSON para que el
+    /// formato sea legible y estable entre plataformas.
+    let specificDates: [String]
     
     enum CodingKeys: String, CodingKey {
             case title
@@ -113,6 +120,11 @@ struct ProgramasPreestablecido: Codable, Identifiable {
             case noUnidades
             case tipoUnidad
             case frecuencia
+            case scheduleType
+            case weeklyDaysPerWeek
+            case dayPeriod
+            case customUnitLabel
+            case specificDates
         }
         
     init(from decoder: Decoder) throws {
@@ -125,6 +137,20 @@ struct ProgramasPreestablecido: Codable, Identifiable {
         self.noUnidades = try container.decode(Int.self, forKey: .noUnidades)
         self.tipoUnidad = try container.decode(TimeUnit.self, forKey: .tipoUnidad)
         self.frecuencia = try container.decode(Int.self, forKey: .frecuencia)
+        self.scheduleType = try container.decodeIfPresent(GoalScheduleType.self, forKey: .scheduleType) ?? .interval
+        self.weeklyDaysPerWeek = min(max(try container.decodeIfPresent(Int.self, forKey: .weeklyDaysPerWeek) ?? 3, 1), 7)
+        self.dayPeriod = try container.decodeIfPresent(GoalDayPeriod.self, forKey: .dayPeriod) ?? .anytime
+        self.customUnitLabel = try container.decodeIfPresent(String.self, forKey: .customUnitLabel) ?? ""
+        self.specificDates = try container.decodeIfPresent([String].self, forKey: .specificDates) ?? []
+
+        if scheduleType == .specificDates,
+           (specificDates.count != noUnidades || Self.resolveDates(specificDates).count != noUnidades) {
+            throw DecodingError.dataCorruptedError(
+                forKey: .specificDates,
+                in: container,
+                debugDescription: "Una programación por fechas específicas necesita una fecha ISO yyyy-MM-dd válida por cada unidad."
+            )
+        }
 
         self.id = UUID()
     }
@@ -135,7 +161,12 @@ struct ProgramasPreestablecido: Codable, Identifiable {
          unidadesNotes: [UnidadesInfo],
          noUnidades: Int,
          tipoUnidad: TimeUnit,
-         frecuencia: Int) {
+         frecuencia: Int,
+         scheduleType: GoalScheduleType = .interval,
+         weeklyDaysPerWeek: Int = 3,
+         dayPeriod: GoalDayPeriod = .anytime,
+         customUnitLabel: String = "",
+         specificDates: [String] = []) {
 
         self.id = UUID()
         self.title = title
@@ -145,7 +176,38 @@ struct ProgramasPreestablecido: Codable, Identifiable {
         self.noUnidades = noUnidades
         self.tipoUnidad = tipoUnidad
         self.frecuencia = frecuencia
+        self.scheduleType = scheduleType
+        self.weeklyDaysPerWeek = min(max(weeklyDaysPerWeek, 1), 7)
+        self.dayPeriod = dayPeriod
+        self.customUnitLabel = customUnitLabel
+        self.specificDates = specificDates
+    }
+
+    var resolvedSpecificDates: [Date] {
+        Self.resolveDates(specificDates)
+    }
+
+    private static func resolveDates(_ values: [String]) -> [Date] {
+        values.compactMap { value in
+            let parts = value.split(separator: "-").compactMap { Int($0) }
+            guard parts.count == 3 else { return nil }
+            return Calendar.current.date(from: DateComponents(year: parts[0], month: parts[1], day: parts[2]))
+        }
+    }
+
+    var scheduleSummary: String {
+        let unitLabel = customUnitLabel.trimmingCharacters(in: .whitespacesAndNewlines)
+        let quantityLabel = unitLabel.isEmpty ? tipoUnidad.description(for: noUnidades) : unitLabel
+        let cadence: String
+        switch scheduleType {
+        case .interval:
+            cadence = "cada \(frecuencia) \(tipoUnidad.description(for: frecuencia))"
+        case .weekly:
+            cadence = "\(weeklyDaysPerWeek) \(weeklyDaysPerWeek == 1 ? "día" : "días") por semana"
+        case .specificDates:
+            cadence = "en fechas específicas"
+        }
+        let period = dayPeriod == .anytime ? "" : " · \(dayPeriod.label.lowercased())"
+        return "\(noUnidades) \(quantityLabel), \(cadence)\(period)"
     }
 }
-
-

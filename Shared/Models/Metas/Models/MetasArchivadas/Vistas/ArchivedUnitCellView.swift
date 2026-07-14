@@ -32,6 +32,15 @@ struct ArchivedUnitCellView: View {
         .padding(3)
         .background(.ultraThinMaterial)
         .clipShape(RoundedRectangle(cornerRadius: 8))
+        .overlay(alignment: .topTrailing) {
+            if hasUserNote {
+                Text("N")
+                    .font(.caption2.bold())
+                    .foregroundStyle(.green)
+                    .padding(5)
+                    .accessibilityLabel("Contiene una nota")
+            }
+        }
 
 
     }
@@ -60,6 +69,12 @@ struct ArchivedUnitCellView: View {
         
        
         
+    }
+
+    private var hasUserNote: Bool {
+        !(unit.note ?? "")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .isEmpty
     }
     
 }

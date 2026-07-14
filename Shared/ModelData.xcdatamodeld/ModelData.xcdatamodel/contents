@@ -19,12 +19,20 @@
     </entity>
     <entity name="ArchivedGoalEntity" representedClassName="ArchivedGoalEntity" syncable="YES" codeGenerationType="class">
         <attribute name="completionDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="completionBasis" optional="YES" attributeType="String"/>
+        <attribute name="customUnitLabel" optional="YES" attributeType="String"/>
+        <attribute name="dayPeriod" optional="YES" attributeType="String"/>
         <attribute name="descriptionText" optional="YES" attributeType="String"/>
+        <attribute name="durationUnit" optional="YES" attributeType="String"/>
+        <attribute name="durationValue" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="executionTargetValue" optional="YES" attributeType="Double" defaultValueString="1" usesScalarValueType="YES"/>
         <attribute name="frequency" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="scheduleType" optional="YES" attributeType="String"/>
         <attribute name="title" optional="YES" attributeType="String"/>
         <attribute name="totalUnits" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="unitType" optional="YES" attributeType="String"/>
+        <attribute name="weeklyDaysPerWeek" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="units" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ArchivedUnitEntity" inverseName="goal" inverseEntity="ArchivedUnitEntity"/>
     </entity>
     <entity name="ArchivedUnitEntity" representedClassName="ArchivedUnitEntity" syncable="YES" codeGenerationType="class">
@@ -87,14 +95,22 @@
         <relationship name="relacionadasPor" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Frases" inverseName="relacionadas" inverseEntity="Frases"/>
     </entity>
     <entity name="GoalEntity" representedClassName="GoalEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="completionBasis" optional="YES" attributeType="String"/>
+        <attribute name="customUnitLabel" optional="YES" attributeType="String"/>
+        <attribute name="dayPeriod" optional="YES" attributeType="String"/>
         <attribute name="descriptionText" optional="YES" attributeType="String"/>
+        <attribute name="durationUnit" optional="YES" attributeType="String"/>
+        <attribute name="durationValue" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="executionTargetValue" optional="YES" attributeType="Double" defaultValueString="1" usesScalarValueType="YES"/>
         <attribute name="frequency" optional="YES" attributeType="Integer 32" defaultValueString="1" usesScalarValueType="YES"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="isStarted" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="scheduleType" optional="YES" attributeType="String"/>
         <attribute name="startDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="title" optional="YES" attributeType="String"/>
         <attribute name="totalUnits" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="unitType" optional="YES" attributeType="String"/>
+        <attribute name="weeklyDaysPerWeek" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="units" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="UnitEntity" inverseName="goal" inverseEntity="UnitEntity"/>
     </entity>
     <entity name="GoalStatsEventEntity" representedClassName="GoalStatsEventEntity" syncable="YES" codeGenerationType="class">

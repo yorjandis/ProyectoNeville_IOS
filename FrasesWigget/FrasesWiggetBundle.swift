@@ -13,5 +13,6 @@ struct FrasesWiggetBundle: WidgetBundle {
 
     var body: some Widget {
         FrasesWigget()
+        ConsciousDashboardWidget()
     }
 }

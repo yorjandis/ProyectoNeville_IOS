@@ -11,6 +11,7 @@ import CoreData
 struct ContentView: View {
     @Environment(\.scenePhase) private var scenePhase
     @StateObject private var modelWatch = watchModel.shared
+    @StateObject private var goalNotificationRouter = WatchGoalNotificationRouter.shared
     @AppStorage("AtajosiOS") private var atajoWatch: String = ""
     @State private var selectedTab: String = WatchScreen.inicio.rawValue
     @State private var screenOrder: [WatchScreen] = ScreenOrderStore.load()
@@ -43,6 +44,7 @@ struct ContentView: View {
                 selectedTab = WatchScreen.inicio.rawValue
             }
             handleShortcutNavigation(atajoWatch)
+            handleGoalNotificationNavigation()
         }
         .onChange(of: screenOrder) { _, newValue in
             let normalized = ScreenOrderStore.normalize(newValue)
@@ -58,10 +60,20 @@ struct ContentView: View {
         .onChange(of: atajoWatch) { _, newValue in
             handleShortcutNavigation(newValue)
         }
+        .onChange(of: goalNotificationRouter.shouldOpenGoals) { _, shouldOpen in
+            guard shouldOpen else { return }
+            handleGoalNotificationNavigation()
+        }
         .onChange(of: scenePhase) { _, newPhase in
             guard newPhase == .active else { return }
-            selectedTab = WatchScreen.inicio.rawValue
+            // Al abrir desde una notificación, onAppear puede consumir la ruta
+            // antes de que scenePhase llegue a .active. No sobrescribir Metas
+            // con Inicio en esa segunda fase del arranque.
+            if selectedTab != WatchScreen.metas.rawValue {
+                selectedTab = WatchScreen.inicio.rawValue
+            }
             handleShortcutNavigation(atajoWatch)
+            handleGoalNotificationNavigation()
         }
     }
 
@@ -82,6 +94,12 @@ struct ContentView: View {
         }
 
         atajoWatch = ""
+    }
+
+    private func handleGoalNotificationNavigation() {
+        guard goalNotificationRouter.shouldOpenGoals else { return }
+        selectedTab = WatchScreen.metas.rawValue
+        goalNotificationRouter.consumeRequest()
     }
 
     @ViewBuilder
@@ -112,6 +130,8 @@ struct ContentView: View {
             }
         case .quickNote:
             QuickAddNotaByLocationView()
+        case .metas:
+            WatchGoalsView()
         case .ajustes:
             EmptyView()
         }
@@ -893,6 +913,195 @@ struct ContentView: View {
     }
 }
 
+struct WatchGoalsView: View {
+    @StateObject private var store = WatchGoalUnitsStore.shared
+
+    var body: some View {
+        TimelineView(.periodic(from: .now, by: 1)) { timeline in
+            ZStack {
+                LinearGradient(
+                    colors: [
+                        Color(red: 0.06, green: 0.16, blue: 0.19),
+                        Color(red: 0.08, green: 0.34, blue: 0.27),
+                        Color(red: 0.16, green: 0.43, blue: 0.31)
+                    ],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+                .ignoresSafeArea()
+
+                ScrollView {
+                    VStack(spacing: 10) {
+                        HStack {
+                            Image(systemName: "target")
+                                .foregroundStyle(.mint)
+                            Text("Metas")
+                                .font(.headline.bold())
+                            Spacer()
+                            Button {
+                                store.requestSnapshot()
+                            } label: {
+                                Image(systemName: "arrow.clockwise")
+                            }
+                            .buttonStyle(.plain)
+                            .offset(y: 3)
+                            .accessibilityLabel("Actualizar Metas")
+                        }
+
+                        let cards = store.goalCards(at: timeline.date)
+                        if cards.isEmpty {
+                            emptyState()
+                        } else {
+                            ForEach(cards) { card in
+                                goalCard(card, now: timeline.date)
+                            }
+                        }
+                    }
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 6)
+                }
+            }
+            .onChange(of: timeline.date) { _, date in
+                store.expireUnitsIfNeeded(at: date)
+            }
+        }
+        .task {
+            store.expireUnitsIfNeeded(at: Date())
+            store.requestSnapshot()
+        }
+        .alert(
+            "No se pudo fichar",
+            isPresented: Binding(
+                get: { store.lastError != nil },
+                set: { if !$0 { store.lastError = nil } }
+            )
+        ) {
+            Button("Aceptar", role: .cancel) { store.lastError = nil }
+        } message: {
+            Text(store.lastError ?? "")
+        }
+    }
+
+    @ViewBuilder
+    private func emptyState() -> some View {
+        VStack(spacing: 8) {
+            Image(systemName: "checkmark.circle")
+                .font(.system(size: 35, weight: .light))
+                .foregroundStyle(.mint)
+
+            Text("Sin unidades pendientes")
+                .font(.subheadline.bold())
+                .multilineTextAlignment(.center)
+
+            Text("Las Metas activas aparecerán aquí cuando tengan unidades programadas.")
+                .font(.caption2)
+                .foregroundStyle(.white.opacity(0.72))
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(14)
+        .background(.white.opacity(0.09), in: RoundedRectangle(cornerRadius: 16))
+    }
+
+    @ViewBuilder
+    private func goalCard(_ card: WatchGoalCardItem, now: Date) -> some View {
+        if let unit = card.displayedUnit {
+            let isSending = store.pendingCompletionIDs.contains(unit.id)
+
+            VStack(alignment: .leading, spacing: 7) {
+                HStack(spacing: 6) {
+                    Text(card.title)
+                        .font(.caption.bold())
+                        .foregroundStyle(.black)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.72)
+
+                    Spacer(minLength: 4)
+
+                    if card.isAvailable {
+                        Label("Disponible", systemImage: "bolt.fill")
+                            .font(.system(size: 11, weight: .bold))
+                            .foregroundStyle(.white)
+                    } else {
+                        Label(remainingText(until: unit.startDate, now: now), systemImage: "clock")
+                            .font(.system(size: 18, weight: .semibold).monospacedDigit())
+                            .foregroundStyle(.mint)
+                    }
+                }
+
+                HStack(spacing: 7) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(unit.unitName)
+                            .font(.caption2.bold())
+                            .lineLimit(1)
+                        Text(unit.targetText)
+                            .font(.system(size: 9))
+                            .foregroundStyle(.white.opacity(0.72))
+                            .lineLimit(1)
+                    }
+
+                    Spacer(minLength: 3)
+
+                    if card.isAvailable {
+                        VStack(alignment: .trailing, spacing: 2) {
+                            Text("Vence en")
+                                .font(.system(size: 8))
+                                .foregroundStyle(.white.opacity(0.75))
+                            Text(remainingText(until: unit.endDate, now: now))
+                                .font(.system(size: 18, weight: .bold).monospacedDigit())
+                                .foregroundStyle(.yellow)
+                        }
+
+                        Button {
+                            store.complete(unit, now: now)
+                        } label: {
+                            Image(systemName: isSending ? "arrow.up" : "checkmark")
+                                .font(.system(size: 13, weight: .heavy))
+                                .foregroundStyle(card.isAvailable ? Color.green : Color.gray)
+                                .frame(width: 30, height: 30)
+                                .background(.white, in: Circle())
+                        }
+                        .buttonStyle(.plain)
+                        .disabled(isSending || !unit.isAvailable(at: now))
+                        .accessibilityLabel(isSending ? "Enviando" : "Marcar unidad realizada")
+                    } else {
+                        Image(systemName: "lock.fill")
+                            .font(.caption2)
+                            .foregroundStyle(.white.opacity(0.42))
+                    }
+                }
+            }
+            .padding(9)
+            .background {
+                RoundedRectangle(cornerRadius: 15, style: .continuous)
+                    .fill(
+                        card.isAvailable
+                            ? Color(red: 0.08, green: 0.52, blue: 0.25).opacity(0.94)
+                            : Color.white.opacity(0.10)
+                    )
+            }
+            .overlay {
+                RoundedRectangle(cornerRadius: 15, style: .continuous)
+                    .stroke(
+                        card.isAvailable ? Color.green.opacity(0.9) : Color.white.opacity(0.18),
+                        lineWidth: card.isAvailable ? 1.4 : 0.8
+                    )
+            }
+        }
+    }
+
+    private func remainingText(until date: Date, now: Date) -> String {
+        let seconds = max(Int(date.timeIntervalSince(now)), 0)
+        let days = seconds / 86_400
+        let hours = seconds / 3_600
+        let minutes = (seconds % 3_600) / 60
+        let remainingSeconds = seconds % 60
+        if days > 0 { return "\(days)d \((hours % 24))h" }
+        if hours > 0 { return "\(hours)h \(minutes)m" }
+        return String(format: "%02d:%02d", minutes, remainingSeconds)
+    }
+}
+
 enum WatchScreen: String, CaseIterable, Identifiable {
     case inicio
     case frases
@@ -901,6 +1110,7 @@ enum WatchScreen: String, CaseIterable, Identifiable {
     case agenda
     case presencia
     case quickNote
+    case metas
     case ajustes
 
     var id: String { rawValue }
@@ -914,6 +1124,7 @@ enum WatchScreen: String, CaseIterable, Identifiable {
         case .agenda: return "Agenda"
         case .presencia: return "Presencia"
         case .quickNote: return "Acceso rápido"
+        case .metas: return "Metas"
         case .ajustes: return "Ajustes"
         }
     }
@@ -935,6 +1146,7 @@ enum WatchScreen: String, CaseIterable, Identifiable {
         case .agenda: return "calendar.badge.clock"
         case .presencia: return "sparkles"
         case .quickNote: return "location.fill.viewfinder"
+        case .metas: return "target"
         case .ajustes: return "gearshape.fill"
         }
     }
@@ -948,6 +1160,7 @@ enum WatchScreen: String, CaseIterable, Identifiable {
         case .agenda: return Color(red: 0.50, green: 0.39, blue: 0.59)
         case .presencia: return Color(red: 0.28, green: 0.55, blue: 0.52)
         case .quickNote: return Color(red: 0.38, green: 0.55, blue: 0.36)
+        case .metas: return Color(red: 0.20, green: 0.64, blue: 0.40)
         case .ajustes: return Color(red: 0.42, green: 0.45, blue: 0.47)
         }
     }
@@ -957,7 +1170,7 @@ enum WatchScreen: String, CaseIterable, Identifiable {
     }
 
     static var reorderableCases: [WatchScreen] {
-        [.inicio, .frases, .diario, .presencia, .agenda, .notas, .quickNote]
+        [.inicio, .metas, .frases, .diario, .presencia, .agenda, .notas, .quickNote]
     }
 }
 

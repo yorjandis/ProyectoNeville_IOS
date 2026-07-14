@@ -107,6 +107,7 @@ private struct ActiveGoalGadgetCard: View {
     @State private var showAlert = false
     @State private var showDeleteConfirmation = false
     @State private var showArchiveConfirmation = false
+    @State private var showReactivateConfirmation = false
     @State private var alertMessage = ""
 
     private var progressPercent: Int {
@@ -254,6 +255,14 @@ private struct ActiveGoalGadgetCard: View {
                 //Botón de archivar:
                 if goal.isCompleted {
                     Button {
+                        showReactivateConfirmation = true
+                    } label: {
+                        Image(systemName: "arrow.clockwise.circle")
+                            .font(.system(size: 24))
+                    }
+                    .buttonStyle(.plain)
+
+                    Button {
                         showArchiveConfirmation = true
                     } label: {
                         Image(systemName: "tray.and.arrow.up")
@@ -305,6 +314,18 @@ private struct ActiveGoalGadgetCard: View {
         } message: {
             Text("Esta acción borrará la meta y todas sus unidades.")
         }
+        .confirmationDialog(
+            "Reactivar Meta",
+            isPresented: $showReactivateConfirmation,
+            titleVisibility: .visible
+        ) {
+            Button("Reactivar") {
+                reactivateGoal()
+            }
+            Button("Cancelar", role: .cancel) { }
+        } message: {
+            Text("La ejecución terminada se conservará en el historial y se creará una nueva Meta activa sin iniciar.")
+        }
         .alert(isPresented: $showAlert) {
             Alert(title: Text("La Ley"), message: Text(alertMessage))
         }
@@ -331,6 +352,15 @@ private struct ActiveGoalGadgetCard: View {
         goal.deleteGoal(context: context)
         alertMessage = "La Meta ha sido eliminada"
         showAlert = true
+    }
+
+    private func reactivateGoal() {
+        do {
+            try goal.reactivateCompleted(context: context)
+        } catch {
+            alertMessage = "La Meta no ha podido reactivarse. Inténtelo nuevamente."
+            showAlert = true
+        }
     }
 }
 

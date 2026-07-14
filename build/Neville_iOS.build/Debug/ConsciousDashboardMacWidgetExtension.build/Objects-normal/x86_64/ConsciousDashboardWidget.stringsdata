@@ -1,0 +1,128 @@
+{
+  "source": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/FrasesWigget/ConsciousDashboardWidget.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Panel de control consciente",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 217
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld%%",
+        "location": {
+          "startingColumn": 14,
+          "startingLine": 238
+        }
+      },
+      {
+        "comment": "",
+        "key": "AHORA",
+        "location": {
+          "startingColumn": 16,
+          "startingLine": 226
+        }
+      },
+      {
+        "comment": "",
+        "key": "Panel consciente",
+        "location": {
+          "startingColumn": 16,
+          "startingLine": 231
+        }
+      },
+      {
+        "comment": "",
+        "key": "Requiere Premium",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 344
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@, %@",
+        "location": {
+          "startingColumn": 39,
+          "startingLine": 344
+        }
+      },
+      {
+        "comment": "",
+        "key": "Abre %@ en La Ley",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 346
+        }
+      },
+      {
+        "comment": "",
+        "key": "TU ESTADO · AHORA",
+        "location": {
+          "startingColumn": 16,
+          "startingLine": 262
+        }
+      },
+      {
+        "comment": "",
+        "key": "Panel consciente",
+        "location": {
+          "startingColumn": 16,
+          "startingLine": 267
+        }
+      },
+      {
+        "comment": "",
+        "key": "Actualizado %@",
+        "location": {
+          "startingColumn": 16,
+          "startingLine": 270
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld",
+        "location": {
+          "startingColumn": 16,
+          "startingLine": 278
+        }
+      },
+      {
+        "comment": "",
+        "key": "pulso",
+        "location": {
+          "startingColumn": 16,
+          "startingLine": 285
+        }
+      },
+      {
+        "comment": "",
+        "key": "PRO",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 407
+        }
+      },
+      {
+        "comment": "",
+        "key": "Panel consciente",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 526
+        }
+      },
+      {
+        "comment": "",
+        "key": "Metas, presencia, Agenda, Diario, rituales y coherencia en un único estado vivo.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 527
+        }
+      }
+    ]
+  },
+  "version": 1
+}

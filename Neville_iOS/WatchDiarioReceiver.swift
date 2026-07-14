@@ -1,7 +1,33 @@
 import Foundation
 import CoreData
 #if canImport(WatchConnectivity)
-import WatchConnectivity
+@preconcurrency import WatchConnectivity
+
+private struct WatchGoalCompletionRequest: Sendable {
+    let unitID: UUID
+    let rawUnitID: String
+
+    init?(_ payload: [String: Any]) {
+        guard let rawUnitID = payload["unitID"] as? String,
+              let unitID = UUID(uuidString: rawUnitID) else {
+            return nil
+        }
+        self.unitID = unitID
+        self.rawUnitID = rawUnitID
+    }
+}
+
+private struct WatchGoalExpirationRequest: Sendable {
+    let unitID: UUID
+
+    init?(_ payload: [String: Any]) {
+        guard let rawUnitID = payload["unitID"] as? String,
+              let unitID = UUID(uuidString: rawUnitID) else {
+            return nil
+        }
+        self.unitID = unitID
+    }
+}
 
 struct WatchNoteTransferPayload {
     static let userInfoKey = "watch_note_payload_v1"
@@ -237,6 +263,30 @@ final class WatchDiarioReceiver: NSObject, WCSessionDelegate {
     }
 
     private nonisolated func handleIncoming(_ payload: [String: Any]) {
+        if payload[WatchGoalSyncKeys.requestSnapshot] != nil {
+            Task { @MainActor in
+                WatchDataSyncToWatch.shared.sendGoalUnitsSnapshot()
+            }
+            return
+        }
+
+        if let rawCompletion = payload[WatchGoalSyncKeys.completeUnit] as? [String: Any],
+           let completionRequest = WatchGoalCompletionRequest(rawCompletion) {
+            Task { @MainActor in
+                let result = await self.completeGoalUnit(completionRequest)
+                WatchDataSyncToWatch.shared.sendGoalUnitCompletionResult(result)
+            }
+            return
+        }
+
+        if let rawExpiration = payload[WatchGoalSyncKeys.expireUnit] as? [String: Any],
+           let expirationRequest = WatchGoalExpirationRequest(rawExpiration) {
+            Task { @MainActor in
+                await self.expireGoalUnit(expirationRequest)
+            }
+            return
+        }
+
         if let raw = payload[WatchNoteDeleteTransferPayload.userInfoKey] as? [String: Any],
            let deletePayload = WatchNoteDeleteTransferPayload.fromDictionary(raw) {
             Task { @MainActor in
@@ -291,6 +341,80 @@ final class WatchDiarioReceiver: NSObject, WCSessionDelegate {
                 await self.upsertPresenceIfNeeded(payload: presencePayload)
             }
         }
+    }
+
+    private func completeGoalUnit(_ completionRequest: WatchGoalCompletionRequest) async -> [String: Any] {
+        let unitID = completionRequest.unitID
+        let rawUnitID = completionRequest.rawUnitID
+        let store = CoreDataController.shared
+        do {
+            if store.persistentContainer.persistentStoreCoordinator.persistentStores.isEmpty {
+                try await store.cargarStores()
+            }
+        } catch {
+            return ["success": false, "unitID": rawUnitID, "reason": "No se pudo abrir la base de datos"]
+        }
+
+        let context = store.persistentContainer.newBackgroundContext()
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+
+        let result: [String: Any] = await context.perform {
+            let request: NSFetchRequest<UnitEntity> = UnitEntity.fetchRequest()
+            request.fetchLimit = 1
+            request.predicate = NSPredicate(format: "id == %@", unitID as CVarArg)
+
+            do {
+                guard let unit = try context.fetch(request).first else {
+                    return ["success": false, "unitID": rawUnitID, "reason": "La unidad ya no existe"]
+                }
+
+                if unit.unitStatus == .completed {
+                    return ["success": true, "unitID": rawUnitID]
+                }
+
+                guard unit.canBeCompleted(now: Date()) else {
+                    return ["success": false, "unitID": rawUnitID, "reason": "La unidad está fuera de su ventana de tiempo"]
+                }
+
+                unit.markCompleted(context: context)
+                guard unit.unitStatus == .completed else {
+                    return ["success": false, "unitID": rawUnitID, "reason": "No se pudo completar la unidad"]
+                }
+                return ["success": true, "unitID": rawUnitID]
+            } catch {
+                context.rollback()
+                return ["success": false, "unitID": rawUnitID, "reason": error.localizedDescription]
+            }
+        }
+
+        WatchDataSyncToWatch.shared.sendGoalUnitsSnapshot()
+        return result
+    }
+
+    private func expireGoalUnit(_ expirationRequest: WatchGoalExpirationRequest) async {
+        let store = CoreDataController.shared
+        do {
+            if store.persistentContainer.persistentStoreCoordinator.persistentStores.isEmpty {
+                try await store.cargarStores()
+            }
+        } catch {
+            return
+        }
+
+        let context = store.persistentContainer.newBackgroundContext()
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+        await context.perform {
+            let request: NSFetchRequest<UnitEntity> = UnitEntity.fetchRequest()
+            request.fetchLimit = 1
+            request.predicate = NSPredicate(format: "id == %@", expirationRequest.unitID as CVarArg)
+
+            guard let unit = try? context.fetch(request).first else { return }
+            unit.updateLostIfNeeded(now: Date())
+            if context.hasChanges {
+                try? context.save()
+            }
+        }
+        WatchDataSyncToWatch.shared.sendGoalUnitsSnapshot()
     }
 
     private func upsertNoteIfNeeded(payload: WatchNoteTransferPayload) async {

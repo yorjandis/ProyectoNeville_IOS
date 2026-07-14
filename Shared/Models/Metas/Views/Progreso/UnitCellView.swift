@@ -38,10 +38,26 @@ struct UnitCellView: View {
 
             Text(texto)
                 .font(.caption.bold())
+
+            if let dateText {
+                Text(dateText)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+            }
         }
         .padding(3)
         .background(.ultraThinMaterial)
         .clipShape(RoundedRectangle(cornerRadius: 8))
+        .overlay(alignment: .topTrailing) {
+            if hasUserNote {
+                Text("N")
+                    .font(.caption2.bold())
+                    .foregroundStyle(.green)
+                    .padding(5)
+                    .accessibilityLabel("Contiene una nota")
+            }
+        }
         .onTapGesture {
             guard !isLocked else { return } // bloqueada
                 unit.markCompleted(context: context)
@@ -90,6 +106,23 @@ struct UnitCellView: View {
 
         return "\(unit.name ?? "Unidad") \(statusEmoji)"
 
+    }
+
+    private var dateText: String? {
+        guard let startDate = unit.startDate else { return nil }
+        if unit.goal?.goalScheduleType == .specificDates || unit.goal?.goalScheduleType == .weekly {
+            return startDate.formatted(.dateTime.day().month(.abbreviated).year())
+        }
+        if unit.goal?.goalDayPeriod != .anytime {
+            return startDate.formatted(.dateTime.weekday(.abbreviated).hour().minute())
+        }
+        return nil
+    }
+
+    private var hasUserNote: Bool {
+        !(unit.note ?? "")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .isEmpty
     }
 
     private func updateLostStatusIfNeeded() {

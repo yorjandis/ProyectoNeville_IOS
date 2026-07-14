@@ -1,0 +1,51 @@
+{
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/GetRandomConfIntent.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/GetRandomConfIntent.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/GetRandomConfIntent.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/GetRandomConfIntent.dia",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/GetRandomConfIntent.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/GetRandomConfIntent.swiftdeps"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Services/LocalAutenticationForIntent.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/LocalAutenticationForIntent.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/LocalAutenticationForIntent.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/LocalAutenticationForIntent.dia",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/LocalAutenticationForIntent.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/LocalAutenticationForIntent.swiftdeps"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Shortcuts/Shortcuts.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/Shortcuts.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/Shortcuts.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/Shortcuts.dia",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/Shortcuts.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/Shortcuts.swiftdeps"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Shared/Models/AppCons/AppCons.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/AppCons.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/AppCons.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/AppCons.dia",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/AppCons.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/AppCons.swiftdeps"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Shared/Models/CoreData/CoreDataController.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/CoreDataController.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/CoreDataController.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/CoreDataController.dia",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/CoreDataController.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/CoreDataController.swiftdeps"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Shared/Models/Utils/Utils.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/Utils.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/Utils.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/Utils.dia",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/Utils.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/Utils.swiftdeps"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Shared/Models/UtilsForView/UtilsForViews.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/UtilsForViews.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/UtilsForViews.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/UtilsForViews.dia",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/UtilsForViews.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug-watchsimulator/La Ley Watch App.build/Objects-normal/arm64/UtilsForViews.swiftdeps"
+  }
+}

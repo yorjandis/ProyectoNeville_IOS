@@ -68,6 +68,14 @@ extension ArchivedGoalEntity {
         activeGoal.totalUnits = self.totalUnits
         activeGoal.unitType = self.unitType
         activeGoal.frequency = self.frequency
+        activeGoal.scheduleType = self.scheduleType
+        activeGoal.weeklyDaysPerWeek = self.weeklyDaysPerWeek
+        activeGoal.dayPeriod = self.dayPeriod
+        activeGoal.customUnitLabel = self.customUnitLabel
+        activeGoal.executionTargetValue = self.executionTargetValue
+        activeGoal.completionBasis = self.completionBasis
+        activeGoal.durationValue = self.durationValue
+        activeGoal.durationUnit = self.durationUnit
         activeGoal.isStarted = false
         activeGoal.startDate = Date()
 
@@ -78,7 +86,11 @@ extension ArchivedGoalEntity {
             )
         }
 
-        activeGoal.generateUnits(DetallesUnidades: unitDetails)
+        let dates = unitsArray.compactMap(\.startDate)
+        activeGoal.generateUnits(
+            DetallesUnidades: unitDetails,
+            specificDates: self.scheduleType == GoalScheduleType.specificDates.rawValue ? dates : []
+        )
         try context.save()
         return activeGoal
     }

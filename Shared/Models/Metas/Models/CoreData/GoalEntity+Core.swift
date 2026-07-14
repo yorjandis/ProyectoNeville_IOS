@@ -56,17 +56,186 @@ extension GoalEntity {
     var frequencyValue: Int {
         max(1, Int(frequency))
     }
+
+    var goalScheduleType: GoalScheduleType {
+        GoalScheduleType(rawValue: scheduleType ?? "") ?? .interval
+    }
+
+    var goalDayPeriod: GoalDayPeriod {
+        GoalDayPeriod(rawValue: dayPeriod ?? "") ?? .anytime
+    }
+
+    var weeklyDaysValue: Int {
+        min(max(Int(weeklyDaysPerWeek), 1), 7)
+    }
+
+    var unitLabel: String {
+        let value = customUnitLabel?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        return value.isEmpty ? "unidad" : value
+    }
+
+    var goalCompletionBasis: GoalCompletionBasis {
+        GoalCompletionBasis(rawValue: completionBasis ?? "") ?? .executions
+    }
+
+    var goalDurationUnit: TimeUnit {
+        TimeUnit(rawValue: durationUnit ?? "") ?? .dias
+    }
+
+    var durationValueNumber: Int {
+        max(Int(durationValue), 1)
+    }
+
+    var executionValueNumber: Double {
+        executionTargetValue > 0 ? executionTargetValue : 1
+    }
+
+    var executionTargetText: String {
+        let value = executionValueNumber
+        let number = value.rounded() == value
+            ? String(Int(value))
+            : value.formatted(.number.precision(.fractionLength(0...2)))
+        let label = customUnitLabel?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        if label.isEmpty {
+            return value == 1 ? "Una ejecución" : "\(number) por ejecución"
+        }
+        return value == 1 ? "\(label) por ejecución" : "\(number) \(label) por ejecución"
+    }
+
+    var scheduleSummary: String {
+        let cadence: String
+        switch goalScheduleType {
+        case .interval:
+            cadence = "Cada \(frequencyValue) \(timeUnit.description(for: frequencyValue))"
+        case .weekly:
+            cadence = "\(weeklyDaysValue) \(weeklyDaysValue == 1 ? "día" : "días") por semana"
+        case .specificDates:
+            cadence = "En fechas específicas"
+        }
+
+        if goalDayPeriod == .anytime {
+            return cadence
+        }
+        return "\(cadence) · \(goalDayPeriod.label.lowercased())"
+    }
+
+    var planSummary: String {
+        let ending: String
+        switch goalCompletionBasis {
+        case .executions:
+            ending = "\(totalUnits) \(totalUnits == 1 ? "ejecución" : "ejecuciones")"
+        case .duration:
+            ending = "durante \(durationValueNumber) \(goalDurationUnit.description(for: durationValueNumber))"
+        }
+        return "\(executionTargetText) · \(scheduleSummary) · \(ending)"
+    }
+
+    func durationEndDate(from referenceDate: Date) -> Date? {
+        guard goalCompletionBasis == .duration else { return nil }
+        return Calendar.current.date(
+            byAdding: goalDurationUnit.calendarComponent,
+            value: durationValueNumber,
+            to: referenceDate
+        )
+    }
+
+    /// Calcula las oportunidades que caben realmente dentro de la duración.
+    /// Ejemplo: 30 días a 5 días/semana = 22 ejecuciones.
+    func plannedUnitCount(from referenceDate: Date) -> Int {
+        guard goalCompletionBasis == .duration,
+              let endDate = durationEndDate(from: referenceDate) else {
+            return max(Int(totalUnits), 1)
+        }
+
+        let calendar = Calendar.current
+        let maximumUnits = 5_000
+
+        switch goalScheduleType {
+        case .specificDates:
+            return max(Int(totalUnits), 1)
+
+        case .weekly:
+            var firstDay = calendar.startOfDay(for: referenceDate)
+            if let window = goalDayPeriod.window(on: firstDay), referenceDate > window.end {
+                firstDay = calendar.date(byAdding: .day, value: 1, to: firstDay) ?? firstDay
+            }
+            let endDay = calendar.startOfDay(for: endDate)
+            let availableDays = max(calendar.dateComponents([.day], from: firstDay, to: endDay).day ?? 0, 1)
+            let fullWeeks = availableDays / 7
+            let remainingDays = availableDays % 7
+            return min(max((fullWeeks * weeklyDaysValue) + min(remainingDays, weeklyDaysValue), 1), maximumUnits)
+
+        case .interval:
+            var count = 0
+            var cursor = referenceDate
+            while cursor < endDate, count < maximumUnits {
+                count += 1
+                guard let next = calendar.date(
+                    byAdding: timeUnit.calendarComponent,
+                    value: frequencyValue,
+                    to: cursor
+                ), next > cursor else { break }
+                cursor = next
+            }
+            return max(count, 1)
+        }
+    }
 }
 
 
 //Inicia una Meta personalizada/Preestablecida
 extension GoalEntity {
     
+    private func applyWindow(start: Date, defaultEnd: Date) -> (Date, Date) {
+        guard let periodWindow = goalDayPeriod.window(on: start) else {
+            return (start, defaultEnd)
+        }
+        return (periodWindow.start, periodWindow.end)
+    }
+
     private func rescheduleUnits(from referenceDate: Date, alignToCalendar: Bool = true) {
         let calendar = Calendar.current
+
+        if goalScheduleType == .specificDates {
+            for unit in unitsArray {
+                guard let scheduledDate = unit.startDate else { continue }
+                let dayStart = calendar.startOfDay(for: scheduledDate)
+                let defaultEnd = calendar.date(byAdding: .day, value: 1, to: dayStart) ?? dayStart
+                let window = applyWindow(start: dayStart, defaultEnd: defaultEnd)
+                unit.startDate = window.0
+                unit.endDate = window.1
+            }
+            return
+        }
+
+        if goalScheduleType == .weekly {
+            var baseDay = calendar.startOfDay(for: referenceDate)
+            if let todayWindow = goalDayPeriod.window(on: baseDay), referenceDate > todayWindow.end {
+                baseDay = calendar.date(byAdding: .day, value: 1, to: baseDay) ?? baseDay
+            }
+            for unit in unitsArray {
+                let position = max(Int(unit.index) - 1, 0)
+                let weekOffset = position / weeklyDaysValue
+                let dayOffset = position % weeklyDaysValue
+                guard let weekStart = calendar.date(byAdding: .weekOfYear, value: weekOffset, to: baseDay),
+                      let scheduledDay = calendar.date(byAdding: .day, value: dayOffset, to: weekStart),
+                      let defaultEnd = calendar.date(byAdding: .day, value: 1, to: scheduledDay) else {
+                    continue
+                }
+                let window = applyWindow(start: scheduledDay, defaultEnd: defaultEnd)
+                unit.startDate = window.0
+                unit.endDate = window.1
+            }
+            return
+        }
+
+        var scheduleReference = referenceDate
+        if let todayWindow = goalDayPeriod.window(on: referenceDate), referenceDate > todayWindow.end {
+            scheduleReference = calendar.date(byAdding: .day, value: 1, to: referenceDate) ?? referenceDate
+        }
         let baseStart = alignToCalendar
-            ? timeUnit.alignedStart(from: referenceDate)
-            : referenceDate
+            ? timeUnit.alignedStart(from: scheduleReference)
+            : scheduleReference
 
         let step = frequencyValue
 
@@ -81,12 +250,14 @@ extension GoalEntity {
                 continue
             }
 
-            unit.startDate = startDate
-            unit.endDate = calendar.date(
+            let defaultEnd = calendar.date(
                 byAdding: timeUnit.calendarComponent,
                 value: step,
                 to: startDate
-            )
+            ) ?? startDate
+            let window = applyWindow(start: startDate, defaultEnd: defaultEnd)
+            unit.startDate = window.0
+            unit.endDate = window.1
         }
     }
 
@@ -94,13 +265,20 @@ extension GoalEntity {
     func start() {
         guard !isStarted else { return }
 
-        isStarted = true
         let now = Date()
+        ensurePlannedUnitCount(from: now)
+        isStarted = true
         startDate = now
 
         rescheduleUnits(from: now, alignToCalendar: true)
 
-        if let firstUnit = unitsArray.first {
+        // Conserva el comportamiento histórico de las metas por intervalo. En
+        // calendarios semanales o explícitos, iniciar no equivale a ejecutar.
+        if goalScheduleType == .interval,
+           goalCompletionBasis == .executions,
+           goalDayPeriod == .anytime,
+           timeUnit != .semanas,
+           let firstUnit = unitsArray.first {
             firstUnit.status = UnitStatus.completed.rawValue
             firstUnit.completedDate = now
             recordStatsEvent(.unitCompleted, unit: firstUnit, date: now, context: managedObjectContext)
@@ -131,10 +309,14 @@ extension GoalEntity {
         }
     }
 
-    func generateUnits(DetallesUnidades: [UnidadesInfo] = []) {
+    func generateUnits(DetallesUnidades: [UnidadesInfo] = [], specificDates: [Date] = []) {
         guard let context = self.managedObjectContext else { return }
+        guard totalUnits > 0 else { return }
+
+        let existingIndexes = Set(unitsArray.map { Int($0.index) })
 
         for index in 1...Int(totalUnits) {
+            guard !existingIndexes.contains(index) else { continue }
             let unit = UnitEntity(context: context)
             unit.id = UUID()
             unit.index = Int32(index)
@@ -147,14 +329,36 @@ extension GoalEntity {
                 unit.name = info.name
                 unit.info = info.info
             } else {
-                unit.name = "Unidad \(index)"
+                if executionValueNumber == 1 {
+                    unit.name = "\(unitLabel.prefix(1).uppercased())\(unitLabel.dropFirst()) \(index)"
+                } else {
+                    unit.name = "\(executionTargetText.replacingOccurrences(of: " por ejecución", with: "")) · \(index)"
+                }
                 unit.info = ""
             }
 
-            // No asignar fechas aquí
-            unit.startDate = nil
-            unit.endDate = nil
+            if index - 1 < specificDates.count {
+                let dayStart = Calendar.current.startOfDay(for: specificDates[index - 1])
+                let defaultEnd = Calendar.current.date(byAdding: .day, value: 1, to: dayStart) ?? dayStart
+                let window = applyWindow(start: dayStart, defaultEnd: defaultEnd)
+                unit.startDate = window.0
+                unit.endDate = window.1
+            } else {
+                unit.startDate = nil
+                unit.endDate = nil
+            }
         }
+    }
+
+    private func ensurePlannedUnitCount(from referenceDate: Date) {
+        guard goalCompletionBasis == .duration, let context = managedObjectContext else { return }
+        let expectedCount = plannedUnitCount(from: referenceDate)
+
+        for unit in unitsArray where Int(unit.index) > expectedCount {
+            context.delete(unit)
+        }
+        totalUnits = Int32(expectedCount)
+        generateUnits()
     }
     
     /*
@@ -247,9 +451,14 @@ extension GoalEntity {
             .filter { unit in
                 guard unit.unitStatus == .pending else { return false }
                 guard let now else { return true }
-                return (unit.startDate ?? now) <= now
+                guard let start = unit.startDate, let end = unit.endDate else { return false }
+                return start <= now && now <= end
             }
-            .min(by: { $0.index < $1.index })
+            .min { lhs, rhs in
+                let leftDate = lhs.startDate ?? .distantFuture
+                let rightDate = rhs.startDate ?? .distantFuture
+                return leftDate == rightDate ? lhs.index < rhs.index : leftDate < rightDate
+            }
     }
 
     /// Retorna la siguiente unidad pendiente que se puede marcar
@@ -301,6 +510,14 @@ extension GoalEntity {
             
             return "Próxima unidad en \(hour)\(minutesTemp)"
 
+        case .semanas:
+            let diff = Calendar.current.dateComponents([.day, .hour], from: now, to: start)
+            let days = max(diff.day ?? 0, 0)
+            let hours = max(diff.hour ?? 0, 0)
+            return days > 0
+                ? "Próxima unidad en \(days) \(days == 1 ? "día" : "días") y \(hours)hr"
+                : "Próxima unidad en \(hours)hr"
+
         case .meses:
             let diff = Calendar.current.dateComponents([.day, .hour], from: now, to: start)
             var day: String = ""
@@ -351,14 +568,7 @@ extension GoalEntity {
     }
 
     func nextExpirationDate(from now: Date) -> Date? {
-        guard let unit = nextPendingUnit,
-              let start = unit.startDate else { return nil }
-
-        return Calendar.current.date(
-            byAdding: timeUnit.calendarComponent,
-            value: frequencyValue,
-            to: start
-        )
+        nextPendingUnit?.endDate
     }
 }
 
@@ -372,6 +582,45 @@ extension GoalEntity {
          self.title = title
          self.descriptionText = description
          try self.managedObjectContext?.save()
+     }
+
+    func updateSchedulingMetadata(unitLabel newLabel: String, dayPeriod newPeriod: GoalDayPeriod) {
+        let oldLabel = unitLabel
+        let cleanLabel = newLabel.trimmingCharacters(in: .whitespacesAndNewlines)
+        customUnitLabel = cleanLabel
+        dayPeriod = newPeriod.rawValue
+
+        for unit in unitsArray {
+            let defaultOldName = "\(oldLabel.prefix(1).uppercased())\(oldLabel.dropFirst()) \(unit.index)"
+            if unit.name == defaultOldName || unit.name == "Unidad \(unit.index)" {
+                let label = unitLabel
+                unit.name = "\(label.prefix(1).uppercased())\(label.dropFirst()) \(unit.index)"
+            }
+
+            guard unit.unitStatus == .pending, let currentStart = unit.startDate else { continue }
+            let calendar = Calendar.current
+            let baseStart: Date
+            let defaultEnd: Date
+            if goalScheduleType == .weekly || goalScheduleType == .specificDates {
+                baseStart = calendar.startOfDay(for: currentStart)
+                defaultEnd = calendar.date(byAdding: .day, value: 1, to: baseStart) ?? baseStart
+            } else {
+                baseStart = timeUnit.alignedStart(from: currentStart)
+                defaultEnd = calendar.date(
+                    byAdding: timeUnit.calendarComponent,
+                    value: frequencyValue,
+                    to: baseStart
+                ) ?? baseStart
+            }
+
+            if let window = newPeriod.window(on: baseStart) {
+                unit.startDate = window.start
+                unit.endDate = window.end
+            } else {
+                unit.startDate = baseStart
+                unit.endDate = defaultEnd
+            }
+        }
     }
 }
 
@@ -399,6 +648,10 @@ extension TimeUnit {
         case .dias:
             return calendar.startOfDay(for: date)
 
+        case .semanas:
+            let day = calendar.startOfDay(for: date)
+            return calendar.dateInterval(of: .weekOfYear, for: day)?.start ?? day
+
         case .meses:
             let comps = calendar.dateComponents([.year, .month], from: date)
             return calendar.date(from: comps) ?? date
@@ -424,6 +677,37 @@ extension GoalEntity {
 //Archiva una Meta Completada!
 extension GoalEntity {
 
+    /// Conserva la ejecución terminada en el historial y crea una nueva copia
+    /// sin iniciar, usando el mismo flujo que Restaurar en Metas Archivadas.
+    @discardableResult
+    func reactivateCompleted(context: NSManagedObjectContext) throws -> GoalEntity {
+        guard isStarted, isCompleted, let goalID = id else {
+            throw NSError(
+                domain: "GoalReactivation",
+                code: 1,
+                userInfo: [NSLocalizedDescriptionKey: "La meta todavía no está completada"]
+            )
+        }
+
+        try archive(context: context)
+
+        let request: NSFetchRequest<ArchivedGoalEntity> = ArchivedGoalEntity.fetchRequest()
+        request.fetchLimit = 1
+        request.predicate = NSPredicate(format: "id == %@", goalID as CVarArg)
+        guard let archivedGoal = try context.fetch(request).first else {
+            throw NSError(
+                domain: "GoalReactivation",
+                code: 2,
+                userInfo: [NSLocalizedDescriptionKey: "No se pudo conservar la ejecución anterior"]
+            )
+        }
+
+        let reactivatedGoal = try archivedGoal.restoreAsActiveGoal(context: context)
+        context.delete(self)
+        try context.save()
+        return reactivatedGoal
+    }
+
     func archive(context: NSManagedObjectContext) throws  {
             guard isCompleted else { return }
             guard let goalID = self.id else { return }
@@ -448,6 +732,14 @@ extension GoalEntity {
             archivedGoal.totalUnits = self.totalUnits
             archivedGoal.unitType = self.unitType
             archivedGoal.frequency = self.frequency
+            archivedGoal.scheduleType = self.scheduleType
+            archivedGoal.weeklyDaysPerWeek = self.weeklyDaysPerWeek
+            archivedGoal.dayPeriod = self.dayPeriod
+            archivedGoal.customUnitLabel = self.customUnitLabel
+            archivedGoal.executionTargetValue = self.executionTargetValue
+            archivedGoal.completionBasis = self.completionBasis
+            archivedGoal.durationValue = self.durationValue
+            archivedGoal.durationUnit = self.durationUnit
             archivedGoal.completionDate = Date()
             recordStatsEvent(.goalArchived, date: archivedGoal.completionDate, context: context)
             
@@ -534,6 +826,14 @@ extension GoalEntity {
         archivedGoal.totalUnits = self.totalUnits
         archivedGoal.unitType = self.unitType
         archivedGoal.frequency = self.frequency
+        archivedGoal.scheduleType = self.scheduleType
+        archivedGoal.weeklyDaysPerWeek = self.weeklyDaysPerWeek
+        archivedGoal.dayPeriod = self.dayPeriod
+        archivedGoal.customUnitLabel = self.customUnitLabel
+        archivedGoal.executionTargetValue = self.executionTargetValue
+        archivedGoal.completionBasis = self.completionBasis
+        archivedGoal.durationValue = self.durationValue
+        archivedGoal.durationUnit = self.durationUnit
         archivedGoal.completionDate = Date()
         
         // 🟣 3. Eliminar unidades archivadas antiguas

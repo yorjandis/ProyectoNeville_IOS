@@ -84,10 +84,21 @@ class ProgramasViewModel: ObservableObject {
         goal.totalUnits = Int32(programa.noUnidades)
         goal.unitType = programa.tipoUnidad.rawValue
         goal.frequency = Int32(programa.frecuencia)
+        goal.scheduleType = programa.scheduleType.rawValue
+        goal.weeklyDaysPerWeek = Int16(programa.weeklyDaysPerWeek)
+        goal.dayPeriod = programa.dayPeriod.rawValue
+        goal.customUnitLabel = programa.customUnitLabel.trimmingCharacters(in: .whitespacesAndNewlines)
+        goal.executionTargetValue = 1
+        goal.completionBasis = GoalCompletionBasis.executions.rawValue
+        goal.durationValue = 0
+        goal.durationUnit = TimeUnit.dias.rawValue
         goal.isStarted = false
         
         // Genera unidades pero mantiene la meta sin iniciar
-        goal.generateUnits(DetallesUnidades: programa.unidadesinfo)
+        goal.generateUnits(
+            DetallesUnidades: programa.unidadesinfo,
+            specificDates: programa.scheduleType == .specificDates ? programa.resolvedSpecificDates : []
+        )
         
         //Salvando el contexto
         do {
@@ -100,6 +111,4 @@ class ProgramasViewModel: ObservableObject {
     
     
 }
-
-
 

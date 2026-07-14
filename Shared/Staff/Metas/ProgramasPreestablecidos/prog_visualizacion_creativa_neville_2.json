@@ -5,6 +5,11 @@
   "noUnidades": 14,
   "tipoUnidad": "dias",
   "frecuencia": 1,
+  "scheduleType": "interval",
+  "weeklyDaysPerWeek": 1,
+  "dayPeriod": "anytime",
+  "customUnitLabel": "días de práctica",
+  "specificDates": [],
   "unidadesinfo": [
     {
       "name": "Día 1",

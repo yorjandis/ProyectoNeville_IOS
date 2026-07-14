@@ -17,6 +17,8 @@ struct ModifyGoal: View {
     
     @State private var title : String = ""
     @State private var description: String = ""
+    @State private var unitLabel: String = ""
+    @State private var dayPeriod: GoalDayPeriod = .anytime
     
     @State private var showAlert: Bool = false
     
@@ -28,10 +30,21 @@ struct ModifyGoal: View {
             
             Text("Nota Adjunta:")
             TextEditor(text: self.$description)
+
+            Text("Nombre de la unidad:")
+            TextField("Ej. páginas, km, vasos", text: $unitLabel)
+                .textFieldStyle(.roundedBorder)
+
+            Picker("Momento del día", selection: $dayPeriod) {
+                ForEach(GoalDayPeriod.allCases, id: \.self) { period in
+                    Text(period.label).tag(period)
+                }
+            }
             
             
             Button("Actualizar"){
                 do{
+                    goal.updateSchedulingMetadata(unitLabel: unitLabel, dayPeriod: dayPeriod)
                     try goal.update(title: self.title, description: self.description)
                 }catch{
                     self.showAlert = true
@@ -47,6 +60,8 @@ struct ModifyGoal: View {
         .onAppear{
             self.title = self.goal.title ?? ""
             self.description = self.goal.descriptionText ?? ""
+            self.unitLabel = self.goal.customUnitLabel ?? ""
+            self.dayPeriod = self.goal.goalDayPeriod
         }
         .alert(isPresented: self.$showAlert){
             Alert(title: Text("La Ley - Objetivos"), message: Text("No se ha podido actualizar el objetivo. Inténtalo de nuevo."))

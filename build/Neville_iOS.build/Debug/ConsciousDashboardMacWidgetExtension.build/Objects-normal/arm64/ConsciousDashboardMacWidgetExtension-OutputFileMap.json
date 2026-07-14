@@ -1,0 +1,39 @@
+{
+  "" : {
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug/ConsciousDashboardMacWidgetExtension.build/Objects-normal/arm64/ConsciousDashboardMacWidgetExtension-primary.dia",
+    "emit-module-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug/ConsciousDashboardMacWidgetExtension.build/Objects-normal/arm64/ConsciousDashboardMacWidgetExtension-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug/ConsciousDashboardMacWidgetExtension.build/Objects-normal/arm64/ConsciousDashboardMacWidgetExtension-primary-emit-module.dia",
+    "pch" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug/ConsciousDashboardMacWidgetExtension.build/Objects-normal/arm64/ConsciousDashboardMacWidgetExtension-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug/ConsciousDashboardMacWidgetExtension.build/Objects-normal/arm64/ConsciousDashboardMacWidgetExtension-primary.swiftdeps"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/ConsciousDashboardMacWidget/ConsciousDashboardMacBundle.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug/ConsciousDashboardMacWidgetExtension.build/Objects-normal/arm64/ConsciousDashboardMacBundle.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug/ConsciousDashboardMacWidgetExtension.build/Objects-normal/arm64/ConsciousDashboardMacBundle.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug/ConsciousDashboardMacWidgetExtension.build/Objects-normal/arm64/ConsciousDashboardMacBundle.dia",
+    "index-unit-output-path" : "/Neville_iOS.build/Debug/ConsciousDashboardMacWidgetExtension.build/Objects-normal/arm64/ConsciousDashboardMacBundle.o",
+    "llvm-bc" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug/ConsciousDashboardMacWidgetExtension.build/Objects-normal/arm64/ConsciousDashboardMacBundle.bc",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug/ConsciousDashboardMacWidgetExtension.build/Objects-normal/arm64/ConsciousDashboardMacBundle.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug/ConsciousDashboardMacWidgetExtension.build/Objects-normal/arm64/ConsciousDashboardMacBundle.swiftdeps",
+    "swiftmodule" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug/ConsciousDashboardMacWidgetExtension.build/Objects-normal/arm64/ConsciousDashboardMacBundle~partial.swiftmodule"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/FrasesWigget/ConsciousDashboardWidget.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug/ConsciousDashboardMacWidgetExtension.build/Objects-normal/arm64/ConsciousDashboardWidget.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug/ConsciousDashboardMacWidgetExtension.build/Objects-normal/arm64/ConsciousDashboardWidget.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug/ConsciousDashboardMacWidgetExtension.build/Objects-normal/arm64/ConsciousDashboardWidget.dia",
+    "index-unit-output-path" : "/Neville_iOS.build/Debug/ConsciousDashboardMacWidgetExtension.build/Objects-normal/arm64/ConsciousDashboardWidget.o",
+    "llvm-bc" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug/ConsciousDashboardMacWidgetExtension.build/Objects-normal/arm64/ConsciousDashboardWidget.bc",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug/ConsciousDashboardMacWidgetExtension.build/Objects-normal/arm64/ConsciousDashboardWidget.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug/ConsciousDashboardMacWidgetExtension.build/Objects-normal/arm64/ConsciousDashboardWidget.swiftdeps",
+    "swiftmodule" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug/ConsciousDashboardMacWidgetExtension.build/Objects-normal/arm64/ConsciousDashboardWidget~partial.swiftmodule"
+  },
+  "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Shared/Models/WidgetDashboard/ConsciousDashboardSnapshot.swift" : {
+    "const-values" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug/ConsciousDashboardMacWidgetExtension.build/Objects-normal/arm64/ConsciousDashboardSnapshot.swiftconstvalues",
+    "dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug/ConsciousDashboardMacWidgetExtension.build/Objects-normal/arm64/ConsciousDashboardSnapshot.d",
+    "diagnostics" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug/ConsciousDashboardMacWidgetExtension.build/Objects-normal/arm64/ConsciousDashboardSnapshot.dia",
+    "index-unit-output-path" : "/Neville_iOS.build/Debug/ConsciousDashboardMacWidgetExtension.build/Objects-normal/arm64/ConsciousDashboardSnapshot.o",
+    "llvm-bc" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug/ConsciousDashboardMacWidgetExtension.build/Objects-normal/arm64/ConsciousDashboardSnapshot.bc",
+    "object" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug/ConsciousDashboardMacWidgetExtension.build/Objects-normal/arm64/ConsciousDashboardSnapshot.o",
+    "swift-dependencies" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug/ConsciousDashboardMacWidgetExtension.build/Objects-normal/arm64/ConsciousDashboardSnapshot.swiftdeps",
+    "swiftmodule" : "/Users/yorjandis/Desktop/ProyectoNeville_IOS/build/Neville_iOS.build/Debug/ConsciousDashboardMacWidgetExtension.build/Objects-normal/arm64/ConsciousDashboardSnapshot~partial.swiftmodule"
+  }
+}

@@ -16,6 +16,8 @@ struct La_Ley_Watch_AppApp: App {
     
     init() {
         _ = WatchIncomingDataReceiver.shared
+        _ = WatchGoalUnitsStore.shared
+        WatchGoalNotificationRouter.shared.configure()
     }
 
     var body: some Scene {
@@ -37,6 +39,7 @@ struct La_Ley_Watch_AppApp: App {
                     await MainActor.run {
                         watchModel.shared.getNotas()
                         watchModel.shared.getDiarioEntradas()
+                        WatchGoalUnitsStore.shared.requestSnapshot()
                         isStoreReady = true
                     }
                 } catch {

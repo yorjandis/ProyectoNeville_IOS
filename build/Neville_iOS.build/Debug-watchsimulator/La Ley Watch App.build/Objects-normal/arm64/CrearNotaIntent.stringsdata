@@ -1,0 +1,72 @@
+{
+  "source": "/Users/yorjandis/Desktop/ProyectoNeville_IOS/Neville_iOS/Atajos/Intens/CrearNotaIntent.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Crear Nota",
+        "location": {
+          "startingColumn": 49,
+          "startingLine": 38
+        }
+      },
+      {
+        "comment": "",
+        "key": "Crear una nueva nota",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 39
+        }
+      },
+      {
+        "comment": "",
+        "key": "Título",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 43
+        }
+      },
+      {
+        "comment": "",
+        "key": "El título de la nota",
+        "location": {
+          "startingColumn": 46,
+          "startingLine": 43
+        }
+      },
+      {
+        "comment": "",
+        "key": "Nota",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 46
+        }
+      },
+      {
+        "comment": "",
+        "key": "El contenido de la nota",
+        "location": {
+          "startingColumn": 43,
+          "startingLine": 46
+        }
+      },
+      {
+        "comment": "",
+        "key": "La nota «%@» ha sido creada correctamente.",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 88
+        }
+      },
+      {
+        "comment": "",
+        "key": "No se pudo guardar la nota.",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 94
+        }
+      }
+    ]
+  },
+  "version": 1
+}

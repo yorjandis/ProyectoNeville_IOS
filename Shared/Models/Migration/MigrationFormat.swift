@@ -289,9 +289,9 @@ enum OrderedJSONWriter {
         case MigrationRecordType.agenda:
             return ["title", "note", "activityDateMillis", "activityTimeMillis", "place", "content", "priority", "colorHex", "completed", "reminderActive", "reminderId"]
         case MigrationRecordType.goal:
-            return ["title", "descriptionText", "totalUnits", "unitType", "frequency", "isStarted", "startDate", "notifyOnUnitAvailable", "lastNotifiedUnitIndex", "status", "units"]
+            return ["title", "descriptionText", "totalUnits", "unitType", "frequency", "scheduleType", "weeklyDaysPerWeek", "dayPeriod", "customUnitLabel", "executionTargetValue", "completionBasis", "durationValue", "durationUnit", "isStarted", "startDate", "notifyOnUnitAvailable", "lastNotifiedUnitIndex", "status", "units"]
         case MigrationRecordType.archivedGoal:
-            return ["title", "descriptionText", "totalUnits", "unitType", "frequency", "completionDate", "status", "units"]
+            return ["title", "descriptionText", "totalUnits", "unitType", "frequency", "scheduleType", "weeklyDaysPerWeek", "dayPeriod", "customUnitLabel", "executionTargetValue", "completionBasis", "durationValue", "durationUnit", "completionDate", "status", "units"]
         case MigrationRecordType.personalPhrase:
             return ["phrase", "author", "source", "favorite", "note", "category"]
         case MigrationRecordType.personalReflection:
@@ -375,6 +375,12 @@ enum MigrationJSON {
     static func int(_ payload: [String: Any], _ key: String, default defaultValue: Int = 0) -> Int {
         if let value = payload[key] as? Int { return value }
         if let value = payload[key] as? NSNumber { return value.intValue }
+        return defaultValue
+    }
+
+    static func double(_ payload: [String: Any], _ key: String, default defaultValue: Double = 0) -> Double {
+        if let value = payload[key] as? Double { return value }
+        if let value = payload[key] as? NSNumber { return value.doubleValue }
         return defaultValue
     }
 

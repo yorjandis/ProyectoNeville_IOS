@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		9A10B0013000000000000001 /* WeeklyReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A10B0023000000000000001 /* WeeklyReviewView.swift */; };
 		19520A4F2B75C34F000B11CC /* AddDiario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19520A4E2B75C34F000B11CC /* AddDiario.swift */; };
 		19520A512B765E31000B11CC /* FilterByNotaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19520A502B765E30000B11CC /* FilterByNotaView.swift */; };
 		19520A532B76778B000B11CC /* FilterByDiarioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19520A522B76778B000B11CC /* FilterByDiarioView.swift */; };
@@ -61,6 +60,14 @@
 		91E2A7A42F7C5E37007A162A /* cardTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91E2A7A22F7C5E2C007A162A /* cardTemplate.swift */; };
 		91E52D8C2F4327CE0054C032 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 91E52D8B2F4327CE0054C032 /* Assets.xcassets */; };
 		91F0DD552D605B5800307453 /* watchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F0DD542D605B4B00307453 /* watchModel.swift */; };
+		9A10B0013000000000000001 /* Shared/Views/RevisionSemanal/WeeklyReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A10B0023000000000000001 /* Shared/Views/RevisionSemanal/WeeklyReviewView.swift */; };
+		9CDA00013000000000000001 /* ConsciousDashboardWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CDA00023000000000000001 /* ConsciousDashboardWidget.swift */; };
+		9CDA01013000000000000001 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19E0BDEC2B0B412D00E149A5 /* WidgetKit.framework */; };
+		9CDA01023000000000000001 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19E0BDEE2B0B412D00E149A5 /* SwiftUI.framework */; };
+		9CDA01033000000000000001 /* ConsciousDashboardWidget.swift in Mac Widget Sources */ = {isa = PBXBuildFile; fileRef = 9CDA00023000000000000001 /* ConsciousDashboardWidget.swift */; };
+		9CDA01043000000000000001 /* ConsciousDashboardSnapshot.swift in Mac Widget Sources */ = {isa = PBXBuildFile; fileRef = 9CDA00063000000000000001 /* ConsciousDashboardSnapshot.swift */; };
+		9CDA01053000000000000001 /* ConsciousDashboardMacBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CDA01113000000000000001 /* ConsciousDashboardMacBundle.swift */; };
+		9CDA01063000000000000001 /* ConsciousDashboardMacWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 9CDA01103000000000000001 /* ConsciousDashboardMacWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		E95B93572AAFBB2600B5E2B5 /* Neville_iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95B93562AAFBB2600B5E2B5 /* Neville_iOSApp.swift */; };
 		E95B93592AAFBB2600B5E2B5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95B93582AAFBB2600B5E2B5 /* ContentView.swift */; };
 /* End PBXBuildFile section */
@@ -108,6 +115,13 @@
 			remoteGlobalIDString = 91E107662EEA01AD00F4DB1D;
 			remoteInfo = sharedios;
 		};
+		9CDA01203000000000000001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E95B934B2AAFBB2600B5E2B5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9CDA01403000000000000001;
+			remoteInfo = ConsciousDashboardMacWidgetExtension;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -151,6 +165,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
+				9CDA01063000000000000001 /* ConsciousDashboardMacWidgetExtension.appex in Embed Foundation Extensions */,
 				918C4B0B2EF4094D00974B54 /* sharedmac.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
@@ -170,7 +185,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		9A10B0023000000000000001 /* WeeklyReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/Views/RevisionSemanal/WeeklyReviewView.swift; sourceTree = SOURCE_ROOT; };
 		190C39AB2B6B84AA008007C6 /* La Ley Watch App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "La Ley Watch App.entitlements"; sourceTree = "<group>"; };
 		19520A4E2B75C34F000B11CC /* AddDiario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddDiario.swift; sourceTree = "<group>"; };
 		19520A502B765E30000B11CC /* FilterByNotaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterByNotaView.swift; sourceTree = "<group>"; };
@@ -241,6 +255,14 @@
 		91E52D8B2F4327CE0054C032 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		91F0DD4E2D60384700307453 /* WatchComplicationLaLeyExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WatchComplicationLaLeyExtension.entitlements; sourceTree = "<group>"; };
 		91F0DD542D605B4B00307453 /* watchModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = watchModel.swift; sourceTree = "<group>"; };
+		9A10B0023000000000000001 /* Shared/Views/RevisionSemanal/WeeklyReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/Views/RevisionSemanal/WeeklyReviewView.swift; sourceTree = SOURCE_ROOT; };
+		9CDA00023000000000000001 /* ConsciousDashboardWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsciousDashboardWidget.swift; sourceTree = "<group>"; };
+		9CDA00063000000000000001 /* ConsciousDashboardSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/Models/WidgetDashboard/ConsciousDashboardSnapshot.swift; sourceTree = SOURCE_ROOT; };
+		9CDA00073000000000000001 /* ConsciousDashboardSnapshotPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/Models/WidgetDashboard/ConsciousDashboardSnapshotPublisher.swift; sourceTree = SOURCE_ROOT; };
+		9CDA01103000000000000001 /* ConsciousDashboardMacWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ConsciousDashboardMacWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		9CDA01113000000000000001 /* ConsciousDashboardMacBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsciousDashboardMacBundle.swift; sourceTree = "<group>"; };
+		9CDA01123000000000000001 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9CDA01133000000000000001 /* ConsciousDashboardMacWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ConsciousDashboardMacWidget.entitlements; sourceTree = "<group>"; };
 		E95B93532AAFBB2600B5E2B5 /* Neville_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Neville_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E95B93562AAFBB2600B5E2B5 /* Neville_iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Neville_iOSApp.swift; sourceTree = "<group>"; };
 		E95B93582AAFBB2600B5E2B5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -251,6 +273,8 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				ModelData.xcdatamodeld,
+				Models/WidgetDashboard/ConsciousDashboardSnapshot.swift,
+				Models/WidgetDashboard/ConsciousDashboardSnapshotPublisher.swift,
 				Models/Agenda/AgendaModels.swift,
 				Models/Agenda/AgendaRepository.swift,
 				Models/Agenda/AgendaViewModel.swift,
@@ -1018,6 +1042,7 @@
 				Staff/Biografias/biografia_gregg.txt,
 				Staff/Biografias/biografia_jd.txt,
 				Staff/Biografias/biografia.txt,
+				Staff/CentroSanador/healing_center_es.json,
 				Staff/CoherenciaCCImagenes/cc_1.JPG,
 				Staff/CoherenciaCCImagenes/cc_2.JPG,
 				Staff/CoherenciaCCImagenes/cc_3.JPG,
@@ -1039,7 +1064,6 @@
 				Staff/CoherenciaCCImagenes/cc_20.JPG,
 				Staff/coherenciaMusica/music_coherencia.mp3,
 				Staff/cuestionario.txt,
-				Staff/CentroSanador/healing_center_es.json,
 				Staff/Enciclopedia/Ansiedad/enc_ansiedad_vs_stress_cronico.txt,
 				Staff/Enciclopedia/Ansiedad/enc_protocolo_anti_ansiedad.txt,
 				Staff/Enciclopedia/Ansiedad/enc_que_es_la_ensiedad.txt,
@@ -1267,8 +1291,8 @@
 				Views/Frases/FrasesUpdateView.swift,
 				Views/Frases/RowFraseMenu.swift,
 				Views/HomeAlternativo/HomeAlternativoPhrases.swift,
-				Views/HomeAlternativo/HomeContextualRecommendationCard.swift,
 				Views/HomeAlternativo/HomeAlternativoView.swift,
+				Views/HomeAlternativo/HomeContextualRecommendationCard.swift,
 				Views/IAView/ChatView.swift,
 				Views/IAView/DescargoResponsabilidad.swift,
 				Views/IAView/RespondView.swift,
@@ -1293,7 +1317,7 @@
 				Views/Reflexiones/ReflexEditView.swift,
 				Views/Reflexiones/ReflexListView.swift,
 				Views/Reflexiones/ReflexShowTextView.swift,
-				Views/RitualMatutino/MorningRitualView.swift,
+				Views/Ritual/MorningRitualView.swift,
 				Views/SelectableTextAPI/Documentation.docc,
 				"Views/SelectableTextAPI/Extensions/BaseTextView+AppKit.swift",
 				"Views/SelectableTextAPI/Extensions/BaseTextView+UIKit.swift",
@@ -1315,6 +1339,7 @@
 		911FE4572ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Models/WidgetDashboard/ConsciousDashboardSnapshot.swift,
 				Models/AppCons/AppCons.swift,
 				Models/Utils/Utils.swift,
 				Staff/Frases/listfrases_bruce.txt,
@@ -1471,6 +1496,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		9CDA01313000000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9CDA01023000000000000001 /* SwiftUI.framework in Frameworks */,
+				9CDA01013000000000000001 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		19EDBBC02B7DD66000432CDE /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -1573,6 +1607,7 @@
 		19E0BE172B0C661A00E149A5 /* FrasesWigget */ = {
 			isa = PBXGroup;
 			children = (
+				9CDA00023000000000000001 /* ConsciousDashboardWidget.swift */,
 				19E0BE182B0C661A00E149A5 /* FrasesWiggetBundle.swift */,
 				19E0BE1A2B0C661A00E149A5 /* FrasesWigget.swift */,
 				199DA0682B102AA600DEED62 /* AppIntentWidget.swift */,
@@ -1580,6 +1615,16 @@
 				19E0BE1E2B0C661B00E149A5 /* Info.plist */,
 			);
 			path = FrasesWigget;
+			sourceTree = "<group>";
+		};
+		9CDA01603000000000000001 /* ConsciousDashboardMacWidget */ = {
+			isa = PBXGroup;
+			children = (
+				9CDA01113000000000000001 /* ConsciousDashboardMacBundle.swift */,
+				9CDA01123000000000000001 /* Info.plist */,
+				9CDA01133000000000000001 /* ConsciousDashboardMacWidget.entitlements */,
+			);
+			path = ConsciousDashboardMacWidget;
 			sourceTree = "<group>";
 		};
 		19EDBBC62B7DD66000432CDE /* WatchComplicationLaLey */ = {
@@ -1640,6 +1685,9 @@
 				914D888E2FC6000000CDDB93 /* Shared/Models/Migration/MyAppMigrationService.swift */,
 				914D888F2FC6000000CDDB93 /* Shared/Views/Migration/MigrationDataDocument.swift */,
 				914D88952FC6000000CDDB93 /* Shared/Views/Migration/MigrationIOSAndroidView.swift */,
+				9A10B0023000000000000001 /* Shared/Views/RevisionSemanal/WeeklyReviewView.swift */,
+				9CDA00063000000000000001 /* ConsciousDashboardSnapshot.swift */,
+				9CDA00073000000000000001 /* ConsciousDashboardSnapshotPublisher.swift */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -1674,6 +1722,7 @@
 				19F8041A2B69CB9D00A323A0 /* La Ley Watch App */,
 				E95B93552AAFBB2600B5E2B5 /* Neville_iOS */,
 				19E0BE172B0C661A00E149A5 /* FrasesWigget */,
+				9CDA01603000000000000001 /* ConsciousDashboardMacWidget */,
 				19EDBBC62B7DD66000432CDE /* WatchComplicationLaLey */,
 				91E107682EEA01AD00F4DB1D /* sharedios */,
 				917C30202EBCD1E5006BB36E /* La Ley_mac */,
@@ -1698,6 +1747,7 @@
 				91E107672EEA01AD00F4DB1D /* sharedios.appex */,
 				918C4AFF2EF4094D00974B54 /* sharedmac.appex */,
 				919F409D2F66C559009FF35B /* LaLeyBackgroundDownloadExtension.appex */,
+				9CDA01103000000000000001 /* ConsciousDashboardMacWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1790,6 +1840,7 @@
 			);
 			dependencies = (
 				918C4B0A2EF4094D00974B54 /* PBXTargetDependency */,
+				9CDA01413000000000000001 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				911FE4452ECB2A7F009F83BE /* Shared */,
@@ -1804,6 +1855,23 @@
 			productName = "La Ley";
 			productReference = 917C301F2EBCD1E5006BB36E /* La Ley.app */;
 			productType = "com.apple.product-type.application";
+		};
+		9CDA01403000000000000001 /* ConsciousDashboardMacWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9CDA01523000000000000001 /* Build configuration list for PBXNativeTarget "ConsciousDashboardMacWidgetExtension" */;
+			buildPhases = (
+				9CDA01303000000000000001 /* Sources */,
+				9CDA01313000000000000001 /* Frameworks */,
+				9CDA01323000000000000001 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ConsciousDashboardMacWidgetExtension;
+			productName = ConsciousDashboardMacWidgetExtension;
+			productReference = 9CDA01103000000000000001 /* ConsciousDashboardMacWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 		918C4AFE2EF4094D00974B54 /* sharedmac */ = {
 			isa = PBXNativeTarget;
@@ -1912,6 +1980,9 @@
 				LastSwiftUpdateCheck = 2630;
 				LastUpgradeCheck = 2660;
 				TargetAttributes = {
+					9CDA01403000000000000001 = {
+						CreatedOnToolsVersion = 26.5;
+					};
 					19E0BE132B0C661A00E149A5 = {
 						CreatedOnToolsVersion = 15.0.1;
 					};
@@ -1959,6 +2030,7 @@
 				19F804182B69CB9D00A323A0 /* La Ley Watch App */,
 				19EDBBC22B7DD66000432CDE /* WatchComplicationLaLeyExtension */,
 				917C301E2EBCD1E5006BB36E /* La Ley_mac */,
+				9CDA01403000000000000001 /* ConsciousDashboardMacWidgetExtension */,
 				91E107662EEA01AD00F4DB1D /* sharedios */,
 				918C4AFE2EF4094D00974B54 /* sharedmac */,
 				919F409C2F66C559009FF35B /* LaLeyBackgroundDownloadExtension */,
@@ -1972,6 +2044,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				19E0BE1D2B0C661B00E149A5 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9CDA01323000000000000001 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2035,9 +2114,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9CDA00013000000000000001 /* ConsciousDashboardWidget.swift in Sources */,
 				19E0BE1B2B0C661A00E149A5 /* FrasesWigget.swift in Sources */,
 				19E0BE192B0C661A00E149A5 /* FrasesWiggetBundle.swift in Sources */,
 				199DA0692B102AA600DEED62 /* AppIntentWidget.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9CDA01303000000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9CDA01033000000000000001 /* ConsciousDashboardWidget.swift in Mac Widget Sources */,
+				9CDA01043000000000000001 /* ConsciousDashboardSnapshot.swift in Mac Widget Sources */,
+				9CDA01053000000000000001 /* ConsciousDashboardMacBundle.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2109,7 +2199,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9A10B0013000000000000001 /* WeeklyReviewView.swift in Sources */,
+				9A10B0013000000000000001 /* Shared/Views/RevisionSemanal/WeeklyReviewView.swift in Sources */,
 				199DA0672B0EAC5800DEED62 /* Home.swift in Sources */,
 				911F242B2F7B7D31009A77BE /* JoeDispenzaAuthorView.swift in Sources */,
 				91E2A7A42F7C5E37007A162A /* cardTemplate.swift in Sources */,
@@ -2157,9 +2247,74 @@
 			target = 91E107662EEA01AD00F4DB1D /* sharedios */;
 			targetProxy = 91E1076F2EEA01AD00F4DB1D /* PBXContainerItemProxy */;
 		};
+		9CDA01413000000000000001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9CDA01403000000000000001 /* ConsciousDashboardMacWidgetExtension */;
+			targetProxy = 9CDA01203000000000000001 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		9CDA01503000000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9173AB7D2F72097F0015A9FD /* Version.xcconfig */;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = ConsciousDashboardMacWidget/ConsciousDashboardMacWidget.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = "$(inherited)";
+				DEVELOPMENT_TEAM = NDP3AP6896;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ConsciousDashboardMacWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Panel consciente";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.6;
+				MARKETING_VERSION = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.ConsciousDashboardMacWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		9CDA01513000000000000001 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9173AB7D2F72097F0015A9FD /* Version.xcconfig */;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = ConsciousDashboardMacWidget/ConsciousDashboardMacWidget.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = "$(inherited)";
+				DEVELOPMENT_TEAM = NDP3AP6896;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ConsciousDashboardMacWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Panel consciente";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.6;
+				MARKETING_VERSION = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.ConsciousDashboardMacWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
 		19E0BE232B0C661B00E149A5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9173AB7D2F72097F0015A9FD /* Version.xcconfig */;
@@ -2886,6 +3041,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		9CDA01523000000000000001 /* Build configuration list for PBXNativeTarget "ConsciousDashboardMacWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9CDA01503000000000000001 /* Debug */,
+				9CDA01513000000000000001 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		19E0BE222B0C661B00E149A5 /* Build configuration list for PBXNativeTarget "FrasesWiggetExtension" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

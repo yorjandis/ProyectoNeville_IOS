@@ -32,7 +32,7 @@ struct ProgramaDetailView: View {
                         .foregroundStyle(.orange)
                         .bold()
                     
-                    Text("Programa a completar en \(programa.noUnidades) \(programa.tipoUnidad.description(for: programa.noUnidades)), cada unidad deberá completarse cada \(programa.frecuencia) \(programa.tipoUnidad.description(for: programa.frecuencia))")
+                    Text("Programa: \(programa.scheduleSummary).")
                     
                     
                     Text("Detalles de las unidades:")

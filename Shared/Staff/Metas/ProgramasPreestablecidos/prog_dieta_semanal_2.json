@@ -3,8 +3,13 @@
   "detalles": "Programa de 7 unidades, cada unidad corresponde a un día de la semana",
   "description": "Programa orientado a mejorar la sensibilidad a la insulina, promover la flexibilidad metabólica y reducir inflamación sistémica.\n\nEstructura del programa:\n- Ventana de ayuno intermitente 16:8 (ayuno de 16 horas, alimentación en ventana de 8 horas, por ejemplo de 12:00 a 20:00).\n- Hidratación durante el ayuno: agua, agua con limón, café solo o té verde sin edulcorantes.\n- Prioridad a alimentos reales, densos en nutrientes, ricos en polifenoles, omega-3, fibra y proteínas de calidad.\n- Carbohidratos estratégicos alrededor del entrenamiento.\n- Cena ligera y temprana para optimizar descanso y autofagia nocturna.\n\nRecomendaciones generales:\n1. Cocinar con aceite de oliva virgen extra en crudo o a baja temperatura.\n2. Priorizar verduras de hoja verde, crucíferas, frutos rojos, legumbres y pescado azul.\n3. Evitar azúcares añadidos, harinas refinadas y aceites vegetales refinados.\n4. Consumir proteína suficiente (1.6–2 g/kg/día si se entrena fuerza).\n5. Dormir 7–8 horas para maximizar beneficios metabólicos.",
   "noUnidades": 7,
-  "tipoUnidad": "dias",
+  "tipoUnidad": "semanas",
   "frecuencia": 1,
+  "scheduleType": "weekly",
+  "weeklyDaysPerWeek": 7,
+  "dayPeriod": "anytime",
+  "customUnitLabel": "días",
+  "specificDates": [],
   "unidadesinfo": [
     {
       "name": "Lunes",

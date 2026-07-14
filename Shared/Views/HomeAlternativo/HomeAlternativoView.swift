@@ -28,9 +28,9 @@ struct HomeAlternativoView: View {
     @AppStorage(AppCons.UD_setting_WeeklyReviewCompletedPeriod) private var weeklyReviewCompletedPeriod = ""
     @AppStorage(AppCons.UD_setting_HomeProductividadPresenciaTotal) private var homeProductividadPresenciaTotal: Int = 5
     @AppStorage(AppCons.UD_setting_HomeProductividadMetasTotal) private var homeProductividadMetasTotal: Int = 1
-    @AppStorage(AppCons.UD_setting_HomeProductividadDiarioTotal) private var homeProductividadDiarioTotal: Int = 1
     @AppStorage(AppCons.UD_setting_HomeAlternativoShowHealingCenterCard) private var showHealingCenterCard: Bool = true
     @StateObject private var agendaViewModel = AgendaViewModel()
+    @StateObject private var stressMonitor = StressMonitor.shared
     @State private var phrase = HomeAlternativoPhrases.random(for: HomeAlternativoDayMoment.current())
     @State private var showPremium = false
     @State private var showAccessEditor = false
@@ -40,7 +40,6 @@ struct HomeAlternativoView: View {
     @State private var goalsBadgeVisible = false
     @State private var nextGoalsBadgeRefreshDate: Date?
     @State private var todayPresentCount = 0
-    @State private var todayDiaryEntriesCount = 0
     private let presenceRepository = PresenciaRepository()
 
     @FetchRequest(
@@ -127,7 +126,6 @@ struct HomeAlternativoView: View {
         let activeGoals = goals.filter { $0.isStarted && !$0.isCompleted }
         let presenceTotal = Double(max(homeProductividadPresenciaTotal, 5))
         let goalsTotal = Double(max(homeProductividadMetasTotal, 1))
-        let diaryTotal = Double(max(homeProductividadDiarioTotal, 1))
 
         return [
             .init(
@@ -143,13 +141,6 @@ struct HomeAlternativoView: View {
                 symbol: "checklist",
                 progress: min(Double(activeGoals.count) / goalsTotal, 1.0),
                 colors: HomeAlternativoProgressPalette.goals
-            ),
-            .init(
-                title: "Diario",
-                valueText: "\(todayDiaryEntriesCount) hoy",
-                symbol: "book.closed",
-                progress: min(Double(todayDiaryEntriesCount) / diaryTotal, 1.0),
-                colors: HomeAlternativoProgressPalette.diary
             )
         ]
     }
@@ -183,7 +174,7 @@ struct HomeAlternativoView: View {
             now = Date()
             agendaViewModel.load()
             reloadPresenceProgress()
-            reloadDiaryProgress()
+            stressMonitor.activateBackgroundObservationIfNeeded()
             phrase = HomeAlternativoPhrases.random(for: dayMoment)
             let normalizedAccessIDs = HomeAlternativoAccess.normalizedIDs(from: storedAccessIDs)
             let normalizedPaletteIDs = HomeAlternativoCardPalette.normalizedIDs(
@@ -193,6 +184,9 @@ struct HomeAlternativoView: View {
             selectedAccessIDs = normalizedAccessIDs
             selectedPaletteIDs = normalizedPaletteIDs
             updateGoalsBadgeState(at: Date())
+        }
+        .task {
+            await stressMonitor.refresh()
         }
         .task(id: nextGoalsBadgeRefreshDate) {
             guard let refreshDate = nextGoalsBadgeRefreshDate else { return }
@@ -232,15 +226,12 @@ struct HomeAlternativoView: View {
             reloadPresenceProgress()
         }
         .onReceive(NotificationCenter.default.publisher(for: .coreDataStoresDidLoad)) { _ in
-            reloadDiaryProgress()
             updateGoalsBadgeState(at: Date())
         }
         .onReceive(NotificationCenter.default.publisher(for: .NSManagedObjectContextObjectsDidChange, object: context)) { _ in
-            reloadDiaryProgress()
             updateGoalsBadgeState(at: Date())
         }
         .onReceive(NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave)) { _ in
-            reloadDiaryProgress()
             updateGoalsBadgeState(at: Date())
         }
     }
@@ -377,6 +368,13 @@ struct HomeAlternativoView: View {
             }
         }
         .buttonStyle(HomeAlternativoPressedButtonStyle())
+        .contextMenu {
+            Button(role: .destructive) {
+                showHealingCenterCard = false
+            } label: {
+                Label("Ocultar de Home", systemImage: "eye.slash")
+            }
+        }
         .accessibilityHint("Abre guías inmediatas de regulación y recursos de emergencia")
     }
 
@@ -397,7 +395,6 @@ struct HomeAlternativoView: View {
                                     now = Date()
                                     agendaViewModel.load()
                                     reloadPresenceProgress()
-                                    reloadDiaryProgress()
                                 }
                         } label: {
                             toolCard(for: tool)
@@ -603,35 +600,24 @@ struct HomeAlternativoView: View {
                 ForEach(progressItems) { item in
                     HomeAlternativoProgressCard(item: item, theme: theme)
                 }
+
+                NavigationLink {
+                    StressHistoryView(monitor: stressMonitor)
+                } label: {
+                    StressHomeIndicator(
+                        monitor: stressMonitor,
+                        primaryText: theme.primaryText,
+                        secondaryText: theme.secondaryText,
+                        trackColor: theme.progressTrack
+                    )
+                }
+                .buttonStyle(HomeAlternativoPressedButtonStyle())
             }
         }
     }
 
     private func reloadPresenceProgress() {
         todayPresentCount = presenceRepository.todayPresentCount()
-    }
-
-    private func reloadDiaryProgress() {
-        let calendar = Calendar.current
-        let startOfDay = calendar.startOfDay(for: Date())
-        guard let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) else {
-            todayDiaryEntriesCount = 0
-            return
-        }
-
-        let request: NSFetchRequest<Diario> = Diario.fetchRequest()
-        request.includesPendingChanges = true
-        request.predicate = NSPredicate(
-            format: "fecha >= %@ AND fecha < %@",
-            startOfDay as NSDate,
-            endOfDay as NSDate
-        )
-
-        do {
-            todayDiaryEntriesCount = try context.fetch(request).count
-        } catch {
-            todayDiaryEntriesCount = 0
-        }
     }
 }
 
@@ -1214,11 +1200,6 @@ private enum HomeAlternativoProgressPalette {
         Color(red: 0.76, green: 1.00, blue: 0.78),
         Color(red: 0.38, green: 0.84, blue: 0.48),
         Color(red: 0.10, green: 0.58, blue: 0.26)
-    ]
-    static let diary = [
-        Color(red: 0.74, green: 1.00, blue: 0.96),
-        Color(red: 0.30, green: 0.82, blue: 0.78),
-        Color(red: 0.00, green: 0.50, blue: 0.58)
     ]
 }
 

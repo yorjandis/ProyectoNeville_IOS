@@ -39,6 +39,8 @@
 	<true/>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>Neville necesita acceso a tu biblioteca musical para que puedas seleccionar música personalizada en Espacio Calma.</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>La Ley usa tus datos de pulso, variabilidad cardiaca, respiración, pasos y entrenamientos para estimar tu activación fisiológica y mostrarte patrones de estrés.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Neville usa tu ubicación para capturar una dirección actual y guardarla en actividades de Agenda o en Notas cuando lo solicites.</string>
 	<key>UIBackgroundModes</key>
