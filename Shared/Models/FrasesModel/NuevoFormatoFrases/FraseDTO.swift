@@ -16,6 +16,7 @@ struct FraseDTO {
     let nota:       String      //La nota asociada a la frase
     let fuente:     String      //La fuente de donde es tomada la frase (conferencia, libro, etc)
     let contexto:   [String]    //los temas generales sobre los que se enmarca la frase (es para agrupar varias frases sobre una idea o tema general)
+    let contextoIDs: [String]   //IDs estables; obligatorios en paquetes traducidos y derivados del español en el legado
     let texto:      String      //El texto de la Frase
     let relacionadas: [String]  //conjunto de ids de frases que se relacionan semánticamente con esta frase (por lo general, las frases que tienen el mismo contexto se relacionan entre sí )
 }

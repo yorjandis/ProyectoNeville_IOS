@@ -48,7 +48,7 @@ struct ArchivedGoalDetailView: View {
             if let showUnit = self.selectedUnit {
                 VStack(alignment: .leading){
                     HStack{
-                        Text("Unidad \(showUnit.name  ?? "") \(showUnit.status == "lost" ? "🟠" : "🟢" )").bold()
+                        Text("\(GoalsL10n.unitDisplayName(showUnit.name, index: Int(showUnit.index))) \(showUnit.status == "lost" ? "🟠" : "🟢" )").bold()
                         Spacer()
                         Text("Fichado:").bold()
                         Text("\(self.getDateFormated(date: showUnit.completedDate))")

@@ -25,7 +25,7 @@ struct FraseActualCargadaView: View {
             ScrollView{
                 VStack{
                     VStack(alignment: .leading,spacing: 8){
-                        Text(self.frase?.frase ?? "").font(.title3).bold().fontDesign(.serif)
+                        Text(self.frase?.localizedText ?? "").font(.title3).bold().fontDesign(.serif)
                         Text( "\(self.frase?.autor ?? "")") //Muestra el Autor de la Frase
                         
                         if showNota {

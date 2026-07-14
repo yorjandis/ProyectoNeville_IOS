@@ -146,7 +146,10 @@ struct ProgramasListView: View {
                         Button{
                             showWindow(for: ProgramaDetailView(programa: programa),
                             environmentObjects: [],
-                                       title: "Información del Programa",
+                                       title: GoalsL10n.text(
+                                           "goals.ui.program_information",
+                                           fallback: "Información del Programa"
+                                       ),
                                        size: .percentage(width: 0.4, height: 0.7),
                                        isModal: true
                             )

@@ -47,7 +47,7 @@ struct GoalDetailView: View {
                 //Muestra información de la unidad:
                 VStack(alignment: .leading){
                     HStack{
-                        Text("\(showUnit.name ?? "") \(showUnit.unitStatus == .lost ? "🟠" : "🟢" )").bold()
+                        Text("\(GoalsL10n.unitDisplayName(showUnit.name, index: Int(showUnit.index))) \(showUnit.unitStatus == .lost ? "🟠" : "🟢" )").bold()
                         Spacer()
                         if showUnit.unitStatus != .pending {
                             Text("Fichado:").bold()

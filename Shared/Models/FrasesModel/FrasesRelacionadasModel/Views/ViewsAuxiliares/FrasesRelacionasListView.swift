@@ -41,7 +41,7 @@ struct FrasesRelacionasListView: View {
                                 ForEach(fraseMain.relacionadasArray) { relacionada in
                                     
                                     VStack(alignment: .leading, spacing: 6) {
-                                        Text(relacionada.frase ?? "")
+                                        Text(relacionada.localizedText)
                                             .font(.title3)
                                             .bold()
                                             .foregroundStyle(.black)

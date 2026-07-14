@@ -68,7 +68,7 @@ struct HealingEmergencyResourcesView: View {
             }
         }
         .navigationTitle("Ayuda urgente")
-        .navigationBarTitleDisplayMode(.inline)
+        .healingInlineNavigationTitle()
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button("Cerrar") { dismiss() }
@@ -124,4 +124,3 @@ struct HealingEmergencyResourcesView: View {
         .padding(.vertical, 5)
     }
 }
-

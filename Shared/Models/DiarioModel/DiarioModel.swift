@@ -53,6 +53,29 @@ enum Emociones : String, CaseIterable{
         }
     }
 
+    /// Nombre visible de la emoción. El `rawValue` sigue siendo el valor
+    /// canónico guardado en Core Data y usado por los filtros.
+    var localizedTitle: String {
+        switch self {
+        case .feliz: L10n.exact("Feliz")
+        case .triste: L10n.exact("Triste")
+        case .enfado: L10n.exact("Enfadado")
+        case .desanimado: L10n.exact("Desanimado")
+        case .sorpresa: L10n.exact("Sorprendido")
+        case .distraido: L10n.exact("Distraído")
+        case .neutral: L10n.exact("Neutral")
+        case .enamorado: L10n.exact("Enamorado")
+        case .enfermo: L10n.exact("Enfermo")
+        case .pensativo: L10n.exact("Pensativo")
+        case .festivo: L10n.exact("Festivo")
+        }
+    }
+
+    static func localizedTitle(from rawValue: String?) -> String {
+        Emociones(rawValue: rawValue ?? "")?.localizedTitle
+            ?? (rawValue?.capitalized ?? L10n.exact("Neutral"))
+    }
+
     static func emoji(from rawValue: String?) -> String {
         Emociones(rawValue: rawValue ?? "")?.emoji ?? Emociones.neutral.emoji
     }

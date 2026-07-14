@@ -52,7 +52,13 @@ struct ArchivedGoalCardView: View {
                 HStack(spacing: 10) {
                     Spacer()
                     
-                    Text("Cumplimiento: \(String(format: "%.2f", goal.completionRate)) %")
+                    Text(GoalsL10n.format(
+                        "goals.ui.compliance_percent",
+                        fallback: "Cumplimiento: {0}%",
+                        goal.completionRate.formatted(
+                            .number.precision(.fractionLength(2)).locale(AppLanguage.current.locale)
+                        )
+                    ))
                         .font(.footnote)
                         .bold()
                     
@@ -69,7 +75,11 @@ struct ArchivedGoalCardView: View {
             // Barra acciones
             HStack {
 
-                Text("Completado: \(goal.completedUnitsText)")
+                Text(GoalsL10n.format(
+                    "goals.ui.completed_value",
+                    fallback: "Completado: {0}",
+                    goal.completedUnitsText
+                ))
                     .font(.footnote)
                     .bold()
 

@@ -178,7 +178,7 @@ struct RowFraseMenu: View {
              Button {
                  
                   showWindow(
-                      for: GenerateQRView(footer: frase.frase ?? ""),
+                      for: GenerateQRView(footer: frase.localizedText),
                       environmentObjects: [frasesModel],
                       title: "Frases",
                       size: AppCons.windows_size_content,
@@ -197,8 +197,8 @@ struct RowFraseMenu: View {
                  
                   //Guarda la nota poniendo como titulo una parte de la cadena
                  if NotasModel().addNote(
-                     nota: frase.frase ?? "",
-                     title: "\(String((frase.frase ?? "").prefix((frase.frase ?? "").count / 3)))..."
+                     nota: frase.localizedText,
+                     title: "\(String(frase.localizedText.prefix(frase.localizedText.count / 3)))..."
                  ) {
                      // acción si addNote devuelve true
                      self.alertMessage = "Frase almacenada en Notas"
@@ -214,13 +214,13 @@ struct RowFraseMenu: View {
              
              //Compartir la frase
              
-             ShareLink(item: frase.frase ?? "") {
+             ShareLink(item: frase.localizedText) {
                              Label("Compartir frase", systemImage: "square.and.arrow.up")
                          }
              
              Button{
                  
-                 showWindow(for: LienzoMain(texto: frase.frase ?? "", imagenPrimariaACargar: LienzoModel.getImagenAutor(autor: frase.autor ?? "nev")),
+                 showWindow(for: LienzoMain(texto: frase.localizedText, imagenPrimariaACargar: LienzoModel.getImagenAutor(autor: frase.autor ?? "nev")),
                              environmentObjects: [],
                              title: "Lienzo",
                              size: .absolute(CGSize(width: 650, height: 750)),
@@ -244,7 +244,7 @@ struct RowFraseMenu: View {
                           showWindow(
                               for: RespondView(
                                   nameConference: "",
-                                  texto: frase.frase ?? "",
+                                  texto: frase.localizedText,
                                   tipoSalida: .interpretar,
                                   autorRespuesta: frase.autor ?? "nev"
                               ),
@@ -267,7 +267,7 @@ struct RowFraseMenu: View {
                           showWindow(
                               for: RespondView(
                                   nameConference: "",
-                                  texto: frase.frase ?? "",
+                                  texto: frase.localizedText,
                                   tipoSalida: .practicaConcreta,
                                   autorRespuesta: frase.autor ?? "nev"
                               ),
@@ -288,7 +288,7 @@ struct RowFraseMenu: View {
                      Button {
                          
                           showWindow(
-                              for: ChatView(textoACargar: frase.frase ?? ""),
+                              for: ChatView(textoACargar: frase.localizedText),
                               environmentObjects: [frasesModel, settingModel],
                               title: "Charlar con la IA",
                               size: AppCons.windows_size_content,

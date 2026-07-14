@@ -95,7 +95,7 @@ struct CalmPhraseManagerView: View {
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Menu {
-                    Button(isMultiSelectionMode ? "Desactivar selección múltiple" : "Activar selección múltiple") {
+                    Button(L10n.exact(isMultiSelectionMode ? "Desactivar selección múltiple" : "Activar selección múltiple")) {
                         withAnimation(.easeInOut(duration: 0.2)) {
                             isMultiSelectionMode.toggle()
                             if !isMultiSelectionMode {

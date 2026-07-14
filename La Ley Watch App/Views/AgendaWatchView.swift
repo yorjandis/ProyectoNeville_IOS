@@ -111,9 +111,9 @@ struct AgendaWatchView: View {
             Button("Borrar", role: .destructive) {
                 guard let item = itemPendingDelete else { return }
                 if modelWatch.deleteAgendaEntry(id: item.id) {
-                    alertMessage = "Entrada eliminada"
+                    alertMessage = WatchL10n.exact("Entrada eliminada")
                 } else {
-                    alertMessage = "Error al eliminar entrada"
+                    alertMessage = WatchL10n.exact("Error al eliminar entrada")
                 }
                 itemPendingDelete = nil
                 showAlert = true
@@ -258,7 +258,7 @@ private struct AddAgendaEntryWatchView: View {
                         .foregroundStyle(.black)
                 }
 
-                Text(lugar.isEmpty ? "Lugar" : "Actualizar lugar")
+                Text(WatchL10n.exact(lugar.isEmpty ? "Lugar" : "Actualizar lugar"))
                     .foregroundStyle(.black)
 
                 if !lugar.isEmpty {

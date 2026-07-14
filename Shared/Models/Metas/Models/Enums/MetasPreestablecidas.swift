@@ -22,18 +22,23 @@ struct MetaPreestablecida{
 
     var scheduleSummary: String {
         let label = customUnitLabel.trimmingCharacters(in: .whitespacesAndNewlines)
-        let quantity = label.isEmpty ? "\(noUnidades) unidades" : "\(noUnidades) \(label)"
+        let quantityLabel = label.isEmpty ? GoalsL10n.unitNoun(count: noUnidades) : label
         let cadence: String
         switch scheduleType {
         case .interval:
-            cadence = "cada \(noFrecuencias) \(tipoUnidad.description(for: noFrecuencias))"
+            cadence = GoalsL10n.intervalCadence(frequency: noFrecuencias, unit: tipoUnidad)
         case .weekly:
-            cadence = "\(weeklyDaysPerWeek) \(weeklyDaysPerWeek == 1 ? "día" : "días") por semana"
+            cadence = GoalsL10n.weeklyCadence(days: weeklyDaysPerWeek)
         case .specificDates:
-            cadence = "en fechas específicas"
+            cadence = GoalsL10n.specificDatesCadence()
         }
-        let period = dayPeriod == .anytime ? "" : " · \(dayPeriod.label.lowercased())"
-        return "\(quantity) · \(cadence)\(period)"
+        return GoalsL10n.format(
+            "goals.dynamic.preset_schedule_summary",
+            fallback: "{0} {1} · {2}",
+            String(noUnidades),
+            quantityLabel,
+            GoalsL10n.addingPeriod(cadence, period: dayPeriod)
+        )
     }
 }
 

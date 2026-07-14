@@ -24,10 +24,10 @@ struct CreateGoalView: View {
     
     var getTitulo : String {
         switch selectedTab{
-        case 0: return "Meta Personalizada"
-        case 1: return "Hábitos Saludables"
-        case 2: return "Programas"
-        default: return "Meta Personalizada"
+        case 0: return GoalsL10n.text("goals.ui.custom_goal", fallback: "Meta Personalizada")
+        case 1: return GoalsL10n.text("goals.ui.healthy_habits", fallback: "Hábitos Saludables")
+        case 2: return GoalsL10n.text("goals.ui.programs", fallback: "Programas")
+        default: return GoalsL10n.text("goals.ui.custom_goal", fallback: "Meta Personalizada")
         }
     }
     
@@ -44,21 +44,36 @@ struct CreateGoalView: View {
         let schedule: String
         switch vm.scheduleType {
         case .interval:
-            schedule = "cada \(vm.frequency) \(vm.unit.description(for: vm.frequency))"
+            schedule = GoalsL10n.intervalCadence(frequency: vm.frequency, unit: vm.unit)
         case .weekly:
-            schedule = "\(vm.weeklyDaysPerWeek) \(vm.weeklyDaysPerWeek == 1 ? "día" : "días") por semana"
+            schedule = GoalsL10n.weeklyCadence(days: vm.weeklyDaysPerWeek)
         case .specificDates:
-            schedule = "en \(vm.amount) fechas específicas"
+            schedule = GoalsL10n.specificDatesCadence(count: vm.amount)
         }
-        let period = vm.dayPeriod == .anytime ? "" : ", \(vm.dayPeriod.label.lowercased())"
+        let period = vm.dayPeriod == .anytime
+            ? ""
+            : GoalsL10n.format("goals.dynamic.period_suffix", fallback: ", {0}", vm.dayPeriod.label)
         let ending: String
         switch vm.completionBasis {
         case .executions:
-            ending = "\(vm.amount) \(vm.amount == 1 ? "ejecución" : "ejecuciones")"
+            ending = GoalsL10n.executionCount(vm.amount)
         case .duration:
-            ending = "durante \(vm.durationValue) \(vm.durationUnit.description(for: vm.durationValue)) (\(vm.estimatedUnitCount()) ejecuciones previstas)"
+            let duration = GoalsL10n.duration(value: vm.durationValue, unit: vm.durationUnit)
+            let estimate = GoalsL10n.format(
+                "goals.dynamic.planned_execution_count",
+                fallback: "({0} ejecuciones previstas)",
+                String(vm.estimatedUnitCount())
+            )
+            ending = "\(duration) \(estimate)"
         }
-        return "\(vm.executionTargetText), \(schedule)\(period), \(ending)."
+        return GoalsL10n.format(
+            "goals.dynamic.creation_summary",
+            fallback: "{0}, {1}{2}, {3}.",
+            vm.executionTargetText,
+            schedule,
+            period,
+            ending
+        )
     }
     
     var body: some View {
@@ -101,7 +116,7 @@ struct CreateGoalView: View {
                 #else
                 .tabViewStyle(.automatic)
                 #endif
-                .navigationTitle("\(self.getTitulo)")
+                .navigationTitle(self.getTitulo)
                 .toolbar {
                     if selectedTab == 0 {
                         ToolbarItem(placement: .confirmationAction) {
@@ -222,7 +237,7 @@ struct CreateGoalView: View {
                                     .pickerStyle(.menu)
                                     .tint(.black)
                                     .labelsHidden()
-                                    Text(vm.amount == 1 ? "ejecución" : "ejecuciones")
+                                    Text(GoalsL10n.executionCount(vm.amount))
                                         .foregroundStyle(.black)
                                 }
                             } else {
@@ -301,7 +316,7 @@ struct CreateGoalView: View {
                                         .foregroundStyle(.black)
                                     Picker("", selection: $vm.weeklyDaysPerWeek) {
                                         ForEach(1...7, id: \.self) { value in
-                                            Text("\(value) \(value == 1 ? "día" : "días")").tag(value)
+                                            Text(GoalsL10n.dayCount(value)).tag(value)
                                         }
                                     }
                                     .pickerStyle(.menu)
@@ -319,7 +334,12 @@ struct CreateGoalView: View {
 
                                     ForEach(Array(vm.specificDates.indices), id: \.self) { index in
                                         DatePicker(
-                                            "\(vm.getTextoForUNidades(number: 1).capitalized) \(index + 1)",
+                                            GoalsL10n.format(
+                                                "goals.dynamic.indexed_unit_label",
+                                                fallback: "{0} {1}",
+                                                vm.getTextoForUNidades(number: 1).localizedCapitalized,
+                                                String(index + 1)
+                                            ),
                                             selection: $vm.specificDates[index],
                                             displayedComponents: .date
                                         )
@@ -347,7 +367,11 @@ struct CreateGoalView: View {
                         
                         //Resumen:
                         VStack{
-                            Text("Resumen: \(summaryText)")
+                            Text(GoalsL10n.format(
+                                "goals.ui.summary_value",
+                                fallback: "Resumen: {0}",
+                                summaryText
+                            ))
                                 .foregroundStyle(.black).bold()
                         }
 

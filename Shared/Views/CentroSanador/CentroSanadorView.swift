@@ -95,7 +95,7 @@ struct CentroSanadorView: View {
             }
         }
         .navigationTitle("Centro Sanador")
-        .navigationBarTitleDisplayMode(.inline)
+        .healingInlineNavigationTitle()
         .searchable(text: $searchText, prompt: "¿Qué sientes ahora?")
         .sheet(isPresented: $showEmergencyResources) {
             NavigationStack {

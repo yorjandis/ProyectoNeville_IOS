@@ -149,7 +149,7 @@ struct AddNotasView: View {
                             }
                             
                         }else{
-                            self.alertMessage = "No se pudo guardar la nota"
+                            self.alertMessage = L10n.exact("No se pudo guardar la nota")
                             self.showAlert = true
                         }
                         
@@ -188,7 +188,7 @@ struct AddNotasView: View {
                             }
                             
                         }else{
-                            self.alertMessage = "No se pudo guardar la nota"
+                            self.alertMessage = L10n.exact("No se pudo guardar la nota")
                             self.showAlert = true
                         }
                         

@@ -1,5 +1,16 @@
 import SwiftUI
 
+extension View {
+    @ViewBuilder
+    func healingInlineNavigationTitle() -> some View {
+        #if os(macOS)
+        self
+        #else
+        navigationBarTitleDisplayMode(.inline)
+        #endif
+    }
+}
+
 enum HealingCenterVisualStyle {
     static let background = LinearGradient(
         colors: [
@@ -122,4 +133,3 @@ struct HealingEvidenceBadge: View {
             .background(HealingCenterVisualStyle.color(for: level).opacity(0.14), in: Capsule())
     }
 }
-

@@ -97,7 +97,11 @@ struct PresenciaView: View {
             Text("Vuelve al Presente")
                 .font(.largeTitle.bold())
                 .foregroundStyle(.white)
-            Text("Hoy has vuelto al presente \(todayPresentCount) \(todayPresentCount == 1 ? "vez" : "veces")")
+            Text(L10n.format(
+                todayPresentCount == 1 ? "presence.today_return.singular" : "presence.today_return.plural",
+                fallback: todayPresentCount == 1 ? "Hoy has vuelto al presente {0} vez" : "Hoy has vuelto al presente {0} veces",
+                "\(todayPresentCount)"
+            ))
                 .font(.headline)
                 .foregroundStyle(.white.opacity(0.82))
             if showMilestoneMessage {
@@ -147,7 +151,7 @@ struct PresenciaView: View {
         } label: {
             HStack(spacing: 10) {
                 Image(systemName: showMoodList ? "chevron.up.circle" : "face.smiling")
-                Text(showMoodList ? "Ocultar estado de ánimo" : "Añadir estado de ánimo")
+                Text(L10n.exact(showMoodList ? "Ocultar estado de ánimo" : "Añadir estado de ánimo"))
                 Spacer()
             }
             .font(.subheadline.weight(.semibold))
@@ -186,7 +190,7 @@ struct PresenciaView: View {
                         HStack(spacing: 12) {
                             Image(systemName: mood.symbolName)
                                 .frame(width: 24)
-                            Text(mood.title)
+                            Text(mood.localizedTitle)
                                 .font(.body.weight(.medium))
                             Spacer()
                             Image(systemName: "plus.circle.fill")
@@ -226,7 +230,8 @@ struct PresenciaView: View {
 
     private var celebrationPhrase: String {
         let trimmed = customCelebrationPhrase.trimmingCharacters(in: .whitespacesAndNewlines)
-        return trimmed.isEmpty ? PresenciaSettings.defaultCelebrationPhrase : trimmed
+        let phrase = trimmed.isEmpty ? PresenciaSettings.defaultCelebrationPhrase : trimmed
+        return phrase == PresenciaSettings.defaultCelebrationPhrase ? L10n.exact(phrase) : phrase
     }
 
     private func triggerMilestoneMessageIfNeeded() {

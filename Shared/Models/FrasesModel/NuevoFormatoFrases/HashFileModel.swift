@@ -60,6 +60,10 @@ struct HashFileModel {
         
         return sha256(hashes)
     }
+
+    private func hashGlobal(contents: [String]) -> String {
+        sha256(contents.map(sha256).joined(separator: "|"))
+    }
     
     
     //Verifica el hash Global y determina si ha cambiado, con respecto al almacenado en UserDefault.
@@ -90,6 +94,27 @@ struct HashFileModel {
                 return hashActual
             }
     }
+
+    @MainActor
+    func verificarHashLocalizado(
+        contents: [String],
+        language: AppLanguage,
+        forceImport: Bool = false
+    ) -> String? {
+        guard !contents.isEmpty else { return nil }
+        let key = "\(Self.UD_HashFrasesTXT).\(language.rawValue)"
+        let current = hashGlobal(contents: contents)
+        let defaults = UserDefaults(suiteName: "group.com.ypg.nev.group")
+        if !forceImport, defaults?.string(forKey: key) == current {
+            return nil
+        }
+        return current
+    }
+
+    func guardarHashLocalizado(_ hash: String, language: AppLanguage) {
+        let key = "\(Self.UD_HashFrasesTXT).\(language.rawValue)"
+        UserDefaults(suiteName: "group.com.ypg.nev.group")?.set(hash, forKey: key)
+    }
     
     
     //Para debug: Resetar el hashGlobal para forzar a que importador se ejecute
@@ -98,5 +123,4 @@ struct HashFileModel {
         userDefaultsGroup?.removeObject(forKey: HashFileModel.UD_HashFrasesTXT)
     }
 }
-
 

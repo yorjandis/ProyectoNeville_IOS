@@ -64,8 +64,8 @@
 		9CDA00013000000000000001 /* ConsciousDashboardWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CDA00023000000000000001 /* ConsciousDashboardWidget.swift */; };
 		9CDA01013000000000000001 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19E0BDEC2B0B412D00E149A5 /* WidgetKit.framework */; };
 		9CDA01023000000000000001 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19E0BDEE2B0B412D00E149A5 /* SwiftUI.framework */; };
-		9CDA01033000000000000001 /* ConsciousDashboardWidget.swift in Mac Widget Sources */ = {isa = PBXBuildFile; fileRef = 9CDA00023000000000000001 /* ConsciousDashboardWidget.swift */; };
-		9CDA01043000000000000001 /* ConsciousDashboardSnapshot.swift in Mac Widget Sources */ = {isa = PBXBuildFile; fileRef = 9CDA00063000000000000001 /* ConsciousDashboardSnapshot.swift */; };
+		9CDA01033000000000000001 /* ConsciousDashboardWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CDA00023000000000000001 /* ConsciousDashboardWidget.swift */; };
+		9CDA01043000000000000001 /* Shared/Models/WidgetDashboard/ConsciousDashboardSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CDA00063000000000000001 /* Shared/Models/WidgetDashboard/ConsciousDashboardSnapshot.swift */; };
 		9CDA01053000000000000001 /* ConsciousDashboardMacBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CDA01113000000000000001 /* ConsciousDashboardMacBundle.swift */; };
 		9CDA01063000000000000001 /* ConsciousDashboardMacWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 9CDA01103000000000000001 /* ConsciousDashboardMacWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		E95B93572AAFBB2600B5E2B5 /* Neville_iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95B93562AAFBB2600B5E2B5 /* Neville_iOSApp.swift */; };
@@ -257,8 +257,8 @@
 		91F0DD542D605B4B00307453 /* watchModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = watchModel.swift; sourceTree = "<group>"; };
 		9A10B0023000000000000001 /* Shared/Views/RevisionSemanal/WeeklyReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/Views/RevisionSemanal/WeeklyReviewView.swift; sourceTree = SOURCE_ROOT; };
 		9CDA00023000000000000001 /* ConsciousDashboardWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsciousDashboardWidget.swift; sourceTree = "<group>"; };
-		9CDA00063000000000000001 /* ConsciousDashboardSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/Models/WidgetDashboard/ConsciousDashboardSnapshot.swift; sourceTree = SOURCE_ROOT; };
-		9CDA00073000000000000001 /* ConsciousDashboardSnapshotPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/Models/WidgetDashboard/ConsciousDashboardSnapshotPublisher.swift; sourceTree = SOURCE_ROOT; };
+		9CDA00063000000000000001 /* Shared/Models/WidgetDashboard/ConsciousDashboardSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/Models/WidgetDashboard/ConsciousDashboardSnapshot.swift; sourceTree = SOURCE_ROOT; };
+		9CDA00073000000000000001 /* Shared/Models/WidgetDashboard/ConsciousDashboardSnapshotPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/Models/WidgetDashboard/ConsciousDashboardSnapshotPublisher.swift; sourceTree = SOURCE_ROOT; };
 		9CDA01103000000000000001 /* ConsciousDashboardMacWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ConsciousDashboardMacWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		9CDA01113000000000000001 /* ConsciousDashboardMacBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsciousDashboardMacBundle.swift; sourceTree = "<group>"; };
 		9CDA01123000000000000001 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -272,9 +272,12 @@
 		911FE4562ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Localization/ContentManifest.en.json,
+				Localization/ContentManifest.es.json,
+				"Localization/ContentManifest.zh-Hans.json",
+				Localization/InfoPlist.xcstrings,
+				Localization/Localizable.xcstrings,
 				ModelData.xcdatamodeld,
-				Models/WidgetDashboard/ConsciousDashboardSnapshot.swift,
-				Models/WidgetDashboard/ConsciousDashboardSnapshotPublisher.swift,
 				Models/Agenda/AgendaModels.swift,
 				Models/Agenda/AgendaRepository.swift,
 				Models/Agenda/AgendaViewModel.swift,
@@ -330,6 +333,8 @@
 				Models/LectorEtiquetas/OpenFoodFactsRiskEngine.swift,
 				Models/LectorEtiquetas/VisionEtiquetaTextRecognizer.swift,
 				Models/LienzoModel/LienzoModel.swift,
+				Models/Localization/AppLocalization.swift,
+				Models/Localization/ContentRepository.swift,
 				"Models/Metas/Models/CoreData/GoalEntity+Core.swift",
 				Models/Metas/Models/Enums/MetasPreestablecidas.swift,
 				Models/Metas/Models/Enums/TimeUnit.swift,
@@ -437,6 +442,8 @@
 				Models/UtilsForView/Fonts/HelperFont.swift,
 				Models/UtilsForView/UIView/HelperView.swift,
 				Models/UtilsForView/UtilsForViews.swift,
+				Models/WidgetDashboard/ConsciousDashboardSnapshot.swift,
+				Models/WidgetDashboard/ConsciousDashboardSnapshotPublisher.swift,
 				Staff/Autores/BruceLipton/ConferenciasYCharlas/SerieEvolucionInterior/bruce_evolucion_interior_1.txt,
 				Staff/Autores/BruceLipton/ConferenciasYCharlas/SerieEvolucionInterior/bruce_evolucion_interior_2.txt,
 				Staff/Autores/BruceLipton/ConferenciasYCharlas/SerieEvolucionInterior/bruce_evolucion_interior_3.txt,
@@ -1339,9 +1346,10 @@
 		911FE4572ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Models/WidgetDashboard/ConsciousDashboardSnapshot.swift,
+				Localization/Localizable.xcstrings,
 				Models/AppCons/AppCons.swift,
 				Models/Utils/Utils.swift,
+				Models/WidgetDashboard/ConsciousDashboardSnapshot.swift,
 				Staff/Frases/listfrases_bruce.txt,
 				Staff/Frases/listfrases_de_gregg.txt,
 				Staff/Frases/listfrases_jd.txt,
@@ -1354,6 +1362,7 @@
 		911FE4582ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Localization/Localizable.xcstrings,
 				ModelData.xcdatamodeld,
 				Models/AppCons/AppCons.swift,
 				Models/CoreData/CoreDataController.swift,
@@ -1420,6 +1429,7 @@
 				Models/LectorEtiquetas/ManagedAssets/AssetPackRelease,
 				Staff/Enciclopedia/PensamientosYSentimientos/enc_sentimiento_como_fuerzacreativa.txt,
 				Views/HomeAlternativo/HomeAlternativoView.swift,
+				Views/HomeAlternativo/HomeContextualRecommendationCard.swift,
 				Views/LectorEtiquetas/LectorEtiquetasView.swift,
 				Views/LectorEtiquetas/LectorEtiquetasViewHelper.swift,
 			);
@@ -1496,15 +1506,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		9CDA01313000000000000001 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				9CDA01023000000000000001 /* SwiftUI.framework in Frameworks */,
-				9CDA01013000000000000001 /* WidgetKit.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		19EDBBC02B7DD66000432CDE /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -1548,6 +1549,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9CDA01313000000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9CDA01023000000000000001 /* SwiftUI.framework in Frameworks */,
+				9CDA01013000000000000001 /* WidgetKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1617,16 +1627,6 @@
 			path = FrasesWigget;
 			sourceTree = "<group>";
 		};
-		9CDA01603000000000000001 /* ConsciousDashboardMacWidget */ = {
-			isa = PBXGroup;
-			children = (
-				9CDA01113000000000000001 /* ConsciousDashboardMacBundle.swift */,
-				9CDA01123000000000000001 /* Info.plist */,
-				9CDA01133000000000000001 /* ConsciousDashboardMacWidget.entitlements */,
-			);
-			path = ConsciousDashboardMacWidget;
-			sourceTree = "<group>";
-		};
 		19EDBBC62B7DD66000432CDE /* WatchComplicationLaLey */ = {
 			isa = PBXGroup;
 			children = (
@@ -1686,8 +1686,8 @@
 				914D888F2FC6000000CDDB93 /* Shared/Views/Migration/MigrationDataDocument.swift */,
 				914D88952FC6000000CDDB93 /* Shared/Views/Migration/MigrationIOSAndroidView.swift */,
 				9A10B0023000000000000001 /* Shared/Views/RevisionSemanal/WeeklyReviewView.swift */,
-				9CDA00063000000000000001 /* ConsciousDashboardSnapshot.swift */,
-				9CDA00073000000000000001 /* ConsciousDashboardSnapshotPublisher.swift */,
+				9CDA00063000000000000001 /* Shared/Models/WidgetDashboard/ConsciousDashboardSnapshot.swift */,
+				9CDA00073000000000000001 /* Shared/Models/WidgetDashboard/ConsciousDashboardSnapshotPublisher.swift */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -1701,6 +1701,16 @@
 				919F34DA2F66BCF1009FF35B /* README.md */,
 			);
 			path = BackgroundDownloadExtension;
+			sourceTree = "<group>";
+		};
+		9CDA01603000000000000001 /* ConsciousDashboardMacWidget */ = {
+			isa = PBXGroup;
+			children = (
+				9CDA01113000000000000001 /* ConsciousDashboardMacBundle.swift */,
+				9CDA01123000000000000001 /* Info.plist */,
+				9CDA01133000000000000001 /* ConsciousDashboardMacWidget.entitlements */,
+			);
+			path = ConsciousDashboardMacWidget;
 			sourceTree = "<group>";
 		};
 		E92F644E2AB6EF5A007BB4BA /* Views */ = {
@@ -1856,23 +1866,6 @@
 			productReference = 917C301F2EBCD1E5006BB36E /* La Ley.app */;
 			productType = "com.apple.product-type.application";
 		};
-		9CDA01403000000000000001 /* ConsciousDashboardMacWidgetExtension */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 9CDA01523000000000000001 /* Build configuration list for PBXNativeTarget "ConsciousDashboardMacWidgetExtension" */;
-			buildPhases = (
-				9CDA01303000000000000001 /* Sources */,
-				9CDA01313000000000000001 /* Frameworks */,
-				9CDA01323000000000000001 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = ConsciousDashboardMacWidgetExtension;
-			productName = ConsciousDashboardMacWidgetExtension;
-			productReference = 9CDA01103000000000000001 /* ConsciousDashboardMacWidgetExtension.appex */;
-			productType = "com.apple.product-type.app-extension";
-		};
 		918C4AFE2EF4094D00974B54 /* sharedmac */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 918C4B0C2EF4094D00974B54 /* Build configuration list for PBXNativeTarget "sharedmac" */;
@@ -1939,6 +1932,23 @@
 			productReference = 91E107672EEA01AD00F4DB1D /* sharedios.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		9CDA01403000000000000001 /* ConsciousDashboardMacWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9CDA01523000000000000001 /* Build configuration list for PBXNativeTarget "ConsciousDashboardMacWidgetExtension" */;
+			buildPhases = (
+				9CDA01303000000000000001 /* Sources */,
+				9CDA01313000000000000001 /* Frameworks */,
+				9CDA01323000000000000001 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ConsciousDashboardMacWidgetExtension;
+			productName = ConsciousDashboardMacWidgetExtension;
+			productReference = 9CDA01103000000000000001 /* ConsciousDashboardMacWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		E95B93522AAFBB2600B5E2B5 /* Neville_iOS */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = E95B93612AAFBB2900B5E2B5 /* Build configuration list for PBXNativeTarget "Neville_iOS" */;
@@ -1980,9 +1990,6 @@
 				LastSwiftUpdateCheck = 2630;
 				LastUpgradeCheck = 2660;
 				TargetAttributes = {
-					9CDA01403000000000000001 = {
-						CreatedOnToolsVersion = 26.5;
-					};
 					19E0BE132B0C661A00E149A5 = {
 						CreatedOnToolsVersion = 15.0.1;
 					};
@@ -2004,6 +2011,9 @@
 					91E107662EEA01AD00F4DB1D = {
 						CreatedOnToolsVersion = 26.1.1;
 					};
+					9CDA01403000000000000001 = {
+						CreatedOnToolsVersion = 26.5;
+					};
 					E95B93522AAFBB2600B5E2B5 = {
 						CreatedOnToolsVersion = 15.0;
 					};
@@ -2014,7 +2024,9 @@
 			developmentRegion = es;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				en,
 				es,
+				"zh-Hans",
 				Base,
 			);
 			mainGroup = E95B934A2AAFBB2600B5E2B5;
@@ -2044,13 +2056,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				19E0BE1D2B0C661B00E149A5 /* Assets.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		9CDA01323000000000000001 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2099,6 +2104,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		9CDA01323000000000000001 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E95B93512AAFBB2600B5E2B5 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2118,16 +2130,6 @@
 				19E0BE1B2B0C661A00E149A5 /* FrasesWigget.swift in Sources */,
 				19E0BE192B0C661A00E149A5 /* FrasesWiggetBundle.swift in Sources */,
 				199DA0692B102AA600DEED62 /* AppIntentWidget.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		9CDA01303000000000000001 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				9CDA01033000000000000001 /* ConsciousDashboardWidget.swift in Mac Widget Sources */,
-				9CDA01043000000000000001 /* ConsciousDashboardSnapshot.swift in Mac Widget Sources */,
-				9CDA01053000000000000001 /* ConsciousDashboardMacBundle.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2195,6 +2197,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		9CDA01303000000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9CDA01033000000000000001 /* ConsciousDashboardWidget.swift in Sources */,
+				9CDA01043000000000000001 /* Shared/Models/WidgetDashboard/ConsciousDashboardSnapshot.swift in Sources */,
+				9CDA01053000000000000001 /* ConsciousDashboardMacBundle.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E95B934F2AAFBB2600B5E2B5 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2255,66 +2267,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		9CDA01503000000000000001 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9173AB7D2F72097F0015A9FD /* Version.xcconfig */;
-			buildSettings = {
-				APPLICATION_EXTENSION_API_ONLY = YES;
-				CODE_SIGN_ENTITLEMENTS = ConsciousDashboardMacWidget/ConsciousDashboardMacWidget.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = "$(inherited)";
-				DEVELOPMENT_TEAM = NDP3AP6896;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = ConsciousDashboardMacWidget/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Panel consciente";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 15.6;
-				MARKETING_VERSION = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.ConsciousDashboardMacWidget;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = macosx;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 6.0;
-			};
-			name = Debug;
-		};
-		9CDA01513000000000000001 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9173AB7D2F72097F0015A9FD /* Version.xcconfig */;
-			buildSettings = {
-				APPLICATION_EXTENSION_API_ONLY = YES;
-				CODE_SIGN_ENTITLEMENTS = ConsciousDashboardMacWidget/ConsciousDashboardMacWidget.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = "$(inherited)";
-				DEVELOPMENT_TEAM = NDP3AP6896;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = ConsciousDashboardMacWidget/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Panel consciente";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 15.6;
-				MARKETING_VERSION = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.ConsciousDashboardMacWidget;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = macosx;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 6.0;
-			};
-			name = Release;
-		};
 		19E0BE232B0C661B00E149A5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9173AB7D2F72097F0015A9FD /* Version.xcconfig */;
@@ -2825,6 +2777,66 @@
 			};
 			name = Release;
 		};
+		9CDA01503000000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9173AB7D2F72097F0015A9FD /* Version.xcconfig */;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = ConsciousDashboardMacWidget/ConsciousDashboardMacWidget.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = "$(inherited)";
+				DEVELOPMENT_TEAM = NDP3AP6896;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ConsciousDashboardMacWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Panel consciente";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.6;
+				MARKETING_VERSION = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.ConsciousDashboardMacWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		9CDA01513000000000000001 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9173AB7D2F72097F0015A9FD /* Version.xcconfig */;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = ConsciousDashboardMacWidget/ConsciousDashboardMacWidget.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = "$(inherited)";
+				DEVELOPMENT_TEAM = NDP3AP6896;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ConsciousDashboardMacWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Panel consciente";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.6;
+				MARKETING_VERSION = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.ConsciousDashboardMacWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
 		E95B935F2AAFBB2900B5E2B5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9173AB7D2F72097F0015A9FD /* Version.xcconfig */;
@@ -3041,15 +3053,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		9CDA01523000000000000001 /* Build configuration list for PBXNativeTarget "ConsciousDashboardMacWidgetExtension" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				9CDA01503000000000000001 /* Debug */,
-				9CDA01513000000000000001 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		19E0BE222B0C661B00E149A5 /* Build configuration list for PBXNativeTarget "FrasesWiggetExtension" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -3109,6 +3112,15 @@
 			buildConfigurations = (
 				91E107732EEA01AD00F4DB1D /* Debug */,
 				91E107742EEA01AD00F4DB1D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9CDA01523000000000000001 /* Build configuration list for PBXNativeTarget "ConsciousDashboardMacWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9CDA01503000000000000001 /* Debug */,
+				9CDA01513000000000000001 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

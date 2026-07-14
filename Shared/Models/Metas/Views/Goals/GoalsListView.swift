@@ -78,7 +78,7 @@ struct GoalsListView: View {
                             showWindow(
                                 for: GoalStatsView().environment(\.managedObjectContext, context),
                                 environmentObjects: [],
-                                title: "Estadísticas de Metas",
+                                title: GoalsL10n.text("goals.ui.statistics_title", fallback: "Estadísticas de Metas"),
                                 size: AppCons.windows_size_content,
                                 isModal: true
                             )
@@ -100,7 +100,7 @@ struct GoalsListView: View {
                             showWindow(
                                 for: ArchivedGoalsListView(context: context),
                                 environmentObjects: [],
-                                title: "Historial de Metas",
+                                title: GoalsL10n.text("goals.ui.history_title", fallback: "Historial de Metas"),
                                 size: AppCons.windows_size_content,
                                 isModal: true
                             )

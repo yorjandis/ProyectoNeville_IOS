@@ -397,9 +397,9 @@ struct ContentView: View {
                 Button("Borrar", role: .destructive) {
                     guard let diario = diarioPendingDelete else { return }
                     if modelWatch.deleteDiarioEntry(diario) {
-                        alertMessage = "Entrada eliminada"
+                        alertMessage = WatchL10n.exact("Entrada eliminada")
                     } else {
-                        alertMessage = "Error al eliminar entrada"
+                        alertMessage = WatchL10n.exact("Error al eliminar la entrada")
                     }
                     diarioPendingDelete = nil
                     showAlert = true
@@ -622,10 +622,10 @@ struct ContentView: View {
                 Button("Borrar", role: .destructive) {
                     guard let nota = notePendingDelete else { return }
                     if modelWatch.deleteNota(nota: nota) {
-                        self.alertMessage = "Nota Eliminada"
+                        self.alertMessage = WatchL10n.exact("Nota eliminada")
                         modelWatch.getNotas()
                     } else {
-                        self.alertMessage = "Error al Eliminar Nota"
+                        self.alertMessage = WatchL10n.exact("Error al eliminar la nota")
                     }
                     notePendingDelete = nil
                     self.showAlert = true
@@ -650,10 +650,10 @@ struct ContentView: View {
                         )
 
                         if updated {
-                            alertMessage = "Nota actualizada"
+                            alertMessage = WatchL10n.exact("Nota actualizada")
                             showEditSheet = false
                         } else {
-                            alertMessage = "Error al actualizar nota"
+                            alertMessage = WatchL10n.exact("Error al actualizar la nota")
                         }
                         showAlert = true
                     }
@@ -673,7 +673,7 @@ struct ContentView: View {
                             categoria: editCategoria
                         )
 
-                        alertMessage = updated ? "Categoría actualizada" : "Error al actualizar categoría"
+                        alertMessage = WatchL10n.exact(updated ? "Categoría actualizada" : "Error al actualizar la categoría")
                         showCategorySheet = false
                         showAlert = true
                     }
@@ -815,7 +815,7 @@ struct ContentView: View {
             ZStack {
                 LinearGradient(colors: [.red, .orange], startPoint: .bottom, endPoint: .top)
                 VStack(spacing: 8) {
-                    Text(title)
+                    Text(WatchL10n.exact(title))
                         .fontDesign(.serif)
                         .foregroundStyle(.black)
                         .bold()
@@ -1117,22 +1117,22 @@ enum WatchScreen: String, CaseIterable, Identifiable {
 
     var displayName: String {
         switch self {
-        case .inicio: return "Inicio"
-        case .frases: return "Frases"
-        case .diario: return "Diario"
-        case .notas: return "Notas"
-        case .agenda: return "Agenda"
-        case .presencia: return "Presencia"
-        case .quickNote: return "Acceso rápido"
-        case .metas: return "Metas"
-        case .ajustes: return "Ajustes"
+        case .inicio: return WatchL10n.exact("Inicio")
+        case .frases: return WatchL10n.exact("Frases")
+        case .diario: return WatchL10n.exact("Diario")
+        case .notas: return WatchL10n.exact("Notas")
+        case .agenda: return WatchL10n.exact("Agenda")
+        case .presencia: return WatchL10n.exact("Presencia")
+        case .quickNote: return WatchL10n.exact("Acceso rápido")
+        case .metas: return WatchL10n.exact("Metas")
+        case .ajustes: return WatchL10n.exact("Ajustes")
         }
     }
 
     var shortName: String {
         switch self {
-        case .agenda: return "Agenda"
-        case .quickNote: return "Rápida"
+        case .agenda: return WatchL10n.exact("Agenda")
+        case .quickNote: return WatchL10n.exact("Rápida")
         default: return displayName
         }
     }

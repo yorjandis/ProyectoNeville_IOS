@@ -22,6 +22,10 @@ struct PresenciaMood: Identifiable, Hashable {
     let symbolName: String
     let countsAsInconsciente: Bool
 
+    var localizedTitle: String {
+        L10n.exact(title)
+    }
+
     static let common: [PresenciaMood] = [
         PresenciaMood(id: "sientoMiFuturoAhora", title: "Siento mi futuro ahora", symbolName: "sparkles", countsAsInconsciente: false),
         PresenciaMood(id: "pilotoAutomatico", title: "Piloto automático", symbolName: "moon.zzz.fill", countsAsInconsciente: true),
@@ -37,7 +41,7 @@ struct PresenciaMood: Identifiable, Hashable {
 
     static func title(for id: String?) -> String {
         guard let id else { return "" }
-        return common.first { $0.id == id }?.title ?? id
+        return common.first { $0.id == id }?.localizedTitle ?? id
     }
 }
 

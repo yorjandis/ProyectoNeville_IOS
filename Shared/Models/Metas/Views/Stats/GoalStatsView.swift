@@ -154,16 +154,33 @@ private struct GoalStatsSnapshot {
         currentStreak = Self.calculateCurrentStreak(from: daysWithCompletions, calendar: calendar)
         longestStreak = Self.calculateLongestStreak(from: daysWithCompletions, calendar: calendar)
 
-        let weekdaySymbols = ["D", "L", "M", "X", "J", "V", "S"]
+        let weekdayFormatter = DateFormatter()
+        weekdayFormatter.locale = AppLanguage.current.locale
+        let weekdaySymbols = weekdayFormatter.veryShortWeekdaySymbols ?? ["D", "L", "M", "X", "J", "V", "S"]
         let weekdayMap = Dictionary(grouping: normalizedDays, by: { calendar.component(.weekday, from: $0) }).mapValues(\.count)
         weekdayCounts = weekdaySymbols.enumerated().map { index, label in
             WeekdayCount(dayLabel: label, count: weekdayMap[index + 1] ?? 0)
         }
 
         statusShares = [
-            StatusShare(title: "Fichadas", value: completedUnits, color: .green, systemImage: "checkmark.circle.fill"),
-            StatusShare(title: "Pendientes", value: pendingUnits, color: .cyan, systemImage: "clock.fill"),
-            StatusShare(title: "Perdidas", value: lostUnits, color: .orange, systemImage: "exclamationmark.circle.fill")
+            StatusShare(
+                title: GoalsL10n.text("goals.stats.completed_units", fallback: "Fichadas"),
+                value: completedUnits,
+                color: .green,
+                systemImage: "checkmark.circle.fill"
+            ),
+            StatusShare(
+                title: GoalsL10n.text("goals.stats.pending_units", fallback: "Pendientes"),
+                value: pendingUnits,
+                color: .cyan,
+                systemImage: "clock.fill"
+            ),
+            StatusShare(
+                title: GoalsL10n.text("goals.stats.lost_units", fallback: "Perdidas"),
+                value: lostUnits,
+                color: .orange,
+                systemImage: "exclamationmark.circle.fill"
+            )
         ]
 
         let unitTypes = goals.compactMap(\.unitType) + archivedGoals.compactMap(\.unitType)
@@ -247,18 +264,42 @@ private struct GoalStatsHeadlineCards: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
 
             HStack(spacing: 12) {
-                GoalStatsMetricCard(title: "Activas", value: "\(stats.activeGoals)", subtitle: "en marcha")
-                GoalStatsMetricCard(title: "Completadas", value: "\(stats.completedGoals)", subtitle: "histórico")
+                GoalStatsMetricCard(
+                    title: GoalsL10n.text("goals.stats.active", fallback: "Activas"),
+                    value: "\(stats.activeGoals)",
+                    subtitle: GoalsL10n.text("goals.stats.in_progress", fallback: "en marcha")
+                )
+                GoalStatsMetricCard(
+                    title: GoalsL10n.text("goals.stats.completed", fallback: "Completadas"),
+                    value: "\(stats.completedGoals)",
+                    subtitle: GoalsL10n.text("goals.stats.historical", fallback: "histórico")
+                )
             }
 
             HStack(spacing: 12) {
-                GoalStatsMetricCard(title: "Listas", value: "\(stats.actionReadyGoals)", subtitle: "para fichar")
-                GoalStatsMetricCard(title: "Acierto", value: "\(Int(stats.completionRate * 100))%", subtitle: "unidades")
+                GoalStatsMetricCard(
+                    title: GoalsL10n.text("goals.stats.ready", fallback: "Listas"),
+                    value: "\(stats.actionReadyGoals)",
+                    subtitle: GoalsL10n.text("goals.stats.ready_to_complete", fallback: "para fichar")
+                )
+                GoalStatsMetricCard(
+                    title: GoalsL10n.text("goals.stats.success_rate", fallback: "Acierto"),
+                    value: "\(Int(stats.completionRate * 100))%",
+                    subtitle: GoalsL10n.text("goals.stats.units", fallback: "unidades")
+                )
             }
 
             HStack(spacing: 12) {
-                GoalStatsMetricCard(title: "Racha actual", value: "\(stats.currentStreak)", subtitle: "días")
-                GoalStatsMetricCard(title: "Mejor racha", value: "\(stats.longestStreak)", subtitle: "días")
+                GoalStatsMetricCard(
+                    title: GoalsL10n.text("goals.stats.current_streak", fallback: "Racha actual"),
+                    value: "\(stats.currentStreak)",
+                    subtitle: GoalsL10n.text("goals.stats.days", fallback: "días")
+                )
+                GoalStatsMetricCard(
+                    title: GoalsL10n.text("goals.stats.best_streak", fallback: "Mejor racha"),
+                    value: "\(stats.longestStreak)",
+                    subtitle: GoalsL10n.text("goals.stats.days", fallback: "días")
+                )
             }
         }
     }
@@ -408,14 +449,14 @@ private struct GoalStatsFocusSection: View {
 
             HStack(spacing: 12) {
                 GoalStatsMetricCard(
-                    title: "Progreso medio",
+                    title: GoalsL10n.text("goals.stats.average_progress", fallback: "Progreso medio"),
                     value: "\(Int(stats.averageProgress * 100))%",
-                    subtitle: "metas creadas"
+                    subtitle: GoalsL10n.text("goals.stats.goals_created", fallback: "metas creadas")
                 )
                 GoalStatsMetricCard(
-                    title: "Unidades",
+                    title: GoalsL10n.text("goals.stats.units_title", fallback: "Unidades"),
                     value: "\(stats.completedUnits)/\(stats.totalUnits)",
-                    subtitle: "fichadas"
+                    subtitle: GoalsL10n.text("goals.stats.completed_units_lowercase", fallback: "fichadas")
                 )
             }
 
@@ -452,7 +493,11 @@ private struct GoalStatsDotTrendSection: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Actividad de los últimos \(selectedDays) días")
+            Text(GoalsL10n.format(
+                "goals.stats.activity_last_days",
+                fallback: "Actividad de los últimos {0} días",
+                String(selectedDays)
+            ))
                 .font(.headline)
                 .foregroundStyle(.white)
 
@@ -464,7 +509,11 @@ private struct GoalStatsDotTrendSection: View {
                                 selectedDays = days
                             }
                         } label: {
-                            Text("\(days)d")
+                            Text(GoalsL10n.format(
+                                "goals.stats.compact_days",
+                                fallback: "{0}d",
+                                String(days)
+                            ))
                                 .font(.caption.weight(.semibold))
                                 .foregroundStyle(selectedDays == days ? .black : .white)
                                 .padding(.vertical, 6)

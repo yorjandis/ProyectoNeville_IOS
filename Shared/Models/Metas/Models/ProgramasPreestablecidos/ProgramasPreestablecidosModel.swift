@@ -201,13 +201,18 @@ struct ProgramasPreestablecido: Codable, Identifiable {
         let cadence: String
         switch scheduleType {
         case .interval:
-            cadence = "cada \(frecuencia) \(tipoUnidad.description(for: frecuencia))"
+            cadence = GoalsL10n.intervalCadence(frequency: frecuencia, unit: tipoUnidad)
         case .weekly:
-            cadence = "\(weeklyDaysPerWeek) \(weeklyDaysPerWeek == 1 ? "día" : "días") por semana"
+            cadence = GoalsL10n.weeklyCadence(days: weeklyDaysPerWeek)
         case .specificDates:
-            cadence = "en fechas específicas"
+            cadence = GoalsL10n.specificDatesCadence()
         }
-        let period = dayPeriod == .anytime ? "" : " · \(dayPeriod.label.lowercased())"
-        return "\(noUnidades) \(quantityLabel), \(cadence)\(period)"
+        return GoalsL10n.format(
+            "goals.dynamic.quantity_schedule_summary",
+            fallback: "{0} {1}, {2}",
+            String(noUnidades),
+            quantityLabel,
+            GoalsL10n.addingPeriod(cadence, period: dayPeriod)
+        )
     }
 }

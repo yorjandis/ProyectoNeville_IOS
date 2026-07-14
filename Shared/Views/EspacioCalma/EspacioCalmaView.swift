@@ -101,9 +101,9 @@ private enum CalmParticleMode: String, CaseIterable {
 
     var label: String {
         switch self {
-        case .spheres: return "Esferas"
-        case .fireflies: return "Luciérnagas"
-        case .both: return "Ambas"
+        case .spheres: return L10n.exact("Esferas")
+        case .fireflies: return L10n.exact("Luciérnagas")
+        case .both: return L10n.exact("Ambas")
         }
     }
 
@@ -128,9 +128,9 @@ private enum CalmPhraseSource: String, CaseIterable {
 
     var label: String {
         switch self {
-        case .inbuilt: return "Inbuilt"
-        case .user: return "Usuario"
-        case .both: return "Ambas"
+        case .inbuilt: return L10n.exact("Incluidas")
+        case .user: return L10n.exact("Usuario")
+        case .both: return L10n.exact("Ambas")
         }
     }
 }
@@ -195,7 +195,7 @@ private final class CalmAudioController: NSObject, ObservableObject, AVAudioPlay
     private var backgroundPlayer: AVAudioPlayer?
     private var effectPlayers: [AVAudioPlayer] = []
     private var keepMusicWithScreenLocked: Bool = false
-    private var nowPlayingTitle: String = "Espacio Calma"
+    private var nowPlayingTitle: String = L10n.exact("Espacio Calma")
 
     override init() {
         super.init()
@@ -222,7 +222,7 @@ private final class CalmAudioController: NSObject, ObservableObject, AVAudioPlay
             player.prepareToPlay()
             player.play()
             backgroundPlayer = player
-            nowPlayingTitle = title.flatMap { $0.isEmpty ? nil : $0 } ?? "Espacio Calma"
+            nowPlayingTitle = title.flatMap { $0.isEmpty ? nil : $0 } ?? L10n.exact("Espacio Calma")
             updateNowPlayingInfoIfNeeded()
         } catch {
             msg("Error reproduciendo música de calma:", error)
@@ -324,7 +324,7 @@ private final class CalmAudioController: NSObject, ObservableObject, AVAudioPlay
     private func updateNowPlayingInfoIfNeeded() {
         var info: [String: Any] = [
             MPMediaItemPropertyTitle: nowPlayingTitle,
-            MPMediaItemPropertyArtist: "Espacio Calma",
+            MPMediaItemPropertyArtist: L10n.exact("Espacio Calma"),
             MPNowPlayingInfoPropertyPlaybackRate: backgroundPlayer?.isPlaying == true ? 1.0 : 0.0,
             MPNowPlayingInfoPropertyElapsedPlaybackTime: backgroundPlayer?.currentTime ?? 0
         ]
@@ -764,7 +764,7 @@ private extension EspacioCalmaView {
                     Button {
                         showBackgroundSelector = true
                     } label: {
-                        Text(selectedBackground?.name ?? "Sin fondo")
+                        Text(selectedBackground?.name ?? L10n.exact("Sin fondo"))
                             .lineLimit(1)
                             .foregroundStyle(.white)
                             .padding(.horizontal, 10)
@@ -796,7 +796,7 @@ private extension EspacioCalmaView {
                     Button {
                         showMusicSelector = true
                     } label: {
-                        Text(selectedMusic?.name ?? "Sin música")
+                        Text(selectedMusic?.name ?? L10n.exact("Sin música"))
                             .lineLimit(1)
                             .foregroundStyle(.white)
                             .padding(.horizontal, 10)
@@ -881,7 +881,7 @@ private extension EspacioCalmaView {
                 .padding(12)
             }
             .background(.ultraThinMaterial)
-            .navigationTitle(title)
+            .navigationTitle(L10n.exact(title))
 #if !os(macOS)
             .navigationBarTitleDisplayMode(.inline)
 #endif

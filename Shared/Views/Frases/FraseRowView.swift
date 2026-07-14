@@ -46,7 +46,7 @@ struct FraseRowView: View {
                             .padding(.horizontal, 5)
                     }
                     VStack(alignment: .leading ,spacing: 2){
-                        Text(frase.frase ?? "")
+                        Text(frase.localizedText)
                             .font(.system(size: 22))
                             .fontDesign(.serif)
                             .foregroundStyle(.black).bold()
@@ -76,7 +76,7 @@ struct FraseRowView: View {
                 #else
                 VStack( alignment: .leading , spacing: 2){
                     
-                    Text(frase.frase ?? "")
+                    Text(frase.localizedText)
                         .font(.system(size: 20))
                         .textSelection(.enabled)
                     HStack{
@@ -106,21 +106,21 @@ struct FraseRowView: View {
                     if IAModelAppleIntelligence.isAvailable() {
                         Menu{
                             NavigationLink{
-                                RespondView(nameConference: "", texto: frase.frase ?? "", tipoSalida: .interpretar, autorRespuesta: frase.autor ?? "nev" )
+                                RespondView(nameConference: "", texto: frase.localizedText, tipoSalida: .interpretar, autorRespuesta: frase.autor ?? "nev" )
                             }label:{
                                 Label("Interpretar", systemImage: "sparkles")
                             }
                             .tint(.orange)
                             
                             NavigationLink{
-                                RespondView(nameConference: "", texto: frase.frase ?? "", tipoSalida: .practicaConcreta, autorRespuesta: frase.autor ?? "nev")
+                                RespondView(nameConference: "", texto: frase.localizedText, tipoSalida: .practicaConcreta, autorRespuesta: frase.autor ?? "nev")
                             }label:{
                                 Label("Aplicación Práctica", systemImage: "sparkles")
                             }
                             .tint(.orange)
                             
                             NavigationLink{
-                                ChatView(textoACargar: frase.frase ?? "")
+                                ChatView(textoACargar: frase.localizedText)
                             }label: {
                                 Label("Charlar con IA", systemImage: "sparkles")
                             }
@@ -144,7 +144,7 @@ struct FraseRowView: View {
                 Button{
                     
                      //Guarda la nota poniendo como titulo una parte de la cadena
-                    if  NotasModel().addNote(nota: frase.frase ?? "", title: "\(String(frase.frase ?? "").prefix((frase.frase ?? "").count / 3 )))..."){
+                    if NotasModel().addNote(nota: frase.localizedText, title: "\(String(frase.localizedText.prefix(frase.localizedText.count / 3)))...") {
                          self.alertMessage = "Frase almacenada en Notas"
                          self.showAlert = true
                      }
@@ -155,7 +155,7 @@ struct FraseRowView: View {
                 }
                 
                 //Compartir la frase:
-                ShareLink(item: frase.frase ?? "") {
+                ShareLink(item: frase.localizedText) {
                                 Label("Compartir frase", systemImage: "square.and.arrow.up")
                             }
                 
@@ -244,7 +244,7 @@ struct FraseRowView: View {
                 
                 //Generando el QR de la frase
                 NavigationLink{
-                    GenerateQRView(footer: frase.frase ?? "")
+                    GenerateQRView(footer: frase.localizedText)
                 }label: {
                     Image(systemName: "qrcode")
                         .tint(.brown)
@@ -252,7 +252,7 @@ struct FraseRowView: View {
                 
                 //Lienzo
                 NavigationLink{
-                    LienzoMain(texto: frase.frase ?? "", imagenPrimariaACargar: LienzoModel.getImagenAutor(autor: self.frase.autor ?? ""))
+                    LienzoMain(texto: frase.localizedText, imagenPrimariaACargar: LienzoModel.getImagenAutor(autor: self.frase.autor ?? ""))
                 }label: {
                     Image(systemName: "heart.text.square")
                         .tint(.brown)
@@ -283,7 +283,7 @@ struct FraseRowView: View {
                 Button{
                     self.alertMessage = """
                         Autor: \(frase.getNameAutor)  
-                        Contextos: \n - \((frase.contextosArray.map{$0.nombre ?? ""}).joined(separator: "\n- "))
+                        Contextos: \n - \((frase.contextosArray.map(\.localizedName)).joined(separator: "\n- "))
                         """
                     self.showAlert = true
                 }label: {

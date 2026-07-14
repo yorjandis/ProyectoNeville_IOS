@@ -141,30 +141,50 @@ struct ListNotasViews: View {
         var confirmTitle: String {
             switch self {
             case .passToFrases:
-                return "Pasar a Frases"
+                return L10n.exact("Pasar a Frases")
             case .passToCalm:
-                return "Pasar a Calma"
+                return L10n.exact("Pasar a Calma")
             case .setCategory:
-                return "Actualizar"
+                return L10n.exact("Actualizar")
             case .exportMigration:
-                return "Continuar"
+                return L10n.exact("Continuar")
             }
         }
 
         func message(count: Int) -> String {
             switch self {
             case .passToFrases:
-                return "Se copiarán \(count == 1 ? "nota" : "notas") \(count == 1 ? "seleccionada" : "seleccionadas") a Frases personales."
+                return L10n.format(
+                    count == 1 ? "notes.batch.personal_phrases.one" : "notes.batch.personal_phrases.other",
+                    fallback: count == 1 ? "Se copiará {0} nota seleccionada a Frases personales." : "Se copiarán {0} notas seleccionadas a Frases personales.",
+                    String(count)
+                )
             case .passToCalm:
-                return "Se copiarán \(count) nota(s) \(count == 1 ? "seleccionada" : "seleccionadas") a Espacio Calma."
+                return L10n.format(
+                    count == 1 ? "notes.batch.calm.one" : "notes.batch.calm.other",
+                    fallback: count == 1 ? "Se copiará {0} nota seleccionada a Espacio Calma." : "Se copiarán {0} notas seleccionadas a Espacio Calma.",
+                    String(count)
+                )
             case .setCategory(let category):
                 let target = category.trimmingCharacters(in: .whitespacesAndNewlines)
                 if target.isEmpty {
-                    return "Se quitará la categoría de \(count) \(count == 1 ? "nota" : "notas") \(count == 1 ? "seleccionada" : "seleccionadas")"
+                    return L10n.format(
+                        count == 1 ? "notes.batch.remove_category.one" : "notes.batch.remove_category.other",
+                        fallback: count == 1 ? "Se quitará la categoría de {0} nota seleccionada" : "Se quitará la categoría de {0} notas seleccionadas",
+                        String(count)
+                    )
                 }
-                return "Se asignará la categoría \"\(target)\" a \(count) \(count == 1 ? "nota" : "notas") \(count == 1 ? "seleccionada" : "seleccionadas")"
+                return L10n.format(
+                    count == 1 ? "notes.batch.assign_category.one" : "notes.batch.assign_category.other",
+                    fallback: count == 1 ? "Se asignará la categoría «{0}» a {1} nota seleccionada" : "Se asignará la categoría «{0}» a {1} notas seleccionadas",
+                    target, String(count)
+                )
             case .exportMigration:
-                return "Se preparará un archivo de migración con \(count) \(count == 1 ? "nota" : "notas") \(count == 1 ? "seleccionada" : "seleccionadas")"
+                return L10n.format(
+                    count == 1 ? "notes.batch.export.one" : "notes.batch.export.other",
+                    fallback: count == 1 ? "Se preparará un archivo de migración con {0} nota seleccionada" : "Se preparará un archivo de migración con {0} notas seleccionadas",
+                    String(count)
+                )
             }
         }
     }
@@ -636,13 +656,13 @@ struct ListNotasViews: View {
     }
 
     private func authenticateBeforeMigrationExport() {
-        UtilFuncs.authenticateDeviceOwner(reason: "Autentícate para exportar las notas seleccionadas.") { success, errorMessage in
+        UtilFuncs.authenticateDeviceOwner(reason: L10n.exact("Autentícate para exportar las notas seleccionadas.")) { success, errorMessage in
             if success {
                 migrationPassword = ""
                 migrationPasswordConfirmation = ""
                 showMigrationPasswordSheet = true
             } else {
-                alertMessage = errorMessage ?? "No se pudo autenticar el acceso a la exportación."
+                alertMessage = L10n.exact(errorMessage ?? "No se pudo autenticar el acceso a la exportación.")
                 showAlert = true
             }
         }
@@ -651,11 +671,11 @@ struct ListNotasViews: View {
     private func handleNotasMigrationExportResult(_ result: Result<URL, Error>) {
         switch result {
         case .success:
-            alertMessage = "Archivo de migración exportado correctamente: \(migrationExportCount) nota(s)."
+            alertMessage = L10n.format("notes.migration.success", fallback: "Archivo de migración exportado correctamente: {0} nota(s).", String(migrationExportCount))
             selectedNotaIDs.removeAll()
             selectionMode = false
         case .failure(let error):
-            alertMessage = "No se pudo guardar el archivo de migración: \(error.localizedDescription)"
+            alertMessage = L10n.format("migration.save.error", fallback: "No se pudo guardar el archivo de migración: {0}", error.localizedDescription)
         }
         migrationPassword = ""
         migrationPasswordConfirmation = ""
@@ -736,7 +756,7 @@ struct ListNotasViews: View {
         }
 
         modelNotas.getAllNotasToModel()
-        alertMessage = "\(updatedCount) nota(s) actualizada(s)."
+        alertMessage = L10n.format("notes.updated.count", fallback: "{0} nota(s) actualizada(s).", String(updatedCount))
         showAlert = true
     }
 
@@ -748,7 +768,7 @@ struct ListNotasViews: View {
         collapsedCategoryNames.remove(category)
         selectedNotaIDs.subtract(toDelete.compactMap { $0.id })
         modelNotas.getAllNotasToModel()
-        alertMessage = "\(toDelete.count) nota(s) eliminada(s)."
+        alertMessage = L10n.format("notes.deleted.count", fallback: "{0} nota(s) eliminada(s).", String(toDelete.count))
         showAlert = true
     }
 
@@ -769,7 +789,7 @@ struct ListNotasViews: View {
         selectedNotaIDs.removeAll()
         selectionMode = false
         modelNotas.getAllNotasToModel()
-        alertMessage = "\(toDelete.count) nota(s) eliminada(s)."
+        alertMessage = L10n.format("notes.deleted.count", fallback: "{0} nota(s) eliminada(s).", String(toDelete.count))
         showAlert = true
     }
 
@@ -784,7 +804,7 @@ struct ListNotasViews: View {
         }
         selectedNotaIDs.removeAll()
         selectionMode = false
-        alertMessage = "\(inserted) nota(s) pasada(s) a Frases personales."
+        alertMessage = L10n.format("notes.personal_phrases.count", fallback: "{0} nota(s) pasada(s) a Frases personales.", String(inserted))
         showAlert = true
     }
 
@@ -793,7 +813,7 @@ struct ListNotasViews: View {
         guard let model = context.persistentStoreCoordinator?.managedObjectModel,
               model.entitiesByName["CalmUserPhrase"] != nil,
               let entity = NSEntityDescription.entity(forEntityName: "CalmUserPhrase", in: context) else {
-            alertMessage = "No se encontró la entidad de frases de Espacio Calma."
+            alertMessage = L10n.exact("No se encontró la entidad de frases de Espacio Calma.")
             showAlert = true
             return
         }
@@ -813,10 +833,10 @@ struct ListNotasViews: View {
             try context.save()
             selectedNotaIDs.removeAll()
             selectionMode = false
-            alertMessage = "\(inserted) nota(s) pasada(s) a Espacio Calma."
+            alertMessage = L10n.format("notes.calm.count", fallback: "{0} nota(s) pasada(s) a Espacio Calma.", String(inserted))
         } catch {
             context.rollback()
-            alertMessage = "No se pudo guardar en Espacio Calma."
+            alertMessage = L10n.exact("No se pudo guardar en Espacio Calma.")
         }
         showAlert = true
     }
@@ -832,7 +852,7 @@ struct ListNotasViews: View {
         selectedNotaIDs.removeAll()
         selectionMode = false
         modelNotas.getAllNotasToModel()
-        alertMessage = "\(updated) nota(s) actualizada(s)."
+        alertMessage = L10n.format("notes.updated.count", fallback: "{0} nota(s) actualizada(s).", String(updated))
         showAlert = true
     }
 
@@ -849,14 +869,14 @@ struct ListNotasViews: View {
 
     private func exportSelectedNotasToMigration() {
         guard migrationPassword == migrationPasswordConfirmation, !migrationPassword.isEmpty else {
-            alertMessage = "La contraseña de exportación está vacía o no coincide."
+            alertMessage = L10n.exact("La contraseña de exportación está vacía o no coincide.")
             showAlert = true
             return
         }
 
         let notes = selectedNotas
         guard !notes.isEmpty else {
-            alertMessage = "Selecciona al menos una nota para exportar."
+            alertMessage = L10n.exact("Selecciona al menos una nota para exportar.")
             showAlert = true
             return
         }
@@ -871,7 +891,7 @@ struct ListNotasViews: View {
             showMigrationPasswordSheet = false
             showMigrationExporter = true
         } catch {
-            alertMessage = "No se pudo preparar el archivo de migración: \(error.localizedDescription)"
+            alertMessage = L10n.format("migration.prepare.error", fallback: "No se pudo preparar el archivo de migración: {0}", error.localizedDescription)
             showAlert = true
         }
     }
@@ -883,7 +903,7 @@ struct ListNotasViews: View {
                 .font(.caption)
             Button("Manual (seleccionadas)") {
                 guard hasPremiumPDFAccess else {
-                    alertMessage = "La exportación a PDF está disponible en la Versión Extendida."
+                    alertMessage = L10n.exact("La exportación a PDF está disponible en la Versión Extendida.")
                     showAlert = true
                     return
                 }
@@ -891,7 +911,7 @@ struct ListNotasViews: View {
                     withAnimation {
                         selectionMode = true
                     }
-                    alertMessage = "Selecciona las notas y vuelve a pulsar 'Manual (seleccionadas)' para exportar."
+                    alertMessage = L10n.exact("Selecciona las notas y vuelve a pulsar 'Manual (seleccionadas)' para exportar.")
                     showAlert = true
                     return
                 }
@@ -899,7 +919,7 @@ struct ListNotasViews: View {
             }
             Button("Semana actual") {
                 guard hasPremiumPDFAccess else {
-                    alertMessage = "La exportación a PDF está disponible en la Versión Extendida."
+                    alertMessage = L10n.exact("La exportación a PDF está disponible en la Versión Extendida.")
                     showAlert = true
                     return
                 }
@@ -907,7 +927,7 @@ struct ListNotasViews: View {
             }
             Button("Mes actual") {
                 guard hasPremiumPDFAccess else {
-                    alertMessage = "La exportación a PDF está disponible en la Versión Extendida."
+                    alertMessage = L10n.exact("La exportación a PDF está disponible en la Versión Extendida.")
                     showAlert = true
                     return
                 }
@@ -915,7 +935,7 @@ struct ListNotasViews: View {
             }
             Button("Rango de fechas") {
                 guard hasPremiumPDFAccess else {
-                    alertMessage = "La exportación a PDF está disponible en la Versión Extendida."
+                    alertMessage = L10n.exact("La exportación a PDF está disponible en la Versión Extendida.")
                     showAlert = true
                     return
                 }
@@ -978,7 +998,7 @@ struct ListNotasViews: View {
     }
 
     private var uncategorizedCategoryTitle: String {
-        "Sin categoría"
+        L10n.exact("Sin categoría")
     }
 
     private func categoryValue(for nota: Notas) -> String {
@@ -1000,12 +1020,12 @@ struct ListNotasViews: View {
 
     private func exportNotasToPDF(_ notas: [Notas], scopeName: String) {
         guard hasPremiumPDFAccess else {
-            alertMessage = "La exportación a PDF está disponible en la Versión Extendida."
+            alertMessage = L10n.exact("La exportación a PDF está disponible en la Versión Extendida.")
             showAlert = true
             return
         }
         guard !notas.isEmpty else {
-            alertMessage = "No hay notas para exportar en \(scopeName.lowercased())."
+            alertMessage = L10n.format("notes.pdf.empty", fallback: "No hay notas para exportar en {0}.", L10n.exact(scopeName).lowercased())
             showAlert = true
             return
         }
@@ -1046,7 +1066,7 @@ struct ListNotasViews: View {
             exportedPDFFileName = "Notas-\(scopeName)-\(dateLabel)"
             showPDFExporter = true
         } catch {
-            alertMessage = "No se pudo generar el PDF."
+            alertMessage = L10n.exact("No se pudo generar el PDF.")
             showAlert = true
         }
     }
@@ -1252,6 +1272,7 @@ struct cardNotas: View{
 
     private static let metadataDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
+        formatter.locale = AppLanguage.current.locale
         formatter.dateStyle = .short
         formatter.timeStyle = .short
         return formatter
@@ -1272,13 +1293,13 @@ struct cardNotas: View{
 
         var parts: [String] = []
         if !category.isEmpty {
-            parts.append("Categoría: \(category)")
+            parts.append(L10n.format("notes.metadata.category", fallback: "Categoría: {0}", category))
         }
         if let created {
-            parts.append("Creada: \(Self.metadataDateFormatter.string(from: created))")
+            parts.append(L10n.format("notes.metadata.created", fallback: "Creada: {0}", Self.metadataDateFormatter.string(from: created)))
         }
         if let modified {
-            parts.append("Modificada: \(Self.metadataDateFormatter.string(from: modified))")
+            parts.append(L10n.format("notes.metadata.modified", fallback: "Modificada: {0}", Self.metadataDateFormatter.string(from: modified)))
         }
         return parts.joined(separator: " · ")
     }
@@ -1844,7 +1865,7 @@ struct cardNotas: View{
                 expandNota = true
             }
         } else {
-            mapsAlertMessage = "No se pudo convertir la nota."
+            mapsAlertMessage = L10n.exact("No se pudo convertir la nota.")
             showMapsAlert = true
         }
     }
@@ -1862,7 +1883,7 @@ struct cardNotas: View{
         ) {
             modelNotas.getAllNotasToModel()
         } else {
-            mapsAlertMessage = "No se pudo cambiar la categoría."
+            mapsAlertMessage = L10n.exact("No se pudo cambiar la categoría.")
             showMapsAlert = true
         }
     }
@@ -1870,7 +1891,7 @@ struct cardNotas: View{
     private func addCurrentNoteToCalmList() {
         let text = noteActionText.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty else {
-            self.calmAlertMessage = "La nota está vacía."
+            self.calmAlertMessage = L10n.exact("La nota está vacía.")
             self.showCalmAlert = true
             return
         }
@@ -1879,7 +1900,7 @@ struct cardNotas: View{
         guard let model = context.persistentStoreCoordinator?.managedObjectModel,
               model.entitiesByName["CalmUserPhrase"] != nil,
               let entity = NSEntityDescription.entity(forEntityName: "CalmUserPhrase", in: context) else {
-            self.calmAlertMessage = "No se encontró la entidad de frases de Espacio Calma."
+            self.calmAlertMessage = L10n.exact("No se encontró la entidad de frases de Espacio Calma.")
             self.showCalmAlert = true
             return
         }
@@ -1891,10 +1912,10 @@ struct cardNotas: View{
 
         do {
             try context.save()
-            self.calmAlertMessage = "Frase agregada a Espacio Calma."
+            self.calmAlertMessage = L10n.exact("Frase agregada a Espacio Calma.")
         } catch {
             context.rollback()
-            self.calmAlertMessage = "No se pudo guardar la frase en Espacio Calma."
+            self.calmAlertMessage = L10n.exact("No se pudo guardar la frase en Espacio Calma.")
         }
 
         self.showCalmAlert = true
@@ -1903,7 +1924,7 @@ struct cardNotas: View{
     private func openInMaps(address: String) {
         let cleaned = address.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !cleaned.isEmpty else {
-            mapsAlertMessage = "La ubicación está vacía."
+            mapsAlertMessage = L10n.exact("La ubicación está vacía.")
             showMapsAlert = true
             return
         }
@@ -1911,7 +1932,7 @@ struct cardNotas: View{
         Task { @MainActor in
             let didOpen = await LocationMapOpener.open(cleaned)
             if !didOpen {
-                mapsAlertMessage = "No se pudo abrir Mapas para esta ubicación."
+                mapsAlertMessage = L10n.exact("No se pudo abrir Mapas para esta ubicación.")
                 showMapsAlert = true
             }
         }

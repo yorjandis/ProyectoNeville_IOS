@@ -66,7 +66,7 @@ struct AddDiario: View {
                         Button{
                             Task{
                                 if self.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || self.content.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                                    self.alertMessage = "Debe colocar un título y un texto para la entrada"
+                                    self.alertMessage = WatchL10n.exact("Debe colocar un título y un texto para la entrada")
                                     showAlert = true
                                 }else{
                                     let didSave = modelWatch.addDiarioEntry(
@@ -80,7 +80,7 @@ struct AddDiario: View {
                                     if didSave {
                                         dismiss()
                                     } else {
-                                        self.alertMessage = "Error al crear entrada"
+                                        self.alertMessage = WatchL10n.exact("Error al crear la entrada")
                                         self.showAlert = true
                                     }
                                 }
@@ -129,7 +129,7 @@ struct AddDiario: View {
                             .font(.system(size: 40))
                             .padding(.vertical, 5)
                         
-                        Text(i.txt)
+                        Text(i.localizedTitle)
                         Spacer()
                     }.padding(.horizontal)
                 }
@@ -149,6 +149,17 @@ struct AddDiario: View {
             case .feliz : "feliz"
             case .neutral : "neutral"
             case .sorpresa : "sorpresa"
+            }
+        }
+
+        var localizedTitle: String {
+            switch self {
+            case .feliz: WatchL10n.exact("Feliz")
+            case .neutral: WatchL10n.exact("Neutral")
+            case .enfadado: WatchL10n.exact("Enfadado")
+            case .sorpresa: WatchL10n.exact("Sorprendido")
+            case .distraido: WatchL10n.exact("Distraído")
+            case .desanimado: WatchL10n.exact("Desanimado")
             }
         }
     }

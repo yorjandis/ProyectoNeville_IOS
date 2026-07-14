@@ -43,9 +43,13 @@ struct ModifNoteUnit: View {
             
             HStack(alignment: .top){
                 //Nombre de la unidad
-                Text("Unidad \(unit.name ?? "")").bold()
+                Text(GoalsL10n.unitDisplayName(unit.name, index: Int(unit.index))).bold()
                 Spacer()
-                Text("Fichado: \(self.unitDateComplete)")
+                Text(GoalsL10n.format(
+                    "goals.ui.completed_at",
+                    fallback: "Fichado: {0}",
+                    self.unitDateComplete
+                ))
             }.padding(.bottom, 5)
             
             

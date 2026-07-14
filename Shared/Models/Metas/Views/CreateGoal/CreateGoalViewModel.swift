@@ -42,10 +42,11 @@ final class CreateGoalViewModel: ObservableObject {
             ? String(Int(executionTargetValue))
             : executionTargetValue.formatted(.number.precision(.fractionLength(0...2)))
         let label = customUnitLabel.trimmingCharacters(in: .whitespacesAndNewlines)
-        if label.isEmpty {
-            return executionTargetValue == 1 ? "Una ejecución" : "\(number) por ejecución"
-        }
-        return executionTargetValue == 1 ? "\(label) por ejecución" : "\(number) \(label) por ejecución"
+        return GoalsL10n.executionTarget(
+            value: executionTargetValue,
+            number: number,
+            label: label
+        )
     }
 
     func estimatedUnitCount(from referenceDate: Date = Date()) -> Int {
@@ -82,7 +83,7 @@ final class CreateGoalViewModel: ObservableObject {
     
     func getTextoForUNidades(number : Int) -> String {
         let label = customUnitLabel.trimmingCharacters(in: .whitespacesAndNewlines)
-        return label.isEmpty ? (number == 1 ? "unidad" : "unidades") : label
+        return label.isEmpty ? GoalsL10n.unitNoun(count: number) : label
     }
 
     func syncSpecificDates() {

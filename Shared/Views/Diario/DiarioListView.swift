@@ -146,7 +146,11 @@ struct DiarioListView: View {
     }
 
     private var batchMigrationCountLabel: String {
-        "\(batchSelectedDiarioIDs.count) entrada(s)"
+        L10n.format(
+            "diary.selected_entries.count",
+            fallback: "{0} entrada(s)",
+            String(batchSelectedDiarioIDs.count)
+        )
     }
 
     @ToolbarContentBuilder
@@ -181,26 +185,42 @@ struct DiarioListView: View {
         var confirmTitle: String {
             switch self {
             case .updateEmotion:
-                return "Actualizar emoción"
+                return L10n.exact("Actualizar emoción")
             case .updateChapter:
-                return "Actualizar capítulo"
+                return L10n.exact("Actualizar capítulo")
             case .exportMigration:
-                return "Continuar"
+                return L10n.exact("Continuar")
             }
         }
 
         func message(count: Int) -> String {
             switch self {
             case .updateEmotion(let emotion):
-                return "Se cambiará la emoción de \(count) \(count == 1 ? " entrada" : " entradas") a \(emotion.rawValue)."
+                return L10n.format(
+                    count == 1 ? "diary.batch.emotion.one" : "diary.batch.emotion.other",
+                    fallback: count == 1 ? "Se cambiará la emoción de {0} entrada a {1}." : "Se cambiará la emoción de {0} entradas a {1}.",
+                    String(count), emotion.localizedTitle
+                )
             case .updateChapter(let chapter):
                 let target = chapter.trimmingCharacters(in: .whitespacesAndNewlines)
                 if target.isEmpty {
-                    return "Se quitará el capítulo de \(count) \(count == 1 ? " entrada" : " entradas") \(count == 1 ? " seleccionada" : " seleccionadas")"
+                    return L10n.format(
+                        count == 1 ? "diary.batch.remove_chapter.one" : "diary.batch.remove_chapter.other",
+                        fallback: count == 1 ? "Se quitará el capítulo de {0} entrada seleccionada" : "Se quitará el capítulo de {0} entradas seleccionadas",
+                        String(count)
+                    )
                 }
-                return "Se asignará el capítulo \"\(target)\" \(count == 1 ? " entrada" : " entradas") \(count == 1 ? " seleccionada" : " seleccionadas")"
+                return L10n.format(
+                    count == 1 ? "diary.batch.assign_chapter.one" : "diary.batch.assign_chapter.other",
+                    fallback: count == 1 ? "Se asignará el capítulo «{0}» a {1} entrada seleccionada" : "Se asignará el capítulo «{0}» a {1} entradas seleccionadas",
+                    target, String(count)
+                )
             case .exportMigration:
-                return "Se preparará un archivo de migración con \(count) \(count == 1 ? " entrada" : " entradas") \(count == 1 ? " seleccionada" : " seleccionadas")"
+                return L10n.format(
+                    count == 1 ? "diary.batch.export.one" : "diary.batch.export.other",
+                    fallback: count == 1 ? "Se preparará un archivo de migración con {0} entrada seleccionada" : "Se preparará un archivo de migración con {0} entradas seleccionadas",
+                    String(count)
+                )
             }
         }
     }
@@ -882,7 +902,7 @@ struct DiarioListView: View {
                             requestBatchActionConfirmation(.updateEmotion(emocion))
                         } label: {
                             HStack {
-                                Text(emocion.rawValue.capitalized)
+                                Text(emocion.localizedTitle)
                                 Text(emocion.emoji)
                             }
                         }
@@ -1103,13 +1123,13 @@ struct DiarioListView: View {
     }
 
     private func authenticateBeforeMigrationExport() {
-        UtilFuncs.authenticateDeviceOwner(reason: "Autentícate para exportar las entradas seleccionadas.") { success, errorMessage in
+        UtilFuncs.authenticateDeviceOwner(reason: L10n.exact("Autentícate para exportar las entradas seleccionadas.")) { success, errorMessage in
             if success {
                 migrationPassword = ""
                 migrationPasswordConfirmation = ""
                 showMigrationPasswordSheet = true
             } else {
-                alertMessage = errorMessage ?? "No se pudo autenticar el acceso a la exportación."
+                alertMessage = L10n.exact(errorMessage ?? "No se pudo autenticar el acceso a la exportación.")
                 showAlert = true
             }
         }
@@ -1139,7 +1159,7 @@ struct DiarioListView: View {
 
     private func exportSelectedDiarioToMigration() {
         guard migrationPassword == migrationPasswordConfirmation, !migrationPassword.isEmpty else {
-            alertMessage = "La contraseña de exportación está vacía o no coincide."
+            alertMessage = L10n.exact("La contraseña de exportación está vacía o no coincide.")
             showAlert = true
             return
         }
@@ -1148,7 +1168,7 @@ struct DiarioListView: View {
             ? selectedDiarioEntries.filter { chapterValue(for: $0) != "Cierre consciente" }
             : selectedDiarioEntries
         guard !entries.isEmpty else {
-            alertMessage = "Selecciona al menos una entrada de diario para exportar."
+            alertMessage = L10n.exact("Selecciona al menos una entrada de diario para exportar.")
             showAlert = true
             return
         }
@@ -1163,7 +1183,7 @@ struct DiarioListView: View {
             showMigrationPasswordSheet = false
             showMigrationExporter = true
         } catch {
-            alertMessage = "No se pudo preparar el archivo de migración: \(error.localizedDescription)"
+            alertMessage = L10n.format("migration.prepare.error", fallback: "No se pudo preparar el archivo de migración: {0}", error.localizedDescription)
             showAlert = true
         }
     }
@@ -1171,10 +1191,10 @@ struct DiarioListView: View {
     private func handleMigrationExportResult(_ result: Result<URL, Error>) {
         switch result {
         case .success:
-            alertMessage = "Archivo de migración exportado correctamente: \(migrationExportCount) entrada(s) de diario."
+            alertMessage = L10n.format("diary.migration.success", fallback: "Archivo de migración exportado correctamente: {0} entrada(s) de diario.", String(migrationExportCount))
             finishBatchOperation()
         case .failure(let error):
-            alertMessage = "No se pudo guardar el archivo de migración: \(error.localizedDescription)"
+            alertMessage = L10n.format("migration.save.error", fallback: "No se pudo guardar el archivo de migración: {0}", error.localizedDescription)
         }
         migrationPassword = ""
         migrationPasswordConfirmation = ""
@@ -1199,7 +1219,7 @@ struct DiarioListView: View {
         }
 
         refreshAfterEntryUpdate(nil)
-        alertMessage = "\(idsToUpdate.count) entrada(s) actualizada(s)."
+        alertMessage = L10n.format("diary.updated.count", fallback: "{0} entrada(s) actualizada(s).", String(idsToUpdate.count))
         showAlert = true
     }
 
@@ -1220,7 +1240,7 @@ struct DiarioListView: View {
         }
 
         refreshAfterEntryUpdate(nil)
-        alertMessage = "\(idsToUpdate.count) entrada(s) movida(s)."
+        alertMessage = L10n.format("diary.moved.count", fallback: "{0} entrada(s) movida(s).", String(idsToUpdate.count))
         showAlert = true
     }
 
@@ -1234,7 +1254,7 @@ struct DiarioListView: View {
         collapsedChapterNames.remove(chapter)
         batchSelectedDiarioIDs.subtract(idsToDelete)
         refreshAfterEntryDeletion(nil)
-        alertMessage = "\(idsToDelete.count) entrada(s) eliminada(s)."
+        alertMessage = L10n.format("diary.deleted.count", fallback: "{0} entrada(s) eliminada(s).", String(idsToDelete.count))
         showAlert = true
     }
 
@@ -1315,7 +1335,7 @@ struct DiarioListView: View {
         Menu {
             Button("Manual") {
                 guard hasPremiumPDFAccess else {
-                    alertMessage = "La exportación a PDF está disponible en la Versión Extendida."
+                    alertMessage = L10n.exact("La exportación a PDF está disponible en la Versión Extendida.")
                     showAlert = true
                     return
                 }
@@ -1324,7 +1344,7 @@ struct DiarioListView: View {
             }
             Button("Semana actual") {
                 guard hasPremiumPDFAccess else {
-                    alertMessage = "La exportación a PDF está disponible en la Versión Extendida."
+                    alertMessage = L10n.exact("La exportación a PDF está disponible en la Versión Extendida.")
                     showAlert = true
                     return
                 }
@@ -1332,7 +1352,7 @@ struct DiarioListView: View {
             }
             Button("Mes actual") {
                 guard hasPremiumPDFAccess else {
-                    alertMessage = "La exportación a PDF está disponible en la Versión Extendida."
+                    alertMessage = L10n.exact("La exportación a PDF está disponible en la Versión Extendida.")
                     showAlert = true
                     return
                 }
@@ -1340,7 +1360,7 @@ struct DiarioListView: View {
             }
             Button("Rango de fechas") {
                 guard hasPremiumPDFAccess else {
-                    alertMessage = "La exportación a PDF está disponible en la Versión Extendida."
+                    alertMessage = L10n.exact("La exportación a PDF está disponible en la Versión Extendida.")
                     showAlert = true
                     return
                 }
@@ -1388,7 +1408,7 @@ struct DiarioListView: View {
 
     private func exportDiarioToPDF(_ entries: [Diario], scopeName: String) {
         guard hasPremiumPDFAccess else {
-            alertMessage = "La exportación a PDF está disponible en la Versión Extendida."
+            alertMessage = L10n.exact("La exportación a PDF está disponible en la Versión Extendida.")
             showAlert = true
             return
         }
@@ -1396,7 +1416,7 @@ struct DiarioListView: View {
             ? entries.filter { chapterValue(for: $0) != "Cierre consciente" }
             : entries
         guard !exportableEntries.isEmpty else {
-            alertMessage = "No hay entradas para exportar en \(scopeName.lowercased())."
+            alertMessage = L10n.format("diary.pdf.empty", fallback: "No hay entradas para exportar en {0}.", L10n.exact(scopeName).lowercased())
             showAlert = true
             return
         }
@@ -1431,13 +1451,13 @@ struct DiarioListView: View {
             exportedPDFFileName = "Diario-\(scopeName)-\(dateLabel)"
             showPDFExporter = true
         } catch {
-            alertMessage = "No se pudo generar el PDF."
+            alertMessage = L10n.exact("No se pudo generar el PDF.")
             showAlert = true
         }
     }
 
     private var unchapteredTitle: String {
-        "Sin capítulo"
+        L10n.exact("Sin capítulo")
     }
 
     private func chapterValue(for item: Diario) -> String {

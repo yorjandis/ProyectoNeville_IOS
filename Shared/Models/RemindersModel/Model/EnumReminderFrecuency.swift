@@ -66,20 +66,32 @@ enum ReminderFrequency: Identifiable, Codable, Equatable, Hashable {
             var parts: [String] = []
             if h > 0 { parts.append("\(h)h") }
             if m > 0 { parts.append("\(m)m") }
-            return "Cada " + parts.joined(separator: " ")
+            let format = L10n.string("reminder.frequency.interval", fallback: "Cada %@")
+            return String(format: format, locale: AppLanguage.current.locale, parts.joined(separator: " "))
 
         case .daily(let h, let m):
-            return String(format: "Todos los días a las %02d:%02d", h, m)
+            let format = L10n.string(
+                "reminder.frequency.daily",
+                fallback: "Todos los días a las %02d:%02d"
+            )
+            return String(format: format, locale: AppLanguage.current.locale, h, m)
 
         case .date(let date):
             let formatter = DateFormatter()
             formatter.dateStyle = .medium
             formatter.timeStyle = .short
-            return "El \(formatter.string(from: date))"
+            formatter.locale = AppLanguage.current.locale
+            let format = L10n.string("reminder.frequency.date", fallback: "El %@")
+            return String(format: format, locale: AppLanguage.current.locale, formatter.string(from: date))
             
         case .monthly(let day, let hour, let minute):
+            let format = L10n.string(
+                "reminder.frequency.monthly",
+                fallback: "Cada mes el día %d a las %02d:%02d"
+            )
             return String(
-                format: "Cada mes el día %d a las %02d:%02d",
+                format: format,
+                locale: AppLanguage.current.locale,
                 day, hour, minute
             )
             
@@ -94,10 +106,15 @@ enum ReminderFrequency: Identifiable, Codable, Equatable, Hashable {
                 let date = calendar.date(from: components) ?? Date()
 
                 let formatter = DateFormatter()
-                formatter.dateFormat = "d 'de' MMMM 'a las' HH:mm"
-                formatter.locale = Locale(identifier: "es_ES")
+                formatter.locale = AppLanguage.current.locale
+                formatter.setLocalizedDateFormatFromTemplate("MMMMdHm")
 
-                return "Cada año el \(formatter.string(from: date))"
+                let format = L10n.string("reminder.frequency.yearly", fallback: "Cada año el %@")
+                return String(
+                    format: format,
+                    locale: AppLanguage.current.locale,
+                    formatter.string(from: date)
+                )
             
             
         }

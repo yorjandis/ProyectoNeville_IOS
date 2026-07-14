@@ -57,7 +57,7 @@ struct editContent : View {
                                     emoticono = emocion
                                 } label: {
                                     HStack {
-                                        Text(emocion.rawValue)
+                                        Text(emocion.localizedTitle)
                                         Text(emocion.emoji)
                                     }
                                 }

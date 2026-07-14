@@ -4,25 +4,25 @@ import UserNotifications
 
 /// Día en el que se pone a disposición la revisión. Los valores coinciden con
 /// `Calendar.Component.weekday` (1 = domingo).
-enum WeeklyReviewDay: Int, CaseIterable, Identifiable {
+nonisolated enum WeeklyReviewDay: Int, CaseIterable, Identifiable {
     case sunday = 1, monday, tuesday, wednesday, thursday, friday, saturday
 
     var id: Int { rawValue }
 
     var title: String {
         switch self {
-        case .sunday: return "Domingo"
-        case .monday: return "Lunes"
-        case .tuesday: return "Martes"
-        case .wednesday: return "Miércoles"
-        case .thursday: return "Jueves"
-        case .friday: return "Viernes"
-        case .saturday: return "Sábado"
+        case .sunday: return L10n.exact("Domingo")
+        case .monday: return L10n.exact("Lunes")
+        case .tuesday: return L10n.exact("Martes")
+        case .wednesday: return L10n.exact("Miércoles")
+        case .thursday: return L10n.exact("Jueves")
+        case .friday: return L10n.exact("Viernes")
+        case .saturday: return L10n.exact("Sábado")
         }
     }
 }
 
-enum WeeklyReviewSchedule {
+nonisolated enum WeeklyReviewSchedule {
     static let availableHour = 6
 
     static func selectedDay(from rawValue: Int) -> WeeklyReviewDay {
@@ -60,7 +60,7 @@ enum WeeklyReviewSchedule {
     }
 }
 
-enum WeeklyReviewNotificationManager {
+nonisolated enum WeeklyReviewNotificationManager {
     static let identifier = "weekly_review_reminder"
 
     static func update(enabled: Bool, weekday: Int) {
@@ -97,8 +97,14 @@ private actor WeeklyReviewNotificationScheduler {
         components.minute = 0
 
         let content = UNMutableNotificationContent()
-        content.title = "Tu revisión semanal está lista"
-        content.body = "Dedica 5–10 minutos a reconocer tus avances y elegir tu foco."
+        content.title = L10n.string(
+            "notification.weekly_review.title",
+            fallback: "Tu revisión semanal está lista"
+        )
+        content.body = L10n.string(
+            "notification.weekly_review.body",
+            fallback: "Dedica 5–10 minutos a reconocer tus avances y elegir tu foco."
+        )
         content.sound = .default
         content.userInfo = ["weeklyReviewDestination": true]
 
@@ -140,7 +146,7 @@ struct WeeklyReviewView: View {
 
     private var periodTitle: String {
         let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "es_ES")
+        formatter.locale = AppLanguage.current.locale
         formatter.dateFormat = "d MMM"
         let lastDay = Calendar.current.date(byAdding: .day, value: -1, to: interval.end) ?? interval.end
         return "\(formatter.string(from: interval.start)) – \(formatter.string(from: lastDay))"
@@ -162,7 +168,9 @@ struct WeeklyReviewView: View {
         }
         .background(.primary.opacity(0.035))
         .navigationTitle("Revisión semanal")
+        #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
+        #endif
         .onAppear(perform: reload)
         .onReceive(NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave)) { _ in
             reload()
@@ -176,7 +184,7 @@ struct WeeklyReviewView: View {
         )) {
             Button("Entendido", role: .cancel) { }
         } message: {
-            Text(saveErrorMessage ?? "Inténtalo de nuevo cuando el almacenamiento esté disponible.")
+            Text(saveErrorMessage ?? L10n.exact("Inténtalo de nuevo cuando el almacenamiento esté disponible."))
         }
     }
 
@@ -361,7 +369,7 @@ struct WeeklyReviewView: View {
                 closeReview()
             } label: {
                 Label(
-                    isCurrentReviewCompleted ? "Revisión completada" : "Cerrar revisión semanal",
+                    L10n.exact(isCurrentReviewCompleted ? "Revisión completada" : "Cerrar revisión semanal"),
                     systemImage: isCurrentReviewCompleted ? "checkmark.circle.fill" : "checkmark.circle"
                 )
                 .frame(maxWidth: .infinity)
@@ -381,10 +389,10 @@ struct WeeklyReviewView: View {
         @ViewBuilder content: () -> Content
     ) -> some View {
         VStack(alignment: .leading, spacing: 12) {
-            Label(title, systemImage: symbol)
+            Label(L10n.exact(title), systemImage: symbol)
                 .font(.title3.bold())
                 .foregroundStyle(color)
-            Text(subtitle)
+            Text(L10n.exact(subtitle))
                 .font(.footnote)
                 .foregroundStyle(.secondary)
             content()
@@ -400,9 +408,9 @@ struct WeeklyReviewView: View {
                 .foregroundStyle(color)
             Text(value)
                 .font(.title2.bold())
-            Text(title)
+            Text(L10n.exact(title))
                 .font(.subheadline.weight(.medium))
-            Text(subtitle)
+            Text(L10n.exact(subtitle))
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
@@ -414,7 +422,7 @@ struct WeeklyReviewView: View {
     private func compactMetric(value: String, label: String) -> some View {
         VStack(alignment: .leading, spacing: 3) {
             Text(value).font(.title2.bold())
-            Text(label).font(.caption).foregroundStyle(.secondary)
+            Text(L10n.exact(label)).font(.caption).foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(12)
@@ -422,13 +430,13 @@ struct WeeklyReviewView: View {
     }
 
     private func positiveLine(_ text: String) -> some View {
-        Label(text, systemImage: "checkmark.circle.fill")
+        Label(L10n.exact(text), systemImage: "checkmark.circle.fill")
             .font(.footnote)
             .foregroundStyle(.green)
     }
 
     private func emptyLine(_ text: String) -> some View {
-        Text(text)
+        Text(L10n.exact(text))
             .font(.footnote)
             .foregroundStyle(.secondary)
     }
@@ -474,7 +482,7 @@ struct WeeklyReviewView: View {
         )
 
         guard didSave else {
-            saveErrorMessage = "El almacenamiento todavía no está listo. Tu revisión no se ha marcado como completada; inténtalo de nuevo en unos segundos."
+            saveErrorMessage = L10n.exact("El almacenamiento todavía no está listo. Tu revisión no se ha marcado como completada; inténtalo de nuevo en unos segundos.")
             return
         }
 
@@ -626,11 +634,11 @@ enum WeeklyReviewRetentionPolicy {
     }
 }
 
-private enum WeeklyReviewRetentionError: LocalizedError {
+nonisolated private enum WeeklyReviewRetentionError: LocalizedError {
     case storeUnavailable
 
     var errorDescription: String? {
-        "El almacenamiento de la revisión semanal no está disponible todavía."
+        L10n.exact("El almacenamiento de la revisión semanal no está disponible todavía.")
     }
 }
 
@@ -694,7 +702,7 @@ private struct WeeklyReviewDataLoader {
         snapshot.moodSummaries = mergedMoods
             .map { raw, count in
                 let presenceTitle = PresenciaMood.title(for: raw)
-                let title = presenceTitle == raw ? raw.capitalized : presenceTitle
+                let title = presenceTitle == raw ? Emociones.localizedTitle(from: raw) : presenceTitle
                 return WeeklyReviewMood(title: title, emoji: Emociones.emoji(from: raw), count: count)
             }
             .sorted { $0.count == $1.count ? $0.title < $1.title : $0.count > $1.count }
@@ -725,20 +733,43 @@ private struct WeeklyReviewDataLoader {
         var achievements = completedGoalEvents
             .compactMap { ($0.value(forKey: "goalTitle") as? String)?.trimmingCharacters(in: .whitespacesAndNewlines) }
             .filter { !$0.isEmpty }
-            .map { "Avanzaste en \($0)" }
-        achievements += agendaAchievements.map { "Completaste \($0)" }
-        if snapshot.diaryEntries > 0 { achievements.append("Escribiste \(snapshot.diaryEntries) entrada\(snapshot.diaryEntries == 1 ? "" : "s") en tu diario") }
-        if snapshot.presenceReturns > 0 { achievements.append("Volviste \(snapshot.presenceReturns) vez\(snapshot.presenceReturns == 1 ? "" : "es") a la presencia") }
+            .map { L10n.format("weekly.achievement.goal", fallback: "Avanzaste en {0}", $0) }
+        achievements += agendaAchievements.map { L10n.format("weekly.achievement.agenda", fallback: "Completaste {0}", $0) }
+        if snapshot.diaryEntries > 0 {
+            achievements.append(L10n.format(
+                snapshot.diaryEntries == 1 ? "weekly.achievement.diary.one" : "weekly.achievement.diary.other",
+                fallback: snapshot.diaryEntries == 1 ? "Escribiste {0} entrada en tu diario" : "Escribiste {0} entradas en tu diario",
+                String(snapshot.diaryEntries)
+            ))
+        }
+        if snapshot.presenceReturns > 0 {
+            achievements.append(L10n.format(
+                snapshot.presenceReturns == 1 ? "weekly.achievement.presence.one" : "weekly.achievement.presence.other",
+                fallback: snapshot.presenceReturns == 1 ? "Volviste {0} vez a la presencia" : "Volviste {0} veces a la presencia",
+                String(snapshot.presenceReturns)
+            ))
+        }
         if snapshot.coherenceSessions > 0 {
-            let sessionText = "\(snapshot.coherenceSessions) sesión\(snapshot.coherenceSessions == 1 ? "" : "es")"
             if snapshot.coherenceMinutes > 0 {
-                achievements.append("Practicaste \(sessionText) de coherencia durante \(snapshot.coherenceMinutes) minuto\(snapshot.coherenceMinutes == 1 ? "" : "s")")
+                achievements.append(L10n.format(
+                    "weekly.achievement.coherence.timed",
+                    fallback: "Practicaste {0} sesiones de coherencia durante {1} minutos",
+                    String(snapshot.coherenceSessions), String(snapshot.coherenceMinutes)
+                ))
             } else {
-                achievements.append("Practicaste \(sessionText) de coherencia")
+                achievements.append(L10n.format(
+                    snapshot.coherenceSessions == 1 ? "weekly.achievement.coherence.one" : "weekly.achievement.coherence.other",
+                    fallback: snapshot.coherenceSessions == 1 ? "Practicaste {0} sesión de coherencia" : "Practicaste {0} sesiones de coherencia",
+                    String(snapshot.coherenceSessions)
+                ))
             }
         }
         if snapshot.ritualsCompleted > 0 {
-            achievements.append("Completaste \(snapshot.ritualsCompleted) ritual\(snapshot.ritualsCompleted == 1 ? "" : "es") consciente\(snapshot.ritualsCompleted == 1 ? "" : "s")")
+            achievements.append(L10n.format(
+                snapshot.ritualsCompleted == 1 ? "weekly.achievement.ritual.one" : "weekly.achievement.ritual.other",
+                fallback: snapshot.ritualsCompleted == 1 ? "Completaste {0} ritual consciente" : "Completaste {0} rituales conscientes",
+                String(snapshot.ritualsCompleted)
+            ))
         }
         snapshot.achievements = Array(NSOrderedSet(array: achievements)) as? [String] ?? achievements
 

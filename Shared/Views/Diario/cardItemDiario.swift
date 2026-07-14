@@ -71,7 +71,7 @@ struct cardItemDiario: View{
                             }
                         } label: {
                             HStack {
-                                Text(emocion.rawValue)
+                                Text(emocion.localizedTitle)
                                 Text(emocion.emoji)
                             }
                         }
@@ -379,7 +379,7 @@ struct cardItemDiario: View{
     private func openInMaps(address: String) {
         let cleaned = address.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !cleaned.isEmpty else {
-            mapsAlertMessage = "La ubicación está vacía."
+            mapsAlertMessage = L10n.exact("La ubicación está vacía.")
             showMapsAlert = true
             return
         }
@@ -387,7 +387,7 @@ struct cardItemDiario: View{
         Task { @MainActor in
             let didOpen = await LocationMapOpener.open(cleaned)
             if !didOpen {
-                mapsAlertMessage = "No se pudo abrir Mapas para esta ubicación."
+                mapsAlertMessage = L10n.exact("No se pudo abrir Mapas para esta ubicación.")
                 showMapsAlert = true
             }
         }

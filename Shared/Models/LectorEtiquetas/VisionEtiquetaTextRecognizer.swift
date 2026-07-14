@@ -38,7 +38,14 @@ final class VisionEtiquetaTextRecognizer: EtiquetaTextRecognizing {
 
             request.recognitionLevel = .accurate
             request.usesLanguageCorrection = true
-            request.recognitionLanguages = ["es-ES", "es-MX", "en-US"]
+            switch AppLanguage.current {
+            case .simplifiedChinese:
+                request.recognitionLanguages = ["zh-Hans", "es-ES", "en-US"]
+            case .english:
+                request.recognitionLanguages = ["en-US", "es-ES", "zh-Hans"]
+            case .spanish:
+                request.recognitionLanguages = ["es-ES", "es-MX", "en-US", "zh-Hans"]
+            }
 
             let handler = VNImageRequestHandler(cgImage: image, options: [:])
             do {

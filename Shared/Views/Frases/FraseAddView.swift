@@ -150,7 +150,7 @@ struct FraseAddView: View {
                             VStack{
                                 Picker("Lista de Contextos", selection: $contextoSeleccionado) {
                                     ForEach(contextoModel.listContextos, id: \.objectID) { contexto in
-                                        Text(contexto.nombre ?? "")
+                                        Text(contexto.localizedName)
                                             .tag(Optional(contexto))
                                             .contextMenu {
                                                 Button("Eliminar Contexto"){

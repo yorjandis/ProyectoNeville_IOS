@@ -27,7 +27,7 @@ final class FrasesRelacionadasModel : ObservableObject {
 extension Frases {
         var relacionadasArray: [Frases] {
             let set = relacionadas as? Set<Frases> ?? []
-            return set.sorted { $0.frase! < $1.frase! }
+            return set.sorted { $0.localizedText < $1.localizedText }
         }
 }
 
@@ -51,4 +51,3 @@ extension Frases {
         relacionadasArray.forEach { desvincularDe($0) }
     }
 }
-

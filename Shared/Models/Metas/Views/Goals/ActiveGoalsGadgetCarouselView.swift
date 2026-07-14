@@ -133,7 +133,7 @@ private struct ActiveGoalGadgetCard: View {
 
     private var hasUnitAvailableForFichaje: Bool {
         guard !goal.isCompleted else { return false }
-        return goal.timeUntilNextUnit(now: clock.now) == "Listo" && goal.nextPendingUnit != nil
+        return goal.isNextUnitReady(now: clock.now) && goal.nextPendingUnit != nil
     }
 
     private var nextPendingFutureUnit: UnitEntity? {
@@ -147,12 +147,21 @@ private struct ActiveGoalGadgetCard: View {
 
     private var nextWindowLabelText: String? {
         guard let startDate = nextPendingFutureUnit?.startDate else { return nil }
-        return "Próxima unidad en \(timeRemainingUntil(until: startDate))"
+        return GoalsL10n.format(
+            "goals.ui.next_unit_in",
+            fallback: "Próxima unidad en {0}",
+            timeRemainingUntil(until: startDate)
+        )
     }
 
     private var statusLabelText: String? {
         if goal.isCompleted {
-            return "Fichadas: \(completedUnitsCount) | Perdidas: \(lostUnitsCount)"
+            return GoalsL10n.format(
+                "goals.ui.completed_lost_counts",
+                fallback: "Fichadas: {0} | Perdidas: {1}",
+                String(completedUnitsCount),
+                String(lostUnitsCount)
+            )
         }
 
         if let nextWindowLabelText {
@@ -168,13 +177,7 @@ private struct ActiveGoalGadgetCard: View {
         let minutes = (interval % 3600) / 60
         let seconds = interval % 60
 
-        if hours > 0 {
-            return "\(hours)h \(minutes)m"
-        } else if minutes > 0 {
-            return "\(minutes)m \(seconds)s"
-        } else {
-            return "\(seconds)s"
-        }
+        return GoalsL10n.countdown(hours: hours, minutes: minutes, seconds: seconds)
     }
 
     var body: some View {
@@ -194,7 +197,10 @@ private struct ActiveGoalGadgetCard: View {
                         .buttonStyle(.plain)
                     }
 
-                    Text(goal.isCompleted ? "Completada" : "Progreso: \(progressText)")
+                    Text(goal.isCompleted
+                        ? GoalsL10n.text("goals.ui.completed", fallback: "Completada")
+                        : GoalsL10n.format("goals.ui.progress_value", fallback: "Progreso: {0}", progressText)
+                    )
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                 }
@@ -207,7 +213,7 @@ private struct ActiveGoalGadgetCard: View {
                         #if os(macOS)
                         showWindow(for: GoalWidgetMetaDetailView(goal: goal),
                                    environmentObjects: [],
-                                   title: "Detalles de la meta",
+                                   title: GoalsL10n.text("goals.ui.goal_details", fallback: "Detalles de la meta"),
                                    size: WindowSize.percentage(width: 0.6, height: 0.8),
                                    isModal: true
                         )
@@ -340,17 +346,20 @@ private struct ActiveGoalGadgetCard: View {
         do {
             try goal.archive(context: context)
             goal.deleteGoal(context: context)
-            alertMessage = "La Meta ha sido archivada"
+            alertMessage = GoalsL10n.text("goals.message.archived", fallback: "La Meta ha sido archivada")
             showAlert = true
         } catch {
-            alertMessage = "La Meta no ha podido archivarse. Inténtelo más tarde"
+            alertMessage = GoalsL10n.text(
+                "goals.error.archive_failed",
+                fallback: "La Meta no ha podido archivarse. Inténtelo más tarde"
+            )
             showAlert = true
         }
     }
 
     private func deleteGoalFromWidget() {
         goal.deleteGoal(context: context)
-        alertMessage = "La Meta ha sido eliminada"
+        alertMessage = GoalsL10n.text("goals.message.deleted", fallback: "La Meta ha sido eliminada")
         showAlert = true
     }
 
@@ -358,7 +367,10 @@ private struct ActiveGoalGadgetCard: View {
         do {
             try goal.reactivateCompleted(context: context)
         } catch {
-            alertMessage = "La Meta no ha podido reactivarse. Inténtelo nuevamente."
+            alertMessage = GoalsL10n.text(
+                "goals.error.reactivate_failed",
+                fallback: "La Meta no ha podido reactivarse. Inténtelo nuevamente."
+            )
             showAlert = true
         }
     }
@@ -446,11 +458,11 @@ private struct GoalWidgetMetaDetailView: View {
                             .font(.title3.bold())
 
                         HStack(spacing: 8) {
-                            Text("Total: \(goal.unitsArray.count)")
-                            Text("Completadas: \(completedUnits)")
-                            Text("Pendientes: \(pendingUnits)")
+                            Text(GoalsL10n.format("goals.ui.total_count", fallback: "Total: {0}", String(goal.unitsArray.count)))
+                            Text(GoalsL10n.format("goals.ui.completed_count", fallback: "Completadas: {0}", String(completedUnits)))
+                            Text(GoalsL10n.format("goals.ui.pending_count", fallback: "Pendientes: {0}", String(pendingUnits)))
                             if lostUnits > 0 {
-                                Text("Perdidas: \(lostUnits)")
+                                Text(GoalsL10n.format("goals.ui.lost_count", fallback: "Perdidas: {0}", String(lostUnits)))
                             }
                         }
                         .font(.caption.bold())
@@ -466,7 +478,10 @@ private struct GoalWidgetMetaDetailView: View {
                             Text("Información")
                                 .font(.headline)
 
-                            Text((goal.descriptionText ?? "").isEmpty ? "Sin información disponible" : (goal.descriptionText ?? ""))
+                            Text((goal.descriptionText ?? "").isEmpty
+                                ? GoalsL10n.text("goals.ui.no_information", fallback: "Sin información disponible")
+                                : (goal.descriptionText ?? "")
+                            )
                                 .font(.body)
                                 .fixedSize(horizontal: false, vertical: true)
                         }

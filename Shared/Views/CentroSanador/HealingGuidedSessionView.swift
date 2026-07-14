@@ -39,7 +39,7 @@ struct HealingGuidedSessionView: View {
             }
         }
         .navigationTitle(healingProtocol.title)
-        .navigationBarTitleDisplayMode(.inline)
+        .healingInlineNavigationTitle()
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button {

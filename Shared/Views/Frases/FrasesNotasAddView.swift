@@ -92,7 +92,7 @@ struct FrasesNotasAddView: View {
             }
             Spacer()
             ScrollView(content: {
-                Text(frase.frase ?? "")
+                Text(frase.localizedText)
                     .font(.system(size: 20))
                 .padding()
             })
@@ -138,7 +138,6 @@ struct FrasesNotasAddView: View {
         
     }
 }
-
 
 
 

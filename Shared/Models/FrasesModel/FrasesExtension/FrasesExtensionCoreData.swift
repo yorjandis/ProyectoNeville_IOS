@@ -26,6 +26,67 @@ extension Frases{
             .trimmingCharacters(in: .whitespacesAndNewlines)
             .lowercased() ?? ""
     }
+
+    var translationsArray: [PhraseTranslation] {
+        Array(translations as? Set<PhraseTranslation> ?? [])
+    }
+
+    private var preferredTranslation: PhraseTranslation? {
+        for language in AppLanguage.current.fallbackChain {
+            if let translation = translationsArray.first(where: {
+                $0.localeIdentifier == language.rawValue
+            }) {
+                return translation
+            }
+        }
+        return nil
+    }
+
+    /// Texto editorial localizado. Las frases personales siempre conservan el texto del usuario.
+    var localizedText: String {
+        guard !isPersonal else { return frase ?? "" }
+        return preferredTranslation?.text ?? frase ?? ""
+    }
+
+    var localizedSource: String {
+        guard !isPersonal else { return fuente ?? "" }
+        return preferredTranslation?.source ?? fuente ?? ""
+    }
+
+    /// Nota incluida por el editor del contenido. No es la nota personal almacenada en `nota`.
+    var localizedEditorialNote: String {
+        guard !isPersonal else { return "" }
+        return preferredTranslation?.editorialNote ?? ""
+    }
+
+    @discardableResult
+    func upsertTranslation(
+        locale: AppLanguage,
+        text: String,
+        source: String,
+        editorialNote: String,
+        context: NSManagedObjectContext
+    ) -> Bool {
+        let translation: PhraseTranslation
+        if let existing = translationsArray.first(where: { $0.localeIdentifier == locale.rawValue }) {
+            translation = existing
+        } else {
+            translation = PhraseTranslation(context: context)
+            translation.id = UUID()
+            translation.localeIdentifier = locale.rawValue
+            translation.phraseID = id
+            translation.phrase = self
+        }
+
+        let changed = translation.text != text
+            || translation.source != source
+            || translation.editorialNote != editorialNote
+        translation.text = text
+        translation.source = source
+        translation.editorialNote = editorialNote
+        translation.phraseID = id
+        return changed
+    }
     
     //Devuelve el nombre del Autor completo
     var getNameAutor : String {
@@ -142,7 +203,7 @@ extension Frases {
             request.predicate = NSPredicate(format: "nota != nil AND nota != ''")
 
         case .buscarTexto(let text):
-            request.predicate = NSPredicate(format: "frase CONTAINS[cd] %@", text)
+            _ = text // La traducción activa se filtra en memoria después del fetch.
 
         case .porAutor(let autor):
             request.predicate = NSPredicate(format: "autor == %@", autor)
@@ -151,7 +212,11 @@ extension Frases {
             break
         }
 
-        return try context.fetch(request)
+        let result = try context.fetch(request)
+        if case .buscarTexto(let text) = query {
+            return result.filter { $0.localizedText.localizedCaseInsensitiveContains(text) }
+        }
+        return result
     }
 }
 
@@ -160,9 +225,11 @@ extension Frases {
     static func getFraseByText(fraseTexto: String, context: NSManagedObjectContext) throws -> Frases? {
         let request: NSFetchRequest<Frases> = Frases.fetchRequest()
         request.predicate = NSPredicate(format: "frase == %@", fraseTexto)
-        return try context.fetch(request).first
+        if let canonical = try context.fetch(request).first {
+            return canonical
+        }
+
+        let allRequest: NSFetchRequest<Frases> = Frases.fetchRequest()
+        return try context.fetch(allRequest).first { $0.localizedText == fraseTexto }
     }
 }
-
-
-

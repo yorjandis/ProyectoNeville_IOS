@@ -288,7 +288,14 @@ final class FrasesModel : ObservableObject {
         let requestBuiltInCount: NSFetchRequest<Frases> = Frases.fetchRequest()
         requestBuiltInCount.predicate = NSPredicate(format: "noinbuilt == %@", false as NSNumber)
         let builtInCountActual = (try? context.count(for: requestBuiltInCount)) ?? 0
-        let forceImport = builtInCountActual == 0
+
+        let spanishTranslationsRequest = NSFetchRequest<PhraseTranslation>(entityName: "PhraseTranslation")
+        spanishTranslationsRequest.predicate = NSPredicate(
+            format: "localeIdentifier == %@",
+            AppLanguage.spanish.rawValue
+        )
+        let spanishTranslationCount = (try? context.count(for: spanishTranslationsRequest)) ?? 0
+        let forceImport = builtInCountActual == 0 || spanishTranslationCount < builtInCountActual
 
         let newHash = HashFileModel().VerificarHashGlobal(
             NameArchivosTXT: ficherosFrases,
@@ -299,6 +306,8 @@ final class FrasesModel : ObservableObject {
         
         if newHash == nil {
             msg("El importador NO procederá ⛔️, TXT sin cambios")
+            importLocalizedPhrasePack(language: .english, fileNames: ficherosFrases)
+            importLocalizedPhrasePack(language: .simplifiedChinese, fileNames: ficherosFrases)
             return
         }
         
@@ -333,16 +342,19 @@ final class FrasesModel : ObservableObject {
         
         
         
-        // 1️⃣.3️⃣ Genera un Diccionario: nombreContexto → Contexto (para evitar duplicados)
-        // Diccionario: nombre de contexto (lowercased) → Contexto
+        // 1️⃣.3️⃣ Genera un diccionario ID estable → Contexto (para evitar duplicados)
         //El diccionario generado se utiliza más abajo en: (7️⃣ Fase 3)
-        var contextosPorNombre: [String: Contexto] = [:]
+        var contextosPorID: [String: Contexto] = [:]
+        var contextosPorNombreCanonico: [String: Contexto] = [:]
         
         let fetchRequestContexto: NSFetchRequest<Contexto> = Contexto.fetchRequest()
         if let contextosExistentes = try? context.fetch(fetchRequestContexto) {
             for contexto in contextosExistentes {
                 if let nombre = contexto.nombre?.trimmingCharacters(in: .whitespacesAndNewlines) {
-                    contextosPorNombre[nombre.lowercased()] = contexto
+                    contextosPorNombreCanonico[nombre.lowercased()] = contexto
+                }
+                if let id = contexto.id, !id.isEmpty {
+                    contextosPorID[id] = contexto
                 }
             }
         }
@@ -401,15 +413,28 @@ final class FrasesModel : ObservableObject {
                 huboCambio = true
             }
             
-            //Si cambió la nota de la frase en TXT
-            if frase.nota != dto.nota {
-                frase.nota = dto.nota
-                huboCambio = true
-            }
-            
             //Si cambió la fuente de la frase en TXT
             if frase.fuente != dto.fuente {
                 frase.fuente = dto.fuente
+                huboCambio = true
+            }
+
+            // El texto, la fuente y la nota editorial viven en una traducción. `nota` queda
+            // reservada exclusivamente para el estado personal del usuario.
+            if frase.upsertTranslation(
+                locale: .spanish,
+                text: dto.texto,
+                source: dto.fuente,
+                editorialNote: dto.nota,
+                context: context
+            ) {
+                huboCambio = true
+            }
+
+            // Migración conservadora: solo se limpia la nota heredada si todavía coincide
+            // exactamente con la nota editorial. Una edición del usuario nunca se borra.
+            if !dto.nota.isEmpty, frase.nota == dto.nota {
+                frase.nota = nil
                 huboCambio = true
             }
 
@@ -506,17 +531,34 @@ final class FrasesModel : ObservableObject {
             frase.eliminarTodosLosContextos()
             
             // 🔹 Este es el código que vincula contextos a la frase
-            for nombre in dto.contexto {   // ya es [String]
-                let key = nombre.lowercased()
+            for (index, nombre) in dto.contexto.enumerated() {
+                let canonicalName = nombre.trimmingCharacters(in: .whitespacesAndNewlines)
+                let suppliedID = dto.contextoIDs.indices.contains(index)
+                    ? dto.contextoIDs[index]
+                    : ""
+                let stableID = suppliedID.isEmpty
+                    ? StableLocalizationID.context(canonicalName: canonicalName)
+                    : suppliedID
                 let contexto: Contexto
                 
-                if let existente = contextosPorNombre[key] {
+                if let existente = contextosPorID[stableID] {
                     contexto = existente
+                } else if let legacy = contextosPorNombreCanonico[canonicalName.lowercased()] {
+                    contexto = legacy
+                    contexto.id = stableID
+                    contextosPorID[stableID] = contexto
                 } else {
                     contexto = Contexto(context: context)
-                    contexto.nombre = nombre
-                    contextosPorNombre[key] = contexto
+                    contexto.id = stableID
+                    contexto.nombre = canonicalName
+                    contextosPorID[stableID] = contexto
+                    contextosPorNombreCanonico[canonicalName.lowercased()] = contexto
                 }
+
+                if contexto.nombre?.isEmpty ?? true {
+                    contexto.nombre = canonicalName
+                }
+                contexto.upsertTranslation(locale: .spanish, name: canonicalName, context: context)
                 
                 frase.vincularConContexto(contexto) //En la función vincularConContexto también se evita contextos duplicados
             }
@@ -540,7 +582,78 @@ final class FrasesModel : ObservableObject {
         
         //🔥 Importante: Almcenando el nuevo VALOR hash creado de los ficheros de frases
         UserDefaults(suiteName: "group.com.ypg.nev.group")?.set(newHash, forKey: HashFileModel.UD_HashFrasesTXT) //Importante!!! Almacenando el nuevo flag
+
+        importLocalizedPhrasePack(language: .english, fileNames: ficherosFrases)
+        importLocalizedPhrasePack(language: .simplifiedChinese, fileNames: ficherosFrases)
         
+    }
+
+    /// Importa exclusivamente el texto editorial de un idioma. No altera favoritos, notas
+    /// personales, relaciones ni los campos canónicos españoles de `Frases` y `Contexto`.
+    private func importLocalizedPhrasePack(language: AppLanguage, fileNames: [String]) {
+        guard language != .spanish else { return }
+
+        let localizedContents = fileNames.sorted().compactMap {
+            language.exactLocalizedTextResource(named: $0)
+        }
+        guard !localizedContents.isEmpty else { return }
+
+        let hashModel = HashFileModel()
+        guard let newHash = hashModel.verificarHashLocalizado(
+            contents: localizedContents,
+            language: language
+        ) else { return }
+
+        let dtos = parsearFrasesNuevoFormato(localizedContents.joined(separator: "\n\n"))
+
+        let phraseRequest: NSFetchRequest<Frases> = Frases.fetchRequest()
+        var phrasesByID: [String: Frases] = [:]
+        for phrase in (try? context.fetch(phraseRequest)) ?? [] {
+            if let id = phrase.id {
+                phrasesByID[id] = phrase
+            }
+        }
+
+        let contextRequest: NSFetchRequest<Contexto> = Contexto.fetchRequest()
+        var contextsByID: [String: Contexto] = [:]
+        for phraseContext in (try? context.fetch(contextRequest)) ?? [] {
+            if let id = phraseContext.id {
+                contextsByID[id] = phraseContext
+            }
+        }
+
+        for dto in dtos {
+            guard let phrase = phrasesByID[dto.id] else { continue }
+            phrase.upsertTranslation(
+                locale: language,
+                text: dto.texto,
+                source: dto.fuente,
+                editorialNote: dto.nota,
+                context: context
+            )
+
+            for (index, translatedName) in dto.contexto.enumerated() {
+                guard dto.contextoIDs.indices.contains(index),
+                      let translatedContext = contextsByID[dto.contextoIDs[index]] else {
+                    continue
+                }
+                translatedContext.upsertTranslation(
+                    locale: language,
+                    name: translatedName,
+                    context: context
+                )
+            }
+        }
+
+        do {
+            if context.hasChanges {
+                try context.save()
+            }
+            hashModel.guardarHashLocalizado(newHash, language: language)
+        } catch {
+            context.rollback()
+            msg("❌ Error importando frases \(language.rawValue): \(error.localizedDescription)")
+        }
     }
     
     
@@ -600,17 +713,17 @@ final class FrasesModel : ObservableObject {
                 switch buscarEn {
                 case .FrasesPersonales:
                     let temp = getFrasesNoInbuilt()
-                    self.listfrases = temp.filter{$0.frase?.localizedCaseInsensitiveContains(textoNormalizado) ?? false}
+                    self.listfrases = temp.filter { $0.localizedText.localizedCaseInsensitiveContains(textoNormalizado) }
                 case .FrasesFavoritas:
                     let temp = getAllFavFrases()
-                    self.listfrases =  temp.filter{$0.frase?.localizedCaseInsensitiveContains(textoNormalizado) ?? false}
+                    self.listfrases = temp.filter { $0.localizedText.localizedCaseInsensitiveContains(textoNormalizado) }
                 case .FrasesConNotas:
                     let temp = getFrasesConNotas()
-                    self.listfrases =  temp.filter{$0.frase?.localizedCaseInsensitiveContains(textoNormalizado) ?? false}
+                    self.listfrases = temp.filter { $0.localizedText.localizedCaseInsensitiveContains(textoNormalizado) }
                 case .TodasFrases:
                     getAllFrases()
                     let temp = self.listfrases
-                    self.listfrases =  temp.filter{$0.frase?.localizedCaseInsensitiveContains(textoNormalizado) ?? false}
+                    self.listfrases = temp.filter { $0.localizedText.localizedCaseInsensitiveContains(textoNormalizado) }
                     
                     
                 }
@@ -640,7 +753,7 @@ final class FrasesModel : ObservableObject {
             let frases = try context.fetch(fetchRequest)
             for frase in frases {
                 for contexto in frase.contextosArray{
-                    list.insert(contexto.nombre ?? "")
+                    list.insert(contexto.localizedName)
                 }
             }
             return list.sorted()
@@ -954,7 +1067,7 @@ final class FrasesModel : ObservableObject {
         // 2️⃣ Paso: eliminar duplicados por texto
         // Agrupamos por texto limpio
         let frasesAgrupadasPorTexto = Dictionary(grouping: frasesPorID.values) {
-            $0.frase?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+            $0.localizedText.trimmingCharacters(in: .whitespacesAndNewlines)
         }
         
         for (_, grupo) in frasesAgrupadasPorTexto {
@@ -1060,5 +1173,3 @@ struct Frase: Transferable {
     }
 }
 #endif
-
-

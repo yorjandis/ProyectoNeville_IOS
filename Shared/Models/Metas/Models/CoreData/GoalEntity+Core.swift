@@ -36,6 +36,13 @@ enum GoalStatsEventType: String {
 
 extension GoalEntity {
 
+    enum NextUnitAvailability {
+        case notStarted
+        case ready
+        case scheduled(Date)
+        case finished
+    }
+
     var wrappedTitle: String {
         title ?? ""
     }
@@ -71,7 +78,7 @@ extension GoalEntity {
 
     var unitLabel: String {
         let value = customUnitLabel?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        return value.isEmpty ? "unidad" : value
+        return value.isEmpty ? GoalsL10n.unitNoun(count: 1) : value
     }
 
     var goalCompletionBasis: GoalCompletionBasis {
@@ -96,38 +103,37 @@ extension GoalEntity {
             ? String(Int(value))
             : value.formatted(.number.precision(.fractionLength(0...2)))
         let label = customUnitLabel?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        if label.isEmpty {
-            return value == 1 ? "Una ejecución" : "\(number) por ejecución"
-        }
-        return value == 1 ? "\(label) por ejecución" : "\(number) \(label) por ejecución"
+        return GoalsL10n.executionTarget(value: value, number: number, label: label)
     }
 
     var scheduleSummary: String {
         let cadence: String
         switch goalScheduleType {
         case .interval:
-            cadence = "Cada \(frequencyValue) \(timeUnit.description(for: frequencyValue))"
+            cadence = GoalsL10n.intervalCadence(frequency: frequencyValue, unit: timeUnit)
         case .weekly:
-            cadence = "\(weeklyDaysValue) \(weeklyDaysValue == 1 ? "día" : "días") por semana"
+            cadence = GoalsL10n.weeklyCadence(days: weeklyDaysValue)
         case .specificDates:
-            cadence = "En fechas específicas"
+            cadence = GoalsL10n.specificDatesCadence()
         }
-
-        if goalDayPeriod == .anytime {
-            return cadence
-        }
-        return "\(cadence) · \(goalDayPeriod.label.lowercased())"
+        return GoalsL10n.addingPeriod(cadence, period: goalDayPeriod)
     }
 
     var planSummary: String {
         let ending: String
         switch goalCompletionBasis {
         case .executions:
-            ending = "\(totalUnits) \(totalUnits == 1 ? "ejecución" : "ejecuciones")"
+            ending = GoalsL10n.executionCount(Int(totalUnits))
         case .duration:
-            ending = "durante \(durationValueNumber) \(goalDurationUnit.description(for: durationValueNumber))"
+            ending = GoalsL10n.duration(value: durationValueNumber, unit: goalDurationUnit)
         }
-        return "\(executionTargetText) · \(scheduleSummary) · \(ending)"
+        return GoalsL10n.format(
+            "goals.dynamic.plan_summary",
+            fallback: "{0} · {1} · {2}",
+            executionTargetText,
+            scheduleSummary,
+            ending
+        )
     }
 
     func durationEndDate(from referenceDate: Date) -> Date? {
@@ -330,9 +336,21 @@ extension GoalEntity {
                 unit.info = info.info
             } else {
                 if executionValueNumber == 1 {
-                    unit.name = "\(unitLabel.prefix(1).uppercased())\(unitLabel.dropFirst()) \(index)"
+                    let customLabel = customUnitLabel?
+                        .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+                    unit.name = customLabel.isEmpty
+                        ? "Unidad \(index)"
+                        : "\(customLabel.prefix(1).uppercased())\(customLabel.dropFirst()) \(index)"
                 } else {
-                    unit.name = "\(executionTargetText.replacingOccurrences(of: " por ejecución", with: "")) · \(index)"
+                    let number = executionValueNumber.rounded() == executionValueNumber
+                        ? String(Int(executionValueNumber))
+                        : executionValueNumber.formatted(
+                            .number.precision(.fractionLength(0...2))
+                        )
+                    let customLabel = customUnitLabel?
+                        .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+                    let target = customLabel.isEmpty ? number : "\(number) \(customLabel)"
+                    unit.name = "\(target) · \(index)"
                 }
                 unit.info = ""
             }
@@ -466,88 +484,35 @@ extension GoalEntity {
         firstPendingUnit(availableAt: Date())
     }
 
-    /// Retorna un string con el tiempo restante hasta la próxima unidad
-    func timeUntilNextUnit(now: Date) -> String? {
-        guard isStarted else { return nil }
-
+    func nextUnitAvailability(now: Date) -> NextUnitAvailability {
+        guard isStarted else { return .notStarted }
         guard let nextUnit = firstPendingUnit(availableAt: nil),
               let start = nextUnit.startDate else {
+            return .finished
+        }
+        return now >= start ? .ready : .scheduled(start)
+    }
+
+    func isNextUnitReady(now: Date) -> Bool {
+        if case .ready = nextUnitAvailability(now: now) {
+            return true
+        }
+        return false
+    }
+
+    /// Retorna un string con el tiempo restante hasta la próxima unidad
+    func timeUntilNextUnit(now: Date) -> String? {
+        switch nextUnitAvailability(now: now) {
+        case .notStarted, .finished:
             return nil
-        }
-
-        if now >= start {
-            return "Listo"
-        }
-        
-        let secondsRemaining = Int(ceil(start.timeIntervalSince(now)))
-        if secondsRemaining < 60 {
-            return "Próxima unidad en \(max(secondsRemaining, 0))s"
-        }
-
-        switch timeUnit {
-        case .minutos:
-            let seconds = start.timeIntervalSince(now)
-            let minutes = Int(ceil(seconds / 60))
-            return "Próxima unidad en \(minutes) min"
-        case .horas:
-            let seconds = start.timeIntervalSince(now)
-            let minutes = Int(ceil(seconds / 60))
-            return "Próxima unidad en \(minutes)min"
-
-        case .dias:
-            let seconds = start.timeIntervalSince(now)
-            let hours = Int(seconds / 3600)
-            let minutes = Int((seconds.truncatingRemainder(dividingBy: 3600)) / 60)
-            
-            var hour: String = ""
-            var minutesTemp: String = ""
-            if hours != 0 {
-                hour = "\(hours)hr y "
-            }
-            if minutes != 0 {
-                minutesTemp = "\(minutes)min"
-            }
-            
-            return "Próxima unidad en \(hour)\(minutesTemp)"
-
-        case .semanas:
-            let diff = Calendar.current.dateComponents([.day, .hour], from: now, to: start)
-            let days = max(diff.day ?? 0, 0)
-            let hours = max(diff.hour ?? 0, 0)
-            return days > 0
-                ? "Próxima unidad en \(days) \(days == 1 ? "día" : "días") y \(hours)hr"
-                : "Próxima unidad en \(hours)hr"
-
-        case .meses:
-            let diff = Calendar.current.dateComponents([.day, .hour], from: now, to: start)
-            var day: String = ""
-            var hour: String = ""
-            if diff.day != 0 {
-                day = "\(diff.day ?? 0)\((diff.day ?? 0) == 1 ? "día" : "días") y "
-            }
-            if diff.hour != 0 {
-                hour = "\(diff.hour ?? 0)hr"
-            }
-            
-            return "Próxima unidad en \(day)\(hour)"
-
-        case .años:
-            let diff = Calendar.current.dateComponents([.month, .day, .hour], from: now, to: start)
-            var month: String = ""
-            var day: String = ""
-            var hour: String = ""
-            
-            if diff.month != 0 {
-                month = "\(diff.month ?? 0)\((diff.month ?? 0) == 1 ? "mes" : "meses") y "
-            }
-            if diff.day != 0 {
-                day = "\(diff.day ?? 0)\((diff.day ?? 0) == 1 ? "día" : "días") y "
-            }
-            if diff.hour != 0 {
-                hour = "\(diff.hour ?? 0)hr"
-            }
-            
-            return "Próxima unidad en \(month) \(day) \(hour)"
+        case .ready:
+            return L10n.string("goal.next_unit.ready", fallback: "Listo")
+        case .scheduled(let start):
+            let formatter = RelativeDateTimeFormatter()
+            formatter.locale = AppLanguage.current.locale
+            formatter.dateTimeStyle = .numeric
+            formatter.unitsStyle = .full
+            return formatter.localizedString(for: start, relativeTo: now)
         }
     }
 
@@ -592,9 +557,17 @@ extension GoalEntity {
 
         for unit in unitsArray {
             let defaultOldName = "\(oldLabel.prefix(1).uppercased())\(oldLabel.dropFirst()) \(unit.index)"
-            if unit.name == defaultOldName || unit.name == "Unidad \(unit.index)" {
-                let label = unitLabel
-                unit.name = "\(label.prefix(1).uppercased())\(label.dropFirst()) \(unit.index)"
+            let index = Int(unit.index)
+            let localizedOldName = GoalsL10n.unitDisplayName(nil, index: index)
+            if unit.name == defaultOldName
+                || unit.name == "Unidad \(unit.index)"
+                || unit.name == "Unit \(unit.index)"
+                || unit.name == "第 \(unit.index) 次"
+                || unit.name == "执行项 \(unit.index)"
+                || unit.name == localizedOldName {
+                unit.name = cleanLabel.isEmpty
+                    ? "Unidad \(unit.index)"
+                    : "\(cleanLabel.prefix(1).uppercased())\(cleanLabel.dropFirst()) \(unit.index)"
             }
 
             guard unit.unitStatus == .pending, let currentStart = unit.startDate else { continue }
@@ -685,7 +658,12 @@ extension GoalEntity {
             throw NSError(
                 domain: "GoalReactivation",
                 code: 1,
-                userInfo: [NSLocalizedDescriptionKey: "La meta todavía no está completada"]
+                userInfo: [
+                    NSLocalizedDescriptionKey: GoalsL10n.text(
+                        "goals.error.not_completed",
+                        fallback: "La meta todavía no está completada"
+                    )
+                ]
             )
         }
 
@@ -698,7 +676,12 @@ extension GoalEntity {
             throw NSError(
                 domain: "GoalReactivation",
                 code: 2,
-                userInfo: [NSLocalizedDescriptionKey: "No se pudo conservar la ejecución anterior"]
+                userInfo: [
+                    NSLocalizedDescriptionKey: GoalsL10n.text(
+                        "goals.error.preserve_previous_run",
+                        fallback: "No se pudo conservar la ejecución anterior"
+                    )
+                ]
             )
         }
 

@@ -239,7 +239,7 @@
                      }label: {
                          HStack{
                              Text(item.rawValue).font(.system(size: 40))
-                             Text(item.txt)
+                             Text(item.localizedTitle)
                              Spacer()
                          }
                      }

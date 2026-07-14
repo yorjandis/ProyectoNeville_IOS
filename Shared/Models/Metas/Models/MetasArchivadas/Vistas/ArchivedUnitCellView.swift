@@ -55,7 +55,7 @@ struct ArchivedUnitCellView: View {
         default: statusEmoji = "🟢"
         }
         
-        return "Unidad \(unit.index) \(statusEmoji)"
+        return "\(GoalsL10n.unitDisplayName(unit.name, index: Int(unit.index))) \(statusEmoji)"
         
     }
 

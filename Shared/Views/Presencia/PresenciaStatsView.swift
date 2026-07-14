@@ -12,8 +12,8 @@ private enum PresenciaStatsAppearance: String, CaseIterable {
 
     var title: String {
         switch self {
-        case .dark: return "Oscuro"
-        case .light: return "Claro"
+        case .dark: return L10n.exact("Oscuro")
+        case .light: return L10n.exact("Claro")
         }
     }
 
@@ -58,15 +58,15 @@ private enum PresenciaStatsCard: String, CaseIterable {
 
     var title: String {
         switch self {
-        case .todayReturns: return "Hoy"
-        case .currentStreak: return "Racha"
-        case .weeklyAverage: return "Promedio semanal"
-        case .dominantMood: return "Estado predominante"
-        case .practicalInsights: return "Datos prácticos"
-        case .dailyEvents: return "Eventos diarios"
-        case .dailyTimeline: return "Momentos de hoy"
-        case .ratio: return "Cociente"
-        case .moods: return "Estados de ánimo"
+        case .todayReturns: return L10n.exact("Hoy")
+        case .currentStreak: return L10n.exact("Racha")
+        case .weeklyAverage: return L10n.exact("Promedio semanal")
+        case .dominantMood: return L10n.exact("Estado predominante")
+        case .practicalInsights: return L10n.exact("Datos prácticos")
+        case .dailyEvents: return L10n.exact("Eventos diarios")
+        case .dailyTimeline: return L10n.exact("Momentos de hoy")
+        case .ratio: return L10n.exact("Cociente")
+        case .moods: return L10n.exact("Estados de ánimo")
         }
     }
 }
@@ -349,7 +349,11 @@ struct PresenciaStatsView: View {
             Text("Presencia")
                 .font(.largeTitle.bold())
                 .foregroundStyle(PresenciaStatsPalette.primaryText)
-            Text("Hoy has vuelto al presente \(todayPresentCount) \(todayPresentCount == 1 ? "vez" : "veces")")
+            Text(L10n.format(
+                todayPresentCount == 1 ? "presence.today_return.singular" : "presence.today_return.plural",
+                fallback: todayPresentCount == 1 ? "Hoy has vuelto al presente {0} vez" : "Hoy has vuelto al presente {0} veces",
+                "\(todayPresentCount)"
+            ))
                 .font(.headline)
                 .foregroundStyle(PresenciaStatsPalette.secondaryText)
         }
@@ -589,8 +593,8 @@ private struct PresenceCardHeader: View {
             .frame(width: 46, height: 46)
 
             VStack(alignment: .leading, spacing: 3) {
-                Text(title)
-                Text(subtitle)
+                Text(L10n.exact(title))
+                Text(L10n.exact(subtitle))
             }
             .font(.subheadline.weight(.medium))
             .foregroundStyle(PresenciaStatsPalette.primaryText)
@@ -625,7 +629,7 @@ private struct PresenceMetricCardHeader<Trailing: View>: View {
                 .fixedSize()
             }
 
-            Text(title)
+            Text(L10n.exact(title))
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(PresenciaStatsPalette.primaryText)
                 .lineLimit(2)
@@ -650,11 +654,11 @@ private struct PresenciaInfoButton: View {
                 .foregroundStyle(PresenciaStatsPalette.secondaryText)
         }
         .buttonStyle(.plain)
-        .accessibilityLabel("Información sobre \(title)")
-        .alert(title, isPresented: $showInfo) {
+        .accessibilityLabel(L10n.format("presence.info.about", fallback: "Información sobre {0}", L10n.exact(title)))
+        .alert(L10n.exact(title), isPresented: $showInfo) {
             Button("Entendido", role: .cancel) {}
         } message: {
-            Text(message)
+            Text(L10n.exact(message))
         }
     }
 }
@@ -678,7 +682,7 @@ private struct TodayReturnsCard: View {
                 .foregroundStyle(.purple)
                 .frame(maxWidth: .infinity)
 
-            Text(count >= 10 ? "¡Sigue así!" : "Vuelve cuando lo notes")
+            Text(L10n.exact(count >= 10 ? "¡Sigue así!" : "Vuelve cuando lo notes"))
                 .font(.subheadline.weight(.medium))
                 .foregroundStyle(PresenciaStatsPalette.secondaryText)
                 .frame(maxWidth: .infinity)
@@ -807,14 +811,16 @@ private struct DominantMoodCard: View {
             .frame(width: 74, height: 74)
             .frame(maxWidth: .infinity)
 
-            Text(summary?.title ?? "Sin registros")
+            Text(summary?.title ?? L10n.exact("Sin registros"))
                 .font(.headline)
                 .foregroundStyle(.blue)
                 .lineLimit(1)
                 .minimumScaleFactor(0.75)
                 .frame(maxWidth: .infinity)
 
-            Text(summary.map { "\($0.percentage)% de tus registros" } ?? "Registra un estado")
+            Text(summary.map {
+                L10n.format("presence.dominant.percentage", fallback: "{0}% de tus registros", "\($0.percentage)")
+            } ?? L10n.exact("Registra un estado"))
                 .font(.subheadline)
                 .foregroundStyle(PresenciaStatsPalette.secondaryText)
                 .lineLimit(1)
@@ -831,17 +837,17 @@ private struct PresenciaPracticalInsightsCard: View {
 
     private var mostPresentDayText: String {
         guard let day = stats.max(by: { $0.presentes < $1.presentes }), day.presentes > 0 else {
-            return "Aún no hay un día destacado."
+            return L10n.exact("Aún no hay un día destacado.")
         }
 
-        return "Tu día más consciente fue el \(weekdayName(for: day.date))."
+        return L10n.format("presence.insights.best_day", fallback: "Tu día más consciente fue el {0}.", weekdayName(for: day.date))
     }
 
     private var averageText: String {
-        guard !stats.isEmpty else { return "0 por día" }
+        guard !stats.isEmpty else { return L10n.format("presence.insights.per_day", fallback: "{0} por día", "0") }
         let total = stats.reduce(0) { $0 + $1.presentes }
         let average = Double(total) / Double(stats.count)
-        return "\(formatAverage(average)) por día"
+        return L10n.format("presence.insights.per_day", fallback: "{0} por día", formatAverage(average))
     }
 
     private var weeklyTrendText: String {
@@ -849,26 +855,29 @@ private struct PresenciaPracticalInsightsCard: View {
         let previousWeek = stats.dropLast(7).suffix(7).reduce(0) { $0 + $1.presentes }
 
         guard currentWeek > 0 || previousWeek > 0 else {
-            return "Sin tendencia suficiente."
+            return L10n.exact("Sin tendencia suficiente.")
         }
 
         guard previousWeek > 0 else {
-            return "Nueva actividad esta semana."
+            return L10n.exact("Nueva actividad esta semana.")
         }
 
         let percentage = Int(((Double(currentWeek - previousWeek) / Double(previousWeek)) * 100).rounded())
         if percentage == 0 {
-            return "Igual que la semana pasada."
+            return L10n.exact("Igual que la semana pasada.")
         }
 
-        let direction = percentage > 0 ? "más" : "menos"
-        return "\(percentage > 0 ? "+" : "")\(percentage)% \(direction) momentos presentes que la semana pasada."
+        let key = percentage > 0 ? "presence.insights.trend.more" : "presence.insights.trend.less"
+        let fallback = percentage > 0
+            ? "+{0}% más momentos presentes que la semana pasada."
+            : "{0}% menos momentos presentes que la semana pasada."
+        return L10n.format(key, fallback: fallback, "\(abs(percentage))")
     }
 
     private var criticalWindowText: String {
         let automaticEvents = events.filter(\.isAutomaticPilot)
         guard !automaticEvents.isEmpty else {
-            return "No se detecta una franja crítica."
+            return L10n.exact("No se detecta una franja crítica.")
         }
 
         let calendar = Calendar.current
@@ -881,10 +890,14 @@ private struct PresenciaPracticalInsightsCard: View {
         }
 
         guard let busiestWindow = windowCounts.max(by: { $0.count < $1.count }), busiestWindow.count > 0 else {
-            return "No se detecta una franja crítica."
+            return L10n.exact("No se detecta una franja crítica.")
         }
 
-        return "Entre \(hourText(busiestWindow.startHour)) y \(hourText(busiestWindow.startHour + 3)) se concentra más piloto automático."
+        return L10n.format(
+            "presence.insights.critical_window",
+            fallback: "Entre {0} y {1} se concentra más piloto automático.",
+            hourText(busiestWindow.startHour), hourText(busiestWindow.startHour + 3)
+        )
     }
 
     private var contextualSuggestionText: String {
@@ -917,15 +930,11 @@ private struct PresenciaPracticalInsightsCard: View {
     }
 
     private var infoMessage: String {
-        """
-        Se calculan con los últimos \(selectedRange) días seleccionados en esta tarjeta.
-
-        Día con más presencia: día con mayor número de retornos conscientes.
-        Promedio por día: total de retornos conscientes dividido entre los días del rango.
-        Tendencia semanal: últimos 7 días comparados con los 7 días anteriores.
-        Franja crítica: bloque de 3 horas con más registros de Piloto automático o Distraído.
-        Sugerencia contextual: recomendación breve derivada de concentración horaria, equilibrio entre presencia/piloto automático y tendencia reciente.
-        """
+        L10n.format(
+            "presence.insights.explanation",
+            fallback: "Se calculan con los últimos {0} días seleccionados en esta tarjeta.\n\nDía con más presencia: día con mayor número de retornos conscientes.\nPromedio por día: total de retornos conscientes dividido entre los días del rango.\nTendencia semanal: últimos 7 días comparados con los 7 días anteriores.\nFranja crítica: bloque de 3 horas con más registros de Piloto automático o Distraído.\nSugerencia contextual: recomendación breve derivada de concentración horaria, equilibrio entre presencia/piloto automático y tendencia reciente.",
+            "\(selectedRange)"
+        )
     }
 
     private func insightRow(icon: String, title: String, value: String, accent: Color) -> some View {
@@ -937,7 +946,7 @@ private struct PresenciaPracticalInsightsCard: View {
                 .background(Circle().fill(accent.opacity(0.16)))
 
             VStack(alignment: .leading, spacing: 3) {
-                Text(title)
+                Text(L10n.exact(title))
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(PresenciaStatsPalette.secondaryText)
                 Text(value)
@@ -954,7 +963,7 @@ private struct PresenciaPracticalInsightsCard: View {
 
     private func weekdayName(for date: Date) -> String {
         let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "es_ES")
+        formatter.locale = AppLanguage.current.locale
         formatter.dateFormat = "EEEE"
         return formatter.string(from: date)
     }
@@ -963,7 +972,7 @@ private struct PresenciaPracticalInsightsCard: View {
         if value.rounded() == value {
             return "\(Int(value))"
         }
-        return String(format: "%.1f", value)
+        return value.formatted(.number.locale(AppLanguage.current.locale).precision(.fractionLength(1)))
     }
 
     private func hourText(_ hour: Int) -> String {
@@ -1073,46 +1082,50 @@ private enum PresenciaDailyEventsSuggestion {
         let activeDays = stats.filter { $0.total > 0 }.count
 
         guard totalCount > 0 else {
-            return "Aún no hay suficientes registros en este rango. Haz uno o dos retornos conscientes hoy para que aparezca un patrón útil."
+            return L10n.exact("Aún no hay suficientes registros en este rango. Haz uno o dos retornos conscientes hoy para que aparezca un patrón útil.")
         }
 
         if activeDays <= max(2, stats.count / 6) {
-            return "Hay pocos días con registros. Prueba una pausa breve a media mañana y otra al final de la tarde para empezar a revelar tu patrón."
+            return L10n.exact("Hay pocos días con registros. Prueba una pausa breve a media mañana y otra al final de la tarde para empezar a revelar tu patrón.")
         }
 
         if presentCount == 0 {
-            return "Por ahora solo aparecen momentos de piloto automático. Elige una hora fácil, como antes de comer, para registrar un retorno consciente deliberado."
+            return L10n.exact("Por ahora solo aparecen momentos de piloto automático. Elige una hora fácil, como antes de comer, para registrar un retorno consciente deliberado.")
         }
 
         if automaticCount > presentCount {
             if let window = strongestWindow(events: events.filter(\.isAutomaticPilot)) {
-                return "El piloto automático se concentra entre \(hourText(window.start)) y \(hourText(window.end)). Prueba una pausa de 30 segundos justo antes de esa franja."
+                return L10n.format(
+                    "presence.suggestion.automatic_window",
+                    fallback: "El piloto automático se concentra entre {0} y {1}. Prueba una pausa de 30 segundos justo antes de esa franja.",
+                    hourText(window.start), hourText(window.end)
+                )
             }
-            return "En este rango hay más piloto automático que presencia. Elige una transición diaria, como antes de abrir una app o comenzar una tarea, para volver al cuerpo."
+            return L10n.exact("En este rango hay más piloto automático que presencia. Elige una transición diaria, como antes de abrir una app o comenzar una tarea, para volver al cuerpo.")
         }
 
         if let dominantPeriod = dominantPresencePeriod(events: events), dominantPeriod.count >= 2 {
             switch dominantPeriod.period {
             case .morning:
-                return "Tus registros conscientes aparecen más por la mañana. Podrías reforzar ese impulso con una pausa breve antes del mediodía."
+                return L10n.exact("Tus registros conscientes aparecen más por la mañana. Podrías reforzar ese impulso con una pausa breve antes del mediodía.")
             case .afternoon:
-                return "Tus registros conscientes se concentran durante la tarde. Prueba un retorno intencional por la mañana para equilibrar el día."
+                return L10n.exact("Tus registros conscientes se concentran durante la tarde. Prueba un retorno intencional por la mañana para equilibrar el día.")
             case .evening:
-                return "Tus registros conscientes aparecen más después de las 18:00. Podrías hacer una pausa breve antes del mediodía."
+                return L10n.exact("Tus registros conscientes aparecen más después de las 18:00. Podrías hacer una pausa breve antes del mediodía.")
             case .night:
-                return "Tus registros conscientes aparecen más tarde en el día. Prueba una señal suave al despertar para llevar presencia al inicio de la jornada."
+                return L10n.exact("Tus registros conscientes aparecen más tarde en el día. Prueba una señal suave al despertar para llevar presencia al inicio de la jornada.")
             }
         }
 
         if isRecentPresenceImproving(stats: stats) {
-            return "Tus últimos días muestran más presencia que los anteriores. Mantén el gesto que ya funciona y añade una pausa corta en la franja donde sueles olvidarte."
+            return L10n.exact("Tus últimos días muestran más presencia que los anteriores. Mantén el gesto que ya funciona y añade una pausa corta en la franja donde sueles olvidarte.")
         }
 
         if automaticCount == 0 {
-            return "Este rango muestra presencia sin piloto automático registrado. Añade también los momentos de distracción cuando ocurran para obtener sugerencias más precisas."
+            return L10n.exact("Este rango muestra presencia sin piloto automático registrado. Añade también los momentos de distracción cuando ocurran para obtener sugerencias más precisas.")
         }
 
-        return "Tus registros están bastante equilibrados. Elige una franja concreta del día y repite ahí una pausa consciente para convertirla en hábito."
+        return L10n.exact("Tus registros están bastante equilibrados. Elige una franja concreta del día y repite ahí una pausa consciente para convertirla en hábito.")
     }
 
     private enum Period {
@@ -1181,7 +1194,7 @@ private struct PresenciaRangePicker: View {
     }
 
     var body: some View {
-        Picker(title, selection: $selectedRange) {
+        Picker(L10n.exact(title), selection: $selectedRange) {
             Text("14 días").tag(14)
             Text("30 días").tag(30)
             Text("90 días").tag(90)

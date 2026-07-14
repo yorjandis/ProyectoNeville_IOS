@@ -40,7 +40,9 @@ struct HealingSituationDetailView: View {
             }
         }
         .navigationTitle(situation.title)
+        #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
+        #endif
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button(action: toggleFavorite) {

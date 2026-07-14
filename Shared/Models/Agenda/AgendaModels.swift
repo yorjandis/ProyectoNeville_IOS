@@ -10,10 +10,10 @@ enum AgendaPriority: String, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .neutral: return "Neutral"
-        case .baja: return "Baja"
-        case .media: return "Media"
-        case .alta: return "Alta"
+        case .neutral: return L10n.exact("Neutral")
+        case .baja: return L10n.exact("Baja")
+        case .media: return L10n.exact("Media")
+        case .alta: return L10n.exact("Alta")
         }
     }
 
@@ -55,10 +55,10 @@ enum AgendaRecurrenceMode: String, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .none: return "Sin repetir"
-        case .weekdays: return "Días de la semana"
-        case .specificDates: return "Fechas concretas"
-        case .frequency: return "Frecuencia"
+        case .none: return L10n.exact("Sin repetir")
+        case .weekdays: return L10n.exact("Días de la semana")
+        case .specificDates: return L10n.exact("Fechas concretas")
+        case .frequency: return L10n.exact("Frecuencia")
         }
     }
 }
@@ -72,9 +72,9 @@ enum AgendaRecurrenceFrequency: String, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .weekly: return "Semanal"
-        case .monthly: return "Mensual"
-        case .yearly: return "Anual"
+        case .weekly: return L10n.exact("Semanal")
+        case .monthly: return L10n.exact("Mensual")
+        case .yearly: return L10n.exact("Anual")
         }
     }
 }

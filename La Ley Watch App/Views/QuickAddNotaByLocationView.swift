@@ -172,9 +172,9 @@ final class WatchLocationCapture: NSObject, ObservableObject, CLLocationManagerD
         case .notDetermined:
             manager.requestWhenInUseAuthorization()
         case .denied, .restricted:
-            finish(.failure(NSError(domain: "WatchLocationCapture", code: 1, userInfo: [NSLocalizedDescriptionKey: "Activa permisos de ubicación en Ajustes."])))
+            finish(.failure(NSError(domain: "WatchLocationCapture", code: 1, userInfo: [NSLocalizedDescriptionKey: WatchL10n.exact("Activa permisos de ubicación en Ajustes.")])))
         @unknown default:
-            finish(.failure(NSError(domain: "WatchLocationCapture", code: 2, userInfo: [NSLocalizedDescriptionKey: "Estado de ubicación no soportado."])))
+            finish(.failure(NSError(domain: "WatchLocationCapture", code: 2, userInfo: [NSLocalizedDescriptionKey: WatchL10n.exact("Estado de ubicación no soportado.")])))
         }
     }
 
@@ -184,7 +184,7 @@ final class WatchLocationCapture: NSObject, ObservableObject, CLLocationManagerD
             if status == .authorizedAlways || status == .authorizedWhenInUse {
                 self.startPrecisionCapture()
             } else if status == .denied || status == .restricted {
-                self.finish(.failure(NSError(domain: "WatchLocationCapture", code: 3, userInfo: [NSLocalizedDescriptionKey: "Permiso de ubicación denegado."])))
+                self.finish(.failure(NSError(domain: "WatchLocationCapture", code: 3, userInfo: [NSLocalizedDescriptionKey: WatchL10n.exact("Permiso de ubicación denegado.")])))
             }
         }
     }
@@ -239,7 +239,7 @@ final class WatchLocationCapture: NSObject, ObservableObject, CLLocationManagerD
                 if let bestLocation = self.bestLocation {
                     self.finish(.success(Self.coordinateString(from: bestLocation.coordinate)))
                 } else {
-                    self.finish(.failure(NSError(domain: "WatchLocationCapture", code: 4, userInfo: [NSLocalizedDescriptionKey: "No se pudo obtener la ubicación actual."])))
+                    self.finish(.failure(NSError(domain: "WatchLocationCapture", code: 4, userInfo: [NSLocalizedDescriptionKey: WatchL10n.exact("No se pudo obtener la ubicación actual.")])))
                 }
             }
         }

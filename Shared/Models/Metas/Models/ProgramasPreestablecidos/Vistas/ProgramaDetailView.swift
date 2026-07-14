@@ -32,7 +32,11 @@ struct ProgramaDetailView: View {
                         .foregroundStyle(.orange)
                         .bold()
                     
-                    Text("Programa: \(programa.scheduleSummary).")
+                    Text(GoalsL10n.format(
+                        "goals.ui.program_summary",
+                        fallback: "Programa: {0}.",
+                        programa.scheduleSummary
+                    ))
                     
                     
                     Text("Detalles de las unidades:")

@@ -153,7 +153,7 @@ struct AgendaEditorView: View {
 #if os(macOS)
             .padding(14)
 #endif
-            .navigationTitle(baseItem.titulo.isEmpty ? "Nueva actividad" : "Editar actividad")
+            .navigationTitle(L10n.exact(baseItem.titulo.isEmpty ? "Nueva actividad" : "Editar actividad"))
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancelar") { dismiss() }
@@ -511,7 +511,7 @@ final class AgendaLocationCapture: NSObject, ObservableObject, CLLocationManager
             finish(.failure(NSError(
                 domain: "AgendaLocationCapture",
                 code: 0,
-                userInfo: [NSLocalizedDescriptionKey: "Los servicios de ubicación están desactivados en el sistema."]
+                userInfo: [NSLocalizedDescriptionKey: L10n.exact("Los servicios de ubicación están desactivados en el sistema.")]
             )))
             return
         }
@@ -522,9 +522,9 @@ final class AgendaLocationCapture: NSObject, ObservableObject, CLLocationManager
         case .notDetermined:
             manager.requestAlwaysAuthorization()
         case .denied, .restricted:
-            finish(.failure(NSError(domain: "AgendaLocationCapture", code: 1, userInfo: [NSLocalizedDescriptionKey: "No hay permisos de ubicación. Actívalos en Ajustes."])))
+            finish(.failure(NSError(domain: "AgendaLocationCapture", code: 1, userInfo: [NSLocalizedDescriptionKey: L10n.exact("No hay permisos de ubicación. Actívalos en Ajustes.")])))
         @unknown default:
-            finish(.failure(NSError(domain: "AgendaLocationCapture", code: 2, userInfo: [NSLocalizedDescriptionKey: "Estado de ubicación no soportado."])))
+            finish(.failure(NSError(domain: "AgendaLocationCapture", code: 2, userInfo: [NSLocalizedDescriptionKey: L10n.exact("Estado de ubicación no soportado.")])))
         }
 #else
         switch manager.authorizationStatus {
@@ -533,9 +533,9 @@ final class AgendaLocationCapture: NSObject, ObservableObject, CLLocationManager
         case .notDetermined:
             manager.requestWhenInUseAuthorization()
         case .denied, .restricted:
-            finish(.failure(NSError(domain: "AgendaLocationCapture", code: 1, userInfo: [NSLocalizedDescriptionKey: "No hay permisos de ubicación. Actívalos en Ajustes."])))
+            finish(.failure(NSError(domain: "AgendaLocationCapture", code: 1, userInfo: [NSLocalizedDescriptionKey: L10n.exact("No hay permisos de ubicación. Actívalos en Ajustes.")])))
         @unknown default:
-            finish(.failure(NSError(domain: "AgendaLocationCapture", code: 2, userInfo: [NSLocalizedDescriptionKey: "Estado de ubicación no soportado."])))
+            finish(.failure(NSError(domain: "AgendaLocationCapture", code: 2, userInfo: [NSLocalizedDescriptionKey: L10n.exact("Estado de ubicación no soportado.")])))
         }
 #endif
     }
@@ -551,7 +551,7 @@ final class AgendaLocationCapture: NSObject, ObservableObject, CLLocationManager
         if isAuthorized(status) {
             startPrecisionCapture()
         } else if status == .denied || status == .restricted {
-            finish(.failure(NSError(domain: "AgendaLocationCapture", code: 3, userInfo: [NSLocalizedDescriptionKey: "Permiso de ubicación denegado."])))
+            finish(.failure(NSError(domain: "AgendaLocationCapture", code: 3, userInfo: [NSLocalizedDescriptionKey: L10n.exact("Permiso de ubicación denegado.")])))
         }
     }
 
@@ -608,7 +608,7 @@ final class AgendaLocationCapture: NSObject, ObservableObject, CLLocationManager
                 if let bestLocation = self.bestLocation {
                     self.finish(.success(LocationCoordinateFormatter.string(from: bestLocation.coordinate)))
                 } else {
-                    self.finish(.failure(NSError(domain: "AgendaLocationCapture", code: 4, userInfo: [NSLocalizedDescriptionKey: "No se pudo obtener la ubicación actual."])))
+                    self.finish(.failure(NSError(domain: "AgendaLocationCapture", code: 4, userInfo: [NSLocalizedDescriptionKey: L10n.exact("No se pudo obtener la ubicación actual.")])))
                 }
             }
         }
@@ -630,7 +630,7 @@ enum LocationMapApp: String, CaseIterable, Identifiable {
     var title: String {
         switch self {
         case .appleMaps:
-            return "Mapas"
+            return L10n.exact("Mapas")
         case .googleMaps:
             return "Google Maps"
         }
@@ -684,7 +684,7 @@ enum LocationMapOpener {
         switch preference {
         case .appleMaps:
             let mapItem = MKMapItem(placemark: MKPlacemark(coordinate: coordinate))
-            mapItem.name = "Ubicación"
+            mapItem.name = L10n.exact("Ubicación")
 #if os(macOS)
             return await mapItem.openInMaps(launchOptions: [
                 MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving

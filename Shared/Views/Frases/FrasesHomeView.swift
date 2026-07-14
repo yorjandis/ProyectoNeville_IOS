@@ -48,7 +48,7 @@ struct FrasesHomeView : View{
     @State private var showFraseInformation : Bool = false
     
     private var fraseCompartir : String{
-        return frase?.frase ?? ""
+        return frase?.localizedText ?? ""
     }
     
     //Mostrar Alerta
@@ -76,7 +76,7 @@ struct FrasesHomeView : View{
                             VStack(spacing: 0) {
                                 Spacer(minLength: 0)
 
-                                Text(frase.frase ?? "")
+                                Text(frase.localizedText)
                                     .font(.system(size: CGFloat(fontSizeFrases), design: .rounded))
                                     .foregroundStyle( self.colorTextAutor != nil ? self.colorTextAutor!  : self.settingModel.colorfrase)
                                     .modifier(mof_frases())
@@ -243,7 +243,7 @@ struct FrasesHomeView : View{
                                 self.alertMessage = """
                                     Autor: \(frase.getNameAutor)  
                                     
-                                    Contextos: \n - \((frase.contextosArray.map{$0.nombre ?? ""}).joined(separator: "\n- "))
+                                    Contextos: \n - \((frase.contextosArray.map(\.localizedName)).joined(separator: "\n- "))
                                     """
                                 self.showAlert = true
                                 
@@ -253,7 +253,8 @@ struct FrasesHomeView : View{
                             
                             Button{
                                 //Guarda la nota poniendo como título una parte de la cadena
-                                _ = NotasModel().addNote(nota: self.frase?.frase ?? "", title: "\(String(self.frase?.frase ?? "").prefix((self.frase?.frase ?? "").count / 3 )))...")
+                                let text = self.frase?.localizedText ?? ""
+                                _ = NotasModel().addNote(nota: text, title: "\(String(text.prefix(text.count / 3)))...")
                             }label: {
                                 Label("Almacenar en Notas", systemImage: "list.bullet.clipboard")
                             }
@@ -267,7 +268,7 @@ struct FrasesHomeView : View{
                     
                             #if os(macOS)
                             Button{
-                                showWindow(for: GenerateQRView(footer: self.frase?.frase ?? "", showImage: true),
+                                showWindow(for: GenerateQRView(footer: self.frase?.localizedText ?? "", showImage: true),
                                            environmentObjects: [self.frasesModel],
                                            size: AppCons.windows_size_content,
                                            isModal: false) //Debe ser una ventana no modal, de lo contrario no funciona el compartir la imagen en macOS
@@ -276,7 +277,7 @@ struct FrasesHomeView : View{
                             }
                             #else
                             NavigationLink{
-                                GenerateQRView(footer: self.frase?.frase ?? "", showImage: true)
+                                GenerateQRView(footer: self.frase?.localizedText ?? "", showImage: true)
                             }label:{
                                 Label("Generar QR", systemImage: "qrcode")
                             }
@@ -284,7 +285,7 @@ struct FrasesHomeView : View{
                             #endif
                             #if os(macOS)
                             Button{
-                                showWindow(for: LienzoMain(texto: self.frase?.frase ?? "", imagenPrimariaACargar: LienzoModel.getImagenAutor(autor: self.frase?.autor ?? "nev" )),
+                                showWindow(for: LienzoMain(texto: self.frase?.localizedText ?? "", imagenPrimariaACargar: LienzoModel.getImagenAutor(autor: self.frase?.autor ?? "nev" )),
                                            environmentObjects: [],
                                            title: "Lienzo",
                                            size: .absolute(CGSize(width: 650, height: 750)),
@@ -296,7 +297,7 @@ struct FrasesHomeView : View{
                             
                             #else
                             NavigationLink{
-                                LienzoMain(texto: self.frase?.frase ?? "",imagenPrimariaACargar: LienzoModel.getImagenAutor(autor: self.frase?.autor ?? ""))
+                                LienzoMain(texto: self.frase?.localizedText ?? "",imagenPrimariaACargar: LienzoModel.getImagenAutor(autor: self.frase?.autor ?? ""))
                             }label: {
                                 Label("Lienzo", systemImage: "heart.text.square")
                             }
@@ -306,7 +307,7 @@ struct FrasesHomeView : View{
                             #if os(macOS)
                             
                             Button{
-                                showWindow(for: ReminderEditorView(reminderAEditar: nil, titleAImportar: nil, textoAImportar: self.frase?.frase ?? "", onSave: {}),
+                                showWindow(for: ReminderEditorView(reminderAEditar: nil, titleAImportar: nil, textoAImportar: self.frase?.localizedText ?? "", onSave: {}),
                                            environmentObjects: [],
                                            title: "Lienzo",
                                            size: .absolute(CGSize(width: 650, height: 750)),
@@ -318,7 +319,7 @@ struct FrasesHomeView : View{
                             #else
                             
                             NavigationLink{
-                                ReminderEditorView(reminderAEditar: nil, titleAImportar: nil, textoAImportar: self.frase?.frase ?? "", onSave: {})
+                                ReminderEditorView(reminderAEditar: nil, titleAImportar: nil, textoAImportar: self.frase?.localizedText ?? "", onSave: {})
                             }label:{
                                 Label("Recordatorios", systemImage: "heart.text.square")
                             }
@@ -326,7 +327,7 @@ struct FrasesHomeView : View{
                             #endif
                             
                             
-                            ShareLink(item: self.frase?.frase ?? "") {
+                            ShareLink(item: self.frase?.localizedText ?? "") {
                                             Label("Compartir frase", systemImage: "square.and.arrow.up")
                                         }
                             
@@ -351,7 +352,7 @@ struct FrasesHomeView : View{
                                     Menu{
                                     #if os(macOS)
                                         Button{
-                                            showWindow(for: RespondView(nameConference: "", texto: self.frase?.frase ?? "", tipoSalida: .interpretar, autorRespuesta: self.frase?.autor ?? "nev"),
+                                            showWindow(for: RespondView(nameConference: "", texto: self.frase?.localizedText ?? "", tipoSalida: .interpretar, autorRespuesta: self.frase?.autor ?? "nev"),
                                                        environmentObjects: [self.frasesModel, self.settingModel],
                                                        size: AppCons.windows_size_content,
                                                        isModal: true,
@@ -363,7 +364,7 @@ struct FrasesHomeView : View{
                                         .tint(.purple)
                                         
                                         Button{
-                                            showWindow(for: RespondView(nameConference: "", texto: self.frase?.frase ?? "", tipoSalida: .practicaConcreta, autorRespuesta: self.frase?.autor ?? "nev"),
+                                            showWindow(for: RespondView(nameConference: "", texto: self.frase?.localizedText ?? "", tipoSalida: .practicaConcreta, autorRespuesta: self.frase?.autor ?? "nev"),
                                                        environmentObjects: [self.frasesModel, self.settingModel],
                                                        size: AppCons.windows_size_content,
                                                        isModal: true,
@@ -375,7 +376,7 @@ struct FrasesHomeView : View{
                                         .tint(.purple)
                                         
                                         Button{
-                                            showWindow(for: ChatView(textoACargar: self.frase?.frase ?? ""),
+                                            showWindow(for: ChatView(textoACargar: self.frase?.localizedText ?? ""),
                                                        environmentObjects: [self.frasesModel, self.settingModel],
                                                                                         size: AppCons.windows_size_content,
                                                        isModal: false,
@@ -389,21 +390,21 @@ struct FrasesHomeView : View{
                                         
                                     #else
                                         NavigationLink{
-                                            RespondView(nameConference: "", texto: self.frase?.frase ?? "", tipoSalida: .interpretar, autorRespuesta: frase.autor ?? "nev")
+                                            RespondView(nameConference: "", texto: self.frase?.localizedText ?? "", tipoSalida: .interpretar, autorRespuesta: frase.autor ?? "nev")
                                         }label: {
                                             Label("Interpretar", systemImage: "sparkles")
                                         }
                                         .tint(.purple)
                                         
                                         NavigationLink{
-                                            RespondView(nameConference: "", texto: self.frase?.frase ?? "", tipoSalida: .practicaConcreta, autorRespuesta: self.frase?.autor ?? "nev" )
+                                            RespondView(nameConference: "", texto: self.frase?.localizedText ?? "", tipoSalida: .practicaConcreta, autorRespuesta: self.frase?.autor ?? "nev" )
                                         }label: {
                                             Label("Aplicación Práctica", systemImage: "sparkles")
                                         }
                                         .tint(.purple)
                                         
                                         NavigationLink{
-                                            ChatView(textoACargar: self.frase?.frase ?? "")
+                                            ChatView(textoACargar: self.frase?.localizedText ?? "")
                                         }label: {
                                             Label("Charlar con IA", systemImage: "sparkles")
                                         }
@@ -504,7 +505,7 @@ struct FrasesHomeView : View{
 
     
     private func cargarFraseInicialSiEsNecesario() {
-        guard (self.frase?.frase ?? "").isEmpty else { return }
+        guard (self.frase?.localizedText ?? "").isEmpty else { return }
         guard let fraseInicial = self.getRandomFraseByScope() else { return }
 
         self.frase = fraseInicial
@@ -599,8 +600,9 @@ struct FrasesHomeView : View{
     }
 
     private func addCurrentPhraseToCalmList() {
-        guard let text = self.frase?.frase?.trimmingCharacters(in: .whitespacesAndNewlines),
-              !text.isEmpty else { return }
+        guard let phrase = self.frase else { return }
+        let text = phrase.localizedText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !text.isEmpty else { return }
 
         let context = CoreDataController.shared.context
         guard let model = context.persistentStoreCoordinator?.managedObjectModel,

@@ -99,7 +99,7 @@ struct AddNota : View {
                     Button{
                         Task{
                             if title.isEmpty || texto.isEmpty {
-                                self.alertMesage = "Debe colocar un titulo y un texto para la nota" ; showAlert = true
+                                self.alertMesage = WatchL10n.exact("Debe colocar un título y un texto para la nota") ; showAlert = true
                             }else{
                                 //Crear una entidad Nota
                                 let newNota = Notas(context: self.context)
@@ -132,12 +132,12 @@ struct AddNota : View {
                                             fechaModificacion: now
                                         )
                                     )
-                                    self.alertMesage = "Nota Creada"
+                                    self.alertMesage = WatchL10n.exact("Nota creada")
                                     self.showAlert = true
                                     
                                 }catch{
                                     self.context.rollback()
-                                    self.alertMesage = "Error al Crear Nota"
+                                    self.alertMesage = WatchL10n.exact("Error al crear la nota")
                                     self.showAlert = true
                                     
                                 }

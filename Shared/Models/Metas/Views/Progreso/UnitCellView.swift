@@ -104,7 +104,7 @@ struct UnitCellView: View {
             statusEmoji = "🟠"
         }
 
-        return "\(unit.name ?? "Unidad") \(statusEmoji)"
+        return "\(GoalsL10n.unitDisplayName(unit.name, index: Int(unit.index))) \(statusEmoji)"
 
     }
 

@@ -21,6 +21,7 @@ enum CheckFilter: String, CaseIterable, Identifiable {
     case activas = "Activas"
     case completadas = "Completadas"
     var id: String { rawValue }
+    var title: String { L10n.exact(rawValue) }
 }
 
 struct AgendaMainView: View {
@@ -96,19 +97,19 @@ struct AgendaMainView: View {
         var confirmTitle: String {
             switch self {
             case .delete:
-                return "Eliminar"
+                return L10n.exact("Eliminar")
             case .markCompleted:
-                return "Marcar completadas"
+                return L10n.exact("Marcar completadas")
             case .clearCheck:
-                return "Quitar check"
+                return L10n.exact("Quitar check")
             case .activateReminders:
-                return "Activar"
+                return L10n.exact("Activar")
             case .deactivateReminders:
-                return "Desactivar"
+                return L10n.exact("Desactivar")
             case .exportPDF:
-                return "Exportar PDF"
+                return L10n.exact("Exportar PDF")
             case .exportMigration:
-                return "Continuar"
+                return L10n.exact("Continuar")
             }
         }
 
@@ -122,21 +123,52 @@ struct AgendaMainView: View {
         }
 
         func message(count: Int) -> String {
+            let singular = count == 1
             switch self {
             case .delete:
-                return "Se eliminarán \(count) \(count == 1 ? " actividad" : " actividades") \(count == 1 ? " seleccionada" : " seleccionadas"), incluidos sus recordatorios."
+                return L10n.format(
+                    singular ? "agenda.bulk.delete.singular" : "agenda.bulk.delete",
+                    fallback: singular
+                        ? "Se eliminará {0} actividad seleccionada, incluido su recordatorio."
+                        : "Se eliminarán {0} actividades seleccionadas, incluidos sus recordatorios.",
+                    "\(count)"
+                )
             case .markCompleted:
-                return "Se marcarán como completadas \(count) \(count == 1 ? " actividad" : " actividades") \(count == 1 ? " seleccionada" : " seleccionadas")"
+                return L10n.format(
+                    singular ? "agenda.bulk.complete.singular" : "agenda.bulk.complete",
+                    fallback: singular ? "Se marcará como completada {0} actividad seleccionada." : "Se marcarán como completadas {0} actividades seleccionadas.",
+                    "\(count)"
+                )
             case .clearCheck:
-                return "Se quitará el modo check de \(count) \(count == 1 ? " actividad" : " actividades") \(count == 1 ? " seleccionada" : "  seleccionadas")"
+                return L10n.format(
+                    singular ? "agenda.bulk.clear_check.singular" : "agenda.bulk.clear_check",
+                    fallback: singular ? "Se quitará el modo check de {0} actividad seleccionada." : "Se quitará el modo check de {0} actividades seleccionadas.",
+                    "\(count)"
+                )
             case .activateReminders:
-                return "Se activarán los recordatorios de \(count) \(count == 1 ? " actividad" : " actividades") \(count == 1 ? " seleccionada" : " seleccionadas")"
+                return L10n.format(
+                    singular ? "agenda.bulk.enable_reminders.singular" : "agenda.bulk.enable_reminders",
+                    fallback: singular ? "Se activará el recordatorio de {0} actividad seleccionada." : "Se activarán los recordatorios de {0} actividades seleccionadas.",
+                    "\(count)"
+                )
             case .deactivateReminders:
-                return "Se desactivarán los recordatorios de \(count) \(count == 1 ? " actividad" : " actividades") \(count == 1 ? " seleccionada" : "  seleccionadas")"
+                return L10n.format(
+                    singular ? "agenda.bulk.disable_reminders.singular" : "agenda.bulk.disable_reminders",
+                    fallback: singular ? "Se desactivará el recordatorio de {0} actividad seleccionada." : "Se desactivarán los recordatorios de {0} actividades seleccionadas.",
+                    "\(count)"
+                )
             case .exportPDF:
-                return "Se preparará un PDF con \(count) \(count == 1 ? " actividad" : " actividades") \(count == 1 ? " seleccionada" : " seleccionadas")"
+                return L10n.format(
+                    singular ? "agenda.bulk.export_pdf.singular" : "agenda.bulk.export_pdf",
+                    fallback: singular ? "Se preparará un PDF con {0} actividad seleccionada." : "Se preparará un PDF con {0} actividades seleccionadas.",
+                    "\(count)"
+                )
             case .exportMigration:
-                return "Se preparará un archivo de migración con \(count) \(count == 1 ? " actividad" : " actividades") \(count == 1 ? "  seleccionada" : " seleccionadas")"
+                return L10n.format(
+                    singular ? "agenda.bulk.export_migration.singular" : "agenda.bulk.export_migration",
+                    fallback: singular ? "Se preparará un archivo de migración con {0} actividad seleccionada." : "Se preparará un archivo de migración con {0} actividades seleccionadas.",
+                    "\(count)"
+                )
             }
         }
     }
@@ -152,7 +184,7 @@ struct AgendaMainView: View {
             Button("Recordatorios") {
                 showReminderManager = true
             }
-            Button(showSearchBar ? "Ocultar búsqueda" : "Mostrar búsqueda") {
+            Button(L10n.exact(showSearchBar ? "Ocultar búsqueda" : "Mostrar búsqueda")) {
                 withAnimation(.easeInOut(duration: 0.2)) {
                     showSearchBar.toggle()
                     if !showSearchBar {
@@ -186,7 +218,7 @@ struct AgendaMainView: View {
             }
 
             if hasSelectionActions {
-                Button(multiSelectionMode ? "Salir selección múltiple" : "Selección múltiple") {
+                Button(L10n.exact(multiSelectionMode ? "Salir selección múltiple" : "Selección múltiple")) {
                     multiSelectionMode.toggle()
                     if !multiSelectionMode { selectedItemsIDs.removeAll() }
                 }
@@ -211,7 +243,7 @@ struct AgendaMainView: View {
     private var quickFilterMenuLabel: some View {
         HStack(spacing: 6) {
             Text("Filtro")
-            Text(viewModel.quickFilter.rawValue)
+            Text(viewModel.quickFilter.title)
                 .fontWeight(.semibold)
         }
         .font(.subheadline)
@@ -316,7 +348,7 @@ struct AgendaMainView: View {
                     .foregroundStyle(.black.opacity(0.65))
             }
             .buttonStyle(.plain)
-            .accessibilityLabel(isCalendarExpanded ? "Ocultar calendario" : "Mostrar calendario")
+            .accessibilityLabel(L10n.exact(isCalendarExpanded ? "Ocultar calendario" : "Mostrar calendario"))
         }
         .padding(.horizontal, 4)
         .padding(.top, 4)
@@ -328,7 +360,7 @@ struct AgendaMainView: View {
                 Button {
                     viewModel.quickFilter = filter
                 } label: {
-                    Text(viewModel.quickFilter == filter ? "\(filter.rawValue) ✓" : filter.rawValue)
+                    Text(viewModel.quickFilter == filter ? "\(filter.title) ✓" : filter.title)
                 }
             }
         } label: {
@@ -343,13 +375,13 @@ struct AgendaMainView: View {
                 Button {
                     checkFilter = filter
                 } label: {
-                    Text(checkFilter == filter ? "\(filter.rawValue) ✓" : filter.rawValue)
+                    Text(checkFilter == filter ? "\(filter.title) ✓" : filter.title)
                 }
             }
         } label: {
             HStack(spacing: 6) {
                 Text("Check")
-                Text(checkFilter.rawValue)
+                Text(checkFilter.title)
                     .fontWeight(.semibold)
             }
             .font(.subheadline)
@@ -478,7 +510,7 @@ struct AgendaMainView: View {
                     showWindow(
                         for: agendaEditorView(for: item),
                         environmentObjects: [],
-                        title: item.titulo.isEmpty ? "Nueva actividad" : "Editar actividad",
+                        title: L10n.exact(item.titulo.isEmpty ? "Nueva actividad" : "Editar actividad"),
                         size: .percentage(width: 0.38, height: 0.52),
                         isModal: false
                     )
@@ -555,9 +587,14 @@ struct AgendaMainView: View {
                     defaultFilename: migrationExportFileName
                 ) { handleMigrationExportResult($0) }
                 .sheet(isPresented: $showMigrationPasswordSheet) {
+                    let selectedCount = selectedListedItems().count
                     migrationPasswordSheet(
-                        title: "Exportar actividades seleccionadas",
-                        countLabel: "\(selectedListedItems().count) actividad(es)",
+                        title: L10n.exact("Exportar actividades seleccionadas"),
+                        countLabel: L10n.format(
+                            selectedCount == 1 ? "agenda.activity_count.singular" : "agenda.activity_count",
+                            fallback: selectedCount == 1 ? "{0} actividad" : "{0} actividades",
+                            "\(selectedCount)"
+                        ),
                         exportAction: exportSelectedAgendaToMigration
                     )
                 }
@@ -671,11 +708,11 @@ struct AgendaMainView: View {
     private func checkActionTitle(for item: AgendaItemData) -> String {
         switch item.completada {
         case nil:
-            return "Activar check"
+            return L10n.exact("Activar check")
         case .some(true):
-            return "Reactivar"
+            return L10n.exact("Reactivar")
         case .some(false):
-            return "Quitar check"
+            return L10n.exact("Quitar check")
         }
     }
 
@@ -796,10 +833,10 @@ struct AgendaMainView: View {
                         }
                     }
 
-                    Button(item.recordatorioActivo ? "Quitar recordatorio" : "Recordatorio") {
+                    Button(L10n.exact(item.recordatorioActivo ? "Quitar recordatorio" : "Recordatorio")) {
                         let shouldEnable = !item.recordatorioActivo
                         if shouldEnable, !viewModel.reminderCanBeEnabled(for: item) {
-                            reminderValidationMessage = "La hora seleccionada ya pasó. Ajusta la fecha u hora del recordatorio a un momento futuro para poder activarlo."
+                            reminderValidationMessage = L10n.exact("La hora seleccionada ya pasó. Ajusta la fecha u hora del recordatorio a un momento futuro para poder activarlo.")
                             showReminderValidationAlert = true
                         } else {
                             viewModel.updateReminder(for: item, enabled: shouldEnable)
@@ -808,13 +845,13 @@ struct AgendaMainView: View {
 
                     Button("Exportar a Notas") {
                         let ok = AgendaInterchangeService.exportAgendaToNotas(item)
-                        interchangeAlertMessage = ok ? "Actividad exportada a Notas." : "No se pudo exportar la actividad a Notas."
+                        interchangeAlertMessage = L10n.exact(ok ? "Actividad exportada a Notas." : "No se pudo exportar la actividad a Notas.")
                         showInterchangeAlert = true
                     }
 
                     Button("Exportar a Diario") {
                         let ok = AgendaInterchangeService.exportAgendaToDiario(item)
-                        interchangeAlertMessage = ok ? "Actividad exportada a Diario." : "No se pudo exportar la actividad a Diario."
+                        interchangeAlertMessage = L10n.exact(ok ? "Actividad exportada a Diario." : "No se pudo exportar la actividad a Diario.")
                         showInterchangeAlert = true
                     }
 
@@ -906,7 +943,7 @@ struct AgendaMainView: View {
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
-                    Button(areAllListedItemsSelected ? "Quitar sel." : "Sel. todas") {
+                    Button(L10n.exact(areAllListedItemsSelected ? "Quitar sel." : "Sel. todas")) {
                         withAnimation {
                             toggleListedItemsSelection()
                         }
@@ -998,11 +1035,15 @@ struct AgendaMainView: View {
     }
 
     private var bulkDeleteConfirmationTitle: String {
-        "Eliminar \(bulkDeleteItems.count) actividad(es)"
+        L10n.format(
+            bulkDeleteItems.count == 1 ? "agenda.delete_count.singular" : "agenda.delete_count",
+            fallback: bulkDeleteItems.count == 1 ? "Eliminar {0} actividad" : "Eliminar {0} actividades",
+            "\(bulkDeleteItems.count)"
+        )
     }
 
     private var bulkDeleteConfirmationMessage: String {
-        "También se eliminarán sus recordatorios. Esta acción no se puede deshacer."
+        L10n.exact("También se eliminarán sus recordatorios. Esta acción no se puede deshacer.")
     }
 
     private var isSearchActive: Bool {
@@ -1054,7 +1095,7 @@ struct AgendaMainView: View {
     private func openInMaps(address: String) {
         let cleaned = address.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !cleaned.isEmpty else {
-            mapsAlertMessage = "La ubicación está vacía."
+            mapsAlertMessage = L10n.exact("La ubicación está vacía.")
             showMapsAlert = true
             return
         }
@@ -1062,7 +1103,7 @@ struct AgendaMainView: View {
         Task { @MainActor in
             let didOpen = await LocationMapOpener.open(cleaned)
             if !didOpen {
-                mapsAlertMessage = "No se pudo abrir Mapas para esta ubicación."
+                mapsAlertMessage = L10n.exact("No se pudo abrir Mapas para esta ubicación.")
                 showMapsAlert = true
             }
         }
@@ -1070,18 +1111,18 @@ struct AgendaMainView: View {
 
     private func exportCurrentMonthToPDF() {
         let monthItems = itemsInDisplayedMonth()
-        exportItemsToPDF(monthItems, scopeName: "Mes")
+        exportItemsToPDF(monthItems, scopeName: L10n.exact("Mes"))
     }
 
     private func exportCurrentWeekToPDF() {
         let weekItems = itemsInActiveWeek()
-        exportItemsToPDF(weekItems, scopeName: "Semana")
+        exportItemsToPDF(weekItems, scopeName: L10n.exact("Semana"))
     }
 
     @discardableResult
     private func exportItemsToPDF(_ items: [AgendaItemData], scopeName: String) -> Bool {
         guard !items.isEmpty else {
-            interchangeAlertMessage = "No hay actividades para exportar en \(scopeName.lowercased())."
+            interchangeAlertMessage = L10n.format("agenda.export.empty", fallback: "No hay actividades para exportar en {0}.", scopeName.lowercased())
             showInterchangeAlert = true
             return false
         }
@@ -1095,10 +1136,10 @@ struct AgendaMainView: View {
             let dayItems = (grouped[day] ?? []).sorted { $0.hora < $1.hora }
             let lines = dayItems.map { item in
                 let details = [
-                    "Hora: \(item.hora.formatted(date: .omitted, time: .shortened))",
-                    item.lugar.isEmpty ? nil : "Lugar: \(item.lugar)",
+                    L10n.format("agenda.pdf.time", fallback: "Hora: {0}", item.hora.formatted(date: .omitted, time: .shortened)),
+                    item.lugar.isEmpty ? nil : L10n.format("agenda.pdf.location", fallback: "Lugar: {0}", item.lugar),
                     item.contenido.isEmpty ? nil : item.contenido,
-                    item.nota.isEmpty ? nil : "Nota: \(item.nota)"
+                    item.nota.isEmpty ? nil : L10n.format("agenda.pdf.note", fallback: "Nota: {0}", item.nota)
                 ]
                     .compactMap { $0 }
                     .joined(separator: "\n")
@@ -1111,8 +1152,8 @@ struct AgendaMainView: View {
         }
 
         let descriptor = PDFExportDocumentDescriptor(
-            title: "Agenda - \(scopeName) actual",
-            subtitle: "Generado el \(Date().formatted(date: .abbreviated, time: .shortened))",
+            title: L10n.format("agenda.pdf.title", fallback: "Agenda - {0} actual", scopeName),
+            subtitle: L10n.format("agenda.pdf.generated", fallback: "Generado el {0}", Date().formatted(date: .abbreviated, time: .shortened)),
             sections: sections
         )
 
@@ -1124,20 +1165,20 @@ struct AgendaMainView: View {
             showPDFExporter = true
             return true
         } catch {
-            interchangeAlertMessage = "No se pudo generar el PDF."
+            interchangeAlertMessage = L10n.exact("No se pudo generar el PDF.")
             showInterchangeAlert = true
             return false
         }
     }
 
     private func authenticateBeforeMigrationExport() {
-        UtilFuncs.authenticateDeviceOwner(reason: "Autentícate para exportar las actividades seleccionadas.") { success, errorMessage in
+        UtilFuncs.authenticateDeviceOwner(reason: L10n.exact("Autentícate para exportar las actividades seleccionadas.")) { success, errorMessage in
             if success {
                 migrationPassword = ""
                 migrationPasswordConfirmation = ""
                 showMigrationPasswordSheet = true
             } else {
-                interchangeAlertMessage = errorMessage ?? "No se pudo autenticar el acceso a la exportación."
+                interchangeAlertMessage = errorMessage ?? L10n.exact("No se pudo autenticar el acceso a la exportación.")
                 showInterchangeAlert = true
             }
         }
@@ -1145,14 +1186,14 @@ struct AgendaMainView: View {
 
     private func exportSelectedAgendaToMigration() {
         guard migrationPassword == migrationPasswordConfirmation, !migrationPassword.isEmpty else {
-            interchangeAlertMessage = "La contraseña de exportación está vacía o no coincide."
+            interchangeAlertMessage = L10n.exact("La contraseña de exportación está vacía o no coincide.")
             showInterchangeAlert = true
             return
         }
 
         let selected = selectedListedItems()
         guard !selected.isEmpty else {
-            interchangeAlertMessage = "Selecciona al menos una actividad para exportar."
+            interchangeAlertMessage = L10n.exact("Selecciona al menos una actividad para exportar.")
             showInterchangeAlert = true
             return
         }
@@ -1167,7 +1208,7 @@ struct AgendaMainView: View {
             showMigrationPasswordSheet = false
             showMigrationExporter = true
         } catch {
-            interchangeAlertMessage = "No se pudo preparar el archivo de migración: \(error.localizedDescription)"
+            interchangeAlertMessage = L10n.format("agenda.migration.prepare_error", fallback: "No se pudo preparar el archivo de migración: {0}", error.localizedDescription)
             showInterchangeAlert = true
         }
     }
@@ -1175,10 +1216,16 @@ struct AgendaMainView: View {
     private func handleMigrationExportResult(_ result: Result<URL, Error>) {
         switch result {
         case .success:
-            interchangeAlertMessage = "Archivo de migración exportado correctamente: \(migrationExportCount) actividad(es)."
+            interchangeAlertMessage = L10n.format(
+                migrationExportCount == 1 ? "agenda.migration.success.singular" : "agenda.migration.success",
+                fallback: migrationExportCount == 1
+                    ? "Archivo de migración exportado correctamente: {0} actividad."
+                    : "Archivo de migración exportado correctamente: {0} actividades.",
+                "\(migrationExportCount)"
+            )
             finishMultiSelectionOperation()
         case .failure(let error):
-            interchangeAlertMessage = "No se pudo guardar el archivo de migración: \(error.localizedDescription)"
+            interchangeAlertMessage = L10n.format("agenda.migration.save_error", fallback: "No se pudo guardar el archivo de migración: {0}", error.localizedDescription)
         }
         migrationPassword = ""
         migrationPasswordConfirmation = ""
@@ -1333,7 +1380,7 @@ struct AgendaMainView: View {
         case .deactivateReminders:
             deactivateReminderForSelected()
         case .exportPDF:
-            if exportItemsToPDF(selectedListedItems(), scopeName: "Seleccionadas") {
+            if exportItemsToPDF(selectedListedItems(), scopeName: L10n.exact("Seleccionadas")) {
                 finishMultiSelectionOperation()
             }
         case .exportMigration:
@@ -1375,7 +1422,7 @@ struct AgendaMainView: View {
         guard !selected.isEmpty else { return }
         let invalidExists = selected.contains { !viewModel.reminderCanBeEnabled(for: $0) && !$0.recordatorioActivo }
         if invalidExists {
-            reminderValidationMessage = "No se activó ningún recordatorio: al menos una actividad seleccionada tiene una hora pasada. Ajusta esas horas a futuro y vuelve a intentarlo."
+            reminderValidationMessage = L10n.exact("No se activó ningún recordatorio: al menos una actividad seleccionada tiene una hora pasada. Ajusta esas horas a futuro y vuelve a intentarlo.")
             showReminderValidationAlert = true
             return
         }
@@ -1435,11 +1482,11 @@ struct AgendaMainView: View {
 
     private func daySectionTitle(_ date: Date) -> String {
         let formatter = DateFormatter()
-        formatter.locale = Locale.current
+        formatter.locale = AppLanguage.current.locale
         formatter.setLocalizedDateFormatFromTemplate("EEEE d MMMM")
         let title = formatter.string(from: date).capitalized
         if Calendar.current.isDateInToday(date) {
-            return "Hoy · \(title)"
+            return L10n.format("agenda.today_section", fallback: "Hoy · {0}", title)
         }
         return title
     }
@@ -1609,7 +1656,7 @@ struct AgendaMainView: View {
 
     private func monthTitle(_ date: Date) -> String {
         let formatter = DateFormatter()
-        formatter.locale = Locale.current
+        formatter.locale = AppLanguage.current.locale
         formatter.setLocalizedDateFormatFromTemplate("MMMM yyyy")
         return formatter.string(from: date).capitalized
     }
@@ -1682,7 +1729,7 @@ private struct AgendaStatusLabel: View {
     var body: some View {
         HStack(spacing: 5) {
             statusIcon
-            Text(completada ? "Completada" : "Activa")
+            Text(L10n.exact(completada ? "Completada" : "Activa"))
                 .font(.body)
                 .foregroundStyle(.black)
         }

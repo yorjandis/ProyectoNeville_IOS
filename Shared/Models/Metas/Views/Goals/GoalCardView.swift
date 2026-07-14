@@ -53,13 +53,7 @@ struct GoalCardView: View {
             let minutes = (interval % 3600) / 60
             let seconds = interval % 60
             
-            if hours > 0 {
-                return "\(hours)h \(minutes)m"
-            } else if minutes > 0 {
-                return "\(minutes)m \(seconds)s"
-            } else {
-                return "\(seconds)s"
-            }
+            return GoalsL10n.countdown(hours: hours, minutes: minutes, seconds: seconds)
         }
     
 
@@ -102,12 +96,16 @@ struct GoalCardView: View {
                     }else{
                         if let timeRemaining = goal.timeUntilNextUnit(now: clock.now) {
                             
-                            if timeRemaining == "Listo",
+                            if goal.isNextUnitReady(now: clock.now),
                                let unit = goal.nextPendingUnit,
                                let expiration = goal.nextExpirationDate(from: clock.now) {
 
                                 HStack {
-                                    Text("Esta unidad vence en : \(timeRemainingUntil(until: expiration))")
+                                    Text(GoalsL10n.format(
+                                        "goals.ui.unit_expires_in",
+                                        fallback: "Esta unidad vence en: {0}",
+                                        timeRemainingUntil(until: expiration)
+                                    ))
 
                                     //Botón para fichar la unidad actual disponible
                                     Button {
@@ -144,7 +142,11 @@ struct GoalCardView: View {
             
             //Barra de acciones:
             HStack {
-                Text("Prog: \(progressText)")
+                Text(GoalsL10n.format(
+                    "goals.ui.progress_value",
+                    fallback: "Progreso: {0}",
+                    progressText
+                ))
                     .font(.footnote)
                     .foregroundStyle(.primary).bold()
                     .layoutPriority(1)
@@ -167,12 +169,18 @@ struct GoalCardView: View {
                         Button{
                                 do{
                                     try goal.archive(context: self.context)
-                                    self.alertMessage = "La Meta ha sido archivada"
+                                    self.alertMessage = GoalsL10n.text(
+                                        "goals.message.archived",
+                                        fallback: "La Meta ha sido archivada"
+                                    )
                                     self.showAlert = true
                                     goal.deleteGoal(context: self.context)
                                 }catch{
                                     msg("Error en la función archivar")
-                                    self.alertMessage = "La Meta no ha podido archivarse. Intentelo más tarde"
+                                    self.alertMessage = GoalsL10n.text(
+                                        "goals.error.archive_failed",
+                                        fallback: "La Meta no ha podido archivarse. Inténtelo más tarde"
+                                    )
                                     self.showAlert = true
                                 }
                             
@@ -350,7 +358,10 @@ struct GoalCardView: View {
                 do {
                     try goal.reactivateCompleted(context: context)
                 } catch {
-                    alertMessage = "La Meta no ha podido reactivarse. Inténtelo nuevamente."
+                    alertMessage = GoalsL10n.text(
+                        "goals.error.reactivate_failed",
+                        fallback: "La Meta no ha podido reactivarse. Inténtelo nuevamente."
+                    )
                     showAlert = true
                 }
             }

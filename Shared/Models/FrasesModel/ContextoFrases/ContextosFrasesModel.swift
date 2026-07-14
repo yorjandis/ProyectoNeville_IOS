@@ -15,7 +15,7 @@ extension Frases {
     //Listado de Contextos de una frase
     var contextosArray: [Contexto] {
         let set = contextos as? Set<Contexto> ?? []
-        return set.sorted { $0.nombre! < $1.nombre! }
+        return set.sorted { $0.localizedName < $1.localizedName }
     }
 
     //Vincular una frase con  un contexto
@@ -45,10 +45,48 @@ extension Frases {
 
 // Contextos → Frases (opcional, para acceder a frases ordenadas)
 extension Contexto {
+    var translationsArray: [ContextTranslation] {
+        Array(translations as? Set<ContextTranslation> ?? [])
+    }
+
+    var localizedName: String {
+        for language in AppLanguage.current.fallbackChain {
+            if let name = translationsArray.first(where: {
+                $0.localeIdentifier == language.rawValue
+            })?.name, !name.isEmpty {
+                return name
+            }
+        }
+        return nombre ?? ""
+    }
+
+    @discardableResult
+    func upsertTranslation(
+        locale: AppLanguage,
+        name: String,
+        context: NSManagedObjectContext
+    ) -> Bool {
+        let translation: ContextTranslation
+        if let existing = translationsArray.first(where: { $0.localeIdentifier == locale.rawValue }) {
+            translation = existing
+        } else {
+            translation = ContextTranslation(context: context)
+            translation.id = UUID()
+            translation.localeIdentifier = locale.rawValue
+            translation.contextID = id
+            translation.context = self
+        }
+
+        let changed = translation.name != name
+        translation.name = name
+        translation.contextID = id
+        return changed
+    }
+
     //Devuelve las frases que pertenecen a un contexto dado
     var frasesArray: [Frases] {
         let set = frases as? Set<Frases> ?? []
-        return set.sorted { $0.frase ?? "" < $1.frase ?? "" }
+        return set.sorted { $0.localizedText < $1.localizedText }
     }
 }
 
@@ -77,4 +115,3 @@ extension Contexto {
      print(frase.frase ?? "")
  }
  */
-

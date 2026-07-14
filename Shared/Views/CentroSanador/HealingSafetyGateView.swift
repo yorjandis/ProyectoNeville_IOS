@@ -108,10 +108,11 @@ struct HealingSafetyGateView: View {
             }
         }
         .navigationTitle("Comprobación")
+        #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
+        #endif
         .sheet(isPresented: $showEmergencyResources) {
             NavigationStack { HealingEmergencyResourcesView() }
         }
     }
 }
-

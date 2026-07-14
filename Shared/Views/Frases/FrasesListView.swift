@@ -523,7 +523,7 @@ struct FrasesListView: View {
         }
 
         let lines: [PDFExportLine] = selected.map { frase in
-            let content = (frase.frase ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+            let content = frase.localizedText.trimmingCharacters(in: .whitespacesAndNewlines)
             let author = (frase.autor ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
             return PDFExportLine(
                 title: content.isEmpty ? "Sin contenido" : content,

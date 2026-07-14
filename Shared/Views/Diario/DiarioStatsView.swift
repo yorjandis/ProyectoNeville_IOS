@@ -87,7 +87,7 @@ private struct DiarioStatsSnapshot {
         }
 
         var name: String {
-            emotion.capitalized
+            Emociones.localizedTitle(from: emotion)
         }
     }
 
@@ -121,7 +121,9 @@ private struct DiarioStatsSnapshot {
             .sorted { $0.count > $1.count }
         topEmotions = Array(emotionMap.prefix(5))
 
-        let weekdaySymbols = ["D", "L", "M", "X", "J", "V", "S"]
+        let formatter = DateFormatter()
+        formatter.locale = AppLanguage.current.locale
+        let weekdaySymbols = formatter.veryShortWeekdaySymbols ?? ["D", "L", "M", "X", "J", "V", "S"]
         let weekdayMap = Dictionary(grouping: normalizedDays, by: { calendar.component(.weekday, from: $0) })
             .mapValues(\.count)
 
@@ -289,7 +291,7 @@ private struct DiarioMetricCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             HStack {
-                Text(title)
+                Text(L10n.exact(title))
                     .font(.caption)
                     .foregroundStyle(.white.opacity(0.8))
 
@@ -308,7 +310,7 @@ private struct DiarioMetricCard: View {
             Text(value)
                 .font(.title2.bold())
                 .foregroundStyle(.white)
-            Text(subtitle)
+            Text(L10n.exact(subtitle))
                 .font(.caption2)
                 .foregroundStyle(.white.opacity(0.75))
         }
@@ -330,7 +332,7 @@ private struct DiarioMetricCard: View {
     }
 
     private func openInfo(title: String, message: String, systemImage: String) {
-        let info = DiarioInfoItem(title: title, message: message, systemImage: systemImage)
+        let info = DiarioInfoItem(title: L10n.exact(title), message: L10n.exact(message), systemImage: systemImage)
         #if os(macOS)
         showWindow(
             for: DiarioInfoFloatingCard(info: info),
@@ -420,7 +422,7 @@ private struct DiarioWeeklyBarChart: View {
     }
 
     private func openInfo(title: String, message: String, systemImage: String) {
-        let info = DiarioInfoItem(title: title, message: message, systemImage: systemImage)
+        let info = DiarioInfoItem(title: L10n.exact(title), message: L10n.exact(message), systemImage: systemImage)
         #if os(macOS)
         showWindow(
             for: DiarioInfoFloatingCard(info: info),
@@ -493,7 +495,7 @@ private struct DiarioMoodRingsSection: View {
     }
 
     private func openInfo(title: String, message: String, systemImage: String) {
-        let info = DiarioInfoItem(title: title, message: message, systemImage: systemImage)
+        let info = DiarioInfoItem(title: L10n.exact(title), message: L10n.exact(message), systemImage: systemImage)
         #if os(macOS)
         showWindow(
             for: DiarioInfoFloatingCard(info: info),
@@ -559,7 +561,7 @@ private struct DiarioRingMetric: View {
             }
             .frame(width: 76, height: 76)
 
-            Text(title)
+            Text(L10n.exact(title))
                 .font(.caption.bold())
                 .foregroundStyle(.white)
                 .lineLimit(1)
@@ -578,7 +580,7 @@ private struct DiarioRingMetric: View {
     }
 
     private func openInfo(title: String, message: String, systemImage: String) {
-        let info = DiarioInfoItem(title: title, message: message, systemImage: systemImage)
+        let info = DiarioInfoItem(title: L10n.exact(title), message: L10n.exact(message), systemImage: systemImage)
         #if os(macOS)
         showWindow(
             for: DiarioInfoFloatingCard(info: info),
@@ -611,7 +613,11 @@ private struct DiarioDotTrendSection: View {
 
                 Button {
                     openInfo(
-                        title: "Actividad de los últimos \(selectedDays) Días",
+                        title: L10n.format(
+                            "diary.activity.days.title",
+                            fallback: "Actividad de los últimos {0} días",
+                            String(selectedDays)
+                        ),
                         message: "Cada punto representa un día. Puedes cambiar el rango a 7, 15, 30, 45, 60 o 90 días para analizar tu ritmo de escritura.",
                         systemImage: "point.3.connected.trianglepath.dotted"
                     )
@@ -693,7 +699,7 @@ private struct DiarioDotTrendSection: View {
     }
 
     private func openInfo(title: String, message: String, systemImage: String) {
-        let info = DiarioInfoItem(title: title, message: message, systemImage: systemImage)
+        let info = DiarioInfoItem(title: L10n.exact(title), message: L10n.exact(message), systemImage: systemImage)
         #if os(macOS)
         showWindow(
             for: DiarioInfoFloatingCard(info: info),
@@ -790,5 +796,3 @@ private struct DiarioInfoFloatingCard: View {
         }
     }
 }
-
-

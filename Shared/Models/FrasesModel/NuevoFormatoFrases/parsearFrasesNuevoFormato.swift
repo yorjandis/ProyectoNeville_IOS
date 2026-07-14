@@ -48,6 +48,7 @@ func parsearFrasesNuevoFormato(_ contenido: String) -> [FraseDTO] {
         var nota :      String?
         var fuente:     String?
         var contexto:   [String] = []
+        var contextoIDs: [String] = []
         var texto:      String?
         var relacionadas: [String] = []
 
@@ -76,6 +77,11 @@ func parsearFrasesNuevoFormato(_ contenido: String) -> [FraseDTO] {
                     .components(separatedBy: ",")
                     .map { $0.trimmingCharacters(in: .whitespaces) }
                     .filter { !$0.isEmpty }
+            case "contexto_ids":
+                contextoIDs = valor
+                    .components(separatedBy: ",")
+                    .map { $0.trimmingCharacters(in: .whitespaces) }
+                    .filter { !$0.isEmpty }
             case "texto":
                 texto = valor
             case "relacionadas":
@@ -97,6 +103,7 @@ func parsearFrasesNuevoFormato(_ contenido: String) -> [FraseDTO] {
                     nota: nota,
                     fuente: fuente,
                     contexto: contexto,
+                    contextoIDs: contextoIDs,
                     texto: texto,
                     relacionadas: relacionadas
                 )

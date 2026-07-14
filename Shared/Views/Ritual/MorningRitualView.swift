@@ -3,6 +3,68 @@ import Combine
 import UserNotifications
 import CoreData
 
+private enum RitualL10n {
+    static func text(_ key: String, fallback: String) -> String {
+        L10n.string(key, fallback: fallback)
+    }
+
+    static func exact(_ spanish: String) -> String {
+        L10n.string(spanish, fallback: spanish)
+    }
+
+    static func format(_ key: String, fallback: String, _ values: String...) -> String {
+        var result = text(key, fallback: fallback)
+        for (index, value) in values.enumerated() {
+            result = result.replacingOccurrences(of: "{\(index)}", with: value)
+        }
+        return result
+    }
+
+    static func localizedIdentityList(_ value: String) -> String {
+        value
+            .split(separator: ",", omittingEmptySubsequences: false)
+            .map { exact(String($0).trimmingCharacters(in: .whitespacesAndNewlines)) }
+            .joined(separator: ", ")
+    }
+
+    static func localizedEmotionList(_ values: [String]) -> String {
+        values.map(exact).joined(separator: ", ")
+    }
+
+    static func localizedMood(_ id: String) -> String {
+        exact(PresenciaMood.title(for: id))
+    }
+
+    static func localizedSuggestion(_ value: String) -> String {
+        let prefix = "Mañana lee al despertar: «Hoy actúo como "
+        let suffix = "», y conviértelo en un gesto visible durante la primera hora."
+        if value.hasPrefix(prefix), value.hasSuffix(suffix) {
+            let identity = String(value.dropFirst(prefix.count).dropLast(suffix.count))
+            return format(
+                "ritual.evening.identity_suggestion",
+                fallback: "Mañana lee al despertar: «Hoy actúo como {0}», y conviértelo en un gesto visible durante la primera hora.",
+                localizedIdentityList(identity)
+            )
+        }
+        return exact(value)
+    }
+
+    static func formattedDate(_ date: Date, dateStyle: DateFormatter.Style) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = AppLanguage.current.locale
+        formatter.dateStyle = dateStyle
+        return formatter.string(from: date)
+    }
+
+    static func decimal(_ value: Double, fractionDigits: Int = 1) -> String {
+        let formatter = NumberFormatter()
+        formatter.locale = AppLanguage.current.locale
+        formatter.minimumFractionDigits = fractionDigits
+        formatter.maximumFractionDigits = fractionDigits
+        return formatter.string(from: NSNumber(value: value)) ?? "\(value)"
+    }
+}
+
 enum RitualNavigationDestination: String, Identifiable {
     case eveningReview
     case wellbeingDashboard
@@ -162,7 +224,7 @@ struct EveningDaySnapshot {
                       calendar.isDate(completedDate, inSameDayAs: date) else { continue }
                 completedGoalUnits.append((
                     goalTitle: goal.wrappedTitle,
-                    unitName: unit.name?.trimmingCharacters(in: .whitespacesAndNewlines) ?? "Unidad completada"
+                    unitName: unit.name?.trimmingCharacters(in: .whitespacesAndNewlines) ?? RitualL10n.exact("Unidad completada")
                 ))
             }
         }
@@ -629,8 +691,11 @@ private actor MorningRitualNotificationManager {
 
         let trigger = UNCalendarNotificationTrigger(dateMatching: date, repeats: true)
         let content = UNMutableNotificationContent()
-        content.title = "Ritual Matutino"
-        content.body = "Diseña tu día con claridad e intención."
+        content.title = L10n.string("notification.morning_ritual.title", fallback: "Ritual Matutino")
+        content.body = L10n.string(
+            "notification.morning_ritual.body",
+            fallback: "Diseña tu día con claridad e intención."
+        )
         content.sound = .default
 
         let request = UNNotificationRequest(
@@ -654,8 +719,11 @@ private actor MorningRitualNotificationManager {
         date.minute = settings.eveningReminderMinute
 
         let content = UNMutableNotificationContent()
-        content.title = "Cierre consciente"
-        content.body = "Dedica unos minutos a integrar tu día y preparar mañana."
+        content.title = L10n.string("notification.evening_review.title", fallback: "Cierre consciente")
+        content.body = L10n.string(
+            "notification.evening_review.body",
+            fallback: "Dedica unos minutos a integrar tu día y preparar mañana."
+        )
         content.sound = .default
         content.userInfo = ["ritualDestination": "eveningReview"]
 
@@ -702,8 +770,11 @@ private actor MorningRitualNotificationManager {
 
             let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
             let content = UNMutableNotificationContent()
-            content.title = "Ritual Matutino"
-            content.body = "Mantén tu intención durante el día."
+            content.title = L10n.string("notification.morning_ritual.title", fallback: "Ritual Matutino")
+            content.body = L10n.string(
+                "notification.morning_ritual.follow_up",
+                fallback: "Mantén tu intención durante el día."
+            )
             content.sound = .default
 
             let request = UNNotificationRequest(
@@ -890,7 +961,7 @@ struct MorningRitualMainView: View {
     private func ritualStatusLabel(isCompleted: Bool, pendingText: String, pendingColor: Color) -> some View {
         HStack(alignment: .center, spacing: 12) {
 
-            Text(isCompleted ? "Completado hoy" : pendingText)
+            Text(LocalizedStringKey(isCompleted ? "Completado hoy" : pendingText))
                 .font(.headline)
                 .lineLimit(2)
                 .fixedSize(horizontal: false, vertical: true)
@@ -909,7 +980,7 @@ struct MorningRitualMainView: View {
 
     private func ritualExploreButton(_ title: String, systemImage: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            Label(title, systemImage: systemImage)
+                    Label(LocalizedStringKey(title), systemImage: systemImage)
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(.black)
                 .lineLimit(1)
@@ -938,13 +1009,13 @@ struct MorningRitualMainView: View {
                         .frame(width: 28)
                 }
 
-                Text(title)
+                Text(LocalizedStringKey(title))
                     .font(.title3.bold())
                     .fixedSize(horizontal: false, vertical: true)
             }
 
             if let subtitle {
-                Text(subtitle)
+                Text(LocalizedStringKey(subtitle))
                     .font(.body)
                     .fixedSize(horizontal: false, vertical: true)
 
@@ -1131,7 +1202,11 @@ private struct EveningReviewFlowView: View {
                         .frame(height: 5)
                 }
             }
-            .accessibilityLabel("Paso \(step + 1) de 4")
+            .accessibilityLabel(RitualL10n.format(
+                "ritual.evening.step_accessibility",
+                fallback: "Paso {0} de 4",
+                "\(step + 1)"
+            ))
         }
     }
 
@@ -1189,7 +1264,7 @@ private struct EveningReviewFlowView: View {
                         } label: {
                             HStack(spacing: 6) {
                                 Image(systemName: moodSymbol(for: emotionID))
-                                Text(PresenciaMood.title(for: emotionID))
+                                Text(RitualL10n.localizedMood(emotionID))
                                     .lineLimit(1)
                             }
                             .font(.subheadline.weight(.medium))
@@ -1228,10 +1303,10 @@ private struct EveningReviewFlowView: View {
                     Label("Intención matutina", systemImage: "sunrise.fill")
                         .font(.caption.weight(.bold))
                         .foregroundStyle(.white.opacity(0.72))
-                    Text(session.identity.isEmpty ? "Identidad no indicada" : session.identity)
+                    Text(session.identity.isEmpty ? RitualL10n.exact("Identidad no indicada") : RitualL10n.localizedIdentityList(session.identity))
                         .font(.headline)
                     if !session.goals.isEmpty {
-                        Text("Metas: \(session.goals.joined(separator: " · "))")
+                        Text(RitualL10n.format("ritual.evening.morning_goals", fallback: "Metas: {0}", session.goals.joined(separator: " · ")))
                             .font(.caption)
                             .foregroundStyle(.white.opacity(0.7))
                     }
@@ -1280,7 +1355,11 @@ private struct EveningReviewFlowView: View {
                     snapshotMetric(value: "\(snapshot.presenceReturns)", label: "Presencia", icon: "sparkles")
                 }
                 if let score = snapshot.coherenceAverageAfterScore {
-                    Label("Coherencia: \(snapshot.coherenceSessionsCount) sesión(es), bienestar final medio \(score)/10", systemImage: "heart.fill")
+                    Label(RitualL10n.format(
+                        "ritual.evening.coherence_summary",
+                        fallback: "Coherencia: {0} sesión(es), bienestar final medio {1}/10",
+                        "\(snapshot.coherenceSessionsCount)", "\(score)"
+                    ), systemImage: "heart.fill")
                         .font(.caption)
                         .foregroundStyle(.white.opacity(0.8))
                 } else {
@@ -1289,7 +1368,11 @@ private struct EveningReviewFlowView: View {
                         .foregroundStyle(.white.opacity(0.66))
                 }
                 if snapshot.automaticPilotEvents > 0 {
-                    Label("\(snapshot.automaticPilotEvents) registro(s) de piloto automático", systemImage: "moon.zzz.fill")
+                    Label(RitualL10n.format(
+                        "ritual.evening.autopilot_count",
+                        fallback: "{0} registro(s) de piloto automático",
+                        "\(snapshot.automaticPilotEvents)"
+                    ), systemImage: "moon.zzz.fill")
                         .font(.caption)
                         .foregroundStyle(.yellow.opacity(0.9))
                 }
@@ -1300,7 +1383,7 @@ private struct EveningReviewFlowView: View {
             eveningCard {
                 Label("Una mejora para mañana", systemImage: "arrow.up.right.circle.fill")
                     .font(.headline)
-                Text(suggestedImprovement(snapshot: snapshot))
+                Text(RitualL10n.localizedSuggestion(suggestedImprovement(snapshot: snapshot)))
                     .font(.body)
                     .foregroundStyle(.white.opacity(0.86))
             }
@@ -1333,7 +1416,7 @@ private struct EveningReviewFlowView: View {
                     .foregroundStyle(.white.opacity(0.7))
             } else {
                 ForEach(Array(snapshot.agendaCompleted.prefix(3).enumerated()), id: \.element.id) { _, item in
-                    Label(item.titulo.isEmpty ? "Actividad sin título" : item.titulo, systemImage: "calendar.badge.checkmark")
+                    Label(item.titulo.isEmpty ? RitualL10n.exact("Actividad sin título") : item.titulo, systemImage: "calendar.badge.checkmark")
                         .font(.subheadline)
                 }
                 ForEach(Array(snapshot.completedGoalUnits.prefix(3).enumerated()), id: \.offset) { _, item in
@@ -1346,7 +1429,7 @@ private struct EveningReviewFlowView: View {
 
     private func answerCard(title: String, prompt: String, text: Binding<String>) -> some View {
         eveningCard {
-            Text(title)
+            Text(LocalizedStringKey(title))
                 .font(.headline)
             TextEditor(text: text)
                 .font(.body)
@@ -1358,7 +1441,7 @@ private struct EveningReviewFlowView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 12))
                 .overlay(alignment: .topLeading) {
                     if text.wrappedValue.isEmpty {
-                        Text(prompt)
+                        Text(LocalizedStringKey(prompt))
                             .font(.subheadline)
                             .foregroundStyle(.white.opacity(0.42))
                             .padding(.horizontal, 13)
@@ -1375,7 +1458,7 @@ private struct EveningReviewFlowView: View {
                 .foregroundStyle(.yellow)
             Text(value)
                 .font(.headline.monospacedDigit())
-            Text(label)
+            Text(LocalizedStringKey(label))
                 .font(.caption2)
                 .foregroundStyle(.white.opacity(0.66))
         }
@@ -1397,7 +1480,7 @@ private struct EveningReviewFlowView: View {
     private func navigationButton(title: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             HStack {
-                Text(title)
+                Text(LocalizedStringKey(title))
                 Spacer()
                 Image(systemName: "arrow.right")
             }
@@ -1424,15 +1507,15 @@ private struct EveningReviewFlowView: View {
     }
 
     private var stepTitle: String {
-        ["Toma el pulso", "Mira con honestidad", "Integra y prepara", "Tu síntesis"] [step]
+        RitualL10n.exact(["Toma el pulso", "Mira con honestidad", "Integra y prepara", "Tu síntesis"][step])
     }
 
     private var stepSubtitle: String {
-        ["Dos preguntas para aterrizar cómo llegas al final del día.", "Observa lo vivido sin corregirte ni juzgarte.", "Cierra el ciclo entre tu intención y tu experiencia.", "Reconoce lo que avanzó y deja espacio para mañana."] [step]
+        RitualL10n.exact(["Dos preguntas para aterrizar cómo llegas al final del día.", "Observa lo vivido sin corregirte ni juzgarte.", "Cierra el ciclo entre tu intención y tu experiencia.", "Reconoce lo que avanzó y deja espacio para mañana."][step])
     }
 
     private var energyDescription: String {
-        ["Muy baja", "Baja", "Estable", "Buena", "Muy alta"][energy - 1]
+        RitualL10n.exact(["Muy baja", "Baja", "Estable", "Buena", "Muy alta"][energy - 1])
     }
 
     private func energySymbol(for value: Int) -> String {
@@ -1444,7 +1527,7 @@ private struct EveningReviewFlowView: View {
     }
 
     private func alignmentLabel(for value: Int) -> String {
-        ["Nada", "Poco", "A medias", "Mucho", "Por completo"][value - 1]
+        RitualL10n.exact(["Nada", "Poco", "A medias", "Mucho", "Por completo"][value - 1])
     }
 
     private func suggestedImprovement(snapshot: EveningDaySnapshot) -> String {
@@ -1537,18 +1620,19 @@ private struct EveningReviewFlowView: View {
         existingID: UUID?
     ) -> (created: Bool, id: UUID?) {
         let identity = store.session(for: reviewDate)?.identity
+        let localizedIdentity = identity.map(RitualL10n.localizedIdentityList)
         let content = [
-            "RESUMEN DE CIERRE",
-            "ENERGÍA\n\(energy)/5 — \(energyDescription)",
-            "EMOCIÓN PREDOMINANTE\n\(PresenciaMood.title(for: predominantEmotionID))",
-            "LO QUE SALIÓ BIEN\n\(displayValue(whatWentWell))",
-            "APRENDIZAJE\n\(displayValue(learning))",
-            "PILOTO AUTOMÁTICO\n\(displayValue(autopilotMoment))",
-            "GRATITUD\n\(displayValue(gratitude))",
-            "PREPARADO PARA MAÑANA\n\(displayValue(tomorrowPreparation))",
-            "COHERENCIA CON MI IDENTIDAD\n\(identityAlignment)/5\(identity.map { " — \($0)" } ?? "")",
-            "SÍNTESIS DEL DÍA\n\(integratedDaySummary(snapshot))",
-            "UNA MEJORA PARA MAÑANA\n\(suggestion)"
+            RitualL10n.exact("RESUMEN DE CIERRE"),
+            "\(RitualL10n.exact("ENERGÍA"))\n\(energy)/5 — \(energyDescription)",
+            "\(RitualL10n.exact("EMOCIÓN PREDOMINANTE"))\n\(RitualL10n.localizedMood(predominantEmotionID))",
+            "\(RitualL10n.exact("LO QUE SALIÓ BIEN"))\n\(displayValue(whatWentWell))",
+            "\(RitualL10n.exact("APRENDIZAJE"))\n\(displayValue(learning))",
+            "\(RitualL10n.exact("PILOTO AUTOMÁTICO"))\n\(displayValue(autopilotMoment))",
+            "\(RitualL10n.exact("GRATITUD"))\n\(displayValue(gratitude))",
+            "\(RitualL10n.exact("PREPARADO PARA MAÑANA"))\n\(displayValue(tomorrowPreparation))",
+            "\(RitualL10n.exact("COHERENCIA CON MI IDENTIDAD"))\n\(identityAlignment)/5\(localizedIdentity.map { " — \($0)" } ?? "")",
+            "\(RitualL10n.exact("SÍNTESIS DEL DÍA"))\n\(integratedDaySummary(snapshot))",
+            "\(RitualL10n.exact("UNA MEJORA PARA MAÑANA"))\n\(RitualL10n.localizedSuggestion(suggestion))"
         ].joined(separator: "\n\n")
 
         let context = CoreDataController.shared.context
@@ -1575,7 +1659,11 @@ private struct EveningReviewFlowView: View {
             entry.setValue("Cierre consciente", forKey: "capitulo")
         }
 
-        entry.title = "Cierre consciente · \(reviewDate.formatted(date: .abbreviated, time: .omitted))"
+        entry.title = RitualL10n.format(
+            "ritual.evening.journal_title",
+            fallback: "Cierre consciente · {0}",
+            RitualL10n.formattedDate(reviewDate, dateStyle: .medium)
+        )
         entry.emotion = journalEmotion.rawValue
         entry.content = content
         entry.fechaM = Date()
@@ -1618,17 +1706,25 @@ private struct EveningReviewFlowView: View {
 
     private func integratedDaySummary(_ snapshot: EveningDaySnapshot) -> String {
         let completedAgenda = snapshot.agendaCompleted
-            .map { $0.titulo.isEmpty ? "Actividad sin título" : $0.titulo }
+            .map { $0.titulo.isEmpty ? RitualL10n.exact("Actividad sin título") : $0.titulo }
         let completedGoals = snapshot.completedGoalUnits
             .map { "\($0.goalTitle) · \($0.unitName)" }
-        let coherence = snapshot.coherenceAverageAfterScore.map { "\(snapshot.coherenceSessionsCount) sesión(es), bienestar final medio \($0)/10" }
-            ?? "sin sesión registrada"
+        let coherence = snapshot.coherenceAverageAfterScore.map {
+            RitualL10n.format(
+                "ritual.evening.coherence_value",
+                fallback: "{0} sesión(es), bienestar final medio {1}/10",
+                "\(snapshot.coherenceSessionsCount)", "\($0)"
+            )
+        } ?? RitualL10n.exact("sin sesión registrada")
+
+        let agendaValues = completedAgenda.isEmpty ? RitualL10n.exact("sin actividades marcadas") : completedAgenda.joined(separator: " · ")
+        let goalValues = completedGoals.isEmpty ? RitualL10n.exact("sin unidades completadas") : completedGoals.joined(separator: " · ")
 
         return [
-            "Agenda completada (\(snapshot.agendaCompleted.count)/\(snapshot.agendaTotalCount)): \(completedAgenda.isEmpty ? "sin actividades marcadas" : completedAgenda.joined(separator: " · "))",
-            "Metas: \(completedGoals.isEmpty ? "sin unidades completadas" : completedGoals.joined(separator: " · "))",
-            "Presencia: \(snapshot.presenceReturns) regreso(s) al presente y \(snapshot.automaticPilotEvents) registro(s) de piloto automático.",
-            "Coherencia: \(coherence)."
+            RitualL10n.format("ritual.evening.agenda_summary", fallback: "Agenda completada ({0}/{1}): {2}", "\(snapshot.agendaCompleted.count)", "\(snapshot.agendaTotalCount)", agendaValues),
+            RitualL10n.format("ritual.evening.goals_summary", fallback: "Metas: {0}", goalValues),
+            RitualL10n.format("ritual.evening.presence_summary", fallback: "Presencia: {0} regreso(s) al presente y {1} registro(s) de piloto automático.", "\(snapshot.presenceReturns)", "\(snapshot.automaticPilotEvents)"),
+            RitualL10n.format("ritual.evening.coherence_line", fallback: "Coherencia: {0}.", coherence)
         ].joined(separator: "\n")
     }
 
@@ -1645,7 +1741,7 @@ private struct EveningReviewFlowView: View {
 
     private func displayValue(_ value: String) -> String {
         let cleaned = normalized(value)
-        return cleaned.isEmpty ? "Sin respuesta" : cleaned
+        return cleaned.isEmpty ? RitualL10n.exact("Sin respuesta") : cleaned
     }
 
     private func normalized(_ value: String) -> String {
@@ -1682,27 +1778,39 @@ private struct EveningReviewCompletedView: View {
                     .font(.subheadline)
                     .multilineTextAlignment(.center)
                     .foregroundStyle(.white.opacity(0.74))
-                Text("Ciclo integrado · \(weeklyClosures)/7 cierres en los últimos siete días")
+                Text(RitualL10n.format(
+                    "ritual.evening.completed_weekly",
+                    fallback: "Ciclo integrado · {0}/7 cierres en los últimos siete días",
+                    "\(weeklyClosures)"
+                ))
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.yellow.opacity(0.92))
                     .frame(maxWidth: .infinity, alignment: .center)
 
                 summaryCard(title: "Tu intención y tu experiencia", icon: "arrow.triangle.2.circlepath") {
                     if let morningSession, !morningSession.identity.isEmpty {
-                        Text("Identidad elegida: \(morningSession.identity)")
+                        Text(RitualL10n.format(
+                            "ritual.evening.completed_identity",
+                            fallback: "Identidad elegida: {0}",
+                            RitualL10n.localizedIdentityList(morningSession.identity)
+                        ))
                     } else {
                         Text("Hoy no registraste una identidad matutina.")
                     }
-                    Text("Coherencia percibida: \(review.identityAlignment)/5")
+                    Text(RitualL10n.format("ritual.evening.perceived_coherence", fallback: "Coherencia percibida: {0}/5", "\(review.identityAlignment)"))
                 }
 
                 summaryCard(title: "Una mejora para mañana", icon: "arrow.up.right.circle.fill") {
-                    Text(review.suggestion)
+                    Text(RitualL10n.localizedSuggestion(review.suggestion))
                         .font(.body)
                 }
 
                 summaryCard(title: "Huella del día", icon: "chart.bar.fill") {
-                    Text("Agenda \(review.agendaCompletedCount)/\(review.agendaTotalCount) · Metas \(review.goalUnitsCompletedCount) · Presencia \(review.presenceReturns)")
+                    Text(RitualL10n.format(
+                        "ritual.day_footprint",
+                        fallback: "Agenda {0}/{1} · Metas {2} · Presencia {3}",
+                        "\(review.agendaCompletedCount)", "\(review.agendaTotalCount)", "\(review.goalUnitsCompletedCount)", "\(review.presenceReturns)"
+                    ))
                     Text(journalStatus)
                         .font(.caption)
                         .foregroundStyle(.white.opacity(0.7))
@@ -1768,7 +1876,7 @@ private struct EveningReviewCompletedView: View {
 
     private func summaryCard<Content: View>(title: String, icon: String, @ViewBuilder content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: 9) {
-            Label(title, systemImage: icon)
+            Label(LocalizedStringKey(title), systemImage: icon)
                 .font(.headline)
             content()
         }
@@ -1782,11 +1890,11 @@ private struct EveningReviewCompletedView: View {
 
     private var journalStatus: String {
         guard review.journalEntryRequested != false || review.journalEntryCreated else {
-            return "Elegiste conservar el cierre sin crear una entrada de Diario."
+            return RitualL10n.exact("Elegiste conservar el cierre sin crear una entrada de Diario.")
         }
         return review.journalEntryCreated
-            ? "Entrada estructurada creada en tu Diario."
-            : "La entrada de Diario no se pudo crear; puedes guardar esta reflexión manualmente."
+            ? RitualL10n.exact("Entrada estructurada creada en tu Diario.")
+            : RitualL10n.exact("La entrada de Diario no se pudo crear; puedes guardar esta reflexión manualmente.")
     }
 
     private var hasContextChanges: Bool {
@@ -1810,7 +1918,7 @@ private struct RitualJournalEntryView: View {
                 if let entry {
                     ScrollView {
                         VStack(alignment: .leading, spacing: 14) {
-                            Text(entry.title ?? "Cierre consciente").font(.title2.bold())
+                            Text(entry.title ?? RitualL10n.exact("Cierre consciente")).font(.title2.bold())
                             Text(entry.fecha?.formatted(date: .long, time: .omitted) ?? "")
                                 .font(.caption).foregroundStyle(.secondary)
                             Text(entry.content ?? "").textSelection(.enabled)
@@ -1902,7 +2010,9 @@ struct WellbeingDashboardView: View {
                         .foregroundStyle(.white)
 
                     dashboardCard(title: "Intención", icon: "sunrise.fill", route: .morningRitual) {
-                        Text(morning?.identity.isEmpty == false ? morning!.identity : "Sin ritual matutino registrado")
+                        Text(morning?.identity.isEmpty == false
+                             ? RitualL10n.localizedIdentityList(morning!.identity)
+                             : RitualL10n.exact("Sin ritual matutino registrado"))
                             .font(.headline)
                             .fixedSize(horizontal: false, vertical: true)
 
@@ -1912,7 +2022,7 @@ struct WellbeingDashboardView: View {
                                 .foregroundStyle(.white.opacity(0.72))
                                 .fixedSize(horizontal: false, vertical: true)
                         } else {
-                            Text(morning == nil ? "Toca el acceso para registrar tu intención." : "Abre el ritual para revisar o repetir tu diseño del día.")
+                            Text(RitualL10n.exact(morning == nil ? "Toca el acceso para registrar tu intención." : "Abre el ritual para revisar o repetir tu diseño del día."))
                                 .font(.caption)
                                 .foregroundStyle(.white.opacity(0.72))
                                 .fixedSize(horizontal: false, vertical: true)
@@ -1933,8 +2043,8 @@ struct WellbeingDashboardView: View {
                         } else {
                             ForEach(snapshot.agendaCompleted.prefix(4)) { item in
                                 dashboardPlainLine(
-                                    title: item.titulo.isEmpty ? "Actividad completada" : item.titulo,
-                                    subtitle: "Actividad completada"
+                                    title: item.titulo.isEmpty ? RitualL10n.exact("Actividad completada") : item.titulo,
+                                    subtitle: RitualL10n.exact("Actividad completada")
                                 )
                             }
                         }
@@ -1953,29 +2063,35 @@ struct WellbeingDashboardView: View {
                     }
 
                     dashboardCard(title: "Presencia", icon: "sparkles", route: .presence) {
-                        Text("Retornos conscientes: \(snapshot.presenceReturns)")
+                        Text(RitualL10n.format("ritual.dashboard.presence_returns", fallback: "Retornos conscientes: {0}", "\(snapshot.presenceReturns)"))
                             .font(.body)
-                        Text("Piloto automático: \(snapshot.automaticPilotEvents) registro(s)")
+                        Text(RitualL10n.format("ritual.dashboard.autopilot", fallback: "Piloto automático: {0} registro(s)", "\(snapshot.automaticPilotEvents)"))
                             .font(.caption)
                             .foregroundStyle(.white.opacity(0.72))
                             .fixedSize(horizontal: false, vertical: true)
                     }
 
                     dashboardCard(title: "Coherencia", icon: "heart.text.square.fill", route: .coherence) {
-                        Text(snapshot.coherenceAverageAfterScore.map { "Puntuación media: \($0)/10" } ?? "Sin sesión de coherencia registrada")
+                        Text(snapshot.coherenceAverageAfterScore.map {
+                            RitualL10n.format("ritual.dashboard.average_score", fallback: "Puntuación media: {0}/10", "\($0)")
+                        } ?? RitualL10n.exact("Sin sesión de coherencia registrada"))
                             .font(.body)
                             .fixedSize(horizontal: false, vertical: true)
-                        Text("\(snapshot.coherenceSessionsCount) sesión(es) en el día")
+                        Text(RitualL10n.format("ritual.dashboard.coherence_sessions", fallback: "{0} sesión(es) en el día", "\(snapshot.coherenceSessionsCount)"))
                             .font(.caption)
                             .foregroundStyle(.white.opacity(0.72))
                     }
 
                     dashboardCard(title: "Aprendizaje", icon: "moon.stars.fill", action: { showReview = true }) {
                         if let review {
-                            Text("Energía \(review.energy)/5 · Coherencia con mi identidad \(review.identityAlignment)/5")
+                            Text(RitualL10n.format(
+                                "ritual.dashboard.learning_scores",
+                                fallback: "Energía {0}/5 · Coherencia con mi identidad {1}/5",
+                                "\(review.energy)", "\(review.identityAlignment)"
+                            ))
                                 .font(.body)
                                 .fixedSize(horizontal: false, vertical: true)
-                            Text(review.suggestion)
+                            Text(RitualL10n.localizedSuggestion(review.suggestion))
                                 .foregroundStyle(.white.opacity(0.82))
                                 .fixedSize(horizontal: false, vertical: true)
                         } else {
@@ -2007,7 +2123,15 @@ struct WellbeingDashboardView: View {
         case .goals:
             GoalsListView()
         case .presence:
+            #if os(iOS)
             PresenciaView()
+            #else
+            ContentUnavailableView(
+                "Presencia",
+                systemImage: "iphone",
+                description: Text("Esta herramienta está disponible en iPhone y Apple Watch.")
+            )
+            #endif
         case .coherence:
             CardioCoherenceWelcomeFlowView()
         case .morningRitual:
@@ -2027,7 +2151,7 @@ struct WellbeingDashboardView: View {
         @ViewBuilder content: () -> Content
     ) -> some View {
         VStack(alignment: .leading, spacing: 9) {
-            Label(title, systemImage: icon).font(.headline)
+            Label(LocalizedStringKey(title), systemImage: icon).font(.headline)
             content()
         }
         .foregroundStyle(.white)
@@ -2051,7 +2175,7 @@ struct WellbeingDashboardView: View {
         VStack(spacing: 6) {
             Image(systemName: icon).foregroundStyle(.yellow)
             Text(value).font(.headline.monospacedDigit())
-            Text(title).font(.caption2).foregroundStyle(.white.opacity(0.7))
+            Text(LocalizedStringKey(title)).font(.caption2).foregroundStyle(.white.opacity(0.7))
         }
         .foregroundStyle(.white)
         .frame(maxWidth: .infinity)
@@ -2113,7 +2237,7 @@ private struct RitualPrivacyUnlockView: View {
             Text("Desbloquea tus reflexiones de cierre con biometría o el código de tu dispositivo.")
                 .multilineTextAlignment(.center).foregroundStyle(.secondary)
             Button("Desbloquear") {
-                UtilFuncs.authenticateDeviceOwner(reason: "Desbloquea tus reflexiones de cierre") { success, _ in
+                UtilFuncs.authenticateDeviceOwner(reason: RitualL10n.exact("Desbloquea tus reflexiones de cierre")) { success, _ in
                     unlocked = success
                 }
             }
@@ -2317,7 +2441,9 @@ private struct MorningRitualFlowView: View {
                     VStack(spacing: 8) {
                         ForEach(Array(state.goals.enumerated()), id: \.offset) { index, _ in
                             HStack {
-                                TextField("Meta \(index + 1)", text: Binding(
+                                TextField(
+                                    RitualL10n.format("ritual.morning.goal_placeholder", fallback: "Meta {0}", "\(index + 1)"),
+                                    text: Binding(
                                     get: { state.goals[index] },
                                     set: { state.goals[index] = $0 }
                                 ))
@@ -2461,13 +2587,13 @@ private struct MorningRitualFlowView: View {
     private var compactIdentity: String {
         let custom = state.customIdentity.trimmingCharacters(in: .whitespacesAndNewlines)
         let values = state.identities + (custom.isEmpty ? [] : [custom])
-        return values.joined(separator: ", ")
+        return values.map(RitualL10n.exact).joined(separator: ", ")
     }
 
     private var compactEmotions: String {
         let custom = state.customEmotion.trimmingCharacters(in: .whitespacesAndNewlines)
         let values = state.emotions + (custom.isEmpty ? [] : [custom])
-        return values.joined(separator: ", ")
+        return values.map(RitualL10n.exact).joined(separator: ", ")
     }
 
     private var compactAnticipation: String {
@@ -2490,13 +2616,13 @@ private struct MorningRitualFlowView: View {
         switch state.step {
         case 2:
             let valid = state.goals.map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }.filter { !$0.isEmpty }
-            message = valid.isEmpty ? "Añade al menos 1 meta para hoy." : nil
+            message = valid.isEmpty ? RitualL10n.exact("Añade al menos 1 meta para hoy.") : nil
         case 3:
             let hasCustom = !state.customIdentity.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-            message = (state.identities.isEmpty && !hasCustom) ? "Elige al menos una identidad o añade una personalizada." : nil
+            message = (state.identities.isEmpty && !hasCustom) ? RitualL10n.exact("Elige al menos una identidad o añade una personalizada.") : nil
         case 4:
             let hasCustom = !state.customEmotion.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-            message = (state.emotions.isEmpty && !hasCustom) ? "Elige al menos una emoción o añade una personalizada." : nil
+            message = (state.emotions.isEmpty && !hasCustom) ? RitualL10n.exact("Elige al menos una emoción o añade una personalizada.") : nil
         case 5:
             let normalizedPairs = state.triggerResponses.map {
                 TriggerResponseInput(
@@ -2510,13 +2636,13 @@ private struct MorningRitualFlowView: View {
             if !hasAnyInput {
                 message = nil
             } else if hasIncompletePair {
-                message = "Completa situación y respuesta en cada bloque usado, o déjalos vacíos."
+                message = RitualL10n.exact("Completa situación y respuesta en cada bloque usado, o déjalos vacíos.")
             } else {
                 message = nil
             }
         case 6:
             message = state.dayRemindersEnabled && state.dayReminderTimes.isEmpty
-                ? "Añade al menos una hora o desactiva los recordatorios del día."
+                ? RitualL10n.exact("Añade al menos una hora o desactiva los recordatorios del día.")
                 : nil
         default:
             message = nil
@@ -2632,7 +2758,7 @@ private struct MorningRitualFlowView: View {
     @ViewBuilder
     private func summarySection(title: String, text: String) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(title)
+            Text(LocalizedStringKey(title))
                 .font(.body).bold()
                 .foregroundStyle(.black)
             Text(text.isEmpty ? "-" : text)
@@ -2649,7 +2775,7 @@ private struct MorningRitualFlowView: View {
                 Button {
                     onToggle(item)
                 } label: {
-                    Text(item)
+                    Text(RitualL10n.exact(item))
                         .font(.body)
                         .padding(.vertical, 6)
                         .padding(.horizontal, 10)
@@ -2667,10 +2793,10 @@ private struct MorningRitualFlowView: View {
     @ViewBuilder
     private func cardBlock(title: String, body: String, @ViewBuilder content: () -> some View) -> some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text(title)
+            Text(LocalizedStringKey(title))
                 .font(.title3.bold())
                 .foregroundStyle(.black)
-            Text(body)
+            Text(LocalizedStringKey(body))
                 .font(.title3)
                 .foregroundStyle(.black.opacity(0.85))
             content()
@@ -2869,7 +2995,11 @@ private struct MorningRitualStatsSnapshot {
             monthlyAverage = 0
         }
 
-        let weekdaySymbols = ["D", "L", "M", "X", "J", "V", "S"]
+        let weekdayFormatter = DateFormatter()
+        weekdayFormatter.locale = AppLanguage.current.locale
+        let weekdaySymbols = weekdayFormatter.veryShortStandaloneWeekdaySymbols
+            ?? weekdayFormatter.veryShortWeekdaySymbols
+            ?? ["S", "M", "T", "W", "T", "F", "S"]
         let weekdayMap = Dictionary(grouping: days, by: { calendar.component(.weekday, from: $0) })
             .mapValues(\.count)
         weekdayCounts = weekdaySymbols.enumerated().map { index, label in
@@ -2967,21 +3097,21 @@ private struct MorningRitualHeadlineCards: View {
                 metricCard(title: "Mejor racha", value: "\(stats.longestStreak)", subtitle: "días")
             }
             HStack(spacing: 10) {
-                metricCard(title: "Prom. semanal", value: String(format: "%.1f", stats.weeklyAverage), subtitle: "rituales")
-                metricCard(title: "Metas/ritual", value: String(format: "%.1f", stats.avgGoalsPerRitual), subtitle: "media")
+                metricCard(title: "Prom. semanal", value: RitualL10n.decimal(stats.weeklyAverage), subtitle: "rituales")
+                metricCard(title: "Metas/ritual", value: RitualL10n.decimal(stats.avgGoalsPerRitual), subtitle: "media")
             }
         }
     }
 
     private func metricCard(title: String, value: String, subtitle: String) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(title)
+            Text(LocalizedStringKey(title))
                 .font(.caption)
                 .foregroundStyle(.white.opacity(0.8))
             Text(value)
                 .font(.title2.bold())
                 .foregroundStyle(.white)
-            Text(subtitle)
+            Text(LocalizedStringKey(subtitle))
                 .font(.caption2)
                 .foregroundStyle(.white.opacity(0.7))
         }
@@ -3044,7 +3174,7 @@ private struct MorningRitualClosingInsightsSection: View {
                 metric(title: "Coherencia", value: score(stats.avgIdentityAlignment), subtitle: "de 5")
             }
             HStack(spacing: 10) {
-                metric(title: "Presencia media", value: String(format: "%.1f", stats.avgPresenceReturns), subtitle: "regresos/día")
+                metric(title: "Presencia media", value: RitualL10n.decimal(stats.avgPresenceReturns), subtitle: "regresos/día")
                 metric(title: "Metas avanzadas", value: "\(stats.totalGoalUnitsCompleted)", subtitle: "unidades")
             }
 
@@ -3063,9 +3193,9 @@ private struct MorningRitualClosingInsightsSection: View {
 
     private func metric(title: String, value: String, subtitle: String) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(title).font(.caption).foregroundStyle(.white.opacity(0.76))
+            Text(LocalizedStringKey(title)).font(.caption).foregroundStyle(.white.opacity(0.76))
             Text(value).font(.title3.bold())
-            Text(subtitle).font(.caption2).foregroundStyle(.white.opacity(0.66))
+            Text(LocalizedStringKey(subtitle)).font(.caption2).foregroundStyle(.white.opacity(0.66))
         }
         .foregroundStyle(.white)
         .padding(10)
@@ -3075,23 +3205,23 @@ private struct MorningRitualClosingInsightsSection: View {
     }
 
     private func score(_ value: Double) -> String {
-        value == 0 ? "—" : String(format: "%.1f", value)
+        value == 0 ? "—" : RitualL10n.decimal(value)
     }
 
     private var practicalInsight: String {
         guard stats.totalEveningReviews > 0 else {
-            return "Completa el cierre nocturno para transformar tu intención de la mañana en aprendizaje práctico."
+            return RitualL10n.exact("Completa el cierre nocturno para transformar tu intención de la mañana en aprendizaje práctico.")
         }
         if stats.closureRate < 0.5 {
-            return "Tu oportunidad más clara: reserva una hora fija para cerrar más días de los que ya comienzas con intención."
+            return RitualL10n.exact("Tu oportunidad más clara: reserva una hora fija para cerrar más días de los que ya comienzas con intención.")
         }
         if stats.avgIdentityAlignment > 0, stats.avgIdentityAlignment < 3 {
-            return "La intención está presente, pero la coherencia aún es baja: elige un gesto visible que exprese tu identidad durante la primera hora del día."
+            return RitualL10n.exact("La intención está presente, pero la coherencia aún es baja: elige un gesto visible que exprese tu identidad durante la primera hora del día.")
         }
         if stats.avgEnergy > 0, stats.avgEnergy < 3 {
-            return "La energía media es baja: usa la preparación nocturna para reducir fricción y proteger el inicio de mañana."
+            return RitualL10n.exact("La energía media es baja: usa la preparación nocturna para reducir fricción y proteger el inicio de mañana.")
         }
-        return "Estás cerrando el ciclo con constancia. Conserva tu preparación de mañana y repite las acciones que sostienen tu coherencia."
+        return RitualL10n.exact("Estás cerrando el ciclo con constancia. Conserva tu preparación de mañana y repite las acciones que sostienen tu coherencia.")
     }
 }
 
@@ -3114,7 +3244,7 @@ private struct MorningRitualTopTagsSection: View {
 
     private func sectionRow(title: String, items: [MorningRitualStatsSnapshot.NamedCount]) -> some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text(title)
+            Text(LocalizedStringKey(title))
                 .font(.subheadline.bold())
                 .foregroundStyle(.white.opacity(0.9))
 
@@ -3126,7 +3256,7 @@ private struct MorningRitualTopTagsSection: View {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 8) {
                         ForEach(items) { item in
-                            Text("\(item.name)  \(item.count)")
+                            Text("\(RitualL10n.exact(item.name))  \(item.count)")
                                 .font(.caption)
                                 .padding(.vertical, 6)
                                 .padding(.horizontal, 10)
@@ -3171,7 +3301,11 @@ private struct MorningRitualTrendSection: View {
             }
             .frame(height: 90)
 
-            Text("Promedio mensual: \(String(format: "%.1f", stats.monthlyAverage)) rituales")
+            Text(RitualL10n.format(
+                "ritual.stats.monthly_average",
+                fallback: "Promedio mensual: {0} rituales",
+                RitualL10n.decimal(stats.monthlyAverage)
+            ))
                 .font(.caption)
                 .foregroundStyle(.white.opacity(0.8))
         }
@@ -3234,7 +3368,11 @@ private struct MorningRitualHistoryView: View {
 
                     if let selectedEpochDay {
                         HStack {
-                            Text("Filtrando: \(formattedDateFromEpochDay(selectedEpochDay))")
+                            Text(RitualL10n.format(
+                                "ritual.history.filtering",
+                                fallback: "Filtrando: {0}",
+                                formattedDateFromEpochDay(selectedEpochDay)
+                            ))
                                 .font(.footnote)
                                 .foregroundStyle(.white.opacity(0.9))
                             Spacer()
@@ -3320,8 +3458,8 @@ private struct MorningRitualHistoryView: View {
 
         var title: String {
             switch self {
-            case .morning: return "Matutinos"
-            case .evening: return "Cierre Consciente"
+            case .morning: return RitualL10n.exact("Matutinos")
+            case .evening: return RitualL10n.exact("Cierre Consciente")
             }
         }
     }
@@ -3356,9 +3494,9 @@ private struct MorningRitualHistoryView: View {
     private var searchPlaceholder: String {
         switch selectedHistoryKind {
         case .morning:
-            return "Buscar en metas, identidad, emoción o anticipación"
+            return RitualL10n.exact("Buscar en metas, identidad, emoción o anticipación")
         case .evening:
-            return "Buscar en emoción, aprendizaje, gratitud o mejora"
+            return RitualL10n.exact("Buscar en emoción, aprendizaje, gratitud o mejora")
         }
     }
 
@@ -3383,11 +3521,11 @@ private struct MorningRitualHistoryView: View {
     private var emptyStateText: String {
         let hasAnyItems = selectedHistoryKind == .morning ? !store.sessions.isEmpty : !store.eveningReviews.isEmpty
         if hasAnyItems {
-            return "No hay rituales que coincidan con el filtro."
+            return RitualL10n.exact("No hay rituales que coincidan con el filtro.")
         }
         return selectedHistoryKind == .morning
-            ? "Aún no hay rituales matutinos guardados."
-            : "Aún no hay cierres conscientes guardados."
+            ? RitualL10n.exact("Aún no hay rituales matutinos guardados.")
+            : RitualL10n.exact("Aún no hay cierres conscientes guardados.")
     }
 
     private var morningHistoryList: some View {
@@ -3484,7 +3622,7 @@ private struct MorningRitualHistoryView: View {
                 Text(title)
                     .font(.headline)
                     .foregroundStyle(.white)
-                Text(subtitle)
+                Text(LocalizedStringKey(subtitle))
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.white.opacity(0.72))
             }
@@ -3494,7 +3632,7 @@ private struct MorningRitualHistoryView: View {
             Button {
                 withAnimation(.easeInOut(duration: 0.2), toggle)
             } label: {
-                Label(isExpanded ? "Colapsar" : "Expandir", systemImage: isExpanded ? "chevron.up" : "chevron.down")
+                Label(LocalizedStringKey(isExpanded ? "Colapsar" : "Expandir"), systemImage: isExpanded ? "chevron.up" : "chevron.down")
                     .labelStyle(.iconOnly)
                     .foregroundStyle(.white)
             }
@@ -3556,17 +3694,15 @@ private struct MorningRitualHistoryView: View {
 
     private func formattedDateFromEpochDay(_ epochDay: Int) -> String {
         let date = Date(timeIntervalSince1970: TimeInterval(epochDay * 86_400))
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        return formatter.string(from: date)
+        return RitualL10n.formattedDate(date, dateStyle: .medium)
     }
 
     @ViewBuilder
     private func detailSection(_ session: MorningRitualSession) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             historyItem(title: "Metas", value: session.goals.isEmpty ? "-" : "• " + session.goals.joined(separator: "\n• "))
-            historyItem(title: "Identidad", value: session.identity.isEmpty ? "-" : session.identity)
-            historyItem(title: "Emociones", value: session.emotions.isEmpty ? "-" : session.emotions.joined(separator: ", "))
+            historyItem(title: "Identidad", value: session.identity.isEmpty ? "-" : RitualL10n.localizedIdentityList(session.identity))
+            historyItem(title: "Emociones", value: session.emotions.isEmpty ? "-" : RitualL10n.localizedEmotionList(session.emotions))
             historyItem(title: "Anticipación", value: anticipationText(for: session))
             historyItem(title: "Nota", value: session.noteText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "-" : session.noteText)
         }
@@ -3576,21 +3712,25 @@ private struct MorningRitualHistoryView: View {
     private func eveningReviewDetailSection(_ review: EveningReview) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             historyItem(title: "Energía", value: "\(review.energy)/5")
-            historyItem(title: "Emoción predominante", value: PresenciaMood.title(for: review.predominantEmotionID))
+            historyItem(title: "Emoción predominante", value: RitualL10n.localizedMood(review.predominantEmotionID))
             historyItem(title: "Lo que salió bien", value: displayValue(review.whatWentWell))
             historyItem(title: "Aprendizaje", value: displayValue(review.learning))
             historyItem(title: "Piloto automático", value: displayValue(review.autopilotMoment))
             historyItem(title: "Gratitud", value: displayValue(review.gratitude))
             historyItem(title: "Preparado para mañana", value: displayValue(review.tomorrowPreparation))
             historyItem(title: "Coherencia", value: "\(review.identityAlignment)/5")
-            historyItem(title: "Huella del día", value: "Agenda \(review.agendaCompletedCount)/\(review.agendaTotalCount) · Metas \(review.goalUnitsCompletedCount) · Presencia \(review.presenceReturns)")
-            historyItem(title: "Mejora para mañana", value: displayValue(review.suggestion))
+            historyItem(title: "Huella del día", value: RitualL10n.format(
+                "ritual.day_footprint",
+                fallback: "Agenda {0}/{1} · Metas {2} · Presencia {3}",
+                "\(review.agendaCompletedCount)", "\(review.agendaTotalCount)", "\(review.goalUnitsCompletedCount)", "\(review.presenceReturns)"
+            ))
+            historyItem(title: "Mejora para mañana", value: displayValue(RitualL10n.localizedSuggestion(review.suggestion)))
         }
     }
 
     private func historyItem(title: String, value: String) -> some View {
         VStack(alignment: .leading, spacing: 2) {
-            Text(title)
+            Text(LocalizedStringKey(title))
                 .font(.subheadline.bold())
                 .foregroundStyle(.white)
             Text(value)
@@ -3611,13 +3751,22 @@ private struct MorningRitualHistoryView: View {
 
     private func summaryText(for session: MorningRitualSession) -> String {
         let goals = session.goals.isEmpty ? "-" : session.goals.joined(separator: " • ")
-        let emotions = session.emotions.isEmpty ? "-" : session.emotions.joined(separator: ", ")
-        return "Metas: \(goals)\nIdentidad: \(session.identity.isEmpty ? "-" : session.identity)\nEmociones: \(emotions)"
+        let identity = session.identity.isEmpty ? "-" : RitualL10n.localizedIdentityList(session.identity)
+        let emotions = session.emotions.isEmpty ? "-" : RitualL10n.localizedEmotionList(session.emotions)
+        return RitualL10n.format(
+            "ritual.history.morning_summary",
+            fallback: "Metas: {0}\nIdentidad: {1}\nEmociones: {2}",
+            goals, identity, emotions
+        )
     }
 
     private func summaryText(for review: EveningReview) -> String {
-        let emotion = PresenciaMood.title(for: review.predominantEmotionID)
-        return "Energía: \(review.energy)/5 · Emoción: \(emotion)\nAprendizaje: \(displayValue(review.learning))\nMejora: \(displayValue(review.suggestion))"
+        let emotion = RitualL10n.localizedMood(review.predominantEmotionID)
+        return RitualL10n.format(
+            "ritual.history.evening_summary",
+            fallback: "Energía: {0}/5 · Emoción: {1}\nAprendizaje: {2}\nMejora: {3}",
+            "\(review.energy)", emotion, displayValue(review.learning), displayValue(RitualL10n.localizedSuggestion(review.suggestion))
+        )
     }
 
     private func displayValue(_ text: String) -> String {
@@ -3626,9 +3775,7 @@ private struct MorningRitualHistoryView: View {
     }
 
     private func formattedDate(_ millis: Int64) -> String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        return formatter.string(from: Date(timeIntervalSince1970: TimeInterval(millis) / 1_000))
+        RitualL10n.formattedDate(Date(timeIntervalSince1970: TimeInterval(millis) / 1_000), dateStyle: .medium)
     }
 
     private func dismissKeyboard() {
@@ -3724,7 +3871,7 @@ private struct MorningRitualHistoryCalendarView: View {
 
     private var monthTitle: String {
         let formatter = DateFormatter()
-        formatter.locale = .current
+        formatter.locale = AppLanguage.current.locale
         formatter.dateFormat = "LLLL yyyy"
         return formatter.string(from: currentMonth).capitalized
     }
@@ -3912,8 +4059,8 @@ private struct MorningRitualSettingsView: View {
                     .font(.title3)
                     .frame(width: 26)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(title).font(.headline)
-                    Text(subtitle)
+                    Text(LocalizedStringKey(title)).font(.headline)
+                    Text(LocalizedStringKey(subtitle))
                         .font(.body)
                         .foregroundStyle(.white.opacity(0.68))
                 }

@@ -9,6 +9,12 @@ import SwiftUI
 import CoreData
 import Combine
 
+enum WatchL10n {
+    static func exact(_ spanish: String, bundle: Bundle = .main) -> String {
+        bundle.localizedString(forKey: spanish, value: spanish, table: "Localizable")
+    }
+}
+
 struct WatchAgendaItem: Identifiable {
     let id: UUID
     let titulo: String
@@ -32,6 +38,8 @@ struct WatchPresenceMood: Identifiable, Hashable {
     let title: String
     let symbolName: String
     let countsAsInconsciente: Bool
+
+    var localizedTitle: String { WatchL10n.exact(title) }
 
     static let common: [WatchPresenceMood] = [
         WatchPresenceMood(id: "sientoMiFuturoAhora", title: "Siento mi futuro ahora", symbolName: "sparkles", countsAsInconsciente: false),
@@ -1235,6 +1243,17 @@ enum Emoticono2:String, CaseIterable{
         case .feliz        : "feliz"
         case .neutral      : "neutral"
         case .sorpresa     : "sorpresa"
+        }
+    }
+
+    var localizedTitle: String {
+        switch self {
+        case .feliz: WatchL10n.exact("Feliz")
+        case .neutral: WatchL10n.exact("Neutral")
+        case .enfadado: WatchL10n.exact("Enfadado")
+        case .sorpresa: WatchL10n.exact("Sorprendido")
+        case .distraido: WatchL10n.exact("Distraído")
+        case .desanimado: WatchL10n.exact("Desanimado")
         }
     }
     }

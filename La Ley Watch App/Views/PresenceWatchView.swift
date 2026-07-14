@@ -69,9 +69,9 @@ struct PresenceWatchView: View {
 
     private func registerPresenceReturn(mood: WatchPresenceMood?) {
         if modelWatch.recordPresenceReturn(mood: mood) {
-            feedbackText = mood == nil ? "Registrado" : "Registrado con estado"
+            feedbackText = WatchL10n.exact(mood == nil ? "Registrado" : "Registrado con estado")
         } else {
-            feedbackText = "No se pudo guardar"
+            feedbackText = WatchL10n.exact("No se pudo guardar")
         }
         showSavedFeedback = true
     }
@@ -104,7 +104,7 @@ private struct PresenceMoodSelectionView: View {
                     Button {
                         onSelectMood(mood)
                     } label: {
-                        Label(mood.title, systemImage: mood.symbolName)
+                        Label(mood.localizedTitle, systemImage: mood.symbolName)
                             .foregroundStyle(.black)
                     }
                 }

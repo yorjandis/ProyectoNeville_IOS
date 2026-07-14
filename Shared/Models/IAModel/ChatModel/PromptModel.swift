@@ -52,6 +52,7 @@ struct NevilleEngine {
         - Termina con una aplicación práctica concreta (ejercicio imaginativo o cambio de estado).
         - Utiliza entre 400 y 600 palabras.
         - Antes de responder, verifica que cada afirmación se derive explícitamente de al menos un principio listado.
+        - \(AppLanguage.current.aiResponseInstruction)
 
         Pregunta:
         \(question)
@@ -132,6 +133,7 @@ struct DispenzaEngine {
         - Termina con una aplicación práctica concreta (ejercicio imaginativo o cambio de estado).
         - Utiliza entre 400 y 600 palabras.
         - Antes de responder, verifica que cada afirmación se derive explícitamente de al menos un principio listado.
+        - \(AppLanguage.current.aiResponseInstruction)
         
         Pregunta:
         \(question)
@@ -186,6 +188,7 @@ struct LiptonEngine {
         - Termina con una aplicación práctica concreta (ejercicio imaginativo o cambio de estado).
         - Utiliza entre 400 y 600 palabras.
         - Antes de responder, verifica que cada afirmación se derive explícitamente de al menos un principio listado.
+        - \(AppLanguage.current.aiResponseInstruction)
 
         Pregunta:
         \(question)
@@ -241,6 +244,7 @@ struct BradenEngine {
         - Termina con una aplicación práctica concreta (ejercicio imaginativo o cambio de estado).
         - Utiliza entre 400 y 600 palabras.
         - Antes de responder, verifica que cada afirmación se derive explícitamente de al menos un principio listado.
+        - \(AppLanguage.current.aiResponseInstruction)
 
         Pregunta:
         \(question)

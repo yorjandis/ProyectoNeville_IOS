@@ -602,7 +602,7 @@ private struct CalmMusicLibraryPicker: UIViewControllerRepresentable {
 
     func makeUIViewController(context: Context) -> MPMediaPickerController {
         let picker = MPMediaPickerController(mediaTypes: .music)
-        picker.prompt = "Selecciona música"
+        picker.prompt = L10n.exact("Selecciona música")
         picker.allowsPickingMultipleItems = false
         picker.showsCloudItems = false
         picker.delegate = context.coordinator

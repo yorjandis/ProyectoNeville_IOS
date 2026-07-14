@@ -11,6 +11,10 @@ final class AgendaViewModel: ObservableObject {
         case todos = "Todos"
 
         var id: String { rawValue }
+
+        var title: String {
+            L10n.exact(rawValue)
+        }
     }
 
     @Published var selectedDate: Date = Date()

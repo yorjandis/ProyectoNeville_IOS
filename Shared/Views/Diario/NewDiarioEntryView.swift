@@ -63,7 +63,7 @@ struct NewDiarioEntryView: View {
                                     emocion = value
                                 } label: {
                                     HStack {
-                                        Text(value.rawValue.capitalized)
+                                        Text(value.localizedTitle)
                                         Text(value.emoji)
                                     }
                                 }

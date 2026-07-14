@@ -69,6 +69,14 @@
         <attribute name="id" optional="YES" attributeType="String"/>
         <attribute name="nombre" optional="YES" attributeType="String"/>
         <relationship name="frases" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Frases" inverseName="contextos" inverseEntity="Frases"/>
+        <relationship name="translations" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ContextTranslation" inverseName="context" inverseEntity="ContextTranslation"/>
+    </entity>
+    <entity name="ContextTranslation" representedClassName="ContextTranslation" syncable="YES" codeGenerationType="class">
+        <attribute name="contextID" optional="YES" attributeType="String"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="localeIdentifier" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <relationship name="context" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Contexto" inverseName="translations" inverseEntity="Contexto"/>
     </entity>
     <entity name="Diario" representedClassName="Diario" syncable="YES" codeGenerationType="class">
         <attribute name="capitulo" optional="YES" attributeType="String"/>
@@ -93,6 +101,16 @@
         <relationship name="contextos" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Contexto" inverseName="frases" inverseEntity="Contexto"/>
         <relationship name="relacionadas" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Frases" inverseName="relacionadasPor" inverseEntity="Frases"/>
         <relationship name="relacionadasPor" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Frases" inverseName="relacionadas" inverseEntity="Frases"/>
+        <relationship name="translations" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="PhraseTranslation" inverseName="phrase" inverseEntity="PhraseTranslation"/>
+    </entity>
+    <entity name="PhraseTranslation" representedClassName="PhraseTranslation" syncable="YES" codeGenerationType="class">
+        <attribute name="editorialNote" optional="YES" attributeType="String"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="localeIdentifier" optional="YES" attributeType="String"/>
+        <attribute name="phraseID" optional="YES" attributeType="String"/>
+        <attribute name="source" optional="YES" attributeType="String"/>
+        <attribute name="text" optional="YES" attributeType="String"/>
+        <relationship name="phrase" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Frases" inverseName="translations" inverseEntity="Frases"/>
     </entity>
     <entity name="GoalEntity" representedClassName="GoalEntity" syncable="YES" codeGenerationType="class">
         <attribute name="completionBasis" optional="YES" attributeType="String"/>
@@ -198,6 +216,7 @@
         <attribute name="title" attributeType="String" defaultValueString=""/>
     </entity>
     <entity name="TxtCont" representedClassName="TxtCont" syncable="YES" codeGenerationType="class">
+        <attribute name="contentID" optional="YES" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="isfav" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="isnew" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
