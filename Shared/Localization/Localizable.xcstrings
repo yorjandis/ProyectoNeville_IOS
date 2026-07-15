@@ -1088,7 +1088,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%.1f coherence minutes · average change %arg%.1f"
+            "value" : "%arg coherence minutes · average change %arg%.1f"
           }
         },
         "es" : {
@@ -1100,7 +1100,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "正念协调练习 %.1f 分钟 · 平均变化 %arg%.1f"
+            "value" : "%arg 分钟的心脑相干练习 · 平均变化 %arg%.1f"
           }
         }
       }
@@ -40023,7 +40023,26 @@
       }
     },
     "Resumen de enseñanza" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teaching Summary"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resumen de enseñanza"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "教学摘要"
+          }
+        }
+      }
     },
     "Resumen de Libros" : {
 

@@ -2401,8 +2401,8 @@ relacionadas=
 
 id=jd_301
 autor=jd
-nota=
+nota=Tu cerebro es un registro del pasado. Si cada vez que te levantas por las mañanas traes a la mente los mismos pensamientos, y sentimientos asociados, entonces vives en el pasado y tendrás un futuro predecible. Decir Yo Soy o yo estoy es condicionar el tu futuro a un destino predecible.
 fuente= Serie La Fórmula, cap.5
-contexto=Tu cerebro es un registro del pasado. Si cada vez que te levantas por las mañanas traes a la mente los mismos pensamientos, y sentimientos asociados, entonces vives en el pasado y tendrás un futuro predecible. Decir Yo Soy o yo estoy es condicionar el tu futuro a un destino predecible.
+contexto=
 texto=Cada vez que dices Yo Soy estás dando una orden a tu mente y a tu cuerpo hacia un destino
 relacionadas=
