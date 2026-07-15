@@ -14,7 +14,7 @@ enum ManagedAssetsSupportError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .featureUnavailable:
-            return "Managed Background Assets no está disponible en esta versión del sistema."
+            return L10n.exact("Managed Background Assets no está disponible en esta versión del sistema.")
         case .appGroupContainerNotFound(let appGroupID):
             return "No se encontró el contenedor del App Group: \(appGroupID)."
         }

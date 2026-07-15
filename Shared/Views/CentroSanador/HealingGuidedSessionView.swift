@@ -68,7 +68,12 @@ struct HealingGuidedSessionView: View {
         VStack(spacing: 0) {
             VStack(spacing: 9) {
                 HStack {
-                    Text("Paso \(currentIndex + 1) de \(healingProtocol.steps.count)")
+                    Text(L10n.format(
+                        "healing.session.step_progress",
+                        fallback: "Paso {0} de {1}",
+                        "\(currentIndex + 1)",
+                        "\(healingProtocol.steps.count)"
+                    ))
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(.white.opacity(0.65))
                     Spacer()
@@ -113,7 +118,10 @@ struct HealingGuidedSessionView: View {
                 Button {
                     isPaused.toggle()
                 } label: {
-                    Label(isPaused ? "Continuar" : "Pausa", systemImage: isPaused ? "play.fill" : "pause.fill")
+                    Label(
+                        L10n.exact(isPaused ? "Continuar" : "Pausa"),
+                        systemImage: isPaused ? "play.fill" : "pause.fill"
+                    )
                         .font(.headline)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 8)
@@ -218,7 +226,7 @@ struct HealingGuidedSessionView: View {
             VStack(spacing: 5) {
                 Image(systemName: value.symbol)
                     .font(.title3)
-                Text(value.title)
+                Text(value.localizedTitle)
                     .font(.caption2.weight(.semibold))
                     .lineLimit(1)
             }
@@ -286,11 +294,11 @@ private enum SessionFeedback: String {
     case somewhat
     case notHelped
 
-    var title: String {
+    var localizedTitle: String {
         switch self {
-        case .helped: return "Me ayudó"
-        case .somewhat: return "Algo"
-        case .notHelped: return "No"
+        case .helped: return L10n.exact("Me ayudó")
+        case .somewhat: return L10n.exact("Algo")
+        case .notHelped: return L10n.exact("No")
         }
     }
 

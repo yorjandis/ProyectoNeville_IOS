@@ -69,10 +69,28 @@ struct HealingProtocol: Decodable, Identifiable, Hashable {
 
     var durationLabel: String {
         let total = durationSeconds
-        if total < 60 { return "\(total) s" }
+        if total < 60 {
+            return L10n.format(
+                "healing.duration.seconds",
+                fallback: "{0} s",
+                "\(total)"
+            )
+        }
         let minutes = total / 60
         let seconds = total % 60
-        return seconds == 0 ? "\(minutes) min" : "\(minutes) min \(seconds) s"
+        if seconds == 0 {
+            return L10n.format(
+                "healing.duration.minutes",
+                fallback: "{0} min",
+                "\(minutes)"
+            )
+        }
+        return L10n.format(
+            "healing.duration.minutes_seconds",
+            fallback: "{0} min {1} s",
+            "\(minutes)",
+            "\(seconds)"
+        )
     }
 }
 
@@ -95,10 +113,10 @@ enum HealingEvidenceLevel: String, Decodable, Hashable {
 
     var title: String {
         switch self {
-        case .supported: return "Apoyo sólido"
-        case .promising: return "Evidencia prometedora"
-        case .complementary: return "Técnica complementaria"
-        case .experimental: return "Evidencia limitada"
+        case .supported: return L10n.exact("Apoyo sólido")
+        case .promising: return L10n.exact("Evidencia prometedora")
+        case .complementary: return L10n.exact("Técnica complementaria")
+        case .experimental: return L10n.exact("Evidencia limitada")
         }
     }
 }

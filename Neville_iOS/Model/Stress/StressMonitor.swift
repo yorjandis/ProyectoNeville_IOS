@@ -9,6 +9,8 @@ enum StressLevel: String, CaseIterable, Sendable {
     case activity = "Actividad"
     case unavailable = "Sin datos"
 
+    var displayName: String { L10n.exact(rawValue) }
+
     init(score: Double) {
         switch score {
         case ..<25: self = .low
@@ -23,6 +25,8 @@ enum StressConfidence: String, Sendable {
     case low = "Baja"
     case medium = "Media"
     case high = "Alta"
+
+    var displayName: String { L10n.exact(rawValue) }
 
     init(value: Double) {
         switch value {
@@ -434,9 +438,15 @@ private enum StressEstimator {
                 confidenceValue: min(0.9, 0.45 + activeRatio * 0.45),
                 signals: [
                     StressSignal(
-                        name: "Movimiento",
-                        value: recentSteps > 0 ? "\(Int(recentSteps)) pasos" : "Detectado",
-                        detail: "Se pausa la estimación para no confundir ejercicio con estrés."
+                        name: L10n.exact("Movimiento"),
+                        value: recentSteps > 0
+                            ? L10n.format(
+                                Int(recentSteps) == 1 ? "home.stress.steps.single" : "home.stress.steps.multiple",
+                                fallback: Int(recentSteps) == 1 ? "{0} paso" : "{0} pasos",
+                                "\(Int(recentSteps))"
+                            )
+                            : L10n.exact("Detectado"),
+                        detail: L10n.exact("Se pausa la estimación para no confundir ejercicio con estrés.")
                     )
                 ],
                 sourceNames: sources,
@@ -465,27 +475,51 @@ private enum StressEstimator {
         if let currentHeartRate, let heartRateBaseline = baseline.heartRate {
             signals.append(
                 StressSignal(
-                    name: "Pulso",
-                    value: "\(Int(currentHeartRate.rounded())) lpm",
-                    detail: "Referencia personal: \(Int(heartRateBaseline.rounded())) lpm"
+                    name: L10n.exact("Pulso"),
+                    value: L10n.format(
+                        "home.stress.heart_rate",
+                        fallback: "{0} lpm",
+                        "\(Int(currentHeartRate.rounded()))"
+                    ),
+                    detail: L10n.format(
+                        "home.stress.personal_heart_rate",
+                        fallback: "Referencia personal: {0} lpm",
+                        "\(Int(heartRateBaseline.rounded()))"
+                    )
                 )
             )
         }
         if let currentHRV, let hrvBaseline = baseline.hrv {
             signals.append(
                 StressSignal(
-                    name: "VFC (SDNN)",
-                    value: "\(Int(currentHRV.value.rounded())) ms",
-                    detail: "Referencia personal: \(Int(hrvBaseline.rounded())) ms"
+                    name: L10n.exact("VFC (SDNN)"),
+                    value: L10n.format(
+                        "home.stress.milliseconds",
+                        fallback: "{0} ms",
+                        "\(Int(currentHRV.value.rounded()))"
+                    ),
+                    detail: L10n.format(
+                        "home.stress.personal_milliseconds",
+                        fallback: "Referencia personal: {0} ms",
+                        "\(Int(hrvBaseline.rounded()))"
+                    )
                 )
             )
         }
         if let currentRespiratory, let respiratoryBaseline = baseline.respiratoryRate {
             signals.append(
                 StressSignal(
-                    name: "Respiración",
-                    value: String(format: "%.1f rpm", currentRespiratory.value),
-                    detail: String(format: "Referencia personal: %.1f rpm", respiratoryBaseline)
+                    name: L10n.exact("Respiración"),
+                    value: L10n.format(
+                        "home.stress.respiratory_rate",
+                        fallback: "{0} rpm",
+                        String(format: "%.1f", currentRespiratory.value)
+                    ),
+                    detail: L10n.format(
+                        "home.stress.personal_respiratory_rate",
+                        fallback: "Referencia personal: {0} rpm",
+                        String(format: "%.1f", respiratoryBaseline)
+                    )
                 )
             )
         }

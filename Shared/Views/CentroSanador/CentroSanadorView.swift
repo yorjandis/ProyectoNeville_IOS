@@ -50,12 +50,19 @@ struct CentroSanadorView: View {
 
                     if hasPremiumAccess {
                         HealingGlassCard {
-                            Label("- Una guía, no un diagnóstico - \n\n\(catalog.disclaimer)", systemImage: "info.circle.fill")
+                            Label(
+                                L10n.format(
+                                    "healing.guide.disclaimer",
+                                    fallback: "- Una guía, no un diagnóstico - \n\n{0}",
+                                    catalog.disclaimer
+                                ),
+                                systemImage: "info.circle.fill"
+                            )
                                 .font(.headline)
                                 .foregroundStyle(.cyan)
                         }
 
-                        Text(searchText.isEmpty ? "¿Qué está ocurriendo?" : "Resultados")
+                        Text(L10n.exact(searchText.isEmpty ? "¿Qué está ocurriendo?" : "Resultados"))
                             .font(.title2.bold())
                             .foregroundStyle(.white)
                             .padding(.top, 4)

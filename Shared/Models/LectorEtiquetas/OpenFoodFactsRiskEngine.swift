@@ -34,10 +34,14 @@ struct OpenFoodFactsRiskEngine {
                 HallazgoRiesgoEtiqueta(
                     categoria: .ultraprocesado,
                     nivel: .medio,
-                    titulo: "Lista extensa de ingredientes",
-                    detalle: "Se detectaron \(ingredientes.count) ingredientes, posible perfil ultraprocesado.",
+                    titulo: L10n.exact("Lista extensa de ingredientes"),
+                    detalle: L10n.format(
+                        "label_reader.finding.ingredient_count",
+                        fallback: "Se detectaron {0} ingredientes, posible perfil ultraprocesado.",
+                        "\(ingredientes.count)"
+                    ),
                     textoDetectado: "\(ingredientes.count) ingredientes",
-                    recomendacion: "Compara con opciones de lista corta de ingredientes y menor procesamiento."
+                    recomendacion: L10n.exact("Compara con opciones de lista corta de ingredientes y menor procesamiento.")
                 )
             )
         }
@@ -226,10 +230,10 @@ struct OpenFoodFactsRiskEngine {
             HallazgoRiesgoEtiqueta(
                 categoria: .indicioGluten,
                 nivel: nivel,
-                titulo: "Posibles indicios de gluten",
-                detalle: "Se detectaron referencias a posible presencia de gluten.",
+                titulo: L10n.exact("Posibles indicios de gluten"),
+                detalle: L10n.exact("Se detectaron referencias a posible presencia de gluten."),
                 textoDetectado: uniques.joined(separator: ", "),
-                recomendacion: "Si necesitas evitar gluten, confirma alérgenos y certificación sin gluten."
+                recomendacion: L10n.exact("Si necesitas evitar gluten, confirma los alérgenos y la certificación sin gluten.")
             )
         ]
     }
@@ -240,21 +244,21 @@ struct OpenFoodFactsRiskEngine {
         if let sugar = bestNutrient(named: "azucar", nutrients: nutrientes) {
             let nivel = riskSugar(grams: grams(sugar), base: sugar.base)
             if nivel > .bajo {
-                findings.append(HallazgoRiesgoEtiqueta(categoria: .excesoAzucar, nivel: nivel, titulo: "Azúcar elevada", detalle: "Concentración alta de azúcar para \(sugar.base.rawValue).", textoDetectado: describe(sugar), recomendacion: "Prioriza opciones con menor azúcar total."))
+                findings.append(HallazgoRiesgoEtiqueta(categoria: .excesoAzucar, nivel: nivel, titulo: L10n.exact("Azúcar elevada"), detalle: L10n.format("label_reader.finding.high_sugar", fallback: "La concentración de azúcar detectada es alta {0}.", sugar.base.displayTitle), textoDetectado: describe(sugar), recomendacion: L10n.exact("Prioriza opciones con menor azúcar total.")))
             }
         }
 
         if let salt = bestNutrient(named: "sal", nutrients: nutrientes) {
             let nivel = riskSalt(grams: grams(salt), base: salt.base)
             if nivel > .bajo {
-                findings.append(HallazgoRiesgoEtiqueta(categoria: .excesoSal, nivel: nivel, titulo: "Sal elevada", detalle: "Concentración alta de sal para \(salt.base.rawValue).", textoDetectado: describe(salt), recomendacion: "Reduce frecuencia y combina con alimentos bajos en sal."))
+                findings.append(HallazgoRiesgoEtiqueta(categoria: .excesoSal, nivel: nivel, titulo: L10n.exact("Sal elevada"), detalle: L10n.format("label_reader.finding.high_salt", fallback: "La concentración de sal supera los niveles recomendados {0}.", salt.base.displayTitle), textoDetectado: describe(salt), recomendacion: L10n.exact("Reduce la frecuencia y combínalo con alimentos bajos en sal.")))
             }
         }
 
         if let satFat = bestNutrient(named: "grasa_saturada", nutrients: nutrientes) {
             let nivel = riskSaturatedFat(grams: grams(satFat), base: satFat.base)
             if nivel > .bajo {
-                findings.append(HallazgoRiesgoEtiqueta(categoria: .excesoGrasaSaturada, nivel: nivel, titulo: "Grasa saturada elevada", detalle: "Concentración alta de grasa saturada para \(satFat.base.rawValue).", textoDetectado: describe(satFat), recomendacion: "Prioriza grasas no saturadas y menor ultraprocesado."))
+                findings.append(HallazgoRiesgoEtiqueta(categoria: .excesoGrasaSaturada, nivel: nivel, titulo: L10n.exact("Grasa saturada elevada"), detalle: L10n.format("label_reader.finding.high_saturated_fat", fallback: "La concentración de grasa saturada es alta {0}.", satFat.base.displayTitle), textoDetectado: describe(satFat), recomendacion: L10n.exact("Prioriza las grasas no saturadas y los alimentos menos procesados.")))
             }
         }
 
@@ -262,7 +266,7 @@ struct OpenFoodFactsRiskEngine {
             let salEquivalente = grams(sodium) * 2.5
             let nivel = riskSalt(grams: salEquivalente, base: sodium.base)
             if nivel > .bajo {
-                findings.append(HallazgoRiesgoEtiqueta(categoria: .sodioElevado, nivel: nivel, titulo: "Sodio elevado", detalle: "Equivale a \(String(format: "%.2f", salEquivalente)) g de sal para \(sodium.base.rawValue).", textoDetectado: describe(sodium), recomendacion: "Busca versiones con menor sodio."))
+                findings.append(HallazgoRiesgoEtiqueta(categoria: .sodioElevado, nivel: nivel, titulo: L10n.exact("Sodio elevado"), detalle: L10n.format("label_reader.finding.sodium_equivalent_short", fallback: "Equivale a {0} g de sal {1}.", String(format: "%.2f", salEquivalente), sodium.base.displayTitle), textoDetectado: describe(sodium), recomendacion: L10n.exact("Busca versiones con menor sodio.")))
             }
         }
 
@@ -316,10 +320,18 @@ struct OpenFoodFactsRiskEngine {
 
     private func buildReadableSource(product: OpenFoodFactsProduct) -> String {
         var lines: [String] = []
-        if let code = product.code { lines.append("Codigo: \(code)") }
-        if let name = product.productName { lines.append("Producto: \(name)") }
-        if let ingredients = product.ingredientsText { lines.append("Ingredientes: \(ingredients)") }
-        if let allergens = product.allergens, !allergens.isEmpty { lines.append("Alergenos: \(allergens)") }
+        if let code = product.code {
+            lines.append(L10n.format("label_reader.source.barcode", fallback: "Código: {0}", code))
+        }
+        if let name = product.productName {
+            lines.append(L10n.format("label_reader.source.product", fallback: "Producto: {0}", name))
+        }
+        if let ingredients = product.ingredientsText {
+            lines.append(L10n.format("label_reader.source.ingredients", fallback: "Ingredientes: {0}", ingredients))
+        }
+        if let allergens = product.allergens, !allergens.isEmpty {
+            lines.append(L10n.format("label_reader.source.allergens", fallback: "Alérgenos: {0}", allergens))
+        }
         return lines.joined(separator: "\n")
     }
 

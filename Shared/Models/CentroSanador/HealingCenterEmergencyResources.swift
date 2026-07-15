@@ -37,7 +37,7 @@ struct HealingEmergencyResourceProvider {
 
     private let locale: Locale
 
-    init(locale: Locale = .current) {
+    init(locale: Locale = AppLanguage.current.locale) {
         self.locale = locale
     }
 
@@ -65,9 +65,9 @@ struct HealingEmergencyResourceProvider {
             contacts.append(
                 .init(
                     id: "\(code)-emergency",
-                    title: "Emergencias",
+                    title: L10n.exact("Emergencias"),
                     number: emergencyNumber,
-                    detail: "Para peligro inmediato o una emergencia médica.",
+                    detail: L10n.exact("Para peligro inmediato o una emergencia médica."),
                     kind: .emergency,
                     sourceURL: emergencySourceURL(for: code)
                 )
@@ -78,9 +78,9 @@ struct HealingEmergencyResourceProvider {
 
         let note: String
         if emergencyNumber == nil {
-            note = "No tenemos verificado un número único para esta región. Usa el número local de emergencias o consulta el directorio internacional."
+            note = L10n.exact("No tenemos verificado un número único para esta región. Usa el número local de emergencias o consulta el directorio internacional.")
         } else {
-            note = "La región se obtiene de los ajustes del dispositivo, no de tu ubicación. Compruébala antes de llamar."
+            note = L10n.exact("La región se obtiene de los ajustes del dispositivo, no de tu ubicación. Compruébala antes de llamar.")
         }
 
         return HealingEmergencyResources(
@@ -109,9 +109,9 @@ struct HealingEmergencyResourceProvider {
             return [support(
                 code: code,
                 id: "024",
-                title: "Línea 024",
+                title: L10n.exact("Línea 024"),
                 number: "024",
-                detail: "Atención a la conducta suicida, gratuita, confidencial y disponible 24/7.",
+                detail: L10n.exact("Atención a la conducta suicida, gratuita, confidencial y disponible 24/7."),
                 source: "https://www.sanidad.gob.es/linea024/home.htm"
             )]
         case "US":
@@ -120,7 +120,7 @@ struct HealingEmergencyResourceProvider {
                 id: "988",
                 title: "988 Suicide & Crisis Lifeline",
                 number: "988",
-                detail: "Llama o envía un mensaje de texto para apoyo en crisis 24/7.",
+                detail: L10n.exact("Llama o envía un mensaje de texto para apoyo en crisis 24/7."),
                 source: "https://988lifeline.org"
             )]
         case "CA":
@@ -129,7 +129,7 @@ struct HealingEmergencyResourceProvider {
                 id: "988",
                 title: "9-8-8 Suicide Crisis Helpline",
                 number: "988",
-                detail: "Llama o envía un mensaje de texto para apoyo en crisis 24/7.",
+                detail: L10n.exact("Llama o envía un mensaje de texto para apoyo en crisis 24/7."),
                 source: "https://988.ca"
             )]
         case "GB", "IE":
@@ -138,7 +138,7 @@ struct HealingEmergencyResourceProvider {
                 id: "samaritans",
                 title: "Samaritans",
                 number: "116 123",
-                detail: "Apoyo emocional gratuito y confidencial, disponible 24/7.",
+                detail: L10n.exact("Apoyo emocional gratuito y confidencial, disponible 24/7."),
                 source: "https://www.samaritans.org/how-we-can-help/contact-samaritan/"
             )]
         case "AU":
@@ -147,7 +147,7 @@ struct HealingEmergencyResourceProvider {
                 id: "lifeline",
                 title: "Lifeline Australia",
                 number: "13 11 14",
-                detail: "Apoyo en crisis y prevención del suicidio, disponible 24/7.",
+                detail: L10n.exact("Apoyo en crisis y prevención del suicidio, disponible 24/7."),
                 source: "https://www.lifeline.org.au/131114/"
             )]
         case "NZ":
@@ -156,16 +156,16 @@ struct HealingEmergencyResourceProvider {
                 id: "1737",
                 title: "1737, Need to talk?",
                 number: "1737",
-                detail: "Llama o envía un mensaje de texto para hablar con una persona capacitada.",
+                detail: L10n.exact("Llama o envía un mensaje de texto para hablar con una persona capacitada."),
                 source: "https://1737.org.nz"
             )]
         case "MX":
             return [support(
                 code: code,
                 id: "linea-vida",
-                title: "Línea de la Vida",
+                title: L10n.exact("Línea de la Vida"),
                 number: "800 911 2000",
-                detail: "Orientación profesional en salud mental, gratuita y disponible 24/7.",
+                detail: L10n.exact("Orientación profesional en salud mental, gratuita y disponible 24/7."),
                 source: "https://www.gob.mx/lineadelavida"
             )]
         default:

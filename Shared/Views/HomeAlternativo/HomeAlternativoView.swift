@@ -104,11 +104,11 @@ struct HomeAlternativoView: View {
     private var greeting: String {
         switch dayMoment {
         case .morning:
-            return "Buenos días"
+            return L10n.exact("Buenos días")
         case .afternoon:
-            return "Buenas tardes"
+            return L10n.exact("Buenas tardes")
         case .night:
-            return "Buenas noches"
+            return L10n.exact("Buenas noches")
         }
     }
 
@@ -129,15 +129,23 @@ struct HomeAlternativoView: View {
 
         return [
             .init(
-                title: "Presencia",
-                valueText: "\(todayPresentCount) eventos",
+                title: L10n.exact("Presencia"),
+                valueText: L10n.format(
+                    todayPresentCount == 1 ? "home.progress.presence.single" : "home.progress.presence.multiple",
+                    fallback: todayPresentCount == 1 ? "{0} evento" : "{0} eventos",
+                    "\(todayPresentCount)"
+                ),
                 symbol: "heart.text.square",
                 progress: min(Double(todayPresentCount) / presenceTotal, 1.0),
                 colors: HomeAlternativoProgressPalette.presence
             ),
             .init(
-                title: "Metas",
-                valueText: "\(activeGoals.count) activas",
+                title: L10n.exact("Metas"),
+                valueText: L10n.format(
+                    activeGoals.count == 1 ? "home.progress.goals.single" : "home.progress.goals.multiple",
+                    fallback: activeGoals.count == 1 ? "{0} activa" : "{0} activas",
+                    "\(activeGoals.count)"
+                ),
                 symbol: "checklist",
                 progress: min(Double(activeGoals.count) / goalsTotal, 1.0),
                 colors: HomeAlternativoProgressPalette.goals
@@ -418,7 +426,7 @@ struct HomeAlternativoView: View {
                             }
                         } label: {
                             Label(
-                                shouldShowAgendaBadge ? "Ocultar indicador por hoy" : "Mostrar indicador",
+                                L10n.exact(shouldShowAgendaBadge ? "Ocultar indicador por hoy" : "Mostrar indicador"),
                                 systemImage: shouldShowAgendaBadge ? "bell.badge.slash" : "bell.badge"
                             )
                         }
@@ -575,7 +583,7 @@ struct HomeAlternativoView: View {
             ReflexListView()
                 .environmentObject(reflexModel)
         case .ayudas:
-            TxtListView(typeOfContent: .ayud, title: "Ayudas")
+            TxtListView(typeOfContent: .ayud, title: L10n.exact("Ayudas"))
                 .environmentObject(clipBoardModel)
                 .environmentObject(modelTxt)
                 .environmentObject(settingModel)
@@ -663,18 +671,18 @@ private enum HomeAlternativoCardPalette: String, CaseIterable, Identifiable, Cod
 
     var title: String {
         switch self {
-        case .calmaAzul: return "Calma azul"
-        case .solDorado: return "Sol dorado"
-        case .presenciaTurquesa: return "Turquesa"
-        case .bosqueVivo: return "Bosque"
-        case .violetaMagenta: return "Violeta"
-        case .coralNaranja: return "Coral"
-        case .indigoMenta: return "Indigo"
-        case .cieloCian: return "Cielo"
-        case .rosaAurora: return "Aurora"
-        case .verdeLima: return "Lima"
-        case .nocheElectrica: return "Noche"
-        case .bronceCalido: return "Bronce"
+        case .calmaAzul: return L10n.exact("Calma azul")
+        case .solDorado: return L10n.exact("Sol dorado")
+        case .presenciaTurquesa: return L10n.exact("Turquesa")
+        case .bosqueVivo: return L10n.exact("Bosque")
+        case .violetaMagenta: return L10n.exact("Violeta")
+        case .coralNaranja: return L10n.exact("Coral")
+        case .indigoMenta: return L10n.exact("Índigo")
+        case .cieloCian: return L10n.exact("Cielo")
+        case .rosaAurora: return L10n.exact("Aurora")
+        case .verdeLima: return L10n.exact("Lima")
+        case .nocheElectrica: return L10n.exact("Noche")
+        case .bronceCalido: return L10n.exact("Bronce")
         }
     }
 
@@ -788,28 +796,30 @@ private enum HomeAlternativoAccess: String, CaseIterable, Identifiable, Codable,
 
     var title: String {
         switch self {
-        case .calma: return "Calma"
-        case .agenda: return "Agenda"
-        case .presencia: return "Presencia"
-        case .metas: return "Metas"
-        case .diario: return "Diario"
-        case .alimentos: return "Alimentos"
-        case .notas: return "Notas"
-        case .ritual: return "Ritual"
-        case .coherencia: return "Coherencia"
-        case .revisionSemanal: return "Revisión"
-        case .lienzo: return "Lienzo"
-        case .recordatorios: return "Recordatorios"
-        case .lectorQR: return "Lector QR"
+        case .calma: return L10n.exact("Calma")
+        case .agenda: return L10n.exact("Agenda")
+        case .presencia: return L10n.exact("Presencia")
+        case .metas: return L10n.exact("Metas")
+        case .diario: return L10n.exact("Diario")
+        case .alimentos:
+            return L10n.string("label_reader.home.title", fallback: "Alimentos")
+        case .notas: return L10n.exact("Notas")
+        case .ritual: return L10n.exact("Ritual")
+        case .coherencia:
+            return L10n.string("coherence.home.title", fallback: "Coherencia")
+        case .revisionSemanal: return L10n.exact("Revisión")
+        case .lienzo: return L10n.exact("Lienzo")
+        case .recordatorios: return L10n.exact("Recordatorios")
+        case .lectorQR: return L10n.exact("Lector QR")
         case .autorNeville: return "Neville"
         case .autorJoeDispenza: return "JD"
         case .autorBruceLipton: return "Bruce"
         case .autorGreggBraden: return "Gregg"
-        case .frases: return "Frases"
-        case .enciclopedia: return "Enciclopedia"
-        case .reflexiones: return "Reflexiones"
-        case .ayudas: return "Ayudas"
-        case .centroSanador: return "Sanador"
+        case .frases: return L10n.exact("Frases")
+        case .enciclopedia: return L10n.exact("Enciclopedia")
+        case .reflexiones: return L10n.exact("Reflexiones")
+        case .ayudas: return L10n.exact("Ayudas")
+        case .centroSanador: return L10n.exact("Sanador")
         }
     }
 
@@ -956,7 +966,7 @@ private enum HomeAlternativoAccess: String, CaseIterable, Identifiable, Codable,
         case .reflexiones:
             return AnyView(ReflexListView())
         case .ayudas:
-            return AnyView(TxtListView(typeOfContent: .ayud, title: "Ayudas"))
+            return AnyView(TxtListView(typeOfContent: .ayud, title: L10n.exact("Ayudas")))
         case .centroSanador:
             return AnyView(CentroSanadorView())
         }
@@ -1008,7 +1018,7 @@ private struct HomeAlternativoAccessEditorView: View {
                             }
                         } label: {
                             Label(
-                                HomeAlternativoAccess(rawValue: accessID)?.title ?? "Acceso",
+                                HomeAlternativoAccess(rawValue: accessID)?.title ?? L10n.exact("Acceso"),
                                 systemImage: HomeAlternativoAccess(rawValue: accessID)?.symbol ?? "square.grid.3x3"
                             )
                         }

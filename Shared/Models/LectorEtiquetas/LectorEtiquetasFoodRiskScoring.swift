@@ -49,9 +49,9 @@ enum LectorEtiquetasFoodRiskClassification: String, Codable {
 
     var title: String {
         switch self {
-        case .excelente: return "Excelente"
-        case .bueno: return "Bueno"
-        case .malo: return "Malo"
+        case .excelente: return L10n.exact("Excelente")
+        case .bueno: return L10n.exact("Bueno")
+        case .malo: return L10n.exact("Malo")
         case .informacionInsuficiente: return "?"
         }
     }

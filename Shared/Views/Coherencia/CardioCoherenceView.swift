@@ -40,7 +40,7 @@ private enum BreathingRhythmOption: String, CaseIterable, Identifiable {
 
     var inhaleSeconds: Int { inhaleMillis / 1000 }
     var exhaleSeconds: Int { exhaleMillis / 1000 }
-    var displayLabel: String { rawValue }
+    var displayLabel: String { L10n.exact(rawValue) }
 }
 
 private enum SessionDurationOption: Int, CaseIterable, Identifiable {
@@ -49,7 +49,9 @@ private enum SessionDurationOption: Int, CaseIterable, Identifiable {
     case fifteen = 15
 
     var id: Int { rawValue }
-    var label: String { "\(rawValue) minutos" }
+    var label: String {
+        L10n.format("coherence.duration.minutes", fallback: "{0} minutos", "\(rawValue)")
+    }
 }
 
 private enum InitialEmotionalState: String, CaseIterable, Identifiable {
@@ -59,6 +61,7 @@ private enum InitialEmotionalState: String, CaseIterable, Identifiable {
     case low = "Bajo de energía"
 
     var id: String { rawValue }
+    var displayTitle: String { L10n.exact(rawValue) }
 }
 
 private enum PostSessionEmotion: String, CaseIterable, Identifiable {
@@ -69,6 +72,7 @@ private enum PostSessionEmotion: String, CaseIterable, Identifiable {
     case connection = "Conexión"
 
     var id: String { rawValue }
+    var displayTitle: String { L10n.exact(rawValue) }
 }
 
 private enum MeditationPhaseKind: String, Codable {
@@ -331,50 +335,58 @@ private final class CardioCoherenceStore: ObservableObject {
         phases.append(.init(
             kind: .regulation,
             durationSeconds: phaseDurations[0],
-            title: "Regulación",
-            cue: "Respira lento. Permite que el cuerpo baje el ritmo y encuentre estabilidad.",
+            title: L10n.exact("Regulación"),
+            cue: L10n.exact("Respira lento. Permite que el cuerpo baje el ritmo y encuentre estabilidad."),
             attentionCues: [
-                .init(startFraction: 0.00, text: "Relaja la mandíbula. Deja que la lengua descanse y que el rostro se suavice."),
-                .init(startFraction: 0.20, text: "Baja los hombros. Suelta cualquier esfuerzo innecesario en cuello y espalda."),
-                .init(startFraction: 0.40, text: "Siente el peso del cuerpo. Permite que el soporte debajo de ti te sostenga."),
-                .init(startFraction: 0.60, text: "Nota el pecho y el esternón. Lleva ahí una atención tranquila, sin forzar."),
-                .init(startFraction: 0.80, text: "Suaviza el abdomen. Deja que la respiración se vuelva amplia, lenta y cómoda.")
+                .init(startFraction: 0.00, text: L10n.exact("Relaja la mandíbula. Deja que la lengua descanse y que el rostro se suavice.")),
+                .init(startFraction: 0.20, text: L10n.exact("Baja los hombros. Suelta cualquier esfuerzo innecesario en cuello y espalda.")),
+                .init(startFraction: 0.40, text: L10n.exact("Siente el peso del cuerpo. Permite que el soporte debajo de ti te sostenga.")),
+                .init(startFraction: 0.60, text: L10n.exact("Nota el pecho y el esternón. Lleva ahí una atención tranquila, sin forzar.")),
+                .init(startFraction: 0.80, text: L10n.exact("Suaviza el abdomen. Deja que la respiración se vuelva amplia, lenta y cómoda."))
             ],
             emotionPrompt: nil
         ))
         phases.append(.init(
             kind: .heartConnection,
             durationSeconds: phaseDurations[1],
-            title: "Conexión corazón",
-            cue: "Lleva la atención al centro del pecho. Imagina que el aire entra y sale desde el corazón.",
+            title: L10n.exact("Conexión corazón"),
+            cue: L10n.exact("Lleva la atención al centro del pecho. Imagina que el aire entra y sale desde el corazón."),
             attentionCues: [
-                .init(startFraction: 0.0, text: "Lleva la atención al centro del pecho. Imagina que el aire entra y sale desde el corazón.")
+                .init(startFraction: 0.0, text: L10n.exact("Lleva la atención al centro del pecho. Imagina que el aire entra y sale desde el corazón."))
             ],
             emotionPrompt: nil
         ))
         phases.append(.init(
             kind: .emotionalActivation,
             durationSeconds: phaseDurations[2],
-            title: "Emoción elevada",
-            cue: "Evoca una emoción elevada en el corazón y respírala con suavidad.",
+            title: L10n.exact("Emoción elevada"),
+            cue: L10n.exact("Evoca una emoción elevada en el corazón y respírala con suavidad."),
             attentionCues: [
-                .init(startFraction: 0.0, text: "Evoca una emoción elevada en el corazón y respírala con suavidad.")
+                .init(startFraction: 0.0, text: L10n.exact("Evoca una emoción elevada en el corazón y respírala con suavidad."))
             ],
             emotionPrompt: state.intention.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-                ? "Sostén gratitud, paz o alegría como estado interno."
-                : "Siente tu intención como ya cumplida: \(state.intention.trimmingCharacters(in: .whitespacesAndNewlines))"
+                ? L10n.exact("Sostén gratitud, paz o alegría como estado interno.")
+                : L10n.format(
+                    "coherence.session.intention_fulfilled",
+                    fallback: "Siente tu intención como ya cumplida: {0}",
+                    state.intention.trimmingCharacters(in: .whitespacesAndNewlines)
+                )
         ))
         phases.append(.init(
             kind: .integration,
             durationSeconds: phaseDurations[3],
-            title: "Integración",
-            cue: "Permanece en silencio. Ancla esta coherencia y deja que tu intención quede sentida.",
+            title: L10n.exact("Integración"),
+            cue: L10n.exact("Permanece en silencio. Ancla esta coherencia y deja que tu intención quede sentida."),
             attentionCues: [
-                .init(startFraction: 0.0, text: "Permanece en silencio. Ancla esta coherencia y deja que tu intención quede sentida.")
+                .init(startFraction: 0.0, text: L10n.exact("Permanece en silencio. Ancla esta coherencia y deja que tu intención quede sentida."))
             ],
             emotionPrompt: state.intention.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
                 ? nil
-                : "Siente tu intención como si ya fuera parte de ti: \(state.intention.trimmingCharacters(in: .whitespacesAndNewlines))"
+                : L10n.format(
+                    "coherence.session.intention_integrated",
+                    fallback: "Siente tu intención como si ya fuera parte de ti: {0}",
+                    state.intention.trimmingCharacters(in: .whitespacesAndNewlines)
+                )
         ))
 
         let realTotal = phases.reduce(0) { $0 + $1.durationSeconds }
@@ -660,7 +672,7 @@ struct CardioCoherenceMainView: View {
                 
                 ScrollView {
                     VStack(spacing: 16) {
-                        Text("Cohencia Cardio-Cerebral")
+                        Text("Coherencia Cardio-Cerebral")
                             .font(.title)
                             .padding(.vertical, 10)
                         switch store.state.stage {
@@ -722,12 +734,12 @@ struct CardioCoherenceMainView: View {
                     }
                     .foregroundStyle(.white.opacity(0.92))
 
-                    Button("Stats") { showStats = true }
+                    Button("Estadísticas") { showStats = true }
                         .foregroundStyle(.white)
 
                     if store.state.stage == .session {
                         Menu {
-                            Button(store.state.isPaused ? "Reanudar" : "Pausar") {
+                            Button(L10n.exact(store.state.isPaused ? "Reanudar" : "Pausar")) {
                                 store.state.isPaused ? store.resume() : store.pause()
                             }
                             Button("Finalizar", role: .destructive) {
@@ -880,7 +892,7 @@ struct CardioCoherenceMainView: View {
                         store.selectInitialState(value)
                     })) {
                         ForEach(InitialEmotionalState.allCases) { item in
-                            Text(item.rawValue).tag(item)
+                            Text(item.displayTitle).tag(item)
                         }
                     }
                     .pickerStyle(.menu)
@@ -903,7 +915,7 @@ struct CardioCoherenceMainView: View {
                     store.selectBreathingRhythm(value)
                 })) {
                     ForEach(BreathingRhythmOption.allCases) { item in
-                        Text(item.rawValue).tag(item)
+                        Text(item.displayLabel).tag(item)
                     }
                 }
                 .pickerStyle(.menu)
@@ -1011,7 +1023,7 @@ struct CardioCoherenceMainView: View {
                     store.updatePredominantEmotion(value)
                 })) {
                     ForEach(PostSessionEmotion.allCases) { item in
-                        Text(item.rawValue).tag(item)
+                        Text(item.displayTitle).tag(item)
                     }
                 }
                 .pickerStyle(.menu)
@@ -1058,10 +1070,19 @@ struct CardioCoherenceMainView: View {
                 .font(.title2.bold())
                 .foregroundStyle(.white)
 
-            Text("Calma final: \(store.state.afterScore)/10")
+            Text(L10n.format(
+                "coherence.summary.final_calm",
+                fallback: "Calma final: {0}/10",
+                "\(store.state.afterScore)"
+            ))
                 .foregroundStyle(.white)
 
-            Text("Claridad: \(store.state.mentalClarityScore)/10 | Corazón: \(store.state.heartConnectionScore)/10")
+            Text(L10n.format(
+                "coherence.summary.clarity_heart",
+                fallback: "Claridad: {0}/10 | Corazón: {1}/10",
+                "\(store.state.mentalClarityScore)",
+                "\(store.state.heartConnectionScore)"
+            ))
                 .foregroundStyle(.white.opacity(0.9))
 
             Button("Nueva sesión") { store.resetFlow() }
@@ -1076,7 +1097,7 @@ struct CardioCoherenceMainView: View {
 
     private func pickerCard<Content: View>(title: String, @ViewBuilder content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(title)
+            Text(L10n.exact(title))
                 .font(.headline)
                 .foregroundStyle(.white)
             content()
@@ -1090,7 +1111,12 @@ struct CardioCoherenceMainView: View {
 
     private func scoreSlider(title: String, value: Int, onChange: @escaping (Int) -> Void) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("\(title): \(value)")
+            Text(L10n.format(
+                "coherence.score_value",
+                fallback: "{0}: {1}",
+                L10n.exact(title),
+                "\(value)"
+            ))
                 .font(.headline)
                 .foregroundStyle(.white)
             Slider(
@@ -1347,7 +1373,10 @@ private struct CardioCoherenceStatsSnapshot {
         averageMentalClarity = records.isEmpty ? 0 : Double(records.reduce(0) { $0 + $1.mentalClarityScore }) / Double(records.count)
         averageHeartConnection = records.isEmpty ? 0 : Double(records.reduce(0) { $0 + $1.heartConnectionScore }) / Double(records.count)
 
-        let weekdaySymbols = ["D", "L", "M", "X", "J", "V", "S"]
+        let weekdayFormatter = DateFormatter()
+        weekdayFormatter.locale = AppLanguage.current.locale
+        let weekdaySymbols = weekdayFormatter.veryShortStandaloneWeekdaySymbols
+            ?? ["D", "L", "M", "X", "J", "V", "S"]
         let weekdayMap = Dictionary(grouping: normalizedDays, by: { calendar.component(.weekday, from: $0) }).mapValues(\.count)
         weekdayCounts = weekdaySymbols.enumerated().map { index, label in
             WeekdayCount(dayLabel: label, count: weekdayMap[index + 1] ?? 0)
@@ -1444,13 +1473,13 @@ private struct CardioMetricCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(title)
+            Text(L10n.exact(title))
                 .font(.caption)
                 .foregroundStyle(.white.opacity(0.8))
             Text(value)
                 .font(.title2.bold())
                 .foregroundStyle(.white)
-            Text(subtitle)
+            Text(L10n.exact(subtitle))
                 .font(.caption2)
                 .foregroundStyle(.white.opacity(0.75))
         }
@@ -1555,7 +1584,7 @@ private struct CardioRingMetric: View {
             }
             .frame(width: 76, height: 76)
 
-            Text(title)
+            Text(L10n.exact(title))
                 .font(.caption.bold())
                 .foregroundStyle(.white)
         }
@@ -1582,7 +1611,7 @@ private struct CardioEmotionSection: View {
                         HStack(spacing: 10) {
                             Text(emotion.emoji)
                                 .font(.body)
-                            Text(emotion.emotion)
+                            Text(L10n.exact(emotion.emotion))
                                 .font(.subheadline.weight(.semibold))
                                 .foregroundStyle(.white)
                                 .lineLimit(1)
@@ -1648,7 +1677,11 @@ private struct CardioDotTrendSection: View {
             Button("30 días") { selectedDays = 30 }
         } label: {
             HStack(spacing: 6) {
-                Text(selectedDays == 7 ? "7 días" : selectedDays == 15 ? "15 días" : "30 días")
+                Text(L10n.format(
+                    "coherence.stats.day_range",
+                    fallback: "{0} días",
+                    "\(selectedDays)"
+                ))
                 Image(systemName: "chevron.down")
                     .font(.caption.bold())
             }
@@ -1982,13 +2015,17 @@ private struct BreathingCueView: View {
     let paused: Bool
     let preparationRemainingSeconds: Int
     let anchor: Date
-    @State private var label: String = "Prepárate"
+    @State private var label: String = L10n.exact("Prepárate")
     @State private var currentPhaseProgress: CGFloat = 0
     @State private var isRhythmTextVisible: Bool = false
 
     private var secondaryCueText: String {
         if preparing {
-            return "La respiración empieza en \(preparationRemainingSeconds)"
+            return L10n.format(
+                "coherence.breathing.starts_in",
+                fallback: "La respiración empieza en {0}",
+                "\(preparationRemainingSeconds)"
+            )
         }
 
         return rhythm.displayLabel
@@ -2019,7 +2056,7 @@ private struct BreathingCueView: View {
         .animation(.easeInOut(duration: CardioCoherenceConstants.Orb.breathingCueTransitionDurationSeconds), value: label)
         .contentShape(Rectangle())
         .onTapGesture {
-            guard label == "Inhala" || label == "Exhala" else { return }
+            guard label == L10n.exact("Inhala") || label == L10n.exact("Exhala") else { return }
             withAnimation(.easeInOut(duration: 0.30)) {
                 isRhythmTextVisible.toggle()
             }
@@ -2064,7 +2101,12 @@ private func breathingCycleSnapshot(
     paused: Bool
 ) -> BreathingCycleSnapshot {
     if preparing || paused {
-        return BreathingCycleSnapshot(progress: 0.0, label: "Prepárate", state: .idle, phaseProgress: 0.0)
+        return BreathingCycleSnapshot(
+            progress: 0.0,
+            label: L10n.exact("Prepárate"),
+            state: .idle,
+            phaseProgress: 0.0
+        )
     }
 
     let inhaleSeconds = Double(rhythm.inhaleMillis) / 1000.0
@@ -2079,7 +2121,11 @@ private func breathingCycleSnapshot(
         let remaining = max(1, Int(ceil(preparatoryExhaleSeconds - elapsed)))
         return BreathingCycleSnapshot(
             progress: 0.0,
-            label: "Vacía tus pulmones (\(remaining))",
+            label: L10n.format(
+                "coherence.breathing.empty_lungs",
+                fallback: "Vacía tus pulmones ({0})",
+                "\(remaining)"
+            ),
             state: .idle,
             phaseProgress: prepProgress
         )
@@ -2091,7 +2137,7 @@ private func breathingCycleSnapshot(
     if t < inhaleSeconds {
         return BreathingCycleSnapshot(
             progress: CGFloat(t / inhaleSeconds),
-            label: "Inhala",
+            label: L10n.exact("Inhala"),
             state: .inhale,
             phaseProgress: CGFloat(t / inhaleSeconds)
         )
@@ -2100,7 +2146,7 @@ private func breathingCycleSnapshot(
         let local = t - inhaleSeconds
         return BreathingCycleSnapshot(
             progress: 1.0,
-            label: "Inhala",
+            label: L10n.exact("Inhala"),
             state: .inhalePause,
             phaseProgress: CGFloat(local / max(topPauseSeconds, 0.001))
         )
@@ -2109,7 +2155,7 @@ private func breathingCycleSnapshot(
         let local = t - inhaleSeconds - topPauseSeconds
         return BreathingCycleSnapshot(
             progress: CGFloat(1.0 - (local / exhaleSeconds)),
-            label: "Exhala",
+            label: L10n.exact("Exhala"),
             state: .exhale,
             phaseProgress: CGFloat(local / exhaleSeconds)
         )
@@ -2117,7 +2163,7 @@ private func breathingCycleSnapshot(
     let local = t - inhaleSeconds - topPauseSeconds - exhaleSeconds
     return BreathingCycleSnapshot(
         progress: 0.0,
-        label: "Exhala",
+        label: L10n.exact("Exhala"),
         state: .exhalePause,
         phaseProgress: CGFloat(local / max(topPauseSeconds, 0.001))
     )

@@ -22,25 +22,33 @@ enum LectorEtiquetasError: Error, LocalizedError {
     var errorDescription: String? {
         switch self {
         case .textoVacio:
-            return "No se detectó texto para analizar."
+            return L10n.exact("No se detectó texto para analizar.")
         case .codigoBarrasInvalido:
-            return "El código de barras no es válido."
+            return L10n.exact("El código de barras no es válido.")
         case .productoNoEncontradoEnOpenFoodFacts:
-            return "No se encontró el producto en OpenFoodFacts para ese código."
+            return L10n.exact("No se encontró el producto en OpenFoodFacts para ese código.")
         case .respuestaOpenFoodFactsInvalida:
-            return "La respuesta de OpenFoodFacts no se pudo procesar."
+            return L10n.exact("La respuesta de OpenFoodFacts no se pudo procesar.")
         case .redOpenFoodFacts(let error):
-            return "Error de red con OpenFoodFacts: \(error.localizedDescription)"
+            return L10n.format(
+                "label_reader.error.openfoodfacts_network",
+                fallback: "Error de red con OpenFoodFacts: {0}",
+                error.localizedDescription
+            )
         case .reconocimientoNoDisponible:
-            return "El reconocimiento de texto no está disponible en este dispositivo."
+            return L10n.exact("El reconocimiento de texto no está disponible en este dispositivo.")
         case .ocrSinResultados:
-            return "No fue posible extraer texto legible de la etiqueta."
+            return L10n.exact("No fue posible extraer texto legible de la etiqueta.")
         case .ocrFallido(let error):
-            return "Error de OCR: \(error.localizedDescription)"
+            return L10n.format(
+                "label_reader.error.ocr",
+                fallback: "Error de OCR: {0}",
+                error.localizedDescription
+            )
         case .baseOfflineNoDisponible:
-            return "La base de datos offline no está disponible todavía. Descárgala y verifícala."
+            return L10n.exact("La base de datos offline no está disponible todavía. Descárgala y verifícala.")
         case .productoNoEncontradoEnBaseOffline:
-            return "No se encontró el producto en la base de datos offline para ese código."
+            return L10n.exact("No se encontró el producto en la base de datos offline para ese código.")
         }
     }
 }

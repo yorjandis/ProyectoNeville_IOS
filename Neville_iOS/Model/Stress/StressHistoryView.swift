@@ -63,17 +63,22 @@ struct StressHomeIndicator: View {
     private var statusText: String {
         switch monitor.accessState {
         case .notRequested:
-            return "Configurar"
+            return L10n.exact("Configurar")
         case .loading where monitor.assessment.score == nil:
-            return "Leyendo…"
+            return L10n.exact("Leyendo…")
         case .unavailable:
-            return "No disponible"
+            return L10n.exact("No disponible")
         case .failed:
-            return "Reintentar"
+            return L10n.exact("Reintentar")
         default:
-            if monitor.assessment.level == .activity { return "En actividad" }
-            guard let score = monitor.assessment.score else { return "Sin lectura" }
-            return "\(monitor.assessment.level.rawValue) · \(Int(score.rounded()))"
+            if monitor.assessment.level == .activity { return L10n.exact("En actividad") }
+            guard let score = monitor.assessment.score else { return L10n.exact("Sin lectura") }
+            return L10n.format(
+                "home.stress.level_score",
+                fallback: "{0} · {1}",
+                monitor.assessment.level.displayName,
+                "\(Int(score.rounded()))"
+            )
         }
     }
 
@@ -158,7 +163,7 @@ struct StressHistoryView: View {
                 .frame(width: 82, height: 82)
 
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(monitor.assessment.level.rawValue)
+                    Text(monitor.assessment.level.displayName)
                         .font(.title2.bold())
                         .foregroundStyle(monitor.assessment.level.color)
                     Text(currentSubtitle)
@@ -166,7 +171,11 @@ struct StressHistoryView: View {
                         .foregroundStyle(.secondary)
                     if monitor.assessment.score != nil {
                         Label(
-                            "Confianza \(monitor.assessment.confidence.rawValue.lowercased())",
+                            L10n.format(
+                                "home.stress.confidence",
+                                fallback: "Confianza {0}",
+                                monitor.assessment.confidence.displayName.lowercased()
+                            ),
                             systemImage: "checkmark.shield"
                         )
                         .font(.caption)
@@ -191,7 +200,11 @@ struct StressHistoryView: View {
             }
 
             if !monitor.assessment.sourceNames.isEmpty {
-                Text("Fuente: \(monitor.assessment.sourceNames.joined(separator: ", "))")
+                Text(L10n.format(
+                    "home.stress.source",
+                    fallback: "Fuente: {0}",
+                    monitor.assessment.sourceNames.joined(separator: ", ")
+                ))
                     .font(.caption2)
                     .foregroundStyle(.secondary)
                     .lineLimit(2)
@@ -288,7 +301,7 @@ struct StressHistoryView: View {
         VStack(alignment: .leading, spacing: 8) {
             Image(systemName: symbol).foregroundStyle(.pink)
             Text(value).font(.headline).minimumScaleFactor(0.75).lineLimit(1)
-            Text(title).font(.caption).foregroundStyle(.secondary)
+            Text(L10n.exact(title)).font(.caption).foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
@@ -300,15 +313,15 @@ struct StressHistoryView: View {
             Text("Evolución").font(.headline)
             Chart(monitor.history) { point in
                 AreaMark(
-                    x: .value("Hora", point.date),
-                    y: .value("Nivel", point.score)
+                    x: .value(L10n.exact("Hora"), point.date),
+                    y: .value(L10n.exact("Nivel"), point.score)
                 )
                 .foregroundStyle(
                     LinearGradient(colors: [.pink.opacity(0.32), .pink.opacity(0.02)], startPoint: .top, endPoint: .bottom)
                 )
                 LineMark(
-                    x: .value("Hora", point.date),
-                    y: .value("Nivel", point.score)
+                    x: .value(L10n.exact("Hora"), point.date),
+                    y: .value(L10n.exact("Nivel"), point.score)
                 )
                 .foregroundStyle(.pink)
                 .lineStyle(StrokeStyle(lineWidth: 2.3, lineCap: .round, lineJoin: .round))
@@ -337,8 +350,8 @@ struct StressHistoryView: View {
             Text("Patrón por hora del día").font(.headline)
             Chart(hourlyAverages) { item in
                 BarMark(
-                    x: .value("Hora", item.hour),
-                    y: .value("Nivel medio", item.average)
+                    x: .value(L10n.exact("Hora"), item.hour),
+                    y: .value(L10n.exact("Nivel medio"), item.average)
                 )
                 .foregroundStyle(item.average >= 50 ? Color.orange : Color.mint)
                 .cornerRadius(3)
@@ -365,7 +378,11 @@ struct StressHistoryView: View {
             Text(practicalInsight)
                 .font(.subheadline)
             if let calm = calmHourText {
-                Text("Tu franja comparativamente más calmada es \(calm). Puede ser un buen momento para tareas que requieren concentración.")
+                Text(L10n.format(
+                    "home.stress.calm_period",
+                    fallback: "Tu franja comparativamente más calmada es {0}. Puede ser un buen momento para tareas que requieren concentración.",
+                    calm
+                ))
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
@@ -392,12 +409,22 @@ struct StressHistoryView: View {
     }
 
     private var currentSubtitle: String {
-        if monitor.isRefreshing && monitor.assessment.score == nil { return "Consultando Salud…" }
-        if monitor.assessment.level == .activity { return "Estimación pausada durante el movimiento" }
-        guard let age = monitor.assessment.dataAge else { return "Sin lectura reciente" }
-        if age < 60 { return "Actualizado ahora" }
-        if age < 3_600 { return "Actualizado hace \(Int(age / 60)) min" }
-        return "Actualizado hace \(Int(age / 3_600)) h"
+        if monitor.isRefreshing && monitor.assessment.score == nil { return L10n.exact("Consultando Salud…") }
+        if monitor.assessment.level == .activity { return L10n.exact("Estimación pausada durante el movimiento") }
+        guard let age = monitor.assessment.dataAge else { return L10n.exact("Sin lectura reciente") }
+        if age < 60 { return L10n.exact("Actualizado ahora") }
+        if age < 3_600 {
+            return L10n.format(
+                "home.stress.updated_minutes_ago",
+                fallback: "Actualizado hace {0} min",
+                "\(Int(age / 60))"
+            )
+        }
+        return L10n.format(
+            "home.stress.updated_hours_ago",
+            fallback: "Actualizado hace {0} h",
+            "\(Int(age / 3_600))"
+        )
     }
 
     private var averageScore: Double? {
@@ -435,12 +462,20 @@ struct StressHistoryView: View {
 
     private var practicalInsight: String {
         guard let peak = hourlyAverages.max(by: { $0.average < $1.average }) else {
-            return "Aún hacen falta más lecturas para detectar un patrón diario fiable."
+            return L10n.exact("Aún hacen falta más lecturas para detectar un patrón diario fiable.")
         }
         if peak.average >= 50 {
-            return "La activación tiende a concentrarse entre \(hourRange(peak.hour)). Considera reservar una pausa breve de respiración o movimiento suave antes de esa franja."
+            return L10n.format(
+                "home.stress.high_period_insight",
+                fallback: "La activación tiende a concentrarse entre {0}. Considera reservar una pausa breve de respiración o movimiento suave antes de esa franja.",
+                hourRange(peak.hour)
+            )
         }
-        return "No aparece una franja persistentemente alta en este periodo. La mayor activación relativa se concentra entre \(hourRange(peak.hour))."
+        return L10n.format(
+            "home.stress.normal_period_insight",
+            fallback: "No aparece una franja persistentemente alta en este periodo. La mayor activación relativa se concentra entre {0}.",
+            hourRange(peak.hour)
+        )
     }
 
     private func hourRange(_ hour: Int) -> String {
@@ -456,9 +491,9 @@ private enum StressHistoryRange: String, CaseIterable, Identifiable {
     var id: String { rawValue }
     var title: String {
         switch self {
-        case .day: "24 h"
-        case .week: "7 días"
-        case .month: "30 días"
+        case .day: L10n.exact("24 h")
+        case .week: L10n.exact("7 días")
+        case .month: L10n.exact("30 días")
         }
     }
     var days: Int {

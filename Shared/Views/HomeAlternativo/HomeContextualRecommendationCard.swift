@@ -64,7 +64,14 @@ struct HomeContextualRecommendationCard: View {
                     .foregroundStyle(secondaryText)
                     .fixedSize(horizontal: false, vertical: true)
 
-                Label("Fuente: \(recommendation.source)", systemImage: "tray.full")
+                Label(
+                    L10n.format(
+                        "home.recommendation.source",
+                        fallback: "Fuente: {0}",
+                        recommendation.source
+                    ),
+                    systemImage: "tray.full"
+                )
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(recommendation.accent)
                     .padding(.horizontal, 10)
@@ -136,9 +143,9 @@ private struct HomeContextualRecommendation {
     static let loading = HomeContextualRecommendation(
         symbol: "sparkles",
         accent: .indigo,
-        title: "Preparando tu recomendación",
-        action: "Estamos reuniendo tus registros recientes.",
-        source: "Mi día",
+        title: L10n.exact("Preparando tu recomendación"),
+        action: L10n.exact("Estamos reuniendo tus registros recientes."),
+        source: L10n.exact("Mi día"),
         evidence: ""
     )
 }
@@ -162,10 +169,22 @@ private struct HomeContextualRecommendationEngine {
             return .init(
                 symbol: "checkmark.circle.badge.xmark",
                 accent: .orange,
-                title: "Desbloquea una tarea pendiente",
-                action: "Empieza «\(overdue)» durante solo 10 minutos. Si no corresponde hacerla, reprográmala hoy para liberar atención.",
-                source: "Agenda",
-                evidence: "Hay \(data.overdueAgendaCount) actividad\(data.overdueAgendaCount == 1 ? "" : "es") sin completar de días anteriores."
+                title: L10n.exact("Desbloquea una tarea pendiente"),
+                action: L10n.format(
+                    "home.recommendation.overdue_agenda.action",
+                    fallback: "Empieza «{0}» durante solo 10 minutos. Si no corresponde hacerla, reprográmala hoy para liberar atención.",
+                    overdue
+                ),
+                source: L10n.exact("Agenda"),
+                evidence: L10n.format(
+                    data.overdueAgendaCount == 1
+                        ? "home.recommendation.overdue_agenda.evidence.single"
+                        : "home.recommendation.overdue_agenda.evidence.multiple",
+                    fallback: data.overdueAgendaCount == 1
+                        ? "Hay {0} actividad sin completar de días anteriores."
+                        : "Hay {0} actividades sin completar de días anteriores.",
+                    "\(data.overdueAgendaCount)"
+                )
             )
         }
 
@@ -173,10 +192,22 @@ private struct HomeContextualRecommendationEngine {
             return .init(
                 symbol: "flag.checkered",
                 accent: .orange,
-                title: "Recupera una unidad de meta",
-                action: "Revisa «\(unit)» y decide ahora: complétala si sigue vigente o ajusta la meta para que vuelva a ser realista.",
-                source: "Metas",
-                evidence: "Hay \(data.lostGoalUnits) unidad\(data.lostGoalUnits == 1 ? "" : "es") de meta fuera de plazo en los últimos 7 días."
+                title: L10n.exact("Recupera una unidad de meta"),
+                action: L10n.format(
+                    "home.recommendation.overdue_goal.action",
+                    fallback: "Revisa «{0}» y decide ahora: complétala si sigue vigente o ajusta la meta para que vuelva a ser realista.",
+                    unit
+                ),
+                source: L10n.exact("Metas"),
+                evidence: L10n.format(
+                    data.lostGoalUnits == 1
+                        ? "home.recommendation.overdue_goal.evidence.single"
+                        : "home.recommendation.overdue_goal.evidence.multiple",
+                    fallback: data.lostGoalUnits == 1
+                        ? "Hay {0} unidad de meta fuera de plazo en los últimos 7 días."
+                        : "Hay {0} unidades de meta fuera de plazo en los últimos 7 días.",
+                    "\(data.lostGoalUnits)"
+                )
             )
         }
 
@@ -184,10 +215,14 @@ private struct HomeContextualRecommendationEngine {
             return .init(
                 symbol: "battery.25percent",
                 accent: .purple,
-                title: "Reduce la exigencia de hoy",
-                action: "Elige una sola prioridad importante y reserva una pausa breve antes de la siguiente tarea. Protege energía antes de añadir más compromisos.",
-                source: "Ritual matutino",
-                evidence: "Tus cierres de ritual registran energía baja en \(data.lowEnergyDays) de los últimos 7 días."
+                title: L10n.exact("Reduce la exigencia de hoy"),
+                action: L10n.exact("Elige una sola prioridad importante y reserva una pausa breve antes de la siguiente tarea. Protege energía antes de añadir más compromisos."),
+                source: L10n.exact("Ritual matutino"),
+                evidence: L10n.format(
+                    "home.recommendation.low_energy.evidence",
+                    fallback: "Tus cierres de ritual registran energía baja en {0} de los últimos 7 días.",
+                    "\(data.lowEnergyDays)"
+                )
             )
         }
 
@@ -195,25 +230,42 @@ private struct HomeContextualRecommendationEngine {
             return .init(
                 symbol: "heart.circle",
                 accent: .red,
-                title: "Recupera coherencia antes de exigirte",
-                action: "Haz una sesión breve de coherencia y elige un gesto visible que exprese la identidad que quieres sostener hoy.",
-                source: data.lowCoherenceSessions > 0 ? "Coherencia" : "Ritual matutino",
+                title: L10n.exact("Recupera coherencia antes de exigirte"),
+                action: L10n.exact("Haz una sesión breve de coherencia y elige un gesto visible que exprese la identidad que quieres sostener hoy."),
+                source: L10n.exact(data.lowCoherenceSessions > 0 ? "Coherencia" : "Ritual matutino"),
                 evidence: data.lowCoherenceSessions > 0
-                    ? "\(data.lowCoherenceSessions) sesiones de coherencia cerraron por debajo de 6/10 esta semana."
-                    : "La alineación con tu identidad fue baja en \(data.lowIdentityAlignmentDays) cierres de ritual."
+                    ? L10n.format(
+                        "home.recommendation.low_coherence.evidence",
+                        fallback: "{0} sesiones de coherencia cerraron por debajo de 6/10 esta semana.",
+                        "\(data.lowCoherenceSessions)"
+                    )
+                    : L10n.format(
+                        "home.recommendation.low_identity.evidence",
+                        fallback: "La alineación con tu identidad fue baja en {0} cierres de ritual.",
+                        "\(data.lowIdentityAlignmentDays)"
+                    )
             )
         }
 
         if data.automaticPilotEvents >= 3 || data.negativeMoodEvents + data.negativeDiaryEmotions >= 3 {
             let difficultRecords = max(data.automaticPilotEvents, data.negativeMoodEvents + data.negativeDiaryEmotions)
-            let issue = data.automaticPilotEvents >= data.negativeMoodEvents + data.negativeDiaryEmotions ? "piloto automático" : "estados de ánimo difíciles"
+            let issue = L10n.exact(
+                data.automaticPilotEvents >= data.negativeMoodEvents + data.negativeDiaryEmotions
+                    ? "piloto automático"
+                    : "estados de ánimo difíciles"
+            )
             return .init(
                 symbol: "heart.text.square",
                 accent: .pink,
-                title: "Haz una pausa consciente",
-                action: "Antes de continuar, respira durante un minuto y registra cómo estás. Después decide la siguiente acción más pequeña que sí puedas sostener.",
-                source: data.automaticPilotEvents >= data.negativeMoodEvents + data.negativeDiaryEmotions ? "Presencia" : "Presencia · Diario",
-                evidence: "Se registraron \(difficultRecords) eventos de \(issue) durante la última semana."
+                title: L10n.exact("Haz una pausa consciente"),
+                action: L10n.exact("Antes de continuar, respira durante un minuto y registra cómo estás. Después decide la siguiente acción más pequeña que sí puedas sostener."),
+                source: L10n.exact(data.automaticPilotEvents >= data.negativeMoodEvents + data.negativeDiaryEmotions ? "Presencia" : "Presencia · Diario"),
+                evidence: L10n.format(
+                    "home.recommendation.difficult_events.evidence",
+                    fallback: "Se registraron {0} eventos de {1} durante la última semana.",
+                    "\(difficultRecords)",
+                    issue
+                )
             )
         }
 
@@ -221,10 +273,22 @@ private struct HomeContextualRecommendationEngine {
             return .init(
                 symbol: "flag.fill",
                 accent: .blue,
-                title: "Avanza una unidad concreta",
-                action: "Dedica el próximo bloque disponible a «\(dueUnit)». Terminar una unidad acota el esfuerzo y mantiene la meta en movimiento.",
-                source: "Metas",
-                evidence: "Tienes una unidad de meta disponible ahora y \(data.completedGoalUnits) completada\(data.completedGoalUnits == 1 ? "" : "s") en los últimos 7 días."
+                title: L10n.exact("Avanza una unidad concreta"),
+                action: L10n.format(
+                    "home.recommendation.available_goal.action",
+                    fallback: "Dedica el próximo bloque disponible a «{0}». Terminar una unidad acota el esfuerzo y mantiene la meta en movimiento.",
+                    dueUnit
+                ),
+                source: L10n.exact("Metas"),
+                evidence: L10n.format(
+                    data.completedGoalUnits == 1
+                        ? "home.recommendation.available_goal.evidence.single"
+                        : "home.recommendation.available_goal.evidence.multiple",
+                    fallback: data.completedGoalUnits == 1
+                        ? "Tienes una unidad de meta disponible ahora y {0} completada en los últimos 7 días."
+                        : "Tienes una unidad de meta disponible ahora y {0} completadas en los últimos 7 días.",
+                    "\(data.completedGoalUnits)"
+                )
             )
         }
 
@@ -232,10 +296,18 @@ private struct HomeContextualRecommendationEngine {
             return .init(
                 symbol: "book.closed",
                 accent: .teal,
-                title: "Convierte lo hecho en aprendizaje",
-                action: "Escribe tres líneas: qué funcionó, qué ajustarías y cuál es el siguiente paso. Hazlo antes de cerrar el día.",
-                source: "Agenda · Diario",
-                evidence: "Tienes \(data.activeAgendaCount) actividad\(data.activeAgendaCount == 1 ? " activa" : "es activas") esta semana, pero no hay entradas de Diario."
+                title: L10n.exact("Convierte lo hecho en aprendizaje"),
+                action: L10n.exact("Escribe tres líneas: qué funcionó, qué ajustarías y cuál es el siguiente paso. Hazlo antes de cerrar el día."),
+                source: L10n.exact("Agenda · Diario"),
+                evidence: L10n.format(
+                    data.activeAgendaCount == 1
+                        ? "home.recommendation.no_diary.evidence.single"
+                        : "home.recommendation.no_diary.evidence.multiple",
+                    fallback: data.activeAgendaCount == 1
+                        ? "Tienes {0} actividad activa esta semana, pero no hay entradas de Diario."
+                        : "Tienes {0} actividades activas esta semana, pero no hay entradas de Diario.",
+                    "\(data.activeAgendaCount)"
+                )
             )
         }
 
@@ -243,8 +315,8 @@ private struct HomeContextualRecommendationEngine {
             return .init(
                 symbol: "sparkles",
                 accent: .green,
-                title: "Consolida lo que ya funciona",
-                action: "Repite hoy el hábito que más te ha sostenido esta semana y deja preparada la primera acción de mañana.",
+                title: L10n.exact("Consolida lo que ya funciona"),
+                action: L10n.exact("Repite hoy el hábito que más te ha sostenido esta semana y deja preparada la primera acción de mañana."),
                 source: activeSources(from: data),
                 evidence: summaryEvidence(from: data)
             )
@@ -253,12 +325,12 @@ private struct HomeContextualRecommendationEngine {
         return .init(
             symbol: "scope",
             accent: .indigo,
-            title: "Define un punto de apoyo",
-            action: "Elige una tarea de Agenda o una unidad de meta y conviértela en el único avance imprescindible de hoy.",
-            source: data.hasAnyRecord ? activeSources(from: data) : "Agenda · Metas · Presencia · Diario",
+            title: L10n.exact("Define un punto de apoyo"),
+            action: L10n.exact("Elige una tarea de Agenda o una unidad de meta y conviértela en el único avance imprescindible de hoy."),
+            source: data.hasAnyRecord ? activeSources(from: data) : L10n.exact("Agenda · Metas · Presencia · Diario"),
             evidence: data.hasAnyRecord
-                ? "Tus registros aún son ligeros esta semana; una acción concreta hará más útil la siguiente recomendación."
-                : "Aún no hay registros en los últimos 7 días. Empieza por anotar una tarea, una presencia o una entrada breve."
+                ? L10n.exact("Tus registros aún son ligeros esta semana; una acción concreta hará más útil la siguiente recomendación.")
+                : L10n.exact("Aún no hay registros en los últimos 7 días. Empieza por anotar una tarea, una presencia o una entrada breve.")
         )
     }
 
@@ -358,32 +430,52 @@ private struct HomeContextualRecommendationEngine {
     private func title(of row: NSManagedObject?) -> String? {
         guard row != nil else { return nil }
         let title = (row?.value(forKey: "titulo") as? String ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
-        return title.isEmpty ? "una actividad pendiente" : title
+        return title.isEmpty ? L10n.exact("una actividad pendiente") : title
     }
 
     private func unitTitle(of item: (GoalEntity, UnitEntity)?) -> String? {
         guard let item else { return nil }
         let unit = (item.1.name ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
         if !unit.isEmpty { return unit }
-        return item.0.wrappedTitle.isEmpty ? "una unidad pendiente" : item.0.wrappedTitle
+        return item.0.wrappedTitle.isEmpty ? L10n.exact("una unidad pendiente") : item.0.wrappedTitle
     }
 
     private func summaryEvidence(from data: HomeContextualData) -> String {
         var parts: [String] = []
-        if data.completedGoalUnits > 0 { parts.append("\(data.completedGoalUnits) unidades de meta") }
-        if data.presenceReturns > 0 { parts.append("\(data.presenceReturns) regresos a presencia") }
-        return "Esta semana: " + parts.joined(separator: " · ") + "."
+        if data.completedGoalUnits > 0 {
+            parts.append(L10n.format(
+                data.completedGoalUnits == 1
+                    ? "home.recommendation.summary.goals.single"
+                    : "home.recommendation.summary.goals.multiple",
+                fallback: data.completedGoalUnits == 1 ? "{0} unidad de meta" : "{0} unidades de meta",
+                "\(data.completedGoalUnits)"
+            ))
+        }
+        if data.presenceReturns > 0 {
+            parts.append(L10n.format(
+                data.presenceReturns == 1
+                    ? "home.recommendation.summary.presence.single"
+                    : "home.recommendation.summary.presence.multiple",
+                fallback: data.presenceReturns == 1 ? "{0} regreso a presencia" : "{0} regresos a presencia",
+                "\(data.presenceReturns)"
+            ))
+        }
+        return L10n.format(
+            "home.recommendation.summary.week",
+            fallback: "Esta semana: {0}.",
+            parts.joined(separator: " · ")
+        )
     }
 
     private func activeSources(from data: HomeContextualData) -> String {
         var sources: [String] = []
-        if data.activeAgendaCount > 0 || data.overdueAgendaCount > 0 { sources.append("Agenda") }
-        if data.completedGoalUnits > 0 || data.availableGoalUnit != nil { sources.append("Metas") }
-        if data.presenceReturns > 0 || data.automaticPilotEvents > 0 || data.negativeMoodEvents > 0 { sources.append("Presencia") }
-        if data.diaryEntries > 0 || data.negativeDiaryEmotions > 0 { sources.append("Diario") }
-        if data.lowEnergyDays > 0 || data.lowIdentityAlignmentDays > 0 { sources.append("Ritual") }
-        if data.lowCoherenceSessions > 0 { sources.append("Coherencia") }
-        return sources.isEmpty ? "Mi día" : sources.joined(separator: " · ")
+        if data.activeAgendaCount > 0 || data.overdueAgendaCount > 0 { sources.append(L10n.exact("Agenda")) }
+        if data.completedGoalUnits > 0 || data.availableGoalUnit != nil { sources.append(L10n.exact("Metas")) }
+        if data.presenceReturns > 0 || data.automaticPilotEvents > 0 || data.negativeMoodEvents > 0 { sources.append(L10n.exact("Presencia")) }
+        if data.diaryEntries > 0 || data.negativeDiaryEmotions > 0 { sources.append(L10n.exact("Diario")) }
+        if data.lowEnergyDays > 0 || data.lowIdentityAlignmentDays > 0 { sources.append(L10n.exact("Ritual")) }
+        if data.lowCoherenceSessions > 0 { sources.append(L10n.exact("Coherencia")) }
+        return sources.isEmpty ? L10n.exact("Mi día") : sources.joined(separator: " · ")
     }
 }
 

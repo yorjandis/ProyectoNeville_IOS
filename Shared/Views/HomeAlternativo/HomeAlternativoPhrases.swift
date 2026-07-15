@@ -89,7 +89,7 @@ enum HomeAlternativoPhrases {
         "La tarde aún tiene espacio para crear",
         "Tu siguiente elección también cuenta",
         "Vuelve al momento presente",
-        "Has una pausa, respira y continúa",
+        "Haz una pausa, respira y continúa",
         "Regresa a tu centro",
         "Mantén viva tu intención",
         "Elige calma otra vez",
@@ -155,19 +155,23 @@ enum HomeAlternativoPhrases {
         "Recupera e integra las experiencias del día",
         "Bendice este día",
         "Descansa en la certeza de tu poder creativo",
-        "No dejes psar este día sin bendecirte",
+        "No dejes pasar este día sin bendecirte",
         "Agradece, todo está en su justo lugar"
     ]
 
     static func random(for moment: HomeAlternativoDayMoment) -> String {
         switch moment {
         case .morning:
-            return morning.randomElement() ?? "Hoy despiertas en un nuevo estado"
+            return localizedRandom(from: morning, fallback: "Hoy despiertas en un nuevo estado")
         case .afternoon:
-            return afternoon.randomElement() ?? "Tu atención puede cambiar el rumbo ahora"
+            return localizedRandom(from: afternoon, fallback: "Tu atención puede cambiar el rumbo ahora")
         case .night:
-            return night.randomElement() ?? "Antes de dormir, habita el resultado"
+            return localizedRandom(from: night, fallback: "Antes de dormir, habita el resultado")
         }
+    }
+
+    private static func localizedRandom(from phrases: [String], fallback: String) -> String {
+        L10n.exact(phrases.randomElement() ?? fallback)
     }
 }
 

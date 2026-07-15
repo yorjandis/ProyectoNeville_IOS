@@ -48,8 +48,16 @@ enum NotificationSound: String, CaseIterable, Codable, Identifiable {
     private static let key = "selectedNotificationSound" //Clave de UserDefault donde almacenar el nombre del tono usado actualmente
 
     var displayName: String {
-            self == .default ? "Por defecto" : rawValue.capitalized
+        if self == .default {
+            return String(localized: "Por defecto")
         }
+
+        let number = String(rawValue.dropFirst("tono".count))
+        return String(
+            format: String(localized: "Tono %@"),
+            number
+        )
+    }
     
     var unSound: UNNotificationSound {
         switch self {

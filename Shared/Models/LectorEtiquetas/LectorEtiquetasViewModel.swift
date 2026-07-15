@@ -46,13 +46,13 @@ final class LectorEtiquetasViewModel: ObservableObject {
 
         guard selectedSource == .offlineSQLite else {
             offlineNameMatches = []
-            errorMessage = "La búsqueda por nombre solo está disponible en modo BD Offline."
+            errorMessage = L10n.exact("La búsqueda por nombre solo está disponible en modo BD Offline.")
             return
         }
 
         guard isOfflineDatabaseReady else {
             offlineNameMatches = []
-            errorMessage = "Primero descarga la BD offline."
+            errorMessage = L10n.exact("Primero descarga la BD offline.")
             return
         }
 
@@ -111,8 +111,16 @@ final class LectorEtiquetasViewModel: ObservableObject {
             isOfflineDatabaseReady = true
             saveOfflineDatabasePath(resolvedPath)
             offlineInfoMessage = status.didCopy
-                ? "Base offline instalada/actualizada. Versión: \(status.installedVersion)."
-                : "Base offline lista. Versión: \(status.installedVersion)."
+                ? L10n.format(
+                    "label_reader.offline.installed",
+                    fallback: "Base offline instalada/actualizada. Versión: {0}.",
+                    "\(status.installedVersion)"
+                )
+                : L10n.format(
+                    "label_reader.offline.ready",
+                    fallback: "Base offline lista. Versión: {0}.",
+                    "\(status.installedVersion)"
+                )
             hasPendingOfflineUpdate = false
             pendingOfflineVersion = nil
             await refreshOfflineItemsCount()
@@ -135,8 +143,13 @@ final class LectorEtiquetasViewModel: ObservableObject {
             hasPendingOfflineUpdate = status.hasUpdate
             pendingOfflineVersion = status.hasUpdate ? status.latestVersion : nil
             if status.hasUpdate {
-                let installed = status.installedVersion.map(String.init) ?? "N/D"
-                offlineInfoMessage = "Nueva versión disponible (\(status.latestVersion), actual: \(installed))."
+                let installed = status.installedVersion.map(String.init) ?? L10n.exact("N/D")
+                offlineInfoMessage = L10n.format(
+                    "label_reader.offline.update_available",
+                    fallback: "Nueva versión disponible ({0}, actual: {1}).",
+                    "\(status.latestVersion)",
+                    installed
+                )
             }
             return status.hasUpdate
         } catch {
@@ -164,8 +177,12 @@ final class LectorEtiquetasViewModel: ObservableObject {
 
         let sharedDefaults = UserDefaults(suiteName: LectorEtiquetasManagedAssetsConfig.appGroupID)
         let installedVersion = (sharedDefaults?.object(forKey: LectorEtiquetasManagedAssetsConfig.versionDefaultsKey) as? NSNumber)?.intValue
-        let versionText = installedVersion.map(String.init) ?? "N/D"
-        offlineInfoMessage = "BD offline activa. Versión instalada: \(versionText)."
+        let versionText = installedVersion.map(String.init) ?? L10n.exact("N/D")
+        offlineInfoMessage = L10n.format(
+            "label_reader.offline.active",
+            fallback: "BD offline activa. Versión instalada: {0}.",
+            versionText
+        )
 
         Task { _ = await verificarActualizacionOffline() }
 

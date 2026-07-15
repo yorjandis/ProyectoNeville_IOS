@@ -18,7 +18,7 @@ func card(
             .foregroundStyle(.black)
 
         HStack(spacing: 10) {
-            Button(buttonTitle1) {
+            Button(L10n.exact(buttonTitle1)) {
                 buttonAction1()
             }
             .buttonStyle(.bordered)
@@ -26,7 +26,7 @@ func card(
             .foregroundStyle(.white)
 
             if !buttonTitle2.isEmpty {
-                Button(buttonTitle2) {
+                Button(L10n.exact(buttonTitle2)) {
                     buttonAction2?()
                 }
                 .buttonStyle(.bordered)

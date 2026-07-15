@@ -55,39 +55,39 @@ extension LectorEtiquetasView {
 
         let insights: [NutritionInsight] = [
             makeProteinNutritionInsight(
-                title: byID[NutritionScoringTarget.proteinas.id]?.titulo ?? "Proteína",
-                rawValueText: byID[NutritionScoringTarget.proteinas.id]?.valor ?? "N/D",
+                title: byID[NutritionScoringTarget.proteinas.id]?.titulo ?? L10n.exact("Proteína"),
+                rawValueText: byID[NutritionScoringTarget.proteinas.id]?.valor ?? L10n.exact("N/D"),
                 proteinGrams: proteinGrams,
                 calories: calories
             ),
             makeNutritionInsight(
                 target: .grasasSaturadas,
-                title: byID[NutritionScoringTarget.grasasSaturadas.id]?.titulo ?? "Grasas saturadas",
-                rawValueText: byID[NutritionScoringTarget.grasasSaturadas.id]?.valor ?? "N/D",
+                title: byID[NutritionScoringTarget.grasasSaturadas.id]?.titulo ?? L10n.exact("Grasas saturadas"),
+                rawValueText: byID[NutritionScoringTarget.grasasSaturadas.id]?.valor ?? L10n.exact("N/D"),
                 value: byID[NutritionScoringTarget.grasasSaturadas.id].flatMap { extractGrams(from: $0.valor) }
             ),
             makeNutritionInsight(
                 target: .fibra,
-                title: byID[NutritionScoringTarget.fibra.id]?.titulo ?? "Fibra",
-                rawValueText: byID[NutritionScoringTarget.fibra.id]?.valor ?? "N/D",
+                title: byID[NutritionScoringTarget.fibra.id]?.titulo ?? L10n.exact("Fibra"),
+                rawValueText: byID[NutritionScoringTarget.fibra.id]?.valor ?? L10n.exact("N/D"),
                 value: byID[NutritionScoringTarget.fibra.id].flatMap { extractGrams(from: $0.valor) }
             ),
             makeNutritionInsight(
                 target: .azucar,
-                title: byID[NutritionScoringTarget.azucar.id]?.titulo ?? "Azúcar",
-                rawValueText: byID[NutritionScoringTarget.azucar.id]?.valor ?? "N/D",
+                title: byID[NutritionScoringTarget.azucar.id]?.titulo ?? L10n.exact("Azúcar"),
+                rawValueText: byID[NutritionScoringTarget.azucar.id]?.valor ?? L10n.exact("N/D"),
                 value: byID[NutritionScoringTarget.azucar.id].flatMap { extractGrams(from: $0.valor) }
             ),
             makeNutritionInsight(
                 target: .sal,
-                title: byID[NutritionScoringTarget.sal.id]?.titulo ?? "Sal",
-                rawValueText: byID[NutritionScoringTarget.sal.id]?.valor ?? "N/D",
+                title: byID[NutritionScoringTarget.sal.id]?.titulo ?? L10n.exact("Sal"),
+                rawValueText: byID[NutritionScoringTarget.sal.id]?.valor ?? L10n.exact("N/D"),
                 value: byID[NutritionScoringTarget.sal.id].flatMap { extractGrams(from: $0.valor) }
             ),
             makeNutritionInsight(
                 target: .valorEnergetico,
-                title: byID[NutritionScoringTarget.valorEnergetico.id]?.titulo ?? "Valor calórico",
-                rawValueText: byID[NutritionScoringTarget.valorEnergetico.id]?.valor ?? "N/D",
+                title: byID[NutritionScoringTarget.valorEnergetico.id]?.titulo ?? L10n.exact("Valor calórico"),
+                rawValueText: byID[NutritionScoringTarget.valorEnergetico.id]?.valor ?? L10n.exact("N/D"),
                 value: calories
             )
         ]
@@ -242,27 +242,31 @@ extension LectorEtiquetasView {
     func nutrientLevelDescription(level: NutritionConcentrationLevel, target: NutritionScoringTarget) -> String {
         if target == .fibra {
             switch level {
-            case .baja: return "Fibra escasa"
-            case .media: return "Buena fuente de fibra"
-            case .alta: return "Alta en fibra"
+            case .baja: return L10n.exact("Fibra escasa")
+            case .media: return L10n.exact("Buena fuente de fibra")
+            case .alta: return L10n.exact("Alta en fibra")
             }
         }
 
         if target == .proteinas {
             switch level {
-            case .baja: return "Poca proteína"
-            case .media: return "Aporte proteico medio"
-            case .alta: return "Aporte proteico alto"
+            case .baja: return L10n.exact("Poca proteína")
+            case .media: return L10n.exact("Aporte proteico medio")
+            case .alta: return L10n.exact("Aporte proteico alto")
             }
         }
 
         switch level {
         case .media:
-            return "Concentración media"
+            return L10n.exact("Concentración media")
         case .baja:
-            return nutrientDialConfig(for: target).higherIsBetter ? "Concentración baja (a mejorar)" : "Concentración baja (favorable)"
+            return nutrientDialConfig(for: target).higherIsBetter
+                ? L10n.exact("Concentración baja (a mejorar)")
+                : L10n.exact("Concentración baja (favorable)")
         case .alta:
-            return nutrientDialConfig(for: target).higherIsBetter ? "Concentración alta (favorable)" : "Concentración alta (a vigilar)"
+            return nutrientDialConfig(for: target).higherIsBetter
+                ? L10n.exact("Concentración alta (favorable)")
+                : L10n.exact("Concentración alta (a vigilar)")
         }
     }
 
@@ -362,9 +366,18 @@ extension LectorEtiquetasView {
         var criteria: [String] = []
 
         if risk.criteriosSinDatos == 0 {
-            criteria.append("Analizamos \(risk.criteriosEvaluados) criterios.")
+            criteria.append(L10n.format(
+                "label_reader.score.criteria_count",
+                fallback: "Analizamos {0} criterios.",
+                "\(risk.criteriosEvaluados)"
+            ))
         }else{
-            criteria.append("Analizamos \(risk.criteriosEvaluados) criterios y hubo \(risk.criteriosSinDatos) sin datos suficientes.")
+            criteria.append(L10n.format(
+                "label_reader.score.criteria_missing",
+                fallback: "Analizamos {0} criterios y hubo {1} sin datos suficientes.",
+                "\(risk.criteriosEvaluados)",
+                "\(risk.criteriosSinDatos)"
+            ))
         }
         
 
@@ -385,27 +398,41 @@ extension LectorEtiquetasView {
         if let novaGroup = resumen.novaGroup,
            (1...2).contains(novaGroup),
            !hasAdditiveRiskAtOrAboveMedium {
-            let novaDescription = novaGroup == 1 ? "alimento sin procesar o mínimamente procesado (NOVA 1)" : "alimento mínimamente procesado (NOVA 2)"
-            criteria.append("Se aplicó una regla prioritaria porque es un \(novaDescription).")
-            criteria.append("No contiene aditivos de riesgo medio, alto o crítico.")
+            let novaDescription = novaGroup == 1
+                ? L10n.exact("alimento sin procesar o mínimamente procesado (NOVA 1)")
+                : L10n.exact("alimento mínimamente procesado (NOVA 2)")
+            criteria.append(L10n.format(
+                "label_reader.score.nova_priority",
+                fallback: "Se aplicó una regla prioritaria porque es un {0}.",
+                novaDescription
+            ))
+            criteria.append(L10n.exact("No contiene aditivos de riesgo medio, alto o crítico."))
 
             if let inferredContainsGluten {
-                criteria.append("Gluten: \(inferredContainsGluten ? "presente" : "no detectado").")
+                criteria.append(L10n.format(
+                    "label_reader.score.gluten_state",
+                    fallback: "Gluten: {0}.",
+                    L10n.exact(inferredContainsGluten ? "presente" : "no detectado")
+                ))
             } else {
-                criteria.append("Gluten: sin dato concluyente.")
+                criteria.append(L10n.exact("Gluten: sin dato concluyente."))
             }
 
             if let isOrganic {
-                criteria.append(isOrganic ? "Se declara como orgánico." : "No se declara como orgánico.")
+                criteria.append(L10n.exact(isOrganic ? "Se declara como orgánico." : "No se declara como orgánico."))
             } else {
-                criteria.append("Orgánico: sin dato disponible.")
+                criteria.append(L10n.exact("Orgánico: sin dato disponible."))
             }
 
             let overrideClassification: LectorEtiquetasFoodRiskClassification = (
                 inferredContainsGluten == false && isOrganic == true
             ) ? .excelente : .bueno
 
-            criteria.append("Por esta combinación, la calificación final es \(overrideClassification.title).")
+            criteria.append(L10n.format(
+                "label_reader.score.final_rating",
+                fallback: "Por esta combinación, la calificación final es {0}.",
+                overrideClassification.title
+            ))
 
             return PrincipalScoreInfo(
                 title: risk.classification.title,
@@ -415,39 +442,69 @@ extension LectorEtiquetasView {
         }
 
         if highOrCriticalCount >= 1 || mediumCount >= 3 {
-            criteria.append("Contiene aditivos de mayor o moderado riesgo (al menos 1 alto/crítico o 3 medios), por eso aplica penalización máxima.")
+            criteria.append(L10n.exact("Contiene aditivos de mayor o moderado riesgo (al menos 1 alto/crítico o 3 medios), por eso aplica penalización máxima."))
         } else if aditivos.isEmpty {
-            criteria.append("No se detectaron aditivos de riesgo relevantes.")
+            criteria.append(L10n.exact("No se detectaron aditivos de riesgo relevantes."))
         } else {
-            criteria.append("Se detectaron \(aditivos.count) aditivos, pero sin llegar al umbral de penalización máxima (medios: \(mediumCount), altos/críticos: \(highOrCriticalCount)).")
+            criteria.append(L10n.format(
+                "label_reader.score.additive_counts",
+                fallback: "Se detectaron {0} aditivos, pero sin llegar al umbral de penalización máxima (medios: {1}, altos/críticos: {2}).",
+                "\(aditivos.count)",
+                "\(mediumCount)",
+                "\(highOrCriticalCount)"
+            ))
         }
 
         if let esOrganico = resumen.perfilAlimentario.esOrganico {
-            criteria.append(esOrganico ? "El producto se declara como orgánico." : "El producto no se declara como orgánico.")
+            criteria.append(L10n.exact(esOrganico ? "El producto se declara como orgánico." : "El producto no se declara como orgánico."))
         } else {
-            criteria.append("No hay dato directo de orgánico; usamos señales ecológicas y el resultado fue: \(resumen.evaluacionEcologica.estado.titulo.lowercased()).")
+            criteria.append(L10n.format(
+                "label_reader.score.ecological_result",
+                fallback: "No hay dato directo de orgánico; usamos señales ecológicas y el resultado fue: {0}.",
+                resumen.evaluacionEcologica.estado.titulo.lowercased()
+            ))
         }
 
         if let contieneGluten = resumen.perfilAlimentario.contieneGluten {
-            criteria.append("Gluten: \(contieneGluten ? "presente" : "no detectado") según la información del producto.")
+            criteria.append(L10n.format(
+                "label_reader.score.gluten_product",
+                fallback: "Gluten: {0} según la información del producto.",
+                L10n.exact(contieneGluten ? "presente" : "no detectado")
+            ))
         } else if let glutenFinding = resultado.hallazgos
             .filter({ $0.categoria == .indicioGluten })
             .max(by: { $0.nivel.rawValue < $1.nivel.rawValue }) {
-            criteria.append("Gluten: se encontraron indicios \(glutenFinding.nivel.badgeText.lowercased()) en ingredientes.")
+            criteria.append(L10n.format(
+                "label_reader.score.gluten_indications",
+                fallback: "Gluten: se encontraron indicios {0} en ingredientes.",
+                glutenFinding.nivel.badgeText.lowercased()
+            ))
         } else if containsGlutenKeyword(in: resumen.alergenos) {
-            criteria.append("Gluten: aparece en la sección de alérgenos del producto.")
+            criteria.append(L10n.exact("Gluten: aparece en la sección de alérgenos del producto."))
         } else {
-            criteria.append("Gluten: no hay evidencia clara; se aplica una evaluación conservadora.")
+            criteria.append(L10n.exact("Gluten: no hay evidencia clara; se aplica una evaluación conservadora."))
         }
 
         if let sugar = highestFindingLevel(in: resultado.hallazgos, categories: [.excesoAzucar]) {
-            criteria.append("Azúcar: nivel \(sugar.badgeText.lowercased()), lo que impacta negativamente el score.")
+            criteria.append(L10n.format(
+                "label_reader.score.sugar_level",
+                fallback: "Azúcar: nivel {0}, lo que impacta negativamente el score.",
+                sugar.badgeText.lowercased()
+            ))
         }
         if let salt = highestFindingLevel(in: resultado.hallazgos, categories: [.excesoSal, .sodioElevado]) {
-            criteria.append("Sal/Sodio: nivel \(salt.badgeText.lowercased()), considerado en la puntuación final.")
+            criteria.append(L10n.format(
+                "label_reader.score.salt_level",
+                fallback: "Sal/Sodio: nivel {0}, considerado en la puntuación final.",
+                salt.badgeText.lowercased()
+            ))
         }
         if let satFat = highestFindingLevel(in: resultado.hallazgos, categories: [.excesoGrasaSaturada]) {
-            criteria.append("Grasa saturada: nivel \(satFat.badgeText.lowercased()), con efecto en la calificación.")
+            criteria.append(L10n.format(
+                "label_reader.score.saturated_fat_level",
+                fallback: "Grasa saturada: nivel {0}, con efecto en la calificación.",
+                satFat.badgeText.lowercased()
+            ))
         }
 
         return PrincipalScoreInfo(
@@ -479,8 +536,8 @@ extension LectorEtiquetasView {
 
     /// Convierte un booleano opcional a texto legible para UI.
     func boolText(_ value: Bool?) -> String {
-        guard let value else { return "No disponible" }
-        return value ? "Sí" : "No"
+        guard let value else { return L10n.exact("No disponible") }
+        return L10n.exact(value ? "Sí" : "No")
     }
 }
 #endif

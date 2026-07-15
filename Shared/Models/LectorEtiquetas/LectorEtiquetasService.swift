@@ -223,14 +223,14 @@ final class LectorEtiquetasService: @unchecked Sendable {
     private func buildOfflineNutriments(from record: OfflineOpenFoodFactsDatabase.ProductRecord) -> [OpenFoodFactsNutrimentItem] {
         var items: [OpenFoodFactsNutrimentItem] = []
 
-        appendNutriment(key: "energy-kcal_100g", title: "Valor energético (kcal/100g)", value: record.energyKcal100g, unit: "kcal", into: &items)
-        appendNutriment(key: "proteins_100g", title: "Proteínas (g/100g)", value: record.proteins100g, unit: "g", into: &items)
-        appendNutriment(key: "fiber_100g", title: "Fibra (g/100g)", value: record.fiber100g, unit: "g", into: &items)
-        appendNutriment(key: "saturated-fat_100g", title: "Grasas saturadas (g/100g)", value: record.saturatedFat100g, unit: "g", into: &items)
-        appendNutriment(key: "sugars_100g", title: "Azúcar (g/100g)", value: record.sugars100g, unit: "g", into: &items)
-        appendNutriment(key: "salt_100g", title: "Sal (g/100g)", value: record.salt100g, unit: "g", into: &items)
-        appendNutriment(key: "fat_100g", title: "Grasa total (g/100g)", value: record.fat100g, unit: "g", into: &items)
-        appendNutriment(key: "carbohydrates_100g", title: "Carbohidratos (g/100g)", value: record.carbohydrates100g, unit: "g", into: &items)
+        appendNutriment(key: "energy-kcal_100g", title: L10n.exact("Valor energético (kcal/100g)"), value: record.energyKcal100g, unit: "kcal", into: &items)
+        appendNutriment(key: "proteins_100g", title: L10n.exact("Proteínas (g/100g)"), value: record.proteins100g, unit: "g", into: &items)
+        appendNutriment(key: "fiber_100g", title: L10n.exact("Fibra (g/100g)"), value: record.fiber100g, unit: "g", into: &items)
+        appendNutriment(key: "saturated-fat_100g", title: L10n.exact("Grasas saturadas (g/100g)"), value: record.saturatedFat100g, unit: "g", into: &items)
+        appendNutriment(key: "sugars_100g", title: L10n.exact("Azúcar (g/100g)"), value: record.sugars100g, unit: "g", into: &items)
+        appendNutriment(key: "salt_100g", title: L10n.exact("Sal (g/100g)"), value: record.salt100g, unit: "g", into: &items)
+        appendNutriment(key: "fat_100g", title: L10n.exact("Grasa total (g/100g)"), value: record.fat100g, unit: "g", into: &items)
+        appendNutriment(key: "carbohydrates_100g", title: L10n.exact("Carbohidratos (g/100g)"), value: record.carbohydrates100g, unit: "g", into: &items)
 
         return items
     }

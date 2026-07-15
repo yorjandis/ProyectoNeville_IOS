@@ -83,13 +83,14 @@ enum CardioCoherenceConstants {
         static let fadeInEndFraction: CGFloat = 0.22
         static let fadeOutStartFraction: CGFloat = 0.76
         static let storageKeys = (0..<8).map { "coherencia_session_phrase_\($0)" }
-        static let phaseTitles = [
+        static var phaseTitles: [String] { [
             "Regulación",
             "Conexión corazón",
             "Emoción elevada",
             "Integración"
-        ]
-        static let defaults = [
+        ].map { L10n.exact($0) } }
+
+        static var defaults: [String] { [
             "Suelto el esfuerzo y permito que mi cuerpo se calme.",
             "Cada respiración me devuelve a un estado de equilibrio.",
             "Llevo mi atención al espacio sereno de mi corazón.",
@@ -98,7 +99,7 @@ enum CardioCoherenceConstants {
             "Dejo que esta emoción elevada impregne todo mi ser.",
             "Esta coherencia se integra suavemente dentro de mí.",
             "Permanezco presente y llevo este estado conmigo."
-        ]
+        ].map { L10n.exact($0) } }
 
         static func load() -> [String] {
             storageKeys.enumerated().map { index, key in
@@ -136,7 +137,7 @@ enum CardioCoherenceConstants {
         static var texts: [String] {
             let selectedTrio = phraseTrios.randomElement() ?? defaultTrio
             return [
-                "Bienvenido a Coherencia \nCardio - Cerebral",
+                L10n.exact("Bienvenido a Coherencia \nCardio - Cerebral"),
                 selectedTrio.0,
                 selectedTrio.1,
                 selectedTrio.2
@@ -149,14 +150,16 @@ enum CardioCoherenceConstants {
             initialTextDelaySeconds + textDurationsSeconds.reduce(0, +)
         }
 
-        static let defaultTrio: (String, String, String) = (
-            "La coherencia es el lenguaje secreto\nentre tu corazón y tu mente",
-            "Todo lo que necesitas\nya habita en tu interior",
-            "Entra a tu espacio sagrado y que la magia ocurra"
-        )
+        static var defaultTrio: (String, String, String) {
+            localizedTrio((
+                "La coherencia es el lenguaje secreto\nentre tu corazón y tu mente",
+                "Todo lo que necesitas\nya habita en tu interior",
+                "Entra a tu espacio sagrado y que la magia ocurra"
+            ))
+        }
 
         /// Colección unificada de tríos para construir una narrativa completa.
-        static let phraseTrios: [(String, String, String)] = [
+        static var phraseTrios: [(String, String, String)] { [
             (
                 "La coherencia es el lenguaje secreto\nentre tu corazón y tu mente",
                 "Todo lo que necesitas\nya habita en tu interior",
@@ -202,7 +205,13 @@ enum CardioCoherenceConstants {
                     "Eres el observador y el creador\nde tu experiencia",
                     "Permite que la transformación\nocurra sin resistencia"
                 )
-        ]
+        ].map(localizedTrio) }
+
+        private static func localizedTrio(
+            _ trio: (String, String, String)
+        ) -> (String, String, String) {
+            (L10n.exact(trio.0), L10n.exact(trio.1), L10n.exact(trio.2))
+        }
             
     }
 

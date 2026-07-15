@@ -125,7 +125,7 @@ actor OfflineOpenFoodFactsDatabase {
         var matches: [ProductMatch] = []
         while sqlite3_step(statement) == SQLITE_ROW {
             let barcode = stringColumn(statement, index: 0) ?? ""
-            let productName = stringColumn(statement, index: 1) ?? "Producto sin nombre"
+            let productName = stringColumn(statement, index: 1) ?? L10n.exact("Producto sin nombre")
             let brands = stringColumn(statement, index: 2)
             guard !barcode.isEmpty else { continue }
             matches.append(ProductMatch(barcode: barcode, productName: productName, brands: brands))
@@ -194,7 +194,7 @@ actor OfflineOpenFoodFactsDatabase {
 
         return ProductRecord(
             barcode: stringColumn(statement, index: 0) ?? barcode,
-            productName: stringColumn(statement, index: 1) ?? "Producto sin nombre",
+            productName: stringColumn(statement, index: 1) ?? L10n.exact("Producto sin nombre"),
             brands: stringColumn(statement, index: 2),
             quantity: stringColumn(statement, index: 3),
             nutritionGrade: stringColumn(statement, index: 4),

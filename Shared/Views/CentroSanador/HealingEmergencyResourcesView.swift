@@ -51,7 +51,11 @@ struct HealingEmergencyResourcesView: View {
                     }
                 }
             } else {
-                Section("Contactos para \(resources.countryName)") {
+                Section(L10n.format(
+                    "healing.emergency.contacts_for",
+                    fallback: "Contactos para {0}",
+                    resources.countryName
+                )) {
                     ForEach(resources.contacts) { contact in
                         emergencyContact(contact)
                     }
@@ -107,7 +111,14 @@ struct HealingEmergencyResourcesView: View {
 
             if let telephoneURL = contact.telephoneURL {
                 Link(destination: telephoneURL) {
-                    Label("Llamar al \(contact.number)", systemImage: "phone.arrow.up.right.fill")
+                    Label(
+                        L10n.format(
+                            "healing.emergency.call_number",
+                            fallback: "Llamar al {0}",
+                            contact.number
+                        ),
+                        systemImage: "phone.arrow.up.right.fill"
+                    )
                         .font(.headline)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 11)

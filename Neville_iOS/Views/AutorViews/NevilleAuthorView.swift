@@ -44,7 +44,7 @@ struct NevilleAuthorView: View {
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .foregroundStyle(.black)
 
-                            Button("Bibliografía") {
+                            Button("Biografía") {
                                 route = .biografia
                             }
                             .buttonStyle(.bordered)
@@ -97,20 +97,20 @@ struct NevilleAuthorView: View {
             VStack {
                 switch item {
                 case .biografia:
-                    ContentTxtShowView(title: "Biografía de Neville Goddard", nombreTxt: AppCons.FileBiografiaNeville, type: .NA, blocks: [
+                    ContentTxtShowView(title: authorBiographyTitle("Neville Goddard"), nombreTxt: AppCons.FileBiografiaNeville, type: .NA, blocks: [
                         ContentBlock(content: .imageLocal(name: "nev-min", size: 150)),
-                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileBiografiaNeville)))
+                        ContentBlock(content: .text(L10n.textResource(named: AppCons.FileBiografiaNeville)))
                     ])
                 case .resumenEnsenanza:
-                    ContentTxtShowView(title: "Resumen de la enseñanza: Neville Goddard", nombreTxt: AppCons.FileResumenEnseñanzaNeville, type: .NA, blocks: [
-                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenEnseñanzaNeville)))
+                    ContentTxtShowView(title: authorTeachingSummaryTitle("Neville Goddard"), nombreTxt: AppCons.FileResumenEnseñanzaNeville, type: .NA, blocks: [
+                        ContentBlock(content: .text(L10n.textResource(named: AppCons.FileResumenEnseñanzaNeville)))
                     ])
                 case .conferencias:
-                    TxtListView(typeOfContent: .conf, title: "Conferencias")
+                    TxtListView(typeOfContent: .conf, title: L10n.exact("Conferencias"))
                 case .citas:
-                    TxtListView(typeOfContent: .citas, title: "Citas")
+                    TxtListView(typeOfContent: .citas, title: L10n.exact("Citas"))
                 case .preguntas:
-                    TxtListView(typeOfContent: .preg, title: "Preguntas")
+                    TxtListView(typeOfContent: .preg, title: L10n.exact("Preguntas"))
                 case .game:
                     GamePLay()
                 }
@@ -138,7 +138,7 @@ struct NevilleAuthorView: View {
             }
 
             HStack(spacing: 10) {
-                Button(buttonTitle1) {
+                Button(L10n.exact(buttonTitle1)) {
                     buttonAction1()
                 }
                 .buttonStyle(.bordered)
@@ -146,7 +146,7 @@ struct NevilleAuthorView: View {
                 .foregroundStyle(.white)
 
                 if !buttonTitle2.isEmpty {
-                    Button(buttonTitle2) {
+                    Button(L10n.exact(buttonTitle2)) {
                         buttonAction2?()
                     }
                     .buttonStyle(.bordered)

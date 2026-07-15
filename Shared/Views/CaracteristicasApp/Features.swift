@@ -54,8 +54,16 @@ struct Features: View {
         FeatureItem(iconName: "sun.max", title: "Ritual matutino", description: "Una forma de organizar intencionalmente tu día y mantener el foco en el presente."),
         FeatureItem(iconName: "eye", title: "Presencia Consciente", description: "Registra pequeños momentos de despertar durante el día y vuelve al presente con un solo toque. Observa cuándo sales del piloto automático, reconoce tu estado de ánimo y refuerza la emoción del futuro que deseas vivir."),
         FeatureItem(iconName: "leaf", title: "Espacio Calma", description: "Experiencia inmersiva para relajarte y desconectarte. Ayuda a disminuir el estrés y la ansiedad."),
-        FeatureItem(iconName: "barcode.viewfinder", title: "Lector de Etiquetas", description: "Ofrece información sobre alimentos y consejos de uso leyendo su código de barras."),
-        FeatureItem(iconName: "heart.circle", title: "Coherencia Cardio-Cerebral", description: "Asistente de guía para entrar en estado de coherencia entre corazón y cerebro."),
+        FeatureItem(
+            iconName: "barcode.viewfinder",
+            title: L10n.exact("Lector de Etiquetas"),
+            description: L10n.exact("Ofrece información sobre alimentos y consejos de uso leyendo su código de barras.")
+        ),
+        FeatureItem(
+            iconName: "heart.circle",
+            title: L10n.exact("Coherencia Cardio-Cerebral"),
+            description: L10n.exact("Asistente de guía para entrar en estado de coherencia entre corazón y cerebro.")
+        ),
         FeatureItem(iconName: "calendar", title: "Agenda", description: "Organiza tareas, eventos y compromisos en el tiempo para liberar memoria, priorizar lo importante y usar mejor tu tiempo."),
         FeatureItem(iconName: "gamecontroller", title: "Evaluación", description: "Juego de respuesta correcta o incorrecta para consolidar y repasar lo aprendido. Las preguntas pueden ser sutiles y desafiantes."),
         FeatureItem(iconName: "qrcode", title: "QR integrado", description: "Importa y exporta información como notas y frases con un formato propio para compartir con amigos y la comunidad."),

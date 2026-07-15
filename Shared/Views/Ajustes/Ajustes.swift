@@ -157,6 +157,17 @@ struct Ajustes: View {
         return theme == .dark ? .white : .black
         #endif
     }
+
+    private func localizedThemeTitle(_ theme: Theme) -> String {
+        switch theme {
+        case .auto:
+            return L10n.exact("Automático")
+        case .light:
+            return L10n.exact("Claro")
+        case .dark:
+            return L10n.exact("Oscuro")
+        }
+    }
     
     var body: some View {
         
@@ -232,7 +243,7 @@ struct Ajustes: View {
                             
                             Picker("Elige el Tema:", selection: self.$setting_theme) {
                                 ForEach(Theme.allCases, id:\.self){item in
-                                    Text(item.rawValue).tag(item)
+                                    Text(localizedThemeTitle(item)).tag(item)
                                         
                                 }
                             }
@@ -302,12 +313,12 @@ struct Ajustes: View {
                                     
                                         Menu("Añadir al Filtro:"){
                                             ForEach(CriterioFraseHome.allCases, id: \.self) { opcion in
-                                                Button(opcion.getName){
+                                                Button(L10n.exact(opcion.getName)){
                                                     if (self.purchaseStatus || self.yorjPremium){
                                                         toggleFiltro(opcion)
                                                     }else{
                                                         if opcion.rawValue != "neville"{
-                                                            self.alertMessage = "Disponible en Versión Extendida"
+                                                            self.alertMessage = L10n.exact("Disponible en Versión Extendida")
                                                             self.showAlert = true
                                                         }
                                                     }
@@ -331,7 +342,7 @@ struct Ajustes: View {
                                                     .buttonStyle(.plain)
                                                     .padding(.horizontal, 5)
                                                     
-                                                    Text(criterio.getName)
+                                                    Text(L10n.exact(criterio.getName))
                                                         .font(.footnote)
 
                                                     Spacer()
@@ -422,7 +433,11 @@ struct Ajustes: View {
                                         Text("Condiciones de Uso de la IA")
                                             .font(.system(size: 20))
                                         HStack{
-                                            Text("(\(self.DescargoDeIA ? "Aceptado" : "No aceptado")) ")
+                                            Text(L10n.format(
+                                                "settings.ai_acceptance_status",
+                                                fallback: "({0})",
+                                                L10n.exact(self.DescargoDeIA ? "Aceptado" : "No aceptado")
+                                            ))
                                                 .foregroundStyle(self.DescargoDeIA ? .green : .red).bold().font(.subheadline)
                                             
                                             Spacer()
@@ -430,7 +445,7 @@ struct Ajustes: View {
                                             Button("Acceder a las Condiciones de Uso de la IA"){
                                                 showWindow(for: DescargoResponsabilidadIA(VentanaEnSetting: true).foregroundStyle(.orange),
                                                            environmentObjects: [],
-                                                           title: "Condiciones de Uso de la IA",
+                                                           title: L10n.exact("Condiciones de Uso de la IA"),
                                                            size: AppCons.windows_size_content,
                                                            isModal: true
                                                            
@@ -446,11 +461,15 @@ struct Ajustes: View {
                                             Text("Papel interpretado por la IA:")
                                             .font(.system(size: 20))
                                         HStack{
-                                            Text("\(self.TratamientoDeIA ? "La IA representa al Maestro, como si nos hablara en persona" : "La IA se muestra de manera impersonal y despectiva")")
+                                            Text(L10n.exact(
+                                                self.TratamientoDeIA
+                                                    ? "La IA representa al Maestro, como si nos hablara en persona"
+                                                    : "La IA se muestra de manera impersonal y neutral"
+                                            ))
                                                 .font(.system(size: 15))
                                             Spacer()
                                             Toggle(isOn: self.$TratamientoDeIA) {
-                                                Text(self.TratamientoDeIA ? "Personal" : "Impersonal")
+                                                Text(L10n.exact(self.TratamientoDeIA ? "Personal" : "Impersonal"))
                                                     .foregroundStyle(self.TratamientoDeIA ? .green : settingsPrimaryTextColor)
                                             }
                                         }
@@ -477,7 +496,7 @@ struct Ajustes: View {
                                     Button("Se requiere Versión Extendida"){
                                         showWindow(for: PurchaseView(),
                                                    environmentObjects: [],
-                                        title: "Habilitar Versión Extendida",
+                                        title: L10n.exact("Habilitar Versión Extendida"),
                                                    size: .percentage(width: 0.50, height: 0.50),
                                         isModal: true)
                                     }
@@ -500,7 +519,7 @@ struct Ajustes: View {
                                         Button("Acceder por contraseña"){
                                             showWindow(for: LogginView(ente: .Notas),
                                                        environmentObjects: [self.securityModel],
-                                                       title: "Acceder por contraseña",
+                                                       title: L10n.exact("Acceder por contraseña"),
                                                        size: AppCons.windows_size_content_small,
                                                        isModal: true
                                                        
@@ -511,7 +530,7 @@ struct Ajustes: View {
                                         Button("Crear una nueva Contraseña de Acceso"){
                                             showWindow(for: CreatePasswordView(),
                                                        environmentObjects: [],
-                                                       title: "Crear una nueva Contraseña de Acceso",
+                                                       title: L10n.exact("Crear una nueva Contraseña de Acceso"),
                                                        size: AppCons.windows_size_content_small,
                                                        isModal: true
                                                        
@@ -549,7 +568,7 @@ struct Ajustes: View {
                                             Button("Acceder por contraseña"){
                                                 showWindow(for: LogginView(ente: .AccesoADiarioAjustes),
                                                            environmentObjects: [self.securityModel],
-                                                           title: "Acceder por contraseña",
+                                                           title: L10n.exact("Acceder por contraseña"),
                                                            size: AppCons.windows_size_content_small,
                                                            isModal: true
                                                            
@@ -560,7 +579,7 @@ struct Ajustes: View {
                                             Button("Crear una nueva Contraseña de Acceso"){
                                                 showWindow(for: CreatePasswordView(),
                                                            environmentObjects: [],
-                                                           title: "Crear una nueva Contraseña de Acceso",
+                                                           title: L10n.exact("Crear una nueva Contraseña de Acceso"),
                                                            size: AppCons.windows_size_content_small,
                                                            isModal: true
                                                            
@@ -569,7 +588,7 @@ struct Ajustes: View {
                                         }
                                     }
                                 }
-                                Text("Nota: Si se activa, el Diario permanece abierto una vez que se ha autentificado la primerá vez. Esto evita tener que loguearse en cada acceso al Diario. Al cerrarse la app el acceso al Diario se bloquea")
+                                Text("Nota: Si se activa, el Diario permanece abierto una vez que se ha autentificado la primera vez. Esto evita tener que iniciar sesión en cada acceso al Diario. Al cerrarse la app, el acceso al Diario se bloquea.")
                                     .font(.system(size: 15))
                                     .frame(width: 600)
                             }
@@ -647,7 +666,7 @@ struct Ajustes: View {
                                     )
                                 }
 
-                            Text("Disponible cada \(WeeklyReviewSchedule.selectedDay(from: weeklyReviewWeekday).title.lowercased()) a partir de las 6:00.")
+                            Text(weeklyReviewShortAvailabilityDescription)
                                 .font(.footnote)
                                 .foregroundStyle(.secondary)
 
@@ -655,7 +674,7 @@ struct Ajustes: View {
                                 .padding(.vertical, 4)
 
                             Stepper(
-                                "Conservar \(weeklyReviewRecordsToKeep) registros",
+                                weeklyReviewRetentionLabel,
                                 value: $weeklyReviewRecordsToKeep,
                                 in: WeeklyReviewRetentionPolicy.minimumRecordsToKeep...WeeklyReviewRetentionPolicy.maximumRecordsToKeep,
                                 step: WeeklyReviewRetentionPolicy.recordStep
@@ -670,7 +689,7 @@ struct Ajustes: View {
                                 Label("Eliminar revisiones antiguas", systemImage: "trash")
                             }
 
-                            Text("Al limpiar, se conservarán las últimas \(weeklyReviewRecordsToKeep) revisiones semanales y se eliminarán los registros anteriores.")
+                            Text(weeklyReviewCleanupDescription)
                                 .font(.footnote)
                                 .foregroundStyle(.secondary)
                         }
@@ -694,7 +713,11 @@ struct Ajustes: View {
                                     Button("Recupera Contraseña Para Acceder al Diario y Notas"){
                                         //Intentando obtener la clave
                                         if let clave = KeychainHelper.shared.getPassword() {
-                                            self.alertMessage = "La clave es: \(clave)" //Almacena la clave
+                                            self.alertMessage = L10n.format(
+                                                "settings.master_password_value",
+                                                fallback: "La clave es: {0}",
+                                                clave
+                                            ) //Almacena la clave
                                             UtilFuncs.autent(HabilitarContenido: self.$showAlert)
                                         }
                                     }
@@ -744,7 +767,7 @@ struct Ajustes: View {
                                     MigrationIOSAndroidView()
                                 },
                                            environmentObjects: [],
-                                           title: "Migración iOS / Android",
+                                           title: L10n.exact("Migración iOS / Android"),
                                            size: .percentage(width: 0.50, height: 0.70),
                                            isModal: false)
                             } label: {
@@ -802,7 +825,7 @@ struct Ajustes: View {
                                                                 
                                                         },
                                                                    environmentObjects: [],
-                                                                   title: "Desarrollador",
+                                                                   title: L10n.exact("Desarrollador"),
                                                                    size: AppCons.windows_size_content_small,
                                                                    isModal: true)
                                                         
@@ -869,7 +892,7 @@ struct Ajustes: View {
                                 }
                                     .padding(15) ,
                                            environmentObjects: [self.modelTxt, self.settingModel, self.modelFrases],
-                                           title: "Información",
+                                           title: L10n.exact("Información"),
                                            size: AppCons.windows_size_content_small,
                                            isModal: true
                                            
@@ -885,12 +908,12 @@ struct Ajustes: View {
                             Button{
                                 showWindow(for: Features(),
                                            environmentObjects: [],
-                                           title: "Novedades",
+                                           title: L10n.exact("Novedades"),
                                            size: AppCons.windows_size_content_small,
                                            isModal: false
                                 )
                             }label:{
-                                Label("Caraterísticas de la App", systemImage: "info.circle.text.page.fill")
+                                Label("Características de la App", systemImage: "info.circle.text.page.fill")
                                     .foregroundStyle(settingsPrimaryTextColor)
                                     .bold()
                                     .font(.headline)
@@ -906,7 +929,7 @@ struct Ajustes: View {
                                         .padding(10)
                                 },
                                            environmentObjects: [],
-                                           title: "Política de Privacidad",
+                                           title: L10n.exact("Política de Privacidad"),
                                            size: AppCons.windows_size_content,
                                            isModal: false
                                 )
@@ -929,7 +952,7 @@ struct Ajustes: View {
                                         .padding(10)
                                 },
                                            environmentObjects: [],
-                                           title: "Política de Privacidad",
+                                           title: L10n.exact("Términos de uso"),
                                            size: AppCons.windows_size_content,
                                            isModal: false
                                 )
@@ -962,7 +985,7 @@ struct Ajustes: View {
                             Button{
                                 showWindow(for: FeedbackView(showTextBotton: false),
                                            environmentObjects: [],
-                                           title: "Enviar una Reseña a la App Store",
+                                           title: L10n.exact("Enviar una Reseña a la App Store"),
                                            size: AppCons.windows_size_content_small,
                                            isModal: true
                                 )
@@ -1076,7 +1099,7 @@ struct Ajustes: View {
                         
                         Picker("Elige el Tema:", selection: self.$setting_theme) {
                             ForEach(Theme.allCases, id:\.self){item in
-                                Text(item.rawValue).tag(item)
+                                Text(localizedThemeTitle(item)).tag(item)
                             }
                         }
                         .pickerStyle(.segmented)
@@ -1184,12 +1207,12 @@ struct Ajustes: View {
                                 
                                  Menu("Añadir al Filtro:"){
                                      ForEach(CriterioFraseHome.allCases, id: \.self) { opcion in
-                                         Button(opcion.getName){
+                                         Button(L10n.exact(opcion.getName)){
                                              if (self.purchaseStatus || self.yorjPremium){
                                                  toggleFiltro(opcion)
                                              }else{
                                                  if opcion.rawValue != "neville"{
-                                                     self.alertMessage = "Disponible en Versión Extendida"
+                                                self.alertMessage = L10n.exact("Disponible en Versión Extendida")
                                                      self.showAlert = true
                                                  }
                                              }
@@ -1213,7 +1236,7 @@ struct Ajustes: View {
                                                 .buttonStyle(.plain)
                                                 .padding(.horizontal, 5)
                                                 
-                                                Text(criterio.getName)
+                                                Text(L10n.exact(criterio.getName))
                                                     .font(.footnote)
 
                                                 Spacer()
@@ -1234,7 +1257,11 @@ struct Ajustes: View {
                             Section("Utilización de la IA"){
                                 VStack(spacing: 10){
                                     HStack{
-                                        Text("(\(self.DescargoDeIA ? "Aceptado" : "No aceptado")) ")
+                                        Text(L10n.format(
+                                            "settings.ai_acceptance_status",
+                                            fallback: "({0})",
+                                            L10n.exact(self.DescargoDeIA ? "Aceptado" : "No aceptado")
+                                        ))
                                             .foregroundStyle(self.DescargoDeIA ? .green : .red).bold().font(.subheadline)
                                         NavigationLink("Acceder a las Condiciones de Uso de la IA"){DescargoResponsabilidadIA(VentanaEnSetting: true)}.foregroundStyle(.orange)
                                     }
@@ -1245,10 +1272,14 @@ struct Ajustes: View {
                                 VStack(alignment: .leading){
                                         Text("Papel interpretado por la IA:")
                                     Toggle(isOn: self.$TratamientoDeIA) {
-                                        Text(self.TratamientoDeIA ? "Personal" : "Impersonal")
+                                        Text(L10n.exact(self.TratamientoDeIA ? "Personal" : "Impersonal"))
                                             .foregroundStyle(self.TratamientoDeIA ? .green : settingsPrimaryTextColor)
                                     }
-                                    Text("\(self.TratamientoDeIA ? "La IA representa al Maestro, como si nos hablara en persona." : "La IA se muestra de manera impersonal y despectiva.")")
+                                    Text(L10n.exact(
+                                        self.TratamientoDeIA
+                                            ? "La IA representa al Maestro, como si nos hablara en persona."
+                                            : "La IA se muestra de manera impersonal y neutral."
+                                    ))
                                         .font(.footnote)
                                 }
                             }
@@ -1338,7 +1369,7 @@ struct Ajustes: View {
                                     }
                                 }
                             }
-                            Text("Nota: Si se activa, el Diario permanece abierto una vez que se ha autentificado la primerá vez. Esto evita tener que loguearse en cada acceso al Diario. Al cerrarse la app el acceso al Diario se bloquea.")
+                            Text("Nota: Si se activa, el Diario permanece abierto una vez que se ha autentificado la primera vez. Esto evita tener que iniciar sesión en cada acceso al Diario. Al cerrarse la app, el acceso al Diario se bloquea.")
                                 .font(.subheadline)
                         }
                         
@@ -1451,8 +1482,24 @@ struct Ajustes: View {
                             .font(.footnote)
                             .foregroundStyle(.secondary)
 
-                        Stepper("Presencia: \(homeProductividadPresenciaTotal)", value: $homeProductividadPresenciaTotal, in: 5...100)
-                        Stepper("Metas: \(homeProductividadMetasTotal)", value: $homeProductividadMetasTotal, in: 1...100)
+                        Stepper(
+                            L10n.format(
+                                "settings.productivity_presence_total",
+                                fallback: "Presencia: {0}",
+                                String(homeProductividadPresenciaTotal)
+                            ),
+                            value: $homeProductividadPresenciaTotal,
+                            in: 5...100
+                        )
+                        Stepper(
+                            L10n.format(
+                                "settings.productivity_goals_total",
+                                fallback: "Metas: {0}",
+                                String(homeProductividadMetasTotal)
+                            ),
+                            value: $homeProductividadMetasTotal,
+                            in: 1...100
+                        )
                     }
 
                     Section("Revisión semanal") {
@@ -1476,12 +1523,12 @@ struct Ajustes: View {
                                 )
                             }
 
-                        Text("La revisión estará disponible cada \(WeeklyReviewSchedule.selectedDay(from: weeklyReviewWeekday).title.lowercased()) a partir de las 6:00. Al activar el recordatorio, la app solicitará permiso de notificaciones si hace falta.")
+                        Text(weeklyReviewAvailabilityDescription)
                             .font(.footnote)
                             .foregroundStyle(.secondary)
 
                         Stepper(
-                            "Conservar \(weeklyReviewRecordsToKeep) registros",
+                            weeklyReviewRetentionLabel,
                             value: $weeklyReviewRecordsToKeep,
                             in: WeeklyReviewRetentionPolicy.minimumRecordsToKeep...WeeklyReviewRetentionPolicy.maximumRecordsToKeep,
                             step: WeeklyReviewRetentionPolicy.recordStep
@@ -1494,7 +1541,7 @@ struct Ajustes: View {
                             showWeeklyReviewRetentionConfirmation = true
                         }
 
-                        Text("Al limpiar, se conservarán las últimas \(weeklyReviewRecordsToKeep) revisiones semanales y se eliminarán los registros anteriores.")
+                        Text(weeklyReviewCleanupDescription)
                             .font(.footnote)
                             .foregroundStyle(.secondary)
                     }
@@ -1543,7 +1590,11 @@ struct Ajustes: View {
                                 Button("Recupera Contraseña Para Acceder al Diario y Notas"){
                                     //Intentando obtener la clave
                                     if let clave = KeychainHelper.shared.getPassword() {
-                                        self.alertMessage = "La clave es: \(clave)" //Almacena la clave
+                                        self.alertMessage = L10n.format(
+                                            "settings.master_password_value",
+                                            fallback: "La clave es: {0}",
+                                            clave
+                                        ) //Almacena la clave
                                         UtilFuncs.autent(HabilitarContenido: self.$showAlert)
                                     }
                                 }
@@ -1652,7 +1703,7 @@ struct Ajustes: View {
                         NavigationLink{
                             Features()
                         }label:{
-                            Label("Caraterísticas de la App", systemImage: "info.circle.text.page.fill")
+                            Label("Características de la App", systemImage: "info.circle.text.page.fill")
                                 .foregroundStyle(settingsPrimaryTextColor)
                                 .bold()
                                 .font(.headline)
@@ -1773,13 +1824,13 @@ struct Ajustes: View {
             case 1:
                 FrasesListView()
             case 2:
-                TxtListView( typeOfContent: .conf, title: "Lecturas")
+                TxtListView( typeOfContent: .conf, title: L10n.exact("Lecturas"))
             case 3:
-                TxtListView( typeOfContent: .citas, title: "Citas")
+                TxtListView( typeOfContent: .citas, title: L10n.exact("Citas"))
             case 4:
-                TxtListView( typeOfContent: .preg, title: "Preguntas")
+                TxtListView( typeOfContent: .preg, title: L10n.exact("Preguntas"))
             case 5:
-                TxtListView( typeOfContent: .ayud, title: "Ayudas")
+                TxtListView( typeOfContent: .ayud, title: L10n.exact("Ayudas"))
             case 6:
                 ReflexListView()
             case 7:
@@ -1821,10 +1872,10 @@ struct Ajustes: View {
                     try CardioCoherenceCustomMusicStore.replaceMusic(with: sourceURL)
                     useCustomCoherenceMusicInSession = true
                 } catch {
-                    cardioMusicImportErrorMessage = "No se pudo importar el archivo de música."
+                    cardioMusicImportErrorMessage = L10n.exact("No se pudo importar el archivo de música.")
                 }
             case .failure:
-                cardioMusicImportErrorMessage = "No se pudo abrir el selector de archivos."
+                cardioMusicImportErrorMessage = L10n.exact("No se pudo abrir el selector de archivos.")
             }
         }
         .alert("Coherencia Cardio-Cerebral", isPresented: Binding(
@@ -1849,7 +1900,7 @@ struct Ajustes: View {
             }
             Button("Cancelar", role: .cancel) {}
         } message: {
-            Text("Se conservarán las últimas \(weeklyReviewRecordsToKeep) revisiones. Las anteriores se eliminarán también de CloudKit al sincronizar.")
+            Text(weeklyReviewConfirmationDescription)
         }
     }
     
@@ -1889,14 +1940,75 @@ struct Ajustes: View {
         NSUbiquitousKeyValueStore.default.synchronize()
     }
 
+    private var weeklyReviewDayName: String {
+        WeeklyReviewSchedule.selectedDay(from: weeklyReviewWeekday).title.lowercased()
+    }
+
+    private var weeklyReviewShortAvailabilityDescription: String {
+        L10n.format(
+            "settings.weekly_review_short_availability",
+            fallback: "Disponible cada {0} a partir de las 6:00.",
+            weeklyReviewDayName
+        )
+    }
+
+    private var weeklyReviewAvailabilityDescription: String {
+        L10n.format(
+            "settings.weekly_review_availability",
+            fallback: "La revisión estará disponible cada {0} a partir de las 6:00. Al activar el recordatorio, la app solicitará permiso de notificaciones si hace falta.",
+            weeklyReviewDayName
+        )
+    }
+
+    private var weeklyReviewRetentionLabel: String {
+        L10n.format(
+            "settings.weekly_review_retention_label",
+            fallback: "Conservar {0} registros",
+            String(weeklyReviewRecordsToKeep)
+        )
+    }
+
+    private var weeklyReviewCleanupDescription: String {
+        L10n.format(
+            "settings.weekly_review_cleanup_description",
+            fallback: "Al limpiar, se conservarán las últimas {0} revisiones semanales y se eliminarán los registros anteriores.",
+            String(weeklyReviewRecordsToKeep)
+        )
+    }
+
+    private var weeklyReviewConfirmationDescription: String {
+        L10n.format(
+            "settings.weekly_review_confirmation_description",
+            fallback: "Se conservarán las últimas {0} revisiones. Las anteriores se eliminarán también de CloudKit al sincronizar.",
+            String(weeklyReviewRecordsToKeep)
+        )
+    }
+
     private func pruneWeeklyReviewRecords() {
         do {
             let recordsToKeep = WeeklyReviewRetentionPolicy.normalizedRecordsToKeep(weeklyReviewRecordsToKeep)
             weeklyReviewRecordsToKeep = recordsToKeep
             let deletedCount = try WeeklyReviewRetentionPolicy.deleteOldRecords(context: context, keeping: recordsToKeep)
-            alertMessage = deletedCount == 0
-                ? "No había revisiones antiguas que eliminar. Se conservan las últimas \(recordsToKeep)."
-                : "Se eliminaron \(deletedCount) revisión\(deletedCount == 1 ? "" : "es") semanal\(deletedCount == 1 ? "" : "es") antigua\(deletedCount == 1 ? "" : "s"). Se conservan las últimas \(recordsToKeep)."
+            if deletedCount == 0 {
+                alertMessage = L10n.format(
+                    "settings.weekly_review_prune_none",
+                    fallback: "No había revisiones antiguas que eliminar. Se conservan las últimas {0}.",
+                    String(recordsToKeep)
+                )
+            } else if deletedCount == 1 {
+                alertMessage = L10n.format(
+                    "settings.weekly_review_prune_one",
+                    fallback: "Se eliminó una revisión semanal antigua. Se conservan las últimas {0}.",
+                    String(recordsToKeep)
+                )
+            } else {
+                alertMessage = L10n.format(
+                    "settings.weekly_review_prune_other",
+                    fallback: "Se eliminaron {0} revisiones semanales antiguas. Se conservan las últimas {1}.",
+                    String(deletedCount),
+                    String(recordsToKeep)
+                )
+            }
         } catch {
             alertMessage = error.localizedDescription
         }
@@ -1952,7 +2064,7 @@ private struct CardioCoherencePhraseSettingsView: View {
     }
 
     private func phraseField(index: Int, label: String) -> some View {
-        TextField(label, text: binding(for: index), axis: .vertical)
+        TextField(L10n.exact(label), text: binding(for: index), axis: .vertical)
             .lineLimit(2...3)
     }
 
@@ -1995,28 +2107,28 @@ final class LocationPermissionManager: NSObject, ObservableObject, CLLocationMan
     var buttonTitle: String {
         switch authorizationStatus {
         case .notDetermined:
-            return "Solicitar permiso de ubicación"
+            return L10n.exact("Solicitar permiso de ubicación")
         case .authorizedWhenInUse, .authorizedAlways:
-            return "Permiso de ubicación concedido"
+            return L10n.exact("Permiso de ubicación concedido")
         case .denied, .restricted:
-            return "Permiso de ubicación no disponible"
+            return L10n.exact("Permiso de ubicación no disponible")
         @unknown default:
-            return "Estado de ubicación no reconocido"
+            return L10n.exact("Estado de ubicación no reconocido")
         }
     }
 
     var statusDescription: String {
         switch authorizationStatus {
         case .notDetermined:
-            return "Permite guardar la dirección actual en Notas, Agenda y Diario cuando uses esta opción."
+            return L10n.exact("Permite guardar la dirección actual en Notas, Agenda y Diario cuando uses esta opción.")
         case .authorizedWhenInUse, .authorizedAlways:
-            return "Notas, Agenda y Diario pueden guardar la ubicación actual cuando uses esta opción."
+            return L10n.exact("Notas, Agenda y Diario pueden guardar la ubicación actual cuando uses esta opción.")
         case .denied:
-            return "El permiso fue denegado. Puedes activarlo desde Ajustes del sistema."
+            return L10n.exact("El permiso fue denegado. Puedes activarlo desde Ajustes del sistema.")
         case .restricted:
-            return "El acceso a la ubicación está restringido en este dispositivo."
+            return L10n.exact("El acceso a la ubicación está restringido en este dispositivo.")
         @unknown default:
-            return "No se pudo determinar el estado del permiso de ubicación."
+            return L10n.exact("No se pudo determinar el estado del permiso de ubicación.")
         }
     }
 

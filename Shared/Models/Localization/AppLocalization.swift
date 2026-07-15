@@ -90,6 +90,31 @@ nonisolated enum AppLanguage: String, CaseIterable, Codable, Sendable {
 }
 
 nonisolated enum L10n {
+    /// Lee un recurso editorial localizado y conserva el fichero español original
+    /// como último recurso. Solo debe usarse con contenidos cuya traducción esté
+    /// expresamente autorizada.
+    static func textResource(
+        named resourceName: String,
+        language: AppLanguage = .current,
+        bundle: Bundle = .main
+    ) -> String {
+        for candidate in language.fallbackChain {
+            if let value = candidate.exactLocalizedTextResource(
+                named: resourceName,
+                bundle: bundle
+            ) {
+                return value
+            }
+        }
+        guard let url = bundle.url(forResource: resourceName.lowercased(), withExtension: "txt"),
+              let value = try? String(contentsOf: url, encoding: .utf8) else {
+            return ""
+        }
+        return value
+            .replacingOccurrences(of: "\r\n", with: "\n")
+            .replacingOccurrences(of: "\r", with: "\n")
+    }
+
     static func string(
         _ key: String,
         fallback: String,
@@ -144,4 +169,41 @@ nonisolated enum StableLocalizationID {
         let encoded = canonical.addingPercentEncoding(withAllowedCharacters: allowed) ?? canonical
         return "context:\(encoded)"
     }
+}
+
+nonisolated func authorBiographyTitle(_ author: String) -> String {
+    L10n.format("author.biography_title", fallback: "Biografía de {0}", author)
+}
+
+nonisolated func authorTeachingSummaryTitle(_ author: String) -> String {
+    L10n.format(
+        "author.teaching_summary_title",
+        fallback: "Resumen de la enseñanza: {0}",
+        author
+    )
+}
+
+nonisolated func authorBookSummaryTitle(_ book: String) -> String {
+    L10n.format("author.book_summary_title", fallback: "Resumen del libro: {0}", book)
+}
+
+nonisolated func authorBookPlanTitle(_ book: String) -> String {
+    L10n.format("author.book_plan_title", fallback: "Plan del libro: {0}", book)
+}
+
+nonisolated func authorChapterTitle(_ number: Int) -> String {
+    L10n.format("author.chapter_title", fallback: "Capítulo {0}", String(number))
+}
+
+nonisolated func authorSeriesChapterTitle(_ series: String, number: Int) -> String {
+    L10n.format(
+        "author.series_chapter_title",
+        fallback: "{0}: Capítulo {1}",
+        series,
+        String(number)
+    )
+}
+
+nonisolated func authorSeriesTitle(_ series: String) -> String {
+    L10n.format("author.series_title", fallback: "Serie {0}", series)
 }

@@ -35,8 +35,8 @@ struct PurchaseView: View {
         ),
         PremiumFeature(
             iconName: "cross.case.fill",
-            title: "Centro Sanador",
-            description: "Guías rápidas para momentos difíciles: ansiedad, miedo, estrés, bloqueo, conflicto o impulso. Comprende qué ocurre en tu cuerpo y aplica técnicas prácticas paso a paso cuando más lo necesitas."
+            title: String(localized: "Centro Sanador"),
+            description: String(localized: "Guías rápidas para momentos difíciles: ansiedad, miedo, estrés, bloqueo, conflicto o impulso. Comprende qué ocurre en tu cuerpo y aplica técnicas prácticas paso a paso cuando más lo necesitas.")
         ),
         PremiumFeature(
             iconName: "target",
@@ -65,8 +65,8 @@ struct PurchaseView: View {
         ),
         PremiumFeature(
             iconName: "heart.circle",
-            title: "Coherencia cardio - Cerebral",
-            description: "Entra en estado de coherencia con la ayuda de este asistente personal. El estado de coherencia es creativo por naturaleza."
+            title: String(localized: "Coherencia cardio - Cerebral"),
+            description: String(localized: "Entra en estado de coherencia con la ayuda de este asistente personal. El estado de coherencia es creativo por naturaleza.")
         ),
         PremiumFeature(
             iconName: "doc.text",
@@ -95,8 +95,8 @@ struct PurchaseView: View {
         ),
         PremiumFeature(
             iconName: "barcode.viewfinder",
-            title: "Lector de Etiquetas",
-            description: "Analiza cualquier alimento y obtiene información nutricional detallada: consumo saludable, impacto en el metabolismo y posibles efectos negativos."
+            title: String(localized: "Lector de Etiquetas"),
+            description: String(localized: "Analiza cualquier alimento y obtiene información nutricional detallada: consumo saludable, impacto en el metabolismo y posibles efectos negativos.")
         ),
         PremiumFeature(
             iconName: "checkmark.seal",

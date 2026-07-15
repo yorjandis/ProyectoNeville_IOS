@@ -18,7 +18,7 @@ enum LectorEtiquetasDataSource: String, Codable, CaseIterable, Identifiable {
         case .openFoodFacts:
             return "OpenFoodFacts"
         case .offlineSQLite:
-            return "Offline"
+            return L10n.exact("Offline")
         }
     }
 }
@@ -53,6 +53,14 @@ enum BaseMedicionEtiqueta: String, Codable {
     case por100g
     case porPorcion
     case desconocida
+
+    var displayTitle: String {
+        switch self {
+        case .por100g: return L10n.exact("por 100 g")
+        case .porPorcion: return L10n.exact("por porción")
+        case .desconocida: return L10n.exact("base desconocida")
+        }
+    }
 }
 
 struct NutrienteEtiqueta: Codable, Hashable {
@@ -249,9 +257,9 @@ enum EstadoEcologicoEtiqueta: String, Codable, Hashable {
 
     var titulo: String {
         switch self {
-        case .confirmado: return "Confirmado"
-        case .probable: return "Probable"
-        case .noConfirmado: return "No confirmado"
+        case .confirmado: return L10n.exact("Confirmado")
+        case .probable: return L10n.exact("Probable")
+        case .noConfirmado: return L10n.exact("No confirmado")
         }
     }
 }
@@ -285,7 +293,7 @@ extension ResultadoAnalisisEtiqueta {
         guard let metadata else { return nil }
 
         let nombre = metadata.productName.trimmingCharacters(in: .whitespacesAndNewlines)
-        let nombreProducto = nombre.isEmpty ? "Producto sin nombre" : nombre
+        let nombreProducto = nombre.isEmpty ? L10n.exact("Producto sin nombre") : nombre
 
         return EtiquetaResumenProducto(
             nombreProducto: nombreProducto,
@@ -452,34 +460,34 @@ extension ResultadoAnalisisEtiqueta {
         if region == .europa {
             if hasAny(in: tags + normalizedSources, markers: OrganicMarkers.euStrong) || containsRegex(pattern: "\\b[a-z]{2}-bio-\\d{2,3}\\b", in: normalizedSources) {
                 score += 4
-                evidencias.append("Certificación ecológica UE detectada")
+                evidencias.append(L10n.exact("Certificación ecológica UE detectada"))
             }
 
             if hasAny(in: normalizedSources, markers: OrganicMarkers.euSupportive) {
                 score += 1
-                evidencias.append("Leyenda compatible con norma ecológica UE")
+                evidencias.append(L10n.exact("Leyenda compatible con norma ecológica UE"))
             }
         } else {
             if hasAny(in: tags + normalizedSources, markers: OrganicMarkers.nonEuStrong) {
                 score += 4
-                evidencias.append("Certificación orgánica regional detectada")
+                evidencias.append(L10n.exact("Certificación orgánica regional detectada"))
             }
         }
 
         if hasAny(in: tags + normalizedSources, markers: OrganicMarkers.globalCertifiers) {
             score += 3
-            evidencias.append("Entidad certificadora orgánica reconocida")
+            evidencias.append(L10n.exact("Entidad certificadora orgánica reconocida"))
         }
 
         if hasAny(in: normalizedSources, markers: OrganicMarkers.genericClaims) {
             score += 1
-            evidencias.append("Declaración de tipo orgánico/ecológico en la etiqueta")
+            evidencias.append(L10n.exact("Declaración de tipo orgánico/ecológico en la etiqueta"))
         }
 
         let ecoscore = normalizeText(data.ecoscoreGrade)
         if ecoscore == "a" || ecoscore == "b" {
             score += 1
-            evidencias.append("Eco-score alto (apoya perfil ambiental, no certifica orgánico)")
+            evidencias.append(L10n.exact("Eco-score alto (apoya perfil ambiental, no certifica orgánico)"))
         }
 
         let estado: EstadoEcologicoEtiqueta
@@ -494,11 +502,11 @@ extension ResultadoAnalisisEtiqueta {
         let resumen: String
         switch estado {
         case .confirmado:
-            resumen = "Hay evidencia suficiente para clasificarlo como ecológico según señales de certificación regional."
+            resumen = L10n.exact("Hay evidencia suficiente para clasificarlo como ecológico según señales de certificación regional.")
         case .probable:
-            resumen = "Hay señales parciales de producto ecológico, pero falta evidencia robusta de certificación oficial."
+            resumen = L10n.exact("Hay señales parciales de producto ecológico, pero falta evidencia robusta de certificación oficial.")
         case .noConfirmado:
-            resumen = "No se encontraron señales suficientes para clasificarlo como ecológico con confianza."
+            resumen = L10n.exact("No se encontraron señales suficientes para clasificarlo como ecológico con confianza.")
         }
 
         return EtiquetaEvaluacionEcologica(
@@ -573,12 +581,12 @@ private enum NutrienteClaveDescriptor: CaseIterable {
 
     var titulo: String {
         switch self {
-        case .proteinas: return "Proteínas:"
-        case .fibra: return "Fibra:"
-        case .valorEnergetico: return "Kilocalorias:"
-        case .grasasSaturadas: return "Grasas saturadas:"
-        case .azucar: return "Azúcar:"
-        case .sal: return "Sal:"
+        case .proteinas: return L10n.exact("Proteínas:")
+        case .fibra: return L10n.exact("Fibra:")
+        case .valorEnergetico: return L10n.exact("Kilocalorías:")
+        case .grasasSaturadas: return L10n.exact("Grasas saturadas:")
+        case .azucar: return L10n.exact("Azúcar:")
+        case .sal: return L10n.exact("Sal:")
         }
     }
 
@@ -608,10 +616,10 @@ private enum RegionEcologica {
 
     var displayName: String {
         switch self {
-        case .europa: return "Europa"
-        case .norteamerica: return "Norteamérica"
-        case .asiaPacifico: return "Asia-Pacífico"
-        case .global: return "Global"
+        case .europa: return L10n.exact("Europa")
+        case .norteamerica: return L10n.exact("Norteamérica")
+        case .asiaPacifico: return L10n.exact("Asia-Pacífico")
+        case .global: return L10n.exact("Global")
         }
     }
 }

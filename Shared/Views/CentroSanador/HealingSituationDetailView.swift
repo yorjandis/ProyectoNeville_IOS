@@ -48,7 +48,7 @@ struct HealingSituationDetailView: View {
                 Button(action: toggleFavorite) {
                     Image(systemName: isFavorite ? "star.fill" : "star")
                 }
-                .accessibilityLabel(isFavorite ? "Quitar de favoritos" : "Añadir a favoritos")
+                .accessibilityLabel(L10n.exact(isFavorite ? "Quitar de favoritos" : "Añadir a favoritos"))
             }
         }
         .sheet(isPresented: $showEmergencyResources) {
@@ -219,13 +219,13 @@ struct HealingSituationDetailView: View {
                         .font(.body)
                         .foregroundStyle(.yellow)
 
-                    Text(isPracticalTipsSectionExpanded ? "Ocultar consejos" : "Toca para ver ideas sencillas y complementarias")
+                    Text(L10n.exact(isPracticalTipsSectionExpanded ? "Ocultar consejos" : "Toca para ver ideas sencillas y complementarias"))
                         .font(.caption)
                         .foregroundStyle(.white.opacity(0.58))
                 }
             }
             .tint(.yellow)
-            .accessibilityHint(isPracticalTipsSectionExpanded ? "Contrae los consejos prácticos" : "Despliega los consejos prácticos")
+            .accessibilityHint(L10n.exact(isPracticalTipsSectionExpanded ? "Contrae los consejos prácticos" : "Despliega los consejos prácticos"))
         }
     }
 
@@ -259,13 +259,13 @@ struct HealingSituationDetailView: View {
                         .font(.body)
                         .foregroundStyle(.mint)
 
-                    Text(isBiologicalSectionExpanded ? "Ocultar explicación" : "Toca para entender qué sucede en tu cuerpo y tu mente")
+                    Text(L10n.exact(isBiologicalSectionExpanded ? "Ocultar explicación" : "Toca para entender qué sucede en tu cuerpo y tu mente"))
                         .font(.caption)
                         .foregroundStyle(.white.opacity(0.58))
                 }
             }
             .tint(.mint)
-            .accessibilityHint(isBiologicalSectionExpanded ? "Contrae la explicación" : "Despliega una explicación biológica más detallada")
+            .accessibilityHint(L10n.exact(isBiologicalSectionExpanded ? "Contrae la explicación" : "Despliega una explicación biológica más detallada"))
         }
     }
 
@@ -297,13 +297,13 @@ struct HealingSituationDetailView: View {
                         .font(.body)
                         .foregroundStyle(.orange)
 
-                    Text(isSeekHelpSectionExpanded ? "Ocultar señales de alerta" : "Toca para ver señales de alerta y recursos urgentes")
+                    Text(L10n.exact(isSeekHelpSectionExpanded ? "Ocultar señales de alerta" : "Toca para ver señales de alerta y recursos urgentes"))
                         .font(.caption)
                         .foregroundStyle(.white.opacity(0.58))
                 }
             }
             .tint(.orange)
-            .accessibilityHint(isSeekHelpSectionExpanded ? "Contrae las señales de alerta" : "Despliega señales de alerta y recursos de emergencia")
+            .accessibilityHint(L10n.exact(isSeekHelpSectionExpanded ? "Contrae las señales de alerta" : "Despliega señales de alerta y recursos de emergencia"))
         }
     }
 
@@ -337,7 +337,12 @@ struct HealingSituationDetailView: View {
     private var disclaimer: some View {
         VStack(alignment: .leading, spacing: 5) {
             Text(HealingSafetyCopy.informationalDisclaimer)
-            Text("Contenido \(catalogVersion) · revisado \(reviewedAt)")
+            Text(L10n.format(
+                "healing.content.reviewed",
+                fallback: "Contenido {0} · revisado {1}",
+                catalogVersion,
+                reviewedAt
+            ))
         }
         .font(.caption2)
         .foregroundStyle(.white.opacity(0.55))

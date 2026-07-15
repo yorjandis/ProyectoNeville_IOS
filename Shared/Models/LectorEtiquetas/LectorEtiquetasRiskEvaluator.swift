@@ -35,10 +35,14 @@ struct DefaultEtiquetaRiskEvaluator: EtiquetaRiskEvaluating {
                 HallazgoRiesgoEtiqueta(
                     categoria: .ultraprocesado,
                     nivel: .medio,
-                    titulo: "Lista extensa de ingredientes",
-                    detalle: "Se detectaron \(parseResult.ingredientes.count) ingredientes, posible perfil ultraprocesado.",
+                    titulo: L10n.exact("Lista extensa de ingredientes"),
+                    detalle: L10n.format(
+                        "label_reader.finding.ingredient_count",
+                        fallback: "Se detectaron {0} ingredientes, posible perfil ultraprocesado.",
+                        "\(parseResult.ingredientes.count)"
+                    ),
                     textoDetectado: "\(parseResult.ingredientes.count) ingredientes",
-                    recomendacion: "Compara con opciones de lista corta de ingredientes y menor procesamiento."
+                    recomendacion: L10n.exact("Compara con opciones de lista corta de ingredientes y menor procesamiento.")
                 )
             )
         }
@@ -192,10 +196,10 @@ struct DefaultEtiquetaRiskEvaluator: EtiquetaRiskEvaluating {
             HallazgoRiesgoEtiqueta(
                 categoria: .indicioGluten,
                 nivel: nivel,
-                titulo: "Posibles indicios de gluten",
-                detalle: "Se detectaron referencias a posible presencia de gluten en la etiqueta.",
+                titulo: L10n.exact("Posibles indicios de gluten"),
+                detalle: L10n.exact("Se detectaron referencias a posible presencia de gluten en la etiqueta."),
                 textoDetectado: evidenciasUnicas.joined(separator: ", "),
-                recomendacion: "Si necesitas evitar gluten, verifica certificación \"sin gluten\" y la sección de alérgenos."
+                recomendacion: L10n.exact("Si necesitas evitar gluten, verifica la certificación sin gluten y la sección de alérgenos.")
             )
         ]
     }
@@ -227,10 +231,15 @@ struct DefaultEtiquetaRiskEvaluator: EtiquetaRiskEvaluating {
                     HallazgoRiesgoEtiqueta(
                         categoria: .sodioElevado,
                         nivel: nivel,
-                        titulo: "Sodio elevado",
-                        detalle: "El sodio equivale aproximadamente a \(String(format: "%.2f", sodioEnSal)) g de sal (\(sodio.base.rawValue)).",
+                        titulo: L10n.exact("Sodio elevado"),
+                        detalle: L10n.format(
+                            "label_reader.finding.sodium_equivalent",
+                            fallback: "El sodio equivale aproximadamente a {0} g de sal ({1}).",
+                            String(format: "%.2f", sodioEnSal),
+                            sodio.base.displayTitle
+                        ),
                         textoDetectado: "\(sodio.valor) \(sodio.unidad.rawValue) (\(sodio.base.rawValue))",
-                        recomendacion: "Busca opciones con menor sodio para reducir el riesgo cardiovascular."
+                        recomendacion: L10n.exact("Busca opciones con menor sodio para reducir el riesgo cardiovascular.")
                     )
                 )
             }
@@ -335,10 +344,14 @@ struct DefaultEtiquetaRiskEvaluator: EtiquetaRiskEvaluating {
         HallazgoRiesgoEtiqueta(
             categoria: .excesoAzucar,
             nivel: nivel,
-            titulo: "Azúcar elevada",
-            detalle: "La concentración de azúcar detectada es alta para \(nutrient.base.rawValue).",
+            titulo: L10n.exact("Azúcar elevada"),
+            detalle: L10n.format(
+                "label_reader.finding.high_sugar",
+                fallback: "La concentración de azúcar detectada es alta {0}.",
+                nutrient.base.displayTitle
+            ),
             textoDetectado: "\(nutrient.valor) \(nutrient.unidad.rawValue) (\(nutrient.base.rawValue))",
-            recomendacion: "Prioriza opciones con menor azúcar, especialmente para consumo frecuente."
+            recomendacion: L10n.exact("Prioriza opciones con menor azúcar, especialmente para consumo frecuente.")
         )
     }
 
@@ -346,10 +359,14 @@ struct DefaultEtiquetaRiskEvaluator: EtiquetaRiskEvaluating {
         HallazgoRiesgoEtiqueta(
             categoria: .excesoSal,
             nivel: nivel,
-            titulo: "Sal elevada",
-            detalle: "La concentración de sal supera niveles recomendados para \(nutrient.base.rawValue).",
+            titulo: L10n.exact("Sal elevada"),
+            detalle: L10n.format(
+                "label_reader.finding.high_salt",
+                fallback: "La concentración de sal supera los niveles recomendados {0}.",
+                nutrient.base.displayTitle
+            ),
             textoDetectado: "\(nutrient.valor) \(nutrient.unidad.rawValue) (\(nutrient.base.rawValue))",
-            recomendacion: "Alterna con productos de menor sal y controla la ingesta total diaria."
+            recomendacion: L10n.exact("Alterna con productos de menor sal y controla la ingesta total diaria.")
         )
     }
 
@@ -357,10 +374,14 @@ struct DefaultEtiquetaRiskEvaluator: EtiquetaRiskEvaluating {
         HallazgoRiesgoEtiqueta(
             categoria: .excesoGrasaSaturada,
             nivel: nivel,
-            titulo: "Grasa saturada elevada",
-            detalle: "La concentración de grasa saturada es alta para \(nutrient.base.rawValue).",
+            titulo: L10n.exact("Grasa saturada elevada"),
+            detalle: L10n.format(
+                "label_reader.finding.high_saturated_fat",
+                fallback: "La concentración de grasa saturada es alta {0}.",
+                nutrient.base.displayTitle
+            ),
             textoDetectado: "\(nutrient.valor) \(nutrient.unidad.rawValue) (\(nutrient.base.rawValue))",
-            recomendacion: "Reduce frecuencia de consumo y compensa con grasas no saturadas."
+            recomendacion: L10n.exact("Reduce la frecuencia de consumo y compensa con grasas no saturadas.")
         )
     }
 
@@ -414,4 +435,3 @@ private extension Array where Element: Hashable {
         return filter { seen.insert($0).inserted }
     }
 }
-

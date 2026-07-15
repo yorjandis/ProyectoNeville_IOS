@@ -52,7 +52,7 @@ struct GreggBradenAuthorView: View {
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .foregroundStyle(.black)
 
-                            Button("Bibliografía") {
+                            Button("Biografía") {
                                 route = .biografia
                             }
                             .buttonStyle(.bordered)
@@ -130,36 +130,36 @@ struct GreggBradenAuthorView: View {
             VStack {
                 switch item {
                 case .biografia:
-                    ContentTxtShowView(title: "Biografía Gregg Braden", nombreTxt: AppCons.FileBiografiaGregg, type: .NA, blocks: [
+                    ContentTxtShowView(title: authorBiographyTitle("Gregg Braden"), nombreTxt: AppCons.FileBiografiaGregg, type: .NA, blocks: [
                         ContentBlock(content: .imageLocal(name: "gregg", size: 100)),
-                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileBiografiaGregg)))
+                        ContentBlock(content: .text(L10n.textResource(named: AppCons.FileBiografiaGregg)))
                     ])
                 case .resumenEnsenanza:
-                    ContentTxtShowView(title: "Resumen de la enseñanza: Gregg Braden", nombreTxt: AppCons.FileResumenEnseñanzaGregg, type: .NA, blocks: [
-                        ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenEnseñanzaGregg)))
+                    ContentTxtShowView(title: authorTeachingSummaryTitle("Gregg Braden"), nombreTxt: AppCons.FileResumenEnseñanzaGregg, type: .NA, blocks: [
+                        ContentBlock(content: .text(L10n.textResource(named: AppCons.FileResumenEnseñanzaGregg)))
                     ], checkPremium: true)
                 case .resumenLaMatrizDivina:
-                    ContentTxtShowView(title: "Resumen del Libro: La Matriz Divina", nombreTxt: AppCons.FileResumenLaMatrizDivinaGregg, type: .NA, blocks: [
+                    ContentTxtShowView(title: authorBookSummaryTitle("La Matriz Divina"), nombreTxt: AppCons.FileResumenLaMatrizDivinaGregg, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenLaMatrizDivinaGregg)))
                     ], checkPremium: true)
                 case .planLaMatrizDivina:
-                    ContentTxtShowView(title: "Plan del Libro: La Matriz Divina", nombreTxt: AppCons.FilePlanLaMatrizDivinaGregg, type: .NA, blocks: [
+                    ContentTxtShowView(title: authorBookPlanTitle("La Matriz Divina"), nombreTxt: AppCons.FilePlanLaMatrizDivinaGregg, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FilePlanLaMatrizDivinaGregg)))
                     ], checkPremium: true)
                 case .resumenResilienciaDesdeCorazon:
-                    ContentTxtShowView(title: "Resumen del Libro: Resilencia desde el Corazón", nombreTxt: AppCons.FileResumenResilenciaCorazonGregg, type: .NA, blocks: [
+                    ContentTxtShowView(title: authorBookSummaryTitle("Resiliencia Desde El Corazón"), nombreTxt: AppCons.FileResumenResilenciaCorazonGregg, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenResilenciaCorazonGregg)))
                     ], checkPremium: true)
                 case .planResilienciaDesdeCorazon:
-                    ContentTxtShowView(title: "Plan del Libro: Resilencia desde el Corazón", nombreTxt: AppCons.FilePlanResilenciaCorazonGregg, type: .NA, blocks: [
+                    ContentTxtShowView(title: authorBookPlanTitle("Resiliencia Desde El Corazón"), nombreTxt: AppCons.FilePlanResilenciaCorazonGregg, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FilePlanResilenciaCorazonGregg)))
                     ], checkPremium: true)
                 case .resumenPuramenteHumanos:
-                    ContentTxtShowView(title: "Resumen del Libro: Puramente Humanos", nombreTxt: AppCons.FileResumenPuramenteHumanosGregg, type: .NA, blocks: [
+                    ContentTxtShowView(title: authorBookSummaryTitle("Puramente Humanos"), nombreTxt: AppCons.FileResumenPuramenteHumanosGregg, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenPuramenteHumanosGregg)))
                     ], checkPremium: true)
                 case .planPuramenteHumanos:
-                    ContentTxtShowView(title: "Plan del Libro: Puramente Humanos", nombreTxt: AppCons.FilePlanPuramenteHumanosGregg, type: .NA, blocks: [
+                    ContentTxtShowView(title: authorBookPlanTitle("Puramente Humanos"), nombreTxt: AppCons.FilePlanPuramenteHumanosGregg, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FilePlanPuramenteHumanosGregg)))
                     ], checkPremium: true)
                 }
@@ -189,7 +189,7 @@ struct GreggBradenAuthorView: View {
                 .foregroundStyle(.black)
 
             HStack(spacing: 10) {
-                Button(buttonTitle1) {
+                Button(L10n.exact(buttonTitle1)) {
                     buttonAction1()
                 }
                 .buttonStyle(.bordered)
@@ -197,7 +197,7 @@ struct GreggBradenAuthorView: View {
                 .foregroundStyle(.white)
 
                 if !buttonTitle2.isEmpty {
-                    Button(buttonTitle2) {
+                    Button(L10n.exact(buttonTitle2)) {
                         buttonAction2?()
                     }
                     .buttonStyle(.bordered)

@@ -106,7 +106,7 @@ struct LectorEtiquetasView: View {
 
                         ToolbarItem(placement: .topBarTrailing) {
                             Menu {
-                                Button("Chequear BD offline", systemImage: "shippingbox") {
+                                Button("Comprobar BD offline", systemImage: "shippingbox") {
                                     Task { await viewModel.buscar(query: barcodeInput) }
                                 }
                                 .disabled(barcodeInput.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || viewModel.isAnalizando)
@@ -117,7 +117,7 @@ struct LectorEtiquetasView: View {
                                         if hasUpdate {
                                             showOfflineUpdatePrompt = true
                                         } else {
-                                            viewModel.offlineInfoMessage = "No hay una nueva versión disponible."
+                                            viewModel.offlineInfoMessage = L10n.exact("No hay una nueva versión disponible.")
                                         }
                                     }
                                 }
@@ -170,8 +170,12 @@ struct LectorEtiquetasView: View {
                         Task { await viewModel.prepararBaseOffline(forceRefresh: true) }
                     }
                 } message: {
-                    let versionText = viewModel.pendingOfflineVersion.map(String.init) ?? "más reciente"
-                    Text("Se detectó una nueva versión (\(versionText)). ¿Quieres descargarla y verificarla ahora?")
+                    let versionText = viewModel.pendingOfflineVersion.map(String.init) ?? L10n.exact("más reciente")
+                    Text(L10n.format(
+                        "label_reader.offline.update_prompt",
+                        fallback: "Se detectó una nueva versión ({0}). ¿Quieres descargarla y verificarla ahora?",
+                        versionText
+                    ))
                 }
                 .onChange(of: viewModel.selectedSource) { _, _ in
                     clearSearchStateForModeChange()
@@ -261,7 +265,7 @@ struct LectorEtiquetasView: View {
                                 .padding(.top, 1)
                         }
                         .buttonStyle(.plain)
-                        .accessibilityLabel(isBarcodeCardExpanded ? "Colapsar tarjeta" : "Expandir tarjeta")
+                        .accessibilityLabel(L10n.exact(isBarcodeCardExpanded ? "Colapsar tarjeta" : "Expandir tarjeta"))
                     }
                 }
 
@@ -281,9 +285,9 @@ struct LectorEtiquetasView: View {
                     }
 
                     TextField(
-                        viewModel.selectedSource == .offlineSQLite
+                        L10n.exact(viewModel.selectedSource == .offlineSQLite
                             ? "Código de barras o nombre de producto"
-                            : "Ejemplo: 8410076475898",
+                            : "Ejemplo: 8410076475898"),
                         text: $barcodeInput
                     )
                         .keyboardType(viewModel.selectedSource == .offlineSQLite ? .default : .numberPad)
@@ -401,7 +405,7 @@ struct LectorEtiquetasView: View {
                     }
                 } else {
                     HStack{
-                        Text( viewModel.selectedSource == .offlineSQLite ?   "Off-Line" : "Online")
+                        Text(L10n.exact(viewModel.selectedSource == .offlineSQLite ? "Off-Line" : "Online"))
                             .font(.system(.footnote, design: .rounded))
                             .foregroundStyle(.secondary)
                         
@@ -470,7 +474,11 @@ struct LectorEtiquetasView: View {
             card {
                 HStack(spacing: 10) {
                     ProgressView()
-                    Text(viewModel.selectedSource == .offlineSQLite ? "Consultando base SQLite offline..." : "Consultando OpenFoodFacts...")
+                    Text(L10n.exact(
+                        viewModel.selectedSource == .offlineSQLite
+                            ? "Consultando base SQLite offline..."
+                            : "Consultando OpenFoodFacts..."
+                    ))
                         .font(.system(.subheadline, design: .rounded))
                 }
             }
@@ -550,7 +558,11 @@ struct LectorEtiquetasView: View {
         return card {
             VStack(alignment: .leading, spacing: 10) {
                 HStack {
-                    Text("Resultado (\(resultado.metadata?.source.title ?? "N/A"))")
+                    Text(L10n.format(
+                        "label_reader.result.source",
+                        fallback: "Resultado ({0})",
+                        resultado.metadata?.source.title ?? L10n.exact("N/D")
+                    ))
                         .font(.system(.headline, design: .rounded, weight: .semibold))
 
                     Spacer()
@@ -641,7 +653,11 @@ struct LectorEtiquetasView: View {
                                             .multilineTextAlignment(.leading)
 
                                         if let toxicidad {
-                                            Text("Toxicidad: \(toxicidad.capitalized)")
+                                            Text(L10n.format(
+                                                "label_reader.additive.toxicity",
+                                                fallback: "Toxicidad: {0}",
+                                                L10n.exact(toxicidad.capitalized)
+                                            ))
                                                 .font(.system(.caption, design: .rounded, weight: .semibold))
                                                 .foregroundStyle(toxicidadColor(toxicidad))
                                         }
@@ -701,10 +717,12 @@ struct LectorEtiquetasView: View {
 
                 infoRow(title: "Código de barras", value: resumen.codigoBarras)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Alergenos:")
+                    Text("Alérgenos:")
                         .font(.system(.body, design: .rounded, weight: .bold))
                         .foregroundStyle(.secondary)
-                    Text(resumen.alergenos.isEmpty ? "No informados" : resumen.alergenos.joined(separator: ", "))
+                    Text(resumen.alergenos.isEmpty
+                         ? L10n.exact("No informados")
+                         : resumen.alergenos.joined(separator: ", "))
                         .font(.system(.subheadline, design: .rounded))
                         .foregroundStyle(.black)
                 }
@@ -827,7 +845,7 @@ struct LectorEtiquetasView: View {
                 } else {
                     HStack{
                         Spacer()
-                        Text("Por 100g")
+                        Text("Por 100 g")
                             .font(.system(.caption, design: .rounded, weight: .bold))
                             .foregroundStyle(.secondary)
                     }
@@ -874,7 +892,11 @@ struct LectorEtiquetasView: View {
                                             .foregroundStyle(.red)
                                     }
                                     .buttonStyle(.plain)
-                                    .accessibilityLabel("Ver advertencia de consumo para \(insight.title)")
+                                    .accessibilityLabel(L10n.format(
+                                        "label_reader.nutrition.consumption_warning_accessibility",
+                                        fallback: "Ver advertencia de consumo para {0}",
+                                        insight.title
+                                    ))
                                 }
                             }
                         }
@@ -932,14 +954,14 @@ struct LectorEtiquetasView: View {
                 return NutritionConsumptionWarning(
                     nutrientTitle: insight.title,
                     valueText: insight.rawValueText,
-                    warningText: "Azúcar mayor de 15 g por 100 g: se recomienda evitar su consumo por su mayor impacto metabólico."
+                    warningText: L10n.exact("Azúcar mayor de 15 g por 100 g: se recomienda evitar su consumo por su mayor impacto metabólico.")
                 )
             }
             if grams >= 5 {
                 return NutritionConsumptionWarning(
                     nutrientTitle: insight.title,
                     valueText: insight.rawValueText,
-                    warningText: "Azúcar entre 5 g y 15 g por 100 g: se recomienda moderar su consumo en grandes cantidades o con frecuencia."
+                    warningText: L10n.exact("Azúcar entre 5 g y 15 g por 100 g: se recomienda moderar su consumo en grandes cantidades o con frecuencia.")
                 )
             }
             return nil
@@ -948,14 +970,14 @@ struct LectorEtiquetasView: View {
             return NutritionConsumptionWarning(
                 nutrientTitle: insight.title,
                 valueText: insight.rawValueText,
-                warningText: "Grasas saturadas iguales o mayores a 5 g por 100 g: se aconseja regular su consumo habitual por mayor riesgo cardiovascular."
+                warningText: L10n.exact("Grasas saturadas iguales o mayores a 5 g por 100 g: se aconseja regular su consumo habitual por mayor riesgo cardiovascular.")
             )
         case .sal:
             guard let grams, grams > 1.5 else { return nil }
             return NutritionConsumptionWarning(
                 nutrientTitle: insight.title,
                 valueText: insight.rawValueText,
-                warningText: "Sal mayor de 1.5 g por 100 g: se recomienda vigilar su consumo y no exceder 5 g de sal al día, salvo pérdida elevada por sudoración excesiva."
+                warningText: L10n.exact("Sal mayor de 1.5 g por 100 g: se recomienda vigilar su consumo y no exceder 5 g de sal al día, salvo pérdida elevada por sudoración excesiva.")
             )
         default:
             return nil
@@ -964,7 +986,7 @@ struct LectorEtiquetasView: View {
 
     private func infoRow(title: String, value: String) -> some View {
         VStack(alignment: .leading, spacing: 2) {
-            Text(title)
+            Text(L10n.exact(title))
                 .font(.system(.caption, design: .rounded, weight: .bold))
                 .foregroundStyle(.secondary)
             Text(value)
@@ -975,14 +997,14 @@ struct LectorEtiquetasView: View {
 
     private func estadoRow(title: String, value: Bool?, isNegativeWhenTrue: Bool = false) -> some View {
         HStack(spacing: 8) {
-            Text(title)
+            Text(L10n.exact(title))
                 .font(.system(.body, design: .rounded, weight: .bold))
                 .foregroundStyle(.secondary)
             Spacer(minLength: 6)
 
             if let value {
                 let isPositive = isNegativeWhenTrue ? !value : value
-                Text(isPositive ? "Si" : "No")
+                Text(L10n.exact(isPositive ? "Sí" : "No"))
                     .font(.system(.body, design: .rounded, weight: .bold))
                     .foregroundStyle(.black)
                 /*
@@ -992,7 +1014,7 @@ struct LectorEtiquetasView: View {
                  */
                 
             } else {
-                Text("N/D")
+                Text(L10n.exact("N/D"))
                     .font(.system(.body, design: .rounded))
                     .foregroundStyle(.secondary)
             }
@@ -1001,17 +1023,17 @@ struct LectorEtiquetasView: View {
 
     private func siNoRow(title: String, value: Bool?) -> some View {
         HStack(spacing: 8) {
-            Text(title)
+            Text(L10n.exact(title))
                 .font(.system(.body, design: .rounded, weight: .bold))
                 .foregroundStyle(.secondary)
             Spacer(minLength: 6)
 
             if let value {
-                Text(value ? "Si" : "No")
+                Text(L10n.exact(value ? "Sí" : "No"))
                     .font(.system(.body, design: .rounded, weight: .bold))
                     .foregroundStyle(.black)
             } else {
-                Text("N/D")
+                Text(L10n.exact("N/D"))
                     .font(.system(.body, design: .rounded))
                     .foregroundStyle(.secondary)
             }
@@ -1026,7 +1048,7 @@ struct LectorEtiquetasView: View {
         action: (() -> Void)? = nil
     ) -> some View {
         VStack(alignment: .leading, spacing: 2) {
-            Text(title)
+            Text(L10n.exact(title))
                 .font(.system(.caption2, design: .rounded, weight: .bold))
                 .foregroundStyle(.secondary)
             Group {
@@ -1152,7 +1174,7 @@ struct LectorEtiquetasView: View {
                     await viewModel.buscar(query: code)
                 }
             case .failure:
-                viewModel.errorMessage = "No se pudo leer el código de barras."
+                viewModel.errorMessage = L10n.exact("No se pudo leer el código de barras.")
             }
         }
         .ignoresSafeArea()
@@ -1294,7 +1316,12 @@ private struct PrincipalScoreDetailSheetView: View {
                 Text("Score principal")
                     .font(.title3.bold())
 
-                Text("Resultado: \(info.title) (\(info.scoreText))")
+                Text(L10n.format(
+                    "label_reader.score.result",
+                    fallback: "Resultado: {0} ({1})",
+                    info.title,
+                    info.scoreText
+                ))
                     .font(.headline)
 
                 Text("Criterios aplicados")
@@ -1344,7 +1371,11 @@ private struct NutritionConsumptionWarningSheetView: View {
                 Text(warning.nutrientTitle)
                     .font(.system(.headline, design: .rounded, weight: .semibold))
 
-                Text("Valor reportado: \(warning.valueText) por 100 g")
+                Text(L10n.format(
+                    "label_reader.nutrition.reported_value",
+                    fallback: "Valor reportado: {0} por 100 g",
+                    warning.valueText
+                ))
                     .font(.system(.subheadline, design: .rounded))
                     .foregroundStyle(.secondary)
 
@@ -1471,10 +1502,10 @@ enum NutritionScoringTarget: CaseIterable, Identifiable {
 extension NivelRiesgoEtiqueta {
     var badgeText: String {
         switch self {
-        case .bajo: return "Bajo"
-        case .medio: return "Medio"
-        case .alto: return "Alto"
-        case .critico: return "Crítico"
+        case .bajo: return L10n.exact("Bajo")
+        case .medio: return L10n.exact("Medio")
+        case .alto: return L10n.exact("Alto")
+        case .critico: return L10n.exact("Crítico")
         }
     }
 
@@ -1512,63 +1543,63 @@ private extension EstadoEcologicoEtiqueta {
 private extension NutritionScoringTarget {
     var infoTitle: String {
         switch self {
-        case .proteinas: return "Proteínas"
-        case .fibra: return "Fibra"
-        case .grasasSaturadas: return "Grasas saturadas"
-        case .azucar: return "Azúcar"
-        case .sal: return "Sal"
-        case .valorEnergetico: return "Valor calórico"
+        case .proteinas: return L10n.exact("Proteínas")
+        case .fibra: return L10n.exact("Fibra")
+        case .grasasSaturadas: return L10n.exact("Grasas saturadas")
+        case .azucar: return L10n.exact("Azúcar")
+        case .sal: return L10n.exact("Sal")
+        case .valorEnergetico: return L10n.exact("Valor calórico")
         }
     }
 
     var functionSummary: String {
         switch self {
         case .proteinas:
-            return "Ayudan a reparar y mantener músculo, piel, enzimas y hormonas."
+            return L10n.exact("Ayudan a reparar y mantener músculo, piel, enzimas y hormonas.")
         case .fibra:
-            return "Mejora el tránsito intestinal, la saciedad y el control de glucosa."
+            return L10n.exact("Mejora el tránsito intestinal, la saciedad y el control de glucosa.")
         case .grasasSaturadas:
-            return "Aportan energía, pero no son esenciales frente a grasas insaturadas."
+            return L10n.exact("Aportan energía, pero no son esenciales frente a grasas insaturadas.")
         case .azucar:
-            return "Fuente rápida de energía; el exceso desplaza nutrientes de mejor calidad."
+            return L10n.exact("Fuente rápida de energía; el exceso desplaza nutrientes de mejor calidad.")
         case .sal:
-            return "Necesaria en pequeñas cantidades para equilibrio hídrico y función nerviosa."
+            return L10n.exact("Necesaria en pequeñas cantidades para equilibrio hídrico y función nerviosa.")
         case .valorEnergetico:
-            return "Representa la energía total del alimento para cubrir requerimientos diarios."
+            return L10n.exact("Representa la energía total del alimento para cubrir requerimientos diarios.")
         }
     }
 
     var concentrationSummary: String {
         switch self {
         case .proteinas:
-            return "Un aporte adecuado favorece masa muscular y saciedad. Muy bajo puede ser insuficiente según contexto dietético."
+            return L10n.exact("Un aporte adecuado favorece masa muscular y saciedad. Muy bajo puede ser insuficiente según contexto dietético.")
         case .fibra:
-            return "Concentración baja suele asociarse a menor saciedad y peor salud digestiva. Buena o alta favorece salud metabólica e intestinal."
+            return L10n.exact("Concentración baja suele asociarse a menor saciedad y peor salud digestiva. Buena o alta favorece salud metabólica e intestinal.")
         case .grasasSaturadas:
-            return "Concentraciones altas y frecuentes se asocian a mayor riesgo cardiovascular. Conviene priorizar niveles bajos o moderados."
+            return L10n.exact("Concentraciones altas y frecuentes se asocian a mayor riesgo cardiovascular. Conviene priorizar niveles bajos o moderados.")
         case .azucar:
-            return "Concentraciones altas aumentan carga glucémica y exceso calórico. Se recomienda mantenerla baja, especialmente en ultraprocesados."
+            return L10n.exact("Concentraciones altas aumentan carga glucémica y exceso calórico. Se recomienda mantenerla baja, especialmente en ultraprocesados.")
         case .sal:
-            return "Concentraciones altas elevan riesgo de hipertensión en consumo habitual. Es preferible una concentración baja."
+            return L10n.exact("Concentraciones altas elevan riesgo de hipertensión en consumo habitual. Es preferible una concentración baja.")
         case .valorEnergetico:
-            return "Mayor densidad energética facilita exceder calorías si la porción no se controla; depende del patrón global de alimentación."
+            return L10n.exact("Mayor densidad energética facilita exceder calorías si la porción no se controla; depende del patrón global de alimentación.")
         }
     }
 
     var recommendedAmountSummary: String {
         switch self {
         case .proteinas:
-            return "Adultos: ~0.8 g/kg/día como mínimo (aprox. 10-35% de la energía diaria)."
+            return L10n.exact("Adultos: ~0.8 g/kg/día como mínimo (aprox. 10-35% de la energía diaria).")
         case .fibra:
-            return "Objetivo general: 14 g por cada 1000 kcal (aprox. 25-38 g/día en adultos)."
+            return L10n.exact("Objetivo general: 14 g por cada 1000 kcal (aprox. 25-38 g/día en adultos).")
         case .grasasSaturadas:
-            return "Limitar a <10% de las calorías diarias; idealmente sustituir por grasas insaturadas."
+            return L10n.exact("Limitar a <10% de las calorías diarias; idealmente sustituir por grasas insaturadas.")
         case .azucar:
-            return "Azúcares libres/añadidos: <10% de las calorías; idealmente <5% si es posible."
+            return L10n.exact("Azúcares libres/añadidos: <10% de las calorías; idealmente <5% si es posible.")
         case .sal:
-            return "Límite recomendado: <5 g de sal al día (≈2 g de sodio)."
+            return L10n.exact("Límite recomendado: <5 g de sal al día (≈2 g de sodio).")
         case .valorEnergetico:
-            return "Depende de edad, sexo y actividad. Referencia habitual en etiquetado: ~2000 kcal/día."
+            return L10n.exact("Depende de edad, sexo y actividad. Referencia habitual en etiquetado: ~2000 kcal/día.")
         }
     }
 }

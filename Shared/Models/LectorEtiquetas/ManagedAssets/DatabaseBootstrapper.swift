@@ -57,7 +57,7 @@ actor DatabaseBootstrapper {
         guard isUsableSQLiteDatabase(at: sourceURL) else {
             throw CocoaError(.fileReadCorruptFile, userInfo: [
                 NSFilePathErrorKey: sourceURL.path,
-                NSLocalizedDescriptionKey: "El asset descargado no contiene una base SQLite válida con tabla products."
+                NSLocalizedDescriptionKey: L10n.exact("El recurso descargado no contiene una base SQLite válida con la tabla products.")
             ])
         }
 
@@ -75,7 +75,7 @@ actor DatabaseBootstrapper {
             guard isUsableSQLiteDatabase(at: destinationURL) else {
                 throw CocoaError(.fileReadCorruptFile, userInfo: [
                     NSFilePathErrorKey: destinationURL.path,
-                    NSLocalizedDescriptionKey: "La base SQLite copiada no es válida o no contiene la tabla products."
+                    NSLocalizedDescriptionKey: L10n.exact("La base SQLite copiada no es válida o no contiene la tabla products.")
                 ])
             }
             defaults?.set(assetPack.version, forKey: LectorEtiquetasManagedAssetsConfig.versionDefaultsKey)

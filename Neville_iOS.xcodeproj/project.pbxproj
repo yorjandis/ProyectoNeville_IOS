@@ -70,6 +70,14 @@
 		9CDA01063000000000000001 /* ConsciousDashboardMacWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 9CDA01103000000000000001 /* ConsciousDashboardMacWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		E95B93572AAFBB2600B5E2B5 /* Neville_iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95B93562AAFBB2600B5E2B5 /* Neville_iOSApp.swift */; };
 		E95B93592AAFBB2600B5E2B5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95B93582AAFBB2600B5E2B5 /* ContentView.swift */; };
+		A10000000000000000000001 /* biografia.txt in Resources */ = {isa = PBXBuildFile; fileRef = A30000000000000000000001 /* biografia.txt */; };
+		A10000000000000000000002 /* biografia_jd.txt in Resources */ = {isa = PBXBuildFile; fileRef = A30000000000000000000002 /* biografia_jd.txt */; };
+		A10000000000000000000003 /* biografia_bruce.txt in Resources */ = {isa = PBXBuildFile; fileRef = A30000000000000000000003 /* biografia_bruce.txt */; };
+		A10000000000000000000004 /* biografia_gregg.txt in Resources */ = {isa = PBXBuildFile; fileRef = A30000000000000000000004 /* biografia_gregg.txt */; };
+		A10000000000000000000005 /* resumen_enseñanza_nevile.txt in Resources */ = {isa = PBXBuildFile; fileRef = A30000000000000000000005 /* resumen_enseñanza_nevile.txt */; };
+		A10000000000000000000006 /* resumen_enseñanza_jd.txt in Resources */ = {isa = PBXBuildFile; fileRef = A30000000000000000000006 /* resumen_enseñanza_jd.txt */; };
+		A10000000000000000000007 /* resumen_enseñanzas_bruce.txt in Resources */ = {isa = PBXBuildFile; fileRef = A30000000000000000000007 /* resumen_enseñanzas_bruce.txt */; };
+		A10000000000000000000008 /* resumen_enseñanza_gregg.txt in Resources */ = {isa = PBXBuildFile; fileRef = A30000000000000000000008 /* resumen_enseñanza_gregg.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -266,6 +274,22 @@
 		E95B93532AAFBB2600B5E2B5 /* Neville_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Neville_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E95B93562AAFBB2600B5E2B5 /* Neville_iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Neville_iOSApp.swift; sourceTree = "<group>"; };
 		E95B93582AAFBB2600B5E2B5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		A20000000000000000000001 /* en */ = {isa = PBXFileReference; lastKnownFileType = text; name = en; path = Shared/Localization/en.lproj/biografia.txt; sourceTree = SOURCE_ROOT; };
+		A20000000000000000000002 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text; name = "zh-Hans"; path = "Shared/Localization/zh-Hans.lproj/biografia.txt"; sourceTree = SOURCE_ROOT; };
+		A20000000000000000000003 /* en */ = {isa = PBXFileReference; lastKnownFileType = text; name = en; path = Shared/Localization/en.lproj/biografia_jd.txt; sourceTree = SOURCE_ROOT; };
+		A20000000000000000000004 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text; name = "zh-Hans"; path = "Shared/Localization/zh-Hans.lproj/biografia_jd.txt"; sourceTree = SOURCE_ROOT; };
+		A20000000000000000000005 /* en */ = {isa = PBXFileReference; lastKnownFileType = text; name = en; path = Shared/Localization/en.lproj/biografia_bruce.txt; sourceTree = SOURCE_ROOT; };
+		A20000000000000000000006 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text; name = "zh-Hans"; path = "Shared/Localization/zh-Hans.lproj/biografia_bruce.txt"; sourceTree = SOURCE_ROOT; };
+		A20000000000000000000007 /* en */ = {isa = PBXFileReference; lastKnownFileType = text; name = en; path = Shared/Localization/en.lproj/biografia_gregg.txt; sourceTree = SOURCE_ROOT; };
+		A20000000000000000000008 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text; name = "zh-Hans"; path = "Shared/Localization/zh-Hans.lproj/biografia_gregg.txt"; sourceTree = SOURCE_ROOT; };
+		A20000000000000000000009 /* en */ = {isa = PBXFileReference; lastKnownFileType = text; name = en; path = "Shared/Localization/en.lproj/resumen_enseñanza_nevile.txt"; sourceTree = SOURCE_ROOT; };
+		A20000000000000000000010 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text; name = "zh-Hans"; path = "Shared/Localization/zh-Hans.lproj/resumen_enseñanza_nevile.txt"; sourceTree = SOURCE_ROOT; };
+		A20000000000000000000011 /* en */ = {isa = PBXFileReference; lastKnownFileType = text; name = en; path = "Shared/Localization/en.lproj/resumen_enseñanza_jd.txt"; sourceTree = SOURCE_ROOT; };
+		A20000000000000000000012 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text; name = "zh-Hans"; path = "Shared/Localization/zh-Hans.lproj/resumen_enseñanza_jd.txt"; sourceTree = SOURCE_ROOT; };
+		A20000000000000000000013 /* en */ = {isa = PBXFileReference; lastKnownFileType = text; name = en; path = "Shared/Localization/en.lproj/resumen_enseñanzas_bruce.txt"; sourceTree = SOURCE_ROOT; };
+		A20000000000000000000014 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text; name = "zh-Hans"; path = "Shared/Localization/zh-Hans.lproj/resumen_enseñanzas_bruce.txt"; sourceTree = SOURCE_ROOT; };
+		A20000000000000000000015 /* en */ = {isa = PBXFileReference; lastKnownFileType = text; name = en; path = "Shared/Localization/en.lproj/resumen_enseñanza_gregg.txt"; sourceTree = SOURCE_ROOT; };
+		A20000000000000000000016 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text; name = "zh-Hans"; path = "Shared/Localization/zh-Hans.lproj/resumen_enseñanza_gregg.txt"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -1049,7 +1073,9 @@
 				Staff/Biografias/biografia_gregg.txt,
 				Staff/Biografias/biografia_jd.txt,
 				Staff/Biografias/biografia.txt,
+				Staff/CentroSanador/healing_center_en.json,
 				Staff/CentroSanador/healing_center_es.json,
+				"Staff/CentroSanador/healing_center_zh-Hans.json",
 				Staff/CoherenciaCCImagenes/cc_1.JPG,
 				Staff/CoherenciaCCImagenes/cc_2.JPG,
 				Staff/CoherenciaCCImagenes/cc_3.JPG,
@@ -2116,6 +2142,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				91E52D8C2F4327CE0054C032 /* Assets.xcassets in Resources */,
+				A10000000000000000000001 /* biografia.txt in Resources */,
+				A10000000000000000000002 /* biografia_jd.txt in Resources */,
+				A10000000000000000000003 /* biografia_bruce.txt in Resources */,
+				A10000000000000000000004 /* biografia_gregg.txt in Resources */,
+				A10000000000000000000005 /* resumen_enseñanza_nevile.txt in Resources */,
+				A10000000000000000000006 /* resumen_enseñanza_jd.txt in Resources */,
+				A10000000000000000000007 /* resumen_enseñanzas_bruce.txt in Resources */,
+				A10000000000000000000008 /* resumen_enseñanza_gregg.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2265,6 +2299,17 @@
 			targetProxy = 9CDA01203000000000000001 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		A30000000000000000000001 /* biografia.txt */ = {isa = PBXVariantGroup; children = (A20000000000000000000001 /* en */, A20000000000000000000002 /* zh-Hans */, ); name = biografia.txt; sourceTree = "<group>"; };
+		A30000000000000000000002 /* biografia_jd.txt */ = {isa = PBXVariantGroup; children = (A20000000000000000000003 /* en */, A20000000000000000000004 /* zh-Hans */, ); name = biografia_jd.txt; sourceTree = "<group>"; };
+		A30000000000000000000003 /* biografia_bruce.txt */ = {isa = PBXVariantGroup; children = (A20000000000000000000005 /* en */, A20000000000000000000006 /* zh-Hans */, ); name = biografia_bruce.txt; sourceTree = "<group>"; };
+		A30000000000000000000004 /* biografia_gregg.txt */ = {isa = PBXVariantGroup; children = (A20000000000000000000007 /* en */, A20000000000000000000008 /* zh-Hans */, ); name = biografia_gregg.txt; sourceTree = "<group>"; };
+		A30000000000000000000005 /* resumen_enseñanza_nevile.txt */ = {isa = PBXVariantGroup; children = (A20000000000000000000009 /* en */, A20000000000000000000010 /* zh-Hans */, ); name = "resumen_enseñanza_nevile.txt"; sourceTree = "<group>"; };
+		A30000000000000000000006 /* resumen_enseñanza_jd.txt */ = {isa = PBXVariantGroup; children = (A20000000000000000000011 /* en */, A20000000000000000000012 /* zh-Hans */, ); name = "resumen_enseñanza_jd.txt"; sourceTree = "<group>"; };
+		A30000000000000000000007 /* resumen_enseñanzas_bruce.txt */ = {isa = PBXVariantGroup; children = (A20000000000000000000013 /* en */, A20000000000000000000014 /* zh-Hans */, ); name = "resumen_enseñanzas_bruce.txt"; sourceTree = "<group>"; };
+		A30000000000000000000008 /* resumen_enseñanza_gregg.txt */ = {isa = PBXVariantGroup; children = (A20000000000000000000015 /* en */, A20000000000000000000016 /* zh-Hans */, ); name = "resumen_enseñanza_gregg.txt"; sourceTree = "<group>"; };
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		19E0BE232B0C661B00E149A5 /* Debug */ = {

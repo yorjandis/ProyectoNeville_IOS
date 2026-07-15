@@ -51,8 +51,16 @@ struct Novedades: View {
         NewsItem(iconName: "sparkles.rectangle.stack", title: "Revisión semanal guiada", description: "Nuevo espacio premium para cerrar la semana en 5-10 minutos: metas avanzadas y estancadas, agenda, diario, emociones predominantes, presencia, coherencia y logros. Puedes elegir el día en Ajustes y activar una notificación opcional a partir de las 6:00 am."),
         NewsItem(iconName: "eye", title: "Presencia Consciente", description: "Registra pequeños momentos de despertar durante el día y vuelve al presente con un solo toque. Observa cuándo sales del piloto automático, reconoce tu estado de ánimo y refuerza la emoción del futuro que deseas vivir."),
         NewsItem(iconName: "leaf", title: "Espacio Calma", description: "Experiencia inmersiva para relajarte y desconectarte. Ayuda a disminuir el estrés y la ansiedad."),
-        NewsItem(iconName: "barcode.viewfinder", title: "Lector de Etiquetas", description: "Ofrece información sobre alimentos y consejos de uso leyendo su código de barras."),
-        NewsItem(iconName: "heart.circle", title: "Coherencia Cardio-Cerebral", description: "Asistente de guía para entrar en estado de coherencia entre corazón y cerebro."),
+        NewsItem(
+            iconName: "barcode.viewfinder",
+            title: L10n.exact("Lector de Etiquetas"),
+            description: L10n.exact("Ofrece información sobre alimentos y consejos de uso leyendo su código de barras.")
+        ),
+        NewsItem(
+            iconName: "heart.circle",
+            title: L10n.exact("Coherencia Cardio-Cerebral"),
+            description: L10n.exact("Asistente de guía para entrar en estado de coherencia entre corazón y cerebro.")
+        ),
         NewsItem(iconName: "calendar", title: "Agenda", description: "Organiza tareas, eventos y compromisos en el tiempo para liberar memoria, priorizar lo importante y usar tu tiempo de manera más óptima e intencional."),
         NewsItem(iconName: "quote.bubble", title: "Mejoras en Frases", description: "Ahora es posible editar frases personales. También se añadieron opciones de compartir la frase y almacenarla en Notas desde el menú contextual."),
         NewsItem(iconName: "book.pages", title: "Diario desbloqueado", description: "Nueva opción en Ajustes para mantener el Diario desbloqueado después del acceso, evitando repetir la validación en cada entrada."),
