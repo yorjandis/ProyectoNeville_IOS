@@ -54,19 +54,19 @@ struct LabeledGradientProgressBar: View {
 
                     Spacer(minLength: 0)
 
-                    percentageText("25%", active: progress >= 0.25)
+                    percentageText(0.25, active: progress >= 0.25)
 
                     Spacer()
 
-                    percentageText("50%", active: progress >= 0.50)
+                    percentageText(0.50, active: progress >= 0.50)
 
                     Spacer()
 
-                    percentageText("75%", active: progress >= 0.75)
+                    percentageText(0.75, active: progress >= 0.75)
 
                     Spacer()
 
-                    percentageText("100%", active: progress >= 1.0)
+                    percentageText(1.0, active: progress >= 1.0)
                 }
                 .padding(.horizontal, 4)
             }
@@ -75,8 +75,8 @@ struct LabeledGradientProgressBar: View {
     }
 
     @ViewBuilder
-    private func percentageText(_ text: String, active: Bool) -> some View {
-        Text(text)
+    private func percentageText(_ value: Double, active: Bool) -> some View {
+        Text(value, format: .percent.precision(.fractionLength(0)))
             .font(.caption.weight(.heavy))
             .monospacedDigit()
             .foregroundStyle(active ? Color.black : Color.white.opacity(0.6))

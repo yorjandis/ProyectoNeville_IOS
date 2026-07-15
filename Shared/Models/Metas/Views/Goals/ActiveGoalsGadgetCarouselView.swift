@@ -416,14 +416,18 @@ private struct CircularGoalProgressView: View {
                 }
             }
 
-            Text("\(percentage)%")
+            Text(Double(percentage) / 100.0, format: .percent.precision(.fractionLength(0)))
                 .font(.caption.bold())
                 .monospacedDigit()
         }
         .frame(width: 52, height: 52)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Progreso")
-        .accessibilityValue("\(percentage)%")
+        .accessibilityValue(
+            (Double(percentage) / 100.0).formatted(
+                .percent.precision(.fractionLength(0)).locale(AppLanguage.current.locale)
+            )
+        )
     }
 }
 

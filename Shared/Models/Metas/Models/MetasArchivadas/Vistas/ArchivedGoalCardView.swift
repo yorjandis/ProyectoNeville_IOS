@@ -54,9 +54,9 @@ struct ArchivedGoalCardView: View {
                     
                     Text(GoalsL10n.format(
                         "goals.ui.compliance_percent",
-                        fallback: "Cumplimiento: {0}%",
+                        fallback: "Cumplimiento: {0}",
                         goal.completionRate.formatted(
-                            .number.precision(.fractionLength(2)).locale(AppLanguage.current.locale)
+                            .percent.precision(.fractionLength(0...2)).locale(AppLanguage.current.locale)
                         )
                     ))
                         .font(.footnote)
@@ -67,7 +67,7 @@ struct ArchivedGoalCardView: View {
 
             // Barra de progreso
             HStack {
-                Text("\(Int(goal.progressRatio * 100))%")
+                Text(goal.progressRatio, format: .percent.precision(.fractionLength(0)))
                 LabeledGradientProgressBar(progress: goal.progressRatio, lostUnits: goal.lostUnitIndexes, totalUnits: Int(goal.totalUnits))
                     .padding(1)
             }

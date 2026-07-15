@@ -1589,13 +1589,13 @@ private extension NutritionScoringTarget {
     var recommendedAmountSummary: String {
         switch self {
         case .proteinas:
-            return L10n.exact("Adultos: ~0.8 g/kg/día como mínimo (aprox. 10-35% de la energía diaria).")
+            return L10n.exact("Adultos: ~0.8 g/kg/día como mínimo (aprox. 10 a 35 por ciento de la energía diaria).")
         case .fibra:
             return L10n.exact("Objetivo general: 14 g por cada 1000 kcal (aprox. 25-38 g/día en adultos).")
         case .grasasSaturadas:
-            return L10n.exact("Limitar a <10% de las calorías diarias; idealmente sustituir por grasas insaturadas.")
+            return L10n.exact("Limitar a menos del 10 por ciento de las calorías diarias; idealmente sustituir por grasas insaturadas.")
         case .azucar:
-            return L10n.exact("Azúcares libres/añadidos: <10% de las calorías; idealmente <5% si es posible.")
+            return L10n.exact("Azúcares libres/añadidos: menos del 10 por ciento de las calorías; idealmente menos del 5 por ciento si es posible.")
         case .sal:
             return L10n.exact("Límite recomendado: <5 g de sal al día (≈2 g de sodio).")
         case .valorEnergetico:

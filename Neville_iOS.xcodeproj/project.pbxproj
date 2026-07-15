@@ -82,20 +82,6 @@
 		9CDA01043000000000000001 /* Shared/Models/WidgetDashboard/ConsciousDashboardSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CDA00063000000000000001 /* Shared/Models/WidgetDashboard/ConsciousDashboardSnapshot.swift */; };
 		9CDA01053000000000000001 /* ConsciousDashboardMacBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CDA01113000000000000001 /* ConsciousDashboardMacBundle.swift */; };
 		9CDA01063000000000000001 /* ConsciousDashboardMacWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 9CDA01103000000000000001 /* ConsciousDashboardMacWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		A10000000000000000000001 /* biografia.txt in Resources */ = {isa = PBXBuildFile; fileRef = A30000000000000000000001 /* biografia.txt */; };
-		A10000000000000000000002 /* biografia_jd.txt in Resources */ = {isa = PBXBuildFile; fileRef = A30000000000000000000002 /* biografia_jd.txt */; };
-		A10000000000000000000003 /* biografia_bruce.txt in Resources */ = {isa = PBXBuildFile; fileRef = A30000000000000000000003 /* biografia_bruce.txt */; };
-		A10000000000000000000004 /* biografia_gregg.txt in Resources */ = {isa = PBXBuildFile; fileRef = A30000000000000000000004 /* biografia_gregg.txt */; };
-		A10000000000000000000005 /* resumen_enseñanza_nevile.txt in Resources */ = {isa = PBXBuildFile; fileRef = A30000000000000000000005 /* resumen_enseñanza_nevile.txt */; };
-		A10000000000000000000006 /* resumen_enseñanza_jd.txt in Resources */ = {isa = PBXBuildFile; fileRef = A30000000000000000000006 /* resumen_enseñanza_jd.txt */; };
-		A10000000000000000000007 /* resumen_enseñanzas_bruce.txt in Resources */ = {isa = PBXBuildFile; fileRef = A30000000000000000000007 /* resumen_enseñanzas_bruce.txt */; };
-		A10000000000000000000008 /* resumen_enseñanza_gregg.txt in Resources */ = {isa = PBXBuildFile; fileRef = A30000000000000000000008 /* resumen_enseñanza_gregg.txt */; };
-		A10000000000000000000009 /* listfrases.txt in Resources */ = {isa = PBXBuildFile; fileRef = A30000000000000000000009 /* listfrases.txt */; };
-		A10000000000000000000010 /* listfrases_jd.txt in Resources */ = {isa = PBXBuildFile; fileRef = A30000000000000000000010 /* listfrases_jd.txt */; };
-		A10000000000000000000011 /* listfrases_bruce.txt in Resources */ = {isa = PBXBuildFile; fileRef = A30000000000000000000011 /* listfrases_bruce.txt */; };
-		A10000000000000000000012 /* listfrases_de_gregg.txt in Resources */ = {isa = PBXBuildFile; fileRef = A30000000000000000000012 /* listfrases_de_gregg.txt */; };
-		A10000000000000000000013 /* listfrases_salud.txt in Resources */ = {isa = PBXBuildFile; fileRef = A30000000000000000000013 /* listfrases_salud.txt */; };
-		A10000000000000000000014 /* listfrases_otros.txt in Resources */ = {isa = PBXBuildFile; fileRef = A30000000000000000000014 /* listfrases_otros.txt */; };
 		E95B93572AAFBB2600B5E2B5 /* Neville_iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95B93562AAFBB2600B5E2B5 /* Neville_iOSApp.swift */; };
 		E95B93592AAFBB2600B5E2B5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95B93582AAFBB2600B5E2B5 /* ContentView.swift */; };
 /* End PBXBuildFile section */
@@ -2217,20 +2203,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				91E52D8C2F4327CE0054C032 /* Assets.xcassets in Resources */,
-				A10000000000000000000001 /* biografia.txt in Resources */,
-				A10000000000000000000002 /* biografia_jd.txt in Resources */,
-				A10000000000000000000003 /* biografia_bruce.txt in Resources */,
-				A10000000000000000000004 /* biografia_gregg.txt in Resources */,
-				A10000000000000000000005 /* resumen_enseñanza_nevile.txt in Resources */,
-				A10000000000000000000006 /* resumen_enseñanza_jd.txt in Resources */,
-				A10000000000000000000007 /* resumen_enseñanzas_bruce.txt in Resources */,
-				A10000000000000000000008 /* resumen_enseñanza_gregg.txt in Resources */,
-				A10000000000000000000009 /* listfrases.txt in Resources */,
-				A10000000000000000000010 /* listfrases_jd.txt in Resources */,
-				A10000000000000000000011 /* listfrases_bruce.txt in Resources */,
-				A10000000000000000000012 /* listfrases_de_gregg.txt in Resources */,
-				A10000000000000000000013 /* listfrases_salud.txt in Resources */,
-				A10000000000000000000014 /* listfrases_otros.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

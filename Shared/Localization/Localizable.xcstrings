@@ -801,7 +801,14 @@
       }
     },
     "¿Quién eliges ser hoy?" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今天你想成为什么样的人？"
+          }
+        }
+      }
     },
     "¿Restaurar las ocho frases predeterminadas?" : {
       "localizations" : {
@@ -892,7 +899,14 @@
       }
     },
     "¿Te gusta la app?" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你喜欢这个应用吗？"
+          }
+        }
+      }
     },
     "¿Viví de acuerdo con la identidad elegida por la mañana?" : {
       "localizations" : {
@@ -1183,10 +1197,22 @@
     },
     "%lld minutos de coherencia · cambio medio %@%.1f" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld coherence minutes · average change %2$@%3$.1f"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "%1$lld minutos de coherencia · cambio medio %2$@%3$.1f"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld 分钟的心脑相干练习 · 平均变化 %2$@%3$.1f"
           }
         }
       }
@@ -1333,16 +1359,37 @@
       }
     },
     "☘️ Información sobre la IA utilizada:\n\nLa Inteligencia Artificial se basa en los modelos preinstalados en el dispositivo. Apple garantiza que su acceso es seguro y no involucra procesamiento fuera del dispositivo.\n\nEl modelo es capaz de generar respuestas creativas y eficaces basadas en los conocimientos y enseñanzas de varios autores (Neville Goddard, Joe Dispenza, Bruce Lipton y Gregg Braden). Sin embargo, se recomienda revisar con cuidado cada respuesta y tomar desiciones informadas acerca de ellas.\n\nLos modelos han sido cuidadosamente instruidos y revisados para aminorar los sezgos, errores y que solo responda dentro de los límites del campo de conocimientos establecido para cada autor.\n\nSi siente que una respuesta no resuena con usted, o no es correcta, la mejor desición es seguir su instinto propio.\n\nLa optimización del modelo es un proceso continuo, en cada actualización de la \"La Ley\" será revisado y actualizado." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "☘️ 关于所用人工智能的信息：\n\n人工智能基于设备预装的模型。苹果公司保证对这些模型的访问安全可靠，且不会在设备外部进行任何处理。\n\n该模型能够根据多位作者（内维尔·戈达德、乔·迪斯潘萨、布鲁斯·利普顿和格雷格·布雷登）的知识和教诲，生成富有创意且有效的回复。然而，我们建议您仔细审阅每条回复，并据此做出明智的决定。\n\n这些模型经过精心训练和审核，以最大限度地减少偏差和错误，并确保其仅在每位作者既定的知识库范围内做出回复。\n\n如果您觉得某个回复与您无关或有误，最好的做法是遵循您自己的直觉。\n\n模型的优化是一个持续的过程；每次《法则》更新时，模型都会进行审核和更新。"
+          }
+        }
+      }
     },
     "🎉 Versión Extendida ✨" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "🎉 加长版 ✨"
+          }
+        }
+      }
     },
     "💡" : {
-
+      "shouldTranslate" : false
     },
     "🔸%@" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "🔸%@"
+          }
+        }
+      }
     },
     "🔸Toca una partícula para liberar su frase.\n🔸Doble toque en el fondo para cambiarlo." : {
       "localizations" : {
@@ -1367,10 +1414,17 @@
       }
     },
     "😊" : {
-
+      "shouldTranslate" : false
     },
     "🟢 %@" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "🟢%@"
+          }
+        }
+      }
     },
     "1: mínimamente procesado • 2: ingrediente culinario • 3: procesado • 4: ultraprocesado" : {
       "localizations" : {
@@ -1549,7 +1603,14 @@
       }
     },
     "7 días gratis, después suscripción anual" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7 天免费试用，之后按年订阅"
+          }
+        }
+      }
     },
     "10" : {
 
@@ -2178,13 +2239,34 @@
       }
     },
     "Accede a todo el contenido" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "访问所有内容"
+          }
+        }
+      }
     },
     "Acceder" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用权"
+          }
+        }
+      }
     },
     "Acceder a la Versión Extendida" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "访问扩展版本"
+          }
+        }
+      }
     },
     "Acceder a las Condiciones de Uso de la IA" : {
       "localizations" : {
@@ -2276,7 +2358,14 @@
       }
     },
     "Acceso protegido" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "受保护的访问"
+          }
+        }
+      }
     },
     "Acceso rápido" : {
       "extractionState" : "stale",
@@ -2368,10 +2457,24 @@
       }
     },
     "Acepto" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "我接受"
+          }
+        }
+      }
     },
     "Aciertos:%d" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "成功:%d"
+          }
+        }
+      }
     },
     "Activa" : {
       "localizations" : {
@@ -2749,10 +2852,24 @@
       }
     },
     "Actualiza frases" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新短语"
+          }
+        }
+      }
     },
     "Actualizado %@" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新 %@"
+          }
+        }
+      }
     },
     "Actualizado ahora" : {
       "extractionState" : "stale",
@@ -2888,10 +3005,24 @@
       }
     },
     "Actualizar Frase" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新短语"
+          }
+        }
+      }
     },
     "Actualizar Frases" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新短语"
+          }
+        }
+      }
     },
     "Actualizar lugar" : {
       "extractionState" : "stale",
@@ -2961,10 +3092,24 @@
       }
     },
     "Adicionar Nueva nota" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加新笔记"
+          }
+        }
+      }
     },
     "Adicionar una Frase" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加短语"
+          }
+        }
+      }
     },
     "Adicionar una nota" : {
       "localizations" : {
@@ -2989,7 +3134,14 @@
       }
     },
     "Adicionar una reflexión" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加反射"
+          }
+        }
+      }
     },
     "Aditivos detectados" : {
       "localizations" : {
@@ -3013,25 +3165,25 @@
         }
       }
     },
-    "Adultos: ~0.8 g/kg/día como mínimo (aprox. 10-35% de la energía diaria)." : {
+    "Adultos: ~0.8 g/kg/día como mínimo (aprox. 10 a 35 por ciento de la energía diaria)." : {
       "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Adults: at least ~0.8 g/kg/day (about 10–35% of daily energy intake)."
+            "value" : "Adults: at least ~0.8 g/kg/day (about 10 to 35 percent of daily energy intake)."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Adultos: ~0.8 g/kg/día como mínimo (aprox. 10-35% de la energía diaria)."
+            "value" : "Adultos: ~0.8 g/kg/día como mínimo (aprox. 10 a 35 por ciento de la energía diaria)."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "成年人：至少约 0.8 克/千克体重/天（约占每日能量的 10%–35%）。"
+            "value" : "成年人：至少约 0.8 克/千克体重/天（约占每日能量的百分之十至百分之三十五）。"
           }
         }
       }
@@ -3919,7 +4071,14 @@
       }
     },
     "Agregar Frase" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加短语"
+          }
+        }
+      }
     },
     "Agregar Música" : {
       "localizations" : {
@@ -3966,7 +4125,14 @@
       }
     },
     "AHORA" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "现在"
+          }
+        }
+      }
     },
     "Ahora puedes pensar desde el resultado" : {
       "localizations" : {
@@ -4035,7 +4201,14 @@
       }
     },
     "Al escribir una reseña ayudas a que más personas puedan disfrutar de estas enseñanzas, gracias por tu apoyo!" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "撰写评论可以帮助更多人欣赏这些课程。感谢您的支持！"
+          }
+        }
+      }
     },
     "Aleatoria" : {
       "localizations" : {
@@ -4216,7 +4389,14 @@
       }
     },
     "Almacenar en Notas" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存到备注中"
+          }
+        }
+      }
     },
     "Alta" : {
       "localizations" : {
@@ -5037,7 +5217,14 @@
       }
     },
     "Aplicar Color" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "涂抹颜色"
+          }
+        }
+      }
     },
     "Aplicar Colores Por Defecto" : {
       "localizations" : {
@@ -5062,10 +5249,24 @@
       }
     },
     "Aplicar formato importación Frases" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "应用导入格式短语"
+          }
+        }
+      }
     },
     "Aplicar formato importación Notas" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "应用导入格式说明"
+          }
+        }
+      }
     },
     "Aportan energía, pero no son esenciales frente a grasas insaturadas." : {
       "extractionState" : "stale",
@@ -6306,7 +6507,14 @@
       }
     },
     "autor" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "作者"
+          }
+        }
+      }
     },
     "Autor" : {
       "localizations" : {
@@ -6331,13 +6539,34 @@
       }
     },
     "Autor de la frase" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这句话的作者"
+          }
+        }
+      }
     },
     "Autor: %@" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "作者: %@"
+          }
+        }
+      }
     },
     "Autores:" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "作者："
+          }
+        }
+      }
     },
     "Avanza hoy con intención" : {
       "localizations" : {
@@ -6630,25 +6859,25 @@
         }
       }
     },
-    "Azúcares libres/añadidos: <10% de las calorías; idealmente <5% si es posible." : {
+    "Azúcares libres/añadidos: menos del 10 por ciento de las calorías; idealmente menos del 5 por ciento si es posible." : {
       "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Free/added sugars: <10% of calories; ideally <5% where possible."
+            "value" : "Free/added sugars: less than 10 percent of calories; ideally less than 5 percent where possible."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Azúcares libres/añadidos: <10% de las calorías; idealmente <5% si es posible."
+            "value" : "Azúcares libres/añadidos: menos del 10 por ciento de las calorías; idealmente menos del 5 por ciento si es posible."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "游离糖/添加糖应低于总热量的 10%；条件允许时最好低于 5%。"
+            "value" : "游离糖/添加糖应低于总热量的百分之十；条件允许时最好低于百分之五。"
           }
         }
       }
@@ -6875,7 +7104,14 @@
       }
     },
     "Bienvenido a una nueva versión de La Ley" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "欢迎来到新版《法律》"
+          }
+        }
+      }
     },
     "Biografía" : {
       "localizations" : {
@@ -7012,10 +7248,10 @@
       }
     },
     "Bruce lipton" : {
-
+      "shouldTranslate" : false
     },
     "Bruce Lipton" : {
-
+      "shouldTranslate" : false
     },
     "Buena" : {
       "localizations" : {
@@ -12855,7 +13091,14 @@
       }
     },
     "Dejar una reseña en la App Store" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 App Store 上留下评论"
+          }
+        }
+      }
     },
     "Dejo que esta emoción elevada impregne todo mi ser." : {
       "localizations" : {
@@ -22336,19 +22579,19 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Completion rate: {0}%"
+            "value" : "Completion rate: {0}"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cumplimiento: {0}%"
+            "value" : "Cumplimiento: {0}"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "完成率：{0}%"
+            "value" : "完成率：{0}"
           }
         }
       }
@@ -28332,7 +28575,14 @@
 
     },
     "Las enseñansas de neville rebozan de Amor y Verdad!" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "内维尔的教诲充满了爱与真理！"
+          }
+        }
+      }
     },
     "Las frases de otros autores necesitan acceso Premium." : {
       "localizations" : {
@@ -28635,25 +28885,25 @@
         }
       }
     },
-    "Limitar a <10% de las calorías diarias; idealmente sustituir por grasas insaturadas." : {
+    "Limitar a menos del 10 por ciento de las calorías diarias; idealmente sustituir por grasas insaturadas." : {
       "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Limit to <10% of daily calories; ideally replace with unsaturated fats."
+            "value" : "Limit to less than 10 percent of daily calories; ideally replace with unsaturated fats."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Limitar a <10% de las calorías diarias; idealmente sustituir por grasas insaturadas."
+            "value" : "Limitar a menos del 10 por ciento de las calorías diarias; idealmente sustituir por grasas insaturadas."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "限制在每日总热量的 10% 以下，并尽量以不饱和脂肪替代。"
+            "value" : "限制在每日总热量的百分之十以下，并尽量以不饱和脂肪替代。"
           }
         }
       }
@@ -36675,19 +36925,19 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "{0}% of your entries"
+            "value" : "{0} of your entries"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "{0}% de tus registros"
+            "value" : "{0} de tus registros"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "占记录的{0}%"
+            "value" : "占记录的{0}"
           }
         }
       }
@@ -36807,19 +37057,19 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "{0}% fewer present moments than last week."
+            "value" : "{0} fewer present moments than last week."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "{0}% menos momentos presentes que la semana pasada."
+            "value" : "{0} menos momentos presentes que la semana pasada."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "比上周少{0}%的觉察时刻。"
+            "value" : "比上周少{0}的觉察时刻。"
           }
         }
       }
@@ -36829,19 +37079,19 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "+{0}% more present moments than last week."
+            "value" : "+{0} more present moments than last week."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "+{0}% más momentos presentes que la semana pasada."
+            "value" : "+{0} más momentos presentes que la semana pasada."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "比上周多{0}%的觉察时刻。"
+            "value" : "比上周多{0}的觉察时刻。"
           }
         }
       }
@@ -37046,7 +37296,14 @@
       }
     },
     "Primera semana gratis" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第一周免费"
+          }
+        }
+      }
     },
     "Primero descarga la BD offline para habilitar escaneo y búsqueda." : {
       "localizations" : {
@@ -37250,7 +37507,14 @@
       }
     },
     "Productividad" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "生产率"
+          }
+        }
+      }
     },
     "Productivo" : {
       "localizations" : {
@@ -42707,7 +42971,14 @@
       }
     },
     "Sí, me encanta! 💖" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "是的，我太喜欢了！💖"
+          }
+        }
+      }
     },
     "Sí, no estoy seguro o necesito ayuda" : {
       "localizations" : {

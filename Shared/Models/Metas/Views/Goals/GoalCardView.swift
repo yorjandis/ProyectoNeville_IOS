@@ -135,7 +135,7 @@ struct GoalCardView: View {
             
             //Barra de Progreso:
             HStack{
-                Text("\(Int(goal.progressRatio * 100))%")
+                Text(goal.progressRatio, format: .percent.precision(.fractionLength(0)))
                 LabeledGradientProgressBar(progress: goal.progressRatio, lostUnits: goal.lostUnitIndexes, totalUnits: Int(goal.totalUnits))
                     .padding(1)
             }

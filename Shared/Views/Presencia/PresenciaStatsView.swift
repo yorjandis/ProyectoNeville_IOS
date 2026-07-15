@@ -819,7 +819,11 @@ private struct DominantMoodCard: View {
                 .frame(maxWidth: .infinity)
 
             Text(summary.map {
-                L10n.format("presence.dominant.percentage", fallback: "{0}% de tus registros", "\($0.percentage)")
+                L10n.format(
+                    "presence.dominant.percentage",
+                    fallback: "{0} de tus registros",
+                    localizedPresencePercent($0.percentage)
+                )
             } ?? L10n.exact("Registra un estado"))
                 .font(.subheadline)
                 .foregroundStyle(PresenciaStatsPalette.secondaryText)
@@ -869,9 +873,9 @@ private struct PresenciaPracticalInsightsCard: View {
 
         let key = percentage > 0 ? "presence.insights.trend.more" : "presence.insights.trend.less"
         let fallback = percentage > 0
-            ? "+{0}% más momentos presentes que la semana pasada."
-            : "{0}% menos momentos presentes que la semana pasada."
-        return L10n.format(key, fallback: fallback, "\(abs(percentage))")
+            ? "+{0} más momentos presentes que la semana pasada."
+            : "{0} menos momentos presentes que la semana pasada."
+        return L10n.format(key, fallback: fallback, localizedPresencePercent(abs(percentage)))
     }
 
     private var criticalWindowText: String {
@@ -978,6 +982,15 @@ private struct PresenciaPracticalInsightsCard: View {
     private func hourText(_ hour: Int) -> String {
         String(format: "%02d:00", min(hour, 24))
     }
+}
+
+private func localizedPresencePercent(_ value: Int) -> String {
+    let formatter = NumberFormatter()
+    formatter.locale = AppLanguage.current.locale
+    formatter.numberStyle = .percent
+    formatter.minimumFractionDigits = 0
+    formatter.maximumFractionDigits = 0
+    return formatter.string(from: NSNumber(value: Double(value) / 100.0)) ?? "\(value)%"
 }
 
 private struct PresenciaBarsView: View {
