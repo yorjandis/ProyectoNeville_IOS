@@ -5,6 +5,45 @@ import UIKit
 import AppKit
 #endif
 
+private enum TutorialCopy {
+    private static let translations: [String: (english: String, chinese: String)] = [
+        "Videos Tutoriales": ("Tutorial Videos", "教程视频"),
+        "Lienzo": ("Canvas", "画布"),
+        "Lienzo es una forma creativa de compartir las enseñanzas de los grandes maestros.": ("Canvas is a creative way to share the teachings of the great masters.", "画布是一种分享伟大导师教诲的创意方式。"),
+        "Metas": ("Goals", "目标"),
+        "Metas es un poderosa heramienta para crear buenos hábitos y reprogramar el cerebro.": ("Goals is a powerful tool for building good habits and reprogramming the brain.", "目标是一种培养良好习惯并重新塑造大脑的强大工具。"),
+        "Ritual Matutino": ("Morning Ritual", "晨间仪式"),
+        "Diseñe su día y establezca una intención clara y definida para afrontar cada situación que se le presente. Elige reaccionar concientemente y dejar de ser un efecto de su entorno.": ("Design your day and set a clear intention for every situation you encounter. Choose how to respond consciously instead of being shaped by your surroundings.", "规划好一天，为将要面对的每种情况设定清晰明确的意图。选择有意识地回应，而不是被周围环境所左右。"),
+        "Lector de Etiquetas": ("Label Scanner", "标签扫描器"),
+        "El Lector de Etiquetas es una herramienta útil para inspeccionar la calidad de un alimento. Permite determinar su grado de procesamiento, la concentración de sus macronutrientes y su origen natural.": ("The Label Scanner is a useful tool for assessing food quality. It helps determine the degree of processing, macronutrient concentration, and natural origin.", "标签扫描器是一款用于评估食品质量的实用工具。它可以帮助判断食品的加工程度、宏量营养素含量以及天然来源。"),
+        "Espacio Calma": ("Calm Space", "宁静空间"),
+        "Espacio Calma es una experiencia inmersiva que ayuda a relajar el cuerpo, calmar la mente y restaurar el equilibrio emocional.": ("Calm Space is an immersive experience that helps relax the body, calm the mind, and restore emotional balance.", "宁静空间是一种沉浸式体验，帮助放松身体、平静心灵并恢复情绪平衡。"),
+        "Coherencia Cardio Cerebral": ("Cardio-Cerebral Coherence", "心脑一致性"),
+        "La coherencia Cardio cerebral es una técnica que unifica el ritmo del corazón  con el estado de las ondas cerebrales. En este estado mental, se abre la puerta a la restauración de la línea base en el cerebro y comienza el estado de curación holística.": ("Cardio-cerebral coherence is a technique that synchronizes the heart rhythm with the state of the brain waves. In this mental state, the brain's baseline can be restored and holistic healing can begin.", "心脑一致性是一种将心脏节律与脑电波状态协调起来的技术。在这种心理状态下，大脑的基线得以恢复，整体疗愈也由此开始。"),
+        "Comandos de Voz": ("Voice Commands", "语音指令"),
+        "Guía visual rápida para usar comandos de voz dentro de la app.": ("A quick visual guide to using voice commands in the app.", "在应用中使用语音指令的快速图文指南。"),
+        "Oye Siri, en La Ley crea una Nota": ("Hey Siri, in La Ley create a Note", "嘿 Siri，在 La Ley 中创建一条笔记"),
+        "Siri pedirá un título y un contenido para crear la Nota": ("Siri will ask for a title and content to create the Note.", "Siri 会要求输入标题和内容，以创建这条笔记。"),
+        "Oye Siri, en La Ley crea una entrada": ("Hey Siri, in La Ley create an entry", "嘿 Siri，在 La Ley 中创建一条日记记录"),
+        "Siri pedirá un título y un contenido para crear la entrada en el Diario": ("Siri will ask for a title and content to create the Journal entry.", "Siri 会要求输入标题和内容，以在日记中创建记录。"),
+        "Oye Siri, en La Ley crea una frase para Calma": ("Hey Siri, in La Ley create a Calm Space affirmation", "嘿 Siri，在 La Ley 中为宁静空间创建一句肯定语"),
+        "Siri pedirá un título y un contenido para crear la frase personal para Espacio Calma": ("Siri will ask for a title and content to create your personal affirmation for Calm Space.", "Siri 会要求输入标题和内容，以在宁静空间中创建个人肯定语。"),
+        "Oye Siri, en La Ley crea entrada en Agenda": ("Hey Siri, in La Ley create a Calendar entry", "嘿 Siri，在 La Ley 中创建一条日程"),
+        "Siri pedirá un título, un contenido y un horario para crear la entrada en la Agenda": ("Siri will ask for a title, content, and time to create the Calendar entry.", "Siri 会要求输入标题、内容和时间，以在日程中创建记录。"),
+        "Oye Siri, en La Ley crea una frase": ("Hey Siri, in La Ley create an affirmation", "嘿 Siri，在 La Ley 中创建一句肯定语"),
+        "Siri pedirá el texto de la frase": ("Siri will ask for the text of the affirmation.", "Siri 会要求输入肯定语的文本。")
+    ]
+
+    static func localized(_ spanish: String) -> String {
+        guard let translation = translations[spanish] else { return spanish }
+        switch AppLanguage.current {
+        case .english: return translation.english
+        case .simplifiedChinese: return translation.chinese
+        case .spanish: return spanish
+        }
+    }
+}
+
 struct TutorialVideo: Identifiable {
     let id: String
     let title: String
@@ -75,34 +114,34 @@ struct TutorialVideosListView: View {
     @State private var selectedGuide: TutorialImageGuide?
 
     private let videos: [TutorialVideo] = [
-        TutorialVideo(videoId: "Qtv7R46NK4Y", title: "Lienzo", description: "Lienzo es una forma creativa de compartir las enseñanzas de los grandes maestros."),
-        TutorialVideo(videoId: "7Lkv71cVlbA", title: "Metas", description: "Metas es un poderosa heramienta para crear buenos hábitos y reprogramar el cerebro."),
-        TutorialVideo(videoId: "zoNihDZeh8k", title: "Ritual Matutino", description: "Diseñe su día y establezca una intención clara y definida para afrontar cada situación que se le presente. Elige reaccionar concientemente y dejar de ser un efecto de su entorno."),
+        TutorialVideo(videoId: "Qtv7R46NK4Y", title: TutorialCopy.localized("Lienzo"), description: TutorialCopy.localized("Lienzo es una forma creativa de compartir las enseñanzas de los grandes maestros.")),
+        TutorialVideo(videoId: "7Lkv71cVlbA", title: TutorialCopy.localized("Metas"), description: TutorialCopy.localized("Metas es un poderosa heramienta para crear buenos hábitos y reprogramar el cerebro.")),
+        TutorialVideo(videoId: "zoNihDZeh8k", title: TutorialCopy.localized("Ritual Matutino"), description: TutorialCopy.localized("Diseñe su día y establezca una intención clara y definida para afrontar cada situación que se le presente. Elige reaccionar concientemente y dejar de ser un efecto de su entorno.")),
         TutorialVideo(
             videoId: "aywaTrF7J74",
-            title: L10n.exact("Lector de Etiquetas"),
-            description: L10n.exact("El Lector de Etiquetas es una herramienta útil para inspeccionar la calidad de un alimento. Permite determinar su grado de procesamiento, la concentración de sus macronutrientes y su origen natural.")
+            title: TutorialCopy.localized("Lector de Etiquetas"),
+            description: TutorialCopy.localized("El Lector de Etiquetas es una herramienta útil para inspeccionar la calidad de un alimento. Permite determinar su grado de procesamiento, la concentración de sus macronutrientes y su origen natural.")
         ),
-        TutorialVideo(videoId: "xKc-cRC94Xo", title: "Espacio Calma", description: "Espacio Calma es una experiencia inmersiva que ayuda a relajar el cuerpo, calmar la mente y restaurar el equilibrio emocional."),
+        TutorialVideo(videoId: "xKc-cRC94Xo", title: TutorialCopy.localized("Espacio Calma"), description: TutorialCopy.localized("Espacio Calma es una experiencia inmersiva que ayuda a relajar el cuerpo, calmar la mente y restaurar el equilibrio emocional.")),
         TutorialVideo(
             videoId: "ozQlIio6E_I",
-            title: L10n.exact("Coherencia Cardio Cerebral"),
-            description: L10n.exact("La coherencia Cardio cerebral es una técnica que unifica el ritmo del corazón  con el estado de las ondas cerebrales. En este estado mental, se abre la puerta a la restauración de la línea base en el cerebro y comienza el estado de curación holística.")
+            title: TutorialCopy.localized("Coherencia Cardio Cerebral"),
+            description: TutorialCopy.localized("La coherencia Cardio cerebral es una técnica que unifica el ritmo del corazón  con el estado de las ondas cerebrales. En este estado mental, se abre la puerta a la restauración de la línea base en el cerebro y comienza el estado de curación holística.")
         )
     ]
 
     private let imageGuides: [TutorialImageGuide] = [
         TutorialImageGuide(
-            title: "Comandos de Voz",
-            description: "Guía visual rápida para usar comandos de voz dentro de la app.",
+            title: TutorialCopy.localized("Comandos de Voz"),
+            description: TutorialCopy.localized("Guía visual rápida para usar comandos de voz dentro de la app."),
             coverImageName: "tuto_running.png",
             steps: [
-                TutorialImageStep(stepTitle: "Oye Siri, en La Ley crea una Nota", imageName: "tuto_running.png", caption: "Siri pedirá un título y un contenido para crear la Nota"),
-                TutorialImageStep(stepTitle: "Oye Siri, en La Ley crea una Nota", imageName: "tuto_ciclismo.png", caption: "Siri pedirá un título y un contenido para crear la Nota"),
-                TutorialImageStep(stepTitle: "Oye Siri, en La Ley crea una entrada", imageName: "tuto_crear_entrada.png", caption: "Siri pedirá un título y un contenido para crear la entrada en el Diario"),
-                TutorialImageStep(stepTitle: "Oye Siri, en La Ley crea una frase para Calma", imageName: "tuto_crearFraseEspacioCalma.png", caption: "Siri pedirá un título y un contenido para crear la frase personal para Espacio Calma"),
-                TutorialImageStep(stepTitle: "Oye Siri, en La Ley crea entrada en Agenda", imageName: "tuto_crearAgenda.png", caption: "Siri pedirá un título, un contenido y un horario para crear la entrada en la Agenda"),
-                TutorialImageStep(stepTitle: "Oye Siri, en La Ley crea una frase", imageName: "tuto_crearFrase.png", caption: "Siri pedirá el texto de la frase"),
+                TutorialImageStep(stepTitle: TutorialCopy.localized("Oye Siri, en La Ley crea una Nota"), imageName: "tuto_running.png", caption: TutorialCopy.localized("Siri pedirá un título y un contenido para crear la Nota")),
+                TutorialImageStep(stepTitle: TutorialCopy.localized("Oye Siri, en La Ley crea una Nota"), imageName: "tuto_ciclismo.png", caption: TutorialCopy.localized("Siri pedirá un título y un contenido para crear la Nota")),
+                TutorialImageStep(stepTitle: TutorialCopy.localized("Oye Siri, en La Ley crea una entrada"), imageName: "tuto_crear_entrada.png", caption: TutorialCopy.localized("Siri pedirá un título y un contenido para crear la entrada en el Diario")),
+                TutorialImageStep(stepTitle: TutorialCopy.localized("Oye Siri, en La Ley crea una frase para Calma"), imageName: "tuto_crearFraseEspacioCalma.png", caption: TutorialCopy.localized("Siri pedirá un título y un contenido para crear la frase personal para Espacio Calma")),
+                TutorialImageStep(stepTitle: TutorialCopy.localized("Oye Siri, en La Ley crea entrada en Agenda"), imageName: "tuto_crearAgenda.png", caption: TutorialCopy.localized("Siri pedirá un título, un contenido y un horario para crear la entrada en la Agenda")),
+                TutorialImageStep(stepTitle: TutorialCopy.localized("Oye Siri, en La Ley crea una frase"), imageName: "tuto_crearFrase.png", caption: TutorialCopy.localized("Siri pedirá el texto de la frase")),
             ]
         )
     ]
@@ -137,7 +176,7 @@ struct TutorialVideosListView: View {
             .padding()
         }
         .background(LinearGradient.AzulTecnologico())
-        .navigationTitle("Videos Tutoriales")
+        .navigationTitle(TutorialCopy.localized("Videos Tutoriales"))
         .sheet(item: $selectedGuide) { guide in
             NavigationStack {
                 TutorialImagesDetailView(guide: guide)
