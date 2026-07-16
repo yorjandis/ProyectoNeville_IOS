@@ -85,6 +85,13 @@
       "resourceName": "ayud_si me resulta dificil creer",
       "title": "If I find it hard to believe",
       "locale": "en"
+      },
+      {
+      "id": "reflex:reflex_conocimiento",
+      "kind": "reflex",
+      "resourceName": "reflex_conocimiento",
+      "title": "Knowledge",
+      "locale": "en"
       }
   ]
 }

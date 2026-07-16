@@ -81,38 +81,15 @@ final class ReflexModel : ObservableObject{
     /// - Note: Este método modifica el estado publicado `list`.
     func getArrayReflexOfTxtFile(){
 
-        //Eliminado el listado primero:
+        // Limpiar el listado primero
         self.list.removeAll()
-        
-        //Obteniendo todas los ficheros de reflexiones
-        let reflexURLs = Bundle.main.urls(forResourcesWithExtension: "txt", subdirectory: nil)?
-            .compactMap { url -> URL? in
-                url.lastPathComponent.hasPrefix("reflex_") ? url : nil
-            } ?? []
-            
-            for url in reflexURLs {
-                do {
-                    let data = try Data(contentsOf: url)
-                    let decoder = JSONDecoder()
-                    let refJSON = try decoder.decode(RefJSON.self, from: data)
-                    
-                    let refType = RefType(
-                        id: UUID().uuidString,
-                        title: refJSON.titulo,
-                        content: refJSON.contenido.joined(separator: "\n\n") ,
-                        autor: refJSON.autor,
-                        isInbuilt: true,
-                        isfav: false
-                    )
-                    
-                    self.list.append(refType)
-                } catch {
-                    msg("Error cargando \(url.lastPathComponent): \(error)")
-                }
-            }
-            //Adicionando las reflexiones personales al listado
-            self.list.append(contentsOf: getAllReflexNoInbuiltGet())
-        
+
+        // Cargar reflexiones integradas desde la localización activa
+        let inbuilt = loadInbuiltReflexes()
+        self.list.append(contentsOf: inbuilt)
+
+        // Adicionar las reflexiones personales al listado
+        self.list.append(contentsOf: getAllReflexNoInbuiltGet())
     }
     
     /// Obtiene todas las reflexiones sin modificar el estado publicado.
@@ -123,40 +100,120 @@ final class ReflexModel : ObservableObject{
     func getArrayReflexOfTxtFileGET()->[RefType]{
   
         var result : [RefType] = []
+
+        // Cargar reflexiones integradas desde la localización activa
+        result.append(contentsOf: loadInbuiltReflexes())
         
-        //Obteniendo todas los ficheros de reflexiones
-        let reflexURLs = Bundle.main.urls(forResourcesWithExtension: "txt", subdirectory: nil)?
-            .compactMap { url -> URL? in
-                url.lastPathComponent.hasPrefix("reflex_") ? url : nil
-            } ?? []
-        
-        for url in reflexURLs {
-            do {
-                let data = try Data(contentsOf: url)
-                let decoder = JSONDecoder()
-                let refJSON = try decoder.decode(RefJSON.self, from: data)
-                
-                let refType = RefType(
-                    id: UUID().uuidString,
-                    title: refJSON.titulo,
-                    content: refJSON.contenido.joined(separator: "\n\n"),
-                    autor: refJSON.autor,
-                    isInbuilt: false,
-                    isfav: false
-                )
-                
-                result.append(refType)
-            } catch {
-                msg("Error cargando \(url.lastPathComponent): \(error)")
-            }
-        }
-        //Adicionando las reflexiones personales al listado
+        // Adicionar las reflexiones personales al listado
         result.append(contentsOf: getAllReflexNoInbuiltGet())
         
         return result
         
     }
     
+    /// Carga las reflexiones integradas desde el bundle.
+    ///
+    /// Intenta primero cargar un único recurso localizado "reflex.txt" (el sistema elegirá la variante del idioma).
+    /// Ese archivo puede contener una única reflexión (RefJSON) o un arreglo de reflexiones ([RefJSON]).
+    /// Si no existe o falla la decodificación, hace fallback a buscar archivos "reflex_*.txt" únicamente
+    /// dentro de la carpeta de la localización activa (o Base), evitando mezclar idiomas.
+    private func loadInbuiltReflexes() -> [RefType] {
+        var result: [RefType] = []
+
+        // 1) Intentar con un único archivo localizado: reflex.txt
+        if let url = Bundle.main.url(forResource: "reflex", withExtension: "txt") {
+            do {
+                let data = try Data(contentsOf: url)
+                let decoder = JSONDecoder()
+
+                // Intentar decodificar como arreglo de reflexiones
+                if let array = try? decoder.decode([RefJSON].self, from: data) {
+                    for item in array {
+                        let isFav = self.getFavState(title: item.titulo)
+                        let refType = RefType(
+                            id: UUID().uuidString,
+                            title: item.titulo,
+                            content: item.contenido.joined(separator: "\n\n"),
+                            autor: item.autor,
+                            isInbuilt: true,
+                            isfav: isFav
+                        )
+                        result.append(refType)
+                    }
+                    return result
+                }
+
+                // Si no es arreglo, decodificar como una sola reflexión
+                let item = try decoder.decode(RefJSON.self, from: data)
+                let isFav = self.getFavState(title: item.titulo)
+                let single = RefType(
+                    id: UUID().uuidString,
+                    title: item.titulo,
+                    content: item.contenido.joined(separator: "\n\n"),
+                    autor: item.autor,
+                    isInbuilt: true,
+                    isfav: isFav
+                )
+                result.append(single)
+                return result
+            } catch {
+                msg("Error cargando reflex.txt: \(error)")
+            }
+        }
+
+        // 2) Fallback: buscar archivos por prefijo en la localización activa para no mezclar idiomas
+        let bundle = Bundle.main
+        var directoryCandidates: [URL] = []
+
+        if let loc = bundle.preferredLocalizations.first,
+           let locDir = bundle.url(forResource: loc, withExtension: "lproj") {
+            directoryCandidates.append(locDir)
+        }
+        if let baseDir = bundle.url(forResource: "Base", withExtension: "lproj") {
+            directoryCandidates.append(baseDir)
+        }
+        if let resURL = bundle.resourceURL {
+            directoryCandidates.append(resURL)
+        }
+
+        let fm = FileManager.default
+        var reflexURLs: [URL] = []
+
+        for dir in directoryCandidates {
+            if let urls = try? fm.contentsOfDirectory(at: dir, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles]) {
+                let matches = urls.filter { $0.pathExtension == "txt" && $0.lastPathComponent.hasPrefix("reflex_") }
+                if !matches.isEmpty {
+                    reflexURLs = matches
+                    break
+                }
+            }
+        }
+
+        for url in reflexURLs {
+            do {
+                let data = try Data(contentsOf: url)
+                let decoder = JSONDecoder()
+                let refJSON = try decoder.decode(RefJSON.self, from: data)
+
+                let isFav = self.getFavState(title: refJSON.titulo)
+
+                let refType = RefType(
+                    id: UUID().uuidString,
+                    title: refJSON.titulo,
+                    content: refJSON.contenido.joined(separator: "\n\n"),
+                    autor: refJSON.autor,
+                    isInbuilt: true,
+                    isfav: isFav
+                )
+
+                result.append(refType)
+            } catch {
+                msg("Error cargando \(url.lastPathComponent): \(error)")
+            }
+        }
+
+        return result
+    }
     
     /// Obtiene las reflexiones marcadas como favoritas.
     ///

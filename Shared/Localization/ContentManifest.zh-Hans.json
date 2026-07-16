@@ -85,6 +85,13 @@
       "resourceName": "ayud_si me resulta dificil creer",
       "title": "如果我觉得很难相信。",
       "locale": "zh-Hans"
+      },
+      {
+      "id": "reflex:reflex_conocimiento",
+      "kind": "reflex",
+      "resourceName": "reflex_conocimiento",
+      "title": "知识",
+      "locale": "zh-Hans"
       }
   ]
 }
