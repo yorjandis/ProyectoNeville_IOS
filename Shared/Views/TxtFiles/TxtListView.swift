@@ -133,9 +133,8 @@ struct TxtListView: View {
                                                              for: ContentTxtShowView(
                                                                  title: self.title,
                                                                  nombreTxt: nombreTxt,
-                                                                 type: self.typeOfContent, blocks: [
-                                                                    ContentBlock(content: .text(UtilFuncs.FileRead("\(typeOfContent.rawValue)\(nombreTxt)")))
-                                                                 ]
+                                                                 type: self.typeOfContent,
+                                                                 blocks: self.contentBlocks(for: nombreTxt)
                                                              ),
                                                              environmentObjects: [
                                                                  self.modeloTxt,
@@ -207,9 +206,8 @@ struct TxtListView: View {
                                           for: ContentTxtShowView(
                                               title: self.title,
                                               nombreTxt: nombreTxt,
-                                              type: self.typeOfContent,blocks: [
-                                                ContentBlock(content: .text(UtilFuncs.FileRead("\(typeOfContent.rawValue)\(nombreTxt)")))
-                                             ]
+                                              type: self.typeOfContent,
+                                              blocks: self.contentBlocks(for: nombreTxt)
                                           ),
                                           environmentObjects: [self.modeloTxt, self.settingModel, self.clipBoardModel],
                                           title: "\(self.title) - \(nombreTxt)",
@@ -263,9 +261,12 @@ struct TxtListView: View {
                                                         ], startPoint: .leading, endPoint: .trailing))
                                                     
                                                     NavigationLink {
-                                                        ContentTxtShowView(title: self.title,nombreTxt: nombreTxt,  type: self.typeOfContent, blocks: [
-                                                            ContentBlock(content: .text(UtilFuncs.FileRead("\(typeOfContent.rawValue)\(nombreTxt)")))
-                                                        ])
+                                                        ContentTxtShowView(
+                                                            title: self.title,
+                                                            nombreTxt: nombreTxt,
+                                                            type: self.typeOfContent,
+                                                            blocks: self.contentBlocks(for: nombreTxt)
+                                                        )
                                                             .environmentObject(self.modeloTxt)
                                                             .environmentObject(self.settingModel)
                                                             .environmentObject(self.clipBoardModel)
@@ -314,9 +315,12 @@ struct TxtListView: View {
                                     ], startPoint: .leading, endPoint: .trailing))
                                 
                                 NavigationLink{
-                                    ContentTxtShowView(title: self.title, nombreTxt: nombreTxt, type: self.typeOfContent, blocks: [
-                                        ContentBlock(content: .text(UtilFuncs.FileRead("\(self.typeOfContent.rawValue)\(nombreTxt)")))
-                                    ])
+                                    ContentTxtShowView(
+                                        title: self.title,
+                                        nombreTxt: nombreTxt,
+                                        type: self.typeOfContent,
+                                        blocks: self.contentBlocks(for: nombreTxt)
+                                    )
                                         .environmentObject(self.modeloTxt)
                                         .environmentObject(self.settingModel)
                                         .environmentObject(self.clipBoardModel)
@@ -396,29 +400,29 @@ struct TxtListView: View {
                  ToolbarItem{
                      Menu{
                          
-                         CreateMenuItemButton(text: "Todas las \(self.title)", sysImageStr: "text.magnifyingglass") {
+                         CreateMenuItemButton(text: String(localized: "Todas las \(self.title)"), sysImageStr: "text.magnifyingglass") {
                              withAnimation {
                                  modeloTxt.getAllFileTxtOfType(type: self.typeOfContent)
                              }
                          }
                          
-                         CreateMenuItemButton(text: "\(self.title) favoritas", sysImageStr: "text.magnifyingglass") {
+                         CreateMenuItemButton(text: String(localized: "\(self.title) favoritas"), sysImageStr: "text.magnifyingglass") {
                              withAnimation {
                                  modeloTxt.textList = modeloTxt.getArrayFavTxt(type: self.typeOfContent)
                              }
                          }
                          
-                         CreateMenuItemButton(text: "\(self.title) con notas", sysImageStr: "text.magnifyingglass") {
+                         CreateMenuItemButton(text: String(localized: "\(self.title) con notas"), sysImageStr: "text.magnifyingglass") {
                              withAnimation {
                                  modeloTxt.textList = modeloTxt.getArrayNoteTxt(type: self.typeOfContent)
                              }
                          }
                          
-                         CreateMenuItemButton(text: "Buscar en el contenido", sysImageStr: "text.magnifyingglass") {
+                         CreateMenuItemButton(text: String(localized: "Buscar en el contenido" ), sysImageStr: "text.magnifyingglass") {
                              showAlertSearchInTxt = true
                          }
                          
-                         CreateMenuItemButton(text: "Buscar en las notas", sysImageStr: "text.magnifyingglass") {
+                         CreateMenuItemButton(text: String(localized: "Buscar en las notas"), sysImageStr: "text.magnifyingglass") {
                              showAlertSearchInNotas = true
                          }
                          
@@ -455,13 +459,16 @@ struct TxtListView: View {
         }
         
     }
-    
-    
-    
-    
-    
+    //Helper que ayuda a cargar el contenido de los ficheros Txt
+    private func contentBlocks(for nombreTxt: String) -> [ContentBlock] {
+        let text: String
+        if self.typeOfContent == .ayud {
+            text = self.modeloTxt.getContentTxt(nombreTxt: nombreTxt, type: self.typeOfContent)
+        } else {
+            text = UtilFuncs.FileRead("\(self.typeOfContent.rawValue)\(nombreTxt)")
+        }
+        return [ContentBlock(content: .text(text))]
+    }
 }
-
-
 
 

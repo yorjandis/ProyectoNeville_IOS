@@ -7,7 +7,7 @@
 		<key>ConsciousDashboardMacWidgetExtension.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>7</integer>
+			<integer>5</integer>
 		</dict>
 		<key>FrasesWiggetExtension.xcscheme_^#shared#^_</key>
 		<dict>
@@ -32,7 +32,7 @@
 		<key>LaLeyBackgroundDownloadExtension.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>5</integer>
+			<integer>7</integer>
 		</dict>
 		<key>Neville_iOS.xcscheme_^#shared#^_</key>
 		<dict>

@@ -2,7 +2,7 @@
   "sourceLanguage" : "es",
   "strings" : {
     "" : {
-
+      "shouldTranslate" : false
     },
     "       Creado:" : {
       "localizations" : {
@@ -71,7 +71,7 @@
       }
     },
     ":" : {
-
+      "shouldTranslate" : false
     },
     ": %@" : {
       "localizations" : {
@@ -931,7 +931,7 @@
       }
     },
     "·" : {
-
+      "shouldTranslate" : false
     },
     "(Beta)" : {
       "localizations" : {
@@ -956,7 +956,7 @@
       }
     },
     "[%lld]" : {
-
+      "shouldTranslate" : false
     },
     "%@" : {
       "localizations" : {
@@ -988,7 +988,8 @@
             "value" : "%1$@  %2$lld"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "%@ · %@" : {
       "localizations" : {
@@ -1020,7 +1021,8 @@
             "value" : "%1$@ %2$@"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "%@ %@ · %lld" : {
       "localizations" : {
@@ -1052,6 +1054,27 @@
             "value" : "%1$@ %2$lld"
           }
         }
+      },
+      "shouldTranslate" : false
+    },
+    "%@ con notas" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 附注释"
+          }
+        }
+      }
+    },
+    "%@ favoritas" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 收藏夹"
+          }
+        }
       }
     },
     "%@, %@" : {
@@ -1062,7 +1085,8 @@
             "value" : "%1$@, %2$@"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "%@: %@" : {
       "localizations" : {
@@ -1072,7 +1096,8 @@
             "value" : "%1$@: %2$@"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "%@: %lld" : {
       "localizations" : {
@@ -1082,10 +1107,11 @@
             "value" : "%1$@: %2$lld"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "%@/año" : {
-
+      "shouldTranslate" : false
     },
     "%@%@" : {
       "localizations" : {
@@ -1095,7 +1121,8 @@
             "value" : "%1$@%2$@"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "%arg minutos de coherencia · cambio medio %arg%.1f" : {
       "localizations" : {
@@ -1149,7 +1176,8 @@
             "value" : "%1$lld %2$@"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "%lld completadas" : {
       "localizations" : {
@@ -1306,7 +1334,7 @@
       }
     },
     "%lld%%" : {
-
+      "shouldTranslate" : false
     },
     "%lldd" : {
       "localizations" : {
@@ -1331,10 +1359,10 @@
       }
     },
     "•" : {
-
+      "shouldTranslate" : false
     },
     "• %@" : {
-
+      "shouldTranslate" : false
     },
     "< %@ >" : {
       "localizations" : {
@@ -1613,7 +1641,7 @@
       }
     },
     "10" : {
-
+      "shouldTranslate" : false
     },
     "14 días" : {
       "localizations" : {
@@ -1727,7 +1755,7 @@
       }
     },
     "99+" : {
-
+      "shouldTranslate" : false
     },
     "A medias" : {
       "localizations" : {
@@ -1818,7 +1846,14 @@
       }
     },
     "Abre %@ en La Ley" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开 %@ 在 La Ley"
+          }
+        }
+      }
     },
     "Abre el histórico y las estadísticas" : {
       "localizations" : {
@@ -7499,7 +7534,14 @@
       }
     },
     "Buscar en contenido" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在内容中搜索"
+          }
+        }
+      }
     },
     "Buscar en el contenido" : {
       "localizations" : {
@@ -7546,7 +7588,14 @@
       }
     },
     "Buscar en las notas" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在笔记中查找"
+          }
+        }
+      }
     },
     "Buscar en metas, identidad, emoción o anticipación" : {
       "localizations" : {
@@ -7571,7 +7620,14 @@
       }
     },
     "Buscar en nota de Frase" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在短语笔记中搜索"
+          }
+        }
+      }
     },
     "Buscar en notas" : {
       "localizations" : {
@@ -8246,7 +8302,14 @@
       }
     },
     "Cancelar selección" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取消选择"
+          }
+        }
+      }
     },
     "Cansado" : {
       "localizations" : {
@@ -10683,7 +10746,14 @@
       }
     },
     "Con Notas" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "附注释"
+          }
+        }
+      }
     },
     "Con recordatorio" : {
       "localizations" : {
@@ -12843,7 +12913,14 @@
       }
     },
     "Debe aceptar primero, en Ajustes, los permisos de ubicación en iPhone." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "您必须先在 iPhone 的“设置”中授予其位置权限。"
+          }
+        }
+      }
     },
     "Debe colocar un título y un texto para la entrada" : {
       "extractionState" : "stale",
@@ -13580,7 +13657,14 @@
 
     },
     "Deseleccionar todas las frases visibles" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取消选择所有可见短语"
+          }
+        }
+      }
     },
     "Deseleccionar visibles" : {
 
@@ -18932,10 +19016,24 @@
       }
     },
     "Evidencia Científica" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "科学证据"
+          }
+        }
+      }
     },
     "Evidencia Científica que apoya los siguientes temas:" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "支持以下主题的科学证据："
+          }
+        }
+      }
     },
     "Evidencia limitada" : {
       "localizations" : {
@@ -19542,7 +19640,14 @@
       }
     },
     "Favorito %@" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最喜欢的 %@"
+          }
+        }
+      }
     },
     "Favoritos" : {
       "localizations" : {
@@ -23512,7 +23617,14 @@
       }
     },
     "Hacer Favorito" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加到收藏夹"
+          }
+        }
+      }
     },
     "Has creado momentos conscientes a lo largo de la semana." : {
       "localizations" : {
@@ -38138,7 +38250,14 @@
       }
     },
     "Puedes gestionar o cancelar la suscripción en Ajustes de tu Apple ID tras la compra." : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "购买后，您可以在 Apple ID 设置中管理或取消订阅。"
+          }
+        }
+      }
     },
     "Puedes volver a esta técnica desde tus favoritos cuando la necesites." : {
       "localizations" : {
@@ -38305,7 +38424,14 @@
       }
     },
     "Quitar Favorito" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移除收藏"
+          }
+        }
+      }
     },
     "Quitar recordatorio" : {
       "localizations" : {
@@ -39128,7 +39254,14 @@
 
     },
     "Recursos Didácticos" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "教学资源"
+          }
+        }
+      }
     },
     "Recursos para" : {
       "localizations" : {
@@ -39672,7 +39805,14 @@
 
     },
     "Remover todas las relaciones" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移除所有关系"
+          }
+        }
+      }
     },
     "Remover Widget" : {
 
@@ -42297,7 +42437,14 @@
 
     },
     "Seleccionar todas las frases visibles" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择所有可见的短语。"
+          }
+        }
+      }
     },
     "Seleccionar visibles" : {
 
@@ -45086,6 +45233,16 @@
         }
       }
     },
+    "Todas las %@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全部 %@"
+          }
+        }
+      }
+    },
     "Todas las entradas" : {
       "localizations" : {
         "en" : {
@@ -46459,7 +46616,14 @@
       }
     },
     "Últimas lecturas visitadas:" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最近浏览的阅读材料："
+          }
+        }
+      }
     },
     "Un año atrás" : {
       "localizations" : {
@@ -47367,7 +47531,14 @@
       }
     },
     "Videos Tutoriales" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "教程视频"
+          }
+        }
+      }
     },
     "Viernes" : {
       "localizations" : {

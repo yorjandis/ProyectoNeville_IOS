@@ -56,6 +56,10 @@
             isEnabled = "YES">
          </EnvironmentVariable>
       </EnvironmentVariables>
+      <LocationScenarioReference
+         identifier = "com.apple.dt.IDEFoundation.CurrentLocationScenarioIdentifier"
+         referenceType = "1">
+      </LocationScenarioReference>
       <StoreKitConfigurationFileReference
          identifier = "../../Shared/Models/PurchaseModel/StoreKitFile.storekit">
       </StoreKitConfigurationFileReference>

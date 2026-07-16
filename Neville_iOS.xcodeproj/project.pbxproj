@@ -314,6 +314,18 @@
 		911FE4562ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				"/Localized/Localization/ayud_como manifestar.txt",
+				"/Localized/Localization/ayud_efectuar un tratamiento a otro.txt",
+				"/Localized/Localization/ayud_ejercicio para la imaginacion.txt",
+				"/Localized/Localization/ayud_El arte de la revisión.txt",
+				"/Localized/Localization/ayud_el poder llamado la ley.txt",
+				"/Localized/Localization/ayud_evitar la influencia inconsciente.txt",
+				"/Localized/Localization/ayud_expresar un cambio en tu mundo.txt",
+				"/Localized/Localization/ayud_la formula de la victoria.txt",
+				"/Localized/Localization/ayud_metodo de manifestacion.txt",
+				"/Localized/Localization/ayud_resumen de la enseñanza de neville.txt",
+				"/Localized/Localization/ayud_salir de las limitaciones y problemas.txt",
+				"/Localized/Localization/ayud_si me resulta dificil creer.txt",
 				/Localized/Localization/biografia_bruce.txt,
 				/Localized/Localization/biografia_gregg.txt,
 				/Localized/Localization/biografia_jd.txt,

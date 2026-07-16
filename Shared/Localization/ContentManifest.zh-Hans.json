@@ -1,5 +1,90 @@
 {
   "version": 1,
   "locale": "zh-Hans",
-  "entries": []
+  "entries": [
+      {
+      "id": "help:ayud_como%20manifestar",
+      "kind": "help",
+      "resourceName": "ayud_como manifestar",
+      "title": "如何显化",
+      "locale": "zh-Hans"
+      },
+      {
+      "id": "help:ayud_efectuar%20un%20tratamiento%20a%20otro",
+      "kind": "help",
+      "resourceName": "ayud_efectuar un tratamiento a otro",
+      "title": "对另一人进行一种治疗",
+      "locale": "zh-Hans"
+      },
+      {
+      "id": "help:ayud_ejercicio%20para%20la%20imaginacion",
+      "kind": "help",
+      "resourceName": "ayud_ejercicio para la imaginacion",
+      "title": "想象力练习",
+      "locale": "zh-Hans"
+      },
+      {
+      "id": "help:ayud_El%20arte%20de%20la%20revisión",
+      "kind": "help",
+      "resourceName": "ayud_El arte de la revisión",
+      "title": "修订的艺术",
+      "locale": "zh-Hans"
+      },
+      {
+      "id": "help:ayud_el%20poder%20llamado%20la%20ley",
+      "kind": "help",
+      "resourceName": "ayud_el poder llamado la ley",
+      "title": "法律赋予的权力",
+      "locale": "zh-Hans"
+      },
+      {
+      "id": "help:ayud_evitar%20la%20influencia%20inconsciente",
+      "kind": "help",
+      "resourceName": "ayud_evitar la influencia inconsciente",
+      "title": "避免无意识影响",
+      "locale": "zh-Hans"
+      },
+      {
+      "id": "help:ayud_expresar%20un%20cambio%20en%20tu%20mundo",
+      "kind": "help",
+      "resourceName": "ayud_expresar un cambio en tu mundo",
+      "title": "表达你世界中的变化",
+      "locale": "zh-Hans"
+      },
+      {
+      "id": "help:ayud_la%20formula%20de%20la%20victoria",
+      "kind": "help",
+      "resourceName": "ayud_la formula de la victoria",
+      "title": "胜利的秘诀",
+      "locale": "zh-Hans"
+      },
+      {
+      "id": "help:ayud_metodo%20de%20manifestacion",
+      "kind": "help",
+      "resourceName": "ayud_metodo de manifestacion",
+      "title": "显现方法",
+      "locale": "zh-Hans"
+      },
+      {
+      "id": "help:ayud_resumen%20de%20la%20enseñanza%20de%20neville",
+      "kind": "help",
+      "resourceName": "ayud_resumen de la enseñanza de neville",
+      "title": "内维尔教导的总结",
+      "locale": "zh-Hans"
+      },
+      {
+      "id": "help:ayud_salir%20de%20las%20limitaciones%20y%20problemas",
+      "kind": "help",
+      "resourceName": "ayud_salir de las limitaciones y problemas",
+      "title": "克服局限性和问题",
+      "locale": "zh-Hans"
+      },
+      {
+      "id": "help:ayud_si%20me%20resulta%20dificil%20creer",
+      "kind": "help",
+      "resourceName": "ayud_si me resulta dificil creer",
+      "title": "如果我觉得很难相信。",
+      "locale": "zh-Hans"
+      }
+  ]
 }

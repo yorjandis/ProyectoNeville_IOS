@@ -19,6 +19,8 @@ struct FeedbackView: View {
     
     @State private var isReviewComplete : Bool = false
     
+    @State private var countPremiumSecreteCode : Int = 0
+    
     @AppStorage("yorjPremium",store: UserDefaults(suiteName: AppCons.AppGroupName))var yorjPremium: Bool = false
 
     
@@ -29,6 +31,11 @@ struct FeedbackView: View {
                 .frame(width: 150, height: 150)
                 .clipShape(Circle())
                 .shadow(color: .orange ,radius: 10)
+                .onTapGesture(count:  3 ) {
+                    if self.countPremiumSecreteCode == 1 {
+                        self.countPremiumSecreteCode = 2
+                    }
+                }
                 
 
                 Text("Las enseñansas de neville rebozan de Amor y Verdad!")
@@ -77,10 +84,16 @@ struct FeedbackView: View {
                 Text("😊")
                     .font(.system(size: 30))
                     .multilineTextAlignment(.center)
+                    .onTapGesture(count:  2) {
+                        if self.countPremiumSecreteCode == 2 {
+                            self.yorjPremium.toggle() //Alterna entre premium o no
+                        }
+                    }
                     .onTapGesture(count: 4){
                         //Hacer al desarrollador premium
-                        self.yorjPremium.toggle()
+                        self.countPremiumSecreteCode = 1
                     }
+                    
                     
                     
             }
