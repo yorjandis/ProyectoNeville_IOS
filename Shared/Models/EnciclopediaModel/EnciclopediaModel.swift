@@ -178,6 +178,79 @@ enum EnciclopediaTemas: String, CaseIterable, Hashable {
 }
 
 
+extension EnciclopediaTemas {
+    /// Título visible del artículo. El nombre del recurso permanece en español
+    /// para conservar las rutas, favoritos y referencias existentes.
+    var localizedTitle: String {
+        guard AppLanguage.current != .spanish else { return rawValue }
+
+        let translations: [EnciclopediaTemas: (english: String, chinese: String)] = [
+            .coherenciaCardioCerebral: ("Cardio-Cerebral Coherence", "心脑一致性"),
+            .hormonasStress: ("Stress Hormones", "压力激素"),
+            .meditación: ("Meditation", "冥想"),
+            .menteUniversal: ("The Universal Mind / Quantum Field / Divine Matrix", "普遍心智／量子场／神圣矩阵"),
+            .menteConcienteYSubconciente: ("The Conscious and Subconscious Mind", "意识与潜意识"),
+            .conciencia: ("Consciousness", "意识"),
+            .tiempo: ("The Concept of Time", "时间概念"),
+            .entrelazamientoCuanticoNeurociencia: ("Quantum Entanglement from a Neuroscience Perspective", "从神经科学角度看量子纠缠"),
+            .enfermedad: ("Disease", "疾病"),
+            .meditacionYExpresionGenica: ("Meditation and Gene Expression", "冥想与基因表达"),
+            .patronesSinapticosHeredados: ("Inherited/Preformed Synaptic Patterns", "遗传／预形成的突触模式"),
+            .patronesConductaHeredados: ("Inherited Behavioral Patterns", "遗传行为模式"),
+            .atencionFocalizada: ("Focused Attention", "专注注意力"),
+            .atencionFocalizadaPractica: ("Focused Attention Exercises", "专注注意力练习"),
+            .apredizajeAsociativo: ("Associative Learning", "联想学习"),
+            .modificarAsociacionesNoDeseadas: ("Modifying Unwanted Associations", "改变不需要的联想"),
+            .queEsUnPensamiento: ("What Is a Thought?", "什么是思想？"),
+            .efectosSentimientosNegativos: ("Effects of Negative Feelings", "负面情绪的影响"),
+            .sentimientoComoFuerzaCreadora: ("Feeling as a Creative Force", "情感作为创造力"),
+            .pensamientosSentimientosSistemaInmune: ("Thoughts, Feelings, and the Immune System", "思想、情绪与免疫系统"),
+            .neurocienciaDeLosHabitos: ("The Neuroscience of Habits", "习惯的神经科学"),
+            .habitosYAhorroDeEnergia: ("Habits and Saving Brain Energy", "习惯与节省大脑能量"),
+            .romperUnHabito: ("How to Break a Habit Physiologically", "如何从生理层面打破习惯"),
+            .cuantoTardaEnDebilitarseUnHábito: ("How Long Does It Take a Habit to Weaken?", "习惯减弱需要多长时间？"),
+            .recaerNoInterrumpeElProgreso: ("Why Relapsing Does Not Interrupt Habit Progress", "为什么复发不会中断习惯的进步？"),
+            .utilizarRecaidaATuFavor: ("Using a Relapse to Your Advantage", "将复发转化为优势"),
+            .protocoloAntiRecaída: ("Relapse Prevention Protocol", "防复发方案"),
+            .señalConsolidacionHabito: ("Signs of Habit Consolidation", "习惯巩固的迹象"),
+            .listadoDeHabitosSaludables: ("List of Healthy Habits", "健康习惯清单"),
+            .epigeneticaSegunVariosAutores: ("Epigenetics According to Various Authors", "多位作者论述的表观遗传学"),
+            .epigeneticaYNeurociencia: ("Epigenetics and Neuroscience", "表观遗传学与神经科学"),
+            .nevilleYepigenetica: ("Neville and Epigenetics", "内维尔与表观遗传学"),
+            .joeDispensaYEpigenetica: ("Joe Dispenza and Epigenetics", "乔·迪斯潘扎与表观遗传学"),
+            .queEsLaMemoria: ("What Is Memory?", "什么是记忆？"),
+            .memoriaSemantica: ("Semantic Memory", "语义记忆"),
+            .memoriaEpisodica: ("Episodic Memory", "情景记忆"),
+            .memoriaProcedimental: ("Procedural Memory", "程序性记忆"),
+            .queEsLaDopamina: ("What Is Dopamine?", "什么是多巴胺？"),
+            .protocoloDopaminergico: ("Daily Dopaminergic Protocol", "每日多巴胺能方案"),
+            .protocoloAntiAdiccionDigital: ("Digital Addiction Prevention Protocol", "数字成瘾预防方案"),
+            .dopaminaYProcrastinacion: ("Dopamine and Procrastination", "多巴胺与拖延"),
+            .dopaminaVersusSerotonina: ("Dopamine vs. Serotonin", "多巴胺与血清素对比"),
+            .queEsLaSerotonina: ("What Is Serotonin?", "什么是血清素？"),
+            .serotoninaYAnsiedad: ("Serotonin and Anxiety", "血清素与焦虑"),
+            .rutinaDiariaProSerotonina: ("Daily Serotonin-Boosting Routine", "提升血清素的日常作息"),
+            .queEsLaAnsiedad: ("What Is Anxiety?", "什么是焦虑？"),
+            .protocoloAntiAnsiedad: ("Anti-Anxiety Protocol", "抗焦虑方案"),
+            .ansiedadVersusStressCronico: ("Anxiety vs. Chronic Stress", "焦虑与慢性压力对比"),
+            .queSonLasEmociones: ("What Are Emotions?", "什么是情绪？"),
+            .almacenamientoEmociones: ("Emotional Storage", "情绪储存"),
+            .componentesDeUnaEmocion: ("Components of an Emotion", "情绪的组成部分"),
+            .controlEmocion: ("Emotional Regulation", "情绪调节"),
+            .interocepcionYEmocion: ("Interoception and Emotion", "内感受与情绪"),
+            .protocoloParaReinterprearEmocion: ("Protocol for Reinterpreting an Emotion", "情绪重新诠释方案"),
+            .ritmoCircadiano: ("The Circadian Rhythm", "昼夜节律"),
+            .genesRelojPerifericos: ("Activation of Peripheral Clock Genes", "外周时钟基因的激活"),
+            .protocoloNormalizarRitmoCircadiano: ("Protocol for Normalizing the Circadian Rhythm", "昼夜节律正常化方案"),
+            .protocoloNormalizarRitmoCircadiano2: ("Protocol for Normalizing the Circadian Rhythm → Optimized Variant for Cognitive Performance", "昼夜节律正常化方案 → 认知表现优化版")
+        ]
+
+        guard let translation = translations[self] else { return rawValue }
+        return AppLanguage.current == .english ? translation.english : translation.chinese
+    }
+}
+
+
 //Categorias de Temas
 
 extension EnciclopediaTemas {

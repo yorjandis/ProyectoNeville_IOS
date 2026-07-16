@@ -994,13 +994,13 @@
     },
     "%@  %lld" : {
       "localizations" : {
-        "es" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@  %2$lld"
           }
         },
-        "en" : {
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@  %2$lld"
@@ -1039,13 +1039,13 @@
     },
     "%@ %@" : {
       "localizations" : {
-        "es" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@ %2$@"
           }
         },
-        "en" : {
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@ %2$@"
@@ -1084,13 +1084,13 @@
     },
     "%@ %lld" : {
       "localizations" : {
-        "es" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@ %2$lld"
           }
         },
-        "en" : {
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@ %2$lld"
@@ -1139,13 +1139,13 @@
     },
     "%@, %@" : {
       "localizations" : {
-        "es" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@, %2$@"
           }
         },
-        "en" : {
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@, %2$@"
@@ -1162,13 +1162,13 @@
     },
     "%@: %@" : {
       "localizations" : {
-        "es" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@: %2$@"
           }
         },
-        "en" : {
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@: %2$@"
@@ -1185,13 +1185,13 @@
     },
     "%@: %lld" : {
       "localizations" : {
-        "es" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@: %2$lld"
           }
         },
-        "en" : {
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@: %2$lld"
@@ -1207,7 +1207,6 @@
       "shouldTranslate" : false
     },
     "%@/año" : {
-      "shouldTranslate" : false,
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1227,17 +1226,18 @@
             "value" : "%@/年"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "%@%@" : {
       "localizations" : {
-        "es" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@%2$@"
           }
         },
-        "en" : {
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@%2$@"
@@ -1298,13 +1298,13 @@
     },
     "%lld %@" : {
       "localizations" : {
-        "es" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$lld %2$@"
           }
         },
-        "en" : {
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$lld %2$@"
@@ -2447,6 +2447,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在地图中打开位置"
+          }
+        }
+      }
+    },
+    "Accede a las frases y enseñanzas de Joe Dispenza, Bruce Lipton y Gregg Braden." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Access quotes and teachings from Joe Dispenza, Bruce Lipton, and Gregg Braden."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accede a las frases y enseñanzas de Joe Dispenza, Bruce Lipton y Gregg Braden."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "获取乔·迪斯潘扎、布鲁斯·利普顿和格雷格·布雷登的名言与教导。"
           }
         }
       }
@@ -4847,6 +4869,28 @@
         }
       }
     },
+    "Amplio catálogo educativo y práctico basado en neurociencia y meditación: hábitos, mente, epigenética, hormonas del estrés, ritmos circadianos y más." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A broad educational and practical catalog based on neuroscience and meditation: habits, the mind, epigenetics, stress hormones, circadian rhythms, and more."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Amplio catálogo educativo y práctico basado en neurociencia y meditación: hábitos, mente, epigenética, hormonas del estrés, ritmos circadianos y más."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "以神经科学和冥想为基础的丰富实用知识库：习惯、心智、表观遗传学、压力激素、昼夜节律等。"
+          }
+        }
+      }
+    },
     "Añade al menos 1 meta para hoy." : {
       "localizations" : {
         "en" : {
@@ -5802,6 +5846,28 @@
         }
       }
     },
+    "Apple Intelligence no está disponible en este dispositivo o idioma." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence is not available on this device or in this language."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence no está disponible en este dispositivo o idioma."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此设备或当前语言不支持 Apple Intelligence。"
+          }
+        }
+      }
+    },
     "Apple Watch realiza lecturas periódicas; fuera de un entrenamiento no son continuas. Por eso “en tiempo real” significa la estimación más reciente disponible en Salud." : {
       "localizations" : {
         "en" : {
@@ -6106,6 +6172,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "从清晨起，就进入你想要的生活状态。"
+          }
+        }
+      }
+    },
+    "Atajos y comandos con Siri" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siri Shortcuts and Commands"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atajos y comandos con Siri"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siri 快捷指令与命令"
           }
         }
       }
@@ -7494,6 +7582,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "简介"
+          }
+        }
+      }
+    },
+    "Bloquea el acceso a tus notas con biometría o contraseña para mantener tu contenido seguro." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lock access to your notes with biometrics or a password to keep your content secure."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bloquea el acceso a tus notas con biometría o contraseña para mantener tu contenido seguro."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通过生物识别或密码锁定笔记访问权限，保护内容安全。"
           }
         }
       }
@@ -9475,6 +9585,28 @@
         }
       }
     },
+    "Ciclo consciente diario" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daily Mindful Cycle"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ciclo consciente diario"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每日觉察循环"
+          }
+        }
+      }
+    },
     "Ciclo mañana → cierre" : {
       "localizations" : {
         "en" : {
@@ -9604,6 +9736,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "有意识地结束这一天。"
+          }
+        }
+      }
+    },
+    "Cierra la semana con una síntesis de metas, agenda, diario, emociones, presencia, coherencia y logros. Elige el día, recibe un recordatorio opcional y conserva tus revisiones sincronizadas." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close the week with a summary of goals, schedule, journal, emotions, presence, coherence, and achievements. Choose the day, get an optional reminder, and keep your reviews in sync."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cierra la semana con una síntesis de metas, agenda, diario, emociones, presencia, coherencia y logros. Elige el día, recibe un recordatorio opcional y conserva tus revisiones sincronizadas."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通过总结目标、日程、日记、情绪、临在感、连贯性和成就，为一周画上句号。选择回顾日期，接收可选提醒，并让回顾内容保持同步。"
           }
         }
       }
@@ -11001,6 +11155,28 @@
         }
       }
     },
+    "Comparte con QR" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Share with QR"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comparte con QR"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通过二维码分享"
+          }
+        }
+      }
+    },
     "Compartir" : {
       "localizations" : {
         "en" : {
@@ -11854,6 +12030,28 @@
         }
       }
     },
+    "Conecta ideas de distintos autores y tus propias reflexiones para crear un mapa visual del pensamiento compartido." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connect ideas from different authors and your own reflections to create a visual map of shared thought."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conecta ideas de distintos autores y tus propias reflexiones para crear un mapa visual del pensamiento compartido."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "连接不同作者的观点与自己的反思，构建共享思想的可视化地图。"
+          }
+        }
+      }
+    },
     "Conecta la app Salud" : {
       "localizations" : {
         "en" : {
@@ -12502,6 +12700,28 @@
         }
       }
     },
+    "Contenido exclusivo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exclusive Content"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contenido exclusivo"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "专属内容"
+          }
+        }
+      }
+    },
     "Contenido:" : {
       "localizations" : {
         "en" : {
@@ -13017,6 +13237,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "从这一刻开始创造。"
+          }
+        }
+      }
+    },
+    "Crea notas, añade entradas al diario o abre contenido usando solo tu voz, sin entrar en la app." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create notes, add journal entries, or open content using only your voice, without opening the app."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Crea notas, añade entradas al diario o abre contenido usando solo tu voz, sin entrar en la app."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无需打开 App，只需通过语音即可创建笔记、添加日记条目或打开内容。"
           }
         }
       }
@@ -13991,6 +14233,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "用几分钟梳理今天，并为明天做好准备。"
+          }
+        }
+      }
+    },
+    "Define objetivos claros, mide tu progreso y adopta hábitos respaldados por la neurociencia. Incluye programas prácticos para reprogramar patrones negativos y empoderarte." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set clear goals, track your progress, and build habits backed by neuroscience. Includes practical programs to reframe negative patterns and empower yourself."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Define objetivos claros, mide tu progreso y adopta hábitos respaldados por la neurociencia. Incluye programas prácticos para reprogramar patrones negativos y empoderarte."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "设定清晰目标，衡量自己的进展，并养成有神经科学支持的习惯。包含实用课程，帮助你重塑消极模式并提升自我力量。"
           }
         }
       }
@@ -15703,6 +15967,28 @@
         }
       }
     },
+    "Diseña imágenes impactantes con tus frases favoritas para compartir en redes o usar como tarjetas personales de enfoque y motivación." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create striking images with your favorite quotes to share on social media or use as personal focus and motivation cards."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diseña imágenes impactantes con tus frases favoritas para compartir en redes o usar como tarjetas personales de enfoque y motivación."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用你喜爱的名言设计醒目的图片，分享到社交媒体，或作为个人专注与激励卡片使用。"
+          }
+        }
+      }
+    },
     "Diseña tu día" : {
       "localizations" : {
         "en" : {
@@ -15743,6 +16029,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "带着清晰与意图规划你的一天。"
+          }
+        }
+      }
+    },
+    "Diseña tu mañana con intención, registra tu presencia, cierra el día con aprendizaje y transforma todo en un Diario útil para mañana. Incluye recordatorios, estadísticas y Mi día." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start your morning with intention, track your presence, end the day with learning, and turn it all into a useful journal for tomorrow. Includes reminders, statistics, and My Day."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diseña tu mañana con intención, registra tu presencia, cierra el día con aprendizaje y transforma todo en un Diario útil para mañana. Incluye recordatorios, estadísticas y Mi día."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "以明确的意图开启早晨，记录你的当下感受，以收获结束一天，并将一切整理成对明天有用的日记。包含提醒、统计数据和“我的一天”。"
           }
         }
       }
@@ -20352,6 +20660,28 @@
         }
       }
     },
+    "Evidencia científica" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scientific Evidence"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Evidencia científica"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "科学证据"
+          }
+        }
+      }
+    },
     "Evidencia Científica" : {
       "localizations" : {
         "en" : {
@@ -20643,6 +20973,28 @@
         }
       }
     },
+    "Experiencia inmersiva para relajarte y aprender mientras activas tu sistema parasimpático." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "An immersive experience to relax and learn while activating your parasympathetic nervous system."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Experiencia inmersiva para relajarte y aprender mientras activas tu sistema parasimpático."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "沉浸式体验，帮助你在激活副交感神经系统的同时放松与学习。"
+          }
+        }
+      }
+    },
     "Explorador" : {
       "localizations" : {
         "en" : {
@@ -20683,6 +21035,50 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "探索"
+          }
+        }
+      }
+    },
+    "Exporta Notas, Frases, Actividades de la Agenda, Reflexiones y respuestas de Chat IA a formato portable PDF estándar." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Export Notes, Quotes, Schedule Activities, Reflections, and AI Chat responses to standard PDF format."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exporta Notas, Frases, Actividades de la Agenda, Reflexiones y respuestas de Chat IA a formato portable PDF estándar."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将笔记、名言、日程活动、反思和 AI 聊天回复导出为标准 PDF 格式。"
+          }
+        }
+      }
+    },
+    "Exportación PDF" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PDF Export"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportación PDF"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PDF 导出"
           }
         }
       }
@@ -22213,6 +22609,28 @@
         }
       }
     },
+    "Frases Relacionadas (FR)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Related Quotes (RQ)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Frases Relacionadas (FR)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关联名言（FR）"
+          }
+        }
+      }
+    },
     "Frases y Citas" : {
       "localizations" : {
         "en" : {
@@ -22484,6 +22902,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "照片"
+          }
+        }
+      }
+    },
+    "Genera códigos QR para compartir notas y frases fácilmente en redes sociales o con amigos." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Generate QR codes to easily share notes and quotes on social media or with friends."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Genera códigos QR para compartir notas y frases fácilmente en redes sociales o con amigos."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "生成二维码，轻松在社交媒体或与朋友分享笔记和名言。"
           }
         }
       }
@@ -24887,6 +25327,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "格雷格·布雷登"
+          }
+        }
+      }
+    },
+    "Guarda texto o imágenes desde webs y apps con el menú compartir. Incluye OCR y lectura de códigos QR." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save text or images from websites and apps using the Share menu. Includes OCR and QR code scanning."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guarda texto o imágenes desde webs y apps con el menú compartir. Incluye OCR y lectura de códigos QR."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通过分享菜单从网站和 App 保存文本或图片。支持 OCR 和二维码扫描。"
           }
         }
       }
@@ -27976,6 +28438,28 @@
         }
       }
     },
+    "Importación desde cualquier lugar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import from Anywhere"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importación desde cualquier lugar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "随处导入"
+          }
+        }
+      }
+    },
     "Importar a Frases" : {
       "localizations" : {
         "en" : {
@@ -28576,6 +29060,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "梳理今天"
+          }
+        }
+      }
+    },
+    "Inteligencia Artificial integrada" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Integrated Artificial Intelligence"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inteligencia Artificial integrada"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "集成人工智能"
           }
         }
       }
@@ -31179,6 +31685,28 @@
         }
       }
     },
+    "Lienzo creativo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Creative Canvas"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lienzo creativo"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "创意画布"
+          }
+        }
+      }
+    },
     "Lima" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -32574,6 +33102,28 @@
         }
       }
     },
+    "Menú inteligente de texto copiado" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Smart Copied Text Menu"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menú inteligente de texto copiado"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "智能复制文本菜单"
+          }
+        }
+      }
+    },
     "Menu:" : {
       "localizations" : {
         "en" : {
@@ -32806,6 +33356,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "暂无进展的目标"
+          }
+        }
+      }
+    },
+    "Metas y transformación personal" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Goals and Personal Transformation"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Metas y transformación personal"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "目标与个人成长"
           }
         }
       }
@@ -36485,6 +37057,28 @@
         }
       }
     },
+    "Notas protegidas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Protected Notes"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notas protegidas"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "受保护的笔记"
+          }
+        }
+      }
+    },
     "Notas, Agenda y Diario pueden guardar la ubicación actual cuando uses esta opción." : {
       "localizations" : {
         "en" : {
@@ -37531,6 +38125,28 @@
         }
       }
     },
+    "Obtén resúmenes, interpretaciones, consejos prácticos y un chat para resolver dudas al instante, con respuestas basadas en el campo de conocimiento de cada autor." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Get summaries, interpretations, practical advice, and a chat to answer questions instantly, with responses grounded in each author's body of knowledge."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obtén resúmenes, interpretaciones, consejos prácticos y un chat para resolver dudas al instante, con respuestas basadas en el campo de conocimiento de cada autor."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "获取摘要、解读、实用建议和即时答疑聊天，其回答基于每位作者的知识体系。"
+          }
+        }
+      }
+    },
     "Obtener funciones Extendidas" : {
       "localizations" : {
         "en" : {
@@ -38183,6 +38799,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "有机：暂无相关数据。"
+          }
+        }
+      }
+    },
+    "Organiza tus actividades y tareas en el tiempo, liberando recursos y memoria. Añade recordatorios para no olvidar lo importante." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Organize your activities and tasks over time, freeing up mental space and memory. Add reminders so you do not forget what matters."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Organiza tus actividades y tareas en el tiempo, liberando recursos y memoria. Añade recordatorios para no olvidar lo importante."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按时间安排活动和任务，释放精力与记忆空间。添加提醒，不错过重要的事。"
           }
         }
       }
@@ -40226,6 +40864,28 @@
         }
       }
     },
+    "Presencia Consciente" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mindful Presence"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Presencia Consciente"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "觉察当下"
+          }
+        }
+      }
+    },
     "Presencia media" : {
       "localizations" : {
         "en" : {
@@ -40622,6 +41282,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "未命名产品"
+          }
+        }
+      }
+    },
+    "Programa avisos para tus prácticas esenciales como meditar, agradecer, visualizar o revisar tus metas." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schedule reminders for essential practices such as meditating, practicing gratitude, visualizing, or reviewing your goals."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Programa avisos para tus prácticas esenciales como meditar, agradecer, visualizar o revisar tus metas."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "为冥想、感恩、观想或回顾目标等重要练习设置提醒。"
           }
         }
       }
@@ -42068,6 +42750,28 @@
         }
       }
     },
+    "Recordatorios inteligentes" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Smart Reminders"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recordatorios inteligentes"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "智能提醒"
+          }
+        }
+      }
+    },
     "Recordatorios:" : {
       "localizations" : {
         "en" : {
@@ -42490,6 +43194,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "适用地区"
+          }
+        }
+      }
+    },
+    "Registra pequeños momentos de despertar durante el día y vuelve al presente con un solo toque. Observa cuándo sales del piloto automático, reconoce tu estado de ánimo y refuerza la emoción del futuro que deseas vivir." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capture small moments of awareness throughout the day and return to the present with one tap. Notice when you leave autopilot, recognize your mood, and strengthen the feeling of the future you want to live."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registra pequeños momentos de despertar durante el día y vuelve al presente con un solo toque. Observa cuándo sales del piloto automático, reconoce tu estado de ánimo y refuerza la emoción del futuro que deseas vivir."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "记录一天中短暂的觉醒时刻，轻点一下便可回到当下。留意自己何时脱离自动驾驶状态，觉察心情，并强化你想体验的未来感受。"
           }
         }
       }
@@ -43573,6 +44299,28 @@
         }
       }
     },
+    "Resumen de investigaciones que respaldan estas enseñanzas, debidamente acotados para su fácil consulta." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A concise summary of research supporting these teachings, organized for easy reference."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resumen de investigaciones que respaldan estas enseñanzas, debidamente acotados para su fácil consulta."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "对支持这些教导的研究进行简明总结，便于查阅。"
+          }
+        }
+      }
+    },
     "Resumen de Libros" : {
       "localizations" : {
         "en" : {
@@ -43854,6 +44602,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "每周回顾"
+          }
+        }
+      }
+    },
+    "Revisión semanal guiada" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guided Weekly Review"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Revisión semanal guiada"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "引导式每周回顾"
           }
         }
       }
@@ -45458,6 +46228,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "请至少选择一条要导出的笔记。"
+          }
+        }
+      }
+    },
+    "Selecciona cualquier fragmento dentro de la app y accede a acciones rápidas como guardar en Notas o Frases al instante." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select any text within the app and instantly access quick actions, such as saving it to Notes or Quotes."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selecciona cualquier fragmento dentro de la app y accede a acciones rápidas como guardar en Notas o Frases al instante."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 App 内选择任意文本片段，即可立即使用快速操作，例如保存到笔记或名言。"
           }
         }
       }
@@ -51769,776 +52561,6 @@
     },
     "Yorjandi PG" : {
       "shouldTranslate" : false
-    },
-    "Contenido exclusivo" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Exclusive Content"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Contenido exclusivo"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "专属内容"
-          }
-        }
-      }
-    },
-    "Accede a las frases y enseñanzas de Joe Dispenza, Bruce Lipton y Gregg Braden." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Access quotes and teachings from Joe Dispenza, Bruce Lipton, and Gregg Braden."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Accede a las frases y enseñanzas de Joe Dispenza, Bruce Lipton y Gregg Braden."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "获取乔·迪斯潘扎、布鲁斯·利普顿和格雷格·布雷登的名言与教导。"
-          }
-        }
-      }
-    },
-    "Metas y transformación personal" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Goals and Personal Transformation"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Metas y transformación personal"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "目标与个人成长"
-          }
-        }
-      }
-    },
-    "Define objetivos claros, mide tu progreso y adopta hábitos respaldados por la neurociencia. Incluye programas prácticos para reprogramar patrones negativos y empoderarte." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Set clear goals, track your progress, and build habits backed by neuroscience. Includes practical programs to reframe negative patterns and empower yourself."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Define objetivos claros, mide tu progreso y adopta hábitos respaldados por la neurociencia. Incluye programas prácticos para reprogramar patrones negativos y empoderarte."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "设定清晰目标，衡量自己的进展，并养成有神经科学支持的习惯。包含实用课程，帮助你重塑消极模式并提升自我力量。"
-          }
-        }
-      }
-    },
-    "Lienzo creativo" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Creative Canvas"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lienzo creativo"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "创意画布"
-          }
-        }
-      }
-    },
-    "Diseña imágenes impactantes con tus frases favoritas para compartir en redes o usar como tarjetas personales de enfoque y motivación." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Create striking images with your favorite quotes to share on social media or use as personal focus and motivation cards."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Diseña imágenes impactantes con tus frases favoritas para compartir en redes o usar como tarjetas personales de enfoque y motivación."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "用你喜爱的名言设计醒目的图片，分享到社交媒体，或作为个人专注与激励卡片使用。"
-          }
-        }
-      }
-    },
-    "Ciclo consciente diario" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Daily Mindful Cycle"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ciclo consciente diario"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "每日觉察循环"
-          }
-        }
-      }
-    },
-    "Diseña tu mañana con intención, registra tu presencia, cierra el día con aprendizaje y transforma todo en un Diario útil para mañana. Incluye recordatorios, estadísticas y Mi día." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Start your morning with intention, track your presence, end the day with learning, and turn it all into a useful journal for tomorrow. Includes reminders, statistics, and My Day."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Diseña tu mañana con intención, registra tu presencia, cierra el día con aprendizaje y transforma todo en un Diario útil para mañana. Incluye recordatorios, estadísticas y Mi día."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "以明确的意图开启早晨，记录你的当下感受，以收获结束一天，并将一切整理成对明天有用的日记。包含提醒、统计数据和“我的一天”。"
-          }
-        }
-      }
-    },
-    "Revisión semanal guiada" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Guided Weekly Review"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Revisión semanal guiada"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "引导式每周回顾"
-          }
-        }
-      }
-    },
-    "Cierra la semana con una síntesis de metas, agenda, diario, emociones, presencia, coherencia y logros. Elige el día, recibe un recordatorio opcional y conserva tus revisiones sincronizadas." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Close the week with a summary of goals, schedule, journal, emotions, presence, coherence, and achievements. Choose the day, get an optional reminder, and keep your reviews in sync."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cierra la semana con una síntesis de metas, agenda, diario, emociones, presencia, coherencia y logros. Elige el día, recibe un recordatorio opcional y conserva tus revisiones sincronizadas."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "通过总结目标、日程、日记、情绪、临在感、连贯性和成就，为一周画上句号。选择回顾日期，接收可选提醒，并让回顾内容保持同步。"
-          }
-        }
-      }
-    },
-    "Organiza tus actividades y tareas en el tiempo, liberando recursos y memoria. Añade recordatorios para no olvidar lo importante." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Organize your activities and tasks over time, freeing up mental space and memory. Add reminders so you do not forget what matters."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Organiza tus actividades y tareas en el tiempo, liberando recursos y memoria. Añade recordatorios para no olvidar lo importante."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "按时间安排活动和任务，释放精力与记忆空间。添加提醒，不错过重要的事。"
-          }
-        }
-      }
-    },
-    "Exportación PDF" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "PDF Export"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Exportación PDF"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "PDF 导出"
-          }
-        }
-      }
-    },
-    "Exporta Notas, Frases, Actividades de la Agenda, Reflexiones y respuestas de Chat IA a formato portable PDF estándar." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Export Notes, Quotes, Schedule Activities, Reflections, and AI Chat responses to standard PDF format."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Exporta Notas, Frases, Actividades de la Agenda, Reflexiones y respuestas de Chat IA a formato portable PDF estándar."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "将笔记、名言、日程活动、反思和 AI 聊天回复导出为标准 PDF 格式。"
-          }
-        }
-      }
-    },
-    "Experiencia inmersiva para relajarte y aprender mientras activas tu sistema parasimpático." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "An immersive experience to relax and learn while activating your parasympathetic nervous system."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Experiencia inmersiva para relajarte y aprender mientras activas tu sistema parasimpático."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "沉浸式体验，帮助你在激活副交感神经系统的同时放松与学习。"
-          }
-        }
-      }
-    },
-    "Presencia Consciente" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mindful Presence"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Presencia Consciente"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "觉察当下"
-          }
-        }
-      }
-    },
-    "Registra pequeños momentos de despertar durante el día y vuelve al presente con un solo toque. Observa cuándo sales del piloto automático, reconoce tu estado de ánimo y refuerza la emoción del futuro que deseas vivir." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Capture small moments of awareness throughout the day and return to the present with one tap. Notice when you leave autopilot, recognize your mood, and strengthen the feeling of the future you want to live."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Registra pequeños momentos de despertar durante el día y vuelve al presente con un solo toque. Observa cuándo sales del piloto automático, reconoce tu estado de ánimo y refuerza la emoción del futuro que deseas vivir."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "记录一天中短暂的觉醒时刻，轻点一下便可回到当下。留意自己何时脱离自动驾驶状态，觉察心情，并强化你想体验的未来感受。"
-          }
-        }
-      }
-    },
-    "Recordatorios inteligentes" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Smart Reminders"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Recordatorios inteligentes"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "智能提醒"
-          }
-        }
-      }
-    },
-    "Programa avisos para tus prácticas esenciales como meditar, agradecer, visualizar o revisar tus metas." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Schedule reminders for essential practices such as meditating, practicing gratitude, visualizing, or reviewing your goals."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Programa avisos para tus prácticas esenciales como meditar, agradecer, visualizar o revisar tus metas."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "为冥想、感恩、观想或回顾目标等重要练习设置提醒。"
-          }
-        }
-      }
-    },
-    "Amplio catálogo educativo y práctico basado en neurociencia y meditación: hábitos, mente, epigenética, hormonas del estrés, ritmos circadianos y más." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "A broad educational and practical catalog based on neuroscience and meditation: habits, the mind, epigenetics, stress hormones, circadian rhythms, and more."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Amplio catálogo educativo y práctico basado en neurociencia y meditación: hábitos, mente, epigenética, hormonas del estrés, ritmos circadianos y más."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "以神经科学和冥想为基础的丰富实用知识库：习惯、心智、表观遗传学、压力激素、昼夜节律等。"
-          }
-        }
-      }
-    },
-    "Evidencia científica" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Scientific Evidence"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Evidencia científica"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "科学证据"
-          }
-        }
-      }
-    },
-    "Resumen de investigaciones que respaldan estas enseñanzas, debidamente acotados para su fácil consulta." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "A concise summary of research supporting these teachings, organized for easy reference."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Resumen de investigaciones que respaldan estas enseñanzas, debidamente acotados para su fácil consulta."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "对支持这些教导的研究进行简明总结，便于查阅。"
-          }
-        }
-      }
-    },
-    "Inteligencia Artificial integrada" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Integrated Artificial Intelligence"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inteligencia Artificial integrada"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "集成人工智能"
-          }
-        }
-      }
-    },
-    "Obtén resúmenes, interpretaciones, consejos prácticos y un chat para resolver dudas al instante, con respuestas basadas en el campo de conocimiento de cada autor." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Get summaries, interpretations, practical advice, and a chat to answer questions instantly, with responses grounded in each author's body of knowledge."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Obtén resúmenes, interpretaciones, consejos prácticos y un chat para resolver dudas al instante, con respuestas basadas en el campo de conocimiento de cada autor."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "获取摘要、解读、实用建议和即时答疑聊天，其回答基于每位作者的知识体系。"
-          }
-        }
-      }
-    },
-    "Atajos y comandos con Siri" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Siri Shortcuts and Commands"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Atajos y comandos con Siri"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Siri 快捷指令与命令"
-          }
-        }
-      }
-    },
-    "Crea notas, añade entradas al diario o abre contenido usando solo tu voz, sin entrar en la app." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Create notes, add journal entries, or open content using only your voice, without opening the app."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Crea notas, añade entradas al diario o abre contenido usando solo tu voz, sin entrar en la app."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "无需打开 App，只需通过语音即可创建笔记、添加日记条目或打开内容。"
-          }
-        }
-      }
-    },
-    "Importación desde cualquier lugar" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Import from Anywhere"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Importación desde cualquier lugar"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "随处导入"
-          }
-        }
-      }
-    },
-    "Guarda texto o imágenes desde webs y apps con el menú compartir. Incluye OCR y lectura de códigos QR." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Save text or images from websites and apps using the Share menu. Includes OCR and QR code scanning."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Guarda texto o imágenes desde webs y apps con el menú compartir. Incluye OCR y lectura de códigos QR."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "通过分享菜单从网站和 App 保存文本或图片。支持 OCR 和二维码扫描。"
-          }
-        }
-      }
-    },
-    "Frases Relacionadas (FR)" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Related Quotes (RQ)"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Frases Relacionadas (FR)"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "关联名言（FR）"
-          }
-        }
-      }
-    },
-    "Conecta ideas de distintos autores y tus propias reflexiones para crear un mapa visual del pensamiento compartido." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Connect ideas from different authors and your own reflections to create a visual map of shared thought."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Conecta ideas de distintos autores y tus propias reflexiones para crear un mapa visual del pensamiento compartido."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "连接不同作者的观点与自己的反思，构建共享思想的可视化地图。"
-          }
-        }
-      }
-    },
-    "Comparte con QR" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Share with QR"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Comparte con QR"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "通过二维码分享"
-          }
-        }
-      }
-    },
-    "Genera códigos QR para compartir notas y frases fácilmente en redes sociales o con amigos." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Generate QR codes to easily share notes and quotes on social media or with friends."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Genera códigos QR para compartir notas y frases fácilmente en redes sociales o con amigos."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "生成二维码，轻松在社交媒体或与朋友分享笔记和名言。"
-          }
-        }
-      }
-    },
-    "Notas protegidas" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Protected Notes"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Notas protegidas"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "受保护的笔记"
-          }
-        }
-      }
-    },
-    "Bloquea el acceso a tus notas con biometría o contraseña para mantener tu contenido seguro." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lock access to your notes with biometrics or a password to keep your content secure."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bloquea el acceso a tus notas con biometría o contraseña para mantener tu contenido seguro."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "通过生物识别或密码锁定笔记访问权限，保护内容安全。"
-          }
-        }
-      }
-    },
-    "Menú inteligente de texto copiado" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Smart Copied Text Menu"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Menú inteligente de texto copiado"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "智能复制文本菜单"
-          }
-        }
-      }
-    },
-    "Selecciona cualquier fragmento dentro de la app y accede a acciones rápidas como guardar en Notas o Frases al instante." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Select any text within the app and instantly access quick actions, such as saving it to Notes or Quotes."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Selecciona cualquier fragmento dentro de la app y accede a acciones rápidas como guardar en Notas o Frases al instante."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在 App 内选择任意文本片段，即可立即使用快速操作，例如保存到笔记或名言。"
-          }
-        }
-      }
     }
   },
   "version" : "1.0"

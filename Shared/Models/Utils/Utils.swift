@@ -39,6 +39,23 @@ struct UtilFuncs{
     static func FileRead(_ fileName: String, omittingFirstLines linesToOmit: Int = 0) -> String {
         var result = ""
         let temp = "\(fileName.lowercased())"
+
+        // Los contenidos editoriales de autores tienen una copia localizada con el
+        // mismo nombre de recurso. Si no existe, L10n.textResource conserva el
+        // recurso español como respaldo.
+        let localized = localizedFileContents(named: fileName)
+        if !localized.isEmpty {
+            let normalized = localized
+                .replacingOccurrences(of: "\r\n", with: "\n")
+                .replacingOccurrences(of: "\r", with: "\n")
+            if linesToOmit > 0 {
+                let lines = normalized.components(separatedBy: "\n")
+                result = lines.dropFirst(min(linesToOmit, lines.count)).joined(separator: "\n")
+            } else {
+                result = normalized
+            }
+            return result
+        }
         
         if let gg = Bundle.main.url(forResource: temp, withExtension: "txt") {
             if let fileContents = try? String(contentsOf: gg, encoding: .utf8) {
@@ -61,6 +78,29 @@ struct UtilFuncs{
             }
         }
         return result
+    }
+
+    private static func localizedFileContents(named fileName: String) -> String {
+        let preferred = Bundle.main.preferredLocalizations.first ?? "es"
+        let locale: String
+        if preferred.lowercased().hasPrefix("zh") {
+            locale = "zh-Hans"
+        } else if preferred.lowercased().hasPrefix("en") {
+            locale = "en"
+        } else {
+            locale = "es"
+        }
+
+        for candidate in [locale, "es"] {
+            guard let path = Bundle.main.path(forResource: candidate, ofType: "lproj"),
+                  let localizedBundle = Bundle(path: path),
+                  let url = localizedBundle.url(forResource: fileName, withExtension: "txt"),
+                  let value = try? String(contentsOf: url, encoding: .utf8) else { continue }
+            return value
+                .replacingOccurrences(of: "\r\n", with: "\n")
+                .replacingOccurrences(of: "\r", with: "\n")
+        }
+        return ""
     }
 
     static func authenticateDeviceOwner(
@@ -176,4 +216,3 @@ extension String {
         return filter("1234567890.".contains)
     }
 }
-

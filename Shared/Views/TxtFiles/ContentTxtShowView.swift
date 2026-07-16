@@ -40,6 +40,7 @@ struct ContentTxtShowView: View {
     @State private var content: String = "" //Contenido del fichero TXT: se llena en un OnApper para que se haga una sola vez
     
     @State private var showSheetIA : Bool = false
+
   
     
     //Setting: Tamaño de fuente por defecto
@@ -131,7 +132,7 @@ struct ContentTxtShowView: View {
                
             }
             .toolbar{
-                
+
                 #if os(macOS)
                 //Coloca un botón de cerrar si la ventana es modal
                 
@@ -807,7 +808,3 @@ struct ContentTxtShowView: View {
     
     
 }
-
-
-
-

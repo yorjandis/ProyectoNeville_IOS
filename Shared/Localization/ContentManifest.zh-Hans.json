@@ -2,89 +2,313 @@
   "version": 1,
   "locale": "zh-Hans",
   "entries": [
-      {
+    {
       "id": "help:ayud_como%20manifestar",
       "kind": "help",
       "resourceName": "ayud_como manifestar",
       "title": "如何显化",
       "locale": "zh-Hans"
-      },
-      {
+    },
+    {
       "id": "help:ayud_efectuar%20un%20tratamiento%20a%20otro",
       "kind": "help",
       "resourceName": "ayud_efectuar un tratamiento a otro",
       "title": "对另一人进行一种治疗",
       "locale": "zh-Hans"
-      },
-      {
+    },
+    {
       "id": "help:ayud_ejercicio%20para%20la%20imaginacion",
       "kind": "help",
       "resourceName": "ayud_ejercicio para la imaginacion",
       "title": "想象力练习",
       "locale": "zh-Hans"
-      },
-      {
+    },
+    {
       "id": "help:ayud_el%20arte%20de%20la%20revisi%C3%B3n",
       "kind": "help",
       "resourceName": "ayud_El arte de la revisión",
       "title": "修订的艺术",
       "locale": "zh-Hans"
-      },
-      {
+    },
+    {
       "id": "help:ayud_el%20poder%20llamado%20la%20ley",
       "kind": "help",
       "resourceName": "ayud_el poder llamado la ley",
       "title": "法律赋予的权力",
       "locale": "zh-Hans"
-      },
-      {
+    },
+    {
       "id": "help:ayud_evitar%20la%20influencia%20inconsciente",
       "kind": "help",
       "resourceName": "ayud_evitar la influencia inconsciente",
       "title": "避免无意识影响",
       "locale": "zh-Hans"
-      },
-      {
+    },
+    {
       "id": "help:ayud_expresar%20un%20cambio%20en%20tu%20mundo",
       "kind": "help",
       "resourceName": "ayud_expresar un cambio en tu mundo",
       "title": "表达你世界中的变化",
       "locale": "zh-Hans"
-      },
-      {
+    },
+    {
       "id": "help:ayud_la%20formula%20de%20la%20victoria",
       "kind": "help",
       "resourceName": "ayud_la formula de la victoria",
       "title": "胜利的秘诀",
       "locale": "zh-Hans"
-      },
-      {
+    },
+    {
       "id": "help:ayud_metodo%20de%20manifestacion",
       "kind": "help",
       "resourceName": "ayud_metodo de manifestacion",
       "title": "显现方法",
       "locale": "zh-Hans"
-      },
-      {
+    },
+    {
       "id": "help:ayud_resumen%20de%20la%20ense%C3%B1anza%20de%20neville",
       "kind": "help",
       "resourceName": "ayud_resumen de la enseñanza de neville",
       "title": "内维尔教导的总结",
       "locale": "zh-Hans"
-      },
-      {
+    },
+    {
       "id": "help:ayud_salir%20de%20las%20limitaciones%20y%20problemas",
       "kind": "help",
       "resourceName": "ayud_salir de las limitaciones y problemas",
       "title": "克服局限性和问题",
       "locale": "zh-Hans"
-      },
-      {
+    },
+    {
       "id": "help:ayud_si%20me%20resulta%20dificil%20creer",
       "kind": "help",
       "resourceName": "ayud_si me resulta dificil creer",
       "title": "如果我觉得很难相信。",
       "locale": "zh-Hans"
-      }
+    },
+    {
+      "id": "quote:cita_audaz%20atrevimiento",
+      "kind": "quote",
+      "resourceName": "cita_audaz atrevimiento",
+      "title": "大胆的勇气 - 讲座 #64 - Neville 09/27/1968",
+      "locale": "zh-Hans"
+    },
+    {
+      "id": "quote:cita_bocetos%20profeticos",
+      "kind": "quote",
+      "resourceName": "cita_bocetos profeticos",
+      "title": "引自预言素描会议 09/22/1967",
+      "locale": "zh-Hans"
+    },
+    {
+      "id": "quote:cita_caminar%20por%20fe",
+      "kind": "quote",
+      "resourceName": "cita_caminar por fe",
+      "title": "凭信心行走 - 第 15 讲 - Neville 11/06/1967",
+      "locale": "zh-Hans"
+    },
+    {
+      "id": "quote:cita_concepcion",
+      "kind": "quote",
+      "resourceName": "cita_concepcion",
+      "title": "概念 - 讲座 #34 - Neville 03/11/1968",
+      "locale": "zh-Hans"
+    },
+    {
+      "id": "quote:cita_conf%C3%ADa%20en%20dios",
+      "kind": "quote",
+      "resourceName": "cita_confía en dios",
+      "title": "引自“信赖上帝”会议 10/13/1967",
+      "locale": "zh-Hans"
+    },
+    {
+      "id": "quote:cita_creaci%C3%B3n%20-%20fe",
+      "kind": "quote",
+      "resourceName": "cita_creación - fe",
+      "title": "创造 - 信仰 - 讲座 #52 - Neville 05/20/1968",
+      "locale": "zh-Hans"
+    },
+    {
+      "id": "quote:cita_creelo%20dentro",
+      "kind": "quote",
+      "resourceName": "cita_creelo dentro",
+      "title": "相信内心 - 第 132 讲 - Neville 06/10/1969",
+      "locale": "zh-Hans"
+    },
+    {
+      "id": "quote:cita_cuando%20un%20hombre%20ora%20con%20exito",
+      "kind": "quote",
+      "resourceName": "cita_cuando un hombre ora con exito",
+      "title": "当一个人祈祷成功时，他相信他就是他想成为的人。",
+      "locale": "zh-Hans"
+    },
+    {
+      "id": "quote:cita_el%20caliz%20de%20la%20experiencia",
+      "kind": "quote",
+      "resourceName": "cita_el caliz de la experiencia",
+      "title": "摘自经验圣杯会议 1967 年 10 月 27 日",
+      "locale": "zh-Hans"
+    },
+    {
+      "id": "quote:cita_el%20es%20mi%20resureccion",
+      "kind": "quote",
+      "resourceName": "cita_el es mi resureccion",
+      "title": "他是我的复活 - 第 59 讲 - Neville 06/28/1968",
+      "locale": "zh-Hans"
+    },
+    {
+      "id": "quote:cita_el%20estado%20de%20visi%C3%B3n",
+      "kind": "quote",
+      "resourceName": "cita_el estado de visión",
+      "title": "视觉状态 - 第 32 讲 - Neville 02/26/1968",
+      "locale": "zh-Hans"
+    },
+    {
+      "id": "quote:cita_el%20nucleo%20del%20hombre",
+      "kind": "quote",
+      "resourceName": "cita_el nucleo del hombre",
+      "title": "人的核心 - 第 18 讲 - Neville 11/17/1967",
+      "locale": "zh-Hans"
+    },
+    {
+      "id": "quote:cita_el%20secreto%20de%20la%20oracion",
+      "kind": "quote",
+      "resourceName": "cita_el secreto de la oracion",
+      "title": "摘自《祷告的秘密》会议 1967 年 6 月 10 日",
+      "locale": "zh-Hans"
+    },
+    {
+      "id": "quote:cita_estados%20eternos",
+      "kind": "quote",
+      "resourceName": "cita_estados eternos",
+      "title": "永恒的状态 - 讲座 #60 - Neville 09/09/1968",
+      "locale": "zh-Hans"
+    },
+    {
+      "id": "quote:cita_judas%20el%20revelador",
+      "kind": "quote",
+      "resourceName": "cita_judas el revelador",
+      "title": "摘自会议《揭秘者犹大》 1967 年 2 月 10 日",
+      "locale": "zh-Hans"
+    },
+    {
+      "id": "quote:cita_la%20causa%20espiritual",
+      "kind": "quote",
+      "resourceName": "cita_la causa espiritual",
+      "title": "精神事业 - 第 48 讲 - Neville 03/05/1968",
+      "locale": "zh-Hans"
+    },
+    {
+      "id": "quote:cita_la%20fuente",
+      "kind": "quote",
+      "resourceName": "cita_la fuente",
+      "title": "消息来源 - 讲座#69 - Neville 10/14/1968",
+      "locale": "zh-Hans"
+    },
+    {
+      "id": "quote:cita_la%20nueva%20cristologia",
+      "kind": "quote",
+      "resourceName": "cita_la nueva cristologia",
+      "title": "摘自《新基督论》会议 1967 年 9 月 22 日",
+      "locale": "zh-Hans"
+    },
+    {
+      "id": "quote:cita_la%20revelacion%20encarnada",
+      "kind": "quote",
+      "resourceName": "cita_la revelacion encarnada",
+      "title": "启示录化身 - 讲座 #89 - Neville 02/20/1969",
+      "locale": "zh-Hans"
+    },
+    {
+      "id": "quote:cita_la%20revelaci%C3%B3n%20encarnada",
+      "kind": "quote",
+      "resourceName": "cita_la revelación encarnada",
+      "title": "启示录化身 - 讲座 #89 - Neville 02/20/1969",
+      "locale": "zh-Hans"
+    },
+    {
+      "id": "quote:cita_libertad",
+      "kind": "quote",
+      "resourceName": "cita_libertad",
+      "title": "自由 - 第 73 讲 - 内维尔 10/28/1968",
+      "locale": "zh-Hans"
+    },
+    {
+      "id": "quote:cita_percepcion",
+      "kind": "quote",
+      "resourceName": "cita_percepcion",
+      "title": "感知 - 第 46 讲 - Neville 04/26/1968",
+      "locale": "zh-Hans"
+    },
+    {
+      "id": "quote:cita_poneos%20a%20prueba",
+      "kind": "quote",
+      "resourceName": "cita_poneos a prueba",
+      "title": "引自 PUT US TO THE TEST 会议 09/25/1967",
+      "locale": "zh-Hans"
+    },
+    {
+      "id": "quote:cita_sensacion%20espiritual",
+      "kind": "quote",
+      "resourceName": "cita_sensacion espiritual",
+      "title": "精神感觉 - 第 115 讲 - Neville 05/16/1969",
+      "locale": "zh-Hans"
+    },
+    {
+      "id": "quote:cita_tu%20creador",
+      "kind": "quote",
+      "resourceName": "cita_tu creador",
+      "title": "你的创造者 - 讲座 #88 - Neville 01/07/1969",
+      "locale": "zh-Hans"
+    },
+    {
+      "id": "quote:cita_tuyo%20para%20que%20lo%20tomes",
+      "kind": "quote",
+      "resourceName": "cita_tuyo para que lo tomes",
+      "title": "引自 1967 年 9 月 18 日会议",
+      "locale": "zh-Hans"
+    },
+    {
+      "id": "quote:cita_un%20movimiento%20dentro%20de%20dios",
+      "kind": "quote",
+      "resourceName": "cita_un movimiento dentro de dios",
+      "title": "摘自会议 上帝之内的运动 1967 年 10 月 16 日",
+      "locale": "zh-Hans"
+    },
+    {
+      "id": "quote:cita_una%20conviccion%20interna",
+      "kind": "quote",
+      "resourceName": "cita_una conviccion interna",
+      "title": "内心信念 - 第 35 讲 - Neville 03/15/1968",
+      "locale": "zh-Hans"
+    },
+    {
+      "id": "quote:cita_una%20lecci%C3%B3n%20de%20las%20escrituras",
+      "kind": "quote",
+      "resourceName": "cita_una lección de las escrituras",
+      "title": "摘自《圣经的教训》会议 1967 年 10 月 23 日",
+      "locale": "zh-Hans"
+    },
+    {
+      "id": "quote:cita_vive%20la%20respuesta%20ahora",
+      "kind": "quote",
+      "resourceName": "cita_vive la respuesta ahora",
+      "title": "现在就给出答案 - 第 22 讲 - Neville 01/15/1968",
+      "locale": "zh-Hans"
+    },
+    {
+      "id": "quote:cita_%C2%BFle%20has%20encontrado",
+      "kind": "quote",
+      "resourceName": "cita_¿le has encontrado",
+      "title": "引自会议 你找到他了吗？ 1967年9月15日",
+      "locale": "zh-Hans"
+    },
+    {
+      "id": "quote:cita_%C2%BFque%20estas%20haciendo",
+      "kind": "quote",
+      "resourceName": "cita_¿que estas haciendo",
+      "title": "引自会议 你在做什么？ 1967年10月30日",
+      "locale": "zh-Hans"
+    }
   ]
 }

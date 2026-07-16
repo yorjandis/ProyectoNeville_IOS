@@ -2,89 +2,313 @@
   "version": 1,
   "locale": "en",
   "entries": [
-      {
+    {
       "id": "help:ayud_como%20manifestar",
       "kind": "help",
       "resourceName": "ayud_como manifestar",
       "title": "how to manifest",
       "locale": "en"
-      },
-      {
+    },
+    {
       "id": "help:ayud_efectuar%20un%20tratamiento%20a%20otro",
       "kind": "help",
       "resourceName": "ayud_efectuar un tratamiento a otro",
       "title": "to perform one treatment on another",
       "locale": "en"
-      },
-      {
+    },
+    {
       "id": "help:ayud_ejercicio%20para%20la%20imaginacion",
       "kind": "help",
       "resourceName": "ayud_ejercicio para la imaginacion",
       "title": "exercise for the imagination",
       "locale": "en"
-      },
-      {
+    },
+    {
       "id": "help:ayud_el%20arte%20de%20la%20revisi%C3%B3n",
       "kind": "help",
       "resourceName": "ayud_El arte de la revisión",
       "title": "The art of revision",
       "locale": "en"
-      },
-      {
+    },
+    {
       "id": "help:ayud_el%20poder%20llamado%20la%20ley",
       "kind": "help",
       "resourceName": "ayud_el poder llamado la ley",
       "title": "the power called the law",
       "locale": "en"
-      },
-      {
+    },
+    {
       "id": "help:ayud_evitar%20la%20influencia%20inconsciente",
       "kind": "help",
       "resourceName": "ayud_evitar la influencia inconsciente",
       "title": "avoid unconscious influence",
       "locale": "en"
-      },
-      {
+    },
+    {
       "id": "help:ayud_expresar%20un%20cambio%20en%20tu%20mundo",
       "kind": "help",
       "resourceName": "ayud_expresar un cambio en tu mundo",
       "title": "express a change in your world",
       "locale": "en"
-      },
-      {
+    },
+    {
       "id": "help:ayud_la%20formula%20de%20la%20victoria",
       "kind": "help",
       "resourceName": "ayud_la formula de la victoria",
       "title": "the formula for victory",
       "locale": "en"
-      },
-      {
+    },
+    {
       "id": "help:ayud_metodo%20de%20manifestacion",
       "kind": "help",
       "resourceName": "ayud_metodo de manifestacion",
       "title": "Method of Manifestation",
       "locale": "en"
-      },
-      {
+    },
+    {
       "id": "help:ayud_resumen%20de%20la%20ense%C3%B1anza%20de%20neville",
       "kind": "help",
       "resourceName": "ayud_resumen de la enseñanza de neville",
       "title": "summary of Neville's teaching",
       "locale": "en"
-      },
-      {
+    },
+    {
       "id": "help:ayud_salir%20de%20las%20limitaciones%20y%20problemas",
       "kind": "help",
       "resourceName": "ayud_salir de las limitaciones y problemas",
       "title": "to overcome limitations and problems",
       "locale": "en"
-      },
-      {
+    },
+    {
       "id": "help:ayud_si%20me%20resulta%20dificil%20creer",
       "kind": "help",
       "resourceName": "ayud_si me resulta dificil creer",
       "title": "If I find it hard to believe",
       "locale": "en"
-      }
+    },
+    {
+      "id": "quote:cita_audaz%20atrevimiento",
+      "kind": "quote",
+      "resourceName": "cita_audaz atrevimiento",
+      "title": "BOLD DARE - Lecture #64 - Neville 09/27/1968",
+      "locale": "en"
+    },
+    {
+      "id": "quote:cita_bocetos%20profeticos",
+      "kind": "quote",
+      "resourceName": "cita_bocetos profeticos",
+      "title": "Quote from the PROPHETIC SKETCHES Conference 09/22/1967",
+      "locale": "en"
+    },
+    {
+      "id": "quote:cita_caminar%20por%20fe",
+      "kind": "quote",
+      "resourceName": "cita_caminar por fe",
+      "title": "WALKING BY FAITH - Lecture #15 - Neville 11/06/1967",
+      "locale": "en"
+    },
+    {
+      "id": "quote:cita_concepcion",
+      "kind": "quote",
+      "resourceName": "cita_concepcion",
+      "title": "CONCEPCION - Lecture #34 - Neville 03/11/1968",
+      "locale": "en"
+    },
+    {
+      "id": "quote:cita_conf%C3%ADa%20en%20dios",
+      "kind": "quote",
+      "resourceName": "cita_confía en dios",
+      "title": "Quote from the TRUST IN GOD Conference 10/13/1967",
+      "locale": "en"
+    },
+    {
+      "id": "quote:cita_creaci%C3%B3n%20-%20fe",
+      "kind": "quote",
+      "resourceName": "cita_creación - fe",
+      "title": "CREATION - FAITH - Lecture #52 - Neville 05/20/1968",
+      "locale": "en"
+    },
+    {
+      "id": "quote:cita_creelo%20dentro",
+      "kind": "quote",
+      "resourceName": "cita_creelo dentro",
+      "title": "BELIEVE IT WITHIN - Lecture #132 - Neville 06/10/1969",
+      "locale": "en"
+    },
+    {
+      "id": "quote:cita_cuando%20un%20hombre%20ora%20con%20exito",
+      "kind": "quote",
+      "resourceName": "cita_cuando un hombre ora con exito",
+      "title": "When a man prays successfully he believes that he is what he wanted to be.",
+      "locale": "en"
+    },
+    {
+      "id": "quote:cita_el%20caliz%20de%20la%20experiencia",
+      "kind": "quote",
+      "resourceName": "cita_el caliz de la experiencia",
+      "title": "Quote from the Conference THE CHALICE OF EXPERIENCE 10/27/1967",
+      "locale": "en"
+    },
+    {
+      "id": "quote:cita_el%20es%20mi%20resureccion",
+      "kind": "quote",
+      "resourceName": "cita_el es mi resureccion",
+      "title": "HE IS MY RESURRECTION - Lecture #59 - Neville 06/28/1968",
+      "locale": "en"
+    },
+    {
+      "id": "quote:cita_el%20estado%20de%20visi%C3%B3n",
+      "kind": "quote",
+      "resourceName": "cita_el estado de visión",
+      "title": "THE STATE OF VISION - Lecture #32 - Neville 02/26/1968",
+      "locale": "en"
+    },
+    {
+      "id": "quote:cita_el%20nucleo%20del%20hombre",
+      "kind": "quote",
+      "resourceName": "cita_el nucleo del hombre",
+      "title": "THE CORE OF MAN - Lecture #18 - Neville 11/17/1967",
+      "locale": "en"
+    },
+    {
+      "id": "quote:cita_el%20secreto%20de%20la%20oracion",
+      "kind": "quote",
+      "resourceName": "cita_el secreto de la oracion",
+      "title": "Quote from the Conference THE SECRET OF PRAYER 06/10/1967",
+      "locale": "en"
+    },
+    {
+      "id": "quote:cita_estados%20eternos",
+      "kind": "quote",
+      "resourceName": "cita_estados eternos",
+      "title": "ETERNAL STATES - Lecture #60 - Neville 09/09/1968",
+      "locale": "en"
+    },
+    {
+      "id": "quote:cita_judas%20el%20revelador",
+      "kind": "quote",
+      "resourceName": "cita_judas el revelador",
+      "title": "Quote from the Conference JUDAS THE REVEALER 02/10/1967",
+      "locale": "en"
+    },
+    {
+      "id": "quote:cita_la%20causa%20espiritual",
+      "kind": "quote",
+      "resourceName": "cita_la causa espiritual",
+      "title": "THE SPIRITUAL CAUSE - Lecture #48 - Neville 05/03/1968",
+      "locale": "en"
+    },
+    {
+      "id": "quote:cita_la%20fuente",
+      "kind": "quote",
+      "resourceName": "cita_la fuente",
+      "title": "THE SOURCE - Lecture #69 - Neville 10/14/1968",
+      "locale": "en"
+    },
+    {
+      "id": "quote:cita_la%20nueva%20cristologia",
+      "kind": "quote",
+      "resourceName": "cita_la nueva cristologia",
+      "title": "Quote from the Conference THE NEW CHRISTOLOGY 09/22/1967",
+      "locale": "en"
+    },
+    {
+      "id": "quote:cita_la%20revelacion%20encarnada",
+      "kind": "quote",
+      "resourceName": "cita_la revelacion encarnada",
+      "title": "REVELATION INcarnate - Lecture #89 - Neville 02/20/1969",
+      "locale": "en"
+    },
+    {
+      "id": "quote:cita_la%20revelaci%C3%B3n%20encarnada",
+      "kind": "quote",
+      "resourceName": "cita_la revelación encarnada",
+      "title": "REVELATION INcarnate - Lecture #89 - Neville 02/20/1969",
+      "locale": "en"
+    },
+    {
+      "id": "quote:cita_libertad",
+      "kind": "quote",
+      "resourceName": "cita_libertad",
+      "title": "FREEDOM - Lecture #73 - Neville 10/28/1968",
+      "locale": "en"
+    },
+    {
+      "id": "quote:cita_percepcion",
+      "kind": "quote",
+      "resourceName": "cita_percepcion",
+      "title": "PERCEPTION - Lecture #46 - Neville 04/26/1968",
+      "locale": "en"
+    },
+    {
+      "id": "quote:cita_poneos%20a%20prueba",
+      "kind": "quote",
+      "resourceName": "cita_poneos a prueba",
+      "title": "Quote from the PUT US TO THE TEST Conference 09/25/1967",
+      "locale": "en"
+    },
+    {
+      "id": "quote:cita_sensacion%20espiritual",
+      "kind": "quote",
+      "resourceName": "cita_sensacion espiritual",
+      "title": "SPIRITUAL SENSATION - Lecture #115 - Neville 05/16/1969",
+      "locale": "en"
+    },
+    {
+      "id": "quote:cita_tu%20creador",
+      "kind": "quote",
+      "resourceName": "cita_tu creador",
+      "title": "YOUR CREATOR - Lecture #88 - Neville 01/07/1969",
+      "locale": "en"
+    },
+    {
+      "id": "quote:cita_tuyo%20para%20que%20lo%20tomes",
+      "kind": "quote",
+      "resourceName": "cita_tuyo para que lo tomes",
+      "title": "Quote from the Conference YOURS FOR THE TAKING 09/18/1967",
+      "locale": "en"
+    },
+    {
+      "id": "quote:cita_un%20movimiento%20dentro%20de%20dios",
+      "kind": "quote",
+      "resourceName": "cita_un movimiento dentro de dios",
+      "title": "Quote from the Conference A MOVEMENT WITHIN GOD 10/16/1967",
+      "locale": "en"
+    },
+    {
+      "id": "quote:cita_una%20conviccion%20interna",
+      "kind": "quote",
+      "resourceName": "cita_una conviccion interna",
+      "title": "AN INTERNAL CONVICTION - Lecture #35 - Neville 03/15/1968",
+      "locale": "en"
+    },
+    {
+      "id": "quote:cita_una%20lecci%C3%B3n%20de%20las%20escrituras",
+      "kind": "quote",
+      "resourceName": "cita_una lección de las escrituras",
+      "title": "Quote from Conference A LESSON FROM THE SCRIPTURES 10/23/1967",
+      "locale": "en"
+    },
+    {
+      "id": "quote:cita_vive%20la%20respuesta%20ahora",
+      "kind": "quote",
+      "resourceName": "cita_vive la respuesta ahora",
+      "title": "LIVE THE ANSWER NOW - Lecture #22 - Neville 01/15/1968",
+      "locale": "en"
+    },
+    {
+      "id": "quote:cita_%C2%BFle%20has%20encontrado",
+      "kind": "quote",
+      "resourceName": "cita_¿le has encontrado",
+      "title": "Quote from the Conference HAVE YOU FOUND HIM? 09/15/1967",
+      "locale": "en"
+    },
+    {
+      "id": "quote:cita_%C2%BFque%20estas%20haciendo",
+      "kind": "quote",
+      "resourceName": "cita_¿que estas haciendo",
+      "title": "Quote from the Conference WHAT ARE YOU DOING? 10/30/1967",
+      "locale": "en"
+    }
   ]
 }

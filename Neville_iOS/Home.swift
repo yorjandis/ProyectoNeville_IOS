@@ -612,13 +612,12 @@ struct TabButtonBar : View{
     let toggleHomeScreen: () -> Void
     
 
-    @State private var showSetting = false
-    
-    
     @State private var sellectionTab = 1
     
 
-    @State var  tabButtons = ["book.pages.fill","note.text","house.circle.fill","book", "gear"]
+    @State private var showChatUnavailable = false
+
+    @State var  tabButtons = ["book.pages.fill","note.text","house.circle.fill","book", "ellipsis.message"]
     
     var body: some View{
         
@@ -655,30 +654,24 @@ struct TabButtonBar : View{
                                 .environmentObject(securityModel)
                         }label: {makeItemlabel(image: idx)}
                         
-                    case "gear":
+                    case "ellipsis.message":
                         if #available(iOS 26.0, *){
                             if IAModelAppleIntelligence.isAvailable(){
                                 NavigationLink{
                                     ChatView(textoACargar: nil)
                                 }label: {
-                                    Image(systemName: "ellipsis.message")
-                                        .font(.system(size: 23, weight: .medium))
-                                        .foregroundStyle(.black.opacity(0.56))
-                                        .padding(8)
-                                        .scaleEffect(1.08)
+                                    makeChatIALabel()
                                 }
                             }else{
-                                Button{ showSetting = true
+                                Button{ showChatUnavailable = true
                                 }label: {
-                                    makeItemlabel(image: idx)
-                                    
+                                    makeChatIALabel()
                                 }
                             }
                         }else{
-                            Button{ showSetting = true
+                            Button{ showChatUnavailable = true
                             }label: {
-                                makeItemlabel(image: idx)
-                                
+                                makeChatIALabel()
                             }
                         }
                         
@@ -716,9 +709,11 @@ struct TabButtonBar : View{
                .presentationDetents([.height(280)])
                .presentationDragIndicator(.hidden)
         }
-        .sheet(isPresented: $showSetting, content: {
-            Ajustes()
-        })
+        .alert(String(localized: "Chat IA"), isPresented: $showChatUnavailable) {
+            Button(String(localized: "Aceptar"), role: .cancel) { }
+        } message: {
+            Text(String(localized: "Apple Intelligence no está disponible en este dispositivo o idioma."))
+        }
     }
     
     //Create UI for reusability
@@ -731,6 +726,14 @@ struct TabButtonBar : View{
             .scaleEffect(isPrimary ? 1.16 : 1.08)
             .shadow(color: Color.black.opacity(isPrimary ? 0.18 : 0.0), radius: 3, y: 1)
         
+    }
+
+    func makeChatIALabel() -> some View {
+        Image(systemName: "ellipsis.message")
+            .font(.system(size: 23, weight: .medium))
+            .foregroundStyle(.black.opacity(0.56))
+            .padding(8)
+            .scaleEffect(1.08)
     }
     
 }

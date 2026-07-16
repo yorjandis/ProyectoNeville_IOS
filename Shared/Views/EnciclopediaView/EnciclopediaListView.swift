@@ -46,7 +46,7 @@ struct EnciclopediaListView: View {
                     // COLUMNA IZQUIERDA — CATEGORÍAS
                     List(categorias,
                          selection: $categoriaSeleccionadaID) { categoria in
-                        Text(categoria.nombre)
+                        Text(categoria.localizedNombre)
                             .tag(categoria.id)   // 🔥 CLAVE
                     }
                     .frame(minWidth: 250)
@@ -59,7 +59,7 @@ struct EnciclopediaListView: View {
                             List(categoria.temas,
                                  id: \.self,
                                  selection: $temaSeleccionado) { tema in
-                                Text(tema.rawValue)
+                                Text(tema.localizedTitle)
                                     .tag(tema)   // 🔥 CLAVE
                             }
                         } else {
@@ -79,7 +79,7 @@ struct EnciclopediaListView: View {
                 // 🔽 PANEL INFERIOR — CONTENIDO
                 Group {
                     if let tema = temaSeleccionado {
-                        ContentTxtShowView(title: tema.rawValue,nombreTxt: "" ,type: .NA, blocks: [
+                        ContentTxtShowView(title: tema.localizedTitle,nombreTxt: "" ,type: .NA, blocks: [
                             ContentBlock(content: .text(UtilFuncs.FileRead(tema.getFileName)))
                         ], checkPremium: true
                         )
@@ -118,7 +118,7 @@ struct EnciclopediaListView: View {
                 .padding()
             
             List(categorias) { categoria in
-                NavigationLink(categoria.nombre) {
+                NavigationLink(categoria.localizedNombre) {
                     SubListaView(categoria: categoria)
                 }
                 .listRowBackground(Color.clear)
@@ -160,8 +160,8 @@ fileprivate struct SubListaView: View {
                 .ignoresSafeArea()
             
             List(categoria.temas, id: \.self) { item in
-                NavigationLink(item.rawValue) {
-                    ContentTxtShowView(title: item.rawValue, nombreTxt: "",type: .NA, blocks: [
+                NavigationLink(item.localizedTitle) {
+                    ContentTxtShowView(title: item.localizedTitle, nombreTxt: "",type: .NA, blocks: [
                                         ContentBlock(content: .text(UtilFuncs.FileRead(item.getFileName)))
                                        ], checkPremium: true)
                     
@@ -173,7 +173,7 @@ fileprivate struct SubListaView: View {
             .background(Color.clear)
         }
         
-        .navigationTitle(categoria.nombre)
+        .navigationTitle(categoria.localizedNombre)
     }
 }
 
@@ -183,4 +183,24 @@ struct EnciclopediaCategoria: Identifiable, Hashable {
     let id = UUID()
     let nombre: String
     let temas: [EnciclopediaTemas]
+
+    var localizedNombre: String {
+        guard AppLanguage.current != .spanish else { return nombre }
+
+        let translations: [String: (english: String, chinese: String)] = [
+            "Temas Generales": ("General Topics", "一般主题"),
+            "Pensamientos & Sentimientos": ("Thoughts & Feelings", "思想与情绪"),
+            "Hábitos": ("Habits", "习惯"),
+            "Epigenética": ("Epigenetics", "表观遗传学"),
+            "Memoria": ("Memory", "记忆"),
+            "Dopamina": ("Dopamine", "多巴胺"),
+            "Serotonina": ("Serotonin", "血清素"),
+            "Ansiedad": ("Anxiety", "焦虑"),
+            "Emociones": ("Emotions", "情绪"),
+            "Ritmo Circadiano": ("Circadian Rhythm", "昼夜节律")
+        ]
+
+        guard let translation = translations[nombre] else { return nombre }
+        return AppLanguage.current == .english ? translation.english : translation.chinese
+    }
 }
