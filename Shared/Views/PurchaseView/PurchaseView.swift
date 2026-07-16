@@ -30,8 +30,8 @@ struct PurchaseView: View {
     private static let premiumFeatures: [PremiumFeature] = [
         PremiumFeature(
             iconName: "sparkles",
-            title: "Contenido exclusivo",
-            description: "Accede a las frases y enseñanzas de Joe Dispenza, Bruce Lipton y Gregg Braden."
+            title: String(localized: "Contenido exclusivo"),
+            description: String(localized: "Accede a las frases y enseñanzas de Joe Dispenza, Bruce Lipton y Gregg Braden.")
         ),
         PremiumFeature(
             iconName: "cross.case.fill",
@@ -40,28 +40,28 @@ struct PurchaseView: View {
         ),
         PremiumFeature(
             iconName: "target",
-            title: "Metas y transformación personal",
-            description: "Define objetivos claros, mide tu progreso y adopta hábitos respaldados por la neurociencia. Incluye programas prácticos para reprogramar patrones negativos y empoderarte."
+            title: String(localized: "Metas y transformación personal"),
+            description: String(localized: "Define objetivos claros, mide tu progreso y adopta hábitos respaldados por la neurociencia. Incluye programas prácticos para reprogramar patrones negativos y empoderarte.")
         ),
         PremiumFeature(
             iconName: "paintpalette",
-            title: "Lienzo creativo",
-            description: "Diseña imágenes impactantes con tus frases favoritas para compartir en redes o usar como tarjetas personales de enfoque y motivación."
+            title: String(localized: "Lienzo creativo"),
+            description: String(localized: "Diseña imágenes impactantes con tus frases favoritas para compartir en redes o usar como tarjetas personales de enfoque y motivación.")
         ),
         PremiumFeature(
             iconName: "sun.max",
-            title: "Ciclo consciente diario",
-            description: "Diseña tu mañana con intención, registra tu presencia, cierra el día con aprendizaje y transforma todo en un Diario útil para mañana. Incluye recordatorios, estadísticas y Mi día."
+            title: String(localized: "Ciclo consciente diario"),
+            description: String(localized: "Diseña tu mañana con intención, registra tu presencia, cierra el día con aprendizaje y transforma todo en un Diario útil para mañana. Incluye recordatorios, estadísticas y Mi día.")
         ),
         PremiumFeature(
             iconName: "sparkles.rectangle.stack",
-            title: "Revisión semanal guiada",
-            description: "Cierra la semana con una síntesis de metas, agenda, diario, emociones, presencia, coherencia y logros. Elige el día, recibe un recordatorio opcional y conserva tus revisiones sincronizadas."
+            title: String(localized: "Revisión semanal guiada"),
+            description: String(localized: "Cierra la semana con una síntesis de metas, agenda, diario, emociones, presencia, coherencia y logros. Elige el día, recibe un recordatorio opcional y conserva tus revisiones sincronizadas.")
         ),
         PremiumFeature(
             iconName: "calendar",
-            title: "Agenda",
-            description: "Organiza tus actividades y tareas en el tiempo, liberando recursos y memoria. Añade recordatorios para no olvidar lo importante."
+            title: String(localized: "Agenda"),
+            description: String(localized: "Organiza tus actividades y tareas en el tiempo, liberando recursos y memoria. Añade recordatorios para no olvidar lo importante.")
         ),
         PremiumFeature(
             iconName: "heart.circle",
@@ -70,28 +70,28 @@ struct PurchaseView: View {
         ),
         PremiumFeature(
             iconName: "doc.text",
-            title: "Exportación PDF",
-            description: "Exporta Notas, Frases, Actividades de la Agenda, Reflexiones y respuestas de Chat IA a formato portable PDF estándar."
+            title: String(localized: "Exportación PDF"),
+            description: String(localized: "Exporta Notas, Frases, Actividades de la Agenda, Reflexiones y respuestas de Chat IA a formato portable PDF estándar.")
         ),
         PremiumFeature(
             iconName: "leaf",
-            title: "Espacio Calma",
-            description: "Experiencia inmersiva para relajarte y aprender mientras activas tu sistema parasimpático."
+            title: String(localized: "Espacio Calma"),
+            description: String(localized: "Experiencia inmersiva para relajarte y aprender mientras activas tu sistema parasimpático.")
         ),
         PremiumFeature(
             iconName: "eye",
-            title: "Presencia Consciente",
-            description: "Registra pequeños momentos de despertar durante el día y vuelve al presente con un solo toque. Observa cuándo sales del piloto automático, reconoce tu estado de ánimo y refuerza la emoción del futuro que deseas vivir."
+            title: String(localized: "Presencia Consciente"),
+            description: String(localized: "Registra pequeños momentos de despertar durante el día y vuelve al presente con un solo toque. Observa cuándo sales del piloto automático, reconoce tu estado de ánimo y refuerza la emoción del futuro que deseas vivir.")
         ),
         PremiumFeature(
             iconName: "bell.badge",
-            title: "Recordatorios inteligentes",
-            description: "Programa avisos para tus prácticas esenciales como meditar, agradecer, visualizar o revisar tus metas."
+            title: String(localized: "Recordatorios inteligentes"),
+            description: String(localized: "Programa avisos para tus prácticas esenciales como meditar, agradecer, visualizar o revisar tus metas.")
         ),
         PremiumFeature(
             iconName: "book.closed",
-            title: "Enciclopedia",
-            description: "Amplio catálogo educativo y práctico basado en neurociencia y meditación: hábitos, mente, epigenética, hormonas del estrés, ritmos circadianos y más."
+            title: String(localized: "Enciclopedia"),
+            description: String(localized: "Amplio catálogo educativo y práctico basado en neurociencia y meditación: hábitos, mente, epigenética, hormonas del estrés, ritmos circadianos y más.")
         ),
         PremiumFeature(
             iconName: "barcode.viewfinder",
@@ -100,43 +100,43 @@ struct PurchaseView: View {
         ),
         PremiumFeature(
             iconName: "checkmark.seal",
-            title: "Evidencia científica",
-            description: "Resumen de investigaciones que respaldan estas enseñanzas, debidamente acotados para su fácil consulta."
+            title: String(localized: "Evidencia científica"),
+            description: String(localized: "Resumen de investigaciones que respaldan estas enseñanzas, debidamente acotados para su fácil consulta.")
         ),
         PremiumFeature(
             iconName: "brain.head.profile",
-            title: "Inteligencia Artificial integrada",
-            description: "Obtén resúmenes, interpretaciones, consejos prácticos y un chat para resolver dudas al instante, con respuestas basadas en el campo de conocimiento de cada autor."
+            title: String(localized: "Inteligencia Artificial integrada"),
+            description: String(localized: "Obtén resúmenes, interpretaciones, consejos prácticos y un chat para resolver dudas al instante, con respuestas basadas en el campo de conocimiento de cada autor.")
         ),
         PremiumFeature(
             iconName: "mic",
-            title: "Atajos y comandos con Siri",
-            description: "Crea notas, añade entradas al diario o abre contenido usando solo tu voz, sin entrar en la app."
+            title: String(localized: "Atajos y comandos con Siri"),
+            description: String(localized: "Crea notas, añade entradas al diario o abre contenido usando solo tu voz, sin entrar en la app.")
         ),
         PremiumFeature(
             iconName: "square.and.arrow.down",
-            title: "Importación desde cualquier lugar",
-            description: "Guarda texto o imágenes desde webs y apps con el menú compartir. Incluye OCR y lectura de códigos QR."
+            title: String(localized: "Importación desde cualquier lugar"),
+            description: String(localized: "Guarda texto o imágenes desde webs y apps con el menú compartir. Incluye OCR y lectura de códigos QR.")
         ),
         PremiumFeature(
             iconName: "link",
-            title: "Frases Relacionadas (FR)",
-            description: "Conecta ideas de distintos autores y tus propias reflexiones para crear un mapa visual del pensamiento compartido."
+            title: String(localized: "Frases Relacionadas (FR)"),
+            description: String(localized: "Conecta ideas de distintos autores y tus propias reflexiones para crear un mapa visual del pensamiento compartido.")
         ),
         PremiumFeature(
             iconName: "qrcode",
-            title: "Comparte con QR",
-            description: "Genera códigos QR para compartir notas y frases fácilmente en redes sociales o con amigos."
+            title: String(localized: "Comparte con QR"),
+            description: String(localized: "Genera códigos QR para compartir notas y frases fácilmente en redes sociales o con amigos.")
         ),
         PremiumFeature(
             iconName: "lock.shield",
-            title: "Notas protegidas",
-            description: "Bloquea el acceso a tus notas con biometría o contraseña para mantener tu contenido seguro."
+            title: String(localized: "Notas protegidas"),
+            description: String(localized: "Bloquea el acceso a tus notas con biometría o contraseña para mantener tu contenido seguro.")
         ),
         PremiumFeature(
             iconName: "textformat.abc",
-            title: "Menú inteligente de texto copiado",
-            description: "Selecciona cualquier fragmento dentro de la app y accede a acciones rápidas como guardar en Notas o Frases al instante."
+            title: String(localized: "Menú inteligente de texto copiado"),
+            description: String(localized: "Selecciona cualquier fragmento dentro de la app y accede a acciones rápidas como guardar en Notas o Frases al instante.")
         )
     ]
     
@@ -334,7 +334,7 @@ struct PurchaseView: View {
                 } label: {
                     VStack(spacing: 4) {
                         if let premiumProduct = self.purchaseModel.products.first {
-                            Text("\(premiumProduct.displayPrice)/año")
+                            Text(String(format: String(localized: "%@/año"), premiumProduct.displayPrice))
                                 .purchasePrimaryButtonTextStyle()
                                 .font(.headline)
                                 .bold()
@@ -372,7 +372,7 @@ struct PurchaseView: View {
                 #endif
                 .disabled(self.purchaseModel.products.isEmpty)
                 
-                Text("La suscripción se renueva automáticamente cada año hasta que se cancele.")
+                Text(String(localized: "La suscripción se renueva automáticamente cada año hasta que se cancele."))
                     .font(.footnote)
                     .multilineTextAlignment(.center)
                     .foregroundStyle(.black)
