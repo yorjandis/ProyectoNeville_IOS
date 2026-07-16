@@ -49,10 +49,36 @@ struct LocalizedContentDescriptor: Codable, Hashable, Sendable {
     let locale: String
 }
 
-private struct ContentManifest: Codable {
+private struct ContentManifest: Decodable {
     let version: Int
     let locale: String
-    let entries: [LocalizedContentDescriptor]
+    private let entries: [ManifestEntry]
+
+    var supportedEntries: [LocalizedContentDescriptor] {
+        entries.compactMap(\.descriptor)
+    }
+}
+
+/// Representación tolerante del manifiesto. Un manifiesto puede indexar otros tipos
+/// de contenido (por ejemplo, reflexiones) sin invalidar las entradas que este
+/// repositorio sí conoce.
+private struct ManifestEntry: Decodable {
+    let id: ContentID
+    let kind: String
+    let resourceName: String
+    let title: String
+    let locale: String
+
+    var descriptor: LocalizedContentDescriptor? {
+        guard let supportedKind = ContentKind(rawValue: kind) else { return nil }
+        return LocalizedContentDescriptor(
+            id: id,
+            kind: supportedKind,
+            resourceName: resourceName,
+            title: title,
+            locale: locale
+        )
+    }
 }
 
 struct ContentRepository {
@@ -71,7 +97,7 @@ struct ContentRepository {
         let canonical = legacyDescriptors(of: kind)
         guard language != .spanish else { return canonical.sorted(by: titleSort) }
 
-        let translated = manifest(for: language)?.entries.filter { $0.kind == kind } ?? []
+        let translated = manifest(for: language)?.supportedEntries.filter { $0.kind == kind } ?? []
         let translatedByID = Dictionary(uniqueKeysWithValues: translated.map { ($0.id, $0) })
         return canonical
             .map { translatedByID[$0.id] ?? $0 }
@@ -118,7 +144,7 @@ struct ContentRepository {
             let candidateResource: String
             if candidate == .spanish {
                 candidateResource = canonical?.resourceName ?? descriptor.resourceName
-            } else if let localizedEntry = manifest(for: candidate)?.entries.first(where: {
+            } else if let localizedEntry = manifest(for: candidate)?.supportedEntries.first(where: {
                 $0.id == descriptor.id
             }) {
                 candidateResource = localizedEntry.resourceName

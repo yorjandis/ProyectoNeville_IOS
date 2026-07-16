@@ -802,6 +802,12 @@
     },
     "¿Quién eliges ser hoy?" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Who do you choose to be today?"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -900,6 +906,12 @@
     },
     "¿Te gusta la app?" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Do you like the app?"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1059,6 +1071,12 @@
     },
     "%@ con notas" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ with notes"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1069,6 +1087,12 @@
     },
     "%@ favoritas" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ favorites"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1388,6 +1412,12 @@
     },
     "☘️ Información sobre la IA utilizada:\n\nLa Inteligencia Artificial se basa en los modelos preinstalados en el dispositivo. Apple garantiza que su acceso es seguro y no involucra procesamiento fuera del dispositivo.\n\nEl modelo es capaz de generar respuestas creativas y eficaces basadas en los conocimientos y enseñanzas de varios autores (Neville Goddard, Joe Dispenza, Bruce Lipton y Gregg Braden). Sin embargo, se recomienda revisar con cuidado cada respuesta y tomar desiciones informadas acerca de ellas.\n\nLos modelos han sido cuidadosamente instruidos y revisados para aminorar los sezgos, errores y que solo responda dentro de los límites del campo de conocimientos establecido para cada autor.\n\nSi siente que una respuesta no resuena con usted, o no es correcta, la mejor desición es seguir su instinto propio.\n\nLa optimización del modelo es un proceso continuo, en cada actualización de la \"La Ley\" será revisado y actualizado." : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "☘️ Information about the AI ​​used:\n\nThe Artificial Intelligence is based on models pre-installed on the device. Apple guarantees that access to these models is secure and does not involve processing outside the device.\n\nThe model is capable of generating creative and effective responses based on the knowledge and teachings of various authors (Neville Goddard, Joe Dispenza, Bruce Lipton, and Gregg Braden). However, it is recommended to carefully review each response and make informed decisions about them.\n\nThe models have been carefully trained and reviewed to minimize biases and errors, and to ensure they only respond within the established knowledge base for each author.\n\nIf you feel that a response doesn't resonate with you or is incorrect, the best course of action is to follow your own instincts.\n\nThe model's optimization is an ongoing process; it will be reviewed and updated with each update of \"The Law.\""
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1398,6 +1428,12 @@
     },
     "🎉 Versión Extendida ✨" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "🎉 Extended Version ✨"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1417,7 +1453,8 @@
             "value" : "🔸%@"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "🔸Toca una partícula para liberar su frase.\n🔸Doble toque en el fondo para cambiarlo." : {
       "localizations" : {
@@ -1452,7 +1489,8 @@
             "value" : "🟢%@"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "1: mínimamente procesado • 2: ingrediente culinario • 3: procesado • 4: ultraprocesado" : {
       "localizations" : {
@@ -1632,6 +1670,12 @@
     },
     "7 días gratis, después suscripción anual" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7 days free, then annual subscription"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1847,6 +1891,12 @@
     },
     "Abre %@ en La Ley" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open %@ in La Ley"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2275,6 +2325,12 @@
     },
     "Accede a todo el contenido" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Access all content"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2285,6 +2341,12 @@
     },
     "Acceder" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Access"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2295,6 +2357,12 @@
     },
     "Acceder a la Versión Extendida" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Access the Extended Version"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2394,6 +2462,12 @@
     },
     "Acceso protegido" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Protected access"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2493,6 +2567,12 @@
     },
     "Acepto" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I accept"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2503,6 +2583,12 @@
     },
     "Aciertos:%d" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Successes:%d"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2888,6 +2974,12 @@
     },
     "Actualiza frases" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Update phrases"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2898,6 +2990,12 @@
     },
     "Actualizado %@" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updated %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3041,6 +3139,12 @@
     },
     "Actualizar Frase" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Update Phrase"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3051,6 +3155,12 @@
     },
     "Actualizar Frases" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Update Phrases"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3128,6 +3238,12 @@
     },
     "Adicionar Nueva nota" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add New Note"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3138,6 +3254,12 @@
     },
     "Adicionar una Frase" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add a Phrase"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3170,6 +3292,12 @@
     },
     "Adicionar una reflexión" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add a reflection"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4107,6 +4235,12 @@
     },
     "Agregar Frase" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add Phrase"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4161,6 +4295,12 @@
     },
     "AHORA" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NOW"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4237,6 +4377,12 @@
     },
     "Al escribir una reseña ayudas a que más personas puedan disfrutar de estas enseñanzas, gracias por tu apoyo!" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "By writing a review, you help more people enjoy these teachings. Thank you for your support!"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4425,6 +4571,12 @@
     },
     "Almacenar en Notas" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Store in Notes"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5253,6 +5405,12 @@
     },
     "Aplicar Color" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apply Color"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5285,6 +5443,12 @@
     },
     "Aplicar formato importación Frases" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apply import format Phrases"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5295,6 +5459,12 @@
     },
     "Aplicar formato importación Notas" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apply Import Format Notes"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6543,6 +6713,12 @@
     },
     "autor" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "author"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6575,6 +6751,12 @@
     },
     "Autor de la frase" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Author of the phrase"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6585,6 +6767,12 @@
     },
     "Autor: %@" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Author: %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6595,6 +6783,12 @@
     },
     "Autores:" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Authors:"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7140,6 +7334,12 @@
     },
     "Bienvenido a una nueva versión de La Ley" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Welcome to a new version of The Law"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7535,6 +7735,12 @@
     },
     "Buscar en contenido" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search within content"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7589,6 +7795,12 @@
     },
     "Buscar en las notas" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search in the notes"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7621,6 +7833,12 @@
     },
     "Buscar en nota de Frase" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search in Phrase note"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7762,7 +7980,14 @@
       }
     },
     "Buscar un texto" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search for a text"
+          }
+        }
+      }
     },
     "Cada amanecer puede reeducar tu mente" : {
       "localizations" : {
@@ -7809,10 +8034,24 @@
       }
     },
     "Cada año en esta fecha:" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Every year on this date:"
+          }
+        }
+      }
     },
     "Cada día, a esta hora:" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Every year on this date:"
+          }
+        }
+      }
     },
     "Cada latido es una puerta\nhacia tu equilibrio natural" : {
       "localizations" : {
@@ -7837,7 +8076,14 @@
       }
     },
     "Cada mes en esta fecha:" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Every month on this date:"
+          }
+        }
+      }
     },
     "Cada noche es una oportunidad de crear" : {
       "localizations" : {
@@ -8127,10 +8373,24 @@
       }
     },
     "Cambiar Autor" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change Author"
+          }
+        }
+      }
     },
     "Cambiar Autor..." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change Author..."
+          }
+        }
+      }
     },
     "Cambiar capítulo" : {
       "localizations" : {
@@ -8177,10 +8437,24 @@
       }
     },
     "Cambiar contraseña" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change password"
+          }
+        }
+      }
     },
     "Cambiar Contraseña" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change Password"
+          }
+        }
+      }
     },
     "Cambiar emoción" : {
       "localizations" : {
@@ -8205,7 +8479,14 @@
       }
     },
     "Cambiar Imagen..." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change Image..."
+          }
+        }
+      }
     },
     "Cambiar La Contraseña" : {
       "localizations" : {
@@ -8230,7 +8511,14 @@
       }
     },
     "Cambiar Operación..." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change Operation..."
+          }
+        }
+      }
     },
     "Cambiar texto" : {
       "localizations" : {
@@ -8277,7 +8565,14 @@
       }
     },
     "Cancel" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        }
+      }
     },
     "Cancelar" : {
       "localizations" : {
@@ -8303,6 +8598,12 @@
     },
     "Cancelar selección" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel selection"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8510,10 +8811,24 @@
       }
     },
     "Cargando datos..." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loading data..."
+          }
+        }
+      }
     },
     "Cargando precio…" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loading price…"
+          }
+        }
+      }
     },
     "Cargar en Metas" : {
       "localizations" : {
@@ -8538,7 +8853,14 @@
       }
     },
     "Cargar imagen de la galería..." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Upload image from gallery..."
+          }
+        }
+      }
     },
     "Categoría" : {
       "localizations" : {
@@ -8784,10 +9106,24 @@
       }
     },
     "Charlar con la IA" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chat with AI"
+          }
+        }
+      }
     },
     "Chat" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chat"
+          }
+        }
+      }
     },
     "Chat IA" : {
       "localizations" : {
@@ -8834,7 +9170,14 @@
       }
     },
     "ChatIA" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ChatIA"
+          }
+        }
+      }
     },
     "Check" : {
       "localizations" : {
@@ -9058,7 +9401,14 @@
       }
     },
     "Cierre" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Closing"
+          }
+        }
+      }
     },
     "Cierre consciente" : {
       "localizations" : {
@@ -9171,7 +9521,14 @@
       }
     },
     "Cierto" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "True"
+          }
+        }
+      }
     },
     "Cinco año atrás" : {
       "localizations" : {
@@ -9795,19 +10152,40 @@
       }
     },
     "Coloque la contraseña" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter the password"
+          }
+        }
+      }
     },
     "Coloque una contraseña" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter a password"
+          }
+        }
+      }
     },
     "Color 1" : {
-
+      "shouldTranslate" : false
     },
     "Color 2" : {
-
+      "shouldTranslate" : false
     },
     "Color de fondo y letra" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Background color and font"
+          }
+        }
+      }
     },
     "Color de frases" : {
       "localizations" : {
@@ -9986,10 +10364,24 @@
       }
     },
     "Color Texto Principal" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Main Text Color"
+          }
+        }
+      }
     },
     "Color Texto Secundario" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Secondary Text Color"
+          }
+        }
+      }
     },
     "Colores Chat IA" : {
       "localizations" : {
@@ -10124,7 +10516,14 @@
       }
     },
     "Comenzar!" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Begin!"
+          }
+        }
+      }
     },
     "Comienza este día con propósito" : {
       "localizations" : {
@@ -10347,10 +10746,24 @@
       }
     },
     "Compartir frase" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Share phrase"
+          }
+        }
+      }
     },
     "Compartir Imagen" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Share Image"
+          }
+        }
+      }
     },
     "Compartir la App" : {
       "localizations" : {
@@ -10419,7 +10832,14 @@
       }
     },
     "Compendio de Frases" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compendium of Phrases"
+          }
+        }
+      }
     },
     "Completa el cierre nocturno para transformar tu intención de la mañana en aprendizaje práctico." : {
       "localizations" : {
@@ -10555,6 +10975,12 @@
     },
     "Completado: %lld/%lld" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completed: %1$lld/%2$lld"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "new",
@@ -10586,7 +11012,14 @@
       }
     },
     "Completar ritual de hoy" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Complete today's ritual"
+          }
+        }
+      }
     },
     "Comprobación" : {
       "localizations" : {
@@ -10721,7 +11154,14 @@
       }
     },
     "Compruebe lo que sabe" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Test what you know"
+          }
+        }
+      }
     },
     "con intención" : {
       "localizations" : {
@@ -10747,6 +11187,12 @@
     },
     "Con Notas" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "With Notes"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11360,10 +11806,24 @@
       }
     },
     "Confirme que desea Eliminar la Frase" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please confirm that you want to delete the phrase."
+          }
+        }
+      }
     },
     "Conflictos" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conflicts"
+          }
+        }
+      }
     },
     "Consciente" : {
       "localizations" : {
@@ -11701,7 +12161,14 @@
       }
     },
     "Contenido de la nota" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contents of the note"
+          }
+        }
+      }
     },
     "Contenido:" : {
       "localizations" : {
@@ -11726,7 +12193,14 @@
       }
     },
     "Contexto" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Context"
+          }
+        }
+      }
     },
     "Contextos" : {
       "extractionState" : "stale",
@@ -11908,13 +12382,34 @@
       }
     },
     "Contraseña" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Password"
+          }
+        }
+      }
     },
     "Contraseña actual" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Current password"
+          }
+        }
+      }
     },
     "Contraseña de la app" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App password"
+          }
+        }
+      }
     },
     "Contraseña del archivo" : {
       "localizations" : {
@@ -11961,10 +12456,24 @@
       }
     },
     "Convertir a checklist" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Convertir a checklist"
+          }
+        }
+      }
     },
     "Convertir a texto" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Convert to text"
+          }
+        }
+      }
     },
     "Convierte lo hecho en aprendizaje" : {
       "extractionState" : "stale",
@@ -12234,7 +12743,14 @@
       }
     },
     "Creando Resumen" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Creating Summary"
+          }
+        }
+      }
     },
     "Crear actividad ${titulo}, fecha ${fecha}, contenido ${contenido}, recordatorio ${activarRecordatorio}" : {
       "localizations" : {
@@ -12259,16 +12775,44 @@
       }
     },
     "Crear archivo .ypgexp" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create .ypgexp file"
+          }
+        }
+      }
     },
     "Crear Contexto" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create Context"
+          }
+        }
+      }
     },
     "Crear Contraseña" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create Password"
+          }
+        }
+      }
     },
     "Crear contraseña de la app" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create app password"
+          }
+        }
+      }
     },
     "Crear Entrada Agenda" : {
       "localizations" : {
@@ -12888,7 +13432,14 @@
       }
     },
     "Datos que se pueden exportar" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data that can be exported"
+          }
+        }
+      }
     },
     "de 5" : {
       "localizations" : {
@@ -12914,6 +13465,12 @@
     },
     "Debe aceptar primero, en Ajustes, los permisos de ubicación en iPhone." : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You must first accept location permissions on your iPhone in Settings."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13169,6 +13726,12 @@
     },
     "Dejar una reseña en la App Store" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leave a review on the App Store"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13400,7 +13963,14 @@
       }
     },
     "Desbloquear %@" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unlock %@"
+          }
+        }
+      }
     },
     "Desbloquear Centro Sanador" : {
       "localizations" : {
@@ -13425,10 +13995,24 @@
       }
     },
     "Desbloquear con biometría o código" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unlock with biometrics or code"
+          }
+        }
+      }
     },
     "Desbloquear con contraseña" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unlock with password"
+          }
+        }
+      }
     },
     "Descansa en confianza" : {
       "localizations" : {
@@ -13651,13 +14235,33 @@
       }
     },
     "Desea eliminar la reflexión?" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Do you want to remove the reflection?"
+          }
+        }
+      }
     },
     "Deseleccionar todas" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deselect all"
+          }
+        }
+      }
     },
     "Deseleccionar todas las frases visibles" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deselect all visible phrases"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13667,7 +14271,14 @@
       }
     },
     "Deseleccionar visibles" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deselect visible"
+          }
+        }
+      }
     },
     "Desmarcar" : {
       "localizations" : {
@@ -13957,7 +14568,14 @@
       }
     },
     "Detener" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stop"
+          }
+        }
+      }
     },
     "Día" : {
       "localizations" : {
@@ -14772,7 +15390,14 @@
       }
     },
     "Doble click para cambiar la imagen" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Double click to change the image"
+          }
+        }
+      }
     },
     "Domingo" : {
       "localizations" : {
@@ -14863,10 +15488,10 @@
       }
     },
     "Dr. Bruce Lipton" : {
-
+      "shouldTranslate" : false
     },
     "Dr. Joe Dispenza" : {
-
+      "shouldTranslate" : false
     },
     "Duerme como quien ya recibió" : {
       "localizations" : {
@@ -15045,7 +15670,14 @@
       }
     },
     "Editar Frase" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit Phrase"
+          }
+        }
+      }
     },
     "Editar nombre" : {
       "localizations" : {
@@ -15136,7 +15768,14 @@
       }
     },
     "Editar una Reflexión" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit a Reflection"
+          }
+        }
+      }
     },
     "Editar..." : {
       "localizations" : {
@@ -15404,7 +16043,14 @@
       }
     },
     "El autor de la frase" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The author of the phrase"
+          }
+        }
+      }
     },
     "El código de barras no es válido." : {
       "localizations" : {
@@ -16228,7 +16874,14 @@
       }
     },
     "Eliminar Contexto" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove Context"
+          }
+        }
+      }
     },
     "Eliminar entrada" : {
       "localizations" : {
@@ -19892,7 +20545,14 @@
       }
     },
     "Feliz Cumpleaños Maestro Neville! 💖" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Happy Birthday, Master Neville! 💖"
+          }
+        }
+      }
     },
     "Festivo" : {
       "localizations" : {
@@ -26768,7 +27428,7 @@
 
     },
     "Joe Dispenza" : {
-
+      "shouldTranslate" : false
     },
     "Jueves" : {
       "localizations" : {
@@ -27057,7 +27717,14 @@
       }
     },
     "La contraseña no es correcta" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The password is incorrect."
+          }
+        }
+      }
     },
     "La contraseña no es correcta." : {
       "localizations" : {
@@ -27082,7 +27749,14 @@
       }
     },
     "La contraseña se almacena cifrada en el llavero del sistema. Se le pedirá siempre que acceda al diario y para bloquear/desbloquear las notas" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The password is stored encrypted in the system keychain. You will be prompted for it every time you access the journal and to lock/unlock notes."
+          }
+        }
+      }
     },
     "La ejecución terminada se conservará en el historial y se creará una nueva Meta activa sin iniciar." : {
       "localizations" : {
@@ -27198,7 +27872,14 @@
       }
     },
     "La frase ha sido creada correctamente." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The sentence has been created correctly."
+          }
+        }
+      }
     },
     "La frase no puede estar vacía." : {
       "localizations" : {
@@ -27245,7 +27926,14 @@
       }
     },
     "La frase será removida!!!" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The phrase will be removed!!!"
+          }
+        }
+      }
     },
     "La gratitud sella una nueva percepción" : {
       "localizations" : {
@@ -27424,7 +28112,7 @@
       }
     },
     "La ley" : {
-
+      "shouldTranslate" : false
     },
     "La Ley" : {
       "localizations" : {
@@ -38282,7 +38970,14 @@
       }
     },
     "pulso" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "pulse"
+          }
+        }
+      }
     },
     "Pulso" : {
       "extractionState" : "stale",
@@ -38308,10 +39003,24 @@
       }
     },
     "Puntos Claves" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Key Points"
+          }
+        }
+      }
     },
     "QR code del texto" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "QR code of the text"
+          }
+        }
+      }
     },
     "Qué puede estar ocurriendo" : {
       "localizations" : {
@@ -38425,6 +39134,12 @@
     },
     "Quitar Favorito" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove Favorite"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -39251,10 +39966,23 @@
       }
     },
     "Recuperar Fallos" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recovering Errors"
+          }
+        }
+      }
     },
     "Recursos Didácticos" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teaching Resources"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -39441,7 +40169,14 @@
       }
     },
     "Regenerar Respuesta" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regenerate Response"
+          }
+        }
+      }
     },
     "Región aplicada" : {
       "extractionState" : "stale",
@@ -39645,7 +40380,14 @@
       }
     },
     "Relaciones(%lld)" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Relations(%lld)"
+          }
+        }
+      }
     },
     "Relaja la mandíbula. Deja que la lengua descanse y que el rostro se suavice." : {
       "localizations" : {
@@ -39802,10 +40544,23 @@
       }
     },
     "Remover Relación" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove Relationship"
+          }
+        }
+      }
     },
     "Remover todas las relaciones" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove all relationships"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -39815,7 +40570,14 @@
       }
     },
     "Remover Widget" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remover Widget"
+          }
+        }
+      }
     },
     "Renombrar capítulo" : {
       "localizations" : {
@@ -39884,7 +40646,14 @@
       }
     },
     "Repetir cada" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Repeat each"
+          }
+        }
+      }
     },
     "Repetir contraseña" : {
       "localizations" : {
@@ -39953,10 +40722,24 @@
       }
     },
     "Repita la contraseña" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Repeat password"
+          }
+        }
+      }
     },
     "Repita la contraseña:" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Repeat password:"
+          }
+        }
+      }
     },
     "Repite hoy el hábito que más te ha sostenido esta semana y deja preparada la primera acción de mañana." : {
       "extractionState" : "stale",
@@ -40314,7 +41097,14 @@
       }
     },
     "Restaurar Compras" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restore Purchases"
+          }
+        }
+      }
     },
     "Restaurar frases predeterminadas" : {
       "localizations" : {
@@ -40449,7 +41239,14 @@
       }
     },
     "Resumen de Libros" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Book Summary"
+          }
+        }
+      }
     },
     "Resumen de Rituales" : {
       "localizations" : {
@@ -40474,7 +41271,14 @@
       }
     },
     "Resumen exportado" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exported summary"
+          }
+        }
+      }
     },
     "Resumen general" : {
       "localizations" : {
@@ -40499,7 +41303,14 @@
       }
     },
     "Resumen importado" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imported summary"
+          }
+        }
+      }
     },
     "Resumen:" : {
       "localizations" : {
@@ -40590,7 +41401,14 @@
       }
     },
     "Revisar intencion del dia" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Review the intention of the day"
+          }
+        }
+      }
     },
     "Revisión" : {
       "extractionState" : "stale",
@@ -40748,7 +41566,14 @@
       }
     },
     "Ritual de hoy pendiente" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Today's ritual pending"
+          }
+        }
+      }
     },
     "Ritual matutino" : {
       "localizations" : {
@@ -41523,7 +42348,14 @@
       }
     },
     "Salir" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exit"
+          }
+        }
+      }
     },
     "Salir de la guía" : {
       "localizations" : {
@@ -42013,7 +42845,14 @@
       }
     },
     "Se mostrará una serie de afirmaciones. Utilice los botones inferiores para decidir si son ciertas o falsas" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A series of statements will be displayed. Use the buttons below to decide whether they are true or false."
+          }
+        }
+      }
     },
     "Se pausa la estimación para no confundir ejercicio con estrés." : {
       "extractionState" : "stale",
@@ -42039,7 +42878,14 @@
       }
     },
     "Se repetirá automáticamente todos los años" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "It will repeat automatically every year"
+          }
+        }
+      }
     },
     "Se requiere Versión Extendida" : {
       "localizations" : {
@@ -42064,7 +42910,14 @@
       }
     },
     "Segun Autor: %@" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "According to the author: %@"
+          }
+        }
+      }
     },
     "Seguridad" : {
       "localizations" : {
@@ -42287,13 +43140,34 @@
       }
     },
     "Selecciona tus colores" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select your colors"
+          }
+        }
+      }
     },
     "Selecciona un ítem para ver el contenido" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select an item to view the content"
+          }
+        }
+      }
     },
     "Selecciona una categoría" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select a category"
+          }
+        }
+      }
     },
     "Seleccionadas" : {
       "localizations" : {
@@ -42384,10 +43258,24 @@
       }
     },
     "Seleccionar archivo .ypgexp" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select .ypgexp file"
+          }
+        }
+      }
     },
     "Seleccionar Imagen..." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select Image..."
+          }
+        }
+      }
     },
     "Seleccionar música personal" : {
       "localizations" : {
@@ -42434,10 +43322,23 @@
       }
     },
     "Seleccionar todas" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select all"
+          }
+        }
+      }
     },
     "Seleccionar todas las frases visibles" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select all visible phrases"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -42447,7 +43348,14 @@
       }
     },
     "Seleccionar visibles" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select visible"
+          }
+        }
+      }
     },
     "Semana" : {
       "localizations" : {
@@ -43002,10 +43910,24 @@
       }
     },
     "Si considera que su contraseña anterior no es lo bastante robusta o ha sido vulnerada, utilice esta opción para cambiarla" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "If you believe your previous password is not strong enough or has been compromised, use this option to change it."
+          }
+        }
+      }
     },
     "Si este dispositivo no admite autenticación biométrica o código compatible, crea una contraseña de la app para proteger el acceso." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "If this device does not support biometric authentication or a compatible code, create an app password to protect access."
+          }
+        }
+      }
     },
     "Si existe peligro inmediato, no continúes con un ejercicio de autorregulación. Llama a emergencias o pide a otra persona que lo haga." : {
       "localizations" : {
@@ -43119,6 +44041,12 @@
     },
     "Sí, me encanta! 💖" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yes, I love it! 💖"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -43878,7 +44806,14 @@
       }
     },
     "Sobrescribir registros" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Overwrite records"
+          }
+        }
+      }
     },
     "Sodio elevado" : {
       "localizations" : {
@@ -44234,7 +45169,14 @@
       }
     },
     "Sugerencias:" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suggestions:"
+          }
+        }
+      }
     },
     "Tamaño de letra" : {
       "localizations" : {
@@ -44259,16 +45201,44 @@
       }
     },
     "Tamaño de Letra" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Font Size"
+          }
+        }
+      }
     },
     "Tamaño Texto Primario: " : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Primary Text Size:"
+          }
+        }
+      }
     },
     "Tamaño Texto Secundario: " : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Secondary Text Size:"
+          }
+        }
+      }
     },
     "Tamaño: " : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Size:"
+          }
+        }
+      }
     },
     "También se eliminarán sus recordatorios. Esta acción no se puede deshacer." : {
       "localizations" : {
@@ -44403,7 +45373,14 @@
       }
     },
     "Tenga en cuenta que este recordatorio será omitido los meses que no tengan el día seleccionado. Por ejemplo, si selecciona día 30, en febrero no se activará el recordatorio." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please note that this reminder will be skipped for months where the selected day is not available. For example, if you select the 30th, the reminder will not be activated in February."
+          }
+        }
+      }
     },
     "Termina el día con claridad, integra lo vivido y deja una única mejora para mañana." : {
       "localizations" : {
@@ -44472,7 +45449,14 @@
       }
     },
     "Términos de Uso" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terms of Use"
+          }
+        }
+      }
     },
     "Texto" : {
       "localizations" : {
@@ -44497,10 +45481,24 @@
       }
     },
     "Texto copiado a: " : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Text copied to:"
+          }
+        }
+      }
     },
     "Texto Copiado a: " : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Text copied to:"
+          }
+        }
+      }
     },
     "Texto de la entrada" : {
       "localizations" : {
@@ -44525,7 +45523,14 @@
       }
     },
     "Texto de la frase" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Text of the phrase"
+          }
+        }
+      }
     },
     "Texto de la nota" : {
       "localizations" : {
@@ -44550,7 +45555,14 @@
       }
     },
     "Texto de la reflexión" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Text of the reflection"
+          }
+        }
+      }
     },
     "Texto del título" : {
       "localizations" : {
@@ -44895,10 +45907,24 @@
       }
     },
     "Tip: Click sostenido sobre la imagen para cambiarla" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tip: Click and hold on the image to change it."
+          }
+        }
+      }
     },
     "Tip: Doble tap/click sobre el texto, en el lienzo, para editarlo" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tip: Double tap/click on the text on the canvas to edit it."
+          }
+        }
+      }
     },
     "Tipo" : {
       "localizations" : {
@@ -45099,7 +46125,14 @@
       }
     },
     "Toca aqui para actualizar" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap here to update"
+          }
+        }
+      }
     },
     "Toca el acceso para registrar tu intención." : {
       "localizations" : {
@@ -45235,6 +46268,12 @@
     },
     "Todas las %@" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All the %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -45970,7 +47009,14 @@
       }
     },
     "TU ESTADO · AHORA" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "YOUR STATUS · NOW"
+          }
+        }
+      }
     },
     "Tu imaginación prepara el mañana" : {
       "localizations" : {
@@ -46392,7 +47438,14 @@
       }
     },
     "Tus datos se preparan en un archivo seguro y protegido. La contraseña no se guarda y se requiere para la importación." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your data is prepared in a secure and protected file. The password is not saved and is required for import."
+          }
+        }
+      }
     },
     "Tus metas activas registraron movimiento o son recientes." : {
       "localizations" : {
@@ -46617,6 +47670,12 @@
     },
     "Últimas lecturas visitadas:" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last viewed readings:"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -46937,7 +47996,14 @@
       }
     },
     "Unidad %@" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unit %@"
+          }
+        }
+      }
     },
     "Unidad completada" : {
       "localizations" : {
@@ -47028,7 +48094,14 @@
       }
     },
     "Ups! Contraseña no coinciden" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oops! Passwords do not match"
+          }
+        }
+      }
     },
     "Usar frase por defecto" : {
       "localizations" : {
@@ -47141,7 +48214,14 @@
       }
     },
     "Valor Actual: %@" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Present Value: %@"
+          }
+        }
+      }
     },
     "Valor calórico" : {
       "extractionState" : "stale",
@@ -47411,7 +48491,14 @@
       }
     },
     "Ver las últimas conferencias" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "View the latest conferences"
+          }
+        }
+      }
     },
     "Ver síntesis del día" : {
       "localizations" : {
@@ -47480,10 +48567,24 @@
       }
     },
     "Versión Extendida" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Extended Version"
+          }
+        }
+      }
     },
     "Versión Extendida Habilitada! 🎉" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Extended Version Enabled! 🎉"
+          }
+        }
+      }
     },
     "VFC (SDNN)" : {
       "extractionState" : "stale",
@@ -47532,6 +48633,12 @@
     },
     "Videos Tutoriales" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tutorial Videos"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -47630,7 +48737,14 @@
       }
     },
     "Vista previa" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preview"
+          }
+        }
+      }
     },
     "Vista rápida" : {
       "localizations" : {
@@ -48051,10 +49165,17 @@
       }
     },
     "Ya he escrito una reseña" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I've already written a review"
+          }
+        }
+      }
     },
     "Yorjandi PG" : {
-
+      "shouldTranslate" : false
     }
   },
   "version" : "1.0"

@@ -24,7 +24,7 @@
       "locale": "en"
       },
       {
-      "id": "help:ayud_El%20arte%20de%20la%20revisión",
+      "id": "help:ayud_el%20arte%20de%20la%20revisi%C3%B3n",
       "kind": "help",
       "resourceName": "ayud_El arte de la revisión",
       "title": "The art of revision",
@@ -66,7 +66,7 @@
       "locale": "en"
       },
       {
-      "id": "help:ayud_resumen%20de%20la%20enseñanza%20de%20neville",
+      "id": "help:ayud_resumen%20de%20la%20ense%C3%B1anza%20de%20neville",
       "kind": "help",
       "resourceName": "ayud_resumen de la enseñanza de neville",
       "title": "summary of Neville's teaching",
@@ -84,13 +84,6 @@
       "kind": "help",
       "resourceName": "ayud_si me resulta dificil creer",
       "title": "If I find it hard to believe",
-      "locale": "en"
-      },
-      {
-      "id": "reflex:reflex_conocimiento",
-      "kind": "reflex",
-      "resourceName": "reflex_conocimiento",
-      "title": "Knowledge",
       "locale": "en"
       }
   ]

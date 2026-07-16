@@ -24,7 +24,7 @@
       "locale": "zh-Hans"
       },
       {
-      "id": "help:ayud_El%20arte%20de%20la%20revisión",
+      "id": "help:ayud_el%20arte%20de%20la%20revisi%C3%B3n",
       "kind": "help",
       "resourceName": "ayud_El arte de la revisión",
       "title": "修订的艺术",
@@ -66,7 +66,7 @@
       "locale": "zh-Hans"
       },
       {
-      "id": "help:ayud_resumen%20de%20la%20enseñanza%20de%20neville",
+      "id": "help:ayud_resumen%20de%20la%20ense%C3%B1anza%20de%20neville",
       "kind": "help",
       "resourceName": "ayud_resumen de la enseñanza de neville",
       "title": "内维尔教导的总结",
@@ -84,13 +84,6 @@
       "kind": "help",
       "resourceName": "ayud_si me resulta dificil creer",
       "title": "如果我觉得很难相信。",
-      "locale": "zh-Hans"
-      },
-      {
-      "id": "reflex:reflex_conocimiento",
-      "kind": "reflex",
-      "resourceName": "reflex_conocimiento",
-      "title": "知识",
       "locale": "zh-Hans"
       }
   ]
