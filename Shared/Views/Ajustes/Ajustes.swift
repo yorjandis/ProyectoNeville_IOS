@@ -1510,7 +1510,7 @@ struct Ajustes: View {
                     .onAppear {
                         let availablePets = PetSettings.availablePetAssetNames
                         if !availablePets.contains(selectedPetAssetName) {
-                            selectedPetAssetName = PetSettings.defaultPetAssetName
+                            selectedPetAssetName = availablePets.first ?? PetSettings.defaultPetAssetName
                         }
                     }
 

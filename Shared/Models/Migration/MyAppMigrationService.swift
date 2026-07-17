@@ -18,7 +18,29 @@ final class MyAppMigrationService {
         return try export(records: records, password: password)
     }
 
+    func exportAsync(password: String) async throws -> ExportResult {
+        let records = try bridge.exportRecords()
+        try validateExportPassword(password)
+        let counts = Dictionary(grouping: records, by: \.type).mapValues(\.count)
+        let sortedCounts = Dictionary(uniqueKeysWithValues: counts.sorted { $0.key < $1.key })
+        let exportId = UUID().uuidString
+        let parameters = try crypto.newParameters()
+        let manifest = buildManifest(exportId: exportId, countsByType: sortedCounts, parameters: parameters)
+        let ndjson = try records.map { try $0.jsonLine() }.joined(separator: "\n") + "\n"
+        let plaintext = try MigrationFormat.packPlaintext(manifest: manifest, ndjson: ndjson)
+
+        let encrypted = try await Task.detached(priority: .userInitiated) {
+            try MigrationCrypto().encrypt(
+                plaintext: plaintext,
+                password: password,
+                parameters: parameters
+            )
+        }.value
+        return ExportResult(exportId: exportId, countsByType: sortedCounts, bytes: encrypted)
+    }
+
     func export(records: [CanonicalMigrationRecord], password: String) throws -> ExportResult {
+        try validateExportPassword(password)
         let counts = Dictionary(grouping: records, by: \.type).mapValues(\.count)
         let sortedCounts = Dictionary(uniqueKeysWithValues: counts.sorted { $0.key < $1.key })
         let exportId = UUID().uuidString
@@ -63,9 +85,6 @@ final class MyAppMigrationService {
         guard preview.errors.isEmpty else {
             throw MigrationError.validation("Hay errores de validación pendientes")
         }
-        if policy == .skipExisting, preview.conflicts.contains(where: { !$0.reason.contains("idéntico") }) {
-            throw MigrationError.validation("Hay conflictos pendientes. Revisa la vista previa antes de importar.")
-        }
         return try bridge.importRecords(preview.records, policy: policy)
     }
 
@@ -109,14 +128,32 @@ final class MyAppMigrationService {
         guard MigrationJSON.string(encryption, "kdf") == MigrationFormat.kdf else {
             throw MigrationError.validation("KDF no soportado")
         }
-        guard MigrationJSON.int(encryption, "kdfIterations") == MigrationFormat.kdfIterations else {
-            throw MigrationError.validation("Parámetros KDF no soportados")
+        guard MigrationJSON.int(encryption, "kdfVersion") == MigrationFormat.kdfVersion,
+              MigrationJSON.int(encryption, "kdfMemoryKiB") == MigrationFormat.kdfMemoryKiB,
+              MigrationJSON.int(encryption, "kdfIterations") == MigrationFormat.kdfIterations,
+              MigrationJSON.int(encryption, "kdfParallelism") == MigrationFormat.kdfParallelism else {
+            throw MigrationError.validation("Parámetros Argon2id no soportados")
+        }
+        guard MigrationJSON.string(encryption, "passwordNormalization") == MigrationFormat.passwordNormalization else {
+            throw MigrationError.validation("Normalización de contraseña no soportada")
         }
         guard (manifest["contentSummary"] as? [String: Any]) != nil else {
             throw MigrationError.validation("Resumen inválido")
         }
         guard !MigrationJSON.string(manifest, "exportId").isEmpty else {
             throw MigrationError.validation("exportId vacío")
+        }
+    }
+
+    private func validateExportPassword(_ password: String) throws {
+        let normalizedPassword = password.precomposedStringWithCanonicalMapping
+        guard normalizedPassword.unicodeScalars.count >= MigrationFormat.minimumPasswordCharacters else {
+            throw MigrationError.validation(
+                "La contraseña del archivo debe tener al menos \(MigrationFormat.minimumPasswordCharacters) caracteres."
+            )
+        }
+        guard normalizedPassword.utf8.count <= MigrationFormat.maximumPasswordBytes else {
+            throw MigrationError.validation("La contraseña del archivo es demasiado larga.")
         }
     }
 

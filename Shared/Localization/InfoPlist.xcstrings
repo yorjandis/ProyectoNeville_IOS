@@ -51,6 +51,18 @@
         }
       }
     },
+    "NSCalendarsFullAccessUsageDescription" : {
+      "comment" : "Privacy - Calendars Full Access Usage Description",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Neville necesita acceso a Calendario para exportar tus notas y actividades de Agenda como eventos."
+          }
+        }
+      }
+    },
     "NSCameraUsageDescription" : {
       "comment" : "Privacy - Camera Usage Description",
       "localizations" : {
@@ -197,6 +209,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "需要访问照片，以便你为内容选择图片。"
+          }
+        }
+      }
+    },
+    "NSRemindersFullAccessUsageDescription" : {
+      "comment" : "Privacy - Reminders Full Access Usage Description",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Neville necesita acceso a Recordatorios para exportar tus notas y actividades de Agenda como recordatorios."
           }
         }
       }

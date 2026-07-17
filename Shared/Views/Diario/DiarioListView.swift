@@ -12,8 +12,12 @@ import UniformTypeIdentifiers
 /// Ajustes visuales específicos de la mascota de la cabecera del Diario.
 /// Modifica estos valores para reajustar manualmente su tamaño y posición.
 private enum DiarioUIConstants {
-    static let topBarPetSize: CGFloat = 100
-    static let topBarPetOffset = CGSize(width: 50, height: -30)
+    static let topBarPetSize: CGFloat = 145
+    static let topBarPetOffset = CGSize(width: 50, height: -35)
+    /// Tamaño del título de cada capítulo en la vista agrupada.
+    static let chapterTitleFontSize: CGFloat = 19
+    /// Separación superior antes del primer capítulo de la vista agrupada.
+    static let chapterListTopPadding: CGFloat = 12
 }
 
 struct DiarioListView: View {
@@ -254,12 +258,6 @@ struct DiarioListView: View {
                 }
             }
         )
-
-        content = AnyView(content.navigationTitle("Diario"))
-
-            #if os(iOS)
-        content = AnyView(content.navigationBarTitleDisplayMode(.inline))
-            #endif
 
         content = AnyView(content.toolbar {
             ritualUpdateToolbar
@@ -686,7 +684,7 @@ struct DiarioListView: View {
         // La superposición evita que el tamaño de la mascota altere la altura de la barra.
         .overlay(alignment: .leading) {
             if petsEnabled {
-                PetImage(assetName: "mascota_diario_a")
+                PetImage(assetName: "peti_escribe")
                     .frame(
                         width: DiarioUIConstants.topBarPetSize,
                         height: DiarioUIConstants.topBarPetSize
@@ -869,9 +867,12 @@ struct DiarioListView: View {
 
     @ViewBuilder
     private var diarioGroupedList: some View {
-        ForEach(groupedDiarioByChapter, id: \.chapter) { section in
-            diarioChapterSection(section)
+        VStack(spacing: 0) {
+            ForEach(groupedDiarioByChapter, id: \.chapter) { section in
+                diarioChapterSection(section)
+            }
         }
+        .padding(.top, DiarioUIConstants.chapterListTopPadding)
     }
 
     @ViewBuilder
@@ -1537,7 +1538,7 @@ private struct DiarioChapterSectionView<RowContent: View>: View {
                     onCollapseToggle()
                 } label: {
                     Text(chapter)
-                        .font(.headline)
+                        .font(.system(size: DiarioUIConstants.chapterTitleFontSize, weight: .semibold))
                         .foregroundStyle(.black)
                 }
                 .buttonStyle(.plain)

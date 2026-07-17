@@ -12,7 +12,7 @@ import AVFoundation
 
 private enum LectorEtiquetasPetLayout {
     /// Ajustes manuales de la mascota flotante del lector de etiquetas.
-    static let assetName = "mascota_comiendo"
+    static let assetName = "nati_comiendo"
     static let size: CGFloat = 200
     static let offset = CGSize(width: 0, height: 5)
 }

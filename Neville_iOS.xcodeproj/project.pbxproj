@@ -63,6 +63,8 @@
 		914D88792FC1AEF100CDDB93 /* WatchDiarioReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914D88782FC1AEF100CDDB93 /* WatchDiarioReceiver.swift */; };
 		914D887B2FC1AF1800CDDB93 /* WatchDiarioReceiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914D887A2FC1AF1800CDDB93 /* WatchDiarioReceiver.swift */; };
 		914D887D2FC1AF1800CDDB93 /* WatchPremiumService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914D887C2FC1AF1800CDDB93 /* WatchPremiumService.swift */; };
+		914D88902FC6000000CDDB93 /* Sodium in Frameworks */ = {isa = PBXBuildFile; productRef = 914D88922FC6000000CDDB93 /* Sodium */; };
+		914D88912FC6000000CDDB93 /* Sodium in Frameworks */ = {isa = PBXBuildFile; productRef = 914D88932FC6000000CDDB93 /* Sodium */; };
 		915017432EF078A2007B741A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 915017422EF078A2007B741A /* StoreKit.framework */; };
 		915017452EF078B2007B741A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 915017442EF078B2007B741A /* StoreKit.framework */; };
 		918C4B0B2EF4094D00974B54 /* sharedmac.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 918C4AFF2EF4094D00974B54 /* sharedmac.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -1680,15 +1682,16 @@
 				"Staff/Images-Tutoriales/tuto_crearFrase.png",
 				"Staff/Images-Tutoriales/tuto_crearFraseEspacioCalma.png",
 				"Staff/Images-Tutoriales/tuto_running.png",
-				Staff/Mascotas/mascota_comiendo.png,
-				Staff/Mascotas/mascota_diario_a.png,
-				Staff/Mascotas/mascota_loto.png,
-				Staff/Mascotas/mascota1.png,
-				Staff/Mascotas/mascota2.png,
-				Staff/Mascotas/mascota3.png,
-				Staff/Mascotas/mascota4.png,
-				Staff/Mascotas/mascota5.png,
-				Staff/Mascotas/mascota6.png,
+				Staff/Mascotas/miou_loto.png,
+				Staff/Mascotas/miou.png,
+				Staff/Mascotas/nati_comiendo.png,
+				Staff/Mascotas/nati_notas.png,
+				Staff/Mascotas/nati.png,
+				Staff/Mascotas/nini.png,
+				Staff/Mascotas/peti_escribe.png,
+				Staff/Mascotas/peti.png,
+				Staff/Mascotas/risi.png,
+				Staff/Mascotas/tamy.png,
 				Staff/Metas/ProgramasPreestablecidos/prog_anti_ansiedad_2.json,
 				Staff/Metas/ProgramasPreestablecidos/prog_anti_ansiedad.json,
 				Staff/Metas/ProgramasPreestablecidos/prog_dejar_alcohol_1.json,
@@ -1834,15 +1837,16 @@
 				Staff/Frases/listfrases_otros.txt,
 				Staff/Frases/listfrases_salud.txt,
 				Staff/Frases/listfrases.txt,
-				Staff/Mascotas/mascota_comiendo.png,
-				Staff/Mascotas/mascota_diario_a.png,
-				Staff/Mascotas/mascota_loto.png,
-				Staff/Mascotas/mascota1.png,
-				Staff/Mascotas/mascota2.png,
-				Staff/Mascotas/mascota3.png,
-				Staff/Mascotas/mascota4.png,
-				Staff/Mascotas/mascota5.png,
-				Staff/Mascotas/mascota6.png,
+				Staff/Mascotas/miou_loto.png,
+				Staff/Mascotas/miou.png,
+				Staff/Mascotas/nati_comiendo.png,
+				Staff/Mascotas/nati_notas.png,
+				Staff/Mascotas/nati.png,
+				Staff/Mascotas/nini.png,
+				Staff/Mascotas/peti_escribe.png,
+				Staff/Mascotas/peti.png,
+				Staff/Mascotas/risi.png,
+				Staff/Mascotas/tamy.png,
 			);
 			target = 19F804182B69CB9D00A323A0 /* La Ley Watch App */;
 		};
@@ -1995,6 +1999,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				914D88912FC6000000CDDB93 /* Sodium in Frameworks */,
 				915017452EF078B2007B741A /* StoreKit.framework in Frameworks */,
 				9198310B2FBC526B00B24155 /* TPPDF in Frameworks */,
 			);
@@ -2034,6 +2039,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				914D88902FC6000000CDDB93 /* Sodium in Frameworks */,
 				915017432EF078A2007B741A /* StoreKit.framework in Frameworks */,
 				919831092FBC525C00B24155 /* TPPDF in Frameworks */,
 			);
@@ -2417,6 +2423,7 @@
 			name = "La Ley_mac";
 			packageProductDependencies = (
 				9198310A2FBC526B00B24155 /* TPPDF */,
+				914D88932FC6000000CDDB93 /* Sodium */,
 			);
 			productName = "La Ley";
 			productReference = 917C301F2EBCD1E5006BB36E /* La Ley.app */;
@@ -2531,6 +2538,7 @@
 			name = Neville_iOS;
 			packageProductDependencies = (
 				919831082FBC525C00B24155 /* TPPDF */,
+				914D88922FC6000000CDDB93 /* Sodium */,
 			);
 			productName = Neville_iOS;
 			productReference = E95B93532AAFBB2600B5E2B5 /* Neville_iOS.app */;
@@ -2587,6 +2595,7 @@
 			mainGroup = E95B934A2AAFBB2600B5E2B5;
 			packageReferences = (
 				919831072FBC525C00B24155 /* XCRemoteSwiftPackageReference "TPPDF" */,
+				914D88942FC6000000CDDB93 /* XCRemoteSwiftPackageReference "swift-sodium" */,
 			);
 			preferredProjectObjectVersion = 56;
 			productRefGroup = E95B93542AAFBB2600B5E2B5 /* Products */;
@@ -4582,6 +4591,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		914D88942FC6000000CDDB93 /* XCRemoteSwiftPackageReference "swift-sodium" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/jedisct1/swift-sodium.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.11.0;
+			};
+		};
 		919831072FBC525C00B24155 /* XCRemoteSwiftPackageReference "TPPDF" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/techprimate/TPPDF";
@@ -4593,6 +4610,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		914D88922FC6000000CDDB93 /* Sodium */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 914D88942FC6000000CDDB93 /* XCRemoteSwiftPackageReference "swift-sodium" */;
+			productName = Sodium;
+		};
+		914D88932FC6000000CDDB93 /* Sodium */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 914D88942FC6000000CDDB93 /* XCRemoteSwiftPackageReference "swift-sodium" */;
+			productName = Sodium;
+		};
 		919831082FBC525C00B24155 /* TPPDF */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 919831072FBC525C00B24155 /* XCRemoteSwiftPackageReference "TPPDF" */;

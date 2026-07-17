@@ -1,19 +1,30 @@
 import Foundation
 import CryptoKit
 
-enum MigrationFormat {
+nonisolated enum MigrationFormat {
     static let fileExtension = ".ypgexp"
     static let formatName = "com.ypg.neville.ndjson.export"
-    static let formatVersion = 1
+    static let formatVersion = 2
     static let schemaVersion = 1
-    static let magic = "MYAPPEXPORT-1"
+    static let magic = "YPGEXP-2"
     static let cipher = "AES-256-GCM"
-    static let kdf = "PBKDF2-HMAC-SHA256"
-    static let kdfIterations = 310_000
+    static let kdf = "ARGON2ID"
+    static let kdfVersion = 19
+    static let kdfMemoryKiB = 65_536
+    static let kdfIterations = 3
+    // libsodium's crypto_pwhash uses one lane. Android must use the same value.
+    static let kdfParallelism = 1
+    static let passwordNormalization = "NFC"
     static let saltBytes = 16
     static let nonceBytes = 12
     static let keyBits = 256
     static let tagBits = 128
+    static let minimumPasswordCharacters = 15
+    static let maximumPasswordBytes = 1_024
+    static let maximumHeaderBytes = 4 * 1_024
+    static let maximumManifestBytes = 1 * 1_024 * 1_024
+    static let maximumPlaintextBytes = 512 * 1_024 * 1_024
+    static let maximumFileBytes = maximumPlaintextBytes + maximumHeaderBytes + 128
 
     struct PlainPackage {
         let manifest: [String: Any]
@@ -66,22 +77,32 @@ enum MigrationFormat {
     }
 
     static func packPlaintext(manifest: [String: Any], ndjson: String) throws -> Data {
-        let manifestBytes = try JSONSerialization.data(withJSONObject: manifest, options: [])
+        let manifestBytes = try JSONSerialization.data(withJSONObject: manifest, options: [.sortedKeys])
+        guard !manifestBytes.isEmpty, manifestBytes.count <= maximumManifestBytes else {
+            throw MigrationError.validation("El manifiesto supera el tamaño máximo permitido")
+        }
+        let ndjsonBytes = Data(ndjson.utf8)
+        guard manifestBytes.count <= maximumPlaintextBytes - 4,
+              ndjsonBytes.count <= maximumPlaintextBytes - 4 - manifestBytes.count else {
+            throw MigrationError.validation("La exportación supera el tamaño máximo permitido")
+        }
         var output = Data()
         var size = UInt32(manifestBytes.count).bigEndian
         withUnsafeBytes(of: &size) { output.append(contentsOf: $0) }
         output.append(manifestBytes)
-        output.append(Data(ndjson.utf8))
+        output.append(ndjsonBytes)
         return output
     }
 
     static func unpackPlaintext(_ bytes: Data) throws -> PlainPackage {
-        guard bytes.count >= 4 else {
+        guard bytes.count >= 4, bytes.count <= maximumPlaintextBytes else {
             throw MigrationError.validation("Paquete descifrado incompleto")
         }
         let manifestSize = bytes.prefix(4).reduce(UInt32(0)) { ($0 << 8) | UInt32($1) }
         let manifestEnd = 4 + Int(manifestSize)
-        guard manifestSize > 0, bytes.count >= manifestEnd else {
+        guard manifestSize > 0,
+              manifestSize <= UInt32(maximumManifestBytes),
+              bytes.count >= manifestEnd else {
             throw MigrationError.validation("Tamaño de manifiesto inválido")
         }
         let manifestData = bytes.subdata(in: 4..<manifestEnd)
@@ -373,9 +394,11 @@ enum MigrationJSON {
     }
 
     static func int(_ payload: [String: Any], _ key: String, default defaultValue: Int = 0) -> Int {
-        if let value = payload[key] as? Int { return value }
-        if let value = payload[key] as? NSNumber { return value.intValue }
-        return defaultValue
+        guard let value = payload[key] as? NSNumber,
+              CFGetTypeID(value) != CFBooleanGetTypeID() else {
+            return defaultValue
+        }
+        return Int(value.stringValue) ?? defaultValue
     }
 
     static func double(_ payload: [String: Any], _ key: String, default defaultValue: Double = 0) -> Double {
@@ -385,10 +408,11 @@ enum MigrationJSON {
     }
 
     static func int64(_ payload: [String: Any], _ key: String, default defaultValue: Int64 = 0) -> Int64 {
-        if let value = payload[key] as? Int64 { return value }
-        if let value = payload[key] as? Int { return Int64(value) }
-        if let value = payload[key] as? NSNumber { return value.int64Value }
-        return defaultValue
+        guard let value = payload[key] as? NSNumber,
+              CFGetTypeID(value) != CFBooleanGetTypeID() else {
+            return defaultValue
+        }
+        return Int64(value.stringValue) ?? defaultValue
     }
 
     static func optionalInt64(_ payload: [String: Any], _ key: String) -> Int64? {

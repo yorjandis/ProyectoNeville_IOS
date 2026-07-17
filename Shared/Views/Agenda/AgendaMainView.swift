@@ -12,19 +12,23 @@ import UIKit
 enum PetSettings {
     static let isEnabledKey = "pets.enabled"
     static let selectedPetKey = "pets.selectedAssetName"
-    static let defaultPetAssetName = "mascota1"
+    static let defaultPetAssetName = "nini"
     static let settingsCarouselPetSize: CGFloat = 32
 
-    /// Mascotas disponibles en el bundle: `mascota1.png` hasta `mascota6.png`.
+    /// Mascotas disponibles en el bundle: imágenes PNG cuyo nombre no contiene `_`.
     static var availablePetAssetNames: [String] {
-        let allowedNames = Set((1...6).map { "mascota\($0)" })
         let bundledNames = (Bundle.main.urls(forResourcesWithExtension: nil, subdirectory: nil) ?? [])
             .filter { $0.pathExtension.lowercased() == "png" }
             .map { $0.deletingPathExtension().lastPathComponent }
-            .filter { allowedNames.contains($0) }
+            .filter { !$0.contains("_") && !$0.localizedCaseInsensitiveContains("appicon") }
 
         return Array(Set(bundledNames))
             .sorted { $0.localizedStandardCompare($1) == .orderedAscending }
+    }
+
+    static func resolvedAssetName(_ assetName: String) -> String {
+        let availablePets = availablePetAssetNames
+        return availablePets.contains(assetName) ? assetName : (availablePets.first ?? assetName)
     }
 
     static func displayName(for assetName: String) -> String {
@@ -140,6 +144,10 @@ struct AgendaMainView: View {
         case deactivateReminders
         case exportPDF
         case exportMigration
+#if os(iOS)
+        case exportAppleCalendar
+        case exportAppleReminders
+#endif
 
         var id: String {
             switch self {
@@ -157,6 +165,12 @@ struct AgendaMainView: View {
                 return "exportPDF"
             case .exportMigration:
                 return "exportMigration"
+#if os(iOS)
+            case .exportAppleCalendar:
+                return "exportAppleCalendar"
+            case .exportAppleReminders:
+                return "exportAppleReminders"
+#endif
             }
         }
 
@@ -176,6 +190,12 @@ struct AgendaMainView: View {
                 return L10n.exact("Exportar PDF")
             case .exportMigration:
                 return L10n.exact("Continuar")
+#if os(iOS)
+            case .exportAppleCalendar:
+                return L10n.exact("Exportar a Calendario")
+            case .exportAppleReminders:
+                return L10n.exact("Exportar a Recordatorios")
+#endif
             }
         }
 
@@ -235,6 +255,16 @@ struct AgendaMainView: View {
                     fallback: singular ? "Se preparará un archivo de migración con {0} actividad seleccionada." : "Se preparará un archivo de migración con {0} actividades seleccionadas.",
                     "\(count)"
                 )
+#if os(iOS)
+            case .exportAppleCalendar:
+                return singular
+                    ? "Se exportará 1 actividad seleccionada a Calendario de Apple."
+                    : "Se exportarán \(count) actividades seleccionadas a Calendario de Apple."
+            case .exportAppleReminders:
+                return singular
+                    ? "Se exportará 1 actividad seleccionada a Recordatorios de Apple."
+                    : "Se exportarán \(count) actividades seleccionadas a Recordatorios de Apple."
+#endif
             }
         }
     }
@@ -713,10 +743,14 @@ struct AgendaMainView: View {
         petsEnabled && hasNoEntriesToday && currentListedItems().isEmpty && !showPastActivities
     }
 
+    private var resolvedPetAssetName: String {
+        PetSettings.resolvedAssetName(selectedPetAssetName)
+    }
+
     private var emptyTodayPet: some View {
         VStack {
             Spacer()
-            PetImage(assetName: selectedPetAssetName)
+            PetImage(assetName: resolvedPetAssetName)
                 .frame(width: AgendaUIConstants.emptyTodayPetSize)
                 .scaleEffect(hasCompletedPetEntrance ? 1 : 0.18)
                 .opacity(hasCompletedPetEntrance ? 1 : 0)
@@ -739,7 +773,7 @@ struct AgendaMainView: View {
                             } label: {
                                 Label(
                                     PetSettings.displayName(for: assetName),
-                                    systemImage: selectedPetAssetName == assetName ? "checkmark" : "pawprint"
+                                    systemImage: resolvedPetAssetName == assetName ? "checkmark" : "pawprint"
                                 )
                             }
                         }
@@ -993,6 +1027,18 @@ struct AgendaMainView: View {
                         showInterchangeAlert = true
                     }
 
+                    #if os(iOS)
+                    Menu("Exportar a Apple") {
+                        Button("Calendario", systemImage: "calendar.badge.plus") {
+                            exportToAppleCalendar(item)
+                        }
+
+                        Button("Recordatorios", systemImage: "checklist") {
+                            exportToAppleReminders(item)
+                        }
+                    }
+                    #endif
+
                     if !item.lugar.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                         Button("Abrir en Mapas") {
                             openInMaps(address: item.lugar)
@@ -1146,6 +1192,20 @@ struct AgendaMainView: View {
                     .foregroundStyle(.black).bold()
                     .buttonStyle(.bordered)
                     .disabled(selectedListedItems().isEmpty)
+
+#if os(iOS)
+                    Menu("Apple") {
+                        Button("Calendario", systemImage: "calendar.badge.plus") {
+                            requestBulkActionConfirmation(.exportAppleCalendar)
+                        }
+                        Button("Recordatorios", systemImage: "checklist") {
+                            requestBulkActionConfirmation(.exportAppleReminders)
+                        }
+                    }
+                    .foregroundStyle(.black).bold()
+                    .buttonStyle(.bordered)
+                    .disabled(selectedListedItems().isEmpty)
+#endif
                 }
                 .fixedSize()
             }
@@ -1246,6 +1306,32 @@ struct AgendaMainView: View {
             }
         }
     }
+
+#if os(iOS)
+    private func exportToAppleCalendar(_ item: AgendaItemData) {
+        Task { @MainActor in
+            do {
+                try await AgendaInterchangeService.exportAgendaToAppleCalendar(item)
+                interchangeAlertMessage = L10n.exact("Actividad exportada a Calendario.")
+            } catch {
+                interchangeAlertMessage = error.localizedDescription
+            }
+            showInterchangeAlert = true
+        }
+    }
+
+    private func exportToAppleReminders(_ item: AgendaItemData) {
+        Task { @MainActor in
+            do {
+                try await AgendaInterchangeService.exportAgendaToAppleReminders(item)
+                interchangeAlertMessage = L10n.exact("Actividad exportada a Recordatorios.")
+            } catch {
+                interchangeAlertMessage = error.localizedDescription
+            }
+            showInterchangeAlert = true
+        }
+    }
+#endif
 
     private func exportCurrentMonthToPDF() {
         let monthItems = itemsInDisplayedMonth()
@@ -1523,8 +1609,48 @@ struct AgendaMainView: View {
             }
         case .exportMigration:
             authenticateBeforeMigrationExport()
+#if os(iOS)
+        case .exportAppleCalendar:
+            exportSelectedAgendaItemsToAppleCalendar()
+        case .exportAppleReminders:
+            exportSelectedAgendaItemsToAppleReminders()
+#endif
         }
     }
+
+#if os(iOS)
+    private func exportSelectedAgendaItemsToAppleCalendar() {
+        let items = selectedListedItems()
+        Task { @MainActor in
+            do {
+                let count = try await AgendaInterchangeService.exportAgendaItemsToAppleCalendar(items)
+                interchangeAlertMessage = count == 1
+                    ? L10n.exact("1 actividad exportada a Calendario.")
+                    : L10n.exact("\(count) actividades exportadas a Calendario.")
+                finishMultiSelectionOperation()
+            } catch {
+                interchangeAlertMessage = error.localizedDescription
+            }
+            showInterchangeAlert = true
+        }
+    }
+
+    private func exportSelectedAgendaItemsToAppleReminders() {
+        let items = selectedListedItems()
+        Task { @MainActor in
+            do {
+                let count = try await AgendaInterchangeService.exportAgendaItemsToAppleReminders(items)
+                interchangeAlertMessage = count == 1
+                    ? L10n.exact("1 actividad exportada a Recordatorios.")
+                    : L10n.exact("\(count) actividades exportadas a Recordatorios.")
+                finishMultiSelectionOperation()
+            } catch {
+                interchangeAlertMessage = error.localizedDescription
+            }
+            showInterchangeAlert = true
+        }
+    }
+#endif
 
     private func finishMultiSelectionOperation() {
         selectedItemsIDs.removeAll()

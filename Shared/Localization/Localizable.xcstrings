@@ -5926,6 +5926,9 @@
         }
       }
     },
+    "Apple" : {
+      "shouldTranslate" : false
+    },
     "Apple Intelligence no está disponible en este dispositivo o idioma." : {
       "localizations" : {
         "en" : {
@@ -7711,6 +7714,22 @@
         }
       }
     },
+    "Borrar búsqueda" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear search"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清除搜索"
+          }
+        }
+      }
+    },
     "Borrar historial completo" : {
       "localizations" : {
         "en" : {
@@ -8884,7 +8903,20 @@
       }
     },
     "Cambiar mascota" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change pet"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更换宠物"
+          }
+        }
+      }
     },
     "Cambiar Operación..." : {
       "localizations" : {
@@ -10006,6 +10038,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "正确"
+          }
+        }
+      }
+    },
+    "Cifrando archivo…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Encrypting file…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在加密文件…"
           }
         }
       }
@@ -13089,6 +13137,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "文件密码"
+          }
+        }
+      }
+    },
+    "Contraseña del archivo (mínimo 15 caracteres)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "File password (minimum 15 characters)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文件密码（至少 15 个字符）"
           }
         }
       }
@@ -21348,6 +21412,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "导出到 Android / 从 Android 导入"
+          }
+        }
+      }
+    },
+    "Exportar a Apple" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exporting Apple"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "出口苹果"
           }
         }
       }
@@ -31608,6 +31688,38 @@
         }
       }
     },
+    "Las contraseñas coinciden" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The passwords match"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "密码匹配"
+          }
+        }
+      }
+    },
+    "Las contraseñas no coinciden" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The passwords do not match"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "密码不匹配"
+          }
+        }
+      }
+    },
     "Las contraseñas no coinciden, por favor revise el texto" : {
       "localizations" : {
         "en" : {
@@ -32521,6 +32633,22 @@
         }
       }
     },
+    "Longitud correcta" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Correct length"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正确长度"
+          }
+        }
+      }
+    },
     "Los datos se guardan en App Group compartido con iOS." : {
       "localizations" : {
         "en" : {
@@ -32796,7 +32924,20 @@
       }
     },
     "Mantén pulsado para cambiar u ocultar la mascota" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Press and hold to change or hide your pet"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按住可更改或隐藏您的宠物"
+          }
+        }
+      }
     },
     "Mantén tu intención durante el día." : {
       "localizations" : {
@@ -33080,10 +33221,36 @@
       }
     },
     "Mascota de Agenda" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agenda Mascot"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "议程吉祥物"
+          }
+        }
+      }
     },
     "Mascotas" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pets"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "宠物"
+          }
+        }
+      }
     },
     "Matutinos" : {
       "localizations" : {
@@ -33955,6 +34122,28 @@
         }
       }
     },
+    "Mínimo %lld caracteres (%lld/%lld)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mínimo %1$lld caracteres (%2$lld/%3$lld)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Mínimo %1$lld caracteres (%2$lld/%3$lld)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minimum %1$lld caracteres (%2$lld/%3$lld)"
+          }
+        }
+      }
+    },
     "Minuto" : {
       "localizations" : {
         "en" : {
@@ -34422,6 +34611,38 @@
         }
       }
     },
+    "Mostrar detalles" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show details"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示详情"
+          }
+        }
+      }
+    },
+    "Mostrar detalles de la entrada" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show entry details"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示条目详情"
+          }
+        }
+      }
+    },
     "Mostrar favoritas" : {
       "localizations" : {
         "en" : {
@@ -34521,7 +34742,20 @@
       }
     },
     "Mostrar mascotas en las vistas compatibles" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show pets in supported views"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在支持的视图中显示宠物"
+          }
+        }
+      }
     },
     "Mostrar Metas en Home" : {
       "localizations" : {
@@ -38732,6 +38966,38 @@
         }
       }
     },
+    "Ocultar detalles" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hide details"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隐藏详情"
+          }
+        }
+      }
+    },
+    "Ocultar detalles de la entrada" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hide entry details"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隐藏条目详情"
+          }
+        }
+      }
+    },
     "Ocultar estado de ánimo" : {
       "localizations" : {
         "en" : {
@@ -38799,7 +39065,20 @@
       }
     },
     "Ocultar mascota" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hide pet"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "藏匿宠物"
+          }
+        }
+      }
     },
     "Ocultar por hoy" : {
       "localizations" : {
@@ -40964,6 +41243,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "正在准备今天的收尾…"
+          }
+        }
+      }
+    },
+    "Preparando exportación segura…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preparing for safe export…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "为安全出口做好准备……"
           }
         }
       }

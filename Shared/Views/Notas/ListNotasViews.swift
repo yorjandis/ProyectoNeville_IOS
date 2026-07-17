@@ -13,6 +13,20 @@ import LocalAuthentication
 import MapKit
 import UniformTypeIdentifiers
 
+/// Ajustes visuales de la búsqueda y la mascota de la cabecera de Notas.
+/// Modifica estos valores para reajustar manualmente el tamaño y la posición.
+private enum NotasUIConstants {
+    static let searchBarHeight: CGFloat = 40
+    static let searchHeaderHeight: CGFloat = 54
+    static let searchBarLeadingInset: CGFloat = 104
+    static let searchBarHorizontalPadding: CGFloat = 12
+    static let listBottomPadding: CGFloat = 16
+
+    static let searchPetAssetName = "nati_notas"
+    static let searchPetSize: CGFloat = 96
+    static let searchPetOffset = CGSize(width: 20, height: -10)
+}
+
 
 struct ListNotasViews: View {
     private enum NotesSortOption {
@@ -67,6 +81,7 @@ struct ListNotasViews: View {
     @State private var migrationExportCount = 0
     @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
     @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) private var yorjPremium: Bool = false
+    @AppStorage(PetSettings.isEnabledKey) private var petsEnabled = true
     
     
     
@@ -124,6 +139,10 @@ struct ListNotasViews: View {
         case passToCalm
         case setCategory(String)
         case exportMigration
+#if os(iOS)
+        case exportAppleCalendar
+        case exportAppleReminders
+#endif
 
         var id: String {
             switch self {
@@ -135,6 +154,12 @@ struct ListNotasViews: View {
                 return "setCategory-\(category)"
             case .exportMigration:
                 return "exportMigration"
+#if os(iOS)
+            case .exportAppleCalendar:
+                return "exportAppleCalendar"
+            case .exportAppleReminders:
+                return "exportAppleReminders"
+#endif
             }
         }
 
@@ -148,6 +173,12 @@ struct ListNotasViews: View {
                 return L10n.exact("Actualizar")
             case .exportMigration:
                 return L10n.exact("Continuar")
+#if os(iOS)
+            case .exportAppleCalendar:
+                return L10n.exact("Exportar a Calendario")
+            case .exportAppleReminders:
+                return L10n.exact("Exportar a Recordatorios")
+#endif
             }
         }
 
@@ -185,6 +216,16 @@ struct ListNotasViews: View {
                     fallback: count == 1 ? "Se preparará un archivo de migración con {0} nota seleccionada" : "Se preparará un archivo de migración con {0} notas seleccionadas",
                     String(count)
                 )
+#if os(iOS)
+            case .exportAppleCalendar:
+                return count == 1
+                    ? "Se exportará 1 nota seleccionada a Calendario de Apple."
+                    : "Se exportarán \(count) notas seleccionadas a Calendario de Apple."
+            case .exportAppleReminders:
+                return count == 1
+                    ? "Se exportará 1 nota seleccionada a Recordatorios de Apple."
+                    : "Se exportarán \(count) notas seleccionadas a Recordatorios de Apple."
+#endif
             }
         }
     }
@@ -292,6 +333,9 @@ struct ListNotasViews: View {
 
             VStack {
                 if canAccessNotasContent {
+#if os(iOS)
+                    notesSearchHeader
+#endif
                     notesScrollView
                 } else {
                     Spacer()
@@ -303,10 +347,19 @@ struct ListNotasViews: View {
                     bulkActionsBar()
                 }
 
+#if os(macOS)
                 Divider()
                 bottomBar
+#endif
             }
         }
+#if os(iOS)
+        .overlay(alignment: .bottomTrailing) {
+            floatingBackButton
+                .padding(.trailing, 20)
+                .padding(.bottom, 12)
+        }
+#endif
     }
 
     @ViewBuilder
@@ -318,15 +371,62 @@ struct ListNotasViews: View {
                 notesGroupedList
             }
         }
+#if os(iOS)
+        .contentMargins(.bottom, NotasUIConstants.listBottomPadding, for: .scrollContent)
+#endif
         #if os(macOS)
         .searchable(text: $textFieldTitle, prompt: "Buscar")
-        #else
-        .searchable(text: $textFieldTitle, placement: .navigationBarDrawer(displayMode: .always), prompt:"Buscar")
         #endif
         .task {
             self.modelNotas.getAllNotasToModel()
         }
     }
+
+#if os(iOS)
+    /// La mascota vive en un `overlay`, por lo que nunca altera la altura de la
+    /// cabecera ni desplaza la lista de notas.
+    private var notesSearchHeader: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "magnifyingglass")
+                .foregroundStyle(.secondary)
+
+            TextField("Buscar", text: $textFieldTitle)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+                .submitLabel(.search)
+
+            if !textFieldTitle.isEmpty {
+                Button {
+                    textFieldTitle = ""
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundStyle(.secondary)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Borrar búsqueda")
+            }
+        }
+        .padding(.horizontal, 12)
+        .frame(height: NotasUIConstants.searchBarHeight)
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .padding(.leading, petsEnabled ? NotasUIConstants.searchBarLeadingInset : NotasUIConstants.searchBarHorizontalPadding)
+        .padding(.trailing, NotasUIConstants.searchBarHorizontalPadding)
+        .frame(height: NotasUIConstants.searchHeaderHeight)
+        .overlay(alignment: .leading) {
+            if petsEnabled {
+                PetImage(assetName: NotasUIConstants.searchPetAssetName)
+                    .frame(
+                        width: NotasUIConstants.searchPetSize,
+                        height: NotasUIConstants.searchPetSize
+                    )
+                    .offset(NotasUIConstants.searchPetOffset)
+                    .accessibilityHidden(true)
+                    .allowsHitTesting(false)
+            }
+        }
+        .zIndex(1)
+    }
+#endif
 
     @ViewBuilder
     private var notesFlatList: some View {
@@ -363,21 +463,22 @@ struct ListNotasViews: View {
         }
     }
 
-    @ViewBuilder
+#if os(iOS)
+    private var floatingBackButton: some View {
+        Button("Volver") {
+            dimiss()
+        }
+        .foregroundStyle(.black)
+        .buttonStyle(.bordered)
+    }
+#else
     private var bottomBar: some View {
         HStack(spacing: 30) {
             Spacer()
-            #if os(iOS)
-            Button("Volver") {
-                dimiss()
-            }
-            .foregroundStyle(.black)
-            .buttonStyle(.bordered)
-            .padding(.trailing, 20)
-            #endif
         }
         .padding(.bottom, 20)
     }
+#endif
 
     @ToolbarContentBuilder
     private var notasToolbar: some ToolbarContent {
@@ -609,6 +710,20 @@ struct ListNotasViews: View {
                     .foregroundStyle(.black).bold()
                     .buttonStyle(.bordered)
                     .disabled(selectedNotaIDs.isEmpty)
+
+#if os(iOS)
+                    Menu("Apple") {
+                        Button("Calendario", systemImage: "calendar.badge.plus") {
+                            requestBulkActionConfirmation(.exportAppleCalendar)
+                        }
+                        Button("Recordatorios", systemImage: "checklist") {
+                            requestBulkActionConfirmation(.exportAppleReminders)
+                        }
+                    }
+                    .foregroundStyle(.black).bold()
+                    .buttonStyle(.bordered)
+                    .disabled(selectedNotaIDs.isEmpty)
+#endif
                 }
                 .fixedSize()
             }
@@ -652,8 +767,50 @@ struct ListNotasViews: View {
             applyCategoryToSelected(category)
         case .exportMigration:
             authenticateBeforeMigrationExport()
+#if os(iOS)
+        case .exportAppleCalendar:
+            exportSelectedNotesToAppleCalendar()
+        case .exportAppleReminders:
+            exportSelectedNotesToAppleReminders()
+#endif
         }
     }
+
+#if os(iOS)
+    private func exportSelectedNotesToAppleCalendar() {
+        let notes = selectedNotas.map { (title: $0.title ?? "", content: $0.noteDisplayText) }
+        Task { @MainActor in
+            do {
+                let count = try await AgendaInterchangeService.exportNotesToAppleCalendar(notes)
+                alertMessage = count == 1
+                    ? L10n.exact("1 nota exportada a Calendario.")
+                    : L10n.exact("\(count) notas exportadas a Calendario.")
+                selectedNotaIDs.removeAll()
+                selectionMode = false
+            } catch {
+                alertMessage = error.localizedDescription
+            }
+            showAlert = true
+        }
+    }
+
+    private func exportSelectedNotesToAppleReminders() {
+        let notes = selectedNotas.map { (title: $0.title ?? "", content: $0.noteDisplayText) }
+        Task { @MainActor in
+            do {
+                let count = try await AgendaInterchangeService.exportNotesToAppleReminders(notes)
+                alertMessage = count == 1
+                    ? L10n.exact("1 nota exportada a Recordatorios.")
+                    : L10n.exact("\(count) notas exportadas a Recordatorios.")
+                selectedNotaIDs.removeAll()
+                selectionMode = false
+            } catch {
+                alertMessage = error.localizedDescription
+            }
+            showAlert = true
+        }
+    }
+#endif
 
     private func authenticateBeforeMigrationExport() {
         UtilFuncs.authenticateDeviceOwner(reason: L10n.exact("Autentícate para exportar las notas seleccionadas.")) { success, errorMessage in
@@ -1267,6 +1424,8 @@ struct cardNotas: View{
     @State private var mapsAlertMessage = ""
     @State private var showCategoryAlert = false
     @State private var categoryDraft = ""
+    @State private var showAppleExportAlert = false
+    @State private var appleExportAlertMessage = ""
     
     @AppStorage(AppCons.UD_setting_fontListaSize)  var fontSizeLista : Int = 20
 
@@ -1484,6 +1643,24 @@ struct cardNotas: View{
                         Label("Añadir a Espacio Calma", systemImage: "leaf")
                     }
                     .buttonStyle(.bordered)
+
+                    #if os(iOS)
+                    Menu {
+                        Button {
+                            exportCurrentNoteToAppleCalendar()
+                        } label: {
+                            Label("Calendario", systemImage: "calendar.badge.plus")
+                        }
+
+                        Button {
+                            exportCurrentNoteToAppleReminders()
+                        } label: {
+                            Label("Recordatorios", systemImage: "checklist")
+                        }
+                    } label: {
+                        Label("Exportar a Apple", systemImage: "apple.logo")
+                    }
+                    #endif
 
                     if let direccion = nota?.value(forKey: "direccionMapa") as? String,
                        !direccion.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
@@ -1792,6 +1969,11 @@ struct cardNotas: View{
         } message: {
             Text("Se actualizará esta nota.")
         }
+        .alert("Exportar a Apple", isPresented: $showAppleExportAlert) {
+            Button("Aceptar", role: .cancel) {}
+        } message: {
+            Text(appleExportAlertMessage)
+        }
         .frame(maxWidth: .infinity)
         //.background(.ultraThinMaterial)
         .background(LinearGradient(colors: [.white.opacity(0.8), .white.opacity(0.7)], startPoint: .top, endPoint: .bottom))
@@ -1920,6 +2102,38 @@ struct cardNotas: View{
 
         self.showCalmAlert = true
     }
+
+#if os(iOS)
+    private func exportCurrentNoteToAppleCalendar() {
+        Task { @MainActor in
+            do {
+                try await AgendaInterchangeService.exportNoteToAppleCalendar(
+                    title: nota?.title ?? "",
+                    content: noteActionText
+                )
+                appleExportAlertMessage = L10n.exact("Nota exportada a Calendario.")
+            } catch {
+                appleExportAlertMessage = error.localizedDescription
+            }
+            showAppleExportAlert = true
+        }
+    }
+
+    private func exportCurrentNoteToAppleReminders() {
+        Task { @MainActor in
+            do {
+                try await AgendaInterchangeService.exportNoteToAppleReminders(
+                    title: nota?.title ?? "",
+                    content: noteActionText
+                )
+                appleExportAlertMessage = L10n.exact("Nota exportada a Recordatorios.")
+            } catch {
+                appleExportAlertMessage = error.localizedDescription
+            }
+            showAppleExportAlert = true
+        }
+    }
+#endif
 
     private func openInMaps(address: String) {
         let cleaned = address.trimmingCharacters(in: .whitespacesAndNewlines)

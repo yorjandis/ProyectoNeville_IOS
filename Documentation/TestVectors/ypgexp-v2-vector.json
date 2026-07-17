@@ -1,0 +1,22 @@
+{
+  "description": "YPGEXP-2 deterministic end-to-end interoperability vector containing a valid empty export",
+  "password": "Neville-Android-2026!",
+  "passwordEncoding": "NFC then UTF-8",
+  "saltHex": "30313233343536373839616263646566",
+  "nonceHex": "6162636465666768696a6b6c",
+  "argon2id": {
+    "version": 19,
+    "memoryKiB": 65536,
+    "iterations": 3,
+    "parallelism": 1,
+    "outputBytes": 32
+  },
+  "derivedKeyHex": "c24533acd1cb72d95e9da90595f6442d5672cd979924cfaf733b223267bd322e",
+  "manifestUtf8": "{\"contentSummary\":{},\"createdAt\":\"2026-01-02T03:04:05Z\",\"encryption\":{\"cipher\":\"AES-256-GCM\",\"kdf\":\"ARGON2ID\",\"kdfIterations\":3,\"kdfMemoryKiB\":65536,\"kdfParallelism\":1,\"kdfVersion\":19,\"keyLengthBits\":256,\"nonce\":\"YWJjZGVmZ2hpamts\",\"passwordNormalization\":\"NFC\",\"salt\":\"MDEyMzQ1Njc4OWFiY2RlZg==\",\"tagLengthBits\":128},\"exportId\":\"00000000-0000-4000-8000-000000000002\",\"format\":\"com.ypg.neville.ndjson.export\",\"formatVersion\":2,\"schemaVersion\":1,\"sourceAppVersion\":\"test-vector\",\"sourcePlatform\":\"ios\"}",
+  "manifestLength": 499,
+  "ndjsonUtf8": "\n",
+  "aadUtf8": "YPGEXP-2\n{\"cipher\":\"AES-256-GCM\",\"format\":\"com.ypg.neville.ndjson.export\",\"formatVersion\":2,\"kdf\":\"ARGON2ID\",\"kdfIterations\":3,\"kdfMemoryKiB\":65536,\"kdfParallelism\":1,\"kdfVersion\":19,\"keyLengthBits\":256,\"nonce\":\"YWJjZGVmZ2hpamts\",\"passwordNormalization\":\"NFC\",\"salt\":\"MDEyMzQ1Njc4OWFiY2RlZg==\",\"tagLengthBits\":128}\n",
+  "ciphertextAndTagHex": "c66b8a52b45bdb9bc48b1f91b8b853e38f1dc8178cc5b1496895f79016a2fa4ba730b811500661a6a79c813fa14c008b90cd03b6d3575419ff8d1d723af30664f2e2879225827a27b8838373e61a06c7cf74cfd0de0511c6a8fe1a31b18fad4f7cb3c00a0379d4664e8b9f528f3dda85166cf86ce4b96f101c23142f0aeb1da23c8dff7542106ac4fbb1fe878c55085d623f29b1b1856bcafee6ad1c2ea04f5d7bffab93244108e533c1fda6cac1be428d8aeb901e0078e18c76fb999e9c5689b56b2803d7e3a8db2d290f60fc9ae67ba841db2ff16c7601172aba7b22bc2d9c92db3b3c5f8b2e93d23adf8ca3c980357f5466f1a2c407e90cbd9157da8819ede3a0548cd49eed2c2bdd72ec833e0da610f9c6a8f54a091d5c3289859ce74e5d01b876c8e673b7fd1b3d0ab2fdef3b25dc4d27b39a201c99a350b086fdb1a8a89100d5ca24321dc39046a946d9d1a318a3e36a83d7619707793e506d0623958329f7cc8d5d3132b0c6cf6dad93c2b408866bea33a29794028f3790be41656681565454cd94092e96545c5e7d09e78818b31d622d9c0e7a7148f4919156794e8db5df9f41f1351a4553aaa4cdea7399d02a12641eb0db4f6872bf83170c16c131c5c8f345858d88236e7fa69e1695daa920a55ebd36dff5034b2aec0c7cfbb54ec7c18e601b3fb3711b73f7ba0de35b9518e0a4b1c0ee473897636416bd516bba229550135c26b1d3",
+  "fileSha256Hex": "284e5cc851b2afb9eb7400a4ea40f3367f06c529e9010713c0e1252aff70be5c",
+  "fileBase64": "WVBHRVhQLTIKeyJjaXBoZXIiOiJBRVMtMjU2LUdDTSIsImZvcm1hdCI6ImNvbS55cGcubmV2aWxsZS5uZGpzb24uZXhwb3J0IiwiZm9ybWF0VmVyc2lvbiI6Miwia2RmIjoiQVJHT04ySUQiLCJrZGZJdGVyYXRpb25zIjozLCJrZGZNZW1vcnlLaUIiOjY1NTM2LCJrZGZQYXJhbGxlbGlzbSI6MSwia2RmVmVyc2lvbiI6MTksImtleUxlbmd0aEJpdHMiOjI1Niwibm9uY2UiOiJZV0pqWkdWbVoyaHBhbXRzIiwicGFzc3dvcmROb3JtYWxpemF0aW9uIjoiTkZDIiwic2FsdCI6Ik1ERXlNelExTmpjNE9XRmlZMlJsWmc9PSIsInRhZ0xlbmd0aEJpdHMiOjEyOH0KxmuKUrRb25vEix+RuLhT448dyBeMxbFJaJX3kBai+kunMLgRUAZhpqecgT+hTACLkM0DttNXVBn/jR1yOvMGZPLih5IlgnonuIODc+YaBsfPdM/Q3gURxqj+GjGxj61PfLPACgN51GZOi59Sjz3ahRZs+GzkuW8QHCMULwrrHaI8jf91QhBqxPux/oeMVQhdYj8psbGFa8r+5q0cLqBPXXv/q5MkQQjlM8H9psrBvkKNiuuQHgB44Yx2+5menFaJtWsoA9fjqNstKQ9g/Jrme6hB2y/xbHYBFyq6eyK8LZyS2zs8X4suk9I634yjyYA1f1Rm8aLEB+kMvZFX2ogZ7eOgVIzUnu0sK91y7IM+DaYQ+cao9UoJHVwyiYWc505dAbh2yOZzt/0bPQqy/e87JdxNJ7OaIByZo1Cwhv2xqKiRANXKJDIdw5BGqUbZ0aMYo+Nqg9dhlwd5PlBtBiOVgyn3zI1dMTKwxs9trZPCtAiGa+ozopeUAo83kL5BZWaBVlRUzZQJLpZUXF59CeeIGLMdYi2cDnpxSPSRkVZ5To21359B8TUaRVOqpM3qc5nQKhJkHrDbT2hyv4MXDBbBMcXI80WFjYgjbn+mnhaV2qkgpV69Nt/1A0sq7Ax8+7VOx8GOYBs/s3Ebc/e6DeNblRjgpLHA7kc4l2NkFr1Ra7oilVATXCax0w=="
+}

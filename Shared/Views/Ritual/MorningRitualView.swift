@@ -112,7 +112,7 @@ private enum MorningRitualConstants {
 
 private enum MorningRitualPetLayout {
     /// Ajustes manuales de la mascota flotante del Ritual Matutino.
-    static let assetName = "mascota_loto"
+    static let assetName = "miou_loto"
     static let size: CGFloat = 148
     static let offset = CGSize(width: 0, height: -8)
 }

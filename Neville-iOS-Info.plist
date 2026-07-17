@@ -39,6 +39,10 @@
 	<true/>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>Neville necesita acceso a tu biblioteca musical para que puedas seleccionar música personalizada en Espacio Calma.</string>
+	<key>NSCalendarsFullAccessUsageDescription</key>
+	<string>Neville necesita acceso a Calendario para exportar tus notas y actividades de Agenda como eventos.</string>
+	<key>NSRemindersFullAccessUsageDescription</key>
+	<string>Neville necesita acceso a Recordatorios para exportar tus notas y actividades de Agenda como recordatorios.</string>
 	<key>NSHealthShareUsageDescription</key>
 	<string>La Ley usa tus datos de pulso, variabilidad cardiaca, respiración, pasos y entrenamientos para estimar tu activación fisiológica y mostrarte patrones de estrés.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>

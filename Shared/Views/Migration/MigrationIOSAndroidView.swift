@@ -17,13 +17,27 @@ private final class MigrationIOSAndroidViewModel: ObservableObject {
     @Published var lastImportPolicy: ImportPolicy = .skipExisting
     @Published var preview: ImportPreview?
     @Published var message: String?
+    @Published var exportErrorMessage: String?
     @Published var isWorking = false
+    @Published var isExporterPresented = false
     @Published var showOverwriteConfirmation = false
 
     private let service = MyAppMigrationService()
 
     var canExport: Bool {
-        !exportPassword.isEmpty && exportPassword == exportPasswordConfirmation
+        exportPasswordLengthIsValid && passwordsMatch
+    }
+
+    var exportPasswordCharacterCount: Int {
+        exportPassword.precomposedStringWithCanonicalMapping.unicodeScalars.count
+    }
+
+    var exportPasswordLengthIsValid: Bool {
+        exportPasswordCharacterCount >= MigrationFormat.minimumPasswordCharacters
+    }
+
+    var passwordsMatch: Bool {
+        !exportPasswordConfirmation.isEmpty && exportPassword == exportPasswordConfirmation
     }
 
     var canPreviewImport: Bool {
@@ -36,24 +50,32 @@ private final class MigrationIOSAndroidViewModel: ObservableObject {
 
     func prepareExport() {
         guard canExport else {
-            message = "La contraseña de exportación está vacía o no coincide."
+            exportErrorMessage = exportPasswordLengthIsValid
+                ? "Las contraseñas no coinciden."
+                : "La contraseña debe tener al menos \(MigrationFormat.minimumPasswordCharacters) caracteres."
             return
         }
         isWorking = true
-        defer { isWorking = false }
-        do {
-            let result = try service.export(password: exportPassword)
-            exportDocument = MigrationDataDocument(data: result.bytes)
-            lastExportCountsByType = result.countsByType
-            lastExportBytes = result.bytes.count
-            lastExportId = result.exportId
-            message = "Exportación preparada: \(exportedTotal) elementos listos para guardar."
-        } catch {
-            exportDocument = nil
-            lastExportCountsByType = [:]
-            lastExportBytes = 0
-            lastExportId = nil
-            message = "No se pudo preparar la exportación: \(error.localizedDescription)"
+        exportErrorMessage = nil
+
+        Task { [weak self] in
+            guard let self else { return }
+            defer { isWorking = false }
+            do {
+                let result = try await service.exportAsync(password: exportPassword)
+                exportDocument = MigrationDataDocument(data: result.bytes)
+                lastExportCountsByType = result.countsByType
+                lastExportBytes = result.bytes.count
+                lastExportId = result.exportId
+                message = "Exportación preparada: \(exportedTotal) elementos listos para guardar."
+                isExporterPresented = true
+            } catch {
+                exportDocument = nil
+                lastExportCountsByType = [:]
+                lastExportBytes = 0
+                lastExportId = nil
+                exportErrorMessage = "No se pudo preparar la exportación: \(error.localizedDescription)"
+            }
         }
     }
 
@@ -128,7 +150,6 @@ private final class MigrationIOSAndroidViewModel: ObservableObject {
 
 struct MigrationIOSAndroidView: View {
     @StateObject private var viewModel = MigrationIOSAndroidViewModel()
-    @State private var showExporter = false
     @State private var showImporter = false
     @State private var isMigrationUnlocked = false
     @State private var authPassword = ""
@@ -140,16 +161,52 @@ struct MigrationIOSAndroidView: View {
 
             if isMigrationUnlocked {
                 Section("Preparar archivo de migración") {
-                    SecureField("Contraseña del archivo", text: $viewModel.exportPassword)
+                    SecureField("Contraseña del archivo (mínimo 15 caracteres)", text: $viewModel.exportPassword)
+
+                    Label {
+                        Text(viewModel.exportPasswordLengthIsValid
+                             ? "Longitud correcta"
+                             : "Mínimo \(MigrationFormat.minimumPasswordCharacters) caracteres (\(viewModel.exportPasswordCharacterCount)/\(MigrationFormat.minimumPasswordCharacters))")
+                    } icon: {
+                        Image(systemName: viewModel.exportPasswordLengthIsValid
+                              ? "checkmark.circle.fill"
+                              : "circle")
+                    }
+                    .font(.footnote)
+                    .foregroundStyle(viewModel.exportPasswordLengthIsValid ? Color.green : Color.secondary)
+
                     SecureField("Repetir contraseña", text: $viewModel.exportPasswordConfirmation)
 
+                    if !viewModel.exportPasswordConfirmation.isEmpty {
+                        Label(
+                            viewModel.passwordsMatch ? "Las contraseñas coinciden" : "Las contraseñas no coinciden",
+                            systemImage: viewModel.passwordsMatch ? "checkmark.circle.fill" : "exclamationmark.circle"
+                        )
+                        .font(.footnote)
+                        .foregroundStyle(viewModel.passwordsMatch ? Color.green : Color.red)
+                    }
+
                     Button {
-                            viewModel.prepareExport()
-                            showExporter = viewModel.exportDocument != nil
+                        viewModel.prepareExport()
                     } label: {
-                        Label("Crear archivo .ypgexp", systemImage: "square.and.arrow.up")
+                        if viewModel.isWorking {
+                            Label("Cifrando archivo…", systemImage: "lock.rotation")
+                        } else {
+                            Label("Crear archivo .ypgexp", systemImage: "square.and.arrow.up")
+                        }
                     }
                     .disabled(!viewModel.canExport || viewModel.isWorking)
+
+                    if viewModel.isWorking {
+                        ProgressView("Preparando exportación segura…")
+                    }
+
+                    if let exportErrorMessage = viewModel.exportErrorMessage {
+                        Text(exportErrorMessage)
+                            .font(.footnote)
+                            .foregroundStyle(.red)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
 
                     Text("Tus datos se preparan en un archivo seguro y protegido. La contraseña no se guarda y se requiere para la importación.")
                         .font(.body)
@@ -217,7 +274,7 @@ struct MigrationIOSAndroidView: View {
         .navigationBarTitleDisplayMode(.inline)
         #endif
         .fileExporter(
-            isPresented: $showExporter,
+            isPresented: $viewModel.isExporterPresented,
             document: viewModel.exportDocument ?? MigrationDataDocument(),
             contentType: .ypgExport,
             defaultFilename: "neville-ios-export.ypgexp"
