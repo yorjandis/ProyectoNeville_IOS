@@ -391,11 +391,15 @@ struct ShareExtensionView: View {
 
     private func saveToAppGroup(key: String, value: String, successMessage: String) {
         guard let defaults = UserDefaults(suiteName: "group.com.ypg.nev.group") else {
-            showTemporaryMessage("No se pudo acceder al App Group.")
+            showTemporaryMessage(localized("No se pudo acceder al App Group."))
             return
         }
         defaults.set(value, forKey: key)
-        showTemporaryMessage(successMessage)
+        showTemporaryMessage(localized(successMessage))
+    }
+
+    private func localized(_ spanish: String) -> String {
+        Bundle.main.localizedString(forKey: spanish, value: spanish, table: "Localizable")
     }
 
     private func showTemporaryMessage(_ message: String) {

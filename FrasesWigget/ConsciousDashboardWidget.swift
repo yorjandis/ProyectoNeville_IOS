@@ -1,6 +1,12 @@
 import SwiftUI
 import WidgetKit
 
+private enum WidgetL10n {
+  static func exact(_ spanish: String) -> String {
+    Bundle.main.localizedString(forKey: spanish, value: spanish, table: "Localizable")
+  }
+}
+
 struct ConsciousDashboardEntry: TimelineEntry {
   let date: Date
   let snapshot: ConsciousDashboardSnapshot
@@ -95,8 +101,8 @@ struct ConsciousDashboardEntryView: View {
     [
       ConsciousMetric(
         id: "metas",
-        title: "Metas activas",
-        compactTitle: "Metas",
+        title: WidgetL10n.exact("Metas activas"),
+        compactTitle: WidgetL10n.exact("Metas"),
         symbol: "target",
         colors: [.green, .mint],
         destination: dashboardURL("metas"),
@@ -104,15 +110,15 @@ struct ConsciousDashboardEntryView: View {
         value: snapshot.completedGoalUnits,
         primaryText: "\(snapshot.activeGoals)",
         detailText: snapshot.totalGoalUnits > 0
-          ? "\(snapshot.completedGoalUnits)/\(snapshot.totalGoalUnits) unidades"
-          : "Sin unidades activas",
+          ? "\(snapshot.completedGoalUnits)/\(snapshot.totalGoalUnits) \(WidgetL10n.exact("unidades"))"
+          : WidgetL10n.exact("Sin unidades activas"),
         progress: snapshot.goalProgress,
         completed: snapshot.activeGoals > 0 && snapshot.goalProgress >= 1
       ),
       ConsciousMetric(
         id: "presencia",
-        title: "Presencia",
-        compactTitle: "Presencia",
+        title: WidgetL10n.exact("Presencia"),
+        compactTitle: WidgetL10n.exact("Presencia"),
         symbol: "camera.macro",
         colors: [.cyan, .mint],
         destination: dashboardURL("presencia"),
@@ -120,71 +126,71 @@ struct ConsciousDashboardEntryView: View {
         value: snapshot.presenceReturns,
         primaryText: "\(snapshot.presenceReturns)",
         detailText: snapshot.automaticPilotEvents > 0
-          ? "\(snapshot.automaticPilotEvents) en automático"
-          : "retornos conscientes",
+          ? "\(snapshot.automaticPilotEvents) \(WidgetL10n.exact("en automático"))"
+          : WidgetL10n.exact("retornos conscientes"),
         progress: min(Double(snapshot.presenceReturns) / 5, 1),
         completed: snapshot.presenceReturns >= 5
       ),
       ConsciousMetric(
         id: "agenda",
-        title: "Agenda de hoy",
-        compactTitle: "Agenda",
+        title: WidgetL10n.exact("Agenda de hoy"),
+        compactTitle: WidgetL10n.exact("Agenda"),
         symbol: "calendar.badge.clock",
         colors: [.yellow, .orange],
         destination: dashboardURL("agenda"),
         requiresPremium: true,
         value: snapshot.agendaCompleted,
         primaryText: "\(snapshot.agendaCompleted)/\(snapshot.agendaToday)",
-        detailText: snapshot.agendaToday == 1 ? "actividad" : "actividades",
+        detailText: WidgetL10n.exact(snapshot.agendaToday == 1 ? "actividad" : "actividades"),
         progress: snapshot.agendaProgress,
         completed: snapshot.agendaToday > 0 && snapshot.agendaCompleted == snapshot.agendaToday
       ),
       ConsciousMetric(
         id: "diario",
-        title: "Diario",
-        compactTitle: "Diario",
+        title: WidgetL10n.exact("Diario"),
+        compactTitle: WidgetL10n.exact("Diario"),
         symbol: "book.closed.fill",
         colors: [.purple, .pink],
         destination: dashboardURL("diario"),
         requiresPremium: false,
         value: snapshot.journalEntriesToday,
         primaryText: "\(snapshot.journalEntriesToday)",
-        detailText: snapshot.journalEntriesToday == 1 ? "entrada hoy" : "entradas hoy",
+        detailText: WidgetL10n.exact(snapshot.journalEntriesToday == 1 ? "entrada hoy" : "entradas hoy"),
         progress: snapshot.journalEntriesToday > 0 ? 1 : 0,
         completed: snapshot.journalEntriesToday > 0
       ),
       ConsciousMetric(
         id: "ritual",
-        title: "Ritual matutino",
-        compactTitle: "Ritual",
+        title: WidgetL10n.exact("Ritual matutino"),
+        compactTitle: WidgetL10n.exact("Ritual"),
         symbol: "sunrise.fill",
         colors: [.pink, .orange],
         destination: dashboardURL("ritual-matutino"),
         requiresPremium: true,
         value: snapshot.morningRitualCompleted ? 1 : 0,
-        primaryText: snapshot.morningRitualCompleted ? "Hecho" : "Pendiente",
-        detailText: snapshot.morningRitualCompleted ? "día intencionado" : "diseña tu día",
+        primaryText: WidgetL10n.exact(snapshot.morningRitualCompleted ? "Hecho" : "Pendiente"),
+        detailText: WidgetL10n.exact(snapshot.morningRitualCompleted ? "día intencionado" : "diseña tu día"),
         progress: snapshot.morningRitualCompleted ? 1 : 0,
         completed: snapshot.morningRitualCompleted
       ),
       ConsciousMetric(
         id: "cierre",
-        title: "Cierre consciente",
-        compactTitle: "Cierre",
+        title: WidgetL10n.exact("Cierre consciente"),
+        compactTitle: WidgetL10n.exact("Cierre"),
         symbol: "moon.stars.fill",
         colors: [.indigo, .purple],
         destination: dashboardURL("cierre"),
         requiresPremium: true,
         value: snapshot.eveningReviewCompleted ? 1 : 0,
-        primaryText: snapshot.eveningReviewCompleted ? "Hecho" : "Pendiente",
-        detailText: snapshot.eveningReviewCompleted ? "día integrado" : "integra tu día",
+        primaryText: WidgetL10n.exact(snapshot.eveningReviewCompleted ? "Hecho" : "Pendiente"),
+        detailText: WidgetL10n.exact(snapshot.eveningReviewCompleted ? "día integrado" : "integra tu día"),
         progress: snapshot.eveningReviewCompleted ? 1 : 0,
         completed: snapshot.eveningReviewCompleted
       ),
       ConsciousMetric(
         id: "coherencia",
-        title: "Coherencia",
-        compactTitle: "Coherencia",
+        title: WidgetL10n.exact("Coherencia"),
+        compactTitle: WidgetL10n.exact("Coherencia"),
         symbol: "waveform.path.ecg",
         colors: [.indigo, .teal],
         destination: dashboardURL("coherencia"),
@@ -214,7 +220,7 @@ struct ConsciousDashboardEntryView: View {
     }
     .foregroundStyle(.white)
     .accessibilityElement(children: .contain)
-    .accessibilityLabel("Panel de control consciente")
+    .accessibilityLabel(WidgetL10n.exact("Panel de control consciente"))
   }
 
   private var compactDashboard: some View {
@@ -343,7 +349,7 @@ struct ConsciousDashboardEntryView: View {
     .accessibilityValue(
       isLocked ? "Requiere Premium" : "\(metric.primaryText), \(metric.detailText)"
     )
-    .accessibilityHint("Abre \(metric.title) en La Ley")
+    .accessibilityHint("\(WidgetL10n.exact("Abre")) \(metric.title) \(WidgetL10n.exact("en La Ley"))")
   }
 
   private func compactMetricTile(_ metric: ConsciousMetric, isLocked: Bool) -> some View {
@@ -413,14 +419,14 @@ struct ConsciousDashboardEntryView: View {
           }
         }
 
-        Text(isLocked ? "Desbloquear" : metric.primaryText)
+        Text(isLocked ? WidgetL10n.exact("Desbloquear") : metric.primaryText)
           .font(.system(size: 15, weight: .black, design: .rounded))
           .monospacedDigit()
           .lineLimit(1)
           .contentTransition(.numericText())
           .animation(widgetAnimation, value: metric.value)
 
-        Text(isLocked ? "Acceso Premium" : metric.detailText)
+        Text(isLocked ? WidgetL10n.exact("Acceso Premium") : metric.detailText)
           .font(.system(size: 8.5, weight: .medium, design: .rounded))
           .lineLimit(1)
           .foregroundStyle(.white.opacity(0.68))

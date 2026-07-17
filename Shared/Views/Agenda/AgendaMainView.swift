@@ -3,11 +3,74 @@ import SwiftUI
 import Combine
 import UniformTypeIdentifiers
 import MapKit
+#if os(macOS)
+import AppKit
+#else
+import UIKit
+#endif
+
+enum PetSettings {
+    static let isEnabledKey = "pets.enabled"
+    static let selectedPetKey = "pets.selectedAssetName"
+    static let defaultPetAssetName = "mascota1"
+    static let settingsCarouselPetSize: CGFloat = 32
+
+    /// Mascotas disponibles en el bundle: `mascota1.png` hasta `mascota6.png`.
+    static var availablePetAssetNames: [String] {
+        let allowedNames = Set((1...6).map { "mascota\($0)" })
+        let bundledNames = (Bundle.main.urls(forResourcesWithExtension: nil, subdirectory: nil) ?? [])
+            .filter { $0.pathExtension.lowercased() == "png" }
+            .map { $0.deletingPathExtension().lastPathComponent }
+            .filter { allowedNames.contains($0) }
+
+        return Array(Set(bundledNames))
+            .sorted { $0.localizedStandardCompare($1) == .orderedAscending }
+    }
+
+    static func displayName(for assetName: String) -> String {
+        assetName
+            .replacingOccurrences(of: "_", with: " ")
+            .replacingOccurrences(of: "-", with: " ")
+            .capitalized
+    }
+
+    static func imageURL(for assetName: String) -> URL? {
+        let supportedExtensions = ["png", "jpg", "jpeg", "webp"]
+        return supportedExtensions.lazy.compactMap {
+            Bundle.main.url(forResource: assetName, withExtension: $0)
+        }.first
+    }
+}
+
+struct PetImage: View {
+    let assetName: String
+
+    var body: some View {
+#if os(macOS)
+        if let url = PetSettings.imageURL(for: assetName), let image = NSImage(contentsOf: url) {
+            Image(nsImage: image)
+                .resizable()
+                .scaledToFit()
+        }
+#else
+        if let url = PetSettings.imageURL(for: assetName), let image = UIImage(contentsOfFile: url.path) {
+            Image(uiImage: image)
+                .resizable()
+                .scaledToFit()
+        }
+#endif
+    }
+}
 
 enum AgendaUIConstants {
     static let calendarBackgroundOpacity: Double = 0.5
     static let activityCardBackgroundOpacity: Double = 0.5
     static let priorityBackgroundOpacity: Double = 0.7
+
+    // Ajustes manuales de la mascota del estado vacío de Agenda.
+    static let emptyTodayPetSize: CGFloat = 250
+    static let emptyTodayPetOffset = CGSize(width: 0, height: -48)
+    static let emptyTodayPetEntranceDuration: Double = 0.65
 
 #if os(macOS)
     static let activityCardCornerRadius: CGFloat = 10
@@ -60,11 +123,14 @@ struct AgendaMainView: View {
     @State private var searchText: String = ""
     @State private var revealLocationIDs: Set<UUID> = []
     @State private var hasEvaluatedInitialTodayAvailability = false
+    @State private var hasCompletedPetEntrance = false
     @State private var checkFilter: CheckFilter = .todas
     @Environment(\.scenePhase) private var scenePhase
 
     @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
     @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) private var yorjPremium: Bool = false
+    @AppStorage(PetSettings.isEnabledKey) private var petsEnabled = true
+    @AppStorage(PetSettings.selectedPetKey) private var selectedPetAssetName = PetSettings.defaultPetAssetName
 
     private enum AgendaBulkAction: Identifiable {
         case delete
@@ -618,7 +684,14 @@ struct AgendaMainView: View {
             .ignoresSafeArea()
 
             mainContent
+
+            if shouldShowEmptyTodayPet {
+                emptyTodayPet
+                    .transition(.opacity)
+            }
         }
+        .animation(.easeInOut(duration: 0.35), value: shouldShowEmptyTodayPet)
+        .animation(.easeInOut(duration: AgendaUIConstants.emptyTodayPetEntranceDuration), value: hasCompletedPetEntrance)
         .navigationTitle("Agenda")
 #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
@@ -628,6 +701,55 @@ struct AgendaMainView: View {
         .toolbar {
             agendaToolbar
         }
+    }
+
+    private var hasNoEntriesToday: Bool {
+        !viewModel.items.contains {
+            Calendar.current.isDateInToday($0.fechaActividad)
+        }
+    }
+
+    private var shouldShowEmptyTodayPet: Bool {
+        petsEnabled && hasNoEntriesToday && currentListedItems().isEmpty && !showPastActivities
+    }
+
+    private var emptyTodayPet: some View {
+        VStack {
+            Spacer()
+            PetImage(assetName: selectedPetAssetName)
+                .frame(width: AgendaUIConstants.emptyTodayPetSize)
+                .scaleEffect(hasCompletedPetEntrance ? 1 : 0.18)
+                .opacity(hasCompletedPetEntrance ? 1 : 0)
+                .offset(
+                    x: AgendaUIConstants.emptyTodayPetOffset.width,
+                    y: AgendaUIConstants.emptyTodayPetOffset.height
+                )
+                .contentShape(Rectangle())
+                .contextMenu {
+                    Button {
+                        petsEnabled = false
+                    } label: {
+                        Label("Ocultar mascota", systemImage: "eye.slash")
+                    }
+
+                    Menu {
+                        ForEach(PetSettings.availablePetAssetNames, id: \.self) { assetName in
+                            Button {
+                                selectedPetAssetName = assetName
+                            } label: {
+                                Label(
+                                    PetSettings.displayName(for: assetName),
+                                    systemImage: selectedPetAssetName == assetName ? "checkmark" : "pawprint"
+                                )
+                            }
+                        }
+                    } label: {
+                        Label("Cambiar mascota", systemImage: "pawprint")
+                    }
+                }
+        }
+        .accessibilityLabel("Mascota de Agenda")
+        .accessibilityHint("Mantén pulsado para cambiar u ocultar la mascota")
     }
 
     @ToolbarContentBuilder
@@ -669,8 +791,24 @@ struct AgendaMainView: View {
     private func handleAgendaAppear() {
         viewModel.load()
         displayedMonth = monthStart(of: viewModel.selectedDate)
+        animatePetEntranceIfNeeded()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
             evaluateInitialTodayAvailability()
+        }
+    }
+
+    private func animatePetEntranceIfNeeded() {
+        guard !hasCompletedPetEntrance else { return }
+
+        guard shouldShowEmptyTodayPet else {
+            hasCompletedPetEntrance = true
+            return
+        }
+
+        DispatchQueue.main.async {
+            withAnimation(.easeInOut(duration: AgendaUIConstants.emptyTodayPetEntranceDuration)) {
+                hasCompletedPetEntrance = true
+            }
         }
     }
 

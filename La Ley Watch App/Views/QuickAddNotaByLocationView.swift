@@ -126,7 +126,7 @@ struct QuickAddNotaByLocationView: View {
 
         let trimmedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedTitle.isEmpty else {
-            alertMessage = "Debes indicar un título."
+            alertMessage = WatchL10n.exact("Debes indicar un título.")
             showAlert = true
             return
         }
@@ -137,7 +137,7 @@ struct QuickAddNotaByLocationView: View {
             nota = ""
             resolvedAddress = ""
             hasResolvedLocation = false
-            alertMessage = "Nota guardada correctamente."
+            alertMessage = WatchL10n.exact("Nota guardada correctamente.")
             showAlert = true
         } else {
             alertMessage = "No se pudo guardar la nota."

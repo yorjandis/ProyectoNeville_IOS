@@ -9,6 +9,13 @@ import SwiftUI
 import CoreData
 import UniformTypeIdentifiers
 
+/// Ajustes visuales específicos de la mascota de la cabecera del Diario.
+/// Modifica estos valores para reajustar manualmente su tamaño y posición.
+private enum DiarioUIConstants {
+    static let topBarPetSize: CGFloat = 100
+    static let topBarPetOffset = CGSize(width: 50, height: -30)
+}
+
 struct DiarioListView: View {
 
     @Environment(\.dismiss) var dimiss
@@ -16,6 +23,7 @@ struct DiarioListView: View {
 
     @StateObject private var modelDiario = DiarioModel.shared
     @StateObject private var securityModel : SecurityModel = SecurityModel.shared
+    @AppStorage(PetSettings.isEnabledKey) private var petsEnabled = true
     
     
     //Para filtros en fechas
@@ -674,6 +682,22 @@ struct DiarioListView: View {
             .buttonStyle(.borderedProminent)
             .tint(.orange)
             .disabled(!securityModel.canOpenDiario)
+        }
+        // La superposición evita que el tamaño de la mascota altere la altura de la barra.
+        .overlay(alignment: .leading) {
+            if petsEnabled {
+                PetImage(assetName: "mascota_diario_a")
+                    .frame(
+                        width: DiarioUIConstants.topBarPetSize,
+                        height: DiarioUIConstants.topBarPetSize
+                    )
+                    .offset(
+                        x: DiarioUIConstants.topBarPetOffset.width,
+                        y: DiarioUIConstants.topBarPetOffset.height
+                    )
+                    .accessibilityHidden(true)
+                    .allowsHitTesting(false)
+            }
         }
     }
 

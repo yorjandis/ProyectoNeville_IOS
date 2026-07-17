@@ -110,6 +110,13 @@ private enum MorningRitualConstants {
     }
 }
 
+private enum MorningRitualPetLayout {
+    /// Ajustes manuales de la mascota flotante del Ritual Matutino.
+    static let assetName = "mascota_loto"
+    static let size: CGFloat = 148
+    static let offset = CGSize(width: 0, height: -8)
+}
+
 private struct MorningRitualSession: Codable, Identifiable, Equatable {
     let id: UUID
     let sessionDateEpochDay: Int
@@ -806,6 +813,7 @@ struct MorningRitualMainView: View {
     @State private var route: MorningRitualRoute?
     @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
     @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) private var yorjPremium: Bool = false
+    @AppStorage(PetSettings.isEnabledKey) private var petsEnabled = true
 
     private var hasPremiumAccess: Bool { purchaseStatus || yorjPremium }
 
@@ -887,6 +895,18 @@ struct MorningRitualMainView: View {
                     .padding(16)
                 }
 
+            }
+            .overlay(alignment: .bottom) {
+                if petsEnabled {
+                    PetImage(assetName: MorningRitualPetLayout.assetName)
+                        .frame(
+                            width: MorningRitualPetLayout.size,
+                            height: MorningRitualPetLayout.size
+                        )
+                        .offset(MorningRitualPetLayout.offset)
+                        .allowsHitTesting(false)
+                        .accessibilityHidden(true)
+                }
             }
             //.navigationTitle("Ritual Matutino")
             .onTapGesture {

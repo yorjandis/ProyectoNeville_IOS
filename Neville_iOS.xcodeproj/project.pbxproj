@@ -167,6 +167,10 @@
 		B130000000000000000057 /* enc_serotonina_y_ansiedad.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000057 /* enc_serotonina_y_ansiedad.txt */; };
 		B130000000000000000058 /* enc_tiempo.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000058 /* enc_tiempo.txt */; };
 		B130000000000000000059 /* enc_utilizar_recaida_a_tu_favor.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000059 /* enc_utilizar_recaida_a_tu_favor.txt */; };
+		CC1000013000000000000001 /* Shared/Localization/Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = CC1000023000000000000001 /* Shared/Localization/Localizable.xcstrings */; };
+		CC1000033000000000000001 /* Shared/Localization/Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = CC1000023000000000000001 /* Shared/Localization/Localizable.xcstrings */; };
+		CC1000043000000000000001 /* Shared/Localization/Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = CC1000023000000000000001 /* Shared/Localization/Localizable.xcstrings */; };
+		CC1000053000000000000001 /* Shared/Localization/Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = CC1000023000000000000001 /* Shared/Localization/Localizable.xcstrings */; };
 		E95B93572AAFBB2600B5E2B5 /* Neville_iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95B93562AAFBB2600B5E2B5 /* Neville_iOSApp.swift */; };
 		E95B93592AAFBB2600B5E2B5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95B93582AAFBB2600B5E2B5 /* ContentView.swift */; };
 /* End PBXBuildFile section */
@@ -534,6 +538,7 @@
 		B110000000000000000057 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text; name = "zh-Hans"; path = "Shared/Localization/zh-Hans.lproj/enc_serotonina_y_ansiedad.txt"; sourceTree = SOURCE_ROOT; };
 		B110000000000000000058 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text; name = "zh-Hans"; path = "Shared/Localization/zh-Hans.lproj/enc_tiempo.txt"; sourceTree = SOURCE_ROOT; };
 		B110000000000000000059 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text; name = "zh-Hans"; path = "Shared/Localization/zh-Hans.lproj/enc_utilizar_recaida_a_tu_favor.txt"; sourceTree = SOURCE_ROOT; };
+		CC1000023000000000000001 /* Shared/Localization/Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Shared/Localization/Localizable.xcstrings; sourceTree = SOURCE_ROOT; };
 		E95B93532AAFBB2600B5E2B5 /* Neville_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Neville_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E95B93562AAFBB2600B5E2B5 /* Neville_iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Neville_iOSApp.swift; sourceTree = "<group>"; };
 		E95B93582AAFBB2600B5E2B5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -1675,6 +1680,15 @@
 				"Staff/Images-Tutoriales/tuto_crearFrase.png",
 				"Staff/Images-Tutoriales/tuto_crearFraseEspacioCalma.png",
 				"Staff/Images-Tutoriales/tuto_running.png",
+				Staff/Mascotas/mascota_comiendo.png,
+				Staff/Mascotas/mascota_diario_a.png,
+				Staff/Mascotas/mascota_loto.png,
+				Staff/Mascotas/mascota1.png,
+				Staff/Mascotas/mascota2.png,
+				Staff/Mascotas/mascota3.png,
+				Staff/Mascotas/mascota4.png,
+				Staff/Mascotas/mascota5.png,
+				Staff/Mascotas/mascota6.png,
 				Staff/Metas/ProgramasPreestablecidos/prog_anti_ansiedad_2.json,
 				Staff/Metas/ProgramasPreestablecidos/prog_anti_ansiedad.json,
 				Staff/Metas/ProgramasPreestablecidos/prog_dejar_alcohol_1.json,
@@ -1809,7 +1823,6 @@
 		911FE4582ECB2B06009F83BE /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Localization/Localizable.xcstrings,
 				ModelData.xcdatamodeld,
 				Models/AppCons/AppCons.swift,
 				Models/CoreData/CoreDataController.swift,
@@ -1821,6 +1834,15 @@
 				Staff/Frases/listfrases_otros.txt,
 				Staff/Frases/listfrases_salud.txt,
 				Staff/Frases/listfrases.txt,
+				Staff/Mascotas/mascota_comiendo.png,
+				Staff/Mascotas/mascota_diario_a.png,
+				Staff/Mascotas/mascota_loto.png,
+				Staff/Mascotas/mascota1.png,
+				Staff/Mascotas/mascota2.png,
+				Staff/Mascotas/mascota3.png,
+				Staff/Mascotas/mascota4.png,
+				Staff/Mascotas/mascota5.png,
+				Staff/Mascotas/mascota6.png,
 			);
 			target = 19F804182B69CB9D00A323A0 /* La Ley Watch App */;
 		};
@@ -2221,6 +2243,7 @@
 				B120000000000000000057 /* enc_serotonina_y_ansiedad.txt */,
 				B120000000000000000058 /* enc_tiempo.txt */,
 				B120000000000000000059 /* enc_utilizar_recaida_a_tu_favor.txt */,
+				CC1000023000000000000001 /* Shared/Localization/Localizable.xcstrings */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -2588,6 +2611,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CC1000033000000000000001 /* Shared/Localization/Localizable.xcstrings in Resources */,
 				19E0BE1D2B0C661B00E149A5 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2604,6 +2628,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CC1000013000000000000001 /* Shared/Localization/Localizable.xcstrings in Resources */,
 				19F804232B69CBA000A323A0 /* Preview Assets.xcassets in Resources */,
 				19F804202B69CBA000A323A0 /* Assets.xcassets in Resources */,
 			);
@@ -2647,6 +2672,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CC1000043000000000000001 /* Shared/Localization/Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2661,6 +2687,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CC1000053000000000000001 /* Shared/Localization/Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

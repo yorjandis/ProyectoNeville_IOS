@@ -212,7 +212,7 @@ final class WatchGoalUnitsStore: ObservableObject {
         } else {
             pendingCompletionIDs.remove(unitID)
             persistPending()
-            lastError = reason ?? "No se pudo completar la unidad"
+            lastError = reason ?? WatchL10n.exact("No se pudo completar la unidad")
             requestSnapshot()
         }
     }
@@ -270,7 +270,7 @@ final class WatchGoalNotificationScheduler {
             for unit in units.sorted(by: { $0.startDate < $1.startDate }).prefix(60)
             where !updatedRegistered.contains(unit.id) {
                 let content = UNMutableNotificationContent()
-                content.title = "Meta disponible"
+                content.title = WatchL10n.exact("Meta disponible")
                 content.body = "\(unit.goalTitle): \(unit.targetText)"
                 content.sound = .default
                 content.categoryIdentifier = Self.categoryID
@@ -322,7 +322,7 @@ final class WatchGoalNotificationRouter: NSObject, ObservableObject, @preconcurr
         center.delegate = self
         let openAction = UNNotificationAction(
             identifier: "OPEN_GOAL_UNITS",
-            title: "Ver unidad",
+            title: WatchL10n.exact("Ver unidad"),
             options: [.foreground]
         )
         center.setNotificationCategories([

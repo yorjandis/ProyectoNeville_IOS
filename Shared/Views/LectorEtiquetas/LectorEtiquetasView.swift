@@ -10,12 +10,20 @@ import SwiftUI
 #if os(iOS)
 import AVFoundation
 
+private enum LectorEtiquetasPetLayout {
+    /// Ajustes manuales de la mascota flotante del lector de etiquetas.
+    static let assetName = "mascota_comiendo"
+    static let size: CGFloat = 200
+    static let offset = CGSize(width: 0, height: 5)
+}
+
 struct LectorEtiquetasView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel = LectorEtiquetasViewModel()
 
     @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
     @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) private var yorjPremium: Bool = false
+    @AppStorage(PetSettings.isEnabledKey) private var petsEnabled = true
 
     @State private var barcodeInput: String = ""
     @State private var showBarcodeScanner: Bool = false
@@ -54,6 +62,20 @@ struct LectorEtiquetasView: View {
                         }
                         .padding(.horizontal, 16)
                         .padding(.vertical, 20)
+                    }
+                }
+                .overlay(alignment: .bottom) {
+                    if petsEnabled {
+                        PetImage(assetName: LectorEtiquetasPetLayout.assetName)
+                            .frame(
+                                width: LectorEtiquetasPetLayout.size,
+                                height: LectorEtiquetasPetLayout.size
+                            )
+                            .offset(LectorEtiquetasPetLayout.offset)
+                            .opacity(viewModel.resultado == nil ? 1 : 0)
+                            .animation(.easeInOut(duration: 0.25), value: viewModel.resultado != nil)
+                            .allowsHitTesting(false)
+                            .accessibilityHidden(true)
                     }
                 }
                 .navigationBarTitleDisplayMode(.inline)

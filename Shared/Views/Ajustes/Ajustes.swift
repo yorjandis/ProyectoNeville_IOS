@@ -30,6 +30,8 @@ struct Ajustes: View {
     //Permite mostrar/Ocultar Metas en Home
     @AppStorage("MostrarMetasEnHome") var MostrarMetasEnHome: Bool = false
     @AppStorage("Home_ShowAgendaButton") var showAgendaButtonInHome: Bool = true
+    @AppStorage(PetSettings.isEnabledKey) private var petsEnabled = true
+    @AppStorage(PetSettings.selectedPetKey) private var selectedPetAssetName = PetSettings.defaultPetAssetName
     #if os(iOS)
     @AppStorage("Home_ShowPresenceButton") private var showPresenceButtonInHome: Bool = true
     @AppStorage(PresenciaSettings.customCelebrationPhraseKey) private var presenciaCelebrationPhrase = PresenciaSettings.defaultCelebrationPhrase
@@ -1467,6 +1469,49 @@ struct Ajustes: View {
 
                     Section("Agenda") {
                         Toggle("Mostrar botón Agenda en Home", isOn: self.$showAgendaButtonInHome)
+                    }
+
+                    Section("Mascotas") {
+                        Toggle("Mostrar mascotas en las vistas compatibles", isOn: $petsEnabled)
+
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 10) {
+                                ForEach(PetSettings.availablePetAssetNames, id: \.self) { assetName in
+                                    Button {
+                                        selectedPetAssetName = assetName
+                                    } label: {
+                                        VStack(spacing: 4) {
+                                            PetImage(assetName: assetName)
+                                                .frame(
+                                                    width: PetSettings.settingsCarouselPetSize,
+                                                    height: PetSettings.settingsCarouselPetSize
+                                                )
+                                                .clipped()
+                                            Text(PetSettings.displayName(for: assetName))
+                                                .font(.caption2)
+                                                .lineLimit(1)
+                                        }
+                                        .frame(width: 64, height: 58)
+                                        .background(
+                                            selectedPetAssetName == assetName
+                                                ? Color.accentColor.opacity(0.22)
+                                                : Color.secondary.opacity(0.08),
+                                            in: RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                        )
+                                    }
+                                    .buttonStyle(.plain)
+                                    .accessibilityLabel(PetSettings.displayName(for: assetName))
+                                    .accessibilityAddTraits(selectedPetAssetName == assetName ? .isSelected : [])
+                                }
+                            }
+                        }
+                        .disabled(!petsEnabled)
+                    }
+                    .onAppear {
+                        let availablePets = PetSettings.availablePetAssetNames
+                        if !availablePets.contains(selectedPetAssetName) {
+                            selectedPetAssetName = PetSettings.defaultPetAssetName
+                        }
                     }
 
                     Section("Centro Sanador") {

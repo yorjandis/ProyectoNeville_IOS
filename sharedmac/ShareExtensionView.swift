@@ -134,7 +134,7 @@ struct ShareExtensionView: View {
                                                 return
                                             }
                                                 defaults.set(textoQR, forKey: self.keyNotaShareText)
-                                                self.alertMessage = "Texto guardado en Notas"
+                                                self.alertMessage = localized("Texto guardado en Notas.")
                                                 self.showAlert = true
                                             
                                             
@@ -349,6 +349,10 @@ struct ShareExtensionView: View {
     func close() {
         NotificationCenter.default.post(name: NSNotification.Name("close"), object: nil)
     }
+
+    private func localized(_ spanish: String) -> String {
+        Bundle.main.localizedString(forKey: spanish, value: spanish, table: "Localizable")
+    }
     
     
     
@@ -445,5 +449,4 @@ struct ShareExtensionView: View {
     
     
 }
-
 
