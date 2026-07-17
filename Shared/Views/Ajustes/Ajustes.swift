@@ -29,6 +29,7 @@ struct Ajustes: View {
     
     //Permite mostrar/Ocultar Metas en Home
     @AppStorage("MostrarMetasEnHome") var MostrarMetasEnHome: Bool = false
+    @AppStorage("Home_ShowMyDayButton") private var showMyDayButtonInHome: Bool = true
     @AppStorage("Home_ShowAgendaButton") var showAgendaButtonInHome: Bool = true
     @AppStorage(PetSettings.isEnabledKey) private var petsEnabled = true
     @AppStorage(PetSettings.selectedPetKey) private var selectedPetAssetName = PetSettings.defaultPetAssetName
@@ -639,6 +640,13 @@ struct Ajustes: View {
                         .padding(.bottom, 20)
 
                         VStack(alignment: .leading){
+                            Text("Ritual Matutino").font(.system(size: 22)).foregroundStyle(.orange)
+                            Toggle("Mostrar botón Mi día en Home", isOn: self.$showMyDayButtonInHome)
+                        }
+                        .padding(.horizontal, 30)
+                        .padding(.bottom, 20)
+
+                        VStack(alignment: .leading){
                             Text("Agenda").font(.system(size: 22)).foregroundStyle(.orange)
                             Toggle("Mostrar botón Agenda en Home", isOn: self.$showAgendaButtonInHome)
                         }
@@ -1037,6 +1045,17 @@ struct Ajustes: View {
             //🔶🔶🔶🔶🔶🔶
             #else //iOS,ipadOS.... NO macOS
                 Form{
+                    Section("Salud y HealthKit") {
+                        NavigationLink {
+                            StressHistoryView(monitor: StressMonitor.shared)
+                        } label: {
+                            Label("Estrés fisiológico con HealthKit", systemImage: "heart.text.square.fill")
+                        }
+
+                        Text("Con tu permiso, La Ley usa HealthKit para leer pulso, VFC, respiración, pasos y entrenamientos guardados por Apple Watch y la app Salud. Los datos se procesan en este dispositivo y La Ley no añade ni modifica datos de Salud.")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
                     
                     Section("Tamaño de letra"){
                         HStack{
@@ -1469,6 +1488,10 @@ struct Ajustes: View {
 
                     Section("Agenda") {
                         Toggle("Mostrar botón Agenda en Home", isOn: self.$showAgendaButtonInHome)
+                    }
+
+                    Section("Ritual Matutino") {
+                        Toggle("Mostrar botón Mi día en Home", isOn: self.$showMyDayButtonInHome)
                     }
 
                     Section("Mascotas") {

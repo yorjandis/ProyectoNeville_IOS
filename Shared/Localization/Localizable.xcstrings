@@ -3591,7 +3591,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Agenda"
+            "value" : "Schedule"
           }
         },
         "es" : {
@@ -11243,24 +11243,24 @@
         }
       }
     },
-    "Cómo se calcula" : {
+    "Cómo funciona con HealthKit" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "How It Is Calculated"
+            "value" : "How HealthKit Is Used"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cómo se calcula"
+            "value" : "Cómo funciona con HealthKit"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "计算方式"
+            "value" : "HealthKit 的使用方式"
           }
         }
       }
@@ -11867,24 +11867,24 @@
         }
       }
     },
-    "Con tu permiso, La Ley leerá pulso, VFC, respiración, pasos y entrenamientos guardados por Apple Watch y Salud. Los datos se procesan en este dispositivo." : {
+    "Con tu permiso, La Ley usa HealthKit para leer pulso, VFC, respiración, pasos y entrenamientos guardados por Apple Watch y la app Salud. Los datos se procesan en este dispositivo y La Ley no añade ni modifica datos de Salud." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "With your permission, La Ley will read heart rate, HRV, respiratory rate, steps, and workouts stored by Apple Watch and Health. The data is processed on this device."
+            "value" : "With your permission, La Ley uses HealthKit to read heart rate, HRV, respiratory rate, steps, and workouts stored by Apple Watch and the Health app. The data is processed on this device, and La Ley does not add or modify Health data."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Con tu permiso, La Ley leerá pulso, VFC, respiración, pasos y entrenamientos guardados por Apple Watch y Salud. Los datos se procesan en este dispositivo."
+            "value" : "Con tu permiso, La Ley usa HealthKit para leer pulso, VFC, respiración, pasos y entrenamientos guardados por Apple Watch y la app Salud. Los datos se procesan en este dispositivo y La Ley no añade ni modifica datos de Salud."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "经你授权后，La Ley 将读取 Apple Watch 和“健康”中保存的心率、心率变异性、呼吸频率、步数和体能训练数据。所有数据均在本设备上处理。"
+            "value" : "经你授权后，La Ley 会使用 HealthKit 读取 Apple Watch 和“健康”App 中保存的心率、心率变异性、呼吸频率、步数和体能训练数据。所有数据均在本设备上处理，La Ley 不会添加或修改健康数据。"
           }
         }
       }
@@ -12184,24 +12184,24 @@
         }
       }
     },
-    "Conecta la app Salud" : {
+    "Conecta Salud con HealthKit" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Connect the Health App"
+            "value" : "Connect Health with HealthKit"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Conecta la app Salud"
+            "value" : "Conecta Salud con HealthKit"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "连接“健康”App"
+            "value" : "通过 HealthKit 连接“健康”"
           }
         }
       }
@@ -20618,24 +20618,24 @@
         }
       }
     },
-    "Este indicador necesita un iPhone compatible con HealthKit." : {
+    "Este indicador necesita un dispositivo compatible con HealthKit." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "This indicator requires an iPhone that supports HealthKit."
+            "value" : "This indicator requires a device that supports HealthKit."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Este indicador necesita un iPhone compatible con HealthKit."
+            "value" : "Este indicador necesita un dispositivo compatible con HealthKit."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "此指标需要支持 HealthKit 的 iPhone。"
+            "value" : "此指标需要支持 HealthKit 的设备。"
           }
         }
       }
@@ -20817,24 +20817,24 @@
         }
       }
     },
-    "Estrés fisiológico" : {
+    "Estrés fisiológico con HealthKit" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Physiological Stress"
+            "value" : "Physiological Stress with HealthKit"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Estrés fisiológico"
+            "value" : "Estrés fisiológico con HealthKit"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "生理压力"
+            "value" : "HealthKit 生理压力"
           }
         }
       }
@@ -24982,6 +24982,182 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "已完成：{0}"
+          }
+        }
+      }
+    },
+    "goals.program_category.anxiety_relief" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anxiety Relief"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anti Ansiedad"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "缓解焦虑"
+          }
+        }
+      }
+    },
+    "goals.program_category.buteyko_breathing" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buteyko Breathing"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Respiración Buteyko"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "布特科呼吸法"
+          }
+        }
+      }
+    },
+    "goals.program_category.digital_balance_youth" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Digital Balance for Young People"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regulación Digital para Menores"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未成年人数字使用管理"
+          }
+        }
+      }
+    },
+    "goals.program_category.dopamine_reset" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dopamine Reset"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reinicio Dopaminérgico"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "多巴胺重置"
+          }
+        }
+      }
+    },
+    "goals.program_category.neville_visualization" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neville Creative Visualization"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visualización Creativa de Neville"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "内维尔创造性想象"
+          }
+        }
+      }
+    },
+    "goals.program_category.quit_drinking" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quit Drinking"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dejar el Alcohol"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "戒酒"
+          }
+        }
+      }
+    },
+    "goals.program_category.quit_smoking" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quit Smoking"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dejar de Fumar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "戒烟"
+          }
+        }
+      }
+    },
+    "goals.program_category.weekly_meal_plans" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weekly Meal Plans"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dietas Semanales"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每周饮食计划"
           }
         }
       }
@@ -30100,24 +30276,24 @@
         }
       }
     },
-    "La estimación compara el pulso, la variabilidad cardiaca (VFC/SDNN) y, cuando es reciente, la respiración con una referencia personal robusta de hasta 30 días. Detecta movimiento, pasos y entrenamientos para no interpretar el ejercicio como estrés, y muestra la confianza según cobertura y antigüedad de los datos." : {
+    "La Ley usa HealthKit para leer datos de la app Salud. La estimación compara el pulso, la variabilidad cardiaca (VFC/SDNN) y, cuando es reciente, la respiración con una referencia personal robusta de hasta 30 días. Detecta movimiento, pasos y entrenamientos para no interpretar el ejercicio como estrés, y muestra la confianza según cobertura y antigüedad de los datos." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "The estimate compares heart rate, heart rate variability (HRV/SDNN), and recent respiratory rate with a robust personal baseline of up to 30 days. It detects movement, steps, and workouts to avoid interpreting exercise as stress, and reports confidence based on data coverage and age."
+            "value" : "La Ley uses HealthKit to read data from the Health app. The estimate compares heart rate, heart rate variability (HRV/SDNN), and recent respiratory rate with a robust personal baseline of up to 30 days. It detects movement, steps, and workouts to avoid interpreting exercise as stress, and reports confidence based on data coverage and age."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La estimación compara el pulso, la variabilidad cardiaca (VFC/SDNN) y, cuando es reciente, la respiración con una referencia personal robusta de hasta 30 días. Detecta movimiento, pasos y entrenamientos para no interpretar el ejercicio como estrés, y muestra la confianza según cobertura y antigüedad de los datos."
+            "value" : "La Ley usa HealthKit para leer datos de la app Salud. La estimación compara el pulso, la variabilidad cardiaca (VFC/SDNN) y, cuando es reciente, la respiración con una referencia personal robusta de hasta 30 días. Detecta movimiento, pasos y entrenamientos para no interpretar el ejercicio como estrés, y muestra la confianza según cobertura y antigüedad de los datos."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "此估算会将心率、心率变异性（HRV/SDNN），以及较新的呼吸频率，与最多 30 天的可靠个人基准进行比较。系统会识别活动、步数和体能训练，避免把运动误判为压力，并根据数据覆盖率和新旧程度显示可信度。"
+            "value" : "La Ley 使用 HealthKit 读取“健康”App 中的数据。此估算会将心率、心率变异性（HRV/SDNN）以及较新的呼吸频率，与最多 30 天的可靠个人基准进行比较。系统会识别活动、步数和体能训练，避免把运动误判为压力，并根据数据覆盖率和新旧程度显示可信度。"
           }
         }
       }
@@ -34541,6 +34717,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在首页显示日程按钮"
+          }
+        }
+      }
+    },
+    "Mostrar botón Mi día en Home" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show My Day Button on Home"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar botón Mi día en Home"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在首页显示“我的一天”按钮"
           }
         }
       }
@@ -46346,6 +46544,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "“健康”不可用"
+          }
+        }
+      }
+    },
+    "Salud y HealthKit" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Health and HealthKit"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salud y HealthKit"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "健康与 HealthKit"
           }
         }
       }

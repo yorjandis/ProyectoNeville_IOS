@@ -55,7 +55,7 @@ struct StressHomeIndicator: View {
         .frame(maxWidth: .infinity)
         .contentShape(Rectangle())
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Estrés fisiológico")
+        .accessibilityLabel("Estrés fisiológico con HealthKit")
         .accessibilityValue(statusText)
         .accessibilityHint("Abre el histórico y las estadísticas")
     }
@@ -112,7 +112,7 @@ struct StressHistoryView: View {
             .padding()
         }
         .background(Color(.systemGroupedBackground))
-        .navigationTitle("Estrés fisiológico")
+        .navigationTitle("Salud y HealthKit")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
@@ -219,9 +219,9 @@ struct StressHistoryView: View {
             Image(systemName: "heart.text.square.fill")
                 .font(.system(size: 36))
                 .foregroundStyle(.pink)
-            Text("Conecta la app Salud")
+            Text("Conecta Salud con HealthKit")
                 .font(.headline)
-            Text("Con tu permiso, La Ley leerá pulso, VFC, respiración, pasos y entrenamientos guardados por Apple Watch y Salud. Los datos se procesan en este dispositivo.")
+            Text("Con tu permiso, La Ley usa HealthKit para leer pulso, VFC, respiración, pasos y entrenamientos guardados por Apple Watch y la app Salud. Los datos se procesan en este dispositivo y La Ley no añade ni modifica datos de Salud.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -242,7 +242,7 @@ struct StressHistoryView: View {
         ContentUnavailableView(
             "Salud no está disponible",
             systemImage: "heart.slash",
-            description: Text("Este indicador necesita un iPhone compatible con HealthKit.")
+            description: Text("Este indicador necesita un dispositivo compatible con HealthKit.")
         )
         .padding()
         .background(.background, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
@@ -394,9 +394,9 @@ struct StressHistoryView: View {
 
     private var methodCard: some View {
         VStack(alignment: .leading, spacing: 9) {
-            Label("Cómo se calcula", systemImage: "info.circle")
+            Label("Cómo funciona con HealthKit", systemImage: "info.circle")
                 .font(.headline)
-            Text("La estimación compara el pulso, la variabilidad cardiaca (VFC/SDNN) y, cuando es reciente, la respiración con una referencia personal robusta de hasta 30 días. Detecta movimiento, pasos y entrenamientos para no interpretar el ejercicio como estrés, y muestra la confianza según cobertura y antigüedad de los datos.")
+            Text("La Ley usa HealthKit para leer datos de la app Salud. La estimación compara el pulso, la variabilidad cardiaca (VFC/SDNN) y, cuando es reciente, la respiración con una referencia personal robusta de hasta 30 días. Detecta movimiento, pasos y entrenamientos para no interpretar el ejercicio como estrés, y muestra la confianza según cobertura y antigüedad de los datos.")
             Text("Apple Watch realiza lecturas periódicas; fuera de un entrenamiento no son continuas. Por eso “en tiempo real” significa la estimación más reciente disponible en Salud.")
             Text("Es una orientación de bienestar, no un diagnóstico médico. Una lectura alta también puede deberse a cafeína, fiebre, falta de sueño, medicación u otras causas. Si tienes síntomas preocupantes, consulta a un profesional sanitario.")
                 .font(.caption)

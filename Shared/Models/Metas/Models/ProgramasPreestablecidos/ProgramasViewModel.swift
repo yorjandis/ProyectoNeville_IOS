@@ -19,14 +19,15 @@ class ProgramasViewModel: ObservableObject {
     let context = CoreDataController.shared.context
     private static let decoder = JSONDecoder()
     private static var cacheByFile: [String: ProgramasPreestablecido] = [:]
-    private static var groupedCache: [(String, [ProgramasPreestablecido])]?
+    private static var groupedCache: [AppLanguage: [(String, [ProgramasPreestablecido])]] = [:]
 
     init() {
         cargarProgramas()
     }
 
     private func cargarProgramas() {
-        if let cache = Self.groupedCache {
+        let language = AppLanguage.current
+        if let cache = Self.groupedCache[language] {
             programasAgrupados = cache
             return
         }
@@ -42,12 +43,13 @@ class ProgramasViewModel: ObservableObject {
             return (grupo.0, modelos)
         }
 
-        Self.groupedCache = loadedGroups
+        Self.groupedCache[language] = loadedGroups
         programasAgrupados = loadedGroups
     }
 
     private func cargarJSON(nombre: String) -> ProgramasPreestablecido? {
-        if let cached = Self.cacheByFile[nombre] {
+        let cacheKey = "\(AppLanguage.current.rawValue):\(nombre)"
+        if let cached = Self.cacheByFile[cacheKey] {
             return cached
         }
 
@@ -59,8 +61,9 @@ class ProgramasViewModel: ObservableObject {
         do {
             let data = try Data(contentsOf: url)
             let decoded = try Self.decoder.decode(ProgramasPreestablecido.self, from: data)
-            Self.cacheByFile[nombre] = decoded
-            return decoded
+            let localized = GoalEditorialLocalization.program(filename: nombre, fallback: decoded)
+            Self.cacheByFile[cacheKey] = localized
+            return localized
         } catch {
             print(error)
             return nil
@@ -111,4 +114,3 @@ class ProgramasViewModel: ObservableObject {
     
     
 }
-

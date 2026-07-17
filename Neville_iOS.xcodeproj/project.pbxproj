@@ -173,6 +173,9 @@
 		CC1000033000000000000001 /* Shared/Localization/Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = CC1000023000000000000001 /* Shared/Localization/Localizable.xcstrings */; };
 		CC1000043000000000000001 /* Shared/Localization/Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = CC1000023000000000000001 /* Shared/Localization/Localizable.xcstrings */; };
 		CC1000053000000000000001 /* Shared/Localization/Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = CC1000023000000000000001 /* Shared/Localization/Localizable.xcstrings */; };
+		DCA100013000000000000001 /* frases_esferas.json in Resources */ = {isa = PBXBuildFile; fileRef = DCA100103000000000000001 /* frases_esferas.json */; };
+		DCB100013000000000000001 /* HealthyHabits.json in Resources */ = {isa = PBXBuildFile; fileRef = DCB100103000000000000001 /* HealthyHabits.json */; };
+		DCC100013000000000000001 /* GoalPrograms.json in Resources */ = {isa = PBXBuildFile; fileRef = DCC100103000000000000001 /* GoalPrograms.json */; };
 		E95B93572AAFBB2600B5E2B5 /* Neville_iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95B93562AAFBB2600B5E2B5 /* Neville_iOSApp.swift */; };
 		E95B93592AAFBB2600B5E2B5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95B93582AAFBB2600B5E2B5 /* ContentView.swift */; };
 /* End PBXBuildFile section */
@@ -541,6 +544,12 @@
 		B110000000000000000058 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text; name = "zh-Hans"; path = "Shared/Localization/zh-Hans.lproj/enc_tiempo.txt"; sourceTree = SOURCE_ROOT; };
 		B110000000000000000059 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text; name = "zh-Hans"; path = "Shared/Localization/zh-Hans.lproj/enc_utilizar_recaida_a_tu_favor.txt"; sourceTree = SOURCE_ROOT; };
 		CC1000023000000000000001 /* Shared/Localization/Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Shared/Localization/Localizable.xcstrings; sourceTree = SOURCE_ROOT; };
+		DCA100113000000000000001 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = en; path = Shared/Localization/en.lproj/frases_esferas.json; sourceTree = SOURCE_ROOT; };
+		DCA100123000000000000001 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = "zh-Hans"; path = "Shared/Localization/zh-Hans.lproj/frases_esferas.json"; sourceTree = SOURCE_ROOT; };
+		DCB100113000000000000001 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = en; path = Shared/Localization/en.lproj/HealthyHabits.json; sourceTree = SOURCE_ROOT; };
+		DCB100123000000000000001 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = "zh-Hans"; path = "Shared/Localization/zh-Hans.lproj/HealthyHabits.json"; sourceTree = SOURCE_ROOT; };
+		DCC100113000000000000001 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = en; path = Shared/Localization/en.lproj/GoalPrograms.json; sourceTree = SOURCE_ROOT; };
+		DCC100123000000000000001 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = "zh-Hans"; path = "Shared/Localization/zh-Hans.lproj/GoalPrograms.json"; sourceTree = SOURCE_ROOT; };
 		E95B93532AAFBB2600B5E2B5 /* Neville_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Neville_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E95B93562AAFBB2600B5E2B5 /* Neville_iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Neville_iOSApp.swift; sourceTree = "<group>"; };
 		E95B93582AAFBB2600B5E2B5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -788,7 +797,8 @@
 				Models/Localization/AppLocalization.swift,
 				Models/Localization/ContentRepository.swift,
 				"Models/Metas/Models/CoreData/GoalEntity+Core.swift",
-				Models/Metas/Models/Enums/MetasPreestablecidas.swift,
+				Models/Metas/Models/GoalEditorialLocalization.swift,
+				Models/Metas/Models/Enums/HabitosSaludablesPreestablecidos.swift,
 				Models/Metas/Models/Enums/TimeUnit.swift,
 				Models/Metas/Models/Enums/UnitStatus.swift,
 				Models/Metas/Models/Logic/UnitLifecycle.swift,
@@ -2150,6 +2160,9 @@
 		9190270D2FE3583F00F15F12 /* Recovered References */ = {
 			isa = PBXGroup;
 			children = (
+				DCA100103000000000000001 /* frases_esferas.json */,
+				DCB100103000000000000001 /* HealthyHabits.json */,
+				DCC100103000000000000001 /* GoalPrograms.json */,
 				914D887F2FC1B22000CDDB93 /* Shared/Models/Presencia/PresenciaModels.swift */,
 				914D887E2FC1B22000CDDB93 /* Shared/Views/Presencia/PresenciaView.swift */,
 				914D88802FC1B22000CDDB93 /* Shared/Views/Presencia/PresenciaStatsView.swift */,
@@ -2711,6 +2724,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DCA100013000000000000001 /* frases_esferas.json in Resources */,
+				DCB100013000000000000001 /* HealthyHabits.json in Resources */,
+				DCC100013000000000000001 /* GoalPrograms.json in Resources */,
 				B130000000000000000001 /* enc_almacenamiento_emociones.txt in Resources */,
 				B130000000000000000002 /* enc_ansiedad_vs_stress_cronico.txt in Resources */,
 				B130000000000000000003 /* enc_aprendizaje_asociativo.txt in Resources */,
@@ -3709,6 +3725,33 @@
 			name = enc_utilizar_recaida_a_tu_favor.txt;
 			sourceTree = "<group>";
 		};
+		DCA100103000000000000001 /* frases_esferas.json */ = {
+			isa = PBXVariantGroup;
+			children = (
+				DCA100113000000000000001 /* en */,
+				DCA100123000000000000001 /* zh-Hans */,
+			);
+			name = frases_esferas.json;
+			sourceTree = "<group>";
+		};
+		DCB100103000000000000001 /* HealthyHabits.json */ = {
+			isa = PBXVariantGroup;
+			children = (
+				DCB100113000000000000001 /* en */,
+				DCB100123000000000000001 /* zh-Hans */,
+			);
+			name = HealthyHabits.json;
+			sourceTree = "<group>";
+		};
+		DCC100103000000000000001 /* GoalPrograms.json */ = {
+			isa = PBXVariantGroup;
+			children = (
+				DCC100113000000000000001 /* en */,
+				DCC100123000000000000001 /* zh-Hans */,
+			);
+			name = GoalPrograms.json;
+			sourceTree = "<group>";
+		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
@@ -4423,10 +4466,17 @@
 				INFOPLIST_FILE = "Neville-iOS-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "La Ley";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
+				INFOPLIST_KEY_NSAppleMusicUsageDescription = "Neville necesita acceso a tu biblioteca musical para que puedas seleccionar música personalizada en Espacio Calma.";
+				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Neville necesita acceso a Calendario para exportar tus notas y actividades de Agenda como eventos.";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Se requiere permisos para usar la cámara";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Se requiere permisos para usar Autenticación segura para Abrir el Diario";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "La Ley usa HealthKit para leer tus datos de pulso, variabilidad cardiaca, respiración, pasos y entrenamientos, estimar tu activación fisiológica y mostrarte patrones de estrés. La Ley no añade ni modifica datos en la app Salud.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "La Ley no guarda ni modifica datos en la app Salud; su acceso a HealthKit es exclusivamente de lectura para estimar tu activación fisiológica y mostrarte patrones de estrés.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Neville usa tu ubicación para capturar una dirección actual y guardarla en actividades de Agenda o en Notas cuando lo solicites.";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Se necesita permisos para guardar la imagen";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Se necesita permisos para acceder a la galeria";
+				INFOPLIST_KEY_NSRemindersFullAccessUsageDescription = "Neville necesita acceso a Recordatorios para exportar tus notas y actividades de Agenda como recordatorios.";
 				INFOPLIST_KEY_NSSiriUsageDescription = "Siri procesa las peticiones para crear entradas en el Diario, nuevas notas y frases";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -4467,10 +4517,17 @@
 				INFOPLIST_FILE = "Neville-iOS-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "La Ley";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
+				INFOPLIST_KEY_NSAppleMusicUsageDescription = "Neville necesita acceso a tu biblioteca musical para que puedas seleccionar música personalizada en Espacio Calma.";
+				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Neville necesita acceso a Calendario para exportar tus notas y actividades de Agenda como eventos.";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Se requiere permisos para usar la cámara";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Se requiere permisos para usar Autenticación segura para Abrir el Diario";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "La Ley usa HealthKit para leer tus datos de pulso, variabilidad cardiaca, respiración, pasos y entrenamientos, estimar tu activación fisiológica y mostrarte patrones de estrés. La Ley no añade ni modifica datos en la app Salud.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "La Ley no guarda ni modifica datos en la app Salud; su acceso a HealthKit es exclusivamente de lectura para estimar tu activación fisiológica y mostrarte patrones de estrés.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Neville usa tu ubicación para capturar una dirección actual y guardarla en actividades de Agenda o en Notas cuando lo solicites.";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Se necesita permisos para guardar la imagen";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Se necesita permisos para acceder a la galeria";
+				INFOPLIST_KEY_NSRemindersFullAccessUsageDescription = "Neville necesita acceso a Recordatorios para exportar tus notas y actividades de Agenda como recordatorios.";
 				INFOPLIST_KEY_NSSiriUsageDescription = "Siri procesa las peticiones para crear entradas en el Diario, nuevas notas y frases";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

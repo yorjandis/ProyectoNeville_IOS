@@ -1,5 +1,5 @@
 //
-//  MetasPreestablecidas.swift
+//  HabitosSaludablesPreestablecidos.swift
 //  Neville_iOS
 //
 //  Created by Yorjandis PG on 17/2/26.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct MetaPreestablecida{
+nonisolated struct MetaPreestablecida{
     let titulo: String
     let description: String
     let unidadesInfo: [UnidadesInfo]
@@ -42,7 +42,7 @@ struct MetaPreestablecida{
     }
 }
 
-enum MetasPreestablecidas: String, CaseIterable, Identifiable {
+nonisolated enum MetasPreestablecidas: String, CaseIterable, Identifiable {
     case CaminarPorLaMañana
     case HidratacionDiaria
     case RespiracionProfunda
@@ -143,15 +143,23 @@ enum MetasPreestablecidas: String, CaseIterable, Identifiable {
     
     
     var id: String { self.rawValue }
-    
-    var getDescription: String {
+
+    private var canonicalTitle: String {
         rawValue
             .replacingOccurrences(of: "([a-z])([A-Z])",
                                   with: "$1 $2",
                                   options: .regularExpression)
     }
-    
+
+    var getDescription: String {
+        GoalEditorialLocalization.habitTitle(id: rawValue, fallback: canonicalTitle)
+    }
+
     var getMeta: MetaPreestablecida {
+        GoalEditorialLocalization.habit(id: rawValue, fallback: canonicalMeta)
+    }
+
+    private var canonicalMeta: MetaPreestablecida {
         switch self {
             
         case .ExposiciónAlFrioControlada:

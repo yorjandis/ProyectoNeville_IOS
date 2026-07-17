@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-enum GoalsL10n {
+nonisolated enum GoalsL10n {
     static func text(_ key: String, fallback: String) -> String {
         L10n.string(key, fallback: fallback)
     }
@@ -141,7 +141,7 @@ enum GoalsL10n {
     }
 }
 
-enum TimeUnit: String, CaseIterable, Codable {
+nonisolated enum TimeUnit: String, CaseIterable, Codable {
     case minutos, horas, dias, semanas, meses, años
 
     var calendarComponent: Calendar.Component {
@@ -202,7 +202,7 @@ extension TimeUnit {
     }
 }
 
-enum GoalScheduleType: String, CaseIterable, Codable {
+nonisolated enum GoalScheduleType: String, CaseIterable, Codable {
     case interval
     case weekly
     case specificDates
@@ -216,7 +216,7 @@ enum GoalScheduleType: String, CaseIterable, Codable {
     }
 }
 
-enum GoalCompletionBasis: String, CaseIterable, Codable {
+nonisolated enum GoalCompletionBasis: String, CaseIterable, Codable {
     case executions
     case duration
 
@@ -228,7 +228,7 @@ enum GoalCompletionBasis: String, CaseIterable, Codable {
     }
 }
 
-enum GoalDayPeriod: String, CaseIterable, Codable {
+nonisolated enum GoalDayPeriod: String, CaseIterable, Codable {
     case anytime
     case morning
     case afternoon

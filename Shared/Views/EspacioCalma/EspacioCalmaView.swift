@@ -1331,13 +1331,23 @@ private extension EspacioCalmaView {
         return files
     }
 
-    func firstBundleFile(named fileName: String) -> URL? {
+    func firstBundleFile(named fileName: String, excludingLocalizedResources: Bool = false) -> URL? {
         let lookup = fileName.lowercased()
-        return bundleFilesRecursively().first { $0.lastPathComponent.lowercased() == lookup }
+        return bundleFilesRecursively().first {
+            $0.lastPathComponent.lowercased() == lookup
+                && (!excludingLocalizedResources || !$0.pathComponents.contains(where: { $0.hasSuffix(".lproj") }))
+        }
     }
 
     func loadPhrases() -> [String] {
-        guard let url = firstBundleFile(named: "frases_esferas.json") else {
+        let language = AppLanguage.current
+        let localizedURL = language == .spanish
+            ? nil
+            : language.localizedBundle()?.url(forResource: "frases_esferas", withExtension: "json")
+        guard let url = localizedURL ?? firstBundleFile(
+            named: "frases_esferas.json",
+            excludingLocalizedResources: true
+        ) else {
             return defaultPhrases
         }
 

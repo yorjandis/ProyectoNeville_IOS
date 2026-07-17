@@ -115,19 +115,42 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La Ley uses heart rate, heart-rate variability, breathing, steps, and workout data to estimate physiological activation and show stress patterns."
+            "value" : "La Ley uses HealthKit to read your heart rate, heart-rate variability, breathing, steps, and workout data, estimate physiological activation, and show stress patterns. La Ley does not add or modify data in the Health app."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La Ley usa tus datos de pulso, variabilidad cardiaca, respiración, pasos y entrenamientos para estimar tu activación fisiológica y mostrarte patrones de estrés."
+            "value" : "La Ley usa HealthKit para leer tus datos de pulso, variabilidad cardiaca, respiración, pasos y entrenamientos, estimar tu activación fisiológica y mostrarte patrones de estrés. La Ley no añade ni modifica datos en la app Salud."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La Ley 会使用你的心率、心率变异性、呼吸、步数和锻炼数据，估算生理唤醒程度并呈现压力变化规律。"
+            "value" : "La Ley 使用 HealthKit 读取你的心率、心率变异性、呼吸、步数和体能训练数据，以估算生理唤醒程度并呈现压力变化规律。La Ley 不会在“健康”App 中添加或修改数据。"
+          }
+        }
+      }
+    },
+    "NSHealthUpdateUsageDescription" : {
+      "comment" : "Privacy - Health Update Usage Description",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La Ley does not save or modify data in the Health app; its HealthKit access is read-only and is used to estimate physiological activation and show stress patterns."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La Ley no guarda ni modifica datos en la app Salud; su acceso a HealthKit es exclusivamente de lectura para estimar tu activación fisiológica y mostrarte patrones de estrés."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La Ley 不会在“健康”App 中存储或修改数据；其 HealthKit 访问权限仅用于读取数据，以估算生理唤醒程度并呈现压力变化规律。"
           }
         }
       }

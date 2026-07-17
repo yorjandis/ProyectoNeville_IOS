@@ -24,7 +24,7 @@ struct ProgramasListView: View {
                     ForEach(viewModel.programasAgrupados,id: \.0) { grupo, programas in
                         #if os(macOS)
                         
-                        Button( programas.count == 1 ? programas.first!.title : tituloLegible(grupo)){
+                        Button(programas.count == 1 ? programas.first!.title : ProgramaArchivo.localizedGroupTitle(for: grupo)) {
                             showWindow(for: SubMenuView(programas: programas),
                                        environmentObjects: [],
                                        title: "",
@@ -35,7 +35,7 @@ struct ProgramasListView: View {
                         #else
                         
                         NavigationLink(
-                            programas.count == 1 ? programas.first!.title : tituloLegible(grupo)
+                            programas.count == 1 ? programas.first!.title : ProgramaArchivo.localizedGroupTitle(for: grupo)
 
                         ) {
 
@@ -56,16 +56,6 @@ struct ProgramasListView: View {
         }
     }
 
-    private func tituloLegible(_ raw: String) -> String {
-        raw
-            .replacingOccurrences(of: "prog_", with: "")
-            .replacingOccurrences(of: "_", with: " ")
-            .capitalized
-    }
-    
-    
-    
-    
     struct SubMenuView: View {
         
         let programas: [ProgramasPreestablecido]

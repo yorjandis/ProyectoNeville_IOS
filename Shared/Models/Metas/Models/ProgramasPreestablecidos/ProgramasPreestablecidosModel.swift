@@ -16,7 +16,7 @@ import SwiftUI
 
 
 //Archivos json de programas Preestablecidos:
-enum ProgramaArchivo: String, CaseIterable {
+nonisolated enum ProgramaArchivo: String, CaseIterable {
     case prog_dieta_semanal_1
     case prog_dieta_semanal_2
     case prog_dieta_semanal_3
@@ -65,13 +65,54 @@ extension ProgramaArchivo {
     }
 }
 
+extension ProgramaArchivo {
+    static func localizedGroupTitle(for groupID: String) -> String {
+        let key: String
+        let fallback: String
+
+        switch groupID {
+        case "prog_anti_ansiedad":
+            key = "goals.program_category.anxiety_relief"
+            fallback = "Anti Ansiedad"
+        case "prog_dejar_alcohol":
+            key = "goals.program_category.quit_drinking"
+            fallback = "Dejar el Alcohol"
+        case "prog_dejar_fumar":
+            key = "goals.program_category.quit_smoking"
+            fallback = "Dejar de Fumar"
+        case "prog_dieta_semanal":
+            key = "goals.program_category.weekly_meal_plans"
+            fallback = "Dietas Semanales"
+        case "prog_regulacion_digital_menores":
+            key = "goals.program_category.digital_balance_youth"
+            fallback = "Regulación Digital para Menores"
+        case "prog_reset_dopaminergico":
+            key = "goals.program_category.dopamine_reset"
+            fallback = "Reinicio Dopaminérgico"
+        case "prog_respiracion_buteyko":
+            key = "goals.program_category.buteyko_breathing"
+            fallback = "Respiración Buteyko"
+        case "prog_visualizacion_creativa_neville":
+            key = "goals.program_category.neville_visualization"
+            fallback = "Visualización Creativa de Neville"
+        default:
+            return groupID
+                .replacingOccurrences(of: "prog_", with: "")
+                .replacingOccurrences(of: "_", with: " ")
+                .localizedCapitalized
+        }
+
+        return GoalsL10n.text(key, fallback: fallback)
+    }
+}
+
 
 
 
 
 
 //Modelo del Json
-struct UnidadesInfo: Codable, Identifiable {
+nonisolated struct UnidadesInfo: Codable, Identifiable {
     let id: UUID
     let name: String
     let info: String
@@ -95,7 +136,7 @@ struct UnidadesInfo: Codable, Identifiable {
         }
 }
 
-struct ProgramasPreestablecido: Codable, Identifiable {
+nonisolated struct ProgramasPreestablecido: Codable, Identifiable {
     let id: UUID
     let title: String
     let detalles : String

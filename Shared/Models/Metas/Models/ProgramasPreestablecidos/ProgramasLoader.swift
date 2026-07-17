@@ -33,12 +33,12 @@ final class ProgramasRepository {
         
         do {
             let data = try Data(contentsOf: url)
-            return try JSONDecoder().decode(ProgramasPreestablecido.self, from: data)
+            let decoded = try JSONDecoder().decode(ProgramasPreestablecido.self, from: data)
+            return GoalEditorialLocalization.program(filename: filename, fallback: decoded)
         } catch {
             print("Error decodificando:", error)
             return nil
         }
     }
 }
-
 

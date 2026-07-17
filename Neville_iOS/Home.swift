@@ -46,6 +46,7 @@ struct Home: View {
 
     @AppStorage("Home_ShowAlternativeHomeDesign") private var showAlternativeHomeDesign: Bool = false
     @AppStorage("Home_RitualMatutino_HiddenDayKey") private var ritualMatutinoHiddenDayKey: String = ""
+    @AppStorage("Home_ShowMyDayButton") private var showMyDayButtonInHome: Bool = true
     @AppStorage("Home_ShowAgendaButton") private var showAgendaButtonInHome: Bool = true
     @AppStorage("Home_AgendaBadge_HiddenDayKey") private var agendaBadgeHiddenDayKey: String = ""
     @AppStorage("Home_ShowPresenceButton") private var showPresenceButtonInHome: Bool = true
@@ -322,20 +323,29 @@ struct Home: View {
                                     }
                                 }
 
-                                Button {
-                                    if purchaseStatus || yorjPremium {
-                                        ritualNavigation.open(.wellbeingDashboard)
-                                    } else {
-                                        showPremium = true
+                                if showMyDayButtonInHome {
+                                    Button {
+                                        if purchaseStatus || yorjPremium {
+                                            ritualNavigation.open(.wellbeingDashboard)
+                                        } else {
+                                            showPremium = true
+                                        }
+                                    } label: {
+                                        Label("Mi día", systemImage: "chart.xyaxis.line")
+                                            .font(.headline)
+                                            .foregroundStyle(.indigo)
+                                            .padding(.horizontal, 14)
+                                            .padding(.vertical, 10)
+                                            .background(.white.opacity(quickAccessButtonBackgroundOpacity))
+                                            .clipShape(Capsule())
                                     }
-                                } label: {
-                                    Label("Mi día", systemImage: "chart.xyaxis.line")
-                                        .font(.headline)
-                                        .foregroundStyle(.indigo)
-                                        .padding(.horizontal, 14)
-                                        .padding(.vertical, 10)
-                                        .background(.white.opacity(quickAccessButtonBackgroundOpacity))
-                                        .clipShape(Capsule())
+                                    .contextMenu {
+                                        Button(role: .destructive) {
+                                            showMyDayButtonInHome = false
+                                        } label: {
+                                            Label("Ocultar", systemImage: "eye.slash")
+                                        }
+                                    }
                                 }
 
                                 if shouldShowAgendaButton {
@@ -346,7 +356,7 @@ struct Home: View {
                                             showPremium = true
                                         }
                                     } label: {
-                                        Label("Agenda", systemImage: "calendar")
+                                        Label(String(localized: "Agenda"), systemImage: "calendar")
                                             .font(.headline)
                                             .foregroundStyle(.black)
                                             .padding(.horizontal, 14)
@@ -815,6 +825,7 @@ private struct HomePreviewHost: View {
 
     init() {
         UserDefaults.standard.set(false, forKey: "MostrarMetasEnHome")
+        UserDefaults.standard.set(true, forKey: "Home_ShowMyDayButton")
         UserDefaults.standard.set(true, forKey: "Home_ShowAgendaButton")
         UserDefaults.standard.set(true, forKey: "Home_ShowPresenceButton")
         UserDefaults.standard.set("", forKey: "Home_RitualMatutino_HiddenDayKey")
