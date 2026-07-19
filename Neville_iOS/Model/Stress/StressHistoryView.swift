@@ -1,6 +1,8 @@
 import Charts
 import SwiftUI
 
+//HealthKitReadOnlyNotice
+
 struct StressHomeIndicator: View {
     @ObservedObject var monitor: StressMonitor
     let primaryText: Color
@@ -94,6 +96,9 @@ struct StressHistoryView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 18) {
+                
+                HealthKitReadOnlyNotice()
+                
                 currentCard
 
                 if monitor.accessState == .notRequested {
@@ -528,5 +533,38 @@ private extension StressLevel {
         case .activity: .blue
         case .unavailable: .secondary
         }
+    }
+}
+
+
+//Tarjeta informativa
+struct HealthKitReadOnlyNotice: View {
+    var body: some View {
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: "exclamationmark.message")
+                .foregroundStyle(.pink)
+                .imageScale(.large)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Datos de HealthKit (solo lectura)")
+                    .font(.headline)
+                Text("Los datos para el cálculo de stress se toman de la aplicación Salud, utilizando HealthKit en modo solo lectura.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer(minLength: 0)
+        }
+        .padding(12)
+        .background {
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .fill(.ultraThinMaterial)
+        }
+        .overlay {
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .strokeBorder(.quaternary, lineWidth: 1)
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Aviso de privacidad")
+        .accessibilityHint("La app solo lee datos de HealthKit.")
     }
 }

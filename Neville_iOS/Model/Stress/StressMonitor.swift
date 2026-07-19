@@ -1,5 +1,8 @@
+
 import Foundation
+import SwiftUI
 import HealthKit
+
 
 enum StressLevel: String, CaseIterable, Sendable {
     case low = "Bajo"
@@ -85,6 +88,11 @@ enum StressAccessState: Equatable, Sendable {
     case unavailable
     case failed(String)
 }
+
+
+
+
+
 
 @MainActor
 final class StressMonitor: ObservableObject {

@@ -7163,6 +7163,22 @@
         }
       }
     },
+    "Aviso de privacidad" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacy notice"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隐私声明"
+          }
+        }
+      }
+    },
     "Ayuda" : {
       "localizations" : {
         "en" : {
@@ -11155,6 +11171,28 @@
         }
       }
     },
+    "Cómo funciona con HealthKit" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How HealthKit Is Used"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cómo funciona con HealthKit"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HealthKit 的使用方式"
+          }
+        }
+      }
+    },
     "Cómo interpretar Nutrition Grade y NOVA" : {
       "localizations" : {
         "en" : {
@@ -11239,28 +11277,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "如何阅读标签"
-          }
-        }
-      }
-    },
-    "Cómo funciona con HealthKit" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "How HealthKit Is Used"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cómo funciona con HealthKit"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "HealthKit 的使用方式"
           }
         }
       }
@@ -14171,6 +14187,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "看见每一份成果，哪怕它很微小。"
+          }
+        }
+      }
+    },
+    "Datos de HealthKit (solo lectura)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HealthKit data (read only)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HealthKit 数据（只读）"
           }
         }
       }
@@ -24480,6 +24512,182 @@
         }
       }
     },
+    "goals.program_category.anxiety_relief" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anxiety Relief"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anti Ansiedad"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "缓解焦虑"
+          }
+        }
+      }
+    },
+    "goals.program_category.buteyko_breathing" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buteyko Breathing"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Respiración Buteyko"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "布特科呼吸法"
+          }
+        }
+      }
+    },
+    "goals.program_category.digital_balance_youth" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Digital Balance for Young People"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regulación Digital para Menores"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未成年人数字使用管理"
+          }
+        }
+      }
+    },
+    "goals.program_category.dopamine_reset" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dopamine Reset"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reinicio Dopaminérgico"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "多巴胺重置"
+          }
+        }
+      }
+    },
+    "goals.program_category.neville_visualization" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neville Creative Visualization"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visualización Creativa de Neville"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "内维尔创造性想象"
+          }
+        }
+      }
+    },
+    "goals.program_category.quit_drinking" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quit Drinking"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dejar el Alcohol"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "戒酒"
+          }
+        }
+      }
+    },
+    "goals.program_category.quit_smoking" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quit Smoking"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dejar de Fumar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "戒烟"
+          }
+        }
+      }
+    },
+    "goals.program_category.weekly_meal_plans" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weekly Meal Plans"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dietas Semanales"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每周饮食计划"
+          }
+        }
+      }
+    },
     "goals.stats.active" : {
       "localizations" : {
         "en" : {
@@ -24982,182 +25190,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "已完成：{0}"
-          }
-        }
-      }
-    },
-    "goals.program_category.anxiety_relief" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Anxiety Relief"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Anti Ansiedad"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "缓解焦虑"
-          }
-        }
-      }
-    },
-    "goals.program_category.buteyko_breathing" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Buteyko Breathing"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Respiración Buteyko"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "布特科呼吸法"
-          }
-        }
-      }
-    },
-    "goals.program_category.digital_balance_youth" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Digital Balance for Young People"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Regulación Digital para Menores"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "未成年人数字使用管理"
-          }
-        }
-      }
-    },
-    "goals.program_category.dopamine_reset" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dopamine Reset"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reinicio Dopaminérgico"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "多巴胺重置"
-          }
-        }
-      }
-    },
-    "goals.program_category.neville_visualization" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Neville Creative Visualization"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Visualización Creativa de Neville"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "内维尔创造性想象"
-          }
-        }
-      }
-    },
-    "goals.program_category.quit_drinking" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Quit Drinking"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dejar el Alcohol"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "戒酒"
-          }
-        }
-      }
-    },
-    "goals.program_category.quit_smoking" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Quit Smoking"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dejar de Fumar"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "戒烟"
-          }
-        }
-      }
-    },
-    "goals.program_category.weekly_meal_plans" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Weekly Meal Plans"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dietas Semanales"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "每周饮食计划"
           }
         }
       }
@@ -29920,6 +29952,22 @@
         }
       }
     },
+    "La app solo lee datos de HealthKit." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The app only reads data from HealthKit."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "该应用仅读取来自 HealthKit 的数据。"
+          }
+        }
+      }
+    },
     "La ayuda de emergencia queda siempre abierta. Las situaciones guiadas, técnicas y explicaciones del Centro Sanador forman parte del contenido premium." : {
       "localizations" : {
         "en" : {
@@ -30276,28 +30324,6 @@
         }
       }
     },
-    "La Ley usa HealthKit para leer datos de la app Salud. La estimación compara el pulso, la variabilidad cardiaca (VFC/SDNN) y, cuando es reciente, la respiración con una referencia personal robusta de hasta 30 días. Detecta movimiento, pasos y entrenamientos para no interpretar el ejercicio como estrés, y muestra la confianza según cobertura y antigüedad de los datos." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La Ley uses HealthKit to read data from the Health app. The estimate compares heart rate, heart rate variability (HRV/SDNN), and recent respiratory rate with a robust personal baseline of up to 30 days. It detects movement, steps, and workouts to avoid interpreting exercise as stress, and reports confidence based on data coverage and age."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La Ley usa HealthKit para leer datos de la app Salud. La estimación compara el pulso, la variabilidad cardiaca (VFC/SDNN) y, cuando es reciente, la respiración con una referencia personal robusta de hasta 30 días. Detecta movimiento, pasos y entrenamientos para no interpretar el ejercicio como estrés, y muestra la confianza según cobertura y antigüedad de los datos."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La Ley 使用 HealthKit 读取“健康”App 中的数据。此估算会将心率、心率变异性（HRV/SDNN）以及较新的呼吸频率，与最多 30 天的可靠个人基准进行比较。系统会识别活动、步数和体能训练，避免把运动误判为压力，并根据数据覆盖率和新旧程度显示可信度。"
-          }
-        }
-      }
-    },
     "La exportación a PDF está disponible en la Versión Extendida." : {
       "localizations" : {
         "en" : {
@@ -30637,6 +30663,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "La Ley - 目标"
+          }
+        }
+      }
+    },
+    "La Ley usa HealthKit para leer datos de la app Salud. La estimación compara el pulso, la variabilidad cardiaca (VFC/SDNN) y, cuando es reciente, la respiración con una referencia personal robusta de hasta 30 días. Detecta movimiento, pasos y entrenamientos para no interpretar el ejercicio como estrés, y muestra la confianza según cobertura y antigüedad de los datos." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La Ley uses HealthKit to read data from the Health app. The estimate compares heart rate, heart rate variability (HRV/SDNN), and recent respiratory rate with a robust personal baseline of up to 30 days. It detects movement, steps, and workouts to avoid interpreting exercise as stress, and reports confidence based on data coverage and age."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La Ley usa HealthKit para leer datos de la app Salud. La estimación compara el pulso, la variabilidad cardiaca (VFC/SDNN) y, cuando es reciente, la respiración con una referencia personal robusta de hasta 30 días. Detecta movimiento, pasos y entrenamientos para no interpretar el ejercicio como estrés, y muestra la confianza según cobertura y antigüedad de los datos."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La Ley 使用 HealthKit 读取“健康”App 中的数据。此估算会将心率、心率变异性（HRV/SDNN）以及较新的呼吸频率，与最多 30 天的可靠个人基准进行比较。系统会识别活动、步数和体能训练，避免把运动误判为压力，并根据数据覆盖率和新旧程度显示可信度。"
           }
         }
       }
@@ -32821,6 +32869,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "正确长度"
+          }
+        }
+      }
+    },
+    "Los datos para el cálculo de stress se toman de la aplicación Salud, utilizando HealthKit en modo solo lectura." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The data for stress calculation is taken from the Health app, using HealthKit in read-only mode."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "压力计算数据取自“健康”应用程序，使用 HealthKit 以只读模式获取。"
           }
         }
       }
@@ -52675,6 +52739,7 @@
       }
     },
     "Valores totales usados como referencia para completar los indicadores de progreso de Presencia y Metas en Home. El indicador de estrés se calcula automáticamente con datos de Salud." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -52692,6 +52757,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "这些总数用于计算首页“当下”和“目标”的进度指标。压力指标会根据“健康”数据自动计算。"
+          }
+        }
+      }
+    },
+    "Valores totales usados como referencia para completar los indicadores de progreso de Presencia y Metas en Home. El indicador de estrés se calcula automáticamente leyendo datos de Salud, utilizando HealthKit em modo lectura." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total values ​​used as a reference to complete the Presence and Goals progress indicators in Home. The stress indicator is automatically calculated by reading Health data, using HealthKit in read mode."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "总计值用作参考，以完善“居家”中的“在线状态”和“目标”进度指标。压力指标通过读取健康数据自动计算，使用 HealthKit 的读取模式。"
           }
         }
       }

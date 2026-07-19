@@ -1546,7 +1546,7 @@ struct Ajustes: View {
                     }
 
                     Section("Vista Home Productividad") {
-                        Text("Valores totales usados como referencia para completar los indicadores de progreso de Presencia y Metas en Home. El indicador de estrés se calcula automáticamente con datos de Salud.")
+                        Text("Valores totales usados como referencia para completar los indicadores de progreso de Presencia y Metas en Home. El indicador de estrés se calcula automáticamente leyendo datos de Salud, utilizando HealthKit em modo lectura.")
                             .font(.footnote)
                             .foregroundStyle(.secondary)
 
