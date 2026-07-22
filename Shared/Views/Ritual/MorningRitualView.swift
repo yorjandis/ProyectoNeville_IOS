@@ -830,8 +830,8 @@ struct MorningRitualMainView: View {
                 )
                 .ignoresSafeArea()
                 VStack{
-                    Text("Ritual Matutino")
-                        .font(.largeTitle).bold()
+                    Text("Ritual Matutino & Cierre")
+                        .font(.title).bold()
                         .foregroundStyle(.black)
                     ScrollView {
                         VStack(spacing: 14) {

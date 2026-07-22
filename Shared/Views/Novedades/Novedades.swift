@@ -7,6 +7,9 @@
 
 import SwiftUI
 
+
+
+
 //Ventana de Novedades de la App
 struct Novedades: View {
     
@@ -271,6 +274,3 @@ struct Novedades: View {
     }
 }
 
-#Preview("Novedades") {
-    Novedades()
-}

@@ -240,6 +240,7 @@ struct CreateGoalView: View {
                                     Text(GoalsL10n.executionCount(vm.amount))
                                         .foregroundStyle(.black)
                                 }
+                                .padding(.top, 5)
                             } else {
                                 HStack {
                                     Text("Duración total:")

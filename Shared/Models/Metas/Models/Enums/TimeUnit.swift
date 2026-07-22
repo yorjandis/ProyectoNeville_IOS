@@ -222,7 +222,7 @@ nonisolated enum GoalCompletionBasis: String, CaseIterable, Codable {
 
     var label: String {
         switch self {
-        case .executions: return L10n.string("goal.completion.executions", fallback: "Número de ejecuciones")
+        case .executions: return L10n.string("goal.completion.executions", fallback: "No. ejecuciones")
         case .duration: return L10n.string("goal.completion.duration", fallback: "Duración total")
         }
     }

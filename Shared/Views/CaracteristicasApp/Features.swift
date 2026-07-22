@@ -43,15 +43,15 @@ struct Features: View {
     
     private static let features: [FeatureItem] = [
         FeatureItem(iconName: "books.vertical", title: "Conferencias y libros", description: "Más de 470 conferencias y libros de toda la obra de Neville Goddard."),
-        FeatureItem(iconName: "quote.bubble", title: "Compendio de frases", description: "439 frases incorporadas, extraídas textualmente de la obra de Neville. También puedes crear nuevas frases personales."),
-        FeatureItem(iconName: "person.3", title: "Autores incorporados", description: "Enseñanzas de Joe Dispenza, Bruce Lipton y Gregg Braden para apoyar la obra de Neville y empoderarte hacia una vida más saludable y armónica."),
+        FeatureItem(iconName: "quote.bubble", title: "Compendio de frases", description: "Cerca de 1000 frases incorporadas que resumen las enseñanzas de la obra de Neville, Joe Dispenza, Bruce Lipton y Gregg Braden . Puedes crear tus propias frases personales."),
+        FeatureItem(iconName: "person.3", title: "Autores incorporados", description: "Enseñanzas de Joe Dispenza, Bruce Lipton y Gregg Braden complementan y enriquecen la obra de Neville y te empoderán con los últimos avances en neurociencia, epigenética y creación cuántica."),
         FeatureItem(iconName: "book.closed", title: "Enciclopedia", description: "Un espacio de aprendizaje y nuevo conocimiento relacionado con las enseñanzas."),
         FeatureItem(iconName: "checkmark.seal", title: "Evidencia científica", description: "Resumen acotado y en crecimiento sobre investigaciones y estudios científicos que apoyan estas enseñanzas."),
-        FeatureItem(iconName: "note.text", title: "Notas personales ilimitadas", description: "Crea notas con comandos de voz, comparte, exporta a QR, envía al lienzo y marca favoritas. Admiten funciones IA: interpretar, aplicación práctica y ChatIA."),
+        FeatureItem(iconName: "note.text", title: "Notas personales ilimitadas", description: "Crea notas con comandos de voz, comparte, exporta a QR, envía al lienzo y marca favoritas. Admiten categoricación y  funciones IA: interpretar, aplicación práctica y ChatIA."),
         FeatureItem(iconName: "book.pages", title: "Diario personal", description: "Registra experiencias y hechos de cada día para observar tus asunciones, deseos y vivencias con estas enseñanzas."),
         FeatureItem(iconName: "target", title: "Metas", description: "Crea objetivos y sigue su progreso con la información necesaria para lograrlos de manera óptima."),
         FeatureItem(iconName: "bell.badge", title: "Recordatorios", description: "Programa avisos para no olvidar nada. También resultan útiles para meditación, entrenamiento y otras prácticas."),
-        FeatureItem(iconName: "sun.max", title: "Ritual matutino", description: "Una forma de organizar intencionalmente tu día y mantener el foco en el presente."),
+        FeatureItem(iconName: "sun.max", title: "Ritual matutino y de cierre", description: "Una forma de organizar intencionalmente tu día y mantener el foco en el presente. Además, permite cerrar tu día de manera consciente y enriquecedora."),
         FeatureItem(iconName: "eye", title: "Presencia Consciente", description: "Registra pequeños momentos de despertar durante el día y vuelve al presente con un solo toque. Observa cuándo sales del piloto automático, reconoce tu estado de ánimo y refuerza la emoción del futuro que deseas vivir."),
         FeatureItem(iconName: "leaf", title: "Espacio Calma", description: "Experiencia inmersiva para relajarte y desconectarte. Ayuda a disminuir el estrés y la ansiedad."),
         FeatureItem(

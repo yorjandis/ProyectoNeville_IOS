@@ -1653,6 +1653,22 @@
         }
       }
     },
+    "1. Abre Ajustes." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1. Open Settings."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1. 打开设置。"
+          }
+        }
+      }
+    },
     "1) Mira el procesamiento (NOVA). 2) Revisa azúcar, sal y grasas saturadas por 100 g. 3) Verifica fibra y proteína. 4) Si tienes sensibilidad, confirma alérgenos (por ejemplo gluten). 5) Revisa presencia de aditivos." : {
       "localizations" : {
         "en" : {
@@ -1671,6 +1687,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "1）查看加工程度（NOVA）。2）检查每 100 克的糖、盐和饱和脂肪。3）查看膳食纤维和蛋白质。4）如有食物敏感，请确认过敏原（例如麸质）。5）查看是否含有添加剂。"
+          }
+        }
+      }
+    },
+    "2. Entra en Privacidad y seguridad." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2. Go to Privacy and Security."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2. 转到隐私和安全。"
+          }
+        }
+      }
+    },
+    "3. Abre Salud." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3. Open Health."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3. 开放式健康。"
+          }
+        }
+      }
+    },
+    "4. Selecciona La Ley." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4. Select La Ley."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4. 选择法律。"
           }
         }
       }
@@ -1715,6 +1779,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "用 5–10 分钟查看进展与规律，并确定接下来的重点。"
+          }
+        }
+      }
+    },
+    "5. Activa los datos necesarios: pulso, VFC, respiración, pasos y entrenamientos." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5. Activate the necessary data: pulse, HRV, respiration, steps, and workouts."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5. 激活必要的数据：脉搏、心率变异性、呼吸、步数和锻炼。"
           }
         }
       }
@@ -6570,6 +6650,7 @@
       }
     },
     "Aún no hay suficientes datos" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -11742,6 +11823,7 @@
       }
     },
     "Comprueba los permisos de Salud y usa el Apple Watch con regularidad. La referencia personal mejora tras varios días de lecturas." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -23549,19 +23631,19 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Number of completions"
+            "value" : "No. executions"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Número de ejecuciones"
+            "value" : "No. ejecuciones"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "完成次数"
+            "value" : "不执行死刑"
           }
         }
       }
@@ -30667,6 +30749,38 @@
         }
       }
     },
+    "La Ley no ha podido obtener lecturas recientes desde la app Salud. Puede que el acceso a HealthKit esté desactivado o que todavía no haya suficientes datos registrados por Apple Watch." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The law was unable to obtain recent readings from the Health app. Access to HealthKit may be disabled, or there may not yet be enough data recorded by Apple Watch."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "法律部门无法从“健康”应用中获取最新数据。可能是 HealthKit 访问权限被禁用，或者 Apple Watch 尚未记录足够的数据。"
+          }
+        }
+      }
+    },
+    "La Ley puede usar HealthKit para leer pulso, VFC, respiración, pasos y entrenamientos guardados por Apple Watch y la app Salud. Los datos se procesan en este dispositivo y La Ley no añade ni modifica datos de Salud." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The Law may use HealthKit to read heart rate, heart rate, respiration, steps, and workouts saved by Apple Watch and the Health app. The data is processed on this device, and the Law does not add or modify Health data."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "该机构可能会使用 HealthKit 读取 Apple Watch 和“健康”应用保存的心率、呼吸频率、步数和锻炼记录。这些数据会在该设备上进行处理，该机构不会添加或修改“健康”数据。"
+          }
+        }
+      }
+    },
     "La Ley usa HealthKit para leer datos de la app Salud. La estimación compara el pulso, la variabilidad cardiaca (VFC/SDNN) y, cuando es reciente, la respiración con una referencia personal robusta de hasta 30 días. Detecta movimiento, pasos y entrenamientos para no interpretar el ejercicio como estrés, y muestra la confianza según cobertura y antigüedad de los datos." : {
       "localizations" : {
         "en" : {
@@ -31323,7 +31437,7 @@
       }
     },
     "label_reader.home.title" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -32873,7 +32987,24 @@
         }
       }
     },
+    "Los datos para el cálculo de estrés se toman de la aplicación Salud, utilizando HealthKit en modo solo lectura." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The Law may use HealthKit to read heart rate, heart rate, respiration, steps, and workouts saved by Apple Watch and the Health app. The data is processed on this device, and the Law does not add or modify Health data."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "压力计算数据取自“健康”应用程序，使用 HealthKit 以只读模式获取。"
+          }
+        }
+      }
+    },
     "Los datos para el cálculo de stress se toman de la aplicación Salud, utilizando HealthKit en modo solo lectura." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -37344,6 +37475,22 @@
         }
       }
     },
+    "No se pueden leer datos de Salud" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Health data cannot be read"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法读取健康数据"
+          }
+        }
+      }
+    },
     "No se volverá a mostrar esta ventana" : {
       "localizations" : {
         "en" : {
@@ -40053,6 +40200,22 @@
         }
       }
     },
+    "Para comprobarlo:" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "To verify this:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "为了验证这一点："
+          }
+        }
+      }
+    },
     "Para peligro inmediato o una emergencia médica." : {
       "localizations" : {
         "en" : {
@@ -40659,6 +40822,7 @@
       }
     },
     "Permitir acceso a Salud" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -45779,6 +45943,9 @@
           }
         }
       }
+    },
+    "Ritual Matutino & Cierre" : {
+
     },
     "Ritual pendiente" : {
       "localizations" : {
@@ -53342,6 +53509,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "返回"
+          }
+        }
+      }
+    },
+    "Volver a comprobar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Double-check"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "仔细核对"
           }
         }
       }

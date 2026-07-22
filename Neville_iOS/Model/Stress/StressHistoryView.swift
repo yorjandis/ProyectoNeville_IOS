@@ -92,6 +92,9 @@ struct StressHomeIndicator: View {
 struct StressHistoryView: View {
     @ObservedObject var monitor: StressMonitor
     @State private var range: StressHistoryRange = .week
+    
+    @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.openURL) private var openURL
 
     var body: some View {
         ScrollView {
@@ -140,6 +143,13 @@ struct StressHistoryView: View {
         }
         .onChange(of: range) { _, newRange in
             Task { await monitor.refresh(days: newRange.days, force: true) }
+        }
+        .onChange(of: scenePhase) { _, newPhase in
+            guard newPhase == .active else { return }
+
+            Task {
+                await monitor.refresh(days: range.days, force: true)
+            }
         }
     }
 
@@ -226,14 +236,14 @@ struct StressHistoryView: View {
                 .foregroundStyle(.pink)
             Text("Conecta Salud con HealthKit")
                 .font(.headline)
-            Text("Con tu permiso, La Ley usa HealthKit para leer pulso, VFC, respiración, pasos y entrenamientos guardados por Apple Watch y la app Salud. Los datos se procesan en este dispositivo y La Ley no añade ni modifica datos de Salud.")
+            Text("La Ley puede usar HealthKit para leer pulso, VFC, respiración, pasos y entrenamientos guardados por Apple Watch y la app Salud. Los datos se procesan en este dispositivo y La Ley no añade ni modifica datos de Salud.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
             Button {
                 Task { await monitor.requestAuthorization() }
             } label: {
-                Label("Permitir acceso a Salud", systemImage: "heart.fill")
+                Label("Continuar", systemImage: "chevron.right")
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
@@ -278,13 +288,7 @@ struct StressHistoryView: View {
         .pickerStyle(.segmented)
 
         if monitor.history.isEmpty && !monitor.isRefreshing {
-            ContentUnavailableView(
-                "Aún no hay suficientes datos",
-                systemImage: "chart.xyaxis.line",
-                description: Text("Comprueba los permisos de Salud y usa el Apple Watch con regularidad. La referencia personal mejora tras varios días de lecturas.")
-            )
-            .padding()
-            .background(.background, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+            healthAccessOrEmptyDataCard
         } else {
             statisticsGrid
             timelineCard
@@ -411,6 +415,45 @@ struct StressHistoryView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
         .background(.background, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+    }
+    
+    
+    private var healthAccessOrEmptyDataCard: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            Label("No se pueden leer datos de Salud", systemImage: "heart.slash")
+                .font(.headline)
+                .foregroundStyle(.pink)
+
+            Text("La Ley no ha podido obtener lecturas recientes desde la app Salud. Puede que el acceso a HealthKit esté desactivado o que todavía no haya suficientes datos registrados por Apple Watch.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Para comprobarlo:")
+                    .font(.body.bold())
+
+                Text("1. Abre Ajustes.")
+                Text("2. Entra en Privacidad y seguridad.")
+                Text("3. Abre Salud.")
+                Text("4. Selecciona La Ley.")
+                Text("5. Activa los datos necesarios: pulso, VFC, respiración, pasos y entrenamientos.")
+            }
+            .font(.body)
+            .foregroundStyle(.secondary)
+
+            Button {
+                Task {
+                    await monitor.refresh(days: range.days, force: true)
+                }
+            } label: {
+                Label("Volver a comprobar", systemImage: "arrow.clockwise")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.bordered)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding()
+        .background(.background, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
     }
 
     private var currentSubtitle: String {
@@ -548,7 +591,7 @@ struct HealthKitReadOnlyNotice: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text("Datos de HealthKit (solo lectura)")
                     .font(.headline)
-                Text("Los datos para el cálculo de stress se toman de la aplicación Salud, utilizando HealthKit en modo solo lectura.")
+                Text("Los datos para el cálculo de estrés se toman de la aplicación Salud, utilizando HealthKit en modo solo lectura.")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
