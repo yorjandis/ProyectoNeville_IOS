@@ -1,0 +1,156 @@
+{
+  "headerTitle": "Welcome to the latest version of La Ley",
+  "versionFormat": "Version {0} includes the following features:",
+  "shortcutsTitle": "Siri Shortcuts & Voice Commands",
+  "features": {
+    "talks_books": {
+      "title": "Talks and Books",
+      "description": "More than 470 talks and books spanning Neville Goddard's body of work."
+    },
+    "quotes": {
+      "title": "Quote Library",
+      "description": "Nearly 1,000 built-in quotes distill the teachings of Neville, Joe Dispenza, Bruce Lipton, and Gregg Braden. You can also create your own personal quotes."
+    },
+    "authors": {
+      "title": "Featured Authors",
+      "description": "Teachings from Joe Dispenza, Bruce Lipton, and Gregg Braden complement and broaden Neville's work with perspectives on neuroscience, epigenetics, and quantum creation."
+    },
+    "encyclopedia": {
+      "title": "Encyclopedia",
+      "description": "A space to learn and discover ideas related to the teachings."
+    },
+    "scientific_evidence": {
+      "title": "Scientific Research",
+      "description": "A concise and growing collection of research and scientific studies related to these teachings."
+    },
+    "notes": {
+      "title": "Unlimited Personal Notes",
+      "description": "Create notes by voice, share them, export them as QR codes, send them to Canvas, organize them into categories, and mark your favorites. AI tools include interpretation, practical application, and AI Chat."
+    },
+    "journal": {
+      "title": "Personal Journal",
+      "description": "Record daily experiences and events to reflect on your assumptions, desires, and life through the lens of these teachings."
+    },
+    "goals": {
+      "title": "Goals",
+      "description": "Create goals, track your progress, and access the information you need to pursue them effectively."
+    },
+    "general_reminders": {
+      "title": "Reminders",
+      "description": "Schedule alerts so nothing slips your mind. They are also useful for meditation, training, and other practices."
+    },
+    "rituals": {
+      "title": "Morning and Evening Rituals",
+      "description": "Structure your day with intention, stay present, and bring the day to a conscious and meaningful close."
+    },
+    "mindful_presence": {
+      "title": "Mindful Presence",
+      "description": "Capture brief moments of awareness throughout the day and return to the present with one tap. Notice when you leave autopilot, recognize your mood, and reinforce the emotion of the future you want to live."
+    },
+    "calm_space": {
+      "title": "Calm Space",
+      "description": "An immersive space to unwind and disconnect, designed to help ease stress and anxiety."
+    },
+    "food_scanner": {
+      "title": "Food Label Scanner",
+      "description": "Scan a barcode to get information about a food and practical tips for using it."
+    },
+    "heart_brain": {
+      "title": "Heart–Brain Coherence",
+      "description": "A guided assistant to help you enter a state of coherence between the heart and brain."
+    },
+    "planner": {
+      "title": "Planner",
+      "description": "Organize tasks, events, and commitments over time so you can clear mental space, prioritize what matters, and use your time well."
+    },
+    "knowledge_check": {
+      "title": "Knowledge Check",
+      "description": "A true-or-false game for reviewing and reinforcing what you have learned. Some questions are subtle and challenging."
+    },
+    "qr": {
+      "title": "Built-in QR Sharing",
+      "description": "Import and export notes, quotes, and other information in the app's own QR format to share with friends and the community."
+    },
+    "ai": {
+      "title": "Artificial Intelligence",
+      "description": "Interpretations, summaries, practical guidance, and chat about the teachings. It runs locally and responds within Neville's context."
+    },
+    "canvas": {
+      "title": "Canvas",
+      "description": "Design backgrounds with images, colors, and text—ideal for sharing quotes and thoughts with friends or on social media."
+    },
+    "practice_reminders": {
+      "title": "Practice Reminders",
+      "description": "Schedule alerts for meditation, reading, prayer, gratitude, affirmations, shopping lists, and daily tasks."
+    }
+  },
+  "shortcuts": {
+    "open_journal": {
+      "title": "Open Journal",
+      "description": "Open the Journal directly.",
+      "commands": [
+        "Hey Siri, in La Ley, open journal",
+        "Hey Siri, in La Ley, open my journal"
+      ],
+      "footer": null
+    },
+    "create_journal_entry": {
+      "title": "Create a Journal Entry",
+      "description": "Create a journal entry in the background without opening the app.",
+      "commands": [
+        "Hey Siri, in La Ley, create an entry"
+      ],
+      "footer": "Siri will ask for your password, a title, and the entry text. If the password is difficult to understand, spell it out slowly and clearly."
+    },
+    "create_calm_phrase": {
+      "title": "Create a Phrase for Calm Space",
+      "description": "Create a personal phrase for Calm Space.",
+      "commands": [
+        "Hey Siri, in La Ley, create a phrase for Calm Space",
+        "Hey Siri, in La Ley, create a personal phrase for Calm Space"
+      ],
+      "footer": "Siri will ask you to dictate the phrase."
+    },
+    "create_planner_item": {
+      "title": "Add an Item to the Planner",
+      "description": "Create a new item in the Planner.",
+      "commands": [
+        "Hey Siri, in La Ley, add an item to the planner",
+        "Hey Siri, in La Ley, create a planner entry"
+      ],
+      "footer": "Siri will ask you to dictate a title, date, and description."
+    },
+    "open_notes": {
+      "title": "Open Notes",
+      "description": "Open the list of notes in the app.",
+      "commands": [
+        "Hey Siri, in La Ley, open my notes"
+      ],
+      "footer": null
+    },
+    "create_note": {
+      "title": "Create a Note",
+      "description": "Create a note in the background without opening the app.",
+      "commands": [
+        "Hey Siri, in La Ley, create a note"
+      ],
+      "footer": "Siri will ask you to dictate a title and the note text."
+    },
+    "create_phrase": {
+      "title": "Create a Phrase",
+      "description": "Create a personal phrase in the background without opening the app.",
+      "commands": [
+        "Hey Siri, in La Ley, create a phrase"
+      ],
+      "footer": "Siri will ask you to dictate the new phrase."
+    },
+    "random_talk": {
+      "title": "Open a Random Talk",
+      "description": "Open the app and display a talk chosen at random.",
+      "commands": [
+        "Hey Siri, in La Ley, open a talk"
+      ],
+      "footer": null
+    }
+  }
+}

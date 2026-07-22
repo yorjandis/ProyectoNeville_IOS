@@ -46,7 +46,7 @@ struct CreateGoalView: View {
         case .interval:
             schedule = GoalsL10n.intervalCadence(frequency: vm.frequency, unit: vm.unit)
         case .weekly:
-            schedule = GoalsL10n.weeklyCadence(days: vm.weeklyDaysPerWeek)
+            schedule = "\(GoalsL10n.weeklyCadence(days: vm.weeklyDaysPerWeek)) · \(GoalWeeklySchedule.summary(for: vm.selectedWeeklyDays))"
         case .specificDates:
             schedule = GoalsL10n.specificDatesCadence(count: vm.amount)
         }
@@ -311,20 +311,58 @@ struct CreateGoalView: View {
                                 }
 
                             case .weekly:
-                                HStack {
-                                    Text("Ejecutar:")
+                                VStack(alignment: .leading, spacing: 10) {
+                                    HStack {
+                                        Text("Ejecutar:")
+                                            .bold()
+                                            .foregroundStyle(.black)
+                                        Picker("", selection: $vm.weeklyDaysPerWeek) {
+                                            ForEach(1...7, id: \.self) { value in
+                                                Text(GoalsL10n.dayCount(value)).tag(value)
+                                            }
+                                        }
+                                        .pickerStyle(.menu)
+                                        .tint(.black)
+                                        .labelsHidden()
+                                        .onChange(of: vm.weeklyDaysPerWeek) { _, newValue in
+                                            vm.setWeeklyDayCount(newValue)
+                                        }
+                                        Text("por semana")
+                                            .foregroundStyle(.black)
+                                    }
+
+                                    Text("Días específicos:")
                                         .bold()
                                         .foregroundStyle(.black)
-                                    Picker("", selection: $vm.weeklyDaysPerWeek) {
-                                        ForEach(1...7, id: \.self) { value in
-                                            Text(GoalsL10n.dayCount(value)).tag(value)
+
+                                    LazyVGrid(
+                                        columns: Array(repeating: GridItem(.flexible(), spacing: 6), count: 4),
+                                        spacing: 6
+                                    ) {
+                                        ForEach(GoalWeekday.mondayFirst) { weekday in
+                                            let isSelected = vm.selectedWeeklyDays.contains(weekday)
+                                            Button {
+                                                vm.toggleWeeklyDay(weekday)
+                                            } label: {
+                                                Text(weekday.shortLabel)
+                                                    .font(.callout.weight(.semibold))
+                                                    .frame(maxWidth: .infinity)
+                                                    .padding(.vertical, 8)
+                                            }
+                                            .buttonStyle(.plain)
+                                            .foregroundStyle(isSelected ? .white : .black)
+                                            .background(
+                                                RoundedRectangle(cornerRadius: 8)
+                                                    .fill(isSelected ? Color.black : Color.white.opacity(0.55))
+                                            )
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: 8)
+                                                    .stroke(Color.black.opacity(0.35), lineWidth: 1)
+                                            )
+                                            .accessibilityLabel(weekday.label)
+                                            .accessibilityAddTraits(isSelected ? .isSelected : [])
                                         }
                                     }
-                                    .pickerStyle(.menu)
-                                    .tint(.black)
-                                    .labelsHidden()
-                                    Text("por semana")
-                                        .foregroundStyle(.black)
                                 }
 
                             case .specificDates:
@@ -495,7 +533,7 @@ struct CreateGoalView: View {
                                         self.vm.frequency = meta.getMeta.noFrecuencias
                                         self.vm.unit = meta.getMeta.tipoUnidad
                                         self.vm.scheduleType = meta.getMeta.scheduleType
-                                        self.vm.weeklyDaysPerWeek = meta.getMeta.weeklyDaysPerWeek
+                                        self.vm.setWeeklyDayCount(meta.getMeta.weeklyDaysPerWeek)
                                         self.vm.dayPeriod = meta.getMeta.dayPeriod
                                         self.vm.customUnitLabel = meta.getMeta.customUnitLabel
                                         self.vm.executionTargetValue = 1
@@ -560,6 +598,7 @@ struct CreateGoalView: View {
         goal.frequency = Int32(vm.frequency)
         goal.scheduleType = vm.scheduleType.rawValue
         goal.weeklyDaysPerWeek = Int16(vm.weeklyDaysPerWeek)
+        goal.weeklyDaysMask = GoalWeeklySchedule.mask(for: vm.selectedWeeklyDays)
         goal.dayPeriod = vm.dayPeriod.rawValue
         goal.customUnitLabel = vm.customUnitLabel.trimmingCharacters(in: .whitespacesAndNewlines)
         goal.executionTargetValue = vm.executionTargetValue

@@ -7,20 +7,60 @@
 
 import SwiftUI
 
+nonisolated private struct FeaturesLocalizedItem: Decodable, Sendable {
+    let title: String
+    let description: String
+}
+
+nonisolated private struct FeaturesLocalizedShortcut: Decodable, Sendable {
+    let title: String
+    let description: String
+    let commands: [String]
+    let footer: String?
+}
+
+nonisolated private struct FeaturesLocalizedContent: Decodable, Sendable {
+    let headerTitle: String
+    let versionFormat: String
+    let shortcutsTitle: String
+    let features: [String: FeaturesLocalizedItem]
+    let shortcuts: [String: FeaturesLocalizedShortcut]
+}
+
+nonisolated private enum FeaturesLocalization {
+    private static let catalogs: [AppLanguage: FeaturesLocalizedContent] = {
+        var result: [AppLanguage: FeaturesLocalizedContent] = [:]
+        for language in [AppLanguage.english, .simplifiedChinese] {
+            guard let bundle = language.localizedBundle(),
+                  let url = bundle.url(forResource: "Features", withExtension: "json"),
+                  let data = try? Data(contentsOf: url),
+                  let content = try? JSONDecoder().decode(FeaturesLocalizedContent.self, from: data) else {
+                continue
+            }
+            result[language] = content
+        }
+        return result
+    }()
+
+    static func content(language: AppLanguage = .current) -> FeaturesLocalizedContent? {
+        catalogs[language]
+    }
+}
+
 //Ventana de Características de la App
 struct Features: View {
     
     @Environment(\.dismiss) var dismiss
-    
+     
     private struct FeatureItem: Identifiable {
-        let id = UUID()
+        let id: String
         let iconName: String
         let title: String
         let description: String
     }
     
     private struct ShortcutItem: Identifiable {
-        let id = UUID()
+        let id: String
         let title: String
         let description: String
         let commands: [String]
@@ -41,47 +81,68 @@ struct Features: View {
         .default
     ]
     
-    private static let features: [FeatureItem] = [
-        FeatureItem(iconName: "books.vertical", title: "Conferencias y libros", description: "Más de 470 conferencias y libros de toda la obra de Neville Goddard."),
-        FeatureItem(iconName: "quote.bubble", title: "Compendio de frases", description: "Cerca de 1000 frases incorporadas que resumen las enseñanzas de la obra de Neville, Joe Dispenza, Bruce Lipton y Gregg Braden . Puedes crear tus propias frases personales."),
-        FeatureItem(iconName: "person.3", title: "Autores incorporados", description: "Enseñanzas de Joe Dispenza, Bruce Lipton y Gregg Braden complementan y enriquecen la obra de Neville y te empoderán con los últimos avances en neurociencia, epigenética y creación cuántica."),
-        FeatureItem(iconName: "book.closed", title: "Enciclopedia", description: "Un espacio de aprendizaje y nuevo conocimiento relacionado con las enseñanzas."),
-        FeatureItem(iconName: "checkmark.seal", title: "Evidencia científica", description: "Resumen acotado y en crecimiento sobre investigaciones y estudios científicos que apoyan estas enseñanzas."),
-        FeatureItem(iconName: "note.text", title: "Notas personales ilimitadas", description: "Crea notas con comandos de voz, comparte, exporta a QR, envía al lienzo y marca favoritas. Admiten categoricación y  funciones IA: interpretar, aplicación práctica y ChatIA."),
-        FeatureItem(iconName: "book.pages", title: "Diario personal", description: "Registra experiencias y hechos de cada día para observar tus asunciones, deseos y vivencias con estas enseñanzas."),
-        FeatureItem(iconName: "target", title: "Metas", description: "Crea objetivos y sigue su progreso con la información necesaria para lograrlos de manera óptima."),
-        FeatureItem(iconName: "bell.badge", title: "Recordatorios", description: "Programa avisos para no olvidar nada. También resultan útiles para meditación, entrenamiento y otras prácticas."),
-        FeatureItem(iconName: "sun.max", title: "Ritual matutino y de cierre", description: "Una forma de organizar intencionalmente tu día y mantener el foco en el presente. Además, permite cerrar tu día de manera consciente y enriquecedora."),
-        FeatureItem(iconName: "eye", title: "Presencia Consciente", description: "Registra pequeños momentos de despertar durante el día y vuelve al presente con un solo toque. Observa cuándo sales del piloto automático, reconoce tu estado de ánimo y refuerza la emoción del futuro que deseas vivir."),
-        FeatureItem(iconName: "leaf", title: "Espacio Calma", description: "Experiencia inmersiva para relajarte y desconectarte. Ayuda a disminuir el estrés y la ansiedad."),
-        FeatureItem(
-            iconName: "barcode.viewfinder",
-            title: L10n.exact("Lector de Etiquetas"),
-            description: L10n.exact("Ofrece información sobre alimentos y consejos de uso leyendo su código de barras.")
-        ),
-        FeatureItem(
-            iconName: "heart.circle",
-            title: L10n.exact("Coherencia Cardio-Cerebral"),
-            description: L10n.exact("Asistente de guía para entrar en estado de coherencia entre corazón y cerebro.")
-        ),
-        FeatureItem(iconName: "calendar", title: "Agenda", description: "Organiza tareas, eventos y compromisos en el tiempo para liberar memoria, priorizar lo importante y usar mejor tu tiempo."),
-        FeatureItem(iconName: "gamecontroller", title: "Evaluación", description: "Juego de respuesta correcta o incorrecta para consolidar y repasar lo aprendido. Las preguntas pueden ser sutiles y desafiantes."),
-        FeatureItem(iconName: "qrcode", title: "QR integrado", description: "Importa y exporta información como notas y frases con un formato propio para compartir con amigos y la comunidad."),
-        FeatureItem(iconName: "brain.head.profile", title: "Inteligencia Artificial", description: "Interpretación, resumen, consejos prácticos y chat sobre las enseñanzas. Funciona localmente y responde dentro del contexto de Neville."),
-        FeatureItem(iconName: "paintpalette", title: "Lienzo", description: "Diseña fondos con imágenes, colores y texto. Ideal para compartir frases y pensamientos en redes sociales y con amigos."),
-        FeatureItem(iconName: "alarm", title: "Recordatorios", description: "Programa avisos para meditaciones, lectura, oración, gratitud, afirmaciones, lista de compras y tareas del día.")
+    private static let baseFeatures: [FeatureItem] = [
+        FeatureItem(id: "talks_books", iconName: "books.vertical", title: "Conferencias y libros", description: "Más de 470 conferencias y libros de toda la obra de Neville Goddard."),
+        FeatureItem(id: "quotes", iconName: "quote.bubble", title: "Compendio de frases", description: "Cerca de 1000 frases incorporadas que resumen las enseñanzas de la obra de Neville, Joe Dispenza, Bruce Lipton y Gregg Braden. Puedes crear tus propias frases personales."),
+        FeatureItem(id: "authors", iconName: "person.3", title: "Autores incorporados", description: "Las enseñanzas de Joe Dispenza, Bruce Lipton y Gregg Braden complementan y enriquecen la obra de Neville con perspectivas sobre neurociencia, epigenética y creación cuántica."),
+        FeatureItem(id: "encyclopedia", iconName: "book.closed", title: "Enciclopedia", description: "Un espacio de aprendizaje y nuevo conocimiento relacionado con las enseñanzas."),
+        FeatureItem(id: "scientific_evidence", iconName: "checkmark.seal", title: "Evidencia científica", description: "Resumen acotado y en crecimiento sobre investigaciones y estudios científicos relacionados con estas enseñanzas."),
+        FeatureItem(id: "notes", iconName: "note.text", title: "Notas personales ilimitadas", description: "Crea notas con comandos de voz, compártelas, expórtalas mediante QR, envíalas al lienzo y marca tus favoritas. Admiten categorización y funciones de IA: interpretación, aplicación práctica y ChatIA."),
+        FeatureItem(id: "journal", iconName: "book.pages", title: "Diario personal", description: "Registra experiencias y hechos de cada día para observar tus asunciones, deseos y vivencias con estas enseñanzas."),
+        FeatureItem(id: "goals", iconName: "target", title: "Metas", description: "Crea objetivos y sigue su progreso con la información necesaria para lograrlos de manera óptima."),
+        FeatureItem(id: "general_reminders", iconName: "bell.badge", title: "Recordatorios", description: "Programa avisos para no olvidar nada. También resultan útiles para meditación, entrenamiento y otras prácticas."),
+        FeatureItem(id: "rituals", iconName: "sun.max", title: "Ritual matutino y de cierre", description: "Una forma de organizar intencionalmente tu día y mantener el foco en el presente. Además, permite cerrar tu día de manera consciente y enriquecedora."),
+        FeatureItem(id: "mindful_presence", iconName: "eye", title: "Presencia Consciente", description: "Registra pequeños momentos de despertar durante el día y vuelve al presente con un solo toque. Observa cuándo sales del piloto automático, reconoce tu estado de ánimo y refuerza la emoción del futuro que deseas vivir."),
+        FeatureItem(id: "calm_space", iconName: "leaf", title: "Espacio Calma", description: "Experiencia inmersiva para relajarte y desconectarte. Ayuda a disminuir el estrés y la ansiedad."),
+        FeatureItem(id: "food_scanner", iconName: "barcode.viewfinder", title: "Lector de Etiquetas", description: "Ofrece información sobre alimentos y consejos de uso leyendo su código de barras."),
+        FeatureItem(id: "heart_brain", iconName: "heart.circle", title: "Coherencia Cardio-Cerebral", description: "Asistente de guía para entrar en estado de coherencia entre corazón y cerebro."),
+        FeatureItem(id: "planner", iconName: "calendar", title: "Agenda", description: "Organiza tareas, eventos y compromisos en el tiempo para liberar memoria, priorizar lo importante y usar mejor tu tiempo."),
+        FeatureItem(id: "knowledge_check", iconName: "gamecontroller", title: "Evaluación", description: "Juego de respuesta correcta o incorrecta para consolidar y repasar lo aprendido. Las preguntas pueden ser sutiles y desafiantes."),
+        FeatureItem(id: "qr", iconName: "qrcode", title: "QR integrado", description: "Importa y exporta información como notas y frases con un formato propio para compartir con amigos y la comunidad."),
+        FeatureItem(id: "ai", iconName: "brain.head.profile", title: "Inteligencia Artificial", description: "Interpretación, resumen, consejos prácticos y chat sobre las enseñanzas. Funciona localmente y responde dentro del contexto de Neville."),
+        FeatureItem(id: "canvas", iconName: "paintpalette", title: "Lienzo", description: "Diseña fondos con imágenes, colores y texto. Ideal para compartir frases y pensamientos en redes sociales y con amigos."),
+        FeatureItem(id: "practice_reminders", iconName: "alarm", title: "Recordatorios", description: "Programa avisos para meditaciones, lectura, oración, gratitud, afirmaciones, lista de compras y tareas del día.")
     ]
     
-    private static let shortcuts: [ShortcutItem] = [
-        ShortcutItem(title: "Abrir el Diario", description: "Abre directamente la ventana del Diario.", commands: ["<Oye Siri> en la ley abre diario", "<Oye Siri> en la ley abre mi diario"], footer: nil),
-        ShortcutItem(title: "Crear entrada del Diario", description: "Crea una entrada de diario sin abrir la aplicación, de manera silenciosa.", commands: ["<Oye Siri> en la la ley crea una entrada"], footer: "Siri te pedirá la contraseña, un título y un contenido para crear la entrada del Diario. Si la contraseña es confusa, conviene deletrearla de manera clara y pausada."),
-        ShortcutItem(title: "Crear frase para Espacio Calma", description: "Crea una frase personal para Espacio Calma.", commands: ["<Oye Siri> en la la ley crea una frase para calma", "<Oye Siri> en la Ley crea una frase personal para calma"], footer: "Siri pedirá que le dictes el texto de la frase."),
-        ShortcutItem(title: "Crear una actividad en la Agenda", description: "Crea una actividad en la Agenda.", commands: ["<Oye Siri> en la la ley crea una actividad en agenda", "<Oye Siri> en la Ley crea entrada en agenda"], footer: "Siri pedirá que le dictes un título, una fecha y un contenido."),
-        ShortcutItem(title: "Abrir las notas", description: "Abre la ventana de la lista de Notas en la aplicación.", commands: ["<Oye Siri> en la ley abre mis notas"], footer: nil),
-        ShortcutItem(title: "Crear una nota", description: "Crea una nota de manera silenciosa, sin abrir la aplicación.", commands: ["<Oye Siri> en la ley crea una nota"], footer: "Siri te pedirá que dictes un título y la nota."),
-        ShortcutItem(title: "Crear una frase", description: "Crea una frase personal de manera silenciosa, sin abrir la aplicación.", commands: ["<Oye Siri> en la ley crea una frase"], footer: "Siri pedirá que dictes la nueva frase."),
-        ShortcutItem(title: "Abrir una conferencia al azar", description: "Abre la aplicación y muestra una conferencia al azar.", commands: ["<Oye Siri> en la ley abre conferencia"], footer: nil)
+    private static let baseShortcuts: [ShortcutItem] = [
+        ShortcutItem(id: "open_journal", title: "Abrir el Diario", description: "Abre directamente la ventana del Diario.", commands: ["Oye Siri, en La Ley abre diario", "Oye Siri, en La Ley abre mi diario"], footer: nil),
+        ShortcutItem(id: "create_journal_entry", title: "Crear entrada del Diario", description: "Crea una entrada de diario sin abrir la aplicación, de manera silenciosa.", commands: ["Oye Siri, en La Ley crea una entrada"], footer: "Siri te pedirá la contraseña, un título y un contenido para crear la entrada del Diario. Si la contraseña es confusa, conviene deletrearla de manera clara y pausada."),
+        ShortcutItem(id: "create_calm_phrase", title: "Crear frase para Espacio Calma", description: "Crea una frase personal para Espacio Calma.", commands: ["Oye Siri, en La Ley crea una frase para calma", "Oye Siri, en La Ley crea una frase personal para calma"], footer: "Siri pedirá que le dictes el texto de la frase."),
+        ShortcutItem(id: "create_planner_item", title: "Crear una actividad en la Agenda", description: "Crea una actividad en la Agenda.", commands: ["Oye Siri, en La Ley crea una actividad en agenda", "Oye Siri, en La Ley crea una entrada en agenda"], footer: "Siri pedirá que le dictes un título, una fecha y un contenido."),
+        ShortcutItem(id: "open_notes", title: "Abrir las notas", description: "Abre la ventana de la lista de Notas en la aplicación.", commands: ["Oye Siri, en La Ley abre mis notas"], footer: nil),
+        ShortcutItem(id: "create_note", title: "Crear una nota", description: "Crea una nota de manera silenciosa, sin abrir la aplicación.", commands: ["Oye Siri, en La Ley crea una nota"], footer: "Siri te pedirá que dictes un título y la nota."),
+        ShortcutItem(id: "create_phrase", title: "Crear una frase", description: "Crea una frase personal de manera silenciosa, sin abrir la aplicación.", commands: ["Oye Siri, en La Ley crea una frase"], footer: "Siri pedirá que dictes la nueva frase."),
+        ShortcutItem(id: "random_talk", title: "Abrir una conferencia al azar", description: "Abre la aplicación y muestra una conferencia al azar.", commands: ["Oye Siri, en La Ley abre conferencia"], footer: nil)
     ]
+
+    private var localizedContent: FeaturesLocalizedContent? {
+        FeaturesLocalization.content()
+    }
+
+    private var localizedFeatures: [FeatureItem] {
+        Self.baseFeatures.map { feature in
+            guard let localized = localizedContent?.features[feature.id] else { return feature }
+            return FeatureItem(
+                id: feature.id,
+                iconName: feature.iconName,
+                title: localized.title,
+                description: localized.description
+            )
+        }
+    }
+
+    private var localizedShortcuts: [ShortcutItem] {
+        Self.baseShortcuts.map { shortcut in
+            guard let localized = localizedContent?.shortcuts[shortcut.id] else { return shortcut }
+            return ShortcutItem(
+                id: shortcut.id,
+                title: localized.title,
+                description: localized.description,
+                commands: localized.commands,
+                footer: localized.footer ?? shortcut.footer
+            )
+        }
+    }
     
     var body: some View {
         NavigationStack {
@@ -106,13 +167,13 @@ struct Features: View {
     
     private var headerView: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Bienvenido a una nueva versión de La Ley")
+            Text(localizedContent?.headerTitle ?? "Bienvenido a una nueva versión de La Ley")
                 .font(.title2)
                 .bold()
                 .fontDesign(.rounded)
                 .foregroundStyle(.white)
             
-            Text("Esta versión: \(AppCons.appVersion ?? ""), cuenta con las siguientes Características:")
+            Text(versionText)
                 .font(.headline)
                 .fontWeight(.semibold)
                 .foregroundStyle(.white.opacity(0.92))
@@ -129,7 +190,7 @@ struct Features: View {
     
     private var featuresView: some View {
         VStack(alignment: .leading, spacing: 12) {
-            ForEach(Array(Self.features.enumerated()), id: \.element.id) { index, feature in
+            ForEach(Array(localizedFeatures.enumerated()), id: \.element.id) { index, feature in
                 featureCard(
                     feature,
                     backgroundColor: Self.cardColors[index % Self.cardColors.count],
@@ -141,12 +202,22 @@ struct Features: View {
     
     private var shortcutsView: some View {
         VStack(alignment: .leading, spacing: 12) {
-            featureSectionTitle("Atajos & Comandos de Siri", iconName: "mic")
+            featureSectionTitle(
+                localizedContent?.shortcutsTitle ?? "Atajos y comandos de Siri",
+                iconName: "mic"
+            )
             
-            ForEach(Self.shortcuts) { shortcut in
+            ForEach(localizedShortcuts) { shortcut in
                 shortcutCard(shortcut)
             }
         }
+    }
+
+    private var versionText: String {
+        let version = AppCons.appVersion ?? ""
+        let format = localizedContent?.versionFormat
+            ?? "Esta versión, {0}, cuenta con las siguientes características:"
+        return format.replacingOccurrences(of: "{0}", with: version)
     }
     
     private func featureSectionTitle(_ title: String, iconName: String) -> some View {

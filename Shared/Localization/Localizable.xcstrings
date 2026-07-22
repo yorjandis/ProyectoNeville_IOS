@@ -16170,6 +16170,9 @@
         }
       }
     },
+    "Días específicos:" : {
+
+    },
     "días seguidos" : {
       "localizations" : {
         "en" : {
@@ -20249,6 +20252,7 @@
       }
     },
     "Esta versión: %@, cuenta con las siguientes Características:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

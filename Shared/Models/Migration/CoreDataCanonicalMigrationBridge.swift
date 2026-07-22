@@ -376,6 +376,7 @@ private extension CoreDataCanonicalMigrationBridge {
                 "frequency": Int(goal.frequency),
                 "scheduleType": goal.scheduleType ?? GoalScheduleType.interval.rawValue,
                 "weeklyDaysPerWeek": Int(goal.weeklyDaysPerWeek),
+                "weeklyDaysMask": Int(goal.weeklyDaysMask),
                 "dayPeriod": goal.dayPeriod ?? GoalDayPeriod.anytime.rawValue,
                 "customUnitLabel": goal.customUnitLabel ?? "",
                 "executionTargetValue": goal.executionTargetValue,
@@ -409,6 +410,7 @@ private extension CoreDataCanonicalMigrationBridge {
                 "frequency": Int(goal.frequency),
                 "scheduleType": goal.scheduleType ?? GoalScheduleType.interval.rawValue,
                 "weeklyDaysPerWeek": Int(goal.weeklyDaysPerWeek),
+                "weeklyDaysMask": Int(goal.weeklyDaysMask),
                 "dayPeriod": goal.dayPeriod ?? GoalDayPeriod.anytime.rawValue,
                 "customUnitLabel": goal.customUnitLabel ?? "",
                 "executionTargetValue": goal.executionTargetValue,
@@ -669,6 +671,7 @@ private extension CoreDataCanonicalMigrationBridge {
         goal.frequency = Int32(MigrationJSON.int(record.payload, "frequency", default: 1))
         goal.scheduleType = MigrationJSON.string(record.payload, "scheduleType", default: GoalScheduleType.interval.rawValue)
         goal.weeklyDaysPerWeek = Int16(MigrationJSON.int(record.payload, "weeklyDaysPerWeek", default: 3))
+        goal.weeklyDaysMask = Int16(MigrationJSON.int(record.payload, "weeklyDaysMask"))
         goal.dayPeriod = MigrationJSON.string(record.payload, "dayPeriod", default: GoalDayPeriod.anytime.rawValue)
         goal.customUnitLabel = MigrationJSON.string(record.payload, "customUnitLabel")
         goal.executionTargetValue = MigrationJSON.double(record.payload, "executionTargetValue", default: 1)
@@ -707,6 +710,7 @@ private extension CoreDataCanonicalMigrationBridge {
         goal.frequency = Int32(MigrationJSON.int(record.payload, "frequency"))
         goal.scheduleType = MigrationJSON.string(record.payload, "scheduleType", default: GoalScheduleType.interval.rawValue)
         goal.weeklyDaysPerWeek = Int16(MigrationJSON.int(record.payload, "weeklyDaysPerWeek", default: 3))
+        goal.weeklyDaysMask = Int16(MigrationJSON.int(record.payload, "weeklyDaysMask"))
         goal.dayPeriod = MigrationJSON.string(record.payload, "dayPeriod", default: GoalDayPeriod.anytime.rawValue)
         goal.customUnitLabel = MigrationJSON.string(record.payload, "customUnitLabel")
         goal.executionTargetValue = MigrationJSON.double(record.payload, "executionTargetValue", default: 1)

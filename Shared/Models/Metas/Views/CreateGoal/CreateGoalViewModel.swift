@@ -19,6 +19,7 @@ final class CreateGoalViewModel: ObservableObject {
     @Published var frequency: Int           = 1         //Frecuencia por defecto
     @Published var scheduleType: GoalScheduleType = .interval
     @Published var weeklyDaysPerWeek: Int   = 3
+    @Published var selectedWeeklyDays: Set<GoalWeekday> = GoalWeeklySchedule.defaultWeekdays(count: 3)
     @Published var dayPeriod: GoalDayPeriod = .anytime
     @Published var customUnitLabel: String  = ""
     @Published var executionTargetValue: Double = 1
@@ -34,6 +35,7 @@ final class CreateGoalViewModel: ObservableObject {
         amount > 0 &&
         executionTargetValue > 0 &&
         (completionBasis != .duration || durationValue > 0) &&
+        (scheduleType != .weekly || (!selectedWeeklyDays.isEmpty && selectedWeeklyDays.count == weeklyDaysPerWeek)) &&
         (scheduleType != .specificDates || specificDates.count == amount)
     }
 
@@ -57,16 +59,19 @@ final class CreateGoalViewModel: ObservableObject {
                 to: referenceDate
               ) else { return amount }
 
-        let calendar = Calendar.current
         if scheduleType == .weekly {
-            let days = max(calendar.dateComponents(
-                [.day],
-                from: calendar.startOfDay(for: referenceDate),
-                to: calendar.startOfDay(for: endDate)
-            ).day ?? 0, 1)
-            return max((days / 7 * weeklyDaysPerWeek) + min(days % 7, weeklyDaysPerWeek), 1)
+            return max(
+                GoalWeeklySchedule.plannedCount(
+                    from: referenceDate,
+                    until: endDate,
+                    weekdays: selectedWeeklyDays,
+                    period: dayPeriod
+                ),
+                1
+            )
         }
 
+        let calendar = Calendar.current
         var count = 0
         var cursor = referenceDate
         while cursor < endDate, count < 5_000 {
@@ -96,6 +101,23 @@ final class CreateGoalViewModel: ObservableObject {
         } else if specificDates.count > amount {
             specificDates.removeLast(specificDates.count - amount)
         }
+    }
+
+    func setWeeklyDayCount(_ count: Int) {
+        let normalizedCount = min(max(count, 1), 7)
+        weeklyDaysPerWeek = normalizedCount
+        guard selectedWeeklyDays.count != normalizedCount else { return }
+        selectedWeeklyDays = GoalWeeklySchedule.defaultWeekdays(count: normalizedCount)
+    }
+
+    func toggleWeeklyDay(_ weekday: GoalWeekday) {
+        if selectedWeeklyDays.contains(weekday) {
+            guard selectedWeeklyDays.count > 1 else { return }
+            selectedWeeklyDays.remove(weekday)
+        } else {
+            selectedWeeklyDays.insert(weekday)
+        }
+        weeklyDaysPerWeek = selectedWeeklyDays.count
     }
     
     

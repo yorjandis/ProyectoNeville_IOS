@@ -89,6 +89,9 @@ class ProgramasViewModel: ObservableObject {
         goal.frequency = Int32(programa.frecuencia)
         goal.scheduleType = programa.scheduleType.rawValue
         goal.weeklyDaysPerWeek = Int16(programa.weeklyDaysPerWeek)
+        goal.weeklyDaysMask = GoalWeeklySchedule.mask(
+            for: GoalWeeklySchedule.defaultWeekdays(count: programa.weeklyDaysPerWeek)
+        )
         goal.dayPeriod = programa.dayPeriod.rawValue
         goal.customUnitLabel = programa.customUnitLabel.trimmingCharacters(in: .whitespacesAndNewlines)
         goal.executionTargetValue = 1

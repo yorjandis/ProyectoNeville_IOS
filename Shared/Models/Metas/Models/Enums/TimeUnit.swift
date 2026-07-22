@@ -216,6 +216,165 @@ nonisolated enum GoalScheduleType: String, CaseIterable, Codable {
     }
 }
 
+/// Día de la semana según la numeración de `Calendar` (domingo = 1).
+nonisolated enum GoalWeekday: Int, CaseIterable, Codable, Hashable, Identifiable {
+    case sunday = 1
+    case monday
+    case tuesday
+    case wednesday
+    case thursday
+    case friday
+    case saturday
+
+    var id: Int { rawValue }
+
+    static let mondayFirst: [GoalWeekday] = [
+        .monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday
+    ]
+
+    var label: String {
+        let formatter = DateFormatter()
+        formatter.locale = AppLanguage.current.locale
+        let symbols = formatter.standaloneWeekdaySymbols ?? formatter.weekdaySymbols ?? []
+        guard symbols.indices.contains(rawValue - 1) else { return fallbackLabel }
+        return symbols[rawValue - 1].localizedCapitalized
+    }
+
+    var shortLabel: String {
+        let formatter = DateFormatter()
+        formatter.locale = AppLanguage.current.locale
+        let symbols = formatter.shortStandaloneWeekdaySymbols ?? formatter.shortWeekdaySymbols ?? []
+        guard symbols.indices.contains(rawValue - 1) else { return String(label.prefix(3)) }
+        return symbols[rawValue - 1].localizedCapitalized
+    }
+
+    private var fallbackLabel: String {
+        switch self {
+        case .sunday: return "Domingo"
+        case .monday: return "Lunes"
+        case .tuesday: return "Martes"
+        case .wednesday: return "Miércoles"
+        case .thursday: return "Jueves"
+        case .friday: return "Viernes"
+        case .saturday: return "Sábado"
+        }
+    }
+}
+
+nonisolated enum GoalWeeklySchedule {
+    static func mask(for weekdays: Set<GoalWeekday>) -> Int16 {
+        weekdays.reduce(into: Int16(0)) { result, weekday in
+            result |= Int16(1 << (weekday.rawValue - 1))
+        }
+    }
+
+    static func weekdays(from mask: Int16) -> Set<GoalWeekday> {
+        Set(GoalWeekday.allCases.filter { weekday in
+            mask & Int16(1 << (weekday.rawValue - 1)) != 0
+        })
+    }
+
+    static func defaultWeekdays(count: Int) -> Set<GoalWeekday> {
+        let presets: [[GoalWeekday]] = [
+            [.monday],
+            [.tuesday, .thursday],
+            [.monday, .wednesday, .friday],
+            [.monday, .tuesday, .thursday, .saturday],
+            [.monday, .tuesday, .wednesday, .thursday, .friday],
+            [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday],
+            GoalWeekday.mondayFirst
+        ]
+        return Set(presets[min(max(count, 1), 7) - 1])
+    }
+
+    /// Reproduce el reparto histórico (N días consecutivos desde el inicio)
+    /// para metas guardadas antes de que existiera la selección explícita.
+    static func legacyWeekdays(
+        count: Int,
+        anchoredAt referenceDate: Date,
+        calendar: Calendar = .current
+    ) -> Set<GoalWeekday> {
+        Set((0..<min(max(count, 1), 7)).compactMap { offset in
+            guard let date = calendar.date(byAdding: .day, value: offset, to: referenceDate) else {
+                return nil
+            }
+            return GoalWeekday(rawValue: calendar.component(.weekday, from: date))
+        })
+    }
+
+    static func scheduledDays(
+        count: Int,
+        from referenceDate: Date,
+        weekdays: Set<GoalWeekday>,
+        period: GoalDayPeriod,
+        calendar: Calendar = .current
+    ) -> [Date] {
+        guard count > 0, !weekdays.isEmpty else { return [] }
+
+        var result: [Date] = []
+        var candidate = calendar.startOfDay(for: referenceDate)
+        var inspectedDays = 0
+        let inspectionLimit = max(count * 7 + 7, 14)
+
+        while result.count < count, inspectedDays < inspectionLimit {
+            if let weekday = GoalWeekday(
+                rawValue: calendar.component(.weekday, from: candidate)
+            ), weekdays.contains(weekday) {
+                if let window = period.window(on: candidate, calendar: calendar) {
+                    if candidate > calendar.startOfDay(for: referenceDate) || referenceDate <= window.end {
+                        result.append(candidate)
+                    }
+                } else {
+                    result.append(candidate)
+                }
+            }
+
+            guard let next = calendar.date(byAdding: .day, value: 1, to: candidate) else { break }
+            candidate = next
+            inspectedDays += 1
+        }
+        return result
+    }
+
+    static func plannedCount(
+        from referenceDate: Date,
+        until endDate: Date,
+        weekdays: Set<GoalWeekday>,
+        period: GoalDayPeriod,
+        maximum: Int = 5_000,
+        calendar: Calendar = .current
+    ) -> Int {
+        guard endDate > referenceDate, !weekdays.isEmpty else { return 0 }
+
+        var count = 0
+        var candidate = calendar.startOfDay(for: referenceDate)
+        while candidate < endDate, count < maximum {
+            if let weekday = GoalWeekday(
+                rawValue: calendar.component(.weekday, from: candidate)
+            ), weekdays.contains(weekday) {
+                if let window = period.window(on: candidate, calendar: calendar) {
+                    if candidate > calendar.startOfDay(for: referenceDate) || referenceDate <= window.end {
+                        count += 1
+                    }
+                } else {
+                    count += 1
+                }
+            }
+
+            guard let next = calendar.date(byAdding: .day, value: 1, to: candidate) else { break }
+            candidate = next
+        }
+        return count
+    }
+
+    static func summary(for weekdays: Set<GoalWeekday>) -> String {
+        let labels = GoalWeekday.mondayFirst.filter(weekdays.contains).map(\.label)
+        let formatter = ListFormatter()
+        formatter.locale = AppLanguage.current.locale
+        return formatter.string(from: labels) ?? labels.joined(separator: ", ")
+    }
+}
+
 nonisolated enum GoalCompletionBasis: String, CaseIterable, Codable {
     case executions
     case duration

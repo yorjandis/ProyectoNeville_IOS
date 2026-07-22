@@ -176,6 +176,7 @@
 		DCA100013000000000000001 /* frases_esferas.json in Resources */ = {isa = PBXBuildFile; fileRef = DCA100103000000000000001 /* frases_esferas.json */; };
 		DCB100013000000000000001 /* HealthyHabits.json in Resources */ = {isa = PBXBuildFile; fileRef = DCB100103000000000000001 /* HealthyHabits.json */; };
 		DCC100013000000000000001 /* GoalPrograms.json in Resources */ = {isa = PBXBuildFile; fileRef = DCC100103000000000000001 /* GoalPrograms.json */; };
+		DCD100013000000000000001 /* Features.json in Resources */ = {isa = PBXBuildFile; fileRef = DCD100103000000000000001 /* Features.json */; };
 		E95B93572AAFBB2600B5E2B5 /* Neville_iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95B93562AAFBB2600B5E2B5 /* Neville_iOSApp.swift */; };
 		E95B93592AAFBB2600B5E2B5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95B93582AAFBB2600B5E2B5 /* ContentView.swift */; };
 /* End PBXBuildFile section */
@@ -550,6 +551,8 @@
 		DCB100123000000000000001 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = "zh-Hans"; path = "Shared/Localization/zh-Hans.lproj/HealthyHabits.json"; sourceTree = SOURCE_ROOT; };
 		DCC100113000000000000001 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = en; path = Shared/Localization/en.lproj/GoalPrograms.json; sourceTree = SOURCE_ROOT; };
 		DCC100123000000000000001 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = "zh-Hans"; path = "Shared/Localization/zh-Hans.lproj/GoalPrograms.json"; sourceTree = SOURCE_ROOT; };
+		DCD100113000000000000001 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = en; path = Shared/Localization/en.lproj/Features.json; sourceTree = SOURCE_ROOT; };
+		DCD100123000000000000001 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = "zh-Hans"; path = "Shared/Localization/zh-Hans.lproj/Features.json"; sourceTree = SOURCE_ROOT; };
 		E95B93532AAFBB2600B5E2B5 /* Neville_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Neville_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E95B93562AAFBB2600B5E2B5 /* Neville_iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Neville_iOSApp.swift; sourceTree = "<group>"; };
 		E95B93582AAFBB2600B5E2B5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -2163,6 +2166,7 @@
 				DCA100103000000000000001 /* frases_esferas.json */,
 				DCB100103000000000000001 /* HealthyHabits.json */,
 				DCC100103000000000000001 /* GoalPrograms.json */,
+				DCD100103000000000000001 /* Features.json */,
 				914D887F2FC1B22000CDDB93 /* Shared/Models/Presencia/PresenciaModels.swift */,
 				914D887E2FC1B22000CDDB93 /* Shared/Views/Presencia/PresenciaView.swift */,
 				914D88802FC1B22000CDDB93 /* Shared/Views/Presencia/PresenciaStatsView.swift */,
@@ -2727,6 +2731,7 @@
 				DCA100013000000000000001 /* frases_esferas.json in Resources */,
 				DCB100013000000000000001 /* HealthyHabits.json in Resources */,
 				DCC100013000000000000001 /* GoalPrograms.json in Resources */,
+				DCD100013000000000000001 /* Features.json in Resources */,
 				B130000000000000000001 /* enc_almacenamiento_emociones.txt in Resources */,
 				B130000000000000000002 /* enc_ansiedad_vs_stress_cronico.txt in Resources */,
 				B130000000000000000003 /* enc_aprendizaje_asociativo.txt in Resources */,
@@ -3750,6 +3755,15 @@
 				DCC100123000000000000001 /* zh-Hans */,
 			);
 			name = GoalPrograms.json;
+			sourceTree = "<group>";
+		};
+		DCD100103000000000000001 /* Features.json */ = {
+			isa = PBXVariantGroup;
+			children = (
+				DCD100113000000000000001 /* en */,
+				DCD100123000000000000001 /* zh-Hans */,
+			);
+			name = Features.json;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

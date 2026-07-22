@@ -1,0 +1,156 @@
+{
+  "headerTitle": "欢迎使用新版 La Ley",
+  "versionFormat": "当前版本 {0} 包含以下功能：",
+  "shortcutsTitle": "Siri 快捷指令与语音命令",
+  "features": {
+    "talks_books": {
+      "title": "讲座与著作",
+      "description": "收录内维尔·戈达德全部作品中的 470 余篇讲座与著作。"
+    },
+    "quotes": {
+      "title": "精选语录库",
+      "description": "内置近 1,000 条语录，提炼了内维尔、Joe Dispenza、Bruce Lipton 和 Gregg Braden 的核心思想。你也可以创建自己的个人语录。"
+    },
+    "authors": {
+      "title": "收录作者",
+      "description": "Joe Dispenza、Bruce Lipton 和 Gregg Braden 的观点从神经科学、表观遗传学和量子创造等角度补充并拓展了内维尔的思想。"
+    },
+    "encyclopedia": {
+      "title": "百科",
+      "description": "围绕这些思想学习知识、探索新内容的空间。"
+    },
+    "scientific_evidence": {
+      "title": "科学研究",
+      "description": "简明且持续扩充的研究资料与科学文献汇总，内容与这些思想相关。"
+    },
+    "notes": {
+      "title": "无限个人笔记",
+      "description": "通过语音创建笔记，还可分享、导出为二维码、发送到画布、分类整理和收藏。AI 工具包括内容解读、实际应用和 AI 对话。"
+    },
+    "journal": {
+      "title": "私人日记",
+      "description": "记录每天的经历与事件，结合这些思想观察自己的假设、愿望和生活体验。"
+    },
+    "goals": {
+      "title": "目标",
+      "description": "创建目标、跟踪进度，并获取有效推进目标所需的信息。"
+    },
+    "general_reminders": {
+      "title": "提醒",
+      "description": "设置提醒，避免遗漏重要事项，也可用于冥想、训练和其他练习。"
+    },
+    "rituals": {
+      "title": "晨间与晚间仪式",
+      "description": "有意识地安排一天、专注当下，并以清醒而充实的方式为一天收尾。"
+    },
+    "mindful_presence": {
+      "title": "觉察当下",
+      "description": "记录一天中短暂的觉醒时刻，轻点一下即可回到当下。留意自己何时进入自动驾驶状态，觉察情绪，并强化你希望在未来体验的感受。"
+    },
+    "calm_space": {
+      "title": "静心空间",
+      "description": "帮助你放松身心、暂时抽离的沉浸式空间，有助于缓解压力与焦虑。"
+    },
+    "food_scanner": {
+      "title": "食品标签扫描器",
+      "description": "扫描食品条形码，查看相关信息和实用建议。"
+    },
+    "heart_brain": {
+      "title": "心脑相干",
+      "description": "通过引导练习，帮助你进入心脏与大脑协调一致的状态。"
+    },
+    "planner": {
+      "title": "日程管理",
+      "description": "按时间整理任务、事件和安排，减轻记忆负担，明确优先事项，更好地利用时间。"
+    },
+    "knowledge_check": {
+      "title": "知识测验",
+      "description": "通过判断对错来复习并巩固所学内容，其中一些问题细致且富有挑战性。"
+    },
+    "qr": {
+      "title": "内置二维码分享",
+      "description": "使用应用专属的二维码格式导入和导出笔记、语录等信息，与朋友和社区分享。"
+    },
+    "ai": {
+      "title": "人工智能",
+      "description": "提供思想解读、内容摘要、实用建议和相关对话。本地运行，并在内维尔思想的语境中作答。"
+    },
+    "canvas": {
+      "title": "画布",
+      "description": "使用图片、颜色和文字设计背景，适合在社交媒体上或与朋友分享语录和想法。"
+    },
+    "practice_reminders": {
+      "title": "练习提醒",
+      "description": "为冥想、阅读、祈祷、感恩、肯定语、购物清单和日常任务设置提醒。"
+    }
+  },
+  "shortcuts": {
+    "open_journal": {
+      "title": "打开日记",
+      "description": "直接打开日记页面。",
+      "commands": [
+        "嘿 Siri，在 La Ley 中打开日记",
+        "嘿 Siri，在 La Ley 中打开我的日记"
+      ],
+      "footer": null
+    },
+    "create_journal_entry": {
+      "title": "新建日记",
+      "description": "无需打开应用，即可在后台创建一篇日记。",
+      "commands": [
+        "嘿 Siri，在 La Ley 中新建一篇日记"
+      ],
+      "footer": "Siri 会询问密码、标题和正文。如果密码不容易识别，建议缓慢、清晰地逐字拼读。"
+    },
+    "create_calm_phrase": {
+      "title": "为静心空间创建语句",
+      "description": "为静心空间创建一条个人语句。",
+      "commands": [
+        "嘿 Siri，在 La Ley 中为静心空间创建一句话",
+        "嘿 Siri，在 La Ley 中为静心空间创建一句个人语句"
+      ],
+      "footer": "Siri 会请你说出语句内容。"
+    },
+    "create_planner_item": {
+      "title": "添加日程",
+      "description": "在日程中创建一项新安排。",
+      "commands": [
+        "嘿 Siri，在 La Ley 中添加一项日程",
+        "嘿 Siri，在 La Ley 中新建日程"
+      ],
+      "footer": "Siri 会请你说出标题、日期和内容。"
+    },
+    "open_notes": {
+      "title": "打开笔记",
+      "description": "打开应用中的笔记列表。",
+      "commands": [
+        "嘿 Siri，在 La Ley 中打开我的笔记"
+      ],
+      "footer": null
+    },
+    "create_note": {
+      "title": "新建笔记",
+      "description": "无需打开应用，即可在后台创建一条笔记。",
+      "commands": [
+        "嘿 Siri，在 La Ley 中新建一条笔记"
+      ],
+      "footer": "Siri 会请你说出标题和笔记内容。"
+    },
+    "create_phrase": {
+      "title": "创建个人语录",
+      "description": "无需打开应用，即可在后台创建一条个人语录。",
+      "commands": [
+        "嘿 Siri，在 La Ley 中创建一条语录"
+      ],
+      "footer": "Siri 会请你说出新的语录。"
+    },
+    "random_talk": {
+      "title": "随机打开一篇讲座",
+      "description": "打开应用并随机显示一篇讲座。",
+      "commands": [
+        "嘿 Siri，在 La Ley 中随机打开一篇讲座"
+      ],
+      "footer": null
+    }
+  }
+}

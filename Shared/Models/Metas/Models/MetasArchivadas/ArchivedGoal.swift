@@ -70,6 +70,7 @@ extension ArchivedGoalEntity {
         activeGoal.frequency = self.frequency
         activeGoal.scheduleType = self.scheduleType
         activeGoal.weeklyDaysPerWeek = self.weeklyDaysPerWeek
+        activeGoal.weeklyDaysMask = self.weeklyDaysMask
         activeGoal.dayPeriod = self.dayPeriod
         activeGoal.customUnitLabel = self.customUnitLabel
         activeGoal.executionTargetValue = self.executionTargetValue

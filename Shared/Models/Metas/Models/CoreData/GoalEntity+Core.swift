@@ -76,6 +76,19 @@ extension GoalEntity {
         min(max(Int(weeklyDaysPerWeek), 1), 7)
     }
 
+    var selectedWeeklyDays: Set<GoalWeekday> {
+        GoalWeeklySchedule.weekdays(from: weeklyDaysMask)
+    }
+
+    private func effectiveWeeklyDays(from referenceDate: Date) -> Set<GoalWeekday> {
+        let explicitDays = selectedWeeklyDays
+        guard explicitDays.isEmpty else { return explicitDays }
+        return GoalWeeklySchedule.legacyWeekdays(
+            count: weeklyDaysValue,
+            anchoredAt: referenceDate
+        )
+    }
+
     var unitLabel: String {
         let value = customUnitLabel?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         return value.isEmpty ? GoalsL10n.unitNoun(count: 1) : value
@@ -112,7 +125,11 @@ extension GoalEntity {
         case .interval:
             cadence = GoalsL10n.intervalCadence(frequency: frequencyValue, unit: timeUnit)
         case .weekly:
-            cadence = GoalsL10n.weeklyCadence(days: weeklyDaysValue)
+            let weeklyCadence = GoalsL10n.weeklyCadence(days: weeklyDaysValue)
+            let weekdays = selectedWeeklyDays
+            cadence = weekdays.isEmpty
+                ? weeklyCadence
+                : "\(weeklyCadence) · \(GoalWeeklySchedule.summary(for: weekdays))"
         case .specificDates:
             cadence = GoalsL10n.specificDatesCadence()
         }
@@ -161,15 +178,20 @@ extension GoalEntity {
             return max(Int(totalUnits), 1)
 
         case .weekly:
-            var firstDay = calendar.startOfDay(for: referenceDate)
-            if let window = goalDayPeriod.window(on: firstDay), referenceDate > window.end {
-                firstDay = calendar.date(byAdding: .day, value: 1, to: firstDay) ?? firstDay
+            var selectionReference = referenceDate
+            let referenceDay = calendar.startOfDay(for: referenceDate)
+            if let window = goalDayPeriod.window(on: referenceDay), referenceDate > window.end {
+                selectionReference = calendar.date(byAdding: .day, value: 1, to: referenceDate) ?? referenceDate
             }
-            let endDay = calendar.startOfDay(for: endDate)
-            let availableDays = max(calendar.dateComponents([.day], from: firstDay, to: endDay).day ?? 0, 1)
-            let fullWeeks = availableDays / 7
-            let remainingDays = availableDays % 7
-            return min(max((fullWeeks * weeklyDaysValue) + min(remainingDays, weeklyDaysValue), 1), maximumUnits)
+            let count = GoalWeeklySchedule.plannedCount(
+                from: referenceDate,
+                until: endDate,
+                weekdays: effectiveWeeklyDays(from: selectionReference),
+                period: goalDayPeriod,
+                maximum: maximumUnits,
+                calendar: calendar
+            )
+            return min(max(count, 1), maximumUnits)
 
         case .interval:
             var count = 0
@@ -215,19 +237,20 @@ extension GoalEntity {
         }
 
         if goalScheduleType == .weekly {
-            var baseDay = calendar.startOfDay(for: referenceDate)
-            if let todayWindow = goalDayPeriod.window(on: baseDay), referenceDate > todayWindow.end {
-                baseDay = calendar.date(byAdding: .day, value: 1, to: baseDay) ?? baseDay
+            var selectionReference = referenceDate
+            let referenceDay = calendar.startOfDay(for: referenceDate)
+            if let todayWindow = goalDayPeriod.window(on: referenceDay), referenceDate > todayWindow.end {
+                selectionReference = calendar.date(byAdding: .day, value: 1, to: referenceDate) ?? referenceDate
             }
-            for unit in unitsArray {
-                let position = max(Int(unit.index) - 1, 0)
-                let weekOffset = position / weeklyDaysValue
-                let dayOffset = position % weeklyDaysValue
-                guard let weekStart = calendar.date(byAdding: .weekOfYear, value: weekOffset, to: baseDay),
-                      let scheduledDay = calendar.date(byAdding: .day, value: dayOffset, to: weekStart),
-                      let defaultEnd = calendar.date(byAdding: .day, value: 1, to: scheduledDay) else {
-                    continue
-                }
+            let scheduledDays = GoalWeeklySchedule.scheduledDays(
+                count: unitsArray.count,
+                from: referenceDate,
+                weekdays: effectiveWeeklyDays(from: selectionReference),
+                period: goalDayPeriod,
+                calendar: calendar
+            )
+            for (unit, scheduledDay) in zip(unitsArray, scheduledDays) {
+                guard let defaultEnd = calendar.date(byAdding: .day, value: 1, to: scheduledDay) else { continue }
                 let window = applyWindow(start: scheduledDay, defaultEnd: defaultEnd)
                 unit.startDate = window.0
                 unit.endDate = window.1
@@ -717,6 +740,7 @@ extension GoalEntity {
             archivedGoal.frequency = self.frequency
             archivedGoal.scheduleType = self.scheduleType
             archivedGoal.weeklyDaysPerWeek = self.weeklyDaysPerWeek
+            archivedGoal.weeklyDaysMask = self.weeklyDaysMask
             archivedGoal.dayPeriod = self.dayPeriod
             archivedGoal.customUnitLabel = self.customUnitLabel
             archivedGoal.executionTargetValue = self.executionTargetValue
@@ -811,6 +835,7 @@ extension GoalEntity {
         archivedGoal.frequency = self.frequency
         archivedGoal.scheduleType = self.scheduleType
         archivedGoal.weeklyDaysPerWeek = self.weeklyDaysPerWeek
+        archivedGoal.weeklyDaysMask = self.weeklyDaysMask
         archivedGoal.dayPeriod = self.dayPeriod
         archivedGoal.customUnitLabel = self.customUnitLabel
         archivedGoal.executionTargetValue = self.executionTargetValue
