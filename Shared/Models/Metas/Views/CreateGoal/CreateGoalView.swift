@@ -8,13 +8,10 @@ struct CreateGoalView: View {
     @Environment(\.managedObjectContext) private var context
     @Environment(\.dismiss) private var dismiss
     
-    @StateObject private var vm = CreateGoalViewModel.shared
-    
-    @State private var showMetasEjemplo : Bool = false
-    
+    @StateObject private var vm = CreateGoalViewModel()
+    @State private var showCreateError = false
     
     @State private var selectedTab : Int = 0
-    @State private var showDescription: Bool = false
     
     private var metasOrdenadas: [MetasPreestablecidas] {
         MetasPreestablecidas.allCases.sorted {
@@ -40,40 +37,48 @@ struct CreateGoalView: View {
         case unitLabel
     }
 
-    private var summaryText: String {
-        let schedule: String
+    private var scheduleSummary: String {
         switch vm.scheduleType {
         case .interval:
-            schedule = GoalsL10n.intervalCadence(frequency: vm.frequency, unit: vm.unit)
+            return GoalsL10n.addingPeriod(
+                GoalsL10n.intervalCadence(frequency: vm.frequency, unit: vm.unit),
+                period: vm.dayPeriod
+            )
         case .weekly:
-            schedule = "\(GoalsL10n.weeklyCadence(days: vm.weeklyDaysPerWeek)) · \(GoalWeeklySchedule.summary(for: vm.selectedWeeklyDays))"
+            let cadence = "\(GoalsL10n.weeklyCadence(days: vm.weeklyDaysPerWeek)) · \(GoalWeeklySchedule.summary(for: vm.selectedWeeklyDays))"
+            if let minutes = vm.effectiveWeeklyTimeMinutes {
+                return GoalsL10n.addingWeeklyTime(cadence, minutes: minutes)
+            }
+            return GoalsL10n.addingPeriod(cadence, period: vm.dayPeriod)
         case .specificDates:
-            schedule = GoalsL10n.specificDatesCadence(count: vm.amount)
+            return GoalsL10n.addingPeriod(
+                GoalsL10n.specificDatesCadence(count: vm.amount),
+                period: vm.dayPeriod
+            )
         }
-        let period = vm.dayPeriod == .anytime
-            ? ""
-            : GoalsL10n.format("goals.dynamic.period_suffix", fallback: ", {0}", vm.dayPeriod.label)
-        let ending: String
+    }
+
+    private var completionSummary: String {
         switch vm.completionBasis {
         case .executions:
-            ending = GoalsL10n.executionCount(vm.amount)
+            return GoalsL10n.executionCount(vm.amount)
         case .duration:
-            let duration = GoalsL10n.duration(value: vm.durationValue, unit: vm.durationUnit)
-            let estimate = GoalsL10n.format(
-                "goals.dynamic.planned_execution_count",
-                fallback: "({0} ejecuciones previstas)",
-                String(vm.estimatedUnitCount())
-            )
-            ending = "\(duration) \(estimate)"
+            return GoalsL10n.duration(value: vm.durationValue, unit: vm.durationUnit)
         }
-        return GoalsL10n.format(
-            "goals.dynamic.creation_summary",
-            fallback: "{0}, {1}{2}, {3}.",
-            vm.executionTargetText,
-            schedule,
-            period,
-            ending
-        )
+    }
+
+    private var validationMessage: String? {
+        if vm.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            return "Escribe un título para poder crear la meta."
+        }
+        if vm.executionTargetValue <= 0 {
+            return "El objetivo de cada ejecución debe ser mayor que cero."
+        }
+        if vm.scheduleType == .weekly,
+           vm.selectedWeeklyDays.count != vm.weeklyDaysPerWeek {
+            return "Selecciona exactamente \(vm.weeklyDaysPerWeek) días de la semana."
+        }
+        return nil
     }
     
     var body: some View {
@@ -121,8 +126,9 @@ struct CreateGoalView: View {
                     if selectedTab == 0 {
                         ToolbarItem(placement: .confirmationAction) {
                             Button("Crear Meta") {
-                                createGoal()
-                                dismiss()
+                                if createGoal() {
+                                    dismiss()
+                                }
                             }
                             .disabled(!vm.isValid)
                         } 
@@ -133,6 +139,15 @@ struct CreateGoalView: View {
                             dismiss()
                         }
                     }
+
+#if os(iOS)
+                    ToolbarItemGroup(placement: .keyboard) {
+                        Spacer()
+                        Button("Listo") {
+                            focusedField = nil
+                        }
+                    }
+#endif
                     
                 }
             }
@@ -141,334 +156,216 @@ struct CreateGoalView: View {
 
     @ViewBuilder
     private func MetasHome() -> some View {
-        ZStack{
-            
-            LinearGradient(
-                colors: [
-                    Color(red: 0.82, green: 0.94, blue: 0.78),
-                    Color(red: 0.73, green: 0.90, blue: 0.69),
-                    Color(red: 0.88, green: 0.97, blue: 0.84)
-                ],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .ignoresSafeArea()
-            
-            VStack{
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 20) {
+        Form {
+            Section {
+                TextField("Ej. Meditar todos los días", text: $vm.title, axis: .vertical)
+                    .font(.title3.weight(.semibold))
+                    .focused($focusedField, equals: .title)
 
-                            Text("Título de la Meta")
-                                .font(.headline)
-                                .foregroundStyle(.black)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                             
-                        TextField(
-                            "",
-                            text: $vm.title,
-                            prompt: Text("Eje. Meditar todos los días"),
-                            axis: .vertical
-                        )
-                        .font(.platFormSize(iOS: 22, mac: 24))
-                        .foregroundStyle(.white).bold()
-                        .padding(12)
-                        .background(Color.black.opacity(0.7))
-                        .cornerRadius(10)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12)
-                                .stroke(Color.gray.opacity(0.4))
-                        )
-                        .focused($focusedField, equals: .title)
-                            
-                        
-                        
-                        //Configuración de la Meta
-                        VStack(alignment: .leading, spacing: 5){
-                            /*
-                             Text("Configurar:")
-                                 .font(.headline)
-                                 .foregroundStyle(.black)
-                                 .frame(maxWidth: .infinity, alignment: .leading)
-                             */
-                           
-                                
-                            
-                            VStack(alignment: .leading, spacing: 6) {
-                                Text("Objetivo por ejecución:")
-                                    .bold()
-                                    .foregroundStyle(.black)
-                                HStack {
-                                    TextField("10", value: $vm.executionTargetValue, format: .number)
-                                        .textFieldStyle(.roundedBorder)
-                                        .frame(width: 85)
-                                    TextField("minutos, páginas, km, vasos…", text: $vm.customUnitLabel)
-                                        .textFieldStyle(.roundedBorder)
-                                        .focused($focusedField, equals: .unitLabel)
-                                }
-                                Text("Ejemplos: 10 minutos, 3 páginas o 5 km cada vez.")
-                                    .font(.caption)
-                                    .foregroundStyle(.black.opacity(0.7))
-                            }
-
-                            HStack {
-                                Text("La meta termina por:")
-                                    .bold()
-                                    .foregroundStyle(.black)
-                                Picker("", selection: $vm.completionBasis) {
-                                    ForEach(GoalCompletionBasis.allCases, id: \.self) { basis in
-                                        Text(basis.label).tag(basis)
-                                    }
-                                }
-                                .pickerStyle(.menu)
-                                .tint(.black)
-                                .labelsHidden()
-                            }
-
-                            if vm.completionBasis == .executions {
-                                HStack {
-                                    Text("Cantidad total:")
-                                        .bold()
-                                        .foregroundStyle(.black)
-                                    Picker("", selection: $vm.amount) {
-                                        ForEach(1...365, id: \.self) { number in
-                                            Text("\(number)").tag(number)
-                                        }
-                                    }
-                                    .pickerStyle(.menu)
-                                    .tint(.black)
-                                    .labelsHidden()
-                                    Text(GoalsL10n.executionCount(vm.amount))
-                                        .foregroundStyle(.black)
-                                }
-                                .padding(.top, 5)
-                            } else {
-                                HStack {
-                                    Text("Duración total:")
-                                        .bold()
-                                        .foregroundStyle(.black)
-                                    Picker("", selection: $vm.durationValue) {
-                                        ForEach(1...365, id: \.self) { value in
-                                            Text("\(value)").tag(value)
-                                        }
-                                    }
-                                    .pickerStyle(.menu)
-                                    .tint(.black)
-                                    .labelsHidden()
-
-                                    Picker("", selection: $vm.durationUnit) {
-                                        ForEach([TimeUnit.dias, .semanas, .meses, .años], id: \.self) { unit in
-                                            Text(unit.label).tag(unit)
-                                        }
-                                    }
-                                    .pickerStyle(.menu)
-                                    .tint(.black)
-                                    .labelsHidden()
-                                }
-                            }
-
-                            HStack{
-                                Text("Programación:")
-                                    .bold()
-                                    .foregroundStyle(.black)
-                                Picker("", selection: $vm.scheduleType) {
-                                    ForEach(GoalScheduleType.allCases.filter {
-                                        vm.completionBasis == .executions || $0 != .specificDates
-                                    }, id: \.self) { type in
-                                        Text(type.label).tag(type)
-                                    }
-                                }
-                                .pickerStyle(.menu)
-                                .tint(.black)
-                                .labelsHidden()
-                            }
-
-                            switch vm.scheduleType {
-                            case .interval:
-                                HStack {
-                                    Text("Cada:")
-                                        .bold()
-                                        .foregroundStyle(.black)
-                                    Picker("", selection: $vm.frequency) {
-                                        ForEach(1...30, id: \.self) { value in
-                                            Text("\(value)")
-                                                .foregroundStyle(.black)
-                                                .tag(value)
-                                        }
-                                    }
-                                    .frame(width: 70)
-                                    .foregroundStyle(.black)
-                                    .tint(.black)
-                                    .labelsHidden()
-
-                                    Picker("", selection: $vm.unit) {
-                                        ForEach(TimeUnit.allCases, id: \.self) { unit in
-                                            Text(unit.label).tag(unit)
-                                        }
-                                    }
-                                    .pickerStyle(.menu)
-                                    .tint(.black)
-                                    .labelsHidden()
-                                }
-
-                            case .weekly:
-                                VStack(alignment: .leading, spacing: 10) {
-                                    HStack {
-                                        Text("Ejecutar:")
-                                            .bold()
-                                            .foregroundStyle(.black)
-                                        Picker("", selection: $vm.weeklyDaysPerWeek) {
-                                            ForEach(1...7, id: \.self) { value in
-                                                Text(GoalsL10n.dayCount(value)).tag(value)
-                                            }
-                                        }
-                                        .pickerStyle(.menu)
-                                        .tint(.black)
-                                        .labelsHidden()
-                                        .onChange(of: vm.weeklyDaysPerWeek) { _, newValue in
-                                            vm.setWeeklyDayCount(newValue)
-                                        }
-                                        Text("por semana")
-                                            .foregroundStyle(.black)
-                                    }
-
-                                    Text("Días específicos:")
-                                        .bold()
-                                        .foregroundStyle(.black)
-
-                                    LazyVGrid(
-                                        columns: Array(repeating: GridItem(.flexible(), spacing: 6), count: 4),
-                                        spacing: 6
-                                    ) {
-                                        ForEach(GoalWeekday.mondayFirst) { weekday in
-                                            let isSelected = vm.selectedWeeklyDays.contains(weekday)
-                                            Button {
-                                                vm.toggleWeeklyDay(weekday)
-                                            } label: {
-                                                Text(weekday.shortLabel)
-                                                    .font(.callout.weight(.semibold))
-                                                    .frame(maxWidth: .infinity)
-                                                    .padding(.vertical, 8)
-                                            }
-                                            .buttonStyle(.plain)
-                                            .foregroundStyle(isSelected ? .white : .black)
-                                            .background(
-                                                RoundedRectangle(cornerRadius: 8)
-                                                    .fill(isSelected ? Color.black : Color.white.opacity(0.55))
-                                            )
-                                            .overlay(
-                                                RoundedRectangle(cornerRadius: 8)
-                                                    .stroke(Color.black.opacity(0.35), lineWidth: 1)
-                                            )
-                                            .accessibilityLabel(weekday.label)
-                                            .accessibilityAddTraits(isSelected ? .isSelected : [])
-                                        }
-                                    }
-                                }
-
-                            case .specificDates:
-                                VStack(alignment: .leading, spacing: 8) {
-                                    Text("Fecha de cada unidad:")
-                                        .font(.headline)
-                                        .foregroundStyle(.black)
-
-                                    ForEach(Array(vm.specificDates.indices), id: \.self) { index in
-                                        DatePicker(
-                                            GoalsL10n.format(
-                                                "goals.dynamic.indexed_unit_label",
-                                                fallback: "{0} {1}",
-                                                vm.getTextoForUNidades(number: 1).localizedCapitalized,
-                                                String(index + 1)
-                                            ),
-                                            selection: $vm.specificDates[index],
-                                            displayedComponents: .date
-                                        )
-                                        .foregroundStyle(.black)
-                                    }
-                                }
-                            }
-
-                            HStack {
-                                Text("Momento del día:")
-                                    .bold()
-                                    .foregroundStyle(.black)
-                                Picker("", selection: $vm.dayPeriod) {
-                                    ForEach(GoalDayPeriod.allCases, id: \.self) { period in
-                                        Text(period.label).tag(period)
-                                    }
-                                }
-                                .pickerStyle(.menu)
-                                .tint(.black)
-                                .labelsHidden()
-                            }
-
-                        }
-                        
-                        
-                        //Resumen:
-                        VStack{
-                            Text(GoalsL10n.format(
-                                "goals.ui.summary_value",
-                                fallback: "Resumen: {0}",
-                                summaryText
-                            ))
-                                .foregroundStyle(.black).bold()
-                        }
-
-                        // Descripción (última sección y colapsada inicialmente):
-                        VStack(alignment: .leading, spacing: 8) {
-                            Button {
-                                withAnimation(.easeInOut) {
-                                    showDescription.toggle()
-                                }
-                            } label: {
-                                HStack {
-                                    Text("Descripción")
-                                        .font(.headline)
-                                    Spacer()
-                                    Image(systemName: "chevron.down")
-                                        .rotationEffect(.degrees(showDescription ? 180 : 0))
-                                }
-                                .foregroundStyle(.black)
-                                .contentShape(Rectangle())
-                            }
-                            .buttonStyle(.plain)
-
-                            if showDescription {
-                                TextEditor(text: $vm.description)
-                                    .font(.platFormSize(iOS: 22, mac: 24))
-                                    .foregroundStyle(.white)
-                                    .scrollContentBackground(.hidden)
-                                    .padding(12)
-                                    .frame(height: 150)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 12)
-                                            .fill(Color.black.opacity(0.7))
-                                    )
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 12)
-                                            .stroke(Color.gray.opacity(0.4))
-                                    )
-                                    .focused($focusedField, equals: .description)
-                                    .transition(.opacity.combined(with: .move(edge: .top)))
-                            }
-                        }
-                            
-                        
-                    }
-                    .onTapGesture {
-                        focusedField = nil
-                    }
+                HStack(alignment: .firstTextBaseline, spacing: 12) {
+                TextField("10", value: $vm.executionTargetValue, format: .number)
+                        .frame(width: 72)
+#if os(iOS)
+                        .keyboardType(.decimalPad)
+#endif
+                    TextField("minutos, páginas, km, vasos…", text: $vm.customUnitLabel)
+                        .focused($focusedField, equals: .unitLabel)
                 }
-                .onTapGesture {
-                    focusedField = nil
-                }
-                
+                .accessibilityElement(children: .contain)
+            } header: {
+                Label("Qué quieres lograr", systemImage: "target")
+            } footer: {
+                Text("Indica el título y cuánto cuenta como un avance. Por ejemplo: 10 minutos en cada ejecución.")
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding()
-            
+
+            Section {
+                Picker("La meta termina por", selection: $vm.completionBasis) {
+                    ForEach(GoalCompletionBasis.allCases, id: \.self) { basis in
+                        Text(basis.label).tag(basis)
+                    }
+                }
+
+                if vm.completionBasis == .executions {
+                    Stepper(value: $vm.amount, in: 1...365) {
+                        LabeledContent("Cantidad total", value: GoalsL10n.executionCount(vm.amount))
+                    }
+                } else {
+                    HStack {
+                        Stepper(value: $vm.durationValue, in: 1...365) {
+                            Text("Duración")
+                        }
+                        Spacer(minLength: 12)
+                        Text("\(vm.durationValue)")
+                            .foregroundStyle(.secondary)
+                        Picker("Unidad de duración", selection: $vm.durationUnit) {
+                            ForEach([TimeUnit.dias, .semanas, .meses, .años], id: \.self) { unit in
+                                Text(unit.label).tag(unit)
+                            }
+                        }
+                        .labelsHidden()
+                    }
+                }
+            } header: {
+                Label("Finalización", systemImage: "flag.checkered")
+            } footer: {
+                if vm.completionBasis == .duration {
+                    Text("Con este ritmo se crearán aproximadamente \(vm.estimatedUnitCount()) oportunidades de avance.")
+                }
+            }
+
+            Section {
+                Picker("Programación", selection: $vm.scheduleType) {
+                    ForEach(GoalScheduleType.allCases.filter {
+                        vm.completionBasis == .executions || $0 != .specificDates
+                    }, id: \.self) { type in
+                        Text(type.label).tag(type)
+                    }
+                }
+
+                switch vm.scheduleType {
+                case .interval:
+                    HStack {
+                        Stepper(value: $vm.frequency, in: 1...30) {
+                            Text("Repetir cada")
+                        }
+                        Spacer(minLength: 12)
+                        Text("\(vm.frequency)")
+                            .foregroundStyle(.secondary)
+                        Picker("Intervalo", selection: $vm.unit) {
+                            ForEach(TimeUnit.allCases, id: \.self) { unit in
+                                Text(unit.description(for: vm.frequency)).tag(unit)
+                            }
+                        }
+                        .labelsHidden()
+                    }
+
+                case .weekly:
+                    Stepper(value: $vm.weeklyDaysPerWeek, in: 1...7) {
+                        LabeledContent(
+                            "Frecuencia semanal",
+                            value: GoalsL10n.weeklyCadence(days: vm.weeklyDaysPerWeek)
+                        )
+                    }
+                    .onChange(of: vm.weeklyDaysPerWeek) { _, newValue in
+                        vm.setWeeklyDayCount(newValue)
+                    }
+
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("Elige los días")
+                            .font(.subheadline.weight(.semibold))
+                        LazyVGrid(
+                            columns: Array(repeating: GridItem(.flexible(), spacing: 6), count: 4),
+                            spacing: 6
+                        ) {
+                            ForEach(GoalWeekday.mondayFirst) { weekday in
+                                let isSelected = vm.selectedWeeklyDays.contains(weekday)
+                                Button {
+                                    vm.toggleWeeklyDay(weekday)
+                                } label: {
+                                    Text(weekday.shortLabel)
+                                        .font(.callout.weight(.semibold))
+                                        .frame(maxWidth: .infinity)
+                                        .padding(.vertical, 9)
+                                }
+                                .buttonStyle(.plain)
+                                .foregroundStyle(isSelected ? Color.blue : Color.primary)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 9)
+                                        .fill(isSelected ? Color.accentColor : Color.secondary.opacity(0.12))
+                                )
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 9)
+                                        .stroke(isSelected ? Color.clear : Color.secondary.opacity(0.22))
+                                )
+                                .accessibilityLabel(weekday.label)
+                                .accessibilityAddTraits(isSelected ? .isSelected : [])
+                            }
+                        }
+                    }
+
+                    Toggle(
+                        "Fijar una hora",
+                        isOn: Binding(
+                            get: { vm.usesWeeklyTime },
+                            set: { vm.setWeeklyTimeEnabled($0) }
+                        )
+                    )
+
+                    if vm.usesWeeklyTime {
+                        DatePicker(
+                            "Hora de ejecución",
+                            selection: $vm.weeklyTime,
+                            displayedComponents: .hourAndMinute
+                        )
+                        Label(
+                            "Podrás marcar cada ejecución desde esa hora y durante los 60 minutos siguientes.",
+                            systemImage: "clock.badge.checkmark"
+                        )
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                    }
+
+                case .specificDates:
+                    ForEach(Array(vm.specificDates.indices), id: \.self) { index in
+                        DatePicker(
+                            GoalsL10n.format(
+                                "goals.dynamic.indexed_unit_label",
+                                fallback: "{0} {1}",
+                                vm.getTextoForUNidades(number: 1).localizedCapitalized,
+                                String(index + 1)
+                            ),
+                            selection: $vm.specificDates[index],
+                            displayedComponents: .date
+                        )
+                    }
+                }
+
+                if vm.scheduleType != .weekly || !vm.usesWeeklyTime {
+                    Picker("Momento del día", selection: $vm.dayPeriod) {
+                        ForEach(GoalDayPeriod.allCases, id: \.self) { period in
+                            Text(period.label).tag(period)
+                        }
+                    }
+                }
+            } header: {
+                Label("Ritmo", systemImage: "calendar.badge.clock")
+            } footer: {
+                if vm.scheduleType == .weekly, vm.usesWeeklyTime {
+                    Text("La hora fija sustituye al Momento del día para evitar franjas contradictorias.")
+                }
+            }
+
+            Section {
+                GoalFormSummaryCard(
+                    title: vm.title,
+                    target: vm.executionTargetText,
+                    schedule: scheduleSummary,
+                    completion: completionSummary,
+                    estimatedExecutions: vm.completionBasis == .duration ? vm.estimatedUnitCount() : nil
+                )
+                .listRowInsets(EdgeInsets())
+                .listRowBackground(Color.clear)
+
+                if let validationMessage {
+                    Label(validationMessage, systemImage: "exclamationmark.circle.fill")
+                        .font(.footnote)
+                        .foregroundStyle(.orange)
+                }
+            } header: {
+                Label("Así quedará tu meta", systemImage: "checklist")
+            } footer: {
+                Text("Comprueba que el objetivo, el ritmo y la condición de finalización expresen exactamente tu intención.")
+            }
+
+            Section {
+                TextField("Añade contexto, motivación o instrucciones…", text: $vm.description, axis: .vertical)
+                    .lineLimit(3...7)
+                    .focused($focusedField, equals: .description)
+            } header: {
+                Label("Detalles opcionales", systemImage: "text.alignleft")
+            }
         }
-        .cornerRadius(20)
+        .formStyle(.grouped)
         .onAppear {
             if vm.scheduleType == .specificDates {
                 vm.syncSpecificDates()
@@ -483,11 +380,19 @@ struct CreateGoalView: View {
             if newValue == .specificDates {
                 vm.syncSpecificDates()
             }
+            if newValue != .weekly {
+                vm.setWeeklyTimeEnabled(false)
+            }
         }
         .onChange(of: vm.completionBasis) { _, newValue in
             if newValue == .duration, vm.scheduleType == .specificDates {
                 vm.scheduleType = .interval
             }
+        }
+        .alert("No se pudo crear la meta", isPresented: $showCreateError) {
+            Button("Aceptar", role: .cancel) { }
+        } message: {
+            Text("Comprueba los datos e inténtalo de nuevo.")
         }
         
     }
@@ -535,6 +440,7 @@ struct CreateGoalView: View {
                                         self.vm.scheduleType = meta.getMeta.scheduleType
                                         self.vm.setWeeklyDayCount(meta.getMeta.weeklyDaysPerWeek)
                                         self.vm.dayPeriod = meta.getMeta.dayPeriod
+                                        self.vm.setWeeklyTimeEnabled(false)
                                         self.vm.customUnitLabel = meta.getMeta.customUnitLabel
                                         self.vm.executionTargetValue = 1
                                         self.vm.completionBasis = .executions
@@ -581,11 +487,11 @@ struct CreateGoalView: View {
     
     
     //Lógica del botón Crear una Meta
-    private func createGoal() {
+    private func createGoal() -> Bool {
         let goal = GoalEntity(context: context)
         goal.id = UUID()
-        goal.title = vm.title
-        goal.descriptionText = vm.description
+        goal.title = vm.title.trimmingCharacters(in: .whitespacesAndNewlines)
+        goal.descriptionText = vm.description.trimmingCharacters(in: .whitespacesAndNewlines)
         goal.totalUnits = Int32(vm.amount)
         switch vm.scheduleType {
         case .interval:
@@ -599,7 +505,8 @@ struct CreateGoalView: View {
         goal.scheduleType = vm.scheduleType.rawValue
         goal.weeklyDaysPerWeek = Int16(vm.weeklyDaysPerWeek)
         goal.weeklyDaysMask = GoalWeeklySchedule.mask(for: vm.selectedWeeklyDays)
-        goal.dayPeriod = vm.dayPeriod.rawValue
+        goal.weeklyTimeMinutes = Int32(vm.effectiveWeeklyTimeMinutes ?? GoalWeeklyTime.disabledMinutes)
+        goal.dayPeriod = (vm.effectiveWeeklyTimeMinutes == nil ? vm.dayPeriod : GoalDayPeriod.anytime).rawValue
         goal.customUnitLabel = vm.customUnitLabel.trimmingCharacters(in: .whitespacesAndNewlines)
         goal.executionTargetValue = vm.executionTargetValue
         goal.completionBasis = vm.completionBasis.rawValue
@@ -618,15 +525,90 @@ struct CreateGoalView: View {
         
         do{
             try context.save()
+            return true
         }catch{
             context.rollback()
             msg("Error al crear una meta nueva")
+            showCreateError = true
+            return false
         }
-        
     }
     
     
     
+}
+
+struct GoalFormSummaryCard: View {
+    let title: String
+    let target: String
+    let schedule: String
+    let completion: String
+    let estimatedExecutions: Int?
+
+    private var cleanTitle: String {
+        let value = title.trimmingCharacters(in: .whitespacesAndNewlines)
+        return value.isEmpty ? "Meta sin título" : value
+    }
+
+    private var summaryParagraph: String {
+        let titleValue = title.trimmingCharacters(in: .whitespacesAndNewlines)
+        let targetValue = target.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        let scheduleValue = schedule.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        let completionValue = completion.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+
+        let intention = titleValue.isEmpty
+            ? "En esta meta te propones completar \(targetValue)."
+            : "Con «\(titleValue)» te propones completar \(targetValue)."
+        let cadence = "Lo harás \(scheduleValue)."
+
+        if let estimatedExecutions {
+            return "\(intention) \(cadence) Mantendrás este plan \(completionValue), con aproximadamente \(estimatedExecutions) oportunidades de avance."
+        }
+
+        return "\(intention) \(cadence) Alcanzarás la meta al completar \(completionValue)."
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            HStack(alignment: .top, spacing: 12) {
+                Image(systemName: "target")
+                    .font(.title2.weight(.semibold))
+                    .foregroundStyle(.black)
+                    .frame(width: 42, height: 42)
+                    .background(Color.accentColor, in: RoundedRectangle(cornerRadius: 12))
+
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("Tu plan")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                        .textCase(.uppercase)
+                    Text(cleanTitle)
+                        .font(.title3.weight(.bold))
+                        .foregroundStyle(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? Color.orange : Color.primary)
+                }
+            }
+
+            Text(summaryParagraph)
+                .font(.body)
+                .foregroundStyle(.primary)
+                .lineSpacing(4)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(18)
+        .background(
+            LinearGradient(
+                colors: [Color.accentColor.opacity(0.16), Color.green.opacity(0.08)],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            ),
+            in: RoundedRectangle(cornerRadius: 18)
+        )
+        .overlay {
+            RoundedRectangle(cornerRadius: 18)
+                .stroke(Color.accentColor.opacity(0.2), lineWidth: 1)
+        }
+        .accessibilityElement(children: .combine)
+    }
 }
 
 #Preview {

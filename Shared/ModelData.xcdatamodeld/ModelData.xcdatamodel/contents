@@ -34,6 +34,7 @@
         <attribute name="unitType" optional="YES" attributeType="String"/>
         <attribute name="weeklyDaysPerWeek" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="weeklyDaysMask" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="weeklyTimeMinutes" optional="YES" attributeType="Integer 32" defaultValueString="-1" usesScalarValueType="YES"/>
         <relationship name="units" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ArchivedUnitEntity" inverseName="goal" inverseEntity="ArchivedUnitEntity"/>
     </entity>
     <entity name="ArchivedUnitEntity" representedClassName="ArchivedUnitEntity" syncable="YES" codeGenerationType="class">
@@ -131,6 +132,7 @@
         <attribute name="unitType" optional="YES" attributeType="String"/>
         <attribute name="weeklyDaysPerWeek" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="weeklyDaysMask" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="weeklyTimeMinutes" optional="YES" attributeType="Integer 32" defaultValueString="-1" usesScalarValueType="YES"/>
         <relationship name="units" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="UnitEntity" inverseName="goal" inverseEntity="UnitEntity"/>
     </entity>
     <entity name="GoalStatsEventEntity" representedClassName="GoalStatsEventEntity" syncable="YES" codeGenerationType="class">

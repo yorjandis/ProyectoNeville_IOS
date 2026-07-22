@@ -5095,6 +5095,9 @@
         }
       }
     },
+    "Añade contexto, motivación o instrucciones…" : {
+
+    },
     "Añadir" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -6228,6 +6231,9 @@
           }
         }
       }
+    },
+    "Así quedará tu meta" : {
+
     },
     "Asia-Pacífico" : {
       "localizations" : {
@@ -8677,6 +8683,7 @@
       }
     },
     "Cada:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -9173,6 +9180,9 @@
         }
       }
     },
+    "Cantidad total" : {
+
+    },
     "Cantidad total de entradas registradas en el Diario desde el inicio." : {
       "localizations" : {
         "en" : {
@@ -9196,6 +9206,7 @@
       }
     },
     "Cantidad total:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -11362,6 +11373,9 @@
         }
       }
     },
+    "Cómo se registra" : {
+
+    },
     "Compara con opciones de lista corta de ingredientes y menor procesamiento." : {
       "localizations" : {
         "en" : {
@@ -11822,6 +11836,9 @@
         }
       }
     },
+    "Comprueba los datos e inténtalo de nuevo." : {
+
+    },
     "Comprueba los permisos de Salud y usa el Apple Watch con regularidad. La referencia personal mejora tras varios días de lecturas." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -11844,6 +11861,9 @@
           }
         }
       }
+    },
+    "Comprueba que el objetivo, el ritmo y la condición de finalización expresen exactamente tu intención." : {
+
     },
     "Comprueba señales de alarma y recursos de tu país" : {
       "localizations" : {
@@ -11882,6 +11902,9 @@
           }
         }
       }
+    },
+    "Con este ritmo se crearán aproximadamente %lld oportunidades de avance." : {
+
     },
     "con intención" : {
       "localizations" : {
@@ -15134,6 +15157,7 @@
       }
     },
     "Descripción" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -15460,6 +15484,9 @@
           }
         }
       }
+    },
+    "Detalles opcionales" : {
+
     },
     "Detalles..." : {
       "localizations" : {
@@ -16170,9 +16197,6 @@
         }
       }
     },
-    "Días específicos:" : {
-
-    },
     "días seguidos" : {
       "localizations" : {
         "en" : {
@@ -16630,7 +16654,11 @@
         }
       }
     },
+    "Duración" : {
+
+    },
     "Duración total:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -16777,6 +16805,9 @@
           }
         }
       }
+    },
+    "Editar meta" : {
+
     },
     "Editar nombre" : {
       "localizations" : {
@@ -16926,7 +16957,14 @@
         }
       }
     },
+    "Ej. Meditar todos los días" : {
+
+    },
+    "Ej. minutos, páginas, km, vasos" : {
+
+    },
     "Ej. páginas, km, vasos" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -16993,6 +17031,7 @@
       }
     },
     "Eje. Meditar todos los días" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -17015,6 +17054,7 @@
       }
     },
     "Ejecutar:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -17060,6 +17100,7 @@
       }
     },
     "Ejemplos: 10 minutos, 3 páginas o 5 km cada vez." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -17555,6 +17596,9 @@
         }
       }
     },
+    "El título es obligatorio." : {
+
+    },
     "Elegir categoría" : {
       "localizations" : {
         "en" : {
@@ -17752,6 +17796,9 @@
           }
         }
       }
+    },
+    "Elige los días" : {
+
     },
     "Elige un foco realista para la próxima semana." : {
       "localizations" : {
@@ -20847,6 +20894,9 @@
         }
       }
     },
+    "Estos cambios se aplicarán también a las ejecuciones pendientes." : {
+
+    },
     "Estoy aquí" : {
       "localizations" : {
         "en" : {
@@ -21907,6 +21957,7 @@
       }
     },
     "Fecha de cada unidad:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -22276,6 +22327,9 @@
         }
       }
     },
+    "Fijar una hora" : {
+
+    },
     "Filtrar" : {
       "localizations" : {
         "en" : {
@@ -22511,6 +22565,9 @@
           }
         }
       }
+    },
+    "Finalización" : {
+
     },
     "Finalizar" : {
       "localizations" : {
@@ -24027,6 +24084,7 @@
       }
     },
     "goals.dynamic.creation_summary" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -24269,6 +24327,7 @@
       }
     },
     "goals.dynamic.period_suffix" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -24313,6 +24372,7 @@
       }
     },
     "goals.dynamic.planned_execution_count" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -25633,6 +25693,7 @@
       }
     },
     "goals.ui.summary_value" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -28282,6 +28343,9 @@
         }
       }
     },
+    "Hora de ejecución" : {
+
+    },
     "Horas" : {
       "localizations" : {
         "en" : {
@@ -29264,6 +29328,9 @@
         }
       }
     },
+    "Indica el título y cuánto cuenta como un avance. Por ejemplo: 10 minutos en cada ejecución." : {
+
+    },
     "Indica si deseas activar un recordatorio" : {
       "localizations" : {
         "en" : {
@@ -29931,6 +29998,9 @@
         }
       }
     },
+    "Intervalo" : {
+
+    },
     "Invertir" : {
       "localizations" : {
         "en" : {
@@ -30328,6 +30398,9 @@
         }
       }
     },
+    "La ejecución se podrá marcar durante una hora desde el horario elegido." : {
+
+    },
     "La ejecución terminada se conservará en el historial y se creará una nueva Meta activa sin iniciar." : {
       "localizations" : {
         "en" : {
@@ -30530,6 +30603,12 @@
         }
       }
     },
+    "La hora fija sustituye al Momento del día para evitar franjas contradictorias." : {
+
+    },
+    "La hora fija sustituye al Momento del día. El cambio reprogramará las ejecuciones pendientes sin modificar el progreso ya registrado." : {
+
+    },
     "La hora seleccionada ya pasó. Ajusta la fecha u hora del recordatorio a un momento futuro para poder activarlo." : {
       "localizations" : {
         "en" : {
@@ -30731,6 +30810,9 @@
         }
       }
     },
+    "La Ley - Metas" : {
+
+    },
     "La Ley - Objetivos" : {
       "localizations" : {
         "en" : {
@@ -30873,7 +30955,11 @@
         }
       }
     },
+    "La meta termina por" : {
+
+    },
     "La meta termina por:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -34789,6 +34875,7 @@
       }
     },
     "Momento del día:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -36702,6 +36789,7 @@
       }
     },
     "No se ha podido actualizar el objetivo. Inténtalo de nuevo." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -36722,6 +36810,9 @@
           }
         }
       }
+    },
+    "No se ha podido actualizar la meta. Inténtalo de nuevo." : {
+
     },
     "No se ha podido actualizar la nota de la unidad. Inténtalo más tarde." : {
       "localizations" : {
@@ -37064,6 +37155,9 @@
           }
         }
       }
+    },
+    "No se pudo crear la meta" : {
+
     },
     "No se pudo determinar el estado del permiso de ubicación." : {
       "localizations" : {
@@ -37557,6 +37651,7 @@
       }
     },
     "Nombre de la unidad:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -37669,6 +37764,7 @@
       }
     },
     "Nota Adjunta:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -39056,6 +39152,7 @@
       }
     },
     "Objetivo por ejecución:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -41071,6 +41168,9 @@
         }
       }
     },
+    "Podrás marcar cada ejecución desde esa hora y durante los 60 minutos siguientes." : {
+
+    },
     "Política de Privacidad" : {
       "localizations" : {
         "en" : {
@@ -42485,7 +42585,11 @@
         }
       }
     },
+    "Programación" : {
+
+    },
     "Programación:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -43183,6 +43287,9 @@
           }
         }
       }
+    },
+    "Qué quieres lograr" : {
+
     },
     "Quicena pasada" : {
       "localizations" : {
@@ -45431,6 +45538,9 @@
           }
         }
       }
+    },
+    "Resumen actualizado" : {
+
     },
     "RESUMEN DE CIERRE" : {
       "localizations" : {
@@ -50663,7 +50773,11 @@
         }
       }
     },
+    "Título de la meta" : {
+
+    },
     "Título de la Meta" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -50708,6 +50822,7 @@
       }
     },
     "Título:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -51833,6 +51948,9 @@
         }
       }
     },
+    "Tu plan" : {
+
+    },
     "Tu poder sigue aquí, contigo" : {
       "localizations" : {
         "en" : {
@@ -52655,6 +52773,9 @@
           }
         }
       }
+    },
+    "Unidad de duración" : {
+
     },
     "unidades" : {
       "localizations" : {

@@ -310,9 +310,9 @@ enum OrderedJSONWriter {
         case MigrationRecordType.agenda:
             return ["title", "note", "activityDateMillis", "activityTimeMillis", "place", "content", "priority", "colorHex", "completed", "reminderActive", "reminderId"]
         case MigrationRecordType.goal:
-            return ["title", "descriptionText", "totalUnits", "unitType", "frequency", "scheduleType", "weeklyDaysPerWeek", "weeklyDaysMask", "dayPeriod", "customUnitLabel", "executionTargetValue", "completionBasis", "durationValue", "durationUnit", "isStarted", "startDate", "notifyOnUnitAvailable", "lastNotifiedUnitIndex", "status", "units"]
+            return ["title", "descriptionText", "totalUnits", "unitType", "frequency", "scheduleType", "weeklyDaysPerWeek", "weeklyDaysMask", "weeklyTimeMinutes", "dayPeriod", "customUnitLabel", "executionTargetValue", "completionBasis", "durationValue", "durationUnit", "isStarted", "startDate", "notifyOnUnitAvailable", "lastNotifiedUnitIndex", "status", "units"]
         case MigrationRecordType.archivedGoal:
-            return ["title", "descriptionText", "totalUnits", "unitType", "frequency", "scheduleType", "weeklyDaysPerWeek", "weeklyDaysMask", "dayPeriod", "customUnitLabel", "executionTargetValue", "completionBasis", "durationValue", "durationUnit", "completionDate", "status", "units"]
+            return ["title", "descriptionText", "totalUnits", "unitType", "frequency", "scheduleType", "weeklyDaysPerWeek", "weeklyDaysMask", "weeklyTimeMinutes", "dayPeriod", "customUnitLabel", "executionTargetValue", "completionBasis", "durationValue", "durationUnit", "completionDate", "status", "units"]
         case MigrationRecordType.personalPhrase:
             return ["phrase", "author", "source", "favorite", "note", "category"]
         case MigrationRecordType.personalReflection:

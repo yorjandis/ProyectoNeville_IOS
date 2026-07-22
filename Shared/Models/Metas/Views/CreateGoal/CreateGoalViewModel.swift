@@ -21,6 +21,8 @@ final class CreateGoalViewModel: ObservableObject {
     @Published var weeklyDaysPerWeek: Int   = 3
     @Published var selectedWeeklyDays: Set<GoalWeekday> = GoalWeeklySchedule.defaultWeekdays(count: 3)
     @Published var dayPeriod: GoalDayPeriod = .anytime
+    @Published var usesWeeklyTime: Bool = false
+    @Published var weeklyTime: Date = GoalWeeklyTime.date(minutes: GoalWeeklyTime.defaultMinutes) ?? Date()
     @Published var customUnitLabel: String  = ""
     @Published var executionTargetValue: Double = 1
     @Published var completionBasis: GoalCompletionBasis = .executions
@@ -36,7 +38,13 @@ final class CreateGoalViewModel: ObservableObject {
         executionTargetValue > 0 &&
         (completionBasis != .duration || durationValue > 0) &&
         (scheduleType != .weekly || (!selectedWeeklyDays.isEmpty && selectedWeeklyDays.count == weeklyDaysPerWeek)) &&
+        (scheduleType != .weekly || !usesWeeklyTime || dayPeriod == .anytime) &&
         (scheduleType != .specificDates || specificDates.count == amount)
+    }
+
+    var effectiveWeeklyTimeMinutes: Int? {
+        guard scheduleType == .weekly, usesWeeklyTime else { return nil }
+        return GoalWeeklyTime.minutes(from: weeklyTime)
     }
 
     var executionTargetText: String {
@@ -65,7 +73,8 @@ final class CreateGoalViewModel: ObservableObject {
                     from: referenceDate,
                     until: endDate,
                     weekdays: selectedWeeklyDays,
-                    period: dayPeriod
+                    period: dayPeriod,
+                    timeMinutes: effectiveWeeklyTimeMinutes
                 ),
                 1
             )
@@ -119,9 +128,14 @@ final class CreateGoalViewModel: ObservableObject {
         }
         weeklyDaysPerWeek = selectedWeeklyDays.count
     }
+
+    func setWeeklyTimeEnabled(_ isEnabled: Bool) {
+        usesWeeklyTime = isEnabled
+        if isEnabled {
+            dayPeriod = .anytime
+        }
+    }
     
     
-    static let shared = CreateGoalViewModel()
-    
-    private init() {}
+    init() {}
 }

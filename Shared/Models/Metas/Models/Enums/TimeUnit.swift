@@ -104,6 +104,16 @@ nonisolated enum GoalsL10n {
         )
     }
 
+    static func addingWeeklyTime(_ cadence: String, minutes: Int?) -> String {
+        guard let minutes else { return cadence }
+        return format(
+            "goals.dynamic.schedule_with_time",
+            fallback: "{0} · a las {1}",
+            cadence,
+            GoalWeeklyTime.formatted(minutes: minutes)
+        )
+    }
+
     static func unitDisplayName(_ storedName: String?, index: Int) -> String {
         let legacySpanish = "Unidad \(index)"
         let legacyEnglish = "Unit \(index)"
@@ -307,6 +317,7 @@ nonisolated enum GoalWeeklySchedule {
         from referenceDate: Date,
         weekdays: Set<GoalWeekday>,
         period: GoalDayPeriod,
+        timeMinutes: Int? = nil,
         calendar: Calendar = .current
     ) -> [Date] {
         guard count > 0, !weekdays.isEmpty else { return [] }
@@ -320,7 +331,10 @@ nonisolated enum GoalWeeklySchedule {
             if let weekday = GoalWeekday(
                 rawValue: calendar.component(.weekday, from: candidate)
             ), weekdays.contains(weekday) {
-                if let window = period.window(on: candidate, calendar: calendar) {
+                let window = timeMinutes.flatMap {
+                    GoalWeeklyTime.window(on: candidate, minutes: $0, calendar: calendar)
+                } ?? period.window(on: candidate, calendar: calendar)
+                if let window {
                     if candidate > calendar.startOfDay(for: referenceDate) || referenceDate <= window.end {
                         result.append(candidate)
                     }
@@ -341,6 +355,7 @@ nonisolated enum GoalWeeklySchedule {
         until endDate: Date,
         weekdays: Set<GoalWeekday>,
         period: GoalDayPeriod,
+        timeMinutes: Int? = nil,
         maximum: Int = 5_000,
         calendar: Calendar = .current
     ) -> Int {
@@ -352,8 +367,12 @@ nonisolated enum GoalWeeklySchedule {
             if let weekday = GoalWeekday(
                 rawValue: calendar.component(.weekday, from: candidate)
             ), weekdays.contains(weekday) {
-                if let window = period.window(on: candidate, calendar: calendar) {
-                    if candidate > calendar.startOfDay(for: referenceDate) || referenceDate <= window.end {
+                let window = timeMinutes.flatMap {
+                    GoalWeeklyTime.window(on: candidate, minutes: $0, calendar: calendar)
+                } ?? period.window(on: candidate, calendar: calendar)
+                if let window {
+                    if window.start < endDate,
+                       (candidate > calendar.startOfDay(for: referenceDate) || referenceDate <= window.end) {
                         count += 1
                     }
                 } else {
@@ -372,6 +391,56 @@ nonisolated enum GoalWeeklySchedule {
         let formatter = ListFormatter()
         formatter.locale = AppLanguage.current.locale
         return formatter.string(from: labels) ?? labels.joined(separator: ", ")
+    }
+}
+
+nonisolated enum GoalWeeklyTime {
+    static let disabledMinutes = -1
+    static let defaultMinutes = 20 * 60
+
+    static func normalized(_ minutes: Int?) -> Int? {
+        guard let minutes, (0..<(24 * 60)).contains(minutes) else { return nil }
+        return minutes
+    }
+
+    static func minutes(from date: Date, calendar: Calendar = .current) -> Int {
+        let components = calendar.dateComponents([.hour, .minute], from: date)
+        return min(max((components.hour ?? 0) * 60 + (components.minute ?? 0), 0), 1_439)
+    }
+
+    static func date(
+        on day: Date = Date(),
+        minutes: Int,
+        calendar: Calendar = .current
+    ) -> Date? {
+        guard let normalized = normalized(minutes) else { return nil }
+        return calendar.date(
+            bySettingHour: normalized / 60,
+            minute: normalized % 60,
+            second: 0,
+            of: day
+        )
+    }
+
+    static func window(
+        on day: Date,
+        minutes: Int,
+        calendar: Calendar = .current
+    ) -> (start: Date, end: Date)? {
+        guard let start = date(on: day, minutes: minutes, calendar: calendar),
+              let end = calendar.date(byAdding: .hour, value: 1, to: start) else {
+            return nil
+        }
+        return (start, end)
+    }
+
+    static func formatted(minutes: Int) -> String {
+        guard let date = date(minutes: minutes) else { return "" }
+        let formatter = DateFormatter()
+        formatter.locale = AppLanguage.current.locale
+        formatter.dateStyle = .none
+        formatter.timeStyle = .short
+        return formatter.string(from: date)
     }
 }
 
