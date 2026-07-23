@@ -1496,6 +1496,9 @@ struct cardNotas: View{
                         .foregroundStyle(.black)
                         .font(.title3)
                         .padding(.leading, 4)
+                        .onTapGesture {
+                            onSelectionToggle()
+                        }
                 }
 
                 Text(nota?.title ?? "")
@@ -1888,27 +1891,12 @@ struct cardNotas: View{
                     if nota?.isChecklistNote == true {
                         checklistPreview
                     } else {
-                        #if os(macOS)
-                        Text(noteActionText)
-                            .font(.system(size: 20))
-                            .fontDesign(.serif)
-                            .foregroundStyle(.black)
-                            .multilineTextAlignment(.leading)
-                            .fixedSize(horizontal: false, vertical: true)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .textSelection(.enabled)
-                            .contentShape(RoundedRectangle(cornerRadius: 20))
-                            .padding(.vertical, 4)
-                            .padding(.horizontal, 5)
-                            .background {
-                                LinearGradient(colors: [.white.opacity(0.8), .white.opacity(0.7)], startPoint: .top, endPoint: .bottom)
-                            }
-                        #else
-                        SelectableText(text: noteActionText)
-                            .font(.system(size: 20))
-                            .fontDesign(.serif)
-                            .foregroundStyle(.black)
-                            .multilineTextAlignment(.leading)
+                        SelectableText(
+                            text: noteActionText,
+                            fontSize: 20,
+                            fontColor: .black,
+                            alignment: .left
+                        )
                             .fixedSize(horizontal: false, vertical: true)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .contentShape(RoundedRectangle(cornerRadius: 20))
@@ -1917,23 +1905,12 @@ struct cardNotas: View{
                             .background {
                                 LinearGradient(colors: [.white.opacity(0.8), .white.opacity(0.7)], startPoint: .top, endPoint: .bottom)
                             }
-                        #endif
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
         .contentShape(Rectangle())
-        .onTapGesture {
-            guard !selectionMode else {
-                onSelectionToggle()
-                return
-            }
-            withAnimation {
-                expandNota.toggle()
-            }
-            
-        }
         .onAppear{
             isfav = nota!.isfav
         }
@@ -1985,23 +1962,25 @@ struct cardNotas: View{
     private var checklistPreview: some View {
         VStack(alignment: .leading, spacing: 8) {
             ForEach(nota?.checklistItems ?? []) { item in
-                Button {
-                    toggleChecklistItem(item)
-                } label: {
-                    HStack(alignment: .top, spacing: 10) {
+                HStack(alignment: .top, spacing: 10) {
+                    Button {
+                        toggleChecklistItem(item)
+                    } label: {
                         Image(systemName: item.isChecked ? "checkmark.circle.fill" : "circle")
                             .font(.title3)
                             .foregroundStyle(item.isChecked ? .green : .black.opacity(0.7))
-                        Text(item.text)
-                            .font(.system(size: 20))
-                            .fontDesign(.serif)
-                            .foregroundStyle(.black)
-                            .strikethrough(item.isChecked, color: .black.opacity(0.45))
-                            .multilineTextAlignment(.leading)
-                            .frame(maxWidth: .infinity, alignment: .leading)
                     }
+                    .buttonStyle(.plain)
+
+                    SelectableText(
+                        text: item.text,
+                        fontSize: 20,
+                        fontColor: .black,
+                        alignment: .left
+                    )
+                    .strikethrough(item.isChecked, color: .black.opacity(0.45))
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
-                .buttonStyle(.plain)
             }
         }
         .padding(.vertical, 8)

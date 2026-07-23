@@ -42,18 +42,18 @@ struct CreateGoalView: View {
         case .interval:
             return GoalsL10n.addingPeriod(
                 GoalsL10n.intervalCadence(frequency: vm.frequency, unit: vm.unit),
-                period: vm.dayPeriod
+                period: vm.effectiveDayPeriod
             )
         case .weekly:
             let cadence = "\(GoalsL10n.weeklyCadence(days: vm.weeklyDaysPerWeek)) · \(GoalWeeklySchedule.summary(for: vm.selectedWeeklyDays))"
             if let minutes = vm.effectiveWeeklyTimeMinutes {
                 return GoalsL10n.addingWeeklyTime(cadence, minutes: minutes)
             }
-            return GoalsL10n.addingPeriod(cadence, period: vm.dayPeriod)
+            return GoalsL10n.addingPeriod(cadence, period: vm.effectiveDayPeriod)
         case .specificDates:
             return GoalsL10n.addingPeriod(
                 GoalsL10n.specificDatesCadence(count: vm.amount),
-                period: vm.dayPeriod
+                period: vm.effectiveDayPeriod
             )
         }
     }
@@ -320,18 +320,28 @@ struct CreateGoalView: View {
                     }
                 }
 
-                if vm.scheduleType != .weekly || !vm.usesWeeklyTime {
+                if vm.supportsDayPeriod,
+                   (vm.scheduleType != .weekly || !vm.usesWeeklyTime) {
                     Picker("Momento del día", selection: $vm.dayPeriod) {
                         ForEach(GoalDayPeriod.allCases, id: \.self) { period in
                             Text(period.label).tag(period)
                         }
                     }
+                } else if vm.scheduleType == .interval {
+                    Label(
+                        "El propio intervalo determina la ventana de cada ejecución.",
+                        systemImage: "info.circle"
+                    )
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
                 }
             } header: {
                 Label("Ritmo", systemImage: "calendar.badge.clock")
             } footer: {
                 if vm.scheduleType == .weekly, vm.usesWeeklyTime {
                     Text("La hora fija sustituye al Momento del día para evitar franjas contradictorias.")
+                } else if vm.scheduleType == .interval, !vm.supportsDayPeriod {
+                    Text("Momento del día solo está disponible para intervalos medidos en días. En minutos, horas, semanas, meses o años la propia duración del intervalo define cuándo empieza y termina cada unidad.")
                 }
             }
 
@@ -380,9 +390,10 @@ struct CreateGoalView: View {
             if newValue == .specificDates {
                 vm.syncSpecificDates()
             }
-            if newValue != .weekly {
-                vm.setWeeklyTimeEnabled(false)
-            }
+            vm.normalizeTimingOptions()
+        }
+        .onChange(of: vm.unit) { _, _ in
+            vm.normalizeTimingOptions()
         }
         .onChange(of: vm.completionBasis) { _, newValue in
             if newValue == .duration, vm.scheduleType == .specificDates {
@@ -448,6 +459,7 @@ struct CreateGoalView: View {
                                         self.vm.durationUnit = .dias
                                         self.vm.specificDates = meta.getMeta.specificDates
                                         self.vm.unidadesInfo = meta.getMeta.unidadesInfo
+                                        self.vm.normalizeTimingOptions()
                                         if self.vm.scheduleType == .specificDates {
                                             self.vm.syncSpecificDates()
                                         }
@@ -506,7 +518,7 @@ struct CreateGoalView: View {
         goal.weeklyDaysPerWeek = Int16(vm.weeklyDaysPerWeek)
         goal.weeklyDaysMask = GoalWeeklySchedule.mask(for: vm.selectedWeeklyDays)
         goal.weeklyTimeMinutes = Int32(vm.effectiveWeeklyTimeMinutes ?? GoalWeeklyTime.disabledMinutes)
-        goal.dayPeriod = (vm.effectiveWeeklyTimeMinutes == nil ? vm.dayPeriod : GoalDayPeriod.anytime).rawValue
+        goal.dayPeriod = vm.effectiveDayPeriod.rawValue
         goal.customUnitLabel = vm.customUnitLabel.trimmingCharacters(in: .whitespacesAndNewlines)
         goal.executionTargetValue = vm.executionTargetValue
         goal.completionBasis = vm.completionBasis.rawValue

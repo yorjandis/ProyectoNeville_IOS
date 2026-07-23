@@ -298,6 +298,7 @@ final class WatchDataSyncToWatch: NSObject {
                 // Mantener la misma transición pendiente → perdida de la app iOS
                 // cuando el reloj solicita o recibe una nueva instantánea.
                 for goal in goals {
+                    goal.repairSchedulingConsistencyIfNeeded(now: now)
                     for unit in goal.unitsArray where unit.unitStatus == .pending && (unit.endDate ?? .distantFuture) < now {
                         unit.updateLostIfNeeded(now: now)
                     }

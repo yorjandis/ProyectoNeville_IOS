@@ -53,15 +53,13 @@ struct ReflexShowTextView: View {
                 VStack(alignment: .leading){
                     HStack{
                         ScrollView{
-                            #if os(macOS)
-                            Text(entity.content)
-                                .font(.system(size: self.fontSizeContent))
-                                .foregroundStyle(.primary)
-                                .textSelection(.enabled)
-                                .padding(.horizontal, 5)
-                            #else
-                            SelectableText(text: entity.content, fontSize: self.fontSizeContent,fonColor: UIColor(Color.primary) ,  alignment: .left)
-                            #endif
+                            SelectableText(
+                                text: entity.content,
+                                fontSize: self.fontSizeContent,
+                                fontColor: .primary,
+                                alignment: .left
+                            )
+                            .padding(.horizontal, 5)
                             
                         }.scrollIndicators(.automatic)
                         
@@ -369,5 +367,4 @@ struct ReflexShowTextView: View {
         }
     }
 }
-
 

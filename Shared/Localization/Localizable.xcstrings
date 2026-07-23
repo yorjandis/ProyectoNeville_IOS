@@ -5672,6 +5672,9 @@
         }
       }
     },
+    "Apariencia" : {
+
+    },
     "Apertura" : {
       "localizations" : {
         "en" : {
@@ -9038,6 +9041,9 @@
         }
       }
     },
+    "Cambiar tamaño y colores del lector" : {
+
+    },
     "Cambiar texto" : {
       "localizations" : {
         "en" : {
@@ -10826,6 +10832,7 @@
       "shouldTranslate" : false
     },
     "Color de fondo y letra" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -11017,6 +11024,12 @@
         }
       }
     },
+    "Color del fondo" : {
+
+    },
+    "Color del texto" : {
+
+    },
     "Color Texto Principal" : {
       "localizations" : {
         "en" : {
@@ -11048,6 +11061,9 @@
           }
         }
       }
+    },
+    "Colores" : {
+
     },
     "Colores Chat IA" : {
       "localizations" : {
@@ -12952,6 +12968,9 @@
           }
         }
       }
+    },
+    "Contenido del documento" : {
+
     },
     "Contenido exclusivo" : {
       "localizations" : {
@@ -17485,6 +17504,9 @@
           }
         }
       }
+    },
+    "El propio intervalo determina la ventana de cada ejecución." : {
+
     },
     "El reconocimiento de texto no está disponible en este dispositivo." : {
       "localizations" : {
@@ -32406,6 +32428,7 @@
       }
     },
     "Letra" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -34873,6 +34896,12 @@
           }
         }
       }
+    },
+    "Momento del día no se combina con este tipo de intervalo, porque produciría ventanas contradictorias o ambiguas." : {
+
+    },
+    "Momento del día solo está disponible para intervalos medidos en días. En minutos, horas, semanas, meses o años la propia duración del intervalo define cuándo empieza y termina cada unidad." : {
+
     },
     "Momento del día:" : {
       "extractionState" : "stale",
@@ -41755,6 +41784,9 @@
         }
       }
     },
+    "Preparando contenido de la conferencia" : {
+
+    },
     "Preparando el cierre de hoy…" : {
       "localizations" : {
         "en" : {
@@ -41792,6 +41824,9 @@
           }
         }
       }
+    },
+    "Preparando lectura…" : {
+
     },
     "Preparando tu recomendación" : {
       "extractionState" : "stale",
@@ -45412,6 +45447,9 @@
           }
         }
       }
+    },
+    "Restablecer apariencia" : {
+
     },
     "Restaurar" : {
       "localizations" : {
@@ -49770,6 +49808,12 @@
           }
         }
       }
+    },
+    "Tamaño de fuente" : {
+
+    },
+    "Tamaño de fuente · %lld pt" : {
+
     },
     "Tamaño de letra" : {
       "localizations" : {

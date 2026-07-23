@@ -38,8 +38,24 @@ final class CreateGoalViewModel: ObservableObject {
         executionTargetValue > 0 &&
         (completionBasis != .duration || durationValue > 0) &&
         (scheduleType != .weekly || (!selectedWeeklyDays.isEmpty && selectedWeeklyDays.count == weeklyDaysPerWeek)) &&
-        (scheduleType != .weekly || !usesWeeklyTime || dayPeriod == .anytime) &&
+        dayPeriod == effectiveDayPeriod &&
         (scheduleType != .specificDates || specificDates.count == amount)
+    }
+
+    var supportsDayPeriod: Bool {
+        GoalSchedulingRules.supportsDayPeriod(
+            scheduleType: scheduleType,
+            intervalUnit: unit
+        )
+    }
+
+    var effectiveDayPeriod: GoalDayPeriod {
+        GoalSchedulingRules.normalizedDayPeriod(
+            scheduleType: scheduleType,
+            intervalUnit: unit,
+            requestedPeriod: dayPeriod,
+            weeklyTimeMinutes: effectiveWeeklyTimeMinutes
+        )
     }
 
     var effectiveWeeklyTimeMinutes: Int? {
@@ -73,7 +89,7 @@ final class CreateGoalViewModel: ObservableObject {
                     from: referenceDate,
                     until: endDate,
                     weekdays: selectedWeeklyDays,
-                    period: dayPeriod,
+                    period: effectiveDayPeriod,
                     timeMinutes: effectiveWeeklyTimeMinutes
                 ),
                 1
@@ -134,6 +150,13 @@ final class CreateGoalViewModel: ObservableObject {
         if isEnabled {
             dayPeriod = .anytime
         }
+    }
+
+    func normalizeTimingOptions() {
+        if scheduleType != .weekly {
+            usesWeeklyTime = false
+        }
+        dayPeriod = effectiveDayPeriod
     }
     
     

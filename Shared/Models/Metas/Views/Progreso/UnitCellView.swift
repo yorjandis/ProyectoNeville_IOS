@@ -129,7 +129,7 @@ struct UnitCellView: View {
         let previousStatus = unit.status
         unit.updateLostIfNeeded(now: clock.now)
 
-        if previousStatus != unit.status {
+        if previousStatus != unit.status || context.hasChanges {
             try? context.save()
         }
     }

@@ -13,7 +13,12 @@ struct RelatedFileDetailView: View {
     
     var body: some View {
         ScrollView {
-            Text( UtilFuncs.FileRead(fileName, omittingFirstLines: 0))
+            SelectableText(
+                text: UtilFuncs.FileRead(fileName, omittingFirstLines: 0),
+                fontSize: 18,
+                fontColor: .primary,
+                alignment: .left
+            )
                 .padding()
                 .frame(maxWidth: .infinity, alignment: .leading)
         }

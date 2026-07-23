@@ -1,115 +1,141 @@
-//
-//  SelectableText.swift
-//
-//
-//  Created by Kevin Hermawan on 14/02/24.
-//
-
 import SwiftUI
-#if os(macOS)
-import AppKit
-#endif
 
-///  A view that displays one or more lines of read-only selectable text.
+/// Superficie de texto seleccionable compartida por iOS y macOS.
 ///
-/// Initializing with plain text:
-/// ```swift
-/// SelectableText("This is some selectable text.")
-/// ```
-///
-/// Initializing with `AttributedString`:
-/// ```swift
-/// let attributes: AttributeContainer = [
-///     .foregroundColor: NSColor.systemPink,
-///     .font: NSFont.preferredFont(forTextStyle: .body)
-/// ]
-///
-/// let attributedString = AttributedString("This is some styled selectable text.", attributes: attributes)
-/// SelectableText(attributedString)
-/// ```
-///
-/// Initializing with `NSAttributedString`:
-/// ```swift
-/// let nsAttributes: [NSAttributedString.Key: Any] = [
-///     .foregroundColor: NSColor.systemPink,
-///     .font: NSFont.preferredFont(forTextStyle: .body)
-/// ]
-///
-/// let nsAttributedString = NSAttributedString(string: "This is some styled selectable text.", attributes: nsAttributes)
-/// SelectableText(nsAttributedString)
-/// ```
+/// Los documentos extensos usan TextKit 2 y desplazamiento nativo. Los textos
+/// pequeños usan `Text` con selección para no crear vistas de texto pesadas.
 public struct SelectableText: View {
-    private var text: String? = nil
-    private var fontSize: CGFloat = 50
+    private let text: String?
+    private let attributedText: AttributedString?
+    private let fontSize: CGFloat
+    private let fontColor: Color
+    private let backgroundColor: Color
+    private let alignment: NSTextAlignment
+    private let isScrollEnabled: Bool
+    private let documentID: String
 
-    private var fontColor: UIColor = .black
-
-    private var alignment: NSTextAlignment = .left
-    private var attributedText: NSAttributedString? = nil
-    @State private var layoutHeight: CGFloat = .zero
-    
-    /// Inicializa la vista con texto plano
-    /// - Parameter text: The text to be displayed.
-    public init(text: String, fontSize: CGFloat = 25,fonColor : UIColor = .black, alignment : NSTextAlignment = .justified) {
+    public init(
+        text: String,
+        fontSize: CGFloat = 25,
+        fontColor: Color,
+        backgroundColor: Color = .clear,
+        alignment: NSTextAlignment = .justified,
+        isScrollEnabled: Bool = false,
+        documentID: String = ""
+    ) {
         self.text = text
+        self.attributedText = nil
         self.fontSize = fontSize
-        self.fontColor = fonColor
+        self.fontColor = fontColor
+        self.backgroundColor = backgroundColor
         self.alignment = alignment
+        self.isScrollEnabled = isScrollEnabled
+        self.documentID = documentID
     }
-    
-    /// Inicializa la vista con un  `AttributedString`.
-    /// - Parameter attributedText: The attributed text to be displayed.
+
+    /// Compatibilidad con los puntos existentes que todavía entregan colores nativos.
+    public init(
+        text: String,
+        fontSize: CGFloat = 25,
+        fonColor: UIColor = .black,
+        backgroundColor: UIColor = .clear,
+        alignment: NSTextAlignment = .justified,
+        isScrollEnabled: Bool = false,
+        documentID: String = ""
+    ) {
+        self.init(
+            text: text,
+            fontSize: fontSize,
+            fontColor: Color(fonColor),
+            backgroundColor: Color(backgroundColor),
+            alignment: alignment,
+            isScrollEnabled: isScrollEnabled,
+            documentID: documentID
+        )
+    }
+
+    public init(
+        _ text: String,
+        fontSize: CGFloat = 25,
+        fonColor: UIColor = .black,
+        alignment: NSTextAlignment = .justified
+    ) {
+        self.init(text: text, fontSize: fontSize, fonColor: fonColor, alignment: alignment)
+    }
+
     public init(
         _ attributedText: AttributedString,
         fontSize: CGFloat = 25,
         fonColor: UIColor = .black,
         alignment: NSTextAlignment = .left
     ) {
-        // Convertimos a NSMutableAttributedString para poder modificar atributos
-        let mutable = NSMutableAttributedString(attributedText)
-        
-        // Rango de todo el texto
-        let rango = NSRange(location: 0, length: mutable.length)
-        
-        // Fuente
-        mutable.addAttribute(.font, value: UIFont.systemFont(ofSize: fontSize), range: rango)
-        
-        // Color
-        mutable.addAttribute(.foregroundColor, value: fonColor, range: rango)
-        
-        // Alineación
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.alignment = alignment
-        mutable.addAttribute(.paragraphStyle, value: paragraphStyle, range: rango)
-        
-        self.attributedText = mutable
-        self.fontSize = fontSize
-        self.fontColor = fonColor
-        self.alignment = alignment
-    }
-    
-    /// Initializes the view with an `NSAttributedString`.
-    /// - Parameter attributedText: The attributed text to be displayed.
-    public init(_ attributedText: NSAttributedString) {
+        self.text = nil
         self.attributedText = attributedText
+        self.fontSize = fontSize
+        self.fontColor = Color(fonColor)
+        self.backgroundColor = .clear
+        self.alignment = alignment
+        self.isScrollEnabled = false
+        self.documentID = ""
     }
-    
+
+    public init(_ attributedText: NSAttributedString) {
+        self.text = nil
+        self.attributedText = AttributedString(attributedText)
+        self.fontSize = 25
+        self.fontColor = .primary
+        self.backgroundColor = .clear
+        self.alignment = .left
+        self.isScrollEnabled = false
+        self.documentID = ""
+    }
+
     public var body: some View {
-        
-         GeometryReader { proxy in
-             SelectableTextRepresentable(
-                 text: text ?? "",
-                 attributedText: attributedText,
-                 fontSize: self.fontSize,
-                 fontColor: self.fontColor,
-                 alignment: self.alignment,
-                 maxLayoutWidth: proxy.maxWidth,
-                 layoutHeight: $layoutHeight
-             )
-         }
-         .frame(height: layoutHeight)
-  
+        if isScrollEnabled, let text {
+            SelectableTextRepresentable(
+                text: text,
+                documentID: documentID,
+                fontSize: fontSize,
+                fontColor: fontColor,
+                backgroundColor: backgroundColor,
+                alignment: alignment
+            )
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        } else if let attributedText {
+            Text(attributedText)
+                .textSelection(.enabled)
+                .multilineTextAlignment(swiftUIAlignment)
+                .frame(maxWidth: .infinity, alignment: frameAlignment)
+        } else {
+            Text(text ?? "")
+                .font(.system(size: fontSize))
+                .foregroundStyle(fontColor)
+                .multilineTextAlignment(swiftUIAlignment)
+                .textSelection(.enabled)
+                .frame(maxWidth: .infinity, alignment: frameAlignment)
+                .background(backgroundColor)
+        }
+    }
+
+    private var swiftUIAlignment: TextAlignment {
+        switch alignment {
+        case .center:
+            .center
+        case .right:
+            .trailing
+        default:
+            .leading
+        }
+    }
+
+    private var frameAlignment: Alignment {
+        switch alignment {
+        case .center:
+            .center
+        case .right:
+            .trailing
+        default:
+            .leading
+        }
     }
 }
-
-

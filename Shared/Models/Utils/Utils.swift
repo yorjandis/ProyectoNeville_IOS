@@ -36,7 +36,10 @@ struct UtilFuncs{
     ///Puede omitir un número de líneas al inicio del fichero
     /// - Parameter - fileName: el nombre del fichero, sin la extensión
     ///  - Returns - Devuelve el contenido del fichero
-    static func FileRead(_ fileName: String, omittingFirstLines linesToOmit: Int = 0) -> String {
+    nonisolated static func FileRead(
+        _ fileName: String,
+        omittingFirstLines linesToOmit: Int = 0
+    ) -> String {
         var result = ""
         let temp = "\(fileName.lowercased())"
 
@@ -80,7 +83,7 @@ struct UtilFuncs{
         return result
     }
 
-    private static func localizedFileContents(named fileName: String) -> String {
+    nonisolated private static func localizedFileContents(named fileName: String) -> String {
         let preferred = Bundle.main.preferredLocalizations.first ?? "es"
         let locale: String
         if preferred.lowercased().hasPrefix("zh") {

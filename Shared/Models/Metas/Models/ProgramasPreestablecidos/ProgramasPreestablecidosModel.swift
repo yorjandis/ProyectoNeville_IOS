@@ -253,7 +253,15 @@ nonisolated struct ProgramasPreestablecido: Codable, Identifiable {
             fallback: "{0} {1}, {2}",
             String(noUnidades),
             quantityLabel,
-            GoalsL10n.addingPeriod(cadence, period: dayPeriod)
+            GoalsL10n.addingPeriod(
+                cadence,
+                period: GoalSchedulingRules.normalizedDayPeriod(
+                    scheduleType: scheduleType,
+                    intervalUnit: tipoUnidad,
+                    requestedPeriod: dayPeriod,
+                    weeklyTimeMinutes: nil
+                )
+            )
         )
     }
 }

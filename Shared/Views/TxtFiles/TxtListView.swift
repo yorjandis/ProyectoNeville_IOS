@@ -134,7 +134,9 @@ struct TxtListView: View {
                                                                  title: self.title,
                                                                  nombreTxt: nombreTxt,
                                                                  type: self.typeOfContent,
-                                                                 blocks: self.contentBlocks(for: nombreTxt)
+                                                                 blocks: self.typeOfContent == .conf
+                                                                    ? []
+                                                                    : self.contentBlocks(for: nombreTxt)
                                                              ),
                                                              environmentObjects: [
                                                                  self.modeloTxt,
@@ -207,7 +209,9 @@ struct TxtListView: View {
                                               title: self.title,
                                               nombreTxt: nombreTxt,
                                               type: self.typeOfContent,
-                                              blocks: self.contentBlocks(for: nombreTxt)
+                                              blocks: self.typeOfContent == .conf
+                                                ? []
+                                                : self.contentBlocks(for: nombreTxt)
                                           ),
                                           environmentObjects: [self.modeloTxt, self.settingModel, self.clipBoardModel],
                                           title: "\(self.title) - \(nombreTxt)",
@@ -265,7 +269,9 @@ struct TxtListView: View {
                                                             title: self.title,
                                                             nombreTxt: nombreTxt,
                                                             type: self.typeOfContent,
-                                                            blocks: self.contentBlocks(for: nombreTxt)
+                                                            blocks: self.typeOfContent == .conf
+                                                                ? []
+                                                                : self.contentBlocks(for: nombreTxt)
                                                         )
                                                             .environmentObject(self.modeloTxt)
                                                             .environmentObject(self.settingModel)
@@ -319,7 +325,9 @@ struct TxtListView: View {
                                         title: self.title,
                                         nombreTxt: nombreTxt,
                                         type: self.typeOfContent,
-                                        blocks: self.contentBlocks(for: nombreTxt)
+                                        blocks: self.typeOfContent == .conf
+                                            ? []
+                                            : self.contentBlocks(for: nombreTxt)
                                     )
                                         .environmentObject(self.modeloTxt)
                                         .environmentObject(self.settingModel)
@@ -470,5 +478,4 @@ struct TxtListView: View {
         return [ContentBlock(content: .text(text))]
     }
 }
-
 

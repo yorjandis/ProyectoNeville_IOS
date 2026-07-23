@@ -76,9 +76,10 @@ struct ShareExtensionView: View {
                                                         }
                                                         
                                                     }else{
-                                                        SelectableText(textoQR)
+                                                        Text(textoQR)
                                                             .font(.title2)
                                                             .foregroundStyle(.black)
+                                                            .textSelection(.enabled)
                                                             .padding(.vertical, 8)
                                                             .padding(.horizontal, 14)
                                                             .frame(maxWidth: .infinity, minHeight: geometry.size.height * 0.5) // Altura dependiente del 40% de la pantalla
@@ -172,9 +173,10 @@ struct ShareExtensionView: View {
                                                             
                                                         }
                                                     }else{
-                                                        SelectableText(textqr)
+                                                        Text(textqr)
                                                             .font(.title2)
                                                             .foregroundStyle(.black)
+                                                            .textSelection(.enabled)
                                                             .padding(.vertical, 8)
                                                             .padding(.horizontal, 14)
                                                             .frame(maxWidth: .infinity, minHeight: geometry.size.height * 0.5) // Altura dependiente del 40% de la pantalla

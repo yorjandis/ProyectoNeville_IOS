@@ -377,8 +377,8 @@ private extension CoreDataCanonicalMigrationBridge {
                 "scheduleType": goal.scheduleType ?? GoalScheduleType.interval.rawValue,
                 "weeklyDaysPerWeek": Int(goal.weeklyDaysPerWeek),
                 "weeklyDaysMask": Int(goal.weeklyDaysMask),
-                "weeklyTimeMinutes": Int(goal.weeklyTimeMinutes),
-                "dayPeriod": goal.dayPeriod ?? GoalDayPeriod.anytime.rawValue,
+                "weeklyTimeMinutes": goal.weeklyTimeMinutesValue ?? GoalWeeklyTime.disabledMinutes,
+                "dayPeriod": goal.goalDayPeriod.rawValue,
                 "customUnitLabel": goal.customUnitLabel ?? "",
                 "executionTargetValue": goal.executionTargetValue,
                 "completionBasis": goal.completionBasis ?? GoalCompletionBasis.executions.rawValue,
@@ -675,7 +675,15 @@ private extension CoreDataCanonicalMigrationBridge {
         goal.weeklyDaysPerWeek = Int16(MigrationJSON.int(record.payload, "weeklyDaysPerWeek", default: 3))
         goal.weeklyDaysMask = Int16(MigrationJSON.int(record.payload, "weeklyDaysMask"))
         goal.weeklyTimeMinutes = Int32(MigrationJSON.int(record.payload, "weeklyTimeMinutes", default: GoalWeeklyTime.disabledMinutes))
-        goal.dayPeriod = MigrationJSON.string(record.payload, "dayPeriod", default: GoalDayPeriod.anytime.rawValue)
+        let importedPeriod = GoalDayPeriod(
+            rawValue: MigrationJSON.string(record.payload, "dayPeriod", default: GoalDayPeriod.anytime.rawValue)
+        ) ?? .anytime
+        goal.dayPeriod = GoalSchedulingRules.normalizedDayPeriod(
+            scheduleType: goal.goalScheduleType,
+            intervalUnit: goal.timeUnit,
+            requestedPeriod: importedPeriod,
+            weeklyTimeMinutes: goal.weeklyTimeMinutesValue
+        ).rawValue
         goal.customUnitLabel = MigrationJSON.string(record.payload, "customUnitLabel")
         goal.executionTargetValue = MigrationJSON.double(record.payload, "executionTargetValue", default: 1)
         goal.completionBasis = MigrationJSON.string(record.payload, "completionBasis", default: GoalCompletionBasis.executions.rawValue)
@@ -715,7 +723,20 @@ private extension CoreDataCanonicalMigrationBridge {
         goal.weeklyDaysPerWeek = Int16(MigrationJSON.int(record.payload, "weeklyDaysPerWeek", default: 3))
         goal.weeklyDaysMask = Int16(MigrationJSON.int(record.payload, "weeklyDaysMask"))
         goal.weeklyTimeMinutes = Int32(MigrationJSON.int(record.payload, "weeklyTimeMinutes", default: GoalWeeklyTime.disabledMinutes))
-        goal.dayPeriod = MigrationJSON.string(record.payload, "dayPeriod", default: GoalDayPeriod.anytime.rawValue)
+        let archivedSchedule = GoalScheduleType(rawValue: goal.scheduleType ?? "") ?? .interval
+        let archivedUnit = TimeUnit(rawValue: goal.unitType ?? "") ?? .dias
+        let archivedTime = archivedSchedule == .weekly
+            ? GoalWeeklyTime.normalized(Int(goal.weeklyTimeMinutes))
+            : nil
+        let importedArchivedPeriod = GoalDayPeriod(
+            rawValue: MigrationJSON.string(record.payload, "dayPeriod", default: GoalDayPeriod.anytime.rawValue)
+        ) ?? .anytime
+        goal.dayPeriod = GoalSchedulingRules.normalizedDayPeriod(
+            scheduleType: archivedSchedule,
+            intervalUnit: archivedUnit,
+            requestedPeriod: importedArchivedPeriod,
+            weeklyTimeMinutes: archivedTime
+        ).rawValue
         goal.customUnitLabel = MigrationJSON.string(record.payload, "customUnitLabel")
         goal.executionTargetValue = MigrationJSON.double(record.payload, "executionTargetValue", default: 1)
         goal.completionBasis = MigrationJSON.string(record.payload, "completionBasis", default: GoalCompletionBasis.executions.rawValue)

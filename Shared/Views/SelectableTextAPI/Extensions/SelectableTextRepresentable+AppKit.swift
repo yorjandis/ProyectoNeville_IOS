@@ -1,87 +1,120 @@
-//
-//  SelectableTextRepresentable+AppKit.swift
-//
-//
-//  Created by Kevin Hermawan on 14/02/24.
-//
-
 #if canImport(AppKit)
 import AppKit
 import SwiftUI
 
- struct SelectableTextRepresentable: NSViewRepresentable {
-     var text: String? = nil
-     var attributedText: NSAttributedString? = nil
-     var fontSize : CGFloat
-     var fontColor : UIColor = .black
-     var alignment : NSTextAlignment
-     var maxLayoutWidth: CGFloat = .zero
-     
-     @Binding var layoutHeight: CGFloat
-     
-     func makeNSView(context: Context) -> NSTextView {
-         let textView = BaseTextView()
-         textView.isEditable = false
-         textView.isSelectable = true
-         textView.backgroundColor = .clear
-         textView.textContainerInset = .zero
-         textView.textContainer?.lineFragmentPadding = 0
-         textView.maxLayoutWidth = self.maxLayoutWidth
-         
-         // Configurar la fuente y color
-         textView.font = NSFont.systemFont(ofSize: self.fontSize)
-         textView.textColor = self.fontColor
-         
-         // Configurar alineación mediante paragraph style
-         let paragraphStyle = NSMutableParagraphStyle()
-         paragraphStyle.alignment = self.alignment
+struct SelectableTextRepresentable: NSViewRepresentable {
+    let text: String
+    let documentID: String
+    let fontSize: CGFloat
+    let fontColor: Color
+    let backgroundColor: Color
+    let alignment: NSTextAlignment
 
-         // Aplicar el estilo al texto plano
-         textView.typingAttributes = [
-             .paragraphStyle: paragraphStyle,
-             .font: NSFont.systemFont(ofSize: self.fontSize),
-             .foregroundColor: self.fontColor
-         ]
+    func makeCoordinator() -> Coordinator {
+        Coordinator()
+    }
 
-         if let text {
-             textView.string = text
-         }
+    func makeNSView(context: Context) -> NSScrollView {
+        let contentStorage = NSTextContentStorage()
+        let layoutManager = NSTextLayoutManager()
+        contentStorage.addTextLayoutManager(layoutManager)
 
-         return textView
-     }
-     
-     func updateNSView(_ nsView: NSTextView, context: Context) {
-         if let baseView = nsView as? BaseTextView {
-             baseView.maxLayoutWidth = self.maxLayoutWidth
-         }
+        let textContainer = NSTextContainer(
+            size: NSSize(width: 0, height: CGFloat.greatestFiniteMagnitude)
+        )
+        textContainer.widthTracksTextView = true
+        layoutManager.textContainer = textContainer
 
-         if let text, nsView.string != text {
-             nsView.string = text
-         }
+        let textView = NSTextView(frame: .zero, textContainer: textContainer)
+        textView.isEditable = false
+        textView.isSelectable = true
+        textView.isRichText = false
+        textView.importsGraphics = false
+        textView.allowsUndo = false
+        textView.usesFindBar = true
+        textView.isIncrementalSearchingEnabled = true
+        textView.isVerticallyResizable = true
+        textView.isHorizontallyResizable = false
+        textView.autoresizingMask = [.width]
+        textView.minSize = .zero
+        textView.maxSize = NSSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
+        textView.textContainerInset = NSSize(width: 20, height: 22)
+        textView.textContainer?.lineFragmentPadding = 0
+        textView.textContainer?.widthTracksTextView = true
+        textView.textContainer?.containerSize = NSSize(
+            width: 0,
+            height: CGFloat.greatestFiniteMagnitude
+        )
+        textView.drawsBackground = true
+        textView.setAccessibilityLabel(String(localized: "Contenido del documento"))
 
-         if nsView.textColor != self.fontColor {
-             nsView.textColor = self.fontColor
-         }
+        let scrollView = NSScrollView()
+        scrollView.borderType = .noBorder
+        scrollView.hasVerticalScroller = true
+        scrollView.hasHorizontalScroller = false
+        scrollView.autohidesScrollers = true
+        scrollView.drawsBackground = true
+        textView.frame = scrollView.contentView.bounds
+        scrollView.documentView = textView
 
-         if nsView.font?.pointSize != self.fontSize {
-             nsView.font = NSFont.systemFont(ofSize: self.fontSize)
-         }
+        context.coordinator.contentStorage = contentStorage
+        context.coordinator.layoutManager = layoutManager
+        context.coordinator.textView = textView
+        applyAppearance(to: textView, scrollView: scrollView, coordinator: context.coordinator)
+        return scrollView
+    }
 
-         if let attributedText, nsView.attributedString() != attributedText {
-             nsView.isRichText = true
-             nsView.textStorage?.setAttributedString(attributedText)
-         }
+    func updateNSView(_ scrollView: NSScrollView, context: Context) {
+        guard let textView = context.coordinator.textView else { return }
+        applyAppearance(to: textView, scrollView: scrollView, coordinator: context.coordinator)
 
-         let newHeight = nsView.intrinsicContentSize.height
-         if abs(self.layoutHeight - newHeight) > 0.5 {
-             DispatchQueue.main.async {
-                 self.layoutHeight = newHeight
-             }
-         }
-     }
- }
+        guard context.coordinator.documentID != documentID else { return }
+        context.coordinator.documentID = documentID
+        textView.string = text
+        textView.setSelectedRange(NSRange(location: 0, length: 0))
+        scrollView.contentView.scroll(to: .zero)
+        scrollView.reflectScrolledClipView(scrollView.contentView)
+    }
 
+    private func applyAppearance(
+        to textView: NSTextView,
+        scrollView: NSScrollView,
+        coordinator: Coordinator
+    ) {
+        if coordinator.fontSize != fontSize {
+            coordinator.fontSize = fontSize
+            textView.font = .systemFont(ofSize: fontSize)
+        }
 
+        if coordinator.fontColor != fontColor {
+            coordinator.fontColor = fontColor
+            let nativeColor = NSColor(fontColor)
+            textView.textColor = nativeColor
+            textView.insertionPointColor = nativeColor
+        }
 
+        if coordinator.backgroundColor != backgroundColor {
+            coordinator.backgroundColor = backgroundColor
+            let nativeColor = NSColor(backgroundColor)
+            textView.backgroundColor = nativeColor
+            scrollView.backgroundColor = nativeColor
+        }
 
+        if coordinator.alignment != alignment {
+            coordinator.alignment = alignment
+            textView.alignment = alignment
+        }
+    }
+
+    final class Coordinator {
+        var documentID: String?
+        var fontSize: CGFloat?
+        var fontColor: Color?
+        var backgroundColor: Color?
+        var alignment: NSTextAlignment?
+        var contentStorage: NSTextContentStorage?
+        var layoutManager: NSTextLayoutManager?
+        weak var textView: NSTextView?
+    }
+}
 #endif

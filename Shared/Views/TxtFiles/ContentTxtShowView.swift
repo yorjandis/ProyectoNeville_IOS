@@ -34,6 +34,10 @@ struct ContentTxtShowView: View {
     let type : TipoDeContenido //define el tipo de contenido a generar por IA
     
     var blocks : [ContentBlock] = []
+
+    /// Las conferencias pueden cargarse después de presentar la vista para que
+    /// la transición y la barra de navegación no compitan con la lectura del TXT.
+    @State private var deferredConferenceBlocks: [ContentBlock]? = nil
     
     var  checkPremium : Bool = false
 
@@ -43,19 +47,16 @@ struct ContentTxtShowView: View {
 
   
     
-    //Setting: Tamaño de fuente por defecto
-    @State private var fontSizeContentSliderTemp : CGFloat = 18 //Valor tenmporal del Slider para evitar actualizaciones de la UI mientras se ajusta
-
-
-    @AppStorage(AppCons.UD_setting_fontContentSize)   var UserDefaultFontSizeContenido  = 18
+    // Apariencia compartida del lector.
+    @State private var fontSizeContentSliderTemp: CGFloat = 18
+    @AppStorage(AppCons.UD_setting_fontContentSize) var UserDefaultFontSizeContenido = 18
     
     //Colores de Texto y fondo
     @State private var textContentdColor    : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_color_textContent) ?? .white
     @State private var backgroundColor      : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_color_fondoContent) ?? .black.opacity(0.7)
     
 
-    @State private var showSlider   = false         //Para mostrar el Ajuste de tamaño de fuente
-    @State private var showColor    = false         //Para mostrar el Ajuste de Colores de Texto y Fondo
+    @State private var showAppearanceSettings = false
     
     //Para comprobar el valor de desplazamiento del texto: funcion de review:
     @State private var scrollOffset: CGFloat = 0 //Para medir el desplazamiento
@@ -126,10 +127,28 @@ struct ContentTxtShowView: View {
             .navigationBarTitleDisplayMode(.inline)
             #endif
             .onAppear {
-                //Se carga el tamaño de la Fuente:
-                self.fontSizeContentSliderTemp = CGFloat(UserDefaultFontSizeContenido)
-                
-               
+                self.fontSizeContentSliderTemp = min(
+                    42,
+                    max(13, CGFloat(UserDefaultFontSizeContenido))
+                )
+            }
+            .task(id: self.readerDocumentID) {
+                await self.loadConferenceIfNeeded()
+            }
+            .onChange(of: self.fontSizeContentSliderTemp) { _, newValue in
+                self.UserDefaultFontSizeContenido = Int(newValue)
+            }
+            .onChange(of: self.backgroundColor) { _, newValue in
+                self.settingModel.saveColor(
+                    forkey: AppCons.UD_setting_color_fondoContent,
+                    color: newValue
+                )
+            }
+            .onChange(of: self.textContentdColor) { _, newValue in
+                self.settingModel.saveColor(
+                    forkey: AppCons.UD_setting_color_textContent,
+                    color: newValue
+                )
             }
             .toolbar{
 
@@ -166,20 +185,25 @@ struct ContentTxtShowView: View {
                 
                  ToolbarItem{
                      if let _ = self.clipBoarModel.clipboardText{
-                         withAnimation {
-                             TextoCopiadoView(clipBoardModel: self.clipBoarModel,
-                                              nameTxt: self.nombreTxt,
-                                              showAlert: self.$showAlert,
-                                              alertMessage: self.$alertMessage,
-                                              showSheetTextoCopiadoAlPortapapelesParaInterpretar: self.$showSheetTextoCopiadoAlPortapapelesParaInterpretar,
-                                              showSheetTtextoCopiadoAlPortapapelesParaChatIA: self.$showSheetTtextoCopiadoAlPortapapelesParaChatIA,
-                                              showSheetTtextoCopiadoAlPortapapelesParaLienzo: self.$showSheetTtextoCopiadoAlPortapapelesParaLienzo)
-                         }
-                         
-                        
+                         TextoCopiadoView(clipBoardModel: self.clipBoarModel,
+                                          nameTxt: self.nombreTxt,
+                                          showAlert: self.$showAlert,
+                                          alertMessage: self.$alertMessage,
+                                          showSheetTextoCopiadoAlPortapapelesParaInterpretar: self.$showSheetTextoCopiadoAlPortapapelesParaInterpretar,
+                                          showSheetTtextoCopiadoAlPortapapelesParaChatIA: self.$showSheetTtextoCopiadoAlPortapapelesParaChatIA,
+                                          showSheetTtextoCopiadoAlPortapapelesParaLienzo: self.$showSheetTtextoCopiadoAlPortapapelesParaLienzo)
                      }else{
                          EmptyView()
                      }
+                 }
+
+                 ToolbarItem {
+                     Button {
+                         self.showAppearanceSettings = true
+                     } label: {
+                         Label("Apariencia", systemImage: "textformat")
+                     }
+                     .help("Cambiar tamaño y colores del lector")
                  }
                  
                  
@@ -344,54 +368,6 @@ struct ContentTxtShowView: View {
                          ToolbarSpacer(.fixed)
                      }
                      
-                     //Opciones de Ajuste de tamaño y color de fuente y opciones de tratamiento del texto copiado
-                     ToolbarItem {
-                         Menu{
-                             
-                             
-                             Button("Tamaño de Letra", systemImage: "textformat") {
-                                 withAnimation(.easeInOut) {
-                                     self.showColor = false
-                                     self.showSlider.toggle()
-                                 }
-                             }
-                             Button("Color de fondo y letra", systemImage: "paintpalette.fill") {
-                                 withAnimation(.easeInOut) {
-                                     self.showSlider = false
-                                     self.showColor.toggle()
-                                 }
-                             }
-                             
-                             //Menú de acciones con el texto copiado
-                             /*
-                              if let _ = self.clipBoarModel.clipboardText{
-                                  TextoCopiadoView(clipBoardModel: self.clipBoarModel,
-                                                   nameTxt: self.nombreTxt,
-                                                   showAlert: self.$showAlert,
-                                                   alertMessage: self.$alertMessage,
-                                                   showSheetTextoCopiadoAlPortapapelesParaInterpretar: self.$showSheetTextoCopiadoAlPortapapelesParaInterpretar,
-                                                   showSheetTtextoCopiadoAlPortapapelesParaChatIA: self.$showSheetTtextoCopiadoAlPortapapelesParaChatIA,
-                                                   showSheetTtextoCopiadoAlPortapapelesParaLienzo: self.$showSheetTtextoCopiadoAlPortapapelesParaLienzo)
-                                 
-                              }else{
-                                  EmptyView()
-                              }
-                              */
-                             
-                             
-                             
-                             
-                             
-                             
-                         }label: {
-                             Image(systemName: "line.3.horizontal")
-                             
-                            
-                                 
-                         }
-                         
-                         
-                     }
                  }
                 
                
@@ -529,137 +505,9 @@ struct ContentTxtShowView: View {
                 
                 
 
-                //Ajustar Tamaño de fuente
-                if showSlider {
-                    #if os(macOS)
-                    
-                    ToolbarItem(placement: .navigation) {
-                        HStack{
-                            Slider(value: self.$fontSizeContentSliderTemp, in: 18...50, onEditingChanged: { editing in
-                                if !editing {
-                                    // Se ejecuta solo cuando se deja de mover el slider
-                                    UserDefaultFontSizeContenido = Int(fontSizeContentSliderTemp)
-                                }
-                            })
-                            .frame(width: 250)
-                            
-                            Button{
-                                withAnimation {
-                                    self.showSlider = false
-                                }
-                                
-                            }label: {
-                                Image(systemName: "xmark.circle")
-                            }
-                            .padding(.horizontal, 10)
-                        }
-                        
-                    }
-                    
-                    if #available(iOS 26.0, macOS 26.0, *) {
-                        ToolbarSpacer(.fixed)
-                    }
-                    
-                    #else
-                    ToolbarItem(placement: .bottomBar) {
-                        Slider(value: self.$fontSizeContentSliderTemp, in: 18...50, onEditingChanged: { editing in
-                            if !editing {
-                                // Se ejecuta solo cuando se deja de mover el slider
-                                UserDefaultFontSizeContenido = Int(fontSizeContentSliderTemp)
-                            }
-                        })
-                    }
-                    
-                    #endif
-                    
-                }
-                
-                
-                //Ajustar Color de Fondo
-                if showColor{
-                    #if os(macOS)
-                    ToolbarItem(placement: .navigation) {
-                        ColorPicker(selection: self.$backgroundColor) {
-                            Label("Fondo", systemImage: "text.page.fill")
-                        }
-                        .frame(width: 120)
-                        .onChange(of: self.backgroundColor) { oldValue, newValue in
-                            settingModel.saveColor(forkey: AppCons.UD_setting_color_fondoContent, color: newValue)
-                        }
-                    }
-                    
-                    if #available(iOS 26.0, macOS 26.0, *) {
-                        ToolbarSpacer(.fixed)
-                    }
-                    
-                    #else
-                    ToolbarItem(placement: .bottomBar) {
-                        //Color de fondo
-                        ColorPicker(selection: self.$backgroundColor) {
-                            Label("Fondo", systemImage: "text.page.fill")
-                        }
-                        .frame(width: 120)
-                        .onChange(of: self.backgroundColor) { oldValue, newValue in
-                            settingModel.saveColor(forkey: AppCons.UD_setting_color_fondoContent, color: newValue)
-                        }
-                    }
-                    
-                    #endif
-                    
-                    
-                    if #available(iOS 26.0, macOS 26.0, *) {
-                        ToolbarSpacer(.fixed)
-                    }
-                    
-                    #if os(macOS)
-                    
-                    ToolbarItem(placement: .navigation) {
-                        //Color de texto
-                        HStack{
-                            ColorPicker(selection: self.$textContentdColor) {
-                                Label("Letra", systemImage: "text.alignleft")
-                                
-                            }
-                            .frame(width: 120)
-                            .onChange(of: self.textContentdColor) { oldValue, newValue in
-                                settingModel.saveColor(forkey: AppCons.UD_setting_color_textContent, color: newValue)
-                            }
-                            
-                            Button{
-                                withAnimation {
-                                    self.showColor = false
-                                }
-                                
-                            }label: {
-                                Image(systemName: "xmark.circle")
-                            }
-                            .padding(.horizontal, 10)
-                            
-                        }
-                        
-                    }
-                    
-                    if #available(iOS 26.0, macOS 26.0, *) {
-                        ToolbarSpacer(.fixed)
-                    }
-                    
-                    #else
-                    ToolbarItem(placement: .bottomBar) {
-                        //Color de texto
-                        ColorPicker(selection: self.$textContentdColor) {
-                            Label("Letra", systemImage: "text.alignleft")
-                            
-                        }
-                        .frame(width: 120)
-                        .onChange(of: self.textContentdColor) { oldValue, newValue in
-                            settingModel.saveColor(forkey: AppCons.UD_setting_color_textContent, color: newValue)
-                        }
-                    }
-                    #endif
-
-                    
-                }
-              
+            }
+            .sheet(isPresented: self.$showAppearanceSettings) {
+                appearanceSettingsSheet
             }
             .sheet(item: $showSheetTextoCopiadoAlPortapapelesParaInterpretar){ text in
                 if #available(iOS 26.0, macOS 26.0, *){
@@ -690,6 +538,68 @@ struct ContentTxtShowView: View {
             }
         }
     }//body
+
+    @ViewBuilder
+    private var appearanceSettingsSheet: some View {
+        #if os(iOS)
+        ReaderAppearanceSettingsView(
+            fontSize: self.$fontSizeContentSliderTemp,
+            textColor: self.$textContentdColor,
+            backgroundColor: self.$backgroundColor
+        )
+        .presentationDetents([.medium])
+        .presentationDragIndicator(.visible)
+        #else
+        ReaderAppearanceSettingsView(
+            fontSize: self.$fontSizeContentSliderTemp,
+            textColor: self.$textContentdColor,
+            backgroundColor: self.$backgroundColor
+        )
+        .frame(width: 420, height: 330)
+        #endif
+    }
+
+    private var readerDocumentID: String {
+        "\(self.type.rawValue)|\(self.nombreTxt)|\(self.title)"
+    }
+
+    private var shouldLoadConferenceDeferred: Bool {
+        self.type == .conf && self.blocks.isEmpty && !self.nombreTxt.isEmpty
+    }
+
+    private var readerBlocks: [ContentBlock] {
+        self.deferredConferenceBlocks ?? self.blocks
+    }
+
+    @MainActor
+    private func loadConferenceIfNeeded() async {
+        guard self.shouldLoadConferenceDeferred,
+              self.deferredConferenceBlocks == nil else {
+            return
+        }
+
+        let resourceName = "\(self.type.rawValue)\(self.nombreTxt)"
+        let loadingTask = Task.detached(priority: .userInitiated) {
+            autoreleasepool {
+                UtilFuncs.FileRead(resourceName)
+            }
+        }
+
+        // Deja que SwiftUI presente primero la navegación y sus controles,
+        // mientras el archivo ya se prepara fuera del hilo principal.
+        await Task.yield()
+        try? await Task.sleep(for: .milliseconds(120))
+        guard !Task.isCancelled else {
+            loadingTask.cancel()
+            return
+        }
+
+        let loadedText = await loadingTask.value
+
+        guard !Task.isCancelled else { return }
+        self.content = loadedText
+        self.deferredConferenceBlocks = [ContentBlock(content: .text(loadedText))]
+    }
     
     
     //Obtiene el texto del TXT
@@ -709,7 +619,7 @@ struct ContentTxtShowView: View {
     }
     
     private var premiumPreviewText: String {
-        let plainText = blocks.compactMap { block -> String? in
+        let plainText = self.readerBlocks.compactMap { block -> String? in
             switch block.content {
             case .text(let value), .markdown(let value), .quote(let value), .code(let value):
                 return value
@@ -738,7 +648,7 @@ struct ContentTxtShowView: View {
     func PremiumPreviewContent() -> some View {
         ScrollView {
             Text(self.premiumPreviewText)
-                .font(.system(size: CGFloat(self.UserDefaultFontSizeContenido)))
+                .font(.system(size: self.fontSizeContentSliderTemp))
                 .foregroundStyle(self.textContentdColor)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
@@ -779,22 +689,34 @@ struct ContentTxtShowView: View {
                 .frame(height: 200)
             }
             
-            DynamicContentView(blocks: self.blocks, fontSize: CGFloat(self.UserDefaultFontSizeContenido), fontColor: UIColor( self.textContentdColor))
+            if self.shouldLoadConferenceDeferred,
+               self.deferredConferenceBlocks == nil {
+                ProgressView("Preparando lectura…")
+                    .controlSize(.large)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .accessibilityLabel("Preparando contenido de la conferencia")
+            } else {
+                DynamicContentView(
+                    blocks: self.readerBlocks,
+                    fontSize: self.fontSizeContentSliderTemp,
+                    fontColor: self.textContentdColor,
+                    backgroundColor: self.backgroundColor,
+                    documentID: self.readerDocumentID
+                )
+            }
          
             #if os(iOS)
             //Coloca un boton Atras en la parte inferior
-            if(self.showColor == false && self.showSlider == false){
-                HStack{
-                    Spacer()
-                    Image(systemName: "house")
-                        .foregroundStyle(Color.primary.opacity(0.4))
-                        .onTapGesture {
-                            self.dismiss()
-                        }
-                        .padding(.trailing, 10)
-                }
-                .padding(5)
+            HStack{
+                Spacer()
+                Image(systemName: "house")
+                    .foregroundStyle(Color.primary.opacity(0.4))
+                    .onTapGesture {
+                        self.dismiss()
+                    }
+                    .padding(.trailing, 10)
             }
+            .padding(5)
             #endif
             
             
@@ -807,4 +729,57 @@ struct ContentTxtShowView: View {
     }
     
     
+}
+
+private struct ReaderAppearanceSettingsView: View {
+    @Environment(\.dismiss) private var dismiss
+
+    @Binding var fontSize: CGFloat
+    @Binding var textColor: Color
+    @Binding var backgroundColor: Color
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section("Tamaño de fuente · \(Int(fontSize)) pt") {
+                    Slider(value: self.$fontSize, in: 13...42, step: 1) {
+                        Text("Tamaño de fuente")
+                    } minimumValueLabel: {
+                        Image(systemName: "textformat.size.smaller")
+                    } maximumValueLabel: {
+                        Image(systemName: "textformat.size.larger")
+                    }
+                }
+
+                Section("Colores") {
+                    ColorPicker("Color del texto", selection: self.$textColor, supportsOpacity: false)
+                    ColorPicker("Color del fondo", selection: self.$backgroundColor, supportsOpacity: false)
+                }
+
+                Section {
+                    Button("Restablecer apariencia", systemImage: "arrow.counterclockwise") {
+                        self.fontSize = 20
+                        self.textColor = .primary
+                        #if os(macOS)
+                        self.backgroundColor = Color(nsColor: .windowBackgroundColor)
+                        #else
+                        self.backgroundColor = Color(uiColor: .systemBackground)
+                        #endif
+                    }
+                }
+            }
+            .formStyle(.grouped)
+            .navigationTitle("Apariencia")
+            #if os(iOS)
+            .navigationBarTitleDisplayMode(.inline)
+            #endif
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Listo") {
+                        self.dismiss()
+                    }
+                }
+            }
+        }
+    }
 }

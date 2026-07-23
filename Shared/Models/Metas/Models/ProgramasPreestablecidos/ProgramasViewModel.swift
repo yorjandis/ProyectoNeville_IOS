@@ -93,7 +93,12 @@ class ProgramasViewModel: ObservableObject {
             for: GoalWeeklySchedule.defaultWeekdays(count: programa.weeklyDaysPerWeek)
         )
         goal.weeklyTimeMinutes = Int32(GoalWeeklyTime.disabledMinutes)
-        goal.dayPeriod = programa.dayPeriod.rawValue
+        goal.dayPeriod = GoalSchedulingRules.normalizedDayPeriod(
+            scheduleType: programa.scheduleType,
+            intervalUnit: programa.tipoUnidad,
+            requestedPeriod: programa.dayPeriod,
+            weeklyTimeMinutes: nil
+        ).rawValue
         goal.customUnitLabel = programa.customUnitLabel.trimmingCharacters(in: .whitespacesAndNewlines)
         goal.executionTargetValue = 1
         goal.completionBasis = GoalCompletionBasis.executions.rawValue

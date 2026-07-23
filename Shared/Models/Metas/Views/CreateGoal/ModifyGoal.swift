@@ -19,6 +19,7 @@ struct ModifyGoal: View {
     @State private var dayPeriod: GoalDayPeriod = .anytime
     @State private var usesWeeklyTime = false
     @State private var weeklyTime = GoalWeeklyTime.date(minutes: GoalWeeklyTime.defaultMinutes) ?? Date()
+    @State private var selectedWeeklyDays: Set<GoalWeekday> = []
     
     @State private var showAlert: Bool = false
 
@@ -32,6 +33,22 @@ struct ModifyGoal: View {
 
     private var cleanTitle: String {
         title.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private var supportsDayPeriod: Bool {
+        GoalSchedulingRules.supportsDayPeriod(
+            scheduleType: goal.goalScheduleType,
+            intervalUnit: goal.timeUnit
+        )
+    }
+
+    private var canEditUnitLabel: Bool {
+        !goal.isStarted
+    }
+
+    private var canEditWeeklyDays: Bool {
+        goal.goalScheduleType == .weekly
+            && goal.goalCompletionBasis == .executions
     }
 
     private var editedExecutionTarget: String {
@@ -52,11 +69,10 @@ struct ModifyGoal: View {
         case .interval:
             cadence = GoalsL10n.intervalCadence(frequency: goal.frequencyValue, unit: goal.timeUnit)
         case .weekly:
-            let weekly = GoalsL10n.weeklyCadence(days: goal.weeklyDaysValue)
-            let selectedDays = goal.selectedWeeklyDays
-            cadence = selectedDays.isEmpty
+            let weekly = GoalsL10n.weeklyCadence(days: selectedWeeklyDays.count)
+            cadence = selectedWeeklyDays.isEmpty
                 ? weekly
-                : "\(weekly) · \(GoalWeeklySchedule.summary(for: selectedDays))"
+                : "\(weekly) · \(GoalWeeklySchedule.summary(for: selectedWeeklyDays))"
         case .specificDates:
             cadence = GoalsL10n.specificDatesCadence(count: Int(goal.totalUnits))
         }
@@ -66,7 +82,15 @@ struct ModifyGoal: View {
                 minutes: GoalWeeklyTime.minutes(from: weeklyTime)
             )
         }
-        return GoalsL10n.addingPeriod(cadence, period: dayPeriod)
+        return GoalsL10n.addingPeriod(
+            cadence,
+            period: GoalSchedulingRules.normalizedDayPeriod(
+                scheduleType: goal.goalScheduleType,
+                intervalUnit: goal.timeUnit,
+                requestedPeriod: dayPeriod,
+                weeklyTimeMinutes: nil
+            )
+        )
     }
 
     private var completionSummary: String {
@@ -77,10 +101,35 @@ struct ModifyGoal: View {
             return GoalsL10n.duration(value: goal.durationValueNumber, unit: goal.goalDurationUnit)
         }
     }
+
+    private var protectedScheduleType: String {
+        switch goal.goalScheduleType {
+        case .interval:
+            return GoalsL10n.intervalCadence(
+                frequency: goal.frequencyValue,
+                unit: goal.timeUnit
+            )
+        case .weekly:
+            return goal.goalScheduleType.label
+        case .specificDates:
+            return GoalsL10n.specificDatesCadence(count: Int(goal.totalUnits))
+        }
+    }
     
     var body: some View {
         NavigationStack {
             Form {
+                Section {
+                    Label(
+                        goal.isStarted
+                            ? "Puedes actualizar la identidad y la planificación futura. El progreso ya registrado no cambiará."
+                            : "La meta todavía no ha comenzado, así que también puedes corregir su unidad de medida.",
+                        systemImage: "checkmark.shield"
+                    )
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                }
+
                 Section {
                     TextField("Título de la meta", text: $title, axis: .vertical)
                         .font(.title3.weight(.semibold))
@@ -95,10 +144,36 @@ struct ModifyGoal: View {
                 }
 
                 Section {
-                    TextField("Ej. minutos, páginas, km, vasos", text: $unitLabel)
-                        .focused($focusedField, equals: .unitLabel)
+                    if canEditUnitLabel {
+                        TextField("Ej. minutos, páginas, km, vasos", text: $unitLabel)
+                            .focused($focusedField, equals: .unitLabel)
+                    }
 
                     if goal.goalScheduleType == .weekly {
+                        if canEditWeeklyDays {
+                            VStack(alignment: .leading, spacing: 10) {
+                                Text("Días de ejecución")
+                                    .font(.subheadline.weight(.semibold))
+
+                                LazyVGrid(
+                                    columns: Array(
+                                        repeating: GridItem(.flexible(), spacing: 6),
+                                        count: 4
+                                    ),
+                                    spacing: 6
+                                ) {
+                                    ForEach(GoalWeekday.mondayFirst) { weekday in
+                                        weeklyDayButton(weekday)
+                                    }
+                                }
+                            }
+                        } else {
+                            LabeledContent(
+                                "Días de ejecución",
+                                value: GoalWeeklySchedule.summary(for: selectedWeeklyDays)
+                            )
+                        }
+
                         Toggle(
                             "Fijar una hora",
                             isOn: Binding(
@@ -131,20 +206,31 @@ struct ModifyGoal: View {
                                 }
                             }
                         }
-                    } else {
+                    } else if supportsDayPeriod {
                         Picker("Momento del día", selection: $dayPeriod) {
                             ForEach(GoalDayPeriod.allCases, id: \.self) { period in
                                 Text(period.label).tag(period)
                             }
                         }
+                    } else {
+                        Label(
+                            "El propio intervalo determina la ventana de cada ejecución.",
+                            systemImage: "info.circle"
+                        )
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
                     }
                 } header: {
-                    Label("Cómo se registra", systemImage: "calendar.badge.clock")
+                    Label("Planificación futura", systemImage: "calendar.badge.clock")
                 } footer: {
                     if goal.goalScheduleType == .weekly, usesWeeklyTime {
-                        Text("La hora fija sustituye al Momento del día. El cambio reprogramará las ejecuciones pendientes sin modificar el progreso ya registrado.")
+                        Text("La hora fija sustituye al Momento del día. Solo se reprogramarán las ejecuciones pendientes.")
+                    } else if goal.goalScheduleType == .weekly, !canEditWeeklyDays {
+                        Text("En una meta definida por duración se conservan los días para no alterar su fecha de finalización. El horario sí puede cambiarse con seguridad.")
+                    } else if goal.goalScheduleType == .interval, !supportsDayPeriod {
+                        Text("Momento del día no se combina con este tipo de intervalo, porque produciría ventanas contradictorias o ambiguas.")
                     } else {
-                        Text("Estos cambios se aplicarán también a las ejecuciones pendientes.")
+                        Text("Estos cambios se aplicarán únicamente a las ejecuciones pendientes.")
                     }
                 }
 
@@ -154,6 +240,25 @@ struct ModifyGoal: View {
                         .focused($focusedField, equals: .description)
                 } header: {
                     Label("Detalles opcionales", systemImage: "text.alignleft")
+                }
+
+                Section {
+                    LabeledContent(
+                        "Objetivo por ejecución",
+                        value: editedExecutionTarget
+                    )
+                    LabeledContent(
+                        "Tipo de programación",
+                        value: protectedScheduleType
+                    )
+                    LabeledContent(
+                        "Finalización",
+                        value: completionSummary
+                    )
+                } header: {
+                    Label("Configuración protegida", systemImage: "lock")
+                } footer: {
+                    Text("Estos valores se mantienen para que las unidades completadas, perdidas y pendientes sigan significando lo mismo.")
                 }
 
                 Section {
@@ -204,6 +309,7 @@ struct ModifyGoal: View {
             self.description = self.goal.descriptionText ?? ""
             self.unitLabel = self.goal.customUnitLabel ?? ""
             self.dayPeriod = self.goal.goalDayPeriod
+            self.selectedWeeklyDays = self.goal.effectiveWeeklyDays(from: Date())
             if let minutes = self.goal.weeklyTimeMinutesValue,
                let date = GoalWeeklyTime.date(minutes: minutes) {
                 self.usesWeeklyTime = true
@@ -224,13 +330,43 @@ struct ModifyGoal: View {
             goal.updateSchedulingMetadata(
                 unitLabel: unitLabel,
                 dayPeriod: dayPeriod,
-                weeklyTimeMinutes: usesWeeklyTime ? GoalWeeklyTime.minutes(from: weeklyTime) : nil
+                weeklyTimeMinutes: usesWeeklyTime ? GoalWeeklyTime.minutes(from: weeklyTime) : nil,
+                weeklyDays: canEditWeeklyDays ? selectedWeeklyDays : nil
             )
             try goal.update(title: cleanTitle, description: description.trimmingCharacters(in: .whitespacesAndNewlines))
             dismiss()
         } catch {
             showAlert = true
         }
+    }
+
+    private func weeklyDayButton(_ weekday: GoalWeekday) -> some View {
+        let isSelected = selectedWeeklyDays.contains(weekday)
+        return Button {
+            if isSelected {
+                guard selectedWeeklyDays.count > 1 else { return }
+                selectedWeeklyDays.remove(weekday)
+            } else {
+                selectedWeeklyDays.insert(weekday)
+            }
+        } label: {
+            Text(weekday.shortLabel)
+                .font(.callout.weight(.semibold))
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 9)
+        }
+        .buttonStyle(.plain)
+        .foregroundStyle(isSelected ? Color.white : Color.primary)
+        .background(
+            RoundedRectangle(cornerRadius: 9)
+                .fill(isSelected ? Color.accentColor : Color.secondary.opacity(0.12))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 9)
+                .stroke(isSelected ? Color.clear : Color.secondary.opacity(0.22))
+        )
+        .accessibilityLabel(weekday.label)
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
     
 }

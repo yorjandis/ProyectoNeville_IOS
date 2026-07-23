@@ -226,6 +226,37 @@ nonisolated enum GoalScheduleType: String, CaseIterable, Codable {
     }
 }
 
+nonisolated enum GoalSchedulingRules {
+    /// Un momento amplio del día solo es inequívoco cuando la programación ya
+    /// identifica una fecha concreta. En intervalos, eso ocurre únicamente con días.
+    static func supportsDayPeriod(
+        scheduleType: GoalScheduleType,
+        intervalUnit: TimeUnit
+    ) -> Bool {
+        switch scheduleType {
+        case .interval:
+            return intervalUnit == .dias
+        case .weekly, .specificDates:
+            return true
+        }
+    }
+
+    static func normalizedDayPeriod(
+        scheduleType: GoalScheduleType,
+        intervalUnit: TimeUnit,
+        requestedPeriod: GoalDayPeriod,
+        weeklyTimeMinutes: Int?
+    ) -> GoalDayPeriod {
+        if scheduleType == .weekly,
+           GoalWeeklyTime.normalized(weeklyTimeMinutes) != nil {
+            return .anytime
+        }
+        return supportsDayPeriod(scheduleType: scheduleType, intervalUnit: intervalUnit)
+            ? requestedPeriod
+            : .anytime
+    }
+}
+
 /// Día de la semana según la numeración de `Calendar` (domingo = 1).
 nonisolated enum GoalWeekday: Int, CaseIterable, Codable, Hashable, Identifiable {
     case sunday = 1

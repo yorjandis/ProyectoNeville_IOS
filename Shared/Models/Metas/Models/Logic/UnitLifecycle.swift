@@ -39,6 +39,7 @@ extension UnitEntity {
     //Actualiza el estado de las unidades perdidas
     func updateLostIfNeeded(now: Date) {
         guard goal?.isStarted == true else { return }
+        goal?.repairSchedulingConsistencyIfNeeded(now: now)
 
         if unitStatus == .pending, let endDate, now > endDate {
             status = UnitStatus.lost.rawValue

@@ -1802,10 +1802,6 @@
 				Views/Reflexiones/ReflexListView.swift,
 				Views/Reflexiones/ReflexShowTextView.swift,
 				Views/Ritual/MorningRitualView.swift,
-				Views/SelectableTextAPI/Documentation.docc,
-				"Views/SelectableTextAPI/Extensions/BaseTextView+AppKit.swift",
-				"Views/SelectableTextAPI/Extensions/BaseTextView+UIKit.swift",
-				"Views/SelectableTextAPI/Extensions/GeometryProxy+MaxWidth.swift",
 				"Views/SelectableTextAPI/Extensions/SelectableTextRepresentable+AppKit.swift",
 				"Views/SelectableTextAPI/Extensions/SelectableTextRepresentable+UIKit.swift",
 				Views/SelectableTextAPI/SelectableText.swift,
@@ -4086,7 +4082,7 @@
 				CODE_SIGN_ENTITLEMENTS = sharedmac/sharedmac.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = "$(inherited)";
+				CURRENT_PROJECT_VERSION = 119;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				ENABLE_APP_SANDBOX = YES;
@@ -4102,7 +4098,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 26.2;
-				MARKETING_VERSION = 1.0.2;
+				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.dev.sharedmac;
 				PRODUCT_MODULE_NAME = sharedmac;
 				PRODUCT_NAME = sharedmac;
@@ -4124,7 +4120,7 @@
 				CODE_SIGN_ENTITLEMENTS = sharedmac/sharedmac.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = "$(inherited)";
+				CURRENT_PROJECT_VERSION = 119;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				ENABLE_APP_SANDBOX = YES;
@@ -4140,7 +4136,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 26.2;
-				MARKETING_VERSION = 1.0.2;
+				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.sharedmac;
 				PRODUCT_MODULE_NAME = sharedmac;
 				PRODUCT_NAME = sharedmac;
@@ -4288,7 +4284,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = "$(inherited)";
+				CURRENT_PROJECT_VERSION = 119;
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ConsciousDashboardMacWidget/Info.plist;
@@ -4298,7 +4294,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.6;
-				MARKETING_VERSION = "$(inherited)";
+				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.ConsciousDashboardMacWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -4318,7 +4314,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = "$(inherited)";
+				CURRENT_PROJECT_VERSION = 119;
 				DEVELOPMENT_TEAM = NDP3AP6896;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ConsciousDashboardMacWidget/Info.plist;
@@ -4328,7 +4324,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.6;
-				MARKETING_VERSION = "$(inherited)";
+				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.ConsciousDashboardMacWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;

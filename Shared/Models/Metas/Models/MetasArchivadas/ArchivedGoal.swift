@@ -71,8 +71,16 @@ extension ArchivedGoalEntity {
         activeGoal.scheduleType = self.scheduleType
         activeGoal.weeklyDaysPerWeek = self.weeklyDaysPerWeek
         activeGoal.weeklyDaysMask = self.weeklyDaysMask
-        activeGoal.weeklyTimeMinutes = self.weeklyTimeMinutes
-        activeGoal.dayPeriod = self.dayPeriod
+        let restoredTime = activeGoal.goalScheduleType == .weekly
+            ? GoalWeeklyTime.normalized(Int(self.weeklyTimeMinutes))
+            : nil
+        activeGoal.weeklyTimeMinutes = Int32(restoredTime ?? GoalWeeklyTime.disabledMinutes)
+        activeGoal.dayPeriod = GoalSchedulingRules.normalizedDayPeriod(
+            scheduleType: activeGoal.goalScheduleType,
+            intervalUnit: activeGoal.timeUnit,
+            requestedPeriod: GoalDayPeriod(rawValue: self.dayPeriod ?? "") ?? .anytime,
+            weeklyTimeMinutes: restoredTime
+        ).rawValue
         activeGoal.customUnitLabel = self.customUnitLabel
         activeGoal.executionTargetValue = self.executionTargetValue
         activeGoal.completionBasis = self.completionBasis

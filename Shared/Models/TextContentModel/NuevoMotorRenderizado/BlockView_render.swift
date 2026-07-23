@@ -15,6 +15,7 @@ struct BlockView: View {
     
     var body: some View {
         render(block.content)
+            .textSelection(.enabled)
     }
     
     @ViewBuilder

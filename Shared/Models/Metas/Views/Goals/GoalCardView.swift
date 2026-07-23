@@ -27,6 +27,7 @@ struct GoalCardView: View {
     @State private var showSheetProgress = false
     
     @State private var showDeleteConfirmation: Bool = false
+    @State private var showArchiveConfirmation = false
     
     @State private var showModifyGoalView = false
     @State private var showReactivateConfirmation = false
@@ -63,13 +64,32 @@ struct GoalCardView: View {
         VStack(alignment: .leading, spacing: 22) {
             //Título con subtitulo del objetivo
             VStack(alignment: .leading, spacing: 8){
-                Text(goal.wrappedTitle)
-                    .font(.platFormSize(iOS: 20, mac: 24))
-                    .font(.headline).bold()
-                    .foregroundStyle(.black)
-                    .onTapGesture(count: 2) {
-                        self.showModifyGoalView = true
+                HStack(alignment: .firstTextBaseline, spacing: 8) {
+                    Text(goal.wrappedTitle)
+                        .font(.platFormSize(iOS: 20, mac: 24))
+                        .font(.headline).bold()
+                        .foregroundStyle(.black)
+
+                    Spacer(minLength: 8)
+
+                    if !goal.isCompleted {
+                        Button {
+                            showModifyGoalView = true
+                        } label: {
+                            Image(systemName: "pencil")
+                                .font(.caption2.weight(.semibold))
+                                .foregroundStyle(.black.opacity(0.55))
+                                .padding(6)
+                                .background(
+                                    Circle()
+                                        .fill(.black.opacity(0.06))
+                                )
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel("Editar meta")
+                        .help("Editar meta")
                     }
+                }
 
                 Label(goal.planSummary, systemImage: "calendar.badge.clock")
                     .font(.caption)
@@ -166,25 +186,9 @@ struct GoalCardView: View {
                         .padding(.leading, 3)
                         .help("Recargar como meta activa")
 
-                        Button{
-                                do{
-                                    try goal.archive(context: self.context)
-                                    self.alertMessage = GoalsL10n.text(
-                                        "goals.message.archived",
-                                        fallback: "La Meta ha sido archivada"
-                                    )
-                                    self.showAlert = true
-                                    goal.deleteGoal(context: self.context)
-                                }catch{
-                                    msg("Error en la función archivar")
-                                    self.alertMessage = GoalsL10n.text(
-                                        "goals.error.archive_failed",
-                                        fallback: "La Meta no ha podido archivarse. Inténtelo más tarde"
-                                    )
-                                    self.showAlert = true
-                                }
-                            
-                        }label:{
+                        Button {
+                            showArchiveConfirmation = true
+                        } label: {
                             Image(systemName: "tray.and.arrow.up")
                         }
                         .buttonStyle(.bordered)
@@ -334,7 +338,7 @@ struct GoalCardView: View {
         }
         .sheet(isPresented: self.$showModifyGoalView){
             ModifyGoal(goal: self.goal)
-                .presentationDetents([.medium])
+                .presentationDetents([.medium, .large])
         }
         .alert(isPresented: self.$showAlert){
             Alert(title: Text("La Ley"), message: Text(self.alertMessage))
@@ -348,6 +352,18 @@ struct GoalCardView: View {
             }
         } message: {
             Text("¿Estás seguro de que quieres eliminar este objetivo y su progreso?")
+        }
+        .confirmationDialog(
+            "Archivar Meta",
+            isPresented: $showArchiveConfirmation,
+            titleVisibility: .visible
+        ) {
+            Button("Archivar", role: .destructive) {
+                archiveGoal()
+            }
+            Button("Cancelar", role: .cancel) { }
+        } message: {
+            Text("La meta se moverá al historial y dejará de mostrarse entre las metas activas.")
         }
         .confirmationDialog(
             "Reactivar Meta",
@@ -375,6 +391,25 @@ struct GoalCardView: View {
     private var progressText: String {
         let completed = goal.unitsSet.filter { $0.unitStatus == .completed }.count
         return "\(completed)/\(goal.totalUnits)"
+    }
+
+    private func archiveGoal() {
+        do {
+            try goal.archive(context: context)
+            alertMessage = GoalsL10n.text(
+                "goals.message.archived",
+                fallback: "La Meta ha sido archivada"
+            )
+            showAlert = true
+            goal.deleteGoal(context: context)
+        } catch {
+            msg("Error en la función archivar")
+            alertMessage = GoalsL10n.text(
+                "goals.error.archive_failed",
+                fallback: "La Meta no ha podido archivarse. Inténtelo más tarde"
+            )
+            showAlert = true
+        }
     }
     
     
