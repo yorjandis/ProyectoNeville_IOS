@@ -356,10 +356,10 @@ struct ModifyGoal: View {
                 .padding(.vertical, 9)
         }
         .buttonStyle(.plain)
-        .foregroundStyle(isSelected ? Color.white : Color.primary)
+        .foregroundStyle(isSelected ? Color.black : Color.primary)
         .background(
             RoundedRectangle(cornerRadius: 9)
-                .fill(isSelected ? Color.accentColor : Color.secondary.opacity(0.12))
+                .fill(isSelected ? Color.green.opacity(0.7) : Color.secondary.opacity(0.12))
         )
         .overlay(
             RoundedRectangle(cornerRadius: 9)

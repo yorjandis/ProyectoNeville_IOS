@@ -271,11 +271,11 @@ struct CreateGoalView: View {
                                 .foregroundStyle(isSelected ? Color.blue : Color.primary)
                                 .background(
                                     RoundedRectangle(cornerRadius: 9)
-                                        .fill(isSelected ? Color.accentColor : Color.secondary.opacity(0.12))
+                                        .fill(isSelected ? Color.black : Color.secondary.opacity(0.12))
                                 )
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 9)
-                                        .stroke(isSelected ? Color.clear : Color.secondary.opacity(0.22))
+                                        .stroke(isSelected ? Color.green.opacity(0.7) : Color.secondary.opacity(0.22))
                                 )
                                 .accessibilityLabel(weekday.label)
                                 .accessibilityAddTraits(isSelected ? .isSelected : [])
@@ -587,7 +587,7 @@ struct GoalFormSummaryCard: View {
                     .font(.title2.weight(.semibold))
                     .foregroundStyle(.black)
                     .frame(width: 42, height: 42)
-                    .background(Color.accentColor, in: RoundedRectangle(cornerRadius: 12))
+                    .background(Color.orange.opacity(0.3), in: RoundedRectangle(cornerRadius: 12))
 
                 VStack(alignment: .leading, spacing: 3) {
                     Text("Tu plan")
@@ -596,7 +596,7 @@ struct GoalFormSummaryCard: View {
                         .textCase(.uppercase)
                     Text(cleanTitle)
                         .font(.title3.weight(.bold))
-                        .foregroundStyle(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? Color.orange : Color.primary)
+                        .foregroundStyle(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? Color.gray : Color.blue)
                 }
             }
 

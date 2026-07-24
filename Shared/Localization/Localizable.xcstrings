@@ -5096,7 +5096,20 @@
       }
     },
     "Añade contexto, motivación o instrucciones…" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add context, motivation, or instructions…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加背景信息、动机或说明…"
+          }
+        }
+      }
     },
     "Añadir" : {
       "extractionState" : "stale",
@@ -5673,7 +5686,20 @@
       }
     },
     "Apariencia" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appearance"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "外貌"
+          }
+        }
+      }
     },
     "Apertura" : {
       "localizations" : {
@@ -6236,7 +6262,20 @@
       }
     },
     "Así quedará tu meta" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This is how your goal will look"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这就是你的目标的样子"
+          }
+        }
+      }
     },
     "Asia-Pacífico" : {
       "localizations" : {
@@ -9042,7 +9081,20 @@
       }
     },
     "Cambiar tamaño y colores del lector" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change reader size and colors"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更改阅读器尺寸和颜色"
+          }
+        }
+      }
     },
     "Cambiar texto" : {
       "localizations" : {
@@ -9187,7 +9239,20 @@
       }
     },
     "Cantidad total" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total amount"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "总金额"
+          }
+        }
+      }
     },
     "Cantidad total de entradas registradas en el Diario desde el inicio." : {
       "localizations" : {
@@ -11025,10 +11090,36 @@
       }
     },
     "Color del fondo" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Background color"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "背景颜色"
+          }
+        }
+      }
     },
     "Color del texto" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Text color"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文本颜色"
+          }
+        }
+      }
     },
     "Color Texto Principal" : {
       "localizations" : {
@@ -11063,7 +11154,20 @@
       }
     },
     "Colores" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Colors"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "颜色"
+          }
+        }
+      }
     },
     "Colores Chat IA" : {
       "localizations" : {
@@ -11388,9 +11492,6 @@
           }
         }
       }
-    },
-    "Cómo se registra" : {
-
     },
     "Compara con opciones de lista corta de ingredientes y menor procesamiento." : {
       "localizations" : {
@@ -11853,7 +11954,20 @@
       }
     },
     "Comprueba los datos e inténtalo de nuevo." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check the data and try again."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请检查数据并重试。"
+          }
+        }
+      }
     },
     "Comprueba los permisos de Salud y usa el Apple Watch con regularidad. La referencia personal mejora tras varios días de lecturas." : {
       "extractionState" : "stale",
@@ -11879,7 +11993,20 @@
       }
     },
     "Comprueba que el objetivo, el ritmo y la condición de finalización expresen exactamente tu intención." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Make sure the goal, pace, and completion condition accurately express your intention."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "确保目标、节奏和完成条件准确表达你的意图。"
+          }
+        }
+      }
     },
     "Comprueba señales de alarma y recursos de tu país" : {
       "localizations" : {
@@ -11920,7 +12047,20 @@
       }
     },
     "Con este ritmo se crearán aproximadamente %lld oportunidades de avance." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "At this rate, approximately %lld advancement opportunities will be created."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按此速度，大约 %lld 晋升机会。"
+          }
+        }
+      }
     },
     "con intención" : {
       "localizations" : {
@@ -12519,6 +12659,22 @@
         }
       }
     },
+    "Configuración protegida" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Protected configuration"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "受保护的配置"
+          }
+        }
+      }
+    },
     "Configurar" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -12970,7 +13126,20 @@
       }
     },
     "Contenido del documento" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Document Contents"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文件内容"
+          }
+        }
+      }
     },
     "Contenido exclusivo" : {
       "localizations" : {
@@ -15505,7 +15674,20 @@
       }
     },
     "Detalles opcionales" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Optional details"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "可选细节"
+          }
+        }
+      }
     },
     "Detalles..." : {
       "localizations" : {
@@ -16172,6 +16354,22 @@
         }
       }
     },
+    "Días de ejecución" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Days of execution"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "处决日"
+          }
+        }
+      }
+    },
     "días de escritura" : {
       "localizations" : {
         "en" : {
@@ -16674,7 +16872,20 @@
       }
     },
     "Duración" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duration"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "期间"
+          }
+        }
+      }
     },
     "Duración total:" : {
       "extractionState" : "stale",
@@ -16826,7 +17037,20 @@
       }
     },
     "Editar meta" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit meta"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "编辑元数据"
+          }
+        }
+      }
     },
     "Editar nombre" : {
       "localizations" : {
@@ -16977,10 +17201,36 @@
       }
     },
     "Ej. Meditar todos los días" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "e.g. meditating every day."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "例如，每天冥想。"
+          }
+        }
+      }
     },
     "Ej. minutos, páginas, km, vasos" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "e.g. minutes, pages, km, glasses"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "例如：分钟、页数、公里数、眼镜数"
+          }
+        }
+      }
     },
     "Ej. páginas, km, vasos" : {
       "extractionState" : "stale",
@@ -17506,7 +17756,20 @@
       }
     },
     "El propio intervalo determina la ventana de cada ejecución." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The interval itself determines the window for each execution."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "间隔本身决定了每次执行的时间窗口。"
+          }
+        }
+      }
     },
     "El reconocimiento de texto no está disponible en este dispositivo." : {
       "localizations" : {
@@ -17619,7 +17882,20 @@
       }
     },
     "El título es obligatorio." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The title is mandatory."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "标题为必填项。"
+          }
+        }
+      }
     },
     "Elegir categoría" : {
       "localizations" : {
@@ -17820,7 +18096,20 @@
       }
     },
     "Elige los días" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose the days"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择日期"
+          }
+        }
+      }
     },
     "Elige un foco realista para la próxima semana." : {
       "localizations" : {
@@ -18826,6 +19115,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在指定日期："
+          }
+        }
+      }
+    },
+    "En una meta definida por duración se conservan los días para no alterar su fecha de finalización. El horario sí puede cambiarse con seguridad." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In a goal defined by duration, the days are kept constant to avoid altering the end date. The schedule can be safely changed."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在以持续时间为目标的情况下，天数保持不变，以避免改变结束日期。进度安排可以安全地进行更改。"
           }
         }
       }
@@ -20916,8 +21221,37 @@
         }
       }
     },
-    "Estos cambios se aplicarán también a las ejecuciones pendientes." : {
-
+    "Estos cambios se aplicarán únicamente a las ejecuciones pendientes." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "These changes will only apply to pending executions."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这些变更仅适用于待执行的事务。"
+          }
+        }
+      }
+    },
+    "Estos valores se mantienen para que las unidades completadas, perdidas y pendientes sigan significando lo mismo." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "These values ​​are maintained so that completed, lost, and pending units continue to mean the same thing."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这些数值得以保持，以便已完成、丢失和待处理的单元继续代表相同的含义。"
+          }
+        }
+      }
     },
     "Estoy aquí" : {
       "localizations" : {
@@ -22350,7 +22684,20 @@
       }
     },
     "Fijar una hora" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set a time"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "设定时间"
+          }
+        }
+      }
     },
     "Filtrar" : {
       "localizations" : {
@@ -22589,7 +22936,20 @@
       }
     },
     "Finalización" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finalization"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最终确定"
+          }
+        }
+      }
     },
     "Finalizar" : {
       "localizations" : {
@@ -28366,7 +28726,20 @@
       }
     },
     "Hora de ejecución" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Execution time"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "执行时间"
+          }
+        }
+      }
     },
     "Horas" : {
       "localizations" : {
@@ -29351,7 +29724,20 @@
       }
     },
     "Indica el título y cuánto cuenta como un avance. Por ejemplo: 10 minutos en cada ejecución." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "State the title and how much it counts as progress. For example: 10 minutes per run."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "说明标题以及它对进度的衡量标准。例如：每次跑步10分钟。"
+          }
+        }
+      }
     },
     "Indica si deseas activar un recordatorio" : {
       "localizations" : {
@@ -30021,7 +30407,20 @@
       }
     },
     "Intervalo" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Interval"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "间隔"
+          }
+        }
+      }
     },
     "Invertir" : {
       "localizations" : {
@@ -30421,7 +30820,20 @@
       }
     },
     "La ejecución se podrá marcar durante una hora desde el horario elegido." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The execution can be scheduled for one hour from the chosen time."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "执行时间可以安排在选定时间后一小时。"
+          }
+        }
+      }
     },
     "La ejecución terminada se conservará en el historial y se creará una nueva Meta activa sin iniciar." : {
       "localizations" : {
@@ -30626,10 +31038,36 @@
       }
     },
     "La hora fija sustituye al Momento del día para evitar franjas contradictorias." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The fixed time replaces the time of day to avoid conflicting time slots."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "固定时间取代了一天中的时间，以避免时间段冲突。"
+          }
+        }
+      }
     },
-    "La hora fija sustituye al Momento del día. El cambio reprogramará las ejecuciones pendientes sin modificar el progreso ya registrado." : {
-
+    "La hora fija sustituye al Momento del día. Solo se reprogramarán las ejecuciones pendientes." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The fixed time replaces the time of day. Only pending executions will be rescheduled."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "固定时间将取代一天中的时间。只有待执行的任务才会重新安排时间。"
+          }
+        }
+      }
     },
     "La hora seleccionada ya pasó. Ajusta la fecha u hora del recordatorio a un momento futuro para poder activarlo." : {
       "localizations" : {
@@ -30833,7 +31271,20 @@
       }
     },
     "La Ley - Metas" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The Law - Goals"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "法律——目标"
+          }
+        }
+      }
     },
     "La Ley - Objetivos" : {
       "localizations" : {
@@ -30955,6 +31406,22 @@
         }
       }
     },
+    "La meta se moverá al historial y dejará de mostrarse entre las metas activas." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The goal will be moved to the history and will no longer be shown among the active goals."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "该进球将被移至历史记录，不再显示在当前进球列表中。"
+          }
+        }
+      }
+    },
     "La meta se volverá a cargar como activa. ¿Desea continuar?" : {
       "localizations" : {
         "en" : {
@@ -30978,7 +31445,20 @@
       }
     },
     "La meta termina por" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The goal ends because"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "目标结束的原因是"
+          }
+        }
+      }
     },
     "La meta termina por:" : {
       "extractionState" : "stale",
@@ -30999,6 +31479,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "目标结束条件："
+          }
+        }
+      }
+    },
+    "La meta todavía no ha comenzado, así que también puedes corregir su unidad de medida." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The goal hasn't started yet, so you can also correct its unit of measurement."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "比赛尚未开始，因此您也可以更正其计量单位。"
           }
         }
       }
@@ -34898,10 +35394,36 @@
       }
     },
     "Momento del día no se combina con este tipo de intervalo, porque produciría ventanas contradictorias o ambiguas." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Time of day does not combine with this type of interval, because it would produce contradictory or ambiguous windows."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一天中的时间不能与这种类型的时间间隔结合使用，因为这会产生矛盾或模糊的窗口。"
+          }
+        }
+      }
     },
     "Momento del día solo está disponible para intervalos medidos en días. En minutos, horas, semanas, meses o años la propia duración del intervalo define cuándo empieza y termina cada unidad." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Time of day is only available for intervals measured in days. In minutes, hours, weeks, months, or years, the duration of the interval itself defines when each unit begins and ends."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "时间信息仅适用于以天为单位的时间间隔。如果以分钟、小时、周、月或年为单位，则时间间隔本身的持续时间决定了每个单位的开始和结束时间。"
+          }
+        }
+      }
     },
     "Momento del día:" : {
       "extractionState" : "stale",
@@ -36841,7 +37363,20 @@
       }
     },
     "No se ha podido actualizar la meta. Inténtalo de nuevo." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The goal could not be updated. Please try again."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "目标更新失败，请重试。"
+          }
+        }
+      }
     },
     "No se ha podido actualizar la nota de la unidad. Inténtalo más tarde." : {
       "localizations" : {
@@ -37186,7 +37721,20 @@
       }
     },
     "No se pudo crear la meta" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The goal could not be created"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "目标无法创建。"
+          }
+        }
+      }
     },
     "No se pudo determinar el estado del permiso de ubicación." : {
       "localizations" : {
@@ -39180,6 +39728,22 @@
         }
       }
     },
+    "Objetivo por ejecución" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Objective by execution"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通过执行实现目标"
+          }
+        }
+      }
+    },
     "Objetivo por ejecución:" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -41152,6 +41716,22 @@
         }
       }
     },
+    "Planificación futura" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Future planning"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未来规划"
+          }
+        }
+      }
+    },
     "Poca proteína" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -41198,7 +41778,20 @@
       }
     },
     "Podrás marcar cada ejecución desde esa hora y durante los 60 minutos siguientes." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You will be able to mark each execution from that time and for the following 60 minutes."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "从那时起，您可以对接下来 60 分钟内的每次执行进行标记。"
+          }
+        }
+      }
     },
     "Política de Privacidad" : {
       "localizations" : {
@@ -41785,7 +42378,20 @@
       }
     },
     "Preparando contenido de la conferencia" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preparing conference content"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "准备会议内容"
+          }
+        }
+      }
     },
     "Preparando el cierre de hoy…" : {
       "localizations" : {
@@ -41826,7 +42432,20 @@
       }
     },
     "Preparando lectura…" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preparing for reading…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "准备阅读……"
+          }
+        }
+      }
     },
     "Preparando tu recomendación" : {
       "extractionState" : "stale",
@@ -42621,7 +43240,20 @@
       }
     },
     "Programación" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Programming"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "编程"
+          }
+        }
+      }
     },
     "Programación:" : {
       "extractionState" : "stale",
@@ -43192,6 +43824,22 @@
         }
       }
     },
+    "Puedes actualizar la identidad y la planificación futura. El progreso ya registrado no cambiará." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You can update your identity and future planning. Any progress already recorded will not change."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "您可以更新您的身份信息和未来规划。已记录的任何进度都不会改变。"
+          }
+        }
+      }
+    },
     "Puedes gestionar o cancelar la suscripción en Ajustes de tu Apple ID tras la compra." : {
       "localizations" : {
         "en" : {
@@ -43324,7 +43972,20 @@
       }
     },
     "Qué quieres lograr" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What do you want to achieve?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你想达成什么目标？"
+          }
+        }
+      }
     },
     "Quicena pasada" : {
       "localizations" : {
@@ -45449,7 +46110,20 @@
       }
     },
     "Restablecer apariencia" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reset appearance"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重置外观"
+          }
+        }
+      }
     },
     "Restaurar" : {
       "localizations" : {
@@ -45578,7 +46252,20 @@
       }
     },
     "Resumen actualizado" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updated summary"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新摘要"
+          }
+        }
+      }
     },
     "RESUMEN DE CIERRE" : {
       "localizations" : {
@@ -46097,7 +46784,20 @@
       }
     },
     "Ritual Matutino & Cierre" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Morning Ritual & Closing"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "晨间仪式与结束"
+          }
+        }
+      }
     },
     "Ritual pendiente" : {
       "localizations" : {
@@ -49810,10 +50510,36 @@
       }
     },
     "Tamaño de fuente" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Font size"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "字体大小"
+          }
+        }
+      }
     },
     "Tamaño de fuente · %lld pt" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Font size · %lld pt"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "字体大小 · %lld pt"
+          }
+        }
+      }
     },
     "Tamaño de letra" : {
       "localizations" : {
@@ -50751,6 +51477,22 @@
         }
       }
     },
+    "Tipo de programación" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Programming type"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "编程类型"
+          }
+        }
+      }
+    },
     "Tips de Salud" : {
       "localizations" : {
         "en" : {
@@ -50818,7 +51560,20 @@
       }
     },
     "Título de la meta" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Goal title"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "目标标题"
+          }
+        }
+      }
     },
     "Título de la Meta" : {
       "extractionState" : "stale",
@@ -51993,7 +52748,20 @@
       }
     },
     "Tu plan" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You plan"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的计划"
+          }
+        }
+      }
     },
     "Tu poder sigue aquí, contigo" : {
       "localizations" : {
@@ -52819,7 +53587,20 @@
       }
     },
     "Unidad de duración" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unit of duration"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "持续时间单位"
+          }
+        }
+      }
     },
     "unidades" : {
       "localizations" : {
