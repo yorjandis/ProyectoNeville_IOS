@@ -774,6 +774,7 @@
 				Models/FrasesModel/NuevoFormatoFrases/HashFileModel.swift,
 				Models/FrasesModel/NuevoFormatoFrases/parsearFrasesNuevoFormato.swift,
 				Models/GameModel/GameModel.swift,
+				Models/IAModel/ChatModel/AIChatPersistence.swift,
 				Models/IAModel/ChatModel/ChactModel.swift,
 				Models/IAModel/ChatModel/PromptModel.swift,
 				Models/IAModel/IAModelAppleIntelligence.swift,

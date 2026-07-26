@@ -71,6 +71,9 @@ struct RespondView: View {
     
     
     @State private var showSheetInfo : Bool = false
+    @State private var generationTask: Task<Void, Never>?
+    @State private var generationRequestID: UUID?
+    @State private var hasStartedGeneration = false
     
     //Obtiene el nombre completo del autor
     private func getNameAutor(autorRaw: String) -> String{
@@ -216,15 +219,14 @@ struct RespondView: View {
   
         }
         .onAppear{
-            if (self.purchaseStatus || self.yorjPremium){
-                
-                    self.autorOriginal = self.autorRespuesta //Almacena el autor original, si lo hay.
-                    
-                    //Procesar el texto
-                    generarTexto(tipoSalida: self.tipoSalida)
- 
-                }
-            
+            guard !hasStartedGeneration,
+                  self.purchaseStatus || self.yorjPremium else { return }
+            hasStartedGeneration = true
+            self.autorOriginal = self.autorRespuesta
+            generarTexto(tipoSalida: self.tipoSalida)
+        }
+        .onDisappear {
+            cancelGeneration()
         }
         .toolbar{
             if (!self.isloading && self.DescargoDeIA) {
@@ -303,15 +305,15 @@ struct RespondView: View {
                         Text("""
                             ☘️ Información sobre la IA utilizada:
                             
-                            La Inteligencia Artificial se basa en los modelos preinstalados en el dispositivo. Apple garantiza que su acceso es seguro y no involucra procesamiento fuera del dispositivo.
+                            Estas funciones utilizan el modelo de Foundation Models de Apple y procesan las solicitudes en el dispositivo. El historial del chat se guarda localmente en el dispositivo y no se sincroniza con iCloud.
                             
-                            El modelo es capaz de generar respuestas creativas y eficaces basadas en los conocimientos y enseñanzas de varios autores (Neville Goddard, Joe Dispenza, Bruce Lipton y Gregg Braden). Sin embargo, se recomienda revisar con cuidado cada respuesta y tomar desiciones informadas acerca de ellas.
+                            El modelo genera respuestas inspiradas en las enseñanzas de Neville Goddard, Joe Dispenza, Bruce Lipton y Gregg Braden. Estas respuestas pueden contener errores, por lo que conviene revisarlas y tomar decisiones informadas.
                             
-                            Los modelos han sido cuidadosamente instruidos y revisados para aminorar los sezgos, errores y que solo responda dentro de los límites del campo de conocimientos establecido para cada autor.
+                            Las instrucciones limitan las respuestas al marco establecido para cada autor, diferencian las enseñanzas de los hechos científicos y reducen sesgos e información inventada.
                             
-                            Si siente que una respuesta no resuena con usted, o no es correcta, la mejor desición es seguir su instinto propio.
+                            Esta herramienta ofrece contenido educativo y de reflexión. No sustituye asesoramiento médico, psicológico, legal ni financiero.
                             
-                            La optimización del modelo es un proceso continuo, en cada actualización de la "La Ley" será revisado y actualizado.
+                            La configuración del modelo se revisará y actualizará junto con la aplicación.
                             """)
                         .foregroundStyle(.black)
                         .bold()
@@ -389,20 +391,16 @@ struct RespondView: View {
                     .frame(maxWidth: 300)
                 }
                 
-                #if os(macOS)
-                //Permitiendo Cancelar la operacion
                 VStack{
                     Button("Cancelar"){
-                        if let window = NSApp.keyWindow {
-                            closeWindow(window)
-                            }
+                        cancelGeneration()
                     }
                     .buttonStyle(.bordered)
                     .padding()
                     .tint(.black).bold()
                 }.padding()
                 
-                
+                #if os(macOS)
                 //Mostrando el texto en la interfaz: Solor función de intepretar que se supone que el texto sea corto
                 if self.tipoSalida == .interpretar{
                     VStack(alignment: .center){
@@ -715,103 +713,92 @@ struct RespondView: View {
     
     
 
-    //Funciones del botón de Regenerar Texto. Vuelce hacer una solicitud de respuesta a Apple Intelligence
-    private func generarTexto(tipoSalida : TiposSalida ,  autor: String = "nev"){
-        
+    // Cancela la solicitud anterior antes de iniciar una nueva.
+    private func generarTexto(tipoSalida: TiposSalida, autor: String? = nil) {
+        if let autor {
+            autorRespuesta = autor
+        }
+        generationTask?.cancel()
+
+        let requestID = UUID()
+        generationRequestID = requestID
         withAnimation {
-            self.isloading = true
-           
+            isloading = true
         }
-        
-            switch tipoSalida {
-                
-            case .puntosClaves:
-                Task { @MainActor in
 
-                    if let nameConferencia = self.nameConference{
-                        let nombreNormalizado = "conf_\(nameConferencia.lowercased())"
-                        let contenidoFile = UtilFuncs.FileRead(nombreNormalizado)
-                        
-                        await self.model.executeRequestPuntosClaves(texto: contenidoFile)
-                        
-                    }else{
-                        
-                        await self.model.executeRequestPuntosClaves(texto: self.texto)
-                    }
-                    
-                    
-                    withAnimation {
-                        self.isloading = false
-                    }
-                    
+        generationTask = Task { @MainActor in
+            do {
+                try await performGeneration(tipoSalida: tipoSalida)
+                try Task.checkCancellation()
+                guard generationRequestID == requestID else { return }
+                withAnimation {
+                    isloading = false
                 }
-            case .practicas:
-                Task { @MainActor in
-
-                    
-                    if let nameConferencia = self.nameConference{
-                        let nombreNormalizado = "conf_\(nameConferencia.lowercased())"
-                        let contenidoFile = UtilFuncs.FileRead(nombreNormalizado)
-                        
-                        await self.model.executeRequestListAplicacionPractica(texto: contenidoFile, autor: self.autorRespuesta)
-                        
-                    }else{
-                        await self.model.executeRequestListAplicacionPractica(texto: self.texto, autor: self.autorRespuesta)
-                    }
-                    
-                    withAnimation {
-                        self.isloading = false
-                    }
-                    
+            } catch is CancellationError {
+                guard generationRequestID == requestID else { return }
+                withAnimation {
+                    isloading = false
                 }
-                
-                //Solo Para Textos cortos (Frases, notas)
-            case .practicaConcreta:
-                Task { @MainActor in
-
-                    await self.model.executeRequestPracticaConcreta(texto: self.texto, autor: self.autorRespuesta)
-
-                    withAnimation {
-                        self.isloading = false
-                    }
-                    
+            } catch {
+                guard generationRequestID == requestID else { return }
+                alertMessage = error.localizedDescription
+                showAlert = true
+                withAnimation {
+                    isloading = false
                 }
-                
-            case .resumen:
-                Task { @MainActor in
+            }
 
-                    
-                    if let nameConferencia = self.nameConference{
-                        let nombreNormalizado = "conf_\(nameConferencia.lowercased())"
-                        let contenidoFile = UtilFuncs.FileRead(nombreNormalizado)
-                        
-                        await self.model.executeRequestResumenGeneral(texto: contenidoFile)
-                        
-                    }else{
-                        await self.model.executeRequestResumenGeneral(texto: self.texto)
-                    }
-                    
-
-
-                    withAnimation {
-                        self.isloading = false
-                    }
-                    
-                }
-            case .interpretar:
-                Task { @MainActor in
-
-                    
-                    await self.model.executeRequestInterpretaTexto(texto: self.texto, autor: self.autorRespuesta)
-
-                    withAnimation {
-                        self.isloading = false
-                    }
-                    
-                }
+            if generationRequestID == requestID {
+                generationTask = nil
+                generationRequestID = nil
+            }
         }
-            
+    }
+
+    private func performGeneration(tipoSalida: TiposSalida) async throws {
+        let longFormText = sourceTextForLongOperation()
+        switch tipoSalida {
+        case .puntosClaves:
+            try await model.executeRequestPuntosClaves(texto: longFormText)
+        case .practicas:
+            try await model.executeRequestListAplicacionPractica(
+                texto: longFormText,
+                autor: autorRespuesta
+            )
+        case .practicaConcreta:
+            try await model.executeRequestPracticaConcreta(
+                texto: texto,
+                autor: autorRespuesta
+            )
+        case .resumen:
+            try await model.executeRequestResumenGeneral(texto: longFormText)
+        case .interpretar:
+            try await model.executeRequestInterpretaTexto(
+                texto: texto,
+                autor: autorRespuesta
+            )
         }
+    }
+
+    private func sourceTextForLongOperation() -> String {
+        guard let nameConference else { return texto }
+        let cleanName = nameConference.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !cleanName.isEmpty else { return texto }
+        let fileName = "conf_\(cleanName.lowercased())"
+        let fileContent = UtilFuncs.FileRead(fileName)
+        return fileContent.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            ? texto
+            : fileContent
+    }
+
+    private func cancelGeneration() {
+        generationTask?.cancel()
+        generationTask = nil
+        generationRequestID = nil
+        withAnimation {
+            isloading = false
+        }
+    }
     
     
     
@@ -833,5 +820,3 @@ struct RespondView: View {
 
 
   
-
-

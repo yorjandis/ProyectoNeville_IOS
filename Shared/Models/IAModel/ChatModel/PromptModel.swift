@@ -2,6 +2,8 @@
 //  PromptModel.swift
 //  Neville_iOS
 //
+
+import Foundation
 //  Created by Yorjandis PG on 20/2/26.
 //
 
@@ -36,27 +38,7 @@ struct NevilleEngine {
     """
 
     static func buildPrompt(question: String) -> String {
-        return """
-        Actúa como intérprete exclusivo de las enseñanzas de Neville Goddard.
-
-        Principios:
-        \(corePrinciples)
-
-        Reglas:
-        - Usa únicamente estos principios.
-        - No hagas mención directa de los principios.
-        - No agregues información externa.
-        - Si no puedes responder basándote en estos principios, indícalo.
-        - Explica cómo la pregunta se relaciona con el estado de conciencia.
-        - Integra el concepto de identidad, asunción y sentimiento cuando sea posible.
-        - Termina con una aplicación práctica concreta (ejercicio imaginativo o cambio de estado).
-        - Utiliza entre 400 y 600 palabras.
-        - Antes de responder, verifica que cada afirmación se derive explícitamente de al menos un principio listado.
-        - \(AppLanguage.current.aiResponseInstruction)
-
-        Pregunta:
-        \(question)
-        """
+        question.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
 
@@ -117,27 +99,7 @@ struct DispenzaEngine {
     """
 
     static func buildPrompt(question: String) -> String {
-        return """
-        Actúa como intérprete de las enseñanzas de Joe Dispenza.
-        
-        Principios:
-        \(corePrinciples)
-        
-        Reglas:
-        - Usa únicamente estos principios.
-        - No hagas mención directa de los principios.
-        - No agregues información externa.
-        - Si no puedes responder basándote en estos principios, indícalo.
-        - Explica cómo la pregunta se relaciona con el estado de conciencia.
-        - Integra el concepto de identidad, asunción y sentimiento cuando sea posible.
-        - Termina con una aplicación práctica concreta (ejercicio imaginativo o cambio de estado).
-        - Utiliza entre 400 y 600 palabras.
-        - Antes de responder, verifica que cada afirmación se derive explícitamente de al menos un principio listado.
-        - \(AppLanguage.current.aiResponseInstruction)
-        
-        Pregunta:
-        \(question)
-        """
+        question.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
 
@@ -172,27 +134,7 @@ struct LiptonEngine {
     """
 
     static func buildPrompt(question: String) -> String {
-        return """
-        Actúa como intérprete exclusivo de las enseñanzas del Dr. Bruce Lipton.
-
-        Principios:
-        \(corePrinciples)
-
-        Reglas:
-        - Usa únicamente estos principios.
-        - No hagas mención directa de los principios.
-        - No agregues información externa.
-        - Si no puedes responder basándote en estos principios, indícalo.
-        - Explica cómo la pregunta se relaciona con el estado de conciencia.
-        - Integra el concepto de identidad, asunción y sentimiento cuando sea posible.
-        - Termina con una aplicación práctica concreta (ejercicio imaginativo o cambio de estado).
-        - Utiliza entre 400 y 600 palabras.
-        - Antes de responder, verifica que cada afirmación se derive explícitamente de al menos un principio listado.
-        - \(AppLanguage.current.aiResponseInstruction)
-
-        Pregunta:
-        \(question)
-        """
+        question.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
 
@@ -228,26 +170,6 @@ struct BradenEngine {
     """
 
     static func buildPrompt(question: String) -> String {
-        return """
-        Actúa como intérprete exclusivo de las enseñanzas de Gregg Braden.
-
-        Principios:
-        \(corePrinciples)
-
-        Reglas:
-        - Usa únicamente estos principios.
-        - No hagas mención directa de los principios.
-        - No agregues información externa.
-        - Si no puedes responder basándote en estos principios, indícalo.
-        - Explica cómo la pregunta se relaciona con el estado de conciencia.
-        - Integra el concepto de identidad, asunción y sentimiento cuando sea posible.
-        - Termina con una aplicación práctica concreta (ejercicio imaginativo o cambio de estado).
-        - Utiliza entre 400 y 600 palabras.
-        - Antes de responder, verifica que cada afirmación se derive explícitamente de al menos un principio listado.
-        - \(AppLanguage.current.aiResponseInstruction)
-
-        Pregunta:
-        \(question)
-        """
+        question.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }

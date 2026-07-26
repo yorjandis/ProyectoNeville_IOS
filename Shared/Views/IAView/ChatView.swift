@@ -14,10 +14,7 @@ import UniformTypeIdentifiers
 
 @available(iOS 26.0, macOS 26.0, *)
 struct ChatView: View {
-    
-
-    
-    @StateObject private var model = ChatViewModel.shared
+    @StateObject private var model: ChatViewModel
     
     @State private var  notasModel : NotasModel = NotasModel()
     
@@ -34,8 +31,6 @@ struct ChatView: View {
     @State private var lastID : UUID? = nil //Para poder desplazar la lista de mensajes en el chat hasta el último siempre
     
     
-    @State private var autor : Autores = .neville
-    
     let textoACargar : String?  //Permite cargar una frase o nota  y usarla en el chatIA para entablar una conversación.
     
     
@@ -48,6 +43,7 @@ struct ChatView: View {
     @State private var showPDFExporter = false
     @State private var exportedPDFDocument: ExportedPDFDocument?
     @State private var exportedPDFFileName: String = "ChatIA.pdf"
+    @State private var showConversationHistory = false
     
     //Colores de IA chat:
     @State var ColorChatIAPrimario         : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_colorIA_main_a) ?? .orange.opacity(0.7)
@@ -62,9 +58,11 @@ struct ChatView: View {
     @State private var showSheetTtextoCopiadoAlPortapapelesParaChatIA       : TextoCopiadoAlPortapapeles? = nil
     @State private var showSheetTtextoCopiadoAlPortapapelesParaLienzo       : TextoCopiadoAlPortapapeles? = nil
     
-    
-    
-    
+    init(textoACargar: String?) {
+        self.textoACargar = textoACargar
+        _model = StateObject(wrappedValue: ChatViewModel())
+    }
+
     var body: some View {
         
         if (self.purchaseStatus || self.yorjPremium){
@@ -109,6 +107,17 @@ struct ChatView: View {
                                                             .padding()
                                                             .background(Color.black.opacity(0.7))
                                                             .cornerRadius(12)
+                                                            .contextMenu {
+                                                                Button {
+                                                                    model.inputText = msg.text
+                                                                    focus = true
+                                                                } label: {
+                                                                    Label(
+                                                                        "Editar y volver a enviar",
+                                                                        systemImage: "pencil"
+                                                                    )
+                                                                }
+                                                            }
                                                             .frame(
                                                                 width: {
                                                                     #if os(iOS)
@@ -178,7 +187,24 @@ struct ChatView: View {
                         }
                         else{
                             ScrollView {
-                                    AdjustableGridView_neville( autor : self.$autor ,rows : 11 , model: self.model)
+                                if let availabilityMessage = model.availabilityMessage {
+                                    ContentUnavailableView(
+                                        "Apple Intelligence no disponible",
+                                        systemImage: "apple.intelligence",
+                                        description: Text(availabilityMessage)
+                                    )
+                                    .padding()
+                                    Button("Comprobar de nuevo") {
+                                        model.refreshAvailability()
+                                    }
+                                    .buttonStyle(.borderedProminent)
+                                } else {
+                                    AdjustableGridView_neville(
+                                        autor: self.model.activeAuthor,
+                                        rows: 11,
+                                        model: self.model
+                                    )
+                                }
                             }
                         }
                         
@@ -197,7 +223,7 @@ struct ChatView: View {
             
         }
         #if os(iOS)
-        .navigationTitle("Pregunta  a \(self.autor.getNombre)")
+        .navigationTitle("Pregunta a \(self.model.activeAuthor.getNombre)")
         .navigationBarTitleDisplayMode(.inline)
         #endif
         .toolbar{
@@ -211,8 +237,9 @@ struct ChatView: View {
                      Menu{
                          Text("Cambiar Autor")
                          Button{
-                             self.autor = .neville
-                             self.model.newConversation()
+                             Task {
+                                 await self.model.createNewConversation(author: .neville)
+                             }
                          }label:{
                              #if os(macOS)
                              iconMenu(nombre: "nev-min", title: "Neville")
@@ -223,8 +250,9 @@ struct ChatView: View {
                          
                          
                          Button{
-                             self.autor = .JoeDispenza
-                             self.model.newConversation()
+                             Task {
+                                 await self.model.createNewConversation(author: .JoeDispenza)
+                             }
                          }label:{
                              #if os(macOS)
                              iconMenu(nombre: "jd", title: "Joe Dispenza")
@@ -234,8 +262,9 @@ struct ChatView: View {
                          }
                          
                          Button{
-                             self.autor = .bruce
-                             self.model.newConversation()
+                             Task {
+                                 await self.model.createNewConversation(author: .bruce)
+                             }
                          }label:{
                              #if os(macOS)
                              iconMenu(nombre: "bruce", title: "Bruce lipton")
@@ -246,8 +275,9 @@ struct ChatView: View {
                          }
                          
                          Button{
-                             self.autor = .gregg
-                             self.model.newConversation()
+                             Task {
+                                 await self.model.createNewConversation(author: .gregg)
+                             }
                          }label:{
                              #if os(macOS)
                              iconMenu(nombre: "gregg", title: "Gregg Braden")
@@ -259,7 +289,7 @@ struct ChatView: View {
                          
                      }label: {
 
-                          switch self.autor {
+                          switch self.model.activeAuthor {
                           case .neville: iconoRedimensionado(nombre: "nev-min")
                           case .JoeDispenza: iconoRedimensionado(nombre: "jd")
                           case .bruce: iconoRedimensionado(nombre: "bruce")
@@ -286,15 +316,24 @@ struct ChatView: View {
                 }
                 
                 ToolbarSpacer(.fixed)
+
+                ToolbarItem {
+                    Button {
+                        self.showConversationHistory = true
+                    } label: {
+                        Image(systemName: "clock.arrow.circlepath")
+                    }
+                    .help("Historial de conversaciones")
+                }
+
+                ToolbarSpacer(.fixed)
                 
                 //Boton Nueva Conversación
                 ToolbarItem {
                     Button{
-                        withAnimation {
-                            self.model.newConversation()
+                        Task {
+                            await self.model.createNewConversation()
                         }
-                        
-                        
                     }label:{
                         Image(systemName: "square.and.pencil")
                     }
@@ -303,9 +342,7 @@ struct ChatView: View {
             
         }
         .task {
-            //🔥 Carga una sesión por defecto
-            self.autor = .neville
-            model.newConversation()
+            await model.loadInitialConversation(prefill: textoACargar)
         }
         .sheet(item: $showSheetTextoCopiadoAlPortapapelesParaInterpretar){ text in
             
@@ -321,6 +358,15 @@ struct ChatView: View {
             
                 LienzoMain(texto : text.texto, imagenPrimariaACargar: nil)
             
+        }
+        .sheet(isPresented: $showConversationHistory) {
+            ConversationHistoryView(model: model)
+        }
+        .onChange(of: model.userFacingError) { _, newValue in
+            guard let newValue else { return }
+            alertMessage = newValue
+            showAlert = true
+            model.userFacingError = nil
         }
         .alert(isPresented: self.$showAlert){
             Alert(title: Text("Chat IA"), message: Text(self.alertMessage))
@@ -347,6 +393,11 @@ struct ChatView: View {
                     ProgressView()
                         .foregroundStyle(.black)
                         .padding(.bottom, 10)
+                    Button("Detener") {
+                        model.cancelResponse()
+                    }
+                    .buttonStyle(.bordered)
+                    .tint(.red)
                     Spacer()
                 }else{
                     TextField("Escribe algo…", text: $model.inputText, axis: .vertical)
@@ -358,29 +409,13 @@ struct ChatView: View {
                         .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(.black.opacity(0.8)))
                         .focused(self.$focus)
                         .onSubmit {
-                            if ( !self.model.inputText.trimmingCharacters(in: .whitespaces).isEmpty  && self.model.inputText.trimmingCharacters(in: .whitespaces).count >= ChatViewModel.maxCharactersContext){
-                                self.alertMessage = "El texto a enviar es demasiado largo. Se admite como máximo 4100 caracteres."
-                                self.showAlert = true
-                            }else{
-                                Task{
-                                    await model.sendMessage(autor: self.autor, questionUser: model.inputText)
-                                    self.focus = false
-                                }
-                            }
-                            
-                            
+                            model.submitMessage()
+                            self.focus = false
                         }
                     
                     Button{
-                        if ( !self.model.inputText.trimmingCharacters(in: .whitespaces).isEmpty  && self.model.inputText.trimmingCharacters(in: .whitespaces).count >= ChatViewModel.maxCharactersContext){
-                            self.alertMessage = "El texto a enviar es demasiado largo. Se admite como máximo 4100 caracteres."
-                            self.showAlert = true
-                        }else{
-                            Task{
-                                await model.sendMessage(autor: self.autor, questionUser: model.inputText)
-                                self.focus = false
-                            }
-                        }
+                        model.submitMessage()
+                        self.focus = false
                     }label:{
                         Text("Enviar").bold()
                         
@@ -395,15 +430,6 @@ struct ChatView: View {
                 
                 
             }
-            .onAppear{
-                //Cargar en el promt el valor pasado a la variable Texto: puede ser una frase, nota o cita
-                if let texto = self.textoACargar{
-                    if !texto.isEmpty{
-                        self.model.inputText = "Hablemos sobre este texto: \(texto)"
-                    }
-                }
-            }
-            
         }
         
     }
@@ -412,33 +438,38 @@ struct ChatView: View {
     //Construye el menú de opciones de cada chat
     @ViewBuilder
     private func MenuOpcionesRespuesta(message: ChatMessage) -> some View {
-        HStack(spacing: 20){
-            ShareLink("", item: message.text)
-            .padding(.leading, 10)
-            .id(lastID)
-            //Pasar a notas:
-            Button{
-                if self.notasModel.addNote(nota: message.text, title: "Nota del Chat"){
-                    self.alertMessage = "Se ha guardado la respuesta en Notas"
-                    self.showAlert = true
-                }else{
-                    self.alertMessage = "No fue posible guardar la respuesta en Notas. Inténtelo más tarde."
-                    self.showAlert = true
+        if message.status != .streaming {
+            HStack(spacing: 20){
+                ShareLink("", item: message.text)
+                    .padding(.leading, 10)
+                    .id(lastID)
+                Button {
+                    model.retryResponse(for: message.id)
+                } label: {
+                    Image(systemName: "arrow.clockwise")
                 }
-            }label:{
-                Image(systemName: "text.page")
+                .help(message.status == .completed ? "Regenerar respuesta" : "Reintentar")
+            //Pasar a notas:
+                Button{
+                    if self.notasModel.addNote(nota: message.text, title: "Nota del Chat"){
+                        self.alertMessage = "Se ha guardado la respuesta en Notas"
+                        self.showAlert = true
+                    }else{
+                        self.alertMessage = "No fue posible guardar la respuesta en Notas. Inténtelo más tarde."
+                        self.showAlert = true
+                    }
+                }label:{
+                    Image(systemName: "text.page")
+                }
+                Button {
+                    exportChatResponseToPDF(message)
+                } label: {
+                    Image(systemName: "doc.richtext")
+                }
+                Spacer()
             }
-            Button {
-                exportChatResponseToPDF(message)
-            } label: {
-                Image(systemName: "doc.richtext")
-            }
-            Spacer()
+            .font(.system(size: 14)).bold()
         }
-        
-        .font(.system(size: 14)).bold()
-        
-        
     }
 
     private func exportChatResponseToPDF(_ responseMessage: ChatMessage) {
@@ -507,7 +538,7 @@ struct ChatView: View {
     fileprivate struct AdjustableGridView_neville: View {
         // Número de filas y columnas
         
-        @Binding var autor : Autores
+        let autor: Autores
         
         @State  var  rows: Int
         @State  var columns: Int = {
@@ -708,10 +739,7 @@ struct ChatView: View {
                     LazyVGrid(columns: gridLayout, spacing: 10) {
                         ForEach(0..<sugerencias.count, id: \.self) { index in
                             Button(action: {
-                                Task{
-                                    model.inputText = sugerencias[index]
-                                    await model.sendMessage(autor: self.autor, questionUser: model.inputText)
-                                }
+                                model.submitMessage(sugerencias[index])
                             }) {
                                 Text(sugerencias[index])
                                     .font(.system(size: 14))
@@ -730,6 +758,148 @@ struct ChatView: View {
         }
     }
     
+}
+
+@available(iOS 26.0, macOS 26.0, *)
+private struct ConversationHistoryView: View {
+    @Environment(\.dismiss) private var dismiss
+    @ObservedObject var model: ChatViewModel
+    @State private var conversationToRename: StoredAIConversation?
+    @State private var editedTitle = ""
+    @State private var searchText = ""
+
+    private var filteredConversations: [StoredAIConversation] {
+        let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !query.isEmpty else { return model.conversations }
+        return model.conversations.filter { conversation in
+            conversation.title.localizedStandardContains(query)
+                || Autores(storedRawValue: conversation.authorRawValue)
+                    .getNombre
+                    .localizedStandardContains(query)
+        }
+    }
+
+    var body: some View {
+        NavigationStack {
+            List {
+                if filteredConversations.isEmpty {
+                    ContentUnavailableView(
+                        searchText.isEmpty ? "Sin conversaciones" : "Sin resultados",
+                        systemImage: searchText.isEmpty
+                            ? "bubble.left.and.bubble.right"
+                            : "magnifyingglass",
+                        description: Text(
+                            searchText.isEmpty
+                                ? "Inicia una conversación para verla aquí."
+                                : "Prueba con otro título o autor."
+                        )
+                    )
+                } else {
+                    ForEach(filteredConversations) { conversation in
+                        Button {
+                            Task {
+                                await model.openConversation(id: conversation.id)
+                                dismiss()
+                            }
+                        } label: {
+                            HStack(spacing: 12) {
+                                Image(Autores(
+                                    storedRawValue: conversation.authorRawValue
+                                ).imageName)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 36, height: 36)
+                                .clipShape(Circle())
+
+                                VStack(alignment: .leading, spacing: 3) {
+                                    Text(conversation.title)
+                                        .lineLimit(2)
+                                    Text(conversation.updatedAt, format: .dateTime)
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                Spacer()
+                                if model.activeConversationID == conversation.id {
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .foregroundStyle(.green)
+                                }
+                            }
+                            .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
+                        .swipeActions {
+                            Button(role: .destructive) {
+                                Task {
+                                    await model.deleteConversation(id: conversation.id)
+                                }
+                            } label: {
+                                Label("Eliminar", systemImage: "trash")
+                            }
+                        }
+                        .contextMenu {
+                            Button {
+                                editedTitle = conversation.title
+                                conversationToRename = conversation
+                            } label: {
+                                Label("Cambiar nombre", systemImage: "pencil")
+                            }
+                            Button(role: .destructive) {
+                                Task {
+                                    await model.deleteConversation(id: conversation.id)
+                                }
+                            } label: {
+                                Label("Eliminar", systemImage: "trash")
+                            }
+                        }
+                    }
+                }
+            }
+            .navigationTitle("Conversaciones")
+            .searchable(text: $searchText, prompt: "Título o autor")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cerrar") {
+                        dismiss()
+                    }
+                }
+                ToolbarItem(placement: .primaryAction) {
+                    Button {
+                        Task {
+                            await model.createNewConversation()
+                            dismiss()
+                        }
+                    } label: {
+                        Label("Nueva", systemImage: "square.and.pencil")
+                    }
+                }
+            }
+            .alert(
+                "Cambiar nombre",
+                isPresented: Binding(
+                    get: { conversationToRename != nil },
+                    set: { if !$0 { conversationToRename = nil } }
+                )
+            ) {
+                TextField("Nombre", text: $editedTitle)
+                Button("Guardar") {
+                    guard let conversationToRename else { return }
+                    Task {
+                        await model.renameConversation(
+                            id: conversationToRename.id,
+                            title: editedTitle
+                        )
+                        self.conversationToRename = nil
+                    }
+                }
+                Button("Cancelar", role: .cancel) {
+                    conversationToRename = nil
+                }
+            }
+        }
+        #if os(macOS)
+        .frame(minWidth: 440, minHeight: 520)
+        #endif
+    }
 }
 
 

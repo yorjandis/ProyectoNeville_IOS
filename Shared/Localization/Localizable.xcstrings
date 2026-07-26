@@ -1560,7 +1560,11 @@
         }
       }
     },
+    "☘️ Información sobre la IA utilizada:\n\nEstas funciones utilizan el modelo de Foundation Models de Apple y procesan las solicitudes en el dispositivo. El historial del chat se guarda localmente en el dispositivo y no se sincroniza con iCloud.\n\nEl modelo genera respuestas inspiradas en las enseñanzas de Neville Goddard, Joe Dispenza, Bruce Lipton y Gregg Braden. Estas respuestas pueden contener errores, por lo que conviene revisarlas y tomar decisiones informadas.\n\nLas instrucciones limitan las respuestas al marco establecido para cada autor, diferencian las enseñanzas de los hechos científicos y reducen sesgos e información inventada.\n\nEsta herramienta ofrece contenido educativo y de reflexión. No sustituye asesoramiento médico, psicológico, legal ni financiero.\n\nLa configuración del modelo se revisará y actualizará junto con la aplicación." : {
+
+    },
     "☘️ Información sobre la IA utilizada:\n\nLa Inteligencia Artificial se basa en los modelos preinstalados en el dispositivo. Apple garantiza que su acceso es seguro y no involucra procesamiento fuera del dispositivo.\n\nEl modelo es capaz de generar respuestas creativas y eficaces basadas en los conocimientos y enseñanzas de varios autores (Neville Goddard, Joe Dispenza, Bruce Lipton y Gregg Braden). Sin embargo, se recomienda revisar con cuidado cada respuesta y tomar desiciones informadas acerca de ellas.\n\nLos modelos han sido cuidadosamente instruidos y revisados para aminorar los sezgos, errores y que solo responda dentro de los límites del campo de conocimientos establecido para cada autor.\n\nSi siente que una respuesta no resuena con usted, o no es correcta, la mejor desición es seguir su instinto propio.\n\nLa optimización del modelo es un proceso continuo, en cada actualización de la \"La Ley\" será revisado y actualizado." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6196,6 +6200,9 @@
     "Apple" : {
       "shouldTranslate" : false
     },
+    "Apple Intelligence no disponible" : {
+
+    },
     "Apple Intelligence no está disponible en este dispositivo o idioma." : {
       "localizations" : {
         "en" : {
@@ -9285,6 +9292,9 @@
         }
       }
     },
+    "Cambiar nombre" : {
+
+    },
     "Cambiar Operación..." : {
       "localizations" : {
         "en" : {
@@ -12240,6 +12250,9 @@
         }
       }
     },
+    "Comprobar de nuevo" : {
+
+    },
     "Comprometido" : {
       "localizations" : {
         "en" : {
@@ -12322,6 +12335,9 @@
           }
         }
       }
+    },
+    "Comprueba que el dispositivo sea compatible, Apple Intelligence esté activado y el modelo termine de descargarse." : {
+
     },
     "Comprueba que el objetivo, el ritmo y la condición de finalización expresen exactamente tu intención." : {
       "localizations" : {
@@ -13818,6 +13834,9 @@
           }
         }
       }
+    },
+    "Conversaciones" : {
+
     },
     "Convertir a checklist" : {
       "localizations" : {
@@ -17531,6 +17550,9 @@
         }
       }
     },
+    "Editar y volver a enviar" : {
+
+    },
     "Editar..." : {
       "localizations" : {
         "en" : {
@@ -20901,6 +20923,9 @@
           }
         }
       }
+    },
+    "Esta función requiere iOS 26 o macOS 26." : {
+
     },
     "Esta función solo esta presente en la versión extendida" : {
       "localizations" : {
@@ -28223,6 +28248,9 @@
         }
       }
     },
+    "Historial de conversaciones" : {
+
+    },
     "home.progress.goals.multiple" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -30466,6 +30494,9 @@
           }
         }
       }
+    },
+    "Inicia una conversación para verla aquí." : {
+
     },
     "Iniciar" : {
       "localizations" : {
@@ -38959,6 +38990,9 @@
         }
       }
     },
+    "Nombre" : {
+
+    },
     "Nombre de la unidad:" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -40114,6 +40148,9 @@
           }
         }
       }
+    },
+    "Nueva" : {
+
     },
     "Nueva actividad" : {
       "localizations" : {
@@ -43028,6 +43065,7 @@
       }
     },
     "Pregunta  a %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -43042,6 +43080,9 @@
           }
         }
       }
+    },
+    "Pregunta a %@" : {
+
     },
     "Preguntas" : {
       "localizations" : {
@@ -44556,6 +44597,9 @@
         }
       }
     },
+    "Prueba con otro título o autor." : {
+
+    },
     "Prueba con palabras como miedo, trabajo, dudas, enfado o ansiedad." : {
       "localizations" : {
         "en" : {
@@ -45958,6 +46002,9 @@
           }
         }
       }
+    },
+    "Regenerar respuesta" : {
+
     },
     "Regenerar Respuesta" : {
       "localizations" : {
@@ -50815,6 +50862,9 @@
         }
       }
     },
+    "Sin conversaciones" : {
+
+    },
     "Sin datos" : {
       "localizations" : {
         "en" : {
@@ -51014,6 +51064,9 @@
           }
         }
       }
+    },
+    "Sin resultados" : {
+
     },
     "Sin ritual matutino" : {
       "localizations" : {
@@ -51251,6 +51304,9 @@
           }
         }
       }
+    },
+    "Sistema no compatible" : {
+
     },
     "situaciones" : {
       "localizations" : {
@@ -52769,6 +52825,9 @@
           }
         }
       }
+    },
+    "Título o autor" : {
+
     },
     "Título:" : {
       "extractionState" : "manual",

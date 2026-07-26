@@ -1,470 +1,423 @@
 //
-//  IAModel.swift
+//  IAModelAppleIntelligence.swift
 //  Neville_iOS
 //
-//  Created by Yorjandis PG on 20/10/25.
+//  Operaciones de análisis con el modelo local de Apple.
 //
 
-import SwiftUI
-import FoundationModels
 import Combine
-#if os(macOS)
-import AppKit
-#endif
+import Foundation
+import FoundationModels
+import SwiftUI
 
 @MainActor
 @available(iOS 26.0, macOS 26.0, *)
-final class IAModelAppleIntelligence :  ObservableObject{
-    
-    var model : LanguageModelSession
-    
-    
-    @Published var puntosClaves     : [String] = [] //Salida: resumen de los puntos claves del texto
-    @Published var resumenGeneral   : String = "" //Salida: resumen general del contenido
-    @Published var practicas        : [String] = [] //Salida: Listado de concejos prácticos sobre el contenido
-    @Published var practicaConcreta : String = "" //Salida: UN ejemplo de aplicación práctica de: Frase, reflexión, cita, etc
-    @Published var interpretacion   : String = "" //Salida: Interpretación de un texto de acuerdo a las ideas fundamentales de Neville Goddard
-    
-    @Published var dialogoConUsuario : String = ""
-    
-    let maxLengthContext : Int = 4000
-    @Published var noFragmentos     : Int = 0 //Representa el número de fragmentos al dividir el contenido para Apple Intelligence
-    @Published var fragmentoActual  : Int = 0 //Un contador para la barra de progreso
+final class IAModelAppleIntelligence: ObservableObject {
+    @Published var puntosClaves: [String] = []
+    @Published var resumenGeneral = ""
+    @Published var practicas: [String] = []
+    @Published var practicaConcreta = ""
+    @Published var interpretacion = ""
+    @Published var noFragmentos = 0
+    @Published var fragmentoActual = 0
 
-    
-    init(){
-        self.model = LanguageModelSession{}
+    let maxLengthContext = 4_000
+
+    func executeRequestPuntosClaves(texto: String) async throws {
+        let fragments = try preparedFragments(from: texto)
+        puntosClaves.removeAll()
+        beginProgress(total: fragments.count)
+        defer { endProgress() }
+
+        var collected: [String] = []
+        for (index, fragment) in fragments.enumerated() {
+            try Task.checkCancellation()
+            fragmentoActual = index + 1
+            let session = LanguageModelSession(instructions: """
+                Extrae las ideas esenciales del texto proporcionado.
+                Sé fiel al contenido, no añadas información y redacta cada idea como una oración completa.
+                \(AppLanguage.current.aiResponseInstruction)
+                """)
+            let result = try await session.respond(
+                to: fragment,
+                generating: Summary.self,
+                options: GenerationOptions(maximumResponseTokens: 420)
+            ).content
+            collected.append(contentsOf: result.keyPoints)
+        }
+
+        puntosClaves = try await consolidateKeyPoints(collected)
     }
-    
-    
-    
-    
-    
-    
-    //Nueva función con Generación Guiada (Conferencias)
-    func executeRequestPuntosClaves(texto : String) async {
-        
 
-        guard !texto.isEmpty else { return }
-        
-        //Divide el texto en fragmentos para ser procesados:
-        let fragmentos = dividirTexto(texto, maxLength: self.maxLengthContext)
-        
-        self.noFragmentos = fragmentos.count //Actualizando la variable UI de progreso
-        
-        self.puntosClaves.removeAll() //Vacia el buffer
-        
+    func executeRequestResumenGeneral(texto: String) async throws {
+        let fragments = try preparedFragments(from: texto)
+        resumenGeneral = ""
+        beginProgress(total: fragments.count)
+        defer { endProgress() }
 
-            do{
-                for (index, fragmento) in fragmentos.enumerated() {
-                    let session : LanguageModelSession = LanguageModelSession() //Creando una sesión para analizar cada fragmento
-                   
-                    
-                    self.fragmentoActual = index + 1 //Actualizando la Variable UI de progreso
-                    
-                    let promt = """
-                Actua como un experto en comprensión y síntesis de información.
+        var partialSummaries: [String] = []
+        for (index, fragment) in fragments.enumerated() {
+            try Task.checkCancellation()
+            fragmentoActual = index + 1
+            partialSummaries.append(try await summarizeText(fragment))
+        }
 
-                Sigue estas directrices:
-                - Analiza cuidadosamente el texto y resume las ideas claves.
-                - No agregues opiniones personales.
-                - Usa un lenguaje sencillo y un tono profesional.
-                
-                Texto a analizar:
-                \(fragmento)
-                
-                """
-                    
-                    let respuesta : Summary = try await session.respond(to: promt, generating: Summary.self).content
-                    
-                    //Filtrando las entradas de respuesta que no terminen en un punto final:"." . Estas no parecen que contengan significado y se deben a que se analiza un fragmento de texto.
-                    let resultFiltro = respuesta.keyPoints.filter { str in
-                        str.last == "."
+        let reduced = try await reduceSummaries(partialSummaries)
+        let finalSession = LanguageModelSession(instructions: """
+            Redacta un resumen general claro, coherente, detallado y fiel al material.
+            No añadas opiniones ni información externa.
+            \(AppLanguage.current.aiResponseInstruction)
+            """)
+        resumenGeneral = try await finalSession.respond(
+            to: reduced,
+            generating: ResumenG.self,
+            options: GenerationOptions(maximumResponseTokens: 650)
+        ).content.resumen
+    }
+
+    func executeRequestListAplicacionPractica(
+        texto: String,
+        autor: String = "nev"
+    ) async throws {
+        let fragments = try preparedFragments(from: texto)
+        practicas.removeAll()
+        beginProgress(total: fragments.count)
+        defer { endProgress() }
+
+        var partialSummaries: [String] = []
+        for (index, fragment) in fragments.enumerated() {
+            try Task.checkCancellation()
+            fragmentoActual = index + 1
+            partialSummaries.append(try await summarizeText(fragment))
+        }
+        let reduced = try await reduceSummaries(partialSummaries)
+
+        let author = Autores(storedRawValue: autor)
+        let session = LanguageModelSession(instructions: """
+            Interpreta el material únicamente desde este marco:
+            \(InstructionIA.principles(for: author))
+
+            Genera acciones concretas derivadas del material.
+            No menciones el marco, no añadas información externa y no presentes resultados como garantizados.
+            Mantén cada acción breve, segura y aplicable.
+            \(AppLanguage.current.aiResponseInstruction)
+            """)
+        practicas = try await session.respond(
+            to: reduced,
+            generating: PracticalAdvice.self,
+            options: GenerationOptions(maximumResponseTokens: 520)
+        ).content.actionableSteps
+    }
+
+    func executeRequestPracticaConcreta(
+        texto: String,
+        autor: String = "nev"
+    ) async throws {
+        let cleanText = try validate(texto)
+        practicaConcreta = ""
+        try ensureModelAvailability()
+        let author = Autores(storedRawValue: autor)
+        let session = LanguageModelSession(instructions: """
+            Interpreta el texto únicamente desde este marco:
+            \(InstructionIA.principles(for: author))
+
+            Propón una única aplicación práctica precisa, segura y realista.
+            No menciones el marco, no añadas ideas externas y no excedas 180 palabras.
+            No presentes resultados como garantizados ni sustituyas ayuda profesional.
+            \(AppLanguage.current.aiResponseInstruction)
+            """)
+        practicaConcreta = try await session.respond(
+            to: cleanText,
+            options: GenerationOptions(maximumResponseTokens: 300)
+        ).content
+    }
+
+    func executeRequestInterpretaTexto(
+        texto: String,
+        autor: String = "nev"
+    ) async throws {
+        let cleanText = try validate(texto)
+        interpretacion = ""
+        try ensureModelAvailability()
+        let author = Autores(storedRawValue: autor)
+        let session = LanguageModelSession(instructions: """
+            Interpreta el texto únicamente desde este marco:
+            \(InstructionIA.principles(for: author))
+
+            Explica su sentido con claridad y fidelidad.
+            No menciones el marco, no añadas información externa y no excedas 220 palabras.
+            Distingue enseñanzas o creencias de hechos científicos y no sustituyas ayuda profesional.
+            \(AppLanguage.current.aiResponseInstruction)
+            """)
+        interpretacion = try await session.respond(
+            to: cleanText,
+            options: GenerationOptions(maximumResponseTokens: 360)
+        ).content
+    }
+
+    private func preparedFragments(from text: String) throws -> [String] {
+        try ensureModelAvailability()
+        let cleanText = try validate(text)
+        let fragments = Self.dividirTexto(cleanText, maxLength: maxLengthContext)
+        guard !fragments.isEmpty else { throw AIProcessingError.emptyText }
+        return fragments
+    }
+
+    private func validate(_ text: String) throws -> String {
+        let cleanText = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !cleanText.isEmpty else { throw AIProcessingError.emptyText }
+        return cleanText
+    }
+
+    private func ensureModelAvailability() throws {
+        guard SystemLanguageModel.default.isAvailable else {
+            throw AIProcessingError.modelUnavailable
+        }
+    }
+
+    private func beginProgress(total: Int) {
+        noFragmentos = total
+        fragmentoActual = 0
+    }
+
+    private func endProgress() {
+        noFragmentos = 0
+        fragmentoActual = 0
+    }
+
+    private func summarizeText(_ text: String) async throws -> String {
+        let session = LanguageModelSession(instructions: """
+            Resume el texto con fidelidad y lenguaje sencillo.
+            Conserva las ideas necesarias para poder elaborar después un resumen global.
+            No añadas opiniones ni información externa.
+            Devuelve menos de 220 palabras.
+            \(AppLanguage.current.aiResponseInstruction)
+            """)
+        return try await session.respond(
+            to: text,
+            options: GenerationOptions(maximumResponseTokens: 330)
+        ).content
+    }
+
+    private func reduceSummaries(_ initialSummaries: [String]) async throws -> String {
+        guard !initialSummaries.isEmpty else { throw AIProcessingError.emptyResult }
+        var summaries = initialSummaries
+
+        while summaries.count > 1 {
+            try Task.checkCancellation()
+            let batches = Self.pack(
+                summaries,
+                maximumCharacters: maxLengthContext
+            )
+            var nextLevel: [String] = []
+            for batch in batches {
+                try Task.checkCancellation()
+                nextLevel.append(try await summarizeText(batch))
+            }
+            if nextLevel == summaries {
+                break
+            }
+            summaries = nextLevel
+        }
+        return summaries.joined(separator: "\n\n")
+    }
+
+    private func consolidateKeyPoints(_ values: [String]) async throws -> [String] {
+        var points = Self.deduplicated(values)
+        guard !points.isEmpty else { throw AIProcessingError.emptyResult }
+
+        while points.count > 10 || points.joined(separator: "\n").count > maxLengthContext {
+            try Task.checkCancellation()
+            let batches = Self.pack(points, maximumCharacters: maxLengthContext)
+            var reduced: [String] = []
+            for batch in batches {
+                let session = LanguageModelSession(instructions: """
+                    Consolida ideas relacionadas y elimina duplicados.
+                    Conserva solo los puntos esenciales presentes en el contenido.
+                    No añadas información y redacta oraciones completas.
+                    \(AppLanguage.current.aiResponseInstruction)
+                    """)
+                let response = try await session.respond(
+                    to: batch,
+                    generating: Summary.self,
+                    options: GenerationOptions(maximumResponseTokens: 420)
+                ).content
+                reduced.append(contentsOf: response.keyPoints)
+            }
+            let deduplicated = Self.deduplicated(reduced)
+            if deduplicated == points {
+                points = Array(points.prefix(10))
+                break
+            }
+            points = deduplicated
+        }
+        return Array(points.prefix(10))
+    }
+
+    static func dividirTexto(_ texto: String, maxLength: Int) -> [String] {
+        guard maxLength > 0 else { return [] }
+        let normalized = texto
+            .replacingOccurrences(of: "\r\n", with: "\n")
+            .replacingOccurrences(of: "\r", with: "\n")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !normalized.isEmpty else { return [] }
+
+        var fragments: [String] = []
+        var start = normalized.startIndex
+
+        while start < normalized.endIndex {
+            let tentativeEnd = normalized.index(
+                start,
+                offsetBy: maxLength,
+                limitedBy: normalized.endIndex
+            ) ?? normalized.endIndex
+            var end = tentativeEnd
+
+            if tentativeEnd < normalized.endIndex {
+                let candidate = normalized[start..<tentativeEnd]
+                let minimumDistance = maxLength / 2
+                let separators = ["\n\n", "\n", ". ", "; ", ", ", " "]
+                for separator in separators {
+                    guard let range = candidate.range(of: separator, options: .backwards) else {
+                        continue
                     }
-                    self.puntosClaves += resultFiltro
-                    
-                    
-                    
+                    let distance = normalized.distance(from: start, to: range.upperBound)
+                    if distance >= minimumDistance {
+                        end = range.upperBound
+                        break
+                    }
                 }
-                
-                
-            }catch{
-                self.puntosClaves.append("Error al procesar el texto")
             }
-        
-        //Resetando las variables UI de progreso
-        self.noFragmentos = 0
-        self.fragmentoActual = 0
 
-    }
-    
-    
-    //Produce un resumen general del contenido (Conferencias)
-    func executeRequestResumenGeneral(texto : String) async {
-        
-        guard !texto.isEmpty else { return }
-
-        // Dividir texto en fragmentos
-        let fragmentos = dividirTexto(texto, maxLength: self.maxLengthContext)
-        
-        self.noFragmentos = fragmentos.count //Actualizando Variables UI
-        
-        var resultados: String = "" //Resumenes parciales de cada fragmento
-        
-        self.resumenGeneral = ""
-        
-        
-        /*Método:
-         Genera un resumen general del contenido
-         */
-            
-        do{
-            for (index, fragmento) in fragmentos.enumerated() {
-                let session : LanguageModelSession = LanguageModelSession()
-                let prompt1 = """
-        Actúa como un experto en comunicación que resume conferencias.
-
-        Lee atentamente el siguiente texto y escribe un resumen claro, conciso y fiel al contenido original.
-        
-        Sigue estas directrices:
-        - No agregues opiniones personales ni información que no esté en el texto.
-        - Usa lenguaje sencillo, frases cortas y un tono didáctico.
-
-        Texto de la conferencia:
-        \(fragmento)
-        """
-                self.fragmentoActual = index + 1 //Actualizando Variables UI
-                
-                let respuesta = try await session.respond(to: prompt1).content
-                resultados.append(respuesta)
+            let fragment = normalized[start..<end]
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+            if !fragment.isEmpty {
+                fragments.append(fragment)
             }
-            
-            //Haciendo un resumen conciso del resultado final
-            let sessionFinal : LanguageModelSession = LanguageModelSession()
-            let prompt2 = """
-                Actúa como un experto en comunicación que resume conferencias.
-        
-                Lee atentamente el siguiente texto y escribe un resumen claro, detallado y fiel al contenido original.
-                
-                Sigue estas directrices:
-                - No agregues opiniones personales ni información que no esté en el texto.
-                - Usa lenguaje sencillo, frases cortas y un tono didáctico.
-        
-                Texto de la conferencia:
-                \(resultados)
-        """
-           let temp =  try await sessionFinal.respond(to: prompt2, generating: ResumenG.self).content
-
-            self.resumenGeneral = temp.resumen
-        }catch{
-            self.resumenGeneral = "Ha ocurrido un error en el procesamiento"
+            start = end
         }
-              
-        //reseteando las variables de UI
-        self.noFragmentos = 0
-        self.fragmentoActual = 0
-        
-        
-        }
-    
-    
-    //Produce un listado de aplicaciones prácticas (Conferencias)
-    func executeRequestListAplicacionPractica(texto : String, autor : String = "nev") async {
-        
-        guard !texto.isEmpty else { return }
+        return fragments
+    }
 
-            // Dividir texto en fragmentos
-        let fragmentos = dividirTexto(texto, maxLength: self.maxLengthContext)
-        
-        self.noFragmentos = fragmentos.count //Actualizando la Variable UI de progreso
-        
-            var resultados: String = "" //Resumenes parciales de cada fragmento
-        
-        self.practicas.removeAll()
-        
-        /*Método:
-         1. Realiza un resumen general del contenido
-         2. Extrae las ideas claves y genera ejemplos prácticos
-         */
-        
-        //Obteniendo los principios de conocimiento según el autor:
-        var principios : String = ""
-        switch autor {
-        case "nev": principios = NevilleEngine.corePrinciples
-        case "jd": principios = DispenzaEngine.corePrinciples
-        case "bruceL" : principios = LiptonEngine.corePrinciples
-        case "gregg": principios = BradenEngine.corePrinciples
-        default: principios = NevilleEngine.corePrinciples
-        }
-            
-        do{
-            for (index, fragmento) in fragmentos.enumerated() {
-                let session : LanguageModelSession = LanguageModelSession()
-                let prompt1 = """
-        Actúa como un experto en comunicación que resume conferencias.
+    private static func pack(
+        _ strings: [String],
+        maximumCharacters: Int
+    ) -> [String] {
+        var batches: [String] = []
+        var current = ""
 
-        Lee atentamente el siguiente texto y escribe un resumen claro, conciso y fiel al contenido original.
-        
-        No agregues opiniones personales ni información que no esté en el texto.
-        
-        Usa lenguaje sencillo, frases cortas y un tono didáctico.
-
-        Texto de la conferencia:
-        \(fragmento)
-        """
-                self.fragmentoActual = index + 1 //Actualizando la variable UI de progreso
-                
-                let respuesta = try await session.respond(to: prompt1).content
-                resultados.append(respuesta)
+        for value in strings {
+            let chunks = dividirTexto(value, maxLength: maximumCharacters)
+            for chunk in chunks {
+                if current.count + chunk.count + 2 > maximumCharacters {
+                    if !current.isEmpty {
+                        batches.append(current)
+                    }
+                    current = chunk
+                } else {
+                    current += current.isEmpty ? chunk : "\n\n\(chunk)"
+                }
             }
-            
-            //Generando concejos para aplicar el conocimiento en la vida práctica
-            let sessionFinal : LanguageModelSession = LanguageModelSession()
-            let prompt2 = """
-                Basado en estos principios:
-                \(principios)
-                
-                Extrae las ideas claves del texto y genera para cada una un ejemplo práctico.
-
-                No agregues opiniones personales ni información que no esté en el texto.
-
-                Usa un tono positivo, motivador y personal.
-
-                El texto a analizar es este:
-                \(resultados)
-                """
-           let temp =  try await sessionFinal.respond(to: prompt2, generating: PracticalAdvice.self).content
-
-            self.practicas = temp.actionableSteps
-        }catch{
-            self.practicas.append("Ha ocurrido un error en el procesamiento")
         }
-              
-        //Reseteando las variables UI de progreso
-        self.noFragmentos = 0
-        self.fragmentoActual = 0
-        
+        if !current.isEmpty {
+            batches.append(current)
         }
-    
-    
-    //Produce una aplicación práctica de una Frase, nota, reflexión, ayuda y cita
-    func executeRequestPracticaConcreta(texto: String, autor : String = "nev") async {
-         guard !texto.isEmpty else {return}
-        //Actúa como un experto en aprendizaje aplicado, desarrollo personal y autoayuda.
-        
-        //Obteniendo los principios de conocimiento según el autor:
-        var principios : String = ""
-        switch autor {
-        case "nev": principios = NevilleEngine.corePrinciples
-        case "jd": principios = DispenzaEngine.corePrinciples
-        case "bruceL" : principios = LiptonEngine.corePrinciples
-        case "gregg": principios = BradenEngine.corePrinciples
-        default: principios = NevilleEngine.corePrinciples
-        }
-        
-        let promt = """
-            Basado en estos principios:
-            \(principios)
-            
-            Analiza el texto y genera un modo de aplicar sus ideas. 
-            
-            Sigue estas directrices:
-            - Sé preciso y mantén un tono profesional.
-            - No exeder de 200 palabras.
-            - No añadas ideas propias.
-            - No menciones los principios.
-            - Solo muestra el texto del ejemplo práctico.
-            
-            El texto es este:
-            \(texto)
-            """
-        
-        self.practicaConcreta = ""
-        
-        
-        /*Método:
-         Genera un ejemplo práctico de la vida diaria
-         */
-        
-        do{
-            let session : LanguageModelSession = LanguageModelSession()
-            let response = try await session.respond(to: promt).content
-            self.practicaConcreta = response
-        }catch{
-            self.practicaConcreta = "No se pudo procesar el texto"
+        return batches
+    }
+
+    private static func deduplicated(_ values: [String]) -> [String] {
+        var seen: Set<String> = []
+        return values.compactMap { value in
+            let clean = value.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !clean.isEmpty else { return nil }
+            let key = clean.folding(
+                options: [.caseInsensitive, .diacriticInsensitive],
+                locale: .current
+            )
+            return seen.insert(key).inserted ? clean : nil
         }
     }
-    
-    
-    
-    //Genera una interpretación de un texto(Frase, refelxion, cita, nota, respuesta) de acuerdo con las ideas fundamentales de Neville Goddard
-    func executeRequestInterpretaTexto(texto: String, autor : String = "nev") async {
-        guard !texto.isEmpty else {return}
-        
-        
-        //Obteniendo los principios de conocimiento según el autor:
-        var principios : String = ""
-        switch autor {
-        case "nev": principios = NevilleEngine.corePrinciples
-        case "jd": principios = DispenzaEngine.corePrinciples
-        case "bruceL" : principios = LiptonEngine.corePrinciples
-        case "gregg": principios = BradenEngine.corePrinciples
-        default: principios = NevilleEngine.corePrinciples
-        }
-        
-        let prompt = """
-        Basado en estos principios:
-        \(principios)
-                    
-        Analiza e interpreta este texto:
-        \(texto)
-                    
-        Responde solo en base a los principios anteriores.
-        
-        No hagas mención directa de los principios.
-                    
-        Usa un tono profesional.
-                              
-        No utilices ideas propias.
-                    
-        No uses más de 250 palabras.
-        """
-        self.interpretacion = ""
-        
-        do{
-            let session : LanguageModelSession = LanguageModelSession()
-            let response = try await session.respond(to: prompt).content
-            self.interpretacion = response
-        }catch{
-            self.interpretacion = "No se pudo procesar el texto"
-        }
-  
-    }
-    
-    
-    
-    
-    /// Divide el texto en fragmentos con longitud máxima, agregando los últimos N párrafos
-    /// del fragmento anterior como contexto superpuesto.
-    
-      private func dividirTexto(_ texto: String, maxLength: Int) -> [String] {
-          var fragmentos: [String] = []
-          var inicio = texto.startIndex
-          
-          while inicio < texto.endIndex {
-              // Calculamos el índice máximo tentativo
-              let finTentativo = texto.index(inicio, offsetBy: maxLength, limitedBy: texto.endIndex) ?? texto.endIndex
-              var finReal = finTentativo
-              
-              // Obtenemos el fragmento tentativo
-              let rangoTentativo = inicio..<finTentativo
-              let subTexto = String(texto[rangoTentativo])
-              
-              // Buscamos el último salto de párrafo antes del límite
-              if let rangoUltimoSalto = subTexto.range(of: "\n", options: .backwards) {
-                  let distancia = subTexto.distance(from: subTexto.startIndex, to: rangoUltimoSalto.lowerBound)
-                  if distancia > 0 {
-                      finReal = texto.index(inicio, offsetBy: distancia)
-                  }
-              }
-              
-              // Creamos el fragmento con el rango calculado
-              let fragmento = String(texto[inicio..<finReal])
-              fragmentos.append(fragmento.trimmingCharacters(in: .whitespacesAndNewlines))
-              
-              // Avanzamos el inicio al final real del fragmento
-              inicio = finReal
-              
-              // Si el siguiente carácter es un salto de línea, lo saltamos
-              if inicio < texto.endIndex {
-                  inicio = texto.index(after: inicio)
-              }
-          }
-          
-          self.noFragmentos = fragmentos.count
-          return fragmentos
-      }
-      
-   
-    
 
-    
-    //Función estática que chequea la disponibilidad del modelo en el dispositivo
-   static func isAvailable() -> Bool {
-        let model = SystemLanguageModel.default
-        
-        switch model.availability {
-        case .available:
-            return true
-        case .unavailable:
-            return false
-        }
+    static func isAvailable() -> Bool {
+        SystemLanguageModel.default.isAvailable
     }
-    
-    
-    
-    
-    
-    
 }
 
-
-
-//Estructura generable para Puntos Claves
 @available(iOS 26.0, macOS 26.0, *)
-@Generable(description: "Estructura que representa un resumen de las ideas claves de un texto dado.")
+@Generable(description: "Resumen estructurado de las ideas esenciales de un texto.")
 struct Summary {
-    @Guide(description: "Listado conciso de las ideas claves del texto.")
+    @Guide(
+        description: "Ideas esenciales, completas, sin repeticiones.",
+        .minimumCount(1),
+        .maximumCount(10)
+    )
     let keyPoints: [String]
 }
 
-//Estructura generable para Resumen General
 @available(iOS 26.0, macOS 26.0, *)
-@Generable(description: "Estructura que representa un resumen general y conciso de un texto dado.")
+@Generable(description: "Resumen general, claro y conciso de un contenido.")
 struct ResumenG {
-    @Guide(description: "Resumen general y conciso del contenido")
+    @Guide(description: "Resumen fiel al contenido.")
     let resumen: String
 }
 
-//Estructura generable para listado de concejos prácticos
 @available(iOS 26.0, macOS 26.0, *)
-@Generable(description: "Estructura que representa consejos prácticos derivados de las enseñanzas de una conferencia.")
+@Generable(description: "Acciones prácticas derivadas de un contenido.")
 struct PracticalAdvice {
-    @Guide(description: "Lista de consejos o acciones concretas que una persona puede aplicar para implementar las ideas presentadas en la conferencia.")
+    @Guide(
+        description: "Acciones concretas, breves, seguras y sin repeticiones.",
+        .minimumCount(1),
+        .maximumCount(8)
+    )
     let actionableSteps: [String]
 }
 
-
-///Tipos de salida de resultados. Delinea las funciones de IA actuales.
-///Puede ser:
-///-puntosClaves: Genera un listado de los puntos claves (solo para conferencias)
-///-resumen: Genera un resumen del contenido (solo para conferencias)
-///-practicas: Genera un listado de aplicaciones prácticas (solo para conferencias)
-///-practicaConcreta: Genera una aplicación práctica de un texto dado (para: frases, reflexiones, citas, entradas del usuario, etc)
-///-interpretar: Genera una interpretación de un texto de acuerdo con las ideas fundamentales de Neville Goddard (frases,reflexiones, citas,etc)
-///-autoayuda: Genera una respuesta a una petición del usuario relacionada con las enseñanzas de Neville Goddard
-enum TiposSalida{
-    case puntosClaves      
+enum TiposSalida {
+    case puntosClaves
     case resumen
     case practicas
     case practicaConcreta
     case interpretar
-    //case autoayuda
 }
 
+enum AIProcessingError: LocalizedError {
+    case emptyText
+    case emptyResult
+    case modelUnavailable
 
-
-//Create a view only if Apple Intelligence is available.
-@ViewBuilder
-func CreateViewIfAppleIntelligence<Content: View>( content: () -> Content) -> some View {
-    if #available(iOS 26.0, macOS 26.0, *) {
-        if SystemLanguageModel.default.isAvailable {
-            content()
+    var errorDescription: String? {
+        switch self {
+        case .emptyText:
+            return "No hay texto para procesar."
+        case .emptyResult:
+            return "El modelo no pudo obtener un resultado útil."
+        case .modelUnavailable:
+            return "Apple Intelligence no está disponible en este dispositivo."
         }
     }
 }
 
-
-
-
-
+@ViewBuilder
+func CreateViewIfAppleIntelligence<Content: View>(
+    @ViewBuilder content: () -> Content
+) -> some View {
+    if #available(iOS 26.0, macOS 26.0, *) {
+        if SystemLanguageModel.default.isAvailable {
+            content()
+        } else {
+            ContentUnavailableView(
+                "Apple Intelligence no disponible",
+                systemImage: "sparkles",
+                description: Text(
+                    "Comprueba que el dispositivo sea compatible, Apple Intelligence esté activado y el modelo termine de descargarse."
+                )
+            )
+        }
+    } else {
+        ContentUnavailableView(
+            "Sistema no compatible",
+            systemImage: "sparkles",
+            description: Text("Esta función requiere iOS 26 o macOS 26.")
+        )
+    }
+}
