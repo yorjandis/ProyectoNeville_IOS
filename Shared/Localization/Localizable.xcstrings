@@ -184,7 +184,7 @@
       }
     },
     "¿Desea eliminar la entrada? \\n Esta acción no puede deshacerse" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1418,6 +1418,29 @@
         }
       }
     },
+    "%lld revisión%@ guardada%@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld saved review%3$@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld revisión%@ guardada%@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld 条已保存的周回顾"
+          }
+        }
+      }
+    },
     "%lld ritual%@ completado%@" : {
       "localizations" : {
         "en" : {
@@ -1631,6 +1654,28 @@
       },
       "shouldTranslate" : false
     },
+    "1 revisión guardada" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 saved review"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 revisión guardada"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 条已保存的回顾"
+          }
+        }
+      }
+    },
     "1: mínimamente procesado • 2: ingrediente culinario • 3: procesado • 4: ultraprocesado" : {
       "localizations" : {
         "en" : {
@@ -1719,6 +1764,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "3. 开放式健康。"
+          }
+        }
+      }
+    },
+    "4 semanas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4 weeks"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4 semanas"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4 周"
           }
         }
       }
@@ -1906,6 +1973,28 @@
     "10" : {
       "shouldTranslate" : false
     },
+    "12 semanas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "12 weeks"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "12 semanas"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "12 周"
+          }
+        }
+      }
+    },
     "14 días" : {
       "localizations" : {
         "en" : {
@@ -1951,7 +2040,7 @@
       }
     },
     "24 h" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1969,6 +2058,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "24 小时"
+          }
+        }
+      }
+    },
+    "24 semanas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "24 weeks"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "24 semanas"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "24 周"
           }
         }
       }
@@ -2109,7 +2220,7 @@
       }
     },
     "Abre %@ en La Ley" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2658,7 +2769,7 @@
       }
     },
     "Acceso" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2703,7 +2814,7 @@
       }
     },
     "Acceso Premium" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2736,7 +2847,7 @@
       }
     },
     "Acceso rápido" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2879,7 +2990,7 @@
       }
     },
     "Activa permisos de ubicación en Ajustes." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3012,7 +3123,7 @@
       }
     },
     "actividad" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3161,7 +3272,7 @@
       }
     },
     "actividades" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3298,7 +3409,7 @@
       }
     },
     "Actualizado ahora" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3463,7 +3574,7 @@
       }
     },
     "Actualizar lugar" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3622,7 +3733,7 @@
       }
     },
     "Adultos: ~0.8 g/kg/día como mínimo (aprox. 10 a 35 por ciento de la energía diaria)." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3689,7 +3800,7 @@
       }
     },
     "Agenda · Diario" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3712,7 +3823,7 @@
       }
     },
     "Agenda · Metas · Presencia · Diario" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3734,8 +3845,30 @@
         }
       }
     },
+    "Agenda completada" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completed schedule"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agenda completada"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已完成日程"
+          }
+        }
+      }
+    },
     "Agenda de hoy" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4834,7 +4967,7 @@
       }
     },
     "alimento mínimamente procesado (NOVA 2)" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4857,7 +4990,7 @@
       }
     },
     "alimento sin procesar o mínimamente procesado (NOVA 1)" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4918,7 +5051,7 @@
       }
     },
     "Alta en fibra" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4963,7 +5096,7 @@
       }
     },
     "Alto" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5111,8 +5244,30 @@
         }
       }
     },
+    "Añade un ritual sencillo esta semana: intención, una emoción elegida y una respuesta consciente." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add a simple ritual this week: intention, a chosen emotion, and a conscious response."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añade un ritual sencillo esta semana: intención, una emoción elegida y una respuesta consciente."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "本周加入一个简单仪式：意图、一个选择的情绪，以及一个有意识的回应。"
+          }
+        }
+      }
+    },
     "Añadir" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5487,7 +5642,7 @@
       }
     },
     "Antes de continuar, respira durante un minuto y registra cómo estás. Después decide la siguiente acción más pequeña que sí puedas sostener." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5838,7 +5993,7 @@
       }
     },
     "Aportan energía, pero no son esenciales frente a grasas insaturadas." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5861,7 +6016,7 @@
       }
     },
     "Aporte proteico alto" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5884,7 +6039,7 @@
       }
     },
     "Aporte proteico medio" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6476,7 +6631,7 @@
       }
     },
     "Aún hacen falta más lecturas para detectar un patrón diario fiable." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6538,6 +6693,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "目前还没有标记为已完成的活动或目标单元，但你的反思依然有价值。"
+          }
+        }
+      }
+    },
+    "Aún no hay celebraciones guardadas en el rango seleccionado." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "There are no saved celebrations in the selected range yet."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aún no hay celebraciones guardadas en el rango seleccionado."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "所选范围内还没有保存的庆祝内容。"
           }
         }
       }
@@ -6652,8 +6829,52 @@
         }
       }
     },
+    "Aún no hay focos guardados en tus revisiones." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "There are no saved focuses in your reviews yet."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aún no hay focos guardados en tus revisiones."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的回顾中还没有保存关注点。"
+          }
+        }
+      }
+    },
+    "Aún no hay historial" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No history yet"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aún no hay historial"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "还没有历史记录"
+          }
+        }
+      }
+    },
     "Aún no hay registros en los últimos 7 días. Empieza por anotar una tarea, una presencia o una entrada breve." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6698,7 +6919,7 @@
       }
     },
     "Aún no hay suficientes datos" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6809,7 +7030,7 @@
       }
     },
     "Aurora" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -7248,7 +7469,7 @@
       }
     },
     "Avanza una unidad concreta" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -7353,7 +7574,7 @@
       }
     },
     "Ayudan a reparar y mantener músculo, piel, enzimas y hormonas." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -7398,7 +7619,7 @@
       }
     },
     "Azúcar" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -7465,7 +7686,7 @@
       }
     },
     "Azúcar entre 5 g y 15 g por 100 g: se recomienda moderar su consumo en grandes cantidades o con frecuencia." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -7488,7 +7709,7 @@
       }
     },
     "Azúcar mayor de 15 g por 100 g: se recomienda evitar su consumo por su mayor impacto metabólico." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -7533,7 +7754,7 @@
       }
     },
     "Azúcares libres/añadidos: menos del 10 por ciento de las calorías; idealmente menos del 5 por ciento si es posible." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -7600,7 +7821,7 @@
       }
     },
     "Bajo" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -7711,7 +7932,7 @@
       }
     },
     "Bibliografía" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -7920,7 +8141,7 @@
       }
     },
     "Bosque" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -7943,7 +8164,7 @@
       }
     },
     "Bronce" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -7994,7 +8215,7 @@
       }
     },
     "Buena fuente de fibra" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -8017,7 +8238,7 @@
       }
     },
     "Buenas noches" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -8040,7 +8261,7 @@
       }
     },
     "Buenas tardes" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -8725,7 +8946,7 @@
       }
     },
     "Cada:" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -8814,7 +9035,7 @@
       }
     },
     "Calma azul" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -9277,7 +9498,7 @@
       }
     },
     "Cantidad total:" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -9502,7 +9723,7 @@
       }
     },
     "Categoría actualizada" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -9520,6 +9741,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "分类已更新"
+          }
+        }
+      }
+    },
+    "Celebraciones recientes" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recent celebrations"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Celebraciones recientes"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "近期庆祝"
           }
         }
       }
@@ -9947,7 +10190,7 @@
       }
     },
     "Cielo" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -9965,6 +10208,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "天空蓝"
+          }
+        }
+      }
+    },
+    "Cierra algunas revisiones más para generar lecturas comparativas." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Complete a few more reviews to generate comparative readings."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cierra algunas revisiones más para generar lecturas comparativas."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "再完成几次回顾，就能生成对比解读。"
           }
         }
       }
@@ -10035,6 +10300,28 @@
         }
       }
     },
+    "Cierra la próxima semana con una celebración concreta y un foco pequeño. Eso hará más útil tu historial." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close next week with one concrete celebration and one small focus. That will make your history more useful."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cierra la próxima semana con una celebración concreta y un foco pequeño. Eso hará más útil tu historial."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下周结束时写下一个具体庆祝和一个小关注点，这会让你的历史记录更有用。"
+          }
+        }
+      }
+    },
     "Cierra la semana con una síntesis de metas, agenda, diario, emociones, presencia, coherencia y logros. Elige el día, recibe un recordatorio opcional y conserva tus revisiones sincronizadas." : {
       "localizations" : {
         "en" : {
@@ -10075,6 +10362,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "闭上眼睛，深深呼吸……让思绪慢慢安静，只去感受呼吸。你很重要，这一刻属于你。"
+          }
+        }
+      }
+    },
+    "Cierra una revisión semanal para empezar a construir estadísticas de metas, agenda, diario, presencia, coherencia, rituales y estados emocionales." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Complete a weekly review to start building stats for goals, schedule, journal, presence, coherence, rituals, and emotional states."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cierra una revisión semanal para empezar a construir estadísticas de metas, agenda, diario, presencia, coherencia, rituales y estados emocionales."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完成一次每周回顾，即可开始生成关于目标、日程、日记、临在、心率协调、仪式和情绪状态的统计。"
           }
         }
       }
@@ -10201,6 +10510,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "收尾次数"
+          }
+        }
+      }
+    },
+    "cierres guardados" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "saved completions"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "cierres guardados"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已保存的完成记录"
           }
         }
       }
@@ -10370,7 +10701,7 @@
       }
     },
     "Cobertura" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -10437,7 +10768,7 @@
       }
     },
     "Código de barras" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -10460,7 +10791,7 @@
       }
     },
     "Código de barras o nombre de producto" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -10549,7 +10880,7 @@
       }
     },
     "coherence.home.title" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -10720,7 +11051,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "相干度"
+            "value" : "协调"
           }
         }
       }
@@ -10836,7 +11167,7 @@
       }
     },
     "Colapsar tarjeta" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -10897,7 +11228,7 @@
       "shouldTranslate" : false
     },
     "Color de fondo y letra" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -11970,7 +12301,7 @@
       }
     },
     "Comprueba los permisos de Salud y usa el Apple Watch con regularidad. La referencia personal mejora tras varios días de lecturas." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12167,7 +12498,7 @@
       }
     },
     "Concentración alta (a vigilar)" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12190,7 +12521,7 @@
       }
     },
     "Concentración alta (favorable)" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12213,7 +12544,7 @@
       }
     },
     "Concentración baja (a mejorar)" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12236,7 +12567,7 @@
       }
     },
     "Concentración baja (favorable)" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12259,7 +12590,7 @@
       }
     },
     "Concentración baja suele asociarse a menor saciedad y peor salud digestiva. Buena o alta favorece salud metabólica e intestinal." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12282,7 +12613,7 @@
       }
     },
     "Concentración media" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12327,7 +12658,7 @@
       }
     },
     "Concentraciones altas aumentan carga glucémica y exceso calórico. Se recomienda mantenerla baja, especialmente en ultraprocesados." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12350,7 +12681,7 @@
       }
     },
     "Concentraciones altas elevan riesgo de hipertensión en consumo habitual. Es preferible una concentración baja." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12373,7 +12704,7 @@
       }
     },
     "Concentraciones altas y frecuentes se asocian a mayor riesgo cardiovascular. Conviene priorizar niveles bajos o moderados." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12676,7 +13007,7 @@
       }
     },
     "Configurar" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12841,7 +13172,7 @@
       }
     },
     "Consolida lo que ya funciona" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12908,7 +13239,7 @@
       }
     },
     "Consulta por código de barras usando API de OpenFoodFacts o base SQLite offline." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12931,7 +13262,7 @@
       }
     },
     "Consultando base SQLite offline..." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12954,7 +13285,7 @@
       }
     },
     "Consultando OpenFoodFacts..." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12977,7 +13308,7 @@
       }
     },
     "Consultando Salud…" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -13202,7 +13533,7 @@
       }
     },
     "Contextos" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -13225,7 +13556,7 @@
       }
     },
     "Contiene aditivos de mayor o moderado riesgo (al menos 1 alto/crítico o 3 medios), por eso aplica penalización máxima." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -13248,7 +13579,7 @@
       }
     },
     "Contiene gluten" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -13521,7 +13852,7 @@
       }
     },
     "Convierte lo hecho en aprendizaje" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -13632,7 +13963,7 @@
       }
     },
     "Coral" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -13787,7 +14118,7 @@
       }
     },
     "Creado:" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -14264,7 +14595,7 @@
       }
     },
     "Crítico" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -14282,6 +14613,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "严重"
+          }
+        }
+      }
+    },
+    "Cuando cierres revisiones, aquí aparecerán tendencias e insights." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Once you complete reviews, trends and insights will appear here."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuando cierres revisiones, aquí aparecerán tendencias e insights."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完成回顾后，这里会显示趋势和洞察。"
           }
         }
       }
@@ -14599,7 +14952,7 @@
       }
     },
     "Debe colocar un título y un texto para la entrada" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -14622,7 +14975,7 @@
       }
     },
     "Debe colocar un título y un texto para la nota" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -14645,7 +14998,7 @@
       }
     },
     "Debes indicar un título." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -14756,7 +15109,7 @@
       }
     },
     "Define un punto de apoyo" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -14927,7 +15280,7 @@
       }
     },
     "Depende de edad, sexo y actividad. Referencia habitual en etiquetado: ~2000 kcal/día." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -15082,7 +15435,7 @@
       }
     },
     "Desbloquea una tarea pendiente" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -15345,7 +15698,7 @@
       }
     },
     "Descripción" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -15712,7 +16065,7 @@
       }
     },
     "Detectado" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -15883,7 +16236,7 @@
       }
     },
     "día integrado" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -15900,7 +16253,7 @@
       }
     },
     "día intencionado" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -16414,6 +16767,28 @@
         }
       }
     },
+    "días por semana" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "days per week"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "días por semana"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每周天数"
+          }
+        }
+      }
+    },
     "días seguidos" : {
       "localizations" : {
         "en" : {
@@ -16547,7 +16922,7 @@
       }
     },
     "diseña tu día" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -16888,7 +17263,7 @@
       }
     },
     "Duración total:" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -17233,7 +17608,7 @@
       }
     },
     "Ej. páginas, km, vasos" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -17300,7 +17675,7 @@
       }
     },
     "Eje. Meditar todos los días" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -17323,7 +17698,7 @@
       }
     },
     "Ejecutar:" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -17346,7 +17721,7 @@
       }
     },
     "Ejemplo: 8410076475898" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -17369,7 +17744,7 @@
       }
     },
     "Ejemplos: 10 minutos, 3 páginas o 5 km cada vez." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -17710,7 +18085,7 @@
       }
     },
     "El producto no se declara como orgánico." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -17733,7 +18108,7 @@
       }
     },
     "El producto se declara como orgánico." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -18199,8 +18574,30 @@
         }
       }
     },
+    "Elige una sola meta y completa una unidad mínima esta semana. Menos ambición, más evidencia." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose one goal and complete one tiny unit this week. Less ambition, more evidence."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige una sola meta y completa una unidad mínima esta semana. Menos ambición, más evidencia."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "本周只选择一个目标，并完成一个最小行动单元。少一点雄心，多一点证据。"
+          }
+        }
+      }
+    },
     "Elige una sola prioridad importante y reserva una pausa breve antes de la siguiente tarea. Protege energía antes de añadir más compromisos." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -18223,7 +18620,7 @@
       }
     },
     "Elige una tarea de Agenda o una unidad de meta y conviértela en el único avance imprescindible de hoy." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -19020,7 +19417,7 @@
       }
     },
     "En actividad" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -19043,7 +19440,7 @@
       }
     },
     "en automático" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -19055,6 +19452,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "处于自动驾驶状态"
+          }
+        }
+      }
+    },
+    "en el rango" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "in range"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "en el rango"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在范围内"
           }
         }
       }
@@ -19526,7 +19945,7 @@
       }
     },
     "Entrada eliminada" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -19571,7 +19990,7 @@
       }
     },
     "entrada hoy" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -19676,7 +20095,7 @@
       }
     },
     "entradas hoy" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -19856,6 +20275,28 @@
         }
       }
     },
+    "Equilibrio semanal" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weekly balance"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Equilibrio semanal"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每周平衡"
+          }
+        }
+      }
+    },
     "Eres el observador y el creador\nde tu experiencia" : {
       "localizations" : {
         "en" : {
@@ -19901,7 +20342,7 @@
       }
     },
     "Error al actualizar la categoría" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -19946,7 +20387,7 @@
       }
     },
     "Error al crear la entrada" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -19969,7 +20410,7 @@
       }
     },
     "Error al crear la nota" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -19992,7 +20433,7 @@
       }
     },
     "Error al eliminar entrada" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -20015,7 +20456,7 @@
       }
     },
     "Error al eliminar la entrada" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -20038,7 +20479,7 @@
       }
     },
     "Error al eliminar la nota" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -20175,7 +20616,7 @@
       }
     },
     "Escribe tres líneas: qué funcionó, qué ajustarías y cuál es el siguiente paso. Hazlo antes de cerrar el día." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -20626,7 +21067,7 @@
       }
     },
     "Esta versión: %@, cuenta con las siguientes Características:" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -20685,7 +21126,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Statistics"
+            "value" : "Stats"
           }
         },
         "es" : {
@@ -20742,6 +21183,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "日记统计"
+          }
+        }
+      }
+    },
+    "Estadísticas semanales" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weekly stats"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estadísticas semanales"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每周统计"
           }
         }
       }
@@ -20945,7 +21408,7 @@
       }
     },
     "estados de ánimo difíciles" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -20990,7 +21453,7 @@
       }
     },
     "Estamos reuniendo tus registros recientes." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -21199,7 +21662,7 @@
       }
     },
     "Estimación pausada durante el movimiento" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -21571,6 +22034,28 @@
         }
       }
     },
+    "Evidencias que ya reconociste en tus cierres." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Evidence you already acknowledged in your reviews."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Evidencias que ya reconociste en tus cierres."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你在回顾中已经认可的证据。"
+          }
+        }
+      }
+    },
     "Evitar apagado de pantalla" : {
       "localizations" : {
         "en" : {
@@ -21742,7 +22227,7 @@
       }
     },
     "Expandir tarjeta" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -22313,7 +22798,7 @@
       }
     },
     "Fecha de cada unidad:" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -22528,7 +23013,7 @@
       }
     },
     "Fibra" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -22573,7 +23058,7 @@
       }
     },
     "Fibra escasa" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -22991,6 +23476,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "顺畅"
+          }
+        }
+      }
+    },
+    "Focos recientes" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recent focuses"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Focos recientes"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "近期关注点"
           }
         }
       }
@@ -23636,7 +24143,7 @@
       }
     },
     "Fuente rápida de energía; el exceso desplaza nutrientes de mejor calidad." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -23979,7 +24486,7 @@
       }
     },
     "Gluten: aparece en la sección de alérgenos del producto." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -24002,7 +24509,7 @@
       }
     },
     "Gluten: no hay evidencia clara; se aplica una evaluación conservadora." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -24025,7 +24532,7 @@
       }
     },
     "Gluten: sin dato concluyente." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -24466,7 +24973,7 @@
       }
     },
     "goals.dynamic.creation_summary" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -24709,7 +25216,7 @@
       }
     },
     "goals.dynamic.period_suffix" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -24754,7 +25261,7 @@
       }
     },
     "goals.dynamic.planned_execution_count" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -26075,7 +26582,7 @@
       }
     },
     "goals.ui.summary_value" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -26202,7 +26709,7 @@
       }
     },
     "Grasas saturadas" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -26247,7 +26754,7 @@
       }
     },
     "Grasas saturadas iguales o mayores a 5 g por 100 g: se aconseja regular su consumo habitual por mayor riesgo cardiovascular." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -27170,7 +27677,7 @@
       }
     },
     "Haz una pausa consciente" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -27215,7 +27722,7 @@
       }
     },
     "Haz una sesión breve de coherencia y elige un gesto visible que exprese la identidad que quieres sostener hoy." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -27678,7 +28185,7 @@
       }
     },
     "Hecho" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -27717,7 +28224,7 @@
       }
     },
     "home.progress.goals.multiple" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -27740,7 +28247,7 @@
       }
     },
     "home.progress.goals.single" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -27763,7 +28270,7 @@
       }
     },
     "home.progress.presence.multiple" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -27786,7 +28293,7 @@
       }
     },
     "home.progress.presence.single" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -27809,7 +28316,7 @@
       }
     },
     "home.recommendation.available_goal.action" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -27832,7 +28339,7 @@
       }
     },
     "home.recommendation.available_goal.evidence.multiple" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -27855,7 +28362,7 @@
       }
     },
     "home.recommendation.available_goal.evidence.single" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -27878,7 +28385,7 @@
       }
     },
     "home.recommendation.difficult_events.evidence" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -27901,7 +28408,7 @@
       }
     },
     "home.recommendation.low_coherence.evidence" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -27924,7 +28431,7 @@
       }
     },
     "home.recommendation.low_energy.evidence" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -27947,7 +28454,7 @@
       }
     },
     "home.recommendation.low_identity.evidence" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -27970,7 +28477,7 @@
       }
     },
     "home.recommendation.no_diary.evidence.multiple" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -27993,7 +28500,7 @@
       }
     },
     "home.recommendation.no_diary.evidence.single" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -28016,7 +28523,7 @@
       }
     },
     "home.recommendation.overdue_agenda.action" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -28039,7 +28546,7 @@
       }
     },
     "home.recommendation.overdue_agenda.evidence.multiple" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -28062,7 +28569,7 @@
       }
     },
     "home.recommendation.overdue_agenda.evidence.single" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -28085,7 +28592,7 @@
       }
     },
     "home.recommendation.overdue_goal.action" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -28108,7 +28615,7 @@
       }
     },
     "home.recommendation.overdue_goal.evidence.multiple" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -28131,7 +28638,7 @@
       }
     },
     "home.recommendation.overdue_goal.evidence.single" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -28154,7 +28661,7 @@
       }
     },
     "home.recommendation.source" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -28177,7 +28684,7 @@
       }
     },
     "home.recommendation.summary.goals.multiple" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -28200,7 +28707,7 @@
       }
     },
     "home.recommendation.summary.goals.single" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -28223,7 +28730,7 @@
       }
     },
     "home.recommendation.summary.presence.multiple" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -28246,7 +28753,7 @@
       }
     },
     "home.recommendation.summary.presence.single" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -28269,7 +28776,7 @@
       }
     },
     "home.recommendation.summary.week" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -28292,7 +28799,7 @@
       }
     },
     "home.stress.calm_period" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -28315,7 +28822,7 @@
       }
     },
     "home.stress.confidence" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -28338,7 +28845,7 @@
       }
     },
     "home.stress.heart_rate" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -28361,7 +28868,7 @@
       }
     },
     "home.stress.high_period_insight" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -28384,7 +28891,7 @@
       }
     },
     "home.stress.level_score" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -28407,7 +28914,7 @@
       }
     },
     "home.stress.milliseconds" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -28430,7 +28937,7 @@
       }
     },
     "home.stress.normal_period_insight" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -28453,7 +28960,7 @@
       }
     },
     "home.stress.personal_heart_rate" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -28476,7 +28983,7 @@
       }
     },
     "home.stress.personal_milliseconds" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -28499,7 +29006,7 @@
       }
     },
     "home.stress.personal_respiratory_rate" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -28522,7 +29029,7 @@
       }
     },
     "home.stress.respiratory_rate" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -28545,7 +29052,7 @@
       }
     },
     "home.stress.source" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -28568,7 +29075,7 @@
       }
     },
     "home.stress.steps.multiple" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -28591,7 +29098,7 @@
       }
     },
     "home.stress.steps.single" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -28614,7 +29121,7 @@
       }
     },
     "home.stress.updated_hours_ago" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -28637,7 +29144,7 @@
       }
     },
     "home.stress.updated_minutes_ago" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -29762,7 +30269,7 @@
       }
     },
     "Índigo" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -30027,7 +30534,7 @@
       }
     },
     "Inicio" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -30116,7 +30623,7 @@
       }
     },
     "integra tu día" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -30673,6 +31180,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "无法从媒体资料库导入所选歌曲。请尝试其他歌曲，或从“文件”中选择。"
+          }
+        }
+      }
+    },
+    "La coherencia bajó. Haz una sesión de 5 minutos después del ritual o antes de dormir." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coherence dropped. Do a 5-minute session after your ritual or before sleep."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La coherencia bajó. Haz una sesión de 5 minutos después del ritual o antes de dormir."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "协调练习下降了。在仪式后或睡前做一次 5 分钟练习。"
           }
         }
       }
@@ -31461,7 +31990,7 @@
       }
     },
     "La meta termina por:" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -31669,6 +32198,28 @@
         }
       }
     },
+    "La presencia bajó. Prueba 1 retorno consciente al día, aunque sea de 10 segundos." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Presence dropped. Try one conscious return per day, even if it is only 10 seconds."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La presencia bajó. Prueba 1 retorno consciente al día, aunque sea de 10 segundos."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "临在练习下降了。每天尝试一次有意识地回到当下，哪怕只有 10 秒。"
+          }
+        }
+      }
+    },
     "La primera imagen interna dirige tus pasos" : {
       "localizations" : {
         "en" : {
@@ -31846,7 +32397,7 @@
       }
     },
     "label_reader.additive.toxicity" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -32068,7 +32619,7 @@
       }
     },
     "label_reader.nutrition.consumption_warning_accessibility" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -32091,7 +32642,7 @@
       }
     },
     "label_reader.nutrition.reported_value" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -32202,7 +32753,7 @@
       }
     },
     "label_reader.offline.update_prompt" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -32225,7 +32776,7 @@
       }
     },
     "label_reader.result.source" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -32248,7 +32799,7 @@
       }
     },
     "label_reader.score.additive_counts" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -32271,7 +32822,7 @@
       }
     },
     "label_reader.score.criteria_count" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -32294,7 +32845,7 @@
       }
     },
     "label_reader.score.criteria_missing" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -32317,7 +32868,7 @@
       }
     },
     "label_reader.score.ecological_result" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -32340,7 +32891,7 @@
       }
     },
     "label_reader.score.final_rating" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -32363,7 +32914,7 @@
       }
     },
     "label_reader.score.gluten_indications" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -32386,7 +32937,7 @@
       }
     },
     "label_reader.score.gluten_product" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -32409,7 +32960,7 @@
       }
     },
     "label_reader.score.gluten_state" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -32432,7 +32983,7 @@
       }
     },
     "label_reader.score.nova_priority" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -32455,7 +33006,7 @@
       }
     },
     "label_reader.score.result" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -32478,7 +33029,7 @@
       }
     },
     "label_reader.score.salt_level" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -32501,7 +33052,7 @@
       }
     },
     "label_reader.score.saturated_fat_level" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -32524,7 +33075,7 @@
       }
     },
     "label_reader.score.sugar_level" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -32699,7 +33250,7 @@
       }
     },
     "Las frases de otros autores necesitan acceso Premium." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -32722,7 +33273,7 @@
       }
     },
     "Las Frases y enseñanzas de %@ están disponibles en la Versión Extendida" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -32739,7 +33290,7 @@
       }
     },
     "Las Frases y enseñanzas de Gregg Braden están disponibles en la Versión Extendida" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -32756,7 +33307,7 @@
       }
     },
     "Las Frases y enseñanzas del Dr. Bruce Lipton están disponibles en la Versión Extendida" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -32779,7 +33330,7 @@
       }
     },
     "Las Frases y enseñanzas del Dr. Joe Dispenza están disponibles en la Versión Extendida" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -32813,6 +33364,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "设有计划单元的进行中目标会显示在这里。"
+          }
+        }
+      }
+    },
+    "Las metas no muestran un patrón fuerte de estancamiento reciente." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your goals do not show a strong recent stagnation pattern."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las metas no muestran un patrón fuerte de estancamiento reciente."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的目标近期没有明显停滞模式。"
           }
         }
       }
@@ -32861,6 +33434,28 @@
         }
       }
     },
+    "Lectura útil" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Useful reading"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lectura útil"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有用解读"
+          }
+        }
+      }
+    },
     "Lecturas" : {
       "localizations" : {
         "en" : {
@@ -32884,7 +33479,7 @@
       }
     },
     "Lecturas altas" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -32929,7 +33524,7 @@
       }
     },
     "Letra" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -32968,7 +33563,7 @@
       }
     },
     "Leyendo…" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -33057,7 +33652,7 @@
       }
     },
     "Lima" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -33080,7 +33675,7 @@
       }
     },
     "Limitar a menos del 10 por ciento de las calorías diarias; idealmente sustituir por grasas insaturadas." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -33103,7 +33698,7 @@
       }
     },
     "Límite recomendado: <5 g de sal al día (≈2 g de sodio)." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -33497,6 +34092,28 @@
         }
       }
     },
+    "Lo que has elegido cuidar semana a semana." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What you have chosen to tend week by week."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lo que has elegido cuidar semana a semana."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你每周选择照看的内容。"
+          }
+        }
+      }
+    },
     "Lo que hoy te mostró sobre ti o tu forma de actuar." : {
       "localizations" : {
         "en" : {
@@ -33515,6 +34132,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "今天让你更了解自己的哪一面，或自己的行事方式？"
+          }
+        }
+      }
+    },
+    "Lo que más se repite en diario y presencia." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What repeats most in journal and presence."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lo que más se repite en diario y presencia."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "日记和临在中最常出现的内容。"
           }
         }
       }
@@ -33618,7 +34257,7 @@
       }
     },
     "Los datos para el cálculo de stress se toman de la aplicación Salud, utilizando HealthKit en modo solo lectura." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -33908,6 +34547,28 @@
         }
       }
     },
+    "Mantén lo que ya funcionó y repite la práctica más fácil de sostener esta semana." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keep what already worked and repeat the easiest practice to sustain this week."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mantén lo que ya funcionó y repite la práctica más fácil de sostener esta semana."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保留已经有效的做法，并重复本周最容易坚持的练习。"
+          }
+        }
+      }
+    },
     "Mantén pulsado para cambiar u ocultar la mascota" : {
       "localizations" : {
         "en" : {
@@ -34160,6 +34821,28 @@
         }
       }
     },
+    "Más coherencia" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Most coherence"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Más coherencia"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最多协调"
+          }
+        }
+      }
+    },
     "Más países" : {
       "localizations" : {
         "en" : {
@@ -34183,7 +34866,7 @@
       }
     },
     "más reciente" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -34260,7 +34943,7 @@
       }
     },
     "Mayor densidad energética facilita exceder calorías si la porción no se controla; depende del patrón global de alimentación." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -34300,6 +34983,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "历史上连续记录日记的最长天数。"
+          }
+        }
+      }
+    },
+    "Mayor presencia" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Most presence"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mayor presencia"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最多临在"
           }
         }
       }
@@ -34371,7 +35076,7 @@
       }
     },
     "Medio" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -34460,7 +35165,7 @@
       }
     },
     "Mejora el tránsito intestinal, la saciedad y el control de glucosa." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -34659,7 +35364,7 @@
       }
     },
     "Meta disponible" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -35129,6 +35834,28 @@
         }
       }
     },
+    "minuto" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "minute"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "minuto"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "分钟"
+          }
+        }
+      }
+    },
     "Minuto" : {
       "localizations" : {
         "en" : {
@@ -35234,7 +35961,7 @@
       }
     },
     "Moderado" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -35431,7 +36158,7 @@
       }
     },
     "Momento del día:" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -35946,7 +36673,7 @@
       }
     },
     "Movimiento" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -36167,7 +36894,7 @@
       }
     },
     "Muy alto" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -36272,7 +36999,7 @@
       }
     },
     "Necesaria en pequeñas cantidades para equilibrio hídrico y función nerviosa." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -36371,7 +37098,7 @@
       }
     },
     "Nivel" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -36394,7 +37121,7 @@
       }
     },
     "Nivel medio" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -36521,7 +37248,7 @@
       }
     },
     "No contiene aditivos de riesgo medio, alto o crítico." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -36588,7 +37315,7 @@
       }
     },
     "no detectado" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -36891,7 +37618,7 @@
       }
     },
     "No hay una nueva versión disponible." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -36952,7 +37679,7 @@
       }
     },
     "No informados" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -37085,7 +37812,7 @@
       }
     },
     "No se declara como orgánico." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -37152,7 +37879,7 @@
       }
     },
     "No se detectaron aditivos de riesgo relevantes." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -37345,7 +38072,7 @@
       }
     },
     "No se ha podido actualizar el objetivo. Inténtalo de nuevo." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -37510,7 +38237,7 @@
       }
     },
     "No se pudo acceder al App Group." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -37637,7 +38364,7 @@
       }
     },
     "No se pudo completar la unidad" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -37852,7 +38579,7 @@
       }
     },
     "No se pudo guardar" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -38045,7 +38772,7 @@
       }
     },
     "No se pudo leer el código de barras." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -38210,7 +38937,7 @@
       }
     },
     "Noche" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -38233,7 +38960,7 @@
       }
     },
     "Nombre de la unidad:" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -38256,7 +38983,7 @@
       }
     },
     "Nombre del producto" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -38323,7 +39050,7 @@
       }
     },
     "Nota actualizada" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -38346,7 +39073,7 @@
       }
     },
     "Nota Adjunta:" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -38385,7 +39112,7 @@
       }
     },
     "Nota creada" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -38468,7 +39195,7 @@
       }
     },
     "Nota eliminada" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -38507,7 +39234,7 @@
       }
     },
     "Nota guardada correctamente." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -39322,7 +40049,7 @@
       }
     },
     "NOVA" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -39711,7 +40438,7 @@
       }
     },
     "Objetivo general: 14 g por cada 1000 kcal (aprox. 25-38 g/día en adultos)." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -39750,7 +40477,7 @@
       }
     },
     "Objetivo por ejecución:" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -40265,7 +40992,7 @@
       }
     },
     "Off-Line" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -40386,7 +41113,7 @@
       }
     },
     "Online" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -40579,7 +41306,7 @@
       }
     },
     "Orgánico" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -40602,7 +41329,7 @@
       }
     },
     "Orgánico: sin dato disponible." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -40861,7 +41588,7 @@
       }
     },
     "Panel de control consciente" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -41180,7 +41907,7 @@
       }
     },
     "Pendiente" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -41521,7 +42248,7 @@
       }
     },
     "Permitir acceso a Salud" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -41610,7 +42337,7 @@
       }
     },
     "Pico habitual" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -41655,7 +42382,7 @@
       }
     },
     "piloto automático" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -41721,6 +42448,28 @@
         }
       }
     },
+    "Pistas para decidir el próximo foco." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clues for choosing your next focus."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pistas para decidir el próximo foco."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "帮助你选择下一个关注点的线索。"
+          }
+        }
+      }
+    },
     "Planificación futura" : {
       "localizations" : {
         "en" : {
@@ -41738,7 +42487,7 @@
       }
     },
     "Poca proteína" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -42453,7 +43202,7 @@
       }
     },
     "Preparando tu recomendación" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -42772,13 +43521,13 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "觉察当下"
+            "value" : "临在"
           }
         }
       }
     },
     "Presencia · Diario" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -43261,7 +44010,7 @@
       }
     },
     "Programación:" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -43519,6 +44268,28 @@
         }
       }
     },
+    "promedio semanal" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "weekly average"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "promedio semanal"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每周平均"
+          }
+        }
+      }
+    },
     "Promedio semanal" : {
       "localizations" : {
         "en" : {
@@ -43630,7 +44401,7 @@
       }
     },
     "Proteína" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -43653,7 +44424,7 @@
       }
     },
     "Proteínas" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -43900,7 +44671,7 @@
       }
     },
     "Pulso" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -44206,6 +44977,28 @@
         }
       }
     },
+    "Rango" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Range"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rango"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "范围"
+          }
+        }
+      }
+    },
     "Rango de datos prácticos" : {
       "localizations" : {
         "en" : {
@@ -44361,7 +45154,7 @@
       }
     },
     "Rápida" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -44533,6 +45326,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "情境建议"
+          }
+        }
+      }
+    },
+    "Reconoce dónde ya hubo evidencia real." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notice where real evidence already appeared."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reconoce dónde ya hubo evidencia real."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "看见已经出现真实证据的地方。"
           }
         }
       }
@@ -44824,7 +45639,7 @@
       }
     },
     "Recupera coherencia antes de exigirte" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -44913,7 +45728,7 @@
       }
     },
     "Recupera una unidad de meta" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -45012,7 +45827,7 @@
       }
     },
     "Reduce la exigencia de hoy" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -45161,7 +45976,7 @@
       }
     },
     "Región aplicada" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -45228,7 +46043,7 @@
       }
     },
     "Registrado" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -45251,7 +46066,7 @@
       }
     },
     "Registrado con estado" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -45782,7 +46597,7 @@
       }
     },
     "Repite hoy el hábito que más te ha sostenido esta semana y deja preparada la primera acción de mañana." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -45805,7 +46620,7 @@
       }
     },
     "Representa la energía total del alimento para cubrir requerimientos diarios." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -46048,7 +46863,7 @@
       }
     },
     "Respiración" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -46354,6 +47169,28 @@
         }
       }
     },
+    "Resumen de revisiones" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Review summary"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resumen de revisiones"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "回顾摘要"
+          }
+        }
+      }
+    },
     "Resumen de Rituales" : {
       "localizations" : {
         "en" : {
@@ -46430,6 +47267,28 @@
         }
       }
     },
+    "Resumen semanal" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weekly review"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resumen semanal"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每周回顾"
+          }
+        }
+      }
+    },
     "Resumen:" : {
       "localizations" : {
         "en" : {
@@ -46452,6 +47311,28 @@
         }
       }
     },
+    "retorno" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "return"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "retorno"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "次回到当下"
+          }
+        }
+      }
+    },
     "retornos" : {
       "localizations" : {
         "en" : {
@@ -46469,7 +47350,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "回到当下的次数"
+            "value" : "次回到当下"
           }
         }
       }
@@ -46497,7 +47378,7 @@
       }
     },
     "retornos conscientes" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -46509,6 +47390,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "有意识回归次数"
+          }
+        }
+      }
+    },
+    "retornos semanales" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "weekly returns"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "retornos semanales"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每周回到当下次数"
           }
         }
       }
@@ -46552,7 +47455,7 @@
       }
     },
     "Revisión" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -46658,6 +47561,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "引导式每周回顾"
+          }
+        }
+      }
+    },
+    "Revisiones" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reviews"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Revisiones"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "回顾"
           }
         }
       }
@@ -47398,6 +48323,28 @@
         }
       }
     },
+    "Rituales" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rituals"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rituales"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "仪式"
+          }
+        }
+      }
+    },
     "Sábado" : {
       "localizations" : {
         "en" : {
@@ -47421,7 +48368,7 @@
       }
     },
     "Sal" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -47488,7 +48435,7 @@
       }
     },
     "Sal mayor de 1.5 g por 100 g: se recomienda vigilar su consumo y no exceder 5 g de sal al día, salvo pérdida elevada por sudoración excesiva." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -47659,7 +48606,7 @@
       }
     },
     "Sanador" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -47726,7 +48673,7 @@
       }
     },
     "Score:" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -47903,7 +48850,7 @@
       }
     },
     "Se declara como orgánico." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -48074,7 +49021,7 @@
       }
     },
     "Se pausa la estimación para no confundir ejercicio con estrés." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -48696,6 +49643,160 @@
         }
       }
     },
+    "Semana de acción" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Action week"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Semana de acción"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "行动周"
+          }
+        }
+      }
+    },
+    "Semana de continuidad" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continuity week"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Semana de continuidad"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "连续周"
+          }
+        }
+      }
+    },
+    "Semana de presencia interior" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inner presence week"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Semana de presencia interior"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "内在临在周"
+          }
+        }
+      }
+    },
+    "Semana de recuperación" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recovery week"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Semana de recuperación"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "恢复周"
+          }
+        }
+      }
+    },
+    "Semana de regulación" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regulation week"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Semana de regulación"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "调节周"
+          }
+        }
+      }
+    },
+    "Semana integrada" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Integrated week"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Semana integrada"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "整合周"
+          }
+        }
+      }
+    },
+    "Semana más integrada" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Most integrated week"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Semana más integrada"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最整合的一周"
+          }
+        }
+      }
+    },
     "Semana pasada" : {
       "localizations" : {
         "en" : {
@@ -48736,6 +49837,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "每周"
+          }
+        }
+      }
+    },
+    "Semanas destacadas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Highlighted weeks"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Semanas destacadas"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "亮点周"
           }
         }
       }
@@ -49159,7 +50282,7 @@
       }
     },
     "Si" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -49182,7 +50305,7 @@
       }
     },
     "Sí" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -49516,6 +50639,28 @@
         }
       }
     },
+    "Siguiente mejor acción" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next best action"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siguiente mejor acción"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下一步最佳行动"
+          }
+        }
+      }
+    },
     "Siguiente paso" : {
       "localizations" : {
         "en" : {
@@ -49737,7 +50882,7 @@
       }
     },
     "Sin lectura" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -49760,7 +50905,7 @@
       }
     },
     "Sin lectura reciente" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -50003,7 +51148,7 @@
       }
     },
     "Sin unidades activas" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -50168,7 +51313,7 @@
       }
     },
     "Sol dorado" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -51015,7 +52160,7 @@
       }
     },
     "Texto guardado como Frase Personal de Calma." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -51032,7 +52177,7 @@
       }
     },
     "Texto guardado en Frases." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -51109,7 +52254,7 @@
       }
     },
     "time_unit.day.one" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -51132,7 +52277,7 @@
       }
     },
     "time_unit.day.other" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -51155,7 +52300,7 @@
       }
     },
     "time_unit.hour.one" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -51178,7 +52323,7 @@
       }
     },
     "time_unit.hour.other" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -51201,7 +52346,7 @@
       }
     },
     "time_unit.minute.one" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -51224,7 +52369,7 @@
       }
     },
     "time_unit.minute.other" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -51247,7 +52392,7 @@
       }
     },
     "time_unit.month.one" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -51270,7 +52415,7 @@
       }
     },
     "time_unit.month.other" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -51293,7 +52438,7 @@
       }
     },
     "time_unit.week.one" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -51316,7 +52461,7 @@
       }
     },
     "time_unit.week.other" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -51339,7 +52484,7 @@
       }
     },
     "time_unit.year.one" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -51362,7 +52507,7 @@
       }
     },
     "time_unit.year.other" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -51581,7 +52726,7 @@
       }
     },
     "Título de la Meta" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -51626,7 +52771,7 @@
       }
     },
     "Título:" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -51900,6 +53045,28 @@
         }
       }
     },
+    "Todavía no hay estados emocionales suficientes para detectar patrones." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "There are not enough emotional states yet to detect patterns."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todavía no hay estados emocionales suficientes para detectar patrones."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "情绪状态记录还不足以识别模式。"
+          }
+        }
+      }
+    },
     "Todavía no hay logros registrados. Elige uno que quieras reconocer antes de cerrar." : {
       "localizations" : {
         "en" : {
@@ -51918,6 +53085,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "目前还没有记录成果。在结束前，选一件你愿意肯定自己的事吧。"
+          }
+        }
+      }
+    },
+    "Todo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todo"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全部"
           }
         }
       }
@@ -52494,6 +53683,28 @@
         }
       }
     },
+    "Tu diario bajó respecto al bloque anterior. Programa 2 entradas breves de 3 minutos." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your journaling dropped compared with the previous block. Schedule two brief 3-minute entries."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu diario bajó respecto al bloque anterior. Programa 2 entradas breves de 3 minutos."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的日记频率比上一阶段下降了。安排两次 3 分钟的简短记录。"
+          }
+        }
+      }
+    },
     "Tu energía de inicio marca la dirección" : {
       "localizations" : {
         "en" : {
@@ -52550,6 +53761,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "你的状态 · 此刻"
+          }
+        }
+      }
+    },
+    "Tu evolución visible" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your progress, made visible"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu evolución visible"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "看得见的成长"
           }
         }
       }
@@ -52967,7 +54200,7 @@
       }
     },
     "Turquesa" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -53050,7 +54283,7 @@
       }
     },
     "Tus registros aún son ligeros esta semana; una acción concreta hará más útil la siguiente recomendación." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -53265,7 +54498,7 @@
       }
     },
     "Un aporte adecuado favorece masa muscular y saciedad. Muy bajo puede ser insuficiente según contexto dietético." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -53353,8 +54586,30 @@
         }
       }
     },
+    "Una acción pequeña elegida desde tus patrones recientes." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A small action chosen from your recent patterns."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una acción pequeña elegida desde tus patrones recientes."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "根据你近期模式选出的一小步行动。"
+          }
+        }
+      }
+    },
     "una actividad pendiente" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -53394,6 +54649,50 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "积极而高昂的情绪能重新调整这一天。"
+          }
+        }
+      }
+    },
+    "Una lectura amable de cómo se distribuyó la práctica." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A gentle read of how your practice was distributed."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una lectura amable de cómo se distribuyó la práctica."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "温和地了解你的练习分布。"
+          }
+        }
+      }
+    },
+    "Una lectura rápida de tus prácticas sostenidas." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A quick read of your sustained practices."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una lectura rápida de tus prácticas sostenidas."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "快速了解你持续练习的情况。"
           }
         }
       }
@@ -53509,7 +54808,7 @@
       }
     },
     "una unidad pendiente" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -53816,7 +55115,7 @@
       }
     },
     "Valor calórico" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -53861,7 +55160,7 @@
       }
     },
     "Valores totales usados como referencia para completar los indicadores de progreso de Presencia y Metas en Home. El indicador de estrés se calcula automáticamente con datos de Salud." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -53922,7 +55221,7 @@
       }
     },
     "Vegano" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -53945,7 +55244,7 @@
       }
     },
     "Vegetariano" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -54138,7 +55437,7 @@
       }
     },
     "Ver unidad" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -54237,7 +55536,7 @@
       }
     },
     "VFC (SDNN)" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -54320,7 +55619,7 @@
       }
     },
     "Violeta" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -54656,6 +55955,182 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "回到当下"
+          }
+        }
+      }
+    },
+    "weekly_review.stats.count_value" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{0} {1}"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{0} {1}"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{0}{1}"
+          }
+        }
+      }
+    },
+    "weekly_review.stats.insight_mood" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The most repeated state has been {0} {1}. Use it as a signal, not a fixed label."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El estado más repetido ha sido {0} {1}. Úsalo como señal, no como etiqueta fija."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最常出现的状态是 {0} {1}。把它当作信号，而不是固定标签。"
+          }
+        }
+      }
+    },
+    "weekly_review.stats.insight_stagnant_goals" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Goals appear stagnant in {0} of the last {1} reviews; choosing a very small action would help."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las metas aparecen estancadas en {0} de las últimas {1} revisiones; conviene elegir una acción muy pequeña."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在最近 {1} 次回顾中，有 {0} 次显示目标停滞；适合选择一个非常小的行动。"
+          }
+        }
+      }
+    },
+    "weekly_review.stats.last_review" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last review: {0}"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Última revisión: {0}"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上次回顾：{0}"
+          }
+        }
+      }
+    },
+    "weekly_review.stats.saved_reviews" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{0} saved reviews"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{0} revisiones guardadas"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{0} 条已保存的回顾"
+          }
+        }
+      }
+    },
+    "weekly_review.stats.trend_down" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{0} dropped compared with the previous block; it may be a good focus for next week."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{0} bajó respecto al bloque anterior; puede ser buen foco para la próxima semana."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{0} 比上一阶段下降；它可能适合作为下周的关注点。"
+          }
+        }
+      }
+    },
+    "weekly_review.stats.trend_stable" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{0} remains stable compared with the previous block."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{0} se mantiene estable respecto al bloque anterior."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{0} 与上一阶段相比保持稳定。"
+          }
+        }
+      }
+    },
+    "weekly_review.stats.trend_up" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{0} is increasing compared with your previous reviews."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{0} va en aumento respecto a tus revisiones anteriores."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{0} 相比之前的回顾正在增加。"
           }
         }
       }

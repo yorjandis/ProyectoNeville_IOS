@@ -144,6 +144,13 @@ struct WeeklyReviewView: View {
         completedPeriodKey == periodKey
     }
 
+    private var reviewContext: NSManagedObjectContext {
+        if WeeklyReviewStore(context: context).isAvailable {
+            return context
+        }
+        return CoreDataController.shared.context
+    }
+
     private var periodTitle: String {
         let formatter = DateFormatter()
         formatter.locale = AppLanguage.current.locale
@@ -177,6 +184,15 @@ struct WeeklyReviewView: View {
         }
         .onReceive(NotificationCenter.default.publisher(for: .coreDataStoresDidLoad)) { _ in
             reload()
+        }
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                NavigationLink {
+                    WeeklyReviewStatsView()
+                } label: {
+                    Label(L10n.exact("Estadísticas"), systemImage: "chart.xyaxis.line")
+                }
+            }
         }
         .alert("No se pudo guardar la revisión", isPresented: Binding(
             get: { saveErrorMessage != nil },
@@ -366,7 +382,9 @@ struct WeeklyReviewView: View {
                 .textFieldStyle(.roundedBorder)
 
             Button {
-                closeReview()
+                Task {
+                    await closeReview()
+                }
             } label: {
                 Label(
                     L10n.exact(isCurrentReviewCompleted ? "Revisión completada" : "Cerrar revisión semanal"),
@@ -443,9 +461,9 @@ struct WeeklyReviewView: View {
 
     private func reload() {
         now = Date()
-        snapshot = WeeklyReviewDataLoader(context: context).load(interval: interval)
+        snapshot = WeeklyReviewDataLoader(context: reviewContext).load(interval: interval)
 
-        let store = WeeklyReviewStore(context: context)
+        let store = WeeklyReviewStore(context: reviewContext)
         if let review = store.review(for: periodKey) {
             completedPeriodKey = periodKey
             savedFocus = review.focus
@@ -470,10 +488,10 @@ struct WeeklyReviewView: View {
         }
     }
 
-    private func closeReview() {
+    private func closeReview() async {
         let trimmedFocus = focus.trimmingCharacters(in: .whitespacesAndNewlines)
         let trimmedCelebration = celebration.trimmingCharacters(in: .whitespacesAndNewlines)
-        let didSave = WeeklyReviewStore(context: context).save(
+        let didSave = await saveReview(
             periodKey: periodKey,
             interval: interval,
             focus: trimmedFocus,
@@ -491,11 +509,758 @@ struct WeeklyReviewView: View {
         completedPeriodKey = periodKey
     }
 
+    private func saveReview(
+        periodKey: String,
+        interval: DateInterval,
+        focus: String,
+        celebration: String,
+        snapshot: WeeklyReviewSnapshot
+    ) async -> Bool {
+        let initialStore = WeeklyReviewStore(context: reviewContext)
+        if initialStore.save(
+            periodKey: periodKey,
+            interval: interval,
+            focus: focus,
+            celebration: celebration,
+            snapshot: snapshot
+        ) {
+            return true
+        }
+
+        if CoreDataController.shared.persistentContainer.persistentStoreCoordinator.persistentStores.isEmpty {
+            do {
+                try await CoreDataController.shared.cargarStores()
+            } catch {
+                return false
+            }
+        }
+
+        return WeeklyReviewStore(context: CoreDataController.shared.context).save(
+            periodKey: periodKey,
+            interval: interval,
+            focus: focus,
+            celebration: celebration,
+            snapshot: snapshot
+        )
+    }
+
     private func loadClosingInputsIfNeeded(focus storedFocus: String, celebration storedCelebration: String) {
         guard closingInputsPeriodKey != periodKey else { return }
         closingInputsPeriodKey = periodKey
         focus = storedFocus
         celebration = storedCelebration
+    }
+}
+
+struct WeeklyReviewStatsView: View {
+    @Environment(\.managedObjectContext) private var context
+
+    @State private var records: [WeeklyReviewHistoryRecord] = []
+    @State private var selectedRange: WeeklyReviewStatsRange = .twelveWeeks
+
+    private var statsContext: NSManagedObjectContext {
+        if WeeklyReviewStore(context: context).isAvailable {
+            return context
+        }
+        return CoreDataController.shared.context
+    }
+
+    private var displayedRecords: [WeeklyReviewHistoryRecord] {
+        selectedRange.records(from: records)
+    }
+
+    private var recentRecords: [WeeklyReviewHistoryRecord] {
+        displayedRecords
+    }
+
+    private var previousRecords: [WeeklyReviewHistoryRecord] {
+        guard let count = selectedRange.recordLimit else { return [] }
+        let end = max(records.count - count, 0)
+        let start = max(end - count, 0)
+        return Array(records[start..<end])
+    }
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 18) {
+                header
+
+                if records.isEmpty {
+                    emptyState
+                } else {
+                    rangePicker
+                    summaryCards
+                    nextActionSection
+                    highlightsSection
+                    balanceSection
+                    trendSection
+                    insightsSection
+                    moodsSection
+                    celebrationsSection
+                    focusSection
+                }
+            }
+            .padding(20)
+        }
+        .background(.primary.opacity(0.035))
+        .navigationTitle(L10n.exact("Estadísticas semanales"))
+        #if os(iOS)
+        .navigationBarTitleDisplayMode(.inline)
+        #endif
+        .onAppear(perform: reload)
+        .onReceive(NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave)) { _ in
+            reload()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .coreDataStoresDidLoad)) { _ in
+            reload()
+        }
+    }
+
+    private var rangePicker: some View {
+        Picker(L10n.exact("Rango"), selection: $selectedRange) {
+            ForEach(WeeklyReviewStatsRange.allCases) { range in
+                Text(L10n.exact(range.title)).tag(range)
+            }
+        }
+        .pickerStyle(.segmented)
+    }
+
+    private var header: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Label(L10n.exact("Tu evolución visible"), systemImage: "chart.xyaxis.line")
+                .font(.headline)
+                .foregroundStyle(.indigo)
+
+            Text(L10n.exact("Resumen de revisiones"))
+                .font(.system(size: 30, weight: .bold, design: .rounded))
+
+            Text(records.isEmpty ? L10n.exact("Cuando cierres revisiones, aquí aparecerán tendencias e insights.") : savedReviewsSummary)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(18)
+        .background(
+            LinearGradient(
+                colors: [.indigo.opacity(0.18), .teal.opacity(0.10)],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        )
+        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+    }
+
+    private var emptyState: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Label(L10n.exact("Aún no hay historial"), systemImage: "clock.badge.questionmark")
+                .font(.title3.bold())
+            Text(L10n.exact("Cierra una revisión semanal para empezar a construir estadísticas de metas, agenda, diario, presencia, coherencia, rituales y estados emocionales."))
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+        }
+        .padding(18)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.primary.opacity(0.055), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+    }
+
+    private var summaryCards: some View {
+        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
+            statCard(
+                title: "Revisiones",
+                value: "\(displayedRecords.count)",
+                caption: selectedRange == .all ? "cierres guardados" : "en el rango",
+                symbol: "checkmark.seal.fill",
+                color: .green
+            )
+
+            statCard(
+                title: "Diario",
+                value: "\(formattedAverage(\.snapshot.diaryActiveDays, in: recentRecords))/7",
+                caption: "días por semana",
+                symbol: "book.closed.fill",
+                color: .purple
+            )
+
+            statCard(
+                title: "Presencia",
+                value: formattedAverage(\.snapshot.presenceReturns, in: recentRecords),
+                caption: "retornos semanales",
+                symbol: "heart.fill",
+                color: .teal
+            )
+
+            statCard(
+                title: "Coherencia",
+                value: "\(Int(average(\.snapshot.coherenceMinutes, in: recentRecords))) min",
+                caption: "promedio semanal",
+                symbol: "waveform.path.ecg",
+                color: .indigo
+            )
+        }
+    }
+
+    private var trendSection: some View {
+        statsCard(title: selectedRange.title, subtitle: "Una lectura rápida de tus prácticas sostenidas.", symbol: "chart.bar.fill", color: .blue) {
+            VStack(alignment: .leading, spacing: 12) {
+                trendRow(title: "Metas", value: sum(\.snapshot.goalUnitsCompleted, in: recentRecords), maxValue: max(1, maxSum(\.snapshot.goalUnitsCompleted)))
+                trendRow(title: "Agenda completada", value: sum(\.snapshot.agendaCompleted, in: recentRecords), maxValue: max(1, maxSum(\.snapshot.agendaCompleted)))
+                trendRow(title: "Diario", value: sum(\.snapshot.diaryActiveDays, in: recentRecords), maxValue: max(1, recentRecords.count * 7))
+                trendRow(title: "Presencia", value: sum(\.snapshot.presenceReturns, in: recentRecords), maxValue: max(1, maxSum(\.snapshot.presenceReturns)))
+                trendRow(title: "Coherencia", value: sum(\.snapshot.coherenceMinutes, in: recentRecords), maxValue: max(1, maxSum(\.snapshot.coherenceMinutes)))
+                trendRow(title: "Rituales", value: sum(\.snapshot.ritualsCompleted, in: recentRecords), maxValue: max(1, maxSum(\.snapshot.ritualsCompleted)))
+            }
+        }
+    }
+
+    private var nextActionSection: some View {
+        statsCard(title: "Siguiente mejor acción", subtitle: "Una acción pequeña elegida desde tus patrones recientes.", symbol: "arrow.up.forward.circle.fill", color: .indigo) {
+            Label(nextBestAction, systemImage: "sparkle.magnifyingglass")
+                .font(.subheadline.weight(.medium))
+                .foregroundStyle(.primary)
+        }
+    }
+
+    private var highlightsSection: some View {
+        statsCard(title: "Semanas destacadas", subtitle: "Reconoce dónde ya hubo evidencia real.", symbol: "trophy.fill", color: .yellow) {
+            VStack(alignment: .leading, spacing: 10) {
+                if let best = bestPracticeWeek {
+                    highlightRow(
+                        title: "Semana más integrada",
+                        value: weekTitle(best),
+                        caption: balanceLabel(for: best),
+                        symbol: "seal.fill"
+                    )
+                }
+
+                if let strongestPresenceWeek {
+                    highlightRow(
+                        title: "Mayor presencia",
+                        value: countText(strongestPresenceWeek.snapshot.presenceReturns, singularKey: "retorno", pluralKey: "retornos"),
+                        caption: weekTitle(strongestPresenceWeek),
+                        symbol: "heart.fill"
+                    )
+                }
+
+                if let strongestCoherenceWeek {
+                    highlightRow(
+                        title: "Más coherencia",
+                        value: countText(strongestCoherenceWeek.snapshot.coherenceMinutes, singularKey: "minuto", pluralKey: "minutos"),
+                        caption: weekTitle(strongestCoherenceWeek),
+                        symbol: "waveform.path.ecg"
+                    )
+                }
+            }
+        }
+    }
+
+    private var balanceSection: some View {
+        statsCard(title: "Equilibrio semanal", subtitle: "Una lectura amable de cómo se distribuyó la práctica.", symbol: "circle.hexagongrid.fill", color: .teal) {
+            VStack(alignment: .leading, spacing: 12) {
+                if let latest = displayedRecords.last {
+                    HStack(alignment: .top, spacing: 12) {
+                        Image(systemName: "circle.grid.cross.fill")
+                            .font(.title2)
+                            .foregroundStyle(.teal)
+
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(balanceLabel(for: latest))
+                                .font(.headline)
+                            Text(L10n.format("weekly_review.stats.last_review", fallback: "Última revisión: {0}", weekTitle(latest)))
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
+
+                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 8) {
+                    balanceChip("Metas", isActive: latestSnapshot.goalUnitsCompleted > 0)
+                    balanceChip("Agenda", isActive: latestSnapshot.agendaCompleted > 0)
+                    balanceChip("Diario", isActive: latestSnapshot.diaryActiveDays > 0)
+                    balanceChip("Presencia", isActive: latestSnapshot.presenceReturns > 0)
+                    balanceChip("Coherencia", isActive: latestSnapshot.coherenceMinutes > 0)
+                    balanceChip("Ritual", isActive: latestSnapshot.ritualsCompleted > 0)
+                }
+            }
+        }
+    }
+
+    private var insightsSection: some View {
+        statsCard(title: "Lectura útil", subtitle: "Pistas para decidir el próximo foco.", symbol: "sparkles", color: .orange) {
+            VStack(alignment: .leading, spacing: 9) {
+                ForEach(insights, id: \.self) { insight in
+                    Label(insight, systemImage: "lightbulb.fill")
+                        .font(.subheadline)
+                        .foregroundStyle(.primary)
+                }
+            }
+        }
+    }
+
+    private var celebrationsSection: some View {
+        statsCard(title: "Celebraciones recientes", subtitle: "Evidencias que ya reconociste en tus cierres.", symbol: "hands.sparkles.fill", color: .purple) {
+            let celebrations = displayedRecords.reversed().compactMap { record -> String? in
+                let text = record.celebration.trimmingCharacters(in: .whitespacesAndNewlines)
+                return text.isEmpty ? nil : text
+            }.prefix(5)
+
+            if celebrations.isEmpty {
+                Text(L10n.exact("Aún no hay celebraciones guardadas en el rango seleccionado."))
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            } else {
+                VStack(alignment: .leading, spacing: 9) {
+                    ForEach(Array(celebrations), id: \.self) { celebration in
+                        Label(celebration, systemImage: "checkmark.seal.fill")
+                            .font(.subheadline)
+                    }
+                }
+            }
+        }
+    }
+
+    private var moodsSection: some View {
+        statsCard(title: "Estados predominantes", subtitle: "Lo que más se repite en diario y presencia.", symbol: "face.smiling", color: .pink) {
+            let moods = moodFrequency.prefix(6)
+            if moods.isEmpty {
+                Text(L10n.exact("Todavía no hay estados emocionales suficientes para detectar patrones."))
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            } else {
+                VStack(alignment: .leading, spacing: 10) {
+                    ForEach(Array(moods), id: \.title) { mood in
+                        HStack {
+                            Text("\(mood.emoji) \(mood.title)")
+                            Spacer()
+                            Text("\(mood.count)")
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(.secondary)
+                        }
+                        .font(.subheadline)
+                    }
+                }
+            }
+        }
+    }
+
+    private var focusSection: some View {
+        statsCard(title: "Focos recientes", subtitle: "Lo que has elegido cuidar semana a semana.", symbol: "target", color: .green) {
+            let focuses = records.reversed().compactMap { record -> String? in
+                let focus = record.focus.trimmingCharacters(in: .whitespacesAndNewlines)
+                return focus.isEmpty ? nil : focus
+            }.prefix(5)
+
+            if focuses.isEmpty {
+                Text(L10n.exact("Aún no hay focos guardados en tus revisiones."))
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            } else {
+                VStack(alignment: .leading, spacing: 9) {
+                    ForEach(Array(focuses), id: \.self) { focus in
+                        Label(focus, systemImage: "arrow.forward.circle.fill")
+                            .font(.subheadline)
+                    }
+                }
+            }
+        }
+    }
+
+    private var insights: [String] {
+        var result: [String] = []
+        let recentDiary = average(\.snapshot.diaryActiveDays, in: recentRecords)
+        let previousDiary = average(\.snapshot.diaryActiveDays, in: previousRecords)
+        let recentPresence = average(\.snapshot.presenceReturns, in: recentRecords)
+        let previousPresence = average(\.snapshot.presenceReturns, in: previousRecords)
+        let recentCoherence = average(\.snapshot.coherenceMinutes, in: recentRecords)
+        let previousCoherence = average(\.snapshot.coherenceMinutes, in: previousRecords)
+        let stagnantWeeks = recentRecords.filter { !$0.snapshot.stagnantGoalTitles.isEmpty }.count
+
+        if !previousRecords.isEmpty {
+            result.append(trendText(title: "Diario", current: recentDiary, previous: previousDiary))
+            result.append(trendText(title: "Presencia", current: recentPresence, previous: previousPresence))
+            result.append(trendText(title: "Coherencia", current: recentCoherence, previous: previousCoherence))
+        }
+
+        if stagnantWeeks > max(1, recentRecords.count / 3) {
+            result.append(L10n.format(
+                "weekly_review.stats.insight_stagnant_goals",
+                fallback: "Las metas aparecen estancadas en {0} de las últimas {1} revisiones; conviene elegir una acción muy pequeña.",
+                "\(stagnantWeeks)",
+                "\(recentRecords.count)"
+            ))
+        } else if !recentRecords.isEmpty {
+            result.append(L10n.exact("Las metas no muestran un patrón fuerte de estancamiento reciente."))
+        }
+
+        if let mood = moodFrequency.first {
+            result.append(L10n.format(
+                "weekly_review.stats.insight_mood",
+                fallback: "El estado más repetido ha sido {0} {1}. Úsalo como señal, no como etiqueta fija.",
+                mood.emoji,
+                mood.title.lowercased()
+            ))
+        }
+
+        if result.isEmpty {
+            result.append(L10n.exact("Cierra algunas revisiones más para generar lecturas comparativas."))
+        }
+
+        return Array(result.prefix(5))
+    }
+
+    private var nextBestAction: String {
+        let recentDiary = average(\.snapshot.diaryActiveDays, in: recentRecords)
+        let previousDiary = average(\.snapshot.diaryActiveDays, in: previousRecords)
+        let recentPresence = average(\.snapshot.presenceReturns, in: recentRecords)
+        let previousPresence = average(\.snapshot.presenceReturns, in: previousRecords)
+        let recentCoherence = average(\.snapshot.coherenceMinutes, in: recentRecords)
+        let previousCoherence = average(\.snapshot.coherenceMinutes, in: previousRecords)
+        let stagnantWeeks = recentRecords.filter { !$0.snapshot.stagnantGoalTitles.isEmpty }.count
+
+        if stagnantWeeks > max(1, recentRecords.count / 3) {
+            return L10n.exact("Elige una sola meta y completa una unidad mínima esta semana. Menos ambición, más evidencia.")
+        }
+
+        if !previousRecords.isEmpty, recentDiary + 0.2 < previousDiary {
+            return L10n.exact("Tu diario bajó respecto al bloque anterior. Programa 2 entradas breves de 3 minutos.")
+        }
+
+        if !previousRecords.isEmpty, recentPresence + 0.2 < previousPresence {
+            return L10n.exact("La presencia bajó. Prueba 1 retorno consciente al día, aunque sea de 10 segundos.")
+        }
+
+        if !previousRecords.isEmpty, recentCoherence + 1 < previousCoherence {
+            return L10n.exact("La coherencia bajó. Haz una sesión de 5 minutos después del ritual o antes de dormir.")
+        }
+
+        if latestSnapshot.ritualsCompleted == 0 {
+            return L10n.exact("Añade un ritual sencillo esta semana: intención, una emoción elegida y una respuesta consciente.")
+        }
+
+        if latestRecord?.celebration.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false {
+            return L10n.exact("Mantén lo que ya funcionó y repite la práctica más fácil de sostener esta semana.")
+        }
+
+        return L10n.exact("Cierra la próxima semana con una celebración concreta y un foco pequeño. Eso hará más útil tu historial.")
+    }
+
+    private var savedReviewsSummary: String {
+        if records.count == 1 {
+            return L10n.exact("1 revisión guardada")
+        }
+        return L10n.format(
+            "weekly_review.stats.saved_reviews",
+            fallback: "{0} revisiones guardadas",
+            "\(records.count)"
+        )
+    }
+
+    private var bestPracticeWeek: WeeklyReviewHistoryRecord? {
+        displayedRecords.max { balanceScore(for: $0) < balanceScore(for: $1) }
+    }
+
+    private var strongestPresenceWeek: WeeklyReviewHistoryRecord? {
+        displayedRecords.max { $0.snapshot.presenceReturns < $1.snapshot.presenceReturns }
+    }
+
+    private var strongestCoherenceWeek: WeeklyReviewHistoryRecord? {
+        displayedRecords.max { $0.snapshot.coherenceMinutes < $1.snapshot.coherenceMinutes }
+    }
+
+    private var latestSnapshot: WeeklyReviewSnapshot {
+        displayedRecords.last?.snapshot ?? .empty
+    }
+
+    private var latestRecord: WeeklyReviewHistoryRecord? {
+        displayedRecords.last
+    }
+
+    private var moodFrequency: [(title: String, emoji: String, count: Int)] {
+        let grouped = records
+            .flatMap(\.snapshot.moodSummaries)
+            .reduce(into: [String: (emoji: String, count: Int)]()) { partial, mood in
+                let existing = partial[mood.title] ?? (mood.emoji, 0)
+                partial[mood.title] = (existing.emoji, existing.count + mood.count)
+            }
+
+        return grouped
+            .map { key, value in (title: key, emoji: value.emoji, count: value.count) }
+            .sorted { $0.count == $1.count ? $0.title < $1.title : $0.count > $1.count }
+    }
+
+    private func reload() {
+        records = WeeklyReviewHistoryLoader(context: statsContext).load()
+    }
+
+    private func statCard(title: String, value: String, caption: String, symbol: String, color: Color) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Label(L10n.exact(title), systemImage: symbol)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(color)
+            Text(value)
+                .font(.title2.bold())
+            Text(L10n.exact(caption))
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(14)
+        .background(.primary.opacity(0.055), in: RoundedRectangle(cornerRadius: 15, style: .continuous))
+    }
+
+    private func highlightRow(title: String, value: String, caption: String, symbol: String) -> some View {
+        HStack(alignment: .top, spacing: 10) {
+            Image(systemName: symbol)
+                .foregroundStyle(.yellow)
+                .frame(width: 24)
+
+            VStack(alignment: .leading, spacing: 3) {
+                Text(L10n.exact(title))
+                    .font(.subheadline.weight(.semibold))
+                Text(value)
+                    .font(.headline)
+                Text(caption)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+    }
+
+    private func balanceChip(_ title: String, isActive: Bool) -> some View {
+        Label(L10n.exact(title), systemImage: isActive ? "checkmark.circle.fill" : "circle")
+            .font(.caption.weight(.semibold))
+            .foregroundStyle(isActive ? .green : .secondary)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 8)
+            .background(.primary.opacity(isActive ? 0.075 : 0.04), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+    }
+
+    private func statsCard<Content: View>(
+        title: String,
+        subtitle: String,
+        symbol: String,
+        color: Color,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Label(L10n.exact(title), systemImage: symbol)
+                .font(.title3.bold())
+                .foregroundStyle(color)
+
+            Text(L10n.exact(subtitle))
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+
+            content()
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(18)
+        .background(.background, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .stroke(color.opacity(0.22), lineWidth: 1)
+        }
+    }
+
+    private func trendRow(title: String, value: Int, maxValue: Int) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack {
+                Text(L10n.exact(title))
+                    .font(.subheadline.weight(.semibold))
+                Spacer()
+                Text("\(value)")
+                    .font(.subheadline.monospacedDigit())
+                    .foregroundStyle(.secondary)
+            }
+
+            GeometryReader { proxy in
+                let fraction = CGFloat(value) / CGFloat(max(maxValue, 1))
+                RoundedRectangle(cornerRadius: 6, style: .continuous)
+                    .fill(.primary.opacity(0.08))
+                    .overlay(alignment: .leading) {
+                        RoundedRectangle(cornerRadius: 6, style: .continuous)
+                            .fill(.indigo.gradient)
+                            .frame(width: max(8, proxy.size.width * min(max(fraction, 0), 1)))
+                    }
+            }
+            .frame(height: 10)
+        }
+    }
+
+    private func trendText(title: String, current: Double, previous: Double) -> String {
+        let delta = current - previous
+        if abs(delta) < 0.2 {
+            return L10n.format(
+                "weekly_review.stats.trend_stable",
+                fallback: "{0} se mantiene estable respecto al bloque anterior.",
+                L10n.exact(title)
+            )
+        }
+        if delta > 0 {
+            return L10n.format(
+                "weekly_review.stats.trend_up",
+                fallback: "{0} va en aumento respecto a tus revisiones anteriores.",
+                L10n.exact(title)
+            )
+        }
+        return L10n.format(
+            "weekly_review.stats.trend_down",
+            fallback: "{0} bajó respecto al bloque anterior; puede ser buen foco para la próxima semana.",
+            L10n.exact(title)
+        )
+    }
+
+    private func balanceScore(for record: WeeklyReviewHistoryRecord) -> Int {
+        var score = 0
+        let snapshot = record.snapshot
+        if snapshot.goalUnitsCompleted > 0 { score += 1 }
+        if snapshot.agendaCompleted > 0 { score += 1 }
+        if snapshot.diaryActiveDays > 0 { score += 1 }
+        if snapshot.presenceReturns > 0 { score += 1 }
+        if snapshot.coherenceMinutes > 0 { score += 1 }
+        if snapshot.ritualsCompleted > 0 { score += 1 }
+        return score
+    }
+
+    private func balanceLabel(for record: WeeklyReviewHistoryRecord) -> String {
+        let snapshot = record.snapshot
+        let score = balanceScore(for: record)
+
+        if score >= 5 { return L10n.exact("Semana integrada") }
+        if snapshot.goalUnitsCompleted > 0 && snapshot.agendaCompleted > 0 { return L10n.exact("Semana de acción") }
+        if snapshot.diaryActiveDays > 0 && snapshot.presenceReturns > 0 { return L10n.exact("Semana de presencia interior") }
+        if snapshot.coherenceMinutes > 0 || snapshot.ritualsCompleted > 0 { return L10n.exact("Semana de regulación") }
+        if score > 0 { return L10n.exact("Semana de continuidad") }
+        return L10n.exact("Semana de recuperación")
+    }
+
+    private func countText(_ count: Int, singularKey: String, pluralKey: String) -> String {
+        let key = count == 1 ? singularKey : pluralKey
+        return L10n.format(
+            "weekly_review.stats.count_value",
+            fallback: "{0} {1}",
+            "\(count)",
+            L10n.exact(key)
+        )
+    }
+
+    private func weekTitle(_ record: WeeklyReviewHistoryRecord) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = AppLanguage.current.locale
+        formatter.dateFormat = "d MMM"
+        let lastDay = Calendar.current.date(byAdding: .day, value: -1, to: record.periodEnd) ?? record.periodEnd
+        return "\(formatter.string(from: record.periodStart)) – \(formatter.string(from: lastDay))"
+    }
+
+    private func average(_ keyPath: KeyPath<WeeklyReviewHistoryRecord, Int>, in records: [WeeklyReviewHistoryRecord]) -> Double {
+        guard !records.isEmpty else { return 0 }
+        return Double(records.reduce(0) { $0 + $1[keyPath: keyPath] }) / Double(records.count)
+    }
+
+    private func formattedAverage(_ keyPath: KeyPath<WeeklyReviewHistoryRecord, Int>, in records: [WeeklyReviewHistoryRecord]) -> String {
+        String(format: "%.1f", average(keyPath, in: records))
+    }
+
+    private func sum(_ keyPath: KeyPath<WeeklyReviewHistoryRecord, Int>, in records: [WeeklyReviewHistoryRecord]) -> Int {
+        records.reduce(0) { $0 + $1[keyPath: keyPath] }
+    }
+
+    private func maxSum(_ keyPath: KeyPath<WeeklyReviewHistoryRecord, Int>) -> Int {
+        let window = max(recentRecords.count, 1)
+        let chunks = stride(from: 0, to: records.count, by: window).map { start -> Int in
+            let end = min(start + window, records.count)
+            return sum(keyPath, in: Array(records[start..<end]))
+        }
+        return chunks.max() ?? 1
+    }
+}
+
+private enum WeeklyReviewStatsRange: String, CaseIterable, Identifiable {
+    case fourWeeks
+    case twelveWeeks
+    case twentyFourWeeks
+    case all
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .fourWeeks: return "4 semanas"
+        case .twelveWeeks: return "12 semanas"
+        case .twentyFourWeeks: return "24 semanas"
+        case .all: return "Todo"
+        }
+    }
+
+    var recordLimit: Int? {
+        switch self {
+        case .fourWeeks: return 4
+        case .twelveWeeks: return 12
+        case .twentyFourWeeks: return 24
+        case .all: return nil
+        }
+    }
+
+    func records(from allRecords: [WeeklyReviewHistoryRecord]) -> [WeeklyReviewHistoryRecord] {
+        guard let recordLimit else { return allRecords }
+        return Array(allRecords.suffix(recordLimit))
+    }
+}
+
+private struct WeeklyReviewHistoryRecord: Identifiable {
+    let id: UUID
+    let periodStart: Date
+    let periodEnd: Date
+    let completedAt: Date
+    let focus: String
+    let celebration: String
+    let snapshot: WeeklyReviewSnapshot
+}
+
+@MainActor
+private struct WeeklyReviewHistoryLoader {
+    private static let entityName = "WeeklyReviewEntity"
+
+    let context: NSManagedObjectContext
+
+    func load() -> [WeeklyReviewHistoryRecord] {
+        guard let coordinator = context.persistentStoreCoordinator,
+              !coordinator.persistentStores.isEmpty,
+              coordinator.managedObjectModel.entitiesByName[Self.entityName] != nil else {
+            return []
+        }
+
+        let request = NSFetchRequest<NSManagedObject>(entityName: Self.entityName)
+        request.sortDescriptors = [NSSortDescriptor(key: "periodEnd", ascending: true)]
+
+        return ((try? context.fetch(request)) ?? []).compactMap(record(from:))
+    }
+
+    private func record(from object: NSManagedObject) -> WeeklyReviewHistoryRecord? {
+        guard let periodStart = object.value(forKey: "periodStart") as? Date,
+              let periodEnd = object.value(forKey: "periodEnd") as? Date else {
+            return nil
+        }
+
+        return WeeklyReviewHistoryRecord(
+            id: object.value(forKey: "id") as? UUID ?? UUID(),
+            periodStart: periodStart,
+            periodEnd: periodEnd,
+            completedAt: object.value(forKey: "completedAt") as? Date ?? periodEnd,
+            focus: object.value(forKey: "focus") as? String ?? "",
+            celebration: object.value(forKey: "celebration") as? String ?? "",
+            snapshot: decodedSnapshot(from: object.value(forKey: "snapshotJSON") as? String)
+        )
+    }
+
+    private func decodedSnapshot(from json: String?) -> WeeklyReviewSnapshot {
+        guard let json,
+              let data = json.data(using: .utf8),
+              let snapshot = try? JSONDecoder().decode(WeeklyReviewSnapshot.self, from: data) else {
+            return .empty
+        }
+
+        return snapshot
     }
 }
 
@@ -536,6 +1301,10 @@ private struct WeeklyReviewStore {
     private static let entityName = "WeeklyReviewEntity"
 
     let context: NSManagedObjectContext
+
+    var isAvailable: Bool {
+        isReady
+    }
 
     func review(for periodKey: String) -> WeeklyReviewRecord? {
         guard let object = reviewObject(for: periodKey) else { return nil }
