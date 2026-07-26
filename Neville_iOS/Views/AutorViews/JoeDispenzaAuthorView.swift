@@ -48,12 +48,6 @@ struct JoeDispenzaAuthorView: View {
         ]
     }
     
-    //Funciones premium
-    @AppStorage("purchaseStatus" ) var purchaseStatus: Bool = false
-    @AppStorage("yorjPremium",store: UserDefaults(suiteName: AppCons.AppGroupName))var yorjPremium: Bool = false
-    
-    @State private var showSheetPremiun : Bool = false
-
     var body: some View {
         NavigationStack {
             ZStack {
@@ -107,34 +101,10 @@ struct JoeDispenzaAuthorView: View {
                         .fontWeight(.semibold)
                         .foregroundStyle(.black)
                     
-                    if purchaseStatus || self.yorjPremium{
-                        FrasesHomeView(authorFilter: "jd", colorTextAutor: .black, showAutorLabel: false, showFraseFilterControl: true)
-                            .frame(height: 270)
-                            .background(LinearGradient(colors: [Color.black.opacity(0.1), Color.black.opacity(0.2)], startPoint: .top, endPoint: .bottom))
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
-                    }else{
-                        
-                        VStack{
-                            Spacer()
-                            Button("Las Frases y enseñanzas del Dr. Joe Dispenza están disponibles en la Versión Extendida"){
-                                self.showSheetPremiun = true
-                            }
-                            .font(.system(size: 22))
-                            .buttonStyle(.plain)
-                            .frame(maxWidth: .infinity, alignment: .center)
-                            Spacer()
-                        }
-                        .padding(12)
-                        .frame(height: 270, alignment: .topLeading)
-                        .background(LinearGradient.JadeProfundo())
+                    FrasesHomeView(authorFilter: "jd", colorTextAutor: .black, showAutorLabel: false, showFraseFilterControl: true)
+                        .frame(height: 270)
+                        .background(LinearGradient(colors: [Color.black.opacity(0.1), Color.black.opacity(0.2)], startPoint: .top, endPoint: .bottom))
                         .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .overlay {
-                            RoundedRectangle(cornerRadius: 14)
-                                .stroke(.white.opacity(0.22), lineWidth: 1)
-                        }
-                        
-                        
-                    }
                     
 
                     VStack(alignment: .leading, spacing: 10) {
@@ -188,39 +158,39 @@ struct JoeDispenzaAuthorView: View {
                 case .resumenEnsenanza:
                     ContentTxtShowView(title: authorTeachingSummaryTitle("Joe Dispenza"), nombreTxt: AppCons.FileResumenEnseñanzaJD, type: .NA, blocks: [
                         ContentBlock(content: .text(L10n.textResource(named: AppCons.FileResumenEnseñanzaJD)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 case .resumenDesarrollaTuCerebro:
                     ContentTxtShowView(title: authorBookSummaryTitle("Desarrolla Tu Cerebro"), nombreTxt: AppCons.FileResumenDesarrollaTuCerebro, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenDesarrollaTuCerebro)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 case .planDesarrollaTuCerebro:
                     ContentTxtShowView(title: authorBookPlanTitle("Desarrolla Tu Cerebro"), nombreTxt: AppCons.FilePlanDesarrollaTuCerebro, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FilePlanDesarrollaTuCerebro)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 case .resumenDejaDeSerTu:
                     ContentTxtShowView(title: authorBookSummaryTitle("Deja De Ser Tu"), nombreTxt: AppCons.FileResumenDejaDeSerTu, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenDejaDeSerTu)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 case .planDejaDeSerTu:
                     ContentTxtShowView(title: authorBookPlanTitle("Deja De Ser Tu"), nombreTxt: AppCons.FilePlanDejaDeSerTu, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FilePlanDejaDeSerTu)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 case .resumenElPlaceboEresTu:
                     ContentTxtShowView(title: authorBookSummaryTitle("El Placebo Eres Tu"), nombreTxt: AppCons.FileResumenElPLaceboEresTu, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenElPLaceboEresTu)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 case .planElPlaceboEresTu:
                     ContentTxtShowView(title: authorBookPlanTitle("El Placebo Eres Tu"), nombreTxt: AppCons.FilePlanElPlaceboEresTu, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FilePlanElPlaceboEresTu)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 case .resumenSuperNatural:
                     ContentTxtShowView(title: authorBookSummaryTitle("SobreNatural"), nombreTxt: AppCons.FileResumenSuperNatural, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenSuperNatural)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 case .planSuperNatural:
                     ContentTxtShowView(title: authorBookPlanTitle("SobreNatural"), nombreTxt: AppCons.FilePlanSupernarural, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FilePlanSupernarural)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 case .serieLaFormulaMenu:
                     NavigationStack {
                         List(serieLaFormulaCapitulos, id: \.title) { capitulo in
@@ -236,58 +206,55 @@ struct JoeDispenzaAuthorView: View {
                 case .serieLaFormula1:
                     ContentTxtShowView(title: authorSeriesChapterTitle("La Fórmula", number: 1), nombreTxt: AppCons.FileSerieLaFormula_1, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieLaFormula_1)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 case .serieLaFormula2:
                     ContentTxtShowView(title: authorSeriesChapterTitle("La Fórmula", number: 2), nombreTxt: AppCons.FileSerieLaFormula_2, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieLaFormula_2)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 case .serieLaFormula3:
                     ContentTxtShowView(title: authorSeriesChapterTitle("La Fórmula", number: 3), nombreTxt: AppCons.FileSerieLaFormula_3, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieLaFormula_3)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 case .serieLaFormula4:
                     ContentTxtShowView(title: authorSeriesChapterTitle("La Fórmula", number: 4), nombreTxt: AppCons.FileSerieLaFormula_4, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieLaFormula_4)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 case .serieLaFormula5:
                     ContentTxtShowView(title: authorSeriesChapterTitle("La Fórmula", number: 5), nombreTxt: AppCons.FileSerieLaFormula_5, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieLaFormula_5)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 case .serieLaFormula6:
                     ContentTxtShowView(title: authorSeriesChapterTitle("La Fórmula", number: 6), nombreTxt: AppCons.FileSerieLaFormula_6, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieLaFormula_6)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 case .serieLaFormula7:
                     ContentTxtShowView(title: authorSeriesChapterTitle("La Fórmula", number: 7), nombreTxt: AppCons.FileSerieLaFormula_7, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieLaFormula_7)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 case .serieLaFormula8:
                     ContentTxtShowView(title: authorSeriesChapterTitle("La Fórmula", number: 8), nombreTxt: AppCons.FileSerieLaFormula_8, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieLaFormula_8)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 case .serieLaFormula9:
                     ContentTxtShowView(title: authorSeriesChapterTitle("La Fórmula", number: 9), nombreTxt: AppCons.FileSerieLaFormula_9, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieLaFormula_9)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 case .serieLaFormula10:
                     ContentTxtShowView(title: authorSeriesChapterTitle("La Fórmula", number: 10), nombreTxt: AppCons.FileSerieLaFormula_10, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieLaFormula_10)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 case .serieLaFormula11:
                     ContentTxtShowView(title: authorSeriesChapterTitle("La Fórmula", number: 11), nombreTxt: AppCons.FileSerieLaFormula_11, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieLaFormula_11)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 case .serieLaFormula12:
                     ContentTxtShowView(title: authorSeriesChapterTitle("La Fórmula", number: 12), nombreTxt: AppCons.FileSerieLaFormula_12, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieLaFormula_12)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 }
             }
             .presentationDetents([.large])
             .presentationDragIndicator(.hidden)
-        }
-        .sheet(isPresented: self.$showSheetPremiun) {
-            PurchaseView()
         }
     }
 

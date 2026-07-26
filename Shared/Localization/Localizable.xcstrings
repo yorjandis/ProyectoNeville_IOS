@@ -32699,6 +32699,7 @@
       }
     },
     "Las frases de otros autores necesitan acceso Premium." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -32721,6 +32722,7 @@
       }
     },
     "Las Frases y enseñanzas de %@ están disponibles en la Versión Extendida" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -32737,6 +32739,7 @@
       }
     },
     "Las Frases y enseñanzas de Gregg Braden están disponibles en la Versión Extendida" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -32753,6 +32756,7 @@
       }
     },
     "Las Frases y enseñanzas del Dr. Bruce Lipton están disponibles en la Versión Extendida" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -32775,6 +32779,7 @@
       }
     },
     "Las Frases y enseñanzas del Dr. Joe Dispenza están disponibles en la Versión Extendida" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

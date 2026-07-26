@@ -833,7 +833,6 @@ struct ContentView: View {
         @Binding var screenOrder: [WatchScreen]
         @StateObject private var modelWatch = watchModel.shared
         @State private var selectedPhraseSource: WatchPhraseSource = watchModel.shared.selectedPhraseSource()
-        @State private var showPremiumAlert = false
 
         var body: some View {
             ZStack {
@@ -859,10 +858,6 @@ struct ContentView: View {
                                         Text(source.displayName)
                                             .foregroundStyle(.black)
                                         Spacer()
-                                        if source.requiresPremium && !modelWatch.hasAgendaPremiumAccess {
-                                            Image(systemName: "lock.fill")
-                                                .foregroundStyle(.black.opacity(0.72))
-                                        }
                                     }
                                 }
                                 .buttonStyle(.plain)
@@ -883,11 +878,6 @@ struct ContentView: View {
                 modelWatch.refreshPremiumAccessState()
                 selectedPhraseSource = modelWatch.selectedPhraseSource()
             }
-            .alert("Requiere Premium", isPresented: $showPremiumAlert) {
-                Button("OK", role: .cancel) {}
-            } message: {
-                Text("Las frases de otros autores necesitan acceso Premium.")
-            }
         }
 
         private func moveScreens(from source: IndexSet, to destination: Int) {
@@ -903,12 +893,8 @@ struct ContentView: View {
         }
 
         private func selectPhraseSource(_ source: WatchPhraseSource) {
-            if modelWatch.setSelectedPhraseSource(source) {
-                selectedPhraseSource = source
-            } else {
-                selectedPhraseSource = .neville
-                showPremiumAlert = true
-            }
+            modelWatch.setSelectedPhraseSource(source)
+            selectedPhraseSource = source
         }
     }
 }

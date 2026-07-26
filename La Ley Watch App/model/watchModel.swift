@@ -76,9 +76,6 @@ enum WatchPhraseSource: String, CaseIterable, Identifiable {
         }
     }
 
-    var requiresPremium: Bool {
-        self != .neville
-    }
 }
 
 @MainActor
@@ -183,27 +180,13 @@ final class watchModel: ObservableObject {
     }
 
     func selectedPhraseSource() -> WatchPhraseSource {
-        let selected = effectiveHomeFilters()
+        effectiveHomeFilters()
             .compactMap { WatchPhraseSource(rawValue: $0) }
             .first ?? .neville
-
-        if selected.requiresPremium && !hasAgendaPremiumAccess {
-            return .neville
-        }
-
-        return selected
     }
 
-    func setSelectedPhraseSource(_ source: WatchPhraseSource) -> Bool {
-        refreshPremiumAccessState()
-
-        guard !source.requiresPremium || hasAgendaPremiumAccess else {
-            persistPhraseSource(.neville)
-            return false
-        }
-
+    func setSelectedPhraseSource(_ source: WatchPhraseSource) {
         persistPhraseSource(source)
-        return true
     }
 
     private func persistPhraseSource(_ source: WatchPhraseSource) {
@@ -396,10 +379,6 @@ final class watchModel: ObservableObject {
         )
     }
 
-    private var canUseExtendedHomeFilters: Bool {
-        hasAgendaPremiumAccess
-    }
-
     private let supportedHomeFilterValues: Set<String> = [
         "todasFrases",
         "frasesPersonales",
@@ -422,19 +401,12 @@ final class watchModel: ObservableObject {
 
         let sourceFilters = !cloudFilters.isEmpty ? cloudFilters : (!sharedFilters.isEmpty ? sharedFilters : standardFilters)
         let filters = sourceFilters.filter { supportedHomeFilterValues.contains($0) }
-        let resolvedFilters = filters.isEmpty ? ["neville"] : filters
-
-        if canUseExtendedHomeFilters {
-            return resolvedFilters
-        }
-
-        let freeFilters = resolvedFilters.filter { $0 == "neville" }
-        return freeFilters.isEmpty ? ["neville"] : freeFilters
+        return filters.isEmpty ? ["neville"] : filters
     }
 
     
     private func refreshHomeFrasesIfNeeded() {
-        let key = "\(canUseExtendedHomeFilters)|\(effectiveHomeFilters().sorted().joined(separator: ","))"
+        let key = effectiveHomeFilters().sorted().joined(separator: ",")
 
         guard homeFrasesCache.isEmpty || homeFrasesCacheKey != key else {
             return

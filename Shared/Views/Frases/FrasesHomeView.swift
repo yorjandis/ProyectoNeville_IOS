@@ -29,9 +29,6 @@ struct FrasesHomeView : View{
     @AppStorage(AppCons.UD_setting_fontFrasesSize) var fontSizeFrases : Int = 24
     @AppStorage(AppCons.UD_setting_showHide_autor_in_frases) var showHideAutorInFrases : Bool = true // Muestra / oculta el aurtor en las frases del Home
     @AppStorage(AppCons.UD_ProgresoUI_PopulandoFrases) private var populandoFrases: Bool = false
-    @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
-    @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) private var yorjPremium: Bool = false
-    
     //Para Adicionar una nueva frase
     @State private var showSheetAddFrase = false
     
@@ -59,7 +56,7 @@ struct FrasesHomeView : View{
     @State private var showListaRecordatorios : Bool = false
 
     //Parámetros para las vistas de autores:
-    var authorFilter: String? = nil //Filtro de frases de autores, restringido por acceso premium
+    var authorFilter: String? = nil //Filtro de frases de autores
     var colorTextAutor : Color? = nil //Color del texto del autor
     var showAutorLabel : Bool = true //Color del texto del autor
     var showFraseFilterControl: Bool = false //Control de filtros en la esquina superior derecha
@@ -527,11 +524,6 @@ struct FrasesHomeView : View{
     }
 
     private func getFrasesByScope() -> [Frases] {
-        // Sin Premium, solo se permiten frases de Neville.
-        guard (self.purchaseStatus || self.yorjPremium) else {
-            return self.frasesModel.getListFrasesByAutor(autor: "nev")
-        }
-
         if let authorFilter, !authorFilter.isEmpty {
             return self.frasesModel.getListFrasesByAutor(autor: authorFilter)
         }

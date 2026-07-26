@@ -609,46 +609,42 @@ struct NavigationDetailsViewMac: View {
             case .resumenEnseñanzaJoe:
                 ContentTxtShowView(title: "Resumen de la enseñanza: Joe Dispenza", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenEnseñanzaJD)))
-                ], checkPremium: true )
+                ], checkPremium: false )
             case .frasesJoe:
-                if (self.purchaseStatus || self.yorjPremium){
-                    FrasesListView(mostrarFrasesDe: .jd)
-                }else{
-                    self.ContenidoPremium(nameAutor: "Dr. Joe Dispenza")
-                }
+                FrasesListView(mostrarFrasesDe: .jd)
 
             case .analisisLibroSobrenatural:
                 ContentTxtShowView(title: "Análisis del Libro: SobreNatural", nombreTxt:"", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenSuperNatural)))
-                ], checkPremium: true   )
+                ], checkPremium: false   )
             case .practicaLibroSobrenatural:
                 ContentTxtShowView(title: "Práctica del Libro: SobreNatural", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FilePlanSupernarural)))
-                ], checkPremium: true   )
+                ], checkPremium: false   )
             case .analisisLibroDejaDeSerTu:
                 ContentTxtShowView(title: "Análisis del Libro: Deja de ser tú", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenDejaDeSerTu)))
-                ], checkPremium: true   )
+                ], checkPremium: false   )
             case .practicaLibroDejaDeSerTu:
                 ContentTxtShowView(title: "Práctica del Libro: Deja de ser tú", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FilePlanDejaDeSerTu)))
-                ], checkPremium: true   )
+                ], checkPremium: false   )
             case .analisisLibroElPlaceboEresTu:
                 ContentTxtShowView(title: "Análisis del Libro: El placebo eres tú", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenElPLaceboEresTu)))
-                ], checkPremium: true   )
+                ], checkPremium: false   )
             case .practicaLibroElPlaceboEresTu:
                 ContentTxtShowView(title: "Práctica del Libro: El placebo eres tú", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FilePlanElPlaceboEresTu)))
-                ], checkPremium: true   )
+                ], checkPremium: false   )
             case .analisisLibroDesarrollaTuCerebro:
                 ContentTxtShowView(title: "Análisis del Libro: Desarrolla tu cerebro", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenDesarrollaTuCerebro)))
-                ], checkPremium: true   )
+                ], checkPremium: false   )
             case .practicaLibroDesarrollaTuCerebro:
                 ContentTxtShowView(title: "Práctica del Libro: Desarrolla tu cerebro", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FilePlanDesarrollaTuCerebro)))
-                ], checkPremium: true   )
+                ], checkPremium: false   )
             
             //Greeg Braden:
             case .bibliografiaGregg:
@@ -659,37 +655,33 @@ struct NavigationDetailsViewMac: View {
             case .resumenEnseñanzaGregg:
                 ContentTxtShowView(title: "Resumen de la enseñanza: Gregg Braden", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenEnseñanzaGregg)))
-                ], checkPremium: true   )
+                ], checkPremium: false   )
             case .frasesGregg:
-                if (self.purchaseStatus || self.yorjPremium){
-                    FrasesListView(mostrarFrasesDe: .gregg)
-                }else{
-                    self.ContenidoPremium(nameAutor: "Dr. Joe Dispenza")
-                }
+                FrasesListView(mostrarFrasesDe: .gregg)
             case .analisisLibroPuramenteHumanos:
                 ContentTxtShowView(title: "Análisis del Libro: Puramente Humanos", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenPuramenteHumanosGregg)))
-                ], checkPremium: true   )
+                ], checkPremium: false   )
             case .practicaLibroPuramenteHumanos:
                 ContentTxtShowView(title: "Práctica del Libro: Puramente Humanos", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FilePlanPuramenteHumanosGregg)))
-                ] , checkPremium: true  )
+                ] , checkPremium: false  )
             case .analisisLibroResilienciaDesdeCorazon:
                 ContentTxtShowView(title: "Análisis del Libro: Resiliencia desde el Corazón", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenResilenciaCorazonGregg)))
-                ], checkPremium: true   )
+                ], checkPremium: false   )
             case .practicaLibroResilienciaDesdeCorazon:
                 ContentTxtShowView(title: "Práctica del Libro: Resiliencia desde el Corazón", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FilePlanResilenciaCorazonGregg)))
-                ] , checkPremium: true  )
+                ] , checkPremium: false  )
             case .analisisLibroLaMatrizDivina:
                 ContentTxtShowView(title: "Análisis del Libro: La Matriz Divina", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FilePlanLaMatrizDivinaGregg)))
-                ] , checkPremium: true  )
+                ] , checkPremium: false  )
             case .practicaLibroLaMatrizDivina:
                 ContentTxtShowView(title: "Práctica del Libro: La Matriz Divina", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FilePlanLaMatrizDivinaGregg)))
-                ] , checkPremium: true  )
+                ] , checkPremium: false  )
                 
               
             //Bruce Lipton:
@@ -701,75 +693,71 @@ struct NavigationDetailsViewMac: View {
             case .resumenEnseñanzaBruce:
                 ContentTxtShowView(title: "Resumen de la enseñanza: Bruce Lipton", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenEnseñanzaBruce)))
-                ] , checkPremium: true  )
+                ] , checkPremium: false  )
             case .frasesBruce:
-                if (self.purchaseStatus || self.yorjPremium){
-                    FrasesListView(mostrarFrasesDe: .bruceL)
-                }else{
-                    self.ContenidoPremium(nameAutor: "Dr. Joe Dispenza")
-                }
+                FrasesListView(mostrarFrasesDe: .bruceL)
             case .analisisLibroBiologiaCreencia:
                 ContentTxtShowView(title: "Análisis del Libro: La Biología de la Creencia", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenBiologiaCreencia)))
-                ], checkPremium: true   )
+                ], checkPremium: false   )
             case .practicaLibroBiologiaCreencia:
                 ContentTxtShowView(title: "Práctica del Libro: La Biología de la Creencia", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FilePlanBiologiaCrrencia)))
-                ] , checkPremium: true  )
+                ] , checkPremium: false  )
             case .serieEvolucionInterior_1:
                 ContentTxtShowView(title: "Serie Evolución Interior: Capítulo 1", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieEvolucionInterior_1)))
-                ] , checkPremium: true  )
+                ] , checkPremium: false  )
             case .serieEvolucionInterior_2:
                 ContentTxtShowView(title: "Serie Evolución Interior: Capítulo 2", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieEvolucionInterior_2)))
-                ] , checkPremium: true  )
+                ] , checkPremium: false  )
             case .serieEvolucionInterior_3:
                 ContentTxtShowView(title: "Serie Evolución Interior: Capítulo 3", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieEvolucionInterior_3)))
-                ] , checkPremium: true  )
+                ] , checkPremium: false  )
             case .serieEvolucionInterior_4:
                 ContentTxtShowView(title: "Serie Evolución Interior: Capítulo 4", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieEvolucionInterior_4)))
-                ] , checkPremium: true  )
+                ] , checkPremium: false  )
                 
             case .serieEvolucionInterior_5:
                 ContentTxtShowView(title: "Serie Evolución Interior: Capítulo 5", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieEvolucionInterior_5)))
-                ], checkPremium: true   )
+                ], checkPremium: false   )
             case .serieEvolucionInterior_6:
                 ContentTxtShowView(title: "Serie Evolución Interior: Capítulo 6", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieEvolucionInterior_6)))
-                ] , checkPremium: true  )
+                ] , checkPremium: false  )
             case .serieEvolucionInterior_7:
                 ContentTxtShowView(title: "Serie Evolución Interior: Capítulo 7", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieEvolucionInterior_7)))
-                ] , checkPremium: true  )
+                ] , checkPremium: false  )
             case .serieEvolucionInterior_8:
                 ContentTxtShowView(title: "Serie Evolución Interior: Capítulo 8", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieEvolucionInterior_8)))
-                ] , checkPremium: true  )
+                ] , checkPremium: false  )
                 
             case .serieEvolucionInterior_9:
                 ContentTxtShowView(title: "Serie Evolución Interior: Capítulo 9", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieEvolucionInterior_9)))
-                ], checkPremium: true   )
+                ], checkPremium: false   )
             case .serieEvolucionInterior_10:
                 ContentTxtShowView(title: "Serie Evolución Interior: Capítulo 10", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieEvolucionInterior_10)))
-                ] , checkPremium: true  )
+                ] , checkPremium: false  )
             case .serieEvolucionInterior_11:
                 ContentTxtShowView(title: "Serie Evolución Interior: Capítulo 11", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieEvolucionInterior_11)))
-                ] , checkPremium: true  )
+                ] , checkPremium: false  )
             case .serieEvolucionInterior_12:
                 ContentTxtShowView(title: "Serie Evolución Interior: Capítulo 12", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieEvolucionInterior_12)))
-                ] , checkPremium: true  )
+                ] , checkPremium: false  )
             case .serieEvolucionInterior_13:
                 ContentTxtShowView(title: "Serie Evolución Interior: Capítulo 13", nombreTxt: "", type: .NA, blocks:   [
                     ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieEvolucionInterior_13)))
-                ]  , checkPremium: true )
+                ]  , checkPremium: false )
                 
                 
             //Recursos Didácticos:
@@ -833,59 +821,6 @@ struct NavigationDetailsViewMac: View {
         }
        
     }
-    
-    
-    
-    @ViewBuilder
-    func ContenidoPremium(nameAutor : String) -> some View{
-        NavigationStack{
-            ZStack{
-                LinearGradient.AtardecerVioleta()
-                    .ignoresSafeArea()
-                
-                VStack{
-                    Image("Logo")
-                        .resizable()
-                        .scaledToFill()
-                        .clipShape(RoundedRectangle(cornerRadius: 20))
-                        .frame(width: 100, height: 100)
-                        .padding()
-                        
-                        
-                    Spacer()
-                    Text("Las Frases y enseñanzas de \(nameAutor) están disponibles en la Versión Extendida")
-                        .font(.title2)
-                        .bold()
-                    
-                    #if os(macOS)
-                    Button("Acceder a la Versión Extendida"){
-                        showWindow(for: PurchaseView(),
-                                   environmentObjects: [],
-                                   title: "Versión Extendida",
-                                   size: WindowSize.percentage(width: 0.4, height: 0.8),
-                                   isModal: false
-                        )
-                        
-                        
-                    }
-                    .buttonStyle(.bordered)
-                    .padding()
-                    #else
-                    NavigationLink("Acceder a la Versión Extendida"){
-                        PurchaseView()
-                    }
-                    .buttonStyle(.bordered)
-                    .padding()
-                    #endif
-                    
-                    Spacer()
-                }
-                .padding(3)
-                
-            }
-        }
-    }
-    
 }
 
 
@@ -1021,45 +956,4 @@ struct SidebarCard<Content: View>: View {
         )
     }
 
-    @ViewBuilder
-    func ContenidoPremium(nameAutor : String) -> some View{
-        NavigationStack{
-            ZStack{
-                LinearGradient.AtardecerVioleta()
-                    .ignoresSafeArea()
-                
-                VStack{
-                    Image("Logo")
-                        .resizable()
-                        .scaledToFill()
-                        .clipShape(RoundedRectangle(cornerRadius: 20))
-                        .frame(width: 100, height: 100)
-                        .padding()
-                        
-                        
-                    Spacer()
-                    Text("Las Frases y enseñanzas de \(nameAutor) están disponibles en la Versión Extendida")
-                        .font(.title2)
-                        .bold()
-                    
-                    NavigationLink("Acceder a la Versión Extendida"){
-                        PurchaseView()
-                    }
-                    .buttonStyle(.bordered)
-                    .padding()
-                    Spacer()
-                    
-                    
-                    
-                    
-                }
-                .padding(3)
-                
-            }
-        }
-    }
-    
-    
-   
 }
-

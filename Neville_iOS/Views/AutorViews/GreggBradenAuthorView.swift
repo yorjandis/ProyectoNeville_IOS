@@ -16,12 +16,6 @@ struct GreggBradenAuthorView: View {
 
     @State private var route: Route?
     
-    //Funciones premium
-    @AppStorage("purchaseStatus" ) var purchaseStatus: Bool = false
-    @AppStorage("yorjPremium",store: UserDefaults(suiteName: AppCons.AppGroupName))var yorjPremium: Bool = false
-    
-    @State private var showSheetPremiun : Bool = false
-
     var body: some View {
         NavigationStack {
             ZStack {
@@ -76,34 +70,10 @@ struct GreggBradenAuthorView: View {
                         .fontWeight(.semibold)
                         .foregroundStyle(.black)
                     
-                    if self.purchaseStatus || self.yorjPremium{
-                        FrasesHomeView(authorFilter: "gregg", colorTextAutor: .black, showAutorLabel: false, showFraseFilterControl: true)
-                            .frame(height: 320)
-                            .background(LinearGradient(colors: [Color.black.opacity(0.1), Color.black.opacity(0.2)], startPoint: .top, endPoint: .bottom))
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
-                    }else{
-                        
-                        VStack{
-                            Spacer()
-                            Button("Las Frases y enseñanzas de Gregg Braden están disponibles en la Versión Extendida"){
-                                self.showSheetPremiun = true
-                            }
-                            .font(.system(size: 22))
-                            .buttonStyle(.plain)
-                            .frame(maxWidth: .infinity, alignment: .center)
-                            Spacer()
-                        }
-                        .padding(12)
-                        .frame(height: 270, alignment: .topLeading)
-                        .background(LinearGradient.JadeProfundo())
+                    FrasesHomeView(authorFilter: "gregg", colorTextAutor: .black, showAutorLabel: false, showFraseFilterControl: true)
+                        .frame(height: 320)
+                        .background(LinearGradient(colors: [Color.black.opacity(0.1), Color.black.opacity(0.2)], startPoint: .top, endPoint: .bottom))
                         .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .overlay {
-                            RoundedRectangle(cornerRadius: 14)
-                                .stroke(.white.opacity(0.22), lineWidth: 1)
-                        }
-                        
-                        
-                    }
                     
 
                     VStack(alignment: .leading, spacing: 10) {
@@ -137,38 +107,35 @@ struct GreggBradenAuthorView: View {
                 case .resumenEnsenanza:
                     ContentTxtShowView(title: authorTeachingSummaryTitle("Gregg Braden"), nombreTxt: AppCons.FileResumenEnseñanzaGregg, type: .NA, blocks: [
                         ContentBlock(content: .text(L10n.textResource(named: AppCons.FileResumenEnseñanzaGregg)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 case .resumenLaMatrizDivina:
                     ContentTxtShowView(title: authorBookSummaryTitle("La Matriz Divina"), nombreTxt: AppCons.FileResumenLaMatrizDivinaGregg, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenLaMatrizDivinaGregg)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 case .planLaMatrizDivina:
                     ContentTxtShowView(title: authorBookPlanTitle("La Matriz Divina"), nombreTxt: AppCons.FilePlanLaMatrizDivinaGregg, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FilePlanLaMatrizDivinaGregg)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 case .resumenResilienciaDesdeCorazon:
                     ContentTxtShowView(title: authorBookSummaryTitle("Resiliencia Desde El Corazón"), nombreTxt: AppCons.FileResumenResilenciaCorazonGregg, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenResilenciaCorazonGregg)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 case .planResilienciaDesdeCorazon:
                     ContentTxtShowView(title: authorBookPlanTitle("Resiliencia Desde El Corazón"), nombreTxt: AppCons.FilePlanResilenciaCorazonGregg, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FilePlanResilenciaCorazonGregg)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 case .resumenPuramenteHumanos:
                     ContentTxtShowView(title: authorBookSummaryTitle("Puramente Humanos"), nombreTxt: AppCons.FileResumenPuramenteHumanosGregg, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenPuramenteHumanosGregg)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 case .planPuramenteHumanos:
                     ContentTxtShowView(title: authorBookPlanTitle("Puramente Humanos"), nombreTxt: AppCons.FilePlanPuramenteHumanosGregg, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FilePlanPuramenteHumanosGregg)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 }
             }
             .presentationDetents([.large])
             .presentationDragIndicator(.hidden)
-        }
-        .sheet(isPresented: self.$showSheetPremiun) {
-            PurchaseView()
         }
     }
 

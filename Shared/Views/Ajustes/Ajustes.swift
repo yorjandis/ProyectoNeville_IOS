@@ -317,15 +317,7 @@ struct Ajustes: View {
                                         Menu("Añadir al Filtro:"){
                                             ForEach(CriterioFraseHome.allCases, id: \.self) { opcion in
                                                 Button(L10n.exact(opcion.getName)){
-                                                    if (self.purchaseStatus || self.yorjPremium){
-                                                        toggleFiltro(opcion)
-                                                    }else{
-                                                        if opcion.rawValue != "neville"{
-                                                            self.alertMessage = L10n.exact("Disponible en Versión Extendida")
-                                                            self.showAlert = true
-                                                        }
-                                                    }
-                                                    
+                                                    toggleFiltro(opcion)
                                                 }
                                             }
                                         }
@@ -1229,15 +1221,7 @@ struct Ajustes: View {
                                  Menu("Añadir al Filtro:"){
                                      ForEach(CriterioFraseHome.allCases, id: \.self) { opcion in
                                          Button(L10n.exact(opcion.getName)){
-                                             if (self.purchaseStatus || self.yorjPremium){
-                                                 toggleFiltro(opcion)
-                                             }else{
-                                                 if opcion.rawValue != "neville"{
-                                                self.alertMessage = L10n.exact("Disponible en Versión Extendida")
-                                                     self.showAlert = true
-                                                 }
-                                             }
-                                             
+                                             toggleFiltro(opcion)
                                          }
                                      }
                                  }

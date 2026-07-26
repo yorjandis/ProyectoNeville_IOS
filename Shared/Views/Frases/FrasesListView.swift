@@ -136,12 +136,6 @@ struct FrasesListView: View {
                                         Task{
                                             frasesModel.criterioFiltroActual = .Buscar
                                             await frasesModel.FiltrarListado(textAbuscar: self.textFieldFrase)
-                                            //Ajustando los valores de resultado de acuerdo a el estado premium:
-                                            if !(self.purchaseStatus || self.yorjPremium){
-                                                self.frasesModel.listfrases = self.frasesModel.listfrases.filter{
-                                                    $0.autor == "nev"
-                                                }
-                                            }
                                         }
                                         
                                     }
@@ -198,13 +192,7 @@ struct FrasesListView: View {
                                                  frasesModel.criterioFiltroActual = .ListadoFull //Almacena información acerca del tipo de filtro
                                                  frasesModel.buscarEn = .TodasFrases
                                                  
-                                                 if (self.purchaseStatus || self.yorjPremium){
-                                                     self.frasesModel.getAllFrases()
-                                                 }else{
-                                                     self.frasesModel.listfrases = self.frasesModel.getAllFrasesGet().filter{
-                                                         $0.autor == "nev"
-                                                     }
-                                                 }
+                                                 self.frasesModel.getAllFrases()
                                                  
                                              }
                                              
@@ -226,13 +214,7 @@ struct FrasesListView: View {
                                                  frasesModel.criterioFiltroActual = .FrasesFavoritas
                                                  frasesModel.buscarEn = .FrasesFavoritas
                                                  
-                                                 if (self.purchaseStatus || self.yorjPremium){
-                                                     self.frasesModel.listfrases = self.frasesModel.getAllFavFrases()
-                                                 }else{
-                                                     self.frasesModel.listfrases = self.frasesModel.getAllFavFrases().filter{
-                                                         $0.autor == "nev"
-                                                     }
-                                                 }
+                                                 self.frasesModel.listfrases = self.frasesModel.getAllFavFrases()
                                              }
                                          }
                                          
@@ -241,13 +223,7 @@ struct FrasesListView: View {
                                                  frasesModel.criterioFiltroActual = .FrasesConNotas
                                                  frasesModel.buscarEn = .FrasesConNotas
                                                  
-                                                 if (self.purchaseStatus || self.yorjPremium){
-                                                     self.frasesModel.listfrases = self.frasesModel.getFrasesConNotas()
-                                                 }else{
-                                                     self.frasesModel.listfrases = self.frasesModel.getFrasesConNotas().filter{
-                                                         $0.autor == "nev"
-                                                     }
-                                                 }
+                                                 self.frasesModel.listfrases = self.frasesModel.getFrasesConNotas()
                                              }
                                          }
 
@@ -269,18 +245,7 @@ struct FrasesListView: View {
                                              let autores = self.frasesModel.getAllAutoresList()
                                              ForEach(autores.sorted(by: { $0.key < $1.key }), id: \.key) { autorRaw, autorNombre in
                                                  Button(autorNombre){
-                                                     if (self.purchaseStatus || self.yorjPremium){
-                                                         self.frasesModel.listfrases = self.frasesModel.getListFrasesByAutor(autor: autorRaw)
-                                                     }else{
-                                                         if (autorRaw == "nev"){
-                                                             self.frasesModel.listfrases = self.frasesModel.getListFrasesByAutor(autor: autorRaw)
-                                                         }else{
-                                                             self.alertMessage = " Las Frases de \(autorNombre) están presentes en la Versión Extendida"
-                                                             self.showAlert = true
-                                                         }
-                                                     }
-                                                     
-                                                     
+                                                     self.frasesModel.listfrases = self.frasesModel.getListFrasesByAutor(autor: autorRaw)
                                                  }
                                              }
                                              
@@ -293,14 +258,7 @@ struct FrasesListView: View {
                                              let autores = self.frasesModel.getAllContextosList()
                                              ForEach(autores, id: \.self) { contexto in
                                                  Button(contexto){
-                                                     if (self.purchaseStatus || self.yorjPremium){
-                                                         self.frasesModel.listfrases = self.frasesModel.getFrasesByContexto(contexto: contexto)
-                                                     }else{
-                                                         self.frasesModel.listfrases = self.frasesModel.getFrasesByContexto(contexto: contexto).filter{
-                                                             $0.autor == "nev"
-                                                         }
-                                                     }
-                                                    
+                                                     self.frasesModel.listfrases = self.frasesModel.getFrasesByContexto(contexto: contexto)
                                                  }
                                              }
                                              
@@ -373,13 +331,7 @@ struct FrasesListView: View {
                          Task{
                              self.frasesModel.criterioFiltroActual = .BuscarEnNotas
                              
-                             if (self.purchaseStatus || self.yorjPremium){
-                                 self.frasesModel.listfrases = self.frasesModel.searchTextInNotaFrases(textNota: self.textFieldNota)
-                             }else{
-                                 self.frasesModel.listfrases = self.frasesModel.searchTextInNotaFrases(textNota: self.textFieldNota).filter{
-                                     $0.autor == "nev"
-                                 }
-                             }
+                             self.frasesModel.listfrases = self.frasesModel.searchTextInNotaFrases(textNota: self.textFieldNota)
                          }
                      }
                      
@@ -414,12 +366,7 @@ struct FrasesListView: View {
                  if self.mostrarFrasesDe != nil{
                      self.frasesModel.listfrases = self.frasesModel.getListFrasesByAutor(autor: self.mostrarFrasesDe!.rawValue)
                  }else{
-                     //Al iniciarse, la ventana se carga todas las frases (Versión Extebndida) o solo las de neville
-                     if (self.purchaseStatus || self.yorjPremium){
-                         self.frasesModel.getAllFrases()
-                     }else{
-                         self.frasesModel.listfrases = self.frasesModel.getListFrasesByAutor(autor: AutorFrase.nev.rawValue)
-                     }
+                     self.frasesModel.getAllFrases()
                      
                  }
                  

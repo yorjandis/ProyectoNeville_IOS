@@ -46,12 +46,6 @@ struct BruceLiptonAuthorView: View {
         ]
     }
     
-    //Funciones premium
-    @AppStorage("purchaseStatus" ) var purchaseStatus: Bool = false
-    @AppStorage("yorjPremium",store: UserDefaults(suiteName: AppCons.AppGroupName))var yorjPremium: Bool = false
-    
-    @State private var showSheetPremiun : Bool = false
-
     var body: some View {
         NavigationStack {
             ZStack {
@@ -105,34 +99,10 @@ struct BruceLiptonAuthorView: View {
                         .fontWeight(.semibold)
                         .foregroundStyle(.black)
                     
-                    if (self.purchaseStatus || self.yorjPremium){
-                        FrasesHomeView(authorFilter: "bruceL", colorTextAutor: .black, showAutorLabel: false, showFraseFilterControl: true)
-                            .frame(height: 320)
-                            .background(LinearGradient(colors: [Color.black.opacity(0.08), Color.black.opacity(0.08)], startPoint: .top, endPoint: .bottom))
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
-                    }else{
-                        
-                        VStack{
-                            Spacer()
-                            Button("Las Frases y enseñanzas del Dr. Bruce Lipton están disponibles en la Versión Extendida"){
-                                self.showSheetPremiun = true
-                            }
-                            .font(.system(size: 22))
-                            .buttonStyle(.plain)
-                            .frame(maxWidth: .infinity, alignment: .center)
-                            Spacer()
-                        }
-                        .padding(12)
-                        .frame(height: 270, alignment: .topLeading)
-                        .background(LinearGradient.JadeProfundo())
+                    FrasesHomeView(authorFilter: "bruceL", colorTextAutor: .black, showAutorLabel: false, showFraseFilterControl: true)
+                        .frame(height: 320)
+                        .background(LinearGradient(colors: [Color.black.opacity(0.08), Color.black.opacity(0.08)], startPoint: .top, endPoint: .bottom))
                         .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .overlay {
-                            RoundedRectangle(cornerRadius: 14)
-                                .stroke(.white.opacity(0.22), lineWidth: 1)
-                        }
-                        
-                        
-                    }
                     
 
                     VStack(alignment: .leading, spacing: 10) {
@@ -179,23 +149,23 @@ struct BruceLiptonAuthorView: View {
                 case .resumenEnsenanza:
                     ContentTxtShowView(title: authorTeachingSummaryTitle("Dr. Bruce H. Lipton"), nombreTxt: AppCons.FileResumenEnseñanzaBruce, type: .NA, blocks: [
                         ContentBlock(content: .text(L10n.textResource(named: AppCons.FileResumenEnseñanzaBruce)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 case .resumenLibroBiologiaCreencia:
                     ContentTxtShowView(title: authorBookSummaryTitle("La Biología De La Creencia"), nombreTxt: AppCons.FileResumenBiologiaCreencia, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenBiologiaCreencia)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 case .planLibroBiologiaCreencia:
                     ContentTxtShowView(title: authorBookPlanTitle("La Biología De La Creencia"), nombreTxt: AppCons.FilePlanBiologiaCrrencia, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FilePlanBiologiaCrrencia)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 case .resumenLibroBiologiaTransformacion:
                     ContentTxtShowView(title: authorBookSummaryTitle("La Biología de la Transformación"), nombreTxt: AppCons.FileResumenBiologiaTransformacion, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileResumenBiologiaTransformacion)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 case .planLibroBiologiaTransformacion:
                     ContentTxtShowView(title: authorBookPlanTitle("La Biología de la Transformación"), nombreTxt: AppCons.FilePlanBiologiaTransformacion, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FilePlanBiologiaTransformacion)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 case .serieEvolucionInteriorMenu:
                     NavigationStack {
                         List(serieCapitulos, id: \.title) { capitulo in
@@ -211,51 +181,51 @@ struct BruceLiptonAuthorView: View {
                 case .serieEvolucionInterior1:
                     ContentTxtShowView(title: authorSeriesChapterTitle("Evolución Interior", number: 1), nombreTxt: AppCons.FileSerieEvolucionInterior_1, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieEvolucionInterior_1)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 case .serieEvolucionInterior2:
                     ContentTxtShowView(title: authorSeriesChapterTitle("Evolución Interior", number: 2), nombreTxt: AppCons.FileSerieEvolucionInterior_2, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieEvolucionInterior_2)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 case .serieEvolucionInterior3:
                     ContentTxtShowView(title: authorSeriesChapterTitle("Evolución Interior", number: 3), nombreTxt: AppCons.FileSerieEvolucionInterior_3, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieEvolucionInterior_3)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 case .serieEvolucionInterior4:
                     ContentTxtShowView(title: authorSeriesChapterTitle("Evolución Interior", number: 4), nombreTxt: AppCons.FileSerieEvolucionInterior_4, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieEvolucionInterior_4)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 case .serieEvolucionInterior5:
                     ContentTxtShowView(title: authorSeriesChapterTitle("Evolución Interior", number: 5), nombreTxt: AppCons.FileSerieEvolucionInterior_5, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieEvolucionInterior_5)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 case .serieEvolucionInterior6:
                     ContentTxtShowView(title: authorSeriesChapterTitle("Evolución Interior", number: 6), nombreTxt: AppCons.FileSerieEvolucionInterior_6, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieEvolucionInterior_6)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 case .serieEvolucionInterior7:
                     ContentTxtShowView(title: authorSeriesChapterTitle("Evolución Interior", number: 7), nombreTxt: AppCons.FileSerieEvolucionInterior_7, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieEvolucionInterior_7)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 case .serieEvolucionInterior8:
                     ContentTxtShowView(title: authorSeriesChapterTitle("Evolución Interior", number: 8), nombreTxt: AppCons.FileSerieEvolucionInterior_8, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieEvolucionInterior_8)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 case .serieEvolucionInterior9:
                     ContentTxtShowView(title: authorSeriesChapterTitle("Evolución Interior", number: 9), nombreTxt: AppCons.FileSerieEvolucionInterior_9, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieEvolucionInterior_9)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 case .serieEvolucionInterior10:
                     ContentTxtShowView(title: authorSeriesChapterTitle("Evolución Interior", number: 10), nombreTxt: AppCons.FileSerieEvolucionInterior_10, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieEvolucionInterior_10)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 case .serieEvolucionInterior11:
                     ContentTxtShowView(title: authorSeriesChapterTitle("Evolución Interior", number: 11), nombreTxt: AppCons.FileSerieEvolucionInterior_11, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieEvolucionInterior_11)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 case .serieEvolucionInterior12:
                     ContentTxtShowView(title: authorSeriesChapterTitle("Evolución Interior", number: 12), nombreTxt: AppCons.FileSerieEvolucionInterior_12, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieEvolucionInterior_12)))
-                    ], checkPremium: true)
+                    ], checkPremium: false)
                 case .serieEvolucionInterior13:
                     ContentTxtShowView(title: authorSeriesChapterTitle("Evolución Interior", number: 13), nombreTxt: AppCons.FileSerieEvolucionInterior_13, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieEvolucionInterior_13)))
@@ -264,9 +234,6 @@ struct BruceLiptonAuthorView: View {
             }
             .presentationDetents([.large])
             .presentationDragIndicator(.hidden)
-        }
-        .sheet(isPresented: self.$showSheetPremiun) {
-            PurchaseView()
         }
     }
 

@@ -81,7 +81,7 @@ struct EnciclopediaListView: View {
                     if let tema = temaSeleccionado {
                         ContentTxtShowView(title: tema.localizedTitle,nombreTxt: "" ,type: .NA, blocks: [
                             ContentBlock(content: .text(UtilFuncs.FileRead(tema.getFileName)))
-                        ], checkPremium: true
+                        ], checkPremium: false
                         )
                         .id(tema)   // 🔥 CLAVE
                     } else {
@@ -163,7 +163,7 @@ fileprivate struct SubListaView: View {
                 NavigationLink(item.localizedTitle) {
                     ContentTxtShowView(title: item.localizedTitle, nombreTxt: "",type: .NA, blocks: [
                                         ContentBlock(content: .text(UtilFuncs.FileRead(item.getFileName)))
-                                       ], checkPremium: true)
+                                       ], checkPremium: false)
                     
                 }
                 .listRowBackground(Color.clear)
