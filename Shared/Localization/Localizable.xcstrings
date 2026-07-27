@@ -946,7 +946,20 @@
       "shouldTranslate" : false
     },
     "· %@" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "· %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "· %@"
+          }
+        }
+      }
     },
     "(Beta)" : {
       "localizations" : {
@@ -1089,7 +1102,7 @@
       "localizations" : {
         "es" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "%1$@ %2$@ %3$@"
           }
         }
@@ -1152,7 +1165,20 @@
       }
     },
     "%@ no disponible" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ unavailable"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 不可用"
+          }
+        }
+      }
     },
     "%@, %@" : {
       "localizations" : {
@@ -1722,7 +1748,20 @@
       }
     },
     "1. Selecciona el modelo" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1. Select the model"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1. 选择模型"
+          }
+        }
+      }
     },
     "1) Mira el procesamiento (NOVA). 2) Revisa azúcar, sal y grasas saturadas por 100 g. 3) Verifica fibra y proteína. 4) Si tienes sensibilidad, confirma alérgenos (por ejemplo gluten). 5) Revisa presencia de aditivos." : {
       "localizations" : {
@@ -1763,7 +1802,20 @@
       }
     },
     "2. Selecciona el autor" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2. Select the author"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2. 选择作者"
+          }
+        }
+      }
     },
     "3. Abre Salud." : {
       "localizations" : {
@@ -2580,7 +2632,20 @@
       }
     },
     "Abrir la página de claves de OpenRouter" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open the OpenRouter API keys page"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开 OpenRouter API 密钥页面"
+          }
+        }
+      }
     },
     "Abrir Notas" : {
       "localizations" : {
@@ -2952,7 +3017,20 @@
       }
     },
     "Aceptar y continuar" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accept and continue"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "接受并继续"
+          }
+        }
+      }
     },
     "Acepto" : {
       "localizations" : {
@@ -4794,10 +4872,36 @@
       }
     },
     "Ajustar la apariencia de esta vista" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Customize the appearance of this view"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "调整此视图的外观"
+          }
+        }
+      }
     },
     "Ajustar visualización" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Customize display"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "调整显示"
+          }
+        }
+      }
     },
     "Ajustes" : {
       "localizations" : {
@@ -4860,7 +4964,20 @@
       }
     },
     "Al usar OpenRouter, las preguntas y el contexto necesario se envían a OpenRouter y al proveedor que ejecuta el modelo gratuito seleccionado. Sus políticas de tratamiento de datos pueden variar." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When you use OpenRouter, your questions and the necessary context are sent to OpenRouter and to the provider running the selected free model. Their data processing policies may vary."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用 OpenRouter 时，您的问题及所需上下文将发送给 OpenRouter 以及运行所选免费模型的提供商。各方的数据处理政策可能有所不同。"
+          }
+        }
+      }
     },
     "Aleatoria" : {
       "localizations" : {
@@ -5384,7 +5501,20 @@
       }
     },
     "Añadir clave de OpenRouter" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add OpenRouter API key"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加 OpenRouter API 密钥"
+          }
+        }
+      }
     },
     "Añadir coordenadas" : {
       "localizations" : {
@@ -5888,10 +6018,36 @@
       }
     },
     "Apariencia del chat" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chat appearance"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "聊天外观"
+          }
+        }
+      }
     },
     "Apariencia del Chat IA" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI Chat Appearance"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 聊天外观"
+          }
+        }
+      }
     },
     "Apertura" : {
       "localizations" : {
@@ -6234,10 +6390,36 @@
       "shouldTranslate" : false
     },
     "Apple Intelligence" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence"
+          }
+        }
+      }
     },
     "Apple Intelligence no disponible" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence unavailable"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence 不可用"
+          }
+        }
+      }
     },
     "Apple Intelligence no está disponible en este dispositivo o idioma." : {
       "localizations" : {
@@ -6262,10 +6444,36 @@
       }
     },
     "Apple Intelligence no está disponible en este dispositivo." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence is not available on this device."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence 在此设备上不可用。"
+          }
+        }
+      }
     },
     "Apple Intelligence seguirá siendo el modelo predeterminado y procesa las funciones de IA de forma local. OpenRouter es opcional y solo se activa cuando tú lo eliges." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence will remain the default model and processes AI features locally. OpenRouter is optional and is only activated when you choose it."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence 将继续作为默认模型，并在本地处理 AI 功能。OpenRouter 为可选服务，仅在您主动选择时启用。"
+          }
+        }
+      }
     },
     "Apple Watch realiza lecturas periódicas; fuera de un entrenamiento no son continuas. Por eso “en tiempo real” significa la estimación más reciente disponible en Salud." : {
       "localizations" : {
@@ -7497,7 +7705,20 @@
       }
     },
     "Autorizar el envío del texto" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Authorize sending the text"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "授权发送文本"
+          }
+        }
+      }
     },
     "Avanza hoy con intención" : {
       "localizations" : {
@@ -8378,7 +8599,20 @@
       }
     },
     "Burbujas de respuesta" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Response bubbles"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "回复气泡"
+          }
+        }
+      }
     },
     "Busca ayuda inmediata si…" : {
       "localizations" : {
@@ -9133,7 +9367,20 @@
       }
     },
     "Cambiar a %@" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Switch to %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "切换到 %@"
+          }
+        }
+      }
     },
     "Cambiar apariencia" : {
       "localizations" : {
@@ -9175,7 +9422,20 @@
       }
     },
     "Cambiar autor · %@" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change author · %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更改作者 · %@"
+          }
+        }
+      }
     },
     "Cambiar Autor..." : {
       "localizations" : {
@@ -9346,7 +9606,20 @@
       }
     },
     "Cambiar nombre" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rename"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重命名"
+          }
+        }
+      }
     },
     "Cambiar Operación..." : {
       "localizations" : {
@@ -10764,10 +11037,36 @@
       }
     },
     "Clave de API de OpenRouter" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OpenRouter API key"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OpenRouter API 密钥"
+          }
+        }
+      }
     },
     "Clave guardada en este dispositivo" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API key saved on this device"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API 密钥已保存在此设备上"
+          }
+        }
+      }
     },
     "Cobertura" : {
       "extractionState" : "manual",
@@ -11336,7 +11635,20 @@
       }
     },
     "Color de la fuente" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Font color"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "字体颜色"
+          }
+        }
+      }
     },
     "Color de Texto Chat IA" : {
       "extractionState" : "stale",
@@ -11528,16 +11840,68 @@
       }
     },
     "Color del texto de las respuestas" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Response text color"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "回复文本颜色"
+          }
+        }
+      }
     },
     "Color del texto del prompt" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prompt text color"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "提示词文本颜色"
+          }
+        }
+      }
     },
     "Color inferior" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bottom color"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "底部颜色"
+          }
+        }
+      }
     },
     "Color superior" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Top color"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "顶部颜色"
+          }
+        }
+      }
     },
     "Color Texto Principal" : {
       "localizations" : {
@@ -11632,7 +11996,20 @@
       }
     },
     "Colores del texto" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Text colors"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文本颜色"
+          }
+        }
+      }
     },
     "Colores en Home" : {
       "localizations" : {
@@ -11783,7 +12160,20 @@
       }
     },
     "Cómo crear una clave" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How to create an API key"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "如何创建 API 密钥"
+          }
+        }
+      }
     },
     "Cómo elegir mejor" : {
       "localizations" : {
@@ -12290,7 +12680,20 @@
       }
     },
     "Comprendo y autorizo el envío de este contenido a OpenRouter y al proveedor del modelo cuando utilice esta opción." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I understand and authorize sending this content to OpenRouter and the model provider when I use this option."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "我理解并授权在使用此选项时，将此内容发送给 OpenRouter 和模型提供商。"
+          }
+        }
+      }
     },
     "Comprobación" : {
       "localizations" : {
@@ -12315,7 +12718,20 @@
       }
     },
     "Comprobando…" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Checking…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在检查…"
+          }
+        }
+      }
     },
     "Comprobar BD offline" : {
       "localizations" : {
@@ -12340,13 +12756,52 @@
       }
     },
     "Comprobar clave guardada" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check saved API key"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "检查已保存的 API 密钥"
+          }
+        }
+      }
     },
     "Comprobar de nuevo" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check again"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新检查"
+          }
+        }
+      }
     },
     "Comprobar y guardar" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check and save"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "检查并保存"
+          }
+        }
+      }
     },
     "Comprometido" : {
       "localizations" : {
@@ -12432,7 +12887,20 @@
       }
     },
     "Comprueba que el dispositivo sea compatible, Apple Intelligence esté activado y el modelo termine de descargarse." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Make sure the device is compatible, Apple Intelligence is enabled, and the model has finished downloading."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请确认设备兼容、Apple Intelligence 已启用且模型已下载完毕。"
+          }
+        }
+      }
     },
     "Comprueba que el objetivo, el ritmo y la condición de finalización expresen exactamente tu intención." : {
       "localizations" : {
@@ -13141,10 +13609,36 @@
       }
     },
     "Configurar modelo gratuito" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configure free model"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "配置免费模型"
+          }
+        }
+      }
     },
     "Configurar OpenRouter" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set Up OpenRouter"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "配置 OpenRouter"
+          }
+        }
+      }
     },
     "Confirmado" : {
       "localizations" : {
@@ -13470,13 +13964,52 @@
       }
     },
     "Consultar la política de privacidad de OpenRouter" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "View the OpenRouter Privacy Policy"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查看 OpenRouter 隐私政策"
+          }
+        }
+      }
     },
     "Consultar la privacidad de los proveedores" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "View the providers’ privacy policies"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查看提供商的隐私政策"
+          }
+        }
+      }
     },
     "Consultar los términos de OpenRouter" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "View the OpenRouter Terms"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查看 OpenRouter 条款"
+          }
+        }
+      }
     },
     "Contacto & Información" : {
       "localizations" : {
@@ -13659,7 +14192,20 @@
       }
     },
     "Contexto máximo publicado: %@ tokens" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Published maximum context: %@ tokens"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "公布的最大上下文：%@ 个词元"
+          }
+        }
+      }
     },
     "Contextos" : {
       "extractionState" : "manual",
@@ -13775,7 +14321,20 @@
       }
     },
     "Continuar en una copia de esta conversación" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue in a copy of this conversation"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在此对话的副本中继续"
+          }
+        }
+      }
     },
     "Contrae la explicación" : {
       "localizations" : {
@@ -13952,7 +14511,20 @@
       }
     },
     "Conversaciones" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conversations"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "对话"
+          }
+        }
+      }
     },
     "Convertir a checklist" : {
       "localizations" : {
@@ -13987,7 +14559,20 @@
       }
     },
     "Convertir en Notas" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Convert to Notes"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "转换为笔记"
+          }
+        }
+      }
     },
     "Convierte lo hecho en aprendizaje" : {
       "extractionState" : "manual",
@@ -14212,7 +14797,20 @@
       }
     },
     "Crea una clave exclusiva para Neville, no la compartas y revócala desde OpenRouter si sospechas que ha quedado expuesta." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create an API key exclusively for Neville, do not share it, and revoke it from OpenRouter if you suspect it has been exposed."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请专门为 Neville 创建一个 API 密钥，切勿分享；如果怀疑密钥已泄露，请在 OpenRouter 中将其撤销。"
+          }
+        }
+      }
     },
     "Crea una nueva actividad en la Agenda" : {
       "localizations" : {
@@ -14582,7 +15180,20 @@
       }
     },
     "Crear o consultar una clave en OpenRouter" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create or view an API key on OpenRouter"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 OpenRouter 创建或查看 API 密钥"
+          }
+        }
+      }
     },
     "Crear una contraseña" : {
       "localizations" : {
@@ -17676,7 +18287,20 @@
       }
     },
     "Editar y volver a enviar" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit and resend"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "编辑并重新发送"
+          }
+        }
+      }
     },
     "Editar..." : {
       "localizations" : {
@@ -18188,7 +18812,20 @@
       }
     },
     "El nombre del modelo que aparece bajo cada respuesta utiliza también el color del texto de las respuestas." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The model name shown below each response also uses the response text color."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每条回复下显示的模型名称也使用回复文本颜色。"
+          }
+        }
+      }
     },
     "El permiso fue denegado. Puedes activarlo desde Ajustes del sistema." : {
       "localizations" : {
@@ -18837,7 +19474,20 @@
       }
     },
     "Eliminar %lld conversaciones" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete %lld conversations"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删除 %lld 个对话"
+          }
+        }
+      }
     },
     "Eliminar %lld entrada(s)" : {
       "localizations" : {
@@ -18906,7 +19556,20 @@
       }
     },
     "Eliminar clave de este dispositivo" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove API key from this device"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "从此设备移除 API 密钥"
+          }
+        }
+      }
     },
     "Eliminar Contexto" : {
       "localizations" : {
@@ -18925,10 +19588,36 @@
       }
     },
     "Eliminar conversación" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete conversation"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删除对话"
+          }
+        }
+      }
     },
     "Eliminar conversaciones" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete conversations"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删除对话"
+          }
+        }
+      }
     },
     "Eliminar entrada" : {
       "localizations" : {
@@ -19447,7 +20136,20 @@
       }
     },
     "Empezar una conversación nueva" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start a new conversation"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开始新对话"
+          }
+        }
+      }
     },
     "Empieza desde tu mejor versión" : {
       "localizations" : {
@@ -20914,7 +21616,20 @@
       }
     },
     "Espera a que termine la respuesta activa antes de convertir esta conversación en Nota." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wait for the active response to finish before converting this conversation to a Note."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请等待当前回复完成，再将此对话转换为笔记。"
+          }
+        }
+      }
     },
     "Esperanza" : {
       "localizations" : {
@@ -20983,7 +21698,20 @@
       }
     },
     "Esta acción eliminará permanentemente las conversaciones seleccionadas y sus mensajes." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This action will permanently delete the selected conversations and their messages."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此操作将永久删除所选对话及其消息。"
+          }
+        }
+      }
     },
     "Esta acción no puede deshacerse." : {
       "localizations" : {
@@ -21074,10 +21802,36 @@
       }
     },
     "Esta es una respuesta de ejemplo." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This is a sample response."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这是一条示例回复。"
+          }
+        }
+      }
     },
     "Esta función requiere iOS 26 o macOS 26." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This feature requires iOS 26 or macOS 26."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此功能需要 iOS 26 或 macOS 26。"
+          }
+        }
+      }
     },
     "Esta función solo esta presente en la versión extendida" : {
       "localizations" : {
@@ -21184,7 +21938,20 @@
       }
     },
     "Esta operación depende exclusivamente del contenido original y no utiliza el marco de ningún autor." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This operation depends exclusively on the original content and does not use any author’s framework."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此操作仅基于原始内容，不使用任何作者的知识框架。"
+          }
+        }
+      }
     },
     "Esta práctica guiada continúa en el iPhone. El panel del Mac seguirá mostrando el estado sincronizado." : {
       "localizations" : {
@@ -21754,7 +22521,20 @@
       }
     },
     "Este es un prompt" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This is a prompt"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这是一条提示词"
+          }
+        }
+      }
     },
     "Este indicador necesita un dispositivo compatible con HealthKit." : {
       "localizations" : {
@@ -23702,16 +24482,68 @@
       }
     },
     "Fondo de la vista" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "View background"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "视图背景"
+          }
+        }
+      }
     },
     "Fondo de las burbujas de respuesta" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Response bubble background"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "回复气泡背景"
+          }
+        }
+      }
     },
     "Fondo del chat" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chat background"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "聊天背景"
+          }
+        }
+      }
     },
     "Fondo del cuadro" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Box background"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文本框背景"
+          }
+        }
+      }
     },
     "Fondo fijo" : {
       "localizations" : {
@@ -24568,7 +25400,20 @@
       }
     },
     "Generando Consejos Prácticos" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Generating Practical Advice"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在生成实用建议"
+          }
+        }
+      }
     },
     "Generando Puntos Claves" : {
       "localizations" : {
@@ -24587,7 +25432,20 @@
       }
     },
     "Generar %@" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Generate %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "生成 %@"
+          }
+        }
+      }
     },
     "Generar Código QR" : {
       "localizations" : {
@@ -27187,10 +28045,36 @@
       }
     },
     "Guardar en el dispositivo" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save to device"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存到设备"
+          }
+        }
+      }
     },
     "Guardar en el dispositivo como PDF" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save to device as PDF"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "以 PDF 格式保存到设备"
+          }
+        }
+      }
     },
     "Guardar en Frases" : {
       "localizations" : {
@@ -27497,7 +28381,20 @@
       }
     },
     "Guía rápida paso a paso" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quick step-by-step guide"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "快速分步指南"
+          }
+        }
+      }
     },
     "Guías prácticas premium" : {
       "localizations" : {
@@ -28435,10 +29332,36 @@
       }
     },
     "Historial de Chat IA" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI Chat History"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 聊天历史记录"
+          }
+        }
+      }
     },
     "Historial de conversaciones" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conversation history"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "对话历史记录"
+          }
+        }
+      }
     },
     "home.progress.goals.multiple" : {
       "extractionState" : "manual",
@@ -30685,7 +31608,20 @@
       }
     },
     "Inicia una conversación para verla aquí." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start a conversation to see it here."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "发起对话后会显示在这里。"
+          }
+        }
+      }
     },
     "Iniciar" : {
       "localizations" : {
@@ -31150,7 +32086,20 @@
       }
     },
     "Introduce una clave para reemplazar la guardada" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter an API key to replace the saved one"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "输入新的 API 密钥以替换已保存的密钥"
+          }
+        }
+      }
     },
     "Invertir" : {
       "localizations" : {
@@ -31408,7 +32357,20 @@
       }
     },
     "La clave pertenece al usuario. Neville no incluye una clave propia ni la envía a servidores intermedios." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The API key belongs to the user. Neville does not include its own key or send it to intermediary servers."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API 密钥属于用户。Neville 不提供自己的密钥，也不会将其发送到中间服务器。"
+          }
+        }
+      }
     },
     "La coherencia bajó. Haz una sesión de 5 minutos después del ritual o antes de dormir." : {
       "localizations" : {
@@ -32557,7 +33519,20 @@
       }
     },
     "La respuesta se generará dentro del campo de conocimiento y las enseñanzas del autor elegido." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The response will be generated within the chosen author’s field of knowledge and teachings."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "回复将在所选作者的知识领域和教导范围内生成。"
+          }
+        }
+      }
     },
     "La suscripción se renueva automáticamente cada año hasta que se cancele." : {
       "localizations" : {
@@ -34519,13 +35494,52 @@
       }
     },
     "Los dos colores forman el degradado del fondo general." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The two colors create the overall background gradient."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "两种颜色将组成整体背景的渐变色。"
+          }
+        }
+      }
     },
     "Los dos colores forman el degradado del fondo." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The two colors create the background gradient."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "两种颜色将组成背景的渐变色。"
+          }
+        }
+      }
     },
     "Los modelos gratuitos están sujetos a límites de uso y disponibilidad. Neville nunca cambiará silenciosamente a un modelo de pago." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Free models are subject to usage limits and availability. Neville will never silently switch to a paid model."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "免费模型受使用限制和可用性影响。Neville 绝不会在未告知您的情况下切换到付费模型。"
+          }
+        }
+      }
     },
     "Los servicios de ubicación están desactivados en el sistema." : {
       "localizations" : {
@@ -35082,7 +36096,20 @@
       }
     },
     "Más opciones" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "More options"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更多选项"
+          }
+        }
+      }
     },
     "Más países" : {
       "localizations" : {
@@ -36063,7 +37090,7 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Mínimo %1$lld caracteres (%2$lld/%3$lld)"
           }
         },
@@ -36202,19 +37229,84 @@
       }
     },
     "Modelo" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Model"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "模型"
+          }
+        }
+      }
     },
     "Modelo activo: %@" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Active model: %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当前模型：%@"
+          }
+        }
+      }
     },
     "Modelo gratuito: %@" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Free model: %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "免费模型：%@"
+          }
+        }
+      }
     },
     "Modelo para nuevas conversaciones" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Model for new conversations"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新对话使用的模型"
+          }
+        }
+      }
     },
     "Modelo utilizado" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Model used"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用的模型"
+          }
+        }
+      }
     },
     "Moderado" : {
       "extractionState" : "manual",
@@ -39216,7 +40308,20 @@
       }
     },
     "Nombre" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "名称"
+          }
+        }
+      }
     },
     "Nombre de la unidad:" : {
       "extractionState" : "manual",
@@ -40375,7 +41480,20 @@
       }
     },
     "Nueva" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新建"
+          }
+        }
+      }
     },
     "Nueva actividad" : {
       "localizations" : {
@@ -40438,7 +41556,20 @@
       }
     },
     "Nueva conversación" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New conversation"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新对话"
+          }
+        }
+      }
     },
     "Nueva entrada" : {
       "localizations" : {
@@ -41467,7 +42598,20 @@
       }
     },
     "Opciones de Chat IA" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI Chat Options"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 聊天选项"
+          }
+        }
+      }
     },
     "Opciones de entrada" : {
       "localizations" : {
@@ -41530,13 +42674,52 @@
       }
     },
     "OpenRouter" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OpenRouter"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OpenRouter"
+          }
+        }
+      }
     },
     "OpenRouter · Modelos gratuitos" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OpenRouter · Free models"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OpenRouter · 免费模型"
+          }
+        }
+      }
     },
     "OpenRouter funciona online" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OpenRouter works online"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OpenRouter 在线运行"
+          }
+        }
+      }
     },
     "Orden de pantallas" : {
       "localizations" : {
@@ -41920,7 +43103,20 @@
       }
     },
     "Para conservar el origen y la privacidad del historial, el modelo no se cambia silenciosamente dentro de la conversación actual." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "To preserve the source and privacy of the history, the model is not silently changed within the current conversation."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "为保留来源并保护历史记录隐私，不会在当前对话中静默切换模型。"
+          }
+        }
+      }
     },
     "Para peligro inmediato o una emergencia médica." : {
       "localizations" : {
@@ -43325,7 +44521,20 @@
       }
     },
     "Pregunta a %@" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ask %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "向 %@ 提问"
+          }
+        }
+      }
     },
     "Preguntas" : {
       "localizations" : {
@@ -44114,10 +45323,36 @@
       }
     },
     "Privacidad de OpenRouter" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OpenRouter Privacy"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OpenRouter 隐私"
+          }
+        }
+      }
     },
     "Privacidad y uso" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacy and Usage"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隐私与使用"
+          }
+        }
+      }
     },
     "PRO" : {
       "localizations" : {
@@ -44180,7 +45415,20 @@
       }
     },
     "Procesamiento privado en el dispositivo" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Private on-device processing"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "设备端私密处理"
+          }
+        }
+      }
     },
     "Productividad" : {
       "localizations" : {
@@ -44850,7 +46098,20 @@
       }
     },
     "Prueba con otro título o autor." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try another title or author."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "换一个标题或作者试试。"
+          }
+        }
+      }
     },
     "Prueba con palabras como miedo, trabajo, dudas, enfado o ansiedad." : {
       "localizations" : {
@@ -46256,7 +47517,20 @@
       }
     },
     "Regenerar respuesta" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regenerate response"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新生成回复"
+          }
+        }
+      }
     },
     "Regenerar Respuesta" : {
       "localizations" : {
@@ -47207,10 +48481,36 @@
       }
     },
     "Respuesta" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Response"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "回复"
+          }
+        }
+      }
     },
     "Respuesta en curso" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Response in progress"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在回复"
+          }
+        }
+      }
     },
     "Restablecer" : {
       "localizations" : {
@@ -47273,10 +48573,36 @@
       }
     },
     "Restaurar colores" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restore colors"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "恢复颜色"
+          }
+        }
+      }
     },
     "Restaurar colores predeterminados" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restore default colors"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "恢复默认颜色"
+          }
+        }
+      }
     },
     "Restaurar Compras" : {
       "localizations" : {
@@ -47899,7 +49225,20 @@
       }
     },
     "Revocar permiso para compartir conversaciones" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Revoke permission to share conversations"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "撤销共享对话的权限"
+          }
+        }
+      }
     },
     "Ritmo" : {
       "localizations" : {
@@ -49231,7 +50570,20 @@
       }
     },
     "Se enviará el texto al modelo gratuito seleccionado." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The text will be sent to the selected free model."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文本将发送给所选的免费模型。"
+          }
+        }
+      }
     },
     "Se excluyen periodos con ejercicio o movimiento significativo." : {
       "localizations" : {
@@ -49706,7 +51058,20 @@
       }
     },
     "Seleccionada: 1" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selected: 1"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已选择：1"
+          }
+        }
+      }
     },
     "Seleccionadas" : {
       "localizations" : {
@@ -49829,7 +51194,20 @@
       }
     },
     "Seleccionar modelo de IA" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select AI model"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择 AI 模型"
+          }
+        }
+      }
     },
     "Seleccionar música personal" : {
       "localizations" : {
@@ -51140,7 +52518,20 @@
       }
     },
     "Sin conversaciones" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No conversations"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "暂无对话"
+          }
+        }
+      }
     },
     "Sin datos" : {
       "localizations" : {
@@ -51343,7 +52734,20 @@
       }
     },
     "Sin resultados" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No results"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无结果"
+          }
+        }
+      }
     },
     "Sin ritual matutino" : {
       "localizations" : {
@@ -51583,7 +52987,20 @@
       }
     },
     "Sistema no compatible" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unsupported system"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "系统不兼容"
+          }
+        }
+      }
     },
     "situaciones" : {
       "localizations" : {
@@ -51713,7 +53130,20 @@
       }
     },
     "Solo se muestran modelos gratuitos, ordenados por capacidad según OpenRouter. El modelo queda fijado al crear cada conversación para mantener un comportamiento coherente." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Only free models are shown, ordered by capability according to OpenRouter. The model is fixed when each conversation is created to maintain consistent behavior."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "仅显示免费模型，并根据 OpenRouter 的能力排序。创建每个对话时会锁定模型，以保持行为一致。"
+          }
+        }
+      }
     },
     "Son recursos complementarios y de bajo riesgo que algunas personas encuentran útiles. Su efecto es personal y algunos tienen evidencia limitada: conserva solo los que te resulten útiles y no aumenten el malestar." : {
       "localizations" : {
@@ -52474,10 +53904,36 @@
       }
     },
     "Texto de las respuestas" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Response text"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "回复文本"
+          }
+        }
+      }
     },
     "Texto del prompt" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prompt text"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "提示词文本"
+          }
+        }
+      }
     },
     "Texto del título" : {
       "localizations" : {
@@ -53113,7 +54569,20 @@
       }
     },
     "Título o autor" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Title or author"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "标题或作者"
+          }
+        }
+      }
     },
     "Título:" : {
       "extractionState" : "manual",
@@ -53831,7 +55300,20 @@
       }
     },
     "Tu clave personal" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your personal API key"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "您的个人 API 密钥"
+          }
+        }
+      }
     },
     "Tu corazón marca el ritmo\nde tu verdad más profunda" : {
       "localizations" : {
@@ -56072,10 +57554,36 @@
       }
     },
     "Visualización" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Display"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示"
+          }
+        }
+      }
     },
     "Visualización de respuestas" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Response display"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "回复显示"
+          }
+        }
+      }
     },
     "Visualización por puntos al estilo Fitness" : {
       "localizations" : {
