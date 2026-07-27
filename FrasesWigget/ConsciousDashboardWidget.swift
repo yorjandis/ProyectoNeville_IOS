@@ -241,7 +241,10 @@ struct ConsciousDashboardEntryView: View {
 
         Spacer(minLength: 2)
 
-        Text("\(snapshot.consciousPulse)%")
+        Text(
+          Double(snapshot.consciousPulse) / 100,
+          format: .percent.precision(.fractionLength(0))
+        )
           .font(.system(size: 17, weight: .black, design: .rounded))
           .monospacedDigit()
           .contentTransition(.numericText())

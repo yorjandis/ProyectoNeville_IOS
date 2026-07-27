@@ -62,25 +62,40 @@ struct OpenRouterModel: Identifiable, Equatable, Sendable {
     let contextLength: Int?
     let description: String?
 
-    var displayName: String {
+    var isAutomaticFreeSelection: Bool {
         id == OpenRouterConfiguration.automaticFreeModelIdentifier
+    }
+
+    var displayName: String {
+        isAutomaticFreeSelection
             ? "Selección automática gratuita"
             : name
     }
 }
 
+struct OpenRouterModelCatalog: Sendable {
+    let models: [OpenRouterModel]
+    let dailyFreeRequestLimit: Int
+}
+
 enum OpenRouterConfiguration {
     static let automaticFreeModelIdentifier = "openrouter/free"
     static let defaultModelIdentifier = automaticFreeModelIdentifier
+    static let standardDailyFreeRequestLimit = 50
+    static let creditedDailyFreeRequestLimit = 1_000
     static let fallbackModels = [
         OpenRouterModel(
             id: automaticFreeModelIdentifier,
             name: "Selección automática gratuita",
             contextLength: nil,
-            description: "OpenRouter selecciona automáticamente un modelo gratuito disponible."
+            description: String(
+                localized: "OpenRouter selecciona automáticamente un modelo gratuito disponible y puede evitar modelos temporalmente saturados."
+            )
         )
     ]
     static let selectedModelDefaultsKey = "ai.openrouter.selected-free-model"
+    static let dailyFreeRequestLimitDefaultsKey =
+        "ai.openrouter.daily-free-request-limit"
     static let consentVersionDefaultsKey = "ai.openrouter.privacy-consent-version"
     static let currentConsentVersion = 1
 
@@ -110,6 +125,27 @@ enum OpenRouterConfiguration {
             return false
         }
         return isFreeModelIdentifier(stored)
+    }
+
+    static var dailyFreeRequestLimit: Int {
+        let stored = UserDefaults.standard.integer(
+            forKey: dailyFreeRequestLimitDefaultsKey
+        )
+        return stored > 0 ? stored : standardDailyFreeRequestLimit
+    }
+
+    static func updateDailyFreeRequestLimit(_ limit: Int) {
+        guard limit > 0 else { return }
+        UserDefaults.standard.set(
+            limit,
+            forKey: dailyFreeRequestLimitDefaultsKey
+        )
+    }
+
+    static func resetDailyFreeRequestLimit() {
+        UserDefaults.standard.removeObject(
+            forKey: dailyFreeRequestLimitDefaultsKey
+        )
     }
 
     static var hasPrivacyConsent: Bool {

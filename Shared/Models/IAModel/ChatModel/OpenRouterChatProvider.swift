@@ -14,6 +14,7 @@ struct OpenRouterChatProvider: Sendable {
     private static let host = "openrouter.ai"
     private static let basePath = "/api/v1"
     private static let responseTokenLimit = 6_000
+    private static let maximumAutomaticRetryDelay: TimeInterval = 8
     private static let modelsURL = URL(
         string: "https://openrouter.ai/api/v1/models?input_modalities=text&output_modalities=text&sort=intelligence-high-to-low"
     )!
@@ -21,9 +22,11 @@ struct OpenRouterChatProvider: Sendable {
         string: "https://openrouter.ai/api/v1/key"
     )!
 
-    func availableModels(apiKey: String) async throws -> [OpenRouterModel] {
+    func availableModels(
+        apiKey: String
+    ) async throws -> OpenRouterModelCatalog {
         do {
-            try await validateAPIKey(apiKey)
+            let dailyFreeRequestLimit = try await validateAPIKey(apiKey)
             let request = Self.authorizedRequest(
                 url: Self.modelsURL,
                 apiKey: apiKey
@@ -52,9 +55,20 @@ struct OpenRouterChatProvider: Sendable {
             ).inserted {
                 models.append(contentsOf: OpenRouterConfiguration.fallbackModels)
             }
-            return models.isEmpty
+            models.sort(by: {
+                (lhs: OpenRouterModel, rhs: OpenRouterModel) -> Bool in
+                if lhs.isAutomaticFreeSelection != rhs.isAutomaticFreeSelection {
+                    return lhs.isAutomaticFreeSelection
+                }
+                return false
+            })
+            let availableModels = models.isEmpty
                 ? OpenRouterConfiguration.fallbackModels
                 : models
+            return OpenRouterModelCatalog(
+                models: availableModels,
+                dailyFreeRequestLimit: dailyFreeRequestLimit
+            )
         } catch {
             throw Self.normalizedError(error)
         }
@@ -80,46 +94,67 @@ struct OpenRouterChatProvider: Sendable {
             frequencyPenalty: 0.25,
             maxCompletionTokens: Self.responseTokenLimit
         )
-        let source: AsyncThrowingStream<ChatStreamResult, Error> =
-            client.chatsStream(query: query)
 
         return AsyncThrowingStream { continuation in
             let task = Task {
-                do {
+                var retryAttempts = 0
+
+                while true {
                     var receivedContent = false
                     var finishReason: ChatResult.Choice.FinishReason?
-                    for try await chunk in source {
-                        try Task.checkCancellation()
-                        for choice in chunk.choices {
-                            if let reason = choice.finishReason {
-                                finishReason = reason
-                            }
-                            if let text = choice.delta.content, !text.isEmpty {
-                                receivedContent = true
-                                continuation.yield(text)
+
+                    do {
+                        let source: AsyncThrowingStream<
+                            ChatStreamResult,
+                            Error
+                        > = client.chatsStream(query: query)
+                        for try await chunk in source {
+                            try Task.checkCancellation()
+                            for choice in chunk.choices {
+                                if let reason = choice.finishReason {
+                                    finishReason = reason
+                                }
+                                if let text = choice.delta.content,
+                                   !text.isEmpty {
+                                    receivedContent = true
+                                    continuation.yield(text)
+                                }
                             }
                         }
+                        guard receivedContent else {
+                            throw OpenRouterChatError.emptyResponse
+                        }
+                        switch finishReason {
+                        case .length:
+                            throw OpenRouterChatError.responseTruncated
+                        case .contentFilter:
+                            throw OpenRouterChatError.contentFiltered
+                        case .error:
+                            throw OpenRouterChatError.serviceUnavailable
+                        default:
+                            break
+                        }
+                        continuation.finish()
+                        return
+                    } catch is CancellationError {
+                        continuation.finish(throwing: CancellationError())
+                        return
+                    } catch {
+                        let normalized = Self.normalizedError(error)
+                        if !receivedContent,
+                           retryAttempts < 1,
+                           let delay = Self.automaticRetryDelay(
+                                for: normalized
+                           ) {
+                            retryAttempts += 1
+                            try await Task.sleep(
+                                for: .seconds(delay)
+                            )
+                            continue
+                        }
+                        continuation.finish(throwing: normalized)
+                        return
                     }
-                    guard receivedContent else {
-                        throw OpenRouterChatError.emptyResponse
-                    }
-                    switch finishReason {
-                    case .length:
-                        throw OpenRouterChatError.responseTruncated
-                    case .contentFilter:
-                        throw OpenRouterChatError.contentFiltered
-                    case .error:
-                        throw OpenRouterChatError.serviceUnavailable
-                    default:
-                        break
-                    }
-                    continuation.finish()
-                } catch is CancellationError {
-                    continuation.finish(throwing: CancellationError())
-                } catch {
-                    continuation.finish(
-                        throwing: Self.normalizedError(error)
-                    )
                 }
             }
             continuation.onTermination = { _ in
@@ -262,13 +297,20 @@ struct OpenRouterChatProvider: Sendable {
         return result
     }
 
-    private func validateAPIKey(_ apiKey: String) async throws {
+    private func validateAPIKey(_ apiKey: String) async throws -> Int {
         let request = Self.authorizedRequest(
             url: Self.keyURL,
             apiKey: apiKey
         )
         let (data, response) = try await URLSession.shared.data(for: request)
         try Self.validateHTTPResponse(response, data: data)
+        let keyInformation = try? JSONDecoder().decode(
+            OpenRouterKeyResponse.self,
+            from: data
+        )
+        return keyInformation?.data.isFreeTier == false
+            ? OpenRouterConfiguration.creditedDailyFreeRequestLimit
+            : OpenRouterConfiguration.standardDailyFreeRequestLimit
     }
 
     private static func authorizedRequest(
@@ -307,14 +349,20 @@ struct OpenRouterChatProvider: Sendable {
             switch httpResponse.statusCode {
             case 400:
                 throw OpenRouterChatError.invalidRequest
-            case 401, 403:
+            case 401:
                 throw OpenRouterChatError.invalidAPIKey
             case 402:
-                throw OpenRouterChatError.freeModelUnavailable
+                throw OpenRouterChatError.insufficientCredits
+            case 403:
+                throw OpenRouterChatError.permissionDenied
+            case 408:
+                throw OpenRouterChatError.timeout
             case 404:
                 throw OpenRouterChatError.modelUnavailable
             case 429:
-                throw OpenRouterChatError.quotaExceeded
+                throw OpenRouterChatError.rateLimited(
+                    retryAfter: Self.retryAfter(from: httpResponse)
+                )
             case 500...599:
                 throw OpenRouterChatError.serviceUnavailable
             default:
@@ -345,18 +393,24 @@ struct OpenRouterChatProvider: Sendable {
         if let apiError = error as? APIErrorResponse {
             return OpenRouterChatError.api(message: apiError.error.message)
         }
-        if case let OpenAIError.statusError(_, statusCode) = error {
+        if case let OpenAIError.statusError(response, statusCode) = error {
             switch statusCode {
             case 400:
                 return OpenRouterChatError.invalidRequest
-            case 401, 403:
+            case 401:
                 return OpenRouterChatError.invalidAPIKey
             case 402:
-                return OpenRouterChatError.freeModelUnavailable
+                return OpenRouterChatError.insufficientCredits
+            case 403:
+                return OpenRouterChatError.permissionDenied
+            case 408:
+                return OpenRouterChatError.timeout
             case 404:
                 return OpenRouterChatError.modelUnavailable
             case 429:
-                return OpenRouterChatError.quotaExceeded
+                return OpenRouterChatError.rateLimited(
+                    retryAfter: retryAfter(from: response)
+                )
             case 500...599:
                 return OpenRouterChatError.serviceUnavailable
             default:
@@ -365,12 +419,37 @@ struct OpenRouterChatProvider: Sendable {
         }
         return OpenRouterChatError.api(message: error.localizedDescription)
     }
+
+    private static func retryAfter(
+        from response: HTTPURLResponse
+    ) -> TimeInterval? {
+        guard let value = response.value(
+            forHTTPHeaderField: "Retry-After"
+        ), let seconds = TimeInterval(value), seconds > 0 else {
+            return nil
+        }
+        return seconds
+    }
+
+    private static func automaticRetryDelay(
+        for error: Error
+    ) -> TimeInterval? {
+        guard let openRouterError = error as? OpenRouterChatError,
+              case let .rateLimited(retryAfter) = openRouterError else {
+            return nil
+        }
+        let delay = retryAfter ?? 1.5
+        guard delay <= maximumAutomaticRetryDelay else { return nil }
+        return max(delay, 0.5)
+    }
 }
 
 enum OpenRouterChatError: LocalizedError {
     case missingAPIKey
     case invalidAPIKey
-    case quotaExceeded
+    case insufficientCredits
+    case permissionDenied
+    case rateLimited(retryAfter: TimeInterval?)
     case invalidRequest
     case paidModelNotAllowed
     case freeModelUnavailable
@@ -391,8 +470,27 @@ enum OpenRouterChatError: LocalizedError {
             return "Añade tu clave personal de OpenRouter para utilizar los modelos gratuitos."
         case .invalidAPIKey:
             return "La clave de OpenRouter no es válida o no tiene acceso a la API."
-        case .quotaExceeded:
-            return "Has alcanzado el límite de OpenRouter para modelos gratuitos. Inténtalo más tarde."
+        case .insufficientCredits:
+            return String(
+                localized: "La cuenta o la clave no tiene crédito disponible para completar la petición. Revisa sus límites en OpenRouter; la app nunca cambiará a un modelo de pago."
+            )
+        case .permissionDenied:
+            return String(
+                localized: "OpenRouter rechazó la petición por permisos o por sus controles de contenido. Revisa la clave o reformula el texto."
+            )
+        case .rateLimited(let retryAfter):
+            if let retryAfter {
+                let seconds = Int(retryAfter.rounded(.up))
+                return String.localizedStringWithFormat(
+                    String(
+                        localized: "OpenRouter ha limitado temporalmente el modelo gratuito. Vuelve a intentarlo en unos %lld segundos. Si se repite, elige «Selección automática gratuita»."
+                    ),
+                    seconds
+                )
+            }
+            return String(
+                localized: "OpenRouter ha limitado temporalmente la cuenta, el modelo o su proveedor. Espera un momento y, si se repite, elige «Selección automática gratuita». El cupo diario también puede haberse agotado."
+            )
         case .invalidRequest:
             return "OpenRouter no pudo procesar esta petición. Prueba a reformularla."
         case .paidModelNotAllowed:
@@ -450,5 +548,17 @@ private struct OpenRouterAPIErrorResponse: Decodable {
 
     struct Details: Decodable {
         let message: String
+    }
+}
+
+private struct OpenRouterKeyResponse: Decodable {
+    let data: Details
+
+    struct Details: Decodable {
+        let isFreeTier: Bool?
+
+        enum CodingKeys: String, CodingKey {
+            case isFreeTier = "is_free_tier"
+        }
     }
 }

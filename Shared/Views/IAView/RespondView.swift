@@ -119,7 +119,7 @@ struct RespondView: View {
     
     var body: some View {
         ZStack{
-            LinearGradient(colors: [self.ColorChatIAPrimario,  self.ColorChatIASecundario], startPoint: .topLeading, endPoint: .bottomTrailing)
+            LinearGradient(colors: [self.ColorChatIAPrimario,  self.ColorChatIASecundario], startPoint: .top, endPoint: .bottom)
                 .ignoresSafeArea(edges: .bottom)
             
             if (self.purchaseStatus || self.yorjPremium){
@@ -439,7 +439,7 @@ struct RespondView: View {
                     )
                     .frame(maxWidth: .infinity)
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.bordered)
                 .controlSize(.large)
                 .disabled(!canStartConfiguredGeneration)
             }
@@ -473,6 +473,11 @@ struct RespondView: View {
                 )
                 .font(.caption.monospaced())
                 .foregroundStyle(.secondary)
+
+                OpenRouterFreeLimitNotice(
+                    modelIdentifier: OpenRouterConfiguration
+                        .selectedModelIdentifier
+                )
 
                 if !hasOpenRouterAPIKey {
                     Button {
@@ -1286,8 +1291,8 @@ private struct RespondAppearanceSettingsView: View {
                                     backgroundPrimary,
                                     backgroundSecondary
                                 ],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
+                                startPoint: .top,
+                                endPoint: .bottom
                             ),
                             in: RoundedRectangle(
                                 cornerRadius: 16,

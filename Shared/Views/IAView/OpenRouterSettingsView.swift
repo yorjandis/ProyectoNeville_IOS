@@ -137,6 +137,10 @@ struct OpenRouterSettingsView: View {
                         .font(.footnote)
                         .foregroundStyle(.secondary)
 
+                    OpenRouterFreeLimitNotice(
+                        modelIdentifier: selectedModel
+                    )
+
                     if let selected = models.first(where: {
                         $0.id == selectedModel
                     }) {
@@ -169,6 +173,10 @@ struct OpenRouterSettingsView: View {
                     Link(
                         "Consultar la privacidad de los proveedores",
                         destination: URL(string: "https://openrouter.ai/docs/guides/privacy/provider-logging")!
+                    )
+                    Link(
+                        "Consultar los límites de modelos gratuitos",
+                        destination: URL(string: "https://openrouter.ai/docs/faq")!
                     )
                     if OpenRouterConfiguration.hasPrivacyConsent {
                         Button(
@@ -259,22 +267,23 @@ struct OpenRouterSettingsView: View {
                     throw OpenRouterChatError.missingAPIKey
                 }
 
-                let available = try await provider.availableModels(apiKey: key)
+                let catalog = try await provider.availableModels(apiKey: key)
                 if !candidate.isEmpty {
                     try credentialStore.saveAPIKey(candidate)
                 }
                 await MainActor.run {
-                    models = available
+                    models = catalog.models
+                    OpenRouterConfiguration.updateDailyFreeRequestLimit(
+                        catalog.dailyFreeRequestLimit
+                    )
                     if !OpenRouterConfiguration.hasSelectedModelIdentifier
-                        || !available.contains(where: {
+                        || !catalog.models.contains(where: {
                             $0.id == selectedModel
                         }) {
-                        selectedModel = available.first(where: {
-                            $0.id
-                                != OpenRouterConfiguration
-                                    .automaticFreeModelIdentifier
+                        selectedModel = catalog.models.first(where: {
+                            $0.isAutomaticFreeSelection
                         })?.id
-                            ?? available.first?.id
+                            ?? catalog.models.first?.id
                             ?? OpenRouterConfiguration.defaultModelIdentifier
                     }
                     OpenRouterConfiguration.selectedModelIdentifier = selectedModel
@@ -298,6 +307,7 @@ struct OpenRouterSettingsView: View {
     private func deleteKey() {
         do {
             try credentialStore.deleteAPIKey()
+            OpenRouterConfiguration.resetDailyFreeRequestLimit()
             apiKey = ""
             hasStoredKey = false
             statusMessage = "La clave se eliminó de este dispositivo."
@@ -306,6 +316,48 @@ struct OpenRouterSettingsView: View {
         } catch {
             errorMessage = error.localizedDescription
         }
+    }
+}
+
+@available(iOS 26.0, macOS 26.0, *)
+struct OpenRouterFreeLimitNotice: View {
+    let modelIdentifier: String
+    var compact = false
+
+    var body: some View {
+        Label {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(
+                    "Límite gratuito de esta cuenta: hasta \(OpenRouterConfiguration.dailyFreeRequestLimit) solicitudes al día."
+                )
+                .font(compact ? .caption2 : .footnote)
+
+                if !compact {
+                    Text(
+                        "Una respuesta puede utilizar más de una solicitud cuando debe resumir un documento largo, compactar el historial o continuar una generación."
+                    )
+                    .font(.caption)
+
+                    if modelIdentifier
+                        == OpenRouterConfiguration
+                            .automaticFreeModelIdentifier {
+                        Text(
+                            "La selección automática gratuita puede evitar modelos temporalmente saturados, pero no evita el límite diario de la cuenta."
+                        )
+                        .font(.caption)
+                    } else {
+                        Text(
+                            "Este modelo puede tener además límites temporales propios. Si aparece un límite repetidamente, prueba «Selección automática gratuita»."
+                        )
+                        .font(.caption)
+                    }
+                }
+            }
+        } icon: {
+            Image(systemName: "gauge.with.dots.needle.50percent")
+        }
+        .foregroundStyle(.secondary)
+        .accessibilityElement(children: .combine)
     }
 }
 

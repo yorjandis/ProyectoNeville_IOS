@@ -943,22 +943,7 @@ struct Ajustes: View {
                             }
                             .buttonStyle(PlainButtonStyle())
                             
-                            Button{
-                                showWindow(for: ScrollView{
-                                    Text(UtilFuncs.FileRead("neville-ios-privacy-policy"))
-                                        .font(.system(size: 22))
-                                        .foregroundStyle(settingsPrimaryTextColor)
-                                        .textSelection(.enabled)
-                                        .padding(10)
-                                },
-                                           environmentObjects: [],
-                                           title: L10n.exact("Política de Privacidad"),
-                                           size: AppCons.windows_size_content,
-                                           isModal: false
-                                )
-                                
-                                
-                            }label:{
+                            Link(destination: URL(string: "https://ypgcode.es/neville-ios-privacy-policy/")!) {
                                 Label("Política de Privacidad", systemImage: "square.and.pencil.circle")
                                     .foregroundStyle(settingsPrimaryTextColor)
                                     .bold()
@@ -1803,14 +1788,7 @@ struct Ajustes: View {
                         }
                         .tint(.red)
                         
-                        NavigationLink{
-                            NavigationStack{
-                                ScrollView{
-                                    SelectableText(text : UtilFuncs.FileRead("neville-ios-privacy-policy"),fontSize: 22, fonColor: UIColor(Color.primary))
-                                        .padding()
-                                }.navigationTitle("Ajustes - Privacy")
-                            }
-                        }label:{
+                        Link(destination: URL(string: "https://ypgcode.es/neville-ios-privacy-policy/")!) {
                             Label("Política de Privacidad", systemImage: "square.and.pencil.circle")
                                 .foregroundStyle(settingsPrimaryTextColor)
                                 .bold()

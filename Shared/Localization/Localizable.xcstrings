@@ -1593,7 +1593,7 @@
       }
     },
     "☘️ Información sobre la IA utilizada:\n\nLa Inteligencia Artificial se basa en los modelos preinstalados en el dispositivo. Apple garantiza que su acceso es seguro y no involucra procesamiento fuera del dispositivo.\n\nEl modelo es capaz de generar respuestas creativas y eficaces basadas en los conocimientos y enseñanzas de varios autores (Neville Goddard, Joe Dispenza, Bruce Lipton y Gregg Braden). Sin embargo, se recomienda revisar con cuidado cada respuesta y tomar desiciones informadas acerca de ellas.\n\nLos modelos han sido cuidadosamente instruidos y revisados para aminorar los sezgos, errores y que solo responda dentro de los límites del campo de conocimientos establecido para cada autor.\n\nSi siente que una respuesta no resuena con usted, o no es correcta, la mejor desición es seguir su instinto propio.\n\nLa optimización del modelo es un proceso continuo, en cada actualización de la \"La Ley\" será revisado y actualizado." : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -7688,7 +7688,7 @@
       }
     },
     "Autores:" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -9405,7 +9405,7 @@
       }
     },
     "Cambiar Autor" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -11651,7 +11651,8 @@
       }
     },
     "Color de Texto Chat IA" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
+      "generatesSymbol" : false,
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -11674,7 +11675,7 @@
       }
     },
     "Color de Texto Chat IA          " : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -11697,7 +11698,7 @@
       }
     },
     "Color de Texto Respuesta IA" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -13991,6 +13992,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "查看提供商的隐私政策"
+          }
+        }
+      }
+    },
+    "Consultar los límites de modelos gratuitos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "View free model limits"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查看免费模型限制"
           }
         }
       }
@@ -22580,6 +22597,22 @@
         }
       }
     },
+    "Este modelo puede tener además límites temporales propios. Si aparece un límite repetidamente, prueba «Selección automática gratuita»." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This model may also have its own temporary limits. If you repeatedly encounter a limit, try “Automatic free selection.”"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此模型还可能有自身的临时限制。如果反复遇到限制，请尝试“免费自动选择”。"
+          }
+        }
+      }
+    },
     "Este rango muestra presencia sin piloto automático registrado. Añade también los momentos de distracción cuando ocurran para obtener sugerencias más precisas." : {
       "localizations" : {
         "en" : {
@@ -25383,7 +25416,7 @@
       }
     },
     "Generando Concejos Prácticos" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -32536,6 +32569,22 @@
         }
       }
     },
+    "La cuenta o la clave no tiene crédito disponible para completar la petición. Revisa sus límites en OpenRouter; la app nunca cambiará a un modelo de pago." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The account or API key has no available credit to complete the request. Check its limits in OpenRouter; the app will never switch to a paid model."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "账户或 API 密钥没有可用于完成请求的额度。请在 OpenRouter 中检查其限制；本应用绝不会切换到付费模型。"
+          }
+        }
+      }
+    },
     "La ejecución se podrá marcar durante una hora desde el horario elegido." : {
       "localizations" : {
         "en" : {
@@ -33530,6 +33579,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "回复将在所选作者的知识领域和教导范围内生成。"
+          }
+        }
+      }
+    },
+    "La selección automática gratuita puede evitar modelos temporalmente saturados, pero no evita el límite diario de la cuenta." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatic free selection can avoid temporarily overloaded models, but it does not bypass the account’s daily limit."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "免费自动选择可以避开暂时过载的模型，但无法绕过账户的每日额度。"
           }
         }
       }
@@ -34897,6 +34962,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "限制在每日总热量的百分之十以下，并尽量以不饱和脂肪替代。"
+          }
+        }
+      }
+    },
+    "Límite gratuito de esta cuenta: hasta %lld solicitudes al día." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Free limit for this account: up to %lld requests per day."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此账户免费额度：每天最多 %lld 次请求。"
           }
         }
       }
@@ -42721,6 +42802,70 @@
         }
       }
     },
+    "OpenRouter ha limitado temporalmente el modelo gratuito. Vuelve a intentarlo en unos %lld segundos. Si se repite, elige «Selección automática gratuita»." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OpenRouter has temporarily rate-limited the free model. Try again in about %lld seconds. If it happens again, choose “Automatic free selection.”"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OpenRouter 暂时限制了该免费模型。请在约 %lld 秒后重试。如果再次发生，请选择“免费自动选择”。"
+          }
+        }
+      }
+    },
+    "OpenRouter ha limitado temporalmente la cuenta, el modelo o su proveedor. Espera un momento y, si se repite, elige «Selección automática gratuita». El cupo diario también puede haberse agotado." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OpenRouter has temporarily rate-limited the account, model, or provider. Wait a moment and, if it happens again, choose “Automatic free selection.” The daily allowance may also have been used up."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OpenRouter 暂时限制了账户、模型或提供商。请稍候；如果再次发生，请选择“免费自动选择”。每日额度也可能已经用完。"
+          }
+        }
+      }
+    },
+    "OpenRouter rechazó la petición por permisos o por sus controles de contenido. Revisa la clave o reformula el texto." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OpenRouter rejected the request because of permissions or content controls. Check the API key or rephrase the text."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OpenRouter 因权限或内容控制拒绝了请求。请检查 API 密钥或改写文本。"
+          }
+        }
+      }
+    },
+    "OpenRouter selecciona automáticamente un modelo gratuito disponible y puede evitar modelos temporalmente saturados." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OpenRouter automatically selects an available free model and can avoid temporarily overloaded models."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OpenRouter 会自动选择可用的免费模型，并可避开暂时过载的模型。"
+          }
+        }
+      }
+    },
     "Orden de pantallas" : {
       "localizations" : {
         "en" : {
@@ -44504,7 +44649,7 @@
       }
     },
     "Pregunta  a %@" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -50751,7 +50896,7 @@
       }
     },
     "Segun Autor: %@" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -56637,6 +56782,22 @@
         }
       }
     },
+    "Una respuesta puede utilizar más de una solicitud cuando debe resumir un documento largo, compactar el historial o continuar una generación." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A response may use more than one request when it needs to summarize a long document, compact the history, or continue a generation."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当需要总结长文档、压缩历史记录或继续生成时，一次回复可能会使用多次请求。"
+          }
+        }
+      }
+    },
     "una unidad pendiente" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -58193,5 +58354,5 @@
       "shouldTranslate" : false
     }
   },
-  "version" : "1.0"
+  "version" : "1.1"
 }

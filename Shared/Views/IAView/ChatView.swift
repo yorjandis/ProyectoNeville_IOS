@@ -119,7 +119,7 @@ struct ChatView: View {
         if (self.purchaseStatus || self.yorjPremium){
             if self.DescargoDeIA == false {
                 ZStack{
-                    LinearGradient(colors: [self.ColorChatIAPrimario,  self.ColorChatIASecundario], startPoint: .topLeading, endPoint: .bottomTrailing)
+                    LinearGradient(colors: [self.ColorChatIAPrimario,  self.ColorChatIASecundario], startPoint: .top, endPoint: .bottom)
                     .ignoresSafeArea()
                     DescargoResponsabilidadIA(VentanaEnSetting: false)
                 }
@@ -143,19 +143,31 @@ struct ChatView: View {
             
             
                 VStack {
-                    HStack {
-                        Label(
-                            model.activeProviderDisplayName,
-                            systemImage: model.activeProvider.systemImage
-                        )
-                        .font(.caption.bold())
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 5)
-                        .background(.black.opacity(0.28), in: Capsule())
-                        .accessibilityLabel(
-                            "Modelo activo: \(model.activeProviderDisplayName)"
-                        )
-                        Spacer()
+                    VStack(alignment: .leading, spacing: 5) {
+                        HStack {
+                            Label(
+                                model.activeProviderDisplayName,
+                                systemImage: model.activeProvider.systemImage
+                            )
+                            .font(.caption.bold())
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 5)
+                            .background(.black.opacity(0.28), in: Capsule())
+                            .accessibilityLabel(
+                                "Modelo activo: \(model.activeProviderDisplayName)"
+                            )
+                            Spacer()
+                        }
+
+                        if model.activeProvider == .openRouter {
+                            OpenRouterFreeLimitNotice(
+                                modelIdentifier: model.activeModelIdentifier
+                                    ?? OpenRouterConfiguration
+                                        .selectedModelIdentifier,
+                                compact: true
+                            )
+                            .padding(.horizontal, 4)
+                        }
                     }
                     .padding(.horizontal)
 
@@ -284,7 +296,7 @@ struct ChatView: View {
                                             showOpenRouterSettings = true
                                         }
                                     }
-                                    .buttonStyle(.borderedProminent)
+                                    .buttonStyle(.bordered)
                                 } else {
                                     AdjustableGridView_neville(
                                         autor: self.model.activeAuthor,
@@ -1119,8 +1131,8 @@ private struct ChatAppearanceSettingsView: View {
                                 chatBackgroundPrimary,
                                 chatBackgroundSecondary
                             ],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
+                            startPoint: .top,
+                            endPoint: .bottom
                         )
                     )
                     .clipShape(
@@ -1458,7 +1470,7 @@ private struct ConversationHistoryView: View {
                     Label("Convertir en Notas", systemImage: "note.text")
                         .frame(maxWidth: .infinity)
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.bordered)
                 .disabled(
                     selectedConversationIDs.isEmpty
                         || isPerformingBulkAction
