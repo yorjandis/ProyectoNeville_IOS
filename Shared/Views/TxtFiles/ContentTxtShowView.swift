@@ -219,7 +219,7 @@ struct ContentTxtShowView: View {
 
                      if #available(iOS 26.0, macOS 26.0, *){
                          //Verificando si el marco FoundationModels esta disponible en el dispositivo
-                         if IAModelAppleIntelligence.isAvailable() {
+                         if IAModelAppleIntelligence.hasAvailableContentProvider() {
                              
                              ToolbarItemGroup{
                                  Menu{
@@ -377,7 +377,7 @@ struct ContentTxtShowView: View {
                  //Barra de opciones de IA para Citas, Ayudas y Reflexiones:
                  if (self.type == .ayud || self.type == .citas ){
                      if #available(iOS 26.0, macOS 26.0, *){
-                         if IAModelAppleIntelligence.isAvailable(){
+                         if IAModelAppleIntelligence.hasAvailableContentProvider(){
                              
                              ToolbarItem {
                                  Menu{

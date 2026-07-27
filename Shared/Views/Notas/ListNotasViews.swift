@@ -1769,7 +1769,7 @@ struct cardNotas: View{
                     
                     //Funciones de inteligencia: IA
                     if #available(iOS 26.0, macOS 26.0, *) {
-                        if IAModelAppleIntelligence.isAvailable(){
+                        if IAModelAppleIntelligence.hasAvailableContentProvider(){
                             
                             #if os(macOS)
                             Button{

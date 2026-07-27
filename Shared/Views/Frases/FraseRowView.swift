@@ -103,7 +103,7 @@ struct FraseRowView: View {
             .swipeActions(edge: .leading, allowsFullSwipe: true){
                 //Esta View no se mostrará si Apple Intelligence no esta disponible
                 if #available(iOS 26.0, macOS 26.0,  *) {
-                    if IAModelAppleIntelligence.isAvailable() {
+                    if IAModelAppleIntelligence.hasAvailableContentProvider() {
                         Menu{
                             NavigationLink{
                                 RespondView(nameConference: "", texto: frase.localizedText, tipoSalida: .interpretar, autorRespuesta: frase.autor ?? "nev" )

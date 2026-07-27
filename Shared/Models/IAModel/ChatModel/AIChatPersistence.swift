@@ -19,6 +19,8 @@ struct StoredAIConversation: Identifiable, Equatable, Sendable {
     var promptVersion: Int
     var usesPersonalVoice: Bool
     var languageRawValue: String
+    var providerRawValue: String
+    var modelIdentifier: String?
 }
 
 struct StoredAIMessage: Identifiable, Equatable, Sendable {
@@ -30,6 +32,14 @@ struct StoredAIMessage: Identifiable, Equatable, Sendable {
     var sequence: Int64
     var statusRawValue: String
     var errorDescription: String?
+    var providerRawValue: String
+    var modelIdentifier: String?
+}
+
+struct AIChatNoteDraft: Identifiable, Equatable, Sendable {
+    let id: UUID
+    let title: String
+    let content: String
 }
 
 @objc(AIConversationRecord)
@@ -44,6 +54,8 @@ private final class AIConversationRecord: NSManagedObject {
     @NSManaged var promptVersion: Int32
     @NSManaged var usesPersonalVoice: Bool
     @NSManaged var languageRawValue: String
+    @NSManaged var providerRawValue: String
+    @NSManaged var modelIdentifier: String?
     @NSManaged var messages: Set<AIMessageRecord>
 }
 
@@ -57,6 +69,8 @@ private final class AIMessageRecord: NSManagedObject {
     @NSManaged var sequence: Int64
     @NSManaged var statusRawValue: String
     @NSManaged var errorDescription: String?
+    @NSManaged var providerRawValue: String
+    @NSManaged var modelIdentifier: String?
     @NSManaged var conversation: AIConversationRecord
 }
 
@@ -128,7 +142,9 @@ final class AIChatStore {
         authorRawValue: String,
         promptVersion: Int,
         usesPersonalVoice: Bool,
-        languageRawValue: String
+        languageRawValue: String,
+        providerRawValue: String = AIChatProviderKind.apple.rawValue,
+        modelIdentifier: String? = nil
     ) async throws -> StoredAIConversation {
         try await ensureLoaded()
         let now = Date()
@@ -144,6 +160,8 @@ final class AIChatStore {
         record.promptVersion = Int32(promptVersion)
         record.usesPersonalVoice = usesPersonalVoice
         record.languageRawValue = languageRawValue
+        record.providerRawValue = providerRawValue
+        record.modelIdentifier = modelIdentifier
         record.messages = []
         try save()
         return Self.makeConversation(record)
@@ -167,6 +185,8 @@ final class AIChatStore {
         record.sequence = message.sequence
         record.statusRawValue = message.statusRawValue
         record.errorDescription = message.errorDescription
+        record.providerRawValue = message.providerRawValue
+        record.modelIdentifier = message.modelIdentifier
         record.conversation = conversation
         conversation.updatedAt = Date()
         try save()
@@ -220,9 +240,17 @@ final class AIChatStore {
     }
 
     func deleteConversation(id: UUID) async throws {
+        try await deleteConversations(ids: [id])
+    }
+
+    func deleteConversations(ids: Set<UUID>) async throws {
         try await ensureLoaded()
-        guard let record = try fetchConversation(id: id) else { return }
-        container.viewContext.delete(record)
+        guard !ids.isEmpty else { return }
+        for id in ids {
+            if let record = try fetchConversation(id: id) {
+                container.viewContext.delete(record)
+            }
+        }
         try save()
     }
 
@@ -274,7 +302,9 @@ final class AIChatStore {
             transcriptData: record.transcriptData,
             promptVersion: Int(record.promptVersion),
             usesPersonalVoice: record.usesPersonalVoice,
-            languageRawValue: record.languageRawValue
+            languageRawValue: record.languageRawValue,
+            providerRawValue: record.providerRawValue,
+            modelIdentifier: record.modelIdentifier
         )
     }
 
@@ -287,7 +317,9 @@ final class AIChatStore {
             createdAt: record.createdAt,
             sequence: record.sequence,
             statusRawValue: record.statusRawValue,
-            errorDescription: record.errorDescription
+            errorDescription: record.errorDescription,
+            providerRawValue: record.providerRawValue,
+            modelIdentifier: record.modelIdentifier
         )
     }
 
@@ -311,7 +343,9 @@ final class AIChatStore {
             attribute("transcriptData", type: .binaryDataAttributeType),
             attribute("promptVersion", type: .integer32AttributeType, optional: false, defaultValue: 1),
             attribute("usesPersonalVoice", type: .booleanAttributeType, optional: false, defaultValue: true),
-            attribute("languageRawValue", type: .stringAttributeType, optional: false, defaultValue: "es")
+            attribute("languageRawValue", type: .stringAttributeType, optional: false, defaultValue: "es"),
+            attribute("providerRawValue", type: .stringAttributeType, optional: false, defaultValue: "apple"),
+            attribute("modelIdentifier", type: .stringAttributeType)
         ]
 
         message.properties = [
@@ -322,7 +356,9 @@ final class AIChatStore {
             attribute("createdAt", type: .dateAttributeType, optional: false),
             attribute("sequence", type: .integer64AttributeType, optional: false, defaultValue: 0),
             attribute("statusRawValue", type: .stringAttributeType, optional: false, defaultValue: "completed"),
-            attribute("errorDescription", type: .stringAttributeType)
+            attribute("errorDescription", type: .stringAttributeType),
+            attribute("providerRawValue", type: .stringAttributeType, optional: false, defaultValue: "apple"),
+            attribute("modelIdentifier", type: .stringAttributeType)
         ]
 
         let messagesRelationship = NSRelationshipDescription()

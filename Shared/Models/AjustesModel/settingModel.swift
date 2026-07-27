@@ -27,12 +27,29 @@ final class SettingModel : ObservableObject {
     
     //Almacena un color y actualiza las variables
      func saveColor(forkey: String, color : Color) {
-        let colortemp = UIColor(color).cgColor
-        
-        if let components = colortemp.components {
-            
-            UserDefaults.standard.setValue(components, forKey: forkey)
+        let cgColor = UIColor(color).cgColor
+        let components = cgColor.components ?? []
+        let rgba: [CGFloat]
+
+        if cgColor.colorSpace?.model == .monochrome,
+           let white = components.first {
+            rgba = [
+                white,
+                white,
+                white,
+                components.count > 1 ? components[1] : 1
+            ]
+        } else if components.count >= 4 {
+            rgba = Array(components.prefix(4))
+        } else if components.count == 3 {
+            rgba = [components[0], components[1], components[2], 1]
+        } else if let white = components.first {
+            rgba = [white, white, white, 1]
+        } else {
+            return
         }
+
+        UserDefaults.standard.setValue(rgba, forKey: forkey)
          
          //Actualizando las variables Observables
          switch forkey {
@@ -50,16 +67,40 @@ final class SettingModel : ObservableObject {
     
     //Devuelve el valor de un color como Color para una clave en userdefault. Por defecto devuelve el color primario en el sistema
     static func loadColor(forkey: String)->Color?{
-        guard let userdefault = UserDefaults.standard.object(forKey: forkey) as? [CGFloat] else {
+        guard let components = UserDefaults.standard.object(
+            forKey: forkey
+        ) as? [CGFloat],
+              !components.isEmpty else {
             return nil
         }
-        
-        let color = Color(.sRGB, red: userdefault[0],
-                                 green: userdefault[1],
-                                 blue: userdefault[2],
-                                 opacity:userdefault[3])
-         
-        return color
+
+        if components.count >= 4 {
+            return Color(
+                .sRGB,
+                red: components[0],
+                green: components[1],
+                blue: components[2],
+                opacity: components[3]
+            )
+        }
+        if components.count == 3 {
+            return Color(
+                .sRGB,
+                red: components[0],
+                green: components[1],
+                blue: components[2],
+                opacity: 1
+            )
+        }
+        let white = components[0]
+        let opacity = components.count > 1 ? components[1] : 1
+        return Color(
+            .sRGB,
+            red: white,
+            green: white,
+            blue: white,
+            opacity: opacity
+        )
     }
     
 
@@ -83,6 +124,26 @@ final class SettingModel : ObservableObject {
         saveColor(forkey: AppCons.UD_setting_color_main_b, color: .blue.opacity(0.5))
         saveColor(forkey: AppCons.UD_setting_color_fondoContent, color: .gray) //Color de fondo del ContentTxt
         saveColor(forkey: AppCons.UD_setting_color_textContent, color: .black) //Color de texto del ContentTxt
+        saveColor(
+            forkey: AppCons.UD_setting_colorIA_main_a,
+            color: AppCons.defaultColorIA_main_a
+        )
+        saveColor(
+            forkey: AppCons.UD_setting_colorIA_main_b,
+            color: AppCons.defaultColorIA_main_b
+        )
+        saveColor(
+            forkey: AppCons.UD_setting_colorIA_textContent,
+            color: AppCons.defaultColorIA_promptText
+        )
+        saveColor(
+            forkey: AppCons.UD_setting_colorIA_textRespond,
+            color: AppCons.defaultColorIA_responseText
+        )
+        saveColor(
+            forkey: AppCons.UD_setting_colorIA_responseBubble,
+            color: AppCons.defaultColorIA_responseBubble
+        )
         
     }
     

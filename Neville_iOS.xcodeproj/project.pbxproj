@@ -84,6 +84,8 @@
 		9CDA01043000000000000001 /* Shared/Models/WidgetDashboard/ConsciousDashboardSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CDA00063000000000000001 /* Shared/Models/WidgetDashboard/ConsciousDashboardSnapshot.swift */; };
 		9CDA01053000000000000001 /* ConsciousDashboardMacBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CDA01113000000000000001 /* ConsciousDashboardMacBundle.swift */; };
 		9CDA01063000000000000001 /* ConsciousDashboardMacWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 9CDA01103000000000000001 /* ConsciousDashboardMacWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		A1C000013100000000000001 /* OpenAI in Frameworks */ = {isa = PBXBuildFile; productRef = A1C000043100000000000001 /* OpenAI */; };
+		A1C000023100000000000001 /* OpenAI in Frameworks */ = {isa = PBXBuildFile; productRef = A1C000053100000000000001 /* OpenAI */; };
 		A41400000000000000000001 /* bruce_evolucion_interior_1.txt in Resources */ = {isa = PBXBuildFile; fileRef = A41300000000000000000001 /* bruce_evolucion_interior_1.txt */; };
 		A41400000000000000000002 /* bruce_evolucion_interior_2.txt in Resources */ = {isa = PBXBuildFile; fileRef = A41300000000000000000002 /* bruce_evolucion_interior_2.txt */; };
 		A41400000000000000000003 /* bruce_evolucion_interior_3.txt in Resources */ = {isa = PBXBuildFile; fileRef = A41300000000000000000003 /* bruce_evolucion_interior_3.txt */; };
@@ -775,7 +777,10 @@
 				Models/FrasesModel/NuevoFormatoFrases/parsearFrasesNuevoFormato.swift,
 				Models/GameModel/GameModel.swift,
 				Models/IAModel/ChatModel/AIChatPersistence.swift,
+				Models/IAModel/ChatModel/AIChatProvider.swift,
 				Models/IAModel/ChatModel/ChactModel.swift,
+				Models/IAModel/ChatModel/OpenRouterChatProvider.swift,
+				Models/IAModel/ChatModel/OpenRouterCredentialStore.swift,
 				Models/IAModel/ChatModel/PromptModel.swift,
 				Models/IAModel/IAModelAppleIntelligence.swift,
 				Models/IAModel/InstructionIA.swift,
@@ -1780,6 +1785,7 @@
 				Views/HomeAlternativo/HomeContextualRecommendationCard.swift,
 				Views/IAView/ChatView.swift,
 				Views/IAView/DescargoResponsabilidad.swift,
+				Views/IAView/OpenRouterSettingsView.swift,
 				Views/IAView/RespondView.swift,
 				Views/LectorEtiquetas/LectorEtiquetasView.swift,
 				Views/LectorEtiquetas/LectorEtiquetasViewHelper.swift,
@@ -2009,6 +2015,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A1C000023100000000000001 /* OpenAI in Frameworks */,
 				914D88912FC6000000CDDB93 /* Sodium in Frameworks */,
 				915017452EF078B2007B741A /* StoreKit.framework in Frameworks */,
 				9198310B2FBC526B00B24155 /* TPPDF in Frameworks */,
@@ -2049,6 +2056,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A1C000013100000000000001 /* OpenAI in Frameworks */,
 				914D88902FC6000000CDDB93 /* Sodium in Frameworks */,
 				915017432EF078A2007B741A /* StoreKit.framework in Frameworks */,
 				919831092FBC525C00B24155 /* TPPDF in Frameworks */,
@@ -2438,6 +2446,7 @@
 			packageProductDependencies = (
 				9198310A2FBC526B00B24155 /* TPPDF */,
 				914D88932FC6000000CDDB93 /* Sodium */,
+				A1C000053100000000000001 /* OpenAI */,
 			);
 			productName = "La Ley";
 			productReference = 917C301F2EBCD1E5006BB36E /* La Ley.app */;
@@ -2553,6 +2562,7 @@
 			packageProductDependencies = (
 				919831082FBC525C00B24155 /* TPPDF */,
 				914D88922FC6000000CDDB93 /* Sodium */,
+				A1C000043100000000000001 /* OpenAI */,
 			);
 			productName = Neville_iOS;
 			productReference = E95B93532AAFBB2600B5E2B5 /* Neville_iOS.app */;
@@ -2610,6 +2620,7 @@
 			packageReferences = (
 				919831072FBC525C00B24155 /* XCRemoteSwiftPackageReference "TPPDF" */,
 				914D88942FC6000000CDDB93 /* XCRemoteSwiftPackageReference "swift-sodium" */,
+				A1C000033100000000000001 /* XCRemoteSwiftPackageReference "OpenAI" */,
 			);
 			preferredProjectObjectVersion = 56;
 			productRefGroup = E95B93542AAFBB2600B5E2B5 /* Products */;
@@ -4675,6 +4686,14 @@
 				minimumVersion = 2.6.1;
 			};
 		};
+		A1C000033100000000000001 /* XCRemoteSwiftPackageReference "OpenAI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/MacPaw/OpenAI.git";
+			requirement = {
+				kind = exactVersion;
+				version = 0.5.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -4697,6 +4716,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 919831072FBC525C00B24155 /* XCRemoteSwiftPackageReference "TPPDF" */;
 			productName = TPPDF;
+		};
+		A1C000043100000000000001 /* OpenAI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A1C000033100000000000001 /* XCRemoteSwiftPackageReference "OpenAI" */;
+			productName = OpenAI;
+		};
+		A1C000053100000000000001 /* OpenAI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A1C000033100000000000001 /* XCRemoteSwiftPackageReference "OpenAI" */;
+			productName = OpenAI;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

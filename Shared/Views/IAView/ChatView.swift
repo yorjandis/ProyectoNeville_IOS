@@ -9,6 +9,38 @@
 import SwiftUI
 import UniformTypeIdentifiers
 
+private enum ResponsePersistenceAction {
+    case notes(ChatMessage)
+    case deviceStorage(ChatMessage)
+
+    var title: String {
+        switch self {
+        case .notes:
+            "Guardar en Notas"
+        case .deviceStorage:
+            "Guardar en el dispositivo"
+        }
+    }
+
+    var confirmationTitle: String {
+        switch self {
+        case .notes:
+            "Guardar respuesta"
+        case .deviceStorage:
+            "Generar PDF"
+        }
+    }
+
+    var explanation: String {
+        switch self {
+        case .notes:
+            "Se creará una Nota nueva con el contenido de esta respuesta."
+        case .deviceStorage:
+            "Se generará un archivo PDF con el prompt y la respuesta. Después podrás elegir dónde guardarlo."
+        }
+    }
+}
+
 
 
 
@@ -43,12 +75,31 @@ struct ChatView: View {
     @State private var showPDFExporter = false
     @State private var exportedPDFDocument: ExportedPDFDocument?
     @State private var exportedPDFFileName: String = "ChatIA.pdf"
+    @State private var pendingResponsePersistenceAction: ResponsePersistenceAction?
     @State private var showConversationHistory = false
+    @State private var showOpenRouterSettings = false
+    @State private var showChatAppearanceSettings = false
+    @State private var showOpenRouterConsent = false
+    @State private var showProviderSwitchConfirmation = false
+    @State private var pendingProvider: AIChatProviderKind?
+    @State private var activateOpenRouterAfterConsent = false
     
     //Colores de IA chat:
-    @State var ColorChatIAPrimario         : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_colorIA_main_a) ?? .orange.opacity(0.7)
-    @State var ColorChatIASecundario       : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_colorIA_main_b) ?? .brown
-    @State var ColorChatIAFuente           : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_colorIA_textContent) ?? .white
+    @State var ColorChatIAPrimario: Color = SettingModel.loadColor(
+        forkey: AppCons.UD_setting_colorIA_main_a
+    ) ?? AppCons.defaultColorIA_main_a
+    @State var ColorChatIASecundario: Color = SettingModel.loadColor(
+        forkey: AppCons.UD_setting_colorIA_main_b
+    ) ?? AppCons.defaultColorIA_main_b
+    @State var ColorChatIAFuente: Color = SettingModel.loadColor(
+        forkey: AppCons.UD_setting_colorIA_textContent
+    ) ?? AppCons.defaultColorIA_promptText
+    @State var ColorRespondIAFuente: Color = SettingModel.loadColor(
+        forkey: AppCons.UD_setting_colorIA_textRespond
+    ) ?? AppCons.defaultColorIA_responseText
+    @State var ColorRespondIABurbuja: Color = SettingModel.loadColor(
+        forkey: AppCons.UD_setting_colorIA_responseBubble
+    ) ?? AppCons.defaultColorIA_responseBubble
     
     //manejar el texto copiado:
     @State private var showSheetInterpretarTextoCopiadoIA : Bool = false
@@ -92,6 +143,22 @@ struct ChatView: View {
             
             
                 VStack {
+                    HStack {
+                        Label(
+                            model.activeProviderDisplayName,
+                            systemImage: model.activeProvider.systemImage
+                        )
+                        .font(.caption.bold())
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 5)
+                        .background(.black.opacity(0.28), in: Capsule())
+                        .accessibilityLabel(
+                            "Modelo activo: \(model.activeProviderDisplayName)"
+                        )
+                        Spacer()
+                    }
+                    .padding(.horizontal)
+
                     ScrollViewReader { scrollProxy in
                         if !model.messages.isEmpty {
                             ScrollView {
@@ -139,14 +206,26 @@ struct ChatView: View {
                                                 } else {
                                                     VStack{
                                                         
-                                                        SelectableText(text : msg.text, fontSize: CGFloat(self.fontSizeChatIA),fonColor: UIColor(self.ColorChatIAFuente) , alignment : .left)
+                                                        SelectableText(text : msg.text, fontSize: CGFloat(self.fontSizeChatIA),fonColor: UIColor(self.ColorRespondIAFuente) , alignment : .left)
                                                             .padding(.horizontal, 10)
-                                                            .background(Color.black.opacity(0.5))
+                                                            .background(self.ColorRespondIABurbuja)
                                                             .cornerRadius(12)
                                                         
                                                         MenuOpcionesRespuesta(message: msg)
                                                             .padding(.vertical, 0)
                                                             .id(msg.id) //Para porpósitos de scrooll
+
+                                                        HStack(spacing: 4) {
+                                                            Image(systemName: msg.provider.systemImage)
+                                                            Text(msg.provider.shortDisplayName)
+                                                            if let modelIdentifier = msg.modelIdentifier {
+                                                                Text("· \(modelIdentifier)")
+                                                            }
+                                                        }
+                                                        .font(.caption2)
+                                                        .foregroundStyle(
+                                                            self.ColorRespondIAFuente.opacity(0.72)
+                                                        )
                                                     }
                                                     
                                                     Spacer()
@@ -187,15 +266,23 @@ struct ChatView: View {
                         }
                         else{
                             ScrollView {
-                                if let availabilityMessage = model.availabilityMessage {
+                                if let availabilityMessage = model.activeProviderAvailabilityMessage {
                                     ContentUnavailableView(
-                                        "Apple Intelligence no disponible",
-                                        systemImage: "apple.intelligence",
+                                        "\(model.activeProvider.displayName) no disponible",
+                                        systemImage: model.activeProvider.systemImage,
                                         description: Text(availabilityMessage)
                                     )
                                     .padding()
-                                    Button("Comprobar de nuevo") {
-                                        model.refreshAvailability()
+                                    Button(
+                                        model.activeProvider == .apple
+                                            ? "Comprobar de nuevo"
+                                            : "Configurar OpenRouter"
+                                    ) {
+                                        if model.activeProvider == .apple {
+                                            model.refreshAvailability()
+                                        } else {
+                                            showOpenRouterSettings = true
+                                        }
                                     }
                                     .buttonStyle(.borderedProminent)
                                 } else {
@@ -226,120 +313,119 @@ struct ChatView: View {
         .navigationTitle("Pregunta a \(self.model.activeAuthor.getNombre)")
         .navigationBarTitleDisplayMode(.inline)
         #endif
-        .toolbar{
+        .toolbar {
             if self.DescargoDeIA {
-                
-               
-                
-                //Cambiar instrucciones de conversación
-                ToolbarItem{
+                // El selector de proveedor permanece visible para que el modelo
+                // activo siempre sea reconocible y fácil de cambiar.
+                ToolbarItem {
+                    Menu {
+                        Button {
+                            requestProvider(.apple)
+                        } label: {
+                            Label(
+                                "Apple Intelligence",
+                                systemImage: model.activeProvider == .apple
+                                    ? "checkmark"
+                                    : "apple.intelligence"
+                            )
+                        }
 
-                     Menu{
-                         Text("Cambiar Autor")
-                         Button{
-                             Task {
-                                 await self.model.createNewConversation(author: .neville)
-                             }
-                         }label:{
-                             #if os(macOS)
-                             iconMenu(nombre: "nev-min", title: "Neville")
-                             #else
-                             Label("Neville Goddard", image: "nev-min")
-                             #endif
-                         }
-                         
-                         
-                         Button{
-                             Task {
-                                 await self.model.createNewConversation(author: .JoeDispenza)
-                             }
-                         }label:{
-                             #if os(macOS)
-                             iconMenu(nombre: "jd", title: "Joe Dispenza")
-                             #else
-                             Label("Joe Dispenza", image: "jd")
-                             #endif
-                         }
-                         
-                         Button{
-                             Task {
-                                 await self.model.createNewConversation(author: .bruce)
-                             }
-                         }label:{
-                             #if os(macOS)
-                             iconMenu(nombre: "bruce", title: "Bruce lipton")
-                             #else
-                             Label("Bruce lipton", image: "bruce")
-                             #endif
-                             
-                         }
-                         
-                         Button{
-                             Task {
-                                 await self.model.createNewConversation(author: .gregg)
-                             }
-                         }label:{
-                             #if os(macOS)
-                             iconMenu(nombre: "gregg", title: "Gregg Braden")
-                             #else
-                             Label("Gregg Braden", image: "gregg")
-                             #endif
-                            
-                         }
-                         
-                     }label: {
-
-                          switch self.model.activeAuthor {
-                          case .neville: iconoRedimensionado(nombre: "nev-min")
-                          case .JoeDispenza: iconoRedimensionado(nombre: "jd")
-                          case .bruce: iconoRedimensionado(nombre: "bruce")
-                          case .gregg: iconoRedimensionado(nombre: "gregg")
-                          }  
-                     }
-                     
-                   
-                }
-                
-                ToolbarSpacer(.fixed)
-                //Barra de opciones para texto copiado:
-                ToolbarItem{
-                    //Menú de acciones con el texto copiado
-                    if let _ = self.clipBoarModel.clipboardText{
-                         TextoCopiadoView(clipBoardModel: self.clipBoarModel,
-                                          nameTxt: nil,
-                                          showAlert: self.$showAlert,
-                                          alertMessage: self.$alertMessage,
-                                          showSheetTextoCopiadoAlPortapapelesParaInterpretar: self.$showSheetTextoCopiadoAlPortapapelesParaInterpretar,
-                                          showSheetTtextoCopiadoAlPortapapelesParaChatIA: self.$showSheetTtextoCopiadoAlPortapapelesParaChatIA,
-                                          showSheetTtextoCopiadoAlPortapapelesParaLienzo: self.$showSheetTtextoCopiadoAlPortapapelesParaLienzo)
+                        Button {
+                            requestProvider(.openRouter)
+                        } label: {
+                            Label(
+                                "OpenRouter · Modelos gratuitos",
+                                systemImage: model.activeProvider == .openRouter
+                                    ? "checkmark"
+                                    : "sparkles"
+                            )
+                        }
+                    } label: {
+                        Label(
+                            model.activeProvider.shortDisplayName,
+                            systemImage: model.activeProvider.systemImage
+                        )
                     }
+                    .disabled(model.isResponding)
+                    .help("Seleccionar modelo de IA")
                 }
-                
+
                 ToolbarSpacer(.fixed)
 
+                // Las acciones secundarias se agrupan para mantener compacta
+                // la barra superior.
+                ToolbarItem {
+                    Menu {
+                        Menu {
+                            authorMenuButton(.neville)
+                            authorMenuButton(.JoeDispenza)
+                            authorMenuButton(.bruce)
+                            authorMenuButton(.gregg)
+                        } label: {
+                            Label(
+                                "Cambiar autor · \(model.activeAuthor.getNombre)",
+                                systemImage: "person.crop.circle"
+                            )
+                        }
+
+                        Button {
+                            self.showConversationHistory = true
+                        } label: {
+                            Label(
+                                "Historial de conversaciones",
+                                systemImage: "clock.arrow.circlepath"
+                            )
+                        }
+
+                        Button {
+                            reloadChatAppearanceColors()
+                            self.showChatAppearanceSettings = true
+                        } label: {
+                            Label(
+                                "Apariencia del chat",
+                                systemImage: "paintpalette"
+                            )
+                        }
+
+                        if self.clipBoarModel.clipboardText != nil {
+                            TextoCopiadoView(
+                                clipBoardModel: self.clipBoarModel,
+                                nameTxt: nil,
+                                showAlert: self.$showAlert,
+                                alertMessage: self.$alertMessage,
+                                showSheetTextoCopiadoAlPortapapelesParaInterpretar: self.$showSheetTextoCopiadoAlPortapapelesParaInterpretar,
+                                showSheetTtextoCopiadoAlPortapapelesParaChatIA: self.$showSheetTtextoCopiadoAlPortapapelesParaChatIA,
+                                showSheetTtextoCopiadoAlPortapapelesParaLienzo: self.$showSheetTtextoCopiadoAlPortapapelesParaLienzo
+                            )
+                        }
+
+                        Divider()
+
+                        Button {
+                            showOpenRouterSettings = true
+                        } label: {
+                            Label("Configurar OpenRouter", systemImage: "key")
+                        }
+                    } label: {
+                        Label("Más opciones", systemImage: "ellipsis.circle")
+                    }
+                    .help("Opciones de Chat IA")
+                }
+
+                ToolbarSpacer(.fixed)
+
+                // Crear conversación permanece como acción directa.
                 ToolbarItem {
                     Button {
-                        self.showConversationHistory = true
-                    } label: {
-                        Image(systemName: "clock.arrow.circlepath")
-                    }
-                    .help("Historial de conversaciones")
-                }
-
-                ToolbarSpacer(.fixed)
-                
-                //Boton Nueva Conversación
-                ToolbarItem {
-                    Button{
                         Task {
                             await self.model.createNewConversation()
                         }
-                    }label:{
-                        Image(systemName: "square.and.pencil")
+                    } label: {
+                        Label("Nueva conversación", systemImage: "square.and.pencil")
                     }
+                    .help("Nueva conversación")
                 }
             }
-            
         }
         .task {
             await model.loadInitialConversation(prefill: textoACargar)
@@ -360,7 +446,92 @@ struct ChatView: View {
             
         }
         .sheet(isPresented: $showConversationHistory) {
-            ConversationHistoryView(model: model)
+            ConversationHistoryView(
+                model: model,
+                notasModel: notasModel
+            )
+        }
+        .sheet(isPresented: $showChatAppearanceSettings) {
+            ChatAppearanceSettingsView(
+                promptTextColor: $ColorChatIAFuente,
+                responseTextColor: $ColorRespondIAFuente,
+                chatBackgroundPrimary: $ColorChatIAPrimario,
+                chatBackgroundSecondary: $ColorChatIASecundario,
+                responseBubbleBackground: $ColorRespondIABurbuja
+            )
+        }
+        .sheet(isPresented: $showOpenRouterSettings) {
+            OpenRouterSettingsView {
+                model.refreshOpenRouterCredentialState()
+            }
+        }
+        .sheet(
+            isPresented: $showOpenRouterConsent,
+            onDismiss: {
+                let shouldActivate = activateOpenRouterAfterConsent
+                    && OpenRouterConfiguration.hasPrivacyConsent
+                activateOpenRouterAfterConsent = false
+                if shouldActivate {
+                    requestProvider(.openRouter)
+                }
+            }
+        ) {
+            OpenRouterPrivacyConsentView {}
+        }
+        .confirmationDialog(
+            "Cambiar a \(pendingProvider?.displayName ?? "otro modelo")",
+            isPresented: $showProviderSwitchConfirmation,
+            titleVisibility: .visible
+        ) {
+            Button("Continuar en una copia de esta conversación") {
+                guard let pendingProvider else { return }
+                self.pendingProvider = nil
+                Task {
+                    await model.activateProvider(
+                        pendingProvider,
+                        preservingContext: true
+                    )
+                }
+            }
+            Button("Empezar una conversación nueva") {
+                guard let pendingProvider else { return }
+                self.pendingProvider = nil
+                Task {
+                    await model.activateProvider(
+                        pendingProvider,
+                        preservingContext: false
+                    )
+                }
+            }
+            Button("Cancelar", role: .cancel) {
+                pendingProvider = nil
+            }
+        } message: {
+            Text("Para conservar el origen y la privacidad del historial, el modelo no se cambia silenciosamente dentro de la conversación actual.")
+        }
+        .confirmationDialog(
+            pendingResponsePersistenceAction?.title ?? "Confirmar acción",
+            isPresented: Binding(
+                get: { pendingResponsePersistenceAction != nil },
+                set: {
+                    if !$0 {
+                        pendingResponsePersistenceAction = nil
+                    }
+                }
+            ),
+            titleVisibility: .visible
+        ) {
+            if let action = pendingResponsePersistenceAction {
+                Button(action.confirmationTitle) {
+                    pendingResponsePersistenceAction = nil
+                    performResponsePersistenceAction(action)
+                }
+            }
+            Button("Cancelar", role: .cancel) {
+                pendingResponsePersistenceAction = nil
+            }
+        } message: {
+            Text(pendingResponsePersistenceAction?.explanation ?? "")
         }
         .onChange(of: model.userFacingError) { _, newValue in
             guard let newValue else { return }
@@ -377,6 +548,72 @@ struct ChatView: View {
             contentType: .pdf,
             defaultFilename: exportedPDFFileName
         ) { _ in }
+    }
+
+    @ViewBuilder
+    private func authorMenuButton(_ author: Autores) -> some View {
+        Button {
+            Task {
+                await model.createNewConversation(author: author)
+            }
+        } label: {
+            let title: String = switch author {
+            case .neville:
+                "Neville Goddard"
+            case .JoeDispenza:
+                "Joe Dispenza"
+            case .bruce:
+                "Dr. Bruce Lipton"
+            case .gregg:
+                "Gregg Braden"
+            }
+            Label(title, image: author.imageName)
+        }
+    }
+
+    private func reloadChatAppearanceColors() {
+        ColorChatIAFuente = SettingModel.loadColor(
+            forkey: AppCons.UD_setting_colorIA_textContent
+        ) ?? AppCons.defaultColorIA_promptText
+        ColorRespondIAFuente = SettingModel.loadColor(
+            forkey: AppCons.UD_setting_colorIA_textRespond
+        ) ?? AppCons.defaultColorIA_responseText
+        ColorChatIAPrimario = SettingModel.loadColor(
+            forkey: AppCons.UD_setting_colorIA_main_a
+        ) ?? AppCons.defaultColorIA_main_a
+        ColorChatIASecundario = SettingModel.loadColor(
+            forkey: AppCons.UD_setting_colorIA_main_b
+        ) ?? AppCons.defaultColorIA_main_b
+        ColorRespondIABurbuja = SettingModel.loadColor(
+            forkey: AppCons.UD_setting_colorIA_responseBubble
+        ) ?? AppCons.defaultColorIA_responseBubble
+    }
+
+    private func requestProvider(_ provider: AIChatProviderKind) {
+        guard provider != model.activeProvider else { return }
+        if provider == .openRouter {
+            guard model.hasOpenRouterAPIKey else {
+                showOpenRouterSettings = true
+                return
+            }
+            guard OpenRouterConfiguration.hasPrivacyConsent else {
+                activateOpenRouterAfterConsent = true
+                showOpenRouterConsent = true
+                return
+            }
+        }
+
+        if model.messages.isEmpty {
+            Task {
+                await model.activateProvider(
+                    provider,
+                    preservingContext: false
+                )
+            }
+        } else {
+            pendingProvider = provider
+            showProviderSwitchConfirmation = true
+        }
     }
     
     
@@ -402,7 +639,7 @@ struct ChatView: View {
                 }else{
                     TextField("Escribe algo…", text: $model.inputText, axis: .vertical)
                         .font(.system(size: 20))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(self.ColorChatIAFuente)
                         .disabled(model.isResponding)
                         .padding(.vertical, 8)
                         .padding(.leading, 5)
@@ -449,27 +686,57 @@ struct ChatView: View {
                     Image(systemName: "arrow.clockwise")
                 }
                 .help(message.status == .completed ? "Regenerar respuesta" : "Reintentar")
-            //Pasar a notas:
-                Button{
-                    if self.notasModel.addNote(nota: message.text, title: "Nota del Chat"){
-                        self.alertMessage = "Se ha guardado la respuesta en Notas"
-                        self.showAlert = true
-                    }else{
-                        self.alertMessage = "No fue posible guardar la respuesta en Notas. Inténtelo más tarde."
-                        self.showAlert = true
-                    }
-                }label:{
+                Button {
+                    requestResponsePersistenceAction(.notes(message))
+                } label: {
                     Image(systemName: "text.page")
                 }
+                .accessibilityLabel("Guardar en Notas")
+                .help("Guardar en Notas")
+
                 Button {
-                    exportChatResponseToPDF(message)
+                    requestResponsePersistenceAction(.deviceStorage(message))
                 } label: {
                     Image(systemName: "doc.richtext")
                 }
+                .accessibilityLabel("Guardar en el dispositivo")
+                .help("Guardar en el dispositivo como PDF")
                 Spacer()
             }
             .font(.system(size: 14)).bold()
         }
+    }
+
+    private func requestResponsePersistenceAction(
+        _ action: ResponsePersistenceAction
+    ) {
+        if case .deviceStorage = action,
+           !(purchaseStatus || yorjPremium) {
+            alertMessage = "La exportación a PDF está disponible en la Versión Extendida."
+            showAlert = true
+            return
+        }
+        pendingResponsePersistenceAction = action
+    }
+
+    private func performResponsePersistenceAction(
+        _ action: ResponsePersistenceAction
+    ) {
+        switch action {
+        case .notes(let message):
+            saveResponseToNotes(message)
+        case .deviceStorage(let message):
+            exportChatResponseToPDF(message)
+        }
+    }
+
+    private func saveResponseToNotes(_ message: ChatMessage) {
+        if notasModel.addNote(nota: message.text, title: "Nota del Chat") {
+            alertMessage = "Se ha guardado la respuesta en Notas"
+        } else {
+            alertMessage = "No fue posible guardar la respuesta en Notas. Inténtelo más tarde."
+        }
+        showAlert = true
     }
 
     private func exportChatResponseToPDF(_ responseMessage: ChatMessage) {
@@ -761,12 +1028,184 @@ struct ChatView: View {
 }
 
 @available(iOS 26.0, macOS 26.0, *)
+private struct ChatAppearanceSettingsView: View {
+    @Environment(\.dismiss) private var dismiss
+    @StateObject private var settingModel = SettingModel()
+
+    @Binding var promptTextColor: Color
+    @Binding var responseTextColor: Color
+    @Binding var chatBackgroundPrimary: Color
+    @Binding var chatBackgroundSecondary: Color
+    @Binding var responseBubbleBackground: Color
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section("Colores del texto") {
+                    ColorPicker(
+                        "Texto del prompt",
+                        selection: $promptTextColor
+                    )
+                    ColorPicker(
+                        "Texto de las respuestas",
+                        selection: $responseTextColor
+                    )
+                    Text("El nombre del modelo que aparece bajo cada respuesta utiliza también el color del texto de las respuestas.")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+
+                Section("Fondo del chat") {
+                    ColorPicker(
+                        "Color superior",
+                        selection: $chatBackgroundPrimary
+                    )
+                    ColorPicker(
+                        "Color inferior",
+                        selection: $chatBackgroundSecondary
+                    )
+                    Text("Los dos colores forman el degradado del fondo general.")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+
+                Section("Burbujas de respuesta") {
+                    ColorPicker(
+                        "Color del fondo",
+                        selection: $responseBubbleBackground
+                    )
+                }
+
+                Section("Vista previa") {
+                    VStack(spacing: 12) {
+                        HStack {
+                            Spacer()
+                            Text("Este es un prompt")
+                                .foregroundStyle(promptTextColor)
+                                .padding(10)
+                                .background(.black.opacity(0.7))
+                                .clipShape(
+                                    RoundedRectangle(
+                                        cornerRadius: 12,
+                                        style: .continuous
+                                    )
+                                )
+                        }
+
+                        VStack(alignment: .leading, spacing: 5) {
+                            Text("Esta es una respuesta de ejemplo.")
+                                .foregroundStyle(responseTextColor)
+                                .padding(10)
+                                .background(responseBubbleBackground)
+                                .clipShape(
+                                    RoundedRectangle(
+                                        cornerRadius: 12,
+                                        style: .continuous
+                                    )
+                                )
+                            Label(
+                                "Modelo utilizado",
+                                systemImage: "sparkles"
+                            )
+                            .font(.caption2)
+                            .foregroundStyle(responseTextColor.opacity(0.72))
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .padding()
+                    .background(
+                        LinearGradient(
+                            colors: [
+                                chatBackgroundPrimary,
+                                chatBackgroundSecondary
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+                    .clipShape(
+                        RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    )
+                }
+
+                Section {
+                    Button {
+                        restoreDefaults()
+                    } label: {
+                        Label(
+                            "Restaurar colores predeterminados",
+                            systemImage: "arrow.counterclockwise"
+                        )
+                    }
+                }
+            }
+            .navigationTitle("Apariencia del Chat IA")
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Cerrar") {
+                        dismiss()
+                    }
+                }
+            }
+        }
+        .onChange(of: promptTextColor) { _, color in
+            settingModel.saveColor(
+                forkey: AppCons.UD_setting_colorIA_textContent,
+                color: color
+            )
+        }
+        .onChange(of: responseTextColor) { _, color in
+            settingModel.saveColor(
+                forkey: AppCons.UD_setting_colorIA_textRespond,
+                color: color
+            )
+        }
+        .onChange(of: chatBackgroundPrimary) { _, color in
+            settingModel.saveColor(
+                forkey: AppCons.UD_setting_colorIA_main_a,
+                color: color
+            )
+        }
+        .onChange(of: chatBackgroundSecondary) { _, color in
+            settingModel.saveColor(
+                forkey: AppCons.UD_setting_colorIA_main_b,
+                color: color
+            )
+        }
+        .onChange(of: responseBubbleBackground) { _, color in
+            settingModel.saveColor(
+                forkey: AppCons.UD_setting_colorIA_responseBubble,
+                color: color
+            )
+        }
+        #if os(macOS)
+        .frame(minWidth: 500, minHeight: 650)
+        #endif
+    }
+
+    private func restoreDefaults() {
+        promptTextColor = AppCons.defaultColorIA_promptText
+        responseTextColor = AppCons.defaultColorIA_responseText
+        chatBackgroundPrimary = AppCons.defaultColorIA_main_a
+        chatBackgroundSecondary = AppCons.defaultColorIA_main_b
+        responseBubbleBackground = AppCons.defaultColorIA_responseBubble
+    }
+}
+
+@available(iOS 26.0, macOS 26.0, *)
 private struct ConversationHistoryView: View {
     @Environment(\.dismiss) private var dismiss
     @ObservedObject var model: ChatViewModel
+    let notasModel: NotasModel
+
     @State private var conversationToRename: StoredAIConversation?
     @State private var editedTitle = ""
     @State private var searchText = ""
+    @State private var isSelecting = false
+    @State private var selectedConversationIDs = Set<UUID>()
+    @State private var showDeleteConfirmation = false
+    @State private var isPerformingBulkAction = false
+    @State private var resultMessage: String?
 
     private var filteredConversations: [StoredAIConversation] {
         let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -777,6 +1216,15 @@ private struct ConversationHistoryView: View {
                     .getNombre
                     .localizedStandardContains(query)
         }
+    }
+
+    private var filteredConversationIDs: Set<UUID> {
+        Set(filteredConversations.map(\.id))
+    }
+
+    private var areAllFilteredConversationsSelected: Bool {
+        !filteredConversationIDs.isEmpty
+            && filteredConversationIDs.isSubset(of: selectedConversationIDs)
     }
 
     var body: some View {
@@ -797,12 +1245,28 @@ private struct ConversationHistoryView: View {
                 } else {
                     ForEach(filteredConversations) { conversation in
                         Button {
-                            Task {
-                                await model.openConversation(id: conversation.id)
-                                dismiss()
+                            if isSelecting {
+                                toggleSelection(for: conversation.id)
+                            } else {
+                                Task {
+                                    await model.openConversation(id: conversation.id)
+                                    dismiss()
+                                }
                             }
                         } label: {
                             HStack(spacing: 12) {
+                                if isSelecting {
+                                    Image(systemName: selectedConversationIDs.contains(
+                                        conversation.id
+                                    ) ? "checkmark.circle.fill" : "circle")
+                                    .font(.title3)
+                                    .foregroundStyle(
+                                        selectedConversationIDs.contains(conversation.id)
+                                            ? .blue
+                                            : .secondary
+                                    )
+                                }
+
                                 Image(Autores(
                                     storedRawValue: conversation.authorRawValue
                                 ).imageName)
@@ -814,9 +1278,19 @@ private struct ConversationHistoryView: View {
                                 VStack(alignment: .leading, spacing: 3) {
                                     Text(conversation.title)
                                         .lineLimit(2)
-                                    Text(conversation.updatedAt, format: .dateTime)
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                    HStack(spacing: 5) {
+                                        let provider = AIChatProviderKind(
+                                            rawValue: conversation.providerRawValue
+                                        ) ?? .apple
+                                        Label(
+                                            provider.shortDisplayName,
+                                            systemImage: provider.systemImage
+                                        )
+                                        Text("·")
+                                        Text(conversation.updatedAt, format: .dateTime)
+                                    }
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
                                 }
                                 Spacer()
                                 if model.activeConversationID == conversation.id {
@@ -828,27 +1302,31 @@ private struct ConversationHistoryView: View {
                         }
                         .buttonStyle(.plain)
                         .swipeActions {
-                            Button(role: .destructive) {
-                                Task {
-                                    await model.deleteConversation(id: conversation.id)
+                            if !isSelecting {
+                                Button(role: .destructive) {
+                                    Task {
+                                        await model.deleteConversation(id: conversation.id)
+                                    }
+                                } label: {
+                                    Label("Eliminar", systemImage: "trash")
                                 }
-                            } label: {
-                                Label("Eliminar", systemImage: "trash")
                             }
                         }
                         .contextMenu {
-                            Button {
-                                editedTitle = conversation.title
-                                conversationToRename = conversation
-                            } label: {
-                                Label("Cambiar nombre", systemImage: "pencil")
-                            }
-                            Button(role: .destructive) {
-                                Task {
-                                    await model.deleteConversation(id: conversation.id)
+                            if !isSelecting {
+                                Button {
+                                    editedTitle = conversation.title
+                                    conversationToRename = conversation
+                                } label: {
+                                    Label("Cambiar nombre", systemImage: "pencil")
                                 }
-                            } label: {
-                                Label("Eliminar", systemImage: "trash")
+                                Button(role: .destructive) {
+                                    Task {
+                                        await model.deleteConversation(id: conversation.id)
+                                    }
+                                } label: {
+                                    Label("Eliminar", systemImage: "trash")
+                                }
                             }
                         }
                     }
@@ -858,20 +1336,62 @@ private struct ConversationHistoryView: View {
             .searchable(text: $searchText, prompt: "Título o autor")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cerrar") {
-                        dismiss()
+                    Button(isSelecting ? "Cancelar" : "Cerrar") {
+                        if isSelecting {
+                            endSelection()
+                        } else {
+                            dismiss()
+                        }
                     }
                 }
                 ToolbarItem(placement: .primaryAction) {
-                    Button {
-                        Task {
-                            await model.createNewConversation()
-                            dismiss()
+                    if isSelecting {
+                        Button("Hecho") {
+                            endSelection()
                         }
-                    } label: {
-                        Label("Nueva", systemImage: "square.and.pencil")
+                    } else {
+                        Button {
+                            isSelecting = true
+                        } label: {
+                            Label("Seleccionar", systemImage: "checkmark.circle")
+                        }
+                        .disabled(model.conversations.isEmpty)
                     }
                 }
+                ToolbarItem(placement: .primaryAction) {
+                    if !isSelecting {
+                        Button {
+                            Task {
+                                await model.createNewConversation()
+                                dismiss()
+                            }
+                        } label: {
+                            Label("Nueva", systemImage: "square.and.pencil")
+                        }
+                    }
+                }
+            }
+            .safeAreaInset(edge: .bottom) {
+                if isSelecting {
+                    bulkActionsBar
+                }
+            }
+            .confirmationDialog(
+                "Eliminar conversaciones",
+                isPresented: $showDeleteConfirmation,
+                titleVisibility: .visible
+            ) {
+                Button(
+                    selectedConversationIDs.count == 1
+                        ? "Eliminar conversación"
+                        : "Eliminar \(selectedConversationIDs.count) conversaciones",
+                    role: .destructive
+                ) {
+                    deleteSelectedConversations()
+                }
+                Button("Cancelar", role: .cancel) {}
+            } message: {
+                Text("Esta acción eliminará permanentemente las conversaciones seleccionadas y sus mensajes.")
             }
             .alert(
                 "Cambiar nombre",
@@ -895,10 +1415,171 @@ private struct ConversationHistoryView: View {
                     conversationToRename = nil
                 }
             }
+            .alert(
+                "Historial de Chat IA",
+                isPresented: Binding(
+                    get: { resultMessage != nil },
+                    set: { if !$0 { resultMessage = nil } }
+                )
+            ) {
+                Button("Aceptar") {
+                    resultMessage = nil
+                }
+            } message: {
+                Text(resultMessage ?? "")
+            }
         }
         #if os(macOS)
         .frame(minWidth: 440, minHeight: 520)
         #endif
+    }
+
+    private var bulkActionsBar: some View {
+        VStack(spacing: 10) {
+            HStack {
+                Text(
+                    selectedConversationIDs.count == 1
+                        ? "Seleccionada: 1"
+                        : "Seleccionadas: \(selectedConversationIDs.count)"
+                )
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                Spacer()
+                Button(selectAllTitle) {
+                    toggleSelectAllFiltered()
+                }
+                .disabled(filteredConversations.isEmpty || isPerformingBulkAction)
+            }
+
+            HStack(spacing: 12) {
+                Button {
+                    convertSelectedConversationsToNotes()
+                } label: {
+                    Label("Convertir en Notas", systemImage: "note.text")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                .disabled(
+                    selectedConversationIDs.isEmpty
+                        || isPerformingBulkAction
+                        || selectionContainsActiveResponse
+                )
+
+                Button(role: .destructive) {
+                    showDeleteConfirmation = true
+                } label: {
+                    Label("Eliminar", systemImage: "trash")
+                }
+                .buttonStyle(.bordered)
+                .disabled(
+                    selectedConversationIDs.isEmpty || isPerformingBulkAction
+                )
+            }
+
+            if isPerformingBulkAction {
+                ProgressView()
+                    .controlSize(.small)
+            } else if selectionContainsActiveResponse {
+                Text("Espera a que termine la respuesta activa antes de convertir esta conversación en Nota.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .padding()
+        .background(.regularMaterial)
+    }
+
+    private var selectAllTitle: String {
+        if areAllFilteredConversationsSelected {
+            return "Quitar selección"
+        }
+        return searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            ? "Seleccionar todo"
+            : "Seleccionar resultados"
+    }
+
+    private var selectionContainsActiveResponse: Bool {
+        guard model.isResponding, let activeID = model.activeConversationID else {
+            return false
+        }
+        return selectedConversationIDs.contains(activeID)
+    }
+
+    private func toggleSelection(for id: UUID) {
+        if selectedConversationIDs.contains(id) {
+            selectedConversationIDs.remove(id)
+        } else {
+            selectedConversationIDs.insert(id)
+        }
+    }
+
+    private func toggleSelectAllFiltered() {
+        if areAllFilteredConversationsSelected {
+            selectedConversationIDs.subtract(filteredConversationIDs)
+        } else {
+            selectedConversationIDs.formUnion(filteredConversationIDs)
+        }
+    }
+
+    private func endSelection() {
+        isSelecting = false
+        selectedConversationIDs.removeAll()
+    }
+
+    private func deleteSelectedConversations() {
+        let ids = selectedConversationIDs
+        guard !ids.isEmpty else { return }
+        isPerformingBulkAction = true
+        Task {
+            let succeeded = await model.deleteConversations(ids: ids)
+            isPerformingBulkAction = false
+            if succeeded {
+                endSelection()
+            } else {
+                resultMessage = model.userFacingError
+                    ?? "No fue posible eliminar las conversaciones seleccionadas."
+                model.userFacingError = nil
+            }
+        }
+    }
+
+    private func convertSelectedConversationsToNotes() {
+        let ids = selectedConversationIDs
+        guard !ids.isEmpty else { return }
+        isPerformingBulkAction = true
+
+        Task {
+            do {
+                let chatDrafts = try await model.noteDrafts(for: ids)
+                guard !chatDrafts.isEmpty else {
+                    isPerformingBulkAction = false
+                    resultMessage = "No se encontraron conversaciones para convertir."
+                    return
+                }
+                let noteDrafts = chatDrafts.map {
+                    NotaCreationDraft(
+                        title: $0.title,
+                        content: $0.content,
+                        category: "Chat IA"
+                    )
+                }
+                let succeeded = notasModel.addNotes(noteDrafts)
+                isPerformingBulkAction = false
+
+                if succeeded {
+                    let count = noteDrafts.count
+                    endSelection()
+                    resultMessage = count == 1
+                        ? "La conversación se convirtió en una Nota."
+                        : "Se crearon \(count) Notas, una por cada conversación."
+                } else {
+                    resultMessage = "No fue posible crear las Notas. No se guardó ningún resultado parcial."
+                }
+            } catch {
+                isPerformingBulkAction = false
+                resultMessage = "No fue posible leer las conversaciones: \(error.localizedDescription)"
+            }
+        }
     }
 }
 

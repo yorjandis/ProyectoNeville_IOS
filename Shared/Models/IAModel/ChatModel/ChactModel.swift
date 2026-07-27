@@ -88,6 +88,8 @@ struct ChatMessage: Identifiable, Equatable, Sendable {
     let sequence: Int64
     var status: ChatMessageStatus
     var errorDescription: String?
+    let provider: AIChatProviderKind
+    let modelIdentifier: String?
 
     var isUser: Bool { role == .user }
 
@@ -99,7 +101,9 @@ struct ChatMessage: Identifiable, Equatable, Sendable {
         createdAt: Date = Date(),
         sequence: Int64,
         status: ChatMessageStatus = .completed,
-        errorDescription: String? = nil
+        errorDescription: String? = nil,
+        provider: AIChatProviderKind = .apple,
+        modelIdentifier: String? = nil
     ) {
         self.id = id
         self.conversationID = conversationID
@@ -109,6 +113,8 @@ struct ChatMessage: Identifiable, Equatable, Sendable {
         self.sequence = sequence
         self.status = status
         self.errorDescription = errorDescription
+        self.provider = provider
+        self.modelIdentifier = modelIdentifier
     }
 }
 
@@ -126,12 +132,17 @@ final class ChatViewModel: ObservableObject {
     @Published private(set) var conversations: [StoredAIConversation] = []
     @Published private(set) var activeConversationID: UUID?
     @Published private(set) var activeAuthor: Autores = .neville
+    @Published private(set) var activeProvider: AIChatProviderKind = .apple
+    @Published private(set) var activeModelIdentifier: String?
+    @Published private(set) var hasOpenRouterAPIKey = false
     @Published private(set) var availabilityMessage: String?
     @Published var userFacingError: String?
 
     static let maxCharactersContext = 4_000
 
     private let store: AIChatStore
+    private let credentialStore: OpenRouterCredentialStore
+    private let openRouterProvider: OpenRouterChatProvider
     private let systemModel = SystemLanguageModel.default
     private var session: LanguageModelSession?
     private var responseTask: Task<Void, Never>?
@@ -139,8 +150,17 @@ final class ChatViewModel: ObservableObject {
     private var activeConversation: StoredAIConversation?
     private var hasLoaded = false
 
-    init(store: AIChatStore = .shared) {
+    init(
+        store: AIChatStore = .shared,
+        credentialStore: OpenRouterCredentialStore = .shared,
+        openRouterProvider: OpenRouterChatProvider = .shared
+    ) {
         self.store = store
+        self.credentialStore = credentialStore
+        self.openRouterProvider = openRouterProvider
+        try? credentialStore.deleteLegacyGeminiAPIKey()
+        OpenRouterConfiguration.removeLegacyGeminiPreferences()
+        hasOpenRouterAPIKey = (try? credentialStore.readAPIKey()) != nil
         availabilityMessage = Self.availabilityDescription(
             for: SystemLanguageModel.default.availability
         )
@@ -148,6 +168,28 @@ final class ChatViewModel: ObservableObject {
 
     deinit {
         responseTask?.cancel()
+    }
+
+    var activeProviderAvailabilityMessage: String? {
+        switch activeProvider {
+        case .apple:
+            return availabilityMessage
+        case .openRouter:
+            if !hasOpenRouterAPIKey {
+                return "Añade tu clave personal para utilizar OpenRouter."
+            }
+            if !OpenRouterConfiguration.hasPrivacyConsent {
+                return "Acepta el aviso de privacidad antes de enviar el historial a OpenRouter."
+            }
+            return nil
+        }
+    }
+
+    var activeProviderDisplayName: String {
+        if let activeModelIdentifier, activeProvider == .openRouter {
+            return "\(activeProvider.displayName) · \(activeModelIdentifier)"
+        }
+        return activeProvider.displayName
     }
 
     func loadInitialConversation(prefill: String?) async {
@@ -170,7 +212,11 @@ final class ChatViewModel: ObservableObject {
         }
     }
 
-    func startNewConversation(author: Autores? = nil) async throws {
+    func startNewConversation(
+        author: Autores? = nil,
+        provider: AIChatProviderKind = .apple,
+        modelIdentifier: String? = nil
+    ) async throws {
         cancelResponse()
         let selectedAuthor = author ?? activeAuthor
         let personalVoice = UserDefaults.standard.object(
@@ -182,18 +228,94 @@ final class ChatViewModel: ObservableObject {
             authorRawValue: selectedAuthor.rawValue,
             promptVersion: InstructionIA.promptVersion,
             usesPersonalVoice: personalVoice,
-            languageRawValue: language.rawValue
+            languageRawValue: language.rawValue,
+            providerRawValue: provider.rawValue,
+            modelIdentifier: provider == .openRouter
+                ? modelIdentifier ?? OpenRouterConfiguration.selectedModelIdentifier
+                : nil
         )
         try await refreshConversations()
         try await selectConversation(id: conversation.id)
     }
 
-    func createNewConversation(author: Autores? = nil) async {
+    func createNewConversation(
+        author: Autores? = nil,
+        provider: AIChatProviderKind = .apple
+    ) async {
         do {
-            try await startNewConversation(author: author)
+            try await startNewConversation(author: author, provider: provider)
         } catch {
             userFacingError = "No se pudo crear la conversación: \(error.localizedDescription)"
         }
+    }
+
+    func activateProvider(
+        _ provider: AIChatProviderKind,
+        preservingContext: Bool
+    ) async {
+        guard provider != activeProvider else { return }
+        if provider == .openRouter {
+            guard hasOpenRouterAPIKey else {
+                userFacingError = OpenRouterChatError.missingAPIKey.localizedDescription
+                return
+            }
+            guard OpenRouterConfiguration.hasPrivacyConsent else {
+                userFacingError = "Debes aceptar el aviso de privacidad de OpenRouter."
+                return
+            }
+        }
+
+        do {
+            let sourceMessages = preservingContext
+                ? Self.pairedCompletedMessages(messages)
+                : []
+            let sourceSummary = preservingContext ? activeConversation?.summary : nil
+            let sourceTitle = preservingContext ? activeConversation?.title : nil
+            try await startNewConversation(
+                author: activeAuthor,
+                provider: provider
+            )
+
+            guard preservingContext, let conversationID = activeConversationID else {
+                return
+            }
+            for source in sourceMessages {
+                let copy = ChatMessage(
+                    conversationID: conversationID,
+                    text: source.text,
+                    role: source.role,
+                    createdAt: source.createdAt,
+                    sequence: source.sequence,
+                    status: .completed,
+                    errorDescription: nil,
+                    provider: source.provider,
+                    modelIdentifier: source.modelIdentifier
+                )
+                try await persist(message: copy)
+            }
+            if let sourceSummary {
+                try await store.updateConversationContext(
+                    id: conversationID,
+                    summary: sourceSummary,
+                    transcriptData: nil,
+                    promptVersion: InstructionIA.promptVersion
+                )
+            }
+            if let sourceTitle, sourceTitle != "Nueva conversación" {
+                try await store.renameConversation(
+                    id: conversationID,
+                    title: "\(sourceTitle) · \(provider.shortDisplayName)"
+                )
+            }
+            try await selectConversation(id: conversationID)
+            try await refreshConversations()
+        } catch {
+            userFacingError = "No se pudo cambiar el modelo: \(error.localizedDescription)"
+        }
+    }
+
+    func refreshOpenRouterCredentialState() {
+        hasOpenRouterAPIKey = (try? credentialStore.readAPIKey()) != nil
     }
 
     func openConversation(id: UUID) async {
@@ -214,10 +336,12 @@ final class ChatViewModel: ObservableObject {
         activeConversation = stored
         activeConversationID = stored.id
         activeAuthor = Autores(storedRawValue: stored.authorRawValue)
+        activeProvider = AIChatProviderKind(rawValue: stored.providerRawValue) ?? .apple
+        activeModelIdentifier = stored.modelIdentifier
         messages = storedMessages.map(Self.makeChatMessage)
         inputText = ""
 
-        guard systemModel.isAvailable else {
+        guard activeProvider == .apple, systemModel.isAvailable else {
             session = nil
             return
         }
@@ -240,23 +364,87 @@ final class ChatViewModel: ObservableObject {
     }
 
     func deleteConversation(id: UUID) async {
-        let wasActive = activeConversationID == id
-        if wasActive {
+        _ = await deleteConversations(ids: [id])
+    }
+
+    @discardableResult
+    func deleteConversations(ids: Set<UUID>) async -> Bool {
+        guard !ids.isEmpty else { return true }
+        let deletesActiveConversation = activeConversationID.map(ids.contains) ?? false
+        if deletesActiveConversation {
             cancelResponse()
         }
         do {
-            try await store.deleteConversation(id: id)
+            try await store.deleteConversations(ids: ids)
             try await refreshConversations()
-            if wasActive {
+            if deletesActiveConversation {
                 if let next = conversations.first {
                     try await selectConversation(id: next.id)
                 } else {
-                    try await startNewConversation(author: activeAuthor)
+                    clearActiveConversation()
                 }
             }
+            return true
         } catch {
-            userFacingError = "No se pudo eliminar la conversación: \(error.localizedDescription)"
+            userFacingError = "No se pudieron eliminar las conversaciones: \(error.localizedDescription)"
+            return false
         }
+    }
+
+    func noteDrafts(for conversationIDs: Set<UUID>) async throws -> [AIChatNoteDraft] {
+        let selectedConversations = conversations.filter {
+            conversationIDs.contains($0.id)
+        }
+        var drafts: [AIChatNoteDraft] = []
+        drafts.reserveCapacity(selectedConversations.count)
+
+        for conversation in selectedConversations {
+            let author = Autores(storedRawValue: conversation.authorRawValue)
+            let provider = AIChatProviderKind(
+                rawValue: conversation.providerRawValue
+            ) ?? .apple
+            let storedMessages = try await store.messages(
+                conversationID: conversation.id
+            )
+            let transcript = storedMessages.compactMap { message -> String? in
+                let text = message.text.trimmingCharacters(
+                    in: .whitespacesAndNewlines
+                )
+                guard !text.isEmpty,
+                      let role = ChatMessageRole(rawValue: message.roleRawValue)
+                else {
+                    return nil
+                }
+                let speaker = role == .user ? "Usuario" : author.getNombre
+                return "\(speaker):\n\(text)"
+            }
+            .joined(separator: "\n\n")
+
+            var modelDescription = provider.displayName
+            if let modelIdentifier = conversation.modelIdentifier,
+               !modelIdentifier.isEmpty {
+                modelDescription += " · \(modelIdentifier)"
+            }
+            let title = conversation.title
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+            let resolvedTitle = title.isEmpty || title == "Nueva conversación"
+                ? "Chat IA con \(author.getNombre)"
+                : title
+            let content = """
+            Conversación de Chat IA
+            Autor: \(author.getNombre)
+            Modelo: \(modelDescription)
+            Fecha: \(conversation.createdAt.formatted(date: .long, time: .shortened))
+
+            \(transcript.isEmpty ? "Esta conversación no contiene mensajes." : transcript)
+            """
+            drafts.append(AIChatNoteDraft(
+                id: conversation.id,
+                title: resolvedTitle,
+                content: content
+            ))
+        }
+        return drafts
     }
 
     func renameConversation(id: UUID, title: String) async {
@@ -293,9 +481,22 @@ final class ChatViewModel: ObservableObject {
             userFacingError = "No hay una conversación activa."
             return
         }
-        guard systemModel.isAvailable, session != nil else {
-            userFacingError = availabilityMessage ?? "Apple Intelligence no está disponible."
-            return
+        switch activeProvider {
+        case .apple:
+            guard systemModel.isAvailable, session != nil else {
+                userFacingError = availabilityMessage
+                    ?? "Apple Intelligence no está disponible."
+                return
+            }
+        case .openRouter:
+            guard hasOpenRouterAPIKey else {
+                userFacingError = OpenRouterChatError.missingAPIKey.localizedDescription
+                return
+            }
+            guard OpenRouterConfiguration.hasPrivacyConsent else {
+                userFacingError = "Acepta el aviso de privacidad antes de usar OpenRouter."
+                return
+            }
         }
 
         inputText = ""
@@ -304,14 +505,18 @@ final class ChatViewModel: ObservableObject {
             conversationID: conversationID,
             text: candidate,
             role: .user,
-            sequence: nextSequence
+            sequence: nextSequence,
+            provider: activeProvider,
+            modelIdentifier: activeModelIdentifier
         )
         let assistantMessage = ChatMessage(
             conversationID: conversationID,
             text: "",
             role: .assistant,
             sequence: nextSequence + 1,
-            status: .streaming
+            status: .streaming,
+            provider: activeProvider,
+            modelIdentifier: activeModelIdentifier
         )
         messages.append(contentsOf: [userMessage, assistantMessage])
 
@@ -362,12 +567,14 @@ final class ChatViewModel: ObservableObject {
         responseTask = nil
         activeRequestID = nil
         isResponding = false
-        rebuildSessionFromCompletedMessages()
+        if activeProvider == .apple {
+            rebuildSessionFromCompletedMessages()
+        }
     }
 
     func refreshAvailability() {
         availabilityMessage = Self.availabilityDescription(for: systemModel.availability)
-        guard systemModel.isAvailable else { return }
+        guard activeProvider == .apple, systemModel.isAvailable else { return }
         rebuildSessionFromCompletedMessages()
     }
 
@@ -395,29 +602,44 @@ final class ChatViewModel: ObservableObject {
             try await updateAutomaticTitleIfNeeded(from: prompt)
             try Task.checkCancellation()
 
-            if await shouldCompactContext(for: prompt) {
-                try await compactContext(excludingMessageID: userMessage.id)
-            }
+            switch assistantMessage.provider {
+            case .apple:
+                if await shouldCompactContext(for: prompt) {
+                    try await compactContext(excludingMessageID: userMessage.id)
+                }
 
-            do {
-                try await streamResponse(
-                    to: turnPrompt,
-                    assistantMessageID: assistantMessage.id,
-                    requestID: requestID
+                do {
+                    try await streamAppleResponse(
+                        to: turnPrompt,
+                        assistantMessageID: assistantMessage.id,
+                        requestID: requestID
+                    )
+                } catch {
+                    guard Self.isContextLimitError(error) else { throw error }
+                    try await compactContext(
+                        excludingMessageID: userMessage.id,
+                        force: true
+                    )
+                    updateAssistantDraft(
+                        id: assistantMessage.id,
+                        text: "",
+                        requestID: requestID
+                    )
+                    try await streamAppleResponse(
+                        to: makeTurnPrompt(
+                            question: prompt,
+                            intent: .alternative
+                        ),
+                        assistantMessageID: assistantMessage.id,
+                        requestID: requestID
+                    )
+                }
+            case .openRouter:
+                try await compactOpenRouterContextIfNeeded(
+                    excludingMessageID: userMessage.id
                 )
-            } catch {
-                guard Self.isContextLimitError(error) else { throw error }
-                try await compactContext(
-                    excludingMessageID: userMessage.id,
-                    force: true
-                )
-                updateAssistantDraft(
-                    id: assistantMessage.id,
-                    text: "",
-                    requestID: requestID
-                )
-                try await streamResponse(
-                    to: makeTurnPrompt(question: prompt, intent: .alternative),
+                try await streamOpenRouterResponse(
+                    prompt: turnPrompt,
                     assistantMessageID: assistantMessage.id,
                     requestID: requestID
                 )
@@ -434,7 +656,9 @@ final class ChatViewModel: ObservableObject {
                 errorDescription: nil
             )
             markMessage(id: completed.id, status: .completed, errorDescription: nil)
-            try await persistCurrentTranscript()
+            if assistantMessage.provider == .apple {
+                try await persistCurrentTranscript()
+            }
             try await refreshConversations()
         } catch is CancellationError {
             await markCancelled(messageID: assistantMessage.id, requestID: requestID)
@@ -453,7 +677,7 @@ final class ChatViewModel: ObservableObject {
         }
     }
 
-    private func streamResponse(
+    private func streamAppleResponse(
         to prompt: String,
         assistantMessageID: UUID,
         requestID: UUID
@@ -482,6 +706,145 @@ final class ChatViewModel: ObservableObject {
         guard !latestText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
             throw ChatModelError.emptyResponse
         }
+    }
+
+    private func streamOpenRouterResponse(
+        prompt: String,
+        assistantMessageID: UUID,
+        requestID: UUID
+    ) async throws {
+        guard let conversation = activeConversation else {
+            throw ChatModelError.conversationNotFound
+        }
+        guard let apiKey = try credentialStore.readAPIKey(), !apiKey.isEmpty else {
+            throw OpenRouterChatError.missingAPIKey
+        }
+        let modelIdentifier = conversation.modelIdentifier
+            ?? OpenRouterConfiguration.selectedModelIdentifier
+        guard OpenRouterConfiguration.isFreeModelIdentifier(modelIdentifier) else {
+            throw OpenRouterChatError.paidModelNotAllowed
+        }
+        let language = AppLanguage(rawValue: conversation.languageRawValue) ?? .current
+        let instructions = InstructionIA.makeOpenRouter(
+            author: Autores(storedRawValue: conversation.authorRawValue),
+            usesPersonalVoice: conversation.usesPersonalVoice,
+            language: language
+        )
+        let contextMessages = openRouterRecentContextMessages()
+        var request = OpenRouterChatRequest(
+            instructions: instructions,
+            summary: conversation.summary,
+            messages: contextMessages,
+            prompt: prompt,
+            modelIdentifier: modelIdentifier
+        )
+
+        var latestText = ""
+        var continuationAttempts = 0
+
+        while true {
+            do {
+                for try await delta in openRouterProvider.streamResponse(
+                    request: request,
+                    apiKey: apiKey
+                ) {
+                    try Task.checkCancellation()
+                    guard activeRequestID == requestID else {
+                        throw CancellationError()
+                    }
+                    latestText += delta
+                    updateAssistantDraft(
+                        id: assistantMessageID,
+                        text: latestText,
+                        requestID: requestID
+                    )
+                }
+                break
+            } catch OpenRouterChatError.responseTruncated
+                where continuationAttempts < 1 && !latestText.isEmpty {
+                continuationAttempts += 1
+                request = OpenRouterChatRequest(
+                    instructions: instructions,
+                    summary: conversation.summary,
+                    messages: contextMessages + [
+                        AIChatContextMessage(role: .user, text: prompt),
+                        AIChatContextMessage(role: .assistant, text: latestText)
+                    ],
+                    prompt: """
+                    Continúa exactamente desde el punto donde se interrumpió la respuesta anterior.
+                    Devuelve únicamente la continuación pendiente: no repitas la introducción, los apartados ya escritos ni anuncies que vas a continuar.
+                    """,
+                    modelIdentifier: modelIdentifier
+                )
+            }
+        }
+        guard !latestText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            throw OpenRouterChatError.emptyResponse
+        }
+    }
+
+    private func openRouterRecentContextMessages() -> [AIChatContextMessage] {
+        let completed = Self.pairedCompletedMessages(messages)
+        var selected: [ChatMessage] = []
+        var characterCount = 0
+
+        for message in completed.reversed() {
+            let nextCount = characterCount + message.text.count
+            guard selected.count < 12, nextCount <= 24_000 else { break }
+            selected.append(message)
+            characterCount = nextCount
+        }
+        return selected.reversed().map {
+            AIChatContextMessage(role: $0.role, text: $0.text)
+        }
+    }
+
+    private func compactOpenRouterContextIfNeeded(
+        excludingMessageID: UUID
+    ) async throws {
+        guard let conversation = activeConversation else {
+            throw ChatModelError.conversationNotFound
+        }
+        let completed = Self.pairedCompletedMessages(messages.filter {
+            $0.id != excludingMessageID
+        })
+        let totalCharacters = completed.reduce(0) { $0 + $1.text.count }
+        guard completed.count > 12 || totalCharacters > 24_000 else { return }
+
+        let recentMessages = Array(completed.suffix(8))
+        let recentIDs = Set(recentMessages.map(\.id))
+        let olderMessages = completed.filter { !recentIDs.contains($0.id) }
+        guard !olderMessages.isEmpty else { return }
+
+        let summary: String
+        if systemModel.isAvailable {
+            summary = try await summarizeHistory(
+                previousSummary: conversation.summary,
+                messages: olderMessages
+            ) ?? conversation.summary ?? ""
+        } else {
+            guard let apiKey = try credentialStore.readAPIKey(), !apiKey.isEmpty else {
+                throw OpenRouterChatError.missingAPIKey
+            }
+            let text = olderMessages.map {
+                "\($0.role == .user ? "Usuario" : "Asistente"): \($0.text)"
+            }.joined(separator: "\n\n")
+            summary = try await openRouterProvider.summarize(
+                text: text,
+                previousSummary: conversation.summary,
+                modelIdentifier: conversation.modelIdentifier
+                    ?? OpenRouterConfiguration.selectedModelIdentifier,
+                apiKey: apiKey
+            )
+        }
+
+        try await store.updateConversationContext(
+            id: conversation.id,
+            summary: summary,
+            transcriptData: nil,
+            promptVersion: InstructionIA.promptVersion
+        )
+        activeConversation = try await store.conversation(id: conversation.id)
     }
 
     private func shouldCompactContext(for incomingPrompt: String) async -> Bool {
@@ -654,6 +1017,15 @@ final class ChatViewModel: ObservableObject {
         session?.prewarm()
     }
 
+    private func clearActiveConversation() {
+        activeConversation = nil
+        activeConversationID = nil
+        messages = []
+        inputText = ""
+        session = nil
+        activeModelIdentifier = nil
+    }
+
     private func makeTurnPrompt(
         question: String,
         intent: ResponseIntent
@@ -732,19 +1104,33 @@ final class ChatViewModel: ObservableObject {
     private func markFailed(messageID: UUID, error: Error, requestID: UUID) async {
         guard activeRequestID == requestID else { return }
         let description = Self.userMessage(for: error)
+        let existingText = messages.first(where: { $0.id == messageID })?.text ?? ""
+        let visibleText: String
+        if !existingText.isEmpty,
+           case OpenRouterChatError.responseTruncated = error {
+            visibleText = """
+            \(existingText)
+
+            — \(description)
+            """
+        } else {
+            visibleText = description
+        }
         markMessage(
             id: messageID,
-            text: description,
+            text: visibleText,
             status: .failed,
             errorDescription: error.localizedDescription
         )
         try? await store.updateMessage(
             id: messageID,
-            text: description,
+            text: visibleText,
             statusRawValue: ChatMessageStatus.failed.rawValue,
             errorDescription: error.localizedDescription
         )
-        rebuildSessionFromCompletedMessages()
+        if activeProvider == .apple {
+            rebuildSessionFromCompletedMessages()
+        }
     }
 
     private func updateAssistantDraft(id: UUID, text: String, requestID: UUID) {
@@ -775,7 +1161,9 @@ final class ChatViewModel: ObservableObject {
             createdAt: message.createdAt,
             sequence: message.sequence,
             statusRawValue: message.status.rawValue,
-            errorDescription: message.errorDescription
+            errorDescription: message.errorDescription,
+            providerRawValue: message.provider.rawValue,
+            modelIdentifier: message.modelIdentifier
         ))
     }
 
@@ -800,7 +1188,9 @@ final class ChatViewModel: ObservableObject {
             createdAt: stored.createdAt,
             sequence: stored.sequence,
             status: status,
-            errorDescription: stored.errorDescription
+            errorDescription: stored.errorDescription,
+            provider: AIChatProviderKind(rawValue: stored.providerRawValue) ?? .apple,
+            modelIdentifier: stored.modelIdentifier
         )
     }
 
@@ -869,6 +1259,12 @@ final class ChatViewModel: ObservableObject {
     }
 
     private static func userMessage(for error: Error) -> String {
+        if let openRouterError = error as? OpenRouterChatError {
+            return openRouterError.localizedDescription
+        }
+        if let credentialError = error as? OpenRouterCredentialError {
+            return credentialError.localizedDescription
+        }
         guard let generationError = error as? LanguageModelSession.GenerationError else {
             return "No se pudo generar la respuesta. Inténtalo de nuevo."
         }

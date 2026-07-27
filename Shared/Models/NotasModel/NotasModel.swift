@@ -37,6 +37,18 @@ struct NotaChecklistItem: Identifiable, Codable, Equatable {
     }
 }
 
+struct NotaCreationDraft: Sendable {
+    let title: String
+    let content: String
+    let category: String
+
+    init(title: String, content: String, category: String = "") {
+        self.title = title
+        self.content = content
+        self.category = category
+    }
+}
+
 extension Notas {
     var isChecklistNote: Bool {
         get {
@@ -235,6 +247,38 @@ final class NotasModel : ObservableObject  {
             }
         }
         return true
+    }
+
+    /// Añade varias notas en una sola transacción. Si alguna escritura falla,
+    /// no se conserva ninguna nota parcial.
+    func addNotes(_ drafts: [NotaCreationDraft]) -> Bool {
+        guard !drafts.isEmpty else { return true }
+        let now = Date()
+
+        for draft in drafts {
+            let entity = Notas(context: context)
+            entity.id = UUID().uuidString
+            entity.title = draft.title
+            entity.nota = draft.content
+            entity.isfav = false
+            entity.isChecklistNote = false
+            entity.checklistItems = []
+            entity.setValue(
+                draft.category.trimmingCharacters(in: .whitespacesAndNewlines),
+                forKey: "categoria"
+            )
+            entity.setValue("", forKey: "direccionMapa")
+            entity.setValue(now, forKey: "fechaCreacion")
+            entity.setValue(now, forKey: "fechaModificacion")
+        }
+
+        do {
+            try context.save()
+            return true
+        } catch {
+            context.rollback()
+            return false
+        }
     }
     
     

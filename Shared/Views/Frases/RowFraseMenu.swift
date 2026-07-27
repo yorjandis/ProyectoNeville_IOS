@@ -58,7 +58,8 @@ struct RowFraseMenu: View {
          self.esNoInbuilt = frase.isPersonal
          
          if #available(iOS 26.0, macOS 26.0, *) {
-             self.iaDisponible = IAModelAppleIntelligence.isAvailable()
+             self.iaDisponible = IAModelAppleIntelligence
+                 .hasAvailableContentProvider()
          } else {
              self.iaDisponible = false
          }

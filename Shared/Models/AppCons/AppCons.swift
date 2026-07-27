@@ -133,6 +133,13 @@ struct AppCons{
     static let UD_setting_colorIA_main_b          = "settig_colorIA_main_b"
     static let UD_setting_colorIA_textContent     = "settig_colorIA_textContent"    //Color del texto del Chat de mIA
     static let UD_setting_colorIA_textRespond     = "setting_colorIA_textRespond"   //Color de texto de la ventana de respuesta de la IA
+    static let UD_setting_colorIA_responseBubble  = "setting_colorIA_responseBubble"
+
+    static let defaultColorIA_main_a: Color = .orange.opacity(0.7)
+    static let defaultColorIA_main_b: Color = .brown
+    static let defaultColorIA_promptText: Color = .white
+    static let defaultColorIA_responseText: Color = .black
+    static let defaultColorIA_responseBubble: Color = .white.opacity(0.88)
     
     //Otros
     static let UD_setting_OrdenarEntradaDiario      = "settig_Diario_ordenarentradas" //Permite ordenar las entradas del Diario por fechaCracion/fechaModificación

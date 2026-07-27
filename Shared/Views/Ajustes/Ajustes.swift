@@ -95,10 +95,21 @@ struct Ajustes: View {
     
     
     //Colores de IA chat:
-    @State var ColorChatIAPrimario         : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_colorIA_main_a) ?? .orange.opacity(0.5)
-    @State var ColorChatIASecundario       : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_colorIA_main_b) ?? .brown
-    @State var ColorChatIAFuente           : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_colorIA_textContent) ?? .white
-    @State var ColorRespondIAFuente        : Color = SettingModel.loadColor(forkey: AppCons.UD_setting_colorIA_textRespond) ?? .black
+    @State var ColorChatIAPrimario: Color = SettingModel.loadColor(
+        forkey: AppCons.UD_setting_colorIA_main_a
+    ) ?? AppCons.defaultColorIA_main_a
+    @State var ColorChatIASecundario: Color = SettingModel.loadColor(
+        forkey: AppCons.UD_setting_colorIA_main_b
+    ) ?? AppCons.defaultColorIA_main_b
+    @State var ColorChatIAFuente: Color = SettingModel.loadColor(
+        forkey: AppCons.UD_setting_colorIA_textContent
+    ) ?? AppCons.defaultColorIA_promptText
+    @State var ColorRespondIAFuente: Color = SettingModel.loadColor(
+        forkey: AppCons.UD_setting_colorIA_textRespond
+    ) ?? AppCons.defaultColorIA_responseText
+    @State var ColorRespondIABurbuja: Color = SettingModel.loadColor(
+        forkey: AppCons.UD_setting_colorIA_responseBubble
+    ) ?? AppCons.defaultColorIA_responseBubble
     
     //Opciones de Frases
     @AppStorage(AppCons.UD_setting_showHide_autor_in_frases) var showHideAutorInFrases : Bool = true // Muestra / oculta el aurtor en las frases del Home
@@ -362,16 +373,22 @@ struct Ajustes: View {
                                     
                                     Text("Colores del Contenido IA").font(.system(size: 22)).foregroundStyle(.orange)
                                     
-                                    ColorPicker("Color de Texto Chat IA          ", selection: $ColorChatIAFuente)
+                                    ColorPicker("Color del texto del prompt", selection: $ColorChatIAFuente)
                                         .bold()
                                         .onChange(of: ColorChatIAFuente, initial: true) { oldValue, newValue in
                                             settingModel.saveColor(forkey: AppCons.UD_setting_colorIA_textContent, color: newValue)
                                         }
                                     
-                                    ColorPicker("Color de Texto Respuesta IA", selection: $ColorRespondIAFuente)
+                                    ColorPicker("Color del texto de las respuestas", selection: $ColorRespondIAFuente)
                                         .bold()
                                         .onChange(of: ColorRespondIAFuente, initial: true) { oldValue, newValue in
                                             settingModel.saveColor(forkey: AppCons.UD_setting_colorIA_textRespond, color: newValue)
+                                        }
+
+                                    ColorPicker("Fondo de las burbujas de respuesta", selection: $ColorRespondIABurbuja)
+                                        .bold()
+                                        .onChange(of: ColorRespondIABurbuja, initial: true) { oldValue, newValue in
+                                            settingModel.saveColor(forkey: AppCons.UD_setting_colorIA_responseBubble, color: newValue)
                                         }
                                     
                                     HStack{
@@ -402,12 +419,16 @@ struct Ajustes: View {
                                     }
                                     
                                     Button("Aplicar Colores Por Defecto"){
-                                        self.ColorChatIAFuente      = .white
-                                        self.ColorChatIAPrimario    = .orange.opacity(0.5)
-                                        self.ColorChatIASecundario  = .brown
+                                        self.ColorChatIAFuente = AppCons.defaultColorIA_promptText
+                                        self.ColorRespondIAFuente = AppCons.defaultColorIA_responseText
+                                        self.ColorChatIAPrimario = AppCons.defaultColorIA_main_a
+                                        self.ColorChatIASecundario = AppCons.defaultColorIA_main_b
+                                        self.ColorRespondIABurbuja = AppCons.defaultColorIA_responseBubble
                                         settingModel.saveColor(forkey: AppCons.UD_setting_colorIA_textContent, color: self.ColorChatIAFuente)
+                                        settingModel.saveColor(forkey: AppCons.UD_setting_colorIA_textRespond, color: self.ColorRespondIAFuente)
                                         settingModel.saveColor(forkey: AppCons.UD_setting_colorIA_main_a, color: self.ColorChatIAPrimario)
                                         settingModel.saveColor(forkey: AppCons.UD_setting_colorIA_main_b, color: self.ColorChatIASecundario)
+                                        settingModel.saveColor(forkey: AppCons.UD_setting_colorIA_responseBubble, color: self.ColorRespondIABurbuja)
                                     }
                                 }
                                 .padding(.horizontal, 30)
@@ -1160,16 +1181,22 @@ struct Ajustes: View {
                         if IAModelAppleIntelligence.isAvailable(){
                             Section("Colores Chat IA"){
                                 
-                                ColorPicker("Color de Texto Chat IA", selection: $ColorChatIAFuente)
+                                ColorPicker("Color del texto del prompt", selection: $ColorChatIAFuente)
                                     .bold()
                                     .onChange(of: ColorChatIAFuente, initial: true) { oldValue, newValue in
                                         settingModel.saveColor(forkey: AppCons.UD_setting_colorIA_textContent, color: newValue)
                                     }
                                 
-                                ColorPicker("Color de Texto Respuesta IA", selection: $ColorRespondIAFuente)
+                                ColorPicker("Color del texto de las respuestas", selection: $ColorRespondIAFuente)
                                     .bold()
                                     .onChange(of: ColorRespondIAFuente, initial: true) { oldValue, newValue in
                                         settingModel.saveColor(forkey: AppCons.UD_setting_colorIA_textRespond, color: newValue)
+                                    }
+
+                                ColorPicker("Fondo de las burbujas de respuesta", selection: $ColorRespondIABurbuja)
+                                    .bold()
+                                    .onChange(of: ColorRespondIABurbuja, initial: true) { oldValue, newValue in
+                                        settingModel.saveColor(forkey: AppCons.UD_setting_colorIA_responseBubble, color: newValue)
                                     }
                                 
                                 VStack(alignment: .center){
@@ -1196,12 +1223,16 @@ struct Ajustes: View {
                                 }
                                 
                                 Button("Aplicar Colores Por Defecto"){
-                                    self.ColorChatIAFuente      = .white
-                                    self.ColorChatIAPrimario    = .orange.opacity(0.5)
-                                    self.ColorChatIASecundario  = .brown
+                                    self.ColorChatIAFuente = AppCons.defaultColorIA_promptText
+                                    self.ColorRespondIAFuente = AppCons.defaultColorIA_responseText
+                                    self.ColorChatIAPrimario = AppCons.defaultColorIA_main_a
+                                    self.ColorChatIASecundario = AppCons.defaultColorIA_main_b
+                                    self.ColorRespondIABurbuja = AppCons.defaultColorIA_responseBubble
                                     settingModel.saveColor(forkey: AppCons.UD_setting_colorIA_textContent, color: self.ColorChatIAFuente)
+                                    settingModel.saveColor(forkey: AppCons.UD_setting_colorIA_textRespond, color: self.ColorRespondIAFuente)
                                     settingModel.saveColor(forkey: AppCons.UD_setting_colorIA_main_a, color: self.ColorChatIAPrimario)
                                     settingModel.saveColor(forkey: AppCons.UD_setting_colorIA_main_b, color: self.ColorChatIASecundario)
+                                    settingModel.saveColor(forkey: AppCons.UD_setting_colorIA_responseBubble, color: self.ColorRespondIABurbuja)
                                 }
                             }
                         }

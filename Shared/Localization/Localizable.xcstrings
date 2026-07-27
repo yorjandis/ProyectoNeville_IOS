@@ -945,6 +945,9 @@
     "·" : {
       "shouldTranslate" : false
     },
+    "· %@" : {
+
+    },
     "(Beta)" : {
       "localizations" : {
         "en" : {
@@ -1147,6 +1150,9 @@
           }
         }
       }
+    },
+    "%@ no disponible" : {
+
     },
     "%@, %@" : {
       "localizations" : {
@@ -1560,9 +1566,6 @@
         }
       }
     },
-    "☘️ Información sobre la IA utilizada:\n\nEstas funciones utilizan el modelo de Foundation Models de Apple y procesan las solicitudes en el dispositivo. El historial del chat se guarda localmente en el dispositivo y no se sincroniza con iCloud.\n\nEl modelo genera respuestas inspiradas en las enseñanzas de Neville Goddard, Joe Dispenza, Bruce Lipton y Gregg Braden. Estas respuestas pueden contener errores, por lo que conviene revisarlas y tomar decisiones informadas.\n\nLas instrucciones limitan las respuestas al marco establecido para cada autor, diferencian las enseñanzas de los hechos científicos y reducen sesgos e información inventada.\n\nEsta herramienta ofrece contenido educativo y de reflexión. No sustituye asesoramiento médico, psicológico, legal ni financiero.\n\nLa configuración del modelo se revisará y actualizará junto con la aplicación." : {
-
-    },
     "☘️ Información sobre la IA utilizada:\n\nLa Inteligencia Artificial se basa en los modelos preinstalados en el dispositivo. Apple garantiza que su acceso es seguro y no involucra procesamiento fuera del dispositivo.\n\nEl modelo es capaz de generar respuestas creativas y eficaces basadas en los conocimientos y enseñanzas de varios autores (Neville Goddard, Joe Dispenza, Bruce Lipton y Gregg Braden). Sin embargo, se recomienda revisar con cuidado cada respuesta y tomar desiciones informadas acerca de ellas.\n\nLos modelos han sido cuidadosamente instruidos y revisados para aminorar los sezgos, errores y que solo responda dentro de los límites del campo de conocimientos establecido para cada autor.\n\nSi siente que una respuesta no resuena con usted, o no es correcta, la mejor desición es seguir su instinto propio.\n\nLa optimización del modelo es un proceso continuo, en cada actualización de la \"La Ley\" será revisado y actualizado." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1718,6 +1721,9 @@
         }
       }
     },
+    "1. Selecciona el modelo" : {
+
+    },
     "1) Mira el procesamiento (NOVA). 2) Revisa azúcar, sal y grasas saturadas por 100 g. 3) Verifica fibra y proteína. 4) Si tienes sensibilidad, confirma alérgenos (por ejemplo gluten). 5) Revisa presencia de aditivos." : {
       "localizations" : {
         "en" : {
@@ -1755,6 +1761,9 @@
           }
         }
       }
+    },
+    "2. Selecciona el autor" : {
+
     },
     "3. Abre Salud." : {
       "localizations" : {
@@ -2570,6 +2579,9 @@
         }
       }
     },
+    "Abrir la página de claves de OpenRouter" : {
+
+    },
     "Abrir Notas" : {
       "localizations" : {
         "en" : {
@@ -2938,6 +2950,9 @@
           }
         }
       }
+    },
+    "Aceptar y continuar" : {
+
     },
     "Acepto" : {
       "localizations" : {
@@ -4778,6 +4793,12 @@
         }
       }
     },
+    "Ajustar la apariencia de esta vista" : {
+
+    },
+    "Ajustar visualización" : {
+
+    },
     "Ajustes" : {
       "localizations" : {
         "en" : {
@@ -4837,6 +4858,9 @@
           }
         }
       }
+    },
+    "Al usar OpenRouter, las preguntas y el contexto necesario se envían a OpenRouter y al proveedor que ejecuta el modelo gratuito seleccionado. Sus políticas de tratamiento de datos pueden variar." : {
+
     },
     "Aleatoria" : {
       "localizations" : {
@@ -5359,6 +5383,9 @@
         }
       }
     },
+    "Añadir clave de OpenRouter" : {
+
+    },
     "Añadir coordenadas" : {
       "localizations" : {
         "en" : {
@@ -5860,6 +5887,12 @@
         }
       }
     },
+    "Apariencia del chat" : {
+
+    },
+    "Apariencia del Chat IA" : {
+
+    },
     "Apertura" : {
       "localizations" : {
         "en" : {
@@ -6200,6 +6233,9 @@
     "Apple" : {
       "shouldTranslate" : false
     },
+    "Apple Intelligence" : {
+
+    },
     "Apple Intelligence no disponible" : {
 
     },
@@ -6224,6 +6260,12 @@
           }
         }
       }
+    },
+    "Apple Intelligence no está disponible en este dispositivo." : {
+
+    },
+    "Apple Intelligence seguirá siendo el modelo predeterminado y procesa las funciones de IA de forma local. OpenRouter es opcional y solo se activa cuando tú lo eliges." : {
+
     },
     "Apple Watch realiza lecturas periódicas; fuera de un entrenamiento no son continuas. Por eso “en tiempo real” significa la estimación más reciente disponible en Salud." : {
       "localizations" : {
@@ -7438,6 +7480,7 @@
       }
     },
     "Autores:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -7452,6 +7495,9 @@
           }
         }
       }
+    },
+    "Autorizar el envío del texto" : {
+
     },
     "Avanza hoy con intención" : {
       "localizations" : {
@@ -8193,9 +8239,6 @@
         }
       }
     },
-    "Bruce lipton" : {
-      "shouldTranslate" : false
-    },
     "Bruce Lipton" : {
       "shouldTranslate" : false
     },
@@ -8333,6 +8376,9 @@
           }
         }
       }
+    },
+    "Burbujas de respuesta" : {
+
     },
     "Busca ayuda inmediata si…" : {
       "localizations" : {
@@ -9086,6 +9132,9 @@
         }
       }
     },
+    "Cambiar a %@" : {
+
+    },
     "Cambiar apariencia" : {
       "localizations" : {
         "en" : {
@@ -9109,6 +9158,7 @@
       }
     },
     "Cambiar Autor" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -9123,6 +9173,9 @@
           }
         }
       }
+    },
+    "Cambiar autor · %@" : {
+
     },
     "Cambiar Autor..." : {
       "localizations" : {
@@ -10710,6 +10763,12 @@
         }
       }
     },
+    "Clave de API de OpenRouter" : {
+
+    },
+    "Clave guardada en este dispositivo" : {
+
+    },
     "Cobertura" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -11276,7 +11335,11 @@
         }
       }
     },
+    "Color de la fuente" : {
+
+    },
     "Color de Texto Chat IA" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -11299,6 +11362,7 @@
       }
     },
     "Color de Texto Chat IA          " : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -11321,6 +11385,7 @@
       }
     },
     "Color de Texto Respuesta IA" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -11462,6 +11527,18 @@
         }
       }
     },
+    "Color del texto de las respuestas" : {
+
+    },
+    "Color del texto del prompt" : {
+
+    },
+    "Color inferior" : {
+
+    },
+    "Color superior" : {
+
+    },
     "Color Texto Principal" : {
       "localizations" : {
         "en" : {
@@ -11553,6 +11630,9 @@
           }
         }
       }
+    },
+    "Colores del texto" : {
+
     },
     "Colores en Home" : {
       "localizations" : {
@@ -11701,6 +11781,9 @@
           }
         }
       }
+    },
+    "Cómo crear una clave" : {
+
     },
     "Cómo elegir mejor" : {
       "localizations" : {
@@ -12206,6 +12289,9 @@
         }
       }
     },
+    "Comprendo y autorizo el envío de este contenido a OpenRouter y al proveedor del modelo cuando utilice esta opción." : {
+
+    },
     "Comprobación" : {
       "localizations" : {
         "en" : {
@@ -12227,6 +12313,9 @@
           }
         }
       }
+    },
+    "Comprobando…" : {
+
     },
     "Comprobar BD offline" : {
       "localizations" : {
@@ -12250,7 +12339,13 @@
         }
       }
     },
+    "Comprobar clave guardada" : {
+
+    },
     "Comprobar de nuevo" : {
+
+    },
+    "Comprobar y guardar" : {
 
     },
     "Comprometido" : {
@@ -13045,6 +13140,12 @@
         }
       }
     },
+    "Configurar modelo gratuito" : {
+
+    },
+    "Configurar OpenRouter" : {
+
+    },
     "Confirmado" : {
       "localizations" : {
         "en" : {
@@ -13368,6 +13469,15 @@
         }
       }
     },
+    "Consultar la política de privacidad de OpenRouter" : {
+
+    },
+    "Consultar la privacidad de los proveedores" : {
+
+    },
+    "Consultar los términos de OpenRouter" : {
+
+    },
     "Contacto & Información" : {
       "localizations" : {
         "en" : {
@@ -13548,6 +13658,9 @@
         }
       }
     },
+    "Contexto máximo publicado: %@ tokens" : {
+
+    },
     "Contextos" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -13660,6 +13773,9 @@
           }
         }
       }
+    },
+    "Continuar en una copia de esta conversación" : {
+
     },
     "Contrae la explicación" : {
       "localizations" : {
@@ -13869,6 +13985,9 @@
           }
         }
       }
+    },
+    "Convertir en Notas" : {
+
     },
     "Convierte lo hecho en aprendizaje" : {
       "extractionState" : "manual",
@@ -14091,6 +14210,9 @@
           }
         }
       }
+    },
+    "Crea una clave exclusiva para Neville, no la compartas y revócala desde OpenRouter si sospechas que ha quedado expuesta." : {
+
     },
     "Crea una nueva actividad en la Agenda" : {
       "localizations" : {
@@ -14458,6 +14580,9 @@
           }
         }
       }
+    },
+    "Crear o consultar una clave en OpenRouter" : {
+
     },
     "Crear una contraseña" : {
       "localizations" : {
@@ -18062,6 +18187,9 @@
         }
       }
     },
+    "El nombre del modelo que aparece bajo cada respuesta utiliza también el color del texto de las respuestas." : {
+
+    },
     "El permiso fue denegado. Puedes activarlo desde Ajustes del sistema." : {
       "localizations" : {
         "en" : {
@@ -18708,6 +18836,9 @@
         }
       }
     },
+    "Eliminar %lld conversaciones" : {
+
+    },
     "Eliminar %lld entrada(s)" : {
       "localizations" : {
         "en" : {
@@ -18774,6 +18905,9 @@
         }
       }
     },
+    "Eliminar clave de este dispositivo" : {
+
+    },
     "Eliminar Contexto" : {
       "localizations" : {
         "en" : {
@@ -18789,6 +18923,12 @@
           }
         }
       }
+    },
+    "Eliminar conversación" : {
+
+    },
+    "Eliminar conversaciones" : {
+
     },
     "Eliminar entrada" : {
       "localizations" : {
@@ -19305,6 +19445,9 @@
           }
         }
       }
+    },
+    "Empezar una conversación nueva" : {
+
     },
     "Empieza desde tu mejor versión" : {
       "localizations" : {
@@ -20770,6 +20913,9 @@
         }
       }
     },
+    "Espera a que termine la respuesta activa antes de convertir esta conversación en Nota." : {
+
+    },
     "Esperanza" : {
       "localizations" : {
         "en" : {
@@ -20835,6 +20981,9 @@
           }
         }
       }
+    },
+    "Esta acción eliminará permanentemente las conversaciones seleccionadas y sus mensajes." : {
+
     },
     "Esta acción no puede deshacerse." : {
       "localizations" : {
@@ -20923,6 +21072,9 @@
           }
         }
       }
+    },
+    "Esta es una respuesta de ejemplo." : {
+
     },
     "Esta función requiere iOS 26 o macOS 26." : {
 
@@ -21030,6 +21182,9 @@
           }
         }
       }
+    },
+    "Esta operación depende exclusivamente del contenido original y no utiliza el marco de ningún autor." : {
+
     },
     "Esta práctica guiada continúa en el iPhone. El panel del Mac seguirá mostrando el estado sincronizado." : {
       "localizations" : {
@@ -21597,6 +21752,9 @@
           }
         }
       }
+    },
+    "Este es un prompt" : {
+
     },
     "Este indicador necesita un dispositivo compatible con HealthKit." : {
       "localizations" : {
@@ -23543,6 +23701,18 @@
         }
       }
     },
+    "Fondo de la vista" : {
+
+    },
+    "Fondo de las burbujas de respuesta" : {
+
+    },
+    "Fondo del chat" : {
+
+    },
+    "Fondo del cuadro" : {
+
+    },
     "Fondo fijo" : {
       "localizations" : {
         "en" : {
@@ -24381,6 +24551,7 @@
       }
     },
     "Generando Concejos Prácticos" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -24395,6 +24566,9 @@
           }
         }
       }
+    },
+    "Generando Consejos Prácticos" : {
+
     },
     "Generando Puntos Claves" : {
       "localizations" : {
@@ -24411,6 +24585,9 @@
           }
         }
       }
+    },
+    "Generar %@" : {
+
     },
     "Generar Código QR" : {
       "localizations" : {
@@ -27009,6 +27186,12 @@
         }
       }
     },
+    "Guardar en el dispositivo" : {
+
+    },
+    "Guardar en el dispositivo como PDF" : {
+
+    },
     "Guardar en Frases" : {
       "localizations" : {
         "en" : {
@@ -27312,6 +27495,9 @@
           }
         }
       }
+    },
+    "Guía rápida paso a paso" : {
+
     },
     "Guías prácticas premium" : {
       "localizations" : {
@@ -28247,6 +28433,9 @@
           }
         }
       }
+    },
+    "Historial de Chat IA" : {
+
     },
     "Historial de conversaciones" : {
 
@@ -30960,6 +31149,9 @@
         }
       }
     },
+    "Introduce una clave para reemplazar la guardada" : {
+
+    },
     "Invertir" : {
       "localizations" : {
         "en" : {
@@ -31214,6 +31406,9 @@
           }
         }
       }
+    },
+    "La clave pertenece al usuario. Neville no incluye una clave propia ni la envía a servidores intermedios." : {
+
     },
     "La coherencia bajó. Haz una sesión de 5 minutos después del ritual o antes de dormir." : {
       "localizations" : {
@@ -32360,6 +32555,9 @@
           }
         }
       }
+    },
+    "La respuesta se generará dentro del campo de conocimiento y las enseñanzas del autor elegido." : {
+
     },
     "La suscripción se renueva automáticamente cada año hasta que se cancele." : {
       "localizations" : {
@@ -34320,6 +34518,15 @@
         }
       }
     },
+    "Los dos colores forman el degradado del fondo general." : {
+
+    },
+    "Los dos colores forman el degradado del fondo." : {
+
+    },
+    "Los modelos gratuitos están sujetos a límites de uso y disponibilidad. Neville nunca cambiará silenciosamente a un modelo de pago." : {
+
+    },
     "Los servicios de ubicación están desactivados en el sistema." : {
       "localizations" : {
         "en" : {
@@ -34873,6 +35080,9 @@
           }
         }
       }
+    },
+    "Más opciones" : {
+
     },
     "Más países" : {
       "localizations" : {
@@ -35990,6 +36200,21 @@
           }
         }
       }
+    },
+    "Modelo" : {
+
+    },
+    "Modelo activo: %@" : {
+
+    },
+    "Modelo gratuito: %@" : {
+
+    },
+    "Modelo para nuevas conversaciones" : {
+
+    },
+    "Modelo utilizado" : {
+
     },
     "Moderado" : {
       "extractionState" : "manual",
@@ -40212,6 +40437,9 @@
         }
       }
     },
+    "Nueva conversación" : {
+
+    },
     "Nueva entrada" : {
       "localizations" : {
         "en" : {
@@ -41238,6 +41466,9 @@
         }
       }
     },
+    "Opciones de Chat IA" : {
+
+    },
     "Opciones de entrada" : {
       "localizations" : {
         "en" : {
@@ -41297,6 +41528,15 @@
           }
         }
       }
+    },
+    "OpenRouter" : {
+
+    },
+    "OpenRouter · Modelos gratuitos" : {
+
+    },
+    "OpenRouter funciona online" : {
+
     },
     "Orden de pantallas" : {
       "localizations" : {
@@ -41678,6 +41918,9 @@
           }
         }
       }
+    },
+    "Para conservar el origen y la privacidad del historial, el modelo no se cambia silenciosamente dentro de la conversación actual." : {
+
     },
     "Para peligro inmediato o una emergencia médica." : {
       "localizations" : {
@@ -43870,6 +44113,12 @@
         }
       }
     },
+    "Privacidad de OpenRouter" : {
+
+    },
+    "Privacidad y uso" : {
+
+    },
     "PRO" : {
       "localizations" : {
         "en" : {
@@ -43929,6 +44178,9 @@
           }
         }
       }
+    },
+    "Procesamiento privado en el dispositivo" : {
+
     },
     "Productividad" : {
       "localizations" : {
@@ -46954,6 +47206,12 @@
         }
       }
     },
+    "Respuesta" : {
+
+    },
+    "Respuesta en curso" : {
+
+    },
     "Restablecer" : {
       "localizations" : {
         "en" : {
@@ -47013,6 +47271,12 @@
           }
         }
       }
+    },
+    "Restaurar colores" : {
+
+    },
+    "Restaurar colores predeterminados" : {
+
     },
     "Restaurar Compras" : {
       "localizations" : {
@@ -47633,6 +47897,9 @@
           }
         }
       }
+    },
+    "Revocar permiso para compartir conversaciones" : {
+
     },
     "Ritmo" : {
       "localizations" : {
@@ -48963,6 +49230,9 @@
         }
       }
     },
+    "Se enviará el texto al modelo gratuito seleccionado." : {
+
+    },
     "Se excluyen periodos con ejercicio o movimiento significativo." : {
       "localizations" : {
         "en" : {
@@ -49129,6 +49399,7 @@
       }
     },
     "Segun Autor: %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -49434,6 +49705,9 @@
         }
       }
     },
+    "Seleccionada: 1" : {
+
+    },
     "Seleccionadas" : {
       "localizations" : {
         "en" : {
@@ -49553,6 +49827,9 @@
           }
         }
       }
+    },
+    "Seleccionar modelo de IA" : {
+
     },
     "Seleccionar música personal" : {
       "localizations" : {
@@ -51435,6 +51712,9 @@
         }
       }
     },
+    "Solo se muestran modelos gratuitos, ordenados por capacidad según OpenRouter. El modelo queda fijado al crear cada conversación para mantener un comportamiento coherente." : {
+
+    },
     "Son recursos complementarios y de bajo riesgo que algunas personas encuentran útiles. Su efecto es personal y algunos tienen evidencia limitada: conserva solo los que te resulten útiles y no aumenten el malestar." : {
       "localizations" : {
         "en" : {
@@ -52192,6 +52472,12 @@
           }
         }
       }
+    },
+    "Texto de las respuestas" : {
+
+    },
+    "Texto del prompt" : {
+
     },
     "Texto del título" : {
       "localizations" : {
@@ -53543,6 +53829,9 @@
           }
         }
       }
+    },
+    "Tu clave personal" : {
+
     },
     "Tu corazón marca el ritmo\nde tu verdad más profunda" : {
       "localizations" : {
@@ -55781,6 +56070,12 @@
           }
         }
       }
+    },
+    "Visualización" : {
+
+    },
+    "Visualización de respuestas" : {
+
     },
     "Visualización por puntos al estilo Fitness" : {
       "localizations" : {

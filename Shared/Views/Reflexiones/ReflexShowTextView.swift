@@ -226,7 +226,7 @@ struct ReflexShowTextView: View {
                 
                 //Opciones de IA
                 if #available(iOS 26.0, macOS 26.0, *){
-                    if IAModelAppleIntelligence.isAvailable(){
+                    if IAModelAppleIntelligence.hasAvailableContentProvider(){
                         ToolbarItem {
                             Menu{
                                 #if os(macOS)
@@ -367,4 +367,3 @@ struct ReflexShowTextView: View {
         }
     }
 }
-

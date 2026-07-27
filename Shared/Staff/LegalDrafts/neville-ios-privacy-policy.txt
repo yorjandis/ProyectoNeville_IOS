@@ -1,6 +1,6 @@
 # Neville iOS - Privacy Policy
 
-**Last updated:** May 21, 2026
+**Last updated:** July 27, 2026
 
 This Privacy Policy describes how the mobile application **La Ley (Neville iOS)** (the "App") handles information.
 
@@ -66,16 +66,27 @@ Retention:
 
 Some features may include AI-generated text.
 
+- Apple Intelligence is the default AI provider for the AI chat. When available, its processing is handled through Apple system frameworks.
+- The user may optionally enable OpenRouter using the user's own API key. The API key is stored locally in the system Keychain and is not sent to developer servers.
+- When OpenRouter is enabled, the App sends the user's question, the instructions needed to provide the requested experience, and the relevant conversation context (which may include recent messages and a conversation summary) to OpenRouter and to the third-party model provider selected through OpenRouter.
+- The App only offers model identifiers designated as free by OpenRouter. Free-model availability, usage limits, and data practices may change and are controlled by OpenRouter and the applicable model provider.
+- OpenRouter and the applicable model provider process this information under their own terms and privacy policies. Their retention, logging, training, and international-transfer practices may differ by provider. Users should avoid submitting unnecessary sensitive or confidential information.
+- Online AI processing is optional, requires explicit consent, and is never enabled automatically as a fallback from Apple Intelligence.
+- The developer does not receive the user's OpenRouter API key or AI conversations through developer-operated servers.
+- OpenRouter terms: https://openrouter.ai/terms
+- OpenRouter privacy policy: https://openrouter.ai/privacy
 - AI output may be incomplete, inaccurate, or not suitable for medical, legal, financial, or professional decisions.
 - The user is responsible for reviewing generated content before use.
 
 ## 9. Children’s Privacy
 
-The App is not directed to children under 13.
+The App and its AI features are intended only for users aged 18 or older.
 
 ## 10. Data Retention
 
 Data created in the App remains on the user’s device (and/or Apple services when enabled by the user) until the user deletes it or uninstalls the App, subject to Apple platform behavior.
+
+When the user voluntarily enables OpenRouter, the content described in Section 8 is processed by OpenRouter and the applicable model provider. Retention by those third parties is governed by their own settings, terms, and privacy policies.
 
 ## 11. Your Rights
 
@@ -90,6 +101,8 @@ For privacy questions, contact: **info@ypgcode.es**.
 ## 12. International Users
 
 If you use the App outside Spain, local laws may apply.
+
+When OpenRouter is enabled, information may be processed in or transferred to countries outside Spain or the European Economic Area, depending on OpenRouter and the model provider selected.
 
 ## 13. Changes to This Policy
 
