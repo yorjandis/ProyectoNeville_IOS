@@ -82,6 +82,7 @@ struct DiarioListView: View {
     @State private var showCalendar: Bool = false   //Mostrar/Ocultar el calendario. Por defecto aparece oculto
     @State private var showDiarioStats: Bool = false
     @State private var selectedCalendarDate: Date? = nil
+    @State private var isCalendarEntryScopeActive = false
     @State private var calendarRefreshTrigger: Int = 0
     @State private var showNewEntryEditor: Bool = false
     @State private var newEntryTitle: String = ""
@@ -128,6 +129,10 @@ struct DiarioListView: View {
 
     private var hasPremiumPDFAccess: Bool {
         purchaseStatus || yorjPremium
+    }
+
+    private var canApplyGlobalEntryFilters: Bool {
+        !showCalendar || !isCalendarEntryScopeActive
     }
 
     private var hasRitualReviewUpdateToday: Bool {
@@ -432,12 +437,14 @@ struct DiarioListView: View {
 
     private var singleDateSearchSheet: some View {
         VStack {
-            DatePicker("Fecha de creación", selection: $fecha1, displayedComponents: [.date])
+            DatePicker(dateFilterTitle, selection: $fecha1, displayedComponents: [.date])
                 .padding(.top, 50)
             Button {
-                Task {
+                withAnimation {
                     modelDiario.list = modelDiario.searchPorFecha(for: fecha1, typeFecha: typeOfFechaSearch)
+                    didApplyGlobalFilter()
                 }
+                showSheetFecha = false
             } label: {
                 Text("Buscar")
                     .padding(.vertical, 10)
@@ -462,9 +469,11 @@ struct DiarioListView: View {
                 .frame(height: 70)
 
             Button {
-                Task {
+                withAnimation {
                     modelDiario.list = modelDiario.searchPorRangoFecha(from: fecha1, to: fecha2, typeFecha: typeOfFechaSearch)
+                    didApplyGlobalFilter()
                 }
+                showSheetRangoFecha = false
             } label: {
                 Text("Buscar")
                     .padding(.vertical, 10)
@@ -601,6 +610,16 @@ struct DiarioListView: View {
             modelDiario.getAllItem()
         }
         .onChange(of: modelDiario.list.map { $0.id }) { _, ids in
+            if let selectedCalendarDate {
+                let selectedDayEntries = modelDiario.searchPorFecha(for: selectedCalendarDate)
+                let selectedDayIDs = selectedDayEntries.map { $0.id }
+
+                if ids != selectedDayIDs {
+                    modelDiario.list = selectedDayEntries
+                    return
+                }
+            }
+
             let visibleIDs = Set(ids.compactMap { $0 })
             batchSelectedDiarioIDs = batchSelectedDiarioIDs.intersection(visibleIDs)
         }
@@ -653,6 +672,23 @@ struct DiarioListView: View {
                     Label("Mostrar favoritas", systemImage: "star")
                 }
 
+                emotionFilterMenu
+                    .disabled(!canApplyGlobalEntryFilters)
+
+                diarioDateFilterMenu(
+                    type: .FechaCreacion,
+                    title: "Fecha de creación",
+                    systemImage: "calendar.badge.clock"
+                )
+                .disabled(!canApplyGlobalEntryFilters)
+
+                diarioDateFilterMenu(
+                    type: .FechaModificacion,
+                    title: "Fecha de modificación",
+                    systemImage: "calendar"
+                )
+                .disabled(!canApplyGlobalEntryFilters)
+
                 Button {
                     showAlertFilterByTitles = true
                 } label: {
@@ -704,7 +740,10 @@ struct DiarioListView: View {
             showCalendar.toggle()
             if showCalendar == false {
                 selectedCalendarDate = nil
+                isCalendarEntryScopeActive = false
                 modelDiario.getAllItem()
+            } else {
+                isCalendarEntryScopeActive = true
             }
         }
     }
@@ -713,6 +752,7 @@ struct DiarioListView: View {
         withAnimation {
             selectedListMode = .all
             selectedCalendarDate = nil
+            isCalendarEntryScopeActive = false
             modelDiario.getAllItem()
         }
     }
@@ -726,7 +766,94 @@ struct DiarioListView: View {
 
     private func showFavoriteEntries() {
         selectedListMode = .all
+        selectedCalendarDate = nil
+        isCalendarEntryScopeActive = showCalendar
         modelDiario.list = modelDiario.filterByFav()
+    }
+
+    private var dateFilterTitle: String {
+        switch typeOfFechaSearch {
+        case .FechaCreacion:
+            return L10n.exact("Fecha de creación")
+        case .FechaModificacion:
+            return L10n.exact("Fecha de modificación")
+        }
+    }
+
+    @ViewBuilder
+    private var emotionFilterMenu: some View {
+        Menu {
+            ForEach(Emociones.allCases, id: \.self) { emotion in
+                Button {
+                    withAnimation {
+                        modelDiario.list = modelDiario.filterByEmoticono(criterio: emotion.rawValue)
+                        didApplyGlobalFilter()
+                    }
+                } label: {
+                    HStack {
+                        Text(emotion.localizedTitle)
+                        Text(emotion.emoji)
+                    }
+                }
+            }
+        } label: {
+            Label("Por emoción", systemImage: "face.smiling")
+        }
+    }
+
+    @ViewBuilder
+    private func diarioDateFilterMenu(type: TypeFecha, title: String, systemImage: String) -> some View {
+        Menu {
+            Button("Fecha") {
+                typeOfFechaSearch = type
+                fecha1 = Date.now
+                showSheetFecha = true
+            }
+
+            Button("Intervalo") {
+                typeOfFechaSearch = type
+                fecha1 = Date.now
+                fecha2 = Date.now
+                showSheetRangoFecha = true
+            }
+
+            Menu("Sugerencias") {
+                relativeDateFilterButton("Tres días", period: .tresDias, type: type)
+                relativeDateFilterButton("Semana anterior", period: .semana, type: type)
+                relativeDateFilterButton("Quincena anterior", period: .quincena, type: type)
+                relativeDateFilterButton("Mes anterior", period: .mes, type: type)
+                relativeDateFilterButton("Dos meses", period: .dosMeses, type: type)
+                relativeDateFilterButton("Tres meses", period: .tresMeses, type: type)
+                relativeDateFilterButton("Seis meses", period: .seisMeses, type: type)
+                relativeDateFilterButton("Un año", period: .unAno, type: type)
+                relativeDateFilterButton("Dos años", period: .dosAnos, type: type)
+                relativeDateFilterButton("Tres años", period: .tresAnos, type: type)
+                relativeDateFilterButton("Cinco años", period: .cincoAnos, type: type)
+                relativeDateFilterButton("Diez años", period: .diezAnos, type: type)
+            }
+        } label: {
+            Label(title, systemImage: systemImage)
+        }
+    }
+
+    @ViewBuilder
+    private func relativeDateFilterButton(
+        _ title: LocalizedStringKey,
+        period: DiarioModel.Antiguedad,
+        type: TypeFecha
+    ) -> some View {
+        Button(title) {
+            withAnimation {
+                modelDiario.list = modelDiario.searchPorAntiguedad(for: period, typeFecha: type)
+                didApplyGlobalFilter()
+            }
+        }
+    }
+
+    private func didApplyGlobalFilter() {
+        selectedListMode = .all
+        selectedCalendarDate = nil
+        isCalendarEntryScopeActive = false
     }
 
     private func openBlankEntryEditor() {
@@ -743,6 +870,7 @@ struct DiarioListView: View {
             refreshTrigger: calendarRefreshTrigger,
             onMonthEntriesLoaded: { _ in
                 selectedCalendarDate = nil
+                isCalendarEntryScopeActive = true
             },
             onRequestCreateEntry: { date in
                 openNewEntryEditor(
@@ -755,6 +883,7 @@ struct DiarioListView: View {
         ) { date in
             withAnimation {
                 selectedCalendarDate = Calendar.current.startOfDay(for: date)
+                isCalendarEntryScopeActive = true
                 modelDiario.list = modelDiario.searchPorFecha(for: date)
             }
         }

@@ -25,6 +25,9 @@ struct JoeDispenzaAuthorView: View {
         case serieLaFormula10
         case serieLaFormula11
         case serieLaFormula12
+#if os(iOS)
+        case protocoloTransformacion
+#endif
 
         var id: String { rawValue }
     }
@@ -94,6 +97,46 @@ struct JoeDispenzaAuthorView: View {
 
                         }
                     }
+
+#if os(iOS)
+                    Button {
+                        route = .protocoloTransformacion
+                    } label: {
+                        HStack(spacing: 14) {
+                            ZStack {
+                                Circle()
+                                    .fill(.white.opacity(0.22))
+                                Image(systemName: "point.3.connected.trianglepath.dotted")
+                                    .font(.title2.weight(.semibold))
+                                    .foregroundStyle(.white)
+                            }
+                            .frame(width: 52, height: 52)
+
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(L10n.exact("Transformación personal · 21 días"))
+                                    .font(.headline)
+                                    .foregroundStyle(.white)
+                                Text(L10n.exact("Práctica guiada, P.A.R.A., diario y seguimiento"))
+                                    .font(.caption)
+                                    .foregroundStyle(.white.opacity(0.82))
+                                    .multilineTextAlignment(.leading)
+                            }
+
+                            Spacer(minLength: 6)
+
+                            Image(systemName: "arrow.right.circle.fill")
+                                .font(.title2)
+                                .foregroundStyle(.white)
+                        }
+                        .padding(16)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(TransformationProtocolTheme.accessGradient())
+                        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+                        .shadow(color: .black.opacity(0.14), radius: 12, y: 6)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityHint(L10n.exact("Abre el protocolo integral de transformación"))
+#endif
 
                     
                     Text("Frases y Citas")
@@ -251,6 +294,10 @@ struct JoeDispenzaAuthorView: View {
                     ContentTxtShowView(title: authorSeriesChapterTitle("La Fórmula", number: 12), nombreTxt: AppCons.FileSerieLaFormula_12, type: .NA, blocks: [
                         ContentBlock(content: .text(UtilFuncs.FileRead(AppCons.FileSerieLaFormula_12)))
                     ], checkPremium: false)
+#if os(iOS)
+                case .protocoloTransformacion:
+                    TransformationProtocolView()
+#endif
                 }
             }
             .presentationDetents([.large])

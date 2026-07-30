@@ -115,7 +115,7 @@ autor=bruceL
 nota=
 fuente=Conferencia: tres amigos Gregg, Joe Dispenza y Bruce Lipton, TCCHE.org, 2017
 contexto=
-texto=Tenemos nuestra exstencia y fuente más alla del cuerpo físico. El cuerpo es solo una antena biológica que sintoniza con la presencia que somos y emite desde el Campo Cuantico o mente de Dios
+texto=Tenemos nuestra existencia y fuente más alla del cuerpo físico. El cuerpo es solo una antena biológica que sintoniza con la presencia que somos y emite desde el Campo Cuantico o mente de Dios
 relacionadas=
 
 id=bruce_016

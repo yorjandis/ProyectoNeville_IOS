@@ -541,7 +541,7 @@ final class DiarioModel : ObservableObject{
             fetchRequest.predicate = NSPredicate(format: "fecha >= %@ AND fecha < %@", startOfDay as NSDate, endOfDay as NSDate)
         case .FechaModificacion:
             fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Diario.fechaM, ascending: false)]
-            fetchRequest.predicate = NSPredicate(format: "fechaM >= %@ AND fecha < %@", startOfDay as NSDate, endOfDay as NSDate)
+            fetchRequest.predicate = NSPredicate(format: "fechaM >= %@ AND fechaM < %@", startOfDay as NSDate, endOfDay as NSDate)
         }
        
         
@@ -591,6 +591,7 @@ final class DiarioModel : ObservableObject{
         
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: Date()) // Inicio del día actual
+        let endOfToday = calendar.date(byAdding: .day, value: 1, to: today)!
         var startDate: Date
         
         // Determinar la fecha de inicio según la antigüedad
@@ -625,10 +626,10 @@ final class DiarioModel : ObservableObject{
         switch typeFecha {
         case .FechaCreacion:
             fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Diario.fecha, ascending: false)]
-            fetchRequest.predicate = NSPredicate(format: "fecha >= %@ AND fecha <= %@", startDate as NSDate, today as NSDate)
+            fetchRequest.predicate = NSPredicate(format: "fecha >= %@ AND fecha < %@", startDate as NSDate, endOfToday as NSDate)
         case .FechaModificacion:
             fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Diario.fechaM, ascending: false)]
-            fetchRequest.predicate = NSPredicate(format: "fechaM >= %@ AND fechaM <= %@", startDate as NSDate, today as NSDate)
+            fetchRequest.predicate = NSPredicate(format: "fechaM >= %@ AND fechaM < %@", startDate as NSDate, endOfToday as NSDate)
         }
         
         

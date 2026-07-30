@@ -93,7 +93,10 @@ struct DiarioCalendarView: View {
                     onDateSelected: onDateSelected
                 )
                 .onAppear{
-                    reloadMonthData(for: self.currentMonth)
+                    reloadMonthData(
+                        for: self.currentMonth,
+                        preserveSelectedDay: selectedDay != nil
+                    )
                 }
             }
             
@@ -235,24 +238,8 @@ struct CalendarGrid: View {
                                         .offset(y: +12)
                                 }
                             }
-                            .onTapGesture(count: 2) {
-                                let calendar = Calendar.current
-                                let normalizedSelectedDay = calendar.startOfDay(for: date)
-                                let today = calendar.startOfDay(for: Date.now)
-
-                                guard normalizedSelectedDay <= today else {
-                                    showFutureDateAlert = true
-                                    return
-                                }
-
-                                selectedDay = normalizedSelectedDay
-                                onRequestCreateEntry(normalizedSelectedDay)
-                            }
-                            .onTapGesture {
-                                let normalizedSelectedDay = Calendar.current.startOfDay(for: date)
-                                selectedDay = normalizedSelectedDay
-                                onDateSelected(normalizedSelectedDay)
-                            }
+                            .contentShape(Rectangle())
+                            .gesture(dayTapGesture(for: date))
                     } else {
                         Text("")
                             .frame(width: 38, height: 38)
@@ -265,6 +252,39 @@ struct CalendarGrid: View {
         } message: {
             Text("No se puede crear una entrada en una fecha futura.")
         }
+    }
+
+    private func dayTapGesture(for date: Date) -> some Gesture {
+        TapGesture(count: 2)
+            .exclusively(before: TapGesture(count: 1))
+            .onEnded { gesture in
+                switch gesture {
+                case .first:
+                    requestEntryCreation(for: date)
+                case .second:
+                    selectEntries(for: date)
+                }
+            }
+    }
+
+    private func selectEntries(for date: Date) {
+        let normalizedSelectedDay = Calendar.current.startOfDay(for: date)
+        selectedDay = normalizedSelectedDay
+        onDateSelected(normalizedSelectedDay)
+    }
+
+    private func requestEntryCreation(for date: Date) {
+        let calendar = Calendar.current
+        let normalizedSelectedDay = calendar.startOfDay(for: date)
+        let today = calendar.startOfDay(for: Date.now)
+
+        guard normalizedSelectedDay <= today else {
+            showFutureDateAlert = true
+            return
+        }
+
+        selectedDay = normalizedSelectedDay
+        onRequestCreateEntry(normalizedSelectedDay)
     }
 
     private var weekdaySymbols: [String] {
