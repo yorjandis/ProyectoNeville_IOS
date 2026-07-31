@@ -65784,6 +65784,52 @@
         }
       }
     },
+    "Un programa práctico de 21 días para reconocer patrones automáticos, interrumpirlos y entrenar respuestas conscientes con prácticas guiadas, diario, recordatorios y seguimiento del progreso." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A practical 21-day program to recognize automatic patterns, interrupt them, and train conscious responses with guided practices, journaling, reminders, and progress tracking."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un programa práctico de 21 días para reconocer patrones automáticos, interrumpirlos y entrenar respuestas conscientes con prácticas guiadas, diario, recordatorios y seguimiento del progreso."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一套为期 21 天的实用计划，帮助你识别并打断自动化模式，通过引导练习、日记、提醒和进度追踪，逐步培养有意识的回应方式。"
+          }
+        }
+      }
+    },
+    "Nuevo en la Versión Extendida: un programa práctico de 21 días para reconocer patrones automáticos, interrumpirlos y entrenar respuestas conscientes con prácticas guiadas, diario, recordatorios y seguimiento del progreso." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New in the Extended Version: a practical 21-day program to recognize automatic patterns, interrupt them, and train conscious responses with guided practices, journaling, reminders, and progress tracking."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nuevo en la Versión Extendida: un programa práctico de 21 días para reconocer patrones automáticos, interrumpirlos y entrenar respuestas conscientes con prácticas guiadas, diario, recordatorios y seguimiento del progreso."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "扩展版新增：一套为期 21 天的实用计划，帮助你识别并打断自动化模式，通过引导练习、日记、提醒和进度追踪，逐步培养有意识的回应方式。"
+          }
+        }
+      }
+    },
     "transformation.alternative.formula" : {
       "extractionState" : "manual",
       "localizations" : {

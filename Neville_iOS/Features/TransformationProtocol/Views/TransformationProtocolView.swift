@@ -2,11 +2,28 @@ import SwiftUI
 
 struct TransformationProtocolView: View {
     @Environment(\.dismiss) private var dismiss
+    @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
+    @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) private var yorjPremium: Bool = false
     @StateObject private var store = TransformationProtocolStore()
     @State private var showsInformation = false
     @State private var exampleSelection: TransformationProtocolExampleSelection?
 
+    private var hasExtendedAccess: Bool {
+        purchaseStatus || yorjPremium
+    }
+
     var body: some View {
+        Group {
+            if hasExtendedAccess {
+                protocolContent
+            } else {
+                PurchaseView()
+            }
+        }
+        .environment(\.locale, AppLanguage.current.locale)
+    }
+
+    private var protocolContent: some View {
         NavigationStack {
             Group {
                 if store.configuration == nil {
@@ -58,7 +75,6 @@ struct TransformationProtocolView: View {
         }
         .toolbarColorScheme(.dark, for: .navigationBar)
         .preferredColorScheme(.light)
-        .environment(\.locale, AppLanguage.current.locale)
     }
 
     private func applyExample(_ example: TransformationProtocolExample) {

@@ -27,12 +27,19 @@ struct JoeDispenzaAuthorView: View {
         case serieLaFormula12
 #if os(iOS)
         case protocoloTransformacion
+        case versionExtendida
 #endif
 
         var id: String { rawValue }
     }
 
     @State private var route: Route?
+    @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
+    @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) private var yorjPremium: Bool = false
+
+    private var hasExtendedAccess: Bool {
+        purchaseStatus || yorjPremium
+    }
 
     private var serieLaFormulaCapitulos: [(title: String, route: Route)] {
         [
@@ -100,7 +107,7 @@ struct JoeDispenzaAuthorView: View {
 
 #if os(iOS)
                     Button {
-                        route = .protocoloTransformacion
+                        route = hasExtendedAccess ? .protocoloTransformacion : .versionExtendida
                     } label: {
                         HStack(spacing: 14) {
                             ZStack {
@@ -113,6 +120,13 @@ struct JoeDispenzaAuthorView: View {
                             .frame(width: 52, height: 52)
 
                             VStack(alignment: .leading, spacing: 4) {
+                                Label(L10n.exact("Versión Extendida"), systemImage: "crown.fill")
+                                    .font(.caption2.weight(.bold))
+                                    .foregroundStyle(.white)
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 4)
+                                    .background(.black.opacity(0.22), in: Capsule())
+
                                 Text(L10n.exact("Transformación personal · 21 días"))
                                     .font(.headline)
                                     .foregroundStyle(.white)
@@ -124,7 +138,7 @@ struct JoeDispenzaAuthorView: View {
 
                             Spacer(minLength: 6)
 
-                            Image(systemName: "arrow.right.circle.fill")
+                            Image(systemName: hasExtendedAccess ? "arrow.right.circle.fill" : "lock.fill")
                                 .font(.title2)
                                 .foregroundStyle(.white)
                         }
@@ -135,7 +149,13 @@ struct JoeDispenzaAuthorView: View {
                         .shadow(color: .black.opacity(0.14), radius: 12, y: 6)
                     }
                     .buttonStyle(.plain)
-                    .accessibilityHint(L10n.exact("Abre el protocolo integral de transformación"))
+                    .accessibilityHint(
+                        L10n.exact(
+                            hasExtendedAccess
+                                ? "Abre el protocolo integral de transformación"
+                                : "Disponible en Versión Extendida"
+                        )
+                    )
 #endif
 
                     
@@ -297,6 +317,8 @@ struct JoeDispenzaAuthorView: View {
 #if os(iOS)
                 case .protocoloTransformacion:
                     TransformationProtocolView()
+                case .versionExtendida:
+                    PurchaseView()
 #endif
                 }
             }

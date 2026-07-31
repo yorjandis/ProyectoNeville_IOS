@@ -44,7 +44,21 @@ struct Novedades: View {
         .default
     ]
     
-    private static let news: [NewsItem] = [
+    private static var transformationProtocolNews: [NewsItem] {
+#if os(iOS)
+        [
+            NewsItem(
+                iconName: "point.3.connected.trianglepath.dotted",
+                title: L10n.exact("Transformación personal · 21 días"),
+                description: L10n.exact("Nuevo en la Versión Extendida: un programa práctico de 21 días para reconocer patrones automáticos, interrumpirlos y entrenar respuestas conscientes con prácticas guiadas, diario, recordatorios y seguimiento del progreso.")
+            )
+        ]
+#else
+        []
+#endif
+    }
+
+    private static let news: [NewsItem] = transformationProtocolNews + [
         NewsItem(iconName: "paintpalette", title: "Lienzo", description: "Una forma creativa de diseñar tus propios fondos con imágenes, colores y texto. Ideal para compartir frases y pensamientos en redes sociales y con amigos."),
         NewsItem(iconName: "person.3", title: "Nuevos autores", description: "Se han incorporado enseñanzas de Joe Dispenza, Bruce Lipton y Gregg Braden. Sus aportes apoyan las enseñanzas de Neville y empoderan una vida más saludable y en armonía."),
         NewsItem(iconName: "book.closed", title: "Enciclopedia de conocimientos", description: "Nuevo espacio de aprendizaje y conocimiento relacionado con las enseñanzas."),
@@ -273,4 +287,3 @@ struct Novedades: View {
         .padding(.vertical, 10)
     }
 }
-

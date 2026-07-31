@@ -27,7 +27,21 @@ struct PurchaseView: View {
         let description: String
     }
     
-    private static let premiumFeatures: [PremiumFeature] = [
+    private static var transformationProtocolFeatures: [PremiumFeature] {
+#if os(iOS)
+        [
+            PremiumFeature(
+                iconName: "point.3.connected.trianglepath.dotted",
+                title: String(localized: "Transformación personal · 21 días"),
+                description: String(localized: "Un programa práctico de 21 días para reconocer patrones automáticos, interrumpirlos y entrenar respuestas conscientes con prácticas guiadas, diario, recordatorios y seguimiento del progreso.")
+            )
+        ]
+#else
+        []
+#endif
+    }
+
+    private static let premiumFeatures: [PremiumFeature] = transformationProtocolFeatures + [
         PremiumFeature(
             iconName: "sparkles",
             title: String(localized: "Contenido exclusivo"),
