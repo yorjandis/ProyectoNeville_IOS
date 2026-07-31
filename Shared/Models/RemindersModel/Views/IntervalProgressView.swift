@@ -42,10 +42,24 @@ struct IntervalProgressView: View {
             RoundedRectangle(cornerRadius: size * 0.35)
                 .trim(from: 0, to: progress)
                 .stroke(
-                    LinearGradient(
-                        colors: [.black.opacity(0.5), .black.opacity(0.8)],
-                        startPoint: .leading,
-                        endPoint: .trailing
+                    AngularGradient(
+                        stops: [
+                            .init(
+                                color: Color(red: 0.42, green: 0.88, blue: 0.78),
+                                location: 0
+                            ),
+                            .init(
+                                color: Color(red: 0.08, green: 0.48, blue: 0.68),
+                                location: 0.55
+                            ),
+                            .init(
+                                color: Color(red: 0.03, green: 0.14, blue: 0.38),
+                                location: 1
+                            )
+                        ],
+                        center: .center,
+                        startAngle: .degrees(0),
+                        endAngle: .degrees(360)
                     ),
                     style: StrokeStyle(
                         lineWidth: lineWidth,

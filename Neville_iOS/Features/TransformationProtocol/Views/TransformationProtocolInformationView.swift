@@ -18,6 +18,7 @@ struct TransformationProtocolInformationView: View {
                     dailyUseCard
                     measurementCard
                     exampleCard
+                    detailedInformationCard
                 }
                 .padding(16)
                 .padding(.bottom, 26)
@@ -180,6 +181,48 @@ struct TransformationProtocolInformationView: View {
         }
     }
 
+    private var detailedInformationCard: some View {
+        NavigationLink {
+            TransformationProtocolDetailedInformationView()
+        } label: {
+            TransformationProtocolCard {
+                HStack(spacing: 14) {
+                    Image(systemName: "doc.text.magnifyingglass")
+                        .font(.system(size: 26, weight: .semibold))
+                        .foregroundStyle(.white)
+                        .frame(width: 52, height: 52)
+                        .background(TransformationProtocolTheme.blue)
+                        .clipShape(Circle())
+
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text("Documento de referencia")
+                            .font(.caption2.weight(.bold))
+                            .textCase(.uppercase)
+                            .tracking(0.7)
+                            .foregroundStyle(TransformationProtocolTheme.blue)
+
+                        Text("Explicación detallada del protocolo")
+                            .font(.headline)
+                            .foregroundStyle(TransformationProtocolTheme.ink)
+
+                        Text("Consulta los fundamentos, reglas, fases, prácticas diarias y criterios de seguridad que dieron forma a esta herramienta.")
+                            .font(.caption)
+                            .foregroundStyle(TransformationProtocolTheme.secondaryInk)
+                            .multilineTextAlignment(.leading)
+                    }
+
+                    Spacer(minLength: 4)
+
+                    Image(systemName: "chevron.right")
+                        .font(.subheadline.weight(.bold))
+                        .foregroundStyle(TransformationProtocolTheme.tertiaryInk)
+                }
+            }
+        }
+        .buttonStyle(.plain)
+        .accessibilityHint("Abre la explicación completa en la que se basa la herramienta")
+    }
+
     private func flowStep(
         _ number: String,
         title: String,
@@ -249,5 +292,224 @@ struct TransformationProtocolInformationView: View {
         onUseExample(pendingExample)
         self.pendingExample = nil
         dismiss()
+    }
+}
+
+private struct TransformationProtocolDetailedInformationView: View {
+    private static let resourceName = "info_protocolo_de_transformacion"
+    @State private var blocks: [TransformationProtocolDocumentBlock]
+
+    init() {
+        _blocks = State(
+            initialValue: TransformationProtocolDocumentParser.blocks(
+                from: L10n.textResource(named: Self.resourceName)
+            )
+        )
+    }
+
+    var body: some View {
+        ScrollView {
+            if blocks.isEmpty {
+                ContentUnavailableView(
+                    "Contenido no disponible",
+                    systemImage: "doc.text.magnifyingglass",
+                    description: Text("No se pudo cargar la explicación detallada del protocolo.")
+                )
+                .foregroundStyle(TransformationProtocolTheme.ink)
+                .padding(24)
+                .frame(maxWidth: .infinity)
+                .background(Color.white.opacity(0.97))
+                .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+                .padding(16)
+            } else {
+                LazyVStack(alignment: .leading, spacing: 13) {
+                    ForEach(blocks) { block in
+                        blockView(block)
+                    }
+                }
+                .padding(20)
+                .background(Color.white.opacity(0.97))
+                .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 22, style: .continuous)
+                        .stroke(Color.white, lineWidth: 1)
+                }
+                .shadow(color: .black.opacity(0.16), radius: 18, y: 8)
+                .padding(.horizontal, 14)
+                .padding(.top, 16)
+                .padding(.bottom, 30)
+                .textSelection(.enabled)
+            }
+        }
+        .background(TransformationProtocolTheme.background.ignoresSafeArea())
+        .navigationTitle("Protocolo detallado")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbarColorScheme(.dark, for: .navigationBar)
+        .task(id: AppLanguage.current) {
+            blocks = TransformationProtocolDocumentParser.blocks(
+                from: L10n.textResource(named: Self.resourceName)
+            )
+        }
+    }
+
+    @ViewBuilder
+    private func blockView(_ block: TransformationProtocolDocumentBlock) -> some View {
+        switch block.kind {
+        case let .heading(level, text):
+            inlineText(text)
+                .font(headingFont(level: level))
+                .foregroundStyle(level == 1 ? TransformationProtocolTheme.violet : TransformationProtocolTheme.ink)
+                .padding(.top, level == 1 ? 16 : 8)
+
+        case let .paragraph(text):
+            inlineText(text)
+                .font(.body)
+                .foregroundStyle(TransformationProtocolTheme.ink)
+                .lineSpacing(4)
+
+        case let .bullet(text):
+            HStack(alignment: .firstTextBaseline, spacing: 10) {
+                Circle()
+                    .fill(TransformationProtocolTheme.violet)
+                    .frame(width: 6, height: 6)
+                inlineText(text)
+                    .font(.body)
+                    .foregroundStyle(TransformationProtocolTheme.ink)
+            }
+
+        case let .numbered(number, text):
+            HStack(alignment: .top, spacing: 10) {
+                Text("\(number).")
+                    .font(.subheadline.monospacedDigit().weight(.bold))
+                    .foregroundStyle(TransformationProtocolTheme.blue)
+                    .frame(minWidth: 24, alignment: .trailing)
+                inlineText(text)
+                    .font(.body)
+                    .foregroundStyle(TransformationProtocolTheme.ink)
+            }
+
+        case let .quote(text):
+            inlineText(text)
+                .font(.body.weight(.medium))
+                .italic()
+                .foregroundStyle(TransformationProtocolTheme.ink)
+                .padding(.vertical, 10)
+                .padding(.horizontal, 14)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(TransformationProtocolTheme.violet.opacity(0.08))
+                .overlay(alignment: .leading) {
+                    Rectangle()
+                        .fill(TransformationProtocolTheme.violet)
+                        .frame(width: 4)
+                }
+                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+
+        case let .callout(text):
+            HStack(alignment: .top, spacing: 10) {
+                Image(systemName: "exclamationmark.circle.fill")
+                    .foregroundStyle(TransformationProtocolTheme.warm)
+                inlineText(text)
+                    .font(.body.weight(.semibold))
+                    .foregroundStyle(TransformationProtocolTheme.ink)
+            }
+
+        case .divider:
+            Divider()
+                .overlay(TransformationProtocolTheme.violet.opacity(0.25))
+                .padding(.vertical, 6)
+        }
+    }
+
+    private func inlineText(_ source: String) -> Text {
+        if let attributed = try? AttributedString(
+            markdown: source,
+            options: AttributedString.MarkdownParsingOptions(
+                interpretedSyntax: .inlineOnlyPreservingWhitespace
+            )
+        ) {
+            return Text(attributed)
+        }
+        return Text(source)
+    }
+
+    private func headingFont(level: Int) -> Font {
+        switch level {
+        case 1:
+            return .title2.weight(.bold)
+        case 2:
+            return .title3.weight(.bold)
+        default:
+            return .headline
+        }
+    }
+}
+
+private struct TransformationProtocolDocumentBlock: Identifiable {
+    enum Kind {
+        case heading(level: Int, text: String)
+        case paragraph(String)
+        case bullet(String)
+        case numbered(number: Int, text: String)
+        case quote(String)
+        case callout(String)
+        case divider
+    }
+
+    let id: Int
+    let kind: Kind
+}
+
+private enum TransformationProtocolDocumentParser {
+    static func blocks(from source: String) -> [TransformationProtocolDocumentBlock] {
+        source
+            .components(separatedBy: .newlines)
+            .compactMap { rawLine -> TransformationProtocolDocumentBlock.Kind? in
+                let line = rawLine.trimmingCharacters(in: .whitespacesAndNewlines)
+                guard !line.isEmpty else { return nil }
+
+                if line == "---" {
+                    return .divider
+                }
+
+                if line.hasPrefix("#") {
+                    let level = min(line.prefix(while: { $0 == "#" }).count, 3)
+                    let text = line.dropFirst(level).trimmingCharacters(in: .whitespaces)
+                    return .heading(level: level, text: text)
+                }
+
+                if line.hasPrefix("🟠 ") {
+                    return .heading(level: 2, text: String(line.dropFirst(2)))
+                }
+
+                if line.hasPrefix("🔸 ") {
+                    return .callout(String(line.dropFirst(2)))
+                }
+
+                if line.hasPrefix("> ") {
+                    return .quote(String(line.dropFirst(2)))
+                }
+
+                if line.hasPrefix("- ") {
+                    return .bullet(String(line.dropFirst(2)))
+                }
+
+                if let numbered = numberedItem(from: line) {
+                    return .numbered(number: numbered.number, text: numbered.text)
+                }
+
+                return .paragraph(line)
+            }
+            .enumerated()
+            .map { TransformationProtocolDocumentBlock(id: $0.offset, kind: $0.element) }
+    }
+
+    private static func numberedItem(from line: String) -> (number: Int, text: String)? {
+        guard let separator = line.firstIndex(of: ".") else { return nil }
+        let numberText = line[..<separator]
+        guard let number = Int(numberText) else { return nil }
+        let textStart = line.index(after: separator)
+        let text = line[textStart...].trimmingCharacters(in: .whitespaces)
+        guard !text.isEmpty else { return nil }
+        return (number, text)
     }
 }

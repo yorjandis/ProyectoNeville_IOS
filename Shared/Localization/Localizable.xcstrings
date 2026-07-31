@@ -3308,6 +3308,9 @@
         }
       }
     },
+    "%lld." : {
+      "shouldTranslate" : false
+    },
     "%lld/2" : {
       "shouldTranslate" : false
     },
@@ -4597,6 +4600,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "打开应用并随机显示一篇讲座"
+          }
+        }
+      }
+    },
+    "Abre la explicación completa en la que se basa la herramienta" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opens the full explanation on which the tool is based"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre la explicación completa en la que se basa la herramienta"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开本工具所依据的完整说明"
           }
         }
       }
@@ -17541,6 +17567,29 @@
         }
       }
     },
+    "Consulta los fundamentos, reglas, fases, prácticas diarias y criterios de seguridad que dieron forma a esta herramienta." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Review the principles, rules, phases, daily practices, and safety criteria that shaped this tool."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consulta los fundamentos, reglas, fases, prácticas diarias y criterios de seguridad que dieron forma a esta herramienta."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查阅构成本工具基础的原理、规则、阶段、每日练习和安全标准。"
+          }
+        }
+      }
+    },
     "Consulta por código de barras usando API de OpenFoodFacts o base SQLite offline." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -17857,6 +17906,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "专属内容"
+          }
+        }
+      }
+    },
+    "Contenido no disponible" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Content Unavailable"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contenido no disponible"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "内容不可用"
           }
         }
       }
@@ -22272,6 +22344,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "双击以更换图片"
+          }
+        }
+      }
+    },
+    "Documento de referencia" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reference Document"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Documento de referencia"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "参考文档"
           }
         }
       }
@@ -28517,6 +28612,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "沉浸式体验，帮助你在激活副交感神经系统的同时放松与学习。"
+          }
+        }
+      }
+    },
+    "Explicación detallada del protocolo" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detailed Protocol Explanation"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Explicación detallada del protocolo"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "方案详细说明"
           }
         }
       }
@@ -46809,6 +46927,29 @@
         }
       }
     },
+    "No se pudo cargar la explicación detallada del protocolo." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The detailed protocol explanation could not be loaded."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo cargar la explicación detallada del protocolo."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法加载方案的详细说明。"
+          }
+        }
+      }
+    },
     "No se pudo cargar la imagen" : {
       "localizations" : {
         "en" : {
@@ -49005,6 +49146,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "新情境"
+          }
+        }
+      }
+    },
+    "Nuevo en la Versión Extendida: un programa práctico de 21 días para reconocer patrones automáticos, interrumpirlos y entrenar respuestas conscientes con prácticas guiadas, diario, recordatorios y seguimiento del progreso." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New in the Extended Version: a practical 21-day program to recognize automatic patterns, interrupt them, and train conscious responses with guided practices, journaling, reminders, and progress tracking."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nuevo en la Versión Extendida: un programa práctico de 21 días para reconocer patrones automáticos, interrumpirlos y entrenar respuestas conscientes con prácticas guiadas, diario, recordatorios y seguimiento del progreso."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "扩展版新增：一套为期 21 天的实用计划，帮助你识别并打断自动化模式，通过引导练习、日记、提醒和进度追踪，逐步培养有意识的回应方式。"
           }
         }
       }
@@ -54502,6 +54666,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "蛋白质："
+          }
+        }
+      }
+    },
+    "Protocolo detallado" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detailed Protocol"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Protocolo detallado"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "详细方案"
           }
         }
       }
@@ -65784,52 +65971,6 @@
         }
       }
     },
-    "Un programa práctico de 21 días para reconocer patrones automáticos, interrumpirlos y entrenar respuestas conscientes con prácticas guiadas, diario, recordatorios y seguimiento del progreso." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "A practical 21-day program to recognize automatic patterns, interrupt them, and train conscious responses with guided practices, journaling, reminders, and progress tracking."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Un programa práctico de 21 días para reconocer patrones automáticos, interrumpirlos y entrenar respuestas conscientes con prácticas guiadas, diario, recordatorios y seguimiento del progreso."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "一套为期 21 天的实用计划，帮助你识别并打断自动化模式，通过引导练习、日记、提醒和进度追踪，逐步培养有意识的回应方式。"
-          }
-        }
-      }
-    },
-    "Nuevo en la Versión Extendida: un programa práctico de 21 días para reconocer patrones automáticos, interrumpirlos y entrenar respuestas conscientes con prácticas guiadas, diario, recordatorios y seguimiento del progreso." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "New in the Extended Version: a practical 21-day program to recognize automatic patterns, interrupt them, and train conscious responses with guided practices, journaling, reminders, and progress tracking."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nuevo en la Versión Extendida: un programa práctico de 21 días para reconocer patrones automáticos, interrumpirlos y entrenar respuestas conscientes con prácticas guiadas, diario, recordatorios y seguimiento del progreso."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "扩展版新增：一套为期 21 天的实用计划，帮助你识别并打断自动化模式，通过引导练习、日记、提醒和进度追踪，逐步培养有意识的回应方式。"
-          }
-        }
-      }
-    },
     "transformation.alternative.formula" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -67413,6 +67554,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "一个模式，一种新回应，21 天。"
+          }
+        }
+      }
+    },
+    "Un programa práctico de 21 días para reconocer patrones automáticos, interrumpirlos y entrenar respuestas conscientes con prácticas guiadas, diario, recordatorios y seguimiento del progreso." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A practical 21-day program to recognize automatic patterns, interrupt them, and train conscious responses with guided practices, journaling, reminders, and progress tracking."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un programa práctico de 21 días para reconocer patrones automáticos, interrumpirlos y entrenar respuestas conscientes con prácticas guiadas, diario, recordatorios y seguimiento del progreso."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一套为期 21 天的实用计划，帮助你识别并打断自动化模式，通过引导练习、日记、提醒和进度追踪，逐步培养有意识的回应方式。"
           }
         }
       }

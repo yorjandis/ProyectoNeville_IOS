@@ -105,58 +105,7 @@ struct JoeDispenzaAuthorView: View {
                         }
                     }
 
-#if os(iOS)
-                    Button {
-                        route = hasExtendedAccess ? .protocoloTransformacion : .versionExtendida
-                    } label: {
-                        HStack(spacing: 14) {
-                            ZStack {
-                                Circle()
-                                    .fill(.white.opacity(0.22))
-                                Image(systemName: "point.3.connected.trianglepath.dotted")
-                                    .font(.title2.weight(.semibold))
-                                    .foregroundStyle(.white)
-                            }
-                            .frame(width: 52, height: 52)
 
-                            VStack(alignment: .leading, spacing: 4) {
-                                Label(L10n.exact("Versión Extendida"), systemImage: "crown.fill")
-                                    .font(.caption2.weight(.bold))
-                                    .foregroundStyle(.white)
-                                    .padding(.horizontal, 8)
-                                    .padding(.vertical, 4)
-                                    .background(.black.opacity(0.22), in: Capsule())
-
-                                Text(L10n.exact("Transformación personal · 21 días"))
-                                    .font(.headline)
-                                    .foregroundStyle(.white)
-                                Text(L10n.exact("Práctica guiada, P.A.R.A., diario y seguimiento"))
-                                    .font(.caption)
-                                    .foregroundStyle(.white.opacity(0.82))
-                                    .multilineTextAlignment(.leading)
-                            }
-
-                            Spacer(minLength: 6)
-
-                            Image(systemName: hasExtendedAccess ? "arrow.right.circle.fill" : "lock.fill")
-                                .font(.title2)
-                                .foregroundStyle(.white)
-                        }
-                        .padding(16)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(TransformationProtocolTheme.accessGradient())
-                        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-                        .shadow(color: .black.opacity(0.14), radius: 12, y: 6)
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityHint(
-                        L10n.exact(
-                            hasExtendedAccess
-                                ? "Abre el protocolo integral de transformación"
-                                : "Disponible en Versión Extendida"
-                        )
-                    )
-#endif
 
                     
                     Text("Frases y Citas")
@@ -205,6 +154,63 @@ struct JoeDispenzaAuthorView: View {
                             
                         }
                     }
+                    
+#if os(iOS)
+                    Button {
+                        route = hasExtendedAccess ? .protocoloTransformacion : .versionExtendida
+                    } label: {
+                        HStack(spacing: 14) {
+                            ZStack {
+                                Circle()
+                                    .fill(.white.opacity(0.22))
+                                Image(systemName: "point.3.connected.trianglepath.dotted")
+                                    .font(.title2.weight(.semibold))
+                                    .foregroundStyle(.white)
+                            }
+                            .frame(width: 52, height: 52)
+
+                            VStack(alignment: .leading, spacing: 4) {
+                                if !hasExtendedAccess {
+                                    Label(L10n.exact("Versión Extendida"), systemImage: "crown.fill")
+                                        .font(.caption2.weight(.bold))
+                                        .foregroundStyle(.white)
+                                        .padding(.horizontal, 8)
+                                        .padding(.vertical, 4)
+                                        .background(.black.opacity(0.22), in: Capsule())
+                                }
+                                
+
+                                Text(L10n.exact("Transformación personal · 21 días"))
+                                    .font(.headline)
+                                    .foregroundStyle(.white)
+                                Text(L10n.exact("Práctica guiada, P.A.R.A., diario y seguimiento"))
+                                    .font(.caption)
+                                    .foregroundStyle(.white.opacity(0.82))
+                                    .multilineTextAlignment(.leading)
+                            }
+
+                            Spacer(minLength: 6)
+
+                            Image(systemName: hasExtendedAccess ? "arrow.right.circle.fill" : "lock.fill")
+                                .font(.title2)
+                                .foregroundStyle(.white)
+                        }
+                        .padding(16)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(TransformationProtocolTheme.accessGradient())
+                        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+                        .shadow(color: .black.opacity(0.14), radius: 12, y: 6)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityHint(
+                        L10n.exact(
+                            hasExtendedAccess
+                                ? "Abre el protocolo integral de transformación"
+                                : "Disponible en Versión Extendida"
+                        )
+                    )
+#endif
+                    
                 }
                 .padding(16)
             }

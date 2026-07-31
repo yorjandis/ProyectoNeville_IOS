@@ -99,80 +99,7 @@
 		A41400000000000000000011 /* bruce_evolucion_interior_11.txt in Resources */ = {isa = PBXBuildFile; fileRef = A41300000000000000000011 /* bruce_evolucion_interior_11.txt */; };
 		A41400000000000000000012 /* bruce_evolucion_interior_12.txt in Resources */ = {isa = PBXBuildFile; fileRef = A41300000000000000000012 /* bruce_evolucion_interior_12.txt */; };
 		A41400000000000000000013 /* bruce_evolucion_interior_13.txt in Resources */ = {isa = PBXBuildFile; fileRef = A41300000000000000000013 /* bruce_evolucion_interior_13.txt */; };
-		A41500000000000000000001 /* bruce_evolucion_interior_1.txt in Resources */ = {isa = PBXBuildFile; fileRef = A41300000000000000000001 /* bruce_evolucion_interior_1.txt */; };
-		A41500000000000000000002 /* bruce_evolucion_interior_2.txt in Resources */ = {isa = PBXBuildFile; fileRef = A41300000000000000000002 /* bruce_evolucion_interior_2.txt */; };
-		A41500000000000000000003 /* bruce_evolucion_interior_3.txt in Resources */ = {isa = PBXBuildFile; fileRef = A41300000000000000000003 /* bruce_evolucion_interior_3.txt */; };
-		A41500000000000000000004 /* bruce_evolucion_interior_4.txt in Resources */ = {isa = PBXBuildFile; fileRef = A41300000000000000000004 /* bruce_evolucion_interior_4.txt */; };
-		A41500000000000000000005 /* bruce_evolucion_interior_5.txt in Resources */ = {isa = PBXBuildFile; fileRef = A41300000000000000000005 /* bruce_evolucion_interior_5.txt */; };
-		A41500000000000000000006 /* bruce_evolucion_interior_6.txt in Resources */ = {isa = PBXBuildFile; fileRef = A41300000000000000000006 /* bruce_evolucion_interior_6.txt */; };
-		A41500000000000000000007 /* bruce_evolucion_interior_7.txt in Resources */ = {isa = PBXBuildFile; fileRef = A41300000000000000000007 /* bruce_evolucion_interior_7.txt */; };
-		A41500000000000000000008 /* bruce_evolucion_interior_8.txt in Resources */ = {isa = PBXBuildFile; fileRef = A41300000000000000000008 /* bruce_evolucion_interior_8.txt */; };
-		A41500000000000000000009 /* bruce_evolucion_interior_9.txt in Resources */ = {isa = PBXBuildFile; fileRef = A41300000000000000000009 /* bruce_evolucion_interior_9.txt */; };
-		A41500000000000000000010 /* bruce_evolucion_interior_10.txt in Resources */ = {isa = PBXBuildFile; fileRef = A41300000000000000000010 /* bruce_evolucion_interior_10.txt */; };
-		A41500000000000000000011 /* bruce_evolucion_interior_11.txt in Resources */ = {isa = PBXBuildFile; fileRef = A41300000000000000000011 /* bruce_evolucion_interior_11.txt */; };
-		A41500000000000000000012 /* bruce_evolucion_interior_12.txt in Resources */ = {isa = PBXBuildFile; fileRef = A41300000000000000000012 /* bruce_evolucion_interior_12.txt */; };
-		A41500000000000000000013 /* bruce_evolucion_interior_13.txt in Resources */ = {isa = PBXBuildFile; fileRef = A41300000000000000000013 /* bruce_evolucion_interior_13.txt */; };
-		B130000000000000000001 /* enc_almacenamiento_emociones.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000001 /* enc_almacenamiento_emociones.txt */; };
-		B130000000000000000002 /* enc_ansiedad_vs_stress_cronico.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000002 /* enc_ansiedad_vs_stress_cronico.txt */; };
-		B130000000000000000003 /* enc_aprendizaje_asociativo.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000003 /* enc_aprendizaje_asociativo.txt */; };
-		B130000000000000000004 /* enc_atencion_focalizada.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000004 /* enc_atencion_focalizada.txt */; };
-		B130000000000000000005 /* enc_atencion_focalizada_practica.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000005 /* enc_atencion_focalizada_practica.txt */; };
-		B130000000000000000006 /* enc_coherencia_cardiocerebral.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000006 /* enc_coherencia_cardiocerebral.txt */; };
-		B130000000000000000007 /* enc_componentes_de_una_emocion.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000007 /* enc_componentes_de_una_emocion.txt */; };
-		B130000000000000000008 /* enc_conciencia.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000008 /* enc_conciencia.txt */; };
-		B130000000000000000009 /* enc_control_emociones.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000009 /* enc_control_emociones.txt */; };
-		B130000000000000000010 /* enc_cuanto_tarda_habito_debilitarse.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000010 /* enc_cuanto_tarda_habito_debilitarse.txt */; };
-		B130000000000000000011 /* enc_dopamina_vs_serotonina.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000011 /* enc_dopamina_vs_serotonina.txt */; };
-		B130000000000000000012 /* enc_dopamina_y_procrastinacion.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000012 /* enc_dopamina_y_procrastinacion.txt */; };
-		B130000000000000000013 /* enc_efecto_sentimie_negativos.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000013 /* enc_efecto_sentimie_negativos.txt */; };
-		B130000000000000000014 /* enc_enfermedad.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000014 /* enc_enfermedad.txt */; };
-		B130000000000000000015 /* enc_entrelazamiento_cuantico_neurociencia.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000015 /* enc_entrelazamiento_cuantico_neurociencia.txt */; };
-		B130000000000000000016 /* enc_epigenetica_varios_autores.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000016 /* enc_epigenetica_varios_autores.txt */; };
-		B130000000000000000017 /* enc_epigenetica_y_neurociencia.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000017 /* enc_epigenetica_y_neurociencia.txt */; };
-		B130000000000000000018 /* enc_genes_reloj_perifericos.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000018 /* enc_genes_reloj_perifericos.txt */; };
-		B130000000000000000019 /* enc_habitos_y_ahorroenergia_cerebral.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000019 /* enc_habitos_y_ahorroenergia_cerebral.txt */; };
-		B130000000000000000020 /* enc_hormonas_estres.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000020 /* enc_hormonas_estres.txt */; };
-		B130000000000000000021 /* enc_interocepcion_y_emocion.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000021 /* enc_interocepcion_y_emocion.txt */; };
-		B130000000000000000022 /* enc_joedispensa_y_epigenetica.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000022 /* enc_joedispensa_y_epigenetica.txt */; };
-		B130000000000000000023 /* enc_listado_habitos_saludables.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000023 /* enc_listado_habitos_saludables.txt */; };
-		B130000000000000000024 /* enc_meditacion.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000024 /* enc_meditacion.txt */; };
-		B130000000000000000025 /* enc_meditacion_y_expresiongenica.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000025 /* enc_meditacion_y_expresiongenica.txt */; };
-		B130000000000000000026 /* enc_memoria_episodica.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000026 /* enc_memoria_episodica.txt */; };
-		B130000000000000000027 /* enc_memoria_procedimental.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000027 /* enc_memoria_procedimental.txt */; };
-		B130000000000000000028 /* enc_memoria_semantica.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000028 /* enc_memoria_semantica.txt */; };
-		B130000000000000000029 /* enc_mente_universal.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000029 /* enc_mente_universal.txt */; };
-		B130000000000000000030 /* enc_menteconciente_subconciente.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000030 /* enc_menteconciente_subconciente.txt */; };
-		B130000000000000000031 /* enc_modificar_asociaciones_no_deseadas.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000031 /* enc_modificar_asociaciones_no_deseadas.txt */; };
-		B130000000000000000032 /* enc_neurociencia_habitos.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000032 /* enc_neurociencia_habitos.txt */; };
-		B130000000000000000033 /* enc_neuroplasticidad.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000033 /* enc_neuroplasticidad.txt */; };
-		B130000000000000000034 /* enc_neville_y_epigenetica.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000034 /* enc_neville_y_epigenetica.txt */; };
-		B130000000000000000035 /* enc_patrones_de_conducta_heredados.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000035 /* enc_patrones_de_conducta_heredados.txt */; };
-		B130000000000000000036 /* enc_patrones_sinapticos_heredados.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000036 /* enc_patrones_sinapticos_heredados.txt */; };
-		B130000000000000000037 /* enc_pensamientos_emociones_sistemainmune.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000037 /* enc_pensamientos_emociones_sistemainmune.txt */; };
-		B130000000000000000038 /* enc_protocolo_anti_adicciones_digitales.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000038 /* enc_protocolo_anti_adicciones_digitales.txt */; };
-		B130000000000000000039 /* enc_protocolo_anti_ansiedad.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000039 /* enc_protocolo_anti_ansiedad.txt */; };
-		B130000000000000000040 /* enc_protocolo_antirecaida.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000040 /* enc_protocolo_antirecaida.txt */; };
-		B130000000000000000041 /* enc_protocolo_dopaminergico.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000041 /* enc_protocolo_dopaminergico.txt */; };
-		B130000000000000000042 /* enc_protocolo_normalizar_ritmo_circadiano.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000042 /* enc_protocolo_normalizar_ritmo_circadiano.txt */; };
-		B130000000000000000043 /* enc_protocolo_normalizar_ritmo_circadiano_2.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000043 /* enc_protocolo_normalizar_ritmo_circadiano_2.txt */; };
-		B130000000000000000044 /* enc_protocolo_practico_reinterpretar_emociones.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000044 /* enc_protocolo_practico_reinterpretar_emociones.txt */; };
-		B130000000000000000045 /* enc_que_es_la_dopamina.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000045 /* enc_que_es_la_dopamina.txt */; };
-		B130000000000000000046 /* enc_que_es_la_ensiedad.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000046 /* enc_que_es_la_ensiedad.txt */; };
-		B130000000000000000047 /* enc_que_es_la_memoria.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000047 /* enc_que_es_la_memoria.txt */; };
-		B130000000000000000048 /* enc_que_es_la_serotonina.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000048 /* enc_que_es_la_serotonina.txt */; };
-		B130000000000000000049 /* enc_que_es_un_pensamiento.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000049 /* enc_que_es_un_pensamiento.txt */; };
-		B130000000000000000050 /* enc_que_es_una_emocion.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000050 /* enc_que_es_una_emocion.txt */; };
-		B130000000000000000051 /* enc_recaer_no_interrumpe_progreso.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000051 /* enc_recaer_no_interrumpe_progreso.txt */; };
-		B130000000000000000052 /* enc_ritmo_circadiano.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000052 /* enc_ritmo_circadiano.txt */; };
-		B130000000000000000053 /* enc_romper_un_habito.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000053 /* enc_romper_un_habito.txt */; };
-		B130000000000000000054 /* enc_rutina_diario_potenciar_serotonina.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000054 /* enc_rutina_diario_potenciar_serotonina.txt */; };
-		B130000000000000000055 /* enc_sentimiento_como_fuerzacreativa.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000055 /* enc_sentimiento_como_fuerzacreativa.txt */; };
-		B130000000000000000056 /* enc_señales_consolidacion_habito.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000056 /* enc_señales_consolidacion_habito.txt */; };
-		B130000000000000000057 /* enc_serotonina_y_ansiedad.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000057 /* enc_serotonina_y_ansiedad.txt */; };
-		B130000000000000000058 /* enc_tiempo.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000058 /* enc_tiempo.txt */; };
-		B130000000000000000059 /* enc_utilizar_recaida_a_tu_favor.txt in Resources */ = {isa = PBXBuildFile; fileRef = B120000000000000000059 /* enc_utilizar_recaida_a_tu_favor.txt */; };
 		CC1000013000000000000001 /* Shared/Localization/Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = CC1000023000000000000001 /* Shared/Localization/Localizable.xcstrings */; };
-		CC1000033000000000000001 /* Shared/Localization/Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = CC1000023000000000000001 /* Shared/Localization/Localizable.xcstrings */; };
 		CC1000043000000000000001 /* Shared/Localization/Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = CC1000023000000000000001 /* Shared/Localization/Localizable.xcstrings */; };
 		CC1000053000000000000001 /* Shared/Localization/Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = CC1000023000000000000001 /* Shared/Localization/Localizable.xcstrings */; };
 		DCA100013000000000000001 /* frases_esferas.json in Resources */ = {isa = PBXBuildFile; fileRef = DCA100103000000000000001 /* frases_esferas.json */; };
@@ -193,6 +120,7 @@
 		F210000A0000000000000001 /* TransformationProtocolPracticeViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F210001A0000000000000001 /* TransformationProtocolPracticeViews.swift */; };
 		F210000B0000000000000001 /* TransformationProtocolSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F210001B0000000000000001 /* TransformationProtocolSettingsView.swift */; };
 		F210000C0000000000000001 /* TransformationProtocolInformationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F210001C0000000000000001 /* TransformationProtocolInformationView.swift */; };
+		F210000D0000000000000001 /* info_protocolo_de_transformacion.txt in Resources */ = {isa = PBXBuildFile; fileRef = F21000300000000000000001 /* info_protocolo_de_transformacion.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -582,6 +510,8 @@
 		F210001A0000000000000001 /* TransformationProtocolPracticeViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransformationProtocolPracticeViews.swift; sourceTree = "<group>"; };
 		F210001B0000000000000001 /* TransformationProtocolSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransformationProtocolSettingsView.swift; sourceTree = "<group>"; };
 		F210001C0000000000000001 /* TransformationProtocolInformationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransformationProtocolInformationView.swift; sourceTree = "<group>"; };
+		F210001E0000000000000001 /* en */ = {isa = PBXFileReference; lastKnownFileType = text; name = en; path = Shared/Localization/en.lproj/info_protocolo_de_transformacion.txt; sourceTree = SOURCE_ROOT; };
+		F210001F0000000000000001 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text; name = "zh-Hans"; path = "Shared/Localization/zh-Hans.lproj/info_protocolo_de_transformacion.txt"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -1753,6 +1683,7 @@
 				Staff/Metas/ProgramasPreestablecidos/prog_visualizacion_creativa_neville_1.json,
 				Staff/Metas/ProgramasPreestablecidos/prog_visualizacion_creativa_neville_2.json,
 				Staff/Metas/ProgramasPreestablecidos/prog_visualizacion_creativa_neville_3.json,
+				"Staff/protocolo-transformacion/info_protocolo_de_transformacion.txt",
 				Staff/Reflexiones/reflex_conciencia_y_realidad.txt,
 				Staff/Reflexiones/reflex_conocimiento.txt,
 				Staff/Reflexiones/reflex_deseo_tener_certeza.txt,
@@ -2370,6 +2301,26 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		E95B93552AAFBB2600B5E2B5 /* Neville_iOS */ = {
+			isa = PBXGroup;
+			children = (
+				91E52D8B2F4327CE0054C032 /* Assets.xcassets */,
+				F21000200000000000000001 /* Features */,
+				9113E29C2EE9E1D2002AC306 /* Model */,
+				19E0BE052B0B508400E149A5 /* Neville_iOS.entitlements */,
+				197D2A392AF9858900486014 /* Neville-iOS-Info.plist */,
+				E95B93562AAFBB2600B5E2B5 /* Neville_iOSApp.swift */,
+				E95B93582AAFBB2600B5E2B5 /* ContentView.swift */,
+				199DA0662B0EAC5800DEED62 /* Home.swift */,
+				E92F644E2AB6EF5A007BB4BA /* Views */,
+				911FF1FA2ECB4064009F83BE /* Preview Content */,
+				914415A92EDC377200FFC61D /* Atajos */,
+				914D887A2FC1AF1800CDDB93 /* WatchDiarioReceiver.swift */,
+				910765482FCC0055001CA6D2 /* WatchDataSyncToWatch.swift */,
+			);
+			path = Neville_iOS;
+			sourceTree = "<group>";
+		};
 		F21000200000000000000001 /* Features */ = {
 			isa = PBXGroup;
 			children = (
@@ -2381,6 +2332,7 @@
 		F21000210000000000000001 /* TransformationProtocol */ = {
 			isa = PBXGroup;
 			children = (
+				F21000300000000000000001 /* info_protocolo_de_transformacion.txt */,
 				F21000220000000000000001 /* Models */,
 				F21000230000000000000001 /* Services */,
 				F21000240000000000000001 /* ViewModels */,
@@ -2427,26 +2379,6 @@
 				F210001C0000000000000001 /* TransformationProtocolInformationView.swift */,
 			);
 			path = Views;
-			sourceTree = "<group>";
-		};
-		E95B93552AAFBB2600B5E2B5 /* Neville_iOS */ = {
-			isa = PBXGroup;
-			children = (
-				91E52D8B2F4327CE0054C032 /* Assets.xcassets */,
-				F21000200000000000000001 /* Features */,
-				9113E29C2EE9E1D2002AC306 /* Model */,
-				19E0BE052B0B508400E149A5 /* Neville_iOS.entitlements */,
-				197D2A392AF9858900486014 /* Neville-iOS-Info.plist */,
-				E95B93562AAFBB2600B5E2B5 /* Neville_iOSApp.swift */,
-				E95B93582AAFBB2600B5E2B5 /* ContentView.swift */,
-				199DA0662B0EAC5800DEED62 /* Home.swift */,
-				E92F644E2AB6EF5A007BB4BA /* Views */,
-				911FF1FA2ECB4064009F83BE /* Preview Content */,
-				914415A92EDC377200FFC61D /* Atajos */,
-				914D887A2FC1AF1800CDDB93 /* WatchDiarioReceiver.swift */,
-				910765482FCC0055001CA6D2 /* WatchDataSyncToWatch.swift */,
-			);
-			path = Neville_iOS;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -2819,6 +2751,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F210000D0000000000000001 /* info_protocolo_de_transformacion.txt in Resources */,
 				DCA100013000000000000001 /* frases_esferas.json in Resources */,
 				DCB100013000000000000001 /* HealthyHabits.json in Resources */,
 				DCC100013000000000000001 /* GoalPrograms.json in Resources */,
@@ -2987,6 +2920,15 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		F21000300000000000000001 /* info_protocolo_de_transformacion.txt */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F210001E0000000000000001 /* en */,
+				F210001F0000000000000001 /* zh-Hans */,
+			);
+			name = info_protocolo_de_transformacion.txt;
+			sourceTree = "<group>";
+		};
 		A30000000000000000000001 /* biografia.txt */ = {
 			isa = PBXVariantGroup;
 			children = (
