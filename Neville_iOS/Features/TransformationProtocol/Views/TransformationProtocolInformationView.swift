@@ -4,10 +4,27 @@ struct TransformationProtocolInformationView: View {
     @Environment(\.dismiss) private var dismiss
 
     let hasActiveCycle: Bool
+    let showsPracticalDemo: Bool
+    let allowsExampleApplication: Bool
+    let showsDetailedReference: Bool
     let onUseExample: (TransformationProtocolExample) -> Void
 
     @State private var pendingExample: TransformationProtocolExample?
     @State private var confirmsReplacement = false
+
+    init(
+        hasActiveCycle: Bool,
+        showsPracticalDemo: Bool = true,
+        allowsExampleApplication: Bool = true,
+        showsDetailedReference: Bool = true,
+        onUseExample: @escaping (TransformationProtocolExample) -> Void
+    ) {
+        self.hasActiveCycle = hasActiveCycle
+        self.showsPracticalDemo = showsPracticalDemo
+        self.allowsExampleApplication = allowsExampleApplication
+        self.showsDetailedReference = showsDetailedReference
+        self.onUseExample = onUseExample
+    }
 
     var body: some View {
         NavigationStack {
@@ -17,8 +34,15 @@ struct TransformationProtocolInformationView: View {
                     cycleCard
                     dailyUseCard
                     measurementCard
-                    exampleCard
-                    detailedInformationCard
+                    if showsPracticalDemo {
+                        if allowsExampleApplication {
+                            exampleCard
+                        }
+                        
+                    }
+                    if showsDetailedReference {
+                        detailedInformationCard
+                    }
                 }
                 .padding(16)
                 .padding(.bottom, 26)
@@ -159,24 +183,24 @@ struct TransformationProtocolInformationView: View {
                 Text("Los ejemplos incluyen reacción a críticas, procrastinación, teléfono compulsivo, comida por estrés, conversaciones incómodas y abandono prematuro de rutinas.")
                     .font(.subheadline)
                     .foregroundStyle(TransformationProtocolTheme.secondaryInk)
+                    if hasActiveCycle {
+                        Label(
+                            "Para cargar un ejemplo será necesario sustituir el ciclo actual. Te pediremos confirmación.",
+                            systemImage: "exclamationmark.shield.fill"
+                        )
+                        .font(.footnote)
+                        .foregroundStyle(Color(red: 0.63, green: 0.29, blue: 0.08))
+                    }
 
-                if hasActiveCycle {
-                    Label(
-                        "Para cargar un ejemplo será necesario sustituir el ciclo actual. Te pediremos confirmación.",
-                        systemImage: "exclamationmark.shield.fill"
-                    )
-                    .font(.footnote)
-                    .foregroundStyle(Color(red: 0.63, green: 0.29, blue: 0.08))
-                }
-
-                Button(action: chooseRandomExample) {
-                    Label("Completar con un ejemplo al azar", systemImage: "dice.fill")
-                        .font(.headline)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 14)
-                }
-                .buttonStyle(.borderedProminent)
-                .tint(TransformationProtocolTheme.violet)
+                    Button(action: chooseRandomExample) {
+                        Label("Completar con un ejemplo al azar", systemImage: "dice.fill")
+                            .font(.headline)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 14)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(TransformationProtocolTheme.violet)
+                
             }
         }
     }

@@ -4998,6 +4998,7 @@
       }
     },
     "Accede a las frases y enseñanzas de Joe Dispenza, Bruce Lipton y Gregg Braden." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -7867,6 +7868,7 @@
       }
     },
     "Amplio catálogo educativo y práctico basado en neurociencia y meditación: hábitos, mente, epigenética, hormonas del estrés, ritmos circadianos y más." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -17889,6 +17891,7 @@
       }
     },
     "Contenido exclusivo" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -58659,6 +58662,7 @@
       }
     },
     "Resumen de investigaciones que respaldan estas enseñanzas, debidamente acotados para su fácil consulta." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

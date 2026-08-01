@@ -43,11 +43,6 @@ struct PurchaseView: View {
 
     private static let premiumFeatures: [PremiumFeature] = transformationProtocolFeatures + [
         PremiumFeature(
-            iconName: "sparkles",
-            title: String(localized: "Contenido exclusivo"),
-            description: String(localized: "Accede a las frases y enseñanzas de Joe Dispenza, Bruce Lipton y Gregg Braden.")
-        ),
-        PremiumFeature(
             iconName: "cross.case.fill",
             title: String(localized: "Centro Sanador"),
             description: String(localized: "Guías rápidas para momentos difíciles: ansiedad, miedo, estrés, bloqueo, conflicto o impulso. Comprende qué ocurre en tu cuerpo y aplica técnicas prácticas paso a paso cuando más lo necesitas.")
@@ -103,19 +98,9 @@ struct PurchaseView: View {
             description: String(localized: "Programa avisos para tus prácticas esenciales como meditar, agradecer, visualizar o revisar tus metas.")
         ),
         PremiumFeature(
-            iconName: "book.closed",
-            title: String(localized: "Enciclopedia"),
-            description: String(localized: "Amplio catálogo educativo y práctico basado en neurociencia y meditación: hábitos, mente, epigenética, hormonas del estrés, ritmos circadianos y más.")
-        ),
-        PremiumFeature(
             iconName: "barcode.viewfinder",
             title: String(localized: "Lector de Etiquetas"),
             description: String(localized: "Analiza cualquier alimento y obtiene información nutricional detallada: consumo saludable, impacto en el metabolismo y posibles efectos negativos.")
-        ),
-        PremiumFeature(
-            iconName: "checkmark.seal",
-            title: String(localized: "Evidencia científica"),
-            description: String(localized: "Resumen de investigaciones que respaldan estas enseñanzas, debidamente acotados para su fácil consulta.")
         ),
         PremiumFeature(
             iconName: "brain.head.profile",

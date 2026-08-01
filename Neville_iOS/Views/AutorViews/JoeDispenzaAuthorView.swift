@@ -34,6 +34,9 @@ struct JoeDispenzaAuthorView: View {
     }
 
     @State private var route: Route?
+#if os(iOS)
+    @State private var showsTransformationInformation = false
+#endif
     @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
     @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) private var yorjPremium: Bool = false
 
@@ -156,59 +159,84 @@ struct JoeDispenzaAuthorView: View {
                     }
                     
 #if os(iOS)
-                    Button {
-                        route = hasExtendedAccess ? .protocoloTransformacion : .versionExtendida
-                    } label: {
-                        HStack(spacing: 14) {
-                            ZStack {
-                                Circle()
-                                    .fill(.white.opacity(0.22))
-                                Image(systemName: "point.3.connected.trianglepath.dotted")
-                                    .font(.title2.weight(.semibold))
-                                    .foregroundStyle(.white)
+                    HStack(spacing: 14) {
+                            Button(action: openTransformationProtocol) {
+                                ZStack {
+                                    Circle()
+                                        .fill(.white.opacity(0.22))
+                                    Image(systemName: "point.3.connected.trianglepath.dotted")
+                                        .font(.title2.weight(.semibold))
+                                        .foregroundStyle(.white)
+                                }
+                                .frame(width: 52, height: 52)
                             }
-                            .frame(width: 52, height: 52)
+                            .buttonStyle(.plain)
+                            .accessibilityHidden(true)
 
                             VStack(alignment: .leading, spacing: 4) {
-                                if !hasExtendedAccess {
-                                    Label(L10n.exact("Versión Extendida"), systemImage: "crown.fill")
-                                        .font(.caption2.weight(.bold))
-                                        .foregroundStyle(.white)
-                                        .padding(.horizontal, 8)
-                                        .padding(.vertical, 4)
-                                        .background(.black.opacity(0.22), in: Capsule())
-                                }
-                                
+                                HStack(spacing: 8) {
+                                    if !hasExtendedAccess {
+                                        Label(L10n.exact("Versión Extendida"), systemImage: "crown.fill")
+                                            .font(.caption2.weight(.bold))
+                                            .foregroundStyle(.white)
+                                            .padding(.horizontal, 8)
+                                            .padding(.vertical, 4)
+                                            .background(.black.opacity(0.22), in: Capsule())
+                                    
 
-                                Text(L10n.exact("Transformación personal · 21 días"))
-                                    .font(.headline)
-                                    .foregroundStyle(.white)
-                                Text(L10n.exact("Práctica guiada, P.A.R.A., diario y seguimiento"))
-                                    .font(.caption)
-                                    .foregroundStyle(.white.opacity(0.82))
-                                    .multilineTextAlignment(.leading)
+                                    Spacer()
+                                    
+                                    Button {
+                                        showsTransformationInformation = true
+                                    } label: {
+                                        Image(systemName: "info.circle.fill")
+                                            .font(.title3.weight(.semibold))
+                                            .foregroundStyle(.white)
+                                            .frame(width: 30, height: 30)
+                                            .background(.black.opacity(0.20), in: Circle())
+                                    }
+                                    .buttonStyle(.plain)
+                                    .accessibilityLabel("Información sobre la herramienta")
+                                    
+                                    }
+                                }
+
+                                Button(action: openTransformationProtocol) {
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text(L10n.exact("Transformación personal · 21 días"))
+                                            .font(.headline)
+                                            .foregroundStyle(.white)
+                                        Text(L10n.exact("Práctica guiada, P.A.R.A., diario y seguimiento"))
+                                            .font(.caption)
+                                            .foregroundStyle(.white.opacity(0.82))
+                                            .multilineTextAlignment(.leading)
+                                    }
+                                }
+                                .buttonStyle(.plain)
+                                .accessibilityHint(
+                                    L10n.exact(
+                                        hasExtendedAccess
+                                            ? "Abre el protocolo integral de transformación"
+                                            : "Disponible en Versión Extendida"
+                                    )
+                                )
                             }
 
                             Spacer(minLength: 6)
 
-                            Image(systemName: hasExtendedAccess ? "arrow.right.circle.fill" : "lock.fill")
-                                .font(.title2)
-                                .foregroundStyle(.white)
-                        }
-                        .padding(16)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(TransformationProtocolTheme.accessGradient())
-                        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-                        .shadow(color: .black.opacity(0.14), radius: 12, y: 6)
+                            Button(action: openTransformationProtocol) {
+                                Image(systemName: hasExtendedAccess ? "arrow.right.circle.fill" : "lock.fill")
+                                    .font(.title2)
+                                    .foregroundStyle(.white)
+                            }
+                            .buttonStyle(.plain)
+                            .accessibilityHidden(true)
                     }
-                    .buttonStyle(.plain)
-                    .accessibilityHint(
-                        L10n.exact(
-                            hasExtendedAccess
-                                ? "Abre el protocolo integral de transformación"
-                                : "Disponible en Versión Extendida"
-                        )
-                    )
+                    .padding(16)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(TransformationProtocolTheme.accessGradient())
+                    .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+                    .shadow(color: .black.opacity(0.14), radius: 12, y: 6)
 #endif
                     
                 }
@@ -331,7 +359,25 @@ struct JoeDispenzaAuthorView: View {
             .presentationDetents([.large])
             .presentationDragIndicator(.hidden)
         }
+#if os(iOS)
+        .sheet(isPresented: $showsTransformationInformation) {
+            TransformationProtocolInformationView(
+                hasActiveCycle: false,
+                allowsExampleApplication: false,
+                showsDetailedReference: false,
+                onUseExample: { _ in }
+            )
+            .presentationDetents([.large])
+            .presentationDragIndicator(.visible)
+        }
+#endif
     }
+
+#if os(iOS)
+    private func openTransformationProtocol() {
+        route = hasExtendedAccess ? .protocoloTransformacion : .versionExtendida
+    }
+#endif
 
    
     @ViewBuilder
