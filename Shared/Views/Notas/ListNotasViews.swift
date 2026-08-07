@@ -18,13 +18,13 @@ import UniformTypeIdentifiers
 private enum NotasUIConstants {
     static let searchBarHeight: CGFloat = 40
     static let searchHeaderHeight: CGFloat = 54
-    static let searchBarLeadingInset: CGFloat = 104
+    static let searchBarLeadingInset: CGFloat = 150
     static let searchBarHorizontalPadding: CGFloat = 12
     static let listBottomPadding: CGFloat = 16
 
     static let searchPetAssetName = "nati_notas"
     static let searchPetSize: CGFloat = 96
-    static let searchPetOffset = CGSize(width: 20, height: -10)
+    static let searchPetOffset = CGSize(width: 55, height: -10)
 }
 
 
