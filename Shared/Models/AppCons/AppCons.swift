@@ -157,6 +157,7 @@ struct AppCons{
     static let UD_setting_WeeklyReviewCelebration         = "setting_WeeklyReviewCelebration"
     static let UD_setting_WeeklyReviewNotificationsEnabled = "setting_WeeklyReviewNotificationsEnabled"
     static let UD_setting_WeeklyReviewRecordsToKeep       = "setting_WeeklyReviewRecordsToKeep"
+    static let UD_setting_BottomBarShortcuts              = "setting_BottomBarShortcuts"
   
    //Theme
     static let UD_setting_theme                     = "setting_theme"    //Theme light/dark

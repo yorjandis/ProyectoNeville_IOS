@@ -7,7 +7,8 @@
 
 import SwiftUI
 
-fileprivate enum TipeViewOptionTab: String, Identifiable {
+enum TipeViewOptionTab: String, Identifiable, CaseIterable {
+    case lecturas
     case notas
     case diario
     case lienzo
@@ -31,6 +32,7 @@ fileprivate enum TipeViewOptionTab: String, Identifiable {
     case presencia
     case revisionSemanal
     case centroSanador
+    case chatIA
 
     case autorNeville
     case autorJoeDispenza
@@ -40,10 +42,246 @@ fileprivate enum TipeViewOptionTab: String, Identifiable {
     case videosTutoriales
 
     var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .lecturas: "Lecturas"
+        case .notas: "Notas"
+        case .diario: "Diario"
+        case .lienzo: "Lienzo"
+        case .metas: "Metas"
+        case .frases: "Frases"
+        case .codeScanner: "Lector QR"
+        case .codeGenerate: "Generador QR"
+        case .game: "Juego"
+        case .ayudas: "Ayudas"
+        case .reflex: "Reflexiones"
+        case .setting: "Ajustes"
+        case .reminder: "Recordatorios"
+        case .premium: "Versión Extendida"
+        case .evidenciaCientifica: "Evidencia Científica"
+        case .enciclopedia: "Enciclopedia"
+        case .espacioCalma: "Espacio de calma"
+        case .ritualMatutino: "Ritual Matutino"
+        case .lectorEtiquetas: "Lector de Etiquetas"
+        case .cardioCoherencia: "Coherencia Cardio-Cerebral"
+        case .agenda: "Agenda"
+        case .presencia: "Presencia"
+        case .revisionSemanal: "Resumen semanal"
+        case .centroSanador: "Centro Sanador"
+        case .chatIA: "Chat IA"
+        case .autorNeville: "Neville Goddard"
+        case .autorJoeDispenza: "Joe Dispenza"
+        case .autorGreggBraden: "Gregg Braden"
+        case .autorBruceLipton: "Bruce Lipton"
+        case .videosTutoriales: "Videos Tutoriales"
+        }
+    }
+
+    var systemImage: String {
+        switch self {
+        case .lecturas: "book.pages.fill"
+        case .notas: "note.text"
+        case .diario: "book"
+        case .lienzo: "paintbrush.pointed.fill"
+        case .metas: "target"
+        case .frases: "quote.bubble.fill"
+        case .codeScanner: "qrcode.viewfinder"
+        case .codeGenerate: "qrcode"
+        case .game: "gamecontroller.fill"
+        case .ayudas: "questionmark.circle.fill"
+        case .reflex: "brain.head.profile.fill"
+        case .setting: "gearshape.fill"
+        case .reminder: "bell.fill"
+        case .premium: "sparkles"
+        case .evidenciaCientifica: "atom"
+        case .enciclopedia: "books.vertical.fill"
+        case .espacioCalma: "leaf.fill"
+        case .ritualMatutino: "sunrise.fill"
+        case .lectorEtiquetas: "barcode.viewfinder"
+        case .cardioCoherencia: "heart.circle.fill"
+        case .agenda: "calendar"
+        case .presencia: "figure.mind.and.body"
+        case .revisionSemanal: "calendar.badge.checkmark"
+        case .centroSanador: "cross.case.fill"
+        case .chatIA: "ellipsis.message"
+        case .autorNeville, .autorJoeDispenza, .autorGreggBraden, .autorBruceLipton:
+            "person.crop.circle.fill"
+        case .videosTutoriales: "play.rectangle.fill"
+        }
+    }
+
+    var requiresPremium: Bool {
+        switch self {
+        case .agenda, .presencia, .revisionSemanal, .lectorEtiquetas,
+             .espacioCalma, .ritualMatutino, .cardioCoherencia, .videosTutoriales:
+            true
+        default:
+            false
+        }
+    }
+}
+
+@MainActor
+enum BottomBarShortcutConfiguration {
+    static let defaultShortcuts: [TipeViewOptionTab] = [.lecturas, .notas, .diario, .chatIA]
+    static let defaultStorageValue = defaultShortcuts.map(\.rawValue).joined(separator: ",")
+
+    static func shortcuts(from storageValue: String) -> [TipeViewOptionTab] {
+        let decoded = storageValue
+            .split(separator: ",")
+            .compactMap { TipeViewOptionTab(rawValue: String($0)) }
+
+        var result: [TipeViewOptionTab] = []
+        for shortcut in decoded + defaultShortcuts + TipeViewOptionTab.allCases where !result.contains(shortcut) {
+            result.append(shortcut)
+            if result.count == 4 { break }
+        }
+        return result
+    }
+
+    static func load() -> [TipeViewOptionTab] {
+        let stored = UserDefaults.standard.string(forKey: AppCons.UD_setting_BottomBarShortcuts)
+            ?? defaultStorageValue
+        return shortcuts(from: stored)
+    }
+
+    static func save(_ shortcuts: [TipeViewOptionTab]) {
+        let normalized = Array(shortcuts.prefix(4))
+        UserDefaults.standard.set(
+            normalized.map(\.rawValue).joined(separator: ","),
+            forKey: AppCons.UD_setting_BottomBarShortcuts
+        )
+    }
+}
+
+struct OptionAccessDestinationView: View {
+    let option: TipeViewOptionTab
+
+    @ObservedObject var settingModel: SettingModel
+    @StateObject private var clipboardModel = ClipboardObserver()
+
+    private struct QRText: Identifiable {
+        let id = UUID()
+        let text: String
+    }
+
+    @State private var scannedQRText: QRText?
+
+    var body: some View {
+        Group {
+            switch option {
+            case .lecturas:
+                TxtListView(typeOfContent: .conf, title: "Lecturas")
+            case .autorNeville:
+                NevilleAuthorView()
+            case .autorJoeDispenza:
+                JoeDispenzaAuthorView()
+            case .autorGreggBraden:
+                GreggBradenAuthorView()
+            case .autorBruceLipton:
+                BruceLiptonAuthorView()
+            case .setting:
+                Ajustes()
+            case .notas:
+                ListNotasViews()
+            case .diario:
+                DiarioListView()
+            case .lienzo:
+                LienzoMain(texto: "", imagenPrimariaACargar: nil)
+            case .premium:
+                PurchaseView()
+            case .codeScanner:
+                CodeScannerView(codeTypes: [.qr]) { result in
+                    if case let .success(code) = result {
+                        scannedQRText = QRText(text: code.string)
+                    }
+                }
+            case .codeGenerate:
+                GenerateQRView(footer: "")
+            case .reminder:
+                ReminderListView()
+            case .metas:
+                GoalsListView()
+            case .agenda:
+                AgendaMainView()
+            case .presencia:
+                PresenciaView()
+            case .revisionSemanal:
+                WeeklyReviewView()
+            case .centroSanador:
+                CentroSanadorView(embeddedInNavigationStack: true)
+            case .enciclopedia:
+                EnciclopediaListView()
+            case .espacioCalma:
+                EspacioCalmaView()
+                    .ignoresSafeArea()
+            case .ritualMatutino:
+                MorningRitualMainView()
+            case .lectorEtiquetas:
+                LectorEtiquetasView()
+            case .cardioCoherencia:
+                CardioCoherenceWelcomeFlowView()
+                    .ignoresSafeArea()
+            case .evidenciaCientifica:
+                EvidenciaCientificaView()
+            case .frases:
+                FrasesListView()
+            case .ayudas:
+                TxtListView(typeOfContent: .ayud, title: "Ayudas")
+            case .reflex:
+                ReflexListView()
+            case .game:
+                GamePLay()
+            case .videosTutoriales:
+                TutorialVideosListView()
+            case .chatIA:
+                chatDestination
+            }
+        }
+        .sheet(item: $scannedQRText) { result in
+            GenerateQRView(footer: result.text, showImage: true)
+        }
+        .environment(\.managedObjectContext, CoreDataController.shared.context)
+        .environmentObject(settingModel)
+        .environmentObject(FrasesModel.shared)
+        .environmentObject(TxtContentModel.shared)
+        .environmentObject(SecurityModel.shared)
+        .environmentObject(ReflexModel.shared)
+        .environmentObject(clipboardModel)
+    }
+
+    @ViewBuilder
+    private var chatDestination: some View {
+        if #available(iOS 26.0, *) {
+            if IAModelAppleIntelligence.isAvailable() {
+                ChatView(textoACargar: nil)
+            } else {
+                unavailableChatView
+            }
+        } else {
+            unavailableChatView
+        }
+    }
+
+    private var unavailableChatView: some View {
+        VStack(spacing: 14) {
+            Image(systemName: "ellipsis.message")
+                .font(.system(size: 42))
+                .foregroundStyle(.secondary)
+            Text("Chat IA no disponible")
+                .font(.title3.bold())
+            Text("Apple Intelligence no está disponible en este dispositivo o idioma.")
+                .multilineTextAlignment(.center)
+                .foregroundStyle(.secondary)
+        }
+        .padding()
+        .navigationTitle("Chat IA")
+    }
 }
 
 struct optionView: View {
-    @EnvironmentObject var settingModel: SettingModel
+    @ObservedObject var settingModel: SettingModel
 
     let isShowingAlternativeHome: Bool
     let toggleHomeScreen: () -> Void
@@ -54,13 +292,6 @@ struct optionView: View {
 
     @AppStorage("purchaseStatus") var purchaseStatus: Bool = false
     @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) var yorjPremium: Bool = false
-
-    struct QRText: Identifiable {
-        let id = UUID()
-        let text: String
-    }
-
-    @State private var footerToQRCode: QRText?
 
     var body: some View {
         NavigationStack {
@@ -77,11 +308,13 @@ struct optionView: View {
                     Spacer()
 
                     Menu {
+                        Button("Lecturas") { self.showView = .lecturas }
                         Button("Ayudas") { self.showView = .ayudas }
                         Button("Reflexiones") { self.showView = .reflex }
                         Button("Evidencia Científica") { self.showView = .evidenciaCientifica }
                         Button("Enciclopedia") { self.showView = .enciclopedia }
                         Button("Frases") { self.showView = .frases }
+                        Button("Chat IA") { self.showView = .chatIA }
                     } label: {
                         Text("Recursos Didácticos")
                             .padding(.vertical, 10)
@@ -249,73 +482,7 @@ struct optionView: View {
                 .ignoresSafeArea()
         }
         .sheet(item: self.$showView) { item in
-            VStack {
-                switch item {
-                case .autorNeville:
-                    NevilleAuthorView()
-                case .autorJoeDispenza:
-                    JoeDispenzaAuthorView()
-                case .autorGreggBraden:
-                    GreggBradenAuthorView()
-                case .autorBruceLipton:
-                    BruceLiptonAuthorView()
-
-                case .setting:
-                    Ajustes()
-                case .notas:
-                    ListNotasViews()
-                case .diario:
-                    DiarioListView()
-                case .lienzo:
-                    LienzoMain(texto: "", imagenPrimariaACargar: nil)
-                case .premium:
-                    PurchaseView()
-                case .codeScanner:
-                    CodeScannerView(codeTypes: [.qr]) { qrCodeString in
-                        do {
-                            let result = try qrCodeString.get().string
-                            self.footerToQRCode = QRText(text: result)
-                        } catch {
-                        }
-                    }
-                case .codeGenerate:
-                    GenerateQRView(footer: "")
-                case .reminder:
-                    ReminderListView()
-                case .metas:
-                    GoalsListView()
-                case .agenda:
-                    AgendaMainView()
-                case .presencia:
-                    PresenciaView()
-                case .revisionSemanal:
-                    WeeklyReviewView()
-                case .centroSanador:
-                    CentroSanadorView(embeddedInNavigationStack: true)
-                case .enciclopedia:
-                    EnciclopediaListView()
-                case .espacioCalma:
-                    EmptyView()
-                case .ritualMatutino:
-                    MorningRitualMainView()
-                case .lectorEtiquetas:
-                    LectorEtiquetasView()
-                case .cardioCoherencia:
-                    CardioCoherenceWelcomeFlowView()
-                case .evidenciaCientifica:
-                    EvidenciaCientificaView()
-                case .frases:
-                    FrasesListView()
-                case .ayudas:
-                    TxtListView(typeOfContent: .ayud, title: "Ayudas")
-                case .reflex:
-                    ReflexListView()
-                case .game:
-                    GamePLay()
-                case .videosTutoriales:
-                    TutorialVideosListView()
-                }
-            }
+            OptionAccessDestinationView(option: item, settingModel: settingModel)
             .presentationDetents([.large])
             .presentationDragIndicator(.hidden)
         }

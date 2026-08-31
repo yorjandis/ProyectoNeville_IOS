@@ -5135,6 +5135,9 @@
         }
       }
     },
+    "Acceso %lld" : {
+
+    },
     "Acceso a Versión Extendida" : {
       "localizations" : {
         "en" : {
@@ -10884,6 +10887,9 @@
         }
       }
     },
+    "Barra de navegación inferior" : {
+
+    },
     "Basada en tus últimos 7 días" : {
       "localizations" : {
         "en" : {
@@ -13327,6 +13333,9 @@
           }
         }
       }
+    },
+    "Chat IA no disponible" : {
+
     },
     "Chat IA:" : {
       "localizations" : {
@@ -37783,6 +37792,9 @@
         }
       }
     },
+    "Inicio y opciones" : {
+
+    },
     "Innovador" : {
       "localizations" : {
         "en" : {
@@ -42111,6 +42123,9 @@
           }
         }
       }
+    },
+    "Los accesos 1 y 2 aparecen a la izquierda de Home; los accesos 3 y 4, a la derecha. Home permanece siempre fijo en el centro. Pulsa Editar para cambiar el orden." : {
+
     },
     "Los datos para el cálculo de estrés se toman de la aplicación Salud, utilizando HealthKit en modo solo lectura." : {
       "localizations" : {
@@ -58441,6 +58456,9 @@
           }
         }
       }
+    },
+    "Restaurar accesos predeterminados" : {
+
     },
     "Restaurar colores" : {
       "localizations" : {

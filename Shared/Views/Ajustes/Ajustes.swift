@@ -39,6 +39,7 @@ struct Ajustes: View {
     @AppStorage(AppCons.UD_setting_HomeProductividadPresenciaTotal) private var homeProductividadPresenciaTotal: Int = 5
     @AppStorage(AppCons.UD_setting_HomeProductividadMetasTotal) private var homeProductividadMetasTotal: Int = 1
     @AppStorage(AppCons.UD_setting_HomeAlternativoShowHealingCenterCard) private var showHealingCenterCardInHomeAlternativo: Bool = true
+    @State private var bottomBarShortcuts = BottomBarShortcutConfiguration.load()
     #endif
 
     @State private var showSheetPremiumView: Bool = false
@@ -1159,6 +1160,49 @@ struct Ajustes: View {
                             
                         }
                     }
+
+                    Section {
+                        ForEach(bottomBarShortcuts.indices, id: \.self) { index in
+                            HStack(spacing: 12) {
+                                Text("\(index + 1)")
+                                    .font(.caption.monospacedDigit())
+                                    .foregroundStyle(.secondary)
+                                    .frame(width: 18)
+
+                                Image(systemName: bottomBarShortcuts[index].systemImage)
+                                    .foregroundStyle(.cyan)
+                                    .frame(width: 24)
+
+                                Picker(
+                                    "Acceso \(index + 1)",
+                                    selection: bottomBarShortcutBinding(at: index)
+                                ) {
+                                    ForEach(TipeViewOptionTab.allCases) { shortcut in
+                                        Label(shortcut.title, systemImage: shortcut.systemImage)
+                                            .tag(shortcut)
+                                    }
+                                }
+                                .pickerStyle(.menu)
+                            }
+                        }
+                        .onMove(perform: moveBottomBarShortcuts)
+
+                        Button("Restaurar accesos predeterminados") {
+                            bottomBarShortcuts = BottomBarShortcutConfiguration.defaultShortcuts
+                            persistBottomBarShortcuts()
+                        }
+
+                        Text("Los accesos 1 y 2 aparecen a la izquierda de Home; los accesos 3 y 4, a la derecha. Home permanece siempre fijo en el centro. Pulsa Editar para cambiar el orden.")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    } header: {
+                        HStack {
+                            Text("Barra de navegación inferior")
+                            Spacer()
+                            EditButton()
+                                .textCase(nil)
+                        }
+                    }
                     
                     
                     //Colores del Chat IA
@@ -2000,6 +2044,34 @@ struct Ajustes: View {
         NSUbiquitousKeyValueStore.default.set(values, forKey: AppCons.UD_FiltroFrasesHome)
         NSUbiquitousKeyValueStore.default.synchronize()
     }
+
+    #if os(iOS)
+    private func bottomBarShortcutBinding(at index: Int) -> Binding<TipeViewOptionTab> {
+        Binding(
+            get: { bottomBarShortcuts[index] },
+            set: { newShortcut in
+                guard bottomBarShortcuts.indices.contains(index) else { return }
+
+                if let existingIndex = bottomBarShortcuts.firstIndex(of: newShortcut),
+                   existingIndex != index {
+                    bottomBarShortcuts.swapAt(index, existingIndex)
+                } else {
+                    bottomBarShortcuts[index] = newShortcut
+                }
+                persistBottomBarShortcuts()
+            }
+        )
+    }
+
+    private func moveBottomBarShortcuts(from source: IndexSet, to destination: Int) {
+        bottomBarShortcuts.move(fromOffsets: source, toOffset: destination)
+        persistBottomBarShortcuts()
+    }
+
+    private func persistBottomBarShortcuts() {
+        BottomBarShortcutConfiguration.save(bottomBarShortcuts)
+    }
+    #endif
 
     private var weeklyReviewDayName: String {
         WeeklyReviewSchedule.selectedDay(from: weeklyReviewWeekday).title.lowercased()

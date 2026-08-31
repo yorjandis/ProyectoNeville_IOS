@@ -435,6 +435,7 @@ struct Home: View {
                         colorFrase:  Binding(get:  { self.settingModel.colorfrase }, set: { self.settingModel.colorfrase = $0 }),
                         colorFondo_a: Binding(get: { self.settingModel.colorFondo_a }, set: { self.settingModel.colorFondo_a = $0 }),
                         colorFondo_b: Binding(get: { self.settingModel.colorFondo_b }, set: { self.settingModel.colorFondo_b = $0 }),
+                        settingModel: settingModel,
                         isShowingAlternativeHome: showAlternativeHomeDesign,
                         toggleHomeScreen: {
                             if showAlternativeHomeDesign {
@@ -466,6 +467,7 @@ struct Home: View {
                                 colorFrase:  Binding(get:  { self.settingModel.colorfrase }, set: { self.settingModel.colorfrase = $0 }),
                                 colorFondo_a: Binding(get: { self.settingModel.colorFondo_a }, set: { self.settingModel.colorFondo_a = $0 }),
                                 colorFondo_b: Binding(get: { self.settingModel.colorFondo_b }, set: { self.settingModel.colorFondo_b = $0 }),
+                                settingModel: settingModel,
                                 isShowingAlternativeHome: showAlternativeHomeDesign,
                                 toggleHomeScreen: {
                                     if showAlternativeHomeDesign {
@@ -604,11 +606,7 @@ struct Home: View {
 
 //CustomTabView
 struct TabButtonBar : View{
-    
-    @EnvironmentObject private var frasesModel : FrasesModel
-    @EnvironmentObject private var securityModel : SecurityModel
-    @EnvironmentObject private var clipBoardModel : ClipboardObserver
-    
+
     @State      var showOptionView = false
     @Binding    var fontFrasesSize : CGFloat //Setting
     @Binding    var fontMenuSize : CGFloat //Setting$
@@ -618,86 +616,48 @@ struct TabButtonBar : View{
     @Binding    var colorFondo_a : Color
     @Binding    var colorFondo_b : Color
 
+    @ObservedObject var settingModel: SettingModel
+
     let isShowingAlternativeHome: Bool
     let toggleHomeScreen: () -> Void
-    
 
-    @State private var sellectionTab = 1
-    
+    @AppStorage(AppCons.UD_setting_BottomBarShortcuts)
+    private var storedShortcuts = BottomBarShortcutConfiguration.defaultStorageValue
 
-    @State private var showChatUnavailable = false
+    @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
+    @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName))
+    private var yorjPremium: Bool = false
 
-    @State var  tabButtons = ["book.pages.fill","note.text","house.circle.fill","book", "ellipsis.message"]
+    @State private var showPremium = false
+    @State private var showEspacioCalmaFullScreen = false
+    @State private var showCardioCoherenciaFullScreen = false
+
+    private var shortcuts: [TipeViewOptionTab] {
+        BottomBarShortcutConfiguration.shortcuts(from: storedShortcuts)
+    }
     
     var body: some View{
         
         //Creando La bottom Bar con los item del menu
         VStack{
             HStack{
-                ForEach(tabButtons, id:\.self){idx in
-                    switch idx{
-                    case "book.pages.fill": //Listado de Conferencias
-                        NavigationLink{
-                            TxtListView(typeOfContent: .conf, title: "Lecturas")
-                                .environmentObject(self.clipBoardModel)
-                        }label: {
-                            makeItemlabel(image: idx)
+                ForEach(0..<5, id: \.self) { position in
+                    if position == 2 {
+                        Button {
+                            showOptionView = true
+                        } label: {
+                            makeItemlabel(image: "house.circle.fill", isPrimary: true)
                         }
-                        
-                    case "note.text":
-                        NavigationLink{
-                           ListNotasViews()
-                        }label: {
-                            makeItemlabel(image: idx)
-                        }
-                    
-                    case "house.circle.fill":
-                        Button{
-                           showOptionView = true
-                        }label: {
-                            makeItemlabel(image: idx, isPrimary: true)
-                        }
-                        
-                    case "book":
-                        NavigationLink{
-                            DiarioListView()
-                                .environmentObject(securityModel)
-                        }label: {makeItemlabel(image: idx)}
-                        
-                    case "ellipsis.message":
-                        if #available(iOS 26.0, *){
-                            if IAModelAppleIntelligence.isAvailable(){
-                                NavigationLink{
-                                    ChatView(textoACargar: nil)
-                                }label: {
-                                    makeChatIALabel()
-                                }
-                            }else{
-                                Button{ showChatUnavailable = true
-                                }label: {
-                                    makeChatIALabel()
-                                }
-                            }
-                        }else{
-                            Button{ showChatUnavailable = true
-                            }label: {
-                                makeChatIALabel()
-                            }
-                        }
-                        
-
-                    default: EmptyView()
-                        
+                        .accessibilityLabel("Inicio y opciones")
+                    } else {
+                        let shortcutIndex = position < 2 ? position : position - 1
+                        shortcutButton(for: shortcuts[shortcutIndex])
                     }
 
-                    
-                    //Insertando un espaciado para mantener la distancia entre los items
-                    if idx != tabButtons.last {
+                    if position < 4 {
                         Spacer(minLength: 0)
                     }
-                    
-                }//ForEach
-                
+                }
             }
             .padding(.horizontal, 25)
             .background(LinearGradient(colors: [.gray, .cyan], startPoint: .top, endPoint: .bottom))
@@ -710,6 +670,7 @@ struct TabButtonBar : View{
         }
         .sheet(isPresented: $showOptionView) {
             optionView(
+                settingModel: settingModel,
                 isShowingAlternativeHome: isShowingAlternativeHome,
                 toggleHomeScreen: {
                     toggleHomeScreen()
@@ -719,10 +680,56 @@ struct TabButtonBar : View{
                .presentationDetents([.height(280)])
                .presentationDragIndicator(.hidden)
         }
-        .alert(String(localized: "Chat IA"), isPresented: $showChatUnavailable) {
-            Button(String(localized: "Aceptar"), role: .cancel) { }
-        } message: {
-            Text(String(localized: "Apple Intelligence no está disponible en este dispositivo o idioma."))
+        .sheet(isPresented: $showPremium) {
+            PurchaseView()
+        }
+        .fullScreenCover(isPresented: $showEspacioCalmaFullScreen) {
+            EspacioCalmaView()
+                .ignoresSafeArea()
+        }
+        .fullScreenCover(isPresented: $showCardioCoherenciaFullScreen) {
+            CardioCoherenceWelcomeFlowView()
+                .ignoresSafeArea()
+        }
+    }
+
+    @ViewBuilder
+    private func shortcutButton(for shortcut: TipeViewOptionTab) -> some View {
+        if shortcut == .premium {
+            Button {
+                showPremium = true
+            } label: {
+                makeItemlabel(image: shortcut.systemImage)
+            }
+            .accessibilityLabel(shortcut.title)
+        } else if shortcut.requiresPremium && !purchaseStatus && !yorjPremium {
+            Button {
+                showPremium = true
+            } label: {
+                makeItemlabel(image: shortcut.systemImage)
+            }
+            .accessibilityLabel(shortcut.title)
+        } else if shortcut == .espacioCalma {
+            Button {
+                showEspacioCalmaFullScreen = true
+            } label: {
+                makeItemlabel(image: shortcut.systemImage)
+            }
+            .accessibilityLabel(shortcut.title)
+        } else if shortcut == .cardioCoherencia {
+            Button {
+                showCardioCoherenciaFullScreen = true
+            } label: {
+                makeItemlabel(image: shortcut.systemImage)
+            }
+            .accessibilityLabel(shortcut.title)
+        } else {
+            NavigationLink {
+                OptionAccessDestinationView(option: shortcut, settingModel: settingModel)
+            } label: {
+                makeItemlabel(image: shortcut.systemImage)
+            }
+            .accessibilityLabel(shortcut.title)
         }
     }
     
@@ -738,14 +745,6 @@ struct TabButtonBar : View{
         
     }
 
-    func makeChatIALabel() -> some View {
-        Image(systemName: "ellipsis.message")
-            .font(.system(size: 23, weight: .medium))
-            .foregroundStyle(.black.opacity(0.56))
-            .padding(8)
-            .scaleEffect(1.08)
-    }
-    
 }
 
 
