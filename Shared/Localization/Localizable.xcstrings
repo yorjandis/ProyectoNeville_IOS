@@ -5136,7 +5136,20 @@
       }
     },
     "Acceso %lld" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Access %lld"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "访问 %lld"
+          }
+        }
+      }
     },
     "Acceso a Versión Extendida" : {
       "localizations" : {
@@ -10888,7 +10901,20 @@
       }
     },
     "Barra de navegación inferior" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bottom navigation bar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "底部导航栏"
+          }
+        }
+      }
     },
     "Basada en tus últimos 7 días" : {
       "localizations" : {
@@ -13335,7 +13361,20 @@
       }
     },
     "Chat IA no disponible" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI chat not available"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI聊天功能暂不可用"
+          }
+        }
+      }
     },
     "Chat IA:" : {
       "localizations" : {
@@ -37793,7 +37832,20 @@
       }
     },
     "Inicio y opciones" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Home and options"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "首页和选项"
+          }
+        }
+      }
     },
     "Innovador" : {
       "localizations" : {
@@ -42125,7 +42177,20 @@
       }
     },
     "Los accesos 1 y 2 aparecen a la izquierda de Home; los accesos 3 y 4, a la derecha. Home permanece siempre fijo en el centro. Pulsa Editar para cambiar el orden." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Access points 1 and 2 appear to the left of Home; access points 3 and 4 appear to the right. Home always remains fixed in the center. Tap Edit to change the order."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "接入点 1 和 2 显示在“首页”左侧；接入点 3 和 4 显示在右侧。“首页”始终固定在中心位置。点击“编辑”即可更改顺序。"
+          }
+        }
+      }
     },
     "Los datos para el cálculo de estrés se toman de la aplicación Salud, utilizando HealthKit en modo solo lectura." : {
       "localizations" : {
@@ -58458,7 +58523,20 @@
       }
     },
     "Restaurar accesos predeterminados" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restore default shortcuts"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "恢复默认快捷键"
+          }
+        }
+      }
     },
     "Restaurar colores" : {
       "localizations" : {
