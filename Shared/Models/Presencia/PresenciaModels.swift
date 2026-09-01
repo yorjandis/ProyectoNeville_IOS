@@ -8,6 +8,8 @@ extension Notification.Name {
 enum PresenciaSettings {
     static let customCelebrationPhraseKey = "presencia.customCelebrationPhrase"
     static let defaultCelebrationPhrase = "Siento mi futuro ahora."
+    static let customMainButtonTitleKey = "presencia.customMainButtonTitle"
+    static let defaultMainButtonTitle = "Estoy aquí"
 }
 
 enum PresenciaEventType: String {

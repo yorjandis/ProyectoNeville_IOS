@@ -36,6 +36,7 @@ struct Ajustes: View {
     #if os(iOS)
     @AppStorage("Home_ShowPresenceButton") private var showPresenceButtonInHome: Bool = true
     @AppStorage(PresenciaSettings.customCelebrationPhraseKey) private var presenciaCelebrationPhrase = PresenciaSettings.defaultCelebrationPhrase
+    @AppStorage(PresenciaSettings.customMainButtonTitleKey) private var presenciaMainButtonTitle = PresenciaSettings.defaultMainButtonTitle
     @AppStorage(AppCons.UD_setting_HomeProductividadPresenciaTotal) private var homeProductividadPresenciaTotal: Int = 5
     @AppStorage(AppCons.UD_setting_HomeProductividadMetasTotal) private var homeProductividadMetasTotal: Int = 1
     @AppStorage(AppCons.UD_setting_HomeAlternativoShowHealingCenterCard) private var showHealingCenterCardInHomeAlternativo: Bool = true
@@ -1665,9 +1666,32 @@ struct Ajustes: View {
                     }
 
                     Section("Presencia") {
-                        Toggle("Mostrar botón Presencia en Home", isOn: self.$showPresenceButtonInHome)
+                        Toggle("Mostrar acceso en Home", isOn: self.$showPresenceButtonInHome)
+                    }
 
-                        TextField("Frase breve", text: $presenciaCelebrationPhrase, axis: .vertical)
+                    Section {
+                        TextField("Texto del botón", text: $presenciaMainButtonTitle, axis: .vertical)
+                            .lineLimit(2)
+                            .onChange(of: presenciaMainButtonTitle) { _, newValue in
+                                if newValue.count > 40 {
+                                    presenciaMainButtonTitle = String(newValue.prefix(40))
+                                }
+                            }
+
+                        Button {
+                            presenciaMainButtonTitle = PresenciaSettings.defaultMainButtonTitle
+                        } label: {
+                            Label("Restaurar «Estoy aquí»", systemImage: "arrow.counterclockwise")
+                        }
+                        .disabled(presenciaMainButtonTitle == PresenciaSettings.defaultMainButtonTitle)
+                    } header: {
+                        Label("Botón principal", systemImage: "circle.circle")
+                    } footer: {
+                        Text("Este texto aparece dentro del botón redondo. Máximo 40 caracteres.")
+                    }
+
+                    Section {
+                        TextField("Mensaje de confirmación", text: $presenciaCelebrationPhrase, axis: .vertical)
                             .lineLimit(2)
                             .onChange(of: presenciaCelebrationPhrase) { _, newValue in
                                 if newValue.count > 80 {
@@ -1675,13 +1699,16 @@ struct Ajustes: View {
                                 }
                             }
 
-                        Text("Se mostrará al registrar un evento de Presencia.")
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
-
-                        Button("Usar frase por defecto") {
+                        Button {
                             presenciaCelebrationPhrase = PresenciaSettings.defaultCelebrationPhrase
+                        } label: {
+                            Label("Restaurar mensaje original", systemImage: "arrow.counterclockwise")
                         }
+                        .disabled(presenciaCelebrationPhrase == PresenciaSettings.defaultCelebrationPhrase)
+                    } header: {
+                        Label("Después de registrar", systemImage: "sparkles")
+                    } footer: {
+                        Text("Este mensaje aparece brevemente después de tocar el botón. Máximo 80 caracteres.")
                     }
                     
                     //Metas

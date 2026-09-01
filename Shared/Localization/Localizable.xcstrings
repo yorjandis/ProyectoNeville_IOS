@@ -5321,10 +5321,48 @@
       }
     },
     "Acciones (%lld)" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actions (%lld)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acciones (%lld)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "操作（%lld）"
+          }
+        }
+      }
     },
     "Acciones para %lld notas seleccionadas" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actions for %lld selected notes"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acciones para %lld notas seleccionadas"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "针对 %lld 条已选笔记的操作"
+          }
+        }
+      }
     },
     "Aceptado" : {
       "localizations" : {
@@ -9455,10 +9493,48 @@
       }
     },
     "Asignar categoría" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Assign category"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Asignar categoría"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "分配分类"
+          }
+        }
+      }
     },
     "Asignar otra categoría…" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Assign another category…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Asignar otra categoría…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "分配其他分类…"
+          }
+        }
+      }
     },
     "Asistente de guía para entrar en estado de coherencia entre corazón y cerebro." : {
       "localizations" : {
@@ -11267,6 +11343,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "森林绿"
+          }
+        }
+      }
+    },
+    "Botón principal" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Main button"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "主按钮"
           }
         }
       }
@@ -20954,6 +21046,22 @@
         }
       }
     },
+    "Después de registrar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "After logging"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "记录后"
+          }
+        }
+      }
+    },
     "Después observa la lista de ingredientes en orden de cantidad: los primeros son los que más aporta el producto. Si aparecen azúcares añadidos, harinas refinadas o varios aditivos en los primeros lugares, suele indicar mayor procesamiento y menor calidad nutricional global." : {
       "localizations" : {
         "en" : {
@@ -24742,7 +24850,26 @@
       }
     },
     "Eliminar notas seleccionadas" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete selected notes"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliminar notas seleccionadas"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删除所选笔记"
+          }
+        }
+      }
     },
     "Eliminar objetivo" : {
       "localizations" : {
@@ -27851,6 +27978,22 @@
         }
       }
     },
+    "Este mensaje aparece brevemente después de tocar el botón. Máximo 80 caracteres." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This message appears briefly after you tap the button. Maximum 80 characters."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "点击按钮后，此消息会短暂显示。最多 80 个字符。"
+          }
+        }
+      }
+    },
     "Este modelo puede tener además límites temporales propios. Si aparece un límite repetidamente, prueba «Selección automática gratuita»." : {
       "localizations" : {
         "en" : {
@@ -27885,6 +28028,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "这段时间里有觉察记录，但没有自动驾驶模式记录。分心时也记下来，建议会更准确。"
+          }
+        }
+      }
+    },
+    "Este texto aparece dentro del botón redondo. Máximo 40 caracteres." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This text appears inside the round button. Maximum 40 characters."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此文本显示在圆形按钮内。最多 40 个字符。"
           }
         }
       }
@@ -28864,19 +29023,44 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Exporting Apple"
+            "value" : "Export to Apple"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportar a Apple"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "出口苹果"
+            "value" : "导出到 Apple"
           }
         }
       }
     },
     "Exportar a Calendario" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Export to Calendar"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportar a Calendario"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "导出到日历"
+          }
+        }
+      }
     },
     "Exportar a Diario" : {
       "localizations" : {
@@ -28901,10 +29085,48 @@
       }
     },
     "Exportar a Espacio Calma" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Export to Calm Space"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportar a Espacio Calma"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "导出到平静空间"
+          }
+        }
+      }
     },
     "Exportar a Frases" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Export to Phrases"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportar a Frases"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "导出到短语"
+          }
+        }
+      }
     },
     "Exportar a Notas" : {
       "localizations" : {
@@ -28951,7 +29173,26 @@
       }
     },
     "Exportar a Recordatorios" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Export to Reminders"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportar a Recordatorios"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "导出到提醒事项"
+          }
+        }
+      }
     },
     "Exportar actividades seleccionadas" : {
       "localizations" : {
@@ -28976,7 +29217,26 @@
       }
     },
     "Exportar archivo de migración" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Export migration file"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportar archivo de migración"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "导出迁移文件"
+          }
+        }
+      }
     },
     "Exportar mes a PDF" : {
       "localizations" : {
@@ -30371,6 +30631,7 @@
       }
     },
     "Frase breve" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -43553,6 +43814,22 @@
         }
       }
     },
+    "Mensaje de confirmación" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirmation message"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "确认消息"
+          }
+        }
+      }
+    },
     "Mensual" : {
       "localizations" : {
         "en" : {
@@ -44739,6 +45016,22 @@
         }
       }
     },
+    "Mostrar acceso en Home" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show shortcut on Home"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在首页显示快捷入口"
+          }
+        }
+      }
+    },
     "Mostrar Autor en Frases del Home" : {
       "localizations" : {
         "en" : {
@@ -44806,6 +45099,7 @@
       }
     },
     "Mostrar botón Presencia en Home" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -55339,7 +55633,26 @@
       }
     },
     "Quitar categoría" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove category"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quitar categoría"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移除分类"
+          }
+        }
+      }
     },
     "Quitar check" : {
       "localizations" : {
@@ -58624,6 +58937,22 @@
         }
       }
     },
+    "Restaurar «Estoy aquí»" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restore “I am here”"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "恢复“我在这里”"
+          }
+        }
+      }
+    },
     "Restaurar accesos predeterminados" : {
       "localizations" : {
         "en" : {
@@ -58706,6 +59035,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "恢复默认句子"
+          }
+        }
+      }
+    },
+    "Restaurar mensaje original" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restore default message"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "恢复默认消息"
           }
         }
       }
@@ -60902,6 +61247,7 @@
       }
     },
     "Se mostrará al registrar un evento de Presencia." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -64766,6 +65112,22 @@
         }
       }
     },
+    "Texto del botón" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Button text"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按钮文字"
+          }
+        }
+      }
+    },
     "Texto del prompt" : {
       "localizations" : {
         "en" : {
@@ -68452,6 +68814,7 @@
       }
     },
     "Usar frase por defecto" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

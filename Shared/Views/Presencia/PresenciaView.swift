@@ -12,6 +12,7 @@ struct PresenciaView: View {
     @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
     @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) private var yorjPremium: Bool = false
     @AppStorage(PresenciaSettings.customCelebrationPhraseKey) private var customCelebrationPhrase = PresenciaSettings.defaultCelebrationPhrase
+    @AppStorage(PresenciaSettings.customMainButtonTitleKey) private var customMainButtonTitle = PresenciaSettings.defaultMainButtonTitle
 
     private let repository = PresenciaRepository()
     private let celebrationVisibleDuration: TimeInterval = 2.3
@@ -120,7 +121,7 @@ struct PresenciaView: View {
                 UIImpactFeedbackGenerator(style: .heavy).impactOccurred(intensity: 0.9)
                 registerPresent(mood: nil)
             } label: {
-                PresenceHaloButtonContent()
+                PresenceHaloButtonContent(title: mainButtonTitle)
             }
             .buttonStyle(.plain)
             .accessibilityLabel("Vuelvo al Presente")
@@ -234,6 +235,12 @@ struct PresenciaView: View {
         return phrase == PresenciaSettings.defaultCelebrationPhrase ? L10n.exact(phrase) : phrase
     }
 
+    private var mainButtonTitle: String {
+        let trimmed = customMainButtonTitle.trimmingCharacters(in: .whitespacesAndNewlines)
+        let title = trimmed.isEmpty ? PresenciaSettings.defaultMainButtonTitle : trimmed
+        return title == PresenciaSettings.defaultMainButtonTitle ? L10n.exact(title) : title
+    }
+
     private func triggerMilestoneMessageIfNeeded() {
         guard todayPresentCount >= 10 else { return }
 
@@ -260,6 +267,7 @@ struct PresenciaView: View {
 
 private struct PresenceHaloButtonContent: View {
     @State private var haloPulse = false
+    let title: String
 
     var body: some View {
         ZStack {
@@ -298,9 +306,13 @@ private struct PresenceHaloButtonContent: View {
                     .foregroundStyle(.white)
                     .shadow(color: .white.opacity(0.28), radius: 8)
 
-                Text("Estoy aquí")
+                Text(title)
                     .font(.title3.weight(.semibold))
                     .foregroundStyle(.white)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.72)
+                    .padding(.horizontal, 22)
             }
         }
         .frame(width: 210, height: 210)
