@@ -181,7 +181,7 @@ struct RespondView: View {
                     DescargoResponsabilidadIA(VentanaEnSetting: false)
                 }
             }else{
-                PurchaseView(mostrarLogo: true, mostrarBotonCerrarMacOS: true)
+                PremiumFeaturePreviewView(feature: .integratedAI)
             }
             
             

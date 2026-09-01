@@ -797,7 +797,7 @@ struct NavigationDetailsViewMac: View {
                 if purchaseStatus || yorjPremium {
                     MorningRitualMainView()
                 } else {
-                    PurchaseView()
+                    PremiumFeaturePreviewView(feature: .consciousDailyCycle)
                 }
             case .agenda:
                 AgendaMainView()

@@ -1,0 +1,99 @@
+"premium.preview.badge" = "INCLUDED WITH THE EXTENDED VERSION";
+"premium.preview.subtitle" = "See how this tool can turn a good intention into meaningful change you can see and sustain.";
+"premium.preview.gallery" = "A look inside";
+"premium.preview.what_it_does" = "What it can do for you";
+"premium.preview.practical_value" = "Practical value";
+"premium.preview.cta" = "Unlock this feature";
+"premium.preview.cta_detail" = "View subscription and available trial";
+"premium.preview.annual_note" = "The subscription is billed annually and is highly affordable—equivalent to a tiny monthly amount compared with the immense practical value and personal growth it puts within reach every day.";
+"premium.preview.screenshot_accessibility" = "Preview {0} of {1}";
+"premium.preview.screenshot_placeholder" = "Preview";
+"premium.preview.open_screenshot" = "View image full screen";
+
+"premium.agenda.title" = "Mindful Planner";
+"premium.agenda.description" = "Plan activities, tasks, and commitments, add reminders, and keep what deserves your attention clearly in view.";
+"premium.agenda.value" = "Lighten your mental load, forget less, and turn priorities into concrete action without losing the balance of your day.";
+
+"premium.healing_center.title" = "Healing Center";
+"premium.healing_center.description" = "Access clear, step-by-step guidance for moments of anxiety, fear, stress, overwhelm, conflict, or strong urges.";
+"premium.healing_center.value" = "Understand what is happening in your body and regain the ability to choose your response when you need it most, with practical support always close at hand.";
+
+"premium.cardio_coherence.title" = "Heart–Brain Coherence";
+"premium.cardio_coherence.description" = "Follow guided breathing and focus exercises designed to encourage a calmer, more balanced, and creative inner state.";
+"premium.cardio_coherence.value" = "Create a meaningful pause in just a few minutes and train yourself to respond more consciously to everyday pressure.";
+
+"premium.calm_space.title" = "Calm Space";
+"premium.calm_space.description" = "Bring together imagery, music, ambient sounds, and inspiring words in an immersive experience that helps you slow down and reconnect with yourself.";
+"premium.calm_space.value" = "Turn any break into a small grounding ritual that supports rest, clarity, and learning.";
+
+"premium.pdf_export.title" = "PDF Export";
+"premium.pdf_export.description" = "Turn notes, quotes, planner entries, reflections, and AI responses into polished PDF documents that are easy to save and share.";
+"premium.pdf_export.value" = "Keep your personal work beyond the app, print it, or share it in a clean, universally accessible format.";
+
+"premium.related_quotes.title" = "Connected Quotes";
+"premium.related_quotes.description" = "Link teachings from different authors with your own ideas to uncover connections that might otherwise remain hidden.";
+"premium.related_quotes.value" = "Build a living map of what you are learning and turn isolated quotes into deeper personal understanding.";
+
+"premium.universal_import.title" = "Import from Anywhere";
+"premium.universal_import.description" = "Save text and images from websites and other apps through the Share menu, with text recognition and QR code scanning built in.";
+"premium.universal_import.value" = "Capture a valuable idea the moment it appears and bring it straight into your personal system without unnecessary steps.";
+
+"premium.ai.title" = "Built-in AI";
+"premium.ai.description" = "Get summaries, interpretations, practical exercises, and conversations grounded in each author’s body of knowledge.";
+"premium.ai.value" = "Move from reading to understanding and action by turning complex material into useful insights for your real situation and next steps.";
+
+"premium.label_scanner.title" = "Food Label Scanner";
+"premium.label_scanner.description" = "Analyze foods and see nutrition facts, consumption guidance, potential concerns, and metabolic impact in a clear, readable format.";
+"premium.label_scanner.value" = "Make better-informed choices in seconds and turn a difficult label into practical guidance you can use while shopping.";
+
+"premium.creative_canvas.title" = "Creative Canvas";
+"premium.creative_canvas.description" = "Design visual compositions with your favorite quotes and images to share, print, or keep as personal reminders.";
+"premium.creative_canvas.value" = "Make your focus visible and create personal pieces that reinforce your intention throughout the day.";
+
+"premium.goals.title" = "Goals and Personal Transformation";
+"premium.goals.description" = "Set clear goals, break them into achievable steps, track your progress, and use practical programs to build lasting habits.";
+"premium.goals.value" = "Turn abstract aspirations into a visible path, strengthen consistency, and celebrate real evidence of progress.";
+
+"premium.protected_notes.title" = "Protected Notes";
+"premium.protected_notes.description" = "Add a layer of privacy to your notes with biometrics or a password, keeping personal reflections away from unwanted access.";
+"premium.protected_notes.value" = "Write with greater freedom and peace of mind, knowing your private space remains under your control.";
+
+"premium.presence.title" = "Mindful Presence";
+"premium.presence.description" = "Record small moments of awareness, notice when you leave autopilot, and observe how your inner states evolve over time.";
+"premium.presence.value" = "Build the habit of returning to the present with a single tap and turn everyday moments into genuine opportunities for awareness.";
+
+"premium.transformation.title" = "21-Day Personal Transformation";
+"premium.transformation.description" = "Follow a guided program to recognize automatic patterns, interrupt them, and practice conscious responses through exercises, journaling, and progress tracking.";
+"premium.transformation.value" = "Stay focused and consistent for 21 days so learning can move beyond an idea and begin to become lived experience.";
+
+"premium.reminders.title" = "Smart Reminders";
+"premium.reminders.description" = "Schedule prompts to meditate, practice gratitude, visualize, review your goals, or maintain any practice that matters to you.";
+"premium.reminders.value" = "Close the gap between knowing what helps you and remembering to do it at the right time, until it becomes a habit.";
+
+"premium.weekly_review.title" = "Guided Weekly Review";
+"premium.weekly_review.description" = "Close the week with a summary of your goals, planner, journal, emotions, presence, coherence, and achievements, while keeping every review for future reference.";
+"premium.weekly_review.value" = "Spot patterns, recognize progress, and begin the next week with accumulated insight instead of starting from zero.";
+
+"premium.siri.title" = "Siri Shortcuts and Voice Commands";
+"premium.siri.description" = "Create notes, add journal entries, save quotes, or open tools using your voice and the system’s Shortcuts app.";
+"premium.siri.value" = "Capture what matters even when your hands are busy and remove friction from keeping your practice up to date.";
+
+"premium.copied_text.title" = "Smart Text Actions";
+"premium.copied_text.description" = "Select any passage in the app and instantly access actions to save, interpret, connect, or transform it.";
+"premium.copied_text.value" = "Act on an idea while it inspires you without breaking your reading flow, and turn it into useful material in fewer steps.";
+
+"premium.share_qr.title" = "Share with QR Codes";
+"premium.share_qr.description" = "Create QR codes from notes, quotes, and selected content for direct, visual sharing that works with any camera.";
+"premium.share_qr.value" = "Move an idea from your device into the physical world in seconds, without relying on accounts, long links, or specific platforms.";
+
+"premium.daily_cycle.title" = "Daily Mindful Cycle";
+"premium.daily_cycle.description" = "Begin the morning with intention, observe your presence throughout the day, and close with a review that preserves what you learned in your Journal.";
+"premium.daily_cycle.value" = "Give your growth continuity through a simple rhythm: set direction, live attentively, integrate, and use what you learned the following day.";
+
+"premium.tutorials.title" = "Guided Tutorials";
+"premium.tutorials.description" = "Learn visually how to get the most from the app’s most powerful tools through clear walkthroughs and practical examples.";
+"premium.tutorials.value" = "Master each feature sooner, avoid trial and error, and start getting value from the very first minutes.";
+
+"premium.extended_content.title" = "Extended Content";
+"premium.extended_content.description" = "Go deeper with selected readings, analyses, practices, and resources that expand on the app’s core ideas.";
+"premium.extended_content.value" = "Move from initial inspiration to structured learning you can understand, revisit, and bring into your life.";

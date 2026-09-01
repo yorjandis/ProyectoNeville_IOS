@@ -40,7 +40,7 @@ struct Home: View {
     @State private var showRitualMatutino: Bool = false
     @State private var showAgenda: Bool = false
     @State private var showPresence: Bool = false
-    @State private var showPremium: Bool = false
+    @State private var selectedPremiumFeature: PremiumFeatureID?
     @State private var now = Date()
     @State private var renderAlternativeHomeDesign: Bool = false
 
@@ -269,7 +269,7 @@ struct Home: View {
                                         if purchaseStatus || yorjPremium {
                                         showRitualMatutino = true
                                         } else {
-                                            showPremium = true
+                                            selectedPremiumFeature = .consciousDailyCycle
                                         }
                                             
                                     } label: {
@@ -295,7 +295,7 @@ struct Home: View {
                                         if purchaseStatus || yorjPremium {
                                             showRitualMatutino = true
                                         } else {
-                                            showPremium = true
+                                            selectedPremiumFeature = .consciousDailyCycle
                                         }
                                     } label: {
                                         Label("Cierre", systemImage: "moon.stars.fill")
@@ -328,7 +328,7 @@ struct Home: View {
                                         if purchaseStatus || yorjPremium {
                                             ritualNavigation.open(.wellbeingDashboard)
                                         } else {
-                                            showPremium = true
+                                            selectedPremiumFeature = .consciousDailyCycle
                                         }
                                     } label: {
                                         Label("Mi día", systemImage: "chart.xyaxis.line")
@@ -353,7 +353,7 @@ struct Home: View {
                                         if purchaseStatus || yorjPremium {
                                             showAgenda = true
                                         } else {
-                                            showPremium = true
+                                            selectedPremiumFeature = .agenda
                                         }
                                     } label: {
                                         Label(String(localized: "Agenda"), systemImage: "calendar")
@@ -405,7 +405,7 @@ struct Home: View {
                                         if purchaseStatus || yorjPremium {
                                             showPresence = true
                                         } else {
-                                            showPremium = true
+                                            selectedPremiumFeature = .consciousPresence
                                         }
                                     } label: {
                                         Label("Presencia", systemImage: "sparkles")
@@ -585,8 +585,8 @@ struct Home: View {
         .sheet(isPresented: $showPresence) {
             PresenciaView()
         }
-        .sheet(isPresented: $showPremium) {
-            PurchaseView()
+        .sheet(item: $selectedPremiumFeature) { feature in
+            PremiumFeaturePreviewView(feature: feature)
         }
         
     }
@@ -628,7 +628,8 @@ struct TabButtonBar : View{
     @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName))
     private var yorjPremium: Bool = false
 
-    @State private var showPremium = false
+    @State private var showPurchase = false
+    @State private var selectedPremiumFeature: PremiumFeatureID?
     @State private var showEspacioCalmaFullScreen = false
     @State private var showCardioCoherenciaFullScreen = false
 
@@ -680,8 +681,11 @@ struct TabButtonBar : View{
                .presentationDetents([.height(280)])
                .presentationDragIndicator(.hidden)
         }
-        .sheet(isPresented: $showPremium) {
+        .sheet(isPresented: $showPurchase) {
             PurchaseView()
+        }
+        .sheet(item: $selectedPremiumFeature) { feature in
+            PremiumFeaturePreviewView(feature: feature)
         }
         .fullScreenCover(isPresented: $showEspacioCalmaFullScreen) {
             EspacioCalmaView()
@@ -697,14 +701,14 @@ struct TabButtonBar : View{
     private func shortcutButton(for shortcut: TipeViewOptionTab) -> some View {
         if shortcut == .premium {
             Button {
-                showPremium = true
+                showPurchase = true
             } label: {
                 makeItemlabel(image: shortcut.systemImage)
             }
             .accessibilityLabel(shortcut.title)
         } else if shortcut.requiresPremium && !purchaseStatus && !yorjPremium {
             Button {
-                showPremium = true
+                selectedPremiumFeature = shortcut.premiumFeature ?? .extendedContent
             } label: {
                 makeItemlabel(image: shortcut.systemImage)
             }

@@ -75,7 +75,7 @@ struct PresenciaView: View {
                     reload()
                 }
             } else {
-                PurchaseView()
+                PremiumFeaturePreviewView(feature: .consciousPresence)
             }
         }
     }

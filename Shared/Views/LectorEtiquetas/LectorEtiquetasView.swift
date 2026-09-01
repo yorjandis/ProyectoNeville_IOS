@@ -221,7 +221,7 @@ struct LectorEtiquetasView: View {
                         .offset(y : -100)
                 }
             } else {
-                PurchaseView()
+                PremiumFeaturePreviewView(feature: .labelScanner)
             }
         }
     }

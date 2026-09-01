@@ -283,7 +283,7 @@ struct ReminderEditorView: View {
                 
                 
             }else{
-                PurchaseView()
+                PremiumFeaturePreviewView(feature: .smartReminders)
             }
         }
         

@@ -318,7 +318,7 @@ struct LienzoMain: View {
                 Alert(title: Text("Lienzo"), message: Text(self.alertMessage), dismissButton: .default(Text("OK")))
             }
         }else{
-            PurchaseView()
+            PremiumFeaturePreviewView(feature: .creativeCanvas)
         }
         
         
@@ -1285,7 +1285,6 @@ struct LienzoMain: View {
     
    
 }
-
 
 
 

@@ -340,7 +340,7 @@ struct PresenciaStatsView: View {
                     }
                 }
             } else {
-                PurchaseView()
+                PremiumFeaturePreviewView(feature: .consciousPresence)
             }
     }
 

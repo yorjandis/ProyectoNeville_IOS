@@ -456,7 +456,7 @@ struct GenerateQRView : View {
                 }
             }
         }else{
-            PurchaseView()
+            PremiumFeaturePreviewView(feature: .shareQR)
         }
         
        
@@ -534,6 +534,5 @@ struct GenerateQRView : View {
     
  
 }
-
 
 

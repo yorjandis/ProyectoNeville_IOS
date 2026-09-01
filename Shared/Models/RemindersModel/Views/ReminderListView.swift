@@ -114,7 +114,7 @@ struct ReminderListView: View {
                 }
                 
             }else{
-                PurchaseView()
+                PremiumFeaturePreviewView(feature: .smartReminders)
             }
             
            

@@ -1,0 +1,99 @@
+"premium.preview.badge" = "已包含在扩展版中";
+"premium.preview.subtitle" = "看看这项工具如何把美好愿望转化为看得见、能坚持的真实改变。";
+"premium.preview.gallery" = "体验预览";
+"premium.preview.what_it_does" = "它能为你做什么";
+"premium.preview.practical_value" = "实际价值";
+"premium.preview.cta" = "解锁此功能";
+"premium.preview.cta_detail" = "查看订阅与可用试用";
+"premium.preview.annual_note" = "订阅按年计费，价格十分亲民；折合每月仅需极少费用，却能每天为你带来巨大的实用价值与个人成长支持。";
+"premium.preview.screenshot_accessibility" = "{1} 的第 {0} 张预览";
+"premium.preview.screenshot_placeholder" = "预览";
+"premium.preview.open_screenshot" = "全屏查看图片";
+
+"premium.agenda.title" = "正念日程";
+"premium.agenda.description" = "统筹活动、任务与重要安排，设置提醒，让真正值得关注的事情始终清晰可见。";
+"premium.agenda.value" = "减轻记忆负担，减少遗漏，把优先事项落实为具体行动，同时保持一天的从容与平衡。";
+
+"premium.healing_center.title" = "疗愈中心";
+"premium.healing_center.description" = "在焦虑、恐惧、压力、失控、冲突或强烈冲动出现时，获得清晰且循序渐进的实用引导。";
+"premium.healing_center.value" = "理解身体正在经历什么，并在最需要的时候重新找回选择回应方式的能力，让支持随时触手可及。";
+
+"premium.cardio_coherence.title" = "心脑相干";
+"premium.cardio_coherence.description" = "跟随呼吸与专注引导，帮助身心进入更平静、更协调且更具创造力的状态。";
+"premium.cardio_coherence.value" = "只需几分钟，就能为自己创造一段高质量的停顿，并练习更有意识地应对日常压力。";
+
+"premium.calm_space.title" = "宁静空间";
+"premium.calm_space.description" = "将画面、音乐、环境音与启发性文字融为沉浸式体验，帮助你放慢节奏，重新回到自己。";
+"premium.calm_space.value" = "把任何短暂休息变成安定身心的小仪式，为休息、清晰思考与学习创造更好状态。";
+
+"premium.pdf_export.title" = "PDF 导出";
+"premium.pdf_export.description" = "将笔记、语录、日程、反思与 AI 回复整理成清晰美观、便于保存和分享的 PDF 文档。";
+"premium.pdf_export.value" = "让个人成果不只留在应用内：你可以长期保存、打印，或以通用而得体的格式分享。";
+
+"premium.related_quotes.title" = "关联语录";
+"premium.related_quotes.description" = "把不同作者的观点与你自己的想法连接起来，发现原本不易察觉的深层联系。";
+"premium.related_quotes.value" = "建立一张持续生长的学习地图，让零散语录逐渐沉淀为更深刻的个人理解。";
+
+"premium.universal_import.title" = "随处导入";
+"premium.universal_import.description" = "通过系统分享菜单，从网页和其他应用保存文字与图片，并使用文字识别和二维码扫描功能。";
+"premium.universal_import.value" = "灵感出现时立即捕捉，并直接纳入你的个人系统，省去不必要的中间步骤。";
+
+"premium.ai.title" = "内置人工智能";
+"premium.ai.description" = "获得摘要、解读、可实践的方法，以及基于每位作者知识体系的情境化对话。";
+"premium.ai.value" = "从阅读走向理解与行动，把复杂内容转化为贴合现实处境、能够指导下一步的有用洞见。";
+
+"premium.label_scanner.title" = "食品标签扫描";
+"premium.label_scanner.description" = "分析食品，并以清晰易读的方式查看营养信息、食用建议、潜在风险与代谢影响。";
+"premium.label_scanner.value" = "几秒内做出更明智的购买选择，把难懂的食品标签变成购物时真正用得上的参考。";
+
+"premium.creative_canvas.title" = "创意画布";
+"premium.creative_canvas.description" = "用喜爱的语录和图片设计视觉作品，可用于分享、打印，或作为专属的日常提醒。";
+"premium.creative_canvas.value" = "让你想专注的方向变得可见，创作能够陪伴自己、不断强化每日意图的个人作品。";
+
+"premium.goals.title" = "目标与个人成长";
+"premium.goals.description" = "设定清晰目标，将其拆分为可完成的步骤，追踪进展，并借助实用计划培养持久习惯。";
+"premium.goals.value" = "把抽象愿望变成看得见的路径，增强持续行动的力量，也让每一点真实进步都值得庆祝。";
+
+"premium.protected_notes.title" = "加密笔记";
+"premium.protected_notes.description" = "使用生物识别或密码为笔记增加隐私保护，让个人反思远离未经允许的访问。";
+"premium.protected_notes.value" = "安心、自由地记录真实想法，并始终掌控属于自己的私密空间。";
+
+"premium.presence.title" = "正念觉察";
+"premium.presence.description" = "记录每一个清醒觉察的瞬间，留意自己何时进入自动驾驶，并观察内在状态如何随时间变化。";
+"premium.presence.value" = "轻点一下就练习回到当下，把日常片刻转化为真正培养觉察力的机会。";
+
+"premium.transformation.title" = "21 天个人蜕变";
+"premium.transformation.description" = "通过引导式计划识别并打断自动化模式，结合练习、日记与进度追踪，培养更有意识的回应方式。";
+"premium.transformation.value" = "连续 21 天保持专注与行动，让所学不再只是一个想法，而逐渐成为亲身经验。";
+
+"premium.reminders.title" = "智能提醒";
+"premium.reminders.description" = "为冥想、感恩、观想、回顾目标或任何对你重要的练习设置贴心提醒。";
+"premium.reminders.value" = "在恰当的时间提醒你去做真正有益的事，缩短“知道”与“做到”之间的距离，逐步形成习惯。";
+
+"premium.weekly_review.title" = "每周引导复盘";
+"premium.weekly_review.description" = "用一份整合目标、日程、日记、情绪、觉察、心脑协调与成果的总结结束一周，并保留每次复盘。";
+"premium.weekly_review.value" = "看见规律，认可进步，让下一周建立在累积的洞见之上，而不是每次都从零开始。";
+
+"premium.siri.title" = "Siri 快捷指令与语音命令";
+"premium.siri.description" = "通过语音和系统“快捷指令”应用创建笔记、添加日记、保存语录或打开工具。";
+"premium.siri.value" = "即使双手忙碌，也能及时记录重要内容，让坚持日常练习变得更轻松顺畅。";
+
+"premium.copied_text.title" = "智能文本操作";
+"premium.copied_text.description" = "在应用内选中任意文字，即可快速保存、解读、建立关联或进行进一步转化。";
+"premium.copied_text.value" = "灵感出现时无需打断阅读节奏，用更少步骤把想法转化为真正有用的内容。";
+
+"premium.share_qr.title" = "二维码分享";
+"premium.share_qr.description" = "将笔记、语录和选定内容生成二维码，以直观、直接且任何相机都能识别的方式分享。";
+"premium.share_qr.value" = "几秒内把设备中的想法带到现实场景，无需账号、冗长链接或特定平台。";
+
+"premium.daily_cycle.title" = "每日正念循环";
+"premium.daily_cycle.description" = "以清晰意图开启早晨，在一天中观察自己的觉察状态，并通过晚间复盘把所得保存到日记中。";
+"premium.daily_cycle.value" = "用简单节奏让成长持续发生：确定方向、专注生活、整合经验，并在第二天真正用上所学。";
+
+"premium.tutorials.title" = "引导式教程";
+"premium.tutorials.description" = "通过清晰的操作引导和实用示例，直观学习如何充分发挥应用中强大工具的价值。";
+"premium.tutorials.value" = "更快掌握每项功能，减少反复摸索，从最初几分钟就开始获得实际帮助。";
+
+"premium.extended_content.title" = "扩展内容";
+"premium.extended_content.description" = "通过精选阅读、分析、练习与资料，进一步深入理解应用中的核心理念。";
+"premium.extended_content.value" = "从最初的启发走向有结构的学习，让内容能够被理解、回顾，并真正融入生活。";

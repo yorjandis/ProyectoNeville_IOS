@@ -177,9 +177,9 @@ struct La_LeyApp: App {
 
         if tool != "diario" && !hasPremium {
             showWindow(
-                for: PurchaseView(),
+                for: PremiumFeaturePreviewView(feature: premiumFeature(forDashboardTool: tool)),
                 environmentObjects: [],
-                title: "Premium",
+                title: "Vista previa premium",
                 size: AppCons.windows_size_content,
                 isModal: true
             )
@@ -203,6 +203,17 @@ struct La_LeyApp: App {
             showWindow(for: DashboardMacHandoffView(tool: "Coherencia", symbol: "waveform.path.ecg"), environmentObjects: [], title: "Coherencia", size: AppCons.windows_size_content_small, isModal: false)
         default:
             break
+        }
+    }
+
+    private func premiumFeature(forDashboardTool tool: String) -> PremiumFeatureID {
+        switch tool {
+        case "metas": .goals
+        case "presencia": .consciousPresence
+        case "agenda": .agenda
+        case "ritual-matutino", "cierre": .consciousDailyCycle
+        case "coherencia": .cardioCoherence
+        default: .extendedContent
         }
     }
     

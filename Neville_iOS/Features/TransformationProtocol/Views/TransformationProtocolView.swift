@@ -17,7 +17,7 @@ struct TransformationProtocolView: View {
             if hasExtendedAccess {
                 protocolContent
             } else {
-                PurchaseView()
+                PremiumFeaturePreviewView(feature: .transformationProtocol)
             }
         }
         .environment(\.locale, AppLanguage.current.locale)

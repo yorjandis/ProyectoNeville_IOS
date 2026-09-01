@@ -511,10 +511,10 @@ struct Ajustes: View {
                                     Toggle("Proteger las Notas con FaceID", isOn: $setting_NotasFaceID)
                                 }else{
                                     Button("Se requiere Versión Extendida"){
-                                        showWindow(for: PurchaseView(),
+                                        showWindow(for: PremiumFeaturePreviewView(feature: .protectedNotes),
                                                    environmentObjects: [],
-                                        title: L10n.exact("Habilitar Versión Extendida"),
-                                                   size: .percentage(width: 0.50, height: 0.50),
+                                        title: L10n.exact("Notas protegidas"),
+                                                   size: .percentage(width: 0.55, height: 0.75),
                                         isModal: true)
                                     }
                                 }

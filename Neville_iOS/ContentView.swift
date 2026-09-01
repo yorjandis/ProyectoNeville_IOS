@@ -83,7 +83,7 @@ struct ContentView: View{
     @ViewBuilder
     private func dashboardView(for destination: DashboardDestination) -> some View {
         if destination.requiresPremium && !(purchaseStatus || yorjPremium) {
-            PurchaseView()
+            PremiumFeaturePreviewView(feature: destination.premiumFeature)
         } else {
             switch destination {
             case .metas:
@@ -125,6 +125,23 @@ private enum DashboardDestination: String, Identifiable {
             return false
         case .metas, .presencia, .agenda, .ritualMatutino, .cierre, .coherencia:
             return true
+        }
+    }
+
+    var premiumFeature: PremiumFeatureID {
+        switch self {
+        case .metas:
+            .goals
+        case .presencia:
+            .consciousPresence
+        case .agenda:
+            .agenda
+        case .ritualMatutino, .cierre:
+            .consciousDailyCycle
+        case .coherencia:
+            .cardioCoherence
+        case .diario:
+            .extendedContent
         }
     }
 

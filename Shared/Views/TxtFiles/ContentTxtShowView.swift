@@ -531,7 +531,7 @@ struct ContentTxtShowView: View {
                 }
             }
             .sheet(isPresented: self.$showSheetPremium, content: {
-                PurchaseView()
+                PremiumFeaturePreviewView(feature: .extendedContent)
             })
             .alert(isPresented: self.$showAlert) {
                 Alert(title: Text("La Ley"), message: Text(self.alertMessage))
@@ -656,10 +656,10 @@ struct ContentTxtShowView: View {
                 
                 
                 #if os(macOS)
-                showWindow(for: PurchaseView(),
+                showWindow(for: PremiumFeaturePreviewView(feature: .extendedContent),
                 environmentObjects: [],
-                title: "Versión Extendida",
-                size: WindowSize.absolute(CGSize(width: 500, height: 600)),
+                title: "Contenido extendido",
+                size: WindowSize.absolute(CGSize(width: 700, height: 780)),
                 isModal: false)
                 #else
                 self.showSheetPremium = true

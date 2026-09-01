@@ -32,7 +32,7 @@ struct HomeAlternativoView: View {
     @StateObject private var agendaViewModel = AgendaViewModel()
     @StateObject private var stressMonitor = StressMonitor.shared
     @State private var phrase = HomeAlternativoPhrases.random(for: HomeAlternativoDayMoment.current())
-    @State private var showPremium = false
+    @State private var selectedPremiumFeature: PremiumFeatureID?
     @State private var showAccessEditor = false
     @State private var selectedAccessIDs = HomeAlternativoAccess.defaultIDs
     @State private var selectedPaletteIDs = HomeAlternativoCardPalette.defaultIDs(for: HomeAlternativoAccess.defaultIDs)
@@ -219,8 +219,8 @@ struct HomeAlternativoView: View {
         .onChange(of: selectedPaletteIDs) { _, newValue in
             storedPaletteIDs = HomeAlternativoCardPalette.encode(newValue, accessIDs: selectedAccessIDs)
         }
-        .sheet(isPresented: $showPremium) {
-            PurchaseView()
+        .sheet(item: $selectedPremiumFeature) { feature in
+            PremiumFeaturePreviewView(feature: feature)
         }
         .sheet(isPresented: $showAccessEditor) {
             HomeAlternativoAccessEditorView(
@@ -392,7 +392,7 @@ struct HomeAlternativoView: View {
                 Group {
                     if tool.requiresPremium && !hasPremiumAccess {
                         Button {
-                            showPremium = true
+                            selectedPremiumFeature = tool.access.premiumFeature ?? .extendedContent
                         } label: {
                             toolCard(for: tool)
                         }
@@ -919,6 +919,23 @@ private enum HomeAlternativoAccess: String, CaseIterable, Identifiable, Codable,
             return true
         default:
             return false
+        }
+    }
+
+    var premiumFeature: PremiumFeatureID? {
+        switch self {
+        case .calma: .calmSpace
+        case .agenda: .agenda
+        case .presencia: .consciousPresence
+        case .alimentos: .labelScanner
+        case .ritual: .consciousDailyCycle
+        case .coherencia: .cardioCoherence
+        case .revisionSemanal: .weeklyReview
+        case .metas: .goals
+        case .lienzo: .creativeCanvas
+        case .recordatorios: .smartReminders
+        case .centroSanador: .healingCenter
+        default: nil
         }
     }
 

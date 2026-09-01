@@ -110,7 +110,7 @@ struct CentroSanadorView: View {
             }
         }
         .sheet(isPresented: $showPremium) {
-            PurchaseView()
+            PremiumFeaturePreviewView(feature: .healingCenter)
         }
     }
 

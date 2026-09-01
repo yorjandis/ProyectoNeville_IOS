@@ -935,7 +935,7 @@ struct MorningRitualMainView: View {
                 case .eveningReview:
                     RitualEveningReviewEntryView()
                 case .premium:
-                    PurchaseView()
+                    PremiumFeaturePreviewView(feature: .consciousDailyCycle)
                 case .wellbeing:
                     WellbeingDashboardView()
                 }

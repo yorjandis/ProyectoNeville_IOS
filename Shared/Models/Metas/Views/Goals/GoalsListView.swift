@@ -138,7 +138,7 @@ struct GoalsListView: View {
                         .environment(\.managedObjectContext, context)
                 }
             } else {
-                PurchaseView()
+                PremiumFeaturePreviewView(feature: .goals)
             }
     }
 

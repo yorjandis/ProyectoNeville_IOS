@@ -112,12 +112,26 @@ enum TipeViewOptionTab: String, Identifiable, CaseIterable {
     }
 
     var requiresPremium: Bool {
+        premiumFeature != nil
+    }
+
+    var premiumFeature: PremiumFeatureID? {
         switch self {
-        case .agenda, .presencia, .revisionSemanal, .lectorEtiquetas,
-             .espacioCalma, .ritualMatutino, .cardioCoherencia, .videosTutoriales:
-            true
-        default:
-            false
+        case .agenda: .agenda
+        case .presencia: .consciousPresence
+        case .revisionSemanal: .weeklyReview
+        case .lectorEtiquetas: .labelScanner
+        case .espacioCalma: .calmSpace
+        case .ritualMatutino: .consciousDailyCycle
+        case .cardioCoherencia: .cardioCoherence
+        case .videosTutoriales: .tutorials
+        case .centroSanador: .healingCenter
+        case .metas: .goals
+        case .lienzo: .creativeCanvas
+        case .reminder: .smartReminders
+        case .codeGenerate: .shareQR
+        case .chatIA: .integratedAI
+        default: nil
         }
     }
 }
@@ -287,6 +301,7 @@ struct optionView: View {
     let toggleHomeScreen: () -> Void
 
     @State private var showView: TipeViewOptionTab? = nil
+    @State private var selectedPremiumFeature: PremiumFeatureID?
     @State private var showEspacioCalmaFullScreen: Bool = false
     @State private var showCardioCoherenciaFullScreen: Bool = false
 
@@ -336,63 +351,21 @@ struct optionView: View {
                     Spacer()
 
                     Menu {
-                        Button("Centro Sanador") { self.showView = .centroSanador }
-                        Button("Coherencia Cardio-Cerebral") {
-                            if self.purchaseStatus || self.yorjPremium {
-                                self.showCardioCoherenciaFullScreen = true
-                            } else {
-                                self.showView = .premium
-                            }
-                        }
-                        Button("Lienzo") { self.showView = .lienzo }
-                        Button("Recordatorios") { self.showView = .reminder }
-                        Button("Metas") { self.showView = .metas }
-                        Button("Agenda") {
-                            if self.purchaseStatus || self.yorjPremium {
-                                self.showView = .agenda
-                            } else {
-                                self.showView = .premium
-                            }
-                        }
-                        Button("Presencia") {
-                            if self.purchaseStatus || self.yorjPremium {
-                                self.showView = .presencia
-                            } else {
-                                self.showView = .premium
-                            }
-                        }
-                        Button("Resumen semanal") {
-                            if self.purchaseStatus || self.yorjPremium {
-                                self.showView = .revisionSemanal
-                            } else {
-                                self.showView = .premium
-                            }
-                        }
-                        Button("Lector de Etiquetas") {
-                            if self.purchaseStatus || self.yorjPremium {
-                                self.showView = .lectorEtiquetas
-                            } else {
-                                self.showView = .premium
-                            }
-                        }
+                        productivityButton("Centro Sanador", option: .centroSanador)
+                        productivityButton("Coherencia Cardio-Cerebral", option: .cardioCoherencia)
+                        productivityButton("Lienzo", option: .lienzo)
+                        productivityButton("Recordatorios", option: .reminder)
+                        productivityButton("Metas", option: .metas)
+                        productivityButton("Agenda", option: .agenda)
+                        productivityButton("Presencia", option: .presencia)
+                        productivityButton("Resumen semanal", option: .revisionSemanal)
+                        productivityButton("Lector de Etiquetas", option: .lectorEtiquetas)
                         Button("Notas") { self.showView = .notas }
-                        Button("Espacio de calma") {
-                            if self.purchaseStatus || self.yorjPremium {
-                                self.showEspacioCalmaFullScreen = true
-                            } else {
-                                self.showView = .premium
-                            }
-                        }
-                        Button("Ritual Matutino") {
-                            if self.purchaseStatus || self.yorjPremium {
-                                self.showView = .ritualMatutino
-                            } else {
-                                self.showView = .premium
-                            }
-                        }
+                        productivityButton("Espacio de calma", option: .espacioCalma)
+                        productivityButton("Ritual Matutino", option: .ritualMatutino)
                         
                         Button("Lector QR") { self.showView = .codeScanner }
-                        Button("Generador QR") { self.showView = .codeGenerate }
+                        productivityButton("Generador QR", option: .codeGenerate)
                     } label: {
                         Text("Productividad")
                             .padding(.vertical, 10)
@@ -432,8 +405,7 @@ struct optionView: View {
                     }
 
                     Spacer()
-
-                    if self.purchaseStatus || self.yorjPremium {
+                    
                         Button {
                             self.showView = .videosTutoriales
                         } label: {
@@ -441,16 +413,7 @@ struct optionView: View {
                                 .padding(.vertical, 10)
                                 .frame(maxWidth: .infinity)
                         }
-                    } else {
-                        Button {
-                            self.showView = .premium
-                        } label: {
-                            Text("Versión Extendida")
-                                .foregroundStyle(.purple)
-                                .padding(.vertical, 10)
-                                .frame(maxWidth: .infinity)
-                        }
-                    }
+                    
                 }
                 .padding(5)
             }
@@ -481,10 +444,38 @@ struct optionView: View {
             CardioCoherenceWelcomeFlowView()
                 .ignoresSafeArea()
         }
+        .sheet(item: self.$selectedPremiumFeature) { feature in
+            PremiumFeaturePreviewView(feature: feature)
+                .presentationDetents([.large])
+                .presentationDragIndicator(.hidden)
+        }
         .sheet(item: self.$showView) { item in
             OptionAccessDestinationView(option: item, settingModel: settingModel)
             .presentationDetents([.large])
             .presentationDragIndicator(.hidden)
+        }
+    }
+
+    @ViewBuilder
+    private func productivityButton(_ title: LocalizedStringKey, option: TipeViewOptionTab) -> some View {
+        Button(title) {
+            openProductivityTool(option)
+        }
+    }
+
+    private func openProductivityTool(_ option: TipeViewOptionTab) {
+        if !(purchaseStatus || yorjPremium), let feature = option.premiumFeature {
+            selectedPremiumFeature = feature
+            return
+        }
+
+        switch option {
+        case .espacioCalma:
+            showEspacioCalmaFullScreen = true
+        case .cardioCoherencia:
+            showCardioCoherenciaFullScreen = true
+        default:
+            showView = option
         }
     }
 }

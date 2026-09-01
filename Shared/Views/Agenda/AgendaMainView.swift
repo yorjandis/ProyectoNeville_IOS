@@ -589,7 +589,7 @@ struct AgendaMainView: View {
             if purchaseStatus || yorjPremium {
                 agendaAuthenticatedView
             } else {
-                PurchaseView()
+                PremiumFeaturePreviewView(feature: .agenda)
             }
         }
     }

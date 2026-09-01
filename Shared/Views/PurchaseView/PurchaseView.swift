@@ -337,6 +337,7 @@ struct PurchaseView: View {
                                 .purchasePrimaryButtonTextStyle()
                                 .font(.headline)
                                 .bold()
+                                .padding(.top, 5)
                         } else {
                             Text("Cargando precio…")
                                 .purchasePrimaryButtonTextStyle()
@@ -348,6 +349,7 @@ struct PurchaseView: View {
                             .purchasePrimaryButtonTextStyle()
                             .font(.title2)
                             .bold()
+                            .padding(.bottom, 5)
                     }
                     .frame(maxWidth: .infinity)
                     #if os(macOS)
@@ -362,12 +364,23 @@ struct PurchaseView: View {
                     }
                     .shadow(color: .black.opacity(0.22), radius: 8, y: 3)
                     #endif
+                    
+                    #if os(iOS)
+                    .background(
+                        LinearGradient(
+                            colors: [.white, Color(red: 0.60, green: 0.50, blue: 0.98)],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        ),
+                        in: RoundedRectangle(cornerRadius: 19, style: .continuous)
+                    )
+                    .shadow(color: .cyan.opacity(0.30), radius: 18, y: 8)
+                    #endif
                 }
                 #if os(macOS)
                 .buttonStyle(.plain)
                 #else
-                .buttonStyle(.bordered)
-                .tint(.blue.opacity(0.6))
+                .buttonStyle(.plain)
                 #endif
                 .disabled(self.purchaseModel.products.isEmpty)
                 

@@ -34082,6 +34082,7 @@
       }
     },
     "Habilitar Versión Extendida" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

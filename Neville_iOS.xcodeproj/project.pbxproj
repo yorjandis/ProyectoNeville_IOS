@@ -102,6 +102,7 @@
 		CC1000013000000000000001 /* Shared/Localization/Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = CC1000023000000000000001 /* Shared/Localization/Localizable.xcstrings */; };
 		CC1000043000000000000001 /* Shared/Localization/Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = CC1000023000000000000001 /* Shared/Localization/Localizable.xcstrings */; };
 		CC1000053000000000000001 /* Shared/Localization/Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = CC1000023000000000000001 /* Shared/Localization/Localizable.xcstrings */; };
+		CDAA00013000000000000001 /* PremiumFeatures.strings in Resources */ = {isa = PBXBuildFile; fileRef = CDAA00213000000000000001 /* PremiumFeatures.strings */; };
 		DCA100013000000000000001 /* frases_esferas.json in Resources */ = {isa = PBXBuildFile; fileRef = DCA100103000000000000001 /* frases_esferas.json */; };
 		DCB100013000000000000001 /* HealthyHabits.json in Resources */ = {isa = PBXBuildFile; fileRef = DCB100103000000000000001 /* HealthyHabits.json */; };
 		DCC100013000000000000001 /* GoalPrograms.json in Resources */ = {isa = PBXBuildFile; fileRef = DCC100103000000000000001 /* GoalPrograms.json */; };
@@ -487,6 +488,9 @@
 		B110000000000000000058 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text; name = "zh-Hans"; path = "Shared/Localization/zh-Hans.lproj/enc_tiempo.txt"; sourceTree = SOURCE_ROOT; };
 		B110000000000000000059 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text; name = "zh-Hans"; path = "Shared/Localization/zh-Hans.lproj/enc_utilizar_recaida_a_tu_favor.txt"; sourceTree = SOURCE_ROOT; };
 		CC1000023000000000000001 /* Shared/Localization/Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Shared/Localization/Localizable.xcstrings; sourceTree = SOURCE_ROOT; };
+		CDAA00113000000000000001 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Shared/Localization/en.lproj/PremiumFeatures.strings; sourceTree = SOURCE_ROOT; };
+		CDAA00123000000000000001 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = Shared/Localization/es.lproj/PremiumFeatures.strings; sourceTree = SOURCE_ROOT; };
+		CDAA00133000000000000001 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "Shared/Localization/zh-Hans.lproj/PremiumFeatures.strings"; sourceTree = SOURCE_ROOT; };
 		DCA100113000000000000001 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = en; path = Shared/Localization/en.lproj/frases_esferas.json; sourceTree = SOURCE_ROOT; };
 		DCA100123000000000000001 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = "zh-Hans"; path = "Shared/Localization/zh-Hans.lproj/frases_esferas.json"; sourceTree = SOURCE_ROOT; };
 		DCB100113000000000000001 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = en; path = Shared/Localization/en.lproj/HealthyHabits.json; sourceTree = SOURCE_ROOT; };
@@ -869,6 +873,35 @@
 				Models/UtilsForView/UtilsForViews.swift,
 				Models/WidgetDashboard/ConsciousDashboardSnapshot.swift,
 				Models/WidgetDashboard/ConsciousDashboardSnapshotPublisher.swift,
+				PremiumFeatures/Agenda/AgendaPremiumFeature.swift,
+				PremiumFeatures/CentroSanador/CentroSanadorPremiumFeature.swift,
+				PremiumFeatures/CicloConscienteDiario/CicloConscienteDiarioPremiumFeature.swift,
+				PremiumFeatures/CicloConscienteDiario/Images/Ritual_premium_1.png,
+				PremiumFeatures/CicloConscienteDiario/Images/Ritual_premium_2.png,
+				PremiumFeatures/CicloConscienteDiario/Images/Ritual_premium_3.png,
+				PremiumFeatures/CicloConscienteDiario/Images/Ritual_premium_4.png,
+				PremiumFeatures/CicloConscienteDiario/Images/Ritual_premium_5.png,
+				PremiumFeatures/CoherenciaCardioCerebral/CoherenciaCardioCerebralPremiumFeature.swift,
+				PremiumFeatures/CompartirQR/CompartirQRPremiumFeature.swift,
+				PremiumFeatures/ContenidoExtendido/ContenidoExtendidoPremiumFeature.swift,
+				PremiumFeatures/Core/PremiumFeaturePresentation.swift,
+				PremiumFeatures/Core/PremiumFeaturePreviewView.swift,
+				PremiumFeatures/EspacioCalma/EspacioCalmaPremiumFeature.swift,
+				PremiumFeatures/ExportacionPDF/ExportacionPDFPremiumFeature.swift,
+				PremiumFeatures/FrasesRelacionadas/FrasesRelacionadasPremiumFeature.swift,
+				PremiumFeatures/ImportacionUniversal/ImportacionUniversalPremiumFeature.swift,
+				PremiumFeatures/InteligenciaArtificial/InteligenciaArtificialPremiumFeature.swift,
+				PremiumFeatures/LectorEtiquetas/LectorEtiquetasPremiumFeature.swift,
+				PremiumFeatures/LienzoCreativo/LienzoCreativoPremiumFeature.swift,
+				PremiumFeatures/Metas/MetasPremiumFeature.swift,
+				PremiumFeatures/NotasProtegidas/NotasProtegidasPremiumFeature.swift,
+				PremiumFeatures/PresenciaConsciente/PresenciaConscientePremiumFeature.swift,
+				PremiumFeatures/ProtocoloTransformacion/ProtocoloTransformacionPremiumFeature.swift,
+				PremiumFeatures/Recordatorios/RecordatoriosPremiumFeature.swift,
+				PremiumFeatures/RevisionSemanal/RevisionSemanalPremiumFeature.swift,
+				PremiumFeatures/SiriAtajos/SiriAtajosPremiumFeature.swift,
+				PremiumFeatures/TextoCopiado/TextoCopiadoPremiumFeature.swift,
+				PremiumFeatures/Tutoriales/TutorialesPremiumFeature.swift,
 				Staff/Autores/BruceLipton/ConferenciasYCharlas/SerieEvolucionInterior/bruce_evolucion_interior_1.txt,
 				Staff/Autores/BruceLipton/ConferenciasYCharlas/SerieEvolucionInterior/bruce_evolucion_interior_2.txt,
 				Staff/Autores/BruceLipton/ConferenciasYCharlas/SerieEvolucionInterior/bruce_evolucion_interior_3.txt,
@@ -1871,6 +1904,29 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Models/LectorEtiquetas/ManagedAssets/AssetPackRelease,
+				PremiumFeatures/Agenda/Images/.gitkeep,
+				PremiumFeatures/CentroSanador/Images/.gitkeep,
+				PremiumFeatures/CicloConscienteDiario/Images/.gitkeep,
+				PremiumFeatures/CoherenciaCardioCerebral/Images/.gitkeep,
+				PremiumFeatures/CompartirQR/Images/.gitkeep,
+				PremiumFeatures/ContenidoExtendido/Images/.gitkeep,
+				PremiumFeatures/EspacioCalma/Images/.gitkeep,
+				PremiumFeatures/ExportacionPDF/Images/.gitkeep,
+				PremiumFeatures/FrasesRelacionadas/Images/.gitkeep,
+				PremiumFeatures/ImportacionUniversal/Images/.gitkeep,
+				PremiumFeatures/InteligenciaArtificial/Images/.gitkeep,
+				PremiumFeatures/LectorEtiquetas/Images/.gitkeep,
+				PremiumFeatures/LienzoCreativo/Images/.gitkeep,
+				PremiumFeatures/Metas/Images/.gitkeep,
+				PremiumFeatures/NotasProtegidas/Images/.gitkeep,
+				PremiumFeatures/PresenciaConsciente/Images/.gitkeep,
+				PremiumFeatures/ProtocoloTransformacion/Images/.gitkeep,
+				PremiumFeatures/README.md,
+				PremiumFeatures/Recordatorios/Images/.gitkeep,
+				PremiumFeatures/RevisionSemanal/Images/.gitkeep,
+				PremiumFeatures/SiriAtajos/Images/.gitkeep,
+				PremiumFeatures/TextoCopiado/Images/.gitkeep,
+				PremiumFeatures/Tutoriales/Images/.gitkeep,
 				Staff/Enciclopedia/PensamientosYSentimientos/enc_sentimiento_como_fuerzacreativa.txt,
 				Views/HomeAlternativo/HomeAlternativoView.swift,
 				Views/HomeAlternativo/HomeContextualRecommendationCard.swift,
@@ -2227,6 +2283,7 @@
 				B120000000000000000058 /* enc_tiempo.txt */,
 				B120000000000000000059 /* enc_utilizar_recaida_a_tu_favor.txt */,
 				CC1000023000000000000001 /* Shared/Localization/Localizable.xcstrings */,
+				CDAA00213000000000000001 /* PremiumFeatures.strings */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -2751,6 +2808,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CDAA00013000000000000001 /* PremiumFeatures.strings in Resources */,
 				F210000D0000000000000001 /* info_protocolo_de_transformacion.txt in Resources */,
 				DCA100013000000000000001 /* frases_esferas.json in Resources */,
 				DCB100013000000000000001 /* HealthyHabits.json in Resources */,
@@ -2920,15 +2978,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		F21000300000000000000001 /* info_protocolo_de_transformacion.txt */ = {
-			isa = PBXVariantGroup;
-			children = (
-				F210001E0000000000000001 /* en */,
-				F210001F0000000000000001 /* zh-Hans */,
-			);
-			name = info_protocolo_de_transformacion.txt;
-			sourceTree = "<group>";
-		};
 		A30000000000000000000001 /* biografia.txt */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -3703,6 +3752,16 @@
 			name = enc_utilizar_recaida_a_tu_favor.txt;
 			sourceTree = "<group>";
 		};
+		CDAA00213000000000000001 /* PremiumFeatures.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CDAA00123000000000000001 /* es */,
+				CDAA00113000000000000001 /* en */,
+				CDAA00133000000000000001 /* zh-Hans */,
+			);
+			name = PremiumFeatures.strings;
+			sourceTree = "<group>";
+		};
 		DCA100103000000000000001 /* frases_esferas.json */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -3737,6 +3796,15 @@
 				DCD100123000000000000001 /* zh-Hans */,
 			);
 			name = Features.json;
+			sourceTree = "<group>";
+		};
+		F21000300000000000000001 /* info_protocolo_de_transformacion.txt */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F210001E0000000000000001 /* en */,
+				F210001F0000000000000001 /* zh-Hans */,
+			);
+			name = info_protocolo_de_transformacion.txt;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

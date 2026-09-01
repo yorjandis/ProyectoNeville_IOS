@@ -129,7 +129,7 @@ struct ChatView: View {
                 ContentMain()
             }
         }else{
-            PurchaseView(mostrarLogo: true, mostrarBotonCerrarMacOS: true)
+            PremiumFeaturePreviewView(feature: .integratedAI)
         }
     }
     

@@ -1,0 +1,99 @@
+"premium.preview.badge" = "INCLUIDO EN LA VERSIÓN EXTENDIDA";
+"premium.preview.subtitle" = "Descubre cómo esta herramienta puede convertir una buena intención en un cambio que puedas ver y sostener.";
+"premium.preview.gallery" = "Un vistazo a la experiencia";
+"premium.preview.what_it_does" = "Lo que hará por ti";
+"premium.preview.practical_value" = "Valor práctico";
+"premium.preview.cta" = "Desbloquear esta función";
+"premium.preview.cta_detail" = "Ver la suscripción y la prueba disponible";
+"premium.preview.annual_note" = "La suscripción es anual y muy asequible: equivale a una cantidad mensual ínfima frente al inmenso valor práctico y de crecimiento personal que pone a tu alcance cada día.";
+"premium.preview.screenshot_accessibility" = "Vista previa {0} de {1}";
+"premium.preview.screenshot_placeholder" = "Vista previa";
+"premium.preview.open_screenshot" = "Ver imagen a pantalla completa";
+
+"premium.agenda.title" = "Agenda consciente";
+"premium.agenda.description" = "Organiza actividades, tareas y compromisos en el tiempo, añade recordatorios y mantén a la vista aquello que merece tu atención.";
+"premium.agenda.value" = "Libera carga mental, reduce olvidos y convierte tus prioridades en acciones concretas sin perder el equilibrio de tu día.";
+
+"premium.healing_center.title" = "Centro Sanador";
+"premium.healing_center.description" = "Accede a guías claras para momentos de ansiedad, miedo, estrés, bloqueo, conflicto o impulso, con prácticas explicadas paso a paso.";
+"premium.healing_center.value" = "Comprende lo que ocurre en tu cuerpo y recupera capacidad de elección justo cuando más la necesitas, con un apoyo práctico siempre disponible.";
+
+"premium.cardio_coherence.title" = "Coherencia cardio-cerebral";
+"premium.cardio_coherence.description" = "Sigue un asistente de respiración y enfoque diseñado para favorecer un estado interno más ordenado, sereno y creativo.";
+"premium.cardio_coherence.value" = "Crea una pausa de calidad en pocos minutos y entrena una respuesta más consciente ante la presión cotidiana.";
+
+"premium.calm_space.title" = "Espacio Calma";
+"premium.calm_space.description" = "Combina imágenes, música, sonidos y frases en una experiencia inmersiva pensada para ayudarte a bajar el ritmo y volver a ti.";
+"premium.calm_space.value" = "Convierte cualquier pausa en un pequeño ritual de regulación que favorece descanso, claridad y aprendizaje.";
+
+"premium.pdf_export.title" = "Exportación PDF";
+"premium.pdf_export.description" = "Transforma notas, frases, agenda, reflexiones y respuestas de IA en documentos PDF limpios, portables y fáciles de compartir.";
+"premium.pdf_export.value" = "Conserva tu trabajo personal fuera de la app, imprímelo o compártelo con una presentación cuidada y universal.";
+
+"premium.related_quotes.title" = "Frases Relacionadas";
+"premium.related_quotes.description" = "Conecta enseñanzas de distintos autores con tus propias ideas para descubrir relaciones que antes permanecían separadas.";
+"premium.related_quotes.value" = "Construye un mapa vivo de tu aprendizaje y transforma citas aisladas en una comprensión personal más profunda.";
+
+"premium.universal_import.title" = "Importación desde cualquier lugar";
+"premium.universal_import.description" = "Guarda texto e imágenes desde webs y otras apps mediante el menú Compartir, con reconocimiento de texto y lectura de códigos QR.";
+"premium.universal_import.value" = "Captura una idea valiosa en el momento en que aparece y llévala directamente a tu sistema personal sin pasos innecesarios.";
+
+"premium.ai.title" = "Inteligencia Artificial integrada";
+"premium.ai.description" = "Obtén resúmenes, interpretaciones, prácticas concretas y conversaciones contextualizadas en el campo de conocimiento de cada autor.";
+"premium.ai.value" = "Pasa de leer a comprender y aplicar: convierte contenido complejo en ideas útiles para tu situación real y tus próximos pasos.";
+
+"premium.label_scanner.title" = "Lector de Etiquetas";
+"premium.label_scanner.description" = "Analiza alimentos y consulta información nutricional, criterios de consumo, posibles riesgos e impacto metabólico en una lectura clara.";
+"premium.label_scanner.value" = "Toma decisiones de compra más informadas en segundos y convierte una etiqueta difícil de entender en una guía práctica.";
+
+"premium.creative_canvas.title" = "Lienzo creativo";
+"premium.creative_canvas.description" = "Diseña composiciones visuales con tus frases e imágenes favoritas para compartir, imprimir o mantener como recordatorio personal.";
+"premium.creative_canvas.value" = "Haz visible aquello en lo que deseas enfocarte y crea piezas personales capaces de acompañar y reforzar tu intención diaria.";
+
+"premium.goals.title" = "Metas y transformación personal";
+"premium.goals.description" = "Define objetivos claros, divídelos en unidades alcanzables, mide tu progreso y apóyate en programas prácticos para consolidar hábitos.";
+"premium.goals.value" = "Convierte aspiraciones abstractas en un camino visible, refuerza tu constancia y celebra evidencia real de avance.";
+
+"premium.protected_notes.title" = "Notas protegidas";
+"premium.protected_notes.description" = "Añade una capa de privacidad a tus notas mediante biometría o contraseña y conserva tus reflexiones personales lejos de miradas ajenas.";
+"premium.protected_notes.value" = "Escribe con mayor libertad y tranquilidad sabiendo que tu espacio íntimo permanece bajo tu control.";
+
+"premium.presence.title" = "Presencia Consciente";
+"premium.presence.description" = "Registra pequeños instantes de despertar, reconoce cuándo sales del piloto automático y observa la evolución de tus estados internos.";
+"premium.presence.value" = "Entrena el hábito de volver al presente con un solo toque y transforma momentos cotidianos en oportunidades reales de conciencia.";
+
+"premium.transformation.title" = "Transformación personal · 21 días";
+"premium.transformation.description" = "Sigue un programa guiado para reconocer patrones automáticos, interrumpirlos y entrenar respuestas conscientes con prácticas, diario y seguimiento.";
+"premium.transformation.value" = "Mantén foco y continuidad durante 21 días para que el aprendizaje deje de ser solo una idea y empiece a convertirse en experiencia.";
+
+"premium.reminders.title" = "Recordatorios inteligentes";
+"premium.reminders.description" = "Programa avisos para meditar, agradecer, visualizar, revisar tus metas o sostener cualquier práctica esencial para ti.";
+"premium.reminders.value" = "Reduce la distancia entre saber lo que te hace bien y recordarlo en el momento adecuado para convertirlo en hábito.";
+
+"premium.weekly_review.title" = "Revisión semanal guiada";
+"premium.weekly_review.description" = "Cierra la semana con una síntesis de metas, agenda, diario, emociones, presencia, coherencia y logros, conservando cada revisión.";
+"premium.weekly_review.value" = "Detecta patrones, reconoce avances y comienza la semana siguiente con aprendizaje acumulado en lugar de empezar de cero.";
+
+"premium.siri.title" = "Atajos y comandos con Siri";
+"premium.siri.description" = "Crea notas, añade entradas al diario, guarda frases o abre herramientas usando tu voz y los Atajos del sistema.";
+"premium.siri.value" = "Captura lo importante incluso cuando tienes las manos ocupadas y reduce la fricción para mantener tu práctica al día.";
+
+"premium.copied_text.title" = "Menú inteligente de texto";
+"premium.copied_text.description" = "Selecciona fragmentos dentro de la app y accede de inmediato a acciones para guardar, interpretar, relacionar o transformar ese contenido.";
+"premium.copied_text.value" = "Aprovecha una idea cuando te inspira sin romper el ritmo de lectura y conviértela en material útil con menos pasos.";
+
+"premium.share_qr.title" = "Comparte con QR";
+"premium.share_qr.description" = "Genera códigos QR con notas, frases y contenido elegido para compartirlo de forma visual, directa y compatible con cualquier cámara.";
+"premium.share_qr.value" = "Lleva una idea del dispositivo al mundo físico en segundos y compártela sin depender de cuentas, enlaces largos o plataformas.";
+
+"premium.daily_cycle.title" = "Ciclo consciente diario";
+"premium.daily_cycle.description" = "Comienza la mañana con intención, observa tu presencia durante el día y ciérralo con una revisión que conserva lo aprendido en tu Diario.";
+"premium.daily_cycle.value" = "Da continuidad a tu crecimiento con un ritmo sencillo: orientar, vivir con atención, integrar y usar lo aprendido al día siguiente.";
+
+"premium.tutorials.title" = "Tutoriales guiados";
+"premium.tutorials.description" = "Aprende visualmente a aprovechar las herramientas más potentes de la app mediante recorridos claros y ejemplos prácticos.";
+"premium.tutorials.value" = "Domina antes cada función, evita ensayo y error y empieza a obtener valor desde los primeros minutos.";
+
+"premium.extended_content.title" = "Contenido extendido";
+"premium.extended_content.description" = "Profundiza en lecturas, análisis, prácticas y materiales seleccionados que amplían las ideas principales de la aplicación.";
+"premium.extended_content.value" = "Pasa de una primera inspiración a un aprendizaje estructurado que puedas comprender, revisar e incorporar a tu vida.";
