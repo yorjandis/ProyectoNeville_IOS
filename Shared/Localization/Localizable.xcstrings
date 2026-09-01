@@ -36720,6 +36720,28 @@
         }
       }
     },
+    "Ideas para tus metas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ideas for Your Goals"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ideas para tus metas"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "目标灵感"
+          }
+        }
+      }
+    },
     "Identidad" : {
       "localizations" : {
         "en" : {
@@ -54800,6 +54822,50 @@
         }
       }
     },
+    "Próx. 15 días" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next 15 days"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Próx. 15 días"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未来15天"
+          }
+        }
+      }
+    },
+    "Próx. 30 días" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next 30 days"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Próx. 30 días"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未来30天"
+          }
+        }
+      }
+    },
     "Próx. 7 días" : {
       "localizations" : {
         "en" : {
@@ -68328,6 +68394,28 @@
         }
       }
     },
+    "Usar este ejemplo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use This Example"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usar este ejemplo"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用这个示例"
+          }
+        }
+      }
+    },
     "Usar frase por defecto" : {
       "localizations" : {
         "en" : {
@@ -68758,6 +68846,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "更清楚地看见自动化模式，本身就是进步。"
+          }
+        }
+      }
+    },
+    "Ver ejemplos de metas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "View Goal Examples"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver ejemplos de metas"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查看目标示例"
           }
         }
       }

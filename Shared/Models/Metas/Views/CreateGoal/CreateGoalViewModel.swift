@@ -158,6 +158,41 @@ final class CreateGoalViewModel: ObservableObject {
         }
         dayPeriod = effectiveDayPeriod
     }
+
+    func apply(_ example: GoalExample, referenceDate: Date = Date()) {
+        title = example.title
+        description = example.details
+        customUnitLabel = example.customUnitLabel
+        executionTargetValue = example.executionTargetValue
+        completionBasis = example.completionBasis
+        amount = example.amount
+        durationValue = example.durationValue
+        durationUnit = example.durationUnit
+        scheduleType = example.scheduleType
+        unit = example.intervalUnit
+        frequency = example.frequency
+        selectedWeeklyDays = example.weeklyDays
+        weeklyDaysPerWeek = max(example.weeklyDays.count, 1)
+        dayPeriod = example.dayPeriod
+        specificDates = example.specificDateOffsets.compactMap {
+            Calendar.current.date(byAdding: .day, value: $0, to: referenceDate)
+        }
+        unidadesInfo = []
+
+        if let minutes = example.weeklyTimeMinutes,
+           let configuredTime = GoalWeeklyTime.date(on: referenceDate, minutes: minutes) {
+            weeklyTime = configuredTime
+            setWeeklyTimeEnabled(true)
+        } else {
+            setWeeklyTimeEnabled(false)
+            dayPeriod = example.dayPeriod
+        }
+
+        if scheduleType == .specificDates {
+            syncSpecificDates()
+        }
+        normalizeTimingOptions()
+    }
     
     
     init() {}

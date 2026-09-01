@@ -27,11 +27,21 @@ nonisolated private struct GoalProgramTranslation: Decodable, Sendable {
     let unidadesinfo: [LocalizedProgramUnit]
 }
 
+nonisolated private struct GoalExampleTranslation: Decodable, Sendable {
+    let category: String
+    let title: String
+    let details: String
+    let configurationSummary: String
+    let customUnitLabel: String
+}
+
 nonisolated enum GoalEditorialLocalization {
     private static let habitCatalogs: [AppLanguage: [String: HealthyHabitTranslation]] =
         decodeCatalogs(named: "HealthyHabits")
     private static let programCatalogs: [AppLanguage: [String: GoalProgramTranslation]] =
         decodeCatalogs(named: "GoalPrograms")
+    private static let exampleCatalogs: [AppLanguage: [String: GoalExampleTranslation]] =
+        decodeCatalogs(named: "GoalExamples")
 
     static func habitTitle(id: String, fallback: String) -> String {
         habitCatalog()[id]?.title ?? fallback
@@ -80,6 +90,32 @@ nonisolated enum GoalEditorialLocalization {
         )
     }
 
+    static func example(id: String, fallback: GoalExample) -> GoalExample {
+        guard let translation = exampleCatalog()[id] else { return fallback }
+        return GoalExample(
+            id: fallback.id,
+            category: translation.category,
+            symbol: fallback.symbol,
+            tint: fallback.tint,
+            title: translation.title,
+            details: translation.details,
+            configurationSummary: translation.configurationSummary,
+            customUnitLabel: translation.customUnitLabel,
+            executionTargetValue: fallback.executionTargetValue,
+            completionBasis: fallback.completionBasis,
+            amount: fallback.amount,
+            durationValue: fallback.durationValue,
+            durationUnit: fallback.durationUnit,
+            scheduleType: fallback.scheduleType,
+            intervalUnit: fallback.intervalUnit,
+            frequency: fallback.frequency,
+            weeklyDays: fallback.weeklyDays,
+            dayPeriod: fallback.dayPeriod,
+            weeklyTimeMinutes: fallback.weeklyTimeMinutes,
+            specificDateOffsets: fallback.specificDateOffsets
+        )
+    }
+
     private static func habitCatalog(
         language: AppLanguage = .current
     ) -> [String: HealthyHabitTranslation] {
@@ -92,6 +128,13 @@ nonisolated enum GoalEditorialLocalization {
     ) -> [String: GoalProgramTranslation] {
         guard language != .spanish else { return [:] }
         return programCatalogs[language] ?? [:]
+    }
+
+    private static func exampleCatalog(
+        language: AppLanguage = .current
+    ) -> [String: GoalExampleTranslation] {
+        guard language != .spanish else { return [:] }
+        return exampleCatalogs[language] ?? [:]
     }
 
     private static func decodeCatalogs<Value: Decodable & Sendable>(

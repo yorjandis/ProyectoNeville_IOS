@@ -107,6 +107,7 @@
 		DCB100013000000000000001 /* HealthyHabits.json in Resources */ = {isa = PBXBuildFile; fileRef = DCB100103000000000000001 /* HealthyHabits.json */; };
 		DCC100013000000000000001 /* GoalPrograms.json in Resources */ = {isa = PBXBuildFile; fileRef = DCC100103000000000000001 /* GoalPrograms.json */; };
 		DCD100013000000000000001 /* Features.json in Resources */ = {isa = PBXBuildFile; fileRef = DCD100103000000000000001 /* Features.json */; };
+		DCE100013000000000000001 /* GoalExamples.json in Resources */ = {isa = PBXBuildFile; fileRef = DCE100103000000000000001 /* GoalExamples.json */; };
 		E95B93572AAFBB2600B5E2B5 /* Neville_iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95B93562AAFBB2600B5E2B5 /* Neville_iOSApp.swift */; };
 		E95B93592AAFBB2600B5E2B5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95B93582AAFBB2600B5E2B5 /* ContentView.swift */; };
 		F21000010000000000000001 /* TransformationProtocolModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = F21000110000000000000001 /* TransformationProtocolModels.swift */; };
@@ -499,6 +500,8 @@
 		DCC100123000000000000001 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = "zh-Hans"; path = "Shared/Localization/zh-Hans.lproj/GoalPrograms.json"; sourceTree = SOURCE_ROOT; };
 		DCD100113000000000000001 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = en; path = Shared/Localization/en.lproj/Features.json; sourceTree = SOURCE_ROOT; };
 		DCD100123000000000000001 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = "zh-Hans"; path = "Shared/Localization/zh-Hans.lproj/Features.json"; sourceTree = SOURCE_ROOT; };
+		DCE100113000000000000001 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = en; path = Shared/Localization/en.lproj/GoalExamples.json; sourceTree = SOURCE_ROOT; };
+		DCE100123000000000000001 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = "zh-Hans"; path = "Shared/Localization/zh-Hans.lproj/GoalExamples.json"; sourceTree = SOURCE_ROOT; };
 		E95B93532AAFBB2600B5E2B5 /* Neville_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Neville_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E95B93562AAFBB2600B5E2B5 /* Neville_iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Neville_iOSApp.swift; sourceTree = "<group>"; };
 		E95B93582AAFBB2600B5E2B5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -781,6 +784,7 @@
 				Models/Metas/Models/ProgramasPreestablecidos/Vistas/ProgramasListView.swift,
 				Models/Metas/Views/CreateGoal/CreateGoalView.swift,
 				Models/Metas/Views/CreateGoal/CreateGoalViewModel.swift,
+				Models/Metas/Views/CreateGoal/GoalExamples.swift,
 				Models/Metas/Views/CreateGoal/ModifyGoal.swift,
 				Models/Metas/Views/Goals/ActiveGoalsGadgetCarouselView.swift,
 				Models/Metas/Views/Goals/GoalCardView.swift,
@@ -2183,6 +2187,7 @@
 				DCB100103000000000000001 /* HealthyHabits.json */,
 				DCC100103000000000000001 /* GoalPrograms.json */,
 				DCD100103000000000000001 /* Features.json */,
+				DCE100103000000000000001 /* GoalExamples.json */,
 				914D887F2FC1B22000CDDB93 /* Shared/Models/Presencia/PresenciaModels.swift */,
 				914D887E2FC1B22000CDDB93 /* Shared/Views/Presencia/PresenciaView.swift */,
 				914D88802FC1B22000CDDB93 /* Shared/Views/Presencia/PresenciaStatsView.swift */,
@@ -2814,6 +2819,7 @@
 				DCB100013000000000000001 /* HealthyHabits.json in Resources */,
 				DCC100013000000000000001 /* GoalPrograms.json in Resources */,
 				DCD100013000000000000001 /* Features.json in Resources */,
+				DCE100013000000000000001 /* GoalExamples.json in Resources */,
 				91E52D8C2F4327CE0054C032 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3796,6 +3802,15 @@
 				DCD100123000000000000001 /* zh-Hans */,
 			);
 			name = Features.json;
+			sourceTree = "<group>";
+		};
+		DCE100103000000000000001 /* GoalExamples.json */ = {
+			isa = PBXVariantGroup;
+			children = (
+				DCE100113000000000000001 /* en */,
+				DCE100123000000000000001 /* zh-Hans */,
+			);
+			name = GoalExamples.json;
 			sourceTree = "<group>";
 		};
 		F21000300000000000000001 /* info_protocolo_de_transformacion.txt */ = {

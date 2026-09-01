@@ -10,6 +10,7 @@ struct CreateGoalView: View {
     
     @StateObject private var vm = CreateGoalViewModel()
     @State private var showCreateError = false
+    @State private var showGoalExamples = false
     
     @State private var selectedTab : Int = 0
     
@@ -124,7 +125,16 @@ struct CreateGoalView: View {
                 .navigationTitle(self.getTitulo)
                 .toolbar {
                     if selectedTab == 0 {
-                        ToolbarItem(placement: .confirmationAction) {
+                        ToolbarItemGroup(placement: .confirmationAction) {
+                            Button {
+                                focusedField = nil
+                                showGoalExamples = true
+                            } label: {
+                                Image(systemName: "lightbulb.max.fill")
+                            }
+                            .accessibilityLabel("Ver ejemplos de metas")
+                            .help("Ver ejemplos de metas")
+
                             Button("Crear Meta") {
                                 if createGoal() {
                                     dismiss()
@@ -149,6 +159,12 @@ struct CreateGoalView: View {
                     }
 #endif
                     
+                }
+                .sheet(isPresented: $showGoalExamples) {
+                    GoalExamplesView { example in
+                        vm.apply(example)
+                        selectedTab = 0
+                    }
                 }
             }
     }

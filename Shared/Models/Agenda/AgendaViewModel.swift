@@ -7,6 +7,8 @@ final class AgendaViewModel: ObservableObject {
     enum QuickFilter: String, CaseIterable, Identifiable {
         case hoy = "Hoy"
         case sieteDias = "Próx. 7 días"
+        case quinceDias = "Próx. 15 días"
+        case treintaDias = "Próx. 30 días"
         case conRecordatorio = "Con recordatorio"
         case todos = "Todos"
 
@@ -62,6 +64,8 @@ final class AgendaViewModel: ObservableObject {
         let calendar = Calendar.current
         let startOfToday = calendar.startOfDay(for: Date())
         let endOfSevenDays = calendar.date(byAdding: .day, value: 7, to: startOfToday) ?? startOfToday
+        let endOfFifteenDays = calendar.date(byAdding: .day, value: 15, to: startOfToday) ?? startOfToday
+        let endOfThirtyDays = calendar.date(byAdding: .day, value: 30, to: startOfToday) ?? startOfToday
 
         switch filter {
         case .hoy:
@@ -70,6 +74,16 @@ final class AgendaViewModel: ObservableObject {
             return items.filter {
                 let day = calendar.startOfDay(for: $0.fechaActividad)
                 return day >= startOfToday && day < endOfSevenDays
+            }
+        case .quinceDias:
+            return items.filter {
+                let day = calendar.startOfDay(for: $0.fechaActividad)
+                return day >= startOfToday && day < endOfFifteenDays
+            }
+        case .treintaDias:
+            return items.filter {
+                let day = calendar.startOfDay(for: $0.fechaActividad)
+                return day >= startOfToday && day < endOfThirtyDays
             }
         case .conRecordatorio:
             return items.filter { $0.recordatorioActivo }
