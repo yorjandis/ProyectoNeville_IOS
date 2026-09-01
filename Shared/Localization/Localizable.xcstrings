@@ -5320,6 +5320,12 @@
         }
       }
     },
+    "Acciones (%lld)" : {
+
+    },
+    "Acciones para %lld notas seleccionadas" : {
+
+    },
     "Aceptado" : {
       "localizations" : {
         "en" : {
@@ -9447,6 +9453,12 @@
           }
         }
       }
+    },
+    "Asignar categoría" : {
+
+    },
+    "Asignar otra categoría…" : {
+
     },
     "Asistente de guía para entrar en estado de coherencia entre corazón y cerebro." : {
       "localizations" : {
@@ -24729,6 +24741,9 @@
         }
       }
     },
+    "Eliminar notas seleccionadas" : {
+
+    },
     "Eliminar objetivo" : {
       "localizations" : {
         "en" : {
@@ -28860,6 +28875,9 @@
         }
       }
     },
+    "Exportar a Calendario" : {
+
+    },
     "Exportar a Diario" : {
       "localizations" : {
         "en" : {
@@ -28881,6 +28899,12 @@
           }
         }
       }
+    },
+    "Exportar a Espacio Calma" : {
+
+    },
+    "Exportar a Frases" : {
+
     },
     "Exportar a Notas" : {
       "localizations" : {
@@ -28926,6 +28950,9 @@
         }
       }
     },
+    "Exportar a Recordatorios" : {
+
+    },
     "Exportar actividades seleccionadas" : {
       "localizations" : {
         "en" : {
@@ -28947,6 +28974,9 @@
           }
         }
       }
+    },
+    "Exportar archivo de migración" : {
+
     },
     "Exportar mes a PDF" : {
       "localizations" : {
@@ -51093,6 +51123,7 @@
       }
     },
     "Pasar a Calma" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -51115,6 +51146,7 @@
       }
     },
     "Pasar a Frases" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -54822,6 +54854,28 @@
         }
       }
     },
+    "Próx. 7 días" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next 7 days"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Próx. 7 días"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未来7天"
+          }
+        }
+      }
+    },
     "Próx. 15 días" : {
       "localizations" : {
         "en" : {
@@ -54862,28 +54916,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "未来30天"
-          }
-        }
-      }
-    },
-    "Próx. 7 días" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Next 7 days"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Próx. 7 días"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "未来7天"
           }
         }
       }
@@ -55305,6 +55337,9 @@
           }
         }
       }
+    },
+    "Quitar categoría" : {
+
     },
     "Quitar check" : {
       "localizations" : {

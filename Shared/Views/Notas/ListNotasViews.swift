@@ -20,7 +20,8 @@ private enum NotasUIConstants {
     static let searchHeaderHeight: CGFloat = 54
     static let searchBarLeadingInset: CGFloat = 150
     static let searchBarHorizontalPadding: CGFloat = 12
-    static let listBottomPadding: CGFloat = 16
+    static let listBottomPadding: CGFloat = 56
+    static let listBottomPaddingDuringSelection: CGFloat = 120
 
     static let searchPetAssetName = "nati_notas"
     static let searchPetSize: CGFloat = 96
@@ -34,7 +35,7 @@ struct ListNotasViews: View {
         case modificationDate
     }
 
-    private enum NotesListMode {
+    private enum NotesListMode: String {
         case all
         case groupedByCategory
     }
@@ -66,7 +67,7 @@ struct ListNotasViews: View {
     @State private var exportFromDate = Date.now
     @State private var exportToDate = Date.now
     @State private var selectedSortOption: NotesSortOption = .creationDate
-    @State private var selectedListMode: NotesListMode = .all
+    @AppStorage("notesListMode") private var selectedListMode: NotesListMode = .all
     @State private var collapsedCategoryNames: Set<String> = []
     @State private var showBulkCategoryAlert = false
     @State private var bulkCategoryDraft = ""
@@ -126,6 +127,14 @@ struct ListNotasViews: View {
         }
     }
 
+    private var filteredNotaIDs: Set<String> {
+        Set(orderedFiltered.compactMap(\.id))
+    }
+
+    private var areAllFilteredNotasSelected: Bool {
+        !filteredNotaIDs.isEmpty && selectedNotaIDs.isSuperset(of: filteredNotaIDs)
+    }
+
     private var canAccessNotasContent: Bool {
         canOpenNotas == true || UserDefaults.standard.bool(forKey: AppCons.UD_setting_NotasFaceID) == false
     }
@@ -166,9 +175,9 @@ struct ListNotasViews: View {
         var confirmTitle: String {
             switch self {
             case .passToFrases:
-                return L10n.exact("Pasar a Frases")
+                return L10n.exact("Exportar a Frases")
             case .passToCalm:
-                return L10n.exact("Pasar a Calma")
+                return L10n.exact("Exportar a Espacio Calma")
             case .setCategory:
                 return L10n.exact("Actualizar")
             case .exportMigration:
@@ -343,11 +352,14 @@ struct ListNotasViews: View {
                 }
 
                 Spacer()
-                if selectionMode && canAccessNotasContent {
-                    bulkActionsBar()
-                }
-
 #if os(macOS)
+                if selectionMode && canAccessNotasContent {
+                    HStack {
+                        Spacer()
+                        bulkActionsMenu
+                    }
+                    .padding(.horizontal, 20)
+                }
                 Divider()
                 bottomBar
 #endif
@@ -355,9 +367,17 @@ struct ListNotasViews: View {
         }
 #if os(iOS)
         .overlay(alignment: .bottomTrailing) {
-            floatingBackButton
-                .padding(.trailing, 20)
-                .padding(.bottom, 12)
+            VStack(alignment: .trailing, spacing: 10) {
+                if selectionMode && canAccessNotasContent {
+                    bulkActionsMenu
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
+                }
+
+                floatingBackButton
+            }
+            .padding(.trailing, 20)
+            .padding(.bottom, 12)
+            .animation(.easeInOut, value: selectionMode)
         }
 #endif
     }
@@ -372,13 +392,22 @@ struct ListNotasViews: View {
             }
         }
 #if os(iOS)
-        .contentMargins(.bottom, NotasUIConstants.listBottomPadding, for: .scrollContent)
+        .contentMargins(
+            .bottom,
+            selectionMode
+                ? NotasUIConstants.listBottomPaddingDuringSelection
+                : NotasUIConstants.listBottomPadding,
+            for: .scrollContent
+        )
 #endif
         #if os(macOS)
         .searchable(text: $textFieldTitle, prompt: "Buscar")
         #endif
         .task {
             self.modelNotas.getAllNotasToModel()
+            if selectedListMode == .groupedByCategory {
+                collapsedCategoryNames = Set(groupedFiltered.map(\.category))
+            }
         }
     }
 
@@ -528,7 +557,10 @@ struct ListNotasViews: View {
                     selectedListMode = .all
                 }
             } label: {
-                Label("Todas las notas", systemImage: "text.magnifyingglass.rtl")
+                Label(
+                    "Todas las notas",
+                    systemImage: selectedListMode == .all ? "checkmark.circle.fill" : "list.bullet"
+                )
             }
 
             Button {
@@ -638,98 +670,90 @@ struct ListNotasViews: View {
         
     }
 
-    @ViewBuilder
-    func bulkActionsBar() -> some View {
-        VStack(spacing: 10) {
-            HStack {
-                Text("Seleccionadas: \(selectedNotaIDs.count)")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-                Spacer()
+    private var bulkActionsMenu: some View {
+        Menu {
+            Button {
+                withAnimation {
+                    toggleSelectAllFiltered()
+                }
+            } label: {
+                Label(
+                    areAllFilteredNotasSelected
+                        ? "Deseleccionar todas"
+                        : "Seleccionar todas",
+                    systemImage: "checkmark.circle"
+                )
             }
 
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 8) {
-                    Button(selectedNotaIDs.count == filtered.count && !filtered.isEmpty ? "Quitar sel." : "Sel. todas") {
-                        withAnimation {
-                            toggleSelectAllFiltered()
-                        }
-                    }
-                    .foregroundStyle(.black).bold()
-                    .tint(.gray)
-                    .buttonStyle(.bordered)
+            Divider()
 
-                    Button {
-                        showConfirmBulkDelete = true
-                    } label: {
-                        Image(systemName: "trash")
-                    }
-                    .accessibilityLabel("Eliminar")
-                    .foregroundStyle(.black).bold()
-                    .buttonStyle(.bordered)
-                    .tint(.red)
-                    .disabled(selectedNotaIDs.isEmpty)
+            Button {
+                requestBulkActionConfirmation(.passToFrases)
+            } label: {
+                Label("Exportar a Frases", systemImage: "quote.bubble")
+            }
+            .disabled(selectedNotaIDs.isEmpty)
 
-                    Button("Frases") {
-                        requestBulkActionConfirmation(.passToFrases)
-                    }
-                    .foregroundStyle(.black).bold()
-                    .buttonStyle(.bordered)
-                    .tint(.green)
-                    .disabled(selectedNotaIDs.isEmpty)
+            Button {
+                requestBulkActionConfirmation(.passToCalm)
+            } label: {
+                Label("Exportar a Espacio Calma", systemImage: "leaf")
+            }
+            .disabled(selectedNotaIDs.isEmpty)
 
-                    Button("Calma") {
-                        requestBulkActionConfirmation(.passToCalm)
+            Menu {
+                Button("Quitar categoría", systemImage: "folder.badge.minus") {
+                    requestBulkActionConfirmation(.setCategory(""))
+                }
+                ForEach(existingCategories, id: \.self) { category in
+                    Button(category) {
+                        requestBulkActionConfirmation(.setCategory(category))
                     }
-                    .foregroundStyle(.black).bold()
-                    .buttonStyle(.bordered)
-                    .tint(.green)
-                    .disabled(selectedNotaIDs.isEmpty)
+                }
+                Button("Asignar otra categoría…", systemImage: "folder.badge.plus") {
+                    bulkCategoryDraft = ""
+                    showBulkCategoryAlert = true
+                }
+            } label: {
+                Label("Asignar categoría", systemImage: "folder")
+            }
+            .disabled(selectedNotaIDs.isEmpty)
 
-                    Menu("Categoría") {
-                        Button("Sin categoría") {
-                            requestBulkActionConfirmation(.setCategory(""))
-                        }
-                        ForEach(existingCategories, id: \.self) { category in
-                            Button(category) {
-                                requestBulkActionConfirmation(.setCategory(category))
-                            }
-                        }
-                        Button("Otra...") {
-                            bulkCategoryDraft = ""
-                            showBulkCategoryAlert = true
-                        }
-                    }
-                    .foregroundStyle(.black).bold()
-                    .buttonStyle(.bordered)
-                    .disabled(selectedNotaIDs.isEmpty)
-
-                    Button("Migrar") {
-                        requestBulkActionConfirmation(.exportMigration)
-                    }
-                    .foregroundStyle(.black).bold()
-                    .buttonStyle(.bordered)
-                    .disabled(selectedNotaIDs.isEmpty)
+            Button {
+                requestBulkActionConfirmation(.exportMigration)
+            } label: {
+                Label("Exportar archivo de migración", systemImage: "lock.doc")
+            }
+            .disabled(selectedNotaIDs.isEmpty)
 
 #if os(iOS)
-                    Menu("Apple") {
-                        Button("Calendario", systemImage: "calendar.badge.plus") {
-                            requestBulkActionConfirmation(.exportAppleCalendar)
-                        }
-                        Button("Recordatorios", systemImage: "checklist") {
-                            requestBulkActionConfirmation(.exportAppleReminders)
-                        }
-                    }
-                    .foregroundStyle(.black).bold()
-                    .buttonStyle(.bordered)
-                    .disabled(selectedNotaIDs.isEmpty)
-#endif
+            Menu {
+                Button("Exportar a Calendario", systemImage: "calendar.badge.plus") {
+                    requestBulkActionConfirmation(.exportAppleCalendar)
                 }
-                .fixedSize()
+                Button("Exportar a Recordatorios", systemImage: "checklist") {
+                    requestBulkActionConfirmation(.exportAppleReminders)
+                }
+            } label: {
+                Label("Exportar a Apple", systemImage: "apple.logo")
             }
+            .disabled(selectedNotaIDs.isEmpty)
+#endif
+
+            Divider()
+
+            Button(role: .destructive) {
+                showConfirmBulkDelete = true
+            } label: {
+                Label("Eliminar notas seleccionadas", systemImage: "trash")
+            }
+            .disabled(selectedNotaIDs.isEmpty)
+        } label: {
+            Label("Acciones (\(selectedNotaIDs.count))", systemImage: "ellipsis.circle.fill")
+                .fontWeight(.semibold)
         }
-        .padding(.horizontal, 10)
-        .padding(.top, 8)
+        .buttonStyle(.borderedProminent)
+        .accessibilityLabel("Acciones para \(selectedNotaIDs.count) notas seleccionadas")
     }
 
     @ViewBuilder
@@ -930,11 +954,10 @@ struct ListNotasViews: View {
     }
 
     private func toggleSelectAllFiltered() {
-        let allFilteredIDs = Set(orderedFiltered.compactMap { $0.id })
-        if !allFilteredIDs.isEmpty && selectedNotaIDs.isSuperset(of: allFilteredIDs) {
-            selectedNotaIDs.subtract(allFilteredIDs)
+        if areAllFilteredNotasSelected {
+            selectedNotaIDs.subtract(filteredNotaIDs)
         } else {
-            selectedNotaIDs.formUnion(allFilteredIDs)
+            selectedNotaIDs.formUnion(filteredNotaIDs)
         }
     }
 
