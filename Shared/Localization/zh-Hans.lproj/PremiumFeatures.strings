@@ -9,6 +9,8 @@
 "premium.preview.screenshot_accessibility" = "{1} 的第 {0} 张预览";
 "premium.preview.screenshot_placeholder" = "预览";
 "premium.preview.open_screenshot" = "全屏查看图片";
+"premium.preview.fullscreen_screenshot_accessibility" = "{2}，第 {0} 张截图，共 {1} 张";
+"premium.preview.navigate_screenshots" = "左右滑动即可浏览其他截图。";
 
 "premium.agenda.title" = "正念日程";
 "premium.agenda.description" = "统筹活动、任务与重要安排，设置提醒，让真正值得关注的事情始终清晰可见。";

@@ -5,10 +5,12 @@
 "premium.preview.practical_value" = "Valor práctico";
 "premium.preview.cta" = "Desbloquear esta función";
 "premium.preview.cta_detail" = "Ver la suscripción y la prueba disponible";
-"premium.preview.annual_note" = "La suscripción anual muy asequible. Además, los primeros siete días son gratuitos.";
+"premium.preview.annual_note" = "Suscripción anual muy asequible, con una semana gratuita para que puedas probar todas las funciones.";
 "premium.preview.screenshot_accessibility" = "Vista previa {0} de {1}";
 "premium.preview.screenshot_placeholder" = "Vista previa";
 "premium.preview.open_screenshot" = "Ver imagen a pantalla completa";
+"premium.preview.fullscreen_screenshot_accessibility" = "Captura {0} de {1}: {2}";
+"premium.preview.navigate_screenshots" = "Desliza a izquierda o derecha para recorrer las capturas.";
 
 "premium.agenda.title" = "Agenda consciente";
 "premium.agenda.description" = "Organiza actividades, tareas y compromisos en el tiempo, añade recordatorios y mantén a la vista aquello que merece tu atención.";

@@ -9,6 +9,8 @@
 "premium.preview.screenshot_accessibility" = "Preview {0} of {1}";
 "premium.preview.screenshot_placeholder" = "Preview";
 "premium.preview.open_screenshot" = "View image full screen";
+"premium.preview.fullscreen_screenshot_accessibility" = "Screenshot {0} of {1}: {2}";
+"premium.preview.navigate_screenshots" = "Swipe left or right to browse the screenshots.";
 
 "premium.agenda.title" = "Mindful Planner";
 "premium.agenda.description" = "Plan activities, tasks, and commitments, add reminders, and keep what deserves your attention clearly in view.";

@@ -3468,7 +3468,7 @@
       }
     },
     "😉" : {
-
+      "shouldTranslate" : false
     },
     "😊" : {
       "shouldTranslate" : false

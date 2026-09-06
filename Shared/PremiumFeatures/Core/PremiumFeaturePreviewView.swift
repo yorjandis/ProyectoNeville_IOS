@@ -142,9 +142,9 @@ struct PremiumFeaturePreviewView: View {
                         position: index + 1
                     ) {
                         selectedScreenshot = PremiumScreenshotSelection(
-                            assetName: name,
+                            screenshotNames: presentation.screenshotNames,
                             feature: presentation,
-                            position: index + 1
+                            initialIndex: index
                         )
                     }
                 }
@@ -235,7 +235,7 @@ struct PremiumFeaturePreviewView: View {
             Label(
                 PremiumFeatureLocalization.string(
                     "premium.preview.annual_note",
-                    fallback: "La suscripción anual muy asequible. Además, los primeros siete días son gratuitos."
+                    fallback: "Suscripción anual muy asequible, con una semana gratuita para que puedas probar todas las funciones."
                 ),
                 systemImage: "checkmark.seal.fill"
             )
@@ -479,38 +479,30 @@ private struct PremiumScreenshotCard: View {
 }
 
 private struct PremiumScreenshotSelection: Identifiable {
-    let assetName: String
+    let screenshotNames: [String]
     let feature: PremiumFeaturePresentation
-    let position: Int
+    let initialIndex: Int
 
-    var id: String { "\(assetName)-\(position)" }
+    var id: String { "\(feature.id.rawValue)-\(initialIndex)" }
 }
 
 private struct PremiumScreenshotFullscreenView: View {
     @Environment(\.dismiss) private var dismiss
 
     let selection: PremiumScreenshotSelection
+    @State private var currentIndex: Int
+
+    init(selection: PremiumScreenshotSelection) {
+        self.selection = selection
+        let lastIndex = max(0, selection.screenshotNames.count - 1)
+        _currentIndex = State(initialValue: min(max(0, selection.initialIndex), lastIndex))
+    }
 
     var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
 
-            Group {
-                if let image = PremiumScreenshotImageLoader.image(named: selection.assetName) {
-                    image
-                        .resizable()
-                        .scaledToFit()
-                } else {
-                    PremiumScreenshotPlaceholder(
-                        feature: selection.feature,
-                        position: selection.position
-                    )
-                    .aspectRatio(0.77, contentMode: .fit)
-                    .frame(maxWidth: 620, maxHeight: 760)
-                    .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
-                }
-            }
-            .padding(24)
+            fullscreenPager
         }
         .overlay(alignment: .topTrailing) {
             Button {
@@ -530,6 +522,109 @@ private struct PremiumScreenshotFullscreenView: View {
 #if os(macOS)
         .frame(minWidth: 620, idealWidth: 900, minHeight: 620, idealHeight: 820)
 #endif
+    }
+
+    @ViewBuilder
+    private var fullscreenPager: some View {
+#if os(iOS)
+        TabView(selection: $currentIndex) {
+            ForEach(selection.screenshotNames.indices, id: \.self) { index in
+                screenshotPage(at: index)
+                    .tag(index)
+            }
+        }
+        .tabViewStyle(.page(indexDisplayMode: selection.screenshotNames.count > 1 ? .always : .never))
+#else
+        screenshotPage(at: currentIndex)
+            .id(currentIndex)
+            .transition(.opacity)
+            .contentShape(Rectangle())
+            .gesture(horizontalSwipeGesture)
+            .overlay(alignment: .bottom) {
+                if selection.screenshotNames.count > 1 {
+                    pageIndicator
+                        .padding(.bottom, 18)
+                }
+            }
+            .accessibilityAdjustableAction { direction in
+                switch direction {
+                case .increment:
+                    moveToScreenshot(at: currentIndex + 1)
+                case .decrement:
+                    moveToScreenshot(at: currentIndex - 1)
+                @unknown default:
+                    break
+                }
+            }
+#endif
+    }
+
+    private func screenshotPage(at index: Int) -> some View {
+        Group {
+            if let image = PremiumScreenshotImageLoader.image(named: selection.screenshotNames[index]) {
+                image
+                    .resizable()
+                    .scaledToFit()
+            } else {
+                PremiumScreenshotPlaceholder(
+                    feature: selection.feature,
+                    position: index + 1
+                )
+                .aspectRatio(0.77, contentMode: .fit)
+                .frame(maxWidth: 620, maxHeight: 760)
+                .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
+            }
+        }
+        .padding(24)
+        .accessibilityLabel(
+            PremiumFeatureLocalization.format(
+                "premium.preview.fullscreen_screenshot_accessibility",
+                fallback: "Captura {0} de {1}: {2}",
+                String(index + 1),
+                String(selection.screenshotNames.count),
+                selection.feature.title
+            )
+        )
+        .accessibilityHint(
+            selection.screenshotNames.count > 1
+                ? PremiumFeatureLocalization.string(
+                    "premium.preview.navigate_screenshots",
+                    fallback: "Desliza a izquierda o derecha para recorrer las capturas."
+                )
+                : ""
+        )
+    }
+
+#if os(macOS)
+    private var horizontalSwipeGesture: some Gesture {
+        DragGesture(minimumDistance: 40)
+            .onEnded { value in
+                guard abs(value.translation.width) > abs(value.translation.height),
+                      abs(value.translation.width) >= 50 else { return }
+
+                moveToScreenshot(at: currentIndex + (value.translation.width < 0 ? 1 : -1))
+            }
+    }
+
+    private var pageIndicator: some View {
+        HStack(spacing: 7) {
+            ForEach(selection.screenshotNames.indices, id: \.self) { index in
+                Circle()
+                    .fill(index == currentIndex ? .white : .white.opacity(0.34))
+                    .frame(width: index == currentIndex ? 8 : 6, height: index == currentIndex ? 8 : 6)
+            }
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
+        .background(.black.opacity(0.42), in: Capsule())
+    }
+#endif
+
+    private func moveToScreenshot(at index: Int) {
+        guard selection.screenshotNames.indices.contains(index), index != currentIndex else { return }
+        withAnimation(.easeInOut(duration: 0.22)) {
+            currentIndex = index
+        }
     }
 }
 
