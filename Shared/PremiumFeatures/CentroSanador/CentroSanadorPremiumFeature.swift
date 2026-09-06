@@ -2,9 +2,12 @@
 import Foundation
 
 private enum CentroSanadorPremiumScreenshot: String, PremiumFeatureScreenshotName {
-    case overview = "centro_sanador_premium_1"
-    case guidance = "centro_sanador_premium_2"
-    case practice = "centro_sanador_premium_3"
+    case c1 = "CSanador_1"
+    case c2 = "CSanador_2"
+    case c3 = "CSanador_3"
+    case c4 = "CSanador_4"
+    case c5 = "CSanador_5"
+    case c6 = "CSanador_6"
 }
 
 extension PremiumFeaturePresentation {

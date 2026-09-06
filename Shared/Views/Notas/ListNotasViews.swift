@@ -752,7 +752,7 @@ struct ListNotasViews: View {
             Label("Acciones (\(selectedNotaIDs.count))", systemImage: "ellipsis.circle.fill")
                 .fontWeight(.semibold)
         }
-        .buttonStyle(.borderedProminent)
+        .buttonStyle(.bordered)
         .accessibilityLabel("Acciones para \(selectedNotaIDs.count) notas seleccionadas")
     }
 

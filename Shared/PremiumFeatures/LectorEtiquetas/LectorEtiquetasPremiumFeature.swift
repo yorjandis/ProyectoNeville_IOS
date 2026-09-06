@@ -2,9 +2,10 @@
 import Foundation
 
 private enum LectorEtiquetasPremiumScreenshot: String, PremiumFeatureScreenshotName {
-    case overview = "lector_etiquetas_premium_1"
-    case scanning = "lector_etiquetas_premium_2"
-    case analysis = "lector_etiquetas_premium_3"
+    case c1 = "InspAlimento_1"
+    case c2 = "InspAlimento_2"
+    case c3 = "InspAlimento_3"
+    case c4 = "InspAlimento_4"
 }
 
 extension PremiumFeaturePresentation {

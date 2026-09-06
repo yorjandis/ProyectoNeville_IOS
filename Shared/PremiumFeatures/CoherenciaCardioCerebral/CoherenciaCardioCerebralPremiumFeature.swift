@@ -2,9 +2,10 @@
 import Foundation
 
 private enum CoherenciaCardioCerebralPremiumScreenshot: String, PremiumFeatureScreenshotName {
-    case overview = "coherencia_premium_1"
-    case breathing = "coherencia_premium_2"
-    case progress = "coherencia_premium_3"
+    case c1 = "CC_1"
+    case c2 = "CC_2"
+    case c3 = "CC_3"
+    case c4 = "CC_4"
 }
 
 extension PremiumFeaturePresentation {

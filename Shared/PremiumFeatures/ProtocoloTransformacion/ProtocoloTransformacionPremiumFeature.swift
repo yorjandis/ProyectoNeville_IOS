@@ -2,9 +2,9 @@
 import Foundation
 
 private enum ProtocoloTransformacionPremiumScreenshot: String, PremiumFeatureScreenshotName {
-    case overview = "transformacion_premium_1"
-    case process = "transformacion_premium_2"
-    case progress = "transformacion_premium_3"
+    case c1 = "ProtocoloTrans_1"
+    case c2 = "ProtocoloTrans_2"
+    case c3 = "ProtocoloTrans_3"
 }
 
 extension PremiumFeaturePresentation {

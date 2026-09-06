@@ -2,9 +2,10 @@
 import Foundation
 
 private enum LienzoCreativoPremiumScreenshot: String, PremiumFeatureScreenshotName {
-    case overview = "lienzo_premium_1"
-    case creation = "lienzo_premium_2"
-    case result = "lienzo_premium_3"
+    case c1 = "Lienzo_1"
+    case c2 = "Lienzo_2"
+    case c3 = "Lienzo_3"
+    case c4 = "Lienzo_4"
 }
 
 extension PremiumFeaturePresentation {

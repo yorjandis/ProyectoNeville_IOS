@@ -2,9 +2,9 @@
 import Foundation
 
 private enum RecordatoriosPremiumScreenshot: String, PremiumFeatureScreenshotName {
-    case overview = "recordatorios_premium_1"
-    case configuration = "recordatorios_premium_2"
-    case notification = "recordatorios_premium_3"
+    case c1 = "Recordatorios_1"
+    case c2 = "Recordatorios_2"
+    case c3 = "Recordatorios_3"
 }
 
 extension PremiumFeaturePresentation {

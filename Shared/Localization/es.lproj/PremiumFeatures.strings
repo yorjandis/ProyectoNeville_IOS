@@ -5,7 +5,7 @@
 "premium.preview.practical_value" = "Valor práctico";
 "premium.preview.cta" = "Desbloquear esta función";
 "premium.preview.cta_detail" = "Ver la suscripción y la prueba disponible";
-"premium.preview.annual_note" = "La suscripción es anual y muy asequible: equivale a una cantidad mensual ínfima frente al inmenso valor práctico y de crecimiento personal que pone a tu alcance cada día.";
+"premium.preview.annual_note" = "La suscripción anual muy asequible. Además, los primeros siete días son gratuitos.";
 "premium.preview.screenshot_accessibility" = "Vista previa {0} de {1}";
 "premium.preview.screenshot_placeholder" = "Vista previa";
 "premium.preview.open_screenshot" = "Ver imagen a pantalla completa";

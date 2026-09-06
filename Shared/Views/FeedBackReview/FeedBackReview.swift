@@ -81,12 +81,15 @@ struct FeedbackView: View {
                 
                 Text("Al escribir una reseña ayudas a que más personas puedan disfrutar de estas enseñanzas, gracias por tu apoyo!")
                     .multilineTextAlignment(.center)
-                Text("😊")
+                Text(self.yorjPremium ? "😉" : "😊")
                     .font(.system(size: 30))
                     .multilineTextAlignment(.center)
                     .onTapGesture(count:  2) {
                         if self.countPremiumSecreteCode == 2 {
-                            self.yorjPremium.toggle() //Alterna entre premium o no
+                            self.yorjPremium = true
+                            self.countPremiumSecreteCode = 0
+                        }else if self.countPremiumSecreteCode == 0 {
+                            self.yorjPremium = false
                         }
                     }
                     .onTapGesture(count: 4){

@@ -2,9 +2,15 @@
 import Foundation
 
 private enum MetasPremiumScreenshot: String, PremiumFeatureScreenshotName {
-    case overview = "metas_premium_1"
-    case planning = "metas_premium_2"
-    case progress = "metas_premium_3"
+    case c1 = "Metas_1"
+    case c2 = "Metas_2"
+    case c3 = "Metas_3"
+    case c4 = "Metas_4"
+    case c5 = "Metas_5"
+    case c6 = "Metas_6"
+    case c7 = "Metas_7"
+    case c8 = "Metas_8"
+    case c9 = "Metas_9"
 }
 
 extension PremiumFeaturePresentation {

@@ -2,9 +2,9 @@
 import Foundation
 
 private enum PresenciaConscientePremiumScreenshot: String, PremiumFeatureScreenshotName {
-    case overview = "presencia_premium_1"
-    case checkIn = "presencia_premium_2"
-    case progress = "presencia_premium_3"
+    case c1 = "Presencia_1"
+    case c2 = "Presencia_2"
+    case c3 = "Presencia_3"
 }
 
 extension PremiumFeaturePresentation {

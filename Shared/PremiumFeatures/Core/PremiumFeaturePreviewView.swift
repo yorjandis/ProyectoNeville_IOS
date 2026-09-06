@@ -37,7 +37,9 @@ struct PremiumFeaturePreviewView: View {
             ScrollView(showsIndicators: false) {
                 VStack(spacing: contentSpacing) {
                     header
-                    screenshotGallery
+                    if !presentation.screenshotNames.isEmpty {
+                        screenshotGallery
+                    }
                     valueCard
                     purchaseCallToAction
                 }
@@ -233,7 +235,7 @@ struct PremiumFeaturePreviewView: View {
             Label(
                 PremiumFeatureLocalization.string(
                     "premium.preview.annual_note",
-                    fallback: "La suscripción es anual y muy asequible: equivale a una cantidad mensual ínfima frente al inmenso valor práctico y de crecimiento personal que pone a tu alcance cada día."
+                    fallback: "La suscripción anual muy asequible. Además, los primeros siete días son gratuitos."
                 ),
                 systemImage: "checkmark.seal.fill"
             )

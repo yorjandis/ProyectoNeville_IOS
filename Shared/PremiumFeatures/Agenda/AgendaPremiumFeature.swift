@@ -2,9 +2,11 @@
 import Foundation
 
 private enum AgendaPremiumScreenshot: String, PremiumFeatureScreenshotName {
-    case overview = "agenda_premium_1"
-    case planning = "agenda_premium_2"
-    case reminders = "agenda_premium_3"
+    case c1 = "Agenda_1"
+    case c2 = "Agenda_2"
+    case c3 = "Agenda_3"
+    case c4 = "Agenda_4"
+    case c5 = "Agenda_5"
 }
 
 extension PremiumFeaturePresentation {

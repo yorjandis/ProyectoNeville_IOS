@@ -10,6 +10,8 @@ disponible en español (`es`), inglés (`en`) y chino simplificado (`zh-Hans`).
 
 Cada fichero `…PremiumFeature.swift` declara un enum conforme a `PremiumFeatureScreenshotName`. Los valores del enum contienen los nombres exactos de las capturas, sin extensión, y la galería respeta estrictamente el orden de declaración de sus casos. Los nombres y sus sufijos son libres; para añadir, retirar o reordenar capturas solo hay que editar ese enum. Mientras no exista un recurso declarado, la galería muestra una composición visual coherente en lugar de un espacio vacío.
 
+Cuando una función no necesita galería, declara `screenshotNames: []`; la plantilla omite por completo esa sección y mantiene el resto de la presentación.
+
 Para presentar una función bloqueada se usa:
 
 ```swift

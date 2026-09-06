@@ -2,9 +2,8 @@
 import Foundation
 
 private enum RevisionSemanalPremiumScreenshot: String, PremiumFeatureScreenshotName {
-    case overview = "revision_semanal_premium_1"
-    case reflection = "revision_semanal_premium_2"
-    case summary = "revision_semanal_premium_3"
+    case c1 = "ResumenSemanal_1"
+    case c2 = "ResumenSemanal_2"
 }
 
 extension PremiumFeaturePresentation {

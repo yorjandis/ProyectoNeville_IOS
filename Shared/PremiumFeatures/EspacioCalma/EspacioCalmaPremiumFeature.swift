@@ -2,9 +2,12 @@
 import Foundation
 
 private enum EspacioCalmaPremiumScreenshot: String, PremiumFeatureScreenshotName {
-    case overview = "espacio_calma_premium_1"
-    case environment = "espacio_calma_premium_2"
-    case experience = "espacio_calma_premium_3"
+    case c1 = "EspacioC_1"
+    case c2 = "EspacioC_2"
+    case c3 = "EspacioC_3"
+    case c4 = "EspacioC_4"
+    case c5 = "EspacioC_5"
+    case c6 = "EspacioC_6"
 }
 
 extension PremiumFeaturePresentation {

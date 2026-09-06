@@ -2,9 +2,10 @@
 import Foundation
 
 private enum InteligenciaArtificialPremiumScreenshot: String, PremiumFeatureScreenshotName {
-    case overview = "ia_premium_1"
-    case conversation = "ia_premium_2"
-    case result = "ia_premium_3"
+    case c1 = "IA_1"
+    case c2 = "IA_2"
+    case c3 = "IA_3"
+    case c4 = "IA_4"
 }
 
 extension PremiumFeaturePresentation {
