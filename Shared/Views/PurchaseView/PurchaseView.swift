@@ -118,6 +118,11 @@ struct PurchaseView: View {
             description: String(localized: "Guarda texto o imágenes desde webs y apps con el menú compartir. Incluye OCR y lectura de códigos QR.")
         ),
         PremiumFeature(
+            iconName: "globe",
+            title: String(localized: "Traducción de notas"),
+            description: String(localized: "Traduce tus notas entre español, inglés y chino mandarín. Edita el resultado, reemplaza la nota original o impórtalo como una nueva Nota, entrada del Diario, actividad de la Agenda o Frase.")
+        ),
+        PremiumFeature(
             iconName: "link",
             title: String(localized: "Frases Relacionadas (FR)"),
             description: String(localized: "Conecta ideas de distintos autores y tus propias reflexiones para crear un mapa visual del pensamiento compartido.")

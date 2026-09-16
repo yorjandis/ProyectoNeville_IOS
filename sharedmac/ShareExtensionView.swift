@@ -9,6 +9,67 @@ import SwiftUI
 import Vision
 import AppKit
 import CoreImage
+import Translation
+
+private enum OCRLanguage: String, CaseIterable, Identifiable {
+    case spanish
+    case english
+    case simplifiedChinese
+    case french
+    case german
+    case hindi
+    case italian
+
+    var id: Self { self }
+
+    var displayName: LocalizedStringKey {
+        switch self {
+        case .spanish: "Español"
+        case .english: "Inglés"
+        case .simplifiedChinese: "Chino mandarín"
+        case .french: "Francés"
+        case .german: "Alemán"
+        case .hindi: "Hindi"
+        case .italian: "Italiano"
+        }
+    }
+
+    var recognitionIdentifiers: [String] {
+        switch self {
+        case .spanish: ["es-ES", "es-MX"]
+        case .english: ["en-US", "en-GB"]
+        case .simplifiedChinese: ["zh-Hans"]
+        case .french: ["fr-FR"]
+        case .german: ["de-DE"]
+        case .hindi: ["hi-IN"]
+        case .italian: ["it-IT"]
+        }
+    }
+}
+
+private enum TranslationTargetLanguage: String, CaseIterable, Identifiable {
+    case spanish
+    case english
+    case simplifiedChinese
+
+    var id: Self { self }
+
+    var displayName: LocalizedStringKey {
+        switch self {
+        case .spanish: "Español"
+        case .english: "Inglés"
+        case .simplifiedChinese: "Chino mandarín"
+        }
+    }
+
+    var localeLanguage: Locale.Language {
+        switch self {
+        case .spanish: Locale.Language(identifier: "es")
+        case .english: Locale.Language(identifier: "en")
+        case .simplifiedChinese: Locale.Language(identifier: "zh-Hans")
+        }
+    }
+}
 
 struct ShareExtensionView: View {
     
@@ -16,6 +77,12 @@ struct ShareExtensionView: View {
     var image: NSImage? = nil
     
     @State private var textqr: String = ""
+    @State private var selectedOCRLanguage: OCRLanguage = .spanish
+    @State private var isRecognizingText: Bool = false
+    @State private var selectedTranslationLanguage: TranslationTargetLanguage = .spanish
+    @State private var translationConfiguration: TranslationSession.Configuration?
+    @State private var pendingTranslationText: String = ""
+    @State private var isTranslating: Bool = false
     @AppStorage("yorjPremium",store: UserDefaults(suiteName: "group.com.ypg.nev.group"))var yorjPremium: Bool = false
     
     let keyNotaShareText    = "notaShareText"
@@ -81,7 +148,7 @@ struct ShareExtensionView: View {
                                                         }
                                                         
                                                     }else{
-                                                        Text(textoQR)
+                                                        Text(textqr)
                                                             .textSelection(.enabled)
                                                             .font(.title2)
                                                             .foregroundStyle(.black)
@@ -113,18 +180,9 @@ struct ShareExtensionView: View {
                                     //Panel de opciones
                                     VStack(spacing: 20){
                                         
-                                        Button("OCR sobre la Imagen"){
-                                            Task{
-                                                do{
-                                                    let texto = try await ocrAccurate(from: img)
-                                                    self.textqr = texto
-                                                }catch{
-                                                    print("La imagen no parece contener texto legible")
-                                                }
-                                            }
-                                        }
-                                        .foregroundStyle(.black)
-                                        .buttonStyle(.bordered)
+                                        ocrLanguagePicker
+
+                                        ocrButton(for: img)
                                         
                                         Button("Guardar Texto en Notas") {
                                             
@@ -133,7 +191,7 @@ struct ShareExtensionView: View {
                                                 print("❌ No se pudo acceder al App Group")
                                                 return
                                             }
-                                                defaults.set(textoQR, forKey: self.keyNotaShareText)
+                                                defaults.set(textqr, forKey: self.keyNotaShareText)
                                                 self.alertMessage = localized("Texto guardado en Notas.")
                                                 self.showAlert = true
                                             
@@ -149,7 +207,7 @@ struct ShareExtensionView: View {
                                                 print("❌ No se pudo acceder al App Group")
                                                 return
                                             }
-                                                defaults.set(textoQR, forKey: self.keyFraseShareText)
+                                                defaults.set(textqr, forKey: self.keyFraseShareText)
                                             
                                             
                                         }
@@ -198,18 +256,9 @@ struct ShareExtensionView: View {
                                                 .frame(width: geometry.size.width) // Ocupa todo el ancho de la pantalla
                                     }
                                     
-                                    Button("OCR sobre la Imagen"){
-                                        Task{
-                                            do{
-                                                let texto = try await ocrAccurate(from: img)
-                                                self.textqr = texto
-                                            }catch{
-                                                print("La imagen no parece contener texto legible")
-                                            }
-                                        }
-                                    }
-                                    .foregroundStyle(.black)
-                                    .buttonStyle(.bordered)
+                                    ocrLanguagePicker
+
+                                    ocrButton(for: img)
                                     
                                     Spacer()
                                 }
@@ -298,6 +347,10 @@ struct ShareExtensionView: View {
                                 .font(.title2)
                                 .foregroundStyle(.orange)
                         }
+
+                        if !translationSourceText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                            translationControls
+                        }
                         
                         Spacer()
                         
@@ -336,6 +389,9 @@ struct ShareExtensionView: View {
             .task{
                 self.hasPremium = await PremiumService.shared.hasPremiumAccess()
             }
+            .translationTask(translationConfiguration) { session in
+                await translatePendingText(using: session)
+            }
             
         }
         .alert(isPresented: self.$showAlert){
@@ -352,6 +408,115 @@ struct ShareExtensionView: View {
 
     private func localized(_ spanish: String) -> String {
         Bundle.main.localizedString(forKey: spanish, value: spanish, table: "Localizable")
+    }
+
+    private var ocrLanguagePicker: some View {
+        HStack {
+            Text("OCR desde:")
+                .foregroundStyle(.black)
+
+            Picker("Idioma de origen del OCR", selection: $selectedOCRLanguage) {
+                ForEach(OCRLanguage.allCases) { language in
+                    Text(language.displayName).tag(language)
+                }
+            }
+            .pickerStyle(.menu)
+            .tint(.black)
+        }
+    }
+
+    private var translationSourceText: String {
+        image == nil ? texto : textqr
+    }
+
+    private func ocrButton(for image: NSImage) -> some View {
+        Button {
+            Task {
+                isRecognizingText = true
+                defer { isRecognizingText = false }
+
+                do {
+                    textqr = try await ocrAccurate(
+                        from: image,
+                        language: selectedOCRLanguage
+                    )
+                } catch {
+                    alertMessage = String(localized: "La imagen no parece contener texto legible.")
+                    showAlert = true
+                }
+            }
+        } label: {
+            if isRecognizingText {
+                ProgressView()
+            } else {
+                Text("OCR sobre la Imagen")
+            }
+        }
+        .foregroundStyle(.black)
+        .buttonStyle(.bordered)
+        .disabled(isRecognizingText)
+    }
+
+    private var translationControls: some View {
+        HStack {
+            Text("Traducir al:")
+                .foregroundStyle(.black)
+
+            Picker("Idioma de destino de la traducción", selection: $selectedTranslationLanguage) {
+                ForEach(TranslationTargetLanguage.allCases) { language in
+                    Text(language.displayName).tag(language)
+                }
+            }
+            .pickerStyle(.menu)
+            .tint(.black)
+
+            Button {
+                requestTranslation()
+            } label: {
+                if isTranslating {
+                    ProgressView()
+                } else {
+                    Text("Traducir")
+                }
+            }
+            .foregroundStyle(.black)
+            .buttonStyle(.bordered)
+            .disabled(isTranslating)
+        }
+    }
+
+    private func requestTranslation() {
+        let sourceText = translationSourceText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !sourceText.isEmpty else { return }
+
+        pendingTranslationText = sourceText
+        isTranslating = true
+
+        let targetLanguage = selectedTranslationLanguage.localeLanguage
+        if translationConfiguration?.target == targetLanguage {
+            translationConfiguration?.invalidate()
+        } else {
+            translationConfiguration = TranslationSession.Configuration(
+                source: nil,
+                target: targetLanguage
+            )
+        }
+    }
+
+    @MainActor
+    private func translatePendingText(using session: TranslationSession) async {
+        do {
+            let response = try await session.translate(pendingTranslationText)
+            if image == nil {
+                texto = response.targetText
+            } else {
+                textqr = response.targetText
+            }
+        } catch {
+            alertMessage = String(localized: "No se pudo traducir el texto.")
+            showAlert = true
+        }
+        isTranslating = false
     }
     
     
@@ -397,10 +562,10 @@ struct ShareExtensionView: View {
     /// Devuelve el texto reconocido en la imagen.
     /// - Parameters:
     ///   - image: NSImage de entrada
-    ///   - languages: Idiomas de reconocimiento (por defecto español e inglés)
-    func ocrAccurate(
+    ///   - language: Idioma prioritario para el reconocimiento.
+    private func ocrAccurate(
         from image: NSImage,
-        languages: [String] = ["es-ES", "en-US"]
+        language: OCRLanguage
     ) async throws -> String {
 
         // Convertimos NSImage a CGImage
@@ -410,43 +575,19 @@ struct ShareExtensionView: View {
             return ""
         }
 
-        return try await withCheckedThrowingContinuation { cont in
-            let request = VNRecognizeTextRequest { req, err in
-                if let err = err {
-                    cont.resume(throwing: err)
-                    return
-                }
-
-                let observations = req.results as? [VNRecognizedTextObservation] ?? []
-
-                let text = observations
-                    .compactMap { $0.topCandidates(1).first?.string }
-                    .joined(separator: "\n")
-
-                cont.resume(returning: text)
-            }
-
-            request.recognitionLevel = .accurate
-            request.usesLanguageCorrection = true
-            request.recognitionLanguages = languages
-
-            let handler = VNImageRequestHandler(
-                cgImage: cgImage,
-                orientation: .up
-            )
-
-            // Ejecutamos fuera del closure para evitar problemas de concurrencia
-            Task {
-                do {
-                    try handler.perform([request])
-                } catch {
-                    cont.resume(throwing: error)
-                }
-            }
+        var request = RecognizeTextRequest()
+        request.recognitionLevel = .accurate
+        request.usesLanguageCorrection = true
+        request.recognitionLanguages = language.recognitionIdentifiers.map {
+            Locale.Language(identifier: $0)
         }
+
+        let observations = try await request.perform(on: cgImage, orientation: .up)
+        return observations
+            .compactMap { $0.topCandidates(1).first?.string }
+            .joined(separator: "\n")
     }
     
     
     
 }
-

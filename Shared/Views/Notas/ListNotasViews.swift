@@ -1449,8 +1449,17 @@ struct cardNotas: View{
     @State private var categoryDraft = ""
     @State private var showAppleExportAlert = false
     @State private var appleExportAlertMessage = ""
+    @State private var showTranslationPreview = false
+    @State private var showTranslationPurchase = false
+    @State private var translationTarget: NoteTranslationLanguage = .spanish
     
     @AppStorage(AppCons.UD_setting_fontListaSize)  var fontSizeLista : Int = 20
+    @AppStorage("purchaseStatus") private var purchaseStatus = false
+    @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) private var yorjPremium = false
+
+    private var hasPremiumTranslationAccess: Bool {
+        purchaseStatus || yorjPremium
+    }
 
     private static let metadataDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -1609,6 +1618,20 @@ struct cardNotas: View{
                     }
                     
                     #endif
+
+                    if #available(iOS 18.0, macOS 15.0, *) {
+                        Menu {
+                            ForEach(NoteTranslationLanguage.allCases) { language in
+                                Button {
+                                    openTranslationPreview(in: language)
+                                } label: {
+                                    Text(language.displayName)
+                                }
+                            }
+                        } label: {
+                            Label("Traducir", systemImage: "globe")
+                        }
+                    }
 
                     Menu {
                         if !currentCategory.isEmpty {
@@ -1974,12 +1997,65 @@ struct cardNotas: View{
         } message: {
             Text(appleExportAlertMessage)
         }
+        #if os(iOS)
+        .sheet(isPresented: $showTranslationPreview) {
+            if #available(iOS 18.0, *), let nota {
+                translationPreview(for: nota, target: translationTarget)
+                    .environmentObject(modelNotas)
+            }
+        }
+        #endif
+        .sheet(isPresented: $showTranslationPurchase) {
+            PurchaseView(mostrarLogo: true, mostrarBotonCerrarMacOS: true)
+        }
         .frame(maxWidth: .infinity)
         //.background(.ultraThinMaterial)
         .background(LinearGradient(colors: [.white.opacity(0.8), .white.opacity(0.7)], startPoint: .top, endPoint: .bottom))
         .clipShape(RoundedRectangle(cornerRadius: 10))
         .padding(.horizontal, 10)
         .padding(.vertical, 8)
+    }
+
+    @available(iOS 18.0, macOS 15.0, *)
+    @ViewBuilder
+    private func translationPreview(
+        for note: Notas,
+        target: NoteTranslationLanguage
+    ) -> some View {
+        NoteTranslationPreviewView(
+            noteID: note.id ?? "",
+            noteTitle: note.title ?? "",
+            originalText: note.noteDisplayText,
+            isFavorite: note.isfav,
+            address: note.value(forKey: "direccionMapa") as? String ?? "",
+            category: note.value(forKey: "categoria") as? String ?? "",
+            initialTarget: target
+        )
+    }
+
+    @available(iOS 18.0, macOS 15.0, *)
+    private func openTranslationPreview(in language: NoteTranslationLanguage) {
+        guard hasPremiumTranslationAccess else {
+            showTranslationPurchase = true
+            return
+        }
+
+        guard let nota, !nota.noteDisplayText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            return
+        }
+
+        translationTarget = language
+        #if os(macOS)
+        showWindow(
+            for: translationPreview(for: nota, target: language),
+            environmentObjects: [modelNotas],
+            title: "Traducir nota",
+            size: .percentage(width: 0.5, height: 0.72),
+            isModal: false
+        )
+        #else
+        showTranslationPreview = true
+        #endif
     }
 
     private var checklistPreview: some View {

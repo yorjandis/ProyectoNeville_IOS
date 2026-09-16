@@ -5345,6 +5345,9 @@
         }
       }
     },
+    "Acciones de traducción" : {
+
+    },
     "Acciones para %lld notas seleccionadas" : {
       "localizations" : {
         "en" : {
@@ -7640,6 +7643,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "喜悦"
+          }
+        }
+      }
+    },
+    "Alemán" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "German"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "德语"
           }
         }
       }
@@ -13583,6 +13602,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "检查清单"
+          }
+        }
+      }
+    },
+    "Chino mandarín" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Mandarin Chinese"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "简体中文"
           }
         }
       }
@@ -27016,6 +27051,22 @@
         }
       }
     },
+    "Español" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Spanish"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "西班牙语"
+          }
+        }
+      }
+    },
     "Espera a que termine la respuesta activa antes de convertir esta conversación en Nota." : {
       "localizations" : {
         "en" : {
@@ -30503,6 +30554,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "FR - 关联名言"
+          }
+        }
+      }
+    },
+    "Francés" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "French"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "法语"
           }
         }
       }
@@ -35380,6 +35447,22 @@
         }
       }
     },
+    "Hindi" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Hindi"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "印地语"
+          }
+        }
+      }
+    },
     "Historial" : {
       "localizations" : {
         "en" : {
@@ -37232,6 +37315,38 @@
         }
       }
     },
+    "Idioma de destino de la traducción" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Translation target language"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "翻译目标语言"
+          }
+        }
+      }
+    },
+    "Idioma de origen del OCR" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "OCR source language"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "OCR 源语言"
+          }
+        }
+      }
+    },
     "Igual que la semana pasada." : {
       "localizations" : {
         "en" : {
@@ -37483,6 +37598,9 @@
           }
         }
       }
+    },
+    "Importar" : {
+
     },
     "Importar a Frases" : {
       "localizations" : {
@@ -37971,6 +38089,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "关于此工具"
+          }
+        }
+      }
+    },
+    "Inglés" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "English"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "英语"
           }
         }
       }
@@ -38724,6 +38858,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "反转可见名言的选择"
+          }
+        }
+      }
+    },
+    "Italiano" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Italian"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "意大利语"
           }
         }
       }
@@ -39702,6 +39852,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "AI 以客观、中立的方式回应。"
+          }
+        }
+      }
+    },
+    "La imagen no parece contener texto legible." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "The image doesn’t appear to contain readable text."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "图像中似乎没有可识别的文本。"
           }
         }
       }
@@ -47926,6 +48092,22 @@
         }
       }
     },
+    "No se pudo traducir el texto." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "The text couldn’t be translated."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "无法翻译文本。"
+          }
+        }
+      }
+    },
     "No se puede actualizar la nota" : {
       "localizations" : {
         "en" : {
@@ -48473,6 +48655,9 @@
           }
         }
       }
+    },
+    "Nota nueva" : {
+
     },
     "Nota opcional" : {
       "localizations" : {
@@ -50127,6 +50312,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "我获得短暂缓解，随后却感到沉重、自责，也更不信任自己"
+          }
+        }
+      }
+    },
+    "OCR desde:" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "OCR from:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "OCR 源语言："
           }
         }
       }
@@ -57292,6 +57493,9 @@
           }
         }
       }
+    },
+    "Reemplazar" : {
+
     },
     "Reflexiones" : {
       "localizations" : {
@@ -66449,6 +66653,76 @@
         }
       }
     },
+    "Traducción" : {
+
+    },
+    "Traducción de notas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Note Translation"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "笔记翻译"
+          }
+        }
+      }
+    },
+    "Traduce tus notas entre español, inglés y chino mandarín. Edita el resultado, reemplaza la nota original o impórtalo como una nueva Nota, entrada del Diario, actividad de la Agenda o Frase." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Translate your notes between Spanish, English, and Mandarin Chinese. Edit the result, replace the original note, or import it as a new note, journal entry, agenda activity, or quote."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "在西班牙语、英语和简体中文之间翻译笔记。编辑译文、替换原笔记，或将译文导入为新笔记、日记、日程活动或语录。"
+          }
+        }
+      }
+    },
+    "Traduciendo…" : {
+
+    },
+    "Traducir" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Translate"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "翻译"
+          }
+        }
+      }
+    },
+    "Traducir al:" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Translate to:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "翻译为："
+          }
+        }
+      }
+    },
     "Transformación" : {
       "localizations" : {
         "en" : {
@@ -70373,5 +70647,5 @@
       "shouldTranslate" : false
     }
   },
-  "version" : "1.1"
+  "version" : "1.3"
 }
