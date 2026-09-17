@@ -252,8 +252,8 @@ struct ListNotasViews: View {
                 .sheet(isPresented: $showAddNoteView) {
                     AddNotasView()
                         .environmentObject(self.modelNotas)
-                        .presentationDetents([.medium])
-                        .presentationDragIndicator(.hidden)
+                        .presentationDetents([.medium, .large])
+                        .presentationDragIndicator(.visible)
                     
                 }
                 .alert("Buscar en Notas", isPresented: $showAlertSearch){
@@ -1366,6 +1366,12 @@ private struct NotesCategorySectionView: View {
                 }
                 .buttonStyle(.plain)
 
+                Spacer()
+
+                Text("\(notas.count)")
+                    .font(.caption)
+                    .foregroundStyle(.black.opacity(0.7))
+
                 Menu {
                     Text("- Categoría -")
                     Button {
@@ -1386,11 +1392,6 @@ private struct NotesCategorySectionView: View {
                         .padding(.horizontal, 4)
                 }
                 .buttonStyle(.plain)
-
-                Spacer()
-                Text("\(notas.count)")
-                    .font(.caption)
-                    .foregroundStyle(.black.opacity(0.7))
             }
             .padding(.horizontal, 16)
             .padding(.top, 8)
@@ -1451,7 +1452,6 @@ struct cardNotas: View{
     @State private var appleExportAlertMessage = ""
     @State private var showTranslationPreview = false
     @State private var showTranslationPurchase = false
-    @State private var translationTarget: NoteTranslationLanguage = .spanish
     
     @AppStorage(AppCons.UD_setting_fontListaSize)  var fontSizeLista : Int = 20
     @AppStorage("purchaseStatus") private var purchaseStatus = false
@@ -1620,14 +1620,8 @@ struct cardNotas: View{
                     #endif
 
                     if #available(iOS 18.0, macOS 15.0, *) {
-                        Menu {
-                            ForEach(NoteTranslationLanguage.allCases) { language in
-                                Button {
-                                    openTranslationPreview(in: language)
-                                } label: {
-                                    Text(language.displayName)
-                                }
-                            }
+                        Button {
+                            openTranslationPreview()
                         } label: {
                             Label("Traducir", systemImage: "globe")
                         }
@@ -2000,7 +1994,7 @@ struct cardNotas: View{
         #if os(iOS)
         .sheet(isPresented: $showTranslationPreview) {
             if #available(iOS 18.0, *), let nota {
-                translationPreview(for: nota, target: translationTarget)
+                translationPreview(for: nota)
                     .environmentObject(modelNotas)
             }
         }
@@ -2018,23 +2012,19 @@ struct cardNotas: View{
 
     @available(iOS 18.0, macOS 15.0, *)
     @ViewBuilder
-    private func translationPreview(
-        for note: Notas,
-        target: NoteTranslationLanguage
-    ) -> some View {
+    private func translationPreview(for note: Notas) -> some View {
         NoteTranslationPreviewView(
             noteID: note.id ?? "",
             noteTitle: note.title ?? "",
             originalText: note.noteDisplayText,
             isFavorite: note.isfav,
             address: note.value(forKey: "direccionMapa") as? String ?? "",
-            category: note.value(forKey: "categoria") as? String ?? "",
-            initialTarget: target
+            category: note.value(forKey: "categoria") as? String ?? ""
         )
     }
 
     @available(iOS 18.0, macOS 15.0, *)
-    private func openTranslationPreview(in language: NoteTranslationLanguage) {
+    private func openTranslationPreview() {
         guard hasPremiumTranslationAccess else {
             showTranslationPurchase = true
             return
@@ -2044,10 +2034,9 @@ struct cardNotas: View{
             return
         }
 
-        translationTarget = language
         #if os(macOS)
         showWindow(
-            for: translationPreview(for: nota, target: language),
+            for: translationPreview(for: nota),
             environmentObjects: [modelNotas],
             title: "Traducir nota",
             size: .percentage(width: 0.5, height: 0.72),

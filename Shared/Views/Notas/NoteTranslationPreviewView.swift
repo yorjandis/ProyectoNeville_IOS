@@ -39,7 +39,6 @@ struct NoteTranslationPreviewView: View {
     @EnvironmentObject private var notesModel: NotasModel
 
     @State private var translatedText: String
-    @State private var targetLanguage: NoteTranslationLanguage
     @State private var translationConfiguration: TranslationSession.Configuration?
     @State private var pendingTranslationText: String
     @State private var isTranslating = false
@@ -52,9 +51,10 @@ struct NoteTranslationPreviewView: View {
         originalText: String,
         isFavorite: Bool,
         address: String,
-        category: String,
-        initialTarget: NoteTranslationLanguage
+        category: String
     ) {
+        let textToTranslate = originalText.trimmingCharacters(in: .whitespacesAndNewlines)
+
         self.noteID = noteID
         self.noteTitle = noteTitle
         self.originalText = originalText
@@ -62,8 +62,8 @@ struct NoteTranslationPreviewView: View {
         self.address = address
         self.category = category
         self._translatedText = State(initialValue: originalText)
-        self._targetLanguage = State(initialValue: initialTarget)
-        self._pendingTranslationText = State(initialValue: originalText)
+        self._translationConfiguration = State(initialValue: nil)
+        self._pendingTranslationText = State(initialValue: textToTranslate)
     }
 
     var body: some View {
@@ -76,15 +76,19 @@ struct NoteTranslationPreviewView: View {
                 )
                 .ignoresSafeArea()
 
-                TextEditor(text: $translatedText)
-                    .font(.body)
-                    .scrollContentBackground(.hidden)
-                    .padding(14)
-                    .background(.regularMaterial)
-                    .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+                VStack(spacing: 12) {
+                    translationButtons
+
+                    TextEditor(text: $translatedText)
+                        .font(.body)
+                        .scrollContentBackground(.hidden)
+                        .padding(14)
+                        .background(.regularMaterial)
+                        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+                        .disabled(isTranslating)
+                }
                     .padding()
                     .padding(.bottom, 70)
-                    .disabled(isTranslating)
 
                 actionsFAB
                     .padding(24)
@@ -108,38 +112,50 @@ struct NoteTranslationPreviewView: View {
             } message: {
                 Text(statusMessage)
             }
-            .task {
-                requestTranslation(to: targetLanguage, sourceText: originalText)
-            }
             .translationTask(translationConfiguration) { session in
                 let textToTranslate = pendingTranslationText
-                Task { @MainActor in
-                    do {
-                        translatedText = try await session.translate(textToTranslate).targetText
-                    } catch {
+                isTranslating = true
+                do {
+                    translatedText = try await session.translate(textToTranslate).targetText
+                } catch is CancellationError {
+                    // SwiftUI cancels the session when the configuration or view changes.
+                } catch {
+                    if !Task.isCancelled {
                         presentStatus("No se pudo traducir el texto.")
                     }
-                    isTranslating = false
                 }
+                isTranslating = false
             }
         }
         .frame(minWidth: 420, minHeight: 520)
     }
 
+    private var translationButtons: some View {
+        HStack(spacing: 8) {
+            ForEach([
+                NoteTranslationLanguage.spanish,
+                .simplifiedChinese,
+                .english
+            ]) { language in
+                Button {
+                    requestTranslation(to: language, sourceText: translatedText)
+                } label: {
+                    Text(language.displayName)
+                        .font(.subheadline)
+                        .foregroundStyle(.black)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(Color(red: 0.42, green: 0.68, blue: 0.90))
+            }
+        }
+        .disabled(isTranslating || translatedText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+    }
+
     private var actionsFAB: some View {
         Menu {
-            Menu {
-                ForEach(NoteTranslationLanguage.allCases) { language in
-                    Button {
-                        requestTranslation(to: language, sourceText: translatedText)
-                    } label: {
-                        Text(language.displayName)
-                    }
-                }
-            } label: {
-                Label("Traducir", systemImage: "globe")
-            }
-
             Button {
                 replaceCurrentNote()
             } label: {
@@ -186,7 +202,6 @@ struct NoteTranslationPreviewView: View {
         let text = sourceText.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty else { return }
 
-        targetLanguage = language
         pendingTranslationText = text
         isTranslating = true
 
