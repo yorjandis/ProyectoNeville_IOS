@@ -5346,7 +5346,20 @@
       }
     },
     "Acciones de traducción" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Translation Actions"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "翻译操作"
+          }
+        }
+      }
     },
     "Acciones para %lld notas seleccionadas" : {
       "localizations" : {
@@ -18103,6 +18116,22 @@
         }
       }
     },
+    "Contenido exportado a %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Content exported to %@."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "内容已导出到 %@。"
+          }
+        }
+      }
+    },
     "Contenido no disponible" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -29028,6 +29057,22 @@
         }
       }
     },
+    "Exportar a" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Export to"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "导出到"
+          }
+        }
+      }
+    },
     "Exportar a Agenda" : {
       "localizations" : {
         "en" : {
@@ -37599,9 +37644,6 @@
         }
       }
     },
-    "Importar" : {
-
-    },
     "Importar a Frases" : {
       "localizations" : {
         "en" : {
@@ -43144,6 +43186,7 @@
       }
     },
     "Mantén pulsado para cambiar u ocultar la mascota" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -47698,6 +47741,22 @@
         }
       }
     },
+    "No se pudo exportar el contenido." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "The content couldn’t be exported."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "无法导出内容。"
+          }
+        }
+      }
+    },
     "No se pudo exportar la actividad a Diario." : {
       "localizations" : {
         "en" : {
@@ -48657,7 +48716,20 @@
       }
     },
     "Nota nueva" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "New Note"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "新建笔记"
+          }
+        }
+      }
     },
     "Nota opcional" : {
       "localizations" : {
@@ -57494,8 +57566,21 @@
         }
       }
     },
-    "Reemplazar" : {
-
+    "Reemplazar nota" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Replace Note"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "替换笔记"
+          }
+        }
+      }
     },
     "Reflexiones" : {
       "localizations" : {
@@ -65423,6 +65508,22 @@
         }
       }
     },
+    "Texto original" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Original Text"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "原文"
+          }
+        }
+      }
+    },
     "Tiempo" : {
       "localizations" : {
         "en" : {
@@ -66039,6 +66140,9 @@
         }
       }
     },
+    "Toca dos veces para crear una entrada para hoy. Mantén pulsado para cambiar u ocultar la mascota" : {
+
+    },
     "Toca el acceso para registrar tu intención." : {
       "localizations" : {
         "en" : {
@@ -66654,7 +66758,20 @@
       }
     },
     "Traducción" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Translation"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "翻译"
+          }
+        }
+      }
     },
     "Traducción de notas" : {
       "localizations" : {
@@ -66689,7 +66806,20 @@
       }
     },
     "Traduciendo…" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Translating…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "正在翻译…"
+          }
+        }
+      }
     },
     "Traducir" : {
       "localizations" : {
