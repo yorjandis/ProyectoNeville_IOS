@@ -157,26 +157,32 @@ struct NoteTranslationPreviewView: View {
     private var actionsFAB: some View {
         Menu {
             Button {
+                translatedText = originalText
+            } label: {
+                Label("Texto original", systemImage: "arrow.uturn.backward")
+            }
+
+            Button {
                 replaceCurrentNote()
             } label: {
-                Label("Reemplazar", systemImage: "arrow.triangle.2.circlepath")
+                Label("Reemplazar nota", systemImage: "arrow.triangle.2.circlepath")
             }
 
             Menu {
                 Button("Nota nueva", systemImage: "note.text.badge.plus") {
-                    importAsNewNote()
+                    exportAsNewNote()
                 }
                 Button("Diario", systemImage: "book.closed") {
-                    importToDiary()
+                    exportToDiary()
                 }
                 Button("Agenda", systemImage: "calendar.badge.plus") {
-                    importToAgenda()
+                    exportToAgenda()
                 }
                 Button("Frase", systemImage: "quote.bubble") {
-                    importToPhrases()
+                    exportToPhrases()
                 }
             } label: {
-                Label("Importar", systemImage: "square.and.arrow.down")
+                Label("Exportar a", systemImage: "square.and.arrow.up")
             }
         } label: {
             Image(systemName: "ellipsis")
@@ -234,15 +240,15 @@ struct NoteTranslationPreviewView: View {
         }
     }
 
-    private func importAsNewNote() {
-        presentImportResult(
+    private func exportAsNewNote() {
+        presentExportResult(
             notesModel.addNote(nota: translatedText, title: noteTitle),
             destination: "Notas"
         )
     }
 
-    private func importToDiary() {
-        presentImportResult(
+    private func exportToDiary() {
+        presentExportResult(
             DiarioModel.shared.addItem(
                 title: noteTitle,
                 emocion: .neutral,
@@ -252,27 +258,31 @@ struct NoteTranslationPreviewView: View {
         )
     }
 
-    private func importToAgenda() {
+    private func exportToAgenda() {
         let draft = AgendaInterchangeService.makeAgendaDraft(
             title: noteTitle,
             content: translatedText
         )
         AgendaInterchangeService.saveAgendaItems([draft])
-        presentImportResult(true, destination: "Agenda")
+        presentExportResult(true, destination: "Agenda")
     }
 
-    private func importToPhrases() {
-        presentImportResult(
+    private func exportToPhrases() {
+        presentExportResult(
             FrasesModel.shared.AddFrase(frase: translatedText, autor: "personal"),
             destination: "Frases"
         )
     }
 
-    private func presentImportResult(_ success: Bool, destination: String) {
+    private func presentExportResult(
+        _ success: Bool,
+        destination: LocalizedStringResource
+    ) {
         if success {
-            presentStatus("Contenido importado en \(destination).")
+            let localizedDestination = String(localized: destination)
+            presentStatus(String(localized: "Contenido exportado a \(localizedDestination)."))
         } else {
-            presentStatus("No se pudo importar el contenido.")
+            presentStatus(String(localized: "No se pudo exportar el contenido."))
         }
     }
 

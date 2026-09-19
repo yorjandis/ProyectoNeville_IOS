@@ -759,6 +759,9 @@ struct AgendaMainView: View {
                     y: AgendaUIConstants.emptyTodayPetOffset.height
                 )
                 .contentShape(Rectangle())
+                .onTapGesture(count: 2) {
+                    editorItem = viewModel.create(selectedDate: Date())
+                }
                 .contextMenu {
                     Button {
                         petsEnabled = false
@@ -783,7 +786,7 @@ struct AgendaMainView: View {
                 }
         }
         .accessibilityLabel("Mascota de Agenda")
-        .accessibilityHint("Mantén pulsado para cambiar u ocultar la mascota")
+        .accessibilityHint("Toca dos veces para crear una entrada para hoy. Mantén pulsado para cambiar u ocultar la mascota")
     }
 
     @ToolbarContentBuilder
