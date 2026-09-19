@@ -298,6 +298,19 @@ final class DiarioModel : ObservableObject{
 
     ///Adiciona un item a la tabla Diario con fecha de creación personalizada.
     func addItem(title : String, emocion : Emociones, content : String, fechaCreacion: Date, isFav : Bool = false, direccionMapa: String = "", capitulo: String = "" )->Bool{
+        return addItemAndReturn(
+            title: title,
+            emocion: emocion,
+            content: content,
+            fechaCreacion: fechaCreacion,
+            isFav: isFav,
+            direccionMapa: direccionMapa,
+            capitulo: capitulo
+        ) != nil
+    }
+
+    /// Crea una entrada y devuelve el objeto persistido para poder vincular relaciones inmediatamente.
+    func addItemAndReturn(title : String, emocion : Emociones, content : String, fechaCreacion: Date, isFav : Bool = false, direccionMapa: String = "", capitulo: String = "" ) -> Diario? {
         let diario : Diario = Diario(context: context)
         diario.id = UUID()
         diario.title = title
@@ -309,11 +322,13 @@ final class DiarioModel : ObservableObject{
         diario.fecha = Calendar.current.startOfDay(for: fechaCreacion)
         diario.fechaM = Date.now
 
-        if context.hasChanges {
-            try? context.save()
-            return true
+        do {
+            try context.save()
+            return diario
+        } catch {
+            context.delete(diario)
+            return nil
         }
-        return false
     }
     
     //Actualiza una entrada: La fecha se actualiza automáticamente.

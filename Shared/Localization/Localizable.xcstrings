@@ -1045,6 +1045,16 @@
         }
       }
     },
+    "¿Mover “%@” a la entrada “%@”?" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "¿Mover “%1$@” a la entrada “%2$@”?"
+          }
+        }
+      }
+    },
     "¿Podría ser una emergencia?" : {
       "localizations" : {
         "en" : {
@@ -11984,6 +11994,9 @@
         }
       }
     },
+    "Buscar por título o contenido" : {
+
+    },
     "Buscar un texto" : {
       "localizations" : {
         "en" : {
@@ -17534,6 +17547,9 @@
           }
         }
       }
+    },
+    "Confirmar movimiento" : {
+
     },
     "Confirme que desea Eliminar la Frase" : {
       "localizations" : {
@@ -42774,6 +42790,9 @@
         }
       }
     },
+    "Los anexos se cifrarán y guardarán junto con la entrada al pulsar Guardar." : {
+
+    },
     "Los archivos cifrados se recuperan desde CloudKit y la clave necesaria desde el Llavero de iCloud." : {
 
     },
@@ -45693,6 +45712,9 @@
     "Mover a otra entrada" : {
 
     },
+    "Mover anexo" : {
+
+    },
     "Mover entradas" : {
       "localizations" : {
         "en" : {
@@ -48175,6 +48197,9 @@
           }
         }
       }
+    },
+    "No se pudo mover el anexo" : {
+
     },
     "No se pudo obtener la ubicación actual." : {
       "localizations" : {
@@ -53819,6 +53844,9 @@
         }
       }
     },
+    "Preparando anexos…" : {
+
+    },
     "Preparando base SQLite offline..." : {
       "localizations" : {
         "en" : {
@@ -55982,6 +56010,9 @@
           }
         }
       }
+    },
+    "Quitar %@" : {
+
     },
     "Quitar categoría" : {
       "localizations" : {

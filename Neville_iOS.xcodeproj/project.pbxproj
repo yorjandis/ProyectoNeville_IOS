@@ -718,6 +718,7 @@
 				Models/CentroSanador/HealingCenterSafety.swift,
 				Models/CoreData/CoreDataController.swift,
 				Models/DiarioModel/DiarioModel.swift,
+				Models/DiarioModel/DiaryAttachmentStore.swift,
 				Models/EnciclopediaModel/EnciclopediaModel.swift,
 				Models/EvidenciaCientificaModel/EvidenciaCientificaModel.swift,
 				Models/Export/PDFExportModule.swift,
@@ -1810,6 +1811,7 @@
 				Views/Diario/DiarioCalendarView.swift,
 				Views/Diario/DiarioListView.swift,
 				Views/Diario/DiarioStatsView.swift,
+				Views/Diario/DiaryAttachmentsView.swift,
 				Views/Diario/editContent.swift,
 				Views/Diario/NewDiarioEntryView.swift,
 				Views/EnciclopediaView/EnciclopediaListView.swift,
@@ -4593,12 +4595,12 @@
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_NSAppleMusicUsageDescription = "Neville necesita acceso a tu biblioteca musical para que puedas seleccionar música personalizada en Espacio Calma.";
 				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Neville necesita acceso a Calendario para exportar tus notas y actividades de Agenda como eventos.";
-				INFOPLIST_KEY_NSCameraUsageDescription = "Se requiere permisos para usar la cámara";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Permite tomar fotografías para anexarlas de forma cifrada a las entradas del Diario.";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Se requiere permisos para usar Autenticación segura para Abrir el Diario";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "La Ley usa HealthKit para leer tus datos de pulso, variabilidad cardiaca, respiración, pasos y entrenamientos, estimar tu activación fisiológica y mostrarte patrones de estrés. La Ley no añade ni modifica datos en la app Salud.";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "La Ley no guarda ni modifica datos en la app Salud; su acceso a HealthKit es exclusivamente de lectura para estimar tu activación fisiológica y mostrarte patrones de estrés.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Neville usa tu ubicación para capturar una dirección actual y guardarla en actividades de Agenda o en Notas cuando lo solicites.";
-				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Se necesita permisos para guardar la imagen";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Permite guardar en Fotos las imágenes que exportes desde los anexos del Diario.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Se necesita permisos para acceder a la galeria";
 				INFOPLIST_KEY_NSRemindersFullAccessUsageDescription = "Neville necesita acceso a Recordatorios para exportar tus notas y actividades de Agenda como recordatorios.";
 				INFOPLIST_KEY_NSSiriUsageDescription = "Siri procesa las peticiones para crear entradas en el Diario, nuevas notas y frases";
@@ -4644,12 +4646,12 @@
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_NSAppleMusicUsageDescription = "Neville necesita acceso a tu biblioteca musical para que puedas seleccionar música personalizada en Espacio Calma.";
 				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Neville necesita acceso a Calendario para exportar tus notas y actividades de Agenda como eventos.";
-				INFOPLIST_KEY_NSCameraUsageDescription = "Se requiere permisos para usar la cámara";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Permite tomar fotografías para anexarlas de forma cifrada a las entradas del Diario.";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Se requiere permisos para usar Autenticación segura para Abrir el Diario";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "La Ley usa HealthKit para leer tus datos de pulso, variabilidad cardiaca, respiración, pasos y entrenamientos, estimar tu activación fisiológica y mostrarte patrones de estrés. La Ley no añade ni modifica datos en la app Salud.";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "La Ley no guarda ni modifica datos en la app Salud; su acceso a HealthKit es exclusivamente de lectura para estimar tu activación fisiológica y mostrarte patrones de estrés.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Neville usa tu ubicación para capturar una dirección actual y guardarla en actividades de Agenda o en Notas cuando lo solicites.";
-				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Se necesita permisos para guardar la imagen";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Permite guardar en Fotos las imágenes que exportes desde los anexos del Diario.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Se necesita permisos para acceder a la galeria";
 				INFOPLIST_KEY_NSRemindersFullAccessUsageDescription = "Neville necesita acceso a Recordatorios para exportar tus notas y actividades de Agenda como recordatorios.";
 				INFOPLIST_KEY_NSSiriUsageDescription = "Siri procesa las peticiones para crear entradas en el Diario, nuevas notas y frases";

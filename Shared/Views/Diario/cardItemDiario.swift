@@ -70,13 +70,12 @@ struct cardItemDiario: View{
             DiaryAttachmentsSection(diario: diario)
             if isFooterExpanded {
                 diaryFooter
-            }
-        }
-        .overlay(alignment: .bottomTrailing) {
-            if !isFooterExpanded {
-                footerVisibilityButton(isFloating: true)
-                    // Compensa el área táctil ampliada para mantener el icono en la misma posición visual.
-                    .offset(x: 21, y: 26)
+            } else {
+                HStack {
+                    Spacer()
+                    footerVisibilityButton()
+                }
+                .frame(height: 48)
             }
         }
         .contentShape(Rectangle())
@@ -291,11 +290,7 @@ struct cardItemDiario: View{
 
             attachmentImportMenu
 
-            Button(role: .destructive) {
-                showAlertDeleteEntry = true
-            } label: {
-                Label("Eliminar", systemImage: "trash")
-            }
+            
 
             if !mapAddress.isEmpty {
                 Button {
@@ -310,6 +305,13 @@ struct cardItemDiario: View{
             } label: {
                 Label("Exportar a Agenda", systemImage: "calendar.badge.plus")
             }
+            
+            Button(role: .destructive) {
+                showAlertDeleteEntry = true
+            } label: {
+                Label("Eliminar", systemImage: "trash")
+            }
+            
         } label: {
             entryActionsMenuLabel
         }
@@ -547,19 +549,19 @@ struct cardItemDiario: View{
         }
     }
 
-    private func footerVisibilityButton(isFloating: Bool = false) -> some View {
+    private func footerVisibilityButton() -> some View {
         Button {
             withAnimation(.easeInOut(duration: 0.2)) {
                 isFooterExpanded.toggle()
             }
         } label: {
             Image(systemName: isFooterExpanded ? "chevron.up.circle" : "chevron.down.circle")
-                .font(.caption)
+                .font(.system(size: 18))
                 .foregroundStyle(.black.opacity(0.45))
-                .frame(width: 22, height: 22)
+                .frame(width: 28, height: 28)
         }
         .buttonStyle(.plain)
-        .frame(width: isFloating ? 44 : 22, height: isFloating ? 44 : 22)
+        .frame(width: 48, height: 48)
         .contentShape(Rectangle())
         .disabled(isSelectionMode)
         .accessibilityLabel(isFooterExpanded ? "Ocultar detalles de la entrada" : "Mostrar detalles de la entrada")
