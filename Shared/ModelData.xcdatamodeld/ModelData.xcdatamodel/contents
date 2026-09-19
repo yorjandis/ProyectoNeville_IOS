@@ -90,6 +90,19 @@
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="isFav" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="title" optional="YES" attributeType="String"/>
+        <relationship name="attachments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="DiarioAttachment" inverseName="diario" inverseEntity="DiarioAttachment"/>
+    </entity>
+    <entity name="DiarioAttachment" representedClassName="DiarioAttachment" syncable="YES" codeGenerationType="class">
+        <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="cryptoVersion" optional="YES" attributeType="Integer 16" defaultValueString="1" usesScalarValueType="YES"/>
+        <attribute name="encapsulatedKey" optional="YES" attributeType="Binary"/>
+        <attribute name="fileData" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
+        <attribute name="fileName" optional="YES" attributeType="String"/>
+        <attribute name="fileNameEncrip" optional="YES" attributeType="String"/>
+        <attribute name="fileSize" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="utiString" optional="YES" attributeType="String"/>
+        <relationship name="diario" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Diario" inverseName="attachments" inverseEntity="Diario"/>
     </entity>
     <entity name="Frases" representedClassName="Frases" syncable="YES" codeGenerationType="class">
         <attribute name="autor" optional="YES" attributeType="String"/>

@@ -3370,6 +3370,21 @@
     "• %@" : {
       "shouldTranslate" : false
     },
+    "• Esperar a que la sincronización termine antes de eliminar la app o reinstalar el sistema." : {
+
+    },
+    "• Mantener activo el Llavero de iCloud y no haberlo restablecido." : {
+
+    },
+    "• Mantener iCloud activado para la aplicación." : {
+
+    },
+    "• Reinstalar la misma aplicación con acceso al mismo contenedor de CloudKit." : {
+
+    },
+    "• Utilizar el mismo Apple ID." : {
+
+    },
     "< %@ >" : {
       "localizations" : {
         "en" : {
@@ -8156,6 +8171,9 @@
         }
       }
     },
+    "Añadir anexo" : {
+
+    },
     "Añadir clave de OpenRouter" : {
       "localizations" : {
         "en" : {
@@ -8391,6 +8409,15 @@
           }
         }
       }
+    },
+    "Anexos" : {
+
+    },
+    "Anexos (%lld) · Toca para abrir" : {
+
+    },
+    "Anexos del Diario" : {
+
     },
     "Anillo de Emoción" : {
       "localizations" : {
@@ -9422,6 +9449,9 @@
           }
         }
       }
+    },
+    "Archivo" : {
+
     },
     "Archivo .ypgexp" : {
       "localizations" : {
@@ -12352,6 +12382,9 @@
         }
       }
     },
+    "Calidad: %lld %%" : {
+
+    },
     "Calma" : {
       "localizations" : {
         "en" : {
@@ -12440,6 +12473,9 @@
           }
         }
       }
+    },
+    "Cámara" : {
+
     },
     "Cambiar a %@" : {
       "localizations" : {
@@ -16298,6 +16334,9 @@
         }
       }
     },
+    "Compresión de imágenes" : {
+
+    },
     "Comprobación" : {
       "localizations" : {
         "en" : {
@@ -17066,6 +17105,9 @@
           }
         }
       }
+    },
+    "Condiciones para recuperar los anexos" : {
+
     },
     "Conducta alternativa" : {
       "extractionState" : "manual",
@@ -20847,6 +20889,9 @@
           }
         }
       }
+    },
+    "Descifrando…" : {
+
     },
     "Describe el desencadenante" : {
       "extractionState" : "manual",
@@ -29315,6 +29360,9 @@
         }
       }
     },
+    "Exportar archivo" : {
+
+    },
     "Exportar archivo de migración" : {
       "localizations" : {
         "en" : {
@@ -30586,6 +30634,9 @@
           }
         }
       }
+    },
+    "Fotos" : {
+
     },
     "FR - Frases Relacionadas" : {
       "localizations" : {
@@ -34074,6 +34125,9 @@
           }
         }
       }
+    },
+    "Guardar en Fotos" : {
+
     },
     "Guardar en Frases" : {
       "localizations" : {
@@ -37643,6 +37697,9 @@
           }
         }
       }
+    },
+    "Importando anexo…" : {
+
     },
     "Importar a Frases" : {
       "localizations" : {
@@ -42717,6 +42774,9 @@
         }
       }
     },
+    "Los archivos cifrados se recuperan desde CloudKit y la clave necesaria desde el Llavero de iCloud." : {
+
+    },
     "Los datos para el cálculo de estrés se toman de la aplicación Salud, utilizando HealthKit en modo solo lectura." : {
       "localizations" : {
         "en" : {
@@ -44025,6 +44085,9 @@
           }
         }
       }
+    },
+    "Menor" : {
+
     },
     "Mensaje de confirmación" : {
       "localizations" : {
@@ -45626,6 +45689,9 @@
           }
         }
       }
+    },
+    "Mover a otra entrada" : {
+
     },
     "Mover entradas" : {
       "localizations" : {
@@ -47420,6 +47486,9 @@
         }
       }
     },
+    "No se pudo abrir el archivo" : {
+
+    },
     "No se pudo abrir el selector de archivos." : {
       "localizations" : {
         "en" : {
@@ -48395,6 +48464,9 @@
           }
         }
       }
+    },
+    "Nombre del archivo" : {
+
     },
     "Nombre del patrón" : {
       "extractionState" : "manual",
@@ -51273,6 +51345,9 @@
           }
         }
       }
+    },
+    "Original" : {
+
     },
     "Oscuro" : {
       "localizations" : {
@@ -58485,6 +58560,12 @@
         }
       }
     },
+    "Renombrar" : {
+
+    },
+    "Renombrar anexo" : {
+
+    },
     "Renombrar capítulo" : {
       "localizations" : {
         "en" : {
@@ -61323,6 +61404,9 @@
         }
       }
     },
+    "Se aplica al importar nuevas imágenes. Los archivos ya anexados no cambian." : {
+
+    },
     "Se borrarán la configuración, las prácticas y los diarios del ciclo actual antes de completar los campos de prueba." : {
       "localizations" : {
         "en" : {
@@ -63206,6 +63290,9 @@
           }
         }
       }
+    },
+    "Si se eliminan los datos de iCloud o se pierde el Llavero de iCloud, los anexos cifrados no podrán recuperarse." : {
+
     },
     "Si sucede x..." : {
       "localizations" : {
@@ -70167,6 +70254,9 @@
           }
         }
       }
+    },
+    "Visualizar" : {
+
     },
     "Volver" : {
       "localizations" : {

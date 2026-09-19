@@ -65,6 +65,7 @@ struct Ajustes: View {
     //Acceso a la opción de en Ajustes
     @AppStorage(AppCons.UD_setting_DiarioAccesoAjustes) var setting_DiarioAccesoAjustes  : Bool = false
     @AppStorage(AppCons.UD_setting_DiarioSiempreOpenFaceID) var setting_DiarioSiempreOpenFaceID  : Bool = false
+    @AppStorage(AppCons.UD_setting_DiarioAttachmentImageQuality) private var diaryAttachmentImageQuality = 0.82
     @AppStorage(AppCons.UD_setting_preferredMapApp) var preferredMapApp: String = LocationMapApp.appleMaps.rawValue
     @AppStorage(AppCons.UD_setting_WeeklyReviewWeekday) private var weeklyReviewWeekday: Int = WeeklyReviewDay.sunday.rawValue
     @AppStorage(AppCons.UD_setting_WeeklyReviewNotificationsEnabled) private var weeklyReviewNotificationsEnabled = false
@@ -248,6 +249,41 @@ struct Ajustes: View {
                                         
                                     }
                                 }
+                            }
+                        }
+                        .padding(.horizontal, 30)
+                        .padding(.bottom, 20)
+
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text("Anexos del Diario")
+                                .font(.system(size: 22))
+                                .foregroundStyle(.orange)
+                            Slider(value: $diaryAttachmentImageQuality, in: 0.35...1, step: 0.05) {
+                                Text("Compresión de imágenes")
+                            } minimumValueLabel: {
+                                Text("Menor")
+                            } maximumValueLabel: {
+                                Text("Original")
+                            }
+                            Text("Calidad: \(Int(diaryAttachmentImageQuality * 100)) %")
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                            Text("Se aplica al importar nuevas imágenes. Los archivos ya anexados no cambian.")
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                            DisclosureGroup("Condiciones para recuperar los anexos") {
+                                VStack(alignment: .leading, spacing: 8) {
+                                    Text("Los archivos cifrados se recuperan desde CloudKit y la clave necesaria desde el Llavero de iCloud.")
+                                    Text("• Utilizar el mismo Apple ID.")
+                                    Text("• Mantener iCloud activado para la aplicación.")
+                                    Text("• Mantener activo el Llavero de iCloud y no haberlo restablecido.")
+                                    Text("• Esperar a que la sincronización termine antes de eliminar la app o reinstalar el sistema.")
+                                    Text("• Reinstalar la misma aplicación con acceso al mismo contenedor de CloudKit.")
+                                    Text("Si se eliminan los datos de iCloud o se pierde el Llavero de iCloud, los anexos cifrados no podrán recuperarse.")
+                                        .foregroundStyle(.red)
+                                }
+                                .font(.caption)
+                                .padding(.top, 6)
                             }
                         }
                         .padding(.horizontal, 30)
@@ -1440,6 +1476,34 @@ struct Ajustes: View {
                         }
                         
                         
+                    }
+
+                    Section("Anexos del Diario") {
+                        Slider(value: $diaryAttachmentImageQuality, in: 0.35...1, step: 0.05) {
+                            Text("Compresión de imágenes")
+                        } minimumValueLabel: {
+                            Text("Menor")
+                        } maximumValueLabel: {
+                            Text("Original")
+                        }
+                        Text("Calidad: \(Int(diaryAttachmentImageQuality * 100)) %")
+                        Text("Se aplica al importar nuevas imágenes. Los archivos ya anexados no cambian.")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                        DisclosureGroup("Condiciones para recuperar los anexos") {
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("Los archivos cifrados se recuperan desde CloudKit y la clave necesaria desde el Llavero de iCloud.")
+                                Text("• Utilizar el mismo Apple ID.")
+                                Text("• Mantener iCloud activado para la aplicación.")
+                                Text("• Mantener activo el Llavero de iCloud y no haberlo restablecido.")
+                                Text("• Esperar a que la sincronización termine antes de eliminar la app o reinstalar el sistema.")
+                                Text("• Reinstalar la misma aplicación con acceso al mismo contenedor de CloudKit.")
+                                Text("Si se eliminan los datos de iCloud o se pierde el Llavero de iCloud, los anexos cifrados no podrán recuperarse.")
+                                    .foregroundStyle(.red)
+                            }
+                            .font(.caption)
+                            .padding(.top, 6)
+                        }
                     }
                     
                     //Recordatorios(Premium):

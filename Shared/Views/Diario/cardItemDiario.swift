@@ -9,6 +9,11 @@
 import SwiftUI
 import CoreData
 import MapKit
+import PhotosUI
+import UniformTypeIdentifiers
+#if os(iOS)
+import UIKit
+#endif
 
 struct cardItemDiario: View{
     @Environment(\.colorScheme) var theme
@@ -45,12 +50,24 @@ struct cardItemDiario: View{
     @State private var isFooterExpanded = false
     //Animation
     @State private var animValue = 0
+    @AppStorage(AppCons.UD_setting_DiarioAttachmentImageQuality)
+    private var attachmentImageQuality = 0.82
+    @State private var showAttachmentFileImporter = false
+    @State private var showAttachmentPhotosPicker = false
+    @State private var selectedAttachmentPhotos: [PhotosPickerItem] = []
+#if os(iOS)
+    @State private var showAttachmentCamera = false
+#endif
+    @State private var isImportingAttachment = false
+    @State private var showAttachmentImportAlert = false
+    @State private var attachmentImportMessage = ""
     
 
     var body: some View{
         VStack(spacing: 20){
             diaryHeader
             diaryEntryContent
+            DiaryAttachmentsSection(diario: diario)
             if isFooterExpanded {
                 diaryFooter
             }
@@ -112,7 +129,35 @@ struct cardItemDiario: View{
         .sheet(isPresented: $showSheet){
             diaryEntryEditor
         }
+        .fileImporter(
+            isPresented: $showAttachmentFileImporter,
+            allowedContentTypes: [.item],
+            allowsMultipleSelection: true
+        ) { result in
+            Task { await importAttachmentFiles(result) }
+        }
+        .photosPicker(
+            isPresented: $showAttachmentPhotosPicker,
+            selection: $selectedAttachmentPhotos,
+            maxSelectionCount: 10,
+            matching: .images
+        )
+        .onChange(of: selectedAttachmentPhotos) { _, items in
+            guard !items.isEmpty else { return }
+            Task { await importAttachmentPhotos(items) }
+        }
+        .alert("Anexos", isPresented: $showAttachmentImportAlert) {
+            Button("Aceptar", role: .cancel) {}
+        } message: {
+            Text(attachmentImportMessage)
+        }
 #if os(iOS)
+        .fullScreenCover(isPresented: $showAttachmentCamera) {
+            CameraPhotoCapture { image in
+                Task { await importCameraAttachment(image) }
+            }
+            .ignoresSafeArea()
+        }
         .sheet(item: $agendaDraftToExport) { draft in
             AgendaEditorView(baseItem: draft, forceDarkTheme: true) { items in
                 AgendaInterchangeService.saveAgendaItems(items)
@@ -244,6 +289,8 @@ struct cardItemDiario: View{
 
             chapterAssignmentMenu
 
+            attachmentImportMenu
+
             Button(role: .destructive) {
                 showAlertDeleteEntry = true
             } label: {
@@ -268,6 +315,38 @@ struct cardItemDiario: View{
         }
         .buttonStyle(.plain)
         .disabled(isSelectionMode)
+    }
+
+    private var attachmentImportMenu: some View {
+        Menu {
+            Button {
+                showAttachmentFileImporter = true
+            } label: {
+                Label("Archivo", systemImage: "folder.badge.plus")
+            }
+
+            Button {
+                showAttachmentPhotosPicker = true
+            } label: {
+                Label("Fotos", systemImage: "photo.badge.plus")
+            }
+
+#if os(iOS)
+            if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                Button {
+                    showAttachmentCamera = true
+                } label: {
+                    Label("Cámara", systemImage: "camera")
+                }
+            }
+#endif
+        } label: {
+            Label(
+                isImportingAttachment ? "Importando anexo…" : "Añadir anexo",
+                systemImage: isImportingAttachment ? "hourglass" : "paperclip.badge.ellipsis"
+            )
+        }
+        .disabled(isImportingAttachment)
     }
 
     private var chapterAssignmentMenu: some View {
@@ -514,5 +593,82 @@ struct cardItemDiario: View{
         diarioModel.UpdateCapitulo(capitulo: chapter, ids: [id])
         diario.setValue(chapter.trimmingCharacters(in: .whitespacesAndNewlines), forKey: "capitulo")
         onEntryUpdated(diario.fecha)
+    }
+
+    private func importAttachmentFiles(_ result: Result<[URL], Error>) async {
+        do {
+            isImportingAttachment = true
+            defer { isImportingAttachment = false }
+            let urls = try result.get()
+            for url in urls {
+                try await DiaryAttachmentStore.shared.importFile(
+                    from: url,
+                    into: diario,
+                    imageQuality: attachmentImageQuality
+                )
+            }
+            presentAttachmentImportSuccess(count: urls.count)
+        } catch {
+            presentAttachmentImportError(error)
+        }
+    }
+
+    private func importAttachmentPhotos(_ items: [PhotosPickerItem]) async {
+        isImportingAttachment = true
+        defer {
+            isImportingAttachment = false
+            selectedAttachmentPhotos = []
+        }
+
+        do {
+            for item in items {
+                guard let data = try await item.loadTransferable(type: Data.self) else {
+                    throw DiaryAttachmentError.invalidFile
+                }
+                let type = item.supportedContentTypes.first(where: { $0.conforms(to: .image) }) ?? .image
+                try await DiaryAttachmentStore.shared.importPhoto(
+                    data: data,
+                    contentType: type,
+                    into: diario,
+                    imageQuality: attachmentImageQuality
+                )
+            }
+            presentAttachmentImportSuccess(count: items.count)
+        } catch {
+            presentAttachmentImportError(error)
+        }
+    }
+
+#if os(iOS)
+    private func importCameraAttachment(_ image: UIImage) async {
+        do {
+            isImportingAttachment = true
+            defer { isImportingAttachment = false }
+            guard let data = image.jpegData(compressionQuality: 1) else {
+                throw DiaryAttachmentError.invalidFile
+            }
+            try await DiaryAttachmentStore.shared.importPhoto(
+                data: data,
+                contentType: .jpeg,
+                into: diario,
+                imageQuality: attachmentImageQuality
+            )
+            presentAttachmentImportSuccess(count: 1)
+        } catch {
+            presentAttachmentImportError(error)
+        }
+    }
+#endif
+
+    private func presentAttachmentImportSuccess(count: Int) {
+        attachmentImportMessage = count == 1
+            ? "Anexo guardado correctamente."
+            : "\(count) anexos guardados correctamente."
+        showAttachmentImportAlert = true
+    }
+
+    private func presentAttachmentImportError(_ error: Error) {
+        attachmentImportMessage = error.localizedDescription
+        showAttachmentImportAlert = true
     }
 }
