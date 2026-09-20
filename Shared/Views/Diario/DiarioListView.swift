@@ -33,7 +33,7 @@ struct DiarioListView: View {
     //Para filtros en fechas
     enum TypeOfSearch{case fix, interval}
 
-    private enum DiarioListMode {
+    private enum DiarioListMode: String {
         case all
         case groupedByChapter
     }
@@ -100,7 +100,7 @@ struct DiarioListView: View {
     @State private var isBatchSelectionMode = false
     @State private var batchSelectedDiarioIDs: Set<UUID> = []
     @State private var showBatchDeleteConfirmation = false
-    @State private var selectedListMode: DiarioListMode = .all
+    @AppStorage("diaryListMode") private var selectedListMode: DiarioListMode = .all
     @State private var collapsedChapterNames: Set<String> = []
     @State private var showBatchChapterAlert = false
     @State private var batchChapterDraft = ""
@@ -618,6 +618,9 @@ struct DiarioListView: View {
         .onAppear {
             selectedCalendarDate = nil
             modelDiario.getAllItem()
+            if selectedListMode == .groupedByChapter {
+                collapsedChapterNames = Set(groupedDiarioByChapter.map(\.chapter))
+            }
         }
         .onChange(of: modelDiario.list.map { $0.id }) { _, ids in
             if let selectedCalendarDate {
@@ -1706,6 +1709,12 @@ private struct DiarioChapterSectionView<RowContent: View>: View {
                 }
                 .buttonStyle(.plain)
 
+                Spacer()
+
+                Text("\(entries.count)")
+                    .font(.caption)
+                    .foregroundStyle(.black.opacity(0.7))
+
                 Menu {
                     Text("- Capítulo -")
                     Button {
@@ -1743,11 +1752,6 @@ private struct DiarioChapterSectionView<RowContent: View>: View {
                 }
                 .buttonStyle(.plain)
                 .disabled(isSelectionMode)
-
-                Spacer()
-                Text("\(entries.count)")
-                    .font(.caption)
-                    .foregroundStyle(.black.opacity(0.7))
             }
             .padding(.horizontal, 16)
             .padding(.top, 8)
