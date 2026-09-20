@@ -940,6 +940,14 @@ struct Ajustes: View {
                                                 Spacer()
                                                 Text("\(UtilFuncs.FileReadToArray("cuestionario").count)")
                                             }
+
+                                            Divider()
+                                                .padding(.vertical, 4)
+
+                                            Text("Uso de almacenamiento")
+                                                .font(.headline)
+                                                .foregroundStyle(.orange)
+                                            AppStorageUsageView()
                                         }
                                         
                                         
@@ -1885,6 +1893,10 @@ struct Ajustes: View {
                                     Spacer()
                                     Text("\(UtilFuncs.FileReadToArray("cuestionario").count)")
                                 }.onTapGesture {self.showSheet = 7}
+
+                                Section("Uso de almacenamiento") {
+                                    AppStorageUsageView()
+                                }
                                 
                             }
                             .navigationTitle("Información")

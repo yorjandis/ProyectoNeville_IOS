@@ -538,6 +538,26 @@ final class DiarioModel : ObservableObject{
             return []
         }
     }
+
+    // Filtra consultando los anexos persistidos para no depender de que la
+    // relación de cada entrada ya esté cargada en memoria.
+    func filterByAttachments() -> [Diario] {
+        let fetchRequest = NSFetchRequest<DiarioAttachment>(entityName: "DiarioAttachment")
+        fetchRequest.relationshipKeyPathsForPrefetching = ["diario"]
+
+        do {
+            let attachments = try context.fetch(fetchRequest)
+            let uniqueEntries = Dictionary(
+                attachments.compactMap(\.diario).map { ($0.objectID, $0) },
+                uniquingKeysWith: { first, _ in first }
+            )
+            let entries = Array(uniqueEntries.values)
+            return (entries as NSArray)
+                .sortedArray(using: defaultSortDescriptors(ascending: true)) as? [Diario] ?? entries
+        } catch {
+            return []
+        }
+    }
     
     //Buscar por fecha de creación
     func searchPorFecha(for date: Date, typeFecha : TypeFecha = .FechaCreacion ) -> [Diario] {

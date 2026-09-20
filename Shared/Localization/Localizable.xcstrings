@@ -2784,6 +2784,9 @@
         }
       }
     },
+    "(category.recordCount) registros" : {
+
+    },
     "[%lld]" : {
       "shouldTranslate" : false
     },
@@ -5970,6 +5973,9 @@
         }
       }
     },
+    "Actualizado (report.measuredAt, format: .dateTime.hour().minute())" : {
+
+    },
     "Actualizado %@" : {
       "localizations" : {
         "en" : {
@@ -6173,6 +6179,9 @@
           }
         }
       }
+    },
+    "Actualizar medición" : {
+
     },
     "Actualizar Metas" : {
       "localizations" : {
@@ -8420,13 +8429,19 @@
         }
       }
     },
+    "Analizar copia" : {
+
+    },
     "Anexos" : {
 
     },
-    "Anexos (%lld) · Toca para abrir" : {
+    "Anexos (%lld)" : {
 
     },
     "Anexos del Diario" : {
+
+    },
+    "Anexos ya existentes" : {
 
     },
     "Anillo de Emoción" : {
@@ -8945,6 +8960,9 @@
           }
         }
       }
+    },
+    "Aplicar a todos" : {
+
     },
     "Aplicar Color" : {
       "localizations" : {
@@ -17551,6 +17569,9 @@
     "Confirmar movimiento" : {
 
     },
+    "Confirmar restauración" : {
+
+    },
     "Confirme que desea Eliminar la Frase" : {
       "localizations" : {
         "en" : {
@@ -18510,6 +18531,9 @@
         }
       }
     },
+    "Contraseña de la copia" : {
+
+    },
     "Contraseña del archivo" : {
       "localizations" : {
         "en" : {
@@ -18768,6 +18792,12 @@
           }
         }
       }
+    },
+    "Copia completa (.sqlite)" : {
+
+    },
+    "Copia completa del Diario" : {
+
     },
     "Copiar Nota..." : {
       "localizations" : {
@@ -19054,6 +19084,9 @@
         }
       }
     },
+    "Creando copia cifrada…" : {
+
+    },
     "Creando Resumen" : {
       "localizations" : {
         "en" : {
@@ -19107,6 +19140,9 @@
           }
         }
       }
+    },
+    "Crear archivo SQLite" : {
+
     },
     "Crear Contexto" : {
       "localizations" : {
@@ -24174,6 +24210,9 @@
         }
       }
     },
+    "El uso local de Core Data es una medición del archivo de base de datos y sus archivos auxiliares. El valor de iCloud es una estimación del contenido local sincronizable; Apple no permite consultar el consumo remoto exacto del contenedor privado." : {
+
+    },
     "Elegir categoría" : {
       "localizations" : {
         "en" : {
@@ -26411,6 +26450,9 @@
           }
         }
       }
+    },
+    "Entradas ya existentes" : {
+
     },
     "Entrega la duda y conserva la certeza" : {
       "localizations" : {
@@ -39420,6 +39462,9 @@
         }
       }
     },
+    "La contraseña no se guarda ni puede recuperarse. Será necesaria para restaurar esta copia." : {
+
+    },
     "La contraseña se almacena cifrada en el llavero del sistema. Se le pedirá siempre que acceda al diario y para bloquear/desbloquear las notas" : {
       "localizations" : {
         "en" : {
@@ -39458,6 +39503,9 @@
           }
         }
       }
+    },
+    "La copia queda protegida con tu contraseña. Nadie podrá leer las entradas ni los anexos sin ella." : {
+
     },
     "La cuenta o la clave no tiene crédito disponible para completar la petición. Revisa sus límites en OpenRouter; la app nunca cambiará a un modelo de pago." : {
       "localizations" : {
@@ -44629,6 +44677,9 @@
         }
       }
     },
+    "Midiendo almacenamiento…" : {
+
+    },
     "miedo al conflicto y posible desaprobación" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -45326,6 +45377,9 @@
         }
       }
     },
+    "Mostrar anexos" : {
+
+    },
     "Mostrar Autor en Frases del Home" : {
       "localizations" : {
         "en" : {
@@ -45458,6 +45512,9 @@
           }
         }
       }
+    },
+    "Mostrar con anexos" : {
+
     },
     "Mostrar detalles" : {
       "localizations" : {
@@ -50539,6 +50596,9 @@
         }
       }
     },
+    "Ocultar anexos" : {
+
+    },
     "Ocultar búsqueda" : {
       "localizations" : {
         "en" : {
@@ -51214,6 +51274,9 @@
           }
         }
       }
+    },
+    "Operación" : {
+
     },
     "Orden de pantallas" : {
       "localizations" : {
@@ -54766,6 +54829,9 @@
           }
         }
       }
+    },
+    "Procesando copia…" : {
+
     },
     "Procrastinación por incomodidad" : {
       "extractionState" : "manual",
@@ -59373,6 +59439,9 @@
         }
       }
     },
+    "Restaurar ahora" : {
+
+    },
     "Restaurar colores" : {
       "localizations" : {
         "en" : {
@@ -59421,6 +59490,9 @@
         }
       }
     },
+    "Restaurar elementos nuevos" : {
+
+    },
     "Restaurar frases predeterminadas" : {
       "localizations" : {
         "en" : {
@@ -59458,6 +59530,9 @@
           }
         }
       }
+    },
+    "Restaurar y reemplazar" : {
+
     },
     "Resultados" : {
       "localizations" : {
@@ -66453,6 +66528,9 @@
         }
       }
     },
+    "Todas las entradas del Diario" : {
+
+    },
     "Todas las Frases" : {
       "localizations" : {
         "en" : {
@@ -66628,6 +66706,9 @@
           }
         }
       }
+    },
+    "Todos sus anexos y metadatos" : {
+
     },
     "Tolerancia a la emoción" : {
       "extractionState" : "manual",
@@ -69382,6 +69463,9 @@
           }
         }
       }
+    },
+    "Uso de almacenamiento" : {
+
     },
     "Usuario" : {
       "localizations" : {

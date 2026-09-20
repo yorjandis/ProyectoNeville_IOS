@@ -46,8 +46,10 @@ struct cardItemDiario: View{
     @State private var showSheet = false
     //favorito
     @State private var isfav : Bool = false
-    // El pie de la tarjeta comienza contraído para priorizar el contenido de la entrada.
+    // Las secciones inferiores comienzan contraídas para priorizar el contenido de la entrada.
     @State private var isFooterExpanded = false
+    @State private var areAttachmentsExpanded = false
+    @State private var hasAttachments = false
     //Animation
     @State private var animValue = 0
     @AppStorage(AppCons.UD_setting_DiarioAttachmentImageQuality)
@@ -64,25 +66,31 @@ struct cardItemDiario: View{
     
 
     var body: some View{
-        VStack(spacing: 20){
+        VStack(spacing: 12) {
             diaryHeader
             diaryEntryContent
-            DiaryAttachmentsSection(diario: diario)
+            if areAttachmentsExpanded {
+                DiaryAttachmentsSection(diario: diario)
+            }
             if isFooterExpanded {
                 diaryFooter
-            } else {
-                HStack {
-                    Spacer()
-                    footerVisibilityButton()
-                }
-                .frame(height: 48)
             }
+            cardExpansionControls
         }
         .contentShape(Rectangle())
         .onTapGesture {
             if isSelectionMode {
                 onSelectionToggle()
             }
+        }
+        .onAppear {
+            reloadAttachmentAvailability()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave)) { _ in
+            reloadAttachmentAvailability()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .NSPersistentStoreRemoteChange)) { _ in
+            reloadAttachmentAvailability()
         }
 
         .alert("Modificar Título", isPresented: $showAlert){
@@ -226,10 +234,36 @@ struct cardItemDiario: View{
                 Spacer()
                 favoriteButton
                 entryActionsMenu
-                footerVisibilityButton()
-                    .padding(.leading, 6)
             }
         }
+    }
+
+    private var cardExpansionControls: some View {
+        HStack(spacing: 8) {
+            Spacer()
+            if hasAttachments {
+                attachmentsVisibilityButton
+            }
+            footerVisibilityButton()
+        }
+    }
+
+    private var attachmentsVisibilityButton: some View {
+        Button {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                areAttachmentsExpanded.toggle()
+            }
+        } label: {
+            Image(systemName: areAttachmentsExpanded ? "paperclip.circle.fill" : "paperclip.circle")
+                .font(.system(size: 18))
+                .foregroundStyle(.black.opacity(0.55))
+                .frame(width: 32, height: 32)
+        }
+        .buttonStyle(.plain)
+        .contentShape(Rectangle())
+        .disabled(isSelectionMode)
+        .accessibilityLabel(areAttachmentsExpanded ? "Ocultar anexos" : "Mostrar anexos")
+        .help(areAttachmentsExpanded ? "Ocultar anexos" : "Mostrar anexos")
     }
 
     private var diaryMetadata: some View {
@@ -558,14 +592,20 @@ struct cardItemDiario: View{
             Image(systemName: isFooterExpanded ? "chevron.up.circle" : "chevron.down.circle")
                 .font(.system(size: 18))
                 .foregroundStyle(.black.opacity(0.45))
-                .frame(width: 28, height: 28)
+                .frame(width: 32, height: 32)
         }
         .buttonStyle(.plain)
-        .frame(width: 48, height: 48)
         .contentShape(Rectangle())
         .disabled(isSelectionMode)
         .accessibilityLabel(isFooterExpanded ? "Ocultar detalles de la entrada" : "Mostrar detalles de la entrada")
         .help(isFooterExpanded ? "Ocultar detalles" : "Mostrar detalles")
+    }
+
+    private func reloadAttachmentAvailability() {
+        hasAttachments = !((try? DiaryAttachmentStore.shared.attachments(for: diario)) ?? []).isEmpty
+        if !hasAttachments {
+            areAttachmentsExpanded = false
+        }
     }
 
     private var entryActionsMenuLabel: some View {

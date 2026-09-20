@@ -115,6 +115,7 @@ struct DiarioListView: View {
     @State private var migrationDocument: MigrationDataDocument?
     @State private var migrationExportFileName = "neville-diario.ypgexp"
     @State private var migrationExportCount = 0
+    @State private var showDiarySQLiteBackup = false
     @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
     @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) private var yorjPremium: Bool = false
     @AppStorage("ritual_private_reflections_protected") private var privateRitualReflections = false
@@ -336,6 +337,15 @@ struct DiarioListView: View {
         content = AnyView(
             content.sheet(isPresented: $showDiarioStats) {
                 DiarioStatsView()
+            }
+        )
+
+        content = AnyView(
+            content.sheet(isPresented: $showDiarySQLiteBackup) {
+                DiarySQLiteBackupView {
+                    modelDiario.getAllItem()
+                    calendarRefreshTrigger += 1
+                }
             }
         )
 
@@ -631,6 +641,14 @@ struct DiarioListView: View {
 
             Menu {
                 Button {
+                    showDiarySQLiteBackup = true
+                } label: {
+                    Label("Copia completa (.sqlite)", systemImage: "externaldrive.badge.timemachine")
+                }
+
+                Divider()
+
+                Button {
                     showDiarioStats = true
                 } label: {
                     Label("Estadísticas", systemImage: "chart.xyaxis.line")
@@ -671,6 +689,13 @@ struct DiarioListView: View {
                 } label: {
                     Label("Mostrar favoritas", systemImage: "star")
                 }
+
+                Button {
+                    showEntriesWithAttachments()
+                } label: {
+                    Label("Mostrar con anexos", systemImage: "paperclip")
+                }
+                .disabled(!canApplyGlobalEntryFilters)
 
                 emotionFilterMenu
                     .disabled(!canApplyGlobalEntryFilters)
@@ -769,6 +794,15 @@ struct DiarioListView: View {
         selectedCalendarDate = nil
         isCalendarEntryScopeActive = showCalendar
         modelDiario.list = modelDiario.filterByFav()
+    }
+
+    private func showEntriesWithAttachments() {
+        withAnimation {
+            selectedListMode = .all
+            selectedCalendarDate = nil
+            isCalendarEntryScopeActive = false
+            modelDiario.list = modelDiario.filterByAttachments()
+        }
     }
 
     private var dateFilterTitle: String {
