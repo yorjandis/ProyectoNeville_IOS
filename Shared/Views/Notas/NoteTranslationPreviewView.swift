@@ -260,7 +260,7 @@ struct NoteTranslationPreviewView: View {
                         .minimumScaleFactor(0.7)
                         .frame(maxWidth: .infinity)
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.bordered)
                 .tint(Color(red: 0.42, green: 0.68, blue: 0.90))
             }
         }

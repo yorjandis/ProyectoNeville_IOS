@@ -239,7 +239,20 @@ struct NotaCreationDraft: Sendable {
     }
 }
 
+private enum NotaKindMarkers {
+    static let voiceNote = "\u{200B}[[VOICE-NOTE]]"
+}
+
 extension Notas {
+    var isVoiceNote: Bool {
+        (nota ?? "").hasPrefix(NotaKindMarkers.voiceNote)
+    }
+
+    var voiceNoteAssociatedText: String {
+        guard isVoiceNote else { return nota ?? "" }
+        return String((nota ?? "").dropFirst(NotaKindMarkers.voiceNote.count))
+    }
+
     var isChecklistNote: Bool {
         get {
             value(forKey: "isChecklist") as? Bool ?? false
@@ -284,6 +297,10 @@ extension Notas {
     }
 
     var noteDisplayText: String {
+        if isVoiceNote {
+            return voiceNoteAssociatedText
+        }
+
         if isChecklistNote {
             let renderedItems = structuredChecklistItems
                 .filter { !$0.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
@@ -460,6 +477,62 @@ final class NotasModel : ObservableObject  {
         return true
     }
 
+    #if os(iOS)
+    func convertPlainTextNoteToVoice(
+        noteID: String,
+        title: String,
+        text: String,
+        category: String,
+        isFavorite: Bool
+    ) -> Bool {
+        let row = getEntityRow(value: noteID)
+        row.title = title
+        row.nota = NotaKindMarkers.voiceNote + text
+        row.isfav = isFavorite
+        row.isChecklistNote = false
+        row.checklistItems = []
+        row.setValue(category.trimmingCharacters(in: .whitespacesAndNewlines), forKey: "categoria")
+        row.setValue("", forKey: "direccionMapa")
+        row.setValue(Date(), forKey: "fechaModificacion")
+
+        do {
+            try context.save()
+            return true
+        } catch {
+            context.rollback()
+            return false
+        }
+    }
+
+    func addVoiceNote(
+        id: String,
+        title: String,
+        note: String,
+        category: String = ""
+    ) -> Bool {
+        let entity = Notas(context: context)
+        let now = Date()
+        entity.id = id
+        entity.title = title
+        entity.nota = NotaKindMarkers.voiceNote + note
+        entity.isfav = false
+        entity.isChecklistNote = false
+        entity.checklistItems = []
+        entity.setValue(category.trimmingCharacters(in: .whitespacesAndNewlines), forKey: "categoria")
+        entity.setValue("", forKey: "direccionMapa")
+        entity.setValue(now, forKey: "fechaCreacion")
+        entity.setValue(now, forKey: "fechaModificacion")
+
+        do {
+            try context.save()
+            return true
+        } catch {
+            context.rollback()
+            return false
+        }
+    }
+    #endif
+
     /// Añade varias notas en una sola transacción. Si alguna escritura falla,
     /// no se conserva ninguna nota parcial.
     func addNotes(_ drafts: [NotaCreationDraft]) -> Bool {
@@ -500,6 +573,11 @@ final class NotasModel : ObservableObject  {
     /// - Parameter nota : El objeto Nota a eliminar
     func deleteNota(nota : Notas){
         let noteID = (nota.id ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+        #if os(iOS)
+        if nota.isVoiceNote, !noteID.isEmpty {
+            VoiceNoteAudioStore.removeFiles(for: noteID)
+        }
+        #endif
         context.delete(nota)
         do {
             try context.save()
@@ -522,13 +600,14 @@ final class NotasModel : ObservableObject  {
     ///  - Parameter newNota : Nuevo texto de la nota
     ///  - Parameter isfav : Estado del campo favorito, por defecto false
     ///  - Returns : true si éxito, false otherwise
-    func updateNota(NotaID : String, newTitle : String, newNota : String, isfav : Bool? = nil, direccionMapa: String = "", categoria: String = "", isChecklist: Bool? = nil, checklistItems: [NotaChecklistItem]? = nil )->Bool{
+    func updateNota(NotaID : String, newTitle : String, newNota : String, isfav : Bool? = nil, direccionMapa: String = "", categoria: String = "", isChecklist: Bool? = nil, checklistItems: [NotaChecklistItem]? = nil, preserveVoiceType: Bool = true )->Bool{
         let row = getEntityRow(value: NotaID)
+        let shouldRemainVoiceNote = row.isVoiceNote && preserveVoiceType && isChecklist != true
         if row.value(forKey: "fechaCreacion") as? Date == nil {
             row.setValue(Date(), forKey: "fechaCreacion")
         }
         row.title = newTitle
-        row.nota = newNota
+        row.nota = shouldRemainVoiceNote ? NotaKindMarkers.voiceNote + newNota : newNota
         if let isfav {
             row.isfav = isfav
         }

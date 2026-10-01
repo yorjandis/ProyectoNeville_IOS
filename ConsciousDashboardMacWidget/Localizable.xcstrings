@@ -1,0 +1,53 @@
+{
+  "sourceLanguage" : "es",
+  "strings" : {
+    "%@ %@ %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@ %3$@"
+          }
+        }
+      }
+    },
+    "%@, %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@, %2$@"
+          }
+        }
+      }
+    },
+    "%lld" : {
+
+    },
+    "Actualizado %@" : {
+
+    },
+    "AHORA" : {
+
+    },
+    "Metas, presencia, Agenda, Diario, rituales y coherencia en un único estado vivo." : {
+
+    },
+    "Panel consciente" : {
+
+    },
+    "PRO" : {
+
+    },
+    "pulso" : {
+
+    },
+    "Requiere Premium" : {
+
+    },
+    "TU ESTADO · AHORA" : {
+
+    }
+  },
+  "version" : "1.3"
+}

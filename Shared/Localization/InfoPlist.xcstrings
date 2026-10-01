@@ -190,6 +190,18 @@
         }
       }
     },
+    "NSMicrophoneUsageDescription" : {
+      "comment" : "Privacy - Microphone Usage Description",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Neville usa el micrófono para grabar tus notas de voz."
+          }
+        }
+      }
+    },
     "NSPhotoLibraryAddUsageDescription" : {
       "comment" : "Privacy - Photo Library Additions Usage Description",
       "localizations" : {
@@ -267,6 +279,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Siri 可在 La Ley 中根据你的请求创建日记、笔记和语录。"
+          }
+        }
+      }
+    },
+    "NSSpeechRecognitionUsageDescription" : {
+      "comment" : "Privacy - Speech Recognition Usage Description",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Neville usa el reconocimiento de voz del dispositivo para transcribir tus notas de voz."
           }
         }
       }

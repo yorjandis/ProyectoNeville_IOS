@@ -1,0 +1,113 @@
+{
+  "sourceLanguage" : "es",
+  "strings" : {
+    "en ${applicationName} abre conferencia" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "es" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "en ${applicationName} abre conferencia"
+            ]
+          }
+        }
+      }
+    },
+    "en ${applicationName} abre diario" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "es" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "en ${applicationName} abre diario",
+              "en ${applicationName} abre mi diario"
+            ]
+          }
+        }
+      }
+    },
+    "en ${applicationName} abre mis notas" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "es" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "en ${applicationName} abre mis notas"
+            ]
+          }
+        }
+      }
+    },
+    "en ${applicationName} crea una actividad en agenda" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "es" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "en ${applicationName} crea una actividad en agenda",
+              "en ${applicationName} crea entrada en agenda"
+            ]
+          }
+        }
+      }
+    },
+    "en ${applicationName} crea una entrada" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "es" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "en ${applicationName} crea una entrada"
+            ]
+          }
+        }
+      }
+    },
+    "en ${applicationName} crea una frase" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "es" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "en ${applicationName} crea una frase"
+            ]
+          }
+        }
+      }
+    },
+    "en ${applicationName} crea una frase para calma" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "es" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "en ${applicationName} crea una frase para calma",
+              "en ${applicationName} crea una frase personal para calma"
+            ]
+          }
+        }
+      }
+    },
+    "en ${applicationName} crea una nota" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "es" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "en ${applicationName} crea una nota"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.3"
+}

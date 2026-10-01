@@ -45,6 +45,9 @@ struct ListNotasViews: View {
     @StateObject private var modelNotas = NotasModel()
     
     @State private var showAddNoteView = false
+#if os(iOS)
+    @State private var showAddVoiceNoteView = false
+#endif
     //@State private var list : [Notas]  = []
     //Buscar en notas
     @State var showAlertSearch = false
@@ -256,6 +259,14 @@ struct ListNotasViews: View {
                         .presentationDragIndicator(.visible)
                     
                 }
+#if os(iOS)
+                .sheet(isPresented: $showAddVoiceNoteView) {
+                    AddVoiceNoteView()
+                        .environmentObject(modelNotas)
+                        .presentationDetents([.medium, .large])
+                        .presentationDragIndicator(.visible)
+                }
+#endif
                 .alert("Buscar en Notas", isPresented: $showAlertSearch){
                     TextField("", text: $textField, axis: .vertical)
                     Button("Buscar"){
@@ -627,21 +638,39 @@ struct ListNotasViews: View {
 
     @ViewBuilder
     private var addNotaButton: some View {
-        Button {
-            guard !selectionMode else { return }
-            #if os(macOS)
-            showWindow(for: AddNotasView(),
-                       environmentObjects: [self.modelNotas],
-                       title: "Crear Nota",
-                       size: AppCons.windows_size_content,
-                       isModal: false
-            )
-            #else
-            showAddNoteView = true
-            #endif
+#if os(iOS)
+        Menu {
+            Button {
+                guard !selectionMode else { return }
+                showAddNoteView = true
+            } label: {
+                Label("Nueva nota", systemImage: "square.and.pencil")
+            }
+
+            Button {
+                guard !selectionMode else { return }
+                showAddVoiceNoteView = true
+            } label: {
+                Label("Nueva nota de voz", systemImage: "waveform.and.mic")
+            }
         } label: {
             Image(systemName: "plus")
         }
+        .disabled(selectionMode)
+#else
+        Button {
+            guard !selectionMode else { return }
+            showWindow(
+                for: AddNotasView(),
+                environmentObjects: [modelNotas],
+                title: "Crear Nota",
+                size: AppCons.windows_size_content,
+                isModal: false
+            )
+        } label: {
+            Image(systemName: "plus")
+        }
+#endif
     }
 
     private func toggleSelectionMode() {
@@ -1452,6 +1481,10 @@ struct cardNotas: View{
     @State private var appleExportAlertMessage = ""
     @State private var showTranslationPreview = false
     @State private var showTranslationPurchase = false
+#if os(iOS)
+    @State private var showVoiceNotes = false
+    @State private var showTextToVoiceConversion = false
+#endif
     
     @AppStorage(AppCons.UD_setting_fontListaSize)  var fontSizeLista : Int = 20
     @AppStorage("purchaseStatus") private var purchaseStatus = false
@@ -1598,30 +1631,50 @@ struct cardNotas: View{
                     }
                     #else
                     
-                    NavigationLink{
-                        if self.nota?.id != nil {
-                            UpdateNotasView(
-                                NotaId: nota!.id!,
-                                title: nota!.title!,
-                                categoria: nota?.value(forKey: "categoria") as? String ?? "",
-                                nota: nota!.noteDisplayText,
-                                direccionMapa: nota?.value(forKey: "direccionMapa") as? String ?? "",
-                                isChecklist: nota?.isChecklistNote ?? false,
-                                checklistItems: nota?.structuredChecklistItems ?? []
-                            )
-                                .environmentObject(self.modelNotas)
+                    NavigationLink {
+                        if let nota, let noteID = nota.id {
+                            if nota.isVoiceNote {
+                                VoiceNotesManagementView(
+                                    noteID: noteID,
+                                    noteTitle: nota.title ?? "",
+                                    noteText: nota.voiceNoteAssociatedText,
+                                    category: nota.value(forKey: "categoria") as? String ?? "",
+                                    isFavorite: nota.isfav
+                                )
+                                .environmentObject(modelNotas)
+                            } else {
+                                UpdateNotasView(
+                                    NotaId: noteID,
+                                    title: nota.title ?? "",
+                                    categoria: nota.value(forKey: "categoria") as? String ?? "",
+                                    nota: nota.noteDisplayText,
+                                    direccionMapa: nota.value(forKey: "direccionMapa") as? String ?? "",
+                                    isChecklist: nota.isChecklistNote,
+                                    checklistItems: nota.structuredChecklistItems
+                                )
+                                .environmentObject(modelNotas)
+                            }
                         }
-                          
-                    }
-                        label:{
+                    } label: {
                         Label("Editar...", systemImage: "highlighter.badge.ellipsis")
                     }
                     
                     #endif
 
-                    if #available(iOS 18.0, macOS 15.0, *) {
+#if os(iOS)
+                    if nota?.isVoiceNote == true {
                         Button {
-                            openTranslationPreview()
+                            showVoiceNotes = true
+                        } label: {
+                            Label("Gestionar nota de voz", systemImage: "waveform.and.mic")
+                        }
+                    }
+#endif
+
+                    Menu {
+                        if #available(iOS 18.0, macOS 15.0, *) {
+                            Button {
+                                openTranslationPreview()
                         } label: {
                             Label("Traducir", systemImage: "globe")
                         }
@@ -1678,6 +1731,17 @@ struct cardNotas: View{
                             systemImage: nota?.isChecklistNote == true ? "text.alignleft" : "checklist"
                         )
                     }
+
+#if os(iOS)
+                    if nota?.isChecklistNote == false, nota?.isVoiceNote == false {
+                        Button {
+                            showTextToVoiceConversion = true
+                        } label: {
+                            Label("Convertir a nota de voz", systemImage: "waveform.and.mic")
+                        }
+                        .disabled(noteActionText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                    }
+#endif
                     
                     
                     
@@ -1694,7 +1758,12 @@ struct cardNotas: View{
                         
                         }label:{
                             Label(nota!.isfav ? "Quitar Favorito" : "Hacer Favorito", systemImage: nota!.isfav ? "heart.slash" : "heart")
+                        }
+                    } label: {
+                        Label("Organizar y transformar", systemImage: "slider.horizontal.3")
                     }
+
+                    Menu {
                     NavigationLink{
                         let isfav = nota!.isfav
                         let categoria = nota?.value(forKey: "categoria") as? String ?? ""
@@ -1830,6 +1899,9 @@ struct cardNotas: View{
                     
                     
                     ShareLink(item: "\(nota!.title ?? "")\n \(noteActionText)")
+                    } label: {
+                        Label("Exportar y compartir", systemImage: "square.and.arrow.up")
+                    }
                     
                     //Funciones de inteligencia: IA
                     if #available(iOS 26.0, macOS 26.0, *) {
@@ -1950,6 +2022,16 @@ struct cardNotas: View{
                     Spacer()
                 }
             }
+#if os(iOS)
+            if let nota, nota.isVoiceNote, let noteID = nota.id {
+                VoiceNoteCardControls(
+                    noteID: noteID,
+                    onManage: { showVoiceNotes = true }
+                )
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 6)
+            }
+#endif
             if expandNota {
                 VStack(alignment: .leading, spacing: 0) {
                     if nota?.isChecklistNote == true {
@@ -2020,6 +2102,30 @@ struct cardNotas: View{
             if #available(iOS 18.0, *), let nota {
                 translationPreview(for: nota)
                     .environmentObject(modelNotas)
+            }
+        }
+        .sheet(isPresented: $showVoiceNotes) {
+            if let nota, let noteID = nota.id {
+                VoiceNotesManagementView(
+                    noteID: noteID,
+                    noteTitle: nota.title ?? "",
+                    noteText: nota.voiceNoteAssociatedText,
+                    category: nota.value(forKey: "categoria") as? String ?? "",
+                    isFavorite: nota.isfav
+                )
+                .environmentObject(modelNotas)
+            }
+        }
+        .sheet(isPresented: $showTextToVoiceConversion) {
+            if let nota, let noteID = nota.id {
+                TextToVoiceNoteConversionView(
+                    noteID: noteID,
+                    title: nota.title ?? "",
+                    text: nota.noteDisplayText,
+                    category: nota.value(forKey: "categoria") as? String ?? "",
+                    isFavorite: nota.isfav
+                )
+                .environmentObject(modelNotas)
             }
         }
         #endif
