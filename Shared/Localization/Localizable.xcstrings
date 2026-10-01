@@ -1049,10 +1049,22 @@
     },
     "¿Mover “%@” a la entrada “%@”?" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Move “%1$@” to the entry “%2$@”?"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "¿Mover “%1$@” a la entrada “%2$@”?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "将“%1$@”移动到日记“%2$@”吗？"
           }
         }
       }
@@ -2795,7 +2807,20 @@
       }
     },
     "(category.recordCount) registros" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "(category.recordCount) records"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "(category.recordCount) 条记录"
+          }
+        }
+      }
     },
     "[%lld]" : {
       "shouldTranslate" : false
@@ -3398,19 +3423,84 @@
       "shouldTranslate" : false
     },
     "• Esperar a que la sincronización termine antes de eliminar la app o reinstalar el sistema." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "• Wait for syncing to finish before deleting the app or reinstalling the system."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "• 请等待同步完成后再删除应用或重新安装系统。"
+          }
+        }
+      }
     },
     "• Mantener activo el Llavero de iCloud y no haberlo restablecido." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "• Keep iCloud Keychain enabled and don’t reset it."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "• 保持 iCloud 钥匙串开启，且不要重置。"
+          }
+        }
+      }
     },
     "• Mantener iCloud activado para la aplicación." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "• Keep iCloud enabled for the app."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "• 保持此应用的 iCloud 功能开启。"
+          }
+        }
+      }
     },
     "• Reinstalar la misma aplicación con acceso al mismo contenedor de CloudKit." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "• Reinstall the same app with access to the same CloudKit container."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "• 重新安装同一应用，并确保其可访问同一个 CloudKit 容器。"
+          }
+        }
+      }
     },
     "• Utilizar el mismo Apple ID." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "• Use the same Apple ID."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "• 使用同一个 Apple ID。"
+          }
+        }
+      }
     },
     "< %@ >" : {
       "localizations" : {
@@ -6012,7 +6102,20 @@
       }
     },
     "Actualizado (report.measuredAt, format: .dateTime.hour().minute())" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Updated (report.measuredAt, format: .dateTime.hour().minute())"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "已更新 (report.measuredAt, format: .dateTime.hour().minute())"
+          }
+        }
+      }
     },
     "Actualizado %@" : {
       "localizations" : {
@@ -6221,7 +6324,20 @@
       }
     },
     "Actualizar medición" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Update Measurement"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "更新测量结果"
+          }
+        }
+      }
     },
     "Actualizar Metas" : {
       "localizations" : {
@@ -8277,7 +8393,20 @@
       }
     },
     "Añadir anexo" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Add Attachment"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "添加附件"
+          }
+        }
+      }
     },
     "Añadir clave de OpenRouter" : {
       "localizations" : {
@@ -8561,19 +8690,138 @@
       }
     },
     "Analizar copia" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Analyze Copy"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "分析备份"
+          }
+        }
+      }
     },
     "Anexos" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Attachments"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "附件"
+          }
+        }
+      }
     },
     "Anexos (%lld)" : {
-
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "machine_translated",
+                  "value" : "Attachment (%lld)"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "machine_translated",
+                  "value" : "Attachments (%lld)"
+                }
+              },
+              "zero" : {
+                "stringUnit" : {
+                  "state" : "machine_translated",
+                  "value" : "Attachments (%lld)"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "machine_translated",
+                  "value" : "Anexo (%lld)"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "machine_translated",
+                  "value" : "Anexos (%lld)"
+                }
+              },
+              "zero" : {
+                "stringUnit" : {
+                  "state" : "machine_translated",
+                  "value" : "Anexos (%lld)"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "machine_translated",
+                  "value" : "附件（%lld个）"
+                }
+              },
+              "zero" : {
+                "stringUnit" : {
+                  "state" : "machine_translated",
+                  "value" : "附件（%lld个）"
+                }
+              }
+            }
+          }
+        }
+      }
     },
     "Anexos del Diario" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Journal Attachments"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "日记附件"
+          }
+        }
+      }
     },
     "Anexos ya existentes" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Existing Attachments"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "已有附件"
+          }
+        }
+      }
     },
     "Anillo de Emoción" : {
       "extractionState" : "stale",
@@ -9103,7 +9351,20 @@
       }
     },
     "Aplicar a todos" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Apply to All"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "全部应用"
+          }
+        }
+      }
     },
     "Aplicar Color" : {
       "localizations" : {
@@ -9626,7 +9887,20 @@
       }
     },
     "Archivo" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "File"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "文件"
+          }
+        }
+      }
     },
     "Archivo .ypgexp" : {
       "localizations" : {
@@ -9937,7 +10211,20 @@
       }
     },
     "Audio" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Audio"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "音频"
+          }
+        }
+      }
     },
     "Aun así, este cierre convierte la experiencia de hoy en una intención más clara para mañana." : {
       "localizations" : {
@@ -12209,7 +12496,20 @@
       }
     },
     "Buscar por título o contenido" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Search by title or content"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "按标题或内容搜索"
+          }
+        }
+      }
     },
     "Buscar un texto" : {
       "localizations" : {
@@ -12618,7 +12918,20 @@
       }
     },
     "Calidad: %lld %%" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Quality: %lld %%"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "质量：%lld %%"
+          }
+        }
+      }
     },
     "Calma" : {
       "extractionState" : "stale",
@@ -12713,7 +13026,20 @@
       }
     },
     "Cámara" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Camera"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "相机"
+          }
+        }
+      }
     },
     "Cambiar a %@" : {
       "localizations" : {
@@ -16619,7 +16945,20 @@
       }
     },
     "Compresión de imágenes" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Image Compression"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "图像压缩"
+          }
+        }
+      }
     },
     "Comprobación" : {
       "localizations" : {
@@ -17395,7 +17734,20 @@
       }
     },
     "Condiciones para recuperar los anexos" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Requirements for Recovering Attachments"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "恢复附件的条件"
+          }
+        }
+      }
     },
     "Conducta alternativa" : {
       "extractionState" : "manual",
@@ -17831,10 +18183,36 @@
       }
     },
     "Confirmar movimiento" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Confirm Move"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "确认移动"
+          }
+        }
+      }
     },
     "Confirmar restauración" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Confirm Restore"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "确认恢复"
+          }
+        }
+      }
     },
     "Confirme que desea Eliminar la Frase" : {
       "localizations" : {
@@ -18803,7 +19181,20 @@
       }
     },
     "Contraseña de la copia" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Backup password"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "备份密码"
+          }
+        }
+      }
     },
     "Contraseña del archivo" : {
       "localizations" : {
@@ -19097,10 +19488,36 @@
       }
     },
     "Copia completa (.sqlite)" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Full Backup (.sqlite)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "完整备份（.sqlite）"
+          }
+        }
+      }
     },
     "Copia completa del Diario" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Full Journal Backup"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "完整日记备份"
+          }
+        }
+      }
     },
     "Copiar Nota..." : {
       "localizations" : {
@@ -19390,7 +19807,20 @@
       }
     },
     "Creando copia cifrada…" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Creating encrypted backup…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "正在创建加密备份…"
+          }
+        }
+      }
     },
     "Creando Resumen" : {
       "localizations" : {
@@ -19447,7 +19877,20 @@
       }
     },
     "Crear archivo SQLite" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Create SQLite file"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "创建 SQLite 文件"
+          }
+        }
+      }
     },
     "Crear Contexto" : {
       "localizations" : {
@@ -21288,7 +21731,20 @@
       }
     },
     "Descifrando…" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Decrypting…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "正在解密…"
+          }
+        }
+      }
     },
     "Describe el desencadenante" : {
       "extractionState" : "manual",
@@ -24735,7 +25191,20 @@
       }
     },
     "El uso local de Core Data es una medición del archivo de base de datos y sus archivos auxiliares. El valor de iCloud es una estimación del contenido local sincronizable; Apple no permite consultar el consumo remoto exacto del contenedor privado." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Local Core Data usage measures the database file and its auxiliary files. The iCloud value is an estimate of local content that can be synced; Apple does not allow apps to query the exact remote storage used by the private container."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "本地 Core Data 用量是对数据库文件及其辅助文件大小的测量。iCloud 数值是对本地可同步内容的估算；Apple 不允许查询私有容器的确切远程存储用量。"
+          }
+        }
+      }
     },
     "Elegir categoría" : {
       "localizations" : {
@@ -27012,7 +27481,20 @@
       }
     },
     "Entradas ya existentes" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Existing entries"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "已有日记"
+          }
+        }
+      }
     },
     "Entrega la duda y conserva la certeza" : {
       "extractionState" : "stale",
@@ -30019,7 +30501,20 @@
       }
     },
     "Exportar archivo" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Export file"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "导出文件"
+          }
+        }
+      }
     },
     "Exportar archivo de migración" : {
       "localizations" : {
@@ -31321,7 +31816,20 @@
       }
     },
     "Fotos" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Photos"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "照片"
+          }
+        }
+      }
     },
     "FR - Frases Relacionadas" : {
       "localizations" : {
@@ -35022,7 +35530,20 @@
       }
     },
     "Guardar en Fotos" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Save to Photos"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "保存到照片"
+          }
+        }
+      }
     },
     "Guardar en Frases" : {
       "localizations" : {
@@ -38736,7 +39257,20 @@
       }
     },
     "Importando anexo…" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Importing attachment…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "正在导入附件…"
+          }
+        }
+      }
     },
     "Importar a Frases" : {
       "localizations" : {
@@ -40484,7 +41018,20 @@
       }
     },
     "La contraseña no se guarda ni puede recuperarse. Será necesaria para restaurar esta copia." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "The password isn’t saved and can’t be recovered. You’ll need it to restore this backup."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "密码不会保存，也无法恢复。恢复此备份时需要该密码。"
+          }
+        }
+      }
     },
     "La contraseña se almacena cifrada en el llavero del sistema. Se le pedirá siempre que acceda al diario y para bloquear/desbloquear las notas" : {
       "localizations" : {
@@ -40526,7 +41073,20 @@
       }
     },
     "La copia queda protegida con tu contraseña. Nadie podrá leer las entradas ni los anexos sin ella." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "The backup is protected with your password. No one can read the entries or attachments without it."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "此备份受密码保护。没有密码，任何人都无法读取日记或附件。"
+          }
+        }
+      }
     },
     "La cuenta o la clave no tiene crédito disponible para completar la petición. Revisa sus límites en OpenRouter; la app nunca cambiará a un modelo de pago." : {
       "localizations" : {
@@ -43933,10 +44493,36 @@
       }
     },
     "Los anexos se cifrarán y guardarán junto con la entrada al pulsar Guardar." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Attachments are encrypted and saved with the entry when you choose Save."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "选择“保存”时，附件将与日记一起加密并保存。"
+          }
+        }
+      }
     },
     "Los archivos cifrados se recuperan desde CloudKit y la clave necesaria desde el Llavero de iCloud." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Encrypted files are retrieved from CloudKit, and the required key from iCloud Keychain."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "加密文件将从 CloudKit 恢复，所需密钥将从 iCloud 钥匙串获取。"
+          }
+        }
+      }
     },
     "Los datos para el cálculo de estrés se toman de la aplicación Salud, utilizando HealthKit en modo solo lectura." : {
       "localizations" : {
@@ -45294,7 +45880,20 @@
       }
     },
     "Menor" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Lower"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "较低"
+          }
+        }
+      }
     },
     "Mensaje de confirmación" : {
       "localizations" : {
@@ -45827,7 +46426,20 @@
       }
     },
     "Midiendo almacenamiento…" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Measuring storage…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "正在测量存储空间…"
+          }
+        }
+      }
     },
     "miedo al conflicto y posible desaprobación" : {
       "extractionState" : "manual",
@@ -46535,7 +47147,20 @@
       }
     },
     "Mostrar anexos" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Show attachments"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "显示附件"
+          }
+        }
+      }
     },
     "Mostrar Autor en Frases del Home" : {
       "localizations" : {
@@ -46672,7 +47297,20 @@
       }
     },
     "Mostrar con anexos" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Show entries with attachments"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "显示含附件的日记"
+          }
+        }
+      }
     },
     "Mostrar detalles" : {
       "localizations" : {
@@ -46925,10 +47563,36 @@
       }
     },
     "Mover a otra entrada" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Move to another entry"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "移动到另一篇日记"
+          }
+        }
+      }
     },
     "Mover anexo" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Move Attachment"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "移动附件"
+          }
+        }
+      }
     },
     "Mover entradas" : {
       "localizations" : {
@@ -48757,7 +49421,20 @@
       }
     },
     "No se pudo abrir el archivo" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Couldn’t Open File"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "无法打开文件"
+          }
+        }
+      }
     },
     "No se pudo abrir el selector de archivos." : {
       "extractionState" : "stale",
@@ -49507,7 +50184,20 @@
       }
     },
     "No se pudo mover el anexo" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Couldn’t Move Attachment"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "无法移动附件"
+          }
+        }
+      }
     },
     "No se pudo obtener la ubicación actual." : {
       "extractionState" : "stale",
@@ -49823,7 +50513,20 @@
       }
     },
     "Nombre del archivo" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "File name"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "文件名"
+          }
+        }
+      }
     },
     "Nombre del patrón" : {
       "extractionState" : "manual",
@@ -51991,7 +52694,20 @@
       }
     },
     "Ocultar anexos" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Hide attachments"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "收起附件"
+          }
+        }
+      }
     },
     "Ocultar búsqueda" : {
       "extractionState" : "stale",
@@ -52677,7 +53393,20 @@
       }
     },
     "Operación" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Operation"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "操作"
+          }
+        }
+      }
     },
     "Orden de pantallas" : {
       "localizations" : {
@@ -52855,7 +53584,20 @@
       }
     },
     "Original" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Original"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "原图"
+          }
+        }
+      }
     },
     "Oscuro" : {
       "extractionState" : "stale",
@@ -55361,7 +56103,20 @@
       }
     },
     "Preparando anexos…" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Preparing attachments…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "正在准备附件…"
+          }
+        }
+      }
     },
     "Preparando base SQLite offline..." : {
       "localizations" : {
@@ -56305,7 +57060,20 @@
       }
     },
     "Procesando copia…" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Processing backup…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "正在处理备份…"
+          }
+        }
+      }
     },
     "Procrastinación por incomodidad" : {
       "extractionState" : "manual",
@@ -57572,7 +58340,20 @@
       }
     },
     "Quitar %@" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Remove %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "移除%@"
+          }
+        }
+      }
     },
     "Quitar categoría" : {
       "localizations" : {
@@ -60220,10 +61001,36 @@
       }
     },
     "Renombrar" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Rename"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "重命名"
+          }
+        }
+      }
     },
     "Renombrar anexo" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Rename Attachment"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "重命名附件"
+          }
+        }
+      }
     },
     "Renombrar capítulo" : {
       "localizations" : {
@@ -61039,7 +61846,20 @@
       }
     },
     "Restaurar ahora" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Restore Now"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "立即恢复"
+          }
+        }
+      }
     },
     "Restaurar colores" : {
       "localizations" : {
@@ -61090,7 +61910,20 @@
       }
     },
     "Restaurar elementos nuevos" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Restore New Items"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "恢复新项目"
+          }
+        }
+      }
     },
     "Restaurar frases predeterminadas" : {
       "localizations" : {
@@ -61131,7 +61964,20 @@
       }
     },
     "Restaurar y reemplazar" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Restore and Replace"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "恢复并替换"
+          }
+        }
+      }
     },
     "Resultados" : {
       "localizations" : {
@@ -63154,7 +64000,20 @@
       }
     },
     "Se aplica al importar nuevas imágenes. Los archivos ya anexados no cambian." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "This applies when importing new images. Existing attachments are not changed."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "适用于新导入的图像。已添加的附件不会更改。"
+          }
+        }
+      }
     },
     "Se borrarán la configuración, las prácticas y los diarios del ciclo actual antes de completar los campos de prueba." : {
       "localizations" : {
@@ -65081,7 +65940,20 @@
       }
     },
     "Si se eliminan los datos de iCloud o se pierde el Llavero de iCloud, los anexos cifrados no podrán recuperarse." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "If iCloud data is deleted or iCloud Keychain is lost, encrypted attachments cannot be recovered."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "如果删除了 iCloud 数据或丢失了 iCloud 钥匙串，将无法恢复加密附件。"
+          }
+        }
+      }
     },
     "Si sucede x..." : {
       "localizations" : {
@@ -68153,7 +69025,50 @@
       }
     },
     "Toca dos veces para crear una entrada para hoy. Mantén pulsado para cambiar u ocultar la mascota" : {
-
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "device" : {
+              "applewatch" : {
+                "stringUnit" : {
+                  "state" : "machine_translated",
+                  "value" : "Double-tap to create an entry for today. Touch and hold to change or hide your pet."
+                }
+              },
+              "ipad" : {
+                "stringUnit" : {
+                  "state" : "machine_translated",
+                  "value" : "Double-tap to create an entry for today. Touch and hold to change or hide your pet."
+                }
+              },
+              "iphone" : {
+                "stringUnit" : {
+                  "state" : "machine_translated",
+                  "value" : "Double-tap to create an entry for today. Touch and hold to change or hide your pet."
+                }
+              },
+              "mac" : {
+                "stringUnit" : {
+                  "state" : "machine_translated",
+                  "value" : "Double-click to create an entry for today. Click and hold to change or hide your pet."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "machine_translated",
+                  "value" : "Double-tap to create an entry for today. Press and hold to change or hide your pet."
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "轻点两下可创建今日条目。按住可更换或隐藏宠物。"
+          }
+        }
+      }
     },
     "Toca el acceso para registrar tu intención." : {
       "extractionState" : "stale",
@@ -68353,7 +69268,20 @@
       }
     },
     "Todas las entradas del Diario" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "All Journal entries"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "所有日记"
+          }
+        }
+      }
     },
     "Todas las Frases" : {
       "extractionState" : "stale",
@@ -68538,7 +69466,20 @@
       }
     },
     "Todos sus anexos y metadatos" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "All attachments and metadata"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "所有附件和元数据"
+          }
+        }
+      }
     },
     "Tolerancia a la emoción" : {
       "extractionState" : "manual",
@@ -71413,7 +72354,20 @@
       }
     },
     "Uso de almacenamiento" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Storage Usage"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "存储用量"
+          }
+        }
+      }
     },
     "Usuario" : {
       "extractionState" : "stale",
@@ -72344,7 +73298,20 @@
       }
     },
     "Visualizar" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Preview"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "预览"
+          }
+        }
+      }
     },
     "Volver" : {
       "localizations" : {
