@@ -1,6 +1,7 @@
 #if os(iOS) || os(macOS)
 import SwiftUI
 @preconcurrency import Translation
+import NaturalLanguage
 
 enum NoteTranslationLanguage: String, CaseIterable, Identifiable {
     case spanish
@@ -26,6 +27,33 @@ enum NoteTranslationLanguage: String, CaseIterable, Identifiable {
     }
 }
 
+private enum NoteTranslationSourceLanguage: String, CaseIterable, Identifiable {
+    case automatic
+    case spanish
+    case english
+    case simplifiedChinese
+
+    var id: Self { self }
+
+    var displayName: LocalizedStringKey {
+        switch self {
+        case .automatic: "Detectar automáticamente"
+        case .spanish: "Español"
+        case .english: "Inglés"
+        case .simplifiedChinese: "Chino mandarín"
+        }
+    }
+
+    var localeLanguage: Locale.Language? {
+        switch self {
+        case .automatic: nil
+        case .spanish: Locale.Language(identifier: "es")
+        case .english: Locale.Language(identifier: "en")
+        case .simplifiedChinese: Locale.Language(identifier: "zh-Hans")
+        }
+    }
+}
+
 @available(iOS 18.0, macOS 15.0, *)
 struct NoteTranslationPreviewView: View {
     let noteID: String
@@ -34,6 +62,8 @@ struct NoteTranslationPreviewView: View {
     let isFavorite: Bool
     let address: String
     let category: String
+    let isChecklist: Bool
+    let originalChecklistItems: [NotaChecklistItem]
 
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var notesModel: NotasModel
@@ -41,6 +71,9 @@ struct NoteTranslationPreviewView: View {
     @State private var translatedText: String
     @State private var translationConfiguration: TranslationSession.Configuration?
     @State private var pendingTranslationText: String
+    @State private var pendingChecklistItems: [NotaChecklistItem]
+    @State private var translatedChecklistItems: [NotaChecklistItem]
+    @State private var selectedSourceLanguage: NoteTranslationSourceLanguage = .automatic
     @State private var isTranslating = false
     @State private var statusMessage = ""
     @State private var showStatus = false
@@ -51,9 +84,17 @@ struct NoteTranslationPreviewView: View {
         originalText: String,
         isFavorite: Bool,
         address: String,
-        category: String
+        category: String,
+        isChecklist: Bool,
+        checklistItems: [NotaChecklistItem]
     ) {
-        let textToTranslate = originalText.trimmingCharacters(in: .whitespacesAndNewlines)
+        let resolvedChecklistItems = isChecklist && checklistItems.isEmpty
+            ? NotaChecklistItem.fromText(originalText)
+            : checklistItems
+        let sourceText = isChecklist
+            ? NotaChecklistItem.renderConvertiblePlainText(resolvedChecklistItems)
+            : originalText
+        let textToTranslate = sourceText.trimmingCharacters(in: .whitespacesAndNewlines)
 
         self.noteID = noteID
         self.noteTitle = noteTitle
@@ -61,9 +102,13 @@ struct NoteTranslationPreviewView: View {
         self.isFavorite = isFavorite
         self.address = address
         self.category = category
-        self._translatedText = State(initialValue: originalText)
+        self.isChecklist = isChecklist
+        self.originalChecklistItems = resolvedChecklistItems
+        self._translatedText = State(initialValue: sourceText)
         self._translationConfiguration = State(initialValue: nil)
         self._pendingTranslationText = State(initialValue: textToTranslate)
+        self._pendingChecklistItems = State(initialValue: resolvedChecklistItems)
+        self._translatedChecklistItems = State(initialValue: resolvedChecklistItems)
     }
 
     var body: some View {
@@ -77,6 +122,7 @@ struct NoteTranslationPreviewView: View {
                 .ignoresSafeArea()
 
                 VStack(spacing: 12) {
+                    sourceLanguagePicker
                     translationButtons
 
                     TextEditor(text: $translatedText)
@@ -116,18 +162,72 @@ struct NoteTranslationPreviewView: View {
                 let textToTranslate = pendingTranslationText
                 isTranslating = true
                 do {
-                    translatedText = try await session.translate(textToTranslate).targetText
+                    if isChecklist {
+                        var translatedItems: [NotaChecklistItem] = []
+                        for item in pendingChecklistItems {
+                            var translatedItem = item
+                            if !item.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                                translatedItem.text = try await session.translate(item.text).targetText
+                            }
+                            translatedItems.append(translatedItem)
+                        }
+                        translatedChecklistItems = translatedItems
+                        translatedText = NotaChecklistItem.renderConvertiblePlainText(translatedItems)
+                    } else {
+                        translatedText = try await session.translate(textToTranslate).targetText
+                    }
                 } catch is CancellationError {
                     // SwiftUI cancels the session when the configuration or view changes.
                 } catch {
                     if !Task.isCancelled {
-                        presentStatus("No se pudo traducir el texto.")
+                        presentStatus(
+                            String(
+                                format: String(localized: "No se pudo traducir el texto: %@"),
+                                error.localizedDescription
+                            )
+                        )
                     }
                 }
                 isTranslating = false
             }
         }
         .frame(minWidth: 420, minHeight: 520)
+    }
+
+    private var sourceLanguagePicker: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            HStack {
+                Text("Idioma de origen")
+                    .font(.subheadline)
+
+                Spacer()
+
+                Picker("Idioma de origen", selection: $selectedSourceLanguage) {
+                    ForEach(NoteTranslationSourceLanguage.allCases) { language in
+                        Text(language.displayName).tag(language)
+                    }
+                }
+                .labelsHidden()
+                .pickerStyle(.menu)
+            }
+
+            if selectedSourceLanguage == .automatic {
+                Text("Detectado: \(detectedSourceLanguageName)")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .disabled(isTranslating)
+    }
+
+    private var detectedSourceLanguageName: String {
+        let detectionText = isChecklist
+            ? NotaChecklistItem.fromText(translatedText).map(\.text).joined(separator: "\n")
+            : translatedText
+        guard let identifier = detectedSourceLanguageIdentifier(for: detectionText) else {
+            return String(localized: "Sin detectar")
+        }
+        return Locale.current.localizedString(forLanguageCode: identifier) ?? identifier
     }
 
     private var translationButtons: some View {
@@ -157,7 +257,10 @@ struct NoteTranslationPreviewView: View {
     private var actionsFAB: some View {
         Menu {
             Button {
-                translatedText = originalText
+                translatedChecklistItems = originalChecklistItems
+                translatedText = isChecklist
+                    ? NotaChecklistItem.renderConvertiblePlainText(originalChecklistItems)
+                    : originalText
             } label: {
                 Label("Texto original", systemImage: "arrow.uturn.backward")
             }
@@ -209,28 +312,73 @@ struct NoteTranslationPreviewView: View {
         guard !text.isEmpty else { return }
 
         pendingTranslationText = text
+        if isChecklist {
+            pendingChecklistItems = checklistItems(
+                from: text,
+                preserving: translatedChecklistItems
+            )
+        }
+
+        let languageDetectionText = isChecklist
+            ? pendingChecklistItems.map(\.text).joined(separator: "\n")
+            : text
+        let sourceLanguage = selectedSourceLanguage.localeLanguage
+            ?? detectedSourceLanguage(for: languageDetectionText)
+
+        if isChecklist, sourceLanguage == nil {
+            presentStatus("No se pudo detectar el idioma de origen. Selecciónalo manualmente e inténtalo de nuevo.")
+            return
+        }
+
+        if sourceLanguage == language.localeLanguage {
+            presentStatus("El idioma de origen y el idioma de destino son el mismo.")
+            return
+        }
+
         isTranslating = true
 
-        if translationConfiguration?.target == language.localeLanguage {
+        if translationConfiguration?.source == sourceLanguage,
+           translationConfiguration?.target == language.localeLanguage {
             translationConfiguration?.invalidate()
         } else {
             translationConfiguration = TranslationSession.Configuration(
-                source: nil,
+                source: sourceLanguage,
                 target: language.localeLanguage
             )
         }
     }
 
+    private func detectedSourceLanguage(for text: String) -> Locale.Language? {
+        guard let identifier = detectedSourceLanguageIdentifier(for: text) else {
+            return nil
+        }
+        return Locale.Language(identifier: identifier)
+    }
+
+    private func detectedSourceLanguageIdentifier(for text: String) -> String? {
+        let recognizer = NLLanguageRecognizer()
+        recognizer.processString(text)
+        guard let language = recognizer.dominantLanguage,
+              language != .undetermined else {
+            return nil
+        }
+        return language.rawValue
+    }
+
     private func replaceCurrentNote() {
+        let checklistItems = translatedChecklistItemsForSaving()
+        let noteText = isChecklist
+            ? NotaChecklistItem.renderPlainText(checklistItems)
+            : translatedText
         let success = notesModel.updateNota(
             NotaID: noteID,
             newTitle: noteTitle,
-            newNota: translatedText,
+            newNota: noteText,
             isfav: isFavorite,
             direccionMapa: address,
             categoria: category,
-            isChecklist: false,
-            checklistItems: []
+            isChecklist: isChecklist,
+            checklistItems: isChecklist ? checklistItems : []
         )
         if success {
             notesModel.getAllNotasToModel()
@@ -241,10 +389,44 @@ struct NoteTranslationPreviewView: View {
     }
 
     private func exportAsNewNote() {
+        let checklistItems = translatedChecklistItemsForSaving().map {
+            NotaChecklistItem(text: $0.text, isChecked: $0.isChecked, kind: $0.kind)
+        }
+        let noteText = isChecklist
+            ? NotaChecklistItem.renderPlainText(checklistItems)
+            : translatedText
         presentExportResult(
-            notesModel.addNote(nota: translatedText, title: noteTitle),
+            notesModel.addNote(
+                nota: noteText,
+                title: noteTitle,
+                isFav: isFavorite,
+                direccionMapa: address,
+                categoria: category,
+                isChecklist: isChecklist,
+                checklistItems: isChecklist ? checklistItems : []
+            ),
             destination: "Notas"
         )
+    }
+
+    private func translatedChecklistItemsForSaving() -> [NotaChecklistItem] {
+        guard isChecklist else { return [] }
+        return checklistItems(from: translatedText, preserving: translatedChecklistItems)
+    }
+
+    private func checklistItems(
+        from text: String,
+        preserving items: [NotaChecklistItem]
+    ) -> [NotaChecklistItem] {
+        NotaChecklistItem.fromText(text).enumerated().map { index, parsedItem in
+            guard items.indices.contains(index) else { return parsedItem }
+            return NotaChecklistItem(
+                id: items[index].id,
+                text: parsedItem.text,
+                isChecked: parsedItem.isTask ? items[index].isChecked : false,
+                kind: parsedItem.kind
+            )
+        }
     }
 
     private func exportToDiary() {

@@ -59,9 +59,14 @@ struct UpdateNotasView: View {
                         Label("Checklist", systemImage: "checklist").tag(true)
                     }
                     .pickerStyle(.segmented)
-                    .onChange(of: isChecklist) { _, newValue in
-                        if newValue && checklistItems.isEmpty {
-                            checklistItems = NotaChecklistItem.fromText(nota)
+                    .onChange(of: isChecklist) { oldValue, newValue in
+                        if oldValue && !newValue {
+                            nota = NotaChecklistItem.renderConvertiblePlainText(sanitizedChecklistItems)
+                        } else if !oldValue && newValue {
+                            let parsedItems = NotaChecklistItem.fromText(nota)
+                            checklistItems = parsedItems.isEmpty
+                                ? [NotaChecklistItem(text: "")]
+                                : parsedItems
                         }
                     }
                 }
@@ -123,7 +128,7 @@ struct UpdateNotasView: View {
                     Button("Actualizar"){
                         let items = sanitizedChecklistItems
                         let noteText = isChecklist ? NotaChecklistItem.renderPlainText(items) : nota
-                        if NotasModel().updateNota(NotaID: NotaId, newTitle: title, newNota: noteText, direccionMapa: direccionMapa, categoria: categoria, isChecklist: isChecklist, checklistItems: items){
+                        if NotasModel().updateNota(NotaID: NotaId, newTitle: title, newNota: noteText, direccionMapa: direccionMapa, categoria: categoria, isChecklist: isChecklist, checklistItems: isChecklist ? items : []){
                             self.modelNotas.getAllNotasToModel()
                             
                             
@@ -165,7 +170,7 @@ struct UpdateNotasView: View {
                     Button("Actualizar"){
                         let items = sanitizedChecklistItems
                         let noteText = isChecklist ? NotaChecklistItem.renderPlainText(items) : nota
-                        if NotasModel().updateNota(NotaID: NotaId, newTitle: title, newNota: noteText, direccionMapa: direccionMapa, categoria: categoria, isChecklist: isChecklist, checklistItems: items){
+                        if NotasModel().updateNota(NotaID: NotaId, newTitle: title, newNota: noteText, direccionMapa: direccionMapa, categoria: categoria, isChecklist: isChecklist, checklistItems: isChecklist ? items : []){
                             self.modelNotas.getAllNotasToModel()
                         }else{
                             msg("Error al actualizar la nota")
@@ -204,7 +209,7 @@ struct UpdateNotasView: View {
 
     private var checklistBinding: Binding<[NotaChecklistItem]> {
         Binding {
-            checklistItems.isEmpty ? [NotaChecklistItem(text: "")] : checklistItems
+            checklistItems
         } set: { newValue in
             checklistItems = newValue
         }
@@ -216,7 +221,8 @@ struct UpdateNotasView: View {
                 NotaChecklistItem(
                     id: $0.id,
                     text: $0.text.trimmingCharacters(in: .whitespacesAndNewlines),
-                    isChecked: $0.isChecked
+                    isChecked: $0.isChecked,
+                    kind: $0.kind
                 )
             }
             .filter { !$0.text.isEmpty }

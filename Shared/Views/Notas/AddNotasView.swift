@@ -63,6 +63,16 @@ struct AddNotasView: View {
                         Label("Checklist", systemImage: "checklist").tag(true)
                     }
                     .pickerStyle(.segmented)
+                    .onChange(of: isChecklist) { oldValue, newValue in
+                        if oldValue && !newValue {
+                            nota = NotaChecklistItem.renderConvertiblePlainText(sanitizedChecklistItems)
+                        } else if !oldValue && newValue {
+                            let parsedItems = NotaChecklistItem.fromText(nota)
+                            checklistItems = parsedItems.isEmpty
+                                ? [NotaChecklistItem(text: "")]
+                                : parsedItems
+                        }
+                    }
                 }
                 Section(isChecklist ? "Checklist" : "Nota"){
                     if isChecklist {
@@ -132,7 +142,7 @@ struct AddNotasView: View {
                     Button("Guardar"){
                         let items = sanitizedChecklistItems
                         let noteText = isChecklist ? NotaChecklistItem.renderPlainText(items) : nota
-                        if NotasModel().addNote(nota: noteText, title: title, isFav: false, direccionMapa: direccionMapa, categoria: categoria, isChecklist: isChecklist, checklistItems: items) {
+                        if NotasModel().addNote(nota: noteText, title: title, isFav: false, direccionMapa: direccionMapa, categoria: categoria, isChecklist: isChecklist, checklistItems: isChecklist ? items : []) {
                             
                             self.modelNotas.getAllNotasToModel() //Actualizando el listado
                             
@@ -177,7 +187,7 @@ struct AddNotasView: View {
                     Button("Guardar"){
                         let items = sanitizedChecklistItems
                         let noteText = isChecklist ? NotaChecklistItem.renderPlainText(items) : nota
-                        if NotasModel().addNote(nota: noteText, title: title, isFav: false, direccionMapa: direccionMapa, categoria: categoria, isChecklist: isChecklist, checklistItems: items) {
+                        if NotasModel().addNote(nota: noteText, title: title, isFav: false, direccionMapa: direccionMapa, categoria: categoria, isChecklist: isChecklist, checklistItems: isChecklist ? items : []) {
                             
                             self.modelNotas.getAllNotasToModel()
                             
@@ -228,7 +238,8 @@ struct AddNotasView: View {
                 NotaChecklistItem(
                     id: $0.id,
                     text: $0.text.trimmingCharacters(in: .whitespacesAndNewlines),
-                    isChecked: $0.isChecked
+                    isChecked: $0.isChecked,
+                    kind: $0.kind
                 )
             }
             .filter { !$0.text.isEmpty }
@@ -241,17 +252,27 @@ struct NotaChecklistEditor: View {
 
     var body: some View {
         VStack(spacing: 8) {
-            ForEach($items) { $item in
+            noteBlockEditor(
+                title: "Añadir nota al inicio",
+                placeholder: "Texto introductorio del checklist",
+                kind: .leadingNote
+            )
+
+            if containsBlock(.leadingNote) {
+                Divider()
+            }
+
+            ForEach(taskItems) { item in
                 HStack(spacing: 10) {
                     Button {
-                        item.isChecked.toggle()
+                        toggleTask(item)
                     } label: {
                         Image(systemName: item.isChecked ? "checkmark.circle.fill" : "circle")
                             .font(.title3)
                     }
                     .buttonStyle(.plain)
 
-                    TextField("Elemento", text: $item.text, axis: .vertical)
+                    TextField("Elemento", text: taskTextBinding(for: item), axis: .vertical)
                         .textFieldStyle(.roundedBorder)
 
                     Button {
@@ -261,21 +282,124 @@ struct NotaChecklistEditor: View {
                             .foregroundStyle(.red)
                     }
                     .buttonStyle(.plain)
-                    .disabled(items.count == 1)
+                    .disabled(taskItems.count == 1)
                 }
             }
 
             Button {
                 items.append(NotaChecklistItem(text: ""))
+                normalizeItemOrder()
             } label: {
                 Label("Añadir elemento", systemImage: "plus.circle")
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+
+            if containsBlock(.trailingNote) {
+                Divider()
+            }
+
+            noteBlockEditor(
+                title: "Añadir nota al final",
+                placeholder: "Texto de cierre del checklist",
+                kind: .trailingNote
+            )
+        }
+        .onAppear {
+            if taskItems.isEmpty {
+                items.append(NotaChecklistItem(text: ""))
+                normalizeItemOrder()
+            }
         }
     }
 
+    @ViewBuilder
+    private func noteBlockEditor(
+        title: LocalizedStringKey,
+        placeholder: LocalizedStringKey,
+        kind: NotaChecklistItemKind
+    ) -> some View {
+        Toggle(title, isOn: blockEnabledBinding(for: kind))
+
+        if containsBlock(kind) {
+            ZStack(alignment: .topLeading) {
+                if blockText(for: kind).trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    Text(placeholder)
+                        .foregroundStyle(.secondary)
+                        .padding(.horizontal, 5)
+                        .padding(.vertical, 8)
+                        .allowsHitTesting(false)
+                }
+
+                TextEditor(text: blockTextBinding(for: kind))
+                    .frame(minHeight: 80)
+                    .scrollContentBackground(.hidden)
+                    .padding(4)
+                    .background(
+                        RoundedRectangle(cornerRadius: 8, style: .continuous)
+                            .fill(Color.black.opacity(0.04))
+                    )
+            }
+        }
+    }
+
+    private var taskItems: [NotaChecklistItem] {
+        items.filter(\.isTask)
+    }
+
+    private func containsBlock(_ kind: NotaChecklistItemKind) -> Bool {
+        items.contains { $0.kind == kind }
+    }
+
+    private func blockText(for kind: NotaChecklistItemKind) -> String {
+        items.first { $0.kind == kind }?.text ?? ""
+    }
+
+    private func blockEnabledBinding(for kind: NotaChecklistItemKind) -> Binding<Bool> {
+        Binding {
+            containsBlock(kind)
+        } set: { isEnabled in
+            if isEnabled {
+                if !containsBlock(kind) {
+                    items.append(NotaChecklistItem(text: "", kind: kind))
+                    normalizeItemOrder()
+                }
+            } else {
+                items.removeAll { $0.kind == kind }
+            }
+        }
+    }
+
+    private func blockTextBinding(for kind: NotaChecklistItemKind) -> Binding<String> {
+        Binding {
+            blockText(for: kind)
+        } set: { newValue in
+            guard let index = items.firstIndex(where: { $0.kind == kind }) else { return }
+            items[index].text = newValue
+        }
+    }
+
+    private func taskTextBinding(for item: NotaChecklistItem) -> Binding<String> {
+        Binding {
+            items.first(where: { $0.id == item.id })?.text ?? ""
+        } set: { newValue in
+            guard let index = items.firstIndex(where: { $0.id == item.id }) else { return }
+            items[index].text = newValue
+        }
+    }
+
+    private func toggleTask(_ item: NotaChecklistItem) {
+        guard let index = items.firstIndex(where: { $0.id == item.id && $0.isTask }) else { return }
+        items[index].isChecked.toggle()
+    }
+
     private func remove(_ item: NotaChecklistItem) {
-        guard items.count > 1 else { return }
+        guard taskItems.count > 1 else { return }
         items.removeAll { $0.id == item.id }
+    }
+
+    private func normalizeItemOrder() {
+        items = items.filter { $0.kind == .leadingNote }
+            + items.filter(\.isTask)
+            + items.filter { $0.kind == .trailingNote }
     }
 }

@@ -8363,6 +8363,12 @@
         }
       }
     },
+    "Añadir nota al final" : {
+
+    },
+    "Añadir nota al inicio" : {
+
+    },
     "Añadir situación" : {
       "localizations" : {
         "en" : {
@@ -21144,6 +21150,9 @@
         }
       }
     },
+    "Desmarcar todos" : {
+
+    },
     "Despliega los consejos prácticos" : {
       "localizations" : {
         "en" : {
@@ -21419,6 +21428,12 @@
           }
         }
       }
+    },
+    "Detectado: %@" : {
+
+    },
+    "Detectar automáticamente" : {
+
     },
     "Detectar las frases mentales que sostienen la conducta." : {
       "extractionState" : "manual",
@@ -31609,6 +31624,9 @@
         }
       }
     },
+    "Gestionar checklist" : {
+
+    },
     "Global" : {
       "localizations" : {
         "en" : {
@@ -37488,6 +37506,9 @@
         }
       }
     },
+    "Idioma de origen" : {
+
+    },
     "Idioma de origen del OCR" : {
       "localizations" : {
         "en" : {
@@ -39002,6 +39023,9 @@
           }
         }
       }
+    },
+    "Invertir selección" : {
+
     },
     "Invertir selección de frases visibles" : {
       "localizations" : {
@@ -43596,6 +43620,9 @@
           }
         }
       }
+    },
+    "Marcar todos" : {
+
     },
     "Marcar unidad realizada" : {
       "localizations" : {
@@ -48302,6 +48329,9 @@
         }
       }
     },
+    "No se pudo traducir el texto: %@" : {
+
+    },
     "No se pudo traducir el texto." : {
       "localizations" : {
         "en" : {
@@ -48824,6 +48854,9 @@
         }
       }
     },
+    "Nota final" : {
+
+    },
     "Nota guardada correctamente." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -48868,6 +48901,9 @@
           }
         }
       }
+    },
+    "Nota inicial" : {
+
     },
     "Nota nueva" : {
       "localizations" : {
@@ -63920,6 +63956,9 @@
         }
       }
     },
+    "Sin detectar" : {
+
+    },
     "Sin fondo" : {
       "localizations" : {
         "en" : {
@@ -65505,6 +65544,9 @@
         }
       }
     },
+    "Texto de cierre del checklist" : {
+
+    },
     "Texto de la entrada" : {
       "localizations" : {
         "en" : {
@@ -65700,6 +65742,9 @@
           }
         }
       }
+    },
+    "Texto introductorio del checklist" : {
+
     },
     "Texto original" : {
       "localizations" : {

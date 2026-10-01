@@ -13,28 +13,160 @@ extension Notification.Name {
     static let noteDeletedForWatchSync = Notification.Name("noteDeletedForWatchSync")
 }
 
+enum NotaChecklistItemKind: String, Codable, Equatable, Hashable {
+    case task
+    case leadingNote
+    case trailingNote
+}
+
 struct NotaChecklistItem: Identifiable, Codable, Equatable {
     var id: String
     var text: String
     var isChecked: Bool
+    var kind: NotaChecklistItemKind
 
-    init(id: String = UUID().uuidString, text: String, isChecked: Bool = false) {
+    init(
+        id: String = UUID().uuidString,
+        text: String,
+        isChecked: Bool = false,
+        kind: NotaChecklistItemKind = .task
+    ) {
         self.id = id
         self.text = text
         self.isChecked = isChecked
+        self.kind = kind
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case id
+        case text
+        case isChecked
+        case kind
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(String.self, forKey: .id)
+        text = try container.decode(String.self, forKey: .text)
+        isChecked = try container.decode(Bool.self, forKey: .isChecked)
+        // Los checklists guardados antes de introducir bloques de nota solo
+        // contienen tareas, por lo que siguen decodificando sin migración.
+        kind = try container.decodeIfPresent(NotaChecklistItemKind.self, forKey: .kind) ?? .task
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(text, forKey: .text)
+        try container.encode(isChecked, forKey: .isChecked)
+        try container.encode(kind, forKey: .kind)
+    }
+
+    var isTask: Bool {
+        kind == .task
     }
 
     static func fromText(_ text: String) -> [NotaChecklistItem] {
-        text
-            .split(whereSeparator: \.isNewline)
-            .map { String($0).trimmingCharacters(in: .whitespacesAndNewlines) }
-            .filter { !$0.isEmpty }
-            .map { NotaChecklistItem(text: $0, isChecked: false) }
+        var tasks: [NotaChecklistItem] = []
+        var leadingNoteParts: [String] = []
+        var trailingNoteParts: [String] = []
+        var activeNoteKind: NotaChecklistItemKind?
+        var noteLines: [String] = []
+
+        func finishNoteBlock() {
+            guard let activeNoteKind else { return }
+            let note = noteLines
+                .joined(separator: "\n")
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+            if !note.isEmpty {
+                switch activeNoteKind {
+                case .leadingNote: leadingNoteParts.append(note)
+                case .trailingNote: trailingNoteParts.append(note)
+                case .task: break
+                }
+            }
+            noteLines.removeAll()
+        }
+
+        for line in text.components(separatedBy: .newlines) {
+            let trimmedLine = line.trimmingCharacters(in: .whitespacesAndNewlines)
+            switch trimmedLine {
+            case leadingNoteStartMarker:
+                finishNoteBlock()
+                activeNoteKind = .leadingNote
+            case trailingNoteStartMarker:
+                finishNoteBlock()
+                activeNoteKind = .trailingNote
+            case leadingNoteEndMarker, trailingNoteEndMarker:
+                finishNoteBlock()
+                activeNoteKind = nil
+            default:
+                if activeNoteKind != nil {
+                    noteLines.append(line)
+                } else if !trimmedLine.isEmpty {
+                    tasks.append(NotaChecklistItem(text: trimmedLine))
+                }
+            }
+        }
+        finishNoteBlock()
+
+        var items: [NotaChecklistItem] = []
+        if !leadingNoteParts.isEmpty {
+            items.append(
+                NotaChecklistItem(
+                    text: leadingNoteParts.joined(separator: "\n\n"),
+                    kind: .leadingNote
+                )
+            )
+        }
+        items.append(contentsOf: tasks)
+        if !trailingNoteParts.isEmpty {
+            items.append(
+                NotaChecklistItem(
+                    text: trailingNoteParts.joined(separator: "\n\n"),
+                    kind: .trailingNote
+                )
+            )
+        }
+        return items
     }
 
     static func renderPlainText(_ items: [NotaChecklistItem]) -> String {
         items.map(\.text).joined(separator: "\n")
     }
+
+    static func renderConvertiblePlainText(_ items: [NotaChecklistItem]) -> String {
+        var sections: [String] = []
+        let leadingNotes = items
+            .filter { $0.kind == .leadingNote }
+            .map(\.text)
+            .filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+        if !leadingNotes.isEmpty {
+            sections.append(
+                ([leadingNoteStartMarker] + leadingNotes + [leadingNoteEndMarker])
+                    .joined(separator: "\n")
+            )
+        }
+
+        sections.append(contentsOf: items.filter(\.isTask).map(\.text))
+
+        let trailingNotes = items
+            .filter { $0.kind == .trailingNote }
+            .map(\.text)
+            .filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+        if !trailingNotes.isEmpty {
+            sections.append(
+                ([trailingNoteStartMarker] + trailingNotes + [trailingNoteEndMarker])
+                    .joined(separator: "\n")
+            )
+        }
+        return sections.joined(separator: "\n")
+    }
+
+    private static let leadingNoteStartMarker = "[[NOTA-INICIAL]]"
+    private static let leadingNoteEndMarker = "[[/NOTA-INICIAL]]"
+    private static let trailingNoteStartMarker = "[[NOTA-FINAL]]"
+    private static let trailingNoteEndMarker = "[[/NOTA-FINAL]]"
 }
 
 struct NotaCreationDraft: Sendable {

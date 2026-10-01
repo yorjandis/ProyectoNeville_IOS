@@ -1627,6 +1627,30 @@ struct cardNotas: View{
                         }
                     }
 
+                    if nota?.isChecklistNote == true {
+                        Menu {
+                            Button {
+                                updateChecklistSelection { _ in false }
+                            } label: {
+                                Label("Desmarcar todos", systemImage: "circle")
+                            }
+
+                            Button {
+                                updateChecklistSelection { !$0 }
+                            } label: {
+                                Label("Invertir selección", systemImage: "arrow.up.arrow.down.circle")
+                            }
+
+                            Button {
+                                updateChecklistSelection { _ in true }
+                            } label: {
+                                Label("Marcar todos", systemImage: "checkmark.circle.fill")
+                            }
+                        } label: {
+                            Label("Gestionar checklist", systemImage: "checklist")
+                        }
+                    }
+
                     Menu {
                         if !currentCategory.isEmpty {
                             Button("Sin categoría") {
@@ -2019,7 +2043,9 @@ struct cardNotas: View{
             originalText: note.noteDisplayText,
             isFavorite: note.isfav,
             address: note.value(forKey: "direccionMapa") as? String ?? "",
-            category: note.value(forKey: "categoria") as? String ?? ""
+            category: note.value(forKey: "categoria") as? String ?? "",
+            isChecklist: note.isChecklistNote,
+            checklistItems: note.checklistItems
         )
     }
 
@@ -2050,24 +2076,45 @@ struct cardNotas: View{
     private var checklistPreview: some View {
         VStack(alignment: .leading, spacing: 8) {
             ForEach(nota?.checklistItems ?? []) { item in
-                HStack(alignment: .top, spacing: 10) {
-                    Button {
-                        toggleChecklistItem(item)
-                    } label: {
-                        Image(systemName: item.isChecked ? "checkmark.circle.fill" : "circle")
-                            .font(.title3)
-                            .foregroundStyle(item.isChecked ? .green : .black.opacity(0.7))
-                    }
-                    .buttonStyle(.plain)
+                if item.isTask {
+                    HStack(alignment: .top, spacing: 10) {
+                        Button {
+                            toggleChecklistItem(item)
+                        } label: {
+                            Image(systemName: item.isChecked ? "checkmark.circle.fill" : "circle")
+                                .font(.title3)
+                                .foregroundStyle(item.isChecked ? .green : .black.opacity(0.7))
+                        }
+                        .buttonStyle(.plain)
 
-                    SelectableText(
-                        text: item.text,
-                        fontSize: 20,
-                        fontColor: .black,
-                        alignment: .left
-                    )
-                    .strikethrough(item.isChecked, color: .black.opacity(0.45))
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                        SelectableText(
+                            text: item.text,
+                            fontSize: 20,
+                            fontColor: .black,
+                            alignment: .left
+                        )
+                        .strikethrough(item.isChecked, color: .black.opacity(0.45))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                } else {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Label(
+                            item.kind == .leadingNote ? "Nota inicial" : "Nota final",
+                            systemImage: item.kind == .leadingNote ? "text.quote" : "text.append"
+                        )
+                        .font(.caption.bold())
+                        .foregroundStyle(.black.opacity(0.65))
+
+                        SelectableText(
+                            text: item.text,
+                            fontSize: 18,
+                            fontColor: .black,
+                            alignment: .left
+                        )
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .padding(10)
+                    .background(.black.opacity(0.05), in: RoundedRectangle(cornerRadius: 10))
                 }
             }
         }
@@ -2080,9 +2127,9 @@ struct cardNotas: View{
     }
 
     private func toggleChecklistItem(_ item: NotaChecklistItem) {
-        guard let nota, let id = nota.id else { return }
+        guard item.isTask, let nota, let id = nota.id else { return }
         var items = nota.checklistItems
-        guard let index = items.firstIndex(where: { $0.id == item.id }) else { return }
+        guard let index = items.firstIndex(where: { $0.id == item.id && $0.isTask }) else { return }
         items[index].isChecked.toggle()
         let noteText = NotaChecklistItem.renderPlainText(items)
         nota.nota = noteText
@@ -2091,12 +2138,37 @@ struct cardNotas: View{
         }
     }
 
+    private func updateChecklistSelection(_ selection: (Bool) -> Bool) {
+        guard let nota, let id = nota.id else { return }
+        let items = nota.checklistItems.map { item in
+            NotaChecklistItem(
+                id: item.id,
+                text: item.text,
+                isChecked: item.isTask ? selection(item.isChecked) : false,
+                kind: item.kind
+            )
+        }
+
+        if modelNotas.updateChecklistItems(NotaID: id, checklistItems: items) {
+            modelNotas.getAllNotasToModel()
+            withAnimation {
+                expandNota = true
+            }
+        } else {
+            mapsAlertMessage = L10n.exact("No se pudo actualizar el checklist.")
+            showMapsAlert = true
+        }
+    }
+
     private func convertCurrentNoteType() {
         guard let nota, let id = nota.id else { return }
         let isCurrentlyChecklist = nota.isChecklistNote
+        let currentItems = nota.checklistItems.isEmpty
+            ? NotaChecklistItem.fromText(noteActionText)
+            : nota.checklistItems
         let items = isCurrentlyChecklist ? [] : NotaChecklistItem.fromText(noteActionText)
         let convertedText = isCurrentlyChecklist
-            ? noteActionText
+            ? NotaChecklistItem.renderConvertiblePlainText(currentItems)
             : NotaChecklistItem.renderPlainText(items)
 
         if modelNotas.updateNota(
