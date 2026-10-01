@@ -65,12 +65,17 @@ struct AddNotasView: View {
                     .pickerStyle(.segmented)
                     .onChange(of: isChecklist) { oldValue, newValue in
                         if oldValue && !newValue {
-                            nota = NotaChecklistItem.renderConvertiblePlainText(sanitizedChecklistItems)
+                            nota = NotaChecklistItem.renderPlainText(sanitizedChecklistItems)
                         } else if !oldValue && newValue {
-                            let parsedItems = NotaChecklistItem.fromText(nota)
-                            checklistItems = parsedItems.isEmpty
+                            let resolvedItems = sanitizedChecklistItems.isEmpty
+                                ? NotaChecklistItem.fromText(nota)
+                                : NotaChecklistItem.updatingTexts(
+                                    in: sanitizedChecklistItems,
+                                    toMatchPlainText: nota
+                                )
+                            checklistItems = resolvedItems.isEmpty
                                 ? [NotaChecklistItem(text: "")]
-                                : parsedItems
+                                : resolvedItems
                         }
                     }
                 }
@@ -92,6 +97,13 @@ struct AddNotasView: View {
                                     .stroke(Color.gray.opacity(0.4), lineWidth: 0.5)
                             )
                             .frame(height: 250)
+                            .onChange(of: nota) { _, newValue in
+                                guard !sanitizedChecklistItems.isEmpty else { return }
+                                checklistItems = NotaChecklistItem.updatingTexts(
+                                    in: checklistItems,
+                                    toMatchPlainText: newValue
+                                )
+                            }
                     }
                 }
                 Section("Coordenadas (Mapas)") {
@@ -142,7 +154,7 @@ struct AddNotasView: View {
                     Button("Guardar"){
                         let items = sanitizedChecklistItems
                         let noteText = isChecklist ? NotaChecklistItem.renderPlainText(items) : nota
-                        if NotasModel().addNote(nota: noteText, title: title, isFav: false, direccionMapa: direccionMapa, categoria: categoria, isChecklist: isChecklist, checklistItems: isChecklist ? items : []) {
+                        if NotasModel().addNote(nota: noteText, title: title, isFav: false, direccionMapa: direccionMapa, categoria: categoria, isChecklist: isChecklist, checklistItems: items) {
                             
                             self.modelNotas.getAllNotasToModel() //Actualizando el listado
                             
@@ -187,7 +199,7 @@ struct AddNotasView: View {
                     Button("Guardar"){
                         let items = sanitizedChecklistItems
                         let noteText = isChecklist ? NotaChecklistItem.renderPlainText(items) : nota
-                        if NotasModel().addNote(nota: noteText, title: title, isFav: false, direccionMapa: direccionMapa, categoria: categoria, isChecklist: isChecklist, checklistItems: isChecklist ? items : []) {
+                        if NotasModel().addNote(nota: noteText, title: title, isFav: false, direccionMapa: direccionMapa, categoria: categoria, isChecklist: isChecklist, checklistItems: items) {
                             
                             self.modelNotas.getAllNotasToModel()
                             

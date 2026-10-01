@@ -61,12 +61,17 @@ struct UpdateNotasView: View {
                     .pickerStyle(.segmented)
                     .onChange(of: isChecklist) { oldValue, newValue in
                         if oldValue && !newValue {
-                            nota = NotaChecklistItem.renderConvertiblePlainText(sanitizedChecklistItems)
+                            nota = NotaChecklistItem.renderPlainText(sanitizedChecklistItems)
                         } else if !oldValue && newValue {
-                            let parsedItems = NotaChecklistItem.fromText(nota)
-                            checklistItems = parsedItems.isEmpty
+                            let resolvedItems = sanitizedChecklistItems.isEmpty
+                                ? NotaChecklistItem.fromText(nota)
+                                : NotaChecklistItem.updatingTexts(
+                                    in: sanitizedChecklistItems,
+                                    toMatchPlainText: nota
+                                )
+                            checklistItems = resolvedItems.isEmpty
                                 ? [NotaChecklistItem(text: "")]
-                                : parsedItems
+                                : resolvedItems
                         }
                     }
                 }
@@ -80,6 +85,13 @@ struct UpdateNotasView: View {
                                 .scrollContentBackground(.hidden)
                                 .background(.black.opacity(0.02))
                                 .cornerRadius(8)
+                                .onChange(of: nota) { _, newValue in
+                                    guard !sanitizedChecklistItems.isEmpty else { return }
+                                    checklistItems = NotaChecklistItem.updatingTexts(
+                                        in: checklistItems,
+                                        toMatchPlainText: newValue
+                                    )
+                                }
                     }
                 }
                 Section("Coordenadas (Mapas)") {
@@ -128,7 +140,7 @@ struct UpdateNotasView: View {
                     Button("Actualizar"){
                         let items = sanitizedChecklistItems
                         let noteText = isChecklist ? NotaChecklistItem.renderPlainText(items) : nota
-                        if NotasModel().updateNota(NotaID: NotaId, newTitle: title, newNota: noteText, direccionMapa: direccionMapa, categoria: categoria, isChecklist: isChecklist, checklistItems: isChecklist ? items : []){
+                        if NotasModel().updateNota(NotaID: NotaId, newTitle: title, newNota: noteText, direccionMapa: direccionMapa, categoria: categoria, isChecklist: isChecklist, checklistItems: items){
                             self.modelNotas.getAllNotasToModel()
                             
                             
@@ -170,7 +182,7 @@ struct UpdateNotasView: View {
                     Button("Actualizar"){
                         let items = sanitizedChecklistItems
                         let noteText = isChecklist ? NotaChecklistItem.renderPlainText(items) : nota
-                        if NotasModel().updateNota(NotaID: NotaId, newTitle: title, newNota: noteText, direccionMapa: direccionMapa, categoria: categoria, isChecklist: isChecklist, checklistItems: isChecklist ? items : []){
+                        if NotasModel().updateNota(NotaID: NotaId, newTitle: title, newNota: noteText, direccionMapa: direccionMapa, categoria: categoria, isChecklist: isChecklist, checklistItems: items){
                             self.modelNotas.getAllNotasToModel()
                         }else{
                             msg("Error al actualizar la nota")

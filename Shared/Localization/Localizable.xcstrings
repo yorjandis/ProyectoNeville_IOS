@@ -8364,10 +8364,48 @@
       }
     },
     "Añadir nota al final" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add note at end"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añadir nota al final"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在末尾添加备注"
+          }
+        }
+      }
     },
     "Añadir nota al inicio" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add note at beginning"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añadir nota al inicio"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在开头添加备注"
+          }
+        }
+      }
     },
     "Añadir situación" : {
       "localizations" : {
@@ -21151,7 +21189,26 @@
       }
     },
     "Desmarcar todos" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uncheck all"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desmarcar todos"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全部取消勾选"
+          }
+        }
+      }
     },
     "Despliega los consejos prácticos" : {
       "localizations" : {
@@ -21430,10 +21487,48 @@
       }
     },
     "Detectado: %@" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detected: %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detectado: %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "检测到：%@"
+          }
+        }
+      }
     },
     "Detectar automáticamente" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detect automatically"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detectar automáticamente"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自动检测"
+          }
+        }
+      }
     },
     "Detectar las frases mentales que sostienen la conducta." : {
       "extractionState" : "manual",
@@ -24313,6 +24408,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "项目"
+          }
+        }
+      }
+    },
+    "El idioma de origen y el idioma de destino son el mismo." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The source and target languages are the same."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El idioma de origen y el idioma de destino son el mismo."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "源语言和目标语言相同。"
           }
         }
       }
@@ -31625,7 +31743,26 @@
       }
     },
     "Gestionar checklist" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manage checklist"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gestionar checklist"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "管理清单"
+          }
+        }
+      }
     },
     "Global" : {
       "localizations" : {
@@ -37507,7 +37644,26 @@
       }
     },
     "Idioma de origen" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Source language"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Idioma de origen"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "源语言"
+          }
+        }
+      }
     },
     "Idioma de origen del OCR" : {
       "localizations" : {
@@ -39025,7 +39181,26 @@
       }
     },
     "Invertir selección" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invert selection"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invertir selección"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "反选"
+          }
+        }
+      }
     },
     "Invertir selección de frases visibles" : {
       "localizations" : {
@@ -43622,7 +43797,26 @@
       }
     },
     "Marcar todos" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check all"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Marcar todos"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全部勾选"
+          }
+        }
+      }
     },
     "Marcar unidad realizada" : {
       "localizations" : {
@@ -47722,6 +47916,29 @@
         }
       }
     },
+    "No se pudo actualizar el checklist." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn’t update the checklist."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo actualizar el checklist."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法更新清单。"
+          }
+        }
+      }
+    },
     "No se pudo cambiar la categoría." : {
       "localizations" : {
         "en" : {
@@ -47890,6 +48107,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "目标无法创建。"
+          }
+        }
+      }
+    },
+    "No se pudo detectar el idioma de origen. Selecciónalo manualmente e inténtalo de nuevo." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn’t detect the source language. Select it manually and try again."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo detectar el idioma de origen. Selecciónalo manualmente e inténtalo de nuevo."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法检测源语言。请手动选择后重试。"
           }
         }
       }
@@ -48330,7 +48570,26 @@
       }
     },
     "No se pudo traducir el texto: %@" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn’t translate the text: %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo traducir el texto: %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法翻译文本：%@"
+          }
+        }
+      }
     },
     "No se pudo traducir el texto." : {
       "localizations" : {
@@ -48854,9 +49113,6 @@
         }
       }
     },
-    "Nota final" : {
-
-    },
     "Nota guardada correctamente." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -48901,9 +49157,6 @@
           }
         }
       }
-    },
-    "Nota inicial" : {
-
     },
     "Nota nueva" : {
       "localizations" : {
@@ -63957,7 +64210,26 @@
       }
     },
     "Sin detectar" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not detected"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin detectar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未检测到"
+          }
+        }
+      }
     },
     "Sin fondo" : {
       "localizations" : {
@@ -65545,7 +65817,26 @@
       }
     },
     "Texto de cierre del checklist" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Checklist closing note"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Texto de cierre del checklist"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清单结尾备注"
+          }
+        }
+      }
     },
     "Texto de la entrada" : {
       "localizations" : {
@@ -65744,7 +66035,26 @@
       }
     },
     "Texto introductorio del checklist" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Checklist opening note"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Texto introductorio del checklist"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清单开头备注"
+          }
+        }
+      }
     },
     "Texto original" : {
       "localizations" : {

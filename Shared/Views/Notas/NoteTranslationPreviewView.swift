@@ -63,6 +63,7 @@ struct NoteTranslationPreviewView: View {
     let address: String
     let category: String
     let isChecklist: Bool
+    let preservesConvertibleChecklistStructure: Bool
     let originalChecklistItems: [NotaChecklistItem]
 
     @Environment(\.dismiss) private var dismiss
@@ -88,11 +89,19 @@ struct NoteTranslationPreviewView: View {
         isChecklist: Bool,
         checklistItems: [NotaChecklistItem]
     ) {
-        let resolvedChecklistItems = isChecklist && checklistItems.isEmpty
-            ? NotaChecklistItem.fromText(originalText)
-            : checklistItems
-        let sourceText = isChecklist
-            ? NotaChecklistItem.renderConvertiblePlainText(resolvedChecklistItems)
+        let preservesConvertibleChecklistStructure = isChecklist
+            || !checklistItems.isEmpty
+            || NotaChecklistItem.containsConvertibleNoteBlocks(in: originalText)
+        let resolvedChecklistItems: [NotaChecklistItem]
+        if preservesConvertibleChecklistStructure {
+            resolvedChecklistItems = !checklistItems.isEmpty
+                ? checklistItems
+                : NotaChecklistItem.fromText(originalText)
+        } else {
+            resolvedChecklistItems = checklistItems
+        }
+        let sourceText = preservesConvertibleChecklistStructure
+            ? NotaChecklistItem.renderPlainText(resolvedChecklistItems)
             : originalText
         let textToTranslate = sourceText.trimmingCharacters(in: .whitespacesAndNewlines)
 
@@ -103,6 +112,7 @@ struct NoteTranslationPreviewView: View {
         self.address = address
         self.category = category
         self.isChecklist = isChecklist
+        self.preservesConvertibleChecklistStructure = preservesConvertibleChecklistStructure
         self.originalChecklistItems = resolvedChecklistItems
         self._translatedText = State(initialValue: sourceText)
         self._translationConfiguration = State(initialValue: nil)
@@ -162,7 +172,7 @@ struct NoteTranslationPreviewView: View {
                 let textToTranslate = pendingTranslationText
                 isTranslating = true
                 do {
-                    if isChecklist {
+                    if preservesConvertibleChecklistStructure {
                         var translatedItems: [NotaChecklistItem] = []
                         for item in pendingChecklistItems {
                             var translatedItem = item
@@ -172,7 +182,7 @@ struct NoteTranslationPreviewView: View {
                             translatedItems.append(translatedItem)
                         }
                         translatedChecklistItems = translatedItems
-                        translatedText = NotaChecklistItem.renderConvertiblePlainText(translatedItems)
+                        translatedText = NotaChecklistItem.renderPlainText(translatedItems)
                     } else {
                         translatedText = try await session.translate(textToTranslate).targetText
                     }
@@ -221,8 +231,11 @@ struct NoteTranslationPreviewView: View {
     }
 
     private var detectedSourceLanguageName: String {
-        let detectionText = isChecklist
-            ? NotaChecklistItem.fromText(translatedText).map(\.text).joined(separator: "\n")
+        let detectionText = preservesConvertibleChecklistStructure
+            ? NotaChecklistItem.updatingTexts(
+                in: translatedChecklistItems,
+                toMatchPlainText: translatedText
+            ).map(\.text).joined(separator: "\n")
             : translatedText
         guard let identifier = detectedSourceLanguageIdentifier(for: detectionText) else {
             return String(localized: "Sin detectar")
@@ -258,8 +271,8 @@ struct NoteTranslationPreviewView: View {
         Menu {
             Button {
                 translatedChecklistItems = originalChecklistItems
-                translatedText = isChecklist
-                    ? NotaChecklistItem.renderConvertiblePlainText(originalChecklistItems)
+                translatedText = preservesConvertibleChecklistStructure
+                    ? NotaChecklistItem.renderPlainText(originalChecklistItems)
                     : originalText
             } label: {
                 Label("Texto original", systemImage: "arrow.uturn.backward")
@@ -312,26 +325,30 @@ struct NoteTranslationPreviewView: View {
         guard !text.isEmpty else { return }
 
         pendingTranslationText = text
-        if isChecklist {
+        if preservesConvertibleChecklistStructure {
             pendingChecklistItems = checklistItems(
                 from: text,
                 preserving: translatedChecklistItems
             )
         }
 
-        let languageDetectionText = isChecklist
+        let languageDetectionText = preservesConvertibleChecklistStructure
             ? pendingChecklistItems.map(\.text).joined(separator: "\n")
             : text
         let sourceLanguage = selectedSourceLanguage.localeLanguage
             ?? detectedSourceLanguage(for: languageDetectionText)
 
-        if isChecklist, sourceLanguage == nil {
-            presentStatus("No se pudo detectar el idioma de origen. Selecciónalo manualmente e inténtalo de nuevo.")
+        if preservesConvertibleChecklistStructure, sourceLanguage == nil {
+            presentStatus(
+                L10n.exact("No se pudo detectar el idioma de origen. Selecciónalo manualmente e inténtalo de nuevo.")
+            )
             return
         }
 
         if sourceLanguage == language.localeLanguage {
-            presentStatus("El idioma de origen y el idioma de destino son el mismo.")
+            presentStatus(
+                L10n.exact("El idioma de origen y el idioma de destino son el mismo.")
+            )
             return
         }
 
@@ -367,7 +384,7 @@ struct NoteTranslationPreviewView: View {
 
     private func replaceCurrentNote() {
         let checklistItems = translatedChecklistItemsForSaving()
-        let noteText = isChecklist
+        let noteText = preservesConvertibleChecklistStructure
             ? NotaChecklistItem.renderPlainText(checklistItems)
             : translatedText
         let success = notesModel.updateNota(
@@ -378,7 +395,7 @@ struct NoteTranslationPreviewView: View {
             direccionMapa: address,
             categoria: category,
             isChecklist: isChecklist,
-            checklistItems: isChecklist ? checklistItems : []
+            checklistItems: checklistItems
         )
         if success {
             notesModel.getAllNotasToModel()
@@ -392,7 +409,7 @@ struct NoteTranslationPreviewView: View {
         let checklistItems = translatedChecklistItemsForSaving().map {
             NotaChecklistItem(text: $0.text, isChecked: $0.isChecked, kind: $0.kind)
         }
-        let noteText = isChecklist
+        let noteText = preservesConvertibleChecklistStructure
             ? NotaChecklistItem.renderPlainText(checklistItems)
             : translatedText
         presentExportResult(
@@ -403,14 +420,14 @@ struct NoteTranslationPreviewView: View {
                 direccionMapa: address,
                 categoria: category,
                 isChecklist: isChecklist,
-                checklistItems: isChecklist ? checklistItems : []
+                checklistItems: checklistItems
             ),
             destination: "Notas"
         )
     }
 
     private func translatedChecklistItemsForSaving() -> [NotaChecklistItem] {
-        guard isChecklist else { return [] }
+        guard preservesConvertibleChecklistStructure else { return [] }
         return checklistItems(from: translatedText, preserving: translatedChecklistItems)
     }
 
@@ -418,15 +435,7 @@ struct NoteTranslationPreviewView: View {
         from text: String,
         preserving items: [NotaChecklistItem]
     ) -> [NotaChecklistItem] {
-        NotaChecklistItem.fromText(text).enumerated().map { index, parsedItem in
-            guard items.indices.contains(index) else { return parsedItem }
-            return NotaChecklistItem(
-                id: items[index].id,
-                text: parsedItem.text,
-                isChecked: parsedItem.isTask ? items[index].isChecked : false,
-                kind: parsedItem.kind
-            )
-        }
+        NotaChecklistItem.updatingTexts(in: items, toMatchPlainText: text)
     }
 
     private func exportToDiary() {

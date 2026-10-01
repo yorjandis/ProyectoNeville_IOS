@@ -135,32 +135,90 @@ struct NotaChecklistItem: Identifiable, Codable, Equatable {
         items.map(\.text).joined(separator: "\n")
     }
 
-    static func renderConvertiblePlainText(_ items: [NotaChecklistItem]) -> String {
-        var sections: [String] = []
-        let leadingNotes = items
-            .filter { $0.kind == .leadingNote }
-            .map(\.text)
-            .filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
-        if !leadingNotes.isEmpty {
-            sections.append(
-                ([leadingNoteStartMarker] + leadingNotes + [leadingNoteEndMarker])
-                    .joined(separator: "\n")
-            )
+    /// Mantiene los nodos internos al editar su proyección como texto plano.
+    /// En la edición habitual SwiftUI entrega cambios incrementales, por lo que
+    /// podemos aplicar la modificación al nodo afectado sin exponer marcadores.
+    static func updatingTexts(
+        in items: [NotaChecklistItem],
+        toMatchPlainText plainText: String
+    ) -> [NotaChecklistItem] {
+        guard !items.isEmpty else { return fromText(plainText) }
+
+        let renderedText = renderPlainText(items)
+        guard renderedText != plainText else { return items }
+
+        let oldCharacters = Array(renderedText)
+        let newCharacters = Array(plainText)
+        let sharedLimit = min(oldCharacters.count, newCharacters.count)
+        var prefixCount = 0
+        while prefixCount < sharedLimit,
+              oldCharacters[prefixCount] == newCharacters[prefixCount] {
+            prefixCount += 1
         }
 
-        sections.append(contentsOf: items.filter(\.isTask).map(\.text))
-
-        let trailingNotes = items
-            .filter { $0.kind == .trailingNote }
-            .map(\.text)
-            .filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
-        if !trailingNotes.isEmpty {
-            sections.append(
-                ([trailingNoteStartMarker] + trailingNotes + [trailingNoteEndMarker])
-                    .joined(separator: "\n")
-            )
+        var suffixCount = 0
+        while suffixCount < oldCharacters.count - prefixCount,
+              suffixCount < newCharacters.count - prefixCount,
+              oldCharacters[oldCharacters.count - suffixCount - 1]
+                == newCharacters[newCharacters.count - suffixCount - 1] {
+            suffixCount += 1
         }
-        return sections.joined(separator: "\n")
+
+        let oldEditEnd = oldCharacters.count - suffixCount
+        let replacementEnd = newCharacters.count - suffixCount
+        let replacement = Array(newCharacters[prefixCount..<replacementEnd])
+
+        var itemStart = 0
+        for index in items.indices {
+            let itemCharacters = Array(items[index].text)
+            let itemEnd = itemStart + itemCharacters.count
+            if prefixCount >= itemStart,
+               prefixCount <= itemEnd,
+               oldEditEnd >= itemStart,
+               oldEditEnd <= itemEnd {
+                var updatedCharacters = itemCharacters
+                updatedCharacters.replaceSubrange(
+                    (prefixCount - itemStart)..<(oldEditEnd - itemStart),
+                    with: replacement
+                )
+                var updatedItems = items
+                updatedItems[index].text = String(updatedCharacters)
+                return updatedItems
+            }
+            itemStart = itemEnd + 1
+        }
+
+        // Un pegado masivo puede afectar varios nodos. Si conserva el mismo
+        // número de líneas, mantenemos la distribución y los tipos existentes.
+        let newLines = plainText.components(separatedBy: .newlines)
+        let lineCounts = items.map { $0.text.components(separatedBy: .newlines).count }
+        guard lineCounts.reduce(0, +) == newLines.count else {
+            return fromText(plainText)
+        }
+
+        var updatedItems = items
+        var lineIndex = 0
+        for index in updatedItems.indices {
+            let lineCount = lineCounts[index]
+            updatedItems[index].text = newLines[lineIndex..<(lineIndex + lineCount)]
+                .joined(separator: "\n")
+            lineIndex += lineCount
+        }
+        return updatedItems
+    }
+
+    /// Reconoce el formato heredado para migrar notas que ya contienen
+    /// marcadores. Las conversiones nuevas nunca generan estas etiquetas.
+    static func containsConvertibleNoteBlocks(in text: String) -> Bool {
+        let lines = Set(
+            text.components(separatedBy: .newlines)
+                .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+        )
+        let hasLeadingNote = lines.contains(leadingNoteStartMarker)
+            && lines.contains(leadingNoteEndMarker)
+        let hasTrailingNote = lines.contains(trailingNoteStartMarker)
+            && lines.contains(trailingNoteEndMarker)
+        return hasLeadingNote || hasTrailingNote
     }
 
     private static let leadingNoteStartMarker = "[[NOTA-INICIAL]]"
@@ -210,14 +268,35 @@ extension Notas {
         }
     }
 
+    /// Estructura asociada tanto a un checklist activo como a su proyección en
+    /// texto plano. También migra en memoria el antiguo formato con etiquetas.
+    var structuredChecklistItems: [NotaChecklistItem] {
+        let storedItems = checklistItems
+        if !storedItems.isEmpty {
+            return storedItems
+        }
+
+        let rawText = nota ?? ""
+        guard NotaChecklistItem.containsConvertibleNoteBlocks(in: rawText) else {
+            return []
+        }
+        return NotaChecklistItem.fromText(rawText)
+    }
+
     var noteDisplayText: String {
         if isChecklistNote {
-            let renderedItems = checklistItems
+            let renderedItems = structuredChecklistItems
                 .filter { !$0.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
                 .renderedAsChecklistText()
             return renderedItems.isEmpty ? (nota ?? "") : renderedItems
         }
-        return nota ?? ""
+
+        let rawText = nota ?? ""
+        if checklistItems.isEmpty,
+           NotaChecklistItem.containsConvertibleNoteBlocks(in: rawText) {
+            return NotaChecklistItem.renderPlainText(structuredChecklistItems)
+        }
+        return rawText
     }
 }
 

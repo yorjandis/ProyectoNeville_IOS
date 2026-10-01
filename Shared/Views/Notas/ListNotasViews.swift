@@ -1581,10 +1581,10 @@ struct cardNotas: View{
                                 NotaId: nota!.id!,
                                 title: nota!.title!,
                                 categoria: nota?.value(forKey: "categoria") as? String ?? "",
-                                nota: nota!.nota!,
+                                nota: nota!.noteDisplayText,
                                 direccionMapa: nota?.value(forKey: "direccionMapa") as? String ?? "",
                                 isChecklist: nota?.isChecklistNote ?? false,
-                                checklistItems: nota?.checklistItems ?? []
+                                checklistItems: nota?.structuredChecklistItems ?? []
                             ),
                                        environmentObjects: [self.modelNotas],
                                        title: "Editar Nota",
@@ -1604,10 +1604,10 @@ struct cardNotas: View{
                                 NotaId: nota!.id!,
                                 title: nota!.title!,
                                 categoria: nota?.value(forKey: "categoria") as? String ?? "",
-                                nota: nota!.nota!,
+                                nota: nota!.noteDisplayText,
                                 direccionMapa: nota?.value(forKey: "direccionMapa") as? String ?? "",
                                 isChecklist: nota?.isChecklistNote ?? false,
-                                checklistItems: nota?.checklistItems ?? []
+                                checklistItems: nota?.structuredChecklistItems ?? []
                             )
                                 .environmentObject(self.modelNotas)
                         }
@@ -2045,7 +2045,7 @@ struct cardNotas: View{
             address: note.value(forKey: "direccionMapa") as? String ?? "",
             category: note.value(forKey: "categoria") as? String ?? "",
             isChecklist: note.isChecklistNote,
-            checklistItems: note.checklistItems
+            checklistItems: note.structuredChecklistItems
         )
     }
 
@@ -2097,22 +2097,13 @@ struct cardNotas: View{
                         .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 } else {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Label(
-                            item.kind == .leadingNote ? "Nota inicial" : "Nota final",
-                            systemImage: item.kind == .leadingNote ? "text.quote" : "text.append"
-                        )
-                        .font(.caption.bold())
-                        .foregroundStyle(.black.opacity(0.65))
-
-                        SelectableText(
-                            text: item.text,
-                            fontSize: 18,
-                            fontColor: .black,
-                            alignment: .left
-                        )
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    }
+                    SelectableText(
+                        text: item.text,
+                        fontSize: 18,
+                        fontColor: .black,
+                        alignment: .left
+                    )
+                    .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(10)
                     .background(.black.opacity(0.05), in: RoundedRectangle(cornerRadius: 10))
                 }
@@ -2163,13 +2154,16 @@ struct cardNotas: View{
     private func convertCurrentNoteType() {
         guard let nota, let id = nota.id else { return }
         let isCurrentlyChecklist = nota.isChecklistNote
-        let currentItems = nota.checklistItems.isEmpty
+        let currentItems = nota.structuredChecklistItems.isEmpty
             ? NotaChecklistItem.fromText(noteActionText)
-            : nota.checklistItems
-        let items = isCurrentlyChecklist ? [] : NotaChecklistItem.fromText(noteActionText)
-        let convertedText = isCurrentlyChecklist
-            ? NotaChecklistItem.renderConvertiblePlainText(currentItems)
-            : NotaChecklistItem.renderPlainText(items)
+            : nota.structuredChecklistItems
+        let items = isCurrentlyChecklist
+            ? currentItems
+            : NotaChecklistItem.updatingTexts(
+                in: currentItems,
+                toMatchPlainText: noteActionText
+            )
+        let convertedText = NotaChecklistItem.renderPlainText(items)
 
         if modelNotas.updateNota(
             NotaID: id,
