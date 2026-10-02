@@ -103,6 +103,7 @@ struct La_LeyApp: App {
                             .onChange(of: scenePhase) { old, phase in
                                 if phase == .active {
                                     ConsciousDashboardSnapshotPublisher.refresh()
+                                    consumeControlCenterDestination()
                                     //Permite mostrar el contenido de la notificación
                                     messageCenter.loadPendingMessage()
                                 
@@ -150,6 +151,7 @@ struct La_LeyApp: App {
                 }
 
                 ConsciousDashboardSnapshotPublisher.refresh()
+                consumeControlCenterDestination()
 
                 self.frasesModel.getAllFrases() //Carga las frases
                 
@@ -166,6 +168,21 @@ struct La_LeyApp: App {
     }
 
     @MainActor
+    private func consumeControlCenterDestination() {
+        let defaults = UserDefaults(suiteName: AppCons.AppGroupName)
+        guard let rawValue = defaults?.string(forKey: "controlCenter.pendingDestination") else {
+            return
+        }
+
+        defaults?.removeObject(forKey: "controlCenter.pendingDestination")
+        guard let url = URL(string: "laley://dashboard/\(rawValue)") else {
+            return
+        }
+
+        openDashboardTool(from: url)
+    }
+
+    @MainActor
     private func openDashboardTool(from url: URL) {
         guard url.scheme == "laley", url.host == "dashboard",
               let tool = url.pathComponents.dropFirst().first else { return }
@@ -175,7 +192,7 @@ struct La_LeyApp: App {
             || (sharedDefaults?.bool(forKey: "purchaseStatus") ?? false)
             || (sharedDefaults?.bool(forKey: "yorjPremium") ?? false)
 
-        if tool != "diario" && !hasPremium {
+        if dashboardToolRequiresPremium(tool) && !hasPremium {
             showWindow(
                 for: PremiumFeaturePreviewView(feature: premiumFeature(forDashboardTool: tool)),
                 environmentObjects: [],
@@ -187,12 +204,50 @@ struct La_LeyApp: App {
         }
 
         switch tool {
+        case "crear-nota":
+            showWindow(for: ControlCenterMacNoteEditorView(), environmentObjects: [], title: "Nueva nota", size: AppCons.windows_size_content, isModal: false)
+        case "crear-nota-voz":
+            showWindow(for: ListNotasViews(), environmentObjects: [], title: "Notas", size: AppCons.windows_size_content, isModal: false)
+        case "crear-diario":
+            showWindow(for: NewDiarioEntryView(), environmentObjects: [settingModel], title: "Nueva entrada de diario", size: AppCons.windows_size_content, isModal: false)
+        case "crear-agenda":
+            showWindow(for: AgendaMainView(presentsNewItemOnAppear: true), environmentObjects: [], title: "Nueva entrada de agenda", size: AppCons.windows_size_content, isModal: false)
+        case "crear-recordatorio":
+            showWindow(
+                for: ReminderEditorView(reminderAEditar: nil, titleAImportar: nil, textoAImportar: nil, onSave: {}),
+                environmentObjects: [],
+                title: "Nuevo recordatorio",
+                size: AppCons.windows_size_content,
+                isModal: false
+            )
+        case "autores":
+            showWindow(for: ControlCenterMacAuthorsView(), environmentObjects: [], title: "Autores", size: AppCons.windows_size_content, isModal: false)
+        case "chat-ia":
+            showWindow(for: ControlCenterMacAIChatView(), environmentObjects: [], title: "Chat IA", size: AppCons.windows_size_content, isModal: false, isIAWindows: true)
+        case "centro-sanador":
+            showWindow(for: CentroSanadorView(embeddedInNavigationStack: true), environmentObjects: [], title: "Centro Sanador", size: AppCons.windows_size_content, isModal: false)
+        case "conferencias":
+            showWindow(for: TxtListView(typeOfContent: .conf, title: "Conferencias"), environmentObjects: [txtcontentModel, settingModel], title: "Conferencias", size: AppCons.windows_size_content, isModal: false)
+        case "resumen-semanal":
+            showWindow(for: WeeklyReviewView(), environmentObjects: [], title: "Resumen semanal", size: AppCons.windows_size_content, isModal: false)
+        case "lector-etiquetas":
+            showWindow(
+                for: DashboardMacHandoffView(tool: "Lector de etiquetas", symbol: "barcode.viewfinder"),
+                environmentObjects: [],
+                title: "Lector de etiquetas",
+                size: AppCons.windows_size_content_small,
+                isModal: false
+            )
         case "metas":
             showWindow(for: GoalsListView(), environmentObjects: [], title: "Metas", size: AppCons.windows_size_content, isModal: false)
         case "agenda":
             showWindow(for: AgendaMainView(), environmentObjects: [], title: "Agenda", size: AppCons.windows_size_content, isModal: false)
         case "diario":
             showWindow(for: DiarioListView(), environmentObjects: [settingModel], title: "Diario", size: AppCons.windows_size_content, isModal: false)
+        case "notas":
+            showWindow(for: ListNotasViews(), environmentObjects: [], title: "Notas", size: AppCons.windows_size_content, isModal: false)
+        case "calma":
+            showWindow(for: EspacioCalmaView(), environmentObjects: [], title: "Espacio Calma", size: AppCons.windows_size_content, isModal: false)
         case "ritual-matutino":
             showWindow(for: MorningRitualMainView(), environmentObjects: [], title: "Ritual Matutino", size: AppCons.windows_size_content, isModal: false)
         case "cierre":
@@ -206,13 +261,29 @@ struct La_LeyApp: App {
         }
     }
 
+    private func dashboardToolRequiresPremium(_ tool: String) -> Bool {
+        switch tool {
+        case "crear-nota", "crear-nota-voz", "crear-diario", "diario", "notas",
+             "autores", "conferencias":
+            false
+        default:
+            true
+        }
+    }
+
     private func premiumFeature(forDashboardTool tool: String) -> PremiumFeatureID {
         switch tool {
         case "metas": .goals
         case "presencia": .consciousPresence
-        case "agenda": .agenda
+        case "crear-agenda", "agenda": .agenda
+        case "crear-recordatorio": .smartReminders
+        case "calma": .calmSpace
         case "ritual-matutino", "cierre": .consciousDailyCycle
         case "coherencia": .cardioCoherence
+        case "chat-ia": .integratedAI
+        case "centro-sanador": .healingCenter
+        case "resumen-semanal": .weeklyReview
+        case "lector-etiquetas": .labelScanner
         default: .extendedContent
         }
     }
@@ -222,6 +293,98 @@ struct La_LeyApp: App {
     
     
     
+}
+
+private struct ControlCenterMacAuthorsView: View {
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: 0) {
+                    NavigationLink {
+                        NevilleAuthorView()
+                    } label: {
+                        authorRow("Neville Goddard", systemImage: "person.text.rectangle")
+                    }
+
+                    Divider()
+
+                    NavigationLink {
+                        BruceLiptonAuthorView()
+                    } label: {
+                        authorRow("Bruce Lipton", systemImage: "leaf")
+                    }
+
+                    Divider()
+
+                    NavigationLink {
+                        JoeDispenzaAuthorView()
+                    } label: {
+                        authorRow("Joe Dispenza", systemImage: "brain.head.profile")
+                    }
+
+                    Divider()
+
+                    NavigationLink {
+                        GreggBradenAuthorView()
+                    } label: {
+                        authorRow("Gregg Braden", systemImage: "globe.americas")
+                    }
+                }
+                .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 20))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 20)
+                        .stroke(.secondary.opacity(0.25), lineWidth: 1)
+                }
+                .padding()
+            }
+            .navigationTitle("Autores")
+        }
+    }
+
+    private func authorRow(_ title: LocalizedStringKey, systemImage: String) -> some View {
+        HStack(spacing: 14) {
+            Image(systemName: systemImage)
+                .font(.title3)
+                .frame(width: 32)
+                .foregroundStyle(.orange)
+
+            Text(title)
+                .foregroundStyle(.primary)
+
+            Spacer()
+
+            Image(systemName: "chevron.right")
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(.tertiary)
+        }
+        .contentShape(Rectangle())
+        .padding(.horizontal, 18)
+        .padding(.vertical, 16)
+    }
+}
+
+private struct ControlCenterMacAIChatView: View {
+    @ViewBuilder
+    var body: some View {
+        if #available(macOS 26.0, *) {
+            ChatView(textoACargar: nil)
+        } else {
+            ContentUnavailableView(
+                "Chat IA no disponible",
+                systemImage: "ellipsis.message",
+                description: Text("Requiere macOS 26 o posterior.")
+            )
+        }
+    }
+}
+
+private struct ControlCenterMacNoteEditorView: View {
+    @StateObject private var notesModel = NotasModel()
+
+    var body: some View {
+        AddNotasView()
+            .environmentObject(notesModel)
+    }
 }
 
 private struct DashboardMacHandoffView: View {

@@ -92,8 +92,11 @@ enum CheckFilter: String, CaseIterable, Identifiable {
 }
 
 struct AgendaMainView: View {
+    private let presentsNewItemOnAppear: Bool
+
     @StateObject private var viewModel = AgendaViewModel()
     @State private var editorItem: AgendaItemData?
+    @State private var hasPresentedInitialItem = false
     @State private var showReminderManager = false
     @State private var isCalendarExpanded = false
     @State private var expandedContentIDs: Set<UUID> = []
@@ -326,6 +329,10 @@ struct AgendaMainView: View {
         } label: {
             Image(systemName: "ellipsis.circle")
         }
+    }
+
+    init(presentsNewItemOnAppear: Bool = false) {
+        self.presentsNewItemOnAppear = presentsNewItemOnAppear
     }
 
     private var addButton: some View {
@@ -829,6 +836,12 @@ struct AgendaMainView: View {
         viewModel.load()
         displayedMonth = monthStart(of: viewModel.selectedDate)
         animatePetEntranceIfNeeded()
+
+        if presentsNewItemOnAppear && !hasPresentedInitialItem {
+            hasPresentedInitialItem = true
+            editorItem = viewModel.create(selectedDate: viewModel.selectedDate)
+        }
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
             evaluateInitialTodayAvailability()
         }

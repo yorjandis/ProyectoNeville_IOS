@@ -5,6 +5,7 @@
 //  Created by Yorjandis PG on 17/12/25.
 //
 import SwiftUI
+import CoreData
 
 //Permite ver y editar el campo nota
 struct EditNoteTxt:View {

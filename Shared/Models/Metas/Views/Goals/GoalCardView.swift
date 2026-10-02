@@ -8,6 +8,7 @@
 //Tarjeta de Objetivo
 
 import SwiftUI
+import CoreData
 
 
 

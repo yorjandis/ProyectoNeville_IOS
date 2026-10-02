@@ -6,6 +6,7 @@ import CoreData
 struct ContentView: View{
     
     @EnvironmentObject private var settingModel: SettingModel
+    @Environment(\.scenePhase) private var scenePhase
     
     @State var showSheetDiario = false
     @State var showSheetNotas = false
@@ -50,6 +51,12 @@ struct ContentView: View{
                     default : break
                 }
             })
+            .onAppear(perform: consumeControlCenterDestination)
+            .onChange(of: scenePhase) { _, phase in
+                if phase == .active {
+                    consumeControlCenterDestination()
+                }
+            }
             .sheet(isPresented: $showSheetDiario, content: {
                 DiarioListView()
             })
@@ -80,12 +87,37 @@ struct ContentView: View{
         
     }
 
+    private func consumeControlCenterDestination() {
+        let defaults = UserDefaults(suiteName: AppCons.AppGroupName)
+        guard let rawValue = defaults?.string(forKey: "controlCenter.pendingDestination") else {
+            return
+        }
+
+        defaults?.removeObject(forKey: "controlCenter.pendingDestination")
+        dashboardDestination = DashboardDestination(rawValue: rawValue)
+    }
+
     @ViewBuilder
     private func dashboardView(for destination: DashboardDestination) -> some View {
         if destination.requiresPremium && !(purchaseStatus || yorjPremium) {
             PremiumFeaturePreviewView(feature: destination.premiumFeature)
         } else {
             switch destination {
+            case .crearNota:
+                ControlCenterNoteEditorView()
+            case .crearNotaVoz:
+                ControlCenterVoiceNoteEditorView()
+            case .crearDiario:
+                NewDiarioEntryView()
+            case .crearAgenda:
+                AgendaMainView(presentsNewItemOnAppear: true)
+            case .crearRecordatorio:
+                ReminderEditorView(
+                    reminderAEditar: nil,
+                    titleAImportar: nil,
+                    textoAImportar: nil,
+                    onSave: {}
+                )
             case .metas:
                 GoalsListView()
             case .presencia:
@@ -94,12 +126,28 @@ struct ContentView: View{
                 AgendaMainView()
             case .diario:
                 DiarioListView()
+            case .notas:
+                ListNotasViews()
+            case .calma:
+                EspacioCalmaView()
             case .ritualMatutino:
                 MorningRitualMainView()
             case .cierre:
                 RitualEveningReviewEntryView()
             case .coherencia:
                 CardioCoherenceWelcomeFlowView()
+            case .autores:
+                ControlCenterAuthorsView()
+            case .chatIA:
+                ControlCenterAIChatView()
+            case .centroSanador:
+                CentroSanadorView(embeddedInNavigationStack: true)
+            case .conferencias:
+                TxtListView(typeOfContent: .conf, title: L10n.exact("Conferencias"))
+            case .resumenSemanal:
+                WeeklyReviewView()
+            case .lectorEtiquetas:
+                LectorEtiquetasView()
             }
         }
     }
@@ -109,21 +157,37 @@ struct ContentView: View{
 }//struct
 
 private enum DashboardDestination: String, Identifiable {
+    case crearNota = "crear-nota"
+    case crearNotaVoz = "crear-nota-voz"
+    case crearDiario = "crear-diario"
+    case crearAgenda = "crear-agenda"
+    case crearRecordatorio = "crear-recordatorio"
     case metas
     case presencia
     case agenda
     case diario
+    case notas
+    case calma
     case ritualMatutino = "ritual-matutino"
     case cierre
     case coherencia
+    case autores
+    case chatIA = "chat-ia"
+    case centroSanador = "centro-sanador"
+    case conferencias
+    case resumenSemanal = "resumen-semanal"
+    case lectorEtiquetas = "lector-etiquetas"
 
     var id: String { rawValue }
 
     var requiresPremium: Bool {
         switch self {
-        case .diario:
+        case .crearNota, .crearNotaVoz, .crearDiario, .diario, .notas, .autores,
+             .conferencias:
             return false
-        case .metas, .presencia, .agenda, .ritualMatutino, .cierre, .coherencia:
+        case .crearAgenda, .crearRecordatorio, .metas, .presencia, .agenda,
+             .calma, .ritualMatutino, .cierre, .coherencia, .chatIA,
+             .centroSanador, .resumenSemanal, .lectorEtiquetas:
             return true
         }
     }
@@ -134,13 +198,26 @@ private enum DashboardDestination: String, Identifiable {
             .goals
         case .presencia:
             .consciousPresence
-        case .agenda:
+        case .crearAgenda, .agenda:
             .agenda
+        case .crearRecordatorio:
+            .smartReminders
+        case .calma:
+            .calmSpace
         case .ritualMatutino, .cierre:
             .consciousDailyCycle
         case .coherencia:
             .cardioCoherence
-        case .diario:
+        case .chatIA:
+            .integratedAI
+        case .centroSanador:
+            .healingCenter
+        case .resumenSemanal:
+            .weeklyReview
+        case .lectorEtiquetas:
+            .labelScanner
+        case .crearNota, .crearNotaVoz, .crearDiario, .diario, .notas,
+             .autores, .conferencias:
             .extendedContent
         }
     }
@@ -153,6 +230,107 @@ private enum DashboardDestination: String, Identifiable {
 }
 
 
+
+private struct ControlCenterAuthorsView: View {
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: 0) {
+                    NavigationLink {
+                        NevilleAuthorView()
+                    } label: {
+                        authorRow("Neville Goddard", systemImage: "person.text.rectangle")
+                    }
+
+                    Divider()
+
+                    NavigationLink {
+                        BruceLiptonAuthorView()
+                    } label: {
+                        authorRow("Bruce Lipton", systemImage: "leaf")
+                    }
+
+                    Divider()
+
+                    NavigationLink {
+                        JoeDispenzaAuthorView()
+                    } label: {
+                        authorRow("Joe Dispenza", systemImage: "brain.head.profile")
+                    }
+
+                    Divider()
+
+                    NavigationLink {
+                        GreggBradenAuthorView()
+                    } label: {
+                        authorRow("Gregg Braden", systemImage: "globe.americas")
+                    }
+                }
+                .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 20))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 20)
+                        .stroke(.secondary.opacity(0.25), lineWidth: 1)
+                }
+                .padding()
+            }
+            .navigationTitle("Autores")
+        }
+    }
+
+    private func authorRow(_ title: LocalizedStringKey, systemImage: String) -> some View {
+        HStack(spacing: 14) {
+            Image(systemName: systemImage)
+                .font(.title3)
+                .frame(width: 32)
+                .foregroundStyle(.orange)
+
+            Text(title)
+                .foregroundStyle(.primary)
+
+            Spacer()
+
+            Image(systemName: "chevron.right")
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(.tertiary)
+        }
+        .contentShape(Rectangle())
+        .padding(.horizontal, 18)
+        .padding(.vertical, 16)
+    }
+}
+
+private struct ControlCenterAIChatView: View {
+    @ViewBuilder
+    var body: some View {
+        if #available(iOS 26.0, *) {
+            ChatView(textoACargar: nil)
+        } else {
+            ContentUnavailableView(
+                "Chat IA no disponible",
+                systemImage: "ellipsis.message",
+                description: Text("Requiere iOS 26 o posterior.")
+            )
+        }
+    }
+}
+
+private struct ControlCenterNoteEditorView: View {
+    @StateObject private var notesModel = NotasModel()
+
+    var body: some View {
+        AddNotasView()
+            .environmentObject(notesModel)
+    }
+}
+
+private struct ControlCenterVoiceNoteEditorView: View {
+    @StateObject private var notesModel = NotasModel()
+
+    var body: some View {
+        AddVoiceNoteView()
+            .environmentObject(notesModel)
+    }
+}
 
 
 #Preview {

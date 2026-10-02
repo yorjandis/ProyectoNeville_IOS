@@ -8,6 +8,7 @@
 //DETALLE DE OBJETIVO + GRID DE UNIDADES
 
 import SwiftUI
+import CoreData
 
 struct GoalDetailView: View {
 

@@ -8,6 +8,7 @@
 //CELDA DE UNIDAD (IMAGEN + FICHAJE)
 
 import SwiftUI
+import CoreData
 
 
 

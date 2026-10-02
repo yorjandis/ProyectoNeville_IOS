@@ -24,13 +24,130 @@
     "%lld" : {
 
     },
+    "Abre el Centro Sanador." : {
+
+    },
+    "Abre el chat con inteligencia artificial." : {
+
+    },
+    "Abre el diario." : {
+
+    },
+    "Abre el editor para añadir una actividad a la agenda." : {
+
+    },
+    "Abre el editor para crear una nota." : {
+
+    },
+    "Abre el editor para escribir en el diario." : {
+
+    },
+    "Abre el editor para programar un recordatorio." : {
+
+    },
+    "Abre el lector de etiquetas." : {
+
+    },
+    "Abre el listado de conferencias." : {
+
+    },
+    "Abre el resumen semanal." : {
+
+    },
+    "Abre Espacio Calma." : {
+
+    },
+    "Abre la agenda." : {
+
+    },
+    "Abre la grabadora para crear una nota de voz." : {
+
+    },
+    "Abre la práctica de coherencia cardiocerebral." : {
+
+    },
+    "Abre la práctica de presencia consciente." : {
+
+    },
+    "Abre las vistas de los autores." : {
+
+    },
+    "Abre tus metas." : {
+
+    },
+    "Abre tus notas." : {
+
+    },
+    "Abrir en La Ley" : {
+
+    },
     "Actualizado %@" : {
+
+    },
+    "Agenda" : {
 
     },
     "AHORA" : {
 
     },
+    "Autores" : {
+
+    },
+    "Centro Sanador" : {
+
+    },
+    "Chat IA" : {
+
+    },
+    "Coherencia cardiocerebral" : {
+
+    },
+    "Conferencias" : {
+
+    },
+    "Destino" : {
+
+    },
+    "Destino de La Ley" : {
+
+    },
+    "Diario" : {
+
+    },
+    "Espacio Calma" : {
+
+    },
+    "Inicia el ritual de cierre del día." : {
+
+    },
+    "Inicia el ritual matutino." : {
+
+    },
+    "Lector de etiquetas" : {
+
+    },
+    "Metas" : {
+
+    },
     "Metas, presencia, Agenda, Diario, rituales y coherencia en un único estado vivo." : {
+
+    },
+    "Notas" : {
+
+    },
+    "Nueva entrada de agenda" : {
+
+    },
+    "Nueva entrada de diario" : {
+
+    },
+    "Nueva nota" : {
+
+    },
+    "Nueva nota de voz" : {
+
+    },
+    "Nuevo recordatorio" : {
 
     },
     "Panel consciente" : {
@@ -42,7 +159,19 @@
     "pulso" : {
 
     },
+    "Registrar presencia" : {
+
+    },
     "Requiere Premium" : {
+
+    },
+    "Resumen semanal" : {
+
+    },
+    "Ritual de cierre" : {
+
+    },
+    "Ritual matutino" : {
 
     },
     "TU ESTADO · AHORA" : {

@@ -73,6 +73,8 @@
 		9155413E306E5EF8005B772A /* La-Ley-Watch-App-InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 9155413D306E5EF8005B772A /* La-Ley-Watch-App-InfoPlist.xcstrings */; };
 		91554148306E5EF8005B772A /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 91554146306E5EF8005B772A /* InfoPlist.xcstrings */; };
 		91554149306E5EF8005B772A /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 91554147306E5EF8005B772A /* Localizable.xcstrings */; };
+		91555448306EFBA0005B772A /* NevilleControlWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91555447306EFBA0005B772A /* NevilleControlWidgets.swift */; };
+		9155544A306EFBA0005B772A /* NevilleControlWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91555449306EFBA0005B772A /* NevilleControlWidgets.swift */; };
 		918C4B0B2EF4094D00974B54 /* sharedmac.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 918C4AFF2EF4094D00974B54 /* sharedmac.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		919816C42FBC1E1600B24155 /* QuickAddNotaByLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 919816C32FBC1E1600B24155 /* QuickAddNotaByLocationView.swift */; };
 		919831092FBC525C00B24155 /* TPPDF in Frameworks */ = {isa = PBXBuildFile; productRef = 919831082FBC525C00B24155 /* TPPDF */; };
@@ -305,6 +307,8 @@
 		9155413D306E5EF8005B772A /* La-Ley-Watch-App-InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = "La-Ley-Watch-App-InfoPlist.xcstrings"; sourceTree = "<group>"; };
 		91554146306E5EF8005B772A /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
 		91554147306E5EF8005B772A /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		91555447306EFBA0005B772A /* NevilleControlWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NevilleControlWidgets.swift; sourceTree = "<group>"; };
+		91555449306EFBA0005B772A /* NevilleControlWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NevilleControlWidgets.swift; sourceTree = "<group>"; };
 		9173AB7D2F72097F0015A9FD /* Version.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Version.xcconfig; sourceTree = "<group>"; };
 		917C301F2EBCD1E5006BB36E /* La Ley.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "La Ley.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		918C4AFF2EF4094D00974B54 /* sharedmac.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = sharedmac.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1957,6 +1961,7 @@
 				Intens/CrearFraseIntent.swift,
 				Intens/CrearNotaIntent.swift,
 				Intens/GetRandomConfIntent.swift,
+				Intens/OpenNevilleControlDestinationIntent.swift,
 				Services/LocalAutenticationForIntent.swift,
 				Shortcuts/Shortcuts.swift,
 			);
@@ -1973,6 +1978,7 @@
 				Intens/CrearFraseIntent.swift,
 				Intens/CrearNotaIntent.swift,
 				Intens/GetRandomConfIntent.swift,
+				Intens/OpenNevilleControlDestinationIntent.swift,
 				Services/LocalAutenticationForIntent.swift,
 				Shortcuts/Shortcuts.swift,
 			);
@@ -2207,6 +2213,7 @@
 				199DA0682B102AA600DEED62 /* AppIntentWidget.swift */,
 				19E0BE1C2B0C661B00E149A5 /* Assets.xcassets */,
 				19E0BE1E2B0C661B00E149A5 /* Info.plist */,
+				91555447306EFBA0005B772A /* NevilleControlWidgets.swift */,
 			);
 			path = FrasesWigget;
 			sourceTree = "<group>";
@@ -2391,6 +2398,7 @@
 				9CDA01113000000000000001 /* ConsciousDashboardMacBundle.swift */,
 				9CDA01123000000000000001 /* Info.plist */,
 				9CDA01133000000000000001 /* ConsciousDashboardMacWidget.entitlements */,
+				91555449306EFBA0005B772A /* NevilleControlWidgets.swift */,
 			);
 			path = ConsciousDashboardMacWidget;
 			sourceTree = "<group>";
@@ -2922,6 +2930,7 @@
 				19E0BE1B2B0C661A00E149A5 /* FrasesWigget.swift in Sources */,
 				19E0BE192B0C661A00E149A5 /* FrasesWiggetBundle.swift in Sources */,
 				199DA0692B102AA600DEED62 /* AppIntentWidget.swift in Sources */,
+				91555448306EFBA0005B772A /* NevilleControlWidgets.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2994,6 +3003,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9CDA01033000000000000001 /* ConsciousDashboardWidget.swift in Sources */,
+				9155544A306EFBA0005B772A /* NevilleControlWidgets.swift in Sources */,
 				9CDA01043000000000000001 /* Shared/Models/WidgetDashboard/ConsciousDashboardSnapshot.swift in Sources */,
 				9CDA01053000000000000001 /* ConsciousDashboardMacBundle.swift in Sources */,
 			);
