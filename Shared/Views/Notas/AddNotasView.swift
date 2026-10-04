@@ -104,6 +104,16 @@ struct AddNotasView: View {
                                     toMatchPlainText: newValue
                                 )
                             }
+
+                        if let calculation = NotaArithmeticCalculation.calculate(in: nota) {
+                            HStack {
+                                Text("Resultado: \(calculation.formattedValue)")
+                                    .font(.headline.bold())
+                                    .foregroundStyle(.blue)
+                                Spacer(minLength: 0)
+                            }
+                            .accessibilityLabel("Resultado \(calculation.formattedValue)")
+                        }
                     }
                 }
                 Section("Coordenadas (Mapas)") {
@@ -315,6 +325,17 @@ struct NotaChecklistEditor: View {
                 placeholder: "Texto de cierre del checklist",
                 kind: .trailingNote
             )
+
+            if let calculation = NotaArithmeticCalculation.calculate(in: items) {
+                HStack {
+                    Text("Resultado: \(calculation.formattedValue)")
+                        .font(.headline.bold())
+                        .foregroundStyle(.blue)
+                    Spacer(minLength: 0)
+                }
+                .padding(.top, 4)
+                .accessibilityLabel("Resultado \(calculation.formattedValue)")
+            }
         }
         .onAppear {
             if taskItems.isEmpty {

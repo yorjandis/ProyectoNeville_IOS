@@ -227,6 +227,223 @@ struct NotaChecklistItem: Identifiable, Codable, Equatable {
     private static let trailingNoteEndMarker = "[[/NOTA-FINAL]]"
 }
 
+/// Resultado de uno o varios bloques aritméticos introducidos por `=`.
+/// Admite `+`, `-`, `*` y `/`, signos unarios y decimales con punto o coma.
+struct NotaArithmeticCalculation: Equatable {
+    private enum Operation: Character {
+        case addition = "+"
+        case subtraction = "-"
+        case multiplication = "*"
+        case division = "/"
+    }
+
+    let value: Decimal
+
+    var formattedValue: String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.minimumFractionDigits = 0
+        formatter.maximumFractionDigits = 12
+        formatter.usesGroupingSeparator = true
+        return formatter.string(from: NSDecimalNumber(decimal: value))
+            ?? NSDecimalNumber(decimal: value).stringValue
+    }
+
+    /// En checklists solo se admite el primer bloque que aparece en las tareas.
+    static func calculate(in items: [NotaChecklistItem]) -> NotaArithmeticCalculation? {
+        for text in items.filter(\.isTask).map(\.text) {
+            guard let equalsIndex = text.firstIndex(of: "=") else { continue }
+            let block = arithmeticBlock(in: text, after: equalsIndex)
+            guard let result = evaluate(expression: block.expression) else { return nil }
+            return NotaArithmeticCalculation(value: result)
+        }
+        return nil
+    }
+
+    /// En texto plano se evalúan todos los bloques y se suman sus resultados.
+    static func calculate(in text: String) -> NotaArithmeticCalculation? {
+        var results: [Decimal] = []
+        var searchStart = text.startIndex
+
+        while searchStart < text.endIndex,
+              let equalsIndex = text[searchStart...].firstIndex(of: "=") {
+            let block = arithmeticBlock(in: text, after: equalsIndex)
+            if let result = evaluate(expression: block.expression) {
+                results.append(result)
+            }
+            searchStart = block.resumeIndex
+        }
+
+        guard !results.isEmpty else { return nil }
+        var total = Decimal.zero
+        for result in results {
+            guard let updatedTotal = apply(.addition, to: total, and: result) else { return nil }
+            total = updatedTotal
+        }
+        return NotaArithmeticCalculation(value: total)
+    }
+
+    private static func arithmeticBlock(
+        in text: String,
+        after equalsIndex: String.Index
+    ) -> (expression: String, resumeIndex: String.Index) {
+        var index = text.index(after: equalsIndex)
+        while index < text.endIndex, text[index] == " " || text[index] == "\t" {
+            index = text.index(after: index)
+        }
+        let expressionStart = index
+        var previousWasDigit = false
+        var numberHasDecimalSeparator = false
+
+        while index < text.endIndex {
+            let character = text[index]
+            if isASCIIDigit(character) {
+                previousWasDigit = true
+                index = text.index(after: index)
+                continue
+            }
+
+            if Operation(rawValue: character) != nil {
+                previousWasDigit = false
+                numberHasDecimalSeparator = false
+                index = text.index(after: index)
+                continue
+            }
+
+            if character == "." || character == "," {
+                let nextIndex = text.index(after: index)
+                let hasDigitAfterSeparator = nextIndex < text.endIndex
+                    && isASCIIDigit(text[nextIndex])
+                if hasDigitAfterSeparator,
+                   !numberHasDecimalSeparator,
+                   previousWasDigit || index == expressionStart || isOperator(before: index, in: text) {
+                    numberHasDecimalSeparator = true
+                    previousWasDigit = false
+                    index = nextIndex
+                    continue
+                }
+            }
+            break
+        }
+
+        return (String(text[expressionStart..<index]), index)
+    }
+
+    private static func isOperator(before index: String.Index, in text: String) -> Bool {
+        guard index > text.startIndex else { return false }
+        return Operation(rawValue: text[text.index(before: index)]) != nil
+    }
+
+    private static func isASCIIDigit(_ character: Character) -> Bool {
+        character >= "0" && character <= "9"
+    }
+
+    private static func evaluate(expression: String) -> Decimal? {
+        guard !expression.isEmpty else { return nil }
+        var parser = ExpressionParser(expression)
+        return parser.parse()
+    }
+
+    private static func apply(
+        _ operation: Operation,
+        to left: Decimal,
+        and right: Decimal
+    ) -> Decimal? {
+        if operation == .division, right == .zero { return nil }
+
+        let result: Decimal = switch operation {
+        case .addition: left + right
+        case .subtraction: left - right
+        case .multiplication: left * right
+        case .division: left / right
+        }
+        return result.isNaN ? nil : result
+    }
+
+    private struct ExpressionParser {
+        private let characters: [Character]
+        private var index = 0
+
+        init(_ expression: String) {
+            characters = Array(expression)
+        }
+
+        mutating func parse() -> Decimal? {
+            guard let result = parseExpression(), index == characters.count else { return nil }
+            return result.isNaN ? nil : result
+        }
+
+        private mutating func parseExpression() -> Decimal? {
+            guard var result = parseTerm() else { return nil }
+            while let operation = currentOperation,
+                  operation == .addition || operation == .subtraction {
+                index += 1
+                guard let right = parseTerm(),
+                      let updated = NotaArithmeticCalculation.apply(operation, to: result, and: right) else {
+                    return nil
+                }
+                result = updated
+            }
+            return result
+        }
+
+        private mutating func parseTerm() -> Decimal? {
+            guard var result = parseSignedNumber() else { return nil }
+            while let operation = currentOperation,
+                  operation == .multiplication || operation == .division {
+                index += 1
+                guard let right = parseSignedNumber(),
+                      let updated = NotaArithmeticCalculation.apply(operation, to: result, and: right) else {
+                    return nil
+                }
+                result = updated
+            }
+            return result
+        }
+
+        private mutating func parseSignedNumber() -> Decimal? {
+            var sign = Decimal(1)
+            if currentCharacter == "-" {
+                sign = -1
+                index += 1
+            }
+
+            guard let number = parseNumber() else { return nil }
+            return number * sign
+        }
+
+        private mutating func parseNumber() -> Decimal? {
+            let start = index
+            while currentCharacter.map(NotaArithmeticCalculation.isASCIIDigit) == true {
+                index += 1
+            }
+
+            var normalized = String(characters[start..<index])
+            if currentCharacter == "." || currentCharacter == "," {
+                index += 1
+                let fractionalStart = index
+                while currentCharacter.map(NotaArithmeticCalculation.isASCIIDigit) == true {
+                    index += 1
+                }
+                guard fractionalStart < index else { return nil }
+                if normalized.isEmpty { normalized = "0" }
+                normalized += "." + String(characters[fractionalStart..<index])
+            }
+
+            guard !normalized.isEmpty else { return nil }
+            return Decimal(string: normalized, locale: Locale(identifier: "en_US_POSIX"))
+        }
+
+        private var currentCharacter: Character? {
+            index < characters.count ? characters[index] : nil
+        }
+
+        private var currentOperation: Operation? {
+            currentCharacter.flatMap(Operation.init(rawValue:))
+        }
+    }
+}
+
 struct NotaCreationDraft: Sendable {
     let title: String
     let content: String

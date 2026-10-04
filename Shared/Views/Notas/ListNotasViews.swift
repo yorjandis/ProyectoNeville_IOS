@@ -2037,20 +2037,30 @@ struct cardNotas: View{
                     if nota?.isChecklistNote == true {
                         checklistPreview
                     } else {
-                        SelectableText(
-                            text: noteActionText,
-                            fontSize: 20,
-                            fontColor: .black,
-                            alignment: .left
-                        )
+                        VStack(alignment: .leading, spacing: 8) {
+                            SelectableText(
+                                text: noteActionText,
+                                fontSize: 20,
+                                fontColor: .black,
+                                alignment: .left
+                            )
                             .fixedSize(horizontal: false, vertical: true)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .contentShape(RoundedRectangle(cornerRadius: 20))
-                            .padding(.vertical, 4)
-                            .padding(.horizontal, 5)
-                            .background {
-                                LinearGradient(colors: [.white.opacity(0.8), .white.opacity(0.7)], startPoint: .top, endPoint: .bottom)
+
+                            if let calculation = NotaArithmeticCalculation.calculate(in: noteActionText) {
+                                Text("Resultado: \(calculation.formattedValue)")
+                                    .font(.headline.bold())
+                                    .foregroundStyle(.blue)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .accessibilityLabel("Resultado \(calculation.formattedValue)")
                             }
+                        }
+                        .padding(.vertical, 4)
+                        .padding(.horizontal, 5)
+                        .background {
+                            LinearGradient(colors: [.white.opacity(0.8), .white.opacity(0.7)], startPoint: .top, endPoint: .bottom)
+                        }
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -2181,7 +2191,7 @@ struct cardNotas: View{
 
     private var checklistPreview: some View {
         VStack(alignment: .leading, spacing: 8) {
-            ForEach(nota?.checklistItems ?? []) { item in
+            ForEach(nota?.structuredChecklistItems ?? []) { item in
                 if item.isTask {
                     HStack(alignment: .top, spacing: 10) {
                         Button {
@@ -2213,6 +2223,16 @@ struct cardNotas: View{
                     .padding(10)
                     .background(.black.opacity(0.05), in: RoundedRectangle(cornerRadius: 10))
                 }
+            }
+
+            if let items = nota?.structuredChecklistItems,
+               let calculation = NotaArithmeticCalculation.calculate(in: items) {
+                Text("Resultado: \(calculation.formattedValue)")
+                    .font(.headline.bold())
+                    .foregroundStyle(.blue)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.top, 4)
+                    .accessibilityLabel("Resultado \(calculation.formattedValue)")
             }
         }
         .padding(.vertical, 8)

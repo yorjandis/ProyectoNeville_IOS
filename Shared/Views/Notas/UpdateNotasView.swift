@@ -92,6 +92,16 @@ struct UpdateNotasView: View {
                                         toMatchPlainText: newValue
                                     )
                                 }
+
+                        if let calculation = NotaArithmeticCalculation.calculate(in: nota) {
+                            HStack {
+                                Text("Resultado: \(calculation.formattedValue)")
+                                    .font(.headline.bold())
+                                    .foregroundStyle(.blue)
+                                Spacer(minLength: 0)
+                            }
+                            .accessibilityLabel("Resultado \(calculation.formattedValue)")
+                        }
                     }
                 }
                 Section("Coordenadas (Mapas)") {
