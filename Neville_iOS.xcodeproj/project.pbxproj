@@ -1863,6 +1863,7 @@
 				Views/Migration/MigrationIOSAndroidView.swift,
 				Views/Notas/AddNotasView.swift,
 				Views/Notas/ListNotasViews.swift,
+				Views/Notas/NotaArithmeticAdjusterView.swift,
 				Views/Notas/NoteTranslationPreviewView.swift,
 				Views/Notas/UpdateNotasView.swift,
 				Views/Notas/VoiceNotesManagementView.swift,

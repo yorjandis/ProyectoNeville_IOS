@@ -86,6 +86,11 @@ struct UpdateNotasView: View {
                                 .background(.black.opacity(0.02))
                                 .cornerRadius(8)
                                 .onChange(of: nota) { _, newValue in
+                                    let cleanValue = NotaArithmeticCalculation.removingOperationAnnotations(from: newValue)
+                                    if cleanValue != newValue {
+                                        nota = cleanValue
+                                        return
+                                    }
                                     guard !sanitizedChecklistItems.isEmpty else { return }
                                     checklistItems = NotaChecklistItem.updatingTexts(
                                         in: checklistItems,
@@ -95,12 +100,12 @@ struct UpdateNotasView: View {
 
                         if let calculation = NotaArithmeticCalculation.calculate(in: nota) {
                             HStack {
-                                Text("Resultado: \(calculation.formattedValue)")
+                                Text("Suma total: \(calculation.formattedValue)")
                                     .font(.headline.bold())
                                     .foregroundStyle(.blue)
                                 Spacer(minLength: 0)
                             }
-                            .accessibilityLabel("Resultado \(calculation.formattedValue)")
+                            .accessibilityLabel("Suma total \(calculation.formattedValue)")
                         }
                     }
                 }
@@ -210,6 +215,9 @@ struct UpdateNotasView: View {
                         }
                 }
                 #endif
+            }
+            .onAppear {
+                nota = NotaArithmeticCalculation.removingOperationAnnotations(from: nota)
             }
             .alert("Ubicación", isPresented: $showAlert) {
                 Button("Aceptar", role: .cancel) {}

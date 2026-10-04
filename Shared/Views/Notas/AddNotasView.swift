@@ -98,6 +98,11 @@ struct AddNotasView: View {
                             )
                             .frame(height: 250)
                             .onChange(of: nota) { _, newValue in
+                                let cleanValue = NotaArithmeticCalculation.removingOperationAnnotations(from: newValue)
+                                if cleanValue != newValue {
+                                    nota = cleanValue
+                                    return
+                                }
                                 guard !sanitizedChecklistItems.isEmpty else { return }
                                 checklistItems = NotaChecklistItem.updatingTexts(
                                     in: checklistItems,
@@ -107,12 +112,12 @@ struct AddNotasView: View {
 
                         if let calculation = NotaArithmeticCalculation.calculate(in: nota) {
                             HStack {
-                                Text("Resultado: \(calculation.formattedValue)")
+                                Text("Suma total: \(calculation.formattedValue)")
                                     .font(.headline.bold())
                                     .foregroundStyle(.blue)
                                 Spacer(minLength: 0)
                             }
-                            .accessibilityLabel("Resultado \(calculation.formattedValue)")
+                            .accessibilityLabel("Suma total \(calculation.formattedValue)")
                         }
                     }
                 }
@@ -208,7 +213,7 @@ struct AddNotasView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Guardar"){
                         let items = sanitizedChecklistItems
-                        let noteText = isChecklist ? NotaChecklistItem.renderPlainText(items) : nota
+                    let noteText = isChecklist ? NotaChecklistItem.renderPlainText(items) : nota
                         if NotasModel().addNote(nota: noteText, title: title, isFav: false, direccionMapa: direccionMapa, categoria: categoria, isChecklist: isChecklist, checklistItems: items) {
                             
                             self.modelNotas.getAllNotasToModel()
@@ -326,15 +331,21 @@ struct NotaChecklistEditor: View {
                 kind: .trailingNote
             )
 
-            if let calculation = NotaArithmeticCalculation.calculate(in: items) {
+            if let summary = NotaArithmeticCalculation.checklistSummary(in: items) {
                 HStack {
-                    Text("Resultado: \(calculation.formattedValue)")
+                    Text("Suma total: \(summary.formattedTotal)")
                         .font(.headline.bold())
                         .foregroundStyle(.blue)
                     Spacer(minLength: 0)
+                    Text("Pendiente: \(summary.formattedPending)")
+                        .font(.headline.bold())
+                        .foregroundStyle(.orange)
                 }
                 .padding(.top, 4)
-                .accessibilityLabel("Resultado \(calculation.formattedValue)")
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel(
+                    "Suma total \(summary.formattedTotal), pendiente \(summary.formattedPending)"
+                )
             }
         }
         .onAppear {

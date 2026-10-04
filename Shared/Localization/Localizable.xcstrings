@@ -2880,6 +2880,19 @@
         }
       }
     },
+    "%lld bloque(s) · Suma total: %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld bloque(s) · Suma total: %2$@"
+          }
+        }
+      }
+    },
+    "%lld bloque(s) aritmético(s)" : {
+
+    },
     "%lld completadas" : {
       "localizations" : {
         "en" : {
@@ -3198,6 +3211,12 @@
           }
         }
       }
+    },
+    "=" : {
+
+    },
+    "= %@" : {
+
     },
     "☘️ Información sobre la IA utilizada:\n\nLa Inteligencia Artificial se basa en los modelos preinstalados en el dispositivo. Apple garantiza que su acceso es seguro y no involucra procesamiento fuera del dispositivo.\n\nEl modelo es capaz de generar respuestas creativas y eficaces basadas en los conocimientos y enseñanzas de varios autores (Neville Goddard, Joe Dispenza, Bruce Lipton y Gregg Braden). Sin embargo, se recomienda revisar con cuidado cada respuesta y tomar desiciones informadas acerca de ellas.\n\nLos modelos han sido cuidadosamente instruidos y revisados para aminorar los sezgos, errores y que solo responda dentro de los límites del campo de conocimientos establecido para cada autor.\n\nSi siente que una respuesta no resuena con usted, o no es correcta, la mejor desición es seguir su instinto propio.\n\nLa optimización del modelo es un proceso continuo, en cada actualización de la \"La Ley\" será revisado y actualizado." : {
       "extractionState" : "manual",
@@ -5966,6 +5985,9 @@
         }
       }
     },
+    "Ajustar valores" : {
+
+    },
     "Ajustar visualización" : {
       "localizations" : {
         "en" : {
@@ -6315,6 +6337,9 @@
           }
         }
       }
+    },
+    "Añade al menos un valor numérico." : {
+
     },
     "Añade contexto, motivación o instrucciones…" : {
       "localizations" : {
@@ -18483,6 +18508,9 @@
         }
       }
     },
+    "Elemento: %@" : {
+
+    },
     "Elige el Tema:" : {
       "localizations" : {
         "en" : {
@@ -22148,6 +22176,12 @@
           }
         }
       }
+    },
+    "Expresión" : {
+
+    },
+    "Expresión no válida" : {
+
     },
     "Fallos:%d" : {
       "localizations" : {
@@ -27282,6 +27316,9 @@
           }
         }
       }
+    },
+    "Inicio del texto" : {
+
     },
     "Inicio y opciones" : {
       "localizations" : {
@@ -36609,6 +36646,9 @@
         }
       }
     },
+    "Pendiente: %@" : {
+
+    },
     "Pensamiento automático" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -41804,6 +41844,7 @@
       }
     },
     "Resultado: %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -44665,6 +44706,22 @@
           }
         }
       }
+    },
+    "Suma total %@" : {
+
+    },
+    "Suma total %@, pendiente %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Suma total %1$@, pendiente %2$@"
+          }
+        }
+      }
+    },
+    "Suma total: %@" : {
+
     },
     "Sustituir" : {
       "extractionState" : "manual",

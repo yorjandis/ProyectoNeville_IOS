@@ -1481,6 +1481,9 @@ struct cardNotas: View{
     @State private var appleExportAlertMessage = ""
     @State private var showTranslationPreview = false
     @State private var showTranslationPurchase = false
+    @State private var arithmeticAdjustmentSession: NotaArithmeticAdjustmentSession?
+    @State private var locallyAdjustedNoteText: String?
+    @State private var locallyAdjustedChecklistItems: [NotaChecklistItem]?
 #if os(iOS)
     @State private var showVoiceNotes = false
     @State private var showTextToVoiceConversion = false
@@ -1543,7 +1546,25 @@ struct cardNotas: View{
     }
 
     private var noteActionText: String {
-        nota?.noteDisplayText ?? ""
+        locallyAdjustedNoteText ?? nota?.noteDisplayText ?? ""
+    }
+
+    private var displayedChecklistItems: [NotaChecklistItem] {
+        locallyAdjustedChecklistItems ?? nota?.structuredChecklistItems ?? []
+    }
+
+    private var hasArithmeticBlocks: Bool {
+        guard let nota else { return false }
+        if nota.isChecklistNote {
+            return displayedChecklistItems.contains { item in
+                item.isTask
+                    && !NotaArithmeticCalculation.arithmeticExpressions(
+                        in: item.text,
+                        maximumCount: 1
+                    ).isEmpty
+            }
+        }
+        return !NotaArithmeticCalculation.arithmeticExpressions(in: noteActionText).isEmpty
     }
 
     private var availableCategoriesForCurrentNote: [String] {
@@ -1607,6 +1628,17 @@ struct cardNotas: View{
                 if !selectionMode {
                 Menu{
                         Text("< \(nota?.title ?? "") >")
+
+                    if hasArithmeticBlocks {
+                        Button {
+                            arithmeticAdjustmentSession = NotaArithmeticAdjustmentSession(
+                                blocks: makeArithmeticAdjustmentBlocks()
+                            )
+                        } label: {
+                            Label("Ajustar valores", systemImage: "dial.medium")
+                        }
+                    }
+
                     #if os(macOS)
                     Button{
                         if self.nota?.id != nil {
@@ -2010,6 +2042,12 @@ struct cardNotas: View{
                         .tint(.black)
                         .padding(15)
                 }
+                .popover(item: $arithmeticAdjustmentSession) { session in
+                    NotaArithmeticAdjusterView(blocks: session.blocks) { blocks in
+                        saveArithmeticAdjustments(blocks)
+                    }
+                    .presentationCompactAdaptation(.popover)
+                }
                 }
 
             }
@@ -2039,7 +2077,10 @@ struct cardNotas: View{
                     } else {
                         VStack(alignment: .leading, spacing: 8) {
                             SelectableText(
-                                text: noteActionText,
+                                text: NotaArithmeticCalculation.annotatingOperations(
+                                    in: noteActionText,
+                                    includeTrailingExpression: true
+                                ),
                                 fontSize: 20,
                                 fontColor: .black,
                                 alignment: .left
@@ -2049,11 +2090,11 @@ struct cardNotas: View{
                             .contentShape(RoundedRectangle(cornerRadius: 20))
 
                             if let calculation = NotaArithmeticCalculation.calculate(in: noteActionText) {
-                                Text("Resultado: \(calculation.formattedValue)")
+                                Text("Suma total: \(calculation.formattedValue)")
                                     .font(.headline.bold())
                                     .foregroundStyle(.blue)
                                     .frame(maxWidth: .infinity, alignment: .leading)
-                                    .accessibilityLabel("Resultado \(calculation.formattedValue)")
+                                    .accessibilityLabel("Suma total \(calculation.formattedValue)")
                             }
                         }
                         .padding(.vertical, 4)
@@ -2191,7 +2232,7 @@ struct cardNotas: View{
 
     private var checklistPreview: some View {
         VStack(alignment: .leading, spacing: 8) {
-            ForEach(nota?.structuredChecklistItems ?? []) { item in
+            ForEach(displayedChecklistItems) { item in
                 if item.isTask {
                     HStack(alignment: .top, spacing: 10) {
                         Button {
@@ -2204,7 +2245,11 @@ struct cardNotas: View{
                         .buttonStyle(.plain)
 
                         SelectableText(
-                            text: item.text,
+                            text: NotaArithmeticCalculation.annotatingOperations(
+                                in: item.text,
+                                includeTrailingExpression: true,
+                                maximumOperationCount: 1
+                            ),
                             fontSize: 20,
                             fontColor: .black,
                             alignment: .left
@@ -2225,14 +2270,21 @@ struct cardNotas: View{
                 }
             }
 
-            if let items = nota?.structuredChecklistItems,
-               let calculation = NotaArithmeticCalculation.calculate(in: items) {
-                Text("Resultado: \(calculation.formattedValue)")
+            if let summary = NotaArithmeticCalculation.checklistSummary(in: displayedChecklistItems) {
+                HStack {
+                    Text("Suma total: \(summary.formattedTotal)")
+                        .foregroundStyle(.blue)
+                    Spacer(minLength: 12)
+                    Text("Pendiente: \(summary.formattedPending)")
+                        .foregroundStyle(.orange)
+                }
                     .font(.headline.bold())
-                    .foregroundStyle(.blue)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .frame(maxWidth: .infinity)
                     .padding(.top, 4)
-                    .accessibilityLabel("Resultado \(calculation.formattedValue)")
+                    .accessibilityElement(children: .combine)
+                    .accessibilityLabel(
+                        "Suma total \(summary.formattedTotal), pendiente \(summary.formattedPending)"
+                    )
             }
         }
         .padding(.vertical, 8)
@@ -2273,6 +2325,88 @@ struct cardNotas: View{
             }
         } else {
             mapsAlertMessage = L10n.exact("No se pudo actualizar el checklist.")
+            showMapsAlert = true
+        }
+    }
+
+    private func makeArithmeticAdjustmentBlocks() -> [NotaArithmeticAdjustmentBlock] {
+        guard let nota else { return [] }
+        if nota.isChecklistNote {
+            return displayedChecklistItems.flatMap { item -> [NotaArithmeticAdjustmentBlock] in
+                guard item.isTask else { return [] }
+                return NotaArithmeticCalculation.arithmeticExpressionContexts(
+                    in: item.text,
+                    maximumCount: 1
+                ).map {
+                    NotaArithmeticAdjustmentBlock(
+                        sourceItemID: item.id,
+                        contextSnippet: $0.precedingText,
+                        expression: $0.expression
+                    )
+                }
+            }
+        }
+
+        return NotaArithmeticCalculation.arithmeticExpressionContexts(in: noteActionText).map {
+            NotaArithmeticAdjustmentBlock(
+                contextSnippet: $0.precedingText,
+                expression: $0.expression
+            )
+        }
+    }
+
+    private func saveArithmeticAdjustments(_ blocks: [NotaArithmeticAdjustmentBlock]) {
+        guard let nota, let noteID = nota.id else { return }
+
+        let updatedText: String
+        let updatedChecklistItems: [NotaChecklistItem]?
+
+        if nota.isChecklistNote {
+            var items = displayedChecklistItems
+            for index in items.indices where items[index].isTask {
+                guard let block = blocks.first(where: { $0.sourceItemID == items[index].id }),
+                      let newText = NotaArithmeticCalculation.replacingArithmeticExpressions(
+                        in: items[index].text,
+                        with: [block.expression],
+                        maximumCount: 1
+                      ) else {
+                    continue
+                }
+                items[index].text = newText
+            }
+            updatedText = NotaChecklistItem.renderPlainText(items)
+            updatedChecklistItems = items
+        } else {
+            guard let newText = NotaArithmeticCalculation.replacingArithmeticExpressions(
+                in: noteActionText,
+                with: blocks.map(\.expression)
+            ) else {
+                mapsAlertMessage = L10n.exact("No se pudieron aplicar los ajustes aritméticos.")
+                showMapsAlert = true
+                return
+            }
+            updatedText = newText
+            updatedChecklistItems = nil
+        }
+
+        if modelNotas.updateNota(
+            NotaID: noteID,
+            newTitle: nota.title ?? "",
+            newNota: updatedText,
+            isfav: nota.isfav,
+            direccionMapa: nota.value(forKey: "direccionMapa") as? String ?? "",
+            categoria: nota.value(forKey: "categoria") as? String ?? "",
+            isChecklist: nota.isChecklistNote,
+            checklistItems: updatedChecklistItems
+        ) {
+            locallyAdjustedNoteText = updatedText
+            locallyAdjustedChecklistItems = updatedChecklistItems
+            modelNotas.getAllNotasToModel()
+            withAnimation {
+                expandNota = true
+            }
+        } else {
+            mapsAlertMessage = L10n.exact("No se pudieron guardar los ajustes aritméticos.")
             showMapsAlert = true
         }
     }

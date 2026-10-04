@@ -228,8 +228,39 @@ struct NotaChecklistItem: Identifiable, Codable, Equatable {
 }
 
 /// Resultado de uno o varios bloques aritméticos introducidos por `=`.
-/// Admite `+`, `-`, `*` y `/`, signos unarios y decimales con punto o coma.
+/// Admite `+`, `-`, `*` y `/`, signos unarios positivos/negativos y decimales con punto o coma.
 struct NotaArithmeticCalculation: Equatable {
+    struct ChecklistSummary: Equatable {
+        let total: Decimal
+        let checked: Decimal
+
+        var pending: Decimal {
+            total - checked
+        }
+
+        var formattedTotal: String {
+            NotaArithmeticCalculation.format(total)
+        }
+
+        var formattedPending: String {
+            NotaArithmeticCalculation.format(pending)
+        }
+    }
+
+    struct ExpressionContext: Equatable {
+        let expression: String
+        let precedingText: String?
+    }
+
+    struct Individual: Equatable {
+        let expression: String
+        let value: Decimal
+
+        var formattedValue: String {
+            NotaArithmeticCalculation.format(value)
+        }
+    }
+
     private enum Operation: Character {
         case addition = "+"
         case subtraction = "-"
@@ -238,38 +269,195 @@ struct NotaArithmeticCalculation: Equatable {
     }
 
     let value: Decimal
+    let individual: [Individual]
 
     var formattedValue: String {
+        Self.format(value)
+    }
+
+    static func arithmeticExpressions(
+        in text: String,
+        maximumCount: Int? = nil
+    ) -> [String] {
+        arithmeticExpressionContexts(in: text, maximumCount: maximumCount).map(\.expression)
+    }
+
+    static func arithmeticExpressionContexts(
+        in text: String,
+        maximumCount: Int? = nil
+    ) -> [ExpressionContext] {
+        arithmeticBlocks(in: text, maximumCount: maximumCount).compactMap { block in
+            guard evaluate(expression: block.expression) != nil else { return nil }
+            return ExpressionContext(
+                expression: block.expression,
+                precedingText: precedingContext(in: text, before: block.equalsIndex)
+            )
+        }
+    }
+
+    static func replacingArithmeticExpressions(
+        in text: String,
+        with expressions: [String],
+        maximumCount: Int? = nil
+    ) -> String? {
+        let blocks = arithmeticBlocks(in: text, maximumCount: maximumCount).filter {
+            evaluate(expression: $0.expression) != nil
+        }
+        guard blocks.count == expressions.count,
+              expressions.allSatisfy({ evaluate(expression: $0) != nil }) else {
+            return nil
+        }
+
+        var updatedText = text
+        for (block, expression) in zip(blocks, expressions).reversed() {
+            updatedText.replaceSubrange(block.expressionRange, with: expression)
+        }
+        return updatedText
+    }
+
+    static func isValidExpression(_ expression: String) -> Bool {
+        evaluate(expression: expression) != nil
+    }
+
+    static func formattedResult(for expression: String) -> String? {
+        evaluate(expression: expression).map(format)
+    }
+
+    static func formattedTotal(for expressions: [String]) -> String? {
+        guard !expressions.isEmpty else { return nil }
+
+        var total = Decimal.zero
+        for expression in expressions {
+            guard let result = evaluate(expression: expression),
+                  let updatedTotal = apply(.addition, to: total, and: result) else {
+                return nil
+            }
+            total = updatedTotal
+        }
+        return format(total)
+    }
+
+    /// Inserta o actualiza el resultado junto a cada bloque aritmético válido.
+    /// La expresión final puede posponerse hasta guardar para no interrumpir su escritura.
+    static func annotatingOperations(
+        in text: String,
+        includeTrailingExpression: Bool = false,
+        maximumOperationCount: Int? = nil
+    ) -> String {
+        var replacements: [(range: Range<String.Index>, annotation: String)] = []
+        var searchStart = text.startIndex
+        var inspectedOperationCount = 0
+
+        while searchStart < text.endIndex,
+              maximumOperationCount.map({ inspectedOperationCount < $0 }) ?? true,
+              let equalsIndex = text[searchStart...].firstIndex(of: "=") {
+            inspectedOperationCount += 1
+            let block = arithmeticBlock(in: text, after: equalsIndex)
+            let existingAnnotation = annotationRange(in: text, after: block.resumeIndex)
+
+            if isTotalAdjustment(block.expression) {
+                if let existingAnnotation {
+                    replacements.append((range: existingAnnotation, annotation: ""))
+                }
+            } else if let result = evaluate(expression: block.expression),
+               includeTrailingExpression || block.resumeIndex < text.endIndex || existingAnnotation != nil {
+                let replacementEnd = existingAnnotation?.upperBound ?? block.resumeIndex
+                replacements.append((
+                    range: block.resumeIndex..<replacementEnd,
+                    annotation: "->(\(format(result)))"
+                ))
+            }
+
+            searchStart = existingAnnotation?.upperBound ?? block.resumeIndex
+        }
+
+        var annotatedText = text
+        for replacement in replacements.reversed() {
+            annotatedText.replaceSubrange(replacement.range, with: replacement.annotation)
+        }
+        return annotatedText
+    }
+
+    private static func isTotalAdjustment(_ expression: String) -> Bool {
+        expression.first == "+" || expression.first == "-"
+    }
+
+    /// Elimina únicamente las anotaciones generadas junto a expresiones válidas.
+    static func removingOperationAnnotations(from text: String) -> String {
+        var ranges: [Range<String.Index>] = []
+        var searchStart = text.startIndex
+
+        while searchStart < text.endIndex,
+              let equalsIndex = text[searchStart...].firstIndex(of: "=") {
+            let block = arithmeticBlock(in: text, after: equalsIndex)
+            let existingAnnotation = annotationRange(in: text, after: block.resumeIndex)
+            if evaluate(expression: block.expression) != nil, let existingAnnotation {
+                ranges.append(existingAnnotation)
+                searchStart = existingAnnotation.upperBound
+            } else {
+                searchStart = block.resumeIndex
+            }
+        }
+
+        var cleanText = text
+        for range in ranges.reversed() {
+            cleanText.removeSubrange(range)
+        }
+        return cleanText
+    }
+
+    private static func format(_ value: Decimal) -> String {
+        var sourceValue = value
+        var roundedInteger = Decimal.zero
+        NSDecimalRound(&roundedInteger, &sourceValue, 0, .plain)
+        let hasFractionalValue = roundedInteger != value
+
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
-        formatter.minimumFractionDigits = 0
-        formatter.maximumFractionDigits = 12
+        formatter.minimumFractionDigits = hasFractionalValue ? 2 : 0
+        formatter.maximumFractionDigits = 2
         formatter.usesGroupingSeparator = true
         return formatter.string(from: NSDecimalNumber(decimal: value))
             ?? NSDecimalNumber(decimal: value).stringValue
     }
 
-    /// En checklists solo se admite el primer bloque que aparece en las tareas.
+    /// En checklists se admite el primer bloque aritmético de cada tarea.
     static func calculate(in items: [NotaChecklistItem]) -> NotaArithmeticCalculation? {
+        var results: [Individual] = []
+
         for text in items.filter(\.isTask).map(\.text) {
             guard let equalsIndex = text.firstIndex(of: "=") else { continue }
             let block = arithmeticBlock(in: text, after: equalsIndex)
-            guard let result = evaluate(expression: block.expression) else { return nil }
-            return NotaArithmeticCalculation(value: result)
+            guard let result = evaluate(expression: block.expression) else { continue }
+            results.append(Individual(expression: block.expression, value: result))
         }
-        return nil
+
+        guard !results.isEmpty else { return nil }
+        var total = Decimal.zero
+        for result in results {
+            guard let updatedTotal = apply(.addition, to: total, and: result.value) else { return nil }
+            total = updatedTotal
+        }
+        return NotaArithmeticCalculation(value: total, individual: results)
+    }
+
+    static func checklistSummary(in items: [NotaChecklistItem]) -> ChecklistSummary? {
+        guard let totalCalculation = calculate(in: items) else { return nil }
+        let checkedItems = items.filter { $0.isTask && $0.isChecked }
+        let checkedValue = calculate(in: checkedItems)?.value ?? .zero
+        return ChecklistSummary(total: totalCalculation.value, checked: checkedValue)
     }
 
     /// En texto plano se evalúan todos los bloques y se suman sus resultados.
     static func calculate(in text: String) -> NotaArithmeticCalculation? {
-        var results: [Decimal] = []
+        var results: [Individual] = []
         var searchStart = text.startIndex
 
         while searchStart < text.endIndex,
               let equalsIndex = text[searchStart...].firstIndex(of: "=") {
             let block = arithmeticBlock(in: text, after: equalsIndex)
             if let result = evaluate(expression: block.expression) {
-                results.append(result)
+                results.append(Individual(expression: block.expression, value: result))
             }
             searchStart = block.resumeIndex
         }
@@ -277,10 +465,10 @@ struct NotaArithmeticCalculation: Equatable {
         guard !results.isEmpty else { return nil }
         var total = Decimal.zero
         for result in results {
-            guard let updatedTotal = apply(.addition, to: total, and: result) else { return nil }
+            guard let updatedTotal = apply(.addition, to: total, and: result.value) else { return nil }
             total = updatedTotal
         }
-        return NotaArithmeticCalculation(value: total)
+        return NotaArithmeticCalculation(value: total, individual: results)
     }
 
     private static func arithmeticBlock(
@@ -301,6 +489,13 @@ struct NotaArithmeticCalculation: Equatable {
                 previousWasDigit = true
                 index = text.index(after: index)
                 continue
+            }
+
+            if character == "-" {
+                let nextIndex = text.index(after: index)
+                if nextIndex < text.endIndex, text[nextIndex] == ">" {
+                    break
+                }
             }
 
             if Operation(rawValue: character) != nil {
@@ -327,6 +522,59 @@ struct NotaArithmeticCalculation: Equatable {
         }
 
         return (String(text[expressionStart..<index]), index)
+    }
+
+    private static func arithmeticBlocks(
+        in text: String,
+        maximumCount: Int?
+    ) -> [(expression: String, expressionRange: Range<String.Index>, equalsIndex: String.Index)] {
+        var blocks: [(expression: String, expressionRange: Range<String.Index>, equalsIndex: String.Index)] = []
+        var searchStart = text.startIndex
+
+        while searchStart < text.endIndex,
+              maximumCount.map({ blocks.count < $0 }) ?? true,
+              let equalsIndex = text[searchStart...].firstIndex(of: "=") {
+            let block = arithmeticBlock(in: text, after: equalsIndex)
+            let expressionStart = text.index(after: equalsIndex)
+            var trimmedExpressionStart = expressionStart
+            while trimmedExpressionStart < block.resumeIndex,
+                  text[trimmedExpressionStart] == " " || text[trimmedExpressionStart] == "\t" {
+                trimmedExpressionStart = text.index(after: trimmedExpressionStart)
+            }
+            blocks.append((
+                expression: block.expression,
+                expressionRange: trimmedExpressionStart..<block.resumeIndex,
+                equalsIndex: equalsIndex
+            ))
+            searchStart = block.resumeIndex
+        }
+        return blocks
+    }
+
+    private static func precedingContext(
+        in text: String,
+        before equalsIndex: String.Index
+    ) -> String? {
+        let prefix = text[..<equalsIndex]
+        let currentLine = prefix.split(
+            separator: "\n",
+            omittingEmptySubsequences: false
+        ).last ?? prefix[...]
+        let words = currentLine.split(whereSeparator: \Character.isWhitespace)
+        guard !words.isEmpty else { return nil }
+
+        let visibleWords = words.suffix(4).map(String.init).joined(separator: " ")
+        return words.count > 4 ? "… " + visibleWords : visibleWords
+    }
+
+    private static func annotationRange(
+        in text: String,
+        after expressionEnd: String.Index
+    ) -> Range<String.Index>? {
+        guard text[expressionEnd...].hasPrefix("->(") else { return nil }
+        let valueStart = text.index(expressionEnd, offsetBy: 3)
+        guard let closingParenthesis = text[valueStart...].firstIndex(of: ")") else { return nil }
+        return expressionEnd..<text.index(after: closingParenthesis)
     }
 
     private static func isOperator(before index: String.Index, in text: String) -> Bool {
@@ -403,8 +651,10 @@ struct NotaArithmeticCalculation: Equatable {
 
         private mutating func parseSignedNumber() -> Decimal? {
             var sign = Decimal(1)
-            if currentCharacter == "-" {
-                sign = -1
+            if currentCharacter == "+" || currentCharacter == "-" {
+                if currentCharacter == "-" {
+                    sign = -1
+                }
                 index += 1
             }
 
