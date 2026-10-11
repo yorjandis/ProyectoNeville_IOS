@@ -24,8 +24,59 @@ private enum NotasUIConstants {
     static let listBottomPaddingDuringSelection: CGFloat = 120
 
     static let searchPetAssetName = "nati_notas"
-    static let searchPetSize: CGFloat = 96
-    static let searchPetOffset = CGSize(width: 55, height: -10)
+    // Debe caber dentro de los 54 pt de la cabecera para que el recorte del
+    // panel de iPad no oculte ninguna parte de la figura.
+    static let searchPetSize: CGFloat = 50
+    static let searchPetOffset = CGSize(width: 55, height: 0)
+}
+
+#if os(iOS)
+/// Disposición del espacio de trabajo de Notas en iPad. La opción automática
+/// sigue la geometría disponible; las otras dos permiten intercambiar los
+/// diseños sin necesidad de girar el dispositivo.
+private enum NotesIPadLayoutMode: String, CaseIterable {
+    case automatic
+    case sideBySide
+    case stacked
+
+    var title: String {
+        switch self {
+        case .automatic: return "Automático"
+        case .sideBySide: return "Panel lateral"
+        case .stacked: return "Panel superior"
+        }
+    }
+
+    var systemImage: String {
+        switch self {
+        case .automatic: return "rectangle.2.swap"
+        case .sideBySide: return "rectangle.split.2x1"
+        case .stacked: return "rectangle.split.1x2"
+        }
+    }
+
+    func resolvedLayout(for size: CGSize) -> NotesSplitLayout {
+        switch self {
+        case .automatic:
+            return size.width >= size.height ? .sideBySide : .stacked
+        case .sideBySide:
+            return .sideBySide
+        case .stacked:
+            return .stacked
+        }
+    }
+}
+
+private enum NotesSplitLayout {
+    case sideBySide
+    case stacked
+}
+#endif
+
+private enum NotaCardPresentation {
+    case standard
+    case splitList
+    case splitDetail
 }
 
 
@@ -86,6 +137,12 @@ struct ListNotasViews: View {
     @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
     @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) private var yorjPremium: Bool = false
     @AppStorage(PetSettings.isEnabledKey) private var petsEnabled = true
+#if os(iOS)
+    @AppStorage("notesIPadLayoutMode") private var iPadLayoutMode: NotesIPadLayoutMode = .automatic
+    @AppStorage("notesIPadSidePanelFraction") private var iPadSidePanelFraction = 0.34
+    @AppStorage("notesIPadTopPanelFraction") private var iPadTopPanelFraction = 0.38
+    @State private var selectedNotaID: String?
+#endif
     
     
     
@@ -141,6 +198,25 @@ struct ListNotasViews: View {
     private var canAccessNotasContent: Bool {
         canOpenNotas == true || UserDefaults.standard.bool(forKey: AppCons.UD_setting_NotasFaceID) == false
     }
+
+#if os(iOS)
+    private var isIPadInterface: Bool {
+        UIDevice.current.userInterfaceIdiom == .pad
+    }
+
+    private var activeNotaID: String? {
+        if let selectedNotaID,
+           orderedFiltered.contains(where: { $0.id == selectedNotaID }) {
+            return selectedNotaID
+        }
+        return orderedFiltered.first?.id
+    }
+
+    private var activeNota: Notas? {
+        guard let activeNotaID else { return nil }
+        return orderedFiltered.first(where: { $0.id == activeNotaID })
+    }
+#endif
 
     private var hasPremiumPDFAccess: Bool {
         purchaseStatus || yorjPremium
@@ -354,9 +430,15 @@ struct ListNotasViews: View {
             VStack {
                 if canAccessNotasContent {
 #if os(iOS)
-                    notesSearchHeader
-#endif
+                    if isIPadInterface {
+                        iPadNotesWorkspace
+                    } else {
+                        notesSearchHeader
+                        notesScrollView
+                    }
+#else
                     notesScrollView
+#endif
                 } else {
                     Spacer()
                     autenticationView()
@@ -392,6 +474,86 @@ struct ListNotasViews: View {
         }
 #endif
     }
+
+#if os(iOS)
+    /// Espacio de trabajo maestro-detalle exclusivo de iPad. El contenedor de
+    /// división no conoce nada del modelo de Notas, por lo que puede evolucionar
+    /// de forma independiente de la lista y del visor de contenido.
+    private var iPadNotesWorkspace: some View {
+        GeometryReader { proxy in
+            let layout = iPadLayoutMode.resolvedLayout(for: proxy.size)
+
+            AdjustableNotesSplitView(
+                layout: layout,
+                primaryFraction: layout == .sideBySide
+                    ? $iPadSidePanelFraction
+                    : $iPadTopPanelFraction,
+                minimumPrimaryLength: layout == .sideBySide ? 300 : 190,
+                minimumSecondaryLength: layout == .sideBySide ? 380 : 260
+            ) {
+                iPadNotesListPanel
+            } secondary: {
+                iPadNoteDetailPanel
+            }
+        }
+        .padding(.horizontal, 10)
+        .padding(.bottom, 8)
+    }
+
+    private var iPadNotesListPanel: some View {
+        VStack(spacing: 0) {
+            notesSearchHeader
+            Divider()
+            notesScrollView
+        }
+        .background(.thinMaterial)
+        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .stroke(.white.opacity(0.45), lineWidth: 1)
+        }
+    }
+
+    @ViewBuilder
+    private var iPadNoteDetailPanel: some View {
+        Group {
+            if let nota = activeNota {
+                ScrollView {
+                    cardNotas(
+                        nota: nota,
+                        selectionMode: false,
+                        isSelected: false,
+                        onSelectionToggle: {},
+                        presentation: .splitDetail,
+                        isActiveInSplitView: true,
+                        onActivate: {}
+                    )
+                    .id(nota.id)
+                    .environmentObject(modelNotas)
+                    .padding(.vertical, 4)
+                }
+            } else {
+                VStack(spacing: 14) {
+                    Image(systemName: "note.text")
+                        .font(.system(size: 46, weight: .light))
+                        .foregroundStyle(.secondary)
+                    Text("Selecciona una nota")
+                        .font(.title3.weight(.semibold))
+                    Text("Su contenido aparecerá en este panel.")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+        }
+        .background(.ultraThinMaterial)
+        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .stroke(.white.opacity(0.45), lineWidth: 1)
+        }
+    }
+#endif
 
     @ViewBuilder
     private var notesScrollView: some View {
@@ -475,7 +637,10 @@ struct ListNotasViews: View {
                 nota: nota,
                 selectionMode: self.selectionMode,
                 isSelected: self.selectedNotaIDs.contains(nota.id ?? ""),
-                onSelectionToggle: { toggleSelection(for: nota) }
+                onSelectionToggle: { toggleSelection(for: nota) },
+                presentation: cardPresentation,
+                isActiveInSplitView: isNotaActiveInSplitView(nota),
+                onActivate: { activateNotaInSplitView(nota) }
             )
             .environmentObject(self.modelNotas)
         }
@@ -497,10 +662,42 @@ struct ListNotasViews: View {
                 onDeleteCategory: {
                     deleteCategory(section.category)
                 },
-                onSelectionToggle: { nota in toggleSelection(for: nota) }
+                onSelectionToggle: { nota in toggleSelection(for: nota) },
+                presentation: cardPresentation,
+                activeNotaID: currentSplitViewNotaID,
+                onActivate: { nota in activateNotaInSplitView(nota) }
             )
             .environmentObject(self.modelNotas)
         }
+    }
+
+    private var cardPresentation: NotaCardPresentation {
+#if os(iOS)
+        return isIPadInterface ? .splitList : .standard
+#else
+        return .standard
+#endif
+    }
+
+    private var currentSplitViewNotaID: String? {
+#if os(iOS)
+        return isIPadInterface ? activeNotaID : nil
+#else
+        return nil
+#endif
+    }
+
+    private func isNotaActiveInSplitView(_ nota: Notas) -> Bool {
+        currentSplitViewNotaID == nota.id
+    }
+
+    private func activateNotaInSplitView(_ nota: Notas) {
+#if os(iOS)
+        guard isIPadInterface, !selectionMode else { return }
+        withAnimation(.easeInOut(duration: 0.2)) {
+            selectedNotaID = nota.id
+        }
+#endif
     }
 
 #if os(iOS)
@@ -535,6 +732,14 @@ struct ListNotasViews: View {
             filtersMenu
         }
 
+#if os(iOS)
+        if isIPadInterface {
+            ToolbarItem {
+                iPadLayoutMenu
+            }
+        }
+#endif
+
         if #available(iOS 26.0, macOS 26.0, *) {
             ToolbarSpacer(.fixed)
         }
@@ -550,6 +755,14 @@ struct ListNotasViews: View {
             filtersMenu
         }
 
+#if os(iOS)
+        if isIPadInterface {
+            ToolbarItem {
+                iPadLayoutMenu
+            }
+        }
+#endif
+
         if #available(iOS 26.0, macOS 26.0, *) {
             ToolbarSpacer(.fixed)
         }
@@ -558,6 +771,28 @@ struct ListNotasViews: View {
             addNotaButton
         }
     }
+
+#if os(iOS)
+    private var iPadLayoutMenu: some View {
+        Menu {
+            ForEach(NotesIPadLayoutMode.allCases, id: \.rawValue) { mode in
+                Button {
+                    withAnimation(.easeInOut(duration: 0.25)) {
+                        iPadLayoutMode = mode
+                    }
+                } label: {
+                    Label(
+                        mode.title,
+                        systemImage: iPadLayoutMode == mode ? "checkmark.circle.fill" : mode.systemImage
+                    )
+                }
+            }
+        } label: {
+            Image(systemName: iPadLayoutMode.systemImage)
+        }
+        .accessibilityLabel("Disposición de paneles")
+    }
+#endif
 
     @ViewBuilder
     private var filtersMenu: some View {
@@ -1358,6 +1593,118 @@ struct ListNotasViews: View {
 
 }
 
+#if os(iOS)
+/// Contenedor de dos paneles con divisor arrastrable. Solo administra geometría:
+/// el contenido, la selección y la persistencia pertenecen a la vista llamadora.
+private struct AdjustableNotesSplitView<Primary: View, Secondary: View>: View {
+    let layout: NotesSplitLayout
+    @Binding var primaryFraction: Double
+    let minimumPrimaryLength: CGFloat
+    let minimumSecondaryLength: CGFloat
+    @ViewBuilder let primary: () -> Primary
+    @ViewBuilder let secondary: () -> Secondary
+
+    @State private var dragStartFraction: Double?
+
+    private let dividerLength: CGFloat = 18
+
+    var body: some View {
+        GeometryReader { proxy in
+            let totalLength = layout == .sideBySide ? proxy.size.width : proxy.size.height
+            let availableLength = max(0, totalLength - dividerLength)
+            let limits = fractionLimits(availableLength: availableLength)
+            let resolvedFraction = min(max(primaryFraction, limits.lower), limits.upper)
+            let primaryLength = availableLength * resolvedFraction
+
+            Group {
+                if layout == .sideBySide {
+                    HStack(spacing: 0) {
+                        primary()
+                            .frame(width: primaryLength)
+                        divider(availableLength: availableLength, limits: limits)
+                        secondary()
+                            .frame(maxWidth: .infinity)
+                    }
+                } else {
+                    VStack(spacing: 0) {
+                        primary()
+                            .frame(height: primaryLength)
+                        divider(availableLength: availableLength, limits: limits)
+                        secondary()
+                            .frame(maxHeight: .infinity)
+                    }
+                }
+            }
+        }
+    }
+
+    private func divider(
+        availableLength: CGFloat,
+        limits: (lower: Double, upper: Double)
+    ) -> some View {
+        ZStack {
+            Color.clear
+
+            Rectangle()
+                .fill(.secondary.opacity(0.2))
+                .frame(
+                    width: layout == .sideBySide ? 1 : nil,
+                    height: layout == .stacked ? 1 : nil
+                )
+
+            Capsule(style: .continuous)
+                .fill(.secondary.opacity(0.55))
+                .frame(
+                    width: layout == .sideBySide ? 4 : 42,
+                    height: layout == .sideBySide ? 42 : 4
+                )
+        }
+        .frame(
+            width: layout == .sideBySide ? dividerLength : nil,
+            height: layout == .stacked ? dividerLength : nil
+        )
+        .contentShape(Rectangle())
+        .gesture(
+            DragGesture(minimumDistance: 0)
+                .onChanged { value in
+                    guard availableLength > 0 else { return }
+                    if dragStartFraction == nil {
+                        dragStartFraction = primaryFraction
+                    }
+                    let translation = layout == .sideBySide
+                        ? value.translation.width
+                        : value.translation.height
+                    let candidate = (dragStartFraction ?? primaryFraction)
+                        + Double(translation / availableLength)
+                    primaryFraction = min(max(candidate, limits.lower), limits.upper)
+                }
+                .onEnded { _ in
+                    dragStartFraction = nil
+                }
+        )
+        .accessibilityElement()
+        .accessibilityLabel("Ajustar tamaño de los paneles")
+        .accessibilityValue("\(Int(primaryFraction * 100)) por ciento")
+        .accessibilityAdjustableAction { direction in
+            let step = direction == .increment ? 0.05 : -0.05
+            primaryFraction = min(max(primaryFraction + step, limits.lower), limits.upper)
+        }
+    }
+
+    private func fractionLimits(availableLength: CGFloat) -> (lower: Double, upper: Double) {
+        guard availableLength > 0 else { return (0, 1) }
+
+        // En ventanas muy pequeñas reducimos ambos mínimos proporcionalmente
+        // para evitar geometría negativa sin perder la capacidad de arrastre.
+        let effectivePrimaryMinimum = min(minimumPrimaryLength, availableLength * 0.48)
+        let effectiveSecondaryMinimum = min(minimumSecondaryLength, availableLength * 0.48)
+        let lower = Double(effectivePrimaryMinimum / availableLength)
+        let upper = Double((availableLength - effectiveSecondaryMinimum) / availableLength)
+        return (lower, max(lower, upper))
+    }
+}
+#endif
+
 private struct NotesCategorySectionView: View {
     let category: String
     let notas: [Notas]
@@ -1368,6 +1715,9 @@ private struct NotesCategorySectionView: View {
     let onRenameCategory: (String) -> Void
     let onDeleteCategory: () -> Void
     let onSelectionToggle: (Notas) -> Void
+    let presentation: NotaCardPresentation
+    let activeNotaID: String?
+    let onActivate: (Notas) -> Void
 
     @EnvironmentObject private var modelNotas: NotasModel
     @State private var showRenameAlert = false
@@ -1431,7 +1781,10 @@ private struct NotesCategorySectionView: View {
                         nota: nota,
                         selectionMode: selectionMode,
                         isSelected: selectedNotaIDs.contains(nota.id ?? ""),
-                        onSelectionToggle: { onSelectionToggle(nota) }
+                        onSelectionToggle: { onSelectionToggle(nota) },
+                        presentation: presentation,
+                        isActiveInSplitView: activeNotaID == nota.id,
+                        onActivate: { onActivate(nota) }
                     )
                     .environmentObject(modelNotas)
                 }
@@ -1458,11 +1811,14 @@ private struct NotesCategorySectionView: View {
 }
 
 //Card notas:
-struct cardNotas: View{
+private struct cardNotas: View{
     let nota : Notas?
     let selectionMode: Bool
     let isSelected: Bool
     let onSelectionToggle: () -> Void
+    let presentation: NotaCardPresentation
+    let isActiveInSplitView: Bool
+    let onActivate: () -> Void
     @EnvironmentObject var modelNotas : NotasModel
     @State private var expandText = false
     @State private var isfav = false
@@ -1596,7 +1952,7 @@ struct cardNotas: View{
                     .bold()
                     .padding(8)
                     .onTapGesture(count: 2) {
-                        guard !selectionMode else { return }
+                        guard !selectionMode, presentation != .splitList else { return }
                         withAnimation {
                             showUpdateNoteView = true
                         }
@@ -1605,6 +1961,10 @@ struct cardNotas: View{
                     .onTapGesture {
                         guard !selectionMode else {
                             onSelectionToggle()
+                            return
+                        }
+                        if presentation == .splitList {
+                            onActivate()
                             return
                         }
                         withAnimation {
@@ -2061,7 +2421,8 @@ struct cardNotas: View{
                 }
             }
 #if os(iOS)
-            if let nota, nota.isVoiceNote, let noteID = nota.id {
+            if presentation != .splitList,
+               let nota, nota.isVoiceNote, let noteID = nota.id {
                 VoiceNoteCardControls(
                     noteID: noteID,
                     onManage: { showVoiceNotes = true }
@@ -2070,7 +2431,7 @@ struct cardNotas: View{
                     .padding(.vertical, 6)
             }
 #endif
-            if expandNota {
+            if presentation == .splitDetail || (presentation == .standard && expandNota) {
                 VStack(alignment: .leading, spacing: 0) {
                     if nota?.isChecklistNote == true {
                         checklistPreview
@@ -2108,8 +2469,19 @@ struct cardNotas: View{
             }
         }
         .contentShape(Rectangle())
+        .onTapGesture {
+            guard presentation == .splitList else { return }
+            if selectionMode {
+                onSelectionToggle()
+            } else {
+                onActivate()
+            }
+        }
         .onAppear{
-            isfav = nota!.isfav
+            isfav = nota?.isfav ?? false
+            if presentation == .splitDetail {
+                expandNota = true
+            }
         }
         //Dialogo de confirmación para elimnar una nota
         .confirmationDialog("Esta seguro?", isPresented: $showConfirmDialogDeleteNota){
@@ -2187,6 +2559,15 @@ struct cardNotas: View{
         //.background(.ultraThinMaterial)
         .background(LinearGradient(colors: [.white.opacity(0.8), .white.opacity(0.7)], startPoint: .top, endPoint: .bottom))
         .clipShape(RoundedRectangle(cornerRadius: 10))
+        .overlay {
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .stroke(
+                    isActiveInSplitView && presentation == .splitList
+                        ? Color.accentColor
+                        : Color.clear,
+                    lineWidth: 2
+                )
+        }
         .padding(.horizontal, 10)
         .padding(.vertical, 8)
     }

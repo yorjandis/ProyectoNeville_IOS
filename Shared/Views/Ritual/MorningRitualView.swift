@@ -2124,9 +2124,15 @@ struct WellbeingDashboardView: View {
             }
             .background(LinearGradient(colors: [Color(red: 0.06, green: 0.13, blue: 0.26), Color(red: 0.38, green: 0.18, blue: 0.42)], startPoint: .topLeading, endPoint: .bottomTrailing).ignoresSafeArea())
             .toolbar { ToolbarItem { Button("Cerrar") { dismiss() }.foregroundStyle(.white) } }
+#if os(iOS)
+            .agendaPresentation(item: $activeRoute, isAgenda: { $0 == .agenda || $0 == .goals }) { route in
+                dashboardDestination(for: route, selectedDate: day, morning: morning)
+            }
+#else
             .sheet(item: $activeRoute) { route in
                 dashboardDestination(for: route, selectedDate: day, morning: morning)
             }
+#endif
             .sheet(isPresented: $showReview) { RitualEveningReviewEntryView(reviewDate: day) }
         }
     }

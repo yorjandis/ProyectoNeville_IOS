@@ -91,8 +91,104 @@ enum CheckFilter: String, CaseIterable, Identifiable {
     var title: String { L10n.exact(rawValue) }
 }
 
+#if os(iOS)
+/// Replica el selector de disposición de Notas para que Agenda pueda seguir la
+/// orientación del iPad o forzar cualquiera de los dos espacios de trabajo.
+private enum AgendaIPadLayoutMode: String, CaseIterable {
+    case automatic
+    case sideBySide
+    case stacked
+
+    var title: String {
+        switch self {
+        case .automatic: return "Automático"
+        case .sideBySide: return "Panel lateral"
+        case .stacked: return "Panel superior"
+        }
+    }
+
+    var systemImage: String {
+        switch self {
+        case .automatic: return "rectangle.2.swap"
+        case .sideBySide: return "rectangle.split.2x1"
+        case .stacked: return "rectangle.split.1x2"
+        }
+    }
+
+    func resolvedLayout(for size: CGSize) -> AgendaSplitLayout {
+        switch self {
+        case .automatic:
+            return size.width >= size.height ? .sideBySide : .stacked
+        case .sideBySide:
+            return .sideBySide
+        case .stacked:
+            return .stacked
+        }
+    }
+}
+
+private enum AgendaSplitLayout {
+    case sideBySide
+    case stacked
+}
+
+private enum AgendaInlineEditorField: Hashable {
+    case title
+    case location
+    case content
+}
+
+/// Conserva la presentación tipo hoja en iPhone, pero entrega a Agenda una
+/// superficie realmente completa en iPad. Un `sheet` de iPad limita el tamaño
+/// antes de que `AgendaMainView` pueda calcular sus paneles.
+extension View {
+    @ViewBuilder
+    func agendaPresentation<Content: View>(
+        isPresented: Binding<Bool>,
+        @ViewBuilder content: @escaping () -> Content
+    ) -> some View {
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            fullScreenCover(isPresented: isPresented, content: content)
+        } else {
+            sheet(isPresented: isPresented, content: content)
+        }
+    }
+
+    func agendaPresentation<Item: Identifiable, Content: View>(
+        item: Binding<Item?>,
+        isAgenda: @escaping (Item) -> Bool,
+        @ViewBuilder content: @escaping (Item) -> Content
+    ) -> some View {
+        let fullScreenItem = Binding<Item?>(
+            get: {
+                guard UIDevice.current.userInterfaceIdiom == .pad,
+                      let value = item.wrappedValue,
+                      isAgenda(value) else { return nil }
+                return value
+            },
+            set: { item.wrappedValue = $0 }
+        )
+        let sheetItem = Binding<Item?>(
+            get: {
+                guard let value = item.wrappedValue else { return nil }
+                if UIDevice.current.userInterfaceIdiom == .pad && isAgenda(value) {
+                    return nil
+                }
+                return value
+            },
+            set: { item.wrappedValue = $0 }
+        )
+
+        return fullScreenCover(item: fullScreenItem, content: content)
+            .sheet(item: sheetItem, content: content)
+    }
+}
+#endif
+
 struct AgendaMainView: View {
     private let presentsNewItemOnAppear: Bool
+
+    @Environment(\.dismiss) private var dismiss
 
     @StateObject private var viewModel = AgendaViewModel()
     @State private var editorItem: AgendaItemData?
@@ -132,6 +228,25 @@ struct AgendaMainView: View {
     @State private var hasEvaluatedInitialTodayAvailability = false
     @State private var hasCompletedPetEntrance = false
     @State private var checkFilter: CheckFilter = .todas
+#if os(iOS)
+    @AppStorage("agendaIPadLayoutMode") private var iPadLayoutMode: AgendaIPadLayoutMode = .automatic
+    @AppStorage("agendaIPadSidePanelFraction") private var iPadSidePanelFraction = 0.38
+    @AppStorage("agendaIPadTopPanelFraction") private var iPadTopPanelFraction = 0.43
+    @State private var selectedAgendaItemID: UUID?
+    @State private var inlineEditingAgendaItemID: UUID?
+    @State private var inlineDraftTitle = ""
+    @State private var inlineDraftHour = Date()
+    @State private var inlineDraftReminderEnabled = false
+    @State private var inlineDraftPriority: AgendaPriority = .neutral
+    @State private var inlineDraftContent = ""
+    @State private var inlineDraftLocation = ""
+    @StateObject private var inlineLocationCapture = AgendaLocationCapture()
+    @State private var isCapturingInlineLocation = false
+    @State private var showInlineLocationAlert = false
+    @State private var inlineLocationAlertMessage = ""
+    @State private var inlineLocationCanOpenSettings = false
+    @FocusState private var focusedInlineEditorField: AgendaInlineEditorField?
+#endif
     @Environment(\.scenePhase) private var scenePhase
 
     @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
@@ -417,6 +532,568 @@ struct AgendaMainView: View {
         .padding(.horizontal, 10)
     }
 
+#if os(iOS)
+    private var isIPadInterface: Bool {
+        UIDevice.current.userInterfaceIdiom == .pad
+    }
+
+    private var iPadListedItems: [AgendaItemData] {
+        let regularItems = filteredItems(viewModel.itemsForSelectedDay)
+        guard showPastActivities else { return regularItems }
+
+        let startOfToday = Calendar.current.startOfDay(for: Date())
+        let pastItems = filteredItems(
+            viewModel.items.filter {
+                Calendar.current.startOfDay(for: $0.fechaActividad) < startOfToday
+            }
+        )
+
+        // Si el calendario ya apunta a una fecha pasada, evita repetir esa
+        // entrada al activar el botón de actividades pasadas.
+        var seenIDs = Set<UUID>()
+        return (pastItems + regularItems)
+            .filter { seenIDs.insert($0.id).inserted }
+            .sorted { left, right in
+                if Calendar.current.isDate(left.fechaActividad, inSameDayAs: right.fechaActividad) {
+                    return left.hora < right.hora
+                }
+                return left.fechaActividad > right.fechaActividad
+            }
+    }
+
+    private var activeAgendaItem: AgendaItemData? {
+        if let selectedAgendaItemID,
+           let selected = iPadListedItems.first(where: { $0.id == selectedAgendaItemID }) {
+            return selected
+        }
+        return iPadListedItems.first
+    }
+
+    private var activeAgendaItemID: UUID? {
+        activeAgendaItem?.id
+    }
+
+    private var iPadListSections: [(date: Date, items: [AgendaItemData])] {
+        let calendar = Calendar.current
+        let startOfToday = calendar.startOfDay(for: Date())
+        let grouped = Dictionary(grouping: iPadListedItems) {
+            calendar.startOfDay(for: $0.fechaActividad)
+        }
+        let orderedDates = grouped.keys.sorted { left, right in
+            guard showPastActivities else { return left < right }
+            let leftIsPast = left < startOfToday
+            let rightIsPast = right < startOfToday
+            if leftIsPast != rightIsPast {
+                return leftIsPast
+            }
+            return leftIsPast ? left > right : left < right
+        }
+        return orderedDates.map { date in
+            let items = (grouped[date] ?? []).sorted { left, right in
+                left.hora < right.hora
+            }
+            return (date: date, items: items)
+        }
+    }
+
+    /// En apaisado el panel maestro queda a la izquierda. En retrato, el panel
+    /// maestro pasa arriba y organiza lista/calendario en dos columnas.
+    private var iPadAgendaWorkspace: some View {
+        Group {
+            if inlineEditingAgendaItemID != nil {
+                // Durante la edición el detalle ocupa todo el espacio disponible.
+                // Así desaparece el panel adyacente y el sistema puede colocar el
+                // formulario por encima del teclado sin recalcular el divisor.
+                iPadAgendaDetailPanel(showsPet: false)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                    .transition(.opacity)
+            } else {
+                iPadAgendaSplitWorkspace
+                    // Fuera del editor conservamos estable la geometría de los
+                    // paneles ante teclados auxiliares, como el de búsqueda.
+                    .ignoresSafeArea(.keyboard, edges: .bottom)
+                    .transition(.opacity)
+            }
+        }
+        .padding(.horizontal, 10)
+        .padding(.bottom, 8)
+        .onChange(of: activeAgendaItemID) { _, newValue in
+            if let inlineEditingAgendaItemID,
+               inlineEditingAgendaItemID != newValue {
+                cancelInlineAgendaEditing()
+            }
+        }
+    }
+
+    private var iPadAgendaSplitWorkspace: some View {
+        GeometryReader { proxy in
+            let layout = iPadLayoutMode.resolvedLayout(for: proxy.size)
+
+            AdjustableAgendaSplitView(
+                layout: layout,
+                primaryFraction: layout == .sideBySide
+                    ? $iPadSidePanelFraction
+                    : $iPadTopPanelFraction,
+                minimumPrimaryLength: layout == .sideBySide ? 330 : 360,
+                minimumSecondaryLength: layout == .sideBySide ? 420 : 250
+            ) {
+                if layout == .sideBySide {
+                    iPadLandscapeMasterPanel
+                } else {
+                    iPadPortraitMasterPanel
+                }
+            } secondary: {
+                iPadAgendaDetailPanel(showsPet: layout == .sideBySide)
+            }
+        }
+    }
+
+    private var iPadLandscapeMasterPanel: some View {
+        VStack(spacing: 0) {
+            customCalendarView
+                .padding(12)
+
+            Divider()
+            iPadListControls
+            Divider()
+            iPadAgendaList
+        }
+        .agendaIPadPanel(material: .thinMaterial)
+    }
+
+    private var iPadPortraitMasterPanel: some View {
+        HStack(spacing: 0) {
+            VStack(spacing: 0) {
+                iPadListControls
+                Divider()
+                iPadAgendaList
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+            Divider()
+
+            ScrollView {
+                VStack(spacing: 8) {
+                    customCalendarView
+                        .padding(12)
+
+                    if shouldShowEmptyTodayPet {
+                        interactiveAgendaPet(size: 150)
+                            .padding(.horizontal, 12)
+                            .padding(.bottom, 10)
+                            .transition(.opacity)
+                    }
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+        .agendaIPadPanel(material: .thinMaterial)
+    }
+
+    private var iPadListControls: some View {
+        VStack(spacing: 8) {
+            if multiSelectionMode {
+                selectionHeader
+            }
+
+            HStack(spacing: 8) {
+                filterMenu
+                checkFilterMenu
+                Button {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        showPastActivities.toggle()
+                    }
+                } label: {
+                    Label(
+                        "Pasadas",
+                        systemImage: showPastActivities ? "clock.arrow.circlepath" : "clock"
+                    )
+                    .font(.caption.weight(.semibold))
+                }
+                .buttonStyle(.bordered)
+                .tint(showPastActivities ? .black : .gray)
+                .accessibilityLabel(
+                    showPastActivities ? "Ocultar actividades pasadas" : "Mostrar actividades pasadas"
+                )
+                Spacer(minLength: 0)
+            }
+
+            if showSearchBar {
+                searchBarView
+            }
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 8)
+    }
+
+    private var iPadAgendaList: some View {
+        VStack(spacing: 0) {
+            List {
+                if iPadListSections.isEmpty {
+                    VStack(spacing: 8) {
+                        Image(systemName: "calendar.badge.exclamationmark")
+                            .font(.title2)
+                        Text("No hay entradas para este filtro")
+                            .font(.subheadline.weight(.semibold))
+                    }
+                    .foregroundStyle(.black.opacity(0.65))
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 24)
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                }
+
+                ForEach(iPadListSections, id: \.date) { section in
+                    Section {
+                        ForEach(section.items) { item in
+                            agendaCard(item, fixedHeight: false)
+                        }
+                    } header: {
+                        Text(daySectionTitle(section.date))
+                            .foregroundStyle(.black)
+                    }
+                }
+            }
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
+
+            if multiSelectionMode {
+                bulkActionsBar()
+                    .padding(.horizontal, 10)
+                    .padding(.bottom, 8)
+            }
+        }
+    }
+
+    private func iPadAgendaDetailPanel(showsPet: Bool) -> some View {
+        ZStack {
+            if let item = activeAgendaItem {
+                ScrollView {
+                    agendaDetailContent(item)
+                        .id(item.id)
+                        .padding(16)
+                }
+                .scrollDismissesKeyboard(.interactively)
+            } else {
+                VStack(spacing: 14) {
+                    Image(systemName: "calendar.day.timeline.left")
+                        .font(.system(size: 46, weight: .light))
+                        .foregroundStyle(.secondary)
+                    Text("Selecciona una entrada")
+                        .font(.title3.weight(.semibold))
+                    Text("El contenido de la Agenda aparecerá en este panel.")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.horizontal, 24)
+            }
+
+            if showsPet && shouldShowEmptyTodayPet {
+                emptyTodayPet
+                    .transition(.opacity)
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .agendaIPadPanel(material: .ultraThinMaterial)
+    }
+
+    private func agendaDetailContent(_ item: AgendaItemData) -> some View {
+        VStack(alignment: .leading, spacing: 18) {
+            HStack(alignment: .top, spacing: 12) {
+                VStack(alignment: .leading, spacing: 6) {
+                    if isInlineEditing(item) {
+                        TextField("Título", text: $inlineDraftTitle)
+                            .font(.title2.weight(.semibold))
+                            .foregroundStyle(.black)
+                            .textFieldStyle(.plain)
+                            .focused($focusedInlineEditorField, equals: .title)
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 8)
+                            .background(.white.opacity(0.72), in: RoundedRectangle(cornerRadius: 10))
+                    } else {
+                        Text(item.titulo.isEmpty ? "Sin título" : item.titulo)
+                            .font(.title2.weight(.semibold))
+                            .foregroundStyle(.black)
+                    }
+                    Text(item.fechaActividad.formatted(date: .long, time: .omitted))
+                        .font(.subheadline)
+                        .foregroundStyle(.black.opacity(0.7))
+                }
+
+                Spacer()
+
+                if isInlineEditing(item) {
+                    HStack(spacing: 8) {
+                        Button("Cancelar") {
+                            cancelInlineAgendaEditing()
+                        }
+                        .buttonStyle(.bordered)
+                        .foregroundStyle(.black)
+
+                        Button("Actualizar") {
+                            updateInlineAgendaItem(item)
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .tint(.black.opacity(0.82))
+                        .foregroundStyle(.white)
+                        .disabled(inlineDraftTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                    }
+                } else {
+                    Button("Editar") {
+                        beginInlineAgendaEditing(item)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(.black.opacity(0.78))
+                    .foregroundStyle(.white)
+                }
+            }
+
+            if isInlineEditing(item) {
+                agendaDetailSection(title: "Programación", systemImage: "calendar.badge.clock") {
+                    VStack(alignment: .leading, spacing: 14) {
+                        DatePicker(
+                            "Hora",
+                            selection: $inlineDraftHour,
+                            displayedComponents: .hourAndMinute
+                        )
+
+                        Toggle("Activar recordatorio", isOn: $inlineDraftReminderEnabled)
+
+                        Picker("Prioridad", selection: $inlineDraftPriority) {
+                            ForEach(AgendaPriority.allCases) { priority in
+                                Text(priority.title).tag(priority)
+                            }
+                        }
+                        .pickerStyle(.menu)
+                    }
+                    .tint(.black)
+                }
+
+                agendaDetailSection(title: "Lugar", systemImage: "mappin.and.ellipse") {
+                    HStack(alignment: .center, spacing: 10) {
+                        TextField("Lugar o coordenadas", text: $inlineDraftLocation, axis: .vertical)
+                            .textFieldStyle(.plain)
+                            .focused($focusedInlineEditorField, equals: .location)
+                            .padding(10)
+                            .background(.white.opacity(0.72), in: RoundedRectangle(cornerRadius: 10))
+
+                        Button {
+                            captureInlineCurrentLocation()
+                        } label: {
+                            if isCapturingInlineLocation {
+                                ProgressView()
+                                    .controlSize(.small)
+                            } else {
+                                Image(
+                                    systemName: inlineDraftLocation.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                                        ? "location.fill"
+                                        : "checkmark.circle.fill"
+                                )
+                                .foregroundStyle(
+                                    inlineDraftLocation.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                                        ? Color.black
+                                        : Color.green
+                                )
+                            }
+                        }
+                        .buttonStyle(.bordered)
+                        .tint(.black.opacity(0.75))
+                        .disabled(isCapturingInlineLocation)
+                        .accessibilityLabel("Obtener ubicación actual")
+                        .accessibilityHint("Solicita permiso de ubicación y guarda las coordenadas actuales")
+                    }
+                }
+
+                agendaDetailSection(title: "Contenido", systemImage: "text.alignleft") {
+                    TextField("Contenido", text: $inlineDraftContent, axis: .vertical)
+                        .textFieldStyle(.plain)
+                        .lineLimit(5...12)
+                        .focused($focusedInlineEditorField, equals: .content)
+                        .frame(minHeight: 130, alignment: .topLeading)
+                        .padding(8)
+                        .background(.white.opacity(0.72), in: RoundedRectangle(cornerRadius: 10))
+                }
+            } else {
+                HStack(spacing: 10) {
+                    AgendaDetailBadge(
+                        title: item.hora.formatted(date: .omitted, time: .shortened),
+                        systemImage: "clock"
+                    )
+                    AgendaDetailBadge(
+                        title: item.prioridad.title,
+                        systemImage: "flag.fill",
+                        tint: item.prioridad.tint
+                    )
+                    if item.recordatorioActivo {
+                        AgendaDetailBadge(title: "Recordatorio", systemImage: "bell.fill")
+                    }
+                }
+
+                if let completada = item.completada {
+                    AgendaStatusLabel(completada: completada)
+                }
+
+                if !item.lugar.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    agendaDetailSection(title: "Lugar", systemImage: "mappin.and.ellipse") {
+                        Button(item.lugar) {
+                            openInMaps(address: item.lugar)
+                        }
+                        .buttonStyle(.plain)
+                        .foregroundStyle(.black.opacity(0.82))
+                    }
+                }
+
+                let content = item.contenido.trimmingCharacters(in: .whitespacesAndNewlines)
+                if !content.isEmpty {
+                    agendaDetailSection(title: "Contenido", systemImage: "text.alignleft") {
+                        Text(content)
+                            .textSelection(.enabled)
+                    }
+                }
+
+                let note = item.nota.trimmingCharacters(in: .whitespacesAndNewlines)
+                if !note.isEmpty {
+                    agendaDetailSection(title: "Nota", systemImage: "note.text") {
+                        Text(note)
+                            .textSelection(.enabled)
+                    }
+                }
+
+                if content.isEmpty && note.isEmpty {
+                    Text("Esta entrada no contiene texto adicional.")
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .padding(.vertical, 30)
+                }
+            }
+        }
+        .foregroundStyle(.black)
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private func agendaDetailSection<Content: View>(
+        title: String,
+        systemImage: String,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Label(title, systemImage: systemImage)
+                .font(.headline)
+            content()
+                .font(.body)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .padding(14)
+        .background(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(.white.opacity(0.48))
+        )
+    }
+
+    private func isInlineEditing(_ item: AgendaItemData) -> Bool {
+        inlineEditingAgendaItemID == item.id
+    }
+
+    private func beginInlineAgendaEditing(_ item: AgendaItemData) {
+        inlineEditingAgendaItemID = item.id
+        inlineDraftTitle = item.titulo
+        inlineDraftHour = item.hora
+        inlineDraftReminderEnabled = item.recordatorioActivo
+        inlineDraftPriority = item.prioridad
+        inlineDraftContent = item.contenido
+        inlineDraftLocation = item.lugar
+    }
+
+    private func cancelInlineAgendaEditing() {
+        dismissInlineEditorKeyboard()
+
+        // La restauración se pospone un ciclo de la cola principal para que el
+        // teclado comience a cerrarse antes de reconstruir el diseño dividido.
+        DispatchQueue.main.async {
+            inlineEditingAgendaItemID = nil
+            inlineDraftTitle = ""
+            inlineDraftContent = ""
+            inlineDraftLocation = ""
+            isCapturingInlineLocation = false
+        }
+    }
+
+    private func dismissInlineEditorKeyboard() {
+        focusedInlineEditorField = nil
+        UIApplication.shared.sendAction(
+            #selector(UIResponder.resignFirstResponder),
+            to: nil,
+            from: nil,
+            for: nil
+        )
+    }
+
+    private func captureInlineCurrentLocation() {
+        guard !isCapturingInlineLocation else { return }
+        isCapturingInlineLocation = true
+        inlineLocationCanOpenSettings = false
+
+        inlineLocationCapture.captureCurrentAddress { result in
+            isCapturingInlineLocation = false
+            switch result {
+            case .success(let coordinates):
+                inlineDraftLocation = coordinates
+            case .failure(let error):
+                let nsError = error as NSError
+                inlineLocationAlertMessage = error.localizedDescription
+                inlineLocationCanOpenSettings = nsError.domain == "AgendaLocationCapture"
+                    && [0, 1, 3].contains(nsError.code)
+                showInlineLocationAlert = true
+            }
+        }
+    }
+
+    private func openLocationPrivacySettings() {
+        guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else { return }
+        UIApplication.shared.open(settingsURL)
+    }
+
+    private func updateInlineAgendaItem(_ originalItem: AgendaItemData) {
+        guard inlineEditingAgendaItemID == originalItem.id else { return }
+        focusedInlineEditorField = nil
+
+        var updated = originalItem
+        updated.titulo = inlineDraftTitle.trimmingCharacters(in: .whitespacesAndNewlines)
+        updated.hora = inlineDraftHour
+        updated.recordatorioActivo = inlineDraftReminderEnabled
+        updated.prioridad = inlineDraftPriority
+        updated.contenido = inlineDraftContent
+        updated.lugar = inlineDraftLocation.trimmingCharacters(in: .whitespacesAndNewlines)
+        updated.fechaModificacion = Date()
+
+        if inlineDraftReminderEnabled && !viewModel.reminderCanBeEnabled(for: updated) {
+            reminderValidationMessage = L10n.exact("La hora seleccionada ya pasó. Ajusta la hora a un momento futuro para poder activar el recordatorio.")
+            showReminderValidationAlert = true
+            return
+        }
+
+        // Si ya existía un recordatorio, se cancela antes de guardar para que
+        // los cambios de título, hora o contenido queden también reprogramados.
+        if originalItem.recordatorioActivo {
+            viewModel.updateReminder(for: originalItem, enabled: false)
+            updated.reminderID = nil
+        }
+
+        if inlineDraftReminderEnabled {
+            updated.recordatorioActivo = false
+            updated.reminderID = nil
+            viewModel.updateReminder(for: updated, enabled: true)
+        } else {
+            updated.recordatorioActivo = false
+            updated.reminderID = nil
+            viewModel.save(updated)
+        }
+
+        selectedAgendaItemID = updated.id
+        cancelInlineAgendaEditing()
+    }
+#endif
+
     private var selectionHeader: some View {
         HStack {
             Text("Seleccionadas: \(selectedItemsIDs.count)")
@@ -641,6 +1318,18 @@ struct AgendaMainView: View {
                 } message: {
                     Text(mapsAlertMessage)
                 }
+#if os(iOS)
+                .alert("Ubicación", isPresented: $showInlineLocationAlert) {
+                    if inlineLocationCanOpenSettings {
+                        Button("Abrir Ajustes") {
+                            openLocationPrivacySettings()
+                        }
+                    }
+                    Button("Aceptar", role: .cancel) {}
+                } message: {
+                    Text(inlineLocationAlertMessage)
+                }
+#endif
                 .confirmationDialog("¿Eliminar actividad?", isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
                     Button("Solo esta actividad", role: .destructive) {
                         if let itemPendingDelete {
@@ -720,9 +1409,9 @@ struct AgendaMainView: View {
             )
             .ignoresSafeArea()
 
-            mainContent
+            agendaAdaptiveContent
 
-            if shouldShowEmptyTodayPet {
+            if shouldShowRootEmptyTodayPet {
                 emptyTodayPet
                     .transition(.opacity)
             }
@@ -738,6 +1427,27 @@ struct AgendaMainView: View {
         .toolbar {
             agendaToolbar
         }
+    }
+
+    @ViewBuilder
+    private var agendaAdaptiveContent: some View {
+#if os(iOS)
+        if isIPadInterface {
+            iPadAgendaWorkspace
+        } else {
+            mainContent
+        }
+#else
+        mainContent
+#endif
+    }
+
+    private var shouldShowRootEmptyTodayPet: Bool {
+#if os(iOS)
+        return !isIPadInterface && shouldShowEmptyTodayPet
+#else
+        return shouldShowEmptyTodayPet
+#endif
     }
 
     private var hasNoEntriesToday: Bool {
@@ -757,43 +1467,48 @@ struct AgendaMainView: View {
     private var emptyTodayPet: some View {
         VStack {
             Spacer()
-            PetImage(assetName: resolvedPetAssetName)
-                .frame(width: AgendaUIConstants.emptyTodayPetSize)
-                .scaleEffect(hasCompletedPetEntrance ? 1 : 0.18)
-                .opacity(hasCompletedPetEntrance ? 1 : 0)
+            interactiveAgendaPet(size: AgendaUIConstants.emptyTodayPetSize)
                 .offset(
                     x: AgendaUIConstants.emptyTodayPetOffset.width,
                     y: AgendaUIConstants.emptyTodayPetOffset.height
                 )
-                .contentShape(Rectangle())
-                .onTapGesture(count: 2) {
-                    editorItem = viewModel.create(selectedDate: Date())
-                }
-                .contextMenu {
-                    Button {
-                        petsEnabled = false
-                    } label: {
-                        Label("Ocultar mascota", systemImage: "eye.slash")
-                    }
-
-                    Menu {
-                        ForEach(PetSettings.availablePetAssetNames, id: \.self) { assetName in
-                            Button {
-                                selectedPetAssetName = assetName
-                            } label: {
-                                Label(
-                                    PetSettings.displayName(for: assetName),
-                                    systemImage: resolvedPetAssetName == assetName ? "checkmark" : "pawprint"
-                                )
-                            }
-                        }
-                    } label: {
-                        Label("Cambiar mascota", systemImage: "pawprint")
-                    }
-                }
         }
         .accessibilityLabel("Mascota de Agenda")
         .accessibilityHint("Toca dos veces para crear una entrada para hoy. Mantén pulsado para cambiar u ocultar la mascota")
+    }
+
+    private func interactiveAgendaPet(size: CGFloat) -> some View {
+        PetImage(assetName: resolvedPetAssetName)
+            .frame(width: size)
+            .scaleEffect(hasCompletedPetEntrance ? 1 : 0.18)
+            .opacity(hasCompletedPetEntrance ? 1 : 0)
+            .contentShape(Rectangle())
+            .onTapGesture(count: 2) {
+                editorItem = viewModel.create(selectedDate: Date())
+            }
+            .contextMenu {
+                Button {
+                    petsEnabled = false
+                } label: {
+                    Label("Ocultar mascota", systemImage: "eye.slash")
+                }
+
+                Menu {
+                    ForEach(PetSettings.availablePetAssetNames, id: \.self) { assetName in
+                        Button {
+                            selectedPetAssetName = assetName
+                        } label: {
+                            Label(
+                                PetSettings.displayName(for: assetName),
+                                systemImage: resolvedPetAssetName == assetName ? "checkmark" : "pawprint"
+                            )
+                        }
+                    }
+                } label: {
+                    Label("Cambiar mascota", systemImage: "pawprint")
+                }
+            }
+            .accessibilityLabel("Mascota de Agenda")
     }
 
     @ToolbarContentBuilder
@@ -804,6 +1519,21 @@ struct AgendaMainView: View {
                 .font(.headline)
         }
 #if os(iOS)
+        if isIPadInterface {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button {
+                    dismiss()
+                } label: {
+                    Image(systemName: "xmark")
+                }
+                .accessibilityLabel("Cerrar Agenda")
+            }
+        }
+        if isIPadInterface {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                iPadLayoutMenu
+            }
+        }
         ToolbarItem(placement: .navigationBarTrailing) {
             menuGestion
         }
@@ -816,12 +1546,42 @@ struct AgendaMainView: View {
         ToolbarItem(placement: .navigationBarTrailing) {
             addButton
         }
+        if isIPadInterface && inlineEditingAgendaItemID != nil {
+            ToolbarItemGroup(placement: .keyboard) {
+                Spacer()
+                Button("Ocultar teclado") {
+                    focusedInlineEditorField = nil
+                }
+            }
+        }
 #else
         ToolbarItem {
             addButton
         }
 #endif
     }
+
+#if os(iOS)
+    private var iPadLayoutMenu: some View {
+        Menu {
+            ForEach(AgendaIPadLayoutMode.allCases, id: \.rawValue) { mode in
+                Button {
+                    withAnimation(.easeInOut(duration: 0.25)) {
+                        iPadLayoutMode = mode
+                    }
+                } label: {
+                    Label(
+                        mode.title,
+                        systemImage: iPadLayoutMode == mode ? "checkmark.circle.fill" : mode.systemImage
+                    )
+                }
+            }
+        } label: {
+            Image(systemName: iPadLayoutMode.systemImage)
+        }
+        .accessibilityLabel("Disposición de paneles")
+    }
+#endif
 
     private func agendaEditorView(for item: AgendaItemData) -> some View {
         AgendaEditorView(baseItem: item) { updatedItems in
@@ -1085,6 +1845,11 @@ struct AgendaMainView: View {
                 .transition(.opacity.combined(with: .move(edge: .top)))
                 .contentShape(Rectangle())
                 .onTapGesture {
+#if os(iOS)
+                    if isIPadInterface && !multiSelectionMode {
+                        selectedAgendaItemID = item.id
+                    }
+#endif
                     guard !cardDetailText(for: item).isEmpty else { return }
                     withAnimation(.spring(response: 0.32, dampingFraction: 0.86)) {
                         if expandedContentIDs.contains(item.id) {
@@ -1105,12 +1870,21 @@ struct AgendaMainView: View {
         .animation(.spring(response: 0.32, dampingFraction: 0.86), value: expandedContentIDs.contains(item.id))
         .contentShape(Rectangle())
         .onTapGesture {
-            guard multiSelectionMode else { return }
-            if selectedItemsIDs.contains(item.id) {
-                selectedItemsIDs.remove(item.id)
-            } else {
-                selectedItemsIDs.insert(item.id)
+            if multiSelectionMode {
+                if selectedItemsIDs.contains(item.id) {
+                    selectedItemsIDs.remove(item.id)
+                } else {
+                    selectedItemsIDs.insert(item.id)
+                }
+                return
             }
+#if os(iOS)
+            if isIPadInterface {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    selectedAgendaItemID = item.id
+                }
+            }
+#endif
         }
 #if os(iOS)
         .padding(.vertical, 2)
@@ -1124,6 +1898,14 @@ struct AgendaMainView: View {
                 .fill(backgroundColor(for: item.prioridad))
         )
         .clipShape(RoundedRectangle(cornerRadius: AgendaUIConstants.activityCardCornerRadius, style: .continuous))
+#if os(iOS)
+        .overlay {
+            if isIPadInterface && activeAgendaItemID == item.id {
+                RoundedRectangle(cornerRadius: AgendaUIConstants.activityCardCornerRadius, style: .continuous)
+                    .stroke(.black.opacity(0.72), lineWidth: 2)
+            }
+        }
+#endif
 #if os(iOS)
         .listRowInsets(EdgeInsets(top: 2, leading: 0, bottom: 2, trailing: 0))
 #endif
@@ -1560,12 +2342,35 @@ struct AgendaMainView: View {
         let startOfToday = calendar.startOfDay(for: Date())
         let sections = viewModel.collapsedSectionsForActiveFilter
 
-        let past = sections.filter { calendar.startOfDay(for: $0.date) < startOfToday }
+        let past: [(date: Date, items: [AgendaItemData])]
+        if !isCalendarExpanded && viewModel.quickFilter == .todos {
+            // «Todos» debe incluir el histórico completo cuando el calendario
+            // está oculto, no solo las entradas pasadas del mes actual.
+            let pastItems = viewModel.items.filter {
+                calendar.startOfDay(for: $0.fechaActividad) < startOfToday
+            }
+            let groupedPastItems = Dictionary(grouping: pastItems) {
+                calendar.startOfDay(for: $0.fechaActividad)
+            }
+            past = groupedPastItems.keys.sorted(by: >).map { date in
+                let items = (groupedPastItems[date] ?? []).sorted { left, right in
+                    left.hora < right.hora
+                }
+                return (date: date, items: items)
+            }
+        } else {
+            past = sections.filter { calendar.startOfDay(for: $0.date) < startOfToday }
+        }
         let todayAndFuture = sections.filter { calendar.startOfDay(for: $0.date) >= startOfToday }
         return (past: past, todayAndFuture: todayAndFuture)
     }
 
     private func currentListedItems() -> [AgendaItemData] {
+#if os(iOS)
+        if isIPadInterface {
+            return iPadListedItems
+        }
+#endif
         if isCalendarExpanded {
             return filteredItems(viewModel.itemsForSelectedDay)
         }
@@ -1941,6 +2746,142 @@ struct AgendaMainView: View {
         return formatter.string(from: date).capitalized
     }
 }
+
+#if os(iOS)
+private struct AgendaDetailBadge: View {
+    let title: String
+    let systemImage: String
+    var tint: Color = .black.opacity(0.72)
+
+    var body: some View {
+        Label(title, systemImage: systemImage)
+            .font(.subheadline.weight(.medium))
+            .foregroundStyle(tint)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 7)
+            .background(.white.opacity(0.5), in: Capsule(style: .continuous))
+    }
+}
+
+private extension View {
+    func agendaIPadPanel(material: Material) -> some View {
+        background(material)
+            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .stroke(.white.opacity(0.45), lineWidth: 1)
+            }
+    }
+}
+
+/// El mismo comportamiento de divisor empleado por Notas, aislado aquí para
+/// mantener independientes las dos pantallas y sus proporciones persistentes.
+private struct AdjustableAgendaSplitView<Primary: View, Secondary: View>: View {
+    let layout: AgendaSplitLayout
+    @Binding var primaryFraction: Double
+    let minimumPrimaryLength: CGFloat
+    let minimumSecondaryLength: CGFloat
+    @ViewBuilder let primary: () -> Primary
+    @ViewBuilder let secondary: () -> Secondary
+
+    @State private var dragStartFraction: Double?
+
+    private let dividerLength: CGFloat = 18
+
+    var body: some View {
+        GeometryReader { proxy in
+            let totalLength = layout == .sideBySide ? proxy.size.width : proxy.size.height
+            let availableLength = max(0, totalLength - dividerLength)
+            let limits = fractionLimits(availableLength: availableLength)
+            let resolvedFraction = min(max(primaryFraction, limits.lower), limits.upper)
+            let primaryLength = availableLength * resolvedFraction
+
+            Group {
+                if layout == .sideBySide {
+                    HStack(spacing: 0) {
+                        primary()
+                            .frame(width: primaryLength)
+                        divider(availableLength: availableLength, limits: limits)
+                        secondary()
+                            .frame(maxWidth: .infinity)
+                    }
+                } else {
+                    VStack(spacing: 0) {
+                        primary()
+                            .frame(height: primaryLength)
+                        divider(availableLength: availableLength, limits: limits)
+                        secondary()
+                            .frame(maxHeight: .infinity)
+                    }
+                }
+            }
+        }
+    }
+
+    private func divider(
+        availableLength: CGFloat,
+        limits: (lower: Double, upper: Double)
+    ) -> some View {
+        ZStack {
+            Color.clear
+
+            Rectangle()
+                .fill(.secondary.opacity(0.2))
+                .frame(
+                    width: layout == .sideBySide ? 1 : nil,
+                    height: layout == .stacked ? 1 : nil
+                )
+
+            Capsule(style: .continuous)
+                .fill(.secondary.opacity(0.55))
+                .frame(
+                    width: layout == .sideBySide ? 4 : 42,
+                    height: layout == .sideBySide ? 42 : 4
+                )
+        }
+        .frame(
+            width: layout == .sideBySide ? dividerLength : nil,
+            height: layout == .stacked ? dividerLength : nil
+        )
+        .contentShape(Rectangle())
+        .gesture(
+            DragGesture(minimumDistance: 0)
+                .onChanged { value in
+                    guard availableLength > 0 else { return }
+                    if dragStartFraction == nil {
+                        dragStartFraction = primaryFraction
+                    }
+                    let translation = layout == .sideBySide
+                        ? value.translation.width
+                        : value.translation.height
+                    let candidate = (dragStartFraction ?? primaryFraction)
+                        + Double(translation / availableLength)
+                    primaryFraction = min(max(candidate, limits.lower), limits.upper)
+                }
+                .onEnded { _ in
+                    dragStartFraction = nil
+                }
+        )
+        .accessibilityElement()
+        .accessibilityLabel("Ajustar tamaño de los paneles")
+        .accessibilityValue("\(Int(primaryFraction * 100)) por ciento")
+        .accessibilityAdjustableAction { direction in
+            let step = direction == .increment ? 0.05 : -0.05
+            primaryFraction = min(max(primaryFraction + step, limits.lower), limits.upper)
+        }
+    }
+
+    private func fractionLimits(availableLength: CGFloat) -> (lower: Double, upper: Double) {
+        guard availableLength > 0 else { return (0, 1) }
+
+        let effectivePrimaryMinimum = min(minimumPrimaryLength, availableLength * 0.48)
+        let effectiveSecondaryMinimum = min(minimumSecondaryLength, availableLength * 0.48)
+        let lower = Double(effectivePrimaryMinimum / availableLength)
+        let upper = Double((availableLength - effectiveSecondaryMinimum) / availableLength)
+        return (lower, max(lower, upper))
+    }
+}
+#endif
 
 struct AgendaReminderManagementView: View {
     @ObservedObject var viewModel: AgendaViewModel

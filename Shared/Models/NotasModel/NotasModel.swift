@@ -862,7 +862,11 @@ final class NotasModel : ObservableObject  {
         
         do{
             let fetched = try self.context.fetch(fetcRequest)
-            self.notas = deduplicateNotasByID(fetched)
+            let resolvedNotes = deduplicateNotasByID(fetched)
+            #if os(iOS)
+            VoiceNoteAudioStore.reconcileAudio(for: resolvedNotes, in: context)
+            #endif
+            self.notas = resolvedNotes
            
         }
         catch{
@@ -882,6 +886,12 @@ final class NotasModel : ObservableObject  {
             let keeper = notas.max { lhs, rhs in
                 comparableDate(for: lhs) < comparableDate(for: rhs)
             }
+
+            #if os(iOS)
+            if let keeper {
+                VoiceNoteAudioStore.mergePersistedAudioIfNeeded(from: notas, into: keeper)
+            }
+            #endif
 
             for nota in notas where nota.objectID != keeper?.objectID {
                 idsToDelete.insert(nota.objectID)
@@ -963,6 +973,7 @@ final class NotasModel : ObservableObject  {
         row.setValue(Date(), forKey: "fechaModificacion")
 
         do {
+            try VoiceNoteAudioStore.attachLocalAudio(to: row)
             try context.save()
             return true
         } catch {
@@ -991,6 +1002,7 @@ final class NotasModel : ObservableObject  {
         entity.setValue(now, forKey: "fechaModificacion")
 
         do {
+            try VoiceNoteAudioStore.attachLocalAudio(to: entity)
             try context.save()
             return true
         } catch {
@@ -1069,7 +1081,8 @@ final class NotasModel : ObservableObject  {
     ///  - Returns : true si éxito, false otherwise
     func updateNota(NotaID : String, newTitle : String, newNota : String, isfav : Bool? = nil, direccionMapa: String = "", categoria: String = "", isChecklist: Bool? = nil, checklistItems: [NotaChecklistItem]? = nil, preserveVoiceType: Bool = true )->Bool{
         let row = getEntityRow(value: NotaID)
-        let shouldRemainVoiceNote = row.isVoiceNote && preserveVoiceType && isChecklist != true
+        let wasVoiceNote = row.isVoiceNote
+        let shouldRemainVoiceNote = wasVoiceNote && preserveVoiceType && isChecklist != true
         if row.value(forKey: "fechaCreacion") as? Date == nil {
             row.setValue(Date(), forKey: "fechaCreacion")
         }
@@ -1087,6 +1100,11 @@ final class NotasModel : ObservableObject  {
         row.setValue(categoria.trimmingCharacters(in: .whitespacesAndNewlines), forKey: "categoria")
         row.setValue(direccionMapa, forKey: "direccionMapa")
         row.setValue(Date(), forKey: "fechaModificacion")
+        #if os(iOS)
+        if wasVoiceNote && !shouldRemainVoiceNote {
+            VoiceNoteAudioStore.clearPersistedAudio(from: row)
+        }
+        #endif
         do {
             try  self.context.save()
             return true

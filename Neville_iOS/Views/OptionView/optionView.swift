@@ -115,6 +115,41 @@ enum TipeViewOptionTab: String, Identifiable, CaseIterable {
         premiumFeature != nil
     }
 
+    /// Destinos del menú central que necesitan aprovechar todo el lienzo de
+    /// iPad. En iPhone continúan presentándose como una hoja normal.
+    var usesFullScreenPresentationOnIPad: Bool {
+        switch self {
+        case .autorNeville, .autorJoeDispenza, .autorGreggBraden, .autorBruceLipton,
+             .setting, .notas, .agenda, .metas, .revisionSemanal,
+             .lectorEtiquetas, .ritualMatutino:
+            return true
+        default:
+            return false
+        }
+    }
+
+    /// Notas y el lector ya ofrecen controles propios para abandonar la vista.
+    /// El resto de destinos adaptados necesita un cierre visible al dejar de ser
+    /// una hoja descartable mediante gesto.
+    var needsIPadFullScreenCloseButton: Bool {
+        switch self {
+        case .autorNeville, .autorJoeDispenza, .autorGreggBraden, .autorBruceLipton,
+             .setting, .revisionSemanal, .ritualMatutino:
+            return true
+        default:
+            return false
+        }
+    }
+
+    var placesIPadCloseButtonOnTrailingEdge: Bool {
+        switch self {
+        case .autorNeville, .autorJoeDispenza, .autorGreggBraden, .autorBruceLipton:
+            return true
+        default:
+            return false
+        }
+    }
+
     var premiumFeature: PremiumFeatureID? {
         switch self {
         case .agenda: .agenda
@@ -449,10 +484,54 @@ struct optionView: View {
                 .presentationDetents([.large])
                 .presentationDragIndicator(.hidden)
         }
-        .sheet(item: self.$showView) { item in
+        .agendaPresentation(
+            item: self.$showView,
+            isAgenda: { $0.usesFullScreenPresentationOnIPad }
+        ) { item in
+            modalDestination(for: item)
+                .presentationDetents([.large])
+                .presentationDragIndicator(.hidden)
+                .overlay(alignment: .top) {
+                    if UIDevice.current.userInterfaceIdiom == .pad,
+                       item.needsIPadFullScreenCloseButton {
+                        HStack {
+                            if item.placesIPadCloseButtonOnTrailingEdge {
+                                Spacer()
+                            }
+
+                            Button {
+                                showView = nil
+                            } label: {
+                                Label("Cerrar", systemImage: "xmark")
+                                    .font(.callout.weight(.semibold))
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .tint(.black.opacity(0.72))
+                            .accessibilityHint("Cierra la vista y vuelve al menú principal")
+
+                            if !item.placesIPadCloseButtonOnTrailingEdge {
+                                Spacer()
+                            }
+                        }
+                        .padding(.horizontal, 16)
+                        .padding(.top, 8)
+                    }
+                }
+        }
+    }
+
+    /// Algunas pantallas, como Resumen semanal, esperan recibir una pila de
+    /// navegación del contexto que las abre. La presentación modal no hereda la
+    /// pila del menú, así que se la proporcionamos solo en esta ruta para no
+    /// crear una navegación anidada cuando el mismo destino se abre desde la barra.
+    @ViewBuilder
+    private func modalDestination(for item: TipeViewOptionTab) -> some View {
+        if item == .revisionSemanal {
+            NavigationStack {
+                OptionAccessDestinationView(option: item, settingModel: settingModel)
+            }
+        } else {
             OptionAccessDestinationView(option: item, settingModel: settingModel)
-            .presentationDetents([.large])
-            .presentationDragIndicator(.hidden)
         }
     }
 

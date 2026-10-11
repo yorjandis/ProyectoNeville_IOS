@@ -180,6 +180,8 @@
         <attribute name="isfav" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="nota" attributeType="String" defaultValueString=""/>
         <attribute name="title" optional="YES" attributeType="String"/>
+        <attribute name="voiceAudioData" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
+        <attribute name="voiceAudioFileExtension" optional="YES" attributeType="String"/>
     </entity>
     <entity name="PresenciaEventEntity" representedClassName="PresenciaEventEntity" syncable="YES" codeGenerationType="class">
         <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>

@@ -1,21 +1,28 @@
 #if os(iOS)
 import AVFoundation
+import CoreData
 import Observation
 import Speech
 import SwiftUI
 
+@MainActor
 enum VoiceNoteAudioStore {
+    private static let audioDataKey = "voiceAudioData"
+    private static let audioFileExtensionKey = "voiceAudioFileExtension"
+
     static func audioURL(for noteID: String) throws -> URL {
-        let recordedURL = try recordingURL(for: noteID)
-        if FileManager.default.fileExists(atPath: recordedURL.path) {
-            return recordedURL
+        if let localURL = try existingAudioURL(for: noteID) {
+            return localURL
         }
 
-        let synthesizedURL = try synthesizedURL(for: noteID)
-        if FileManager.default.fileExists(atPath: synthesizedURL.path) {
-            return synthesizedURL
+        _ = try restorePersistedAudio(for: noteID)
+        if let restoredURL = try existingAudioURL(for: noteID) {
+            return restoredURL
         }
-        return recordedURL
+
+        // Conserva el comportamiento anterior: el reproductor producirá un
+        // error descriptivo si ni el archivo local ni CloudKit tienen audio.
+        return try recordingURL(for: noteID)
     }
 
     static func recordingURL(for noteID: String) throws -> URL {
@@ -38,6 +45,136 @@ enum VoiceNoteAudioStore {
     static func removeFiles(for noteID: String) {
         guard let directory = try? directory(for: noteID) else { return }
         try? FileManager.default.removeItem(at: directory)
+    }
+
+    /// Copia el archivo local a la entidad sincronizable. Core Data representa
+    /// el binario externo como un asset de CloudKit cuando es necesario.
+    static func attachLocalAudio(to note: Notas) throws {
+        guard let noteID = note.id,
+              let payload = try localAudioPayload(for: noteID) else {
+            return
+        }
+        note.setValue(payload.data, forKey: audioDataKey)
+        note.setValue(payload.fileExtension, forKey: audioFileExtensionKey)
+    }
+
+    static func clearPersistedAudio(from note: Notas) {
+        note.setValue(nil, forKey: audioDataKey)
+        note.setValue(nil, forKey: audioFileExtensionKey)
+    }
+
+    /// Evita perder el asset si una importación antigua produjo registros
+    /// duplicados y el registro más reciente todavía no contenía el binario.
+    static func mergePersistedAudioIfNeeded(from candidates: [Notas], into keeper: Notas) {
+        if let keeperData = keeper.value(forKey: audioDataKey) as? Data,
+           !keeperData.isEmpty {
+            return
+        }
+        guard let donor = candidates.first(where: {
+            guard let data = $0.value(forKey: audioDataKey) as? Data else { return false }
+            return !data.isEmpty
+        }) else {
+            return
+        }
+        keeper.setValue(donor.value(forKey: audioDataKey), forKey: audioDataKey)
+        keeper.setValue(donor.value(forKey: audioFileExtensionKey), forKey: audioFileExtensionKey)
+    }
+
+    /// Actualiza CloudKit después de reemplazar una grabación ya existente.
+    static func persistLocalAudio(for noteID: String) throws {
+        let context = CoreDataController.shared.context
+        let request: NSFetchRequest<Notas> = Notas.fetchRequest()
+        request.fetchLimit = 1
+        request.predicate = NSPredicate(format: "id == %@", noteID)
+        guard let note = try context.fetch(request).first else { return }
+
+        try attachLocalAudio(to: note)
+        note.setValue(Date(), forKey: "fechaModificacion")
+        if context.hasChanges {
+            try context.save()
+        }
+    }
+
+    /// Migra archivos creados por versiones anteriores y materializa en disco
+    /// los audios que acaban de llegar desde CloudKit.
+    static func reconcileAudio(for notes: [Notas], in context: NSManagedObjectContext) {
+        var addedAudioToPersistentStore = false
+
+        for note in notes where note.isVoiceNote {
+            guard let noteID = note.id, !noteID.isEmpty else { continue }
+            let persistedData = note.value(forKey: audioDataKey) as? Data
+            let hasLocalAudio = (try? existingAudioURL(for: noteID)) != nil
+
+            if persistedData == nil, hasLocalAudio {
+                do {
+                    try attachLocalAudio(to: note)
+                    addedAudioToPersistentStore = true
+                } catch {
+                    // Una nota concreta no debe impedir que las demás se carguen.
+                    msg("❌ Error preparando audio de nota para CloudKit: \(error.localizedDescription)")
+                }
+            } else if !hasLocalAudio, persistedData != nil {
+                do {
+                    _ = try restorePersistedAudio(from: note, noteID: noteID)
+                } catch {
+                    msg("❌ Error restaurando audio de nota desde CloudKit: \(error.localizedDescription)")
+                }
+            }
+        }
+
+        guard addedAudioToPersistentStore, context.hasChanges else { return }
+        do {
+            try context.save()
+        } catch {
+            context.rollback()
+            msg("❌ Error sincronizando audios de notas con CloudKit: \(error.localizedDescription)")
+        }
+    }
+
+    @discardableResult
+    private static func restorePersistedAudio(for noteID: String) throws -> Bool {
+        let context = CoreDataController.shared.context
+        let request: NSFetchRequest<Notas> = Notas.fetchRequest()
+        request.fetchLimit = 1
+        request.predicate = NSPredicate(format: "id == %@", noteID)
+        guard let note = try context.fetch(request).first else { return false }
+        return try restorePersistedAudio(from: note, noteID: noteID)
+    }
+
+    @discardableResult
+    private static func restorePersistedAudio(from note: Notas, noteID: String) throws -> Bool {
+        guard let data = note.value(forKey: audioDataKey) as? Data, !data.isEmpty else {
+            return false
+        }
+
+        let storedExtension = (note.value(forKey: audioFileExtensionKey) as? String)?
+            .lowercased()
+        let destinationURL = storedExtension == "caf"
+            ? try synthesizedURL(for: noteID)
+            : try recordingURL(for: noteID)
+        try data.write(to: destinationURL, options: [.atomic])
+        return true
+    }
+
+    private static func existingAudioURL(for noteID: String) throws -> URL? {
+        let recordedURL = try recordingURL(for: noteID)
+        if FileManager.default.fileExists(atPath: recordedURL.path) {
+            return recordedURL
+        }
+
+        let synthesizedURL = try synthesizedURL(for: noteID)
+        if FileManager.default.fileExists(atPath: synthesizedURL.path) {
+            return synthesizedURL
+        }
+        return nil
+    }
+
+    private static func localAudioPayload(for noteID: String) throws -> (data: Data, fileExtension: String)? {
+        guard let url = try existingAudioURL(for: noteID) else { return nil }
+        return (
+            data: try Data(contentsOf: url, options: [.mappedIfSafe]),
+            fileExtension: url.pathExtension.lowercased()
+        )
     }
 
     private static func directory(for noteID: String) throws -> URL {
@@ -243,6 +380,7 @@ final class VoiceNoteAudioModel: NSObject, AVAudioRecorderDelegate, AVAudioPlaye
                 if let transcriptURL = try? VoiceNoteAudioStore.transcriptURL(for: self.noteID) {
                     try? FileManager.default.removeItem(at: transcriptURL)
                 }
+                try VoiceNoteAudioStore.persistLocalAudio(for: self.noteID)
             } catch {
                 self.errorMessage = error.localizedDescription
             }

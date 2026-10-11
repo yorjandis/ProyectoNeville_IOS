@@ -63,10 +63,17 @@ struct ContentView: View{
             .sheet(isPresented: $showSheetNotas, content: {
                 ListNotasViews()
             })
-            .sheet(isPresented: $showSheetMetas, content: {
+            .agendaPresentation(isPresented: $showSheetMetas, content: {
                 GoalsListView()
             })
-            .sheet(item: $dashboardDestination) { destination in
+            .agendaPresentation(item: $dashboardDestination, isAgenda: { destination in
+                switch destination {
+                case .agenda, .crearAgenda, .metas:
+                    return true
+                default:
+                    return false
+                }
+            }) { destination in
                 dashboardView(for: destination)
             }
             .onReceive(NotificationCenter.default.publisher(for: .coreDataStoresDidLoad)) { _ in

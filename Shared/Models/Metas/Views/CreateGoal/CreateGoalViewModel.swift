@@ -159,6 +159,30 @@ final class CreateGoalViewModel: ObservableObject {
         dayPeriod = effectiveDayPeriod
     }
 
+    /// Deja listo el formulario incrustado de iPad para capturar otra meta sin
+    /// cerrar el espacio de trabajo.
+    func reset() {
+        title = ""
+        description = ""
+        note = ""
+        amount = 21
+        unit = .dias
+        frequency = 1
+        scheduleType = .interval
+        weeklyDaysPerWeek = 3
+        selectedWeeklyDays = GoalWeeklySchedule.defaultWeekdays(count: 3)
+        dayPeriod = .anytime
+        usesWeeklyTime = false
+        weeklyTime = GoalWeeklyTime.date(minutes: GoalWeeklyTime.defaultMinutes) ?? Date()
+        customUnitLabel = ""
+        executionTargetValue = 1
+        completionBasis = .executions
+        durationValue = 30
+        durationUnit = .dias
+        specificDates = []
+        unidadesInfo = []
+    }
+
     func apply(_ example: GoalExample, referenceDate: Date = Date()) {
         title = example.title
         description = example.details

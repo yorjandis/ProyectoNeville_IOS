@@ -2981,6 +2981,9 @@
         }
       }
     },
+    "%lld por ciento" : {
+
+    },
     "%lld revisión%@ guardada%@" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4266,6 +4269,9 @@
 
     },
     "Abre tus notas." : {
+
+    },
+    "Abrir Ajustes" : {
 
     },
     "Abrir ayuda urgente" : {
@@ -5984,6 +5990,9 @@
           }
         }
       }
+    },
+    "Ajustar tamaño de los paneles" : {
+
     },
     "Ajustar valores" : {
 
@@ -9980,6 +9989,9 @@
         }
       }
     },
+    "Catálogo" : {
+
+    },
     "Categoría" : {
       "localizations" : {
         "en" : {
@@ -10090,6 +10102,9 @@
           }
         }
       }
+    },
+    "Cerrar Agenda" : {
+
     },
     "Cerrar día" : {
       "localizations" : {
@@ -10458,6 +10473,9 @@
           }
         }
       }
+    },
+    "Cierra la vista y vuelve al menú principal" : {
+
     },
     "Cierre" : {
       "localizations" : {
@@ -14633,6 +14651,9 @@
         }
       }
     },
+    "Crear" : {
+
+    },
     "Crear actividad ${titulo}, fecha ${fecha}, contenido ${contenido}, recordatorio ${activarRecordatorio}" : {
       "localizations" : {
         "en" : {
@@ -17172,6 +17193,9 @@
         }
       }
     },
+    "Disposición de paneles" : {
+
+    },
     "Distribución semanal" : {
       "localizations" : {
         "en" : {
@@ -18068,6 +18092,9 @@
           }
         }
       }
+    },
+    "El contenido de la Agenda aparecerá en este panel." : {
+
     },
     "El contenido de la entrada del Diario" : {
       "localizations" : {
@@ -20594,6 +20621,9 @@
           }
         }
       }
+    },
+    "Esta entrada no contiene texto adicional." : {
+
     },
     "Esta es una respuesta de ejemplo." : {
       "localizations" : {
@@ -24687,6 +24717,9 @@
         }
       }
     },
+    "Hábitos saludables" : {
+
+    },
     "Hábitos Saludables" : {
       "localizations" : {
         "en" : {
@@ -25100,6 +25133,9 @@
           }
         }
       }
+    },
+    "Historial de Metas" : {
+
     },
     "home.progress.goals.multiple" : {
       "extractionState" : "manual",
@@ -30414,6 +30450,9 @@
         }
       }
     },
+    "Lugar o coordenadas" : {
+
+    },
     "Mañana" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -31700,6 +31739,9 @@
         }
       }
     },
+    "Modo de visualización de Metas" : {
+
+    },
     "Modo Edición" : {
       "localizations" : {
         "en" : {
@@ -31846,6 +31888,9 @@
           }
         }
       }
+    },
+    "Mostrar actividades pasadas" : {
+
     },
     "Mostrar anexos" : {
       "localizations" : {
@@ -32853,6 +32898,9 @@
           }
         }
       }
+    },
+    "No hay entradas para este filtro" : {
+
     },
     "No hay frases de usuario todavía." : {
       "localizations" : {
@@ -35345,6 +35393,9 @@
         }
       }
     },
+    "Obtener ubicación actual" : {
+
+    },
     "Obtener Versión Extendida" : {
       "localizations" : {
         "en" : {
@@ -35443,6 +35494,9 @@
           }
         }
       }
+    },
+    "Ocultar actividades pasadas" : {
+
     },
     "Ocultar anexos" : {
       "localizations" : {
@@ -35589,6 +35643,9 @@
           }
         }
       }
+    },
+    "Ocultar teclado" : {
+
     },
     "Ocultar Texto" : {
       "localizations" : {
@@ -36471,6 +36528,9 @@
           }
         }
       }
+    },
+    "Pasadas" : {
+
     },
     "Paso %lld de %lld" : {
       "localizations" : {
@@ -43314,6 +43374,12 @@
         }
       }
     },
+    "Selecciona una entrada" : {
+
+    },
+    "Selecciona una nota" : {
+
+    },
     "Seleccionada: 1" : {
       "localizations" : {
         "en" : {
@@ -44458,6 +44524,9 @@
         }
       }
     },
+    "Solicita permiso de ubicación y guarda las coordenadas actuales" : {
+
+    },
     "Solo esta actividad" : {
       "localizations" : {
         "en" : {
@@ -44584,6 +44653,9 @@
           }
         }
       }
+    },
+    "Su contenido aparecerá en este panel." : {
+
     },
     "Suelo pensar…" : {
       "extractionState" : "manual",
@@ -48700,6 +48772,9 @@
           }
         }
       }
+    },
+    "Volver a Programas" : {
+
     },
     "Volver al inicio" : {
       "localizations" : {

@@ -3,7 +3,13 @@
 import SwiftUI
 import CoreData
 
+enum CreateGoalPresentation {
+    case modal
+    case iPadWorkspace
+}
+
 struct CreateGoalView: View {
+    let presentation: CreateGoalPresentation
     
     @Environment(\.managedObjectContext) private var context
     @Environment(\.dismiss) private var dismiss
@@ -11,8 +17,17 @@ struct CreateGoalView: View {
     @StateObject private var vm = CreateGoalViewModel()
     @State private var showCreateError = false
     @State private var showGoalExamples = false
+    @State private var creationConfirmation: String?
     
     @State private var selectedTab : Int = 0
+#if os(iOS)
+    @State private var selectedCatalogTab = 1
+    @AppStorage("goalsIPadCreationPanelFraction") private var iPadCreationPanelFraction = 0.52
+#endif
+
+    init(presentation: CreateGoalPresentation = .modal) {
+        self.presentation = presentation
+    }
     
     private var metasOrdenadas: [MetasPreestablecidas] {
         MetasPreestablecidas.allCases.sorted {
@@ -82,9 +97,31 @@ struct CreateGoalView: View {
         return nil
     }
     
+    @ViewBuilder
     var body: some View {
+        Group {
+            switch presentation {
+            case .modal:
+                modalContent
+            case .iPadWorkspace:
+#if os(iOS)
+                iPadWorkspaceContent
+#else
+                modalContent
+#endif
+            }
+        }
+        .sheet(isPresented: $showGoalExamples) {
+            GoalExamplesView { example in
+                vm.apply(example)
+                selectedTab = 0
+                creationConfirmation = nil
+            }
+        }
+    }
 
-            NavigationStack {
+    private var modalContent: some View {
+        NavigationStack {
 
                 TabView(selection: self.$selectedTab) {
 
@@ -160,14 +197,98 @@ struct CreateGoalView: View {
 #endif
                     
                 }
-                .sheet(isPresented: $showGoalExamples) {
-                    GoalExamplesView { example in
-                        vm.apply(example)
-                        selectedTab = 0
+        }
+    }
+
+#if os(iOS)
+    private var iPadWorkspaceContent: some View {
+        AdjustableGoalsSplitView(
+            axis: .horizontal,
+            primaryFraction: $iPadCreationPanelFraction,
+            minimumPrimaryLength: 360,
+            minimumSecondaryLength: 340
+        ) {
+            workspacePanel {
+                VStack(spacing: 0) {
+                    HStack(spacing: 12) {
+                        Label("Crear Meta", systemImage: "plus.circle.fill")
+                            .font(.headline)
+                        Spacer()
+
+                        if let creationConfirmation {
+                            Label(creationConfirmation, systemImage: "checkmark.circle.fill")
+                                .font(.caption)
+                                .foregroundStyle(.green)
+                                .lineLimit(1)
+                                .transition(.opacity)
+                        }
+
+                        Button {
+                            focusedField = nil
+                            showGoalExamples = true
+                        } label: {
+                            Image(systemName: "lightbulb.max.fill")
+                        }
+                        .buttonStyle(.bordered)
+                        .accessibilityLabel("Ver ejemplos de metas")
+
+                        Button("Crear") {
+                            focusedField = nil
+                            let createdTitle = vm.title.trimmingCharacters(in: .whitespacesAndNewlines)
+                            if createGoal() {
+                                withAnimation {
+                                    creationConfirmation = "Creada: \(createdTitle)"
+                                }
+                                vm.reset()
+                            }
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .disabled(!vm.isValid)
+                    }
+                    .padding(.horizontal, 14)
+                    .frame(height: 50)
+
+                    Divider()
+                    MetasHome()
+                }
+            }
+        } secondary: {
+            workspacePanel {
+                VStack(spacing: 0) {
+                    Picker("Catálogo", selection: $selectedCatalogTab) {
+                        Label("Hábitos saludables", systemImage: "heart.text.square")
+                            .tag(1)
+                        Label("Programas", systemImage: "list.bullet.rectangle")
+                            .tag(2)
+                    }
+                    .pickerStyle(.segmented)
+                    .padding(10)
+
+                    Divider()
+
+                    if selectedCatalogTab == 1 {
+                        MetasPreestablecidasView()
+                    } else {
+                        ProgramasPreestablecidos()
                     }
                 }
             }
+        }
     }
+
+    private func workspacePanel<Content: View>(
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        content()
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(.ultraThinMaterial)
+            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .stroke(.white.opacity(0.45), lineWidth: 1)
+            }
+    }
+#endif
     
 
     @ViewBuilder
@@ -479,6 +600,7 @@ struct CreateGoalView: View {
                                         if self.vm.scheduleType == .specificDates {
                                             self.vm.syncSpecificDates()
                                         }
+                                        self.creationConfirmation = nil
                                         self.selectedTab = 0
                                     }
                                     .tint(.black)
@@ -510,7 +632,8 @@ struct CreateGoalView: View {
     
     @ViewBuilder
     private func ProgramasPreestablecidos() -> some View {
-        ProgramasListView().cornerRadius(20)
+        ProgramasListView(embeddedInPanel: presentation == .iPadWorkspace)
+            .cornerRadius(20)
     }
     
     

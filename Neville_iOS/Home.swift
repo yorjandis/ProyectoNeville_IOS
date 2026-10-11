@@ -580,7 +580,7 @@ struct Home: View {
                 WellbeingDashboardView()
             }
         }
-        .sheet(isPresented: $showAgenda) {
+        .agendaPresentation(isPresented: $showAgenda) {
             AgendaMainView()
         }
         .sheet(isPresented: $showPresence) {
