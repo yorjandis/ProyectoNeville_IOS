@@ -173,19 +173,19 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La Ley uses your location to capture the current address and save it to Agenda activities or Notes when you request it."
+            "value" : "La Ley uses your location to capture current coordinates and save them to Diary entries, Agenda activities, or Notes when you request it."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La Ley usa tu ubicación para capturar la dirección actual y guardarla en actividades de Agenda o en Notas cuando lo solicites."
+            "value" : "La Ley usa tu ubicación para capturar las coordenadas actuales y guardarlas en entradas de Diario, actividades de Agenda o Notas cuando lo solicites."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "当你主动使用此功能时，La Ley 会根据你的位置获取当前地址，并将其保存到日程活动或笔记中。"
+            "value" : "当你主动使用此功能时，La Ley 会获取当前位置坐标，并将其保存到日记、日程活动或笔记中。"
           }
         }
       }

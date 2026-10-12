@@ -24,6 +24,9 @@ struct cardItemDiario: View{
     var isSelectionMode: Bool = false
     var isSelected: Bool = false
     var onSelectionToggle: () -> Void = {}
+    var isActiveInSplitView: Bool = false
+    var usesDetailPanel: Bool = false
+    var onActivate: () -> Void = {}
     
     @StateObject private var diarioModel = DiarioModel.shared
     
@@ -48,7 +51,6 @@ struct cardItemDiario: View{
     @State private var isfav : Bool = false
     // Las secciones inferiores comienzan contraídas para priorizar el contenido de la entrada.
     @State private var isFooterExpanded = false
-    @State private var areAttachmentsExpanded = false
     @State private var hasAttachments = false
     //Animation
     @State private var animValue = 0
@@ -69,7 +71,7 @@ struct cardItemDiario: View{
         VStack(spacing: 12) {
             diaryHeader
             diaryEntryContent
-            if areAttachmentsExpanded {
+            if isFooterExpanded && hasAttachments {
                 DiaryAttachmentsSection(diario: diario)
             }
             if isFooterExpanded {
@@ -81,6 +83,8 @@ struct cardItemDiario: View{
         .onTapGesture {
             if isSelectionMode {
                 onSelectionToggle()
+            } else {
+                onActivate()
             }
         }
         .onAppear {
@@ -241,29 +245,8 @@ struct cardItemDiario: View{
     private var cardExpansionControls: some View {
         HStack(spacing: 8) {
             Spacer()
-            if hasAttachments {
-                attachmentsVisibilityButton
-            }
             footerVisibilityButton()
         }
-    }
-
-    private var attachmentsVisibilityButton: some View {
-        Button {
-            withAnimation(.easeInOut(duration: 0.2)) {
-                areAttachmentsExpanded.toggle()
-            }
-        } label: {
-            Image(systemName: areAttachmentsExpanded ? "paperclip.circle.fill" : "paperclip.circle")
-                .font(.system(size: 18))
-                .foregroundStyle(.black.opacity(0.55))
-                .frame(width: 32, height: 32)
-        }
-        .buttonStyle(.plain)
-        .contentShape(Rectangle())
-        .disabled(isSelectionMode)
-        .accessibilityLabel(areAttachmentsExpanded ? "Ocultar anexos" : "Mostrar anexos")
-        .help(areAttachmentsExpanded ? "Ocultar anexos" : "Mostrar anexos")
     }
 
     private var diaryMetadata: some View {
@@ -518,25 +501,40 @@ struct cardItemDiario: View{
             .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
+    @ViewBuilder
     private var diaryEntryContent: some View {
-        Text(diario.content ?? "")
+        let contentText = Text(diario.content ?? "")
             .font(.system(size: 18))
             .foregroundStyle(.black)
             .italic()
             .fontDesign(.serif)
             .fontWeight(.heavy)
-            .lineLimit(isContentExpanded ? nil : 1)
-            .onTapGesture {
-                guard !isSelectionMode else {
-                    onSelectionToggle()
-                    return
+
+        if usesDetailPanel {
+            contentText
+                .lineLimit(1)
+                .onTapGesture {
+                    if isSelectionMode {
+                        onSelectionToggle()
+                    } else {
+                        onActivate()
+                    }
                 }
-                toggleContentExpansion()
-            }
-            .onTapGesture(count: 2) {
-                guard !isSelectionMode else { return }
-                presentDiaryEntryEditor()
-            }
+        } else {
+            contentText
+                .lineLimit(isContentExpanded ? nil : 1)
+                .onTapGesture {
+                    guard !isSelectionMode else {
+                        onSelectionToggle()
+                        return
+                    }
+                    toggleContentExpansion()
+                }
+                .onTapGesture(count: 2) {
+                    guard !isSelectionMode else { return }
+                    presentDiaryEntryEditor()
+                }
+        }
     }
 
     private var diaryEntryEditor: some View {
@@ -597,15 +595,22 @@ struct cardItemDiario: View{
         .buttonStyle(.plain)
         .contentShape(Rectangle())
         .disabled(isSelectionMode)
-        .accessibilityLabel(isFooterExpanded ? "Ocultar detalles de la entrada" : "Mostrar detalles de la entrada")
-        .help(isFooterExpanded ? "Ocultar detalles" : "Mostrar detalles")
+        .accessibilityLabel(expansionAccessibilityLabel)
+        .help(expansionHelp)
+    }
+
+    private var expansionAccessibilityLabel: String {
+        let sections = hasAttachments ? "anexos y detalles de la entrada" : "detalles de la entrada"
+        return isFooterExpanded ? "Ocultar \(sections)" : "Mostrar \(sections)"
+    }
+
+    private var expansionHelp: String {
+        let sections = hasAttachments ? "anexos y detalles" : "detalles"
+        return isFooterExpanded ? "Ocultar \(sections)" : "Mostrar \(sections)"
     }
 
     private func reloadAttachmentAvailability() {
         hasAttachments = !((try? DiaryAttachmentStore.shared.attachments(for: diario)) ?? []).isEmpty
-        if !hasAttachments {
-            areAttachmentsExpanded = false
-        }
     }
 
     private var entryActionsMenuLabel: some View {

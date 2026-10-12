@@ -484,9 +484,9 @@ struct optionView: View {
                 .presentationDetents([.large])
                 .presentationDragIndicator(.hidden)
         }
-        .agendaPresentation(
+        .iPadFullScreenPresentation(
             item: self.$showView,
-            isAgenda: { $0.usesFullScreenPresentationOnIPad }
+            shouldUseFullScreen: { $0.usesFullScreenPresentationOnIPad }
         ) { item in
             modalDestination(for: item)
                 .presentationDetents([.large])

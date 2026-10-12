@@ -138,12 +138,11 @@ private enum AgendaInlineEditorField: Hashable {
     case content
 }
 
-/// Conserva la presentación tipo hoja en iPhone, pero entrega a Agenda una
-/// superficie realmente completa en iPad. Un `sheet` de iPad limita el tamaño
-/// antes de que `AgendaMainView` pueda calcular sus paneles.
+/// Conserva la presentación tipo hoja en iPhone, pero permite que los destinos
+/// adaptados aprovechen toda la superficie del iPad.
 extension View {
     @ViewBuilder
-    func agendaPresentation<Content: View>(
+    func iPadFullScreenPresentation<Content: View>(
         isPresented: Binding<Bool>,
         @ViewBuilder content: @escaping () -> Content
     ) -> some View {
@@ -154,16 +153,16 @@ extension View {
         }
     }
 
-    func agendaPresentation<Item: Identifiable, Content: View>(
+    func iPadFullScreenPresentation<Item: Identifiable, Content: View>(
         item: Binding<Item?>,
-        isAgenda: @escaping (Item) -> Bool,
+        shouldUseFullScreen: @escaping (Item) -> Bool,
         @ViewBuilder content: @escaping (Item) -> Content
     ) -> some View {
         let fullScreenItem = Binding<Item?>(
             get: {
                 guard UIDevice.current.userInterfaceIdiom == .pad,
                       let value = item.wrappedValue,
-                      isAgenda(value) else { return nil }
+                      shouldUseFullScreen(value) else { return nil }
                 return value
             },
             set: { item.wrappedValue = $0 }
@@ -171,7 +170,7 @@ extension View {
         let sheetItem = Binding<Item?>(
             get: {
                 guard let value = item.wrappedValue else { return nil }
-                if UIDevice.current.userInterfaceIdiom == .pad && isAgenda(value) {
+                if UIDevice.current.userInterfaceIdiom == .pad && shouldUseFullScreen(value) {
                     return nil
                 }
                 return value
@@ -181,6 +180,37 @@ extension View {
 
         return fullScreenCover(item: fullScreenItem, content: content)
             .sheet(item: sheetItem, content: content)
+    }
+
+    @ViewBuilder
+    func iPadFullScreenDismissButton(
+        alignment: Alignment = .topTrailing
+    ) -> some View {
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            overlay(alignment: alignment) {
+                IPadFullScreenDismissButton()
+                    .padding(.horizontal, 16)
+                    .padding(.top, 8)
+            }
+        } else {
+            self
+        }
+    }
+}
+
+private struct IPadFullScreenDismissButton: View {
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        Button {
+            dismiss()
+        } label: {
+            Label("Cerrar", systemImage: "xmark")
+                .font(.callout.weight(.semibold))
+        }
+        .buttonStyle(.borderedProminent)
+        .tint(.black.opacity(0.72))
+        .accessibilityHint("Cierra la vista y vuelve a la pantalla anterior")
     }
 }
 #endif

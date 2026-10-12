@@ -920,26 +920,40 @@ struct MorningRitualMainView: View {
                     store.reload()
                 }
             }
-            .sheet(item: $route) { selected in
-                switch selected {
-                case .flow:
-                    MorningRitualFlowView(store: store)
-                case .history:
-                    MorningRitualHistoryView(store: store)
-                case .settings:
-                    MorningRitualSettingsView(store: store)
-                        .presentationDetents([.height(650)])
-                        .presentationDragIndicator(.visible)
-                case .stats:
-                    MorningRitualStatsView(store: store)
-                case .eveningReview:
-                    RitualEveningReviewEntryView()
-                case .premium:
-                    PremiumFeaturePreviewView(feature: .consciousDailyCycle)
-                case .wellbeing:
-                    WellbeingDashboardView()
-                }
+#if os(iOS)
+            .iPadFullScreenPresentation(
+                item: $route,
+                shouldUseFullScreen: { $0.rawValue == MorningRitualRoute.wellbeing.rawValue }
+            ) { selected in
+                routeDestination(for: selected)
             }
+#else
+            .sheet(item: $route) { selected in
+                routeDestination(for: selected)
+            }
+#endif
+        }
+    }
+
+    @ViewBuilder
+    private func routeDestination(for selected: MorningRitualRoute) -> some View {
+        switch selected {
+        case .flow:
+            MorningRitualFlowView(store: store)
+        case .history:
+            MorningRitualHistoryView(store: store)
+        case .settings:
+            MorningRitualSettingsView(store: store)
+                .presentationDetents([.height(650)])
+                .presentationDragIndicator(.visible)
+        case .stats:
+            MorningRitualStatsView(store: store)
+        case .eveningReview:
+            RitualEveningReviewEntryView()
+        case .premium:
+            PremiumFeaturePreviewView(feature: .consciousDailyCycle)
+        case .wellbeing:
+            WellbeingDashboardView()
         }
     }
 
@@ -2125,7 +2139,10 @@ struct WellbeingDashboardView: View {
             .background(LinearGradient(colors: [Color(red: 0.06, green: 0.13, blue: 0.26), Color(red: 0.38, green: 0.18, blue: 0.42)], startPoint: .topLeading, endPoint: .bottomTrailing).ignoresSafeArea())
             .toolbar { ToolbarItem { Button("Cerrar") { dismiss() }.foregroundStyle(.white) } }
 #if os(iOS)
-            .agendaPresentation(item: $activeRoute, isAgenda: { $0 == .agenda || $0 == .goals }) { route in
+            .iPadFullScreenPresentation(
+                item: $activeRoute,
+                shouldUseFullScreen: { $0 == .agenda || $0 == .goals || $0 == .morningRitual }
+            ) { route in
                 dashboardDestination(for: route, selectedDate: day, morning: morning)
             }
 #else
@@ -2164,7 +2181,12 @@ struct WellbeingDashboardView: View {
             if morning == nil {
                 MorningRitualFlowView(store: store, ritualDate: selectedDate)
             } else {
+#if os(iOS)
                 MorningRitualMainView()
+                    .iPadFullScreenDismissButton(alignment: .topTrailing)
+#else
+                MorningRitualMainView()
+#endif
             }
         }
     }

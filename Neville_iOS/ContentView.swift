@@ -60,21 +60,17 @@ struct ContentView: View{
             .sheet(isPresented: $showSheetDiario, content: {
                 DiarioListView()
             })
-            .sheet(isPresented: $showSheetNotas, content: {
+            .iPadFullScreenPresentation(isPresented: $showSheetNotas, content: {
                 ListNotasViews()
             })
-            .agendaPresentation(isPresented: $showSheetMetas, content: {
+            .iPadFullScreenPresentation(isPresented: $showSheetMetas, content: {
                 GoalsListView()
             })
-            .agendaPresentation(item: $dashboardDestination, isAgenda: { destination in
-                switch destination {
-                case .agenda, .crearAgenda, .metas:
-                    return true
-                default:
-                    return false
-                }
+            .iPadFullScreenPresentation(item: $dashboardDestination, shouldUseFullScreen: { destination in
+                destination.usesFullScreenPresentationOnIPad
+                    && (!destination.requiresPremium || purchaseStatus || yorjPremium)
             }) { destination in
-                dashboardView(for: destination)
+                dashboardPresentationView(for: destination)
             }
             .onReceive(NotificationCenter.default.publisher(for: .coreDataStoresDidLoad)) { _ in
                 ConsciousDashboardSnapshotPublisher.refresh()
@@ -102,6 +98,28 @@ struct ContentView: View{
 
         defaults?.removeObject(forKey: "controlCenter.pendingDestination")
         dashboardDestination = DashboardDestination(rawValue: rawValue)
+    }
+
+    @ViewBuilder
+    private func dashboardPresentationView(for destination: DashboardDestination) -> some View {
+        let hasAccess = !destination.requiresPremium || purchaseStatus || yorjPremium
+
+        if UIDevice.current.userInterfaceIdiom == .pad && hasAccess {
+            switch destination {
+            case .resumenSemanal:
+                NavigationStack {
+                    dashboardView(for: destination)
+                }
+                .iPadFullScreenDismissButton(alignment: .topLeading)
+            case .ritualMatutino, .autores:
+                dashboardView(for: destination)
+                    .iPadFullScreenDismissButton(alignment: .topTrailing)
+            default:
+                dashboardView(for: destination)
+            }
+        } else {
+            dashboardView(for: destination)
+        }
     }
 
     @ViewBuilder
@@ -186,6 +204,16 @@ private enum DashboardDestination: String, Identifiable {
     case lectorEtiquetas = "lector-etiquetas"
 
     var id: String { rawValue }
+
+    var usesFullScreenPresentationOnIPad: Bool {
+        switch self {
+        case .agenda, .crearAgenda, .metas, .notas, .ritualMatutino,
+             .autores, .resumenSemanal, .lectorEtiquetas:
+            return true
+        default:
+            return false
+        }
+    }
 
     var requiresPremium: Bool {
         switch self {

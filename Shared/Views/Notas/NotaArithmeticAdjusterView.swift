@@ -342,7 +342,11 @@ private struct ArithmeticOperandWheel: View {
                 }
             }
             .labelsHidden()
+#if os(macOS)
+            .pickerStyle(.inline)
+#else
             .pickerStyle(.wheel)
+#endif
             .frame(width: 112, height: 112)
             .clipped()
             .accessibilityLabel(title)

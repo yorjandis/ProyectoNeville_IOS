@@ -172,6 +172,21 @@ final class DiaryAttachmentStore {
         return try container.viewContext.fetch(request)
     }
 
+    /// Índice ligero para la búsqueda general del Diario. Mantiene los nombres
+    /// asociados a cada entrada sin tener que descifrar ni cargar los archivos.
+    func attachmentNamesByDiaryObjectID() throws -> [NSManagedObjectID: [String]] {
+        let request = NSFetchRequest<DiarioAttachment>(entityName: "DiarioAttachment")
+        request.relationshipKeyPathsForPrefetching = ["diario"]
+        request.returnsObjectsAsFaults = false
+
+        return try container.viewContext.fetch(request).reduce(into: [:]) { index, attachment in
+            guard let diario = attachment.diario,
+                  let fileName = attachment.fileName,
+                  !fileName.isEmpty else { return }
+            index[diario.objectID, default: []].append(fileName)
+        }
+    }
+
     func importFile(
         from url: URL,
         into diario: Diario,
@@ -254,6 +269,32 @@ final class DiaryAttachmentStore {
             DiaryAttachmentPayload(encryptedData: fileData, encapsulatedKey: encapsulatedKey),
             attachmentID: id
         )
+    }
+
+    func replaceData(
+        for attachment: DiarioAttachment,
+        with data: Data,
+        contentType: UTType
+    ) async throws {
+        guard let id = attachment.id else {
+            throw DiaryAttachmentError.missingData
+        }
+
+        let payload = try await DiaryAttachmentCryptor.shared.encrypt(data, attachmentID: id)
+        attachment.fileData = payload.encryptedData
+        attachment.encapsulatedKey = payload.encapsulatedKey
+        attachment.fileSize = Int64(data.count)
+        attachment.utiString = contentType.identifier
+
+        if let currentName = attachment.fileName {
+            let baseName = (currentName as NSString).deletingPathExtension
+            if let fileExtension = contentType.preferredFilenameExtension {
+                attachment.fileName = "\(baseName).\(fileExtension)"
+            }
+        }
+
+        attachment.diario?.fechaM = .now
+        try saveViewContext()
     }
 
     func rename(_ attachment: DiarioAttachment, to proposedName: String) throws {

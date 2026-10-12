@@ -8,6 +8,9 @@
 import SwiftUI
 import CoreData
 import UniformTypeIdentifiers
+#if os(iOS)
+import UIKit
+#endif
 
 /// Ajustes visuales específicos de la mascota de la cabecera del Diario.
 /// Modifica estos valores para reajustar manualmente su tamaño y posición.
@@ -20,9 +23,54 @@ private enum DiarioUIConstants {
     static let chapterListTopPadding: CGFloat = 12
 }
 
+#if os(iOS)
+/// La disposición puede seguir la orientación del iPad o intercambiarse desde
+/// la barra de herramientas, igual que en Notas y Agenda.
+private enum DiarioIPadLayoutMode: String, CaseIterable {
+    case automatic
+    case sideBySide
+    case stacked
+
+    var title: String {
+        switch self {
+        case .automatic: return "Automático"
+        case .sideBySide: return "Panel lateral"
+        case .stacked: return "Panel superior"
+        }
+    }
+
+    var systemImage: String {
+        switch self {
+        case .automatic: return "rectangle.2.swap"
+        case .sideBySide: return "rectangle.split.2x1"
+        case .stacked: return "rectangle.split.1x2"
+        }
+    }
+
+    func resolvedLayout(for size: CGSize) -> DiarioSplitLayout {
+        switch self {
+        case .automatic: return size.width >= size.height ? .sideBySide : .stacked
+        case .sideBySide: return .sideBySide
+        case .stacked: return .stacked
+        }
+    }
+}
+
+private enum DiarioSplitLayout {
+    case sideBySide
+    case stacked
+}
+
+private enum DiarioInlineEditorField: Hashable {
+    case title
+    case content
+    case chapter
+    case location
+}
+#endif
+
 struct DiarioListView: View {
 
-    @Environment(\.dismiss) var dimiss
     @Environment(\.managedObjectContext) var context
 
     @StateObject private var modelDiario = DiarioModel.shared
@@ -30,30 +78,22 @@ struct DiarioListView: View {
     @AppStorage(PetSettings.isEnabledKey) private var petsEnabled = true
     
     
-    //Para filtros en fechas
-    enum TypeOfSearch{case fix, interval}
-
     private enum DiarioListMode: String {
         case all
         case groupedByChapter
     }
     
-    //Para Buscar en títulos
-    @State private var showAlertFilterByTitles = false
-    @State private var textfielTitles = ""
-    //Para Buscar en contenido
-    @State private var showAlertFilterByContent = false
+    // Búsqueda general por título, contenido y nombre de anexo.
+    @AppStorage("diarySearchBarVisible") private var isDiarySearchVisible = false
+    @State private var diarySearchText = ""
+    @State private var diaryAttachmentNamesByEntryID: [NSManagedObjectID: [String]] = [:]
+    @FocusState private var isDiarySearchFocused: Bool
     //Para buscar en fechas:
     @State private var showSheetFecha       = false
     @State private var showSheetRangoFecha  = false
     @State private var typeOfFechaSearch : TypeFecha = .FechaCreacion
     @State private var fecha1 = Date.now
     @State private var fecha2 = Date.now
-    
-    @State private var datepicker : Date = Date.now
-    @State private var textfielContent = ""
-    
-
     
     let titlesExamples : [(String,String)] = [
     ("Revisión de este día", "neutral"),
@@ -128,6 +168,46 @@ struct DiarioListView: View {
     //Almacena la contraeña de acceso en el Llavero, si existe:
     @State private var hasPassword = false
 
+#if os(iOS)
+    @AppStorage("diaryIPadLayoutMode") private var iPadLayoutMode: DiarioIPadLayoutMode = .automatic
+    @AppStorage("diaryIPadSidePanelFraction") private var iPadSidePanelFraction = 0.35
+    @AppStorage("diaryIPadTopPanelFraction") private var iPadTopPanelFraction = 0.42
+    @AppStorage("diaryIPadDetailHeaderCollapsed") private var isIPadDetailHeaderCollapsed = false
+    @State private var selectedDiarioID: UUID?
+    @State private var iPadListScrollTargetID: NSManagedObjectID?
+    @State private var iPadListScrollRequest = 0
+    @State private var iPadQuickTitleEntryID: UUID?
+    @State private var iPadQuickTitleDraft = ""
+    @State private var showIPadQuickTitleAlert = false
+    @State private var inlineEditingDiarioID: UUID?
+    @State private var inlineDraftTitle = ""
+    @State private var inlineDraftContent = ""
+    @State private var inlineDraftChapter = ""
+    @State private var inlineDraftLocation = ""
+    @State private var inlineDraftEmotion: Emociones = .neutral
+    @State private var inlineNewChapterDraft = ""
+    @State private var showInlineNewChapterAlert = false
+    @State private var immediateChapterEntryID: UUID?
+    @StateObject private var inlineLocationCapture = AgendaLocationCapture()
+    @State private var isCapturingInlineLocation = false
+    @State private var showInlineLocationAlert = false
+    @State private var inlineLocationAlertMessage = ""
+    @State private var inlineLocationCanOpenSettings = false
+    @State private var iPadDetailAttachmentCount = 0
+    @State private var isIPadDetailAttachmentsExpanded = false
+    @State private var inlinePendingAttachments: [PendingDiaryAttachment] = []
+    @State private var isSavingInlineDiario = false
+    @AppStorage(AppCons.UD_setting_DiarioAttachmentImageQuality)
+    private var inlineAttachmentImageQuality = 0.82
+    @FocusState private var focusedInlineEditorField: DiarioInlineEditorField?
+
+    // Ajustes visuales manuales del encabezado de detalle en iPad.
+    // Cambia este valor para desplazar la mascota: negativo hacia la izquierda,
+    // positivo hacia la derecha.
+    private let iPadDiaryPetHorizontalOffset: CGFloat = 50
+    private let iPadDiaryCalendarVerticalPadding: CGFloat = 6
+#endif
+
     private var hasPremiumPDFAccess: Bool {
         purchaseStatus || yorjPremium
     }
@@ -149,8 +229,21 @@ struct DiarioListView: View {
             || Int(review.value(forKey: "automaticPilotEvents") as? Int32 ?? 0) != snapshot.automaticPilotEvents
     }
 
+    private var diarySearchVisibleEntries: [Diario] {
+        let query = diarySearchText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard isDiarySearchVisible, !query.isEmpty else { return modelDiario.list }
+
+        return modelDiario.list.filter { entry in
+            diarySearchContains(entry.title, query: query)
+                || diarySearchContains(entry.content, query: query)
+                || (diaryAttachmentNamesByEntryID[entry.objectID] ?? []).contains {
+                    diarySearchContains($0, query: query)
+                }
+        }
+    }
+
     private var groupedDiarioByChapter: [(chapter: String, entries: [Diario])] {
-        let grouped = Dictionary(grouping: modelDiario.list) { item in
+        let grouped = Dictionary(grouping: diarySearchVisibleEntries) { item in
             chapterName(for: item)
         }
 
@@ -183,6 +276,17 @@ struct DiarioListView: View {
             }
         }
     }
+
+#if os(iOS)
+    @ToolbarContentBuilder
+    private var diarioIPadToolbar: some ToolbarContent {
+        if isIPadInterface && securityModel.canOpenDiario {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                iPadLayoutMenu
+            }
+        }
+    }
+#endif
 
     private enum DiarioBatchAction: Identifiable {
         case updateEmotion(Emociones)
@@ -267,41 +371,10 @@ struct DiarioListView: View {
 
         content = AnyView(content.toolbar {
             ritualUpdateToolbar
+#if os(iOS)
+            diarioIPadToolbar
+#endif
         })
-
-        content = AnyView(
-            content.alert("Filtrar por Título", isPresented: $showAlertFilterByTitles) {
-                TextField("", text: $textfielTitles)
-                Button("Cancelar"){
-                    textfielTitles = ""
-                    dimiss()
-                }
-                Button("Filtrar"){
-                    withAnimation {
-                        modelDiario.list = modelDiario.filterByTitle(criterio: textfielTitles)
-                    }
-                    textfielTitles = ""
-                }
-                
-            }
-        )
-
-        content = AnyView(
-            content.alert("Filtrar por Contenido", isPresented: $showAlertFilterByContent) {
-                TextField("", text: $textfielContent)
-                Button("Cancelar"){
-                    textfielContent = ""
-                    dimiss()
-                }
-                Button("Filtrar"){
-                    withAnimation {
-                        modelDiario.list = modelDiario.filterByContent(criterio: textfielContent)
-                    }
-                    
-                    textfielContent = ""
-                }
-            }
-        )
 
         content = AnyView(
             content.sheet(isPresented: $showSheetFecha) {
@@ -315,18 +388,27 @@ struct DiarioListView: View {
             }
         )
 
+#if os(iOS)
+        if isIPadInterface {
+            content = AnyView(
+                content.fullScreenCover(isPresented: $showNewEntryEditor) {
+                    newDiarioEntryEditor
+                }
+            )
+        } else {
+            content = AnyView(
+                content.sheet(isPresented: $showNewEntryEditor) {
+                    newDiarioEntryEditor
+                }
+            )
+        }
+#else
         content = AnyView(
             content.sheet(isPresented: $showNewEntryEditor) {
-                NewDiarioEntryView(
-                    title: newEntryTitle,
-                    content: newEntryContent,
-                    emocion: newEntryEmotion,
-                    fechaCreacion: newEntryDate
-                ) { savedDate in
-                    refreshAfterEntryCreation(savedDate)
-                }
+                newDiarioEntryEditor
             }
         )
+#endif
 
         content = AnyView(
             content.sheet(isPresented: self.$sheetShowFeedBackReview, content: {
@@ -358,12 +440,20 @@ struct DiarioListView: View {
         content = AnyView(
             content.onAppear {
                 ritualReviewNeedsUpdate = hasRitualReviewUpdateToday
+                refreshDiaryAttachmentSearchIndex()
             }
         )
 
         content = AnyView(
             content.onReceive(NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave, object: CoreDataController.shared.context)) { _ in
                 ritualReviewNeedsUpdate = hasRitualReviewUpdateToday
+                refreshDiaryAttachmentSearchIndex()
+            }
+        )
+
+        content = AnyView(
+            content.onReceive(NotificationCenter.default.publisher(for: .NSPersistentStoreRemoteChange)) { _ in
+                refreshDiaryAttachmentSearchIndex()
             }
         )
 
@@ -443,6 +533,17 @@ struct DiarioListView: View {
         )
 
         return content
+    }
+
+    private var newDiarioEntryEditor: some View {
+        NewDiarioEntryView(
+            title: newEntryTitle,
+            content: newEntryContent,
+            emocion: newEntryEmotion,
+            fechaCreacion: newEntryDate
+        ) { savedDate in
+            refreshAfterEntryCreation(savedDate)
+        }
     }
 
     private var singleDateSearchSheet: some View {
@@ -595,15 +696,35 @@ struct DiarioListView: View {
 
     @ViewBuilder
     private var diarioUnlockedContent: some View {
+#if os(iOS)
+        if isIPadInterface {
+            iPadDiarioWorkspace
+        } else {
+            diarioStandardUnlockedContent
+        }
+#else
+        diarioStandardUnlockedContent
+#endif
+    }
+
+    @ViewBuilder
+    private var diarioStandardUnlockedContent: some View {
         VStack {
             Text("") //Para que las entradas no sobrepasen el area segura superior
 
-            diarioTopActions
+            diarioTopActions(showsPet: true)
                 .padding(.horizontal, 15)
                 .padding(.top, 8)
 
             if showCalendar {
                 diarioCalendarSection
+            }
+
+            if isDiarySearchVisible {
+                diarySearchBar
+                    .padding(.horizontal, 15)
+                    .padding(.vertical, 8)
+                    .transition(.move(edge: .top).combined(with: .opacity))
             }
 
             if isBatchSelectionMode {
@@ -638,7 +759,7 @@ struct DiarioListView: View {
         }
     }
 
-    private var diarioTopActions: some View {
+    private func diarioTopActions(showsPet: Bool) -> some View {
         HStack {
             Spacer()
 
@@ -663,11 +784,21 @@ struct DiarioListView: View {
                     Label(isBatchSelectionMode ? "Cancelar selección" : "Seleccionar", systemImage: isBatchSelectionMode ? "xmark.circle" : "checklist")
                 }
 
+#if os(iOS)
+                if !isIPadInterface {
+                    Button {
+                        toggleCalendar()
+                    } label: {
+                        Label(showCalendar ? "Ocultar calendario" : "Mostrar calendario", systemImage: "calendar")
+                    }
+                }
+#else
                 Button {
                     toggleCalendar()
                 } label: {
                     Label(showCalendar ? "Ocultar calendario" : "Mostrar calendario", systemImage: "calendar")
                 }
+#endif
             } label: {
                 Image(systemName: "ellipsis.circle")
             }
@@ -718,15 +849,12 @@ struct DiarioListView: View {
                 .disabled(!canApplyGlobalEntryFilters)
 
                 Button {
-                    showAlertFilterByTitles = true
+                    toggleDiarySearch()
                 } label: {
-                    Label("Buscar en títulos", systemImage: "text.magnifyingglass")
-                }
-
-                Button {
-                    showAlertFilterByContent = true
-                } label: {
-                    Label("Buscar en el contenido", systemImage: "text.magnifyingglass")
+                    Label(
+                        isDiarySearchVisible ? "Ocultar búsqueda" : "Mostrar búsqueda",
+                        systemImage: "magnifyingglass"
+                    )
                 }
 
                 exportDiarioPDFMenu()
@@ -747,7 +875,7 @@ struct DiarioListView: View {
         }
         // La superposición evita que el tamaño de la mascota altere la altura de la barra.
         .overlay(alignment: .leading) {
-            if petsEnabled {
+            if showsPet && petsEnabled {
                 PetImage(assetName: "peti_escribe")
                     .frame(
                         width: DiarioUIConstants.topBarPetSize,
@@ -763,16 +891,908 @@ struct DiarioListView: View {
         }
     }
 
+    private var diarySearchBar: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "magnifyingglass")
+                .foregroundStyle(.secondary)
+            TextField("Buscar en título, contenido o anexos", text: $diarySearchText)
+                .textFieldStyle(.plain)
+                .focused($isDiarySearchFocused)
+            if !diarySearchText.isEmpty {
+                Button {
+                    diarySearchText = ""
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundStyle(.secondary)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Borrar búsqueda")
+            }
+        }
+        .padding(.horizontal, 12)
+        .frame(height: 40)
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+    }
+
+#if os(iOS)
+    private var isIPadInterface: Bool {
+        UIDevice.current.userInterfaceIdiom == .pad
+    }
+
+    private var iPadVisibleEntries: [Diario] {
+        diarySearchVisibleEntries
+    }
+
+    private var activeDiario: Diario? {
+        if let selectedDiarioID,
+           let selected = iPadVisibleEntries.first(where: { $0.id == selectedDiarioID }) {
+            return selected
+        }
+        return iPadVisibleEntries.first
+    }
+
+    private var activeDiarioID: UUID? {
+        activeDiario?.id
+    }
+
+    /// En apaisado: lista a la izquierda y calendario compacto + detalle a la
+    /// derecha. En retrato: lista y calendario comparten el panel superior.
+    private var iPadDiarioWorkspace: some View {
+        Group {
+            if inlineEditingDiarioID != nil {
+                // El editor ocupa el espacio de trabajo completo: al ocultar el
+                // calendario y la mascota queda altura real para el contenido.
+                iPadDiarioDetailPanel(showsCalendar: false)
+                    .transition(.opacity)
+            } else {
+                GeometryReader { proxy in
+                    let layout = iPadLayoutMode.resolvedLayout(for: proxy.size)
+
+                    AdjustableDiarioSplitView(
+                        layout: layout,
+                        primaryFraction: layout == .sideBySide
+                            ? $iPadSidePanelFraction
+                            : $iPadTopPanelFraction,
+                        minimumPrimaryLength: layout == .sideBySide ? 310 : 270,
+                        minimumSecondaryLength: layout == .sideBySide ? 430 : 280
+                    ) {
+                        if layout == .sideBySide {
+                            iPadLandscapeListPanel
+                        } else {
+                            iPadPortraitTopPanel
+                        }
+                    } secondary: {
+                        iPadDiarioDetailPanel(showsCalendar: layout == .sideBySide)
+                    }
+                }
+                .ignoresSafeArea(.keyboard, edges: .bottom)
+                .transition(.opacity)
+            }
+        }
+        .padding(.horizontal, 10)
+        .padding(.bottom, 8)
+        .onAppear {
+            modelDiario.getAllItem()
+            if selectedListMode == .groupedByChapter {
+                collapsedChapterNames = Set(groupedDiarioByChapter.map(\.chapter))
+            }
+            refreshIPadDetailAttachmentAvailability()
+        }
+        .onChange(of: modelDiario.list.map(\.id)) { _, _ in
+            refreshIPadDetailAttachmentAvailability()
+            guard let activeDiarioID else {
+                selectedDiarioID = nil
+                inlineEditingDiarioID = nil
+                return
+            }
+            if inlineEditingDiarioID != nil, inlineEditingDiarioID != activeDiarioID {
+                cancelInlineDiarioEditing()
+            }
+        }
+        .onChange(of: activeDiarioID) { _, _ in
+            isIPadDetailAttachmentsExpanded = false
+            refreshIPadDetailAttachmentAvailability()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave)) { _ in
+            refreshIPadDetailAttachmentAvailability()
+        }
+    }
+
+    private var iPadLandscapeListPanel: some View {
+        VStack(spacing: 0) {
+            diarioTopActions(showsPet: false)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 8)
+            if isDiarySearchVisible {
+                diarySearchBar
+                    .padding(.horizontal, 10)
+                    .padding(.bottom, 8)
+                    .transition(.move(edge: .top).combined(with: .opacity))
+            }
+            Divider()
+            iPadDiaryEntriesList
+        }
+        .diaryIPadPanel(material: .thinMaterial)
+    }
+
+    private var iPadPortraitTopPanel: some View {
+        HStack(spacing: 0) {
+            VStack(spacing: 0) {
+                diarioTopActions(showsPet: false)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 6)
+                Divider()
+                iPadDiaryEntriesList
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+            Divider()
+
+            VStack(spacing: 0) {
+                if isDiarySearchVisible {
+                    diarySearchBar
+                        .padding(10)
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                    Divider()
+                }
+                iPadCompactCalendar(showsPet: false)
+                    .frame(maxHeight: .infinity, alignment: .top)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+        .diaryIPadPanel(material: .thinMaterial)
+    }
+
+    private var iPadDiaryEntriesList: some View {
+        ScrollViewReader { proxy in
+            List {
+                if isBatchSelectionMode {
+                    Section {
+                        batchSelectionToolbar
+                            .listRowInsets(EdgeInsets(top: 6, leading: 10, bottom: 6, trailing: 10))
+                    }
+                }
+
+                if iPadVisibleEntries.isEmpty {
+                    ContentUnavailableView(
+                        "No hay entradas",
+                        systemImage: "book.closed",
+                        description: Text(diarySearchText.isEmpty ? "Crea una entrada o cambia el filtro." : "Prueba con otra búsqueda.")
+                    )
+                    .listRowBackground(Color.clear)
+                } else if selectedListMode == .groupedByChapter {
+                    ForEach(groupedDiarioByChapter, id: \.chapter) { section in
+                        diarioChapterSection(section)
+                            .listRowInsets(EdgeInsets())
+                            .listRowBackground(Color.clear)
+                            .listRowSeparator(.hidden)
+                    }
+                } else {
+                    ForEach(iPadVisibleEntries) { entry in
+                        diarioCard(for: entry)
+                            .listRowInsets(EdgeInsets())
+                            .listRowBackground(Color.clear)
+                            .listRowSeparator(.hidden)
+                    }
+                }
+            }
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
+            .onChange(of: iPadListScrollRequest) { _, _ in
+                guard let target = iPadListScrollTargetID else { return }
+                Task { @MainActor in
+                    await Task.yield()
+                    withAnimation(.easeInOut(duration: 0.25)) {
+                        proxy.scrollTo(target, anchor: .center)
+                    }
+                }
+            }
+        }
+    }
+
+    private func iPadCompactCalendar(showsPet: Bool) -> some View {
+        HStack(spacing: 0) {
+            if showsPet && petsEnabled {
+                ZStack(alignment: .center) {
+                    Color.clear
+                    PetImage(assetName: "peti_escribe")
+                        .frame(width: 132, height: 198)
+                        .offset(x: iPadDiaryPetHorizontalOffset)
+                        .accessibilityHidden(true)
+                        .allowsHitTesting(false)
+                }
+                .frame(width: 170, height: 245, alignment: .center)
+            }
+            diarioCalendarSection
+                .scaleEffect(0.80, anchor: .top)
+                .frame(height: 245, alignment: .top)
+                .clipped()
+                .padding(.vertical, iPadDiaryCalendarVerticalPadding)
+        }
+        .frame(maxWidth: .infinity, alignment: .center)
+        .padding(.top, 5)
+    }
+
+    private func iPadDiarioDetailPanel(showsCalendar: Bool) -> some View {
+        VStack(spacing: 0) {
+            if showsCalendar {
+                iPadCollapsibleDetailHeader
+              //  Divider()
+            }
+
+            Group {
+                if let entry = activeDiario {
+                    ScrollView {
+                        iPadDiaryDetailContent(entry)
+                            .id(entry.id)
+                            .padding(16)
+                    }
+                    .scrollDismissesKeyboard(.interactively)
+                } else {
+                    ContentUnavailableView(
+                        "Selecciona una entrada",
+                        systemImage: "book.pages",
+                        description: Text("Su contenido aparecerá en este panel."))
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .diaryIPadPanel(material: .ultraThinMaterial)
+        .alert("Crear capítulo", isPresented: $showInlineNewChapterAlert) {
+            TextField("Nombre del capítulo", text: $inlineNewChapterDraft, axis: .vertical)
+            Button("Cancelar", role: .cancel) {
+                immediateChapterEntryID = nil
+            }
+            Button("Usar capítulo") {
+                useCreatedIPadChapter()
+            }
+            .disabled(inlineNewChapterDraft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+        } message: {
+            Text(
+                immediateChapterEntryID == nil
+                    ? "El capítulo se asignará a esta entrada al actualizarla."
+                    : "El capítulo se guardará y asignará inmediatamente a esta entrada."
+            )
+        }
+        .alert("Modificar Título", isPresented: $showIPadQuickTitleAlert) {
+            TextField("Nuevo título", text: $iPadQuickTitleDraft)
+            Button("Cancelar", role: .cancel) {
+                iPadQuickTitleEntryID = nil
+            }
+            Button("Guardar") {
+                saveIPadQuickTitle()
+            }
+        } message: {
+            Text("Se actualizará el título de esta entrada del Diario.")
+        }
+        .alert("Ubicación", isPresented: $showInlineLocationAlert) {
+            if inlineLocationCanOpenSettings {
+                Button("Abrir Ajustes") {
+                    openInlineLocationPrivacySettings()
+                }
+            }
+            Button("Aceptar", role: .cancel) {}
+        } message: {
+            Text(inlineLocationAlertMessage)
+        }
+    }
+
+    private var iPadCollapsibleDetailHeader: some View {
+        Group {
+            if isIPadDetailHeaderCollapsed {
+                Button {
+                    withAnimation(.easeInOut(duration: 0.22)) {
+                        isIPadDetailHeaderCollapsed = false
+                    }
+                } label: {
+                    HStack(spacing: 8) {
+                        Label("Mascota y calendario", systemImage: "calendar")
+                            .font(.subheadline.weight(.semibold))
+                        Spacer()
+                        Image(systemName: "chevron.down")
+                            .font(.caption.weight(.bold))
+                    }
+                    .foregroundStyle(.black.opacity(0.78))
+                    .padding(.horizontal, 14)
+                    .frame(height: 38)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityHint("Despliega la mascota y el calendario")
+            } else {
+                ZStack(alignment: .topTrailing) {
+                    iPadCompactCalendar(showsPet: true)
+
+                    Button {
+                        withAnimation(.easeInOut(duration: 0.22)) {
+                            isIPadDetailHeaderCollapsed = true
+                        }
+                    } label: {
+                        Image(systemName: "chevron.up.circle.fill")
+                            .font(.title3)
+                            .symbolRenderingMode(.hierarchical)
+                            .foregroundStyle(.black.opacity(0.72))
+                            .padding(10)
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("Ocultar mascota y calendario")
+                    .accessibilityHint("Da más espacio al contenido de la entrada")
+                }
+            }
+        }
+    }
+
+    private func iPadDiaryDetailContent(_ entry: Diario) -> some View {
+        let isEditing = inlineEditingDiarioID == entry.id
+        return VStack(alignment: .leading, spacing: 18) {
+            HStack(alignment: .top, spacing: 12) {
+                if isEditing {
+                    Menu {
+                        ForEach(Emociones.allCases, id: \.self) { emotion in
+                            Button("\(emotion.emoji) \(emotion.localizedTitle)") {
+                                inlineDraftEmotion = emotion
+                            }
+                        }
+                    } label: {
+                        Text(inlineDraftEmotion.emoji)
+                            .font(.system(size: 38))
+                    }
+                } else {
+                    Text(Emociones.emoji(from: entry.emotion))
+                        .font(.system(size: 38))
+                }
+
+                VStack(alignment: .leading, spacing: 5) {
+                    if isEditing {
+                        TextField("Título", text: $inlineDraftTitle, axis: .vertical)
+                            .font(.title2.weight(.semibold))
+                            .textFieldStyle(.plain)
+                            .focused($focusedInlineEditorField, equals: .title)
+                            .padding(10)
+                            .background(.white.opacity(0.72), in: RoundedRectangle(cornerRadius: 10))
+                    } else {
+                        Text((entry.title ?? "").isEmpty ? "Sin título" : (entry.title ?? ""))
+                            .font(.title2.weight(.semibold))
+                            .contentShape(Rectangle())
+                            .gesture(
+                                TapGesture(count: 2)
+                                    .onEnded {
+                                        revealIPadDetailEntryInList(entry)
+                                        presentIPadQuickTitleEditor(for: entry)
+                                    }
+                                    .exclusively(
+                                        before: TapGesture(count: 1)
+                                            .onEnded {
+                                                revealIPadDetailEntryInList(entry)
+                                            }
+                                    )
+                            )
+                            .accessibilityAddTraits(.isButton)
+                            .accessibilityHint("Un toque muestra la tarjeta en el listado; dos toques permiten cambiar el título")
+                    }
+                    if let date = entry.fecha {
+                        Text(date.formatted(date: .long, time: .omitted))
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                Spacer()
+                if isEditing {
+                    HStack(spacing: 8) {
+                        Button("Cancelar") { cancelInlineDiarioEditing() }
+                            .buttonStyle(.bordered)
+                            .tint(.white.opacity(0.9))
+                            .foregroundStyle(.black)
+                        Button("Actualizar") { updateInlineDiario(entry) }
+                            .buttonStyle(.borderedProminent)
+                            .tint(.black.opacity(0.78))
+                            .foregroundStyle(.white)
+                            .disabled(
+                                isSavingInlineDiario
+                                    || inlineDraftTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                            )
+                    }
+                } else {
+                    HStack(spacing: 8) {
+                        if iPadDetailAttachmentCount > 0 {
+                            Button {
+                                withAnimation(.easeInOut(duration: 0.2)) {
+                                    isIPadDetailAttachmentsExpanded.toggle()
+                                }
+                            } label: {
+                                Image(systemName: "paperclip")
+                                    .font(.title3)
+                                    .foregroundStyle(
+                                        isIPadDetailAttachmentsExpanded
+                                            ? .black
+                                            : .black.opacity(0.72)
+                                    )
+                                    .padding(6)
+                                    .contentShape(Rectangle())
+                            }
+                            .buttonStyle(.plain)
+                            .accessibilityLabel(
+                                isIPadDetailAttachmentsExpanded ? "Ocultar anexos" : "Mostrar anexos"
+                            )
+                        }
+
+                        Button("Editar") { beginInlineDiarioEditing(entry) }
+                            .buttonStyle(.borderedProminent)
+                            .tint(.black.opacity(0.78))
+                            .foregroundStyle(.white)
+                    }
+                }
+            }
+
+            iPadDiaryAttachmentsSection(entry, isEditing: isEditing)
+
+            if isEditing {
+                iPadDiaryDetailSection(title: "Capítulo", systemImage: "book.closed") {
+                    Menu {
+                        Button("Sin capítulo") {
+                            inlineDraftChapter = ""
+                        }
+
+                        if !existingChapters.isEmpty {
+                            Divider()
+                            ForEach(existingChapters, id: \.self) { chapter in
+                                Button(chapter) {
+                                    inlineDraftChapter = chapter
+                                }
+                            }
+                        }
+
+                        Divider()
+                        Button("Crear capítulo…") {
+                            immediateChapterEntryID = nil
+                            inlineNewChapterDraft = ""
+                            showInlineNewChapterAlert = true
+                        }
+                    } label: {
+                        HStack {
+                            Text(inlineDraftChapter.isEmpty ? "Sin capítulo" : inlineDraftChapter)
+                                .lineLimit(1)
+                            Spacer()
+                            Image(systemName: "chevron.up.chevron.down")
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(10)
+                        .background(.white.opacity(0.72), in: RoundedRectangle(cornerRadius: 10))
+                    }
+                    .buttonStyle(.plain)
+                }
+                iPadDiaryDetailSection(title: "Contenido", systemImage: "text.alignleft") {
+                    TextEditor(text: $inlineDraftContent)
+                        .focused($focusedInlineEditorField, equals: .content)
+                        .foregroundStyle(.black)
+                        .tint(.black)
+                        .accentColor(.black)
+                        .scrollContentBackground(.hidden)
+                        .frame(minHeight: 260, alignment: .topLeading)
+                        .padding(8)
+                        .background(.white.opacity(0.72), in: RoundedRectangle(cornerRadius: 10))
+                }
+                iPadDiaryDetailSection(title: "Coordenadas", systemImage: "mappin.and.ellipse") {
+                    HStack(spacing: 10) {
+                        TextField("Ej: 40.416775,-3.703790", text: $inlineDraftLocation, axis: .vertical)
+                            .textFieldStyle(.plain)
+                            .focused($focusedInlineEditorField, equals: .location)
+                            .padding(10)
+                            .background(.white.opacity(0.72), in: RoundedRectangle(cornerRadius: 10))
+
+                        Button {
+                            captureInlineCurrentLocation()
+                        } label: {
+                            if isCapturingInlineLocation {
+                                ProgressView()
+                                    .controlSize(.small)
+                            } else {
+                                Label("Ubicación actual", systemImage: "location.fill")
+                            }
+                        }
+                        .buttonStyle(.bordered)
+                        .tint(.black.opacity(0.75))
+                        .disabled(isCapturingInlineLocation)
+                        .accessibilityHint("Solicita permiso de ubicación si es necesario y obtiene las coordenadas actuales")
+                    }
+                }
+            } else {
+                let content = (entry.content ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+                iPadDiaryChapterLine(entry)
+                iPadDiaryDetailSection(title: "Contenido", systemImage: "text.alignleft") {
+                    Text(content.isEmpty ? "Esta entrada no contiene texto." : content)
+                        .textSelection(.enabled)
+                        .italic()
+                        .fontDesign(.serif)
+                }
+                let location = (entry.value(forKey: "direccionMapa") as? String ?? "")
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
+                if !location.isEmpty {
+                    iPadDiaryDetailSection(title: "Ubicación", systemImage: "mappin.and.ellipse") {
+                        Text(location)
+                            .textSelection(.enabled)
+                    }
+                }
+            }
+        }
+        .foregroundStyle(.black)
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private func iPadDiaryAttachmentsSection(_ entry: Diario, isEditing: Bool) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            if iPadDetailAttachmentCount > 0 {
+                HStack(spacing: 8) {
+                    Button {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            isIPadDetailAttachmentsExpanded.toggle()
+                        }
+                    } label: {
+                        HStack(spacing: 8) {
+                            Label("Anexos", systemImage: "paperclip")
+                                .font(.subheadline.weight(.semibold))
+                            Text("\(iPadDetailAttachmentCount)")
+                                .font(.caption.weight(.bold))
+                                .foregroundStyle(.secondary)
+                            Spacer()
+                            Image(
+                                systemName: isIPadDetailAttachmentsExpanded
+                                    ? "chevron.up.circle.fill"
+                                    : "chevron.down.circle"
+                            )
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(
+                        isIPadDetailAttachmentsExpanded ? "Ocultar anexos" : "Mostrar anexos"
+                    )
+
+                    if !isEditing {
+                        iPadImmediateAttachmentImportMenu(for: entry)
+                    }
+                }
+            } else {
+                HStack(spacing: 8) {
+                    Label("Anexos", systemImage: "paperclip")
+                        .font(.subheadline.weight(.semibold))
+                    Spacer()
+                    if !isEditing {
+                        iPadImmediateAttachmentImportMenu(for: entry)
+                    }
+                }
+            }
+
+            if isIPadDetailAttachmentsExpanded && iPadDetailAttachmentCount > 0 {
+                DiaryAttachmentsSection(diario: entry, horizontal: true)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .transition(.opacity.combined(with: .move(edge: .top)))
+            }
+
+            if isEditing && (isIPadDetailAttachmentsExpanded || iPadDetailAttachmentCount == 0) {
+                Divider()
+                Text("Añadir anexos")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                PendingDiaryAttachmentsPicker(attachments: $inlinePendingAttachments)
+            }
+        }
+        .foregroundStyle(.black)
+        .padding(14)
+        .background(.white.opacity(0.48), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+    }
+
+    private func iPadImmediateAttachmentImportMenu(for entry: Diario) -> some View {
+        DiaryAttachmentImportMenu(diario: entry, compact: true) {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                refreshIPadDetailAttachmentAvailability(for: entry)
+                isIPadDetailAttachmentsExpanded = true
+            }
+        }
+        .buttonStyle(.plain)
+        .accessibilityHint("Permite añadir archivos, fotos o imágenes de la cámara")
+    }
+
+    private func iPadDiaryChapterLine(_ entry: Diario) -> some View {
+        let currentChapter = chapterName(for: entry)
+        return Menu {
+            Button {
+                updateIPadDetailChapter("", for: entry)
+            } label: {
+                Label(
+                    "Sin capítulo",
+                    systemImage: currentChapter == unchapteredTitle ? "checkmark" : "book.closed"
+                )
+            }
+
+            if !existingChapters.isEmpty {
+                Divider()
+                ForEach(existingChapters, id: \.self) { chapter in
+                    Button {
+                        updateIPadDetailChapter(chapter, for: entry)
+                    } label: {
+                        Label(
+                            chapter,
+                            systemImage: chapter == currentChapter ? "checkmark" : "book.closed"
+                        )
+                    }
+                }
+            }
+
+            Divider()
+            Button("Crear capítulo…") {
+                immediateChapterEntryID = entry.id
+                inlineNewChapterDraft = ""
+                showInlineNewChapterAlert = true
+            }
+        } label: {
+            HStack(spacing: 7) {
+                Image(systemName: "book.closed")
+                Text("Capítulo:")
+                    .fontWeight(.semibold)
+                Text(currentChapter)
+                    .lineLimit(1)
+                Spacer(minLength: 0)
+                Image(systemName: "chevron.up.chevron.down")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            .font(.subheadline)
+            .foregroundStyle(.black.opacity(0.82))
+            .padding(.horizontal, 14)
+            .frame(height: 42)
+            .contentShape(Rectangle())
+            .background(.white.opacity(0.48), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("Capítulo: \(currentChapter)")
+        .accessibilityHint("Permite cambiar o crear el capítulo de la entrada")
+    }
+
+    private func updateIPadDetailChapter(_ chapter: String, for entry: Diario) {
+        guard let entryID = entry.id else { return }
+        let trimmedChapter = chapter.trimmingCharacters(in: .whitespacesAndNewlines)
+        let currentValue = chapterValue(for: entry).trimmingCharacters(in: .whitespacesAndNewlines)
+        guard trimmedChapter != currentValue else { return }
+
+        selectedDiarioID = entryID
+        withAnimation(.easeInOut(duration: 0.2)) {
+            modelDiario.UpdateCapitulo(capitulo: trimmedChapter, ids: [entryID])
+            entry.setValue(trimmedChapter, forKey: "capitulo")
+            refreshAfterEntryUpdate(entry.fecha)
+
+            if selectedListMode == .groupedByChapter {
+                let destination = trimmedChapter.isEmpty ? unchapteredTitle : trimmedChapter
+                collapsedChapterNames.remove(destination)
+            }
+        }
+    }
+
+    private func useCreatedIPadChapter() {
+        let chapter = inlineNewChapterDraft.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !chapter.isEmpty else { return }
+
+        if let entryID = immediateChapterEntryID,
+           let entry = modelDiario.getAllItemGET().first(where: { $0.id == entryID }) {
+            updateIPadDetailChapter(chapter, for: entry)
+        } else {
+            inlineDraftChapter = chapter
+        }
+        immediateChapterEntryID = nil
+    }
+
+    private func iPadDiaryDetailSection<Content: View>(
+        title: String,
+        systemImage: String,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Label(title, systemImage: systemImage)
+                .font(.headline)
+            content()
+                .font(.body)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .padding(14)
+        .background(.white.opacity(0.48), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+    }
+
+    private func revealIPadDetailEntryInList(_ entry: Diario) {
+        guard let entryID = entry.id else { return }
+        selectedDiarioID = entryID
+
+        if selectedListMode == .groupedByChapter {
+            collapsedChapterNames.remove(chapterName(for: entry))
+        }
+
+        iPadListScrollTargetID = entry.objectID
+        iPadListScrollRequest &+= 1
+    }
+
+    private func presentIPadQuickTitleEditor(for entry: Diario) {
+        iPadQuickTitleEntryID = entry.id
+        iPadQuickTitleDraft = entry.title ?? ""
+        showIPadQuickTitleAlert = true
+    }
+
+    private func saveIPadQuickTitle() {
+        guard let entryID = iPadQuickTitleEntryID,
+              let entry = modelDiario.getAllItemGET().first(where: { $0.id == entryID }) else {
+            iPadQuickTitleEntryID = nil
+            return
+        }
+
+        modelDiario.UpdateTitle(title: iPadQuickTitleDraft, diario: entry)
+        selectedDiarioID = entryID
+        refreshAfterEntryUpdate(entry.fecha)
+        iPadQuickTitleEntryID = nil
+    }
+
+    private func beginInlineDiarioEditing(_ entry: Diario) {
+        inlineEditingDiarioID = entry.id
+        inlineDraftTitle = entry.title ?? ""
+        inlineDraftContent = entry.content ?? ""
+        inlineDraftChapter = chapterValue(for: entry).trimmingCharacters(in: .whitespacesAndNewlines)
+        inlineDraftLocation = (entry.value(forKey: "direccionMapa") as? String ?? "")
+        inlineDraftEmotion = modelDiario.getEmocionesFromStr(value: entry.emotion ?? "neutral")
+        inlinePendingAttachments = []
+        refreshIPadDetailAttachmentAvailability(for: entry)
+        isIPadDetailAttachmentsExpanded = iPadDetailAttachmentCount > 0
+    }
+
+    private func cancelInlineDiarioEditing() {
+        focusedInlineEditorField = nil
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        DispatchQueue.main.async {
+            inlineEditingDiarioID = nil
+            inlineDraftTitle = ""
+            inlineDraftContent = ""
+            inlineDraftChapter = ""
+            inlineDraftLocation = ""
+            inlineNewChapterDraft = ""
+            inlinePendingAttachments = []
+            isCapturingInlineLocation = false
+            isSavingInlineDiario = false
+        }
+    }
+
+    private func refreshIPadDetailAttachmentAvailability(for entry: Diario? = nil) {
+        guard let target = entry ?? activeDiario else {
+            iPadDetailAttachmentCount = 0
+            isIPadDetailAttachmentsExpanded = false
+            return
+        }
+
+        iPadDetailAttachmentCount = (try? DiaryAttachmentStore.shared.attachments(for: target).count) ?? 0
+        if iPadDetailAttachmentCount == 0 {
+            isIPadDetailAttachmentsExpanded = false
+        }
+    }
+
+    private func captureInlineCurrentLocation() {
+        guard !isCapturingInlineLocation else { return }
+        isCapturingInlineLocation = true
+        inlineLocationCanOpenSettings = false
+
+        // AgendaLocationCapture solicita `when in use` si el usuario todavía
+        // no ha decidido el permiso; solo abre Ajustes si ya fue denegado.
+        inlineLocationCapture.captureCurrentAddress { result in
+            isCapturingInlineLocation = false
+            switch result {
+            case .success(let coordinates):
+                inlineDraftLocation = coordinates
+            case .failure(let error):
+                let nsError = error as NSError
+                inlineLocationAlertMessage = error.localizedDescription
+                inlineLocationCanOpenSettings = nsError.domain == "AgendaLocationCapture"
+                    && [0, 1, 3].contains(nsError.code)
+                showInlineLocationAlert = true
+            }
+        }
+    }
+
+    private func openInlineLocationPrivacySettings() {
+        guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
+        UIApplication.shared.open(url)
+    }
+
+    private func updateInlineDiario(_ entry: Diario) {
+        guard inlineEditingDiarioID == entry.id, !isSavingInlineDiario else { return }
+        isSavingInlineDiario = true
+
+        Task { @MainActor in
+            modelDiario.UpdateItem(
+                diario: entry,
+                title: inlineDraftTitle.trimmingCharacters(in: .whitespacesAndNewlines),
+                content: inlineDraftContent,
+                emoticono: inlineDraftEmotion,
+                isFav: entry.isFav,
+                direccionMapa: inlineDraftLocation.trimmingCharacters(in: .whitespacesAndNewlines),
+                capitulo: inlineDraftChapter
+            )
+
+            do {
+                let pendingAttachments = inlinePendingAttachments
+                for attachment in pendingAttachments {
+                    try await DiaryAttachmentStore.shared.importData(
+                        attachment.data,
+                        fileName: attachment.fileName,
+                        contentType: attachment.contentType,
+                        into: entry,
+                        imageQuality: inlineAttachmentImageQuality
+                    )
+                }
+                inlinePendingAttachments.removeAll()
+                selectedDiarioID = entry.id
+                calendarRefreshTrigger += 1
+                refreshAfterEntryUpdate(entry.fecha)
+                refreshIPadDetailAttachmentAvailability(for: entry)
+                cancelInlineDiarioEditing()
+            } catch {
+                isSavingInlineDiario = false
+                alertMessage = "La entrada se actualizó, pero no se pudieron guardar todos los anexos: \(error.localizedDescription)"
+                showAlert = true
+            }
+        }
+    }
+
+    private var iPadLayoutMenu: some View {
+        Menu {
+            ForEach(DiarioIPadLayoutMode.allCases, id: \.rawValue) { mode in
+                Button {
+                    withAnimation(.easeInOut(duration: 0.25)) {
+                        iPadLayoutMode = mode
+                    }
+                } label: {
+                    Label(
+                        mode.title,
+                        systemImage: iPadLayoutMode == mode ? "checkmark.circle.fill" : mode.systemImage
+                    )
+                }
+            }
+        } label: {
+            Image(systemName: iPadLayoutMode.systemImage)
+        }
+        .accessibilityLabel("Disposición de paneles")
+    }
+#endif
+
+    private func toggleDiarySearch() {
+        withAnimation(.easeInOut(duration: 0.2)) {
+            isDiarySearchVisible.toggle()
+            if !isDiarySearchVisible {
+                diarySearchText = ""
+                isDiarySearchFocused = false
+            }
+        }
+
+        if isDiarySearchVisible {
+            refreshDiaryAttachmentSearchIndex()
+            DispatchQueue.main.async {
+                isDiarySearchFocused = true
+            }
+        }
+    }
+
+    private func diarySearchContains(_ candidate: String?, query: String) -> Bool {
+        guard let candidate else { return false }
+        return candidate.range(
+            of: query,
+            options: [.caseInsensitive, .diacriticInsensitive],
+            locale: .current
+        ) != nil
+    }
+
+    private func refreshDiaryAttachmentSearchIndex() {
+        diaryAttachmentNamesByEntryID =
+            (try? DiaryAttachmentStore.shared.attachmentNamesByDiaryObjectID()) ?? [:]
+    }
+
     private func toggleCalendar() {
         withAnimation {
             showCalendar.toggle()
-            if showCalendar == false {
-                selectedCalendarDate = nil
-                isCalendarEntryScopeActive = false
-                modelDiario.getAllItem()
-            } else {
-                isCalendarEntryScopeActive = true
-            }
         }
     }
 
@@ -905,10 +1925,6 @@ struct DiarioListView: View {
     private var diarioCalendarSection: some View {
         DiarioCalendarView(
             refreshTrigger: calendarRefreshTrigger,
-            onMonthEntriesLoaded: { _ in
-                selectedCalendarDate = nil
-                isCalendarEntryScopeActive = true
-            },
             onRequestCreateEntry: { date in
                 openNewEntryEditor(
                     title: "",
@@ -924,7 +1940,6 @@ struct DiarioListView: View {
                 modelDiario.list = modelDiario.searchPorFecha(for: date)
             }
         }
-        .background(Color.black.opacity(0.05))
     }
 
     @ViewBuilder
@@ -1026,7 +2041,7 @@ struct DiarioListView: View {
 
     @ViewBuilder
     private var diarioFlatList: some View {
-        ForEach(modelDiario.list) { item in
+        ForEach(diarySearchVisibleEntries) { item in
             diarioCard(for: item)
         }
     }
@@ -1192,6 +2207,7 @@ struct DiarioListView: View {
     @ViewBuilder
     private func diarioCard(for item: Diario) -> some View {
         let isSelected = isDiarioSelected(item)
+        let isActiveInSplitView = isDiarioActiveInSplitView(item)
 
         cardItemDiario(
             diario: item,
@@ -1209,24 +2225,62 @@ struct DiarioListView: View {
             isSelected: isSelected,
             onSelectionToggle: {
                 toggleBatchSelection(item)
+            },
+            isActiveInSplitView: isActiveInSplitView,
+            usesDetailPanel: usesIPadDetailPanel,
+            onActivate: {
+                activateDiarioInSplitView(item)
             }
         )
         .padding(15)
         .frame(maxWidth: .infinity)
         .foregroundStyle(Color.black)
-        .background(.white.opacity(0.7))
+        .background(
+            isActiveInSplitView
+                ? Color(red: 0.96, green: 0.82, blue: 0.66).opacity(0.82)
+                : Color.white.opacity(0.7)
+        )
         .overlay(
             RoundedRectangle(cornerRadius: 10)
-                .stroke(isSelected ? Color.orange : Color.clear, lineWidth: 2)
+                .stroke(
+                    isSelected ? Color.orange : (isActiveInSplitView ? Color.accentColor.opacity(0.75) : Color.clear),
+                    lineWidth: 2
+                )
         )
         .clipShape(RoundedRectangle(cornerRadius: 10))
         .shadow(radius: 5)
         .padding(.horizontal, 15)
         .padding(.vertical, 8)
+        .id(item.objectID)
+    }
+
+    private func isDiarioActiveInSplitView(_ item: Diario) -> Bool {
+#if os(iOS)
+        return isIPadInterface && activeDiarioID == item.id
+#else
+        return false
+#endif
+    }
+
+    private func activateDiarioInSplitView(_ item: Diario) {
+#if os(iOS)
+        guard isIPadInterface, !isBatchSelectionMode else { return }
+        withAnimation(.easeInOut(duration: 0.2)) {
+            selectedDiarioID = item.id
+        }
+#endif
+    }
+
+    private var usesIPadDetailPanel: Bool {
+#if os(iOS)
+        isIPadInterface
+#else
+        false
+#endif
     }
 
     private var visibleDiarioIDs: Set<UUID> {
-        Set(modelDiario.list.compactMap { $0.id })
+        Set(diarySearchVisibleEntries.compactMap { $0.id })
     }
 
     private var areAllVisibleEntriesSelected: Bool {
@@ -1274,12 +2328,10 @@ struct DiarioListView: View {
     }
 
     private func toggleChapterCollapse(_ chapter: String) {
-        withAnimation {
-            if collapsedChapterNames.contains(chapter) {
-                collapsedChapterNames.remove(chapter)
-            } else {
-                collapsedChapterNames.insert(chapter)
-            }
+        if collapsedChapterNames.contains(chapter) {
+            collapsedChapterNames.remove(chapter)
+        } else {
+            collapsedChapterNames.insert(chapter)
         }
     }
 
@@ -1670,6 +2722,100 @@ struct DiarioListView: View {
 
 }
 
+#if os(iOS)
+private extension View {
+    func diaryIPadPanel(material: Material) -> some View {
+        background(material)
+            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .stroke(.white.opacity(0.45), lineWidth: 1)
+            }
+    }
+}
+
+/// Divisor ajustable y persistente para el área de trabajo del Diario.
+private struct AdjustableDiarioSplitView<Primary: View, Secondary: View>: View {
+    let layout: DiarioSplitLayout
+    @Binding var primaryFraction: Double
+    let minimumPrimaryLength: CGFloat
+    let minimumSecondaryLength: CGFloat
+    @ViewBuilder let primary: () -> Primary
+    @ViewBuilder let secondary: () -> Secondary
+
+    @State private var dragStartFraction: Double?
+    private let dividerLength: CGFloat = 18
+
+    var body: some View {
+        GeometryReader { proxy in
+            let totalLength = layout == .sideBySide ? proxy.size.width : proxy.size.height
+            let availableLength = max(0, totalLength - dividerLength)
+            let limits = fractionLimits(availableLength: availableLength)
+            let resolvedFraction = min(max(primaryFraction, limits.lower), limits.upper)
+            let primaryLength = availableLength * resolvedFraction
+
+            if layout == .sideBySide {
+                HStack(spacing: 0) {
+                    primary().frame(width: primaryLength)
+                    divider(availableLength: availableLength, limits: limits)
+                    secondary().frame(maxWidth: .infinity)
+                }
+            } else {
+                VStack(spacing: 0) {
+                    primary().frame(height: primaryLength)
+                    divider(availableLength: availableLength, limits: limits)
+                    secondary().frame(maxHeight: .infinity)
+                }
+            }
+        }
+    }
+
+    private func divider(
+        availableLength: CGFloat,
+        limits: (lower: Double, upper: Double)
+    ) -> some View {
+        ZStack {
+            Color.clear
+            Rectangle()
+                .fill(.secondary.opacity(0.2))
+                .frame(width: layout == .sideBySide ? 1 : nil, height: layout == .stacked ? 1 : nil)
+            Capsule(style: .continuous)
+                .fill(.secondary.opacity(0.55))
+                .frame(width: layout == .sideBySide ? 4 : 42, height: layout == .sideBySide ? 42 : 4)
+        }
+        .frame(width: layout == .sideBySide ? dividerLength : nil, height: layout == .stacked ? dividerLength : nil)
+        .contentShape(Rectangle())
+        .gesture(
+            DragGesture(minimumDistance: 0)
+                .onChanged { value in
+                    guard availableLength > 0 else { return }
+                    if dragStartFraction == nil { dragStartFraction = primaryFraction }
+                    let translation = layout == .sideBySide ? value.translation.width : value.translation.height
+                    let candidate = (dragStartFraction ?? primaryFraction) + Double(translation / availableLength)
+                    primaryFraction = min(max(candidate, limits.lower), limits.upper)
+                }
+                .onEnded { _ in dragStartFraction = nil }
+        )
+        .accessibilityElement()
+        .accessibilityLabel("Ajustar tamaño de los paneles")
+        .accessibilityValue("\(Int(primaryFraction * 100)) por ciento")
+        .accessibilityAdjustableAction { direction in
+            let step = direction == .increment ? 0.05 : -0.05
+            primaryFraction = min(max(primaryFraction + step, limits.lower), limits.upper)
+        }
+    }
+
+    private func fractionLimits(availableLength: CGFloat) -> (lower: Double, upper: Double) {
+        guard availableLength > 0 else { return (0, 1) }
+        let effectivePrimaryMinimum = min(minimumPrimaryLength, availableLength * 0.48)
+        let effectiveSecondaryMinimum = min(minimumSecondaryLength, availableLength * 0.48)
+        let lower = Double(effectivePrimaryMinimum / availableLength)
+        let upper = Double((availableLength - effectiveSecondaryMinimum) / availableLength)
+        return (lower, max(lower, upper))
+    }
+}
+#endif
+
 private struct DiarioChapterSectionView<RowContent: View>: View {
     let chapter: String
     let entries: [Diario]
@@ -1758,7 +2904,7 @@ private struct DiarioChapterSectionView<RowContent: View>: View {
 
             if !isCollapsed {
                 ForEach(entries) { entry in
-            rowContent(entry)
+                    rowContent(entry)
                 }
             }
         }

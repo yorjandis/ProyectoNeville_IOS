@@ -6,6 +6,9 @@
 //
 
 import SwiftUI
+#if os(iOS)
+import UIKit
+#endif
 
 struct NewDiarioEntryView: View {
     @Environment(\.dismiss) private var dismiss
@@ -187,6 +190,14 @@ struct NewDiarioEntryView: View {
         .sorted { $0.localizedCaseInsensitiveCompare($1) == .orderedAscending }
     }
 
+    private var contentEditorMinimumHeight: CGFloat {
+#if os(iOS)
+        return UIDevice.current.userInterfaceIdiom == .pad ? 420 : 220
+#else
+        return 220
+#endif
+    }
+
     private var contentEditor: some View {
         TextEditor(text: $content)
             .font(.title3)
@@ -201,7 +212,7 @@ struct NewDiarioEntryView: View {
                 RoundedRectangle(cornerRadius: 12, style: .continuous)
                     .stroke(Color.gray.opacity(0.4), lineWidth: 0.5)
             )
-            .frame(minHeight: 220)
+            .frame(minHeight: contentEditorMinimumHeight)
     }
 
     private var attachmentsSection: some View {

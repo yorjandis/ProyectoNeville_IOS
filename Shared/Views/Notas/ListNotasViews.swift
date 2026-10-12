@@ -28,6 +28,7 @@ private enum NotasUIConstants {
     // panel de iPad no oculte ninguna parte de la figura.
     static let searchPetSize: CGFloat = 50
     static let searchPetOffset = CGSize(width: 55, height: 0)
+    static let detailPanelPetSize: CGFloat = 118
 }
 
 #if os(iOS)
@@ -433,7 +434,7 @@ struct ListNotasViews: View {
                     if isIPadInterface {
                         iPadNotesWorkspace
                     } else {
-                        notesSearchHeader
+                        notesSearchHeader(showsPet: true)
                         notesScrollView
                     }
 #else
@@ -491,18 +492,18 @@ struct ListNotasViews: View {
                 minimumPrimaryLength: layout == .sideBySide ? 300 : 190,
                 minimumSecondaryLength: layout == .sideBySide ? 380 : 260
             ) {
-                iPadNotesListPanel
+                iPadNotesListPanel(layout: layout)
             } secondary: {
-                iPadNoteDetailPanel
+                iPadNoteDetailPanel(layout: layout)
             }
         }
         .padding(.horizontal, 10)
         .padding(.bottom, 8)
     }
 
-    private var iPadNotesListPanel: some View {
+    private func iPadNotesListPanel(layout: NotesSplitLayout) -> some View {
         VStack(spacing: 0) {
-            notesSearchHeader
+            notesSearchHeader(showsPet: layout == .stacked)
             Divider()
             notesScrollView
         }
@@ -515,35 +516,53 @@ struct ListNotasViews: View {
     }
 
     @ViewBuilder
-    private var iPadNoteDetailPanel: some View {
-        Group {
-            if let nota = activeNota {
-                ScrollView {
-                    cardNotas(
-                        nota: nota,
-                        selectionMode: false,
-                        isSelected: false,
-                        onSelectionToggle: {},
-                        presentation: .splitDetail,
-                        isActiveInSplitView: true,
-                        onActivate: {}
+    private func iPadNoteDetailPanel(layout: NotesSplitLayout) -> some View {
+        VStack(spacing: 0) {
+            if layout == .sideBySide && petsEnabled {
+                PetImage(assetName: NotasUIConstants.searchPetAssetName)
+                    .frame(
+                        width: NotasUIConstants.detailPanelPetSize,
+                        height: NotasUIConstants.detailPanelPetSize
                     )
-                    .id(nota.id)
-                    .environmentObject(modelNotas)
-                    .padding(.vertical, 4)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.top, 10)
+                    .padding(.bottom, 6)
+                    .accessibilityHidden(true)
+                    .allowsHitTesting(false)
+
+                Divider()
+                    .padding(.horizontal, 16)
+            }
+
+            Group {
+                if let nota = activeNota {
+                    ScrollView {
+                        cardNotas(
+                            nota: nota,
+                            selectionMode: false,
+                            isSelected: false,
+                            onSelectionToggle: {},
+                            presentation: .splitDetail,
+                            isActiveInSplitView: true,
+                            onActivate: {}
+                        )
+                        .id(nota.id)
+                        .environmentObject(modelNotas)
+                        .padding(.vertical, 4)
+                    }
+                } else {
+                    VStack(spacing: 14) {
+                        Image(systemName: "note.text")
+                            .font(.system(size: 46, weight: .light))
+                            .foregroundStyle(.secondary)
+                        Text("Selecciona una nota")
+                            .font(.title3.weight(.semibold))
+                        Text("Su contenido aparecerá en este panel.")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
-            } else {
-                VStack(spacing: 14) {
-                    Image(systemName: "note.text")
-                        .font(.system(size: 46, weight: .light))
-                        .foregroundStyle(.secondary)
-                    Text("Selecciona una nota")
-                        .font(.title3.weight(.semibold))
-                    Text("Su contenido aparecerá en este panel.")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
         .background(.ultraThinMaterial)
@@ -585,9 +604,9 @@ struct ListNotasViews: View {
     }
 
 #if os(iOS)
-    /// La mascota vive en un `overlay`, por lo que nunca altera la altura de la
-    /// cabecera ni desplaza la lista de notas.
-    private var notesSearchHeader: some View {
+    /// En iPhone y en el modo apilado de iPad la mascota permanece junto a la
+    /// búsqueda. Solo el modo lateral la traslada al panel de detalle.
+    private func notesSearchHeader(showsPet: Bool) -> some View {
         HStack(spacing: 8) {
             Image(systemName: "magnifyingglass")
                 .foregroundStyle(.secondary)
@@ -611,11 +630,16 @@ struct ListNotasViews: View {
         .padding(.horizontal, 12)
         .frame(height: NotasUIConstants.searchBarHeight)
         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
-        .padding(.leading, petsEnabled ? NotasUIConstants.searchBarLeadingInset : NotasUIConstants.searchBarHorizontalPadding)
+        .padding(
+            .leading,
+            showsPet && petsEnabled
+                ? NotasUIConstants.searchBarLeadingInset
+                : NotasUIConstants.searchBarHorizontalPadding
+        )
         .padding(.trailing, NotasUIConstants.searchBarHorizontalPadding)
         .frame(height: NotasUIConstants.searchHeaderHeight)
         .overlay(alignment: .leading) {
-            if petsEnabled {
+            if showsPet && petsEnabled {
                 PetImage(assetName: NotasUIConstants.searchPetAssetName)
                     .frame(
                         width: NotasUIConstants.searchPetSize,

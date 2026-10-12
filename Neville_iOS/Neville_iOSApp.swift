@@ -113,7 +113,13 @@ struct Neville_iOSApp: App {
                                     }
                                 }
                             }
-                            .sheet(item: self.$itemAtajo) { item in
+                            .iPadFullScreenPresentation(
+                                item: self.$itemAtajo,
+                                shouldUseFullScreen: { item in
+                                    if case .abrirNotas = item { return true }
+                                    return false
+                                }
+                            ) { item in
                                 switch  item{
                                 case .abrirDiario:
                                         DiarioListView()

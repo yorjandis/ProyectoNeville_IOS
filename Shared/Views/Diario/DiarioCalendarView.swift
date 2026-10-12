@@ -5,13 +5,6 @@
 //  Created by Yorjandis PG on 18/2/25.
 //
 //Construye un calendario donde serán seleccionado los días en que hay entradas de cierto tipo en Core Data (Entradas del Diario)
-#if os(macOS)
-import AppKit
-#endif
-#if os(iOS)
-import UIKit
-#endif
-
 import SwiftUI
 import CoreData
 
@@ -28,12 +21,10 @@ struct DiarioCalendarView: View {
     
     @State private var hideCalendar: Bool = false //Oculta el calendario pero deja la cabezera
     @State private var fechasDeEntradas: Set<Date> = []
-    @State private var conteoEntradasPorDia: [Date: Int] = [:]
     @State private var shouldSelectDayFromDatePicker: Bool = false
     @State private var selectedDay: Date? = nil
     
     var refreshTrigger: Int
-    var onMonthEntriesLoaded: (Date) -> Void = { _ in }
     var onRequestCreateEntry: (Date) -> Void = { _ in }
     // Closure que se ejecutará cuando se seleccione una fecha
     var onDateSelected: (Date) -> Void
@@ -76,7 +67,6 @@ struct DiarioCalendarView: View {
                 //Para fijar la fecha actual
                 Button{
                     self.currentMonth = Date()
-                    self.modeloDiario.getAllItem()
                 }label: {
                     Image(systemName: "diamond.circle.fill")
                         .tint(.black)
@@ -87,7 +77,6 @@ struct DiarioCalendarView: View {
                 CalendarGrid(
                     currentMonth: $currentMonth,
                     fechasResaltadas: $fechasDeEntradas,
-                    entryCountsByDay: $conteoEntradasPorDia,
                     selectedDay: $selectedDay,
                     onRequestCreateEntry: onRequestCreateEntry,
                     onDateSelected: onDateSelected
@@ -103,6 +92,23 @@ struct DiarioCalendarView: View {
         }
         .padding(.horizontal)
         .padding(.vertical, 8)
+        .background {
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .fill(
+                    LinearGradient(
+                        colors: [
+                            Color(red: 0.88, green: 0.94, blue: 0.80),
+                            Color(red: 0.99, green: 0.88, blue: 0.70)
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+                .overlay {
+                    RoundedRectangle(cornerRadius: 22, style: .continuous)
+                        .stroke(Color(red: 0.61, green: 0.39, blue: 0.25).opacity(0.18), lineWidth: 1)
+                }
+        }
         .onChange(of: self.currentMonth) { oldValue, newValue in
             reloadMonthData(for: newValue)
             if shouldSelectDayFromDatePicker {
@@ -139,7 +145,6 @@ struct DiarioCalendarView: View {
         let calendar = Calendar.current
         let normalizedDays = entries.compactMap { $0.fecha }.map { calendar.startOfDay(for: $0) }
         fechasDeEntradas = Set(normalizedDays)
-        conteoEntradasPorDia = Dictionary(grouping: normalizedDays, by: { $0 }).mapValues(\.count)
 
         if preserveSelectedDay, let selectedDay {
             let normalizedSelectedDay = calendar.startOfDay(for: selectedDay)
@@ -151,8 +156,9 @@ struct DiarioCalendarView: View {
             }
         }
 
-        modeloDiario.list = entries
-        onMonthEntriesLoaded(date)
+        // Cargar los indicadores del calendario nunca debe modificar el filtro
+        // ni el listado de entradas activo. Solo la selección explícita de un
+        // día, mediante `onDateSelected`, puede cambiar ese listado.
     }
 
     private func selectEntriesForDatePickerSelection(_ date: Date) {
@@ -166,7 +172,6 @@ struct DiarioCalendarView: View {
 struct CalendarGrid: View {
     @Binding var currentMonth: Date
     @Binding var fechasResaltadas: Set<Date>
-    @Binding var entryCountsByDay: [Date: Int]
     @Binding var selectedDay: Date?
     var onRequestCreateEntry: (Date) -> Void
     var onDateSelected: (Date) -> Void
@@ -178,21 +183,15 @@ struct CalendarGrid: View {
     var body: some View {
         let days = generateDaysInMonth(for: currentMonth)
         
-        // ⚙️ Aquí defines el color compatible con ambas plataformas
-                #if os(macOS)
-                let highlightColor = Color(NSColor(calibratedWhite: 0, alpha: 0.6))
-                #else
-                let highlightColor = Color(UIColor(white: 0, alpha: 0.6))
-                #endif
+        let highlightColor = Color(red: 0.58, green: 0.70, blue: 0.46).opacity(0.78)
         
         VStack(spacing: 4) {
             LazyVGrid(columns: columns, spacing: 2) {
                 ForEach(weekdaySymbols, id: \.self) { weekday in
                     Text(weekday.uppercased())
-                        .font(.caption2)
-                        .fontWeight(.semibold)
-                        .foregroundStyle(.secondary)
-                        .frame(width: 38, height: 16)
+                        .font(.caption.weight(.bold))
+                        .foregroundStyle(Color(red: 0.35, green: 0.25, blue: 0.16))
+                        .frame(width: 38, height: 20)
                 }
             }
 
@@ -201,42 +200,41 @@ struct CalendarGrid: View {
                     if let date = days[index] {
                         let calendar = Calendar.current
                         let isHighlighted = fechasResaltadas.contains(date)
-                        let entryCount = entryCountsByDay[date] ?? 0
                         let isSelected = selectedDay.map { calendar.isDate($0, inSameDayAs: date) } ?? false
                         let isToday = calendar.isDateInToday(date)
                         let today = calendar.startOfDay(for: Date.now)
                         let isFutureDay = calendar.startOfDay(for: date) > today
                         let todayTextColor = Color(red: 0.45, green: 0.22, blue: 0.08)
-                        let dayTextColor = isToday ? todayTextColor : (isHighlighted ? Color.white : (isFutureDay ? Color.secondary : Color.primary))
+                        let selectedBackgroundColor = Color(red: 0.80, green: 0.62, blue: 0.48)
+                        let dayTextColor = isToday
+                            ? todayTextColor
+                            : Color(red: 0.18, green: 0.14, blue: 0.10)
 
                         Text(date.formatted(.dateTime.day()))
+                            .font(.body.weight(.bold))
                             .frame(width: 38, height: 38)
                             .background(
                                 Circle()
-                                    .fill(isHighlighted && !isToday ? highlightColor : Color.clear)
+                                    .fill(
+                                        isSelected
+                                            ? selectedBackgroundColor
+                                            : (isHighlighted && !isToday ? highlightColor : Color.clear)
+                                    )
                             )
                             .foregroundStyle(dayTextColor)
-                            .fontWeight(isToday ? .heavy : .regular)
+                            .fontWeight(isToday ? .heavy : .bold)
                             .opacity(isFutureDay ? 0.45 : 1)
                             .overlay {
                                 Circle()
                                     .stroke(
-                                        isSelected ? Color.black : Color.clear,
+                                        isSelected
+                                            ? Color(red: 0.52, green: 0.30, blue: 0.20)
+                                            : Color.clear,
                                         style: StrokeStyle(
-                                            lineWidth: 3,
-                                            dash: [2, 4] // patrón de puntos
+                                            lineWidth: 2
                                         )
                                     )
                                     .frame(width: 42, height: 42)
-                            }
-                            .overlay {
-                                if isHighlighted {
-                                    Text("\(entryCount)")
-                                        .font(.caption2)
-                                        .foregroundStyle(Color.orange)
-                                        .bold()
-                                        .offset(y: +12)
-                                }
                             }
                             .contentShape(Rectangle())
                             .gesture(dayTapGesture(for: date))

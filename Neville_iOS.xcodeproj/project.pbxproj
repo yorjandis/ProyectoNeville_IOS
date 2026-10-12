@@ -4641,7 +4641,7 @@
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Se requiere permisos para usar Autenticación segura para Abrir el Diario";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "La Ley usa HealthKit para leer tus datos de pulso, variabilidad cardiaca, respiración, pasos y entrenamientos, estimar tu activación fisiológica y mostrarte patrones de estrés. La Ley no añade ni modifica datos en la app Salud.";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "La Ley no guarda ni modifica datos en la app Salud; su acceso a HealthKit es exclusivamente de lectura para estimar tu activación fisiológica y mostrarte patrones de estrés.";
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Neville usa tu ubicación para capturar una dirección actual y guardarla en actividades de Agenda o en Notas cuando lo solicites.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Neville usa tu ubicación para capturar las coordenadas actuales y guardarlas en entradas de Diario, actividades de Agenda o Notas cuando lo solicites.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Neville usa el micrófono para grabar tus notas de voz.";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Permite guardar en Fotos las imágenes que exportes desde los anexos del Diario.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Se necesita permisos para acceder a la galeria";
@@ -4694,7 +4694,7 @@
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Se requiere permisos para usar Autenticación segura para Abrir el Diario";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "La Ley usa HealthKit para leer tus datos de pulso, variabilidad cardiaca, respiración, pasos y entrenamientos, estimar tu activación fisiológica y mostrarte patrones de estrés. La Ley no añade ni modifica datos en la app Salud.";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "La Ley no guarda ni modifica datos en la app Salud; su acceso a HealthKit es exclusivamente de lectura para estimar tu activación fisiológica y mostrarte patrones de estrés.";
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Neville usa tu ubicación para capturar una dirección actual y guardarla en actividades de Agenda o en Notas cuando lo solicites.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Neville usa tu ubicación para capturar las coordenadas actuales y guardarlas en entradas de Diario, actividades de Agenda o Notas cuando lo solicites.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Neville usa el micrófono para grabar tus notas de voz.";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Permite guardar en Fotos las imágenes que exportes desde los anexos del Diario.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Se necesita permisos para acceder a la galeria";

@@ -569,10 +569,14 @@ struct Home: View {
         .sheet(isPresented: self.$showNovedades) {
             Novedades()
         }
-        .sheet(isPresented: $showRitualMatutino) {
+        .iPadFullScreenPresentation(isPresented: $showRitualMatutino) {
             MorningRitualMainView()
+                .iPadFullScreenDismissButton(alignment: .topTrailing)
         }
-        .sheet(item: $ritualNavigation.destination) { destination in
+        .iPadFullScreenPresentation(
+            item: $ritualNavigation.destination,
+            shouldUseFullScreen: { $0.rawValue == RitualNavigationDestination.wellbeingDashboard.rawValue }
+        ) { destination in
             switch destination {
             case .eveningReview:
                 RitualEveningReviewEntryView()
@@ -580,7 +584,7 @@ struct Home: View {
                 WellbeingDashboardView()
             }
         }
-        .agendaPresentation(isPresented: $showAgenda) {
+        .iPadFullScreenPresentation(isPresented: $showAgenda) {
             AgendaMainView()
         }
         .sheet(isPresented: $showPresence) {

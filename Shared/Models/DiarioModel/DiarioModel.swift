@@ -481,38 +481,6 @@ final class DiarioModel : ObservableObject{
     
     //MARK Operaciones de filtrado
     
-    //Filtrar por título: Case Insentitive
-    func filterByTitle(criterio : String)->[Diario]{
-        if criterio.isEmpty {
-            return getAllItemGET()
-        }
-        let fetchRequest: NSFetchRequest<Diario> = Diario.fetchRequest()
-        fetchRequest.fetchBatchSize = 100
-        fetchRequest.sortDescriptors = defaultSortDescriptors(ascending: true)
-        fetchRequest.predicate = NSPredicate(format: "title CONTAINS[cd] %@", criterio)
-        do {
-            return try context.fetch(fetchRequest)
-        } catch {
-            return []
-        }
-    }
-    
-    //Filtrar por contenido: Case Insentitive
-    func filterByContent(criterio : String)->[Diario]{
-        if criterio.isEmpty {
-            return getAllItemGET()
-        }
-        let fetchRequest: NSFetchRequest<Diario> = Diario.fetchRequest()
-        fetchRequest.fetchBatchSize = 100
-        fetchRequest.sortDescriptors = defaultSortDescriptors(ascending: true)
-        fetchRequest.predicate = NSPredicate(format: "content CONTAINS[cd] %@", criterio)
-        do {
-            return try context.fetch(fetchRequest)
-        } catch {
-            return []
-        }
-    }
-    
     //Filtrar por emoticono: Case Insentitive
     func filterByEmoticono(criterio : String)->[Diario]{
         let fetchRequest: NSFetchRequest<Diario> = Diario.fetchRequest()
