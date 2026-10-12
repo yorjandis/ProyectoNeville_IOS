@@ -343,6 +343,10 @@ struct optionView: View {
     @AppStorage("purchaseStatus") var purchaseStatus: Bool = false
     @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) var yorjPremium: Bool = false
 
+    private var isIPad: Bool {
+        UIDevice.current.userInterfaceIdiom == .pad
+    }
+
     var body: some View {
         NavigationStack {
             VStack {
@@ -468,6 +472,8 @@ struct optionView: View {
             .buttonStyle(.bordered)
             .foregroundStyle(.white)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .padding(.horizontal, isIPad ? 24 : 0)
+            .padding(.vertical, isIPad ? 24 : 0)
         }
         .preferredColorScheme(.dark)
         .background(LinearGradient.AzulTecnologico())

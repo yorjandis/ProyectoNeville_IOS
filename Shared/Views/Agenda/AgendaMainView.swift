@@ -252,7 +252,7 @@ struct AgendaMainView: View {
     @State private var migrationExportFileName = "neville-agenda.ypgexp"
     @State private var migrationExportCount = 0
     @State private var showPastActivities: Bool = false
-    @State private var showSearchBar: Bool = false
+    @AppStorage("agendaSearchBarVisible") private var showSearchBar = false
     @State private var searchText: String = ""
     @State private var revealLocationIDs: Set<UUID> = []
     @State private var hasEvaluatedInitialTodayAvailability = false
@@ -262,6 +262,7 @@ struct AgendaMainView: View {
     @AppStorage("agendaIPadLayoutMode") private var iPadLayoutMode: AgendaIPadLayoutMode = .automatic
     @AppStorage("agendaIPadSidePanelFraction") private var iPadSidePanelFraction = 0.38
     @AppStorage("agendaIPadTopPanelFraction") private var iPadTopPanelFraction = 0.43
+    @AppStorage("agendaIPadCalendarVisible") private var isIPadCalendarVisible = true
     @State private var selectedAgendaItemID: UUID?
     @State private var inlineEditingAgendaItemID: UUID?
     @State private var inlineDraftTitle = ""
@@ -680,10 +681,13 @@ struct AgendaMainView: View {
 
     private var iPadLandscapeMasterPanel: some View {
         VStack(spacing: 0) {
-            customCalendarView
-                .padding(12)
+            if isIPadCalendarVisible {
+                customCalendarView
+                    .padding(12)
+                    .transition(.move(edge: .top).combined(with: .opacity))
 
-            Divider()
+                Divider()
+            }
             iPadListControls
             Divider()
             iPadAgendaList
@@ -700,22 +704,25 @@ struct AgendaMainView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
 
-            Divider()
+            if isIPadCalendarVisible {
+                Divider()
 
-            ScrollView {
-                VStack(spacing: 8) {
-                    customCalendarView
-                        .padding(12)
+                ScrollView {
+                    VStack(spacing: 8) {
+                        customCalendarView
+                            .padding(12)
 
-                    if shouldShowEmptyTodayPet {
-                        interactiveAgendaPet(size: 150)
-                            .padding(.horizontal, 12)
-                            .padding(.bottom, 10)
-                            .transition(.opacity)
+                        if shouldShowEmptyTodayPet {
+                            interactiveAgendaPet(size: 150)
+                                .padding(.horizontal, 12)
+                                .padding(.bottom, 10)
+                                .transition(.opacity)
+                        }
                     }
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .transition(.move(edge: .trailing).combined(with: .opacity))
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .agendaIPadPanel(material: .thinMaterial)
     }
@@ -746,6 +753,26 @@ struct AgendaMainView: View {
                     showPastActivities ? "Ocultar actividades pasadas" : "Mostrar actividades pasadas"
                 )
                 Spacer(minLength: 0)
+                Button {
+                    withAnimation(.easeInOut(duration: 0.22)) {
+                        isIPadCalendarVisible.toggle()
+                    }
+                } label: {
+                    Image(
+                        systemName: isIPadCalendarVisible
+                            ? "calendar.badge.minus"
+                            : "calendar.badge.plus"
+                    )
+                    .font(.subheadline.weight(.medium))
+                    .foregroundStyle(.black.opacity(0.65))
+                    .frame(width: 30, height: 30)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(
+                    isIPadCalendarVisible ? "Ocultar calendario" : "Mostrar calendario"
+                )
+                .accessibilityHint("También oculta o muestra la mascota situada bajo el calendario")
             }
 
             if showSearchBar {

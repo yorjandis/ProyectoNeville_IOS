@@ -683,7 +683,9 @@ struct TabButtonBar : View{
                     showOptionView = false
                 }
             )
-               .presentationDetents([.height(280)])
+               .presentationDetents([
+                   .height(UIDevice.current.userInterfaceIdiom == .pad ? 340 : 280)
+               ])
                .presentationDragIndicator(.hidden)
         }
         .sheet(isPresented: $showPurchase) {
