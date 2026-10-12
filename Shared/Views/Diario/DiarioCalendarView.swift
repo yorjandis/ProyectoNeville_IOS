@@ -48,6 +48,8 @@ struct DiarioCalendarView: View {
                 
                 Button(action: { changeMonth(by: -1) }) {
                     Image(systemName: "chevron.left")
+                        .font(.system(size: 16, weight: .black))
+                        .foregroundStyle(.black)
                 }
                 .padding()
                 
@@ -55,10 +57,16 @@ struct DiarioCalendarView: View {
                 DatePicker("", selection: datePickerSelection, displayedComponents: [.date])
                     .datePickerStyle(.compact)
                     .labelsHidden()
+                    .font(.headline.weight(.bold))
+                    .fontWeight(.bold)
+                    .foregroundStyle(.black)
+                    .tint(.black)
                     .frame(width: 120) // Ajustar el ancho según sea necesario
                 
                 Button(action: { changeMonth(by: 1) }) {
                     Image(systemName: "chevron.right")
+                        .font(.system(size: 16, weight: .black))
+                        .foregroundStyle(.black)
                 }
                 .padding()
                 

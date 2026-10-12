@@ -175,6 +175,7 @@ struct DiarioListView: View {
     @AppStorage("diaryIPadDetailHeaderCollapsed") private var isIPadDetailHeaderCollapsed = false
     @State private var selectedDiarioID: UUID?
     @State private var iPadListScrollTargetID: NSManagedObjectID?
+    @State private var iPadListScrollTargetChapter: String?
     @State private var iPadListScrollRequest = 0
     @State private var iPadQuickTitleEntryID: UUID?
     @State private var iPadQuickTitleDraft = ""
@@ -1062,10 +1063,20 @@ struct DiarioListView: View {
                     .listRowBackground(Color.clear)
                 } else if selectedListMode == .groupedByChapter {
                     ForEach(groupedDiarioByChapter, id: \.chapter) { section in
-                        diarioChapterSection(section)
+                        diarioChapterSection(section, includesEntries: false)
+                            .id(iPadChapterScrollID(section.chapter))
                             .listRowInsets(EdgeInsets())
                             .listRowBackground(Color.clear)
                             .listRowSeparator(.hidden)
+
+                        if !collapsedChapterNames.contains(section.chapter) {
+                            ForEach(section.entries) { entry in
+                                diarioCard(for: entry)
+                                    .listRowInsets(EdgeInsets())
+                                    .listRowBackground(Color.clear)
+                                    .listRowSeparator(.hidden)
+                            }
+                        }
                     }
                 } else {
                     ForEach(iPadVisibleEntries) { entry in
@@ -1080,8 +1091,19 @@ struct DiarioListView: View {
             .scrollContentBackground(.hidden)
             .onChange(of: iPadListScrollRequest) { _, _ in
                 guard let target = iPadListScrollTargetID else { return }
+                let targetChapter = iPadListScrollTargetChapter
                 Task { @MainActor in
                     await Task.yield()
+
+                    if let targetChapter {
+                        // La fila del capítulo es un hijo directo de List y
+                        // siempre puede localizarse, aunque sus tarjetas aún
+                        // no se hayan creado por estar fuera de pantalla.
+                        proxy.scrollTo(iPadChapterScrollID(targetChapter), anchor: .top)
+                        await Task.yield()
+                        await Task.yield()
+                    }
+
                     withAnimation(.easeInOut(duration: 0.25)) {
                         proxy.scrollTo(target, anchor: .center)
                     }
@@ -1604,11 +1626,19 @@ struct DiarioListView: View {
         selectedDiarioID = entryID
 
         if selectedListMode == .groupedByChapter {
-            collapsedChapterNames.remove(chapterName(for: entry))
+            let chapter = chapterName(for: entry)
+            collapsedChapterNames.remove(chapter)
+            iPadListScrollTargetChapter = chapter
+        } else {
+            iPadListScrollTargetChapter = nil
         }
 
         iPadListScrollTargetID = entry.objectID
         iPadListScrollRequest &+= 1
+    }
+
+    private func iPadChapterScrollID(_ chapter: String) -> String {
+        "diary-ipad-chapter-\(chapter)"
     }
 
     private func presentIPadQuickTitleEditor(for entry: Diario) {
@@ -2057,12 +2087,16 @@ struct DiarioListView: View {
     }
 
     @ViewBuilder
-    private func diarioChapterSection(_ section: (chapter: String, entries: [Diario])) -> some View {
+    private func diarioChapterSection(
+        _ section: (chapter: String, entries: [Diario]),
+        includesEntries: Bool = true
+    ) -> some View {
         DiarioChapterSectionView(
             chapter: section.chapter,
             entries: section.entries,
             isCollapsed: collapsedChapterNames.contains(section.chapter),
             isSelectionMode: isBatchSelectionMode,
+            includesEntries: includesEntries,
             availableChapters: existingChapters.filter {
                 $0.localizedCaseInsensitiveCompare(section.chapter) != .orderedSame
             },
@@ -2821,6 +2855,7 @@ private struct DiarioChapterSectionView<RowContent: View>: View {
     let entries: [Diario]
     let isCollapsed: Bool
     let isSelectionMode: Bool
+    let includesEntries: Bool
     let availableChapters: [String]
     let onCollapseToggle: () -> Void
     let onRenameChapter: (String) -> Void
@@ -2902,7 +2937,7 @@ private struct DiarioChapterSectionView<RowContent: View>: View {
             .padding(.horizontal, 16)
             .padding(.top, 8)
 
-            if !isCollapsed {
+            if includesEntries && !isCollapsed {
                 ForEach(entries) { entry in
                     rowContent(entry)
                 }
