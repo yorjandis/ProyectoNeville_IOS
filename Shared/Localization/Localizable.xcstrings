@@ -96,7 +96,20 @@
       }
     },
     "¿Cerrar sin guardar los cambios?" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Close without saving changes?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "不保存更改并关闭吗？"
+          }
+        }
+      }
     },
     "¿Cómo cambia durante 90 segundos?" : {
       "extractionState" : "manual",
@@ -2885,9 +2898,21 @@
     },
     "%lld × %lld px" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "%1$lld × %2$lld px"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "new",
+            "value" : "%1$lld × %2$lld px"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
             "value" : "%1$lld × %2$lld px"
           }
         }
@@ -2895,16 +2920,143 @@
     },
     "%lld bloque(s) · Suma total: %@" : {
       "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "machine_translated",
+                  "value" : "%1$lld block · Total: %2$@"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "machine_translated",
+                  "value" : "%1$lld blocks · Total: %2$@"
+                }
+              },
+              "zero" : {
+                "stringUnit" : {
+                  "state" : "machine_translated",
+                  "value" : "%1$lld blocks · Total: %2$@"
+                }
+              }
+            }
+          }
+        },
         "es" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$lld bloque(s) · Suma total: %2$@"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "machine_translated",
+                  "value" : "%1$lld bloque · Suma total: %2$@"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "machine_translated",
+                  "value" : "%1$lld bloques · Suma total: %2$@"
+                }
+              },
+              "zero" : {
+                "stringUnit" : {
+                  "state" : "machine_translated",
+                  "value" : "%1$lld bloques · Suma total: %2$@"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "machine_translated",
+                  "value" : "%1$lld 个块 · 总计：%2$@"
+                }
+              },
+              "zero" : {
+                "stringUnit" : {
+                  "state" : "machine_translated",
+                  "value" : "%1$lld 个块 · 总计：%2$@"
+                }
+              }
+            }
           }
         }
       }
     },
     "%lld bloque(s) aritmético(s)" : {
-
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "machine_translated",
+                  "value" : "%lld arithmetic block"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "machine_translated",
+                  "value" : "%lld arithmetic blocks"
+                }
+              },
+              "zero" : {
+                "stringUnit" : {
+                  "state" : "machine_translated",
+                  "value" : "%lld arithmetic blocks"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "machine_translated",
+                  "value" : "%lld bloque aritmético"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "machine_translated",
+                  "value" : "%lld bloques aritméticos"
+                }
+              },
+              "zero" : {
+                "stringUnit" : {
+                  "state" : "machine_translated",
+                  "value" : "%lld bloques aritméticos"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "machine_translated",
+                  "value" : "%lld 个算术块"
+                }
+              },
+              "zero" : {
+                "stringUnit" : {
+                  "state" : "machine_translated",
+                  "value" : "%lld 个算术块"
+                }
+              }
+            }
+          }
+        }
+      }
     },
     "%lld completadas" : {
       "localizations" : {
@@ -2993,9 +3145,6 @@
           }
         }
       }
-    },
-    "%lld por ciento" : {
-
     },
     "%lld revisión%@ guardada%@" : {
       "extractionState" : "manual",
@@ -3229,10 +3378,36 @@
       }
     },
     "=" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "="
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "="
+          }
+        }
+      }
     },
     "= %@" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "= %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "= %@"
+          }
+        }
+      }
     },
     "☘️ Información sobre la IA utilizada:\n\nLa Inteligencia Artificial se basa en los modelos preinstalados en el dispositivo. Apple garantiza que su acceso es seguro y no involucra procesamiento fuera del dispositivo.\n\nEl modelo es capaz de generar respuestas creativas y eficaces basadas en los conocimientos y enseñanzas de varios autores (Neville Goddard, Joe Dispenza, Bruce Lipton y Gregg Braden). Sin embargo, se recomienda revisar con cuidado cada respuesta y tomar desiciones informadas acerca de ellas.\n\nLos modelos han sido cuidadosamente instruidos y revisados para aminorar los sezgos, errores y que solo responda dentro de los límites del campo de conocimientos establecido para cada autor.\n\nSi siente que una respuesta no resuena con usted, o no es correcta, la mejor desición es seguir su instinto propio.\n\nLa optimización del modelo es un proceso continuo, en cada actualización de la \"La Ley\" será revisado y actualizado." : {
       "extractionState" : "manual",
@@ -4076,25 +4251,116 @@
       }
     },
     "Abre el Centro Sanador." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Open the Healing Center."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "打开疗愈中心。"
+          }
+        }
+      }
     },
     "Abre el chat con inteligencia artificial." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Open the AI chat."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "打开 AI 聊天。"
+          }
+        }
+      }
     },
     "Abre el diario." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Open the journal."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "打开日记。"
+          }
+        }
+      }
     },
     "Abre el editor para añadir una actividad a la agenda." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Open the editor to add an activity to the schedule."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "打开编辑器，将活动添加到日程。"
+          }
+        }
+      }
     },
     "Abre el editor para crear una nota." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Open the editor to create a note."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "打开编辑器，新建笔记。"
+          }
+        }
+      }
     },
     "Abre el editor para escribir en el diario." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Open the editor to write in the journal."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "打开编辑器，撰写日记。"
+          }
+        }
+      }
     },
     "Abre el editor para programar un recordatorio." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Open the editor to schedule a reminder."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "打开编辑器，安排提醒。"
+          }
+        }
+      }
     },
     "Abre el histórico y las estadísticas" : {
       "localizations" : {
@@ -4119,10 +4385,36 @@
       }
     },
     "Abre el lector de etiquetas." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Open the tag reader."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "打开食品标签扫描器。"
+          }
+        }
+      }
     },
     "Abre el listado de conferencias." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Open the lecture list."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "打开讲座列表。"
+          }
+        }
+      }
     },
     "Abre el listado de las notas" : {
       "localizations" : {
@@ -4147,10 +4439,36 @@
       }
     },
     "Abre el resumen semanal." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Open the weekly review."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "打开每周回顾。"
+          }
+        }
+      }
     },
     "Abre Espacio Calma." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Open Calm Space."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "打开静心空间。"
+          }
+        }
+      }
     },
     "Abre guías inmediatas de regulación y recursos de emergencia" : {
       "localizations" : {
@@ -4175,7 +4493,20 @@
       }
     },
     "Abre la agenda." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Open the schedule."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "打开日程。"
+          }
+        }
+      }
     },
     "Abre la app en una conferencia aleatoria" : {
       "localizations" : {
@@ -4223,13 +4554,52 @@
       }
     },
     "Abre la grabadora para crear una nota de voz." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Open the recorder to create a voice note."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "打开录音器以创建语音笔记。"
+          }
+        }
+      }
     },
     "Abre la práctica de coherencia cardiocerebral." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Open the heart-brain coherence practice."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "打开心脑相干练习。"
+          }
+        }
+      }
     },
     "Abre la práctica de presencia consciente." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Open the Mindful Presence practice."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "打开觉察当下练习。"
+          }
+        }
+      }
     },
     "Abre la vista del Diario" : {
       "localizations" : {
@@ -4254,7 +4624,20 @@
       }
     },
     "Abre las vistas de los autores." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Open the Authors section."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "打开作者专区。"
+          }
+        }
+      }
     },
     "Abre los números de emergencia y apoyo emocional según la región seleccionada" : {
       "localizations" : {
@@ -4279,13 +4662,52 @@
       }
     },
     "Abre tus metas." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Open your goals."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "打开你的目标。"
+          }
+        }
+      }
     },
     "Abre tus notas." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Open your notes."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "打开你的笔记。"
+          }
+        }
+      }
     },
     "Abrir Ajustes" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Open Settings"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "打开设置"
+          }
+        }
+      }
     },
     "Abrir ayuda urgente" : {
       "localizations" : {
@@ -4420,7 +4842,20 @@
       }
     },
     "Abrir en La Ley" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Open in La Ley"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "在法则中打开"
+          }
+        }
+      }
     },
     "Abrir en Mapas" : {
       "localizations" : {
@@ -6005,10 +6440,36 @@
       }
     },
     "Ajustar tamaño de los paneles" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Adjust Panel Sizes"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "调整面板大小"
+          }
+        }
+      }
     },
     "Ajustar valores" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Adjust Values"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "调整数值"
+          }
+        }
+      }
     },
     "Ajustar visualización" : {
       "localizations" : {
@@ -6361,7 +6822,20 @@
       }
     },
     "Añade al menos un valor numérico." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Add at least one numeric value."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "添加至少一个数值。"
+          }
+        }
+      }
     },
     "Añade contexto, motivación o instrucciones…" : {
       "localizations" : {
@@ -6463,7 +6937,20 @@
       }
     },
     "Añadir anexos" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Add Attachments"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "添加附件"
+          }
+        }
+      }
     },
     "Añadir clave de OpenRouter" : {
       "localizations" : {
@@ -7613,7 +8100,20 @@
       }
     },
     "Arrastra cualquiera de las cuatro líneas naranjas para ajustar el corte." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Drag any of the four orange lines to adjust the crop."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "拖动任意一条橙色边线以调整裁剪范围。"
+          }
+        }
+      }
     },
     "Así quedará tu meta" : {
       "localizations" : {
@@ -8120,7 +8620,20 @@
       }
     },
     "Autores" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Authors"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "作者"
+          }
+        }
+      }
     },
     "Autores:" : {
       "extractionState" : "manual",
@@ -8708,7 +9221,20 @@
       }
     },
     "Brillo" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Brightness"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "亮度"
+          }
+        }
+      }
     },
     "Bronce" : {
       "extractionState" : "manual",
@@ -9047,7 +9573,20 @@
       }
     },
     "Buscar en título, contenido o anexos" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Search titles, content, or attachments"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "搜索标题、内容或附件"
+          }
+        }
+      }
     },
     "Buscar en título, nota,contenido,prioridad, estado check" : {
       "localizations" : {
@@ -9067,29 +9606,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "搜索标题、备注、内容、优先级或状态"
-          }
-        }
-      }
-    },
-    "Buscar en títulos" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Search titles"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Buscar en títulos"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "搜索标题"
           }
         }
       }
@@ -9901,7 +10417,20 @@
       }
     },
     "Capítulo: %@" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Chapter: %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "章节：%@"
+          }
+        }
+      }
     },
     "Características de la App" : {
       "localizations" : {
@@ -10019,7 +10548,20 @@
       }
     },
     "Catálogo" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Catalog"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "目录"
+          }
+        }
+      }
     },
     "Categoría" : {
       "localizations" : {
@@ -10133,7 +10675,20 @@
       }
     },
     "Cerrar Agenda" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Close Planner"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "关闭日程"
+          }
+        }
+      }
     },
     "Cerrar día" : {
       "localizations" : {
@@ -10504,10 +11059,36 @@
       }
     },
     "Cierra la vista y vuelve a la pantalla anterior" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Closes this view and returns to the previous screen"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "关闭此视图并返回上一屏幕"
+          }
+        }
+      }
     },
     "Cierra la vista y vuelve al menú principal" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Closes this view and returns to the main menu"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "关闭此视图并返回主菜单"
+          }
+        }
+      }
     },
     "Cierre" : {
       "localizations" : {
@@ -10943,7 +11524,20 @@
       }
     },
     "Coherencia cardiocerebral" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Heart–Brain Coherence"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "心脑相干"
+          }
+        }
+      }
     },
     "Colapsar tarjeta" : {
       "extractionState" : "manual",
@@ -14148,7 +14742,20 @@
       }
     },
     "Contraste" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Contrast"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "对比度"
+          }
+        }
+      }
     },
     "Contrato de transformación" : {
       "extractionState" : "manual",
@@ -14542,7 +15149,20 @@
       }
     },
     "Crea una entrada o cambia el filtro." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Create an entry or change the filter."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "创建一篇日记或更改筛选条件。"
+          }
+        }
+      }
     },
     "Crea una escala de intensidad del 1 al 10 y practica hoy con una situación de nivel 3 o 4." : {
       "extractionState" : "manual",
@@ -14690,7 +15310,20 @@
       }
     },
     "Crear" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Create"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "创建"
+          }
+        }
+      }
     },
     "Crear actividad ${titulo}, fecha ${fecha}, contenido ${contenido}, recordatorio ${activarRecordatorio}" : {
       "localizations" : {
@@ -14747,10 +15380,36 @@
       }
     },
     "Crear capítulo" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Create Chapter"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "创建章节"
+          }
+        }
+      }
     },
     "Crear capítulo…" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Create Chapter…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "创建章节…"
+          }
+        }
+      }
     },
     "Crear Contexto" : {
       "localizations" : {
@@ -15324,7 +15983,20 @@
       "shouldTranslate" : false
     },
     "Da más espacio al contenido de la entrada" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Provides more space for the entry content"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "为日记内容腾出更多空间"
+          }
+        }
+      }
     },
     "Datos de HealthKit (solo lectura)" : {
       "localizations" : {
@@ -16042,7 +16714,20 @@
       }
     },
     "Descartar cambios" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Discard Changes"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "放弃更改"
+          }
+        }
+      }
     },
     "Descifrando…" : {
       "localizations" : {
@@ -16282,7 +16967,20 @@
       }
     },
     "Despliega la mascota y el calendario" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Expands the pet and calendar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "展开宠物和日历"
+          }
+        }
+      }
     },
     "Después de registrar" : {
       "localizations" : {
@@ -16323,10 +17021,36 @@
       }
     },
     "Destino" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Destination"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "目标位置"
+          }
+        }
+      }
     },
     "Destino de La Ley" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "La Ley Destination"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "La Ley 目标位置"
+          }
+        }
+      }
     },
     "Detalle" : {
       "localizations" : {
@@ -17247,7 +17971,20 @@
       }
     },
     "Disposición de paneles" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Panel Layout"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "面板布局"
+          }
+        }
+      }
     },
     "Distribución semanal" : {
       "localizations" : {
@@ -18102,10 +18839,36 @@
       }
     },
     "El capítulo se asignará a esta entrada al actualizarla." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "The chapter will be assigned to this entry when it is updated."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "更新此日记时，会为其指定该章节。"
+          }
+        }
+      }
     },
     "El capítulo se guardará y asignará inmediatamente a esta entrada." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "The chapter will be saved and assigned to this entry immediately."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "该章节将立即保存并指定给此日记。"
+          }
+        }
+      }
     },
     "El ciclo de aprendizaje" : {
       "extractionState" : "manual",
@@ -18153,7 +18916,20 @@
       }
     },
     "El contenido de la Agenda aparecerá en este panel." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Agenda content will appear in this panel."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "日程内容将在此面板中显示。"
+          }
+        }
+      }
     },
     "El contenido de la entrada del Diario" : {
       "localizations" : {
@@ -18595,7 +19371,20 @@
       }
     },
     "Elemento: %@" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Item: %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "项目：%@"
+          }
+        }
+      }
     },
     "Elige el Tema:" : {
       "localizations" : {
@@ -20682,7 +21471,20 @@
       }
     },
     "Esta entrada no contiene texto adicional." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "This entry doesn’t contain any additional text."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "此日程不含其他文本。"
+          }
+        }
+      }
     },
     "Esta es una respuesta de ejemplo." : {
       "localizations" : {
@@ -22267,10 +23069,36 @@
       }
     },
     "Expresión" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Expression"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "表达式"
+          }
+        }
+      }
     },
     "Expresión no válida" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Invalid expression"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "表达式无效"
+          }
+        }
+      }
     },
     "Fallos:%d" : {
       "localizations" : {
@@ -22777,29 +23605,6 @@
         }
       }
     },
-    "Filtrar" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Filter"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Filtrar"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "筛选"
-          }
-        }
-      }
-    },
     "Filtrar Agenda" : {
       "localizations" : {
         "en" : {
@@ -22884,52 +23689,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "按时间范围筛选"
-          }
-        }
-      }
-    },
-    "Filtrar por Contenido" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Filter by Content"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Filtrar por Contenido"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "按内容筛选"
-          }
-        }
-      }
-    },
-    "Filtrar por Título" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Filter by Title"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Filtrar por Título"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "按标题筛选"
           }
         }
       }
@@ -24780,7 +25539,20 @@
       }
     },
     "Hábitos saludables" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Healthy Habits"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "健康习惯"
+          }
+        }
+      }
     },
     "Hábitos Saludables" : {
       "localizations" : {
@@ -25197,7 +25969,20 @@
       }
     },
     "Historial de Metas" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Goal History"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "目标历史记录"
+          }
+        }
+      }
     },
     "home.progress.goals.multiple" : {
       "extractionState" : "manual",
@@ -26780,7 +27565,20 @@
       }
     },
     "Importando anexo" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Importing attachment"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "正在导入附件"
+          }
+        }
+      }
     },
     "Importando anexo…" : {
       "localizations" : {
@@ -27285,10 +28083,36 @@
       }
     },
     "Inicia el ritual de cierre del día." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Start the end-of-day ritual."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "开始每日回顾仪式。"
+          }
+        }
+      }
     },
     "Inicia el ritual matutino." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Start the morning ritual."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "开始晨间仪式。"
+          }
+        }
+      }
     },
     "Inicia una conversación para verla aquí." : {
       "localizations" : {
@@ -27419,7 +28243,20 @@
       }
     },
     "Inicio del texto" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Beginning of Text"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "文本开头"
+          }
+        }
+      }
     },
     "Inicio y opciones" : {
       "localizations" : {
@@ -29633,7 +30470,20 @@
       }
     },
     "Lector de etiquetas" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Food Label Scanner"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "食品标签扫描器"
+          }
+        }
+      }
     },
     "Lector de Etiquetas" : {
       "localizations" : {
@@ -30516,7 +31366,20 @@
       }
     },
     "Lugar o coordenadas" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Location or Coordinates"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "地点或坐标"
+          }
+        }
+      }
     },
     "Mañana" : {
       "extractionState" : "manual",
@@ -30881,7 +31744,20 @@
       }
     },
     "Mascota y calendario" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Pet and Calendar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "宠物和日历"
+          }
+        }
+      }
     },
     "Mascotas" : {
       "localizations" : {
@@ -31808,7 +32684,20 @@
       }
     },
     "Modo de visualización de Metas" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Goals Display Mode"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "目标显示模式"
+          }
+        }
+      }
     },
     "Modo Edición" : {
       "localizations" : {
@@ -31958,7 +32847,20 @@
       }
     },
     "Mostrar actividades pasadas" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Show Past Activities"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "显示过去的活动"
+          }
+        }
+      }
     },
     "Mostrar anexos" : {
       "localizations" : {
@@ -32043,7 +32945,20 @@
       }
     },
     "Mostrar búsqueda" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Show Search"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "显示搜索"
+          }
+        }
+      }
     },
     "Mostrar calendario" : {
       "localizations" : {
@@ -32079,40 +32994,6 @@
           "stringUnit" : {
             "state" : "machine_translated",
             "value" : "显示含附件的日记"
-          }
-        }
-      }
-    },
-    "Mostrar detalles" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Show details"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "显示详情"
-          }
-        }
-      }
-    },
-    "Mostrar detalles de la entrada" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Show entry details"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "显示条目详情"
           }
         }
       }
@@ -32433,6 +33314,9 @@
           }
         }
       }
+    },
+    "Muestra y selecciona la tarjeta correspondiente en el listado" : {
+
     },
     "Muestra:" : {
       "localizations" : {
@@ -32973,10 +33857,36 @@
       }
     },
     "No hay entradas" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "No Entries"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "暂无日记"
+          }
+        }
+      }
     },
     "No hay entradas para este filtro" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "No Entries for This Filter"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "此筛选条件下没有日程"
+          }
+        }
+      }
     },
     "No hay frases de usuario todavía." : {
       "localizations" : {
@@ -33792,7 +34702,20 @@
       }
     },
     "No se pudo guardar la imagen" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Couldn’t Save Image"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "无法保存图片"
+          }
+        }
+      }
     },
     "No se pudo guardar la nota." : {
       "localizations" : {
@@ -34184,7 +35107,20 @@
       }
     },
     "Nombre del capítulo" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Chapter Name"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "章节名称"
+          }
+        }
+      }
     },
     "Nombre del patrón" : {
       "extractionState" : "manual",
@@ -34915,10 +35851,36 @@
       }
     },
     "Nueva entrada de agenda" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "New Agenda Item"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "新建日程"
+          }
+        }
+      }
     },
     "Nueva entrada de diario" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "New Journal Entry"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "新建日记"
+          }
+        }
+      }
     },
     "Nueva frase" : {
       "localizations" : {
@@ -35476,7 +36438,20 @@
       }
     },
     "Obtener ubicación actual" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Get Current Location"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "获取当前位置"
+          }
+        }
+      }
     },
     "Obtener Versión Extendida" : {
       "localizations" : {
@@ -35578,7 +36553,20 @@
       }
     },
     "Ocultar actividades pasadas" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Hide Past Activities"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "隐藏过去的活动"
+          }
+        }
+      }
     },
     "Ocultar anexos" : {
       "localizations" : {
@@ -35597,7 +36585,20 @@
       }
     },
     "Ocultar búsqueda" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Hide Search"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "隐藏搜索"
+          }
+        }
+      }
     },
     "Ocultar calendario" : {
       "localizations" : {
@@ -35643,40 +36644,6 @@
         }
       }
     },
-    "Ocultar detalles" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hide details"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "隐藏详情"
-          }
-        }
-      }
-    },
-    "Ocultar detalles de la entrada" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hide entry details"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "隐藏条目详情"
-          }
-        }
-      }
-    },
     "Ocultar indicador por hoy" : {
       "localizations" : {
         "en" : {
@@ -35716,7 +36683,20 @@
       }
     },
     "Ocultar mascota y calendario" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Hide Pet and Calendar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "隐藏宠物和日历"
+          }
+        }
+      }
     },
     "Ocultar por hoy" : {
       "localizations" : {
@@ -35735,7 +36715,20 @@
       }
     },
     "Ocultar teclado" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Hide Keyboard"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "隐藏键盘"
+          }
+        }
+      }
     },
     "Ocultar Texto" : {
       "localizations" : {
@@ -36620,7 +37613,21 @@
       }
     },
     "Pasadas" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Past"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "过去活动"
+          }
+        }
+      }
     },
     "Paso %lld de %lld" : {
       "localizations" : {
@@ -36797,7 +37804,20 @@
       }
     },
     "Pendiente: %@" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Pending: %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "待处理：%@"
+          }
+        }
+      }
     },
     "Pensamiento automático" : {
       "extractionState" : "manual",
@@ -37005,10 +38025,36 @@
       }
     },
     "Permite añadir archivos, fotos o imágenes de la cámara" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Lets you add files, photos, or images from the camera"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "可添加文件、照片或相机拍摄的图像"
+          }
+        }
+      }
     },
     "Permite cambiar o crear el capítulo de la entrada" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Lets you change or create the entry’s chapter"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "可更改或创建日记的章节"
+          }
+        }
+      }
     },
     "Permite charlar con la IA sobre el texto copiado al potapaepeles" : {
       "localizations" : {
@@ -38672,28 +39718,6 @@
         }
       }
     },
-    "Progreso %lld por ciento" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld percent complete"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Progreso %lld por ciento"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已完成 %lld%"
-          }
-        }
-      }
-    },
     "Progreso guardado" : {
       "localizations" : {
         "en" : {
@@ -38898,7 +39922,20 @@
       }
     },
     "Prueba con otra búsqueda." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Try another search."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "换个搜索词试试。"
+          }
+        }
+      }
     },
     "Prueba con otro título o autor." : {
       "localizations" : {
@@ -40093,7 +41130,20 @@
       }
     },
     "Recorte" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Crop"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "裁剪"
+          }
+        }
+      }
     },
     "Recuerda tres episodios y localiza el primer cambio corporal, la tensión, la respiración, la postura, la temperatura y el movimiento." : {
       "extractionState" : "manual",
@@ -40866,7 +41916,20 @@
       }
     },
     "Registrar presencia" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Log Presence"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "记录临在"
+          }
+        }
+      }
     },
     "Reglas del ciclo" : {
       "extractionState" : "manual",
@@ -41495,10 +42558,36 @@
       }
     },
     "Requiere iOS 26 o posterior." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Requires iOS 26 or later."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "需要 iOS 26 或更高版本。"
+          }
+        }
+      }
     },
     "Requiere macOS 26 o posterior." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Requires macOS 26 or later."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "需要 macOS 26 或更高版本。"
+          }
+        }
+      }
     },
     "Requiere Premium" : {
       "localizations" : {
@@ -41796,10 +42885,36 @@
       }
     },
     "Restablecer guías" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Reset Guides"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "重置引导线"
+          }
+        }
+      }
     },
     "Restablecer luz" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Reset Lighting"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "重置光照"
+          }
+        }
+      }
     },
     "Restaurar" : {
       "localizations" : {
@@ -42007,29 +43122,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "结果 %@"
-          }
-        }
-      }
-    },
-    "Resultado: %@" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Result: %@"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Resultado: %@"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "结果：%@"
           }
         }
       }
@@ -42548,7 +43640,20 @@
       }
     },
     "Ritual de cierre" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Closing Ritual"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "收尾仪式"
+          }
+        }
+      }
     },
     "Ritual de hoy pendiente" : {
       "localizations" : {
@@ -42567,7 +43672,20 @@
       }
     },
     "Ritual matutino" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Morning Ritual"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "晨间仪式"
+          }
+        }
+      }
     },
     "Ritual Matutino" : {
       "localizations" : {
@@ -42894,7 +44012,20 @@
       }
     },
     "Se actualizará el título de esta entrada del Diario." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "The title of this Journal entry will be updated."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "将更新这篇日记条目的标题。"
+          }
+        }
+      }
     },
     "Se actualizará esta entrada del Diario." : {
       "localizations" : {
@@ -43486,10 +44617,36 @@
       }
     },
     "Selecciona una entrada" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Select an Entry"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "选择一个条目"
+          }
+        }
+      }
     },
     "Selecciona una nota" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Select a Note"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "选择一则笔记"
+          }
+        }
+      }
     },
     "Seleccionada: 1" : {
       "localizations" : {
@@ -44636,10 +45793,36 @@
       }
     },
     "Solicita permiso de ubicación si es necesario y obtiene las coordenadas actuales" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Requests location permission if needed and gets the current coordinates"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "必要时请求位置权限，并获取当前位置的坐标"
+          }
+        }
+      }
     },
     "Solicita permiso de ubicación y guarda las coordenadas actuales" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Requests location permission and saves the current coordinates"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "请求位置权限，并保存当前位置的坐标"
+          }
+        }
+      }
     },
     "Solo esta actividad" : {
       "localizations" : {
@@ -44769,7 +45952,20 @@
       }
     },
     "Su contenido aparecerá en este panel." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Its content will appear in this panel."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "内容将显示在此面板中。"
+          }
+        }
+      }
     },
     "Suelo pensar…" : {
       "extractionState" : "manual",
@@ -44894,20 +46090,58 @@
       }
     },
     "Suma total %@" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Total %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "总计 %@"
+          }
+        }
+      }
     },
     "Suma total %@, pendiente %@" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Total %1$@, pending %2$@"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Suma total %1$@, pendiente %2$@"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "总计 %1$@，待处理 %2$@"
+          }
         }
       }
     },
     "Suma total: %@" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Total: %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "总计：%@"
+          }
+        }
+      }
     },
     "Sustituir" : {
       "extractionState" : "manual",
@@ -45096,7 +46330,20 @@
       }
     },
     "También oculta o muestra la mascota situada bajo el calendario" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Also hides or shows the pet below the calendar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "同时隐藏或显示日历下方的宠物"
+          }
+        }
+      }
     },
     "Te recuperas antes de un desliz." : {
       "extractionState" : "manual",
@@ -47514,7 +48761,20 @@
       }
     },
     "Ubicación actual" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Current Location"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "当前位置"
+          }
+        }
+      }
     },
     "Últimas lecturas visitadas:" : {
       "localizations" : {
@@ -47731,7 +48991,20 @@
       }
     },
     "Un toque muestra la tarjeta en el listado; dos toques permiten cambiar el título" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Tap once to show the card in the list; double-tap to change the title"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "轻点一次可在列表中显示卡片；轻点两次可更改标题"
+          }
+        }
+      }
     },
     "Una acción observable" : {
       "extractionState" : "manual",
@@ -48056,7 +49329,20 @@
       }
     },
     "Usar capítulo" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Use Chapter"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "使用此章节"
+          }
+        }
+      }
     },
     "Usar este ejemplo" : {
       "localizations" : {
@@ -48900,7 +50186,20 @@
       }
     },
     "Volver a Programas" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Back to Programs"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "返回练习计划"
+          }
+        }
+      }
     },
     "Volver al inicio" : {
       "localizations" : {

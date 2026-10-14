@@ -264,6 +264,9 @@ struct AgendaMainView: View {
     @AppStorage("agendaIPadTopPanelFraction") private var iPadTopPanelFraction = 0.43
     @AppStorage("agendaIPadCalendarVisible") private var isIPadCalendarVisible = true
     @State private var selectedAgendaItemID: UUID?
+    @State private var iPadListScrollTargetID: UUID?
+    @State private var iPadListScrollTargetDate: Date?
+    @State private var iPadListScrollRequest = 0
     @State private var inlineEditingAgendaItemID: UUID?
     @State private var inlineDraftTitle = ""
     @State private var inlineDraftHour = Date()
@@ -736,23 +739,27 @@ struct AgendaMainView: View {
             HStack(spacing: 8) {
                 filterMenu
                 checkFilterMenu
+                
+                Spacer(minLength: 0)
+                
                 Button {
                     withAnimation(.easeInOut(duration: 0.2)) {
                         showPastActivities.toggle()
                     }
                 } label: {
-                    Label(
-                        "Pasadas",
-                        systemImage: showPastActivities ? "clock.arrow.circlepath" : "clock"
-                    )
-                    .font(.caption.weight(.semibold))
+                    Image(systemName: showPastActivities ? "clock.arrow.circlepath" : "clock")
+                        .font(.subheadline.weight(.medium))
+                        .foregroundStyle(.black.opacity(0.65))
+                        .frame(width: 30, height: 30)
+                        .contentShape(Rectangle())
                 }
-                .buttonStyle(.bordered)
-                .tint(showPastActivities ? .black : .gray)
                 .accessibilityLabel(
                     showPastActivities ? "Ocultar actividades pasadas" : "Mostrar actividades pasadas"
                 )
-                Spacer(minLength: 0)
+                .padding(.horizontal, 10)
+                
+               
+                
                 Button {
                     withAnimation(.easeInOut(duration: 0.22)) {
                         isIPadCalendarVisible.toggle()
@@ -785,34 +792,58 @@ struct AgendaMainView: View {
 
     private var iPadAgendaList: some View {
         VStack(spacing: 0) {
-            List {
-                if iPadListSections.isEmpty {
-                    VStack(spacing: 8) {
-                        Image(systemName: "calendar.badge.exclamationmark")
-                            .font(.title2)
-                        Text("No hay entradas para este filtro")
-                            .font(.subheadline.weight(.semibold))
-                    }
-                    .foregroundStyle(.black.opacity(0.65))
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 24)
-                    .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
-                }
-
-                ForEach(iPadListSections, id: \.date) { section in
-                    Section {
-                        ForEach(section.items) { item in
-                            agendaCard(item, fixedHeight: false)
+            ScrollViewReader { proxy in
+                List {
+                    if iPadListSections.isEmpty {
+                        VStack(spacing: 8) {
+                            Image(systemName: "calendar.badge.exclamationmark")
+                                .font(.title2)
+                            Text("No hay entradas para este filtro")
+                                .font(.subheadline.weight(.semibold))
                         }
-                    } header: {
-                        Text(daySectionTitle(section.date))
-                            .foregroundStyle(.black)
+                        .foregroundStyle(.black.opacity(0.65))
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 24)
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
+                    }
+
+                    ForEach(iPadListSections, id: \.date) { section in
+                        Section {
+                            ForEach(section.items) { item in
+                                agendaCard(item, fixedHeight: false)
+                            }
+                        } header: {
+                            Text(daySectionTitle(section.date))
+                                .foregroundStyle(.black)
+                                .id(iPadAgendaSectionScrollID(section.date))
+                        }
+                    }
+                }
+                .listStyle(.plain)
+                .scrollContentBackground(.hidden)
+                .onChange(of: iPadListScrollRequest) { _, _ in
+                    guard let target = iPadListScrollTargetID else { return }
+                    let targetDate = iPadListScrollTargetDate
+
+                    Task { @MainActor in
+                        await Task.yield()
+
+                        if let targetDate {
+                            // La cabecera es un hijo estable de List. Situarnos
+                            // primero en ella permite materializar tarjetas de
+                            // días anteriores que aún estén fuera de pantalla.
+                            proxy.scrollTo(iPadAgendaSectionScrollID(targetDate), anchor: .top)
+                            await Task.yield()
+                            await Task.yield()
+                        }
+
+                        withAnimation(.easeInOut(duration: 0.25)) {
+                            proxy.scrollTo(target, anchor: .center)
+                        }
                     }
                 }
             }
-            .listStyle(.plain)
-            .scrollContentBackground(.hidden)
 
             if multiSelectionMode {
                 bulkActionsBar()
@@ -871,6 +902,12 @@ struct AgendaMainView: View {
                         Text(item.titulo.isEmpty ? "Sin título" : item.titulo)
                             .font(.title2.weight(.semibold))
                             .foregroundStyle(.black)
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                revealIPadDetailItemInList(item)
+                            }
+                            .accessibilityAddTraits(.isButton)
+                            .accessibilityHint("Muestra y selecciona la tarjeta correspondiente en el listado")
                     }
                     Text(item.fechaActividad.formatted(date: .long, time: .omitted))
                         .font(.subheadline)
@@ -1045,6 +1082,28 @@ struct AgendaMainView: View {
             RoundedRectangle(cornerRadius: 14, style: .continuous)
                 .fill(.white.opacity(0.48))
         )
+    }
+
+    private func revealIPadDetailItemInList(_ item: AgendaItemData) {
+        let calendar = Calendar.current
+        let itemDate = calendar.startOfDay(for: item.fechaActividad)
+        let startOfToday = calendar.startOfDay(for: Date())
+
+        selectedAgendaItemID = item.id
+
+        // Las entradas anteriores viven en un bloque opcional. Al revelar una,
+        // lo hacemos visible antes de solicitar el desplazamiento.
+        if itemDate < startOfToday {
+            showPastActivities = true
+        }
+
+        iPadListScrollTargetDate = itemDate
+        iPadListScrollTargetID = item.id
+        iPadListScrollRequest &+= 1
+    }
+
+    private func iPadAgendaSectionScrollID(_ date: Date) -> Date {
+        Calendar.current.startOfDay(for: date)
     }
 
     private func isInlineEditing(_ item: AgendaItemData) -> Bool {
@@ -1955,11 +2014,12 @@ struct AgendaMainView: View {
                 .fill(backgroundColor(for: item.prioridad))
         )
         .clipShape(RoundedRectangle(cornerRadius: AgendaUIConstants.activityCardCornerRadius, style: .continuous))
+        .id(item.id)
 #if os(iOS)
         .overlay {
             if isIPadInterface && activeAgendaItemID == item.id {
                 RoundedRectangle(cornerRadius: AgendaUIConstants.activityCardCornerRadius, style: .continuous)
-                    .stroke(.black.opacity(0.72), lineWidth: 2)
+                    .stroke(Color(red: 0.86, green: 0.30, blue: 0.34).opacity(0.72), lineWidth: 2)
             }
         }
 #endif
@@ -2834,6 +2894,8 @@ private extension View {
 /// El mismo comportamiento de divisor empleado por Notas, aislado aquí para
 /// mantener independientes las dos pantallas y sus proporciones persistentes.
 private struct AdjustableAgendaSplitView<Primary: View, Secondary: View>: View {
+    @Environment(\.locale) private var locale
+
     let layout: AgendaSplitLayout
     @Binding var primaryFraction: Double
     let minimumPrimaryLength: CGFloat
@@ -2841,7 +2903,7 @@ private struct AdjustableAgendaSplitView<Primary: View, Secondary: View>: View {
     @ViewBuilder let primary: () -> Primary
     @ViewBuilder let secondary: () -> Secondary
 
-    @State private var dragStartFraction: Double?
+    @GestureState private var dragTranslation: CGFloat = 0
 
     private let dividerLength: CGFloat = 18
 
@@ -2850,7 +2912,11 @@ private struct AdjustableAgendaSplitView<Primary: View, Secondary: View>: View {
             let totalLength = layout == .sideBySide ? proxy.size.width : proxy.size.height
             let availableLength = max(0, totalLength - dividerLength)
             let limits = fractionLimits(availableLength: availableLength)
-            let resolvedFraction = min(max(primaryFraction, limits.lower), limits.upper)
+            let dragFraction = availableLength > 0
+                ? Double(dragTranslation / availableLength)
+                : 0
+            let interactiveFraction = primaryFraction + dragFraction
+            let resolvedFraction = min(max(interactiveFraction, limits.lower), limits.upper)
             let primaryLength = availableLength * resolvedFraction
 
             Group {
@@ -2902,26 +2968,40 @@ private struct AdjustableAgendaSplitView<Primary: View, Secondary: View>: View {
         )
         .contentShape(Rectangle())
         .gesture(
-            DragGesture(minimumDistance: 0)
-                .onChanged { value in
+            // El espacio global evita que la referencia del gesto se desplace
+            // junto con el propio divisor, que era la causa del temblor visual.
+            DragGesture(minimumDistance: 0, coordinateSpace: .global)
+                .updating($dragTranslation) { value, state, transaction in
+                    transaction.disablesAnimations = true
+                    state = layout == .sideBySide
+                        ? value.translation.width
+                        : value.translation.height
+                }
+                .onEnded { value in
                     guard availableLength > 0 else { return }
-                    if dragStartFraction == nil {
-                        dragStartFraction = primaryFraction
-                    }
                     let translation = layout == .sideBySide
                         ? value.translation.width
                         : value.translation.height
-                    let candidate = (dragStartFraction ?? primaryFraction)
+                    let candidate = primaryFraction
                         + Double(translation / availableLength)
-                    primaryFraction = min(max(candidate, limits.lower), limits.upper)
-                }
-                .onEnded { _ in
-                    dragStartFraction = nil
+                    let finalFraction = min(max(candidate, limits.lower), limits.upper)
+
+                    // AppStorage se actualiza únicamente al terminar el gesto;
+                    // durante el arrastre se usa GestureState, mucho más ligero.
+                    var transaction = Transaction()
+                    transaction.disablesAnimations = true
+                    withTransaction(transaction) {
+                        primaryFraction = finalFraction
+                    }
                 }
         )
         .accessibilityElement()
         .accessibilityLabel("Ajustar tamaño de los paneles")
-        .accessibilityValue("\(Int(primaryFraction * 100)) por ciento")
+        .accessibilityValue(
+            primaryFraction.formatted(
+                .percent.precision(.fractionLength(0)).locale(locale)
+            )
+        )
         .accessibilityAdjustableAction { direction in
             let step = direction == .increment ? 0.05 : -0.05
             primaryFraction = min(max(primaryFraction + step, limits.lower), limits.upper)

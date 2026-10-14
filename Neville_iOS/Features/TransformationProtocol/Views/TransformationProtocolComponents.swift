@@ -83,6 +83,8 @@ struct TransformationProtocolSectionTitle: View {
 }
 
 struct TransformationProtocolProgressRing: View {
+    @Environment(\.locale) private var locale
+
     let progress: Double
     let label: String
 
@@ -106,7 +108,7 @@ struct TransformationProtocolProgressRing: View {
                 .rotationEffect(.degrees(-90))
 
             VStack(spacing: 1) {
-                Text("\(Int((progress * 100).rounded()))%")
+                Text(progress, format: .percent.precision(.fractionLength(0)))
                     .font(.headline.weight(.bold))
                 Text(label)
                     .font(.caption2)
@@ -115,7 +117,12 @@ struct TransformationProtocolProgressRing: View {
         }
         .frame(width: 92, height: 92)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Progreso \(Int((progress * 100).rounded())) por ciento")
+        .accessibilityLabel("Progreso")
+        .accessibilityValue(
+            progress.formatted(
+                .percent.precision(.fractionLength(0)).locale(locale)
+            )
+        )
     }
 }
 

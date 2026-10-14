@@ -2770,6 +2770,8 @@ private extension View {
 
 /// Divisor ajustable y persistente para el área de trabajo del Diario.
 private struct AdjustableDiarioSplitView<Primary: View, Secondary: View>: View {
+    @Environment(\.locale) private var locale
+
     let layout: DiarioSplitLayout
     @Binding var primaryFraction: Double
     let minimumPrimaryLength: CGFloat
@@ -2777,7 +2779,7 @@ private struct AdjustableDiarioSplitView<Primary: View, Secondary: View>: View {
     @ViewBuilder let primary: () -> Primary
     @ViewBuilder let secondary: () -> Secondary
 
-    @State private var dragStartFraction: Double?
+    @GestureState private var dragTranslation: CGFloat = 0
     private let dividerLength: CGFloat = 18
 
     var body: some View {
@@ -2785,7 +2787,11 @@ private struct AdjustableDiarioSplitView<Primary: View, Secondary: View>: View {
             let totalLength = layout == .sideBySide ? proxy.size.width : proxy.size.height
             let availableLength = max(0, totalLength - dividerLength)
             let limits = fractionLimits(availableLength: availableLength)
-            let resolvedFraction = min(max(primaryFraction, limits.lower), limits.upper)
+            let dragFraction = availableLength > 0
+                ? Double(dragTranslation / availableLength)
+                : 0
+            let interactiveFraction = primaryFraction + dragFraction
+            let resolvedFraction = min(max(interactiveFraction, limits.lower), limits.upper)
             let primaryLength = availableLength * resolvedFraction
 
             if layout == .sideBySide {
@@ -2820,19 +2826,36 @@ private struct AdjustableDiarioSplitView<Primary: View, Secondary: View>: View {
         .frame(width: layout == .sideBySide ? dividerLength : nil, height: layout == .stacked ? dividerLength : nil)
         .contentShape(Rectangle())
         .gesture(
-            DragGesture(minimumDistance: 0)
-                .onChanged { value in
-                    guard availableLength > 0 else { return }
-                    if dragStartFraction == nil { dragStartFraction = primaryFraction }
-                    let translation = layout == .sideBySide ? value.translation.width : value.translation.height
-                    let candidate = (dragStartFraction ?? primaryFraction) + Double(translation / availableLength)
-                    primaryFraction = min(max(candidate, limits.lower), limits.upper)
+            DragGesture(minimumDistance: 0, coordinateSpace: .global)
+                .updating($dragTranslation) { value, state, transaction in
+                    transaction.disablesAnimations = true
+                    state = layout == .sideBySide
+                        ? value.translation.width
+                        : value.translation.height
                 }
-                .onEnded { _ in dragStartFraction = nil }
+                .onEnded { value in
+                    guard availableLength > 0 else { return }
+                    let translation = layout == .sideBySide
+                        ? value.translation.width
+                        : value.translation.height
+                    let candidate = primaryFraction
+                        + Double(translation / availableLength)
+                    let finalFraction = min(max(candidate, limits.lower), limits.upper)
+
+                    var transaction = Transaction()
+                    transaction.disablesAnimations = true
+                    withTransaction(transaction) {
+                        primaryFraction = finalFraction
+                    }
+                }
         )
         .accessibilityElement()
         .accessibilityLabel("Ajustar tamaño de los paneles")
-        .accessibilityValue("\(Int(primaryFraction * 100)) por ciento")
+        .accessibilityValue(
+            primaryFraction.formatted(
+                .percent.precision(.fractionLength(0)).locale(locale)
+            )
+        )
         .accessibilityAdjustableAction { direction in
             let step = direction == .increment ? 0.05 : -0.05
             primaryFraction = min(max(primaryFraction + step, limits.lower), limits.upper)

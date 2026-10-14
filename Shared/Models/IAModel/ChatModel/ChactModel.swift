@@ -684,7 +684,7 @@ final class ChatViewModel: ObservableObject {
     ) async throws {
         guard let session else { throw ChatModelError.sessionUnavailable }
         let options = GenerationOptions(
-            sampling: .random(probabilityThreshold: 0.9),
+            samplingMode: .random(probabilityThreshold: 0.9),
             temperature: 0.75,
             maximumResponseTokens: 600
         )
