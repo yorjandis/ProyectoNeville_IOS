@@ -816,8 +816,6 @@
 				Models/Migration/MigrationCrypto.swift,
 				Models/Migration/MigrationFormat.swift,
 				Models/Migration/MyAppMigrationService.swift,
-				Models/WirelessSync/WirelessSyncClient.swift,
-				Models/WirelessSync/WirelessSyncProtocol.swift,
 				Models/MultiplatformModel/Multiplatform.swift,
 				Models/NetModel/NetModel.swift,
 				Models/NotasModel/NotasModel.swift,
@@ -896,6 +894,8 @@
 				Models/UtilsForView/UtilsForViews.swift,
 				Models/WidgetDashboard/ConsciousDashboardSnapshot.swift,
 				Models/WidgetDashboard/ConsciousDashboardSnapshotPublisher.swift,
+				Models/WirelessSync/WirelessSyncClient.swift,
+				Models/WirelessSync/WirelessSyncProtocol.swift,
 				PremiumFeatures/Agenda/AgendaPremiumFeature.swift,
 				PremiumFeatures/Agenda/Images/Agenda_1.png,
 				PremiumFeatures/Agenda/Images/Agenda_2.png,
@@ -2741,7 +2741,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 2630;
-				LastUpgradeCheck = 2660;
+				LastUpgradeCheck = 2700;
 				TargetAttributes = {
 					19E0BE132B0C661A00E149A5 = {
 						CreatedOnToolsVersion = 15.0.1;
@@ -4440,7 +4440,9 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 119;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = NDP3AP6896;
+				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ConsciousDashboardMacWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Panel consciente";
@@ -4452,6 +4454,7 @@
 				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.ConsciousDashboardMacWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = macosx;
@@ -4470,7 +4473,9 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 119;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = NDP3AP6896;
+				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ConsciousDashboardMacWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Panel consciente";
@@ -4482,6 +4487,7 @@
 				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ypg.nev.ConsciousDashboardMacWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = macosx;
@@ -4496,6 +4502,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -4562,6 +4569,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
