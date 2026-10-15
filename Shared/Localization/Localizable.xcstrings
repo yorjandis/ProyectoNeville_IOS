@@ -7420,6 +7420,70 @@
         }
       }
     },
+    "Anexos del Diario · Premium" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Journal Attachments · Premium"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "日记附件 · 高级功能"
+          }
+        }
+      }
+    },
+    "Anexos cifrados en el Diario" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Encrypted Journal attachments"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "日记加密附件"
+          }
+        }
+      }
+    },
+    "Añade archivos, fotos y documentos a tus entradas del Diario. Los anexos permanecen unidos a cada recuerdo y protegidos mediante cifrado fuerte." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add files, photos, and documents to your Journal entries. Attachments stay connected to each memory and protected with strong encryption."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "为日记条目添加文件、照片和文档。附件始终与对应回忆关联，并受到强加密保护。"
+          }
+        }
+      }
+    },
+    "Los anexos del Diario requieren acceso Premium." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Journal attachments require Premium access."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "日记附件需要高级版权限。"
+          }
+        }
+      }
+    },
     "Anexos ya existentes" : {
       "extractionState" : "stale",
       "localizations" : {

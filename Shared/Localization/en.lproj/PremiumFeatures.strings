@@ -235,3 +235,7 @@
 /* (No Comment) */
 "premium.weekly_review.value" = "Detecta patrones, reconoce avances y comienza la semana siguiente con aprendizaje acumulado en lugar de empezar de cero.";
 
+"premium.diary_attachments.title" = "Encrypted Journal attachments";
+"premium.diary_attachments.description" = "Add files, photos, and documents to your Journal entries. Each attachment stays connected to its memory and protected with strong encryption.";
+"premium.diary_attachments.value" = "Keep the text and materials that give each experience context together in one place, without giving up your privacy.";
+

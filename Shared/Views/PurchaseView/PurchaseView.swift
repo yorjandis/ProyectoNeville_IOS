@@ -83,6 +83,11 @@ struct PurchaseView: View {
             description: String(localized: "Exporta Notas, Frases, Actividades de la Agenda, Reflexiones y respuestas de Chat IA a formato portable PDF estándar.")
         ),
         PremiumFeature(
+            iconName: "paperclip.circle.fill",
+            title: String(localized: "Anexos cifrados en el Diario"),
+            description: String(localized: "Añade archivos, fotos y documentos a tus entradas del Diario. Los anexos permanecen unidos a cada recuerdo y protegidos mediante cifrado fuerte.")
+        ),
+        PremiumFeature(
             iconName: "leaf",
             title: String(localized: "Espacio Calma"),
             description: String(localized: "Experiencia inmersiva para relajarte y aprender mientras activas tu sistema parasimpático.")

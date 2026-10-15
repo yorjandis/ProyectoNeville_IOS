@@ -99,3 +99,6 @@
 "premium.extended_content.title" = "Contenido extendido";
 "premium.extended_content.description" = "Profundiza en lecturas, análisis, prácticas y materiales seleccionados que amplían las ideas principales de la aplicación.";
 "premium.extended_content.value" = "Pasa de una primera inspiración a un aprendizaje estructurado que puedas comprender, revisar e incorporar a tu vida.";
+"premium.diary_attachments.title" = "Anexos cifrados en el Diario";
+"premium.diary_attachments.description" = "Añade archivos, fotos y documentos a tus entradas del Diario. Cada anexo permanece vinculado a su recuerdo y protegido mediante cifrado fuerte.";
+"premium.diary_attachments.value" = "Conserva en un mismo lugar el texto y los materiales que dan contexto a cada experiencia, sin renunciar a tu privacidad.";

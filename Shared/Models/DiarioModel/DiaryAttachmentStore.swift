@@ -10,6 +10,7 @@ enum DiaryAttachmentError: LocalizedError {
     case missingData
     case invalidFile
     case keychain(OSStatus)
+    case premiumRequired
 
     var errorDescription: String? {
         switch self {
@@ -21,7 +22,21 @@ enum DiaryAttachmentError: LocalizedError {
             return "No se pudo leer o procesar el archivo."
         case .keychain:
             return "No se pudo acceder de forma segura a la clave de los anexos. Comprueba que iCloud esté disponible e inténtalo de nuevo."
+        case .premiumRequired:
+            return String(localized: "Los anexos del Diario requieren acceso Premium.")
         }
+    }
+}
+
+@MainActor
+enum DiaryAttachmentPremiumAccess {
+    static var isEnabled: Bool {
+        UserDefaults.standard.bool(forKey: "purchaseStatus")
+            || UserDefaults(suiteName: AppCons.AppGroupName)?.bool(forKey: "yorjPremium") == true
+    }
+
+    static func requireAccess() throws {
+        guard isEnabled else { throw DiaryAttachmentError.premiumRequired }
     }
 }
 
@@ -192,6 +207,7 @@ final class DiaryAttachmentStore {
         into diario: Diario,
         imageQuality: Double
     ) async throws {
+        try DiaryAttachmentPremiumAccess.requireAccess()
         let hasAccess = url.startAccessingSecurityScopedResource()
         defer {
             if hasAccess { url.stopAccessingSecurityScopedResource() }
@@ -221,6 +237,7 @@ final class DiaryAttachmentStore {
         into diario: Diario,
         imageQuality: Double
     ) async throws {
+        try DiaryAttachmentPremiumAccess.requireAccess()
         let preparedData = await Task.detached(priority: .userInitiated) {
             DiaryAttachmentImageProcessor.compressedDataIfNeeded(
                 data,
@@ -244,6 +261,7 @@ final class DiaryAttachmentStore {
         into diario: Diario,
         imageQuality: Double
     ) async throws {
+        try DiaryAttachmentPremiumAccess.requireAccess()
         let preparedData = await Task.detached(priority: .userInitiated) {
             DiaryAttachmentImageProcessor.compressedDataIfNeeded(
                 data,
@@ -260,6 +278,7 @@ final class DiaryAttachmentStore {
     }
 
     func decryptedData(for attachment: DiarioAttachment) async throws -> Data {
+        try DiaryAttachmentPremiumAccess.requireAccess()
         guard let id = attachment.id,
               let fileData = attachment.fileData,
               let encapsulatedKey = attachment.encapsulatedKey else {
@@ -276,6 +295,7 @@ final class DiaryAttachmentStore {
         with data: Data,
         contentType: UTType
     ) async throws {
+        try DiaryAttachmentPremiumAccess.requireAccess()
         guard let id = attachment.id else {
             throw DiaryAttachmentError.missingData
         }
@@ -299,6 +319,7 @@ final class DiaryAttachmentStore {
     }
 
     func rename(_ attachment: DiarioAttachment, to proposedName: String) throws {
+        try DiaryAttachmentPremiumAccess.requireAccess()
         let trimmed = proposedName.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { throw DiaryAttachmentError.invalidFile }
         let existingExtension = (attachment.fileName ?? "").split(separator: ".").last.map(String.init) ?? ""
@@ -311,6 +332,7 @@ final class DiaryAttachmentStore {
     }
 
     func move(_ attachment: DiarioAttachment, to destination: Diario) throws {
+        try DiaryAttachmentPremiumAccess.requireAccess()
         guard attachment.diario != destination else { return }
         attachment.diario = destination
         attachment.updatedAt = .now
@@ -319,6 +341,7 @@ final class DiaryAttachmentStore {
     }
 
     func delete(_ attachment: DiarioAttachment) throws {
+        try DiaryAttachmentPremiumAccess.requireAccess()
         container.viewContext.delete(attachment)
         try saveViewContext()
     }

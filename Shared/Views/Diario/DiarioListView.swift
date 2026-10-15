@@ -1750,6 +1750,10 @@ struct DiarioListView: View {
     }
 
     private func refreshDiaryAttachmentSearchIndex() {
+        guard purchaseStatus || yorjPremium else {
+            diaryAttachmentNamesByEntryID = [:]
+            return
+        }
         diaryAttachmentNamesByEntryID =
             (try? DiaryAttachmentStore.shared.attachmentNamesByDiaryObjectID()) ?? [:]
     }

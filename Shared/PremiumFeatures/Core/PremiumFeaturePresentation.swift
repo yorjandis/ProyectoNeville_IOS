@@ -16,6 +16,7 @@ enum PremiumFeatureID: String, Identifiable, CaseIterable, Sendable {
     case creativeCanvas
     case goals
     case protectedNotes
+    case diaryAttachments
     case consciousPresence
     case transformationProtocol
     case smartReminders
@@ -43,6 +44,7 @@ enum PremiumFeatureID: String, Identifiable, CaseIterable, Sendable {
         case .creativeCanvas: .creativeCanvas
         case .goals: .goals
         case .protectedNotes: .protectedNotes
+        case .diaryAttachments: .diaryAttachments
         case .consciousPresence: .consciousPresence
         case .transformationProtocol: .transformationProtocol
         case .smartReminders: .smartReminders
@@ -83,6 +85,19 @@ struct PremiumFeaturePresentation: Identifiable, Sendable {
             description: PremiumFeatureLocalization.string(description.key, fallback: description.fallback),
             practicalValue: PremiumFeatureLocalization.string(practicalValue.key, fallback: practicalValue.fallback),
             screenshotNames: screenshotNames
+        )
+    }
+}
+
+extension PremiumFeaturePresentation {
+    static var diaryAttachments: Self {
+        .localized(
+            id: .diaryAttachments,
+            iconName: "paperclip.circle.fill",
+            title: ("premium.diary_attachments.title", "Anexos cifrados en el Diario"),
+            description: ("premium.diary_attachments.description", "Añade archivos, fotos y documentos a tus entradas del Diario. Cada anexo permanece vinculado a su recuerdo y protegido mediante cifrado fuerte."),
+            practicalValue: ("premium.diary_attachments.value", "Conserva en un mismo lugar el texto y los materiales que dan contexto a cada experiencia, sin renunciar a tu privacidad."),
+            screenshotNames: []
         )
     }
 }

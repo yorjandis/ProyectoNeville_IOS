@@ -52,6 +52,10 @@ struct cardItemDiario: View{
     // Las secciones inferiores comienzan contraídas para priorizar el contenido de la entrada.
     @State private var isFooterExpanded = false
     @State private var hasAttachments = false
+    @AppStorage("purchaseStatus") private var purchaseStatus = false
+    @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName))
+    private var yorjPremium = false
+    @State private var showDiaryAttachmentsPremium = false
     //Animation
     @State private var animValue = 0
     @AppStorage(AppCons.UD_setting_DiarioAttachmentImageQuality)
@@ -65,6 +69,8 @@ struct cardItemDiario: View{
     @State private var isImportingAttachment = false
     @State private var showAttachmentImportAlert = false
     @State private var attachmentImportMessage = ""
+
+    private var hasDiaryAttachmentsPremiumAccess: Bool { purchaseStatus || yorjPremium }
     
 
     var body: some View{
@@ -139,6 +145,9 @@ struct cardItemDiario: View{
         }
         .sheet(isPresented: $showSheet){
             diaryEntryEditor
+        }
+        .sheet(isPresented: $showDiaryAttachmentsPremium) {
+            PremiumFeaturePreviewView(feature: .diaryAttachments)
         }
         .fileImporter(
             isPresented: $showAttachmentFileImporter,
@@ -337,35 +346,45 @@ struct cardItemDiario: View{
     }
 
     private var attachmentImportMenu: some View {
-        Menu {
-            Button {
-                showAttachmentFileImporter = true
-            } label: {
-                Label("Archivo", systemImage: "folder.badge.plus")
-            }
+        Group {
+            if hasDiaryAttachmentsPremiumAccess {
+                Menu {
+                    Button {
+                        showAttachmentFileImporter = true
+                    } label: {
+                        Label("Archivo", systemImage: "folder.badge.plus")
+                    }
 
-            Button {
-                showAttachmentPhotosPicker = true
-            } label: {
-                Label("Fotos", systemImage: "photo.badge.plus")
-            }
+                    Button {
+                        showAttachmentPhotosPicker = true
+                    } label: {
+                        Label("Fotos", systemImage: "photo.badge.plus")
+                    }
 
 #if os(iOS)
-            if UIImagePickerController.isSourceTypeAvailable(.camera) {
-                Button {
-                    showAttachmentCamera = true
+                    if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                        Button {
+                            showAttachmentCamera = true
+                        } label: {
+                            Label("Cámara", systemImage: "camera")
+                        }
+                    }
+#endif
                 } label: {
-                    Label("Cámara", systemImage: "camera")
+                    Label(
+                        isImportingAttachment ? "Importando anexo…" : "Añadir anexo",
+                        systemImage: isImportingAttachment ? "hourglass" : "paperclip.badge.ellipsis"
+                    )
+                }
+                .disabled(isImportingAttachment)
+            } else {
+                Button {
+                    showDiaryAttachmentsPremium = true
+                } label: {
+                    Label("Anexos del Diario · Premium", systemImage: "lock.fill")
                 }
             }
-#endif
-        } label: {
-            Label(
-                isImportingAttachment ? "Importando anexo…" : "Añadir anexo",
-                systemImage: isImportingAttachment ? "hourglass" : "paperclip.badge.ellipsis"
-            )
         }
-        .disabled(isImportingAttachment)
     }
 
     private var chapterAssignmentMenu: some View {

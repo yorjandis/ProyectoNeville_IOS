@@ -42,6 +42,9 @@ struct PendingDiaryAttachment: Identifiable {
 }
 
 struct PendingDiaryAttachmentsPicker: View {
+    @AppStorage("purchaseStatus") private var purchaseStatus = false
+    @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName))
+    private var yorjPremium = false
     @Binding var attachments: [PendingDiaryAttachment]
     @State private var showFileImporter = false
     @State private var showPhotosPicker = false
@@ -52,8 +55,64 @@ struct PendingDiaryAttachmentsPicker: View {
     @State private var isLoading = false
     @State private var errorMessage = ""
     @State private var showError = false
+    @State private var showPremiumPreview = false
+
+    private var hasPremiumAccess: Bool { purchaseStatus || yorjPremium }
 
     var body: some View {
+        Group {
+            if hasPremiumAccess {
+                attachmentsPickerContent
+            } else {
+                diaryAttachmentsPremiumButton
+            }
+        }
+        .sheet(isPresented: $showPremiumPreview) {
+            PremiumFeaturePreviewView(feature: .diaryAttachments)
+        }
+        .fileImporter(
+            isPresented: $showFileImporter,
+            allowedContentTypes: [.item],
+            allowsMultipleSelection: true
+        ) { result in
+            Task { await loadFiles(result) }
+        }
+        .photosPicker(
+            isPresented: $showPhotosPicker,
+            selection: $selectedPhotos,
+            maxSelectionCount: 10,
+            matching: .images
+        )
+        .onChange(of: selectedPhotos) { _, items in
+            guard !items.isEmpty else { return }
+            Task { await loadPhotos(items) }
+        }
+#if os(iOS)
+        .fullScreenCover(isPresented: $showCamera) {
+            CameraPhotoCapture { image in
+                guard let data = image.jpegData(compressionQuality: 1) else {
+                    present(DiaryAttachmentError.invalidFile)
+                    return
+                }
+                attachments.append(
+                    PendingDiaryAttachment(
+                        data: data,
+                        fileName: "Foto-\(UUID().uuidString.prefix(8)).jpg",
+                        contentType: .jpeg
+                    )
+                )
+            }
+            .ignoresSafeArea()
+        }
+#endif
+        .alert("Anexos", isPresented: $showError) {
+            Button("Aceptar", role: .cancel) {}
+        } message: {
+            Text(errorMessage)
+        }
+    }
+
+    private var attachmentsPickerContent: some View {
         VStack(alignment: .leading, spacing: 10) {
             ForEach(attachments) { attachment in
                 HStack {
@@ -102,46 +161,16 @@ struct PendingDiaryAttachmentsPicker: View {
             }
             .disabled(isLoading)
         }
-        .fileImporter(
-            isPresented: $showFileImporter,
-            allowedContentTypes: [.item],
-            allowsMultipleSelection: true
-        ) { result in
-            Task { await loadFiles(result) }
+    }
+
+    private var diaryAttachmentsPremiumButton: some View {
+        Button {
+            showPremiumPreview = true
+        } label: {
+            Label("Anexos del Diario · Premium", systemImage: "lock.fill")
+                .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .photosPicker(
-            isPresented: $showPhotosPicker,
-            selection: $selectedPhotos,
-            maxSelectionCount: 10,
-            matching: .images
-        )
-        .onChange(of: selectedPhotos) { _, items in
-            guard !items.isEmpty else { return }
-            Task { await loadPhotos(items) }
-        }
-#if os(iOS)
-        .fullScreenCover(isPresented: $showCamera) {
-            CameraPhotoCapture { image in
-                guard let data = image.jpegData(compressionQuality: 1) else {
-                    present(DiaryAttachmentError.invalidFile)
-                    return
-                }
-                attachments.append(
-                    PendingDiaryAttachment(
-                        data: data,
-                        fileName: "Foto-\(UUID().uuidString.prefix(8)).jpg",
-                        contentType: .jpeg
-                    )
-                )
-            }
-            .ignoresSafeArea()
-        }
-#endif
-        .alert("Anexos", isPresented: $showError) {
-            Button("Aceptar", role: .cancel) {}
-        } message: {
-            Text(errorMessage)
-        }
+        .buttonStyle(.bordered)
     }
 
     private func loadFiles(_ result: Result<[URL], Error>) async {
@@ -221,6 +250,9 @@ private struct DiaryAttachmentPreviewPresentationModifier: ViewModifier {
 }
 
 struct DiaryAttachmentsSection: View {
+    @AppStorage("purchaseStatus") private var purchaseStatus = false
+    @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName))
+    private var yorjPremium = false
     @StateObject private var diarioModel = DiarioModel.shared
     @State private var attachments: [DiarioAttachment] = []
     @State private var previewAttachment: DiarioAttachment?
@@ -234,9 +266,12 @@ struct DiaryAttachmentsSection: View {
     @State private var isWorking = false
     @State private var alertMessage = ""
     @State private var showAlert = false
+    @State private var showPremiumPreview = false
 
     private let diario: Diario
     private let horizontal: Bool
+
+    private var hasPremiumAccess: Bool { purchaseStatus || yorjPremium }
 
     init(diario: Diario, horizontal: Bool = false) {
         self.diario = diario
@@ -247,29 +282,21 @@ struct DiaryAttachmentsSection: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            if !horizontal {
-                Label("Anexos (\(attachments.count))", systemImage: "paperclip")
-                    .font(.subheadline.weight(.semibold))
-            }
-
-            if horizontal {
-                ScrollView(.horizontal) {
-                    HStack(spacing: 8) {
-                        ForEach(attachments) { attachment in
-                            horizontalAttachmentRow(attachment)
-                        }
-                    }
-                }
-                .scrollIndicators(.hidden)
+        Group {
+            if hasPremiumAccess {
+                attachmentsContent
             } else {
-                VStack(spacing: 6) {
-                    ForEach(attachments) { attachment in
-                        attachmentRow(attachment)
-                    }
+                Button {
+                    showPremiumPreview = true
+                } label: {
+                    Label("Anexos del Diario · Premium", systemImage: "lock.fill")
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
-                .padding(.leading, 8)
+                .buttonStyle(.bordered)
             }
+        }
+        .sheet(isPresented: $showPremiumPreview) {
+            PremiumFeaturePreviewView(feature: .diaryAttachments)
         }
         .onAppear { reloadAttachments() }
         .onReceive(NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave)) { _ in reloadAttachments() }
@@ -308,6 +335,33 @@ struct DiaryAttachmentsSection: View {
                 present(error)
             }
             exportDocument = nil
+        }
+    }
+
+    private var attachmentsContent: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            if !horizontal {
+                Label("Anexos (\(attachments.count))", systemImage: "paperclip")
+                    .font(.subheadline.weight(.semibold))
+            }
+
+            if horizontal {
+                ScrollView(.horizontal) {
+                    HStack(spacing: 8) {
+                        ForEach(attachments) { attachment in
+                            horizontalAttachmentRow(attachment)
+                        }
+                    }
+                }
+                .scrollIndicators(.hidden)
+            } else {
+                VStack(spacing: 6) {
+                    ForEach(attachments) { attachment in
+                        attachmentRow(attachment)
+                    }
+                }
+                .padding(.leading, 8)
+            }
         }
     }
 
@@ -635,6 +689,9 @@ struct MoveDiaryAttachmentView: View {
 }
 
 struct DiaryAttachmentImportMenu: View {
+    @AppStorage("purchaseStatus") private var purchaseStatus = false
+    @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName))
+    private var yorjPremium = false
     @AppStorage(AppCons.UD_setting_DiarioAttachmentImageQuality)
     private var imageQuality = 0.82
 
@@ -647,12 +704,69 @@ struct DiaryAttachmentImportMenu: View {
     @State private var isWorking = false
     @State private var alertMessage = ""
     @State private var showAlert = false
+    @State private var showPremiumPreview = false
 
     let diario: Diario
     var compact = false
     var onImportCompleted: () -> Void = {}
 
+    private var hasPremiumAccess: Bool { purchaseStatus || yorjPremium }
+
     var body: some View {
+        Group {
+            if hasPremiumAccess {
+                importMenu
+            } else {
+                Button {
+                    showPremiumPreview = true
+                } label: {
+                    if compact {
+                        Image(systemName: "lock.fill")
+                            .frame(width: 32, height: 32)
+                            .contentShape(Rectangle())
+                            .accessibilityLabel("Anexos del Diario · Premium")
+                    } else {
+                        Label("Anexos del Diario · Premium", systemImage: "lock.fill")
+                    }
+                }
+            }
+        }
+        .sheet(isPresented: $showPremiumPreview) {
+            PremiumFeaturePreviewView(feature: .diaryAttachments)
+        }
+        .fileImporter(
+            isPresented: $showFileImporter,
+            allowedContentTypes: [.item],
+            allowsMultipleSelection: true
+        ) { result in
+            Task { await importFiles(result) }
+        }
+        .photosPicker(
+            isPresented: $showPhotosPicker,
+            selection: $selectedPhotos,
+            maxSelectionCount: 10,
+            matching: .images
+        )
+        .onChange(of: selectedPhotos) { _, items in
+            guard !items.isEmpty else { return }
+            Task { await importPhotos(items) }
+        }
+#if os(iOS)
+        .fullScreenCover(isPresented: $showCamera) {
+            CameraPhotoCapture { image in
+                Task { await importCameraImage(image) }
+            }
+            .ignoresSafeArea()
+        }
+#endif
+        .alert("Anexos", isPresented: $showAlert) {
+            Button("Aceptar", role: .cancel) {}
+        } message: {
+            Text(alertMessage)
+        }
+    }
+
+    private var importMenu: some View {
         Menu {
             Button {
                 showFileImporter = true
@@ -689,36 +803,6 @@ struct DiaryAttachmentImportMenu: View {
             }
         }
         .disabled(isWorking)
-        .fileImporter(
-            isPresented: $showFileImporter,
-            allowedContentTypes: [.item],
-            allowsMultipleSelection: true
-        ) { result in
-            Task { await importFiles(result) }
-        }
-        .photosPicker(
-            isPresented: $showPhotosPicker,
-            selection: $selectedPhotos,
-            maxSelectionCount: 10,
-            matching: .images
-        )
-        .onChange(of: selectedPhotos) { _, items in
-            guard !items.isEmpty else { return }
-            Task { await importPhotos(items) }
-        }
-#if os(iOS)
-        .fullScreenCover(isPresented: $showCamera) {
-            CameraPhotoCapture { image in
-                Task { await importCameraImage(image) }
-            }
-            .ignoresSafeArea()
-        }
-#endif
-        .alert("Anexos", isPresented: $showAlert) {
-            Button("Aceptar", role: .cancel) {}
-        } message: {
-            Text(alertMessage)
-        }
     }
 
     private func importFiles(_ result: Result<[URL], Error>) async {

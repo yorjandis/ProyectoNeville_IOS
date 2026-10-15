@@ -235,3 +235,7 @@
 /* (No Comment) */
 "premium.weekly_review.value" = "Detecta patrones, reconoce avances y comienza la semana siguiente con aprendizaje acumulado en lugar de empezar de cero.";
 
+"premium.diary_attachments.title" = "日记加密附件";
+"premium.diary_attachments.description" = "为日记条目添加文件、照片和文档。每个附件始终与对应回忆关联，并受到强加密保护。";
+"premium.diary_attachments.value" = "将每段经历的文字和相关资料保存在同一处，同时守护你的隐私。";
+
