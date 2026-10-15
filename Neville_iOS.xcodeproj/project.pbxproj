@@ -297,7 +297,6 @@
 		914D888C2FC6000000CDDB93 /* Shared/Models/Migration/MigrationCrypto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/Models/Migration/MigrationCrypto.swift; sourceTree = SOURCE_ROOT; };
 		914D888D2FC6000000CDDB93 /* Shared/Models/Migration/CoreDataCanonicalMigrationBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/Models/Migration/CoreDataCanonicalMigrationBridge.swift; sourceTree = SOURCE_ROOT; };
 		914D888E2FC6000000CDDB93 /* Shared/Models/Migration/MyAppMigrationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/Models/Migration/MyAppMigrationService.swift; sourceTree = SOURCE_ROOT; };
-		914D888F2FC6000000CDDB93 /* Shared/Views/Migration/MigrationDataDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/Views/Migration/MigrationDataDocument.swift; sourceTree = SOURCE_ROOT; };
 		914D88952FC6000000CDDB93 /* Shared/Views/Migration/MigrationIOSAndroidView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shared/Views/Migration/MigrationIOSAndroidView.swift; sourceTree = SOURCE_ROOT; };
 		915017422EF078A2007B741A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		915017442EF078B2007B741A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/System/Library/Frameworks/StoreKit.framework; sourceTree = DEVELOPER_DIR; };
@@ -736,7 +735,6 @@
 				Models/CoreData/CoreDataController.swift,
 				Models/DiarioModel/DiarioModel.swift,
 				Models/DiarioModel/DiaryAttachmentStore.swift,
-				Models/DiarioModel/DiarySQLiteBackupService.swift,
 				Models/EnciclopediaModel/EnciclopediaModel.swift,
 				Models/EvidenciaCientificaModel/EvidenciaCientificaModel.swift,
 				Models/Export/PDFExportModule.swift,
@@ -818,6 +816,8 @@
 				Models/Migration/MigrationCrypto.swift,
 				Models/Migration/MigrationFormat.swift,
 				Models/Migration/MyAppMigrationService.swift,
+				Models/WirelessSync/WirelessSyncClient.swift,
+				Models/WirelessSync/WirelessSyncProtocol.swift,
 				Models/MultiplatformModel/Multiplatform.swift,
 				Models/NetModel/NetModel.swift,
 				Models/NotasModel/NotasModel.swift,
@@ -1831,7 +1831,6 @@
 				Views/Diario/DiarioListView.swift,
 				Views/Diario/DiarioStatsView.swift,
 				Views/Diario/DiaryAttachmentsView.swift,
-				Views/Diario/DiarySQLiteBackupView.swift,
 				Views/Diario/editContent.swift,
 				Views/Diario/NewDiarioEntryView.swift,
 				Views/EnciclopediaView/EnciclopediaListView.swift,
@@ -1859,7 +1858,6 @@
 				Views/Lienzo/Lienzo_Fondos.swift,
 				Views/Lienzo/Lienzo.swift,
 				Views/Lienzo/LienzoUtilsUI.swift,
-				Views/Migration/MigrationDataDocument.swift,
 				Views/Migration/MigrationIOSAndroidView.swift,
 				Views/Notas/AddNotasView.swift,
 				Views/Notas/ListNotasViews.swift,
@@ -2283,7 +2281,6 @@
 				914D888C2FC6000000CDDB93 /* Shared/Models/Migration/MigrationCrypto.swift */,
 				914D888D2FC6000000CDDB93 /* Shared/Models/Migration/CoreDataCanonicalMigrationBridge.swift */,
 				914D888E2FC6000000CDDB93 /* Shared/Models/Migration/MyAppMigrationService.swift */,
-				914D888F2FC6000000CDDB93 /* Shared/Views/Migration/MigrationDataDocument.swift */,
 				914D88952FC6000000CDDB93 /* Shared/Views/Migration/MigrationIOSAndroidView.swift */,
 				9A10B0023000000000000001 /* Shared/Views/RevisionSemanal/WeeklyReviewView.swift */,
 				9CDA00063000000000000001 /* Shared/Models/WidgetDashboard/ConsciousDashboardSnapshot.swift */,

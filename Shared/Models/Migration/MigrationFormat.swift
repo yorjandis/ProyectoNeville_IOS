@@ -2,10 +2,9 @@ import Foundation
 import CryptoKit
 
 nonisolated enum MigrationFormat {
-    static let fileExtension = ".ypgexp"
     static let formatName = "com.ypg.neville.ndjson.export"
     static let formatVersion = 2
-    static let schemaVersion = 1
+    static let schemaVersion = 2
     static let magic = "YPGEXP-2"
     static let cipher = "AES-256-GCM"
     static let kdf = "ARGON2ID"
@@ -132,6 +131,7 @@ nonisolated enum MigrationFormat {
 enum MigrationRecordType {
     static let note = "note"
     static let diary = "diary_entry"
+    static let diaryAttachment = "diary_attachment"
     static let agenda = "agenda_entry"
     static let goal = "goal"
     static let archivedGoal = "archived_goal"
@@ -144,6 +144,9 @@ enum MigrationRecordType {
 enum ImportPolicy {
     case skipExisting
     case overwriteExisting
+    case newerWins
+    case newerWinsIncomingOnTie
+    case newerWinsExistingOnTie
 }
 
 struct CanonicalMigrationRecord: Identifiable {
@@ -269,6 +272,11 @@ enum MigrationIds {
         return digest.map { String(format: "%02x", $0) }.joined()
     }
 
+    static func sha256Hex(_ data: Data) -> String {
+        let digest = SHA256.hash(data: data)
+        return digest.map { String(format: "%02x", $0) }.joined()
+    }
+
     static func deterministicUUID(from value: String) -> UUID {
         if let uuid = UUID(uuidString: value) {
             return uuid
@@ -307,6 +315,8 @@ enum OrderedJSONWriter {
             return ["title", "body", "tags", "category", "favorite", "isChecklist", "checklistJson"]
         case MigrationRecordType.diary:
             return ["title", "body", "emotion", "chapter", "favorite"]
+        case MigrationRecordType.diaryAttachment:
+            return ["parentDiaryId", "fileName", "mimeType", "fileSize", "sha256", "data"]
         case MigrationRecordType.agenda:
             return ["title", "note", "activityDateMillis", "activityTimeMillis", "place", "content", "priority", "colorHex", "completed", "reminderActive", "reminderId"]
         case MigrationRecordType.goal:

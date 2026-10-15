@@ -1,638 +1,669 @@
 import SwiftUI
-import Combine
-import UniformTypeIdentifiers
+
+#if os(iOS)
 import LocalAuthentication
+import NetworkExtension
+import VisionKit
 
 @MainActor
-private final class MigrationIOSAndroidViewModel: ObservableObject {
-    @Published var exportPassword = ""
-    @Published var exportPasswordConfirmation = ""
-    @Published var importPassword = ""
-    @Published var exportDocument: MigrationDataDocument?
-    @Published var lastExportCountsByType: [String: Int] = [:]
-    @Published var lastExportBytes = 0
-    @Published var lastExportId: String?
-    @Published var lastImportCountsByType: [String: Int] = [:]
-    @Published var lastImportSummary: MigrationSummary?
-    @Published var lastImportPolicy: ImportPolicy = .skipExisting
-    @Published var preview: ImportPreview?
-    @Published var message: String?
-    @Published var exportErrorMessage: String?
-    @Published var isWorking = false
-    @Published var isExporterPresented = false
-    @Published var showOverwriteConfirmation = false
+private final class WirelessMigrationViewModel: ObservableObject {
+    enum Phase: Equatable {
+        case idle
+        case joiningNetwork
+        case preparing
+        case discovering
+        case transferring
+        case importing
+        case completed
+        case failed(String)
 
-    private let service = MyAppMigrationService()
-
-    var canExport: Bool {
-        exportPasswordLengthIsValid && passwordsMatch
-    }
-
-    var exportPasswordCharacterCount: Int {
-        exportPassword.precomposedStringWithCanonicalMapping.unicodeScalars.count
-    }
-
-    var exportPasswordLengthIsValid: Bool {
-        exportPasswordCharacterCount >= MigrationFormat.minimumPasswordCharacters
-    }
-
-    var passwordsMatch: Bool {
-        !exportPasswordConfirmation.isEmpty && exportPassword == exportPasswordConfirmation
-    }
-
-    var canPreviewImport: Bool {
-        !importPassword.isEmpty
-    }
-
-    var hasBlockingConflicts: Bool {
-        preview?.conflicts.contains { !$0.reason.contains("idéntico") } == true
-    }
-
-    func prepareExport() {
-        guard canExport else {
-            exportErrorMessage = exportPasswordLengthIsValid
-                ? "Las contraseñas no coinciden."
-                : "La contraseña debe tener al menos \(MigrationFormat.minimumPasswordCharacters) caracteres."
-            return
-        }
-        isWorking = true
-        exportErrorMessage = nil
-
-        Task { [weak self] in
-            guard let self else { return }
-            defer { isWorking = false }
-            do {
-                let result = try await service.exportAsync(password: exportPassword)
-                exportDocument = MigrationDataDocument(data: result.bytes)
-                lastExportCountsByType = result.countsByType
-                lastExportBytes = result.bytes.count
-                lastExportId = result.exportId
-                message = "Exportación preparada: \(exportedTotal) elementos listos para guardar."
-                isExporterPresented = true
-            } catch {
-                exportDocument = nil
-                lastExportCountsByType = [:]
-                lastExportBytes = 0
-                lastExportId = nil
-                exportErrorMessage = "No se pudo preparar la exportación: \(error.localizedDescription)"
+        var isWorking: Bool {
+            switch self {
+            case .joiningNetwork, .preparing, .discovering, .transferring, .importing: true
+            default: false
             }
         }
     }
 
-    var exportedTotal: Int {
-        lastExportCountsByType.values.reduce(0, +)
-    }
+    @Published var direction: WirelessSyncDirection = .androidToIOS
+    @Published var transferEverything = true
+    @Published var selectedTypes = Set(MigrationRecordType.allWirelessTypes)
+    @Published var phase: Phase = .idle
+    @Published var isUnlocked = false
+    @Published var isScannerPresented = false
+    @Published var completionSummary: WirelessTransferSummary?
 
-    var hasExportSummary: Bool {
-        !lastExportCountsByType.isEmpty || lastExportBytes > 0
-    }
+    private let migrationService = MyAppMigrationService()
+    private let client = WirelessSyncClient()
 
-    var importedTotal: Int {
-        lastImportCountsByType.values.reduce(0, +)
-    }
-
-    var hasImportSummary: Bool {
-        lastImportSummary != nil
-    }
-
-    func buildPreview(from url: URL) {
-        guard canPreviewImport else {
-            message = "Escribe la contraseña del archivo antes de importar."
+    func unlock() {
+        let context = LAContext()
+        var error: NSError?
+        guard context.canEvaluatePolicy(.deviceOwnerAuthentication, error: &error) else {
+            phase = .failed(error?.localizedDescription ?? "Configura un código de desbloqueo en el dispositivo")
             return
         }
-        isWorking = true
-        defer { isWorking = false }
-
-        let didStartAccessing = url.startAccessingSecurityScopedResource()
-        defer {
-            if didStartAccessing {
-                url.stopAccessingSecurityScopedResource()
+        context.evaluatePolicy(
+            .deviceOwnerAuthentication,
+            localizedReason: "Autoriza la transferencia de tus datos personales"
+        ) { [weak self] success, evaluationError in
+            Task { @MainActor in
+                if success {
+                    self?.isUnlocked = true
+                    self?.phase = .idle
+                } else {
+                    self?.phase = .failed(evaluationError?.localizedDescription ?? "No se pudo autorizar el acceso")
+                }
             }
         }
+    }
 
+    func scan() {
+        guard isUnlocked else {
+            unlock()
+            return
+        }
+        guard DataScannerViewController.isSupported,
+              DataScannerViewController.isAvailable else {
+            phase = .failed("La cámara no está disponible para escanear el código QR")
+            return
+        }
+        isScannerPresented = true
+    }
+
+    func receiveScannedPayload(_ payload: String) {
+        isScannerPresented = false
+        Task { await performTransfer(qrPayload: payload) }
+    }
+
+    private func performTransfer(qrPayload: String) async {
+        var session: WirelessSyncSession?
         do {
-            let bytes = try Data(contentsOf: url)
-            preview = try service.preview(fileBytes: bytes, password: importPassword)
-            lastImportCountsByType = [:]
-            lastImportSummary = nil
-            let total = preview?.countsByType.values.reduce(0, +) ?? 0
-            message = "Vista previa lista: \(total) elementos."
+            let descriptor = try WirelessSessionDescriptor.parse(qrPayload: qrPayload)
+            direction = descriptor.direction
+            if descriptor.direction == .bidirectional {
+                transferEverything = descriptor.includedTypes == nil
+                if let includedTypes = descriptor.includedTypes {
+                    selectedTypes = Set(includedTypes)
+                }
+            }
+            if let network = descriptor.network {
+                phase = .joiningNetwork
+                try await join(network)
+            }
+
+            var outgoingExport: ExportResult?
+            if descriptor.direction == .iosToAndroid || descriptor.direction == .bidirectional {
+                phase = .preparing
+                let includedTypes: Set<String>?
+                if descriptor.direction == .bidirectional {
+                    includedTypes = descriptor.includedTypes.map(Set.init)
+                } else {
+                    includedTypes = transferEverything ? nil : selectedTypes
+                }
+                outgoingExport = try await migrationService.exportAsync(
+                    password: descriptor.secret,
+                    includedTypes: includedTypes,
+                    allowEmpty: descriptor.direction == .bidirectional
+                )
+            }
+
+            phase = .discovering
+            let connectedSession = try await client.connect(to: descriptor)
+            session = connectedSession
+            phase = .transferring
+
+            switch descriptor.direction {
+            case .iosToAndroid:
+                guard let outgoingExport else {
+                    throw WirelessSyncError.protocolViolation("No se pudo preparar el paquete")
+                }
+                try await connectedSession.send(type: .package, payload: outgoingExport.bytes)
+                let result = try await connectedSession.receive()
+                guard result.type == .result else {
+                    throw WirelessSyncError.protocolViolation("Android no confirmó la importación")
+                }
+                let remoteResult = try importResult(from: result.payload)
+                complete(WirelessTransferSummary(
+                    direction: descriptor.direction,
+                    sent: outgoingExport.countsByType.values.reduce(0, +),
+                    received: 0,
+                    localImport: .empty,
+                    remoteImport: remoteResult
+                ))
+
+            case .androidToIOS:
+                let packageFrame = try await connectedSession.receive()
+                guard packageFrame.type == .package else {
+                    throw WirelessSyncError.protocolViolation("Android no envió un paquete válido")
+                }
+                phase = .importing
+                let preview = try await migrationService.preview(
+                    fileBytes: packageFrame.payload,
+                    password: descriptor.secret
+                )
+                guard preview.errors.isEmpty else {
+                    throw MigrationError.validation("El paquete contiene registros inválidos")
+                }
+                let summary = try await migrationService.importPreview(preview, policy: .newerWins)
+                let localResult = WirelessImportResult(summary: summary, message: summaryMessage(summary))
+                try await connectedSession.send(type: .result, payload: try JSONEncoder().encode(localResult))
+                complete(WirelessTransferSummary(
+                    direction: descriptor.direction,
+                    sent: 0,
+                    received: preview.records.count,
+                    localImport: localResult,
+                    remoteImport: .empty
+                ))
+
+            case .bidirectional:
+                guard let outgoingExport else {
+                    throw WirelessSyncError.protocolViolation("No se pudo preparar el paquete")
+                }
+                let androidPackage = try await connectedSession.receive()
+                guard androidPackage.type == .package else {
+                    throw WirelessSyncError.protocolViolation("Android no envió un paquete válido")
+                }
+                phase = .importing
+                let preview = try await migrationService.preview(
+                    fileBytes: androidPackage.payload,
+                    password: descriptor.secret
+                )
+                guard preview.errors.isEmpty else {
+                    throw MigrationError.validation("El paquete contiene registros inválidos")
+                }
+                let localSummary = try await migrationService.importPreview(
+                    preview,
+                    policy: .newerWinsIncomingOnTie
+                )
+                let localResult = WirelessImportResult(
+                    summary: localSummary,
+                    message: summaryMessage(localSummary)
+                )
+                try await connectedSession.send(type: .result, payload: try JSONEncoder().encode(localResult))
+
+                phase = .transferring
+                try await connectedSession.send(type: .package, payload: outgoingExport.bytes)
+                let androidResultFrame = try await connectedSession.receive()
+                guard androidResultFrame.type == .result else {
+                    throw WirelessSyncError.protocolViolation("Android no confirmó la sincronización")
+                }
+                let remoteResult = try importResult(from: androidResultFrame.payload)
+                complete(WirelessTransferSummary(
+                    direction: descriptor.direction,
+                    sent: outgoingExport.countsByType.values.reduce(0, +),
+                    received: preview.records.count,
+                    localImport: localResult,
+                    remoteImport: remoteResult
+                ))
+            }
         } catch {
-            preview = nil
-            lastImportCountsByType = [:]
-            lastImportSummary = nil
-            message = "No se pudo generar la vista previa: \(error.localizedDescription)"
+            phase = .failed(error.localizedDescription)
+        }
+        session?.cancel()
+    }
+
+    private func join(_ network: WirelessNetworkCredentials) async throws {
+        let configuration = NEHotspotConfiguration(
+            ssid: network.ssid,
+            passphrase: network.password,
+            isWEP: false
+        )
+        configuration.joinOnce = true
+        try await withCheckedThrowingContinuation { continuation in
+            NEHotspotConfigurationManager.shared.apply(configuration) { error in
+                if let error {
+                    let nsError = error as NSError
+                    if nsError.domain == NEHotspotConfigurationErrorDomain,
+                       nsError.code == NEHotspotConfigurationError.alreadyAssociated.rawValue {
+                        continuation.resume()
+                    } else {
+                        continuation.resume(throwing: error)
+                    }
+                } else {
+                    continuation.resume()
+                }
+            }
         }
     }
 
-    func importCurrentPreview(policy: ImportPolicy = .skipExisting) {
-        guard let preview else {
-            message = "Primero genera una vista previa del archivo."
-            return
-        }
-        isWorking = true
-        defer { isWorking = false }
+    private func importResult(from data: Data) throws -> WirelessImportResult {
         do {
-            let summary = try service.importPreview(preview, policy: policy)
-            lastImportCountsByType = preview.countsByType
-            lastImportSummary = summary
-            lastImportPolicy = policy
-            message = "Importación finalizada. Insertados: \(summary.inserted), actualizados: \(summary.updated), omitidos: \(summary.skipped), conflictos: \(summary.conflicts), errores: \(summary.errors)."
-            self.preview = nil
-            importPassword = ""
+            return try JSONDecoder().decode(WirelessImportResult.self, from: data)
         } catch {
-            lastImportCountsByType = [:]
-            lastImportSummary = nil
-            message = "No se pudo completar la importación: \(error.localizedDescription)"
+            throw WirelessSyncError.protocolViolation("Respuesta de Android inválida")
+        }
+    }
+
+    private func complete(_ summary: WirelessTransferSummary) {
+        completionSummary = summary
+        phase = .completed
+    }
+
+    private func summaryMessage(_ summary: MigrationSummary) -> String {
+        "Importados: \(summary.inserted) · Actualizados: \(summary.updated) · Omitidos: \(summary.skipped) · Conflictos: \(summary.conflicts)"
+    }
+}
+
+private extension MigrationRecordType {
+    static let allWirelessTypes: [String] = [
+        note, diary, agenda, goal, archivedGoal, personalPhrase,
+        personalReflection, dayRitualArchive, calmPersonalPhrase
+    ]
+
+    static func localizedName(_ type: String) -> String {
+        switch type {
+        case note: L10n.exact("Notas")
+        case diary: L10n.exact("Diario")
+        case agenda: L10n.exact("Agenda")
+        case goal: L10n.exact("Metas activas")
+        case archivedGoal: L10n.exact("Metas archivadas")
+        case personalPhrase: L10n.exact("Frases personales")
+        case personalReflection: L10n.exact("Reflexiones personales")
+        case dayRitualArchive: L10n.exact("Rituales")
+        case calmPersonalPhrase: L10n.exact("Frases de Calma")
+        default: type
         }
     }
 }
 
 struct MigrationIOSAndroidView: View {
-    @StateObject private var viewModel = MigrationIOSAndroidViewModel()
-    @State private var showImporter = false
-    @State private var isMigrationUnlocked = false
-    @State private var authPassword = ""
-    @State private var authMessage: String?
+    @StateObject private var viewModel = WirelessMigrationViewModel()
+    @State private var isInfoPresented = false
+
+    private let contentColumns = [
+        GridItem(.flexible(), spacing: 8),
+        GridItem(.flexible(), spacing: 8)
+    ]
 
     var body: some View {
         Form {
-            exportableContentInfo()
+            Section {
+                Text("La transferencia es local, cifrada y no utiliza Internet. Android mostrará el código de enlace y este dispositivo lo escaneará.")
+                    .foregroundStyle(.secondary)
+            }
 
-            if isMigrationUnlocked {
-                Section("Preparar archivo de migración") {
-                    SecureField("Contraseña del archivo (mínimo 15 caracteres)", text: $viewModel.exportPassword)
-
-                    Label {
-                        Text(viewModel.exportPasswordLengthIsValid
-                             ? "Longitud correcta"
-                             : "Mínimo \(MigrationFormat.minimumPasswordCharacters) caracteres (\(viewModel.exportPasswordCharacterCount)/\(MigrationFormat.minimumPasswordCharacters))")
-                    } icon: {
-                        Image(systemName: viewModel.exportPasswordLengthIsValid
-                              ? "checkmark.circle.fill"
-                              : "circle")
-                    }
-                    .font(.footnote)
-                    .foregroundStyle(viewModel.exportPasswordLengthIsValid ? Color.green : Color.secondary)
-
-                    SecureField("Repetir contraseña", text: $viewModel.exportPasswordConfirmation)
-
-                    if !viewModel.exportPasswordConfirmation.isEmpty {
-                        Label(
-                            viewModel.passwordsMatch ? "Las contraseñas coinciden" : "Las contraseñas no coinciden",
-                            systemImage: viewModel.passwordsMatch ? "checkmark.circle.fill" : "exclamationmark.circle"
-                        )
-                        .font(.footnote)
-                        .foregroundStyle(viewModel.passwordsMatch ? Color.green : Color.red)
-                    }
-
-                    Button {
-                        viewModel.prepareExport()
-                    } label: {
-                        if viewModel.isWorking {
-                            Label("Cifrando archivo…", systemImage: "lock.rotation")
-                        } else {
-                            Label("Crear archivo .ypgexp", systemImage: "square.and.arrow.up")
-                        }
-                    }
-                    .disabled(!viewModel.canExport || viewModel.isWorking)
-
-                    if viewModel.isWorking {
-                        ProgressView("Preparando exportación segura…")
-                    }
-
-                    if let exportErrorMessage = viewModel.exportErrorMessage {
-                        Text(exportErrorMessage)
-                            .font(.footnote)
-                            .foregroundStyle(.red)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-
-                    Text("Tus datos se preparan en un archivo seguro y protegido. La contraseña no se guarda y se requiere para la importación.")
-                        .font(.body)
-                        .foregroundStyle(.secondary)
-
-                    if viewModel.hasExportSummary {
-                        exportSummary()
-                    }
+            if viewModel.isUnlocked {
+                Section("Dirección") {
+                    directionButton(
+                        .androidToIOS,
+                        title: "Recibir desde Android",
+                        icon: "arrow.down.circle"
+                    )
+                    directionButton(
+                        .iosToAndroid,
+                        title: "Enviar a Android",
+                        icon: "arrow.up.circle"
+                    )
+                    directionButton(
+                        .bidirectional,
+                        title: "Sincronizar ambos dispositivos",
+                        icon: "arrow.triangle.2.circlepath"
+                    )
                 }
 
-                Section("Importar archivo de migración ") {
-                    SecureField("Contraseña del archivo", text: $viewModel.importPassword)
-
-                    Button {
-                        showImporter = true
-                    } label: {
-                        Label("Seleccionar archivo .ypgexp", systemImage: "square.and.arrow.down")
-                    }
-                    .disabled(!viewModel.canPreviewImport || viewModel.isWorking)
-
-                    if let preview = viewModel.preview {
-                        previewSummary(preview)
-
-                        if !preview.errors.isEmpty {
-                            validationList(title: "Errores", items: preview.errors)
-                        }
-
-                        if !preview.conflicts.isEmpty {
-                            conflictList(preview.conflicts)
-                        }
-
-                        Button {
-                            if viewModel.hasBlockingConflicts {
-                                viewModel.showOverwriteConfirmation = true
-                            } else {
-                                viewModel.importCurrentPreview()
+                if viewModel.direction != .androidToIOS {
+                    Section {
+                        Toggle("Transferir todo", isOn: $viewModel.transferEverything)
+                        if !viewModel.transferEverything {
+                            LazyVGrid(columns: contentColumns, spacing: 8) {
+                                ForEach(MigrationRecordType.allWirelessTypes, id: \.self) { type in
+                                    contentSelectionButton(for: type)
+                                }
                             }
-                        } label: {
-                            Label("Importar elementos válidos", systemImage: "checkmark.circle")
+                            .padding(.vertical, 4)
                         }
-                        .disabled(viewModel.isWorking || !preview.errors.isEmpty)
-                    }
-
-                    if viewModel.hasImportSummary {
-                        importSummary()
-                    }
-                }
-
-                if let message = viewModel.message {
-                    Section("Resumen") {
-                        Text(message)
-                            .foregroundStyle(.secondary)
-                            .fixedSize(horizontal: false, vertical: true)
+                    } header: {
+                        Text("Contenido")
+                    } footer: {
+                        if viewModel.direction == .bidirectional {
+                            Text("En la sincronización, Android incluirá esta selección en el enlace para aplicarla en ambos dispositivos.")
+                        }
                     }
                 }
+
+                Section {
+                    Button {
+                        viewModel.scan()
+                    } label: {
+                        Label("Escanear código de Android", systemImage: "qrcode.viewfinder")
+                    }
+                    .disabled(
+                        viewModel.phase.isWorking ||
+                        (viewModel.direction != .androidToIOS && !viewModel.transferEverything && viewModel.selectedTypes.isEmpty)
+                    )
+                } footer: {
+                    Text("Si no compartís una red Wi‑Fi, selecciona “Conexión directa” en Android.")
+                }
+
+                statusSection
             } else {
-                authenticationSection()
+                Section("Acceso protegido") {
+                    Button {
+                        viewModel.unlock()
+                    } label: {
+                        Label("Desbloquear transferencia", systemImage: "lock.open")
+                    }
+                }
+                statusSection
             }
         }
-        #if os(macOS)
-        .padding(20)
-        #endif
-        .navigationTitle("Migración iOS / Android")
-        #if !os(macOS)
+        .navigationTitle("Transferir datos")
         .navigationBarTitleDisplayMode(.inline)
-        #endif
-        .fileExporter(
-            isPresented: $viewModel.isExporterPresented,
-            document: viewModel.exportDocument ?? MigrationDataDocument(),
-            contentType: .ypgExport,
-            defaultFilename: "neville-ios-export.ypgexp"
-        ) { result in
-            switch result {
-            case .success:
-                viewModel.message = "Archivo exportado correctamente: \(viewModel.exportedTotal) elementos en \(ByteCountFormatter.string(fromByteCount: Int64(viewModel.lastExportBytes), countStyle: .file))."
-                viewModel.exportPassword = ""
-                viewModel.exportPasswordConfirmation = ""
-                viewModel.exportDocument = nil
-            case .failure(let error):
-                viewModel.message = "No se pudo guardar el archivo exportado: \(error.localizedDescription)"
-            }
-        }
-        .fileImporter(
-            isPresented: $showImporter,
-            allowedContentTypes: [.ypgExport, .data],
-            allowsMultipleSelection: false
-        ) { result in
-            switch result {
-            case .success(let urls):
-                if let url = urls.first {
-                    viewModel.buildPreview(from: url)
-                } else {
-                    viewModel.preview = nil
-                    viewModel.lastImportCountsByType = [:]
-                    viewModel.lastImportSummary = nil
-                    viewModel.message = "No se seleccionó ningún archivo para importar."
-                }
-            case .failure(let error):
-                viewModel.preview = nil
-                viewModel.lastImportCountsByType = [:]
-                viewModel.lastImportSummary = nil
-                viewModel.message = "No se pudo abrir el selector de archivos: \(error.localizedDescription)"
-            }
-        }
-        .confirmationDialog(
-            "Hay conflictos con datos locales. No se sobrescribe nada sin confirmación.",
-            isPresented: $viewModel.showOverwriteConfirmation,
-            titleVisibility: .visible
-        ) {
-            Button("Omitir conflictos e importar lo nuevo") {
-                viewModel.importCurrentPreview(policy: .skipExisting)
-            }
-            Button("Sobrescribir registros", role: .destructive) {
-                viewModel.importCurrentPreview(policy: .overwriteExisting)
-            }
-            Button("Cancelar", role: .cancel) { }
-        }
-    }
-
-    private func exportableContentInfo() -> some View {
-        Section("Datos que se pueden exportar") {
-            Text("La migración exporta, de manera segura y cifrada, los siguientes datos:")
-                .font(.body)
-                .foregroundStyle(.secondary)
-
-            VStack(alignment: .leading, spacing: 8) {
-                ForEach(exportableContentTypes, id: \.self) { item in
-                    Label(item, systemImage: "checkmark.circle")
-                        .font(.subheadline)
-                }
-            }
-        }
-    }
-
-    private func authenticationSection() -> some View {
-        Section("Acceso protegido") {
-            Text("Por seguridad, desbloquea la migración antes de proceder.")
-                .font(.body)
-                .foregroundStyle(.secondary)
-
-            Button {
-                authenticateWithDeviceOwner()
-            } label: {
-                Label("Desbloquear con biometría o código", systemImage: "key.viewfinder")
-            }
-
-            if KeychainHelper.shared.getPassword() != nil {
-                SecureField("Contraseña de la app", text: $authPassword)
-
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    authenticateWithStoredPassword()
+                    isInfoPresented = true
                 } label: {
-                    Label("Desbloquear con contraseña", systemImage: "lock.open")
+                    Image(systemName: "info.circle")
                 }
-                .disabled(authPassword.isEmpty)
-            } else {
-                Text("Si este dispositivo no admite autenticación biométrica o código compatible, crea una contraseña de la app para proteger el acceso.")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-
-                createPasswordAccess
-            }
-
-            if let authMessage {
-                Text(authMessage)
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
+                .accessibilityLabel("Información sobre la transferencia")
             }
         }
+        .sheet(isPresented: $isInfoPresented) {
+            WirelessSyncInfoView()
+        }
+        .sheet(isPresented: $viewModel.isScannerPresented) {
+            WirelessQRCodeScanner { payload in
+                viewModel.receiveScannedPayload(payload)
+            }
+            .ignoresSafeArea()
+        }
+        .sheet(item: $viewModel.completionSummary) { summary in
+            WirelessTransferSummaryView(summary: summary)
+        }
+    }
+
+    private func directionButton(
+        _ direction: WirelessSyncDirection,
+        title: LocalizedStringKey,
+        icon: String
+    ) -> some View {
+        let isSelected = viewModel.direction == direction
+        return Button {
+            viewModel.direction = direction
+        } label: {
+            HStack(spacing: 12) {
+                Image(systemName: icon)
+                    .foregroundStyle(isSelected ? Color.accentColor : .secondary)
+                Text(title)
+                    .foregroundStyle(.primary)
+                Spacer()
+                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                    .foregroundStyle(isSelected ? Color.accentColor : .secondary)
+            }
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
+    }
+
+    private func contentSelectionButton(for type: String) -> some View {
+        let isSelected = viewModel.selectedTypes.contains(type)
+        return Button {
+            if isSelected {
+                viewModel.selectedTypes.remove(type)
+            } else {
+                viewModel.selectedTypes.insert(type)
+            }
+        } label: {
+            HStack(spacing: 8) {
+                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                    .foregroundStyle(isSelected ? Color.accentColor : .secondary)
+                Text(MigrationRecordType.localizedName(type))
+                    .font(.subheadline)
+                    .lineLimit(2)
+                    .multilineTextAlignment(.leading)
+                Spacer(minLength: 0)
+            }
+            .frame(maxWidth: .infinity, minHeight: 46, alignment: .leading)
+            .padding(.horizontal, 10)
+            .background(isSelected ? Color.accentColor.opacity(0.12) : Color.secondary.opacity(0.08))
+            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .stroke(isSelected ? Color.accentColor.opacity(0.55) : Color.secondary.opacity(0.2))
+            }
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(MigrationRecordType.localizedName(type))
+        .accessibilityValue(isSelected ? "Seleccionado" : "No seleccionado")
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 
     @ViewBuilder
-    private var createPasswordAccess: some View {
-        #if os(macOS)
-        Button {
-            showWindow(for: CreatePasswordView(),
-                       environmentObjects: [],
-                       title: "Crear contraseña",
-                       size: AppCons.windows_size_content_small,
-                       isModal: true)
-        } label: {
-            Label("Crear contraseña de la app", systemImage: "lock.badge.plus")
-        }
-        #else
-        NavigationLink {
-            CreatePasswordView()
-        } label: {
-            Label("Crear contraseña de la app", systemImage: "lock.badge.plus")
-        }
-        #endif
-    }
-
-    private func authenticateWithDeviceOwner() {
-        let context = LAContext()
-        var error: NSError?
-        let reason = "Autentícate para acceder a la exportación e importación de datos."
-
-        guard context.canEvaluatePolicy(.deviceOwnerAuthentication, error: &error) else {
-            authMessage = "No hay biometría/código disponible. Usa la contraseña de la app si existe."
-            return
-        }
-
-        context.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: reason) { success, evalError in
-            DispatchQueue.main.async {
-                if success {
-                    isMigrationUnlocked = true
-                    authPassword = ""
-                    authMessage = nil
-                } else {
-                    authMessage = evalError?.localizedDescription ?? "No se pudo autenticar."
-                }
+    private var statusSection: some View {
+        switch viewModel.phase {
+        case .idle:
+            EmptyView()
+        case .joiningNetwork:
+            progressSection("Uniéndose a la conexión directa…")
+        case .preparing:
+            progressSection("Preparando y cifrando el paquete…")
+        case .discovering:
+            progressSection("Localizando Android…")
+        case .transferring:
+            progressSection("Transfiriendo datos…")
+        case .importing:
+            progressSection("Validando e importando…")
+        case .completed:
+            Section("Transferencia completada") {
+                Label("Consulta el resumen de la operación.", systemImage: "checkmark.circle.fill")
+                    .foregroundStyle(.green)
             }
-        }
-    }
-
-    private func authenticateWithStoredPassword() {
-        guard let storedPassword = KeychainHelper.shared.getPassword() else {
-            authMessage = "No hay una contraseña de la app configurada."
-            return
-        }
-
-        if authPassword == storedPassword {
-            isMigrationUnlocked = true
-            authPassword = ""
-            authMessage = nil
-        } else {
-            authMessage = "Contraseña incorrecta."
-        }
-    }
-
-    private func exportSummary() -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Resumen exportado")
-                .font(.headline)
-
-            ForEach(viewModel.lastExportCountsByType.keys.sorted(), id: \.self) { key in
-                compactSummaryLine(displayName(for: key), value: viewModel.lastExportCountsByType[key] ?? 0)
-            }
-
-            if viewModel.lastExportBytes > 0 {
-                compactSummaryLine(
-                    "Tamaño",
-                    detail: ByteCountFormatter.string(fromByteCount: Int64(viewModel.lastExportBytes), countStyle: .file)
-                )
-            }
-
-            if let exportId = viewModel.lastExportId {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("ID")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                    Text(exportId)
-                        .font(.caption.monospaced())
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-                        .truncationMode(.middle)
-                        .textSelection(.enabled)
-                }
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
-
-    private func previewSummary(_ preview: ImportPreview) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Vista previa")
-                .font(.headline)
-            ForEach(preview.countsByType.keys.sorted(), id: \.self) { key in
-                compactSummaryLine(displayName(for: key), value: preview.countsByType[key] ?? 0)
-            }
-        }
-    }
-
-    private func importSummary() -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Resumen importado")
-                .font(.headline)
-
-            ForEach(viewModel.lastImportCountsByType.keys.sorted(), id: \.self) { key in
-                compactSummaryLine(displayName(for: key), value: viewModel.lastImportCountsByType[key] ?? 0)
-            }
-
-            if let summary = viewModel.lastImportSummary {
-                Divider()
-
-                summaryRow("Procesados", value: viewModel.importedTotal)
-                summaryRow("Insertados", value: summary.inserted)
-                summaryRow("Actualizados", value: summary.updated)
-                summaryRow("Omitidos", value: summary.skipped)
-                summaryRow("Conflictos", value: summary.conflicts)
-                summaryRow("Errores", value: summary.errors)
-
-                Text("Política: \(viewModel.lastImportPolicy == .overwriteExisting ? "sobrescribir mismo ID" : "no sobrescribir")")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-        }
-    }
-
-    private func summaryRow(_ title: String, value: Int) -> some View {
-        compactSummaryLine(title, value: value)
-    }
-
-    private func compactSummaryLine(_ title: String, value: Int) -> some View {
-        compactSummaryLine(title, detail: "\(value)")
-    }
-
-    private func compactSummaryLine(_ title: String, detail: String) -> some View {
-        Text("\(title): \(detail)")
-            .foregroundStyle(.secondary)
-            .lineLimit(2)
-            .fixedSize(horizontal: false, vertical: true)
-            .frame(maxWidth: .infinity, alignment: .leading)
-    }
-
-    private func validationList(title: String, items: [String]) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(title)
-                .font(.headline)
-            ForEach(items, id: \.self) { item in
-                Text(item)
-                    .font(.footnote)
+        case .failed(let message):
+            Section("No se pudo completar") {
+                Label(message, systemImage: "exclamationmark.triangle.fill")
                     .foregroundStyle(.red)
             }
         }
     }
 
-    private func conflictList(_ conflicts: [ImportConflict]) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Conflictos")
-                .font(.headline)
+    private func progressSection(_ title: String) -> some View {
+        Section {
+            HStack(spacing: 12) {
+                ProgressView()
+                Text(title)
+            }
+        }
+    }
+}
 
-            ForEach(conflictSummaries(from: conflicts), id: \.id) { summary in
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(summary.title)
-                        .font(.subheadline)
-                    Text(summary.detail)
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
+private struct WirelessTransferSummaryView: View {
+    @Environment(\.dismiss) private var dismiss
+    let summary: WirelessTransferSummary
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: 20) {
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.system(size: 52))
+                        .foregroundStyle(.green)
+                    VStack(spacing: 6) {
+                        Text(summary.direction == .bidirectional
+                             ? LocalizedStringKey("Sincronización completada")
+                             : LocalizedStringKey("Transferencia completada"))
+                            .font(.title2.bold())
+                        Text(summary.direction == .bidirectional
+                             ? LocalizedStringKey("Ambos dispositivos han aplicado las versiones más recientes.")
+                             : LocalizedStringKey("La operación terminó correctamente."))
+                            .multilineTextAlignment(.center)
+                            .foregroundStyle(.secondary)
+                    }
+
+                    VStack(spacing: 0) {
+                        summaryRow("Elementos enviados", value: summary.sent, icon: "arrow.up.circle")
+                        Divider().padding(.leading, 44)
+                        summaryRow("Elementos recibidos", value: summary.received, icon: "arrow.down.circle")
+                        Divider().padding(.leading, 44)
+                        summaryRow("Añadidos", value: summary.totalInserted, icon: "plus.circle")
+                        Divider().padding(.leading, 44)
+                        summaryRow("Actualizados", value: summary.totalUpdated, icon: "arrow.clockwise.circle")
+                        Divider().padding(.leading, 44)
+                        summaryRow("Sin cambios", value: summary.totalSkipped, icon: "equal.circle")
+                        if summary.totalConflicts > 0 {
+                            Divider().padding(.leading, 44)
+                            summaryRow("Conflictos", value: summary.totalConflicts, icon: "exclamationmark.triangle")
+                        }
+                        if summary.totalErrors > 0 {
+                            Divider().padding(.leading, 44)
+                            summaryRow("Errores", value: summary.totalErrors, icon: "xmark.octagon")
+                        }
+                    }
+                    .background(Color.secondary.opacity(0.08))
+                    .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                }
+                .padding()
+            }
+            .navigationTitle("Resumen")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Cerrar") { dismiss() }
+                }
+            }
+        }
+        .presentationDetents([.medium, .large])
+    }
+
+    private func summaryRow(_ title: LocalizedStringKey, value: Int, icon: String) -> some View {
+        HStack(spacing: 12) {
+            Image(systemName: icon)
+                .frame(width: 24)
+                .foregroundStyle(Color.accentColor)
+            Text(title)
+            Spacer()
+            Text(value.formatted())
+                .fontWeight(.semibold)
+                .monospacedDigit()
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 12)
+    }
+}
+
+private struct WirelessSyncInfoView: View {
+    @Environment(\.dismiss) private var dismiss
+
+    private let columns = [
+        GridItem(.flexible(), spacing: 8),
+        GridItem(.flexible(), spacing: 8)
+    ]
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 24) {
+                    infoSection(
+                        icon: "iphone.and.arrow.forward",
+                        title: L10n.exact("Una forma sencilla de mover tus datos"),
+                        text: L10n.exact("Transfiere tu información directamente entre tu iPhone y un dispositivo Android, o sincroniza ambos automáticamente. Puedes incluir todo el contenido compatible o elegir solo las categorías que necesitas.")
+                    )
+                    infoSection(
+                        icon: "lock.shield",
+                        title: L10n.exact("Una operación privada y segura"),
+                        text: L10n.exact("Toda la información viaja fuertemente encriptada y únicamente entre los dos dispositivos enlazados. Tus datos no se publican ni se guardan en servicios externos.")
+                    )
+
+                    VStack(alignment: .leading, spacing: 12) {
+                        Label("Contenido que puedes transferir", systemImage: "square.grid.2x2")
+                            .font(.headline)
+                        LazyVGrid(columns: columns, alignment: .leading, spacing: 8) {
+                            ForEach(MigrationRecordType.allWirelessTypes, id: \.self) { type in
+                                Text(MigrationRecordType.localizedName(type))
+                                    .font(.subheadline)
+                                    .frame(maxWidth: .infinity, minHeight: 42, alignment: .leading)
+                                    .padding(.horizontal, 10)
+                                    .background(Color.secondary.opacity(0.08))
+                                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                            }
+                        }
+                    }
+                }
+                .padding()
+            }
+            .navigationTitle("Acerca de la transferencia")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Cerrar") { dismiss() }
+                }
+            }
+        }
+        .presentationDetents([.medium, .large])
+    }
+
+    private func infoSection(icon: String, title: String, text: String) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Label(title, systemImage: icon)
+                .font(.headline)
+            Text(text)
+                .foregroundStyle(.secondary)
+        }
+    }
+}
+
+private struct WirelessQRCodeScanner: UIViewControllerRepresentable {
+    let onCode: (String) -> Void
+
+    func makeCoordinator() -> Coordinator { Coordinator(onCode: onCode) }
+
+    func makeUIViewController(context: Context) -> DataScannerViewController {
+        let controller = DataScannerViewController(
+            recognizedDataTypes: [.barcode(symbologies: [.qr])],
+            qualityLevel: .balanced,
+            recognizesMultipleItems: false,
+            isHighFrameRateTrackingEnabled: false,
+            isPinchToZoomEnabled: true,
+            isGuidanceEnabled: true,
+            isHighlightingEnabled: true
+        )
+        controller.delegate = context.coordinator
+        try? controller.startScanning()
+        return controller
+    }
+
+    func updateUIViewController(_ uiViewController: DataScannerViewController, context: Context) { }
+
+    final class Coordinator: NSObject, DataScannerViewControllerDelegate {
+        private let onCode: (String) -> Void
+        private var delivered = false
+
+        init(onCode: @escaping (String) -> Void) {
+            self.onCode = onCode
+        }
+
+        func dataScanner(
+            _ dataScanner: DataScannerViewController,
+            didAdd addedItems: [RecognizedItem],
+            allItems: [RecognizedItem]
+        ) {
+            guard !delivered else { return }
+            for item in addedItems {
+                if case .barcode(let barcode) = item,
+                   let payload = barcode.payloadStringValue {
+                    delivered = true
+                    dataScanner.stopScanning()
+                    onCode(payload)
+                    return
                 }
             }
         }
     }
+}
 
-    private func conflictSummaries(from conflicts: [ImportConflict]) -> [ConflictSummary] {
-        let grouped = Dictionary(grouping: conflicts) { conflict in
-            ConflictSummaryKey(type: conflict.type, kind: conflictKind(for: conflict))
-        }
+#else
 
-        return grouped
-            .map { key, values in
-                ConflictSummary(
-                    id: "\(key.type)-\(key.kind.rawValue)",
-                    title: conflictTitle(type: key.type, kind: key.kind, count: values.count),
-                    detail: conflictDetail(kind: key.kind)
-                )
-            }
-            .sorted { left, right in
-                left.title.localizedCaseInsensitiveCompare(right.title) == .orderedAscending
-            }
-    }
-
-    private func conflictKind(for conflict: ImportConflict) -> ConflictKind {
-        conflict.reason.localizedCaseInsensitiveContains("idéntico") ? .existing : .conflict
-    }
-
-    private func conflictTitle(type: String, kind: ConflictKind, count: Int) -> String {
-        let name = displayName(for: type)
-        switch kind {
-        case .existing:
-            return "\(name) existentes: \(count)"
-        case .conflict:
-            return "\(name) con conflicto: \(count)"
-        }
-    }
-
-    private func conflictDetail(kind: ConflictKind) -> String {
-        switch kind {
-        case .existing:
-            return "Ya existen en iOS y se omitirán durante la importación."
-        case .conflict:
-            return "No se sobrescribirán sin confirmación manual."
-        }
-    }
-
-    private func displayName(for type: String) -> String {
-        switch type {
-        case MigrationRecordType.note: return "Notas"
-        case MigrationRecordType.diary: return "Diario"
-        case MigrationRecordType.agenda: return "Agenda"
-        case MigrationRecordType.goal: return "Metas activas"
-        case MigrationRecordType.archivedGoal: return "Metas archivadas"
-        case MigrationRecordType.personalPhrase: return "Frases personales"
-        case MigrationRecordType.personalReflection: return "Reflexiones personales"
-        case MigrationRecordType.dayRitualArchive: return "Ritual del día"
-        case MigrationRecordType.calmPersonalPhrase: return "Frases de Calma"
-            default: return type
-        }
-    }
-
-    private var exportableContentTypes: [String] {
-        [
-            "Notas",
-            "Entradas de diario",
-            "Entradas de agenda sin recordatorios",
-            "Metas activas, completadas y archivadas",
-            "Frases personales",
-            "Reflexiones personales",
-            "Ritual del día archivado",
-            "Frases personales de Espacio Calma"
-        ]
+struct MigrationIOSAndroidView: View {
+    var body: some View {
+        ContentUnavailableView(
+            "Transferencia móvil",
+            systemImage: "iphone.and.arrow.forward",
+            description: Text("El enlace inalámbrico entre iOS y Android está disponible desde el iPhone.")
+        )
+        .navigationTitle("Transferir datos")
     }
 }
 
-private enum ConflictKind: String {
-    case existing
-    case conflict
-}
-
-private struct ConflictSummaryKey: Hashable {
-    let type: String
-    let kind: ConflictKind
-}
-
-private struct ConflictSummary {
-    let id: String
-    let title: String
-    let detail: String
-}
+#endif

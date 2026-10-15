@@ -102,6 +102,7 @@
         <attribute name="fileSize" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="utiString" optional="YES" attributeType="String"/>
+        <attribute name="updatedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <relationship name="diario" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Diario" inverseName="attachments" inverseEntity="Diario"/>
     </entity>
     <entity name="Frases" representedClassName="Frases" syncable="YES" codeGenerationType="class">

@@ -13,13 +13,26 @@ final class MyAppMigrationService {
         self.bridge = bridge
     }
 
-    func export(password: String) throws -> ExportResult {
-        let records = try bridge.exportRecords()
+    func export(password: String) async throws -> ExportResult {
+        let records = try await bridge.exportRecords()
         return try export(records: records, password: password)
     }
 
-    func exportAsync(password: String) async throws -> ExportResult {
-        let records = try bridge.exportRecords()
+    func exportAsync(
+        password: String,
+        includedTypes: Set<String>? = nil,
+        allowEmpty: Bool = false
+    ) async throws -> ExportResult {
+        let allRecords = try await bridge.exportRecords()
+        let records = includedTypes.flatMap { types in
+            types.isEmpty ? nil : allRecords.filter {
+                types.contains($0.type) ||
+                ($0.type == MigrationRecordType.diaryAttachment && types.contains(MigrationRecordType.diary))
+            }
+        } ?? allRecords
+        guard allowEmpty || !records.isEmpty else {
+            throw MigrationError.validation("No hay elementos para transferir")
+        }
         try validateExportPassword(password)
         let counts = Dictionary(grouping: records, by: \.type).mapValues(\.count)
         let sortedCounts = Dictionary(uniqueKeysWithValues: counts.sorted { $0.key < $1.key })
@@ -52,7 +65,7 @@ final class MyAppMigrationService {
         return ExportResult(exportId: exportId, countsByType: sortedCounts, bytes: encrypted)
     }
 
-    func preview(fileBytes: Data, password: String) throws -> ImportPreview {
+    func preview(fileBytes: Data, password: String) async throws -> ImportPreview {
         let plainPackage = try crypto.decrypt(fileBytes: fileBytes, password: password)
         try validateManifest(plainPackage.manifest)
 
@@ -71,7 +84,7 @@ final class MyAppMigrationService {
         let counts = Dictionary(grouping: records, by: \.type).mapValues(\.count)
         let sortedCounts = Dictionary(uniqueKeysWithValues: counts.sorted { $0.key < $1.key })
         try validateManifestCounts(manifest: plainPackage.manifest, countsByType: sortedCounts)
-        let conflicts = try bridge.findConflicts(records: records)
+        let conflicts = try await bridge.findConflicts(records: records)
         return ImportPreview(
             manifest: plainPackage.manifest,
             records: records,
@@ -81,11 +94,11 @@ final class MyAppMigrationService {
         )
     }
 
-    func importPreview(_ preview: ImportPreview, policy: ImportPolicy = .skipExisting) throws -> MigrationSummary {
+    func importPreview(_ preview: ImportPreview, policy: ImportPolicy = .skipExisting) async throws -> MigrationSummary {
         guard preview.errors.isEmpty else {
             throw MigrationError.validation("Hay errores de validación pendientes")
         }
-        return try bridge.importRecords(preview.records, policy: policy)
+        return try await bridge.importRecords(preview.records, policy: policy)
     }
 
     private func buildManifest(

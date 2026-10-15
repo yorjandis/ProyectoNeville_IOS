@@ -8,21 +8,14 @@
 	<true/>
 	<key>BAUsesAppleHosting</key>
 	<true/>
-	<key>CFBundleDocumentTypes</key>
+	<key>NSBonjourServices</key>
 	<array>
-		<dict>
-			<key>CFBundleTypeName</key>
-			<string>Neville Export</string>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>LSHandlerRank</key>
-			<string>Owner</string>
-			<key>LSItemContentTypes</key>
-			<array>
-				<string>com.ypg.neville.ypgexp</string>
-			</array>
-		</dict>
+		<string>_nevillesync._tcp</string>
 	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>La cámara se utiliza para escanear el código QR del otro dispositivo y enlazar la transferencia.</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Neville utiliza la red local para transferir tus datos cifrados directamente entre tus dispositivos.</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -39,26 +32,6 @@
 	<array>
 		<string>remote-notification</string>
 		<string>audio</string>
-	</array>
-	<key>UTExportedTypeDeclarations</key>
-	<array>
-		<dict>
-			<key>UTTypeConformsTo</key>
-			<array>
-				<string>public.data</string>
-			</array>
-			<key>UTTypeDescription</key>
-			<string>Neville export file</string>
-			<key>UTTypeIdentifier</key>
-			<string>com.ypg.neville.ypgexp</string>
-			<key>UTTypeTagSpecification</key>
-			<dict>
-				<key>public.filename-extension</key>
-				<array>
-					<string>ypgexp</string>
-				</array>
-			</dict>
-		</dict>
 	</array>
 </dict>
 </plist>

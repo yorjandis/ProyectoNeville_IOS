@@ -146,16 +146,8 @@ struct DiarioListView: View {
     @State private var batchChapterDraft = ""
     @State private var pendingBatchAction: DiarioBatchAction?
     @State private var showBatchActionConfirmation = false
-    @State private var showMigrationPasswordSheet = false
-    @State private var showMigrationExporter = false
     @State private var showRitualReviewUpdate = false
     @State private var ritualReviewNeedsUpdate = false
-    @State private var migrationPassword = ""
-    @State private var migrationPasswordConfirmation = ""
-    @State private var migrationDocument: MigrationDataDocument?
-    @State private var migrationExportFileName = "neville-diario.ypgexp"
-    @State private var migrationExportCount = 0
-    @State private var showDiarySQLiteBackup = false
     @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
     @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) private var yorjPremium: Bool = false
     @AppStorage("ritual_private_reflections_protected") private var privateRitualReflections = false
@@ -257,14 +249,6 @@ struct DiarioListView: View {
             }
     }
 
-    private var batchMigrationCountLabel: String {
-        L10n.format(
-            "diary.selected_entries.count",
-            fallback: "{0} entrada(s)",
-            String(batchSelectedDiarioIDs.count)
-        )
-    }
-
     @ToolbarContentBuilder
     private var ritualUpdateToolbar: some ToolbarContent {
         if ritualReviewNeedsUpdate {
@@ -292,7 +276,6 @@ struct DiarioListView: View {
     private enum DiarioBatchAction: Identifiable {
         case updateEmotion(Emociones)
         case updateChapter(String)
-        case exportMigration
 
         var id: String {
             switch self {
@@ -300,8 +283,6 @@ struct DiarioListView: View {
                 return "updateEmotion-\(emotion.rawValue)"
             case .updateChapter(let chapter):
                 return "updateChapter-\(chapter)"
-            case .exportMigration:
-                return "exportMigration"
             }
         }
 
@@ -311,8 +292,6 @@ struct DiarioListView: View {
                 return L10n.exact("Actualizar emoción")
             case .updateChapter:
                 return L10n.exact("Actualizar capítulo")
-            case .exportMigration:
-                return L10n.exact("Continuar")
             }
         }
 
@@ -337,12 +316,6 @@ struct DiarioListView: View {
                     count == 1 ? "diary.batch.assign_chapter.one" : "diary.batch.assign_chapter.other",
                     fallback: count == 1 ? "Se asignará el capítulo «{0}» a {1} entrada seleccionada" : "Se asignará el capítulo «{0}» a {1} entradas seleccionadas",
                     target, String(count)
-                )
-            case .exportMigration:
-                return L10n.format(
-                    count == 1 ? "diary.batch.export.one" : "diary.batch.export.other",
-                    fallback: count == 1 ? "Se preparará un archivo de migración con {0} entrada seleccionada" : "Se preparará un archivo de migración con {0} entradas seleccionadas",
-                    String(count)
                 )
             }
         }
@@ -424,15 +397,6 @@ struct DiarioListView: View {
         )
 
         content = AnyView(
-            content.sheet(isPresented: $showDiarySQLiteBackup) {
-                DiarySQLiteBackupView {
-                    modelDiario.getAllItem()
-                    calendarRefreshTrigger += 1
-                }
-            }
-        )
-
-        content = AnyView(
             content.sheet(isPresented: $showRitualReviewUpdate) {
                 RitualEveningReviewEntryView()
             }
@@ -477,21 +441,6 @@ struct DiarioListView: View {
                 contentType: .pdf,
                 defaultFilename: exportedPDFFileName
             ) { _ in }
-        )
-
-        content = AnyView(
-            content.fileExporter(
-                isPresented: $showMigrationExporter,
-                document: migrationDocument ?? MigrationDataDocument(),
-                contentType: .ypgExport,
-                defaultFilename: migrationExportFileName
-            ) { handleMigrationExportResult($0) }
-        )
-
-        content = AnyView(
-            content.sheet(isPresented: $showMigrationPasswordSheet) {
-                selectedEntriesMigrationPasswordSheet
-            }
         )
 
         content = AnyView(
@@ -611,13 +560,6 @@ struct DiarioListView: View {
             .buttonStyle(.bordered)
         }
         .padding()
-    }
-
-    private var selectedEntriesMigrationPasswordSheet: some View {
-        migrationPasswordSheet(
-            title: "Exportar entradas seleccionadas",
-            countLabel: batchMigrationCountLabel
-        )
     }
 
     private var manualDiarioExportSheet: some View {
@@ -765,14 +707,6 @@ struct DiarioListView: View {
             Spacer()
 
             Menu {
-                Button {
-                    showDiarySQLiteBackup = true
-                } label: {
-                    Label("Copia completa (.sqlite)", systemImage: "externaldrive.badge.timemachine")
-                }
-
-                Divider()
-
                 Button {
                     showDiarioStats = true
                 } label: {
@@ -2178,17 +2112,6 @@ struct DiarioListView: View {
                 .disabled(batchSelectedDiarioIDs.isEmpty)
                 .help("Cambiar capítulo")
 
-                Button {
-                    requestBatchActionConfirmation(.exportMigration)
-                } label: {
-                    Label("Exportar migración", systemImage: "square.and.arrow.up")
-                        .labelStyle(.iconOnly)
-                }
-                .buttonStyle(.bordered)
-                .tint(.black)
-                .disabled(batchSelectedDiarioIDs.isEmpty)
-                .help("Exportar seleccionadas a archivo de migración")
-
                 Button(role: .destructive) {
                     showBatchDeleteConfirmation = true
                 } label: {
@@ -2205,37 +2128,6 @@ struct DiarioListView: View {
         .background(.white.opacity(0.82))
         .clipShape(RoundedRectangle(cornerRadius: 10))
         .shadow(radius: 3)
-    }
-
-    private func migrationPasswordSheet(title: String, countLabel: String) -> some View {
-        NavigationStack {
-            Form {
-                Section(title) {
-                    Text("Se creará un archivo seguro con \(countLabel). La contraseña solo se usa para proteger este archivo y no se guarda.")
-                        .font(.body)
-                        .foregroundStyle(.secondary)
-                    SecureField("Contraseña del archivo", text: $migrationPassword)
-                    SecureField("Repetir contraseña", text: $migrationPasswordConfirmation)
-                }
-            }
-            .navigationTitle("Archivo .ypgexp")
-            #if os(iOS)
-            .navigationBarTitleDisplayMode(.inline)
-            #endif
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancelar") {
-                        showMigrationPasswordSheet = false
-                    }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Exportar") {
-                        exportSelectedDiarioToMigration()
-                    }
-                    .disabled(migrationPassword.isEmpty || migrationPassword != migrationPasswordConfirmation)
-                }
-            }
-        }
     }
 
     @ViewBuilder
@@ -2394,21 +2286,6 @@ struct DiarioListView: View {
             updateSelectedEntriesEmotion(emotion)
         case .updateChapter(let chapter):
             updateSelectedEntriesChapter(chapter)
-        case .exportMigration:
-            authenticateBeforeMigrationExport()
-        }
-    }
-
-    private func authenticateBeforeMigrationExport() {
-        UtilFuncs.authenticateDeviceOwner(reason: L10n.exact("Autentícate para exportar las entradas seleccionadas.")) { success, errorMessage in
-            if success {
-                migrationPassword = ""
-                migrationPasswordConfirmation = ""
-                showMigrationPasswordSheet = true
-            } else {
-                alertMessage = L10n.exact(errorMessage ?? "No se pudo autenticar el acceso a la exportación.")
-                showAlert = true
-            }
         }
     }
 
@@ -2432,51 +2309,6 @@ struct DiarioListView: View {
             finishBatchOperation()
             refreshAfterEntryUpdate(nil)
         }
-    }
-
-    private func exportSelectedDiarioToMigration() {
-        guard migrationPassword == migrationPasswordConfirmation, !migrationPassword.isEmpty else {
-            alertMessage = L10n.exact("La contraseña de exportación está vacía o no coincide.")
-            showAlert = true
-            return
-        }
-
-        let entries = privateRitualReflections
-            ? selectedDiarioEntries.filter { chapterValue(for: $0) != "Cierre consciente" }
-            : selectedDiarioEntries
-        guard !entries.isEmpty else {
-            alertMessage = L10n.exact("Selecciona al menos una entrada de diario para exportar.")
-            showAlert = true
-            return
-        }
-
-        do {
-            let bridge = CoreDataCanonicalMigrationBridge()
-            let records = try bridge.exportRecords(diaryEntries: entries)
-            let result = try MyAppMigrationService().export(records: records, password: migrationPassword)
-            migrationDocument = MigrationDataDocument(data: result.bytes)
-            migrationExportCount = entries.count
-            migrationExportFileName = "neville-diario-\(entries.count).ypgexp"
-            showMigrationPasswordSheet = false
-            showMigrationExporter = true
-        } catch {
-            alertMessage = L10n.format("migration.prepare.error", fallback: "No se pudo preparar el archivo de migración: {0}", error.localizedDescription)
-            showAlert = true
-        }
-    }
-
-    private func handleMigrationExportResult(_ result: Result<URL, Error>) {
-        switch result {
-        case .success:
-            alertMessage = L10n.format("diary.migration.success", fallback: "Archivo de migración exportado correctamente: {0} entrada(s) de diario.", String(migrationExportCount))
-            finishBatchOperation()
-        case .failure(let error):
-            alertMessage = L10n.format("migration.save.error", fallback: "No se pudo guardar el archivo de migración: {0}", error.localizedDescription)
-        }
-        migrationPassword = ""
-        migrationPasswordConfirmation = ""
-        migrationDocument = nil
-        showAlert = true
     }
 
     private func renameChapter(_ oldChapter: String, to newChapter: String) {

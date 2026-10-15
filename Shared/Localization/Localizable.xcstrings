@@ -5442,6 +5442,28 @@
         }
       }
     },
+    "Acerca de la transferencia" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "About Data Transfer"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acerca de la transferencia"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关于数据传输"
+          }
+        }
+      }
+    },
     "Aciertos:%d" : {
       "localizations" : {
         "en" : {
@@ -5759,6 +5781,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "刚刚更新"
+          }
+        }
+      }
+    },
+    "Actualizados" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updated"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualizados"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已更新"
           }
         }
       }
@@ -6821,6 +6866,29 @@
         }
       }
     },
+    "Ambos dispositivos han aplicado las versiones más recientes." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Both devices now use the most recent versions."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ambos dispositivos han aplicado las versiones más recientes."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "两台设备现已采用最新版本的数据。"
+          }
+        }
+      }
+    },
     "Añade al menos un valor numérico." : {
       "localizations" : {
         "en" : {
@@ -6849,6 +6917,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "添加背景信息、动机或说明…"
+          }
+        }
+      }
+    },
+    "Añadidos" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Added"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añadidos"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新增"
           }
         }
       }
@@ -7211,6 +7302,7 @@
       }
     },
     "Analizar copia" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -7329,6 +7421,7 @@
       }
     },
     "Anexos ya existentes" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -7642,6 +7735,7 @@
       }
     },
     "Aplicar a todos" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -8056,6 +8150,7 @@
       }
     },
     "Archivo .ypgexp" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -11190,6 +11285,7 @@
       }
     },
     "Cifrando archivo…" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -13868,6 +13964,7 @@
       }
     },
     "Confirmar restauración" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -14070,6 +14167,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "请查询当地急救电话，或使用国际求助目录查找你所在国家或地区经核实的帮助资源。"
+          }
+        }
+      }
+    },
+    "Consulta el resumen de la operación." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Review the operation summary."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consulta el resumen de la operación."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查看本次操作的摘要。"
           }
         }
       }
@@ -14434,6 +14554,28 @@
         }
       }
     },
+    "Contenido que puedes transferir" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Content You Can Transfer"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contenido que puedes transferir"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "可传输的内容"
+          }
+        }
+      }
+    },
     "Contenido:" : {
       "localizations" : {
         "en" : {
@@ -14650,6 +14792,7 @@
       }
     },
     "Contraseña de la app" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -14666,6 +14809,7 @@
       }
     },
     "Contraseña de la copia" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -14682,6 +14826,7 @@
       }
     },
     "Contraseña del archivo" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -14704,6 +14849,7 @@
       }
     },
     "Contraseña del archivo (mínimo 15 caracteres)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -14989,6 +15135,7 @@
       }
     },
     "Copia completa (.sqlite)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -15005,6 +15152,7 @@
       }
     },
     "Copia completa del Diario" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -15111,6 +15259,7 @@
       }
     },
     "Crea o lee archivos .ypgexp cifrados y compatibles con Android." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -15278,6 +15427,7 @@
       }
     },
     "Creando copia cifrada…" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -15348,6 +15498,7 @@
       }
     },
     "Crear archivo .ypgexp" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -15364,6 +15515,7 @@
       }
     },
     "Crear archivo SQLite" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -15444,6 +15596,7 @@
       }
     },
     "Crear contraseña de la app" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -16059,6 +16212,7 @@
       }
     },
     "Datos que se pueden exportar" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -16593,6 +16747,7 @@
       }
     },
     "Desbloquear con biometría o código" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -16609,6 +16764,7 @@
       }
     },
     "Desbloquear con contraseña" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -16620,6 +16776,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "使用密码解锁"
+          }
+        }
+      }
+    },
+    "Desbloquear transferencia" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unlock transfer"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "解锁转账"
           }
         }
       }
@@ -17771,6 +17943,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "十年"
+          }
+        }
+      }
+    },
+    "Dirección" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Direction"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dirección"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "传输方向"
           }
         }
       }
@@ -19386,6 +19580,52 @@
         }
       }
     },
+    "Elementos enviados" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Items Sent"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elementos enviados"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已发送项目"
+          }
+        }
+      }
+    },
+    "Elementos recibidos" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Items Received"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elementos recibidos"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已接收项目"
+          }
+        }
+      }
+    },
     "Elige el Tema:" : {
       "localizations" : {
         "en" : {
@@ -20369,6 +20609,29 @@
         }
       }
     },
+    "En la sincronización, Android incluirá esta selección en el enlace para aplicarla en ambos dispositivos." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "For syncing, Android will include this selection in the link so it is applied on both devices."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En la sincronización, Android incluirá esta selección en el enlace para aplicarla en ambos dispositivos."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "同步时，Android 会将此选择包含在连接中，以便在两台设备上应用。"
+          }
+        }
+      }
+    },
     "En una fecha dada:" : {
       "localizations" : {
         "en" : {
@@ -20766,6 +21029,7 @@
       }
     },
     "Entradas ya existentes" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -20831,6 +21095,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "发送"
+          }
+        }
+      }
+    },
+    "Enviar a Android" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Send to Android"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviar a Android"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "发送到 Android"
           }
         }
       }
@@ -20995,6 +21281,29 @@
         }
       }
     },
+    "Errores" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Errors"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Errores"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "错误"
+          }
+        }
+      }
+    },
     "Es una orientación de bienestar, no un diagnóstico médico. Una lectura alta también puede deberse a cafeína, fiebre, falta de sueño, medicación u otras causas. Si tienes síntomas preocupantes, consulta a un profesional sanitario." : {
       "localizations" : {
         "en" : {
@@ -21035,6 +21344,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "扫描"
+          }
+        }
+      }
+    },
+    "Escanear código de Android" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scan Android code"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "扫描安卓二维码"
           }
         }
       }
@@ -22684,6 +23009,7 @@
       }
     },
     "Exportar a Android / Importar desde Android" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -22898,6 +23224,7 @@
       }
     },
     "Exportar archivo de migración" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -22942,6 +23269,7 @@
       }
     },
     "Exportar migración" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -22986,6 +23314,7 @@
       }
     },
     "Exportar seleccionadas a archivo de migración" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -24039,6 +24368,29 @@
         }
       }
     },
+    "Frases de Calma" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calm Space Phrases"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Frases de Calma"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "静心空间语句"
+          }
+        }
+      }
+    },
     "Frases de coherencia" : {
       "localizations" : {
         "en" : {
@@ -24101,6 +24453,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "呼吸过程中的句子"
+          }
+        }
+      }
+    },
+    "Frases personales" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Personal Phrases"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Frases personales"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "个人语句"
           }
         }
       }
@@ -25683,6 +26058,7 @@
       }
     },
     "Hay conflictos con datos locales. No se sobrescribe nada sin confirmación." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -27131,6 +27507,7 @@
       }
     },
     "ID" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -27629,6 +28006,7 @@
       }
     },
     "Importar archivo de migración " : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -27645,6 +28023,7 @@
       }
     },
     "Importar elementos válidos" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -28039,6 +28418,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "关于此工具"
+          }
+        }
+      }
+    },
+    "Información sobre la transferencia" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Information About Transfers"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Información sobre la transferencia"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "传输说明"
           }
         }
       }
@@ -28930,6 +29331,7 @@
       }
     },
     "La contraseña no se guarda ni puede recuperarse. Será necesaria para restaurar esta copia." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -28985,6 +29387,7 @@
       }
     },
     "La copia queda protegida con tu contraseña. Nadie podrá leer las entradas ni los anexos sin ella." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -29608,6 +30011,7 @@
       }
     },
     "La migración exporta, de manera segura y cifrada, los siguientes datos:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -29686,6 +30090,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "当你一次次在同样的诱因面前做出不同回应时，新的身份认同便逐渐建立。"
+          }
+        }
+      }
+    },
+    "La operación terminó correctamente." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The operation completed successfully."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La operación terminó correctamente."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "操作已成功完成。"
           }
         }
       }
@@ -29829,6 +30256,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "订阅会每年自动续订，直到你取消为止。"
+          }
+        }
+      }
+    },
+    "La transferencia es local, cifrada y no utiliza Internet. Android mostrará el código de enlace y este dispositivo lo escaneará." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The transfer is local, encrypted, and does not use the internet. Android will display the link code, and this device will scan it."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "传输过程在本地进行，已加密，无需使用互联网。安卓系统会显示链接代码，此设备会扫描该代码。"
           }
         }
       }
@@ -30287,6 +30730,7 @@
       }
     },
     "Las contraseñas coinciden" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -30303,6 +30747,7 @@
       }
     },
     "Las contraseñas no coinciden" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -31055,6 +31500,7 @@
       }
     },
     "Longitud correcta" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -32139,6 +32585,52 @@
         }
       }
     },
+    "Metas activas" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Active Goals"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Metas activas"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "进行中的目标"
+          }
+        }
+      }
+    },
+    "Metas archivadas" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Archived Goals"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Metas archivadas"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已归档目标"
+          }
+        }
+      }
+    },
     "Metas Archivadas" : {
       "localizations" : {
         "en" : {
@@ -32367,6 +32859,7 @@
       }
     },
     "Migración iOS / Android" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -32389,6 +32882,7 @@
       }
     },
     "Migrar" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -32411,6 +32905,7 @@
       }
     },
     "Mínimo %lld caracteres (%lld/%lld)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -33316,7 +33811,20 @@
       }
     },
     "Muestra y selecciona la tarjeta correspondiente en el listado" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Display and select the corresponding card from the list."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "从列表中显示并选择相应的卡片。"
+          }
+        }
+      }
     },
     "Muestra:" : {
       "localizations" : {
@@ -34473,6 +34981,22 @@
         }
       }
     },
+    "No se pudo completar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "It could not be completed"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法完成"
+          }
+        }
+      }
+    },
     "No se pudo completar la unidad" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -34955,6 +35479,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "此窗口将不再显示。"
+          }
+        }
+      }
+    },
+    "No seleccionado" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not selected"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未选择"
           }
         }
       }
@@ -36814,6 +37354,7 @@
       }
     },
     "Omitir conflictos e importar lo nuevo" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -37123,6 +37664,7 @@
       }
     },
     "Operación" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -38376,6 +38918,7 @@
       }
     },
     "Política: %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -38572,6 +39115,7 @@
       }
     },
     "Por seguridad, desbloquea la migración antes de proceder." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -39100,6 +39644,7 @@
       }
     },
     "Preparando exportación segura…" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -39155,6 +39700,7 @@
       }
     },
     "Preparar archivo de migración" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -39498,6 +40044,7 @@
       }
     },
     "Procesando copia…" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -40793,6 +41340,28 @@
         }
       }
     },
+    "Recibir desde Android" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Receive from Android"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recibir desde Android"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "从 Android 接收"
+          }
+        }
+      }
+    },
     "recibo una crítica o una corrección sobre mi trabajo" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -41561,6 +42130,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "感悟"
+          }
+        }
+      }
+    },
+    "Reflexiones personales" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Personal Reflections"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reflexiones personales"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "个人感悟"
           }
         }
       }
@@ -42360,6 +42952,7 @@
       }
     },
     "Repetir contraseña" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -42971,6 +43564,7 @@
       }
     },
     "Restaurar ahora" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -43035,6 +43629,7 @@
       }
     },
     "Restaurar elementos nuevos" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -43089,6 +43684,7 @@
       }
     },
     "Restaurar y reemplazar" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -43292,6 +43888,7 @@
       }
     },
     "Resumen exportado" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -43330,6 +43927,7 @@
       }
     },
     "Resumen importado" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -43721,6 +44319,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "晨间仪式与结束"
+          }
+        }
+      }
+    },
+    "Rituales" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rituals"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rituales"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "仪式"
           }
         }
       }
@@ -44220,6 +44841,7 @@
       }
     },
     "Se creará un archivo seguro con %@. La contraseña solo se usa para proteger este archivo y no se guarda." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -44686,6 +45308,22 @@
         }
       }
     },
+    "Seleccionado" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selected"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已选"
+          }
+        }
+      }
+    },
     "Seleccionar" : {
       "localizations" : {
         "en" : {
@@ -44731,6 +45369,7 @@
       }
     },
     "Seleccionar archivo .ypgexp" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -45106,6 +45745,7 @@
       }
     },
     "Si este dispositivo no admite autenticación biométrica o código compatible, crea una contraseña de la app para proteger el acceso." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -45162,6 +45802,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "如果我说出来，就会引发冲突或让对方失望"
+          }
+        }
+      }
+    },
+    "Si no compartís una red Wi‑Fi, selecciona “Conexión directa” en Android." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "If you're not sharing a Wi-Fi network, select \"Direct Connection\" on Android."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "如果您没有共享 Wi-Fi 网络，请在 Android 设备上选择“直接连接”。"
           }
         }
       }
@@ -45440,6 +46096,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "这一天没有已完成的活动。"
+          }
+        }
+      }
+    },
+    "Sin cambios" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unchanged"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin cambios"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未更改"
           }
         }
       }
@@ -45737,6 +46416,84 @@
         }
       }
     },
+    "Sincronización completada" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sync Complete"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sincronización completada"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "同步完成"
+          }
+        }
+      }
+    },
+    "Sincronización local" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Local synchronization"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "本地同步"
+          }
+        }
+      }
+    },
+    "Sincronizar ambos dispositivos" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sync Both Devices"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sincronizar ambos dispositivos"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "同步两台设备"
+          }
+        }
+      }
+    },
+    "Sincronizar con Android" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sync with Android"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "与安卓系统同步"
+          }
+        }
+      }
+    },
     "Sistema no compatible" : {
       "localizations" : {
         "en" : {
@@ -45754,6 +46511,7 @@
       }
     },
     "Sobrescribir registros" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -47569,6 +48327,29 @@
         }
       }
     },
+    "Toda la información viaja fuertemente encriptada y únicamente entre los dos dispositivos enlazados. Tus datos no se publican ni se guardan en servicios externos." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your information is protected with strong encryption and travels only between the two linked devices. Your data is never published or stored on external services."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toda la información viaja fuertemente encriptada y únicamente entre los dos dispositivos enlazados. Tus datos no se publican ni se guardan en servicios externos."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "所有信息都会经过强加密，并且只在两台已连接的设备之间传输。你的数据不会公开，也不会保存到任何外部服务。"
+          }
+        }
+      }
+    },
     "Toda la serie" : {
       "localizations" : {
         "en" : {
@@ -47652,6 +48433,7 @@
       }
     },
     "Todas las entradas del Diario" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -47712,6 +48494,7 @@
       }
     },
     "Todos sus anexos y metadatos" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -48063,6 +48846,128 @@
           "stringUnit" : {
             "state" : "machine_translated",
             "value" : "设备端转写"
+          }
+        }
+      }
+    },
+    "Transferencia completada" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transfer Complete"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transferencia completada"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "传输完成"
+          }
+        }
+      }
+    },
+    "Transferir datos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transfer data"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "传输数据"
+          }
+        }
+      }
+    },
+    "Transferir todo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transfer Everything"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transferir todo"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "传输全部内容"
+          }
+        }
+      }
+    },
+    "Transfiere datos cifrados directamente, sin nube ni archivos manuales." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transfer encrypted data directly, without cloud or manual files."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "直接传输加密数据，无需云端或手动传输文件。"
+          }
+        }
+      }
+    },
+    "Transfiere tu información directamente entre tu iPhone y un dispositivo Android, o sincroniza ambos automáticamente. Puedes incluir todo el contenido compatible o elegir solo las categorías que necesitas." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transfer information directly between your iPhone and an Android device, or sync both automatically. You can include all compatible content or select only the categories you need."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transfiere tu información directamente entre tu iPhone y un dispositivo Android, o sincroniza ambos automáticamente. Puedes incluir todo el contenido compatible o elegir solo las categorías que necesitas."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 iPhone 与 Android 设备之间直接传输信息，或自动同步两台设备。你可以包含所有兼容内容，也可以只选择需要的类别。"
+          }
+        }
+      }
+    },
+    "Transfiere tu información directamente entre tu iPhone y un dispositivo Android. Puedes enviar todo el contenido compatible o elegir solo las categorías que necesitas." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transfer your information directly between your iPhone and an Android device. You can send all compatible content or select only the categories you need."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transfiere tu información directamente entre tu iPhone y un dispositivo Android. Puedes enviar todo el contenido compatible o elegir solo las categorías que necesitas."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 iPhone 与 Android 设备之间直接传输信息。你可以发送所有兼容内容，也可以只选择需要的类别。"
           }
         }
       }
@@ -48678,6 +49583,7 @@
       }
     },
     "Tus datos se preparan en un archivo seguro y protegido. La contraseña no se guarda y se requiere para la importación." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -49075,6 +49981,29 @@
         }
       }
     },
+    "Una forma sencilla de mover tus datos" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Simple Way to Move Your Data"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una forma sencilla de mover tus datos"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "轻松迁移你的数据"
+          }
+        }
+      }
+    },
     "Una identidad basada en proceso" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -49116,6 +50045,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "明天的一项改进"
+          }
+        }
+      }
+    },
+    "Una operación privada y segura" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Private and Secure Operation"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una operación privada y segura"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "私密且安全的传输"
           }
         }
       }

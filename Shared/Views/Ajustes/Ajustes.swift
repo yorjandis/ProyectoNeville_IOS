@@ -819,7 +819,7 @@ struct Ajustes: View {
                         #endif
                         
                         VStack(alignment: .leading, spacing: 12) {
-                            Text("Migración iOS / Android")
+                            Text("Sincronización local")
                                 .font(.system(size: 22))
                                 .foregroundStyle(.orange)
 
@@ -828,18 +828,18 @@ struct Ajustes: View {
                                     MigrationIOSAndroidView()
                                 },
                                            environmentObjects: [],
-                                           title: L10n.exact("Migración iOS / Android"),
+                                           title: L10n.exact("Sincronización local"),
                                            size: .percentage(width: 0.50, height: 0.70),
                                            isModal: false)
                             } label: {
-                                Label("Exportar a Android / Importar desde Android", systemImage: "arrow.left.arrow.right.circle")
+                                Label("Sincronizar con Android", systemImage: "antenna.radiowaves.left.and.right")
                                     .foregroundStyle(settingsPrimaryTextColor)
                                     .bold()
                                     .font(.headline)
                             }
                             .buttonStyle(PlainButtonStyle())
 
-                            Text("Crea o lee archivos .ypgexp cifrados y compatibles con Android.")
+                            Text("Transfiere datos cifrados directamente, sin nube ni archivos manuales.")
                                 .font(.footnote)
                                 .foregroundStyle(.secondary)
                         }
@@ -1825,14 +1825,14 @@ struct Ajustes: View {
                         }
                     }
                     
-                    Section("Migración iOS / Android") {
+                    Section("Sincronización local") {
                         NavigationLink {
                             MigrationIOSAndroidView()
                         } label: {
-                            Label("Exportar a Android / Importar desde Android", systemImage: "arrow.left.arrow.right.circle")
+                            Label("Sincronizar con Android", systemImage: "antenna.radiowaves.left.and.right")
                         }
 
-                        Text("Crea o lee archivos .ypgexp cifrados y compatibles con Android.")
+                        Text("Transfiere datos cifrados directamente, sin nube ni archivos manuales.")
                             .font(.footnote)
                             .foregroundStyle(.secondary)
                     }

@@ -244,13 +244,6 @@ struct AgendaMainView: View {
     @State private var selectedItemsIDs: Set<UUID> = []
     @State private var pendingBulkAction: AgendaBulkAction?
     @State private var showBulkActionConfirmation = false
-    @State private var showMigrationPasswordSheet = false
-    @State private var showMigrationExporter = false
-    @State private var migrationPassword = ""
-    @State private var migrationPasswordConfirmation = ""
-    @State private var migrationDocument: MigrationDataDocument?
-    @State private var migrationExportFileName = "neville-agenda.ypgexp"
-    @State private var migrationExportCount = 0
     @State private var showPastActivities: Bool = false
     @AppStorage("agendaSearchBarVisible") private var showSearchBar = false
     @State private var searchText: String = ""
@@ -295,7 +288,6 @@ struct AgendaMainView: View {
         case activateReminders
         case deactivateReminders
         case exportPDF
-        case exportMigration
 #if os(iOS)
         case exportAppleCalendar
         case exportAppleReminders
@@ -315,8 +307,6 @@ struct AgendaMainView: View {
                 return "deactivateReminders"
             case .exportPDF:
                 return "exportPDF"
-            case .exportMigration:
-                return "exportMigration"
 #if os(iOS)
             case .exportAppleCalendar:
                 return "exportAppleCalendar"
@@ -340,8 +330,6 @@ struct AgendaMainView: View {
                 return L10n.exact("Desactivar")
             case .exportPDF:
                 return L10n.exact("Exportar PDF")
-            case .exportMigration:
-                return L10n.exact("Continuar")
 #if os(iOS)
             case .exportAppleCalendar:
                 return L10n.exact("Exportar a Calendario")
@@ -399,12 +387,6 @@ struct AgendaMainView: View {
                 return L10n.format(
                     singular ? "agenda.bulk.export_pdf.singular" : "agenda.bulk.export_pdf",
                     fallback: singular ? "Se preparará un PDF con {0} actividad seleccionada." : "Se preparará un PDF con {0} actividades seleccionadas.",
-                    "\(count)"
-                )
-            case .exportMigration:
-                return L10n.format(
-                    singular ? "agenda.bulk.export_migration.singular" : "agenda.bulk.export_migration",
-                    fallback: singular ? "Se preparará un archivo de migración con {0} actividad seleccionada." : "Se preparará un archivo de migración con {0} actividades seleccionadas.",
                     "\(count)"
                 )
 #if os(iOS)
@@ -1488,24 +1470,6 @@ struct AgendaMainView: View {
                     contentType: .pdf,
                     defaultFilename: exportedPDFFileName
                 ) { _ in }
-                .fileExporter(
-                    isPresented: $showMigrationExporter,
-                    document: migrationDocument ?? MigrationDataDocument(),
-                    contentType: .ypgExport,
-                    defaultFilename: migrationExportFileName
-                ) { handleMigrationExportResult($0) }
-                .sheet(isPresented: $showMigrationPasswordSheet) {
-                    let selectedCount = selectedListedItems().count
-                    migrationPasswordSheet(
-                        title: L10n.exact("Exportar actividades seleccionadas"),
-                        countLabel: L10n.format(
-                            selectedCount == 1 ? "agenda.activity_count.singular" : "agenda.activity_count",
-                            fallback: selectedCount == 1 ? "{0} actividad" : "{0} actividades",
-                            "\(selectedCount)"
-                        ),
-                        exportAction: exportSelectedAgendaToMigration
-                    )
-                }
                 .confirmationDialog("Confirmar acción", isPresented: $showBulkActionConfirmation, titleVisibility: .visible) {
                     agendaBulkConfirmationActions()
                 } message: {
@@ -2071,13 +2035,6 @@ struct AgendaMainView: View {
                     .tint(.blue)
                     .disabled(selectedListedItems().isEmpty)
 
-                    Button("Migrar") {
-                        requestBulkActionConfirmation(.exportMigration)
-                    }
-                    .foregroundStyle(.black).bold()
-                    .buttonStyle(.bordered)
-                    .disabled(selectedListedItems().isEmpty)
-
                     Button("Completadas") {
                         requestBulkActionConfirmation(.markCompleted)
                     }
@@ -2310,99 +2267,6 @@ struct AgendaMainView: View {
         }
     }
 
-    private func authenticateBeforeMigrationExport() {
-        UtilFuncs.authenticateDeviceOwner(reason: L10n.exact("Autentícate para exportar las actividades seleccionadas.")) { success, errorMessage in
-            if success {
-                migrationPassword = ""
-                migrationPasswordConfirmation = ""
-                showMigrationPasswordSheet = true
-            } else {
-                interchangeAlertMessage = errorMessage ?? L10n.exact("No se pudo autenticar el acceso a la exportación.")
-                showInterchangeAlert = true
-            }
-        }
-    }
-
-    private func exportSelectedAgendaToMigration() {
-        guard migrationPassword == migrationPasswordConfirmation, !migrationPassword.isEmpty else {
-            interchangeAlertMessage = L10n.exact("La contraseña de exportación está vacía o no coincide.")
-            showInterchangeAlert = true
-            return
-        }
-
-        let selected = selectedListedItems()
-        guard !selected.isEmpty else {
-            interchangeAlertMessage = L10n.exact("Selecciona al menos una actividad para exportar.")
-            showInterchangeAlert = true
-            return
-        }
-
-        do {
-            let bridge = CoreDataCanonicalMigrationBridge()
-            let records = try bridge.exportRecords(agendaItems: selected)
-            let result = try MyAppMigrationService().export(records: records, password: migrationPassword)
-            migrationDocument = MigrationDataDocument(data: result.bytes)
-            migrationExportCount = selected.count
-            migrationExportFileName = "neville-agenda-\(selected.count).ypgexp"
-            showMigrationPasswordSheet = false
-            showMigrationExporter = true
-        } catch {
-            interchangeAlertMessage = L10n.format("agenda.migration.prepare_error", fallback: "No se pudo preparar el archivo de migración: {0}", error.localizedDescription)
-            showInterchangeAlert = true
-        }
-    }
-
-    private func handleMigrationExportResult(_ result: Result<URL, Error>) {
-        switch result {
-        case .success:
-            interchangeAlertMessage = L10n.format(
-                migrationExportCount == 1 ? "agenda.migration.success.singular" : "agenda.migration.success",
-                fallback: migrationExportCount == 1
-                    ? "Archivo de migración exportado correctamente: {0} actividad."
-                    : "Archivo de migración exportado correctamente: {0} actividades.",
-                "\(migrationExportCount)"
-            )
-            finishMultiSelectionOperation()
-        case .failure(let error):
-            interchangeAlertMessage = L10n.format("agenda.migration.save_error", fallback: "No se pudo guardar el archivo de migración: {0}", error.localizedDescription)
-        }
-        migrationPassword = ""
-        migrationPasswordConfirmation = ""
-        migrationDocument = nil
-        showInterchangeAlert = true
-    }
-
-    private func migrationPasswordSheet(title: String, countLabel: String, exportAction: @escaping () -> Void) -> some View {
-        NavigationStack {
-            Form {
-                Section(title) {
-                    Text("Se creará un archivo seguro con \(countLabel). La contraseña solo se usa para proteger este archivo y no se guarda.")
-                        .font(.body)
-                        .foregroundStyle(.secondary)
-                    SecureField("Contraseña del archivo", text: $migrationPassword)
-                    SecureField("Repetir contraseña", text: $migrationPasswordConfirmation)
-                }
-            }
-            .navigationTitle("Archivo .ypgexp")
-#if os(iOS)
-            .navigationBarTitleDisplayMode(.inline)
-#endif
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancelar") {
-                        showMigrationPasswordSheet = false
-                    }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Exportar") {
-                        exportAction()
-                    }
-                    .disabled(migrationPassword.isEmpty || migrationPassword != migrationPasswordConfirmation)
-                }
-            }
-        }
-    }
-
     private func matchesSearch(_ item: AgendaItemData) -> Bool {
         let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
         guard !query.isEmpty else { return true }
@@ -2545,8 +2409,6 @@ struct AgendaMainView: View {
             if exportItemsToPDF(selectedListedItems(), scopeName: L10n.exact("Seleccionadas")) {
                 finishMultiSelectionOperation()
             }
-        case .exportMigration:
-            authenticateBeforeMigrationExport()
 #if os(iOS)
         case .exportAppleCalendar:
             exportSelectedAgendaItemsToAppleCalendar()

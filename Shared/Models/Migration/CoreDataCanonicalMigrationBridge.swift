@@ -1,5 +1,6 @@
 import Foundation
 import CoreData
+import UniformTypeIdentifiers
 
 @MainActor
 final class CoreDataCanonicalMigrationBridge {
@@ -9,10 +10,14 @@ final class CoreDataCanonicalMigrationBridge {
         self.context = context
     }
 
-    func exportRecords() throws -> [CanonicalMigrationRecord] {
+    func exportRecords() async throws -> [CanonicalMigrationRecord] {
         var records: [CanonicalMigrationRecord] = []
         records += try fetchNotes().map(noteRecord)
-        records += try fetchDiary().map(diaryRecord)
+        let diaryEntries = try fetchDiary()
+        records += try diaryEntries.map(diaryRecord)
+        for diary in diaryEntries {
+            records += try await diaryAttachmentRecords(for: diary)
+        }
         records += try fetchObjects(entityName: "AgendaItemEntity").map(agendaRecord)
         records += try fetchGoals().map(goalRecord)
         records += try fetchArchivedGoals().map(archivedGoalRecord)
@@ -27,8 +32,12 @@ final class CoreDataCanonicalMigrationBridge {
         try notes.map(noteRecord)
     }
 
-    func exportRecords(diaryEntries: [Diario]) throws -> [CanonicalMigrationRecord] {
-        try diaryEntries.map(diaryRecord)
+    func exportRecords(diaryEntries: [Diario]) async throws -> [CanonicalMigrationRecord] {
+        var records = try diaryEntries.map(diaryRecord)
+        for diary in diaryEntries {
+            records += try await diaryAttachmentRecords(for: diary)
+        }
+        return records
     }
 
     func exportRecords(agendaItems: [AgendaItemData]) throws -> [CanonicalMigrationRecord] {
@@ -39,8 +48,8 @@ final class CoreDataCanonicalMigrationBridge {
         try personalPhrases.filter(\.isPersonal).map(personalPhraseRecord)
     }
 
-    func findConflicts(records: [CanonicalMigrationRecord]) throws -> [ImportConflict] {
-        let existing = try exportRecords()
+    func findConflicts(records: [CanonicalMigrationRecord]) async throws -> [ImportConflict] {
+        let existing = try await exportRecords()
         return records.compactMap { incoming in
             guard let match = matchingExistingRecord(for: incoming, in: existing) else {
                 return nil
@@ -52,11 +61,21 @@ final class CoreDataCanonicalMigrationBridge {
         }
     }
 
-    func importRecords(_ records: [CanonicalMigrationRecord], policy: ImportPolicy) throws -> MigrationSummary {
+    func importRecords(_ records: [CanonicalMigrationRecord], policy: ImportPolicy) async throws -> MigrationSummary {
         var summary = MigrationSummary()
         do {
-            for record in records {
+            let diaryRecords = records
+                .filter { $0.type == MigrationRecordType.diary }
+                .reduce(into: [String: CanonicalMigrationRecord]()) { $0[$1.id] = $1 }
+            for record in records where record.type != MigrationRecordType.diaryAttachment {
                 summary = summary + (try importOne(record, policy: policy))
+            }
+            for record in records where record.type == MigrationRecordType.diaryAttachment {
+                summary = summary + (try await importDiaryAttachment(
+                    record,
+                    parentRecord: diaryRecords[MigrationJSON.string(record.payload, "parentDiaryId")],
+                    policy: policy
+                ))
             }
             if context.hasChanges {
                 try context.save()
@@ -71,9 +90,13 @@ final class CoreDataCanonicalMigrationBridge {
     private func importOne(_ record: CanonicalMigrationRecord, policy: ImportPolicy) throws -> MigrationSummary {
         switch record.type {
         case MigrationRecordType.note:
-            return try importAutoRecord(record, existing: fetchNotes().map(noteRecord)) { try insertNote(record) }
+            return try importStableRecord(record, existing: try existingNote(for: record).map(noteRecord), policy: policy) {
+                try upsertNote(record)
+            }
         case MigrationRecordType.diary:
-            return try importAutoRecord(record, existing: fetchDiary().map(diaryRecord)) { try insertDiary(record) }
+            return try importStableRecord(record, existing: try existingDiary(for: record).map(diaryRecord), policy: policy) {
+                try upsertDiary(record)
+            }
         case MigrationRecordType.agenda:
             return try importStableRecord(record, existing: try existingAgenda(for: record).map(agendaRecord), policy: policy) {
                 try upsertAgenda(record)
@@ -112,11 +135,39 @@ final class CoreDataCanonicalMigrationBridge {
         if recordsEquivalent(existing, record) {
             return MigrationSummary(skipped: 1)
         }
-        guard policy == .overwriteExisting else {
+        switch policy {
+        case .skipExisting:
             return MigrationSummary(conflicts: 1)
+        case .overwriteExisting:
+            try upsert()
+            return MigrationSummary(updated: 1)
+        case .newerWins:
+            let incomingDate = try MigrationFormat.milliseconds(fromISO8601: record.updatedAt)
+            let existingDate = try MigrationFormat.milliseconds(fromISO8601: existing.updatedAt)
+            if incomingDate > existingDate {
+                try upsert()
+                return MigrationSummary(updated: 1)
+            }
+            return incomingDate < existingDate
+                ? MigrationSummary(skipped: 1)
+                : MigrationSummary(conflicts: 1)
+        case .newerWinsIncomingOnTie:
+            let incomingDate = try MigrationFormat.milliseconds(fromISO8601: record.updatedAt)
+            let existingDate = try MigrationFormat.milliseconds(fromISO8601: existing.updatedAt)
+            guard incomingDate >= existingDate else {
+                return MigrationSummary(skipped: 1)
+            }
+            try upsert()
+            return MigrationSummary(updated: 1)
+        case .newerWinsExistingOnTie:
+            let incomingDate = try MigrationFormat.milliseconds(fromISO8601: record.updatedAt)
+            let existingDate = try MigrationFormat.milliseconds(fromISO8601: existing.updatedAt)
+            guard incomingDate > existingDate else {
+                return MigrationSummary(skipped: 1)
+            }
+            try upsert()
+            return MigrationSummary(updated: 1)
         }
-        try upsert()
-        return MigrationSummary(updated: 1)
     }
 
     private func importAutoRecord(
@@ -134,21 +185,37 @@ final class CoreDataCanonicalMigrationBridge {
     private func recordsEquivalent(_ left: CanonicalMigrationRecord, _ right: CanonicalMigrationRecord) -> Bool {
         guard left.type == right.type else { return false }
 
-        if let leftKey = semanticContentKey(for: left),
-           let rightKey = semanticContentKey(for: right) {
-            return leftKey == rightKey
+        if left.type == MigrationRecordType.diaryAttachment {
+            return left.id == right.id &&
+                MigrationJSON.string(left.payload, "sha256") == MigrationJSON.string(right.payload, "sha256") &&
+                MigrationJSON.string(left.payload, "parentDiaryId") == MigrationJSON.string(right.payload, "parentDiaryId") &&
+                MigrationJSON.string(left.payload, "fileName") == MigrationJSON.string(right.payload, "fileName") &&
+                MigrationJSON.string(left.payload, "mimeType") == MigrationJSON.string(right.payload, "mimeType")
         }
 
-        return left.id == right.id &&
-        left.createdAt == right.createdAt &&
-        left.updatedAt == right.updatedAt &&
-        NSDictionary(dictionary: left.payload).isEqual(to: right.payload)
+        if left.id == right.id {
+            return left.createdAt == right.createdAt &&
+            left.updatedAt == right.updatedAt &&
+            NSDictionary(dictionary: left.payload).isEqual(to: right.payload)
+        }
+
+        if let leftKey = semanticContentKey(for: left),
+           let rightKey = semanticContentKey(for: right),
+           leftKey == rightKey {
+            return left.createdAt == right.createdAt &&
+                NSDictionary(dictionary: left.payload).isEqual(to: right.payload)
+        }
+
+        return false
     }
 
     private func matchingExistingRecord(
         for incoming: CanonicalMigrationRecord,
         in existing: [CanonicalMigrationRecord]
     ) -> CanonicalMigrationRecord? {
+        if incoming.type == MigrationRecordType.diaryAttachment {
+            return existing.first { $0.type == incoming.type && $0.id == incoming.id }
+        }
         let incomingContentKey = semanticContentKey(for: incoming)
         let incomingFingerprint = try? incoming.contentFingerprint()
 
@@ -210,6 +277,56 @@ private extension CoreDataCanonicalMigrationBridge {
         return try context.fetch(request)
     }
 
+    func fetchDiaryAttachments(for diary: Diario) throws -> [DiarioAttachment] {
+        let request = NSFetchRequest<DiarioAttachment>(entityName: "DiarioAttachment")
+        request.predicate = NSPredicate(format: "diario == %@", diary)
+        request.sortDescriptors = [NSSortDescriptor(key: "createdAt", ascending: true)]
+        request.returnsObjectsAsFaults = false
+        return try context.fetch(request)
+    }
+
+    func diaryAttachmentRecords(for diary: Diario) async throws -> [CanonicalMigrationRecord] {
+        let parent = try diaryRecord(diary)
+        var records: [CanonicalMigrationRecord] = []
+        for attachment in try fetchDiaryAttachments(for: diary) {
+            guard let id = attachment.id,
+                  let encryptedData = attachment.fileData,
+                  let encapsulatedKey = attachment.encapsulatedKey else {
+                throw MigrationError.validation("Un anexo del Diario no contiene todos sus datos")
+            }
+            let clearData = try await DiaryAttachmentCryptor.shared.decrypt(
+                DiaryAttachmentPayload(
+                    encryptedData: encryptedData,
+                    encapsulatedKey: encapsulatedKey
+                ),
+                attachmentID: id
+            )
+            let createdAt = iso(attachment.createdAt)
+            let updatedAt = iso(attachment.updatedAt ?? attachment.createdAt)
+            let mimeType = attachment.utiString
+                .flatMap(UTType.init)
+                .flatMap(\.preferredMIMEType) ?? "application/octet-stream"
+            records.append(
+                CanonicalMigrationRecord(
+                    type: MigrationRecordType.diaryAttachment,
+                    id: id.uuidString.lowercased(),
+                    createdAt: createdAt,
+                    updatedAt: updatedAt,
+                    schemaVersion: MigrationFormat.schemaVersion,
+                    payload: [
+                        "parentDiaryId": parent.id,
+                        "fileName": attachment.fileName ?? "Archivo",
+                        "mimeType": mimeType,
+                        "fileSize": clearData.count,
+                        "sha256": MigrationIds.sha256Hex(clearData),
+                        "data": MigrationFormat.encodeBase64(clearData)
+                    ]
+                )
+            )
+        }
+        return records
+    }
+
     func fetchGoals() throws -> [GoalEntity] {
         let request: NSFetchRequest<GoalEntity> = GoalEntity.fetchRequest()
         request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
@@ -268,9 +385,13 @@ private extension CoreDataCanonicalMigrationBridge {
         let title = note.title ?? ""
         let body = note.nota ?? ""
         let category = note.categoria ?? ""
+        let storedId = note.id?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let recordId = storedId.isEmpty
+            ? try MigrationIds.stableId(type: MigrationRecordType.note, parts: "ios", created)
+            : storedId
         return CanonicalMigrationRecord(
             type: MigrationRecordType.note,
-            id: try MigrationIds.stableId(type: MigrationRecordType.note, parts: created, title, body),
+            id: recordId,
             createdAt: created,
             updatedAt: updated,
             schemaVersion: MigrationFormat.schemaVersion,
@@ -291,9 +412,15 @@ private extension CoreDataCanonicalMigrationBridge {
         let updated = iso(diary.fechaM)
         let title = diary.title ?? ""
         let body = diary.content ?? ""
+        let recordId: String
+        if let id = diary.id {
+            recordId = id.uuidString.lowercased()
+        } else {
+            recordId = try MigrationIds.stableId(type: MigrationRecordType.diary, parts: "ios", created)
+        }
         return CanonicalMigrationRecord(
             type: MigrationRecordType.diary,
-            id: try MigrationIds.stableId(type: MigrationRecordType.diary, parts: created, title, body),
+            id: recordId,
             createdAt: created,
             updatedAt: updated,
             schemaVersion: MigrationFormat.schemaVersion,
@@ -620,8 +747,8 @@ private extension CoreDataCanonicalMigrationBridge {
 }
 
 private extension CoreDataCanonicalMigrationBridge {
-    func insertNote(_ record: CanonicalMigrationRecord) throws {
-        let note = Notas(context: context)
+    func upsertNote(_ record: CanonicalMigrationRecord) throws {
+        let note = try existingNote(for: record) ?? Notas(context: context)
         note.id = record.id
         note.title = MigrationJSON.string(record.payload, "title")
         note.nota = MigrationJSON.string(record.payload, "body")
@@ -633,8 +760,8 @@ private extension CoreDataCanonicalMigrationBridge {
         note.fechaModificacion = try MigrationFormat.date(fromISO8601: record.updatedAt)
     }
 
-    func insertDiary(_ record: CanonicalMigrationRecord) throws {
-        let diary = Diario(context: context)
+    func upsertDiary(_ record: CanonicalMigrationRecord) throws {
+        let diary = try existingDiary(for: record) ?? Diario(context: context)
         diary.id = MigrationIds.deterministicUUID(from: record.id)
         diary.title = MigrationJSON.string(record.payload, "title")
         diary.content = MigrationJSON.string(record.payload, "body")
@@ -643,6 +770,127 @@ private extension CoreDataCanonicalMigrationBridge {
         diary.isFav = MigrationJSON.bool(record.payload, "favorite")
         diary.fecha = try MigrationFormat.date(fromISO8601: record.createdAt)
         diary.fechaM = try MigrationFormat.date(fromISO8601: record.updatedAt)
+    }
+
+    func importDiaryAttachment(
+        _ record: CanonicalMigrationRecord,
+        parentRecord: CanonicalMigrationRecord?,
+        policy: ImportPolicy
+    ) async throws -> MigrationSummary {
+        guard let parentRecord,
+              let diary = try existingDiary(for: parentRecord) else {
+            throw MigrationError.validation("El anexo no tiene una entrada del Diario asociada")
+        }
+
+        let encodedData = MigrationJSON.string(record.payload, "data")
+        let clearData = try MigrationFormat.decodeBase64(encodedData)
+        let declaredSize = MigrationJSON.int(record.payload, "fileSize", default: -1)
+        guard declaredSize == clearData.count else {
+            throw MigrationError.validation("El tamaño declarado del anexo no coincide")
+        }
+        let incomingDigest = MigrationJSON.string(record.payload, "sha256").lowercased()
+        guard !incomingDigest.isEmpty,
+              MigrationIds.sha256Hex(clearData) == incomingDigest else {
+            throw MigrationError.validation("La huella del anexo no coincide con su contenido")
+        }
+
+        let attachmentID = MigrationIds.deterministicUUID(from: record.id)
+        let existing = try existingDiaryAttachment(id: attachmentID)
+        if let existing {
+            let localData = try await decryptedData(for: existing)
+            let localDigest = MigrationIds.sha256Hex(localData)
+            let existingMimeType = existing.utiString
+                .flatMap { UTType($0)?.preferredMIMEType } ?? "application/octet-stream"
+            let isEquivalent = localDigest == incomingDigest &&
+                existing.fileName == MigrationJSON.string(record.payload, "fileName") &&
+                existingMimeType == MigrationJSON.string(record.payload, "mimeType") &&
+                existing.diario == diary
+            if isEquivalent {
+                return MigrationSummary(skipped: 1)
+            }
+
+            switch policy {
+            case .skipExisting:
+                return MigrationSummary(conflicts: 1)
+            case .overwriteExisting:
+                try await applyAttachment(record, clearData: clearData, id: attachmentID, diary: diary, existing: existing)
+                return MigrationSummary(updated: 1)
+            case .newerWins:
+                let localUpdatedAt = millis(existing.updatedAt ?? existing.createdAt)
+                let incomingUpdatedAt = try MigrationFormat.milliseconds(fromISO8601: record.updatedAt)
+                guard incomingUpdatedAt != localUpdatedAt else {
+                    return MigrationSummary(conflicts: 1)
+                }
+                if incomingUpdatedAt > localUpdatedAt {
+                    try await applyAttachment(record, clearData: clearData, id: attachmentID, diary: diary, existing: existing)
+                    return MigrationSummary(updated: 1)
+                }
+                return MigrationSummary(skipped: 1)
+            case .newerWinsIncomingOnTie:
+                let localUpdatedAt = millis(existing.updatedAt ?? existing.createdAt)
+                let incomingUpdatedAt = try MigrationFormat.milliseconds(fromISO8601: record.updatedAt)
+                guard incomingUpdatedAt >= localUpdatedAt else {
+                    return MigrationSummary(skipped: 1)
+                }
+                try await applyAttachment(record, clearData: clearData, id: attachmentID, diary: diary, existing: existing)
+                return MigrationSummary(updated: 1)
+            case .newerWinsExistingOnTie:
+                let localUpdatedAt = millis(existing.updatedAt ?? existing.createdAt)
+                let incomingUpdatedAt = try MigrationFormat.milliseconds(fromISO8601: record.updatedAt)
+                guard incomingUpdatedAt > localUpdatedAt else {
+                    return MigrationSummary(skipped: 1)
+                }
+                try await applyAttachment(record, clearData: clearData, id: attachmentID, diary: diary, existing: existing)
+                return MigrationSummary(updated: 1)
+            }
+        }
+
+        try await applyAttachment(record, clearData: clearData, id: attachmentID, diary: diary, existing: nil)
+        return MigrationSummary(inserted: 1)
+    }
+
+    func applyAttachment(
+        _ record: CanonicalMigrationRecord,
+        clearData: Data,
+        id: UUID,
+        diary: Diario,
+        existing: DiarioAttachment?
+    ) async throws {
+        let encrypted = try await DiaryAttachmentCryptor.shared.encrypt(clearData, attachmentID: id)
+        let attachment = existing ?? DiarioAttachment(context: context)
+        let mimeType = MigrationJSON.string(record.payload, "mimeType", default: "application/octet-stream")
+        let fileName = MigrationJSON.string(record.payload, "fileName", default: "Archivo")
+
+        attachment.id = id
+        attachment.fileName = fileName
+        attachment.fileNameEncrip = "\(id.uuidString).nevenc"
+        attachment.utiString = UTType(mimeType: mimeType)?.identifier ??
+            UTType(filenameExtension: (fileName as NSString).pathExtension)?.identifier ??
+            UTType.data.identifier
+        attachment.fileSize = Int64(clearData.count)
+        attachment.createdAt = try MigrationFormat.date(fromISO8601: record.createdAt)
+        attachment.updatedAt = try MigrationFormat.date(fromISO8601: record.updatedAt)
+        attachment.cryptoVersion = 1
+        attachment.fileData = encrypted.encryptedData
+        attachment.encapsulatedKey = encrypted.encapsulatedKey
+        attachment.diario = diary
+
+        let incomingUpdatedAt = try MigrationFormat.date(fromISO8601: record.updatedAt)
+        if diary.fechaM == nil || diary.fechaM! < incomingUpdatedAt {
+            diary.fechaM = incomingUpdatedAt
+        }
+    }
+
+    func decryptedData(for attachment: DiarioAttachment) async throws -> Data {
+        guard let id = attachment.id,
+              let encryptedData = attachment.fileData,
+              let encapsulatedKey = attachment.encapsulatedKey else {
+            throw MigrationError.validation("El anexo local está incompleto")
+        }
+        return try await DiaryAttachmentCryptor.shared.decrypt(
+            DiaryAttachmentPayload(encryptedData: encryptedData, encapsulatedKey: encapsulatedKey),
+            attachmentID: id
+        )
     }
 
     func upsertAgenda(_ record: CanonicalMigrationRecord) throws {
@@ -794,6 +1042,42 @@ private extension CoreDataCanonicalMigrationBridge {
 
     func existingAgenda(for record: CanonicalMigrationRecord) throws -> NSManagedObject? {
         try firstObject(entityName: "AgendaItemEntity", uuidKey: "id", uuid: MigrationIds.deterministicUUID(from: record.id))
+    }
+
+    func existingNote(for record: CanonicalMigrationRecord) throws -> Notas? {
+        for note in try fetchNotes() {
+            if try noteRecord(note).id == record.id {
+                return note
+            }
+        }
+        return nil
+    }
+
+    func existingDiary(for record: CanonicalMigrationRecord) throws -> Diario? {
+        let request: NSFetchRequest<Diario> = Diario.fetchRequest()
+        request.predicate = NSPredicate(
+            format: "id == %@",
+            MigrationIds.deterministicUUID(from: record.id) as CVarArg
+        )
+        request.fetchLimit = 1
+        if let exactMatch = try context.fetch(request).first {
+            return exactMatch
+        }
+
+        let incomingTitle = canonicalText(MigrationJSON.string(record.payload, "title"))
+        let incomingBody = canonicalText(MigrationJSON.string(record.payload, "body"))
+        return try fetchDiary().first { diary in
+            canonicalText(diary.title ?? "") == incomingTitle &&
+                canonicalText(diary.content ?? "") == incomingBody
+        }
+    }
+
+    func existingDiaryAttachment(id: UUID) throws -> DiarioAttachment? {
+        let request = NSFetchRequest<DiarioAttachment>(entityName: "DiarioAttachment")
+        request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+        request.fetchLimit = 1
+        request.returnsObjectsAsFaults = false
+        return try context.fetch(request).first
     }
 
     func existingGoal(for record: CanonicalMigrationRecord) throws -> GoalEntity? {

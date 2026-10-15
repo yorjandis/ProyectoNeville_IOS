@@ -25,9 +25,6 @@
         }
       }
     },
-    "Neville export file" : {
-
-    },
     "NSAppleMusicUsageDescription" : {
       "comment" : "Privacy - Media Library Usage Description",
       "localizations" : {
@@ -163,6 +160,18 @@
           "stringUnit" : {
             "state" : "new",
             "value" : ""
+          }
+        }
+      }
+    },
+    "NSLocalNetworkUsageDescription" : {
+      "comment" : "Privacy - Local Network Usage Description",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Neville utiliza la red local para transferir tus datos cifrados directamente entre tus dispositivos."
           }
         }
       }

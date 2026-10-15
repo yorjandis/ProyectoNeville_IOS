@@ -128,13 +128,6 @@ struct ListNotasViews: View {
     @State private var bulkCategoryDraft = ""
     @State private var pendingBulkAction: NotesBulkAction?
     @State private var showBulkActionConfirmation = false
-    @State private var showMigrationPasswordSheet = false
-    @State private var showMigrationExporter = false
-    @State private var migrationPassword = ""
-    @State private var migrationPasswordConfirmation = ""
-    @State private var migrationDocument: MigrationDataDocument?
-    @State private var migrationExportFileName = "neville-notas.ypgexp"
-    @State private var migrationExportCount = 0
     @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
     @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) private var yorjPremium: Bool = false
     @AppStorage(PetSettings.isEnabledKey) private var petsEnabled = true
@@ -227,7 +220,6 @@ struct ListNotasViews: View {
         case passToFrases
         case passToCalm
         case setCategory(String)
-        case exportMigration
 #if os(iOS)
         case exportAppleCalendar
         case exportAppleReminders
@@ -241,8 +233,6 @@ struct ListNotasViews: View {
                 return "passToCalm"
             case .setCategory(let category):
                 return "setCategory-\(category)"
-            case .exportMigration:
-                return "exportMigration"
 #if os(iOS)
             case .exportAppleCalendar:
                 return "exportAppleCalendar"
@@ -260,8 +250,6 @@ struct ListNotasViews: View {
                 return L10n.exact("Exportar a Espacio Calma")
             case .setCategory:
                 return L10n.exact("Actualizar")
-            case .exportMigration:
-                return L10n.exact("Continuar")
 #if os(iOS)
             case .exportAppleCalendar:
                 return L10n.exact("Exportar a Calendario")
@@ -298,12 +286,6 @@ struct ListNotasViews: View {
                     count == 1 ? "notes.batch.assign_category.one" : "notes.batch.assign_category.other",
                     fallback: count == 1 ? "Se asignará la categoría «{0}» a {1} nota seleccionada" : "Se asignará la categoría «{0}» a {1} notas seleccionadas",
                     target, String(count)
-                )
-            case .exportMigration:
-                return L10n.format(
-                    count == 1 ? "notes.batch.export.one" : "notes.batch.export.other",
-                    fallback: count == 1 ? "Se preparará un archivo de migración con {0} nota seleccionada" : "Se preparará un archivo de migración con {0} notas seleccionadas",
-                    String(count)
                 )
 #if os(iOS)
             case .exportAppleCalendar:
@@ -371,12 +353,6 @@ struct ListNotasViews: View {
                     contentType: .pdf,
                     defaultFilename: exportedPDFFileName
                 ) { _ in }
-                .fileExporter(
-                    isPresented: $showMigrationExporter,
-                    document: migrationDocument ?? MigrationDataDocument(),
-                    contentType: .ypgExport,
-                    defaultFilename: migrationExportFileName
-                ) { handleNotasMigrationExportResult($0) }
                 .sheet(isPresented: $showExportRangeSheet) {
                     VStack(spacing: 16) {
                         DatePicker("Desde", selection: $exportFromDate, displayedComponents: [.date])
@@ -388,13 +364,6 @@ struct ListNotasViews: View {
                         .buttonStyle(.bordered)
                     }
                     .padding()
-                }
-                .sheet(isPresented: $showMigrationPasswordSheet) {
-                    migrationPasswordSheet(
-                        title: "Exportar notas seleccionadas",
-                        countLabel: "\(selectedNotaIDs.count) nota(s)",
-                        exportAction: exportSelectedNotasToMigration
-                    )
                 }
                 .confirmationDialog("¿Eliminar notas seleccionadas?", isPresented: $showConfirmBulkDelete) {
                     Button("Eliminar \(selectedNotaIDs.count) nota(s)", role: .destructive) {
@@ -1007,13 +976,6 @@ struct ListNotasViews: View {
             }
             .disabled(selectedNotaIDs.isEmpty)
 
-            Button {
-                requestBulkActionConfirmation(.exportMigration)
-            } label: {
-                Label("Exportar archivo de migración", systemImage: "lock.doc")
-            }
-            .disabled(selectedNotaIDs.isEmpty)
-
 #if os(iOS)
             Menu {
                 Button("Exportar a Calendario", systemImage: "calendar.badge.plus") {
@@ -1077,8 +1039,6 @@ struct ListNotasViews: View {
             applyPassToCalm()
         case .setCategory(let category):
             applyCategoryToSelected(category)
-        case .exportMigration:
-            authenticateBeforeMigrationExport()
 #if os(iOS)
         case .exportAppleCalendar:
             exportSelectedNotesToAppleCalendar()
@@ -1123,65 +1083,6 @@ struct ListNotasViews: View {
         }
     }
 #endif
-
-    private func authenticateBeforeMigrationExport() {
-        UtilFuncs.authenticateDeviceOwner(reason: L10n.exact("Autentícate para exportar las notas seleccionadas.")) { success, errorMessage in
-            if success {
-                migrationPassword = ""
-                migrationPasswordConfirmation = ""
-                showMigrationPasswordSheet = true
-            } else {
-                alertMessage = L10n.exact(errorMessage ?? "No se pudo autenticar el acceso a la exportación.")
-                showAlert = true
-            }
-        }
-    }
-
-    private func handleNotasMigrationExportResult(_ result: Result<URL, Error>) {
-        switch result {
-        case .success:
-            alertMessage = L10n.format("notes.migration.success", fallback: "Archivo de migración exportado correctamente: {0} nota(s).", String(migrationExportCount))
-            selectedNotaIDs.removeAll()
-            selectionMode = false
-        case .failure(let error):
-            alertMessage = L10n.format("migration.save.error", fallback: "No se pudo guardar el archivo de migración: {0}", error.localizedDescription)
-        }
-        migrationPassword = ""
-        migrationPasswordConfirmation = ""
-        migrationDocument = nil
-        showAlert = true
-    }
-
-    private func migrationPasswordSheet(title: String, countLabel: String, exportAction: @escaping () -> Void) -> some View {
-        NavigationStack {
-            Form {
-                Section(title) {
-                    Text("Se creará un archivo seguro con \(countLabel). La contraseña solo se usa para proteger este archivo y no se guarda.")
-                        .font(.body)
-                        .foregroundStyle(.secondary)
-                    SecureField("Contraseña del archivo", text: $migrationPassword)
-                    SecureField("Repetir contraseña", text: $migrationPasswordConfirmation)
-                }
-            }
-            .navigationTitle("Archivo .ypgexp")
-            #if os(iOS)
-            .navigationBarTitleDisplayMode(.inline)
-            #endif
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancelar") {
-                        showMigrationPasswordSheet = false
-                    }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Exportar") {
-                        exportAction()
-                    }
-                    .disabled(migrationPassword.isEmpty || migrationPassword != migrationPasswordConfirmation)
-                }
-            }
-        }
-    }
 
     private func toggleSelection(for nota: Notas) {
         guard selectionMode, let id = nota.id else { return }
@@ -1333,35 +1234,6 @@ struct ListNotasViews: View {
             direccionMapa: nota.value(forKey: "direccionMapa") as? String ?? "",
             categoria: category
         )
-    }
-
-    private func exportSelectedNotasToMigration() {
-        guard migrationPassword == migrationPasswordConfirmation, !migrationPassword.isEmpty else {
-            alertMessage = L10n.exact("La contraseña de exportación está vacía o no coincide.")
-            showAlert = true
-            return
-        }
-
-        let notes = selectedNotas
-        guard !notes.isEmpty else {
-            alertMessage = L10n.exact("Selecciona al menos una nota para exportar.")
-            showAlert = true
-            return
-        }
-
-        do {
-            let bridge = CoreDataCanonicalMigrationBridge()
-            let records = try bridge.exportRecords(notes: notes)
-            let result = try MyAppMigrationService().export(records: records, password: migrationPassword)
-            migrationDocument = MigrationDataDocument(data: result.bytes)
-            migrationExportCount = notes.count
-            migrationExportFileName = "neville-notas-\(notes.count).ypgexp"
-            showMigrationPasswordSheet = false
-            showMigrationExporter = true
-        } catch {
-            alertMessage = L10n.format("migration.prepare.error", fallback: "No se pudo preparar el archivo de migración: {0}", error.localizedDescription)
-            showAlert = true
-        }
     }
 
     @ViewBuilder

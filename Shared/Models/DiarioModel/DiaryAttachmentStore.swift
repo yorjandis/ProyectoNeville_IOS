@@ -285,6 +285,7 @@ final class DiaryAttachmentStore {
         attachment.encapsulatedKey = payload.encapsulatedKey
         attachment.fileSize = Int64(data.count)
         attachment.utiString = contentType.identifier
+        attachment.updatedAt = .now
 
         if let currentName = attachment.fileName {
             let baseName = (currentName as NSString).deletingPathExtension
@@ -304,6 +305,7 @@ final class DiaryAttachmentStore {
         attachment.fileName = trimmed.contains(".") || existingExtension.isEmpty
             ? trimmed
             : "\(trimmed).\(existingExtension)"
+        attachment.updatedAt = .now
         attachment.diario?.fechaM = .now
         try saveViewContext()
     }
@@ -311,6 +313,7 @@ final class DiaryAttachmentStore {
     func move(_ attachment: DiarioAttachment, to destination: Diario) throws {
         guard attachment.diario != destination else { return }
         attachment.diario = destination
+        attachment.updatedAt = .now
         destination.fechaM = .now
         try saveViewContext()
     }
@@ -336,6 +339,7 @@ final class DiaryAttachmentStore {
         attachment.utiString = contentType.identifier
         attachment.fileSize = Int64(data.count)
         attachment.createdAt = .now
+        attachment.updatedAt = attachment.createdAt
         attachment.cryptoVersion = 1
         attachment.fileData = payload.encryptedData
         attachment.encapsulatedKey = payload.encapsulatedKey
