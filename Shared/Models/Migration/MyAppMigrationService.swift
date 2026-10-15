@@ -110,7 +110,7 @@ final class MyAppMigrationService {
             "format": MigrationFormat.formatName,
             "formatVersion": MigrationFormat.formatVersion,
             "createdAt": MigrationFormat.utcNow(),
-            "sourcePlatform": "ios",
+            "sourcePlatform": sourcePlatform,
             "sourceAppVersion": Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown",
             "schemaVersion": MigrationFormat.schemaVersion,
             "contentSummary": countsByType,
@@ -129,7 +129,7 @@ final class MyAppMigrationService {
         guard MigrationJSON.int(manifest, "schemaVersion") <= MigrationFormat.schemaVersion else {
             throw MigrationError.validation("Schema no soportado")
         }
-        guard ["ios", "android"].contains(MigrationJSON.string(manifest, "sourcePlatform")) else {
+        guard ["ios", "macos", "android"].contains(MigrationJSON.string(manifest, "sourcePlatform")) else {
             throw MigrationError.validation("Plataforma de origen inválida")
         }
         guard let encryption = manifest["encryption"] as? [String: Any] else {
@@ -156,6 +156,14 @@ final class MyAppMigrationService {
         guard !MigrationJSON.string(manifest, "exportId").isEmpty else {
             throw MigrationError.validation("exportId vacío")
         }
+    }
+
+    private var sourcePlatform: String {
+#if os(macOS)
+        "macos"
+#else
+        "ios"
+#endif
     }
 
     private func validateExportPassword(_ password: String) throws {

@@ -1,9 +1,16 @@
 import SwiftUI
+import Combine
 
-#if os(iOS)
+#if os(iOS) || os(macOS)
 import LocalAuthentication
+#if os(iOS)
 import NetworkExtension
 import VisionKit
+#elseif os(macOS)
+@preconcurrency import AVFoundation
+import AppKit
+import CoreWLAN
+#endif
 
 @MainActor
 private final class WirelessMigrationViewModel: ObservableObject {
@@ -63,11 +70,13 @@ private final class WirelessMigrationViewModel: ObservableObject {
             unlock()
             return
         }
+#if os(iOS)
         guard DataScannerViewController.isSupported,
               DataScannerViewController.isAvailable else {
             phase = .failed("La cámara no está disponible para escanear el código QR")
             return
         }
+#endif
         isScannerPresented = true
     }
 
@@ -204,6 +213,7 @@ private final class WirelessMigrationViewModel: ObservableObject {
     }
 
     private func join(_ network: WirelessNetworkCredentials) async throws {
+#if os(iOS)
         let configuration = NEHotspotConfiguration(
             ssid: network.ssid,
             passphrase: network.password,
@@ -225,6 +235,37 @@ private final class WirelessMigrationViewModel: ObservableObject {
                 }
             }
         }
+#elseif os(macOS)
+        let missingWiFiMessage = L10n.exact("Este Mac no dispone de una interfaz Wi‑Fi activa")
+        let networkNotFoundMessage = L10n.format(
+            "wireless.mac.network_not_found",
+            fallback: "No se encontró la red {0}. Comprueba que el punto de acceso de Android siga activo.",
+            network.ssid
+        )
+        try await withCheckedThrowingContinuation { continuation in
+            DispatchQueue.global(qos: .userInitiated).async {
+                do {
+                    guard let interface = CWWiFiClient.shared().interface() else {
+                        throw WirelessSyncError.connection(missingWiFiMessage)
+                    }
+                    if interface.ssid() == network.ssid { // Ya está conectado.
+                        continuation.resume()
+                        return
+                    }
+                    let networks = try interface.scanForNetworks(
+                        withSSID: Data(network.ssid.utf8)
+                    )
+                    guard let target = networks.first else {
+                        throw WirelessSyncError.connection(networkNotFoundMessage)
+                    }
+                    try interface.associate(to: target, password: network.password)
+                    continuation.resume()
+                } catch {
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+#endif
     }
 
     private func importResult(from data: Data) throws -> WirelessImportResult {
@@ -279,7 +320,7 @@ struct MigrationIOSAndroidView: View {
     var body: some View {
         Form {
             Section {
-                Text("La transferencia es local, cifrada y no utiliza Internet. Android mostrará el código de enlace y este dispositivo lo escaneará.")
+                Text("La transferencia es local, cifrada y no utiliza Internet. Android mostrará el código de enlace y este dispositivo Apple lo escaneará.")
                     .foregroundStyle(.secondary)
             }
 
@@ -349,9 +390,11 @@ struct MigrationIOSAndroidView: View {
             }
         }
         .navigationTitle("Transferir datos")
+#if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
+#endif
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItem(placement: .primaryAction) {
                 Button {
                     isInfoPresented = true
                 } label: {
@@ -517,14 +560,18 @@ private struct WirelessTransferSummaryView: View {
                 .padding()
             }
             .navigationTitle("Resumen")
+#if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+#endif
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Cerrar") { dismiss() }
                 }
             }
         }
+#if os(iOS)
         .presentationDetents([.medium, .large])
+#endif
     }
 
     private func summaryRow(_ title: LocalizedStringKey, value: Int, icon: String) -> some View {
@@ -558,7 +605,7 @@ private struct WirelessSyncInfoView: View {
                     infoSection(
                         icon: "iphone.and.arrow.forward",
                         title: L10n.exact("Una forma sencilla de mover tus datos"),
-                        text: L10n.exact("Transfiere tu información directamente entre tu iPhone y un dispositivo Android, o sincroniza ambos automáticamente. Puedes incluir todo el contenido compatible o elegir solo las categorías que necesitas.")
+                        text: L10n.exact("Transfiere tu información directamente entre tu dispositivo Apple y Android, o sincroniza ambos automáticamente. Puedes incluir todo el contenido compatible o elegir solo las categorías que necesitas.")
                     )
                     infoSection(
                         icon: "lock.shield",
@@ -584,14 +631,18 @@ private struct WirelessSyncInfoView: View {
                 .padding()
             }
             .navigationTitle("Acerca de la transferencia")
+#if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+#endif
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Cerrar") { dismiss() }
                 }
             }
         }
+#if os(iOS)
         .presentationDetents([.medium, .large])
+#endif
     }
 
     private func infoSection(icon: String, title: String, text: String) -> some View {
@@ -604,6 +655,7 @@ private struct WirelessSyncInfoView: View {
     }
 }
 
+#if os(iOS)
 private struct WirelessQRCodeScanner: UIViewControllerRepresentable {
     let onCode: (String) -> Void
 
@@ -652,6 +704,270 @@ private struct WirelessQRCodeScanner: UIViewControllerRepresentable {
         }
     }
 }
+
+#elseif os(macOS)
+
+private struct MacWirelessCamera: Identifiable, Hashable {
+    let id: String
+    let name: String
+    let isContinuityCamera: Bool
+}
+
+private struct WirelessQRCodeScanner: View {
+    @Environment(\.dismiss) private var dismiss
+    @State private var cameras: [MacWirelessCamera] = []
+    @State private var selectedCameraID = ""
+    @State private var authorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)
+
+    let onCode: (String) -> Void
+
+    var body: some View {
+        VStack(spacing: 0) {
+            HStack {
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("Escanear código de Android")
+                        .font(.headline)
+                    Text("Usa la cámara del Mac, una cámara externa o la Cámara de Continuidad del iPhone.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+                Button("Cerrar") { dismiss() }
+            }
+            .padding()
+
+            Divider()
+
+            Group {
+                switch authorizationStatus {
+                case .authorized:
+                    if cameras.isEmpty {
+                        unavailableCameraView
+                    } else {
+                        scannerContent
+                    }
+                case .denied, .restricted:
+                    cameraPermissionView
+                case .notDetermined:
+                    ProgressView("Solicitando acceso a la cámara…")
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                @unknown default:
+                    unavailableCameraView
+                }
+            }
+        }
+        .frame(minWidth: 640, idealWidth: 760, minHeight: 520, idealHeight: 620)
+        .task { await prepareCameraAccess() }
+        .onReceive(NotificationCenter.default.publisher(for: AVCaptureDevice.wasConnectedNotification)) { _ in
+            refreshCameras()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: AVCaptureDevice.wasDisconnectedNotification)) { _ in
+            refreshCameras()
+        }
+    }
+
+    private var scannerContent: some View {
+        VStack(spacing: 12) {
+            Picker("Cámara", selection: $selectedCameraID) {
+                ForEach(cameras) { camera in
+                    Text(camera.isContinuityCamera ? "\(camera.name) · iPhone" : camera.name)
+                        .tag(camera.id)
+                }
+            }
+            .pickerStyle(.menu)
+            .frame(maxWidth: 420)
+            .padding(.top, 12)
+
+            MacWirelessQRCodeCapture(deviceID: selectedCameraID, onCode: onCode)
+                .id(selectedCameraID)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(.black)
+                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        .stroke(.white.opacity(0.24), lineWidth: 1)
+                }
+                .padding(.horizontal)
+
+            Text("Coloca el código QR dentro de la imagen. La lectura comenzará automáticamente.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .padding(.bottom, 12)
+        }
+    }
+
+    private var unavailableCameraView: some View {
+        ContentUnavailableView {
+            Label("No hay una cámara disponible", systemImage: "video.slash")
+        } description: {
+            Text("Si este Mac no tiene cámara, acerca y desbloquea tu iPhone, activa Bluetooth y Wi‑Fi en ambos dispositivos y selecciónalo aquí como Cámara de Continuidad.")
+        } actions: {
+            Button("Buscar cámaras") { refreshCameras() }
+        }
+    }
+
+    private var cameraPermissionView: some View {
+        ContentUnavailableView {
+            Label("Permite el acceso a la cámara", systemImage: "camera.fill")
+        } description: {
+            Text("Activa Cámara para Neville en Ajustes del Sistema > Privacidad y seguridad. También se necesita este permiso para usar la cámara del iPhone.")
+        } actions: {
+            Button("Abrir Ajustes del Sistema") {
+                if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Camera") {
+                    NSWorkspace.shared.open(url)
+                }
+            }
+            Button("Volver a comprobar") {
+                authorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)
+                refreshCameras()
+            }
+        }
+    }
+
+    @MainActor
+    private func prepareCameraAccess() async {
+        let current = AVCaptureDevice.authorizationStatus(for: .video)
+        if current == .notDetermined {
+            _ = await AVCaptureDevice.requestAccess(for: .video)
+        }
+        authorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)
+        refreshCameras()
+    }
+
+    @MainActor
+    private func refreshCameras() {
+        let discovered = macWirelessVideoDevices().map {
+            MacWirelessCamera(
+                id: $0.uniqueID,
+                name: $0.localizedName,
+                isContinuityCamera: $0.isContinuityCamera
+            )
+        }
+        cameras = Array(Dictionary(uniqueKeysWithValues: discovered.map { ($0.id, $0) }).values)
+            .sorted {
+                if $0.isContinuityCamera != $1.isContinuityCamera {
+                    return !$0.isContinuityCamera
+                }
+                return $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending
+            }
+        if !cameras.contains(where: { $0.id == selectedCameraID }) {
+            selectedCameraID = cameras.first?.id ?? ""
+        }
+    }
+}
+
+@MainActor
+private func macWirelessVideoDevices() -> [AVCaptureDevice] {
+    AVCaptureDevice.DiscoverySession(
+        deviceTypes: [.builtInWideAngleCamera, .external, .continuityCamera],
+        mediaType: .video,
+        position: .unspecified
+    ).devices
+}
+
+private struct MacWirelessQRCodeCapture: NSViewControllerRepresentable {
+    let deviceID: String
+    let onCode: (String) -> Void
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(onCode: onCode)
+    }
+
+    func makeNSViewController(context: Context) -> MacWirelessQRCodeCaptureController {
+        let controller = MacWirelessQRCodeCaptureController()
+        controller.configure(deviceID: deviceID, delegate: context.coordinator)
+        context.coordinator.controller = controller
+        return controller
+    }
+
+    func updateNSViewController(
+        _ nsViewController: MacWirelessQRCodeCaptureController,
+        context: Context
+    ) { }
+
+    static func dismantleNSViewController(
+        _ nsViewController: MacWirelessQRCodeCaptureController,
+        coordinator: Coordinator
+    ) {
+        nsViewController.stopSession()
+    }
+
+    final class Coordinator: NSObject, @MainActor AVCaptureMetadataOutputObjectsDelegate {
+        private let onCode: (String) -> Void
+        private var delivered = false
+        weak var controller: MacWirelessQRCodeCaptureController?
+
+        init(onCode: @escaping (String) -> Void) {
+            self.onCode = onCode
+        }
+
+        func metadataOutput(
+            _ output: AVCaptureMetadataOutput,
+            didOutput metadataObjects: [AVMetadataObject],
+            from connection: AVCaptureConnection
+        ) {
+            guard !delivered,
+                  let qr = metadataObjects.first as? AVMetadataMachineReadableCodeObject,
+                  let payload = qr.stringValue else { return }
+            delivered = true
+            controller?.stopSession()
+            onCode(payload)
+        }
+    }
+}
+
+private final class MacWirelessQRCodeCaptureController: NSViewController {
+    private let session = AVCaptureSession()
+    private let sessionQueue = DispatchQueue(label: "com.ypg.neville.wireless.mac-camera", qos: .userInitiated)
+    private lazy var previewLayer = AVCaptureVideoPreviewLayer(session: session)
+
+    override func loadView() {
+        view = NSView()
+        view.wantsLayer = true
+        previewLayer.videoGravity = .resizeAspectFill
+        view.layer?.addSublayer(previewLayer)
+    }
+
+    override func viewDidLayout() {
+        super.viewDidLayout()
+        previewLayer.frame = view.bounds
+    }
+
+    func configure(
+        deviceID: String,
+        delegate: AVCaptureMetadataOutputObjectsDelegate
+    ) {
+        guard let device = macWirelessVideoDevices().first(where: { $0.uniqueID == deviceID }),
+              let input = try? AVCaptureDeviceInput(device: device) else { return }
+
+        session.beginConfiguration()
+        session.sessionPreset = .high
+        if session.canAddInput(input) { session.addInput(input) }
+        let output = AVCaptureMetadataOutput()
+        if session.canAddOutput(output) {
+            session.addOutput(output)
+            output.setMetadataObjectsDelegate(delegate, queue: .main)
+            output.metadataObjectTypes = [.qr]
+        }
+        session.commitConfiguration()
+
+        let session = session
+        sessionQueue.async {
+            guard !session.isRunning else { return }
+            session.startRunning()
+        }
+    }
+
+    func stopSession() {
+        let session = session
+        sessionQueue.async {
+            guard session.isRunning else { return }
+            session.stopRunning()
+        }
+    }
+}
+
+#endif
 
 #else
 

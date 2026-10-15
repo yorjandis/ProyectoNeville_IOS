@@ -1,4 +1,4 @@
-#if os(iOS)
+#if os(iOS) || os(macOS)
 import Foundation
 import CryptoKit
 
@@ -17,7 +17,7 @@ struct WirelessNetworkCredentials: Codable, Sendable {
 struct WirelessSessionDescriptor: Codable, Sendable {
     static let supportedVersion = 2
     static let uriPrefix = "neville://sync/"
-    static let serviceType = "_nevillesync._tcp"
+    nonisolated static let serviceType = "_nevillesync._tcp"
 
     let version: Int
     let sessionId: String
@@ -60,8 +60,15 @@ struct WirelessSessionDescriptor: Codable, Sendable {
         return descriptor
     }
 
-    var secretData: Data {
-        Data(base64URL: secret) ?? Data()
+    nonisolated var secretData: Data {
+        var base64 = secret
+            .replacingOccurrences(of: "-", with: "+")
+            .replacingOccurrences(of: "_", with: "/")
+        let remainder = base64.count % 4
+        if remainder != 0 {
+            base64 += String(repeating: "=", count: 4 - remainder)
+        }
+        return Data(base64Encoded: base64) ?? Data()
     }
 }
 
@@ -138,7 +145,7 @@ struct WirelessFrame: Sendable {
 }
 
 enum WirelessSessionAuthenticator {
-    static func proof(
+    nonisolated static func proof(
         secret: Data,
         sessionId: String,
         clientNonce: Data,

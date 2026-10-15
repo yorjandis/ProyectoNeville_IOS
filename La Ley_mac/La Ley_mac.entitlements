@@ -16,5 +16,9 @@
 	<array>
 		<string>group.com.ypg.nev.group</string>
 	</array>
+	<key>com.apple.security.device.camera</key>
+	<true/>
+	<key>com.apple.security.network.client</key>
+	<true/>
 </dict>
 </plist>
