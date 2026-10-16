@@ -4709,6 +4709,22 @@
         }
       }
     },
+    "Abrir Ajustes del Sistema" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open System Settings"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开系统设置"
+          }
+        }
+      }
+    },
     "Abrir ayuda urgente" : {
       "localizations" : {
         "en" : {
@@ -5520,6 +5536,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "进行中"
+          }
+        }
+      }
+    },
+    "Activa Cámara para Neville en Ajustes del Sistema > Privacidad y seguridad. También se necesita este permiso para usar la cámara del iPhone." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enable Camera for Neville in System Settings > Privacy & Security. This permission is also required to use the iPhone camera."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请在“系统设置”>“隐私与安全性”中允许 Neville 使用摄像头。使用 iPhone 摄像头同样需要此权限。"
           }
         }
       }
@@ -6905,6 +6937,22 @@
         }
       }
     },
+    "Añade archivos, fotos y documentos a tus entradas del Diario. Los anexos permanecen unidos a cada recuerdo y protegidos mediante cifrado fuerte." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add files, photos, and documents to your Journal entries. Attachments stay connected to each memory and protected with strong encryption."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "为日记条目添加文件、照片和文档。附件始终与对应回忆关联，并受到强加密保护。"
+          }
+        }
+      }
+    },
     "Añade contexto, motivación o instrucciones…" : {
       "localizations" : {
         "en" : {
@@ -7404,6 +7452,22 @@
         }
       }
     },
+    "Anexos cifrados en el Diario" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Encrypted Journal attachments"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "日记加密附件"
+          }
+        }
+      }
+    },
     "Anexos del Diario" : {
       "localizations" : {
         "en" : {
@@ -7432,54 +7496,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "日记附件 · 高级功能"
-          }
-        }
-      }
-    },
-    "Anexos cifrados en el Diario" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Encrypted Journal attachments"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "日记加密附件"
-          }
-        }
-      }
-    },
-    "Añade archivos, fotos y documentos a tus entradas del Diario. Los anexos permanecen unidos a cada recuerdo y protegidos mediante cifrado fuerte." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Add files, photos, and documents to your Journal entries. Attachments stay connected to each memory and protected with strong encryption."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "为日记条目添加文件、照片和文档。附件始终与对应回忆关联，并受到强加密保护。"
-          }
-        }
-      }
-    },
-    "Los anexos del Diario requieren acceso Premium." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Journal attachments require Premium access."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "日记附件需要高级版权限。"
           }
         }
       }
@@ -9591,6 +9607,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "检查更新"
+          }
+        }
+      }
+    },
+    "Buscar cámaras" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Find cameras"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查找摄像头"
           }
         }
       }
@@ -11718,6 +11750,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "收起卡片"
+          }
+        }
+      }
+    },
+    "Coloca el código QR dentro de la imagen. La lectura comenzará automáticamente." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Place the QR code inside the image. Scanning will start automatically."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将二维码置于画面内，扫描会自动开始。"
           }
         }
       }
@@ -22346,6 +22394,22 @@
         }
       }
     },
+    "Este Mac no dispone de una interfaz Wi‑Fi activa" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This Mac does not have an active Wi‑Fi interface"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这台 Mac 没有可用的 Wi‑Fi 接口"
+          }
+        }
+      }
+    },
     "Este mensaje aparece brevemente después de tocar el botón. Máximo 80 caracteres." : {
       "localizations" : {
         "en" : {
@@ -30324,7 +30388,24 @@
         }
       }
     },
+    "La transferencia es local, cifrada y no utiliza Internet. Android mostrará el código de enlace y este dispositivo Apple lo escaneará." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The transfer is local, encrypted, and does not use the Internet. Android will display the connection code for this Apple device to scan."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "传输在本地加密进行，无需互联网。Android 会显示连接二维码，供这台 Apple 设备扫描。"
+          }
+        }
+      }
+    },
     "La transferencia es local, cifrada y no utiliza Internet. Android mostrará el código de enlace y este dispositivo lo escaneará." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -31615,6 +31696,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "接入点 1 和 2 显示在“首页”左侧；接入点 3 和 4 显示在右侧。“首页”始终固定在中心位置。点击“编辑”即可更改顺序。"
+          }
+        }
+      }
+    },
+    "Los anexos del Diario requieren acceso Premium." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Journal attachments require Premium access."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "日记附件需要高级版权限。"
           }
         }
       }
@@ -34516,6 +34613,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "暂无营养信息。"
+          }
+        }
+      }
+    },
+    "No hay una cámara disponible" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No camera is available"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有可用的摄像头"
           }
         }
       }
@@ -38674,6 +38787,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "允许你与 AI 讨论复制到剪贴板的文本。"
+          }
+        }
+      }
+    },
+    "Permite el acceso a la cámara" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allow camera access"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "允许访问摄像头"
           }
         }
       }
@@ -45825,6 +45954,22 @@
         }
       }
     },
+    "Si este Mac no tiene cámara, acerca y desbloquea tu iPhone, activa Bluetooth y Wi‑Fi en ambos dispositivos y selecciónalo aquí como Cámara de Continuidad." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "If this Mac has no camera, bring your unlocked iPhone nearby, turn on Bluetooth and Wi‑Fi on both devices, and select it here as a Continuity Camera."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "如果这台 Mac 没有摄像头，请将已解锁的 iPhone 放在附近，开启两台设备的蓝牙和 Wi‑Fi，然后在此选择它作为连续互通相机。"
+          }
+        }
+      }
+    },
     "Si existe peligro inmediato, no continúes con un ejercicio de autorregulación. Llama a emergencias o pide a otra persona que lo haga." : {
       "localizations" : {
         "en" : {
@@ -46642,6 +46787,22 @@
           "stringUnit" : {
             "state" : "machine_translated",
             "value" : "请求位置权限，并保存当前位置的坐标"
+          }
+        }
+      }
+    },
+    "Solicitando acceso a la cámara…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Requesting camera access…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在请求摄像头权限…"
           }
         }
       }
@@ -48990,6 +49151,22 @@
         }
       }
     },
+    "Transfiere tu información directamente entre tu dispositivo Apple y Android, o sincroniza ambos automáticamente. Puedes incluir todo el contenido compatible o elegir solo las categorías que necesitas." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transfer your information directly between your Apple device and Android, or synchronize both automatically. You can include all compatible content or choose only the categories you need."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 Apple 设备与 Android 之间直接传输信息，或自动同步两台设备。你可以传输所有兼容内容，也可以只选择需要的类别。"
+          }
+        }
+      }
+    },
     "Transfiere tu información directamente entre tu iPhone y un dispositivo Android, o sincroniza ambos automáticamente. Puedes incluir todo el contenido compatible o elegir solo las categorías que necesitas." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -50321,6 +50498,22 @@
         }
       }
     },
+    "Usa la cámara del Mac, una cámara externa o la Cámara de Continuidad del iPhone." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use the Mac camera, an external camera, or iPhone Continuity Camera."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用 Mac 摄像头、外接摄像头或 iPhone 连续互通相机。"
+          }
+        }
+      }
+    },
     "Usa una señal física de pausa al menos una vez." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -51283,6 +51476,29 @@
         }
       }
     },
+    "wireless.mac.network_not_found" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The {0} network could not be found. Make sure the Android hotspot is still active."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se encontró la red {0}. Comprueba que el punto de acceso de Android siga activo."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "找不到网络 {0}。请确认 Android 热点仍处于开启状态。"
+          }
+        }
+      }
+    },
     "Y termino haciendo…" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -51320,86 +51536,6 @@
             "value" : "我已经写过评价"
           }
         }
-      }
-    },
-    "Abrir Ajustes del Sistema" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Open System Settings" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "打开系统设置" } }
-      }
-    },
-    "Buscar cámaras" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Find cameras" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "查找摄像头" } }
-      }
-    },
-    "Coloca el código QR dentro de la imagen. La lectura comenzará automáticamente." : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Place the QR code inside the image. Scanning will start automatically." } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "将二维码置于画面内，扫描会自动开始。" } }
-      }
-    },
-    "La transferencia es local, cifrada y no utiliza Internet. Android mostrará el código de enlace y este dispositivo Apple lo escaneará." : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "The transfer is local, encrypted, and does not use the Internet. Android will display the connection code for this Apple device to scan." } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "传输在本地加密进行，无需互联网。Android 会显示连接二维码，供这台 Apple 设备扫描。" } }
-      }
-    },
-    "No hay una cámara disponible" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "No camera is available" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "没有可用的摄像头" } }
-      }
-    },
-    "Permite el acceso a la cámara" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Allow camera access" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "允许访问摄像头" } }
-      }
-    },
-    "Si este Mac no tiene cámara, acerca y desbloquea tu iPhone, activa Bluetooth y Wi‑Fi en ambos dispositivos y selecciónalo aquí como Cámara de Continuidad." : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "If this Mac has no camera, bring your unlocked iPhone nearby, turn on Bluetooth and Wi‑Fi on both devices, and select it here as a Continuity Camera." } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "如果这台 Mac 没有摄像头，请将已解锁的 iPhone 放在附近，开启两台设备的蓝牙和 Wi‑Fi，然后在此选择它作为连续互通相机。" } }
-      }
-    },
-    "Solicitando acceso a la cámara…" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Requesting camera access…" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "正在请求摄像头权限…" } }
-      }
-    },
-    "Transfiere tu información directamente entre tu dispositivo Apple y Android, o sincroniza ambos automáticamente. Puedes incluir todo el contenido compatible o elegir solo las categorías que necesitas." : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Transfer your information directly between your Apple device and Android, or synchronize both automatically. You can include all compatible content or choose only the categories you need." } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "在 Apple 设备与 Android 之间直接传输信息，或自动同步两台设备。你可以传输所有兼容内容，也可以只选择需要的类别。" } }
-      }
-    },
-    "Usa la cámara del Mac, una cámara externa o la Cámara de Continuidad del iPhone." : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Use the Mac camera, an external camera, or iPhone Continuity Camera." } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "使用 Mac 摄像头、外接摄像头或 iPhone 连续互通相机。" } }
-      }
-    },
-    "Activa Cámara para Neville en Ajustes del Sistema > Privacidad y seguridad. También se necesita este permiso para usar la cámara del iPhone." : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Enable Camera for Neville in System Settings > Privacy & Security. This permission is also required to use the iPhone camera." } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "请在“系统设置”>“隐私与安全性”中允许 Neville 使用摄像头。使用 iPhone 摄像头同样需要此权限。" } }
-      }
-    },
-    "Este Mac no dispone de una interfaz Wi‑Fi activa" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "This Mac does not have an active Wi‑Fi interface" } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "这台 Mac 没有可用的 Wi‑Fi 接口" } }
-      }
-    },
-    "wireless.mac.network_not_found" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "The {0} network could not be found. Make sure the Android hotspot is still active." } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "No se encontró la red {0}. Comprueba que el punto de acceso de Android siga activo." } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "找不到网络 {0}。请确认 Android 热点仍处于开启状态。" } }
       }
     },
     "Yorjandi PG" : {

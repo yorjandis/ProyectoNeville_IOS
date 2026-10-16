@@ -1,6 +1,14 @@
 import Foundation
 import CoreData
 import UniformTypeIdentifiers
+#if os(iOS)
+import AVFoundation
+#endif
+
+private enum VoiceNoteMigrationField {
+    static let audioData = "voiceAudioData"
+    static let audioFileExtension = "voiceAudioFileExtension"
+}
 
 @MainActor
 final class CoreDataCanonicalMigrationBridge {
@@ -12,7 +20,11 @@ final class CoreDataCanonicalMigrationBridge {
 
     func exportRecords() async throws -> [CanonicalMigrationRecord] {
         var records: [CanonicalMigrationRecord] = []
-        records += try fetchNotes().map(noteRecord)
+        let notes = try fetchNotes()
+#if os(iOS)
+        try await normalizeVoiceAudioForWirelessSync(in: notes)
+#endif
+        records += try notes.map(noteRecord)
         let diaryEntries = try fetchDiary()
         records += try diaryEntries.map(diaryRecord)
         for diary in diaryEntries {
@@ -47,6 +59,58 @@ final class CoreDataCanonicalMigrationBridge {
     func exportRecords(personalPhrases: [Frases]) throws -> [CanonicalMigrationRecord] {
         try personalPhrases.filter(\.isPersonal).map(personalPhraseRecord)
     }
+
+#if os(iOS)
+    /// Android records and plays AAC in an MPEG-4 container. iOS text-to-speech
+    /// notes were historically stored as PCM CAF, so normalize those assets once
+    /// before exporting to guarantee playback on both platforms.
+    private func normalizeVoiceAudioForWirelessSync(in notes: [Notas]) async throws {
+        for note in notes {
+            guard let audioData = note.value(forKey: VoiceNoteMigrationField.audioData) as? Data,
+                  !audioData.isEmpty,
+                  (note.value(forKey: VoiceNoteMigrationField.audioFileExtension) as? String)?
+                    .lowercased() == "caf" else {
+                continue
+            }
+
+            let directory = FileManager.default.temporaryDirectory
+                .appendingPathComponent("voice-note-sync-\(UUID().uuidString)", isDirectory: true)
+            try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+            defer { try? FileManager.default.removeItem(at: directory) }
+
+            let sourceURL = directory.appendingPathComponent("source.caf")
+            let destinationURL = directory.appendingPathComponent("normalized.m4a")
+            try audioData.write(to: sourceURL, options: [.atomic])
+            let asset = AVURLAsset(url: sourceURL)
+            guard let exporter = AVAssetExportSession(
+                asset: asset,
+                presetName: AVAssetExportPresetAppleM4A
+            ) else {
+                throw MigrationError.validation("No se pudo convertir el audio CAF de la nota de voz")
+            }
+            try await exporter.export(to: destinationURL, as: .m4a)
+            let normalizedData = try Data(contentsOf: destinationURL, options: [.mappedIfSafe])
+            guard !normalizedData.isEmpty else {
+                throw MigrationError.validation("La conversión de la nota de voz produjo audio vacío")
+            }
+
+            note.setValue(normalizedData, forKey: VoiceNoteMigrationField.audioData)
+            note.setValue("m4a", forKey: VoiceNoteMigrationField.audioFileExtension)
+
+            if let noteID = note.id, !noteID.isEmpty {
+                let localURL = try VoiceNoteAudioStore.recordingURL(for: noteID)
+                try normalizedData.write(to: localURL, options: [.atomic])
+                if let oldURL = try? VoiceNoteAudioStore.synthesizedURL(for: noteID) {
+                    try? FileManager.default.removeItem(at: oldURL)
+                }
+            }
+        }
+
+        if context.hasChanges {
+            try context.save()
+        }
+    }
+#endif
 
     func findConflicts(records: [CanonicalMigrationRecord]) async throws -> [ImportConflict] {
         let existing = try await exportRecords()
@@ -193,6 +257,18 @@ final class CoreDataCanonicalMigrationBridge {
                 MigrationJSON.string(left.payload, "mimeType") == MigrationJSON.string(right.payload, "mimeType")
         }
 
+        if left.type == MigrationRecordType.note {
+            let sameIdentityAndDates: Bool
+            if left.id == right.id {
+                sameIdentityAndDates = left.createdAt == right.createdAt &&
+                    left.updatedAt == right.updatedAt
+            } else {
+                sameIdentityAndDates = semanticContentKey(for: left) == semanticContentKey(for: right) &&
+                    left.createdAt == right.createdAt
+            }
+            return sameIdentityAndDates && notePayloadsEquivalent(left.payload, right.payload)
+        }
+
         if left.id == right.id {
             return left.createdAt == right.createdAt &&
             left.updatedAt == right.updatedAt &&
@@ -207,6 +283,28 @@ final class CoreDataCanonicalMigrationBridge {
         }
 
         return false
+    }
+
+    /// Peers predating wireless voice-audio support omit these optional keys.
+    /// An omitted key means "audio not supplied", not "remove local audio".
+    private func notePayloadsEquivalent(_ left: [String: Any], _ right: [String: Any]) -> Bool {
+        let commonFieldsMatch = MigrationJSON.string(left, "title") == MigrationJSON.string(right, "title") &&
+            MigrationJSON.string(left, "body") == MigrationJSON.string(right, "body") &&
+            MigrationJSON.string(left, "category") == MigrationJSON.string(right, "category") &&
+            MigrationJSON.bool(left, "favorite") == MigrationJSON.bool(right, "favorite") &&
+            MigrationJSON.bool(left, "isChecklist") == MigrationJSON.bool(right, "isChecklist") &&
+            MigrationJSON.string(left, "checklistJson") == MigrationJSON.string(right, "checklistJson")
+        guard commonFieldsMatch else { return false }
+
+        let audioMatches = left[VoiceNoteMigrationField.audioData] == nil ||
+            right[VoiceNoteMigrationField.audioData] == nil ||
+            MigrationJSON.string(left, VoiceNoteMigrationField.audioData) ==
+                MigrationJSON.string(right, VoiceNoteMigrationField.audioData)
+        let extensionMatches = left[VoiceNoteMigrationField.audioFileExtension] == nil ||
+            right[VoiceNoteMigrationField.audioFileExtension] == nil ||
+            MigrationJSON.string(left, VoiceNoteMigrationField.audioFileExtension) ==
+                MigrationJSON.string(right, VoiceNoteMigrationField.audioFileExtension)
+        return audioMatches && extensionMatches
     }
 
     private func matchingExistingRecord(
@@ -389,21 +487,28 @@ private extension CoreDataCanonicalMigrationBridge {
         let recordId = storedId.isEmpty
             ? try MigrationIds.stableId(type: MigrationRecordType.note, parts: "ios", created)
             : storedId
+        var payload: [String: Any] = [
+            "title": title,
+            "body": body,
+            "tags": category.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? [] : [category],
+            "category": category,
+            "favorite": note.isfav,
+            "isChecklist": note.value(forKey: "isChecklist") as? Bool ?? false,
+            "checklistJson": note.value(forKey: "checklistItemsData") as? String ?? ""
+        ]
+        if let audioData = note.value(forKey: VoiceNoteMigrationField.audioData) as? Data,
+           !audioData.isEmpty {
+            payload[VoiceNoteMigrationField.audioData] = audioData.base64EncodedString()
+            payload[VoiceNoteMigrationField.audioFileExtension] =
+                note.value(forKey: VoiceNoteMigrationField.audioFileExtension) as? String ?? ""
+        }
         return CanonicalMigrationRecord(
             type: MigrationRecordType.note,
             id: recordId,
             createdAt: created,
             updatedAt: updated,
             schemaVersion: MigrationFormat.schemaVersion,
-            payload: [
-                "title": title,
-                "body": body,
-                "tags": category.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? [] : [category],
-                "category": category,
-                "favorite": note.isfav,
-                "isChecklist": note.value(forKey: "isChecklist") as? Bool ?? false,
-                "checklistJson": note.value(forKey: "checklistItemsData") as? String ?? ""
-            ]
+            payload: payload
         )
     }
 
@@ -756,6 +861,27 @@ private extension CoreDataCanonicalMigrationBridge {
         note.setValue(MigrationJSON.string(record.payload, "category"), forKey: "categoria")
         note.setValue(MigrationJSON.bool(record.payload, "isChecklist"), forKey: "isChecklist")
         note.setValue(MigrationJSON.string(record.payload, "checklistJson"), forKey: "checklistItemsData")
+        if record.payload[VoiceNoteMigrationField.audioData] != nil {
+            let encodedAudio = MigrationJSON.string(record.payload, VoiceNoteMigrationField.audioData)
+            if encodedAudio.isEmpty {
+                note.setValue(nil, forKey: VoiceNoteMigrationField.audioData)
+            } else {
+                guard let audioData = Data(base64Encoded: encodedAudio), !audioData.isEmpty else {
+                    throw MigrationError.validation("El audio de la nota de voz no es Base64 válido")
+                }
+                note.setValue(audioData, forKey: VoiceNoteMigrationField.audioData)
+            }
+        }
+        if record.payload[VoiceNoteMigrationField.audioFileExtension] != nil {
+            let fileExtension = MigrationJSON.string(
+                record.payload,
+                VoiceNoteMigrationField.audioFileExtension
+            )
+            note.setValue(fileExtension.isEmpty ? nil : fileExtension, forKey: VoiceNoteMigrationField.audioFileExtension)
+        } else if record.payload[VoiceNoteMigrationField.audioData] != nil,
+                  note.value(forKey: VoiceNoteMigrationField.audioFileExtension) == nil {
+            note.setValue("m4a", forKey: VoiceNoteMigrationField.audioFileExtension)
+        }
         note.fechaCreacion = try MigrationFormat.date(fromISO8601: record.createdAt)
         note.fechaModificacion = try MigrationFormat.date(fromISO8601: record.updatedAt)
     }

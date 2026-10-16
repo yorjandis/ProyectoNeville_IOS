@@ -312,7 +312,10 @@ enum OrderedJSONWriter {
     static func payloadOrder(for type: String) -> [String] {
         switch type {
         case MigrationRecordType.note:
-            return ["title", "body", "tags", "category", "favorite", "isChecklist", "checklistJson"]
+            return [
+                "title", "body", "tags", "category", "favorite", "isChecklist", "checklistJson",
+                "voiceAudioData", "voiceAudioFileExtension"
+            ]
         case MigrationRecordType.diary:
             return ["title", "body", "emotion", "chapter", "favorite"]
         case MigrationRecordType.diaryAttachment:
