@@ -36342,6 +36342,279 @@
         }
       }
     },
+    "notes.arithmetic_help.accessibility" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Help with calculations in Notes" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "笔记计算帮助" } }
+      }
+    },
+    "notes.arithmetic_help.checklist.body" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Add the calculation to the text of each item. Only the first arithmetic expression in each task is used." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "在每个项目的文字中加入算式。每项任务只会使用第一个算术表达式。" } }
+      }
+    },
+    "notes.arithmetic_help.checklist.checked" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "When you check “Buy supplies,” its amount is considered complete and Pending drops to 7. Uncheck it to add the amount back to Pending." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "勾选“购买材料”后，该金额会计入已完成，“待完成”将变为 7。取消勾选后，这笔金额会重新计入“待完成”。" } }
+      }
+    },
+    "notes.arithmetic_help.checklist.example" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "○ Buy supplies =15\n○ Transportation =5+2" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "○ 购买材料 =15\n○ 交通 =5+2" } }
+      }
+    },
+    "notes.arithmetic_help.checklist.note_blocks" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Introductory and closing notes in a checklist are not included in calculations." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "清单开头或末尾的说明文字不参与计算。" } }
+      }
+    },
+    "notes.arithmetic_help.checklist.result" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Grand total: 22   ·   Pending: 22" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "总计：22   ·   待完成：22" } }
+      }
+    },
+    "notes.arithmetic_help.checklist.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Calculations in checklists" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "清单中的计算" } }
+      }
+    },
+    "notes.arithmetic_help.introduction.body" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Add calculations to your text and the app will show each result and the grand total without changing what you wrote." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "在文字中加入算式，应用会显示各项结果和总计，同时保留你输入的原文。" } }
+      }
+    },
+    "notes.arithmetic_help.introduction.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Turn your note text into a simple calculator" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "让笔记文字变成便捷计算器" } }
+      }
+    },
+    "notes.arithmetic_help.rules.decimals.detail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "You can use a comma or a period: =2,50*3 and =2.50*3 are both valid." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "小数可使用逗号或句点：=2,50*3 和 =2.50*3 均有效。" } }
+      }
+    },
+    "notes.arithmetic_help.rules.decimals.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Decimals" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "小数" } }
+      }
+    },
+    "notes.arithmetic_help.rules.limits.detail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Parentheses, percentages, and exponents are not supported. Division by zero is ignored." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "不支持括号、百分号或幂运算。除以零的算式会被忽略。" } }
+      }
+    },
+    "notes.arithmetic_help.rules.limits.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Limitations" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "限制" } }
+      }
+    },
+    "notes.arithmetic_help.rules.operators.detail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "+  addition   ·   −  subtraction   ·   *  multiplication   ·   /  division" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "+  加法   ·   −  减法   ·   *  乘法   ·   /  除法" } }
+      }
+    },
+    "notes.arithmetic_help.rules.operators.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Supported operators" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "支持的运算符" } }
+      }
+    },
+    "notes.arithmetic_help.rules.signs.detail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Positive and negative values are supported, for example =-5 or =10+-2." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "支持正数和负数，例如 =-5 或 =10+-2。" } }
+      }
+    },
+    "notes.arithmetic_help.rules.signs.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Signs" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "正负号" } }
+      }
+    },
+    "notes.arithmetic_help.rules.spaces.detail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "You may add spaces after =, but not inside the expression. Use =10+2, not =10 + 2." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "等号后可以留空格，但算式内部不能有空格。请使用 =10+2，而不是 =10 + 2。" } }
+      }
+    },
+    "notes.arithmetic_help.rules.spaces.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Spaces" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "空格" } }
+      }
+    },
+    "notes.arithmetic_help.rules.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Rules and syntax" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "规则与语法" } }
+      }
+    },
+    "notes.arithmetic_help.tips.edit.detail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "When you change a number, its result and the grand total update automatically." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "修改数字后，对应结果和总计会自动更新。" } }
+      }
+    },
+    "notes.arithmetic_help.tips.edit.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Edit at any time" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "随时编辑" } }
+      }
+    },
+    "notes.arithmetic_help.tips.separate.detail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Put each amount on a separate line or checklist item to make the total easier to review." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "将每笔金额单独放在一行或一个清单项目中，更便于核对总计。" } }
+      }
+    },
+    "notes.arithmetic_help.tips.separate.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Separate each item" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "分开记录" } }
+      }
+    },
+    "notes.arithmetic_help.tips.syntax.detail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "If an expression is missing from the grand total, check for spaces, unsupported symbols, or division by zero." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "如果某个算式未计入总计，请检查是否含有空格、不支持的符号或除以零。" } }
+      }
+    },
+    "notes.arithmetic_help.tips.syntax.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Check the syntax" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "检查语法" } }
+      }
+    },
+    "notes.arithmetic_help.tips.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Quick tips" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "实用提示" } }
+      }
+    },
+    "notes.arithmetic_help.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Calculations in Notes" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "笔记中的计算" } }
+      }
+    },
+    "notes.arithmetic_help.tooltip" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "How to use calculations in Notes" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "如何在笔记中使用计算" } }
+      }
+    },
+    "notes.arithmetic_help.total.adjustments" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "A value that starts with a minus sign is deducted from the total. Results for regular expressions appear automatically beside them; adjustments that start with + or − are applied directly to the grand total. You do not need to type the →(result) label." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "以减号开头的值会从总计中扣除。普通算式的结果会自动显示在旁边；以 + 或 − 开头的调整项会直接计入总计。无需手动输入 →(结果) 标记。" } }
+      }
+    },
+    "notes.arithmetic_help.total.body" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Notes evaluates every valid arithmetic expression in the text and adds the results together." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "“笔记”会计算文字中所有有效的算术表达式，并将结果相加。" } }
+      }
+    },
+    "notes.arithmetic_help.total.example" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Bread =2\nMilk =1.50\nDiscount =-0.50" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "面包 =2\n牛奶 =1.50\n优惠 =-0.50" } }
+      }
+    },
+    "notes.arithmetic_help.total.result" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Grand total: 3" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "总计：3" } }
+      }
+    },
+    "notes.arithmetic_help.total.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Grand total for a note" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "笔记总计" } }
+      }
+    },
+    "notes.arithmetic_help.write.body" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Type an equals sign followed by the expression. You can add any description before the equals sign." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "输入等号，后面紧跟算式。等号前可以添加任意说明文字。" } }
+      }
+    },
+    "notes.arithmetic_help.write.example" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Purchase =12+3*2" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "购物 =12+3*2" } }
+      }
+    },
+    "notes.arithmetic_help.write.precedence" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Multiplication and division are evaluated before addition and subtraction." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "先计算乘法和除法，再计算加法和减法。" } }
+      }
+    },
+    "notes.arithmetic_help.write.result" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Result: 18" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "结果：18" } }
+      }
+    },
+    "notes.arithmetic_help.write.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "How to write a calculation" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "如何输入算式" } }
+      }
+    },
     "Notas favoritas" : {
       "localizations" : {
         "en" : {

@@ -31,6 +31,10 @@ private enum NotasUIConstants {
     static let detailPanelPetSize: CGFloat = 118
 }
 
+private func notesArithmeticHelpText(_ key: String, fallback: String) -> String {
+    L10n.string("notes.arithmetic_help.\(key)", fallback: fallback)
+}
+
 #if os(iOS)
 /// Disposición del espacio de trabajo de Notas en iPad. La opción automática
 /// sigue la geometría disponible; las otras dos permiten intercambiar los
@@ -128,6 +132,7 @@ struct ListNotasViews: View {
     @State private var bulkCategoryDraft = ""
     @State private var pendingBulkAction: NotesBulkAction?
     @State private var showBulkActionConfirmation = false
+    @State private var showArithmeticHelp = false
     @AppStorage("purchaseStatus") private var purchaseStatus: Bool = false
     @AppStorage("yorjPremium", store: UserDefaults(suiteName: AppCons.AppGroupName)) private var yorjPremium: Bool = false
     @AppStorage(PetSettings.isEnabledKey) private var petsEnabled = true
@@ -364,6 +369,9 @@ struct ListNotasViews: View {
                         .buttonStyle(.bordered)
                     }
                     .padding()
+                }
+                .sheet(isPresented: $showArithmeticHelp) {
+                    NotesArithmeticHelpView()
                 }
                 .confirmationDialog("¿Eliminar notas seleccionadas?", isPresented: $showConfirmBulkDelete) {
                     Button("Eliminar \(selectedNotaIDs.count) nota(s)", role: .destructive) {
@@ -725,6 +733,10 @@ struct ListNotasViews: View {
             filtersMenu
         }
 
+        ToolbarItem {
+            arithmeticHelpButton
+        }
+
 #if os(iOS)
         if isIPadInterface {
             ToolbarItem {
@@ -748,6 +760,10 @@ struct ListNotasViews: View {
             filtersMenu
         }
 
+        ToolbarItem {
+            arithmeticHelpButton
+        }
+
 #if os(iOS)
         if isIPadInterface {
             ToolbarItem {
@@ -763,6 +779,20 @@ struct ListNotasViews: View {
         ToolbarItem {
             addNotaButton
         }
+    }
+
+    private var arithmeticHelpButton: some View {
+        Button {
+            showArithmeticHelp = true
+        } label: {
+            Image(systemName: "info.circle")
+        }
+        .accessibilityLabel(
+            Text(notesArithmeticHelpText("accessibility", fallback: "Ayuda sobre cálculos en Notas"))
+        )
+        .help(
+            Text(notesArithmeticHelpText("tooltip", fallback: "Cómo usar cálculos en Notas"))
+        )
     }
 
 #if os(iOS)
@@ -1487,6 +1517,239 @@ struct ListNotasViews: View {
          }
     }
 
+}
+
+/// Guía de consulta rápida para la sintaxis aritmética que reconoce Notas.
+private struct NotesArithmeticHelpView: View {
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 18) {
+                    introduction
+
+                    helpSection(
+                        icon: "equal.circle.fill",
+                        title: notesArithmeticHelpText(
+                            "write.title",
+                            fallback: "Cómo escribir un cálculo"
+                        ),
+                        color: .blue
+                    ) {
+                        Text(notesArithmeticHelpText(
+                            "write.body",
+                            fallback: "Escribe un signo igual y, a continuación, la operación. Puedes añadir cualquier descripción antes del signo igual."
+                        ))
+                        calculationExample(
+                            notesArithmeticHelpText("write.example", fallback: "Compra =12+3*2"),
+                            result: notesArithmeticHelpText("write.result", fallback: "Resultado: 18")
+                        )
+                        Text(notesArithmeticHelpText(
+                            "write.precedence",
+                            fallback: "La multiplicación y la división se resuelven antes que la suma y la resta."
+                        ))
+                            .font(.callout)
+                            .foregroundStyle(.secondary)
+                    }
+
+                    helpSection(
+                        icon: "list.bullet.rectangle.portrait.fill",
+                        title: notesArithmeticHelpText("rules.title", fallback: "Reglas y sintaxis"),
+                        color: .indigo
+                    ) {
+                        rule(
+                            notesArithmeticHelpText("rules.operators.title", fallback: "Operadores admitidos"),
+                            detail: notesArithmeticHelpText("rules.operators.detail", fallback: "+  suma   ·   −  resta   ·   *  multiplicación   ·   /  división")
+                        )
+                        rule(
+                            notesArithmeticHelpText("rules.decimals.title", fallback: "Decimales"),
+                            detail: notesArithmeticHelpText("rules.decimals.detail", fallback: "Puedes usar coma o punto: =2,50*3 y =2.50*3 son válidos.")
+                        )
+                        rule(
+                            notesArithmeticHelpText("rules.signs.title", fallback: "Signos"),
+                            detail: notesArithmeticHelpText("rules.signs.detail", fallback: "Se admiten valores positivos y negativos, por ejemplo =-5 o =10+-2.")
+                        )
+                        rule(
+                            notesArithmeticHelpText("rules.spaces.title", fallback: "Espacios"),
+                            detail: notesArithmeticHelpText("rules.spaces.detail", fallback: "Puedes dejar espacios después de =, pero no dentro de la operación. Usa =10+2, no =10 + 2.")
+                        )
+                        rule(
+                            notesArithmeticHelpText("rules.limits.title", fallback: "Límites"),
+                            detail: notesArithmeticHelpText("rules.limits.detail", fallback: "No se admiten paréntesis, porcentajes ni potencias. La división entre cero se ignora.")
+                        )
+                    }
+
+                    helpSection(
+                        icon: "sum",
+                        title: notesArithmeticHelpText("total.title", fallback: "Suma total de una nota"),
+                        color: .green
+                    ) {
+                        Text(notesArithmeticHelpText(
+                            "total.body",
+                            fallback: "Notas evalúa todos los bloques aritméticos válidos del texto y suma sus resultados."
+                        ))
+                        calculationExample(
+                            notesArithmeticHelpText(
+                                "total.example",
+                                fallback: "Pan =2\nLeche =1,50\nDescuento =-0,50"
+                            ),
+                            result: notesArithmeticHelpText("total.result", fallback: "Suma total: 3")
+                        )
+                        Text(notesArithmeticHelpText(
+                            "total.adjustments",
+                            fallback: "Un valor que empieza por menos sirve para descontar del total. Los resultados de las operaciones ordinarias aparecen automáticamente junto a ellas; los ajustes que empiezan por + o − se reflejan directamente en la suma total. No necesitas escribir la indicación →(resultado)."
+                        ))
+                            .font(.callout)
+                            .foregroundStyle(.secondary)
+                    }
+
+                    helpSection(
+                        icon: "checklist",
+                        title: notesArithmeticHelpText("checklist.title", fallback: "Cálculos en checklist"),
+                        color: .orange
+                    ) {
+                        Text(notesArithmeticHelpText(
+                            "checklist.body",
+                            fallback: "Añade el cálculo dentro del texto de cada elemento. Solo se usa el primer bloque aritmético de cada tarea."
+                        ))
+                        calculationExample(
+                            notesArithmeticHelpText(
+                                "checklist.example",
+                                fallback: "○ Comprar material =15\n○ Transporte =5+2"
+                            ),
+                            result: notesArithmeticHelpText(
+                                "checklist.result",
+                                fallback: "Suma total: 22   ·   Pendiente: 22"
+                            )
+                        )
+                        Text(notesArithmeticHelpText(
+                            "checklist.checked",
+                            fallback: "Al marcar «Comprar material», su importe se considera completado y Pendiente pasa a 7. Si vuelves a desmarcarlo, se añade otra vez al pendiente."
+                        ))
+                            .font(.callout)
+                        Text(notesArithmeticHelpText(
+                            "checklist.note_blocks",
+                            fallback: "Las notas introductorias o finales del checklist no participan en los cálculos."
+                        ))
+                            .font(.callout)
+                            .foregroundStyle(.secondary)
+                    }
+
+                    helpSection(
+                        icon: "lightbulb.fill",
+                        title: notesArithmeticHelpText("tips.title", fallback: "Consejos rápidos"),
+                        color: .yellow
+                    ) {
+                        rule(
+                            notesArithmeticHelpText("tips.separate.title", fallback: "Separa conceptos"),
+                            detail: notesArithmeticHelpText("tips.separate.detail", fallback: "Pon cada importe en una línea o elemento distinto para que el total sea fácil de revisar.")
+                        )
+                        rule(
+                            notesArithmeticHelpText("tips.edit.title", fallback: "Edita cuando quieras"),
+                            detail: notesArithmeticHelpText("tips.edit.detail", fallback: "Al cambiar una cifra, el resultado y la suma total se actualizan automáticamente.")
+                        )
+                        rule(
+                            notesArithmeticHelpText("tips.syntax.title", fallback: "Revisa la sintaxis"),
+                            detail: notesArithmeticHelpText("tips.syntax.detail", fallback: "Si una operación no aparece en la suma total, comprueba espacios, símbolos no admitidos o una división entre cero.")
+                        )
+                    }
+                }
+                .padding()
+                .frame(maxWidth: 720, alignment: .leading)
+                .frame(maxWidth: .infinity)
+            }
+            .navigationTitle(notesArithmeticHelpText("title", fallback: "Cálculos en Notas"))
+#if os(iOS)
+            .navigationBarTitleDisplayMode(.inline)
+#endif
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Text(L10n.exact("Cerrar"))
+                    }
+                }
+            }
+        }
+        .frame(minWidth: 340, idealWidth: 620, minHeight: 520, idealHeight: 720)
+    }
+
+    private var introduction: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Image(systemName: "function")
+                .font(.system(size: 34, weight: .semibold))
+                .foregroundStyle(.blue)
+
+            Text(notesArithmeticHelpText(
+                "introduction.title",
+                fallback: "Convierte el texto de una nota en una pequeña calculadora"
+            ))
+                .font(.title2.bold())
+
+            Text(notesArithmeticHelpText(
+                "introduction.body",
+                fallback: "Incluye operaciones en el texto y la app mostrará sus resultados y la suma total sin alterar lo que has escrito."
+            ))
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding()
+        .background(.blue.opacity(0.09), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+    }
+
+    private func helpSection<Content: View>(
+        icon: String,
+        title: String,
+        color: Color,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Label {
+                Text(title)
+                    .font(.headline)
+            } icon: {
+                Image(systemName: icon)
+                    .foregroundStyle(color)
+            }
+
+            content()
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding()
+        .background(.secondary.opacity(0.08), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+    }
+
+    private func calculationExample(_ expression: String, result: String) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(expression)
+                .font(.system(.body, design: .monospaced, weight: .medium))
+                .textSelection(.enabled)
+            Divider()
+            Text(result)
+                .font(.callout.bold())
+                .foregroundStyle(.blue)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(12)
+        .background(.background, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+    }
+
+    private func rule(_ title: String, detail: String) -> some View {
+        HStack(alignment: .top, spacing: 10) {
+            Image(systemName: "checkmark.circle.fill")
+                .foregroundStyle(.green)
+                .padding(.top, 2)
+            VStack(alignment: .leading, spacing: 3) {
+                Text(title)
+                    .font(.subheadline.bold())
+                Text(detail)
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+            }
+        }
+    }
 }
 
 #if os(iOS)
